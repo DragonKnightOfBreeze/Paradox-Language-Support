@@ -40,8 +40,9 @@
 	  SERIAL_NUMBER_ID="regexp:[A-Z]"
 	  SERIAL_NUMBER_END="%"
       COMMAND_START="["
-      COMMAND_KEY_TOKEN='regexp:[a-zA-Z0-9_$:@]+'
-      COMMAND_KEY_SEPARATOR='.'
+      COMMAND_SCOPE_TOKEN='regexp:[a-zA-Z0-9_:@]+'
+      COMMAND_KEY_TOKEN='regexp:[a-zA-Z0-9_]+'
+      COMMAND_SEPARATOR='.'
       COMMAND_END="]"
 	  COLORFUL_TEXT_START="§"
 	  COLOR_CODE="regexp:[a-zA-Z]"
@@ -114,10 +115,15 @@ command ::= COMMAND_START command_expression? COMMAND_END{
   extends=rich_text
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationRichText"
 }
-private command_expression ::= command_Key (COMMAND_KEY_SEPARATOR command_Key)*{
+private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_Key {
   pin(".*")=1
 }
-command_Key ::= COMMAND_KEY_TOKEN{
+command_scope ::= COMMAND_SCOPE_TOKEN{
+  mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
+  implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
+  methods=[getName setName getNameIdentifier getReference]
+}
+command_Key ::= property_reference | COMMAND_KEY_TOKEN{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[getName setName getNameIdentifier getReference]

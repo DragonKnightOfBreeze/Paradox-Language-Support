@@ -95,13 +95,10 @@ locations:
     file_extension: txt
   common/governments:
     file_extension: txt
-    path_strict: true
   common/governments/authorities:
     file_extension: txt
-    path_strict: true
   common/governments/civics:
     file_extension: txt
-    path_strict: true
   common/graphical_culture:
     file_extension: txt
   common/lawsuits:
@@ -201,7 +198,6 @@ locations:
     file_extension: txt
   common/technology:
     file_extension: txt
-    path_strict: true
   common/technology/category:
     file_extension: txt
   common/technology/tier:
@@ -228,10 +224,8 @@ locations:
     path_strict: false
   dlc_metadata:
     file_extension: txt
-    path_strict: true
   dlc_metadata/dlc_recommendations:
     file_extension: txt
-    path_strict: true
   events:
     file_extension: txt
   flags:
@@ -256,7 +250,6 @@ locations:
     file_extension: txt
   gfx/projectiles:
     file_extension: txt
-    path_strict: true
   gfx/projectiles/planet_destruction:
     file_extension: txt
     path_strict: false
@@ -279,7 +272,6 @@ locations:
     file_extension: txt
   previewer_assets/assetviewer_interface:
     file_extensions: [ gfx, gui ]
-    path_strict: true
   sound:
     file_extension: asset
     path_strict: false

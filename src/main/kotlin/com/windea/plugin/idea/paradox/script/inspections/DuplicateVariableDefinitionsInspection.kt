@@ -82,7 +82,7 @@ class DuplicateVariableDefinitionsInspection :LocalInspectionTool(){
 			private val key: String,
 			private val editor: Editor
 		) : BaseListPopupStep<ParadoxScriptVariable>(_header(key), values) {
-			override fun getIconFor(aValue: ParadoxScriptVariable) = paradoxScriptVariableIcon
+			override fun getIconFor(aValue: ParadoxScriptVariable) = scriptVariableIcon
 
 			override fun getTextFor(value: ParadoxScriptVariable) = _text(key, editor.document.getLineNumber(value.textOffset))
 

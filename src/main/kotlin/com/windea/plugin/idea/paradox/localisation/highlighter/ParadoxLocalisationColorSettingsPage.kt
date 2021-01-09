@@ -51,7 +51,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
 
-	override fun getIcon() = paradoxLocalisationFileIcon
+	override fun getIcon() = localisationFileIcon
 
 	override fun getAttributeDescriptors() = attributesDescriptors
 

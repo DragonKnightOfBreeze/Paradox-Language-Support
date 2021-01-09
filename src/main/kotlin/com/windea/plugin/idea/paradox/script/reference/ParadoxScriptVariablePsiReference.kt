@@ -34,7 +34,7 @@ class ParadoxScriptVariablePsiReference(
 	}
 	
 	override fun getVariants(): Array<out Any> {
-		return findScriptVariables(project, scope).mapArray {
+		return findScriptVariables(project).mapArray {
 			LookupElementBuilder.create(it.name).withIcon(it.getIcon(0)).withTypeText(it.containingFile.name).withPsiElement(it)
 		}
 	}

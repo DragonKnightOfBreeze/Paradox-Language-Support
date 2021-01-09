@@ -47,6 +47,20 @@ fun isPreviousComment(element: PsiElement): Boolean {
 	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == COMMENT
 }
 
+fun checkScriptValueType(value: ParadoxScriptValue,valueType:String):Boolean{
+	return when(valueType){
+		"block" -> value is ParadoxScriptBlock
+		//"array" -> value is ParadoxScriptBlock && value.isArray
+		//"object" ->value is ParadoxScriptBlock && value.isObject
+		"string" -> value is ParadoxScriptString
+		"boolean" -> value is ParadoxScriptBoolean
+		"number" -> value is ParadoxScriptNumber
+		"color" -> value is ParadoxScriptColor
+		"code" -> value is ParadoxScriptCode
+		else -> false
+	}
+}
+
 //Keys
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
@@ -197,7 +211,7 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val ruleGroup = ruleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val scriptPath = element.paradoxScriptPath?: return null
-	val definition = ruleGroup.types.values.find { it.matches(element,elemenetName, path, scriptPath) } ?: return null
+	val definition = ruleGroup.types.values.find { it.matches(element,elementName, path, scriptPath) } ?: return null
 	return definition.toMetadata(element, elementName)
 }
 
@@ -223,16 +237,16 @@ fun findScriptVariables(project: Project, scope: GlobalSearchScope = GlobalSearc
 	return ParadoxScriptVariableKeyIndex.getAll(project, scope)
 }
 
-fun findScriptProperty(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
-	return ParadoxScriptPropertyKeyIndex.getOne(name, project, scope)
+fun findScriptProperty(name: String,type:String? = null,project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
+	return ParadoxScriptPropertyKeyIndex.getOne(name, type, project,  scope)
 }
 
-fun findScriptProperties(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
-	return ParadoxScriptPropertyKeyIndex.getAll(name, project, scope)
+fun findScriptProperties(name: String,type:String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+	return ParadoxScriptPropertyKeyIndex.getAll(name, type, project, scope)
 }
 
-fun findScriptProperties(project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
-	return ParadoxScriptPropertyKeyIndex.getAll(project, scope)
+fun findScriptProperties(type:String? = null,project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+	return ParadoxScriptPropertyKeyIndex.getAll(type,project,scope)
 }
 
 fun findLocalisationProperty(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project),defaultToFirst :Boolean = false): ParadoxLocalisationProperty? {

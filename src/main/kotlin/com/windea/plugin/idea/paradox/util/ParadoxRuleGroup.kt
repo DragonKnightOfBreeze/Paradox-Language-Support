@@ -52,9 +52,11 @@ class ParadoxRuleGroup(
 		//path和propertyPath不要重复获取
 		
 		fun matches(element:ParadoxScriptProperty,elementName: String, path: ParadoxPath, scriptPath: ParadoxPath): Boolean {
-			//value必须是array或者object
-			val isBlockValue = element.propertyValue?.value is ParadoxScriptBlock
-			if(!isBlockValue) return false
+			//valueType必须匹配，默认是block
+			val valueTypeData = get("value_type") as String? ?: "block"
+			val value = element.propertyValue?.value?:return false
+			val isValueTypeMatched = checkScriptValueType(value,valueTypeData)
+			if(!isValueTypeMatched) return false
 			//判断文件扩展名是否匹配
 			val fileExtensionData = get("file_extension") as String? ?: "txt"
 			if(fileExtensionData != path.fileExtension) return false

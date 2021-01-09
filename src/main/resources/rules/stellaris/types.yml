@@ -42,8 +42,8 @@ types:
     path: "common/armies"
     localisation:
       name!: $
-      description!: $_desc
       plural!: $_plural
+      description!: $_desc
     subtypes:
       defensive_army:
         predicate:
@@ -216,6 +216,9 @@ types:
       null:
         predicate:
           is_null: true
+      not_null:
+        predicate: 
+          is_null?: false
 
   # TODO 没弄懂！
   diplo_phrase:
@@ -246,15 +249,15 @@ types:
     name_prefix: "district_"
     localisation:
       name!: $
-      description!: $_desc
       plural!: $_plural
+      description!: $_desc
     subtypes:
       capped:
         predicate:
-          is_capped_by_modifier?: true
+          is_capped_by_modifier: true
       uncapped:
         predicate:
-          is_capped_by_modifier: false
+          is_capped_by_modifier?: false
 
   dynamic_text:
     path: "common/dynamic_text"
@@ -374,6 +377,7 @@ types:
 
   map_mode:
     path: "common/map_modes"
+    name_suffix: "_map_mode"
     localisation:
       name!: $
       description!: $_desc
@@ -390,7 +394,7 @@ types:
         localisation:
           details!: $_MEGASTRUCTURE_DETAILS
           delayed_info?: $_CONSTRUCTION_INFO_DELAYED
-      non_base_level:
+      not_base_level:
         predicate:
           prerequisites: any
 
@@ -419,18 +423,247 @@ types:
   # TODO scopes from comment (root/this = xxx, xxx xx)
   on_action:
     path: "common/on_actions"
+    name_prefix: "on_"
 
+  opnion_modifier:
+    path: "common/opinion_modifiers"
+    name_prefix: "opnion_"
+    localisation:
+      name!: $
+    subtypes:
+      triggered_opnion_modifier:
+        predicate:
+          trigger: any
+      block_triggered:
+        predicate:
+          block_triggered: true
+    hard_coded_file_names:
+    - "01_personality_opinions.txt"
+    - "00_opinion_modifiers.txt"
+
+  ai_personality:
+    alias: "personality"
+    path: "common/personalities"
+    localisation:
+      name!: personality_$
+      description!: personality_$_desc
+
+  planet_class:
+    path: "common/planet_classes"
+    key_filter: "!random_list"
+    localisation:
+      name!: $
+      description!: $_desc
+    subtypes:
+      star:
+        predicate:
+          star: true
+      planet:
+        predicate:
+          star?: false
+      colonizable:
+        predicate:
+          colonizable: true
+        localisation:
+          habitability!: mod_$_habitability
+          preference_trait: trait_$_preference
+          preference_trait_description: trait_$_preference_desc
+
+  planet_class_random_list:
+    path: "common/planet_classes"
+    key_filter: "random_list"
+    name_key: "name"
+
+  planet_modfiier:
+    path: "common/planet_modifiers"
+    name_prefix: "pm_"
+    subtypes:
+      null:
+        predicate:
+          is_null: true
+      not_null:
+        predicate: 
+          is_null?: false
+
+  policy:
+    path: "common/policies"
+    localisation:
+      name!: policy_$
+      description!: policy_$_desc
+
+  policy_option:
+    path: "common/policies"
+    skip_root_key: any
+    key_filter: "option"
+    name_key: "name"
+    localisation: 
+      title!: $
+      name!: $_name
+      description!: $_desc
+
+  social_strata:
+    alias: "pop_category"
+    path: "common/pop_categories"
+    localisation:
+      name!: pop_cat_$
+      plural!: pop_cat_$_plural
+      description!: pop_cat_$_desc
+
+  faction_type:
+    alias: "pop_faction_type"
+    path: "common/pop_faction_types"
+    localisation:
+      name!: pft_$
+      description!: pft_$_desc
+    #subtypes: 
+    #  unique:
+    #    predicate: 
+    #      unique: true
+    #  non_unique:
+    #    predicate: 
+    #      unique?: false
+
+  job:
+    alias: "pop_job"
+    path: "common/pop_jobs"
+    localisation:
+      name!: job_$
+      plural!: job_$_plural
+      description!: job_$_desc
+    subtypes:
+      capped:
+        predicate:
+          is_capped_by_modifier: true
+      uncapped:
+        predicate:
+          is_capped_by_modifier?: false
+
+  precursor_civilization:
+    path: "common/precursor_civilizations"
+    name_prefix: "precursor_"
+    
+  empire_name_parts_list:
+    path: "common/random_names"
+    key_filter: "empire_name_parts_list"
+    name_key: "key"
+
+  empire_name_format:
+    path: "common/random_names"
+    key_filter: "empire_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  federation_name_parts_list:
+    path: "common/random_names"
+    key_filter: "federation_name_parts_list"
+    name_key: "key"
+
+  federation_name_format:
+    path: "common/random_names"
+    key_filter: "federation_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  pop_faction_name_parts_list:
+    path: "common/random_names"
+    key_filter: "pop_faction_name_parts_list"
+    name_key: "key"
+
+  pop_faction_name_format:
+    path: "common/random_names"
+    key_filter: "pop_faction_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  pre_communications_name_parts_list:
+    path: "common/random_names"
+    key_filter: "pre_communications_name_parts_list"
+    name_key: "key"
+
+  pre_communications_name_format:
+    path: "common/random_names"
+    key_filter: "pre_communications_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  war_name_parts_list:
+    path: "common/random_names"
+    key_filter: "war_name_parts_list"
+    name_key: "key"
+
+  war_name_format:
+    path: "common/random_names"
+    key_filter: "war_name_format"
+    name_key: "format"
+    name_prefix: "format."
+    
+  # skip path: common/random_names/base 
+    
+  relic:
+    path: "common/relics"
+    name_prefix: "r_"
+    localisation:
+      name!: $
+      description!: $_desc
+    
+  resolution_category:
+    path: "common/resolution_categories"
+    name_prefix: "resolution_category_"
+    localisation:
+      name!: $
+      group!: .group
+    from_version: "2.8"
+      
+  resolution:
+    path: "common/resolutions"
+    name_prefix: "resolution_"
+    localisation:
+      name!: $
+      description!: $_desc
+      effect_success!: $_effect_success
+      effect_failure!: $_effect_failure
+    subtypes: 
+      require_target:
+        predicate: 
+          target: true
+      not_require_target:
+        predicate: 
+          target: false
+    replace_scopes:
+      this: "country"
+      root: "country"
+    from_version: "2.8"
+      
+  scripted_effect:
+    path: "common/scripted_effects"
+  
+  # TODO 绑定到
+  scripted_loc:
+    path: "common/scripted_loc"
+    key_filter: "define_text"
+    name_key: name
+      
+  scripted_trigger:
+    path: "common/scripted_triggers"
+
+  section_template:
+    path: "common/section_templates"
+    name_key: "key"
+    subtypes:
+      needs_locs:
+        predicate:
+          ship_size: $ship_size.designable
+        localisation:
+          name!: $  
+    
   system_type:
     path: "common/system_types"
     localisation:
       name!: $
-
+      
   start_screen_message:
     path: "common/start_screen_messages"
     key_filter: "part"
-
-  precursor_civilization:
-    path: "common/precursor_civilizations"
 
   sector_type:
     path: "common/sector_types"
@@ -451,18 +684,6 @@ types:
   trade_conversion:
     path: "common/trade_conversions"
 
-  opnion_modifier:
-    path: "common/opinion_modifiers"
-    localisation:
-      name!: $
-    subtypes:
-      triggered_opnion_modifier:
-        predicate:
-          trigger: { }
-      block_triggered:
-        predicate:
-          block_triggered: true
-
   static_modifier:
     path: "common/static_modifiers"
     localisation:
@@ -473,19 +694,6 @@ types:
       planet:
         predicate:
           icon_frame: "int"
-
-  planet_modfiier:
-    path: "common/planet_modifiers"
-    subtypes:
-      null:
-        predicate:
-          is_null: true
-
-  relic:
-    path: "common/relics"
-    localisation:
-      name!: $
-      description!: $_desc
 
   tradition:
     path: "common/traditions"
@@ -553,7 +761,6 @@ types:
 
   government:
     path: "common/governments"
-    path_strict: true
     localisation:
       name!: $
       description!: $_desc
@@ -586,20 +793,6 @@ types:
       name!: $
       description!: $_desc
 
-  job:
-    path: "common/pop_jobs"
-    localisation:
-      name!: job_$
-      plural!: job_$_plural
-      description!: job_$_desc
-
-  social_strata:
-    path: "common/pop_categories"
-    localisation:
-      name!: pop_cat_$
-      plural!: pop_cat_$_plural
-      description!: pop_cat_$_desc
-
   species_name:
     path: "common/species_names"
     name_key: "name"
@@ -607,96 +800,6 @@ types:
   species_name_list:
     path: "common/species_names"
     skip_root_key: "name_lists"
-
-  ai_personality:
-    path: "common/personalities"
-    localisation:
-      name!: personality_$
-      description!: personality_$_desc
-
-  planet_class:
-    path: "common/planet_classes"
-    key_filter: "!random_list"
-    localisation:
-      name!: $
-      description!: $_desc
-    subtypes:
-      star:
-        predicate:
-          star?: true
-      planet:
-        predicate:
-          star: false
-      habitable_planet:
-        predicate:
-          colonizable?: true
-        localisation:
-          habitability!: mod_$_habitability
-          preference_trait: trait_$_preference
-          preference_trait_description: trait_$_Preference_desc
-
-  planet_class_random_list:
-    path: "common/planet_classes"
-    key_filter: "random_list"
-    name_key: "name"
-
-  policy:
-    path: "common/policies"
-    localisation:
-      name!: policy_$
-      description!: policy_$_desc
-
-  policy_option:
-    path: "common/policies"
-    skip_root_key: any
-    key_filter: "option"
-    name_key: "name"
-
-  pop_faction_type:
-    path: "common/pop_faction_types"
-    localisation:
-      name!: pft_$
-      description!: pft_$_desc
-
-  empire_name_parts_list:
-    path: "common/random_names"
-    key_filter: "empire_name_parts_list"
-    name_key: "key"
-
-  empire_name_format:
-    path: "common/random_names"
-    key_filter: "empire_name_format"
-    name_key: "format"
-
-  pop_faction_name_parts_list:
-    path: "common/random_names"
-    key_filter: "pop_faction_name_parts_list"
-    name_key: "key"
-
-  pop_faction_name_format:
-    path: "common/random_names"
-    key_filter: "pop_faction_name_format"
-    name_key: "format"
-
-  pre_communications_name_parts_list:
-    path: "common/random_names"
-    key_filter: "pre_communications_name_parts_list"
-    name_key: "key"
-
-  pre_communications_name_format:
-    path: "common/random_names"
-    key_filter: "pre_communications_name_format"
-    name_key: "format"
-
-  war_name_parts_list:
-    path: "common/random_names"
-    key_filter: "war_name_parts_list"
-    name_key: "key"
-
-  war_name_format:
-    path: "common/random_names"
-    key_filter: "war_name_format"
-    name_key: "format"
 
   resource:
     path: "common/strategic_resources"
@@ -710,22 +813,6 @@ types:
       max:
         predicate:
           max: "int"
-
-  scripted_trigger:
-    path: "common/scripted_triggers"
-
-  scripted_effect:
-    path: "common/scripted_effects"
-
-  section_template:
-    path: "common/section_templates"
-    name_key: "key"
-    subtypes:
-      needs_locs:
-        predicate:
-          ship_size: $ship_size.designable
-        localisation:
-          name!: $
 
   solar_system_initializer:
     path: "common/solar_system_initializers"
@@ -820,7 +907,6 @@ types:
 
   technology:
     path: "common/technology"
-    path_strict: true
     localisation:
       name!: $
       description!: $_desc
@@ -858,21 +944,6 @@ types:
       species_trait:
         predicate:
           leader_trait?: false
-
-  resolution:
-    path: "common/resolutions"
-    localisation:
-      name!: $
-      description!: $_desc
-    replace_scopes:
-      this: "country"
-      root: "country"
-    from_version: "2.8"
-
-  resolution_category:
-    path: "common/resolution_categories"
-    localisation:
-      name!: $
 
   alert_icon:
     path: "common"
@@ -1015,7 +1086,6 @@ types:
 
   projectile:
     path: "gfx/projectiles"
-    path_strict: true
     name_key: "name"
     severity: "warning"
 

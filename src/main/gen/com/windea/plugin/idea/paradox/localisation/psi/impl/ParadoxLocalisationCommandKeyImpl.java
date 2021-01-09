@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
-import com.intellij.util.IncorrectOperationException;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandKeyPsiReference;
 
 public class ParadoxLocalisationCommandKeyImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationCommandKey {
@@ -29,25 +28,31 @@ public class ParadoxLocalisationCommandKeyImpl extends ParadoxLocalisationNamedE
   }
 
   @Override
-  @NotNull
-  public PsiElement getCommandKeyToken() {
-    return notNullChild(findChildByType(COMMAND_KEY_TOKEN));
+  @Nullable
+  public ParadoxLocalisationPropertyReference getPropertyReference() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyReference.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public PsiElement getCommandKeyToken() {
+    return findChildByType(COMMAND_KEY_TOKEN);
+  }
+
+  @Override
+  @Nullable
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getNameIdentifier() {
     return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
   }

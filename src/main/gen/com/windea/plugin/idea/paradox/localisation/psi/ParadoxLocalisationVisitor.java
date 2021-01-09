@@ -21,6 +21,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitNamedElement(o);
   }
 
+  public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
+    visitNamedElement(o);
+  }
+
   public void visitEscape(@NotNull ParadoxLocalisationEscape o) {
     visitRichText(o);
   }

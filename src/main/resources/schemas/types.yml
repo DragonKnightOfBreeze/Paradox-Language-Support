@@ -2,10 +2,13 @@ definitions:
   type:
     type: object
     properties: 
+      alias:
+        type: string
       path:
         type: string
       path_strict:
         type: boolean
+        default: true # TODO 暂且如此
       type_from_file:
         type: boolean
         default: false
@@ -16,6 +19,9 @@ definitions:
         type: string
       file_extension:
         type: string
+      value_type:
+        type: string
+        default: scriptBlock
       skip_root_key:
         type: string
       key_filter:
@@ -51,6 +57,10 @@ definitions:
       from_version:
         type: string
         enum: [2.6, 2.7, 2.8]
+      hard_coded_file_names:
+        type: array
+        items:
+          type: string
     additionalProperties: false
 
 type: object

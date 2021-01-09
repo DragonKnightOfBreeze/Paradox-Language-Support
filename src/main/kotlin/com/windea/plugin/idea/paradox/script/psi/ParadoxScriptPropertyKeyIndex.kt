@@ -11,44 +11,44 @@ object ParadoxScriptPropertyKeyIndex : StringStubIndexExtension<ParadoxScriptPro
 	override fun getKey() = key
 	
 	override fun get(key: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
-		return getAll(key,project,scope)
+		return getAll(key, project = project, scope = scope)
 	}
 	
-	fun getOne(name: String, project: Project, scope: GlobalSearchScope): ParadoxScriptProperty? {
+	fun getOne(name: String,type:String? = null, project: Project, scope: GlobalSearchScope): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
-			return element
+			if(type == null || type == element.paradoxDefinitionInfo?.type) return element
 		}
 		return null
 	}
 	
-	fun getAll(name: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+	fun getAll(name: String,type:String? = null, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
-			result.add(element)
+			if(type == null || type == element.paradoxDefinitionInfo?.type) result.add(element)
 		}
 		return result
 	}
 	
-	fun getAll(project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+	fun getAll(type:String? = null,project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {
 			for(element in get(key, project, scope)) {
-				result.add(element)
+				if(type == null || type == element.paradoxDefinitionInfo?.type) result.add(element)
 			}
 		}
 		return result
 	}
 	
-	inline fun filter(project: Project, scope: GlobalSearchScope, predicate:(String)->Boolean): List<ParadoxScriptProperty> {
+	inline fun filter(type:String? = null,project: Project, scope: GlobalSearchScope, predicate:(String)->Boolean): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {
 			if(predicate(key)) {
 				for(element in get(key, project, scope)) {
-					result.add(element)
+					if(type == null || type == element.paradoxDefinitionInfo?.type)  result.add(element)
 				}
 			}
 		}

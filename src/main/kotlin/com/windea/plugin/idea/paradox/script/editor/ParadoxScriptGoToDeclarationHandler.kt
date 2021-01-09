@@ -21,7 +21,7 @@ class ParadoxScriptGoToDeclarationHandler: GotoDeclarationHandler {
 				//查找当前项目的本地化文件属性，如果没有，再查找当前项目的本地化文件属性
 				val name = sourceElement.value
 				val project = sourceElement.project
-				return findScriptProperties(name, project).ifEmpty {
+				return findScriptProperties(name, null, project).ifEmpty {
 					findLocalisationProperties(name, inferredParadoxLocale, project,defaultToAll=true) //优先查找推断的语言区域
 				}.toTypedArray()
 			}

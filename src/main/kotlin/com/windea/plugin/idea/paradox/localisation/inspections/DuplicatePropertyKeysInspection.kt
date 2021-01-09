@@ -81,7 +81,7 @@ class DuplicatePropertyKeysInspection : LocalInspectionTool() {
 			private val key: String,
 			private val editor: Editor
 		) : BaseListPopupStep<PsiElement>(_header(key), values) {
-			override fun getIconFor(aValue: PsiElement) = paradoxLocalisationPropertyIcon
+			override fun getIconFor(aValue: PsiElement) = localisationPropertyIcon
 			
 			override fun getTextFor(value: PsiElement) = _text(key,editor.document.getLineNumber(value.textOffset))
 			

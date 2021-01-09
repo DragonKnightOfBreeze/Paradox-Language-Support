@@ -35,7 +35,7 @@ class ParadoxLocalisationPropertyPsiReference(
 
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
-		return findLocalisationProperties(locale, project, scope).mapArray {
+		return findLocalisationProperties(locale, project).mapArray {
 			LookupElementBuilder.create(it).withIcon(it.getIcon(0)).withTypeText(it.containingFile.name).withPsiElement(it)
 		}
 	}

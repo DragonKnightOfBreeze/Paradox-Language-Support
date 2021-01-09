@@ -59,20 +59,27 @@ val exeFileNames = arrayOf("stellaris.exe")
 
 //Icons
 
-val paradoxLocalisationFileIcon = IconLoader.findIcon("/icons/paradoxLocalisationFile.svg")!!
-val paradoxLocalisationLocaleIcon = IconLoader.findIcon("/icons/paradoxLocalisationLocale.svg")!!
-val paradoxLocalisationPropertyIcon = IconLoader.findIcon("/icons/paradoxLocalisationProperty.svg")!!
+val localisationFileIcon = IconLoader.findIcon("/icons/paradoxLocalisationFile.svg")!!
+val localisationLocaleIcon = IconLoader.findIcon("/icons/paradoxLocalisationLocale.svg")!!
+val localisationPropertyIcon = IconLoader.findIcon("/icons/paradoxLocalisationProperty.svg")!!
+val localisationCommandKeyIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandKey.svg")
 
-val paradoxScriptFileIcon = IconLoader.findIcon("/icons/paradoxScriptFile.svg")!!
-val paradoxScriptVariableIcon = IconLoader.findIcon("/icons/paradoxScriptVariable.svg")!!
-val paradoxScriptPropertyIcon = IconLoader.findIcon("/icons/paradoxScriptProperty.svg")!!
-val paradoxScriptValueIcon = IconLoader.findIcon("/icons/paradoxScriptValue.svg")!!
+val scriptFileIcon = IconLoader.findIcon("/icons/paradoxScriptFile.svg")!!
+val scriptVariableIcon = IconLoader.findIcon("/icons/paradoxScriptVariable.svg")!!
+val scriptPropertyIcon = IconLoader.findIcon("/icons/paradoxScriptProperty.svg")!!
+val scriptValueIcon = IconLoader.findIcon("/icons/paradoxScriptValue.svg")!!
 
-val definitionGutterIcon = IconLoader.findIcon("/icons/paradoxDefinition.svg")!!
-val definitionLocalisationGutterIcon = IconLoader.findIcon("/icons/paradoxDefinitionLocalisation.svg")!!
-val localisationGutterIcon = IconLoader.findIcon("/icons/paradoxLocalisation.svg")!!
-val stringScriptPropertyGutterIcon =IconLoader.findIcon("/icons/paradoxStringScriptProperty.svg")!!
-val stringLocalisationPropertyGutterIcon = IconLoader.findIcon("/icons/paradoxStringLocalisationProperty.svg")!!
+val definitionIcon = IconLoader.findIcon("/icons/paradoxDefinition.svg")!!
+val definitionLocalisationIcon = IconLoader.findIcon("/icons/paradoxDefinitionLocalisation.svg")!!
+val localisationIcon = IconLoader.findIcon("/icons/paradoxLocalisation.svg")!!
+val stringScriptPropertyIcon =IconLoader.findIcon("/icons/paradoxStringScriptProperty.svg")!!
+val stringLocalisationPropertyIcon = IconLoader.findIcon("/icons/paradoxStringLocalisationProperty.svg")!!
+
+val definitionGutterIcon = definitionIcon.resize(12)
+val definitionLocalisationGutterIcon = definitionLocalisationIcon.resize(12)
+val localisationGutterIcon = localisationIcon.resize(12)
+val stringScriptPropertyGutterIcon =stringScriptPropertyIcon.resize(12)
+val stringLocalisationPropertyGutterIcon = stringLocalisationPropertyIcon.resize(12)
 //val eventIdGutterIcon = IconUtil.toSize(AllIcons.Nodes.Protected, 12, 12)
 //val gfxKeyGutterIcon = IconUtil.toSize(AllIcons.Nodes.Related, 12, 12)
 //val assetKeyGutterIcon = IconUtil.toSize(AllIcons.Nodes.Related, 12, 12)

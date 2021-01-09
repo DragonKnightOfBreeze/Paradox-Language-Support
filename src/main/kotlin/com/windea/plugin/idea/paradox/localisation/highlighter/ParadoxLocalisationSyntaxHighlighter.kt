@@ -31,7 +31,7 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 	}
 
 	override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
-		COLON,COMMAND_KEY_SEPARATOR -> SEPARATOR_KEYS
+		COLON,COMMAND_SEPARATOR -> SEPARATOR_KEYS
 		LOCALE_ID -> LOCALE_KEYS
 		PROPERTY_KEY_ID -> PROPERTY_KEY_KEYS
 		PROPERTY_REFERENCE_ID -> PROPERTY_REFERENCE_KEYS

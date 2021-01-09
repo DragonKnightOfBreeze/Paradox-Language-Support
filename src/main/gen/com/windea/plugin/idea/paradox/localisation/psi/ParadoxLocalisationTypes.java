@@ -11,6 +11,7 @@ public interface ParadoxLocalisationTypes {
   IElementType COLORFUL_TEXT = new ParadoxLocalisationElementType("COLORFUL_TEXT");
   IElementType COMMAND = new ParadoxLocalisationElementType("COMMAND");
   IElementType COMMAND_KEY = new ParadoxLocalisationElementType("COMMAND_KEY");
+  IElementType COMMAND_SCOPE = new ParadoxLocalisationElementType("COMMAND_SCOPE");
   IElementType ESCAPE = new ParadoxLocalisationElementType("ESCAPE");
   IElementType ICON = new ParadoxLocalisationElementType("ICON");
   IElementType LOCALE = new ParadoxLocalisationElementType("LOCALE");
@@ -28,8 +29,9 @@ public interface ParadoxLocalisationTypes {
   IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("§");
   IElementType COLOR_CODE = new ParadoxLocalisationTokenType("COLOR_CODE");
   IElementType COMMAND_END = new ParadoxLocalisationTokenType("]");
-  IElementType COMMAND_KEY_SEPARATOR = new ParadoxLocalisationTokenType(".");
   IElementType COMMAND_KEY_TOKEN = new ParadoxLocalisationTokenType("COMMAND_KEY_TOKEN");
+  IElementType COMMAND_SCOPE_TOKEN = new ParadoxLocalisationTokenType("COMMAND_SCOPE_TOKEN");
+  IElementType COMMAND_SEPARATOR = new ParadoxLocalisationTokenType(".");
   IElementType COMMAND_START = new ParadoxLocalisationTokenType("[");
   IElementType COMMENT = new ParadoxLocalisationTokenType("COMMENT");
   IElementType END_OF_LINE_COMMENT = new ParadoxLocalisationTokenType("END_OF_LINE_COMMENT");
@@ -66,6 +68,9 @@ public interface ParadoxLocalisationTypes {
       }
       else if (type == COMMAND_KEY) {
         return new ParadoxLocalisationCommandKeyImpl(node);
+      }
+      else if (type == COMMAND_SCOPE) {
+        return new ParadoxLocalisationCommandScopeImpl(node);
       }
       else if (type == ESCAPE) {
         return new ParadoxLocalisationEscapeImpl(node);

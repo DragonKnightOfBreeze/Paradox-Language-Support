@@ -140,7 +140,7 @@ fun <T : Any> T?.toSingletonListOrEmpty(): List<T> {
 	return if(this == null) Collections.emptyList() else Collections.singletonList(this)
 }
 
-fun Icon.resize(width: Int, height: Int): Icon {
+fun Icon.resize(width: Int, height: Int=width): Icon {
 	return IconUtil.toSize(this, width, height)
 }
 

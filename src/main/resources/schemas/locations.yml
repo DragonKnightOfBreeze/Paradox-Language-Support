@@ -6,6 +6,7 @@ definitions:
         type: string
       path_strict:
         type: boolean
+        default: true # TODO 暂且如此
       file_name:
         type: string
       file_names:
