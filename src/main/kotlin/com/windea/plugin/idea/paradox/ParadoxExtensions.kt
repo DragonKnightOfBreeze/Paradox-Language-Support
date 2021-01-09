@@ -248,7 +248,7 @@ fun findLocalisationProperties(locale: ParadoxLocale? = null, project: Project, 
 }
 
 fun findLocalisationProperties(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project),keepOrder:Boolean = false): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationPropertyKeyIndex.getAll(names, locale, project, scope,false)
+	return ParadoxLocalisationPropertyKeyIndex.getAll(names, locale, project, scope,keepOrder)
 }
 
 //TODO REMOVE

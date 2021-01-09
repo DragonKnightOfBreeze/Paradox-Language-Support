@@ -91,7 +91,7 @@ PROPERTY_REFERENCE_PARAMETER=[a-zA-Z0-9+\-*%=\[.\]]+
 ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+
 SERIAL_NUMBER_ID=[a-zA-Z]
-COMMAND_KEY_TOKEN=[a-zA-Z0-9_$]+ //加$是为了兼容性
+COMMAND_KEY_TOKEN=[a-zA-Z0-9_$:@]+
 COMMAND_KEY_SEPARATOR=\.
 COLOR_CODE=[a-zA-Z]
 //双引号和百分号实际上不需要转义

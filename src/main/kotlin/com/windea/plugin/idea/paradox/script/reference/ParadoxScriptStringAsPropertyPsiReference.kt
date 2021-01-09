@@ -22,21 +22,15 @@ class ParadoxScriptStringAsPropertyPsiReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		if(state.resolveStringReferences) {
-			//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
-			return findScriptProperty(name, project, scope)
-			       ?: findLocalisationProperty(name, inferredParadoxLocale, project, scope,defaultToFirst=true)
-		}
-		return null
+		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
+		return findScriptProperty(name, project, scope)
+		       ?: findLocalisationProperty(name, inferredParadoxLocale, project, scope, defaultToFirst = true)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-		if(state.resolveStringReferences) {
-			//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
-			return findScriptProperties(name, project,scope)
-				.ifEmpty { findLocalisationProperties(name, inferredParadoxLocale, project, scope,defaultToAll=true) }
-				.mapArray { PsiElementResolveResult(it) }
-		}
-		return ResolveResult.EMPTY_ARRAY
+		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
+		return findScriptProperties(name, project, scope)
+			.ifEmpty { findLocalisationProperties(name, inferredParadoxLocale, project, scope, defaultToAll = true) }
+			.mapArray { PsiElementResolveResult(it) }
 	}
 }

@@ -25,7 +25,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
 		//如果是定义，则加上下划线突出显示
-		if(element.paradoxDefinitionInfo != null){
+		if(element.paradoxDefinitionInfo != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.range(element.propertyKey)
 				.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)
@@ -33,37 +33,35 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun annotateVariableReference(element:ParadoxScriptVariableReference,holder: AnnotationHolder){
+	private fun annotateVariableReference(element: ParadoxScriptVariableReference, holder: AnnotationHolder) {
 		//注明无法解析的情况
 		val reference = element.reference
-		if(reference.resolve() == null){
-			holder.newAnnotation(ERROR,message("paradox.script.annotator.unresolvedVariable",element.name))
+		if(reference.resolve() == null) {
+			holder.newAnnotation(ERROR, message("paradox.script.annotator.unresolvedVariable", element.name))
 				.create()
 		}
 	}
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
-		if(state.resolveStringReferences) {
-			val name = element.value
-			val project = element.project
-			val scope = element.resolveScope
-			
-			//注明所有对应名称的脚本属性，或者本地化属性（如果存在）
-			val scriptProperties = findScriptProperties(name, project, scope).toTypedArray()
-			if(scriptProperties.isNotEmpty()) {
-				holder.newSilentAnnotation(INFORMATION)
-					.textAttributes(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
-					.gutterIconRenderer(ParadoxStringDefinitionGutterIconRenderer(name, scriptProperties))
-					.create()
-				return
-			}
-			val localisationProperties = findLocalisationProperties(name, null, project, scope).toTypedArray()
-			if(localisationProperties.isNotEmpty()) {
-				holder.newSilentAnnotation(INFORMATION)
-					.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
-					.gutterIconRenderer(ParadoxStringLocalisationGutterIconRenderer(name, localisationProperties))
-					.create()
-			}
+		val name = element.value
+		val project = element.project
+		val scope = element.resolveScope
+		
+		//注明所有对应名称的脚本属性，或者本地化属性（如果存在）
+		val scriptProperties = findScriptProperties(name, project, scope).toTypedArray()
+		if(scriptProperties.isNotEmpty()) {
+			holder.newSilentAnnotation(INFORMATION)
+				.textAttributes(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
+				.gutterIconRenderer(ParadoxStringDefinitionGutterIconRenderer(name, scriptProperties))
+				.create()
+			return
+		}
+		val localisationProperties = findLocalisationProperties(name, null, project, scope).toTypedArray()
+		if(localisationProperties.isNotEmpty()) {
+			holder.newSilentAnnotation(INFORMATION)
+				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
+				.gutterIconRenderer(ParadoxStringLocalisationGutterIconRenderer(name, localisationProperties))
+				.create()
 		}
 	}
 }

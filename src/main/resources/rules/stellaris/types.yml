@@ -232,6 +232,7 @@ types:
 
   diplomatic_action:
     path: "common/diplomatic_actions"
+    name_prefix: "action_"
     localisation:
       title?: $_TITLE
       description?: $_DESC
@@ -241,6 +242,7 @@ types:
 
   district:
     path: "common/districts"
+    name_prefix: "district_"
     localisation:
       name!: $
       description!: $_desc
@@ -258,6 +260,22 @@ types:
     localisation:
       text!: .text
 
+  economic_category:
+    path: "common/economic_categories"
+    localisation:
+      name!: $
+    subtypes:
+      hidden:
+        predicate:
+          hidden: true
+      has_parent:
+        predicate:
+          parent: any
+
+  economic_plan:
+    path: "common/economic_plans"
+    name_suffix: "_plan"
+
   edict:
     path: "common/edicts"
     localisation:
@@ -268,15 +286,17 @@ types:
         predicate:
           is_ambition: true
 
+  ethic_category:
+    path: "common/ethics"
+    skip_root_key: "ethic_categories"
+
   ethic:
     path: "common/ethics"
+    key_filter: "!ethic_categories"
     localisation:
       name!: $
       description!: $_desc
-
-  ethic_categories:
-    path: "game/common/ethics"
-    key_filter: "!ethic_categories"
+      tag: .tags
 
   event_chain:
     path: "common/event_chains"
@@ -286,6 +306,50 @@ types:
 
   fallen_empire:
     path: "common/fallen_empires"
+
+
+  federation_law_category:
+    path: "common/federation_law_categories"
+    name_prefix: "law_category_"
+    localisation:
+      name!: $
+      description!: $_desc
+    from_version: "2.8"
+
+  federation_law:
+    path: "common/federation_laws"
+    localisation:
+      name!: $
+      description!: $_desc
+    from_version: "2.8"
+
+  federation_perk:
+    path: "common/federation_perks"
+    localisation: 
+      name?: $
+      description?: $_desc
+    from_version: "2.8"
+
+  federation_type:
+    path: "common/federation_types"
+    name_suffix: "_federation"
+    localisation:
+      name!: $
+      description!: $_desc
+    from_version: "2.8"
+
+  galactic_focus:
+    path: "common/galactic_focuses"
+    name_prefix: "galactic_focus_"
+    localisation:
+      name!: $
+      description!: $_desc
+    from_version: "2.8"
+
+  game_rule:
+    path: "common/game_rules"
+    # TODO subtypes
+    # TODO scopes from comment (root = xxx, xxx xx)
 
   system_type:
     path: "common/system_types"
@@ -323,9 +387,6 @@ types:
 
   trade_conversion:
     path: "common/trade_conversions"
-
-  economic_plan:
-    path: "common/economic_plans"
 
   mandate:
     path: "common/mandates"
@@ -412,16 +473,6 @@ types:
       name!: war_goal_$
       description!: war_goal_$_desc
 
-  economic_category:
-    path: "common/economic_categories"
-    subtypes:
-      has_parent:
-        predicate:
-          parent: "string"
-      hidden:
-        predicate:
-          hidden: true
-
   ship_behavior:
     path: "common/ship_behaviors"
     name_key: "name"
@@ -444,10 +495,6 @@ types:
       designable:
         predicate:
           designable?: true
-
-  game_rule:
-    path: "common/game_rules"
-    # TODO subtypes
 
   global_ship_design:
     path: "common/global_ship_designs"
@@ -799,41 +846,6 @@ types:
       species_trait:
         predicate:
           leader_trait?: false
-
-  federation_law_category:
-    path: "common/federation_law_categories"
-    localisation:
-      name!: $
-      description!: $_desc
-    from_version: "2.8"
-
-  federation_law:
-    path: "common/federation_laws"
-    localisation:
-      name!: $
-      description!: $_desc
-    from_version: "2.8"
-
-  federation_perk:
-    path: "common/federation_perks"
-    localisation:
-      name!: $
-      description!: $_desc
-    from_version: "2.8"
-
-  federation_type:
-    path: "common/federation_types"
-    localisation:
-      name!: $
-      description!: $_desc
-    from_version: "2.8"
-
-  galactic_focus:
-    path: "common/galactic_focuses"
-    localisation:
-      name!: $
-      description!: $_desc
-    from_version: "2.8"
 
   resolution:
     path: "common/resolutions"

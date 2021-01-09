@@ -40,7 +40,7 @@
 	  SERIAL_NUMBER_ID="regexp:[A-Z]"
 	  SERIAL_NUMBER_END="%"
       COMMAND_START="["
-      COMMAND_KEY_TOKEN='regexp:[a-zA-Z0-9_$]+' //加$是为了兼容性
+      COMMAND_KEY_TOKEN='regexp:[a-zA-Z0-9_$:@]+'
       COMMAND_KEY_SEPARATOR='.'
       COMMAND_END="]"
 	  COLORFUL_TEXT_START="§"

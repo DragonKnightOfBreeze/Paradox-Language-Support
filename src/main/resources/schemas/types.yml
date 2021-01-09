@@ -26,6 +26,8 @@ definitions:
         type: string
       name_prefix: 
         type: string
+      name_suffix:
+        type: string
       localisation:
         type: object
         additionalProperties: 
