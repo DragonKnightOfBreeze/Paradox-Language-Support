@@ -641,7 +641,7 @@ types:
   scripted_loc:
     path: "common/scripted_loc"
     key_filter: "define_text"
-    name_key: name
+    name_key: "name"
 
   # TODO subtypes
   # TODO scopes from comment (root/this = xxx, xxx xx)
@@ -726,38 +726,62 @@ types:
       name!: $
       description!: $_DESC
     subtypes:
+      not_cost:
+        predicate:
+          cost: any
       cost:
         predicate:
-          ### range: 1..9999999
-          cost: "int"
+          cost: none
     graph_related_types:
     - event
     - anomaly_category
 
+  species_archetype:
+    path: "common/species_archetypes"
+
   species_class:
     path: "common/species_classes"
+    localisation:
+      name!: $
+      plural!: $_plural
+      description!: $_desc
+      insult!: $_insult_01
+      insult_plural!: $_insult_plural_01
+      compliment!: $_compliment_01
+      compliment_plural!: $_compliment_plural_01
+      spawn!: $_spawn
+      spawn_plural!: $_spawn_plural
+      sound_01!: $_sound_01
+      sound_02!: $_sound_02
+      sound_03!: $_sound_03
+      sound_04!: $_sound_04
+      sound_05!: $_sound_05
+      organ!: $_organ
+      mouth!: $_mouth
     subtypes:
+      randomized:
+        predicate:
+          randomized?: true
       playable:
         predicate:
-          playable?:
-            always?: true
-        localisation:
-          name!: $
-          plural!: $_plural
-          description!: $_desc
-          insult!: $_insult_01
-          insult_plural!: $_insult_plural_01
-          compliment!: $_compliment_01
-          compliment_plural!: $_compliment_plural_01
-          spawn!: $_spawn
-          spawn_plural!: $_spawn_plural
-          sound_01!: $_sound_01
-          sound_02!: $_sound_02
-          sound_03!: $_sound_03
-          sound_04!: $_sound_04
-          sound_05!: $_sound_05
-          organ!: $_organ
-          mouth!: $_mouth
+          playable?: true # not: {always = no}
+
+  species_name:
+    path: "common/species_names"
+    skip_root_key: "!named_lists"
+    name_key: "name"
+
+  species_named_list:
+    path: "common/species_names"
+    skip_root_key: "named_lists"
+
+  species_right:
+    path: "common/species_rights"
+    localisation: 
+      name!: $
+      tooltip!: $_tooltip
+      delayed_tooltip?: $_tooltip_delayed
+      token: .token
 
   system_type:
     path: "common/system_types"
@@ -856,14 +880,6 @@ types:
     localisation:
       name!: $
       description!: $_desc
-
-  species_name:
-    path: "common/species_names"
-    name_key: "name"
-
-  species_name_list:
-    path: "common/species_names"
-    skip_root_key: "name_lists"
 
   resource:
     path: "common/strategic_resources"

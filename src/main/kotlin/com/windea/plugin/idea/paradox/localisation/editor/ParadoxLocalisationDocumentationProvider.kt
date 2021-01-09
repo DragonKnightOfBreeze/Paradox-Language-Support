@@ -19,6 +19,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
 			element is ParadoxLocalisationLocale -> getLocaleInfo(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
+			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
 			element is ParadoxLocalisationCommandKey -> getCommandKeyInfo(element)
 			element is ParadoxLocalisationSerialNumber -> getSerialNumberInfo(element)
 			element is ParadoxLocalisationColorfulText -> getColorInfo(element)
@@ -61,6 +62,14 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
+	private fun getCommandScopeInfo(element: ParadoxLocalisationCommandScope): String {
+		return buildString {
+			definition {
+				append("(localisation command scope) <b>").append(element.name).append("</b>")
+			}
+		}
+	}
+	
 	private fun getCommandKeyInfo(element: ParadoxLocalisationCommandKey): String {
 		return buildString {
 			definition {
@@ -90,6 +99,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyDoc(element)
 			element is ParadoxLocalisationLocale -> getLocaleDoc(element)
 			element is ParadoxLocalisationIcon -> getIconDoc(element)
+			element is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
 			element is ParadoxLocalisationCommandKey -> getCommandKeyDoc(element)
 			element is ParadoxLocalisationSerialNumber -> getSerialNumberDoc(element)
 			element is ParadoxLocalisationColorfulText -> getColorDoc(element)
@@ -159,6 +169,14 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				content {
 					appendIconTag(iconUrl)
 				}
+			}
+		}
+	}
+	
+	private fun getCommandScopeDoc(element: ParadoxLocalisationCommandScope): String {
+		return buildString {
+			definition {
+				append("(localisation command scope) <b>").append(element.name).append("</b>")
 			}
 		}
 	}
