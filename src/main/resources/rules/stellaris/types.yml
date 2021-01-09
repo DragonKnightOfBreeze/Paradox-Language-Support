@@ -217,7 +217,7 @@ types:
         predicate:
           is_null: true
       not_null:
-        predicate: 
+        predicate:
           is_null?: false
 
   # TODO 没弄懂！
@@ -482,7 +482,7 @@ types:
         predicate:
           is_null: true
       not_null:
-        predicate: 
+        predicate:
           is_null?: false
 
   policy:
@@ -496,7 +496,7 @@ types:
     skip_root_key: any
     key_filter: "option"
     name_key: "name"
-    localisation: 
+    localisation:
       title!: $
       name!: $_name
       description!: $_desc
@@ -541,7 +541,7 @@ types:
   precursor_civilization:
     path: "common/precursor_civilizations"
     name_prefix: "precursor_"
-    
+
   empire_name_parts_list:
     path: "common/random_names"
     key_filter: "empire_name_parts_list"
@@ -596,16 +596,16 @@ types:
     key_filter: "war_name_format"
     name_key: "format"
     name_prefix: "format."
-    
-  # skip path: common/random_names/base 
-    
+
+    # skip path: common/random_names/base 
+
   relic:
     path: "common/relics"
     name_prefix: "r_"
     localisation:
       name!: $
       description!: $_desc
-    
+
   resolution_category:
     path: "common/resolution_categories"
     name_prefix: "resolution_category_"
@@ -613,7 +613,7 @@ types:
       name!: $
       group!: .group
     from_version: "2.8"
-      
+
   resolution:
     path: "common/resolutions"
     name_prefix: "resolution_"
@@ -622,21 +622,21 @@ types:
       description!: $_desc
       effect_success!: $_effect_success
       effect_failure!: $_effect_failure
-    subtypes: 
+    subtypes:
       require_target:
-        predicate: 
+        predicate:
           target: true
       not_require_target:
-        predicate: 
+        predicate:
           target: false
     replace_scopes:
       this: "country"
       root: "country"
     from_version: "2.8"
-      
+
   scripted_effect:
     path: "common/scripted_effects"
-  
+
   # bind to: localisationCommandKey
   scripted_loc:
     path: "common/scripted_loc"
@@ -655,20 +655,24 @@ types:
     key_filter: "ship_section_template"
     name_key: "key"
     subtypes:
-      needs_locs:
+      designable:
         predicate:
-          ship_size: $ship_size.designable
+          ship_size?: $ship_size.designable
         localisation:
-          name!: $  
-    
-  system_type:
-    path: "common/system_types"
+          name!: $
+
+  component_slot:
+    path: "common/section_templates"
+    skip_root_key: ship_section_template
+    name_key: name
+
+  sector_focus:
+    path: "common/sector_focuses"
     localisation:
       name!: $
-      
-  start_screen_message:
-    path: "common/start_screen_messages"
-    key_filter: "part"
+    replace_scopes:
+      root: "sector"
+      this: "sector"
 
   sector_type:
     path: "common/sector_types"
@@ -678,13 +682,91 @@ types:
       root: "system"
       this: "system"
 
-  sector_focus:
-    path: "common/sector_focuses"
+  ship_behavior:
+    path: "common/ship_behaviors"
+    name_key: "name"
+
+  ship_size:
+    path: "common/ship_sizes"
     localisation:
       name!: $
-    replace_scopes:
-      root: "sector"
-      this: "sector"
+      plural!: $_plural
+      class!: .class # TODO 是否需要？
+    subtypes:
+      station:
+        predicate:
+          is_space_station: true
+      ship:
+        predicate:
+          is_space_station: false
+      starbase:
+        predicate:
+          class: "shipclass_starbase"
+      designable:
+        predicate:
+          designable?: true
+
+  solar_system_initializer:
+    path: "common/solar_system_initializers"
+    key_filter: "!random_list"
+    subtypes:
+      fallen_empire_initialzer:
+        predicate:
+          usage: "fallen_empire_init"
+
+  solar_system_initializer_random_list:
+    path: "common/solar_system_initializers"
+    key_filter: "random_list"
+    name_key: "name"
+
+  special_project:
+    path: "common/special_projects"
+    name_key: "key"
+    localisation:
+      name!: $
+      description!: $_DESC
+    subtypes:
+      cost:
+        predicate:
+          ### range: 1..9999999
+          cost: "int"
+    graph_related_types:
+    - event
+    - anomaly_category
+
+  species_class:
+    path: "common/species_classes"
+    subtypes:
+      playable:
+        predicate:
+          playable?:
+            always?: true
+        localisation:
+          name!: $
+          plural!: $_plural
+          description!: $_desc
+          insult!: $_insult_01
+          insult_plural!: $_insult_plural_01
+          compliment!: $_compliment_01
+          compliment_plural!: $_compliment_plural_01
+          spawn!: $_spawn
+          spawn_plural!: $_spawn_plural
+          sound_01!: $_sound_01
+          sound_02!: $_sound_02
+          sound_03!: $_sound_03
+          sound_04!: $_sound_04
+          sound_05!: $_sound_05
+          organ!: $_organ
+          mouth!: $_mouth
+
+  system_type:
+    path: "common/system_types"
+    localisation:
+      name!: $
+
+  start_screen_message:
+    path: "common/start_screen_messages"
+    key_filter: "part"
 
   trade_conversion:
     path: "common/trade_conversions"
@@ -736,29 +818,6 @@ types:
     localisation:
       name!: war_goal_$
       description!: war_goal_$_desc
-
-  ship_behavior:
-    path: "common/ship_behaviors"
-    name_key: "name"
-
-  ship_size:
-    path: "common/ship_sizes"
-    localisation:
-      name!: $
-      plural!: $_plural
-    subtypes:
-      station:
-        predicate:
-          is_space_station: true
-      ship:
-        predicate:
-          is_space_station: false
-      starbase:
-        predicate:
-          class: "shipclass_starbase"
-      designable:
-        predicate:
-          designable?: true
 
   global_ship_design:
     path: "common/global_ship_designs"
@@ -818,59 +877,6 @@ types:
       max:
         predicate:
           max: "int"
-
-  solar_system_initializer:
-    path: "common/solar_system_initializers"
-    key_filter: "!random_list"
-    subtypes:
-      fallen_empire_initialzer:
-        predicate:
-          usage: "fallen_empire_init"
-
-  solar_system_initializer_random_list:
-    path: "common/solar_system_initializers"
-    key_filter: "random_list"
-    name_key: "name"
-
-  special_project:
-    path: "common/special_projects"
-    name_key: "key"
-    localisation:
-      name!: $
-      description!: $_DESC
-    subtypes:
-      cost:
-        predicate:
-          ### range: 1..9999999
-          cost: "int"
-    graph_related_types:
-    - event
-    - anomaly_category
-
-  species_class:
-    path: "common/species_classes"
-    subtypes:
-      playable:
-        predicate:
-          playable?:
-            always?: true
-        localisation:
-          name!: $
-          plural!: $_plural
-          description!: $_desc
-          insult!: $_insult_01
-          insult_plural!: $_insult_plural_01
-          compliment!: $_compliment_01
-          compliment_plural!: $_compliment_plural_01
-          spawn!: $_spawn
-          spawn_plural!: $_spawn_plural
-          sound_01!: $_sound_01
-          sound_02!: $_sound_02
-          sound_03!: $_sound_03
-          sound_04!: $_sound_04
-          sound_05!: $_sound_05
-          organ!: $_organ
-          mouth!: $_mouth
 
   star_class:
     path: "common/star_classes"

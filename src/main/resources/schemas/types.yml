@@ -22,12 +22,12 @@ definitions:
       value_type:
         type: string
         default: scriptBlock
+      predicate:
+        type: object
       skip_root_key:
         type: string
       key_filter:
         type: string
-      predicate:
-        type: object
       name_key:
         type: string
       name_prefix: 

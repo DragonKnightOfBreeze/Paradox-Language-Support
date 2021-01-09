@@ -19,7 +19,8 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 		private val _markerName = message("paradox.localisation.displayName.marker")
 		private val _parameterName = message("paradox.localisation.displayName.parameter")
 		private val _propertyReferenceName = message("paradox.localisation.displayName.propertyReference")
-		private val _commandKeyName = message("paradox.localisation.displayName.codeKey")
+		private val _commandScopeName = message("paradox.localisation.displayName.commandScope")
+		private val _commandKeyName = message("paradox.localisation.displayName.commandKey")
 		private val _iconName = message("paradox.localisation.displayName.icon")
 		private val _serialNumberName = message("paradox.localisation.displayName.serialNumber")
 		private val _colorName = message("paradox.localisation.displayName.color")
@@ -37,6 +38,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(_markerName, ParadoxLocalisationAttributesKeys.MARKER_KEY),
 			AttributesDescriptor(_parameterName, ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
 			AttributesDescriptor(_propertyReferenceName, ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY),
+			AttributesDescriptor(_commandScopeName, ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
 			AttributesDescriptor(_commandKeyName, ParadoxLocalisationAttributesKeys.COMMAND_KEY_KEY),
 			AttributesDescriptor(_iconName, ParadoxLocalisationAttributesKeys.ICON_KEY),
 			AttributesDescriptor(_serialNumberName, ParadoxLocalisationAttributesKeys.SERIAL_NUMBER_KEY),
