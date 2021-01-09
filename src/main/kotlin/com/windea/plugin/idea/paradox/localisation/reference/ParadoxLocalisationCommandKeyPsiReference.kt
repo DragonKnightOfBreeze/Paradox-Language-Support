@@ -17,7 +17,8 @@ class ParadoxLocalisationCommandKeyPsiReference(
 		return element.setName(newElementName)
 	}
 	
-	//从scripted_loc中解析
+	//解析为scripted_loc
+	//TODO 不完全 - 有些localisationCommandKey并没有对应的scripted_loc
 	
 	override fun resolve(): PsiElement? {
 		return findScriptProperty(name?: return null,"scripted_loc",project,element.resolveScope)

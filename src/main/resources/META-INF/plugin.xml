@@ -128,8 +128,6 @@
     <lang.findUsagesProvider
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptFindUsagesProvider"/>
-    <gotoDeclarationHandler
-        implementation="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptGoToDeclarationHandler"/>
     <annotator
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptAnnotator"/>
@@ -226,8 +224,6 @@
     <lang.findUsagesProvider
         language="Paradox Localisation"
         implementationClass="com.windea.plugin.idea.paradox.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
-    <gotoDeclarationHandler
-        implementation="com.windea.plugin.idea.paradox.localisation.editor.ParadoxLocalisationGoToDeclarationHandler"/>
     <annotator
         language="Paradox Localisation"
         implementationClass="com.windea.plugin.idea.paradox.localisation.editor.ParadoxLocalisationAnnotator"/>

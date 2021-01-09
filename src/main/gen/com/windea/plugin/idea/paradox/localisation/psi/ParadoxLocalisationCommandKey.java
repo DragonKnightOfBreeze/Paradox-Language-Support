@@ -23,7 +23,7 @@ public interface ParadoxLocalisationCommandKey extends ParadoxLocalisationNamedE
   @Nullable
   PsiElement getNameIdentifier();
 
-  @NotNull
+  @Nullable
   ParadoxLocalisationCommandKeyPsiReference getReference();
 
 }

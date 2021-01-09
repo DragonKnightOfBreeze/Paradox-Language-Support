@@ -172,8 +172,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptString): ParadoxScriptStringAsPropertyPsiReference {
-		return ParadoxScriptStringAsPropertyPsiReference(element, TextRange(0, element.textLength))
+	fun getReference(element: ParadoxScriptString): ParadoxScriptStringPropertyPsiReference {
+		return ParadoxScriptStringPropertyPsiReference(element, TextRange(0, element.textLength))
 	}
 	//endregion
 	

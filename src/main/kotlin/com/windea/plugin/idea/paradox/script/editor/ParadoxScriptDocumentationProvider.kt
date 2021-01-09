@@ -2,8 +2,10 @@ package com.windea.plugin.idea.paradox.script.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
+import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.settings.*
 
@@ -17,11 +19,20 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private val state = ParadoxSettingsState.getInstance()
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
+		if(originalElement != null && originalElement.elementType == COMMAND_KEY_TOKEN) return getCommandKeyInfo(originalElement)
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			else -> null
+		}
+	}
+	
+	private fun getCommandKeyInfo(element: PsiElement): String {
+		return buildString {
+			definition {
+				append("(localisation command key) <b>").append(element.text).append("</b>")
+			}
 		}
 	}
 	
@@ -66,11 +77,20 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
+		if(originalElement != null && originalElement.elementType == COMMAND_KEY_TOKEN) return getCommandKeyDoc(originalElement)
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			else -> null
+		}
+	}
+	
+	private fun getCommandKeyDoc(element: PsiElement): String {
+		return buildString {
+			definition {
+				append("(localisation command key) <b>").append(element.text).append("</b>")
+			}
 		}
 	}
 	

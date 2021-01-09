@@ -6,7 +6,7 @@ import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.settings.*
 
-class ParadoxScriptStringAsPropertyPsiReference(
+class ParadoxScriptStringPropertyPsiReference(
 	element: ParadoxScriptString,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxScriptString>(element, rangeInElement), PsiPolyVariantReference {

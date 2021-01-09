@@ -58,7 +58,7 @@ public class ParadoxLocalisationCommandKeyImpl extends ParadoxLocalisationNamedE
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ParadoxLocalisationCommandKeyPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }

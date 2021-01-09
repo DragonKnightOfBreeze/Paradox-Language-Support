@@ -164,7 +164,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
-		return ParadoxLocalisationCommandScopePsiReference(element,element.textRangeInParent)
+		return ParadoxLocalisationCommandScopePsiReference(element,element.commandScopeToken.textRangeInParent)
 	}
 	//endregion
 	
@@ -185,8 +185,8 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxLocalisationCommandKey): ParadoxLocalisationCommandKeyPsiReference {
-		return ParadoxLocalisationCommandKeyPsiReference(element,element.textRangeInParent)
+	fun getReference(element: ParadoxLocalisationCommandKey): ParadoxLocalisationCommandKeyPsiReference? {
+		return ParadoxLocalisationCommandKeyPsiReference(element,element.commandKeyToken?.textRangeInParent?:return null)
 	}
 	//endregion
 	

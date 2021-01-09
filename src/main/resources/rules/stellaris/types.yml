@@ -638,9 +638,10 @@ types:
     path: "common/scripted_effects"
 
   # bind to: localisationCommandKey
+  # TODO scopes from comment 
   scripted_loc:
     path: "common/scripted_loc"
-    key_filter: "define_text"
+    key_filter: "defined_text"
     name_key: "name"
 
   # TODO subtypes

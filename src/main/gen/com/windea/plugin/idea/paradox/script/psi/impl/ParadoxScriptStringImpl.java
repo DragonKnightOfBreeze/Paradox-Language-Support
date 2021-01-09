@@ -1,15 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package com.windea.plugin.idea.paradox.script.psi.impl;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
+
 import static com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*;
 import com.windea.plugin.idea.paradox.script.psi.*;
-import com.windea.plugin.idea.paradox.script.reference.ParadoxScriptStringAsPropertyPsiReference;
+import com.windea.plugin.idea.paradox.script.reference.ParadoxScriptStringPropertyPsiReference;
 
 public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implements ParadoxScriptString {
 
@@ -48,7 +47,7 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implem
 
   @Override
   @NotNull
-  public ParadoxScriptStringAsPropertyPsiReference getReference() {
+  public ParadoxScriptStringPropertyPsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
