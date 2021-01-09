@@ -235,28 +235,20 @@ fun findScriptProperties(project: Project, scope: GlobalSearchScope = GlobalSear
 	return ParadoxScriptPropertyKeyIndex.getAll(project, scope)
 }
 
-fun findLocalisationProperty(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationPropertyKeyIndex.getOne(name, locale, false,project, scope)
+fun findLocalisationProperty(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project),defaultToFirst :Boolean = false): ParadoxLocalisationProperty? {
+	return ParadoxLocalisationPropertyKeyIndex.getOne(name, locale, project, scope, defaultToFirst)
 }
 
-fun findLocalisationPropertyOrFirst(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationPropertyKeyIndex.getOne(name, locale, true,project, scope)
-}
-
-fun findLocalisationProperties(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationPropertyKeyIndex.getAll(name, locale, false,project, scope)
-}
-
-fun findLocalisationPropertiesOrAll(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationPropertyKeyIndex.getAll(name, locale, true,project, scope)
+fun findLocalisationProperties(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project),defaultToAll:Boolean = true): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationPropertyKeyIndex.getAll(name, locale, project, scope, defaultToAll)
 }
 
 fun findLocalisationProperties(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationPropertyKeyIndex.getAll(locale, project, scope)
 }
 
-fun findLocalisationProperties(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationPropertyKeyIndex.getAll(names, locale, project, scope)
+fun findLocalisationProperties(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project),keepOrder:Boolean = false): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationPropertyKeyIndex.getAll(names, locale, project, scope,false)
 }
 
 //TODO REMOVE

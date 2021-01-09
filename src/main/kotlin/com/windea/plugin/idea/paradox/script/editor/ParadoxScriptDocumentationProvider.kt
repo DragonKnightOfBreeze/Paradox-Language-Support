@@ -54,8 +54,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
 				definitionInfo.let { (name, type, _, localisation) ->
 					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-					for((k, v) in localisation) {
-						append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#", v).append("</b>")
+					if(localisation.isNotEmpty()) {
+						append("<br>")
+						for((k, v) in localisation) {
+							append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#", v).append("</b>")
+						}
 					}
 				}
 			}
@@ -79,7 +82,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			getDocTextFromPreviousComment(element).ifNotEmpty { docText->
+			getDocTextFromPreviousComment(element).ifNotEmpty { docText ->
 				content {
 					append(docText)
 				}
@@ -98,7 +101,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			getDocTextFromPreviousComment(element).ifNotEmpty { docText->
+			getDocTextFromPreviousComment(element).ifNotEmpty { docText ->
 				content {
 					append(docText)
 				}
@@ -106,19 +109,22 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionDoc(element:ParadoxScriptProperty,definitionInfo: ParadoxDefinitionInfo):String{
+	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
 				definitionInfo.let { (name, type, _, localisation) ->
 					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-					for((k, v) in localisation) {
-						append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#",v).append("</b>")
+					if(localisation.isNotEmpty()) {
+						append("<br>")
+						for((k, v) in localisation) {
+							append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#", v).append("</b>")
+						}
 					}
 				}
 			}
 			//之前的单行注释文本
-			getDocTextFromPreviousComment(element).ifNotEmpty { docText->
+			getDocTextFromPreviousComment(element).ifNotEmpty { docText ->
 				content {
 					append(docText)
 				}
@@ -196,24 +202,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	//}
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
-		return when{
+		return when {
 			link == null || context == null -> null
 			link.startsWith("#") -> getLocalisationLink(link, context)
-			link.startsWith("$") -> getScriptLink(link,context)
+			link.startsWith("$") -> getScriptLink(link, context)
 			else -> null
-		}                                                                                                            
+		}
 	}
 	
 	private fun getLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-		return findLocalisationPropertyOrFirst(link.drop(1), getLocale(context), context.project)
+		return findLocalisationProperty(link.drop(1), getLocale(context), context.project, defaultToFirst = true)
 	}
 	
-	private fun getScriptLink(link:String,context: PsiElement): ParadoxScriptProperty?{
-		return findScriptProperty(link.drop(1),context.project)
+	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
+		return findScriptProperty(link.drop(1), context.project)
 	}
 	
-	private fun getLocale(element:PsiElement):ParadoxLocale?{
+	private fun getLocale(element: PsiElement): ParadoxLocale? {
 		val file = element.containingFile
-		return if(file is ParadoxLocalisationFile) file.paradoxLocale  else null
+		return if(file is ParadoxLocalisationFile) file.paradoxLocale else null
 	}
 }

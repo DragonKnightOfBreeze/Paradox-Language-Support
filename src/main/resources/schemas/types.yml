@@ -6,7 +6,7 @@ definitions:
         type: string
       path_strict:
         type: boolean
-      name_from_file:
+      type_from_file:
         type: boolean
         default: false
       type_per_file:

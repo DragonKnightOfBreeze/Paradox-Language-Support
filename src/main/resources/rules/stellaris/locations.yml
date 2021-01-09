@@ -61,6 +61,8 @@ locations:
     file_extension: txt
   common/diplomacy_economy:
     file_extension: txt
+  common/diplomatic_actions:
+    file_extension: txt
   common/districts:
     file_extension: txt
   common/dynamic_text:

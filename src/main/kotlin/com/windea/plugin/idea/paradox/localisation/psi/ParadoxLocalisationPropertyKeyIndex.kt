@@ -11,10 +11,10 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 	override fun getKey() = key
 	
 	override fun get(key: String, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
-		return getAll(key, null,false, project, scope)
+		return getAll(key, null, project, scope, false)
 	}
 	
-	fun getOne(name: String, locale: ParadoxLocale?,defaultToFirst:Boolean, project: Project, scope: GlobalSearchScope): ParadoxLocalisationProperty? {
+	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,defaultToFirst:Boolean): ParadoxLocalisationProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
 		for(element in elements) {
 			if(locale == null || locale == element.paradoxLocale) return element
@@ -22,7 +22,7 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 		return if(defaultToFirst) elements.firstOrNull() else null
 	}
 	
-	fun getAll(name: String, locale: ParadoxLocale?,defaultToAll:Boolean, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
+	fun getAll(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,defaultToAll:Boolean): List<ParadoxLocalisationProperty> {
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
@@ -44,7 +44,7 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 		return if(defaultToAll && result.isEmpty()) elements.toList() else result
 	}
 	
-	fun getAll(names:Iterable<String>,locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
+	fun getAll(names:Iterable<String>,locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,keepOrder:Boolean): List<ParadoxLocalisationProperty> {
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)
@@ -70,6 +70,7 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 				index = nextIndex
 			}
 		}
+		if(keepOrder) result.sortBy { names.indexOf(it.name) } 
 		return result
 	}
 	

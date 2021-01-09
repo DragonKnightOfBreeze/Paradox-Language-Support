@@ -155,12 +155,14 @@ types:
 
   component_tags:
     path: "common/component_tags"
-    name_from_file: true
+    type_from_file: true
 
   component_template:
     path: "common/component_templates"
     localisation:
       name!: $
+      tag?: .tags
+      ai_tag?: .ai_tags
     subtypes:
       utility_component_template:
         key_filter: "utility_component_template"
@@ -168,6 +170,122 @@ types:
         key_filter: "weapon_component_template"
       strike_craft_component_template:
         key_filter: "strike_craft_component_template"
+
+  country_type:
+    path: "common/country_types"
+
+  decision:
+    path: "common/decisions"
+    localisation:
+      name!: $
+      description!: $_desc
+
+  define:
+    path: "common/defines"
+
+  deposit_category:
+    path: "common/deposit_categories"
+    subtypes:
+      blocker:
+        predicate:
+          blocker: true
+      import:
+        predicate:
+          important: true
+
+  deposit:
+    path: "common/deposits"
+    # path_strict: true
+    name_prefix: "d_"
+    localisation:
+      name!: $
+      description!: $_desc
+    subtypes:
+      colonisable:
+        predicate:
+          if_for_colonisable: true
+      orbital:
+        predicate:
+          station: "shipclass_research_station | shipclass_mining_station"
+      blocker:
+        predicate:
+          category: $deplosit_category.blocker
+      important:
+        predicate:
+          category: $deposit_category.important
+      null:
+        predicate:
+          is_null: true
+
+  diplo_phrase: # TODO 没弄懂！
+    path: "common/diplo_phrases"
+    #type_from_file: true
+    #type_per_file: true
+    subtypes:
+      greetings:
+        key_filter: "greetings"
+
+  diplomacy_economy:
+    path: "common/diplomacy_economy"
+    type_from_file: true
+    from_version: "2.6"
+
+  diplomatic_action:
+    path: "common/diplomatic_actions"
+    localisation:
+      title?: $_TITLE
+      description?: $_DESC
+      long_description?: $_LONG_DESC
+      type?: $_TYPE
+      type_description?: $_TYPE_DESC
+
+  district:
+    path: "common/districts"
+    localisation:
+      name!: $
+      description!: $_desc
+      plural!: $_plural
+    subtypes:
+      capped:
+        predicate:
+          is_capped_by_modifier?: true
+      uncapped:
+        predicate:
+          is_capped_by_modifier: false
+
+  dynamic_text:
+    path: "common/dynamic_text"
+    localisation:
+      text!: .text
+
+  edict:
+    path: "common/edicts"
+    localisation:
+      name!: edit_$
+      description!: edit_$_desc
+    subtypes:
+      edit_ambition:
+        predicate:
+          is_ambition: true
+
+  ethic:
+    path: "common/ethics"
+    localisation:
+      name!: $
+      description!: $_desc
+
+  ethic_categories:
+    path: "game/common/ethics"
+    key_filter: "!ethic_categories"
+
+  event_chain:
+    path: "common/event_chains"
+    localisation:
+      title!: $_title
+      description!: $_desc
+
+  fallen_empire:
+    path: "common/fallen_empires"
 
   system_type:
     path: "common/system_types"
@@ -326,112 +444,6 @@ types:
       designable:
         predicate:
           designable?: true
-
-  country_type:
-    path: "common/country_types"
-
-  decision:
-    path: "common/decisions"
-    localisation:
-      name!: $
-      description!: $_desc
-
-  define:
-    path: "common/defines"
-
-  deposit_category:
-    path: "common/deposit_categories"
-    subtypes:
-      blocker:
-        predicate:
-          blocker: true
-      import:
-        predicate:
-          important: true
-
-  deposit:
-    path: "common/deposits"
-    # path_strict: true
-    name_prefix: "d_"
-    localisation:
-      name!: $
-      description!: $_desc
-    subtypes:
-      colonisable:
-        predicate:
-          if_for_colonisable: true
-      orbital:
-        predicate:
-          station: "shipclass_research_station | shipclass_mining_station"
-      blocker:
-        predicate:
-          category: $deplosit_category.blocker
-      important:
-        predicate:
-          category: $deposit_category.important
-      null:
-        predicate:
-          is_null: true
-
-  diplo_phrase: # TODO
-    path: "common/diplo_phrases"
-    name_from_file: true
-    type_per_file: true
-    subtypes:
-      greetings:
-        key_filter: "greetings"
-
-  diplomatic_action:
-    path: "common/diplomatic_actions"
-    localisation:
-      title?: $_TITLE
-      description?: $_DESC
-      long_description?: $_LONG_DESC
-      type?: $_TYPE
-      type_description?: $_TYPE_DESC
-
-  district:
-    path: "common/districts"
-    localisation:
-      name!: $
-      description!: $_desc
-      plural!: $_plural
-    subtypes:
-      capped:
-        predicate:
-          is_capped_by_modifier?: true
-      uncapped:
-        predicate:
-          is_capped_by_modifier: false
-
-  edict:
-    path: "common/edicts"
-    localisation:
-      name!: edit_$
-      description!: edit_$_desc
-    subtypes:
-      edit_ambition:
-        predicate:
-          is_ambition: true
-
-  ethic:
-    path: "common/ethics"
-    localisation:
-      name!: $
-      description!: $_desc
-
-  ethic_categories:
-    path: "game/common/ethics"
-    key_filter: "!ethic_categories"
-
-  event_chain:
-    path: "common/event_chains"
-    localisation:
-      title!: $_title
-      description!: $_desc
-
-  fallen_empire:
-    path: "common/fallen_empires"
 
   game_rule:
     path: "common/game_rules"
@@ -787,11 +799,6 @@ types:
       species_trait:
         predicate:
           leader_trait?: false
-
-  diplomacy_economy:
-    path: "common/diplomacy_economy"
-    type_per_file: true
-    from_version: "2.6"
 
   federation_law_category:
     path: "common/federation_law_categories"

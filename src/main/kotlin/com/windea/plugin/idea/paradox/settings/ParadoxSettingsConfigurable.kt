@@ -28,24 +28,24 @@ class ParadoxSettingsConfigurable: SearchableConfigurable {
 	override fun isModified(): Boolean {
 		val settings = ParadoxSettingsState.getInstance()
 		val settingsComponent = component!!
-		return settingsComponent.resolveStringReferencesCheckBox.isSelected != settings.resolveStringReferences
-		       || settingsComponent.validateScriptCheckBox.isSelected != settings.validateScript
+		return settingsComponent.validateScriptCheckBox.isSelected != settings.validateScript
+		       || settingsComponent.renderDefinitionTextCheckBox.isSelected != settings.renderDefinitionText
 		       || settingsComponent.renderLocalisationTextCheckBox.isSelected != settings.renderLocalisationText
 	}
 	
 	override fun apply() {
 		val settings = ParadoxSettingsState.getInstance()
 		val settingsComponent = component ?: return
-		settings.resolveStringReferences = settingsComponent.resolveStringReferencesCheckBox.isSelected
 		settings.validateScript = settingsComponent.validateScriptCheckBox.isSelected
+		settings.renderDefinitionText = settingsComponent.renderDefinitionTextCheckBox.isSelected
 		settings.renderLocalisationText = settingsComponent.renderLocalisationTextCheckBox.isSelected
 	}
 	
 	override fun reset() {
 		val settings = ParadoxSettingsState.getInstance()
 		val settingsComponent = component ?: return
-		settingsComponent.resolveStringReferencesCheckBox.isSelected = settings.resolveStringReferences
 		settingsComponent.validateScriptCheckBox.isSelected = settings.validateScript
+		settingsComponent.renderDefinitionTextCheckBox.isSelected = settings.renderDefinitionText
 		settingsComponent.renderLocalisationTextCheckBox.isSelected = settings.renderLocalisationText
 	}
 }
