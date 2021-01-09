@@ -1,0 +1,25 @@
+# Root comment
+# Second line comment
+@var1 = 123
+@var2 = 1
+
+settings = {
+	variable_value = @var1 # variable reference
+	boolean_value = yes # yes or no
+	number_value = 123 # number
+	string_value = Foo # simple text
+	string_value = "Foo\n bar " # text (require quotes when contains blank)
+	property_value = {
+		foo = bar
+		annotated_value = settings # annotated value  
+		number < 1 # predicate expression (treat as property)
+	}
+	list_value = {
+		"A" "B" "C"
+	}
+	#123
+}
+
+color = rgb { 142 188 241 }
+
+code = @\[2 + ($MAX$ - 1)]

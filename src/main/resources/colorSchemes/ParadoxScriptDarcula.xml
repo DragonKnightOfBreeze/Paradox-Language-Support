@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<list>
+  <option name="PARADOX_SCRIPT.DEFINITION">
+    <value>
+      <option name="EFFECT_COLOR" value="b99bf8"/>
+      <option name="EFFECT_TYPE" value="1" />
+    </value>
+  </option>
+  <!--<option name="PARADOX_SCRIPT.LOCALISATION_PROPERTY_REFERENCE">-->
+  <!--  <value>-->
+  <!--    <option name="EFFECT_COLOR" value="cc7832" />-->
+  <!--    <option name="EFFECT_TYPE" value="1" />-->
+  <!--  </value>-->
+  <!--</option>-->
+  <!--<option name="PARADOX_SCRIPT.SCRIPT_PROPERTY_REFERENCE">-->
+  <!--  <value>-->
+  <!--    <option name="EFFECT_COLOR" value="b99bf8"/>-->
+  <!--    <option name="EFFECT_TYPE" value="1" />-->
+  <!--  </value>-->
+  <!--</option>-->
+</list>

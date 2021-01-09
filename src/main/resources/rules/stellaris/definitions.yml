@@ -1,0 +1,265 @@
+definitions:
+  ambient_object:
+    subtype[show_name]:
+      name: $localisation
+    subtype[!show_name]:
+      name: string
+    subtype[selectable]:
+      description: $localisation
+      tooltip: $localisation
+    entity: $model_entity
+    selectable: boolean
+    show_name: boolean
+
+  asteroid_belt_type:
+    mesh: string
+    shader: string
+
+  attribute:
+    type: string
+    behaviour:
+      ### 0..1
+      attack: boolean
+      ### 0..1
+      weaken: boolean
+      ### 0..1
+      alliance: boolean
+      ### 0..1
+      vassalize: boolean
+      ### 0..1
+      trade: boolean
+      ### 0..1
+      coexist: boolean
+
+  button_effect:
+    ### replace_scope: {this: any, root: any, from: country}
+    potential:
+      $trigger.name: $trigger.value
+    ### replace_scope: {this: any, root: any, from: country}
+    allow:
+      $trigger.name: $trigger.value
+    ### replace_scope: {this: any, root: any, from: country}
+    ### 0..1
+    effect:
+      $trigger.name: $trigger.value
+
+  country_customization:
+    colony_shelter:
+      default: $building[capital]
+      ### 0..inf
+      $planet_class: $building[colonizable]
+    ### 0..inf
+    graphical_culture_for_random_empire:
+      ### 0..inf
+      $graphical_culture:
+        ### 0..inf
+        modifier:
+          add: int
+          species_portrait: $portrait
+    ### replace_scope: {this: country, root: country}
+    ### 0..1
+    weight:
+      ### 0..1
+      base: int
+      $modifier_rule_add.name: $modifier_rule_add.value
+
+  system_type:
+    ### replace_scope: {this: system, root: system}
+    potential:
+      $trigger.name: $trigger.value
+    ### 0..1
+    weight_modifier:
+      ### 0..1
+      base: int
+      $modifier_rule: $modifier_rule
+
+  start_screen_message:
+    location: int
+    localisation: $localisation
+    ### replace_scope: {root: country, this: country}
+    trigger:
+      $trigger.name: $trigger.value
+
+  precursor_civilization:
+    size: int
+    ### 0..1
+    possible:
+      $trigger.name: $trigger.value
+
+  sector_type:
+    system_scores:
+      ### 0..1
+      base: int
+      $modifier_rule.name: $modifier_rule.value
+    local_capital_scores:
+      ### 0..1
+      base: int
+      ### 0..1
+      modifier:
+        mult: float
+        $trigger.name: $trigger.value
+    resource_conversion_table:
+      energy: int
+      minerals: int
+    resources: $resources # TODO
+    max_jumps: int
+
+  sector_focus:
+    ai_weight:
+      weight: float
+      $modifier_rule.name: $modifier_rule.value
+    ### 0..inf
+    district:
+      key: $district
+      weight:
+        weight: float
+        $modifier_rule.name: $modifier_rule.value
+    ### 0..inf
+    building:
+      key: $building
+      weight:
+        weight: float
+        $modifier_rule.name: $modifier_rule.value
+
+  map_mode:
+    icon: $sprite
+    enable_terra_incognita: boolean
+    ### 0..1
+    can_change_point_of_view: boolean
+    ### 0..1
+    shortcut: string
+    ### 0..1
+    display_claims: boolean
+    ### 1..inf
+    color:
+      ### required | 3..4
+      value: $country | float[]
+      ### 0..1
+      custom_tooltip: $localisation
+      ### 0..1
+      hardcoded_tooltip: $opnion | $country
+      ### replace_scope: {root: country, this: country, from: country}
+      condition:
+        $trigger.name: $trigger.value
+
+  ai_budget:
+    resource: $resource
+    type: $expenditure | $upkeep
+    category: $economic_category
+    potential:
+      $trigger.name: $trigger.value
+    ### 0..1
+    fraction:
+      weight: float
+      $modifier_rule.name: $modifier_rule.value
+    ### 0..1
+    static_max:
+      base: int
+      $modifier_rule.name: $modifier_rule.value
+    ### 0..1
+    static_min:
+      base: int
+      $modifier_rule.name: $modifier_rule.value
+
+  trade_conversion:
+    ### replace_scope: {this: country, from: country}
+    potential:
+      $trigger.name: $trigger.value
+    weight:
+      weight: int
+    conversion_rate:
+      ### 1..inf
+      $resource: float
+    economic_category: $economic_category
+
+  economic_plan:
+    type: string
+    income:
+      ### 1..inf
+      $resource: int
+    focus:
+      ### 1..inf
+      $resource: int
+    subplan:
+      potential:
+        ### replace_scope: {this: country, root: country}
+        $trigger.name: $trigger.value
+      income:
+        ### 1..inf
+        $resource: int
+      focus:
+        ### 1..inf
+        $resource: int
+    pops: int
+    empire_size: float
+    ### replace_scope: {this: country, root: country}
+    ai_weight:
+      weight: float
+      $modifier_rule.name: $modifier_rule.value
+
+  prescripted_country:
+    name: string
+    adjective: $localisation_synced
+    spawn_enabled: boolean | always
+    default?: yes
+    ignore_portrait_duplication?: boolean
+    spawn_as_fallen?: boolean
+    ship_prefix: $localisation_synced
+    species?:
+      class: $species_class
+      portrait: $portrait | $portrait_group
+      name: $localisation_synced
+      plural: $localisation_synced
+      adjective: $localisation_synced
+      name_list: $name_list
+      trait*: $trait.species_trait
+    secondary_species?:
+      class: $species_class
+      portrait: $portrait | $portrait_group
+      name: $localisation_synced
+      plural: $localisa/tion_synced
+      adjective: $localisation_synced
+      name_list: $name_list
+      trait*: $trait.species_trait
+    playable?: $scripted_trigger
+    # room: icon[gfx/portraits/city_sets] | asset_selector.room
+    room: icon[gfx/portraits/city_sets] | icon[gfx/portraits/asset_selectors]
+    authority?: $authority
+    civics?:
+    - $civic
+    government?: $government
+    origin?: $origin
+    ethic+: $ethic
+    flags?:
+    - value_set[country_flag]
+    planet_name: $localisation_synced
+    planet_class: $planet_class.habitable_planet
+    initializer?: $solar_system_initializer
+    system_name: $localisation_synced
+    graphical_culture: $graphical_culture
+    city_graphical_culture: $graphical_culture
+    empire_flag:
+      icon:
+        category: string # directory[/flags]
+        file: string # filename[/flags/{category}]
+      background:
+        category: string # directory[/flags]
+        file: # filename[/flags/{category}]
+      color:
+      - $color
+      - "null"
+    ruler:
+      name: localisation_synced
+      gender: enum[gender]
+      portrait: $portrait | $portrait_group
+      texture: int
+      hair?: int
+      clothes?: int
+      ruler_title?: $localisation_synced
+      ruler_title_male?: $localisation_synced
+      rule_title_female?: $localisation_synced
+      hair_title?: $localisation_synced
+      hair_title_male?: $localisation_synced
+      hair_title_female?: $localisation_synced
+      leader_class?: $leader_class
+      trait*: $trait.leader_trait

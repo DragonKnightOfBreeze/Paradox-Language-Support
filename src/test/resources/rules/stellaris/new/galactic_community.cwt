@@ -1,0 +1,124 @@
+
+types = {
+	type[galactic_focus] = {
+		path = "game/common/galactic_focuses"
+		localisation = {
+			## required
+			Name = "$"
+			## required
+			Description = "$_desc"
+		}
+	}
+	type[resolution_category] = {
+		path = "game/common/resolution_categories"
+		localisation = {
+			## required
+			Name = "$"
+		}
+	}
+	## replace_scope = { this = country root = country }
+	type[resolution] = {
+		path = "game/common/resolutions"
+		localisation = {
+			## required
+			Name = "$"
+			## required
+			Description = "$_desc"
+		}
+	}
+}
+
+galactic_focus = {
+	icon = <sprite>
+	## replace_scope = { this = country root = country }
+	effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## replace_scope = { this = no_scope root = no_scope }
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { this = no_scope root = no_scope }
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	#example says weight is also valid
+}
+
+resolution_category = {
+	group = localisation
+	icon = <sprite>
+	resolution_types = {
+		## cardinality = 1..inf
+		<resolution>
+	}
+}
+
+## replace_scope = { this = country root = country }
+resolution = {
+	icon = scalar #not really
+	resources = {
+		category = <economic_category>
+		alias_name[economic_template] = alias_match_left[economic_template]
+	}
+	###Does the resolution require a target country?
+	target = bool
+	## cardinality = 0..1
+	level = int
+	## cardinality = 0..1
+	sanction = yes
+	## cardinality = 0..1
+	harmful = bool
+	## cardinality = 0..1
+	###Modifier to be applied to all community members if passed. Apparently. Not sure about that...
+	modifier = {
+		## cardinality = 0..inf
+		<static_modifier> = int
+	}
+	## cardinality = 0..1
+	###Modifier to be applied to all community members if passed and the potential trigger is true
+	triggered_modifier = {
+		potential = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		modifier = {
+			## cardinality = 1..inf
+			<static_modifier> = int
+		}
+	}
+	## cardinality = 0..1
+	###Effect to be applied if passed, scope is country
+	effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	###Effect to be applied if failed, scope is country
+	fail_effects = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	###Resolution only in effect while this trigger is met
+	active = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	breach = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	valid_target = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	ai_weight = {
+		enum[weight_or_base] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}

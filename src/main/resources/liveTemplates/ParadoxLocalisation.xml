@@ -1,0 +1,73 @@
+<templateSet group="Paradox Localisation">
+  <template name="sref"
+            value="$DELIMITER$$SELECTION$$DELIMITER$"
+            description="Surround with property reference markers"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="DELIMITER" expression="" defaultValue="&quot;$&quot;" alwaysStopAt="false"/>
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
+  <template name="scolor"
+            value="§$CODE$$SELECTION$§!"
+            description="Surround with colorful text markers"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="CODE"
+              expression="enum(&quot;B&quot;,&quot;E&quot;,&quot;G&quot;,&quot;H&quot;,&quot;L&quot;,&quot;M&quot;,&quot;P&quot;,&quot;R&quot;,&quot;S&quot;,&quot;T&quot;,&quot;W&quot;,&quot;Y&quot;)"
+              alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
+  <template name="ref"
+            value="$DELIMITER$$TEXT$$DELIMITER$$END$"
+            description="Insert a property reference fragment"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="DELIMITER" expression="" defaultValue="&quot;$&quot;" alwaysStopAt="false"/>
+    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
+  <template name="color"
+            value="§$CODE$$TEXT$§!$END$"
+            description="Insert a colorful text fragment"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="CODE"
+              expression="enum(&quot;B&quot;,&quot;E&quot;,&quot;G&quot;,&quot;H&quot;,&quot;L&quot;,&quot;M&quot;,&quot;P&quot;,&quot;R&quot;,&quot;S&quot;,&quot;T&quot;,&quot;W&quot;,&quot;Y&quot;)"
+              alwaysStopAt="true"/>
+    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
+  <template name="code"
+            value="[$TEXT$]$END$"
+            description="Insert an inline code fragment"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
+  <template name="icon"
+            value="£$TEXT$£$END$"
+            description="Insert an inline icon fragment"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
+  <template name="serial"
+            value="%$CODE$%$END$"
+            description="Insert a serial number fragment"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="CODE"
+              expression="enum(&quot;C&quot;,&quot;O&quot;&quot;R&quot;)"
+              alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
+</templateSet>

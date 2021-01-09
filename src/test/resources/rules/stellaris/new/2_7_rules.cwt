@@ -1,0 +1,320 @@
+
+## scope = country
+## push_scope = leader
+###Iterate through each envoy available to the country
+alias[trigger:any_envoy] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = country
+## push_scope = leader
+###Iterate through each envoy available to the country
+alias[trigger:count_envoy] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = country
+## push_scope = leader
+###Iterate through each envoy available to the country
+alias[effect:random_envoy] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = leader
+###Iterate through each envoy available to the country
+alias[effect:every_envoy] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = country
+###Checks if a specified number of playable countries meet the specified criteria
+alias[trigger:count_playable_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country rivalled by the current country
+alias[trigger:any_rival_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country rivalled by the current country
+alias[trigger:count_rival_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country rivalled by the current country
+alias[effect:random_rival_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country rivalled by the current country
+alias[effect:every_rival_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country in a federation with the current country
+alias[trigger:any_federation_ally] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country in a federation with the current country
+alias[trigger:count_federation_ally] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country in a federation with the current country
+alias[effect:random_federation_ally] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = country
+###Iterate through each country in a federation with the current country
+alias[effect:every_federation_ally] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = pop_faction
+###Checks if any of the country's pop factions meet the specified criteria
+alias[trigger:any_pop_faction] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+
+#--- Triggers
+
+## scope = leader
+###Checks the scoped envoy's task.
+alias[trigger:has_envoy_task] = {
+	##cardinality = 0..1
+	target = scope[country]
+	task = enum[envoy_tasks]
+}
+
+enums = {
+	enum[envoy_tasks] = {
+		improve_relations
+		harm_relations
+		federation
+		galactic_community
+		none
+	}
+	enum[planet_resource_compare_types] = {
+		produces
+		upkeep
+		balance
+	}
+}
+
+## scope = leader
+###Checks whether the scoped envoy is affected by a cooldown.
+alias[trigger:has_envoy_cooldown] = bool
+
+## scope = fleet
+###Checks if the scoped fleet is able to enter the system. Note: Avoid overusing this, it is a performance-intensive trigger!
+alias[trigger:can_access_system] = scope[system]
+
+## scope = system
+###Checks the system's trade value
+alias[trigger:has_system_trade_value] = float
+
+## scope = leader
+###Checks the scoped leader's age.
+alias[trigger:leader_age] = int
+
+## scope = country
+###Checks if the country has completed a specific special project as part of an in-progress event chain
+alias[trigger:has_completed_special_project] = <special_project>
+
+## scope = country
+###Checks if the country has failed, timed out or aborted a specific special project as part of an in-progress event chain.
+alias[trigger:has_failed_special_project] = <special_project>
+
+## scope = planet
+###Compares the value of the planet's total housing
+alias[trigger:num_housing] = int
+
+## scope = system
+###Compares the number of planets in the current solar system
+alias[trigger:num_planets_in_system] = int
+
+## scope = planet
+###Checks if the current planet is the capital of its sector.
+alias[trigger:is_sector_capital] = bool
+
+## scope = sector
+###Checks if the current sector has the specified focus.
+alias[trigger:has_sector_focus] = <sector_focus>
+
+## scope = planet
+###Checks if the planet uses the specified district set.
+alias[trigger:uses_district_set] = enum[district_sets]
+
+## scope = planet
+###Compares the planet's production/upkeep or balance (default: balance) of a given resource with a specified value.
+alias[trigger:planet_resource_compare] = {
+	## cardinality = 0..1
+	###Default: Balance
+	type = enum[planet_resource_compare_types]
+	resource = <resource>
+	value = float
+}
+
+###Checks if given law category has any active law.
+alias[trigger:has_any_federation_law_in_category] = <federation_law_category>
+
+###Check that the planet has available jobs of a specific type
+alias[trigger:has_available_jobs] = <job>
+
+###Checks if Xeno Compatibility are enabled in game setup
+alias[trigger:xeno_compatibility_enabled] = <job>
+
+###Checks if the country has been set to be neutral towards target country via set_faction_hostility.
+alias[trigger:is_forced_friendly] = scope[country]
+
+###Checks if the country has been set to be friendly towards target country via set_faction_hostility.
+alias[trigger:is_forced_neutral] = scope[country]
+
+###Checks if the current pop has happiness or not.
+alias[trigger:pop_has_happiness] = bool
+
+###Checks if any pops are being purged on the current planet.
+alias[trigger:has_current_purge] = bool
+
+###Checks if the current species has happiness or not when owned by a specified country.
+alias[trigger:species_has_happiness_with_owner] = scope[country]
+
+
+
+#--- Effects
+
+## scope = any
+###Prints the countries that match the limit triggers in a list for a tooltip.
+alias[effect:country_list_tooltip] = {
+	## push_scope = country
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+## scope = country
+###Prints the country's colonies that match the limit triggers in a list for a tooltip.
+alias[effect:owned_planet_list_tooltip] = {
+	## push_scope = planet
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+## scope = country
+###Prints the country's pop factions that match the limit triggers in a list for a tooltip.
+alias[effect:owned_pop_faction_list_tooltip] = {
+	## push_scope = pop_faction
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+## scope = country
+###Prints the country's leaders that match the limit triggers in a list for a tooltip.
+alias[effect:owned_leader_list_tooltip] = {
+	## push_scope = leader
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+## scope = country
+###Prints the country's fleets that match the limit triggers in a list for a tooltip.
+alias[effect:owned_fleet_list_tooltip] = {
+	## push_scope = fleet
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+## scope = leader
+###Locks the leader in its current role for the next X days.
+alias[effect:set_cooldown] = int
+
+## scope = planet
+###Sets the current planet as the capital of its sector.
+alias[effect:set_sector_capital] = yes
+
+## scope = sector
+###Sets the current sector's focus.
+alias[effect:set_sector_focus] = <sector_focus>
+
+## scope = planet
+###Sets the current planet to have the specified type designation.
+alias[effect:set_colony_type] = <colony_type>
+
+###Adds civic to a goverment without checking the restrictions.
+alias[effect:force_add_civic] = <civic_or_origin.civic>
+
+###Removes civic from a goverment without checking the restrictions.
+alias[effect:force_remove_civic] = <civic_or_origin.civic>
+
+###Completes a specific special project for the country, firing the on_success effects
+alias[effect:complete_special_project] = {
+	type = <special_project>
+	## cardinality = 0..1
+	location = scope[planet]
+	## cardinality = 0..1
+	location = scope[system]
+	## cardinality = 0..1
+	location = scope[ship]
+	## cardinality = 0..1
+	location = scope[fleet]
+	## cardinality = 0..1
+	location = scope[starbase]
+}
+

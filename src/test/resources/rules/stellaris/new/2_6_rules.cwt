@@ -1,0 +1,693 @@
+
+#     Triggers
+
+## scope = federation
+###Checks if the federation has a specific flag.
+alias[trigger:has_federation_flag] = value[country_flag]
+
+## scope = federation
+###Checks the country's number of envoys sent to its federation.
+alias[trigger:num_envoys_to_federation] = int
+
+## scope = federation
+###Checks the country's number of envoys sent to the galactic community.
+alias[trigger:num_envoys_to_galcom] = int
+
+## scope = federation
+###Checks experience of the federation.
+alias[trigger:federation_experience] = int
+
+## scope = federation
+###Checks cohesion of the federation.
+alias[trigger:federation_cohesion] = int
+
+## scope = federation
+###Checks cohesion growth of the federation.
+alias[trigger:federation_cohesion_growth] = float
+
+## scope = federation
+###Checks if given law has been enacted in scoped federation.
+alias[trigger:has_federation_law] = <federation_law>
+
+## scope = country
+###Checks if scoped country is part of the Galactic Community.
+alias[trigger:is_galactic_community_member] = bool
+
+## scope = country
+###Checks how much the empire sprawl is over its admin capacity.
+alias[trigger:empire_sprawl_over_cap] = int
+
+## scope = country
+###Checks the empire's sprawl compared to its admin level.
+alias[trigger:empire_sprawl_cap_fraction] = int
+
+## scope = country
+###Checks if scoped country is part of the Galactic Council.
+alias[trigger:is_part_of_galactic_council] = bool
+
+## scope = federation
+###Checks if given perk has been unlocked in scoped federation.
+alias[trigger:has_federation_perk] = <federation_perk>
+
+## scope = federation
+###Checks if federation has specific federation type.
+alias[trigger:has_federation_type] = <federation_type>
+
+## scope = federation
+###Checks federation level in comparison to given value in scoped federation.
+alias[trigger:federation_level] = int
+
+## scope = any
+###Checks if the Galactic Community is currently voting on any, or a specific, resolution.
+alias[trigger:is_voting_on_resolution] = any
+
+## scope = any
+###Checks if the Galactic Community is currently voting on any, or a specific, resolution.
+alias[trigger:is_voting_on_resolution] = <resolution>
+
+## scope = country
+###Checks if the scoped country is currently proposing any, or a specific, resolution.
+alias[trigger:is_proposing_resolution] = any
+
+## scope = country
+###Checks if the scoped country is currently proposing any, or a specific, resolution.
+alias[trigger:is_proposing_resolution] = <resolution>
+
+## scope = any
+###Compare with number of years since the formation of the Galactic Community. NOTE: A negative value means it hasn't been formed yet!
+alias[trigger:is_years_since_community_formation] = int
+
+## scope = any
+###Compares with number of years since the establishment of the Galactic Council. NOTE: A negative value means it hasn't been established yet!
+alias[trigger:is_years_since_council_establishment] = int
+
+## scope = any
+###Checks if the Galactic Community has been formed.
+alias[trigger:is_galactic_community_formed] = bool
+
+## scope = any
+###Checks if the Galactic Council has been established.
+alias[trigger:is_galactic_council_established] = bool
+
+## scope = country
+###Checks if scoped country has specified origin
+alias[trigger:has_origin] = <civic_or_origin.origin>
+
+## scope = any
+###Checks if the provided Resolution is active in the Community
+alias[trigger:is_active_resolution] = <resolution>
+
+## scope = country
+###Checks if an empire is in breach of any galactic resolution.
+alias[trigger:is_in_breach_of_any] = bool
+
+## scope = country
+###Checks if the scoped country is in breach of the specified resolution (or would be, were it to be enacted).
+alias[trigger:in_breach_of] = <resolution>
+
+## scope = federation
+###Checks if given setting is on for scoped federation.
+alias[trigger:has_federation_setting] = enum[federation_settings]
+
+## scope = any
+###Compares the number of council positions in the Galactic Community.
+alias[trigger:num_council_positions] = int
+
+## scope = country
+###Compares empire rank ( sorted by diplomatic weight ) in the Galactic Community. NOTE: If the scoped country isn't part of the community this returns -1.
+alias[trigger:galactic_community_rank] = int[-1..inf]
+
+## scope = country
+###Checks if an empire has a permanent seat on the Galactic Council.
+alias[trigger:is_permanent_councillor] = bool
+
+## scope = country
+###Checks the country's opinion of the target country has been changed by envoys.
+alias[trigger:envoy_opinion_change] = {
+	who = scope[country]
+	value = int
+}
+
+## scope = country
+###Checks if the country has an envoy sent to the target country to improve relations.
+alias[trigger:is_improving_relations_with] = scope[country]
+
+## scope = country
+###Checks if the country has an envoy sent to the target country to harm relations.
+alias[trigger:is_harming_relations_with] = scope[country]
+
+## scope = federation
+## push_scope = country
+###Iterate through each member of the federation
+alias[trigger:count_member] = {
+	count = all
+	count = int
+	## cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+}
+
+## scope = country
+###Checks whether the country has the specified opinion level to the specified country.
+alias[trigger:opinion_level] = {
+	who = scope[country]
+	level = enum[opinion_levels]
+}
+
+## scope = species
+###Check if the species in the scope is a robot species or not.
+alias[trigger:is_robotic] = bool
+
+## scope = country
+###Check amount of favors that scoped country can collect from target country.
+alias[trigger:num_favors] = {
+	target = scope[country]
+	value = int
+}
+
+
+#     Effects
+
+## scope = country
+###Add <value> favors for scoped country to use on target country.
+alias[effect:add_favors] = {
+	target = scope[country]
+	value = int
+}
+
+## scope = country
+###Remove <value/all> favors that scoped country have on target country.
+alias[effect:remove_favors] = {
+	target = scope[country]
+	value = int
+	value = all
+}
+
+## scope = federation
+###Sets an arbitrarily-named flag on the scoped federation
+alias[effect:set_federation_flag] = value_set[country_flag]
+
+## scope = federation
+###Sets an arbitrarily-named flag on the scoped federation
+alias[effect:set_timed_federation_flag] = {
+	flag = value_set[country_flag]
+	enum[days_months_years] = int
+}
+
+## scope = federation
+###Removes a previously-set flag from the scoped federation
+alias[effect:remove_federation_flag] = value[country_flag]
+
+## scope = federation
+###Sets the given law for the scoped federation.
+alias[effect:set_federation_law] = <federation_law>
+
+## scope = country
+###Tries to add the country to the Galactic Community.
+alias[effect:add_to_galactic_community] = yes
+
+## scope = country
+###Tries to remove the country from the Galactic Community.
+alias[effect:remove_from_galactic_community] = yes
+
+## scope = country
+###Tries to add the scoped country to the Galactic Council.
+alias[effect:add_to_galactic_council] = yes
+
+## scope = country
+###Tries to remove the scoped country from the Galactic Council.
+alias[effect:remove_from_galactic_council] = yes
+
+## scope = federation
+###Adds experience to the scoped federation.
+alias[effect:add_federation_experience] = int
+
+## scope = federation
+###Sets federation type to the scoped federation.
+alias[effect:set_federation_type] = <federation_type>
+
+## scope = federation
+###Sets federation succession type to the scoped federation. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_federation_succession_type] = enum[federation_succession_types]
+
+## scope = federation
+###Sets federation succession term to the scoped federation. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_federation_succession_term] = enum[federation_succession_terms]
+
+## scope = federation
+###Sets exclusive right to build fleets by federation leader. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_only_leader_builds_fleets] = bool
+
+## scope = federation
+###Sets right for subjects to join federations. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_allow_subjects_to_join] = bool
+
+## scope = federation
+###Sets different voting weight. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_equal_voting_power] = bool
+
+## scope = federation
+###Sets diplomatic action custom setting. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_diplomacy_action_setting] = {
+	action = <diplomatic_action>
+	settings = {
+		## cardinality = 0..1
+		vote_type = enum[vote_types] #unanimous_vote majority_vote leader
+		## cardinality = 0..1
+		acceptance_type = enum[acceptance_types] #leader default
+	}
+}
+
+## scope = federation
+###Sets unified migration flag for federation. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_free_migration] = bool
+
+## scope = federation
+###Sets federation custom setting. Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
+alias[effect:set_federation_settings] = {
+	enum[federation_settings] = bool
+}
+
+## scope = federation
+###Add cohesion to the federation
+alias[effect:add_cohesion] = int
+
+## scope = any
+###Sets the number of seats on the Galactic Council
+alias[effect:set_council_size] = int
+
+## scope = any
+###Increases the number of seats on the Galactic Council by 1
+alias[effect:increase_council_size] = yes
+
+## scope = any
+###Decreases the number of seats on the Galactic Council by 1
+alias[effect:decrease_council_size] = yes
+
+## scope = any
+###Sets whether council members can veto resolutions or not
+alias[effect:set_council_veto] = bool
+
+## scope = any
+###Sets whether council members can propose emergency measures or not
+alias[effect:set_council_emergency_measures] = bool
+
+## scope = country
+###Gives scoped country a permanent position on the Galactic Council
+alias[effect:add_permanent_councillor] = yes
+
+## scope = country
+###Remove the scoped country from their permanent council position
+alias[effect:remove_permanent_councillor] = yes
+
+## scope = country
+###Passes the specified resolution
+alias[effect:pass_resolution] = <resolution>
+
+## scope = war
+###Removes the specified participant from the scoped war.
+alias[effect:remove_war_participant] = scope[country]
+
+## scope = country
+###Ends all treaties with the target.
+alias[effect:end_all_treaties_with] = scope[country]
+
+
+
+#       Scopes
+
+## scope = any
+## push_scope = federation
+###Iterate through each federation
+alias[trigger:any_federation] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = any
+## push_scope = federation
+###Iterate through each federation
+alias[trigger:count_federation] = {
+	##cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	count = int
+	count = all
+}
+
+## scope = any
+## push_scope = federation
+###Iterate through each federation
+alias[effect:random_federation] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = federation
+###Iterate through each federation
+alias[effect:every_federation] = {
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+
+## scope = federation
+## push_scope = country
+###Iterate through each member of the federation
+alias[trigger:any_member] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = federation
+## push_scope = country
+###Iterate through each member of the federation
+alias[effect:random_member] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = federation
+## push_scope = country
+###Iterate through each member of the federation
+alias[effect:every_member] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = war
+###Iterate through each war the country is fighting in
+alias[effect:every_war] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = war
+###Iterate through each war the country is fighting in
+alias[effect:random_war] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = war
+###Iterate through each war the country is fighting in
+alias[trigger:count_war] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+
+## scope = system
+## push_scope = fleet
+###Iterate through each fleet in the system
+alias[trigger:any_fleet_in_system] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = system
+## push_scope = fleet
+###Iterate through each fleet in the system
+alias[trigger:count_fleet_in_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = any
+## push_scope = species
+###Iterate through each species in the galaxy
+alias[trigger:any_galaxy_species] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = any
+## push_scope = species
+###Iterate through each species in the galaxy
+alias[trigger:count_galaxy_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = any
+## push_scope = species
+###Iterate through each species in the galaxy
+alias[effect:random_galaxy_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = species
+###Iterate through each species in the galaxy
+alias[effect:every_galaxy_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species belonging to the country/planet
+alias[trigger:any_owned_species] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species belonging to the country/planet
+alias[trigger:count_owned_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species belonging to the country/planet
+alias[effect:random_owned_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species belonging to the country/planet
+alias[effect:every_owned_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species enslaved by the country/planet
+alias[trigger:any_enslaved_species] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species enslaved by the country/planet
+alias[trigger:count_enslaved_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	count = int
+	count = all
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species enslaved by the country/planet
+alias[effect:random_enslaved_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country planet }
+## push_scope = species
+###Iterate through each species enslaved by the country/planet
+alias[effect:every_enslaved_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+
+
+#       Enums
+
+enums = {
+	enum[federation_succession_types] = {
+		strongest
+		diplomatic_weight
+		rotation
+		challenge
+		random
+		tech
+		fleet
+	}
+	enum[federation_succession_terms] = {
+		status_change
+		years_10
+		years_20
+		years_30
+		years_40
+	}
+	enum[federation_settings] = {
+		research_sharing
+		failed_vote_half_price
+	}
+	enum[vote_types] = {
+		unanimous_vote
+		majority_vote
+		leader
+	}
+	enum[acceptance_types] = {
+		default
+		leader
+	}
+	enum[opinion_levels] = {
+		terrible
+		poor
+		neutral
+		good
+		excellent
+	}
+	enum[diplomacy_economy_tags] = {
+		federation
+		rivalry
+		non_aggression_pact
+		migration_pact
+		research_agreement
+		commercial_pact
+		defensive_pact
+		guarantee
+		improving_relations
+		harming_relations
+		diplo_stance_closed_borders
+	}
+}
+
+#Modifiers
+
+## scope = country
+alias[modifier:diplo_weight_mult] = float
+## scope = country
+alias[modifier:envoy_improve_relations_mult] = float
+## scope = country
+alias[modifier:envoy_harm_relations_mult] = float
+## scope = country
+alias[modifier:empire_size_pops_mult] = float
+## scope = country
+alias[modifier:envoys_add] = int
+## scope = country
+alias[modifier:country_admin_cap_mult] = float
+## scope = country
+alias[modifier:diplo_weight_naval_mult] = float
+## scope = country
+alias[modifier:lithoid_pop_happiness] = float
+## scope = country
+alias[modifier:diplo_weight_technology_mult] = float
+## scope = federation
+alias[modifier:ship_federation_territory_speed_mult] = float
+## scope = federation
+alias[modifier:federation_research_sharing_mult] = float
+## scope = federation
+alias[modifier:federation_join_malus_mult] = float
+## scope = federation
+alias[modifier:federation_leader_fleet_scale_mult] = float
+## scope = federation
+alias[modifier:federation_leader_diplo_weight_from_members_mult] = float
+## scope = ship
+alias[modifier:ship_engagement_range_mult] = float
+## scope = ship
+alias[modifier:ship_jumpdrive_cooldown_mult] = float
+## scope = country
+alias[modifier:diplo_weight_economy_mult] = float
+## scope = country
+alias[modifier:diplo_weight_pops_mult] = float
+## scope = country
+alias[modifier:diplo_weight_council_mult] = float
+## scope = country
+alias[modifier:diplo_weight_envoys_mult] = float
+## scope = federation
+alias[modifier:federation_fleet_cap_add] = int
+## scope = country
+alias[modifier:empire_size_districts_mult] = float
+## scope = country
+alias[modifier:empire_size_systems_mult] = float
+## scope = country
+alias[modifier:empire_size_colonies_mult] = float
+## scope = species
+alias[modifier:species_empire_size_mult] = float
+
+
+
+types = {
+	type[diplomacy_economy] = {
+        path = "game/common/diplomacy_economy"
+#        name_from_file = yes
+        type_per_file = yes
+	}
+}
+
+diplomacy_economy = {
+	once = {
+		#Not sure if you can define your own stuff here so used an enum
+		## cardinality = 0..inf
+		enum[diplomacy_economy_tags] = {
+			## replace_scopes = { this = country root = country from = country }
+			trigger = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			resources = {
+				category = <economic_category>
+				alias_name[economic_template] = alias_match_left[economic_template]
+			}
+		}
+	}
+	per_relation = {
+		#Not sure if you can define your own stuff here so used an enum
+		## cardinality = 0..inf
+		enum[diplomacy_economy_tags] = {
+			## replace_scopes = { this = country root = country from = country }
+			trigger = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			resources = {
+				category = <economic_category>
+				alias_name[economic_template] = alias_match_left[economic_template]
+			}
+		}
+	}
+}

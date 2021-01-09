@@ -1,0 +1,288 @@
+locations:
+  common/agendas:
+    file_extension: txt
+  common/ai_budget:
+    file_extension: txt
+  common/ambient_objects:
+    file_extension: txt
+  common/anomalies:
+    file_extension: txt
+  common/archaeological_site_types:
+    file_extension: txt
+  common/armies:
+    file_extension: txt
+  common/artifact_actions:
+    file_extension: txt
+  common/ascension_perks:
+    file_extension: txt
+  common/asteroid_belts:
+    file_extension: txt
+  common/attitutes:
+    file_extension: txt
+  common/bombardment_stances:
+    file_extension: txt
+  common/buildings:
+    file_extension: txt
+  common/button_effects:
+    file_extension: txt
+  common/bypass:
+    file_extension: txt
+  common/casus_belli:
+    file_extension: txt
+  common/colony_automation:
+    file_extension: txt
+  common/colony_automation_exceptions:
+    file_extension: txt
+  common/colony_types:
+    file_extension: txt
+  common/colors:
+    file_extension: txt
+  common/component_sets:
+    file_extension: txt
+  common/component_slot_templates:
+    file_extension: txt
+  common/component_tags:
+    file_extension: txt
+  common/component_templates:
+    file_extension: txt
+  common/country_customization:
+    file_extension: txt
+  common/country_types:
+    file_extension: txt
+  common/decisions:
+    file_extension: txt
+  common/defines:
+    file_extension: txt
+  common/deposit_categories:
+    file_extension: txt
+  common/deposits:
+    file_extension: txt
+  common/diplo_phrases:
+    file_extension: txt
+  common/diplomacy_economy:
+    file_extension: txt
+  common/districts:
+    file_extension: txt
+  common/dynamic_text:
+    file_extension: txt
+  common/economic_categories:
+    file_extension: txt
+  common/economic_plans:
+    file_extension: txt
+  common/edicts:
+    file_extension: txt
+  common/ethics:
+    file_extension: txt
+  common/event_chains:
+    file_extension: txt
+  common/fallen_empires:
+    file_extension: txt
+  common/federation_law_categories:
+    file_extension: txt
+  common/federation_laws:
+    file_extension: txt
+  common/federation_perks:
+    file_extension: txt
+  common/federation_types:
+    file_extension: txt
+  common/galactic_focuses:
+    file_extension: txt
+  common/game_rules:
+    file_extension: txt
+  common/global_ship_designs:
+    file_extension: txt
+  common/governments:
+    file_extension: txt
+    path_strict: true
+  common/governments/authorities:
+    file_extension: txt
+    path_strict: true
+  common/governments/civics:
+    file_extension: txt
+    path_strict: true
+  common/graphical_culture:
+    file_extension: txt
+  common/lawsuits:
+    file_extension: txt
+  common/leader_classes:
+    file_extension: txt
+  common/mandates:
+    file_extension: txt
+  common/map_modes:
+    file_extension: txt
+  common/megastructures:
+    file_extension: txt
+  common/name_lists:
+    file_extension: txt
+  common/notification_modifiers:
+    file_extension: txt
+  common/observation_station_missions:
+    file_extension: txt
+  common/on_actions:
+    file_extension: txt
+  common/opinion_modifiers:
+    file_extension: txt
+  common/personalities:
+    file_extension: txt
+  common/planet_classes:
+    file_extension: txt
+  common/planet_modifiers:
+    file_extension: txt
+  common/policies:
+    file_extension: txt
+  common/pop_categories:
+    file_extension: txt
+  common/pop_faction_types:
+    file_extension: txt
+  common/pop_jobs:
+    file_extension: txt
+  common/precursor_civilizations:
+    file_extension: txt
+  common/random_names:
+    file_extension: txt
+    path_strict: false
+  common/relics:
+    file_extension: txt
+  common/resolution_categories:
+    file_extension: txt
+  common/resolutions:
+    file_extension: txt
+  common/scripted_effects:
+    file_extension: txt
+  common/scripted_loc:
+    file_extension: txt
+  common/scripted_triggers:
+    file_extension: txt
+  common/scripted_variables:
+    file_extension: txt
+  common/section_templates:
+    file_extension: txt
+  common/sector_focuses:
+    file_extension: txt
+  common/sector_types:
+    file_extension: txt
+  common/ship_behaviors:
+    file_extension: txt
+  common/ship_sizes:
+    file_extension: txt
+  common/solar_system_initializers:
+    file_extension: txt
+  common/special_projects:
+    file_extension: txt
+  common/species_archetypes:
+    file_extension: txt
+  common/species_classes:
+    file_extension: txt
+  common/species_names:
+    file_extension: txt
+  common/species_rights:
+    file_extension: txt
+  common/star_classes:
+    file_extension: txt
+  common/starbase_buildings:
+    file_extension: txt
+  common/starbase_levels:
+    file_extension: txt
+  common/starbase_modules:
+    file_extension: txt
+  common/starbase_types:
+    file_extension: txt
+  common/start_screen_messages:
+    file_extension: txt
+  common/static_modifiers:
+    file_extension: txt
+  common/strategic_resources:
+    file_extension: txt
+  common/subjects:
+    file_extension: txt
+  common/system_types:
+    file_extension: txt
+  common/technology:
+    file_extension: txt
+    path_strict: true
+  common/technology/category:
+    file_extension: txt
+  common/technology/tier:
+    file_extension: txt
+  common/terraform:
+    file_extension: txt
+  common/trade_conversions:
+    file_extension: txt
+  common/tradition_categories:
+    file_extension: txt
+  common/traditions:
+    file_extension: txt
+  common/traits:
+    file_extension: txt
+  common/war_goals:
+    file_extension: txt
+  common:
+    file_names:
+    - achievements.txt
+    - alerts.txt
+    - message_types.txt
+  dlc:
+    file_extension: dlc
+    path_strict: false
+  dlc_metadata:
+    file_extension: txt
+    path_strict: true
+  dlc_metadata/dlc_recommendations:
+    file_extension: txt
+    path_strict: true
+  events:
+    file_extension: txt
+  flags:
+    file_extension: txt
+    path_strict: false
+  fonts:
+    file_extension: asset
+  gfx/advisorwindow:
+    file_extension: txt
+  gfx/lights:
+    file_extension: asset
+  gfx/models:
+    file_extensions: [ gfx, asset ]
+    path_strict: false
+  gfx/particles:
+    file_extensions: [ gfx, asset ]
+  gfx/pingmap:
+    file_extension: txt
+  gfx/portraits/asset_selectors:
+    file_extension: txt
+  gfx/portraits/portraits:
+    file_extension: txt
+  gfx/projectiles:
+    file_extension: txt
+    path_strict: true
+  gfx/projectiles/planet_destruction:
+    file_extension: txt
+    path_strict: false
+  gfx/shipview:
+    file_extension: txt
+  gfx/worldgfx:
+    file_extension: txt
+  interface:
+    file_extensions: [ gfx, gui ] # 不包括*.txt文件
+    path_strict: false
+  map/galaxy:
+    file_extension: txt
+  map/setup_scenarios:
+    file_extension: txt
+  music:
+    file_extensions: [ asset, txt ]
+  # pdx_launcher会被视为嵌套的库，如果不另外添加，则不解析
+  # pdx_online_assets会被视为嵌套的库，如果不另外添加，则不解析
+  prescripted_countries:
+    file_extension: txt
+  previewer_assets/assetviewer_interface:
+    file_extensions: [ gfx, gui ]
+    path_strict: true
+  sound:
+    file_extension: asset
+    path_strict: false
+  sound/advisor_voice_types:
+    file_extension: txt
+  tools:
+    file_name: pdxexporter.settings
+  # tweakergui_assets会被视为嵌套的库，如果不另外添加，则不解析

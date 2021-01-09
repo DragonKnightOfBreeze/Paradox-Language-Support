@@ -1,0 +1,75 @@
+types = {
+	type[diplo_phrase] = {
+		path = "game/common/diplo_phrases"
+
+ #       name_from_file = yes
+        type_per_file = yes
+
+		## type_key_filter = greetings
+		subtype[greetings] = {
+		}
+
+		## type_key_filter = action_offer_trade_deal
+		subtype[trade_offer] = {
+		}
+
+		## type_key_filter = action_declare_war
+		subtype[declare_war] = {
+		}
+	}
+}
+
+#the types and stuff aren't important as they aren't referred to elsewhere, I am just making sure it validates the triggers and stuff
+
+#TODO: scalar = { should be localisation = {
+
+#TODO: find out whether opinion does anything
+
+#TODO Confirm
+#TODO Document
+diplo_phrase = {
+	## cardinality = 0..1
+	greetings = {
+		## cardinality = 0..inf
+		localisation = {
+			## replace_scope = { root = country this = country from = country }
+			trigger = { alias_name[trigger] = alias_match_left[trigger] }
+			## cardinality = 0..1
+			weight = {
+				weight = float
+			}
+		}
+	}
+	## cardinality = 0..inf
+	<diplomatic_action> = {
+		enum[diplo_phrase_types] = {
+			## cardinality = 0..inf
+			localisation = {
+				## replace_scope = { root = country this = country from = country }
+				trigger = { alias_name[trigger] = alias_match_left[trigger] }
+				## cardinality = 0..1
+				weight = {
+					weight = float
+				}
+				## cardinality = 0..1
+				###Only with action_offer_trade_deal
+				only_for_trade = yes
+				## cardinality = 0..1
+				###Only with action_offer_trade_deal
+				only_for_gift = yes
+			}
+		}
+	}
+}
+
+enums = {
+	enum[diplo_phrase_types] = {
+		select
+		consider
+		propose
+		accept
+		refuse
+		propose_vote
+		opinion
+	}
+}

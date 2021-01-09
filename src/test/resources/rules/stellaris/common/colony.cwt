@@ -1,0 +1,68 @@
+types = {
+	type[colony_type] = {
+		path = "game/common/colony_type"
+		localisation = {
+			## required
+			Name = "$"
+			## required
+			Description = "$_desc"
+		}
+	}
+	type[colony_automation] = {
+		path = "game/common/colony_automation"
+		path_strict = yes
+	}
+	type[colony_automation_exception] = {
+		path = "game/common/colony_automation_exception"
+	}
+}
+
+## push_scope = planet
+colony_automation = {
+	available = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	prio_districts = {
+		## cardinality = 0..inf
+		<district>
+	}
+
+	buildings = {
+		## cardinality = 1..16
+		int[1..16] = {
+			## cardinality = 1..inf
+			building = <building>
+			## cardinality = 1..inf
+			available = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+
+		}
+	}
+
+}
+
+colony_type = {
+	icon = int
+
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { this = planet root = planet }
+	planet_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	## replace_scope = { this = planet root = planet }
+	alias_name[triggered_planet_modifier] = alias_match_left[triggered_planet_modifier]
+	
+	weight_modifier = {
+		## cardinality = 0..1
+		base = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+}

@@ -1,0 +1,58 @@
+definitions: 
+  type:
+    type: object
+    properties: 
+      path:
+        type: string
+      path_strict:
+        type: boolean
+      name_from_file:
+        type: boolean
+      type_per_file:
+        type: boolean
+        default: false
+      file_name:
+        type: string
+      file_extension:
+        type: string
+      skip_root_key:
+        type: string
+      key_filter:
+        type: string
+      predicate:
+        type: object
+      name_key:
+        type: string
+      name_prefix: 
+        type: string
+      localisation:
+        type: object
+        additionalProperties: 
+          type: string
+      push_scope:
+        type: string
+      replace_scopes:
+        type: object
+        additionalProperties: 
+          type: string
+      graph_related_types:
+        type: array
+        additionalItems: 
+          type: string
+      severity:
+        type: string
+      subtypes:
+        type: object
+        additionalProperties: 
+          $ref: "#/definitions/type"
+      from_version:
+        type: string
+        enum: [2.6, 2.7, 2.8]
+    additionalProperties: false
+
+type: object
+properties: 
+  types:
+    additionalProperties: 
+      $ref: "#/definitions/type"
+additionalProperties: false

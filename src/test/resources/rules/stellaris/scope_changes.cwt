@@ -1,0 +1,1496 @@
+
+enums = {
+	enum[basic_scopes] = {
+		country
+		pop
+		planet
+		pop_faction
+		system
+		leader
+		sector
+		star
+		galactic_object
+		species
+		ambient_object
+		fleet
+		ship
+		war
+		army
+		federation
+	}
+}
+
+
+alias[trigger:scope_field] = { alias_name[trigger] = alias_match_left[trigger] }
+
+###An inverted trigger, functionally the same as NOR
+alias[trigger:NOT] = {
+	## cardinality = 1..1
+	alias_name[trigger] = alias_match_left[trigger]
+}
+###An inverted OR trigger
+alias[trigger:NOR] = { alias_name[trigger] = alias_match_left[trigger] }
+###An inverted AND trigger
+alias[trigger:NAND] = { alias_name[trigger] = alias_match_left[trigger] }
+###all inside trigger must be true
+alias[trigger:AND] = { alias_name[trigger] = alias_match_left[trigger] }
+###At least one entry inside the trigger must be true
+alias[trigger:OR] = { alias_name[trigger] = alias_match_left[trigger] }
+
+# alias[trigger:hidden_trigger] = { alias_name[trigger] = alias_match_left[trigger] }
+
+
+## push_scope = country
+###Checks if the planet's observation post's owner meets the specified criteria
+alias[trigger:observation_outpost_owner] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = fleet
+###Checks if the planet's observation post meets the specified criteria
+alias[trigger:observation_outpost] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+###Checks if any playable country meet the specified criteria
+alias[trigger:any_playable_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = fleet
+###Checks if any of the country's owned fleets meet the specified criteria
+alias[trigger:any_owned_fleet] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = fleet
+###Checks if the planet's orbital station meets the specified criteria
+alias[trigger:any_orbital_station] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = planet
+###Checks if any planets within the country's borders meet the specified criteria
+alias[trigger:any_planet_within_border] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = ship
+###Checks if any of the country's ships meet the specified criteria
+alias[trigger:any_owned_ship] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = ship
+###Checks if any ships in the game meet the specified criteria
+alias[trigger:any_ship] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = planet
+###Checks if any of the planet's moons meet the specified criteria
+alias[trigger:any_moon] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = war
+###Checks if any wars meet the specified criteria
+alias[trigger:any_war] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Checks if any of the defenders in the war meet the specified criteria
+alias[trigger:any_defender] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Checks if any attackers in the war meet the specified criteria
+alias[trigger:any_attacker] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = planet
+###Checks if any planet ANYWHERE meets the specified criteria
+alias[trigger:any_planet] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = planet
+###Checks if any planet in the system meets the specified criteria
+alias[trigger:any_system_planet] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = planet
+###Checks if any of the country's owned planets meet the specified criteria
+alias[trigger:any_owned_planet] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = planet
+###Checks if any of the country's controlled planets meet the specified criteria
+alias[trigger:any_controlled_planet] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Iterate through all countries
+alias[trigger:any_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = pop
+###Checks if any of the planet/species/pop faction pops meet the specified criteria
+alias[trigger:any_pop] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = fleet
+###Checks if any fleet in orbit of the planet meet the specified criteria
+alias[trigger:any_fleet_in_orbit] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = fleet
+###Checks if the planet's orbital research station meets the specified criteria
+alias[trigger:any_research_station] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = fleet
+###Checks if the planet's orbital mining station meets the specified criteria
+alias[trigger:any_mining_station] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = system
+###Iterate through all rim systems
+alias[trigger:any_rim_system] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = ship
+###Checks if any ships in the system meet the specified criteria
+alias[trigger:any_ship_in_system] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = leader
+###Checks if any of the country's leaders meet the specified criteria
+alias[trigger:any_owned_leader] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = pop
+###Iterate through all owned pops
+alias[trigger:any_owned_pop] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = sector
+###Iterate through all sectors
+alias[trigger:any_sector] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = sector
+###Iterate through every owned sector
+alias[trigger:any_owned_sector] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = ambient_object
+###Checks if any ambient objects in the game meet the specified criteria
+alias[trigger:any_ambient_object] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = ambient_object
+###Checks if any ambient objects in the system meet the specified criteria
+alias[trigger:any_system_ambient_object] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Iterate through all bordering countries of a system
+alias[trigger:any_bordering_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Checks if any members of the alliance meet the specified criteria
+alias[trigger:any_member] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = system
+###Checks if any of the system's neighboring systems meet the specified criteria
+alias[trigger:any_neighbor_system] = {
+	## cardinality = 0..1
+	ignore_hyperlanes = bool
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Checks if any of the country's subject states meet the specified criteria
+alias[trigger:any_subject] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Iterate through all relations
+alias[trigger:any_relation] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = army
+###Iterate through each army that is owned by the country
+alias[trigger:any_owned_army] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = army
+###Iterate through each defending army on a planet
+alias[trigger:any_planet_army] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Iterate through all neighbor countries
+alias[trigger:any_neighbor_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = fleet
+###Iterate through each fleet this fleet is in combat with
+alias[trigger:any_combatant_fleet] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = leader
+###Iterate through each leader that is recruitable for the country
+alias[trigger:any_pool_leader] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure
+alias[trigger:any_megastructure] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = megastructure
+###Iterate through each owned megastructure
+alias[trigger:any_owned_megastructure] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure in system
+alias[trigger:any_system_megastructure] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = species
+###Iterate through each species of a country's owned pops
+alias[trigger:any_owned_pop_species] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = starbase
+###Iterate through every owned starbase
+alias[trigger:any_owned_starbase] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = system
+###Iterate through all systems
+alias[trigger:any_system] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = system
+###Iterate through all systems within the country's borders
+alias[trigger:any_system_within_border] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = country
+###Iterate through all war participants
+alias[trigger:any_war_participant] = {
+	alias_name[trigger] = alias_match_left[trigger]
+	##cardinality = 0..1
+	count = int
+}
+
+## push_scope = system
+###Checks if any close-by systems meet the criteria. Conditions in trigger = { } filters the systems within the min/max steps limits. If no system meets the condition, the trigger will return as false. Conditions outside of the trigger = { } will check whether these conditions are true for *the closest* system for which the trigger conditions and min_steps conditions.
+alias[trigger:closest_system] = {
+	##cardinality = 0..1
+	min_steps = int
+	##cardinality = 0..1
+	max_steps = int
+
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+
+# Effect Scopes
+
+alias[effect:scope_field] = { alias_name[effect] = alias_match_left[effect] }
+
+## push_scope = leader
+### Executes enclosed effects on a random leader owned by scoped country that meets the limit criteria
+alias[effect:every_owned_leader] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = leader
+###Executes enclosed effects on a random leader owned by scoped country that meets the limit criteria
+alias[effect:random_owned_leader] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = leader
+###Iterate through each leader that is recruitable for the country
+alias[effect:every_pool_leader] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = leader
+###Iterate through each leader that is recruitable for the country
+alias[effect:random_owned_leader] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+	}
+}
+
+## push_scope = country
+###Iterate through all war participants
+alias[effect:every_war_participant] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through all war participants
+alias[effect:random_war_participant] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = army
+###Iterate through each army that is owned by the country
+alias[effect:every_owned_army] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = army
+###Iterate through each army that is owned by the country
+alias[effect:random_owned_army] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = system
+###Iterate through all systems within the country's borders
+alias[effect:every_system_within_border] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Iterate through all systems within the country's borders
+alias[effect:random_system_within_border] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = starbase
+###Iterate through every owned starbase
+alias[effect:every_owned_starbase] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = starbase
+###Iterate through every owned starbase
+alias[effect:random_owned_starbase] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = pop_faction
+###Executes enclosed effects on every pop faction within the scoped country that meets the limit criteria
+alias[effect:every_pop_faction] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = pop_faction
+###Executes enclosed effects on a random pop faction within the scoped country that meets the limit criteria
+alias[effect:random_pop_faction] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = pop
+###Iterate through all owned pops
+alias[effect:every_owned_pop] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = pop
+###Iterate through all owned pops
+alias[effect:random_owned_pop] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = pop
+###Executes enclosed effects for every pop in the game that meet the limit criteria
+alias[effect:every_galaxy_pop] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = pop
+###Executes enclosed effects on a random pop that meets the limit criteria
+alias[effect:random_pop] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = country
+###Iterate through all relations
+alias[effect:every_relation] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through all relations
+alias[effect:random_relation] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = country
+###Iterate through all countries
+alias[effect:every_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through all countries
+alias[effect:random_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = planet
+###Executes enclosed effects on every planet -owned by the scoped country- that meet the limit criteria
+alias[effect:every_owned_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on a planet -owned by the scoped country- that meets the limit criteria
+alias[effect:random_owned_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = country
+###switches Scope to and goes through all playable countries
+alias[effect:every_playable_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Scopes to a random playable country
+alias[effect:random_playable_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = system
+###Executes enclosed effects on every system in the cluster that meet the limit criteria
+alias[effect:every_system_in_cluster] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Checks if the planet's observation post's owner meets the specified criteria
+alias[effect:observation_outpost_owner] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Checks if the planet's observation post meets the specified criteria
+alias[effect:observation_outpost] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on every planet within the scoped country's borders that meet the limit criteria
+alias[effect:every_planet_within_border] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on a random planet within the scoped country's borders that meets the limit criteria
+alias[effect:random_planet_within_border] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = fleet
+alias[effect:every_mining_station] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Executes enclosed effects on a random orbital mining station that meets the limit criteria
+alias[effect:random_mining_station] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = fleet
+###Executes enclosed effects on every orbital mining station in the game that meets the limit criteria
+alias[effect:every_research_station] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Executes enclosed effects on a random orbital research station that meets the limit criteria
+alias[effect:random_research_station] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = country
+###switches Scope to and goes through all Subjects
+alias[effect:every_subject] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Scopes to a random Subject
+alias[effect:random_subject] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = fleet
+###Executes enclosed effects on every fleet owned by the scoped country that meets the limit criteria
+alias[effect:every_owned_fleet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Executes enclosed effects on a random fleet owned by the scoped country that meets the limit criteria
+alias[effect:random_owned_fleet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = country
+###Iterate through all neighbor countries
+alias[effect:every_neighbor_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through all neighbor countries
+alias[effect:random_neighbor_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = system
+###Executes enclosed effects on every one of the scoped system's neighboring systems that meet the limit criteria
+alias[effect:every_neighbor_system] = {
+	##cardinality = 0..1
+	ignore_hyperlanes = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Executes enclosed effects on a random system neigboring the scoped system that meets the limit criteria
+alias[effect:random_neighbor_system] = {
+	##cardinality = 0..1
+	ignore_hyperlanes = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = fleet
+###Executes enclosed effects on every fleet in the scoped system that meets the limit criteria
+alias[effect:every_fleet_in_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Executes enclosed effects on a random fleet in the scoped system that meets the limit criteria
+alias[effect:random_fleet_in_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = ambient_object
+###Executes enclosed effects on a random ambient object in the game that meets the limit criteria
+alias[effect:random_ambient_object] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = ambient_object
+###Executes enclosed effects on a random ambient object in the scoped system that meets the limit criteria
+alias[effect:random_system_ambient_object] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = ambient_object
+###Executes enclosed effects on every ambient object in the game that meets the limit criteria
+alias[effect:every_ambient_object] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = ambient_object
+###Executes enclosed effects on every ambient object in the scoped system that meets the limit criteria
+alias[effect:every_system_ambient_object] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = sector
+###Iterate through all sectors
+alias[effect:random_sector] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = sector
+###Iterate through every owned sector
+alias[effect:random_owned_sector] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = sector
+###Iterate through all sectors
+alias[effect:every_sector] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = sector
+###Iterate through every owned sector
+alias[effect:every_owned_sector] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Iterate through all rim systems
+alias[effect:every_rim_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Iterate through all rim systems
+alias[effect:random_rim_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = planet
+###Executes enclosed effects on a random moon that meets the limit criteria
+alias[effect:random_moon] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = planet
+###Executes enclosed effects on every moon that meets the limit criteria
+alias[effect:every_moon] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on every planet within the scoped system that meets the limit criteria
+alias[effect:every_system_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on a random planet within the scoped system that meets the limit criteria
+alias[effect:random_system_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = ship
+###Executes enclosed effects for every ship in the game that meet the limit criteria
+alias[effect:every_ship] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects for every planet in the game that meet the limit criteria
+alias[effect:every_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on a random planet that meets the limit criteria
+alias[effect:random_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = ship
+###Executes enclosed effects on every ship -owned by the scoped country- that meet the limit criteria
+alias[effect:every_owned_ship] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = ship
+###Executes enclosed effects on a random ship -owned by the scoped country/fleet- that meets the limit criteria
+alias[effect:random_owned_ship] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = planet
+###Executes enclosed effects on every planet -controlled by the scoped country- that meet the limit criteria
+alias[effect:every_controlled_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on a random planet -controlled by the scoped country- that meets the limit criteria
+alias[effect:random_controlled_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+
+## push_scope = system
+###Runs an effect on the nearest system that meets the criteria
+alias[effect:closest_system] = {
+	##cardinality = 0..1
+	min_steps = int
+	##cardinality = 0..1
+	max_steps = int
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## push_scope = country
+###Executes enclosed effects on every defender that meets the limit criteria in the scoped country's war with a specific enemy
+alias[effect:every_war_defender] = {
+	enemy = scope[country]
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Executes enclosed effects on a random defender that meets the limit criteria in the scoped country's war with a specific enemy
+alias[effect:random_war_defender] = {
+	enemy = scope[country]
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = country
+###Executes enclosed effects on every attacker that meets the limit criteria in the scoped country's war with a specific enemy
+alias[effect:every_war_attacker] = {
+	enemy = scope[country]
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## push_scope = country
+###Executes enclosed effects on a random attacker that meets the limit criteria in the scoped country's war with a specific enemy
+alias[effect:random_war_attacker] = {
+	enemy = scope[country]
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure
+alias[effect:random_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure
+alias[effect:every_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = megastructure
+###Iterate through each owned megastructure
+alias[effect:random_owned_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+	}
+}
+
+## push_scope = megastructure
+###Iterate through each owned megastructure
+alias[effect:every_owned_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure in system
+alias[effect:random_system_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+
+	}
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure in system
+alias[effect:every_system_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## push_scope = system
+###Iterate through all systems
+alias[effect:random_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+	}
+}
+
+## push_scope = system
+###Iterate through all systems
+alias[effect:every_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+### Iterate through all bordering countries of a system
+alias[effect:every_bordering_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+### Iterate through each fleet this fleet is in combat with
+alias[effect:every_combatant_fleet] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = species
+### Iterate through each species of a country's owned pops
+alias[effect:every_owned_pop_species] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = army
+### Iterate through each defending army on a planet
+alias[effect:every_planet_army] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+### Iterate through all bordering countries of a system
+alias[effect:random_bordering_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+### Iterate through each fleet this fleet is in combat with
+alias[effect:random_combatant_fleet] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = species
+### Iterate through each species of a country's owned pops
+alias[effect:random_owned_pop_species] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = army
+### Iterate through each defending army on a planet
+alias[effect:random_planet_army] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = leader
+### Iterate through each leader that is recruitable for the country
+alias[effect:random_pool_leader] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+#2.2
+
+## scope = planet
+## push_scope = deposit
+###Checks if any deposits on the planet meet the criteria
+alias[trigger:any_deposit] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = planet
+## push_scope = deposit
+###Executes on every deposit on planet
+alias[effect:every_deposit] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = planet
+## push_scope = deposit
+###Executes enclosed effects on a random deposit on the scoped planet that meets the limit criteria
+alias[effect:random_deposit] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		base = float
+		## cardinality = 0..inf
+		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+	}
+}

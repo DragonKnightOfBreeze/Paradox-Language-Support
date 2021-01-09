@@ -1,0 +1,28 @@
+definitions:
+  type:
+    type: object
+    properties:
+      path:
+        type: string
+      path_strict:
+        type: boolean
+      file_name:
+        type: string
+      file_names:
+        type: array
+        items: 
+          type: string
+      file_extension:
+        type: string
+      file_extensions:
+        type: array
+        items: 
+          type: string
+    additionalProperties: false
+
+type: object
+properties:
+  locations:
+    additionalProperties:
+      $ref: "#/definitions/type"
+

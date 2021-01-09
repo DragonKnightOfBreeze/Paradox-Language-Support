@@ -1,0 +1,174 @@
+
+enums = {
+	enum[leader_classes] = {
+		ruler
+		scientist
+		admiral
+		governor
+		general
+		envoy
+	}
+	enum[leader_classes_no_ruler] = {
+		scientist
+		admiral
+		governor
+		general
+	}
+	enum[days_months_years] = {
+		days
+		months
+		years
+	}
+	enum[weight_or_base] = {
+		weight
+		base
+	}
+	enum[weight_or_factor] = {
+		weight
+		factor
+	}
+	enum[relative_power_categories] = {
+		all
+		fleet
+		technology
+		economy
+	}
+	enum[relative_power_values] = {
+		pathetic
+		inferior
+		equivalent
+		superior
+		overwhelming
+	}
+	enum[research_areas] = {
+		physics
+		engineering
+		society
+	}
+	enum[genders] = {
+		female
+		male
+		indeterminable
+	}
+	enum[hyperlane_euclidean] = {
+		hyperlane
+		euclidean
+	}
+	enum[election_types] = {
+		none
+		democratic
+		oligarchic
+	}
+	enum[war_sides] = {
+		attackers
+		defenders
+	}
+	enum[scope_type_tokens] = {
+		none
+		megastructure
+		planet
+		country
+		ship
+		pop
+		fleet
+		galactic_object
+		leader
+		army
+		ambient_object
+		species
+		design
+		pop_faction
+		war
+		federation
+		starbase
+		deposit
+		sector
+		no_scope
+		archaeological_site
+		first_contact
+		spy_network
+		espionage_operation
+	}
+	enum[intel_level] = {
+		none
+		low
+		medium
+		high
+		full
+	}
+	enum[construction_type] = {
+		starbase
+		mining_station
+		research_station
+		observation_post
+	}
+	enum[tutorial_levels] = {
+		0
+		1
+		2
+		full
+		medium
+		none
+	}
+	enum[fleet_stance] = {
+		aggressive
+		passive
+		evasive
+	}
+	enum[action_types] = {
+		positive
+		negative
+		aggressive
+		neutral
+	}
+	enum[fleet_orders] = {
+		move_to_system_point_order
+		orbit_planet_order
+		build_orbital_station_order
+		build_space_station_order
+		colonize_planet_order
+		survey_planet_order
+		research_discovery_order
+		research_anomaly_order
+		collect_data_fleet_order
+		upgrade_design_at_starbase_fleet_order
+		upgrade_design_at_orbitable_fleet_order
+		return_fleet_order
+		repair_fleet_order
+		evade_hostiles_order
+		follow_order
+		assist_research_order
+		land_armies_order
+		merge_fleet_order
+		aggressive_stance_fleet_order
+		auto_explore_order
+		auto_patrol_order
+		build_megastructure_fleet_order
+		destroy_planet_order
+		planet_killer_weapon_windup_order
+		planet_killer_weapon_fire_order
+		explore_bypass_order
+		use_bypass_order
+		jumpdrive_order
+		jumpdrive_windup
+		experimental_subspace_navigation_fleet_order
+		excavate_archaeological_site_fleet_order
+	}
+	enum[galaxy_setup_values] = {
+		num_empires
+		num_advanced_empires
+		num_fallen_empires
+		num_marauder_empires
+		mid_game_year
+		end_game_year
+		victory_year
+		num_guaranteed_colonies
+		num_gateways
+		num_wormhole_pairs
+		num_hyperlanes
+		habitable_worlds_scale
+		primitive_worlds_scale
+		crisis_strength_scale
+		tech_costs_scale
+	}
+}
