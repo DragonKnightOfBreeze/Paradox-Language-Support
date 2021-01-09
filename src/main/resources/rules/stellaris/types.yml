@@ -637,17 +637,22 @@ types:
   scripted_effect:
     path: "common/scripted_effects"
   
-  # TODO 绑定到
+  # bind to: localisationCommandKey
   scripted_loc:
     path: "common/scripted_loc"
     key_filter: "define_text"
     name_key: name
-      
+
+  # TODO subtypes
+  # TODO scopes from comment (root/this = xxx, xxx xx)
   scripted_trigger:
     path: "common/scripted_triggers"
 
+  # skip path: common/scripted_variables
+
   section_template:
     path: "common/section_templates"
+    key_filter: "ship_section_template"
     name_key: "key"
     subtypes:
       needs_locs:

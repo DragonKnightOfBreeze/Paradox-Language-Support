@@ -1,5 +1,6 @@
 package com.windea.plugin.idea.paradox.localisation.psi;
 
+import com.intellij.lexer.*;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
@@ -248,7 +249,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "£" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
   "%" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_SERIAL_NUMBER_START);}
-  "[" { codeLocation=0; yybegin(WAITING_COMMAND_KEY); return COMMAND_START;}
+  "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;}
   "§" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {depth--; yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}

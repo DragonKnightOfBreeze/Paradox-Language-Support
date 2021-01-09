@@ -44,7 +44,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
 
-	override fun getIcon() = paradoxScriptFileIcon
+	override fun getIcon() = scriptFileIcon
 
 	override fun getAttributeDescriptors() = attributesDescriptors
 
