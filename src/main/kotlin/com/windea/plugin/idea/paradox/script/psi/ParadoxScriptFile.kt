@@ -20,6 +20,4 @@ class ParadoxScriptFile(
 	val properties get() =  rootBlock?.propertyList?:listOf()
 
 	val values get() = rootBlock?.valueList?:listOf()
-	
-	val fileInfo = getFileInfo(this)
 }

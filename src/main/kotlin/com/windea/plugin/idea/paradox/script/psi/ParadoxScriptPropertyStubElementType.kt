@@ -19,21 +19,13 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	"PARADOX_SCRIPT_PROPERTY",
 	ParadoxScriptLanguage
 ) {
-	override fun shouldCreateStub(node: ASTNode?): Boolean {
-		//不确定这里是否需要预先过滤，这里的索引依赖于文件信息
-		return node != null && (node.treeParent.elementType == ROOT_BLOCK || node.paradoxDefinitionInfoNoCheck != null)
-		//return node != null && node.paradoxDefinitionInfoNoCheck != null
-		//return node != null
-	}
-	
 	override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
 		return ParadoxScriptPropertyImpl(stub, this)
 	}
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		//这里使用scriptProperty.paradoxDefinitionInfo.name而非scriptProperty.name
-		//暂时的策略：尝试得到真正的name，如果找不到但是是rootProperty，那么以psi.name为准（虽然不一定准确）
-		val usedName = psi.paradoxDefinitionInfoNoCheck?.name?: if(psi.parent is ParadoxScriptRootBlock) psi.name else "@"
+		val usedName = psi.paradoxDefinitionInfoNoCheck?.name?: "@"
 		return ParadoxScriptPropertyStubImpl(parentStub, usedName)
 	}
 	
@@ -59,11 +51,11 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		sink.occurrence(ParadoxScriptPropertyKeyIndex.key, stub.key)
 	}
 	
-	companion object {
-		fun intern(table: CharTable, node: LighterASTNode?): String {
-			return table.intern((node as LighterASTTokenNode).text).toString()
-		}
-	}
+	//companion object {
+	//	fun intern(table: CharTable, node: LighterASTNode?): String {
+	//		return table.intern((node as LighterASTTokenNode).text).toString()
+	//	}
+	//}
 }
 
 

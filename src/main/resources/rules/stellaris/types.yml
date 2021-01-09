@@ -22,12 +22,12 @@ types:
       selectable:
         predicate:
           selectable: true
-          
+
   anomaly_category:
     path: "common/anomalies"
     localisation:
       name!: $
-      description!: .desc 
+      description!: .desc
     graph_related_types:
     - "event"
     - "special_project"
@@ -51,7 +51,7 @@ types:
       occupation_army:
         predicate:
           occupation: true
-          
+
   artifact_action:
     path: "common/artifact_actions"
     name_prefix: "artifact_"
@@ -96,7 +96,7 @@ types:
 
   button_effect:
     path: "common/button_effects"
-    replace_scopes: 
+    replace_scopes:
       this: selected_object | player_country
       from: player_country
 
@@ -149,12 +149,13 @@ types:
       required_component:
         predicate:
           required_component_set: true
-  
+
   component_slot_template:
     path: "common/component_slot_templates"
 
   component_tags:
     path: "common/component_tags"
+    name_from_file: true
 
   component_template:
     path: "common/component_templates"
@@ -335,9 +336,23 @@ types:
       name!: $
       description!: $_desc
 
+  define:
+    path: "common/defines"
+
+  deposit_category:
+    path: "common/deposit_categories"
+    subtypes:
+      blocker:
+        predicate:
+          blocker: true
+      import:
+        predicate:
+          important: true
+
   deposit:
     path: "common/deposits"
-    path_strict: true
+    # path_strict: true
+    name_prefix: "d_"
     localisation:
       name!: $
       description!: $_desc
@@ -351,20 +366,20 @@ types:
       blocker:
         predicate:
           category: $deplosit_category.blocker
+      important:
+        predicate:
+          category: $deposit_category.important
       null:
         predicate:
           is_null: true
-      not_dropped:
-        predicate:
-          potential:
-            always: false
 
-  deposit_category:
-    path: "common/deposit_categories"
+  diplo_phrase: # TODO
+    path: "common/diplo_phrases"
+    name_from_file: true
+    type_per_file: true
     subtypes:
-      blocker:
-        predicate:
-          blocker: true
+      greetings:
+        key_filter: "greetings"
 
   diplomatic_action:
     path: "common/diplomatic_actions"
@@ -374,18 +389,6 @@ types:
       long_description?: $_LONG_DESC
       type?: $_TYPE
       type_description?: $_TYPE_DESC
-
-  diplo_phrase:
-    path: "common/diplo_phrases"
-    name_from_file: true
-    type_per_file: true
-    subtypes:
-      greetings:
-        key_filter: "greetings"
-      trade_offer:
-        key_filter: "action_offer_trade_deal"
-      declare_war:
-        key_filter: "action_declare_war"
 
   district:
     path: "common/districts"

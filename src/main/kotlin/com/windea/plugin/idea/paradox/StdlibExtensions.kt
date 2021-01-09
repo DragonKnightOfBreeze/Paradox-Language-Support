@@ -157,7 +157,7 @@ fun <C: CharSequence> C.ifNotEmpty(block: (C) -> Unit) {
 }
 
 /**
- * 判断当前路径是否匹配另一个路径（是另一个路径的父路径）。
+ * 判断当前路径是否匹配另一个路径（等于或者是另一个路径的父路径）。
  */
 infix fun String.matchesPath(other: String): Boolean {
 	if(this == other) return true

@@ -55,7 +55,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				definitionInfo.let { (name, type, _, localisation) ->
 					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
 					for((k, v) in localisation) {
-						append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#",v).append("</b>")
+						append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#", v).append("</b>")
 					}
 				}
 			}

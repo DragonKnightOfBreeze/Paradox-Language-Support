@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="locations">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="locations" />
+              <option name="relativePathToSchema" value="src/main/resources/schemas/locations.yml" />
+              <option name="schemaVersion" value="JSON Schema version 7" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="src/main/resources/rules/stellaris/locations.yml" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="types">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="types" />
+              <option name="relativePathToSchema" value="src/main/resources/schemas/types.yml" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="src/main/resources/rules/stellaris/types.yml" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>

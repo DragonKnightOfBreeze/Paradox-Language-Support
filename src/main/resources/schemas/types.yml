@@ -8,6 +8,7 @@ definitions:
         type: boolean
       name_from_file:
         type: boolean
+        default: false
       type_per_file:
         type: boolean
         default: false

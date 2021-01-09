@@ -1,15 +1,12 @@
 package com.windea.plugin.idea.paradox
 
-import com.intellij.lang.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
-import com.windea.plugin.idea.paradox.localisation.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
-import com.windea.plugin.idea.paradox.script.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 import com.windea.plugin.idea.paradox.util.*
@@ -53,15 +50,9 @@ fun isPreviousComment(element: PsiElement): Boolean {
 //Keys
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
-val paradoxFileTypeKey = Key<ParadoxFileType>("paradoxFileType")
-val paradoxRootTypeKey = Key<ParadoxRootType>("paradoxRootType")
-val paradoxGameTypeKey = Key<ParadoxGameType>("paradoxGameType")
 val paradoxPathKey = Key<ParadoxPath>("paradoxPath")
 val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
-val cachedParadoxFileTypeKey = Key<CachedValue<ParadoxFileType>>("cachedParadoxFileType")
-val cachedParadoxRootTypeKey = Key<CachedValue<ParadoxRootType>>("cachedParadoxRootType")
-val cachedParadoxGameTypeKey = Key<CachedValue<ParadoxGameType>>("cachedParadoxGameTypeKey")
 val cachedParadoxPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxPath")
 val cachedParadoxScriptPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxScriptPath")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
@@ -74,25 +65,19 @@ val ruleGroups = ParadoxRuleGroupProvider.getRuleGroups()
 
 val VirtualFile.paradoxFileInfo:ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 
-val PsiElement.paradoxFileInfo:ParadoxFileInfo? get() = getFileInfo(this)
+val PsiFile.paradoxFileInfo:ParadoxFileInfo? get() = getFileInfo(this)
 
-val ASTNode.paradoxFileInfo:ParadoxFileInfo? get() = getFileInfo(psi)
+val PsiElement.paradoxFileInfo:ParadoxFileInfo? get() = getFileInfo(this.containingFile)
 
-//element->element.containingFile->element.containingFile.virtualFile->tryResolve
-internal fun  getFileInfo(element: PsiElement): ParadoxFileInfo? {
-	//检查语言，预先过滤
-	//if(element.language != ParadoxScriptLanguage && element.language != ParadoxLocalisationLanguage) return null
-	val fastFileInfo = element.getUserData(paradoxFileInfoKey)
-	if(fastFileInfo != null) return fastFileInfo
-	if(element is PsiFile) return getFileInfoFromFile(element)
-	return CachedValuesManager.getCachedValue(element, cachedParadoxFileInfoKey) {
-		val file = element.containingFile
-		val value = getFileInfoFromFile(file) 
-		CachedValueProvider.Result.create(value, element,file) 
-	}
+internal fun canGetFileInfo(file:PsiFile):Boolean{
+	return file is ParadoxScriptFile || file is ParadoxLocalisationFile
 }
 
-private fun getFileInfoFromFile(file:PsiFile):ParadoxFileInfo?{
+private fun  getFileInfo(file: PsiFile): ParadoxFileInfo? {
+	if(!canGetFileInfo(file)) return null
+	//尝试基于fileViewProvider得到fileInfo
+	val quickFileInfo = file.getUserData(paradoxFileInfoKey)
+	if(quickFileInfo != null) return quickFileInfo
 	return CachedValuesManager.getCachedValue(file, cachedParadoxFileInfoKey) {
 		val value = file.virtualFile?.getUserData(paradoxFileInfoKey) ?: resolveFileInfo(file)
 		CachedValueProvider.Result.create(value, file)
@@ -109,9 +94,7 @@ private fun resolveFileInfo(file:PsiFile):ParadoxFileInfo?{
 		if(rootType != null) {
 			val path = getPath(subPaths)
 			val gameType = getGameType()
-			val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
-			file.putUserData(paradoxFileInfoKey,fileInfo)
-			return file.getUserData(paradoxFileInfoKey)
+			return ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
 		}
 		subPaths.add(0, currentFile.name)
 		currentFile = currentFile.parent
@@ -153,13 +136,14 @@ private fun getGameType(): ParadoxGameType {
 	return ParadoxGameType.Stellaris //TODO
 }
 
-val PsiElement.paradoxScriptPath: ParadoxPath? get() = getScriptedPath(this)
+val PsiElement.paradoxScriptPath: ParadoxPath? get() = getScriptPath(this)
 
-private fun getScriptedPath(element: PsiElement): ParadoxPath? {
-	return getCachedScriptPath(element)
+internal fun canGetScriptPath(element:PsiElement):Boolean{
+	return element is ParadoxScriptProperty || element is ParadoxScriptValue
 }
 
-private fun getCachedScriptPath(element: PsiElement): ParadoxPath? {
+private fun getScriptPath(element: PsiElement): ParadoxPath? {
+	if(!canGetScriptPath(element)) return null
 	return CachedValuesManager.getCachedValue(element, cachedParadoxScriptPathKey) {
 		CachedValueProvider.Result.create(resolveScriptPath(element), element)
 	}
@@ -195,12 +179,6 @@ val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = 
 
 val ParadoxScriptProperty.paradoxDefinitionInfoNoCheck: ParadoxDefinitionInfo? get() = getDefinitionInfo(this, false)
 
-internal fun canGetDefinitionInfo(node: ASTNode): Boolean {
-	//最低到2级scriptProperty
-	val parent = node.treeParent
-	return parent?.elementType == ROOT_BLOCK || parent?.treeParent?.treeParent?.treeParent?.elementType == ROOT_BLOCK
-}
-
 internal fun canGetDefinitionInfo(element: ParadoxScriptProperty): Boolean {
 	//最低到2级scriptProperty
 	val parent = element.parent
@@ -209,10 +187,6 @@ internal fun canGetDefinitionInfo(element: ParadoxScriptProperty): Boolean {
 
 private fun getDefinitionInfo(element: ParadoxScriptProperty, check: Boolean = true): ParadoxDefinitionInfo? {
 	if(check && !canGetDefinitionInfo(element)) return null
-	return getCachedDefinitionInfo(element)
-}
-
-private fun getCachedDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
 		CachedValueProvider.Result.create(resolveDefinitionInfo(element), element)
 	}
@@ -225,15 +199,6 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val scriptPath = element.paradoxScriptPath?: return null
 	val definition = ruleGroup.types.values.find { it.matches(elementName, path, scriptPath) } ?: return null
 	return definition.toMetadata(element, elementName)
-}
-
-val ASTNode.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = getDefinitionInfo(this)
-
-val ASTNode.paradoxDefinitionInfoNoCheck: ParadoxDefinitionInfo? get() = getDefinitionInfo(this, false)
-
-private fun getDefinitionInfo(node: ASTNode, check: Boolean = true): ParadoxDefinitionInfo? {
-	if(check && !canGetDefinitionInfo(node)) return null
-	return getCachedDefinitionInfo(node.psi as? ParadoxScriptProperty?:return null)
 }
 
 //Find Extensions

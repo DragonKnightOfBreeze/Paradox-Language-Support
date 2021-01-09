@@ -22,6 +22,7 @@
 * [X] 修复`00_edicts.txt`无限重复解析的bug（应当是scriptVariable索引的问题）
 * [X] definition文档中列出definitionLocalisation
 * [X] definition文档中列出definitionLocalisation并且绑定psi链接
+* [X] 修复索引的相关bug
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`
 * [ ] 解析`definitionInfo`的`subTypes`
 * [ ] 编写规则文件`enums.yml`

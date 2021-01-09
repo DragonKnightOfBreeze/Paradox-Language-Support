@@ -25,19 +25,31 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 	
 	class Builder : DefaultStubBuilder() {
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-			//仅包括作为scripted_variable的顶级的variable，以及可能作为类型定义的1-2级的property
+			//仅包括作为scripted_variable的顶级的variable，以及作为definition的property
 			val type = node.elementType
 			val parentType = parent.elementType
 			return when {
-				parentType == FILE && type !== ROOT_BLOCK -> true
-				//parentType == ROOT_BLOCK && type != PROPERTY && type != VARIABLE -> true
-				parentType == ROOT_BLOCK && type != PROPERTY && (type != VARIABLE || (parent.treeParent.psi as PsiFile)
-					.parent?.let{ it.name != "scripted_variables" }?:true)  -> true
-				parentType == BLOCK && type != PROPERTY -> true
-				parent.treeParent?.treeParent?.treeParent?.elementType == ROOT_BLOCK && type != PROPERTY -> true
-				type == ROOT_BLOCK || type == BLOCK || type == PROPERTY || type == PROPERTY_VALUE || type == VARIABLE -> false
+				parentType == FILE && type != ROOT_BLOCK -> true
+				parentType == FILE -> false
+				type == PROPERTY && isDefinition(node) -> false
+				type == VARIABLE && isScriptedVariable(node,parent) -> false
+				parentType == ROOT_BLOCK && type == PROPERTY -> false
+				parentType == ROOT_BLOCK || parentType == BLOCK -> true
+				parentType == PROPERTY || parentType == PROPERTY_VALUE -> false
 				else -> true
 			}
+		}
+		
+		private fun isDefinition(node: ASTNode):Boolean{
+			val element = node.psi as? ParadoxScriptProperty?:return false
+			return element.paradoxDefinitionInfo != null
+		}
+		
+		private fun isScriptedVariable(node: ASTNode,parent:ASTNode): Boolean {
+			if(parent.elementType != ROOT_BLOCK) return false
+			val file = node.psi.containingFile
+			val parentPath = file.paradoxFileInfo?.path?.parent ?: return false
+			return "common/scripted_variables".matchesPath(parentPath)
 		}
 	}
 }
