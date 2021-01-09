@@ -23,14 +23,17 @@
 * [X] definition文档中列出definitionLocalisation
 * [X] definition文档中列出definitionLocalisation并且绑定psi链接
 * [X] 修复索引的相关bug
-* [ ] 添加配置`renderLineCommentText`
+* [X] 添加配置`renderLineCommentText`
+* [X] 尝试得到`definitionInfo`时，`element`必须是`scriptProperty`且`value`必须是`scriptBlock`
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
-* [ ] 解析`definitionInfo`的`subTypes`
+* [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
+* [ ] 解析规则文件`definition.yml`的规则`subTypes`
 * [ ] 编写规则文件`enums.yml`
 * [ ] 编写规则文件`definitions.yml`
 * [ ] 修复图标能加载但不能正常渲染的bug（IDE新版本底层代码错误？）
 * [ ] 初步实现功能：添加模块（基于游戏类型）
+* [ ] 让`scriptRootBlock`直接或间接继承自`scriptProperty`
 
 # TODO
 

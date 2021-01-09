@@ -197,7 +197,7 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val ruleGroup = ruleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val scriptPath = element.paradoxScriptPath?: return null
-	val definition = ruleGroup.types.values.find { it.matches(elementName, path, scriptPath) } ?: return null
+	val definition = ruleGroup.types.values.find { it.matches(element,elemenetName, path, scriptPath) } ?: return null
 	return definition.toMetadata(element, elementName)
 }
 

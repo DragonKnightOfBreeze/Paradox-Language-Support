@@ -217,7 +217,8 @@ types:
         predicate:
           is_null: true
 
-  diplo_phrase: # TODO 没弄懂！
+  # TODO 没弄懂！
+  diplo_phrase:
     path: "common/diplo_phrases"
     #type_from_file: true
     #type_per_file: true
@@ -307,7 +308,6 @@ types:
   fallen_empire:
     path: "common/fallen_empires"
 
-
   federation_law_category:
     path: "common/federation_law_categories"
     name_prefix: "law_category_"
@@ -325,7 +325,7 @@ types:
 
   federation_perk:
     path: "common/federation_perks"
-    localisation: 
+    localisation:
       name?: $
       description?: $_desc
     from_version: "2.8"
@@ -346,10 +346,79 @@ types:
       description!: $_desc
     from_version: "2.8"
 
+  # TODO subtypes
+  # TODO scopes from comment (root = xxx, xxx xx)
   game_rule:
     path: "common/game_rules"
-    # TODO subtypes
-    # TODO scopes from comment (root = xxx, xxx xx)
+
+  graphical_culture:
+    path: "common/graphical_culture"
+    subtypes:
+      ship_color:
+        predicate:
+          ship_color: true
+
+  lawsuit:
+    path: "common/lawsuits"
+    # name_key: none
+
+  leader_class:
+    path: "common/leader_classes"
+
+  mandate:
+    path: "common/mandates"
+    name_prefix: "mandate_"
+    localisation:
+      name!: MANDATE_$
+      description!: MANDATE_$_DESC
+
+  map_mode:
+    path: "common/map_modes"
+    localisation:
+      name!: $
+      description!: $_desc
+
+  megastructure:
+    path: "common/megastructures"
+    localisation:
+      name!: $
+      description!: $_DESC
+    subtypes:
+      base_level:
+        predicate:
+          placement_rules: none
+        localisation:
+          details!: $_MEGASTRUCTURE_DETAILS
+          delayed_info?: $_CONSTRUCTION_INFO_DELAYED
+      non_base_level:
+        predicate:
+          prerequisites: any
+
+  name_list:
+    path: "common/name_lists"
+    localisation:
+      name!: name_list_$
+    subtypes:
+      randomized:
+        predicate:
+          randomized?: true
+
+  notification_modifier:
+    path: "common/notification_modifiers"
+    localisation:
+      name!: $
+      description!: $_desc
+
+  observation_station_mission:
+    path: "common/observation_station_missions"
+    localisation:
+      name!: mission_$
+      description!: mission_$_desc
+
+  # TODO subtypes
+  # TODO scopes from comment (root/this = xxx, xxx xx)
+  on_action:
+    path: "common/on_actions"
 
   system_type:
     path: "common/system_types"
@@ -379,20 +448,8 @@ types:
       root: "sector"
       this: "sector"
 
-  map_mode:
-    path: "common/map_modes"
-    localisation:
-      name!: $
-      description!: $_desc
-
   trade_conversion:
     path: "common/trade_conversions"
-
-  mandate:
-    path: "common/mandates"
-    localisation:
-      name!: MANDATE_$
-      description!: MANDATE_$_DESC
 
   opnion_modifier:
     path: "common/opinion_modifiers"
@@ -423,12 +480,6 @@ types:
       null:
         predicate:
           is_null: true
-
-  notification_modifier:
-    path: "common/notification_modifiers"
-    localisation:
-      name!: $
-      description!: $_desc
 
   relic:
     path: "common/relics"
@@ -535,9 +586,6 @@ types:
       name!: $
       description!: $_desc
 
-  graphical_culture:
-    path: "common/graphical_culture"
-
   job:
     path: "common/pop_jobs"
     localisation:
@@ -552,32 +600,6 @@ types:
       plural!: pop_cat_$_plural
       description!: pop_cat_$_desc
 
-  megastructure:
-    path: "common/megastructures"
-    localisation:
-      name!: $
-      description!: $_desc
-    subtypes:
-      base_level:
-        predicate:
-          placement_rules: { }
-        localisation:
-          details!: $_MEGASTRUCTURE_DETAILS
-          delayed_info?: $_CONSTRUCTION_INFO_DELAYED
-      has_prerequisites:
-        predicate:
-          prerequisites: { }
-
-  name_list:
-    path: "common/name_lists"
-    localisation:
-      name!: $
-      description!: $_desc
-    subtypes:
-      random:
-        predicate:
-          randomized?: false
-
   species_name:
     path: "common/species_names"
     name_key: "name"
@@ -585,16 +607,6 @@ types:
   species_name_list:
     path: "common/species_names"
     skip_root_key: "name_lists"
-
-  observation_station_mission:
-    path: "common/observation_station_missions"
-    localisation:
-      name!: mission_$
-      description!: mission_$_desc
-
-  on_action:
-    path: "common/on_actions"
-    # TODO subtypes
 
   ai_personality:
     path: "common/personalities"
@@ -1125,3 +1137,9 @@ types:
     path: "sound"
     file_extension: "asset"
     key_filter: "soundeffect"
+
+  dlc:
+    path: "dlc"
+    path_strict: false
+    type_from_file: true
+    name_key: "name"

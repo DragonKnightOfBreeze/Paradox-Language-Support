@@ -17,7 +17,7 @@ locations:
     file_extension: txt
   common/asteroid_belts:
     file_extension: txt
-  common/attitutes:
+  common/attitudes:
     file_extension: txt
   common/bombardment_stances:
     file_extension: txt
