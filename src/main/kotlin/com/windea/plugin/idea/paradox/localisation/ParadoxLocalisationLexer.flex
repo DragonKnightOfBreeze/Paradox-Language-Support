@@ -94,7 +94,7 @@ ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+
 SERIAL_NUMBER_ID=[a-zA-Z]
 COMMAND_SCOPE_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_:@]+[ \u00a0\t]*\.
 COMMAND_SEPARATOR=\.
-COMMAND_KEY_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_]+[ \u00a0\t]*\.
+COMMAND_KEY_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_]+[ \u00a0\t]*\]
 COLOR_CODE=[a-zA-Z]
 //双引号和百分号实际上不需要转义
 STRING_TOKEN=[^\"%$£§\[\r\n\\]+

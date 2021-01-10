@@ -21,7 +21,7 @@ definitions:
         default: true # TODO 暂且如此
         description:
           路径是否是严格的，如果是，该路径的子路径下的脚本文件将会被忽略，默认为是。
-          Whether path should be strict, it true, script file in subpaths of this path is not inclued. default to true.
+          Whether path should be strict, it true, script file in subpaths of this path is not included. default to true.
       file_name:
         type: string
         description:
