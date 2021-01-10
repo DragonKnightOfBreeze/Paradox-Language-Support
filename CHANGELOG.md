@@ -33,6 +33,7 @@
 * [X] 解析规则文件`definitions.yml`的规则`value_type`
 * [X] 解析规则文件`definitions.yml`的规则`name_from_value`
 * [X] 为`types.yml`规则文件的schema补充描述。
+* [X] 为`locations.yml`规则文件的schema补充描述。
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
