@@ -32,6 +32,7 @@
 * [X] 解决`commandKey`无法自动补全的bug（lexer不够完善，没有兼容空格的情况？）
 * [X] 解析规则文件`definitions.yml`的规则`value_type`
 * [X] 解析规则文件`definitions.yml`的规则`name_from_value`
+* [X] 为`types.yml`规则文件的schema补充描述。
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
