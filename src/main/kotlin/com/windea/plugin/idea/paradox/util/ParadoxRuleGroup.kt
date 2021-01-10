@@ -97,6 +97,12 @@ class ParadoxRuleGroup(
 		}
 		
 		fun getName(element: ParadoxScriptProperty): String {
+			//几种情况：从value得到，从指定的key的value得到，完全匿名，直接使用elementName
+			val nameFromValueData = get("name_from_value") as Boolean? ?: false
+			if(nameFromValueData){
+				val value = element.propertyValue?.value
+				if(value is ParadoxScriptStringValue) return value.value
+			}
 			val nameKeyData = get("name_key") as String? ?: return element.name
 			if(nameKeyData == "none") return anonymousName //完全匿名 
 			val nameProperty = element.findProperty(nameKeyData) ?: return anonymousName

@@ -29,9 +29,11 @@
 * [X] 让`PsiNamedElement`也实现`PsiCheckNameElement`
 * [X] 改为使用自定义的`com.windea.plugin.idea.paradox.core.psi.PsiCheckRenameElement`，整理目录
 * [X] 兼容`\u00a0`的空格
+* [X] 解决`commandKey`无法自动补全的bug（lexer不够完善，没有兼容空格的情况？）
+* [X] 解析规则文件`definitions.yml`的规则`value_type`
+* [X] 解析规则文件`definitions.yml`的规则`name_from_value`
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
-* [ ] 解析规则文件`definitions.yml`的规则`value_type`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
 * [ ] 解析规则文件`definition.yml`的规则`subTypes`
 * [ ] 编写规则文件`enums.yml`

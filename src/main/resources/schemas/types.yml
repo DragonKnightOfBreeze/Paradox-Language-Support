@@ -22,6 +22,9 @@ definitions:
       value_type:
         type: string
         default: block
+      name_from_value:
+        type: boolean
+        default: false
       predicate:
         type: object
       skip_root_key:
