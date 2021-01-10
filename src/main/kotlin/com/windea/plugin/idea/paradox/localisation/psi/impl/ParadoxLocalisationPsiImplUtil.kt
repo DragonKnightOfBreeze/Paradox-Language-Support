@@ -167,6 +167,21 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun setName(element: ParadoxLocalisationCommandScope, name: String): PsiElement {
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun checkRename(element: ParadoxLocalisationCommandScope){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: ParadoxLocalisationCommandScope): PsiElement {
+		return element.commandScopeToken
+	}
+	
+	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
 		val commandScopeToken = element.commandScopeToken
 		return ParadoxLocalisationCommandScopePsiReference(element, commandScopeToken.textRangeInParent)
@@ -181,8 +196,17 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandKey, name: String): PsiElement {
-		element.commandKeyToken?.replace(createCommandKey(element.project, name).commandKeyToken!!)
-		return element
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun checkRename(element: ParadoxLocalisationCommandKey){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: ParadoxLocalisationCommandKey): PsiElement? {
+		return element.commandKeyToken
 	}
 	
 	@JvmStatic

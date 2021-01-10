@@ -37,7 +37,7 @@ import static com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*;
 %}
 
 EOL=\s*\R\s*
-WHITE_SPACE=[ \t]+
+WHITE_SPACE=[ \t\u00a0]+
 
 COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\r\n]*
@@ -49,7 +49,7 @@ BOOLEAN=(yes)|(no)
 NUMBER=0|[+-]?[1-9][0-9]*|[+-]?[0-9]+\.[0-9]+
 STRING=[^@\s\{\}=\"][^\s\{\}=\"]*
 QUOTED_STRING=\"([^\"\r\n\\]|\\.)*?\"
-COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[0-9. \t]*}
+COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[0-9. \t\u00a0]*}
 CODE_TEXT_TOKEN=[^\r\n\]}]+
 
 //为了兼容cwt规则文件（<xxx>格式的propertyKey），需要弄得很麻烦

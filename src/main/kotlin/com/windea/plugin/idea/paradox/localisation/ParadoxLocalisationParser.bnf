@@ -17,7 +17,6 @@
 	  COLON=':'
 	  PARAMETER_SEPARATOR="|"
 	  NUMBER='regexp:\d+'
-	  BLANK='wregexp:\s+'
 	  COMMENT='regexp:#[^\r\n]*'
 	  ROOT_COMMENT='regexp:#[^\r\n]*'
 	  //行尾注释不能包含双引号，否则会有解析冲突
@@ -117,10 +116,10 @@ private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_Key {
   pin(".*")=1
 }
 command_scope ::= COMMAND_SCOPE_TOKEN{
-  methods=[getName getReference]
+  methods=[getName setName checkRename getNameIdentifier getReference]
 }
 command_Key ::= property_reference | COMMAND_KEY_TOKEN{
-  methods=[getName setName getReference]
+  methods=[getName setName checkRename getNameIdentifier getReference]
 }
 
 serial_number ::= SERIAL_NUMBER_START SERIAL_NUMBER_ID SERIAL_NUMBER_END {

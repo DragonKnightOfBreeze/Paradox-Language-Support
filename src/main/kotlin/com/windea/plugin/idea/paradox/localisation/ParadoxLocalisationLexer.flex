@@ -76,7 +76,7 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
 //不要使用\R：可能不合法
 
 EOL=\s*\R\s*
-WHITE_SPACE=[ \t]+
+WHITE_SPACE=[ \u00a0\t]+
 
 COMMENT=#[^\r\n]*
 ROOT_COMMENT=#[^\r\n]*
@@ -87,7 +87,7 @@ LOCALE_ID=[a-z_]+
 PROPERTY_KEY_ID=[a-zA-Z0-9_.\-']+
 VALID_ESCAPE_TOKEN=\\[rnt\"$£§%\[]
 INVALID_ESCAPE_TOKEN=\\.
-PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-' ]+
+PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-' \u00a0]+
 PROPERTY_REFERENCE_PARAMETER=[a-zA-Z0-9+\-*%=\[.\]]+
 ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+

@@ -1,12 +1,9 @@
 package com.windea.plugin.idea.paradox.localisation.psi
 
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
-import com.intellij.util.*
 import com.intellij.util.CommonProcessors.*
-import com.intellij.util.containers.*
 import com.windea.plugin.idea.paradox.*
 
 object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
@@ -75,7 +72,6 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 	}
 	
 	fun getAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
-		ProgressManager.checkCanceled()
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)

@@ -53,6 +53,17 @@ public class ParadoxLocalisationCommandKeyImpl extends ASTWrapperPsiElement impl
   }
 
   @Override
+  public void checkRename() {
+    ParadoxLocalisationPsiImplUtil.checkRename(this);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNameIdentifier() {
+    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
+  }
+
+  @Override
   @Nullable
   public ParadoxLocalisationCommandKeyPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);

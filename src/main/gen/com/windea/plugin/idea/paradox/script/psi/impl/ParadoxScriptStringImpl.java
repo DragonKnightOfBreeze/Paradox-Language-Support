@@ -48,6 +48,12 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implem
 
   @Override
   @NotNull
+  public PsiElement setValue(@NotNull String name) {
+    return ParadoxScriptPsiImplUtil.setValue(this, name);
+  }
+
+  @Override
+  @NotNull
   public ParadoxScriptStringPropertyPsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }

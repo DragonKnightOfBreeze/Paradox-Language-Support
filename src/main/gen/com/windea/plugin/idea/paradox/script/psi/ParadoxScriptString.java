@@ -18,6 +18,13 @@ public interface ParadoxScriptString extends ParadoxScriptStringValue {
   String getValue();
 
   @NotNull
+  PsiElement setValue(@NotNull String name);
+
+  @NotNull
   ParadoxScriptStringPropertyPsiReference getReference();
+
+  //WARNING: getReferneceName(...) is skipped
+  //matching getReferneceName(ParadoxScriptString, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
 
 }
