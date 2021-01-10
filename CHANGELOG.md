@@ -29,7 +29,7 @@
 * [X] 让`PsiNamedElement`也实现`PsiCheckNameElement`
 * [X] 改为使用自定义的`com.windea.plugin.idea.paradox.core.psi.PsiCheckRenameElement`，整理目录
 * [X] 兼容`\u00a0`的空格
-* [ ] 为规则文件`definitions.yml`添加规则`name_prefix`
+* [ ] 为规则文件`definitions.yml`添加规则`name_prefix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
 * [ ] 解析规则文件`definition.yml`的规则`subTypes`
@@ -41,4 +41,7 @@
 
 # TODO
 
-* 整合来自cwtools的规则文件，更改扩展名和文件格式，加入到项目的rules目录下
+* [ ] `commandKey`、`localisationProperty`为什么不能进行自定代码补全？为什么一个不调用，另一个`processCanceled`？
+* [ ] 整合来自cwtools的规则文件，更改扩展名和文件格式，加入到项目的rules目录下
+
+

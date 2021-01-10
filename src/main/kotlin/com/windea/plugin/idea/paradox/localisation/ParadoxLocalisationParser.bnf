@@ -116,9 +116,13 @@ private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_Key {
   pin(".*")=1
 }
 command_scope ::= COMMAND_SCOPE_TOKEN{
+  mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
+  implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[getName setName checkRename getNameIdentifier getReference]
 }
 command_Key ::= property_reference | COMMAND_KEY_TOKEN{
+  mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
+  implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[getName setName checkRename getNameIdentifier getReference]
 }
 

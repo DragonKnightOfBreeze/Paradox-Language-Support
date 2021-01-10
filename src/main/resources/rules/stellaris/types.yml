@@ -354,6 +354,53 @@ types:
   game_rule:
     path: "common/game_rules"
 
+  global_ship_design:
+    path: "common/global_ship_designs"
+    name_key: "name"
+
+  government:
+    path: "common/governments"
+    name_prefix: "gov_"
+    localisation:
+      name!: $
+      description!: $_desc
+      rule_title!: .rule_title
+      rule_title_female?: .rule_title_female
+      heir_title?: heir_title
+      heir_title_female?: heir_title_female
+
+  authority:
+    path: "common/governments/authorities"
+    name_prefix: "auth_"
+    localisation:
+      name!: $
+      description!: $_desc
+      tag: .tags
+
+  civic_or_origin:
+    path: "common/governments/civics"
+    localisation:
+      name!: $
+      description!: $_desc
+    subtypes:
+      civic:
+        predicate:
+          is_origin?: false
+        name_prefix: "civic_"
+      origin:
+        predicate:
+          is_origin: true
+        name_prefix: "origin_"
+
+  swapped_civic:
+    path: "common/governments/civics"
+    skip_root_key: any
+    key_filter: "swap_type"
+    name_key: "name"
+    localisation:
+      name!: $
+      description!: $_desc
+
   graphical_culture:
     path: "common/graphical_culture"
     subtypes:
@@ -778,7 +825,7 @@ types:
 
   species_right:
     path: "common/species_rights"
-    localisation: 
+    localisation:
       name!: $
       tooltip!: $_tooltip
       delayed_tooltip?: $_tooltip_delayed
@@ -816,42 +863,77 @@ types:
     localisation:
       name!: $
 
-  system_type:
-    path: "common/system_types"
-    localisation:
-      name!: $
-
   start_screen_message:
     path: "common/start_screen_messages"
     key_filter: "part"
-
-  trade_conversion:
-    path: "common/trade_conversions"
+    name_key: "location"
+    localisation:
+      localization: .localization
 
   static_modifier:
     path: "common/static_modifiers"
     localisation:
       name!: $
-      description!: $_desc
+      description?: $_desc
     subtypes:
       planet:
         predicate:
-          icon_frame: "int"
+          icon_frame: any
 
-  tradition:
-    path: "common/traditions"
+  resource:
+    alias: "strategic_resources"
+    path: "common/strategic_resources"
+    localisation:
+      name?: $
+      description?: $_desc
+    subtypes:
+      tradable:
+        predicate:
+          tradable: true
+      limited:
+        predicate:
+          max: any
+
+  subject:
+    path: "common/subjects"
+    localisation:
+      name!: SUBJECT_$
+      description!: SUBJECT_DESC_$
+
+  system_type:
+    path: "common/system_types"
+    localisation:
+      name!: $
+
+  technology:
+    path: "common/technology"
+    name_prefix: "tech_"
     localisation:
       name!: $
       description!: $_desc
+      # category: .category
+    subtypes:
+      repeatable:
+        predicate:
+          level: any
+      start_tech:
+        predicate:
+          start_tech: true
 
-  tradition_swap:
-    path: "common/traditions"
-    skip_root_key: any
-    key_filter: "tradition_swap"
-    name_key: "name"
-    localisation:
-      name!: $
-      description!: $_desc
+  technology_category:
+    path: "common/technology/category"
+
+  technology_tier:
+    path: "common/technology/tier"
+
+  terraform_link:
+    alias: "terraform"
+    path: "common/terraform"
+    key_filter: "terraform_link"
+    name_keys: [ "from", "to" ]
+
+  trade_conversion:
+    path: "common/trade_conversions"
 
   tradition_category:
     path: "common/tradition_categories"
@@ -868,90 +950,20 @@ types:
       name!: $
       description!: $_desc
 
-  war_goal:
-    path: "common/war_goals"
-    name_prefix: "wg_"
-    localisation:
-      name!: war_goal_$
-      description!: war_goal_$_desc
-
-  global_ship_design:
-    path: "common/global_ship_designs"
-    name_key: "name"
-
-  government:
-    path: "common/governments"
+  tradition:
+    path: "common/traditions"
     localisation:
       name!: $
       description!: $_desc
 
-  authority:
-    path: "common/governments/authorities"
-    localisation:
-      name!: $
-      description!: $_desc
-
-  civic_or_origin:
-    path: "common/governments/civics"
-    localisation:
-      name!: $
-      description!: $_desc
-    subtypes:
-      origin:
-        predicate:
-          is_origin: true
-      civic:
-        predicate:
-          is_origin: false
-
-  swapped_civic:
-    path: "common/governments/civics"
+  tradition_swap:
+    path: "common/traditions"
     skip_root_key: any
-    key_filter: "swap_type"
+    key_filter: "tradition_swap"
     name_key: "name"
     localisation:
       name!: $
       description!: $_desc
-
-  resource:
-    path: "common/strategic_resources"
-    localisation:
-      name!: $
-      description!: $_desc
-    subtypes:
-      tradable:
-        predicate:
-          tradable: true
-      max:
-        predicate:
-          max: "int"
-
-  subject:
-    path: "common/subjects"
-    localisation:
-      name!: SUBJECT_$
-      description!: SUBJECT_DESC_$
-
-  technology:
-    path: "common/technology"
-    localisation:
-      name!: $
-      description!: $_desc
-    subtypes:
-      repeatable:
-        predicate:
-          ### range: -1..100
-          level: "int"
-      start_tech:
-        predicate:
-          start_tech: true
-
-  technology_tier:
-    path: "common/technology/tier"
-
-  terraform_link:
-    path: "common/terraform"
-    key_filter: "terraform_link"
 
   trait:
     path: "common/traits"
@@ -959,18 +971,48 @@ types:
       name!: $
       description!: $_desc
     subtypes:
+      randomized:
+        predicate:
+          randomized: true
       ruler_trait:
         predicate:
           leader_class: [ ruler ]
+        name_prefix: "trait_ruler_"
+      general_trait:
+        predicate:
+          leader_class: [ general ]
+        name_prefix: "trait_ruler_"
       leader_trait:
         predicate:
           leader_trait: any
+        name_prefix: "leader_trait_"
+      governor_trait:
+        predicate:
+          leader_class: [ admiral ]
+        name_prefix: "trait_ruler_"
       scientist_trait:
         predicate:
           leader_class: [ scientist ]
+        name_prefix: "trait_ruler_"
+      admiral_trait:
+        predicate:
+          leader_class: [ admiral ]
+        name_prefix: "trait_ruler_"
       species_trait:
         predicate:
           leader_trait?: false
+        name_prefix: "trait_"
+
+  war_goal:
+    path: "common/war_goals"
+    name_prefix: "wg_"
+    localisation:
+      name!: war_goal_$
+      description!: war_goal_$_desc
+    subtypes: 
+      total_war:
+        predicate: 
+          total_war: true
 
   alert_icon:
     path: "common"

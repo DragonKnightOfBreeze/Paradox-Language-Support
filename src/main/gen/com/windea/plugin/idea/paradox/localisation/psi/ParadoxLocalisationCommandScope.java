@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandScopePsiReference;
 
-public interface ParadoxLocalisationCommandScope extends PsiElement {
+public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationNamedElement {
 
   @NotNull
   PsiElement getCommandScopeToken();

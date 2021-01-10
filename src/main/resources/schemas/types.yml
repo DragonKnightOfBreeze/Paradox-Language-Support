@@ -30,6 +30,10 @@ definitions:
         type: string
       name_key:
         type: string
+      name_keys:
+        type: array
+        items: 
+          type: string
       name_prefix: 
         type: string
       name_suffix:

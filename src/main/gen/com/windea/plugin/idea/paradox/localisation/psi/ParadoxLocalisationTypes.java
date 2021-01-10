@@ -23,7 +23,6 @@ public interface ParadoxLocalisationTypes {
   IElementType SERIAL_NUMBER = new ParadoxLocalisationElementType("SERIAL_NUMBER");
   IElementType STRING = new ParadoxLocalisationElementType("STRING");
 
-  IElementType BLANK = new ParadoxLocalisationTokenType("wregexp:\\s+");
   IElementType COLON = new ParadoxLocalisationTokenType(":");
   IElementType COLORFUL_TEXT_END = new ParadoxLocalisationTokenType("§!");
   IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("§");

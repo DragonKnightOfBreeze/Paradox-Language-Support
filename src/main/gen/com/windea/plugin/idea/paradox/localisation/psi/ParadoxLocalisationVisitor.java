@@ -18,11 +18,11 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitCommandKey(@NotNull ParadoxLocalisationCommandKey o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitEscape(@NotNull ParadoxLocalisationEscape o) {
