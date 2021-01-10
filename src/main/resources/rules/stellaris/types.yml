@@ -1038,6 +1038,26 @@ types:
     path: "common"
     file_name: "achievements.txt"
 
+  # skip path: dlc
+  # dlc:
+  #   path: "dlc"
+  #   path_strict: false
+  #   type_from_file: true
+  #   # name_key: "name"
+
+  dlc_info:
+    path: "dlc_metadata"
+    skip_root_key: "dlcs"
+    # name_key: "name"
+
+  # skip path: dlc_metadata/dlc_recommendations
+  # dlc_recomendation:
+  #   path: "dlc_metadata/dlc_recommendations"
+
+  event_namespace:
+    path: "events"
+    value_type: "string" 
+
   event:
     path: "events"
     name_key: "id"
@@ -1090,7 +1110,7 @@ types:
   color_define:
     path: "flags"
     skip_root_key: "colors"
-
+  
   font:
     path: "fonts"
     key_filter: "font"
@@ -1276,9 +1296,3 @@ types:
     path: "sound"
     file_extension: "asset"
     key_filter: "soundeffect"
-
-  dlc:
-    path: "dlc"
-    path_strict: false
-    type_from_file: true
-    name_key: "name"

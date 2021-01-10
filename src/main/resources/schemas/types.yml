@@ -21,7 +21,7 @@ definitions:
         type: string
       value_type:
         type: string
-        default: scriptBlock
+        default: block
       predicate:
         type: object
       skip_root_key:
