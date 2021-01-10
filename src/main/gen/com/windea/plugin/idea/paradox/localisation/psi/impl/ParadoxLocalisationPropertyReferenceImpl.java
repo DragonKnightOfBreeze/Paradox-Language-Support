@@ -12,12 +12,13 @@ import com.windea.plugin.idea.paradox.localisation.psi.*;
 import com.windea.plugin.idea.paradox.ParadoxColor;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationPropertyPsiReference;
 
-public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationPropertyReference {
+public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationPropertyReference {
 
   public ParadoxLocalisationPropertyReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
     visitor.visitPropertyReference(this);
   }
@@ -50,23 +51,6 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement setName(@NotNull String name) {
-    return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public void checkRename() {
-    ParadoxLocalisationPsiImplUtil.checkRename(this);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override

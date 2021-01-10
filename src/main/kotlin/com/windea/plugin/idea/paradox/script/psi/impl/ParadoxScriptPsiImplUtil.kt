@@ -123,22 +123,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptVariableReference, name: String): PsiElement {
-		element.replace(createValue(element.project, name))
-		return element
-	}
-	
-	@JvmStatic
-	fun checkRename(element:ParadoxScriptVariableReference){
-		
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptVariableReference): PsiElement {
-		return element.variableReferenceId
-	}
-	
-	@JvmStatic
 	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptVariablePsiReference {
 		return ParadoxScriptVariablePsiReference(element, TextRange(0, element.textLength))
 	}

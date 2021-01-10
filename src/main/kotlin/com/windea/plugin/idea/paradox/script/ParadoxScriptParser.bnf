@@ -86,7 +86,7 @@ value ::= variable_reference | boolean | number | string_value | block{
 }
 variable_reference ::= VARIABLE_REFERENCE_ID {
   extends=value
-  methods=[getName setName checkRename getNameIdentifier getReference getReferenceValue]
+  methods=[getName getReference getReferenceValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value

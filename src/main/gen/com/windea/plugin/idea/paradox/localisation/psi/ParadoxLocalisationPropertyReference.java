@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.windea.plugin.idea.paradox.ParadoxColor;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationPropertyPsiReference;
 
-public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisationRichText {
 
   @Nullable
   ParadoxLocalisationCommand getCommand();
@@ -20,14 +20,6 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
 
   @NotNull
   String getName();
-
-  @NotNull
-  PsiElement setName(@NotNull String name);
-
-  void checkRename();
-
-  @Nullable
-  PsiElement getNameIdentifier();
 
   int getTextOffset();
 

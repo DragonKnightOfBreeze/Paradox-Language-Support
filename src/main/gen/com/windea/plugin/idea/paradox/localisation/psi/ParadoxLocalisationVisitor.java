@@ -18,11 +18,11 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitCommandKey(@NotNull ParadoxLocalisationCommandKey o) {
-    visitNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
-    visitNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitEscape(@NotNull ParadoxLocalisationEscape o) {
@@ -48,7 +48,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitPropertyReference(@NotNull ParadoxLocalisationPropertyReference o) {
     visitRichText(o);
-    // visitNamedElement(o);
   }
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {

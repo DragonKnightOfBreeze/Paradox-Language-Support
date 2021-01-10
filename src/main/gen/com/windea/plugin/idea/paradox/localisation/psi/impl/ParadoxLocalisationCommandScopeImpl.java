@@ -8,10 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandScopePsiReference;
 
-public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationCommandScope {
+public class ParadoxLocalisationCommandScopeImpl extends ASTWrapperPsiElement implements ParadoxLocalisationCommandScope {
 
   public ParadoxLocalisationCommandScopeImpl(@NotNull ASTNode node) {
     super(node);
@@ -37,23 +38,6 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationName
   @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement setName(@NotNull String name) {
-    return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public void checkRename() {
-    ParadoxLocalisationPsiImplUtil.checkRename(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override

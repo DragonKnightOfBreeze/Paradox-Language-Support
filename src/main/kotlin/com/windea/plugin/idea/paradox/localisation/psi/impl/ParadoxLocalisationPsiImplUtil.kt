@@ -98,23 +98,6 @@ object ParadoxLocalisationPsiImplUtil {
 		return element.propertyReferenceId?.text.orEmpty()
 	}
 	
-	//TODO 检查是否是项目中的localisation，这样才允许重命名
-	@JvmStatic
-	fun setName(element: ParadoxLocalisationPropertyReference, name: String): PsiElement {
-		element.propertyReferenceId?.replace(createPropertyReference(element.project, name).propertyReferenceId!!)
-		return element
-	}
-	
-	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationPropertyReference){
-		
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationPropertyReference): PsiElement? {
-		return element.propertyReferenceId
-	}
-	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxLocalisationPropertyReference): Int {
 		return element.startOffset + 1
@@ -179,21 +162,6 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxLocalisationCommandScope, name: String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationCommandScope){
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationCommandScope): PsiElement {
-		return element.commandScopeToken
-	}
-	
-	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
 		val commandScopeToken = element.commandScopeToken
 		return ParadoxLocalisationCommandScopePsiReference(element, commandScopeToken.textRangeInParent)
@@ -204,22 +172,6 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationCommandKey): String? {
 		return element.commandKeyToken?.text
-	}
-	
-	//TODO 只有项目中的commandKey才能重命名，同时更改scripted_loc的name
-	@JvmStatic
-	fun setName(element: ParadoxLocalisationCommandKey, name: String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationCommandKey){
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationCommandKey): PsiElement? {
-		return element.commandKeyToken
 	}
 	
 	@JvmStatic

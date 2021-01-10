@@ -21,7 +21,7 @@ class ParadoxLocalisationCommandKeyPsiReference(
 	
 	override fun resolve(): PsiElement? {
 		val name = element.commandKeyToken?.text?: return null
-		return findScriptProperty(name , "scripted_loc", project, element.resolveScope)
+		return findScriptProperty(name , "scripted_loc", project)
 	}
 	
 	//注意要传入elementName而非element
@@ -33,4 +33,3 @@ class ParadoxLocalisationCommandKeyPsiReference(
 		}
 	}
 }
-

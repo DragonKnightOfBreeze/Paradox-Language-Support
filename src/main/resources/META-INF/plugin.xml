@@ -159,7 +159,7 @@
         shortName="ParadoxScriptDuplicateVariableDefinitions" bundle="messages.ParadoxBundle"
         groupKey="paradox.script.inspection"
         key="paradox.script.inspection.duplicateVariableDefinitions"
-        enabledByDefault="true" level="WARNING"
+        enabledByDefault="true" level="ERROR"
         implementationClass="com.windea.plugin.idea.paradox.script.inspections.DuplicateVariableDefinitionsInspection"/>
     <localInspection
         language="Paradox Script"
@@ -264,7 +264,7 @@
         language="Paradox Localisation"
         shortName="ParadoxLocalisationDuplicatePropertyKeys"
         groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.duplicatePropertyKeys"
-        enabledByDefault="true" level="WARNING"
+        enabledByDefault="true" level="ERROR"
         implementationClass="com.windea.plugin.idea.paradox.localisation.inspections.DuplicatePropertyKeysInspection"/>
     <localInspection
         language="Paradox Localisation"

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandKeyPsiReference;
 
-public interface ParadoxLocalisationCommandKey extends ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationCommandKey extends PsiElement {
 
   @Nullable
   ParadoxLocalisationPropertyReference getPropertyReference();
@@ -16,14 +16,6 @@ public interface ParadoxLocalisationCommandKey extends ParadoxLocalisationNamedE
 
   @Nullable
   String getName();
-
-  @NotNull
-  PsiElement setName(@NotNull String name);
-
-  void checkRename();
-
-  @Nullable
-  PsiElement getNameIdentifier();
 
   @Nullable
   ParadoxLocalisationCommandKeyPsiReference getReference();

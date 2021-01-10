@@ -42,23 +42,6 @@ public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl i
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
-    return ParadoxScriptPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public void checkRename() {
-    ParadoxScriptPsiImplUtil.checkRename(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
-    return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  @NotNull
   public ParadoxScriptVariablePsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }

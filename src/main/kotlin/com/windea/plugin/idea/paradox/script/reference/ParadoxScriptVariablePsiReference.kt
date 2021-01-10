@@ -6,8 +6,6 @@ import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
-////TODO scope
-
 class ParadoxScriptVariablePsiReference(
 	element: ParadoxScriptVariableReference,
 	rangeInElement: TextRange
