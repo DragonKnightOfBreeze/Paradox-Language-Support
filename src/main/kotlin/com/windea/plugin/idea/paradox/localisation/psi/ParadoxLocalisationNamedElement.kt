@@ -2,4 +2,4 @@ package com.windea.plugin.idea.paradox.localisation.psi
 
 import com.intellij.psi.*
 
-interface ParadoxLocalisationNamedElement : PsiNameIdentifierOwner,NavigatablePsiElement
+interface ParadoxLocalisationNamedElement : PsiNameIdentifierOwner,PsiCheckedRenameElement,NavigatablePsiElement

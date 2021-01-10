@@ -3,6 +3,9 @@ package com.windea.plugin.idea.paradox.localisation.psi
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
+import com.intellij.util.*
+import com.intellij.util.CommonProcessors.*
+import com.intellij.util.containers.*
 import com.windea.plugin.idea.paradox.*
 
 object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
@@ -71,6 +74,39 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 			}
 		}
 		if(keepOrder) result.sortBy { names.indexOf(it.name) } 
+		return result
+	}
+	
+	class KeysProcessor: CollectProcessor<StubIndexKey<String, ParadoxLocalisationProperty>>()
+	
+	fun getAll1(names:Iterable<String>,locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,keepOrder:Boolean): List<ParadoxLocalisationProperty> {
+		val result = mutableListOf<ParadoxLocalisationProperty>()
+		var index = 0
+		
+		val keys = getAllKeys(project)
+		for(key in keys) {
+			if(key in names) {
+				val group = get(key, project, scope)
+				val nextIndex = index + group.size
+				for(element in group) {
+					val elementLocale = element.paradoxLocale
+					if(locale == null) {
+						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
+						if(elementLocale == inferredParadoxLocale) {
+							result.add(index++, element)
+						} else {
+							result.add(element)
+						}
+					} else {
+						if(locale == elementLocale) {
+							result.add(element)
+						}
+					}
+				}
+				index = nextIndex
+			}
+		}
+		if(keepOrder) result.sortBy { names.indexOf(it.name) }
 		return result
 	}
 	

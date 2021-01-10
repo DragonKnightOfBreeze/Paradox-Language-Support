@@ -48,6 +48,11 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedEleme
   }
 
   @Override
+  public void checkSetName(@NotNull String name) {
+    ParadoxLocalisationPsiImplUtil.checkSetName(this, name);
+  }
+
+  @Override
   @NotNull
   public PsiElement getNameIdentifier() {
     return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);

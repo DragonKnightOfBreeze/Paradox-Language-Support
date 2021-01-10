@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
-import com.intellij.util.IncorrectOperationException;
 import com.windea.plugin.idea.paradox.ParadoxColor;
 
 public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationColorfulText {
@@ -48,8 +47,13 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationName
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  public void checkSetName(@NotNull String name) {
+    ParadoxLocalisationPsiImplUtil.checkSetName(this, name);
   }
 
   @Override

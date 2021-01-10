@@ -17,6 +17,8 @@ public interface ParadoxLocalisationSerialNumber extends ParadoxLocalisationRich
   @NotNull
   PsiElement setName(@NotNull String name);
 
+  void checkSetName(@NotNull String name);
+
   @Nullable
   PsiElement getNameIdentifier();
 

@@ -26,6 +26,7 @@
 * [X] 添加配置`renderLineCommentText`
 * [X] 尝试得到`definitionInfo`时，`element`必须是`scriptProperty`且`value`必须是`scriptBlock`
 * [X] 解析`localisationCommandKey`
+* [X] 让`PsiNamedElement`也实现`PsiCheckNameElement`
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`

@@ -2,6 +2,7 @@
 
 package com.windea.plugin.idea.paradox.localisation.psi.impl
 
+import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
@@ -11,6 +12,7 @@ import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
 import com.windea.plugin.idea.paradox.localisation.reference.*
+import com.windea.plugin.idea.paradox.script.psi.*
 import javax.swing.*
 
 //NOTE getName 确定进行重构和导航时显示的PsiElement的名字
@@ -27,6 +29,11 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationLocale, name: String): PsiElement {
+		throw IncorrectOperationException("Cannot rename this element")
+	}
+	
+	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationLocale,name:String){
 		throw IncorrectOperationException("Cannot rename this element")
 	}
 	
@@ -52,10 +59,16 @@ object ParadoxLocalisationPsiImplUtil {
 		return element.stub?.key?: element.propertyKey.text
 	}
 	
+	//TODO 检查是否是项目中的localisation，这样才允许重命名
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationProperty, name: String): PsiElement {
 		element.propertyKey.replace(createPropertyKey(element.project, name))
 		return element
+	}
+	
+	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationProperty,name:String){
+		
 	}
 	
 	@JvmStatic
@@ -85,10 +98,16 @@ object ParadoxLocalisationPsiImplUtil {
 		return element.propertyReferenceId?.text.orEmpty()
 	}
 	
+	//TODO 检查是否是项目中的localisation，这样才允许重命名
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationPropertyReference, name: String): PsiElement {
 		element.propertyReferenceId?.replace(createPropertyReference(element.project, name).propertyReferenceId!!)
 		return element
+	}
+	
+	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationPropertyReference,name:String){
+		
 	}
 	
 	@JvmStatic
@@ -103,7 +122,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPropertyPsiReference? {
-		return element.propertyReferenceId?.let { ParadoxLocalisationPropertyPsiReference(element, it.textRangeInParent) }
+		val propertyReferenceId = element.propertyReferenceId?:return null
+		return ParadoxLocalisationPropertyPsiReference(element, propertyReferenceId.textRangeInParent)
 	}
 	
 	@JvmStatic
@@ -122,11 +142,17 @@ object ParadoxLocalisationPsiImplUtil {
 		return element.iconId?.text.orEmpty()
 	}
 	
+	//TODO 实现icon引用解析后，只有项目中的icon才能重命名
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationIcon, name: String): PsiElement {
-		throw IncorrectOperationException("Cannot rename this element")
 		//element.iconId?.replace(createIcon(element.project, name).iconId!!)
 		//return element
+		throw IncorrectOperationException("Cannot rename this element")
+	}
+	
+	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationIcon,name:String){
+		throw IncorrectOperationException("Cannot rename this element")
 	}
 	
 	@JvmStatic
@@ -158,13 +184,19 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationCommandScope,name:String){
+		throw IncorrectOperationException("Cannot rename this element")
+	}
+	
+	@JvmStatic
 	fun getNameIdentifier(element: ParadoxLocalisationCommandScope): PsiElement {
 		return element.commandScopeToken
 	}
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
-		return ParadoxLocalisationCommandScopePsiReference(element,element.commandScopeToken.textRangeInParent)
+		val commandScopeToken = element.commandScopeToken
+		return ParadoxLocalisationCommandScopePsiReference(element, commandScopeToken.textRangeInParent)
 	}
 	//endregion
 	
@@ -174,8 +206,14 @@ object ParadoxLocalisationPsiImplUtil {
 		return element.commandKeyToken?.text
 	}
 	
+	//TODO 只有项目中的commandKey才能重命名，同时更改scripted_loc的name
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandKey, name: String): PsiElement {
+		throw IncorrectOperationException("Cannot rename this element")
+	}
+	
+	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationCommandKey,name:String){
 		throw IncorrectOperationException("Cannot rename this element")
 	}
 	
@@ -186,7 +224,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandKey): ParadoxLocalisationCommandKeyPsiReference? {
-		return ParadoxLocalisationCommandKeyPsiReference(element,element.commandKeyToken?.textRangeInParent?:return null)
+		val commandKeyToken = element.commandKeyToken?:return null
+		return ParadoxLocalisationCommandKeyPsiReference(element, commandKeyToken.textRangeInParent)
 	}
 	//endregion
 	
@@ -198,6 +237,11 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationSerialNumber, name: String): PsiElement {
+		throw IncorrectOperationException("Cannot rename this element")
+	}
+	
+	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationSerialNumber,name:String){
 		throw IncorrectOperationException("Cannot rename this element")
 	}
 	
@@ -224,8 +268,12 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	@Throws(IncorrectOperationException::class)
 	fun setName(element: ParadoxLocalisationColorfulText, name: String): PsiElement {
+		throw IncorrectOperationException("Cannot rename this element")
+	}
+	
+	@JvmStatic
+	fun checkSetName(element: ParadoxLocalisationColorfulText,name:String){
 		throw IncorrectOperationException("Cannot rename this element")
 	}
 	

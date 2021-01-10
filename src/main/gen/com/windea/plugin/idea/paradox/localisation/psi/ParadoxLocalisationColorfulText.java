@@ -4,7 +4,6 @@ package com.windea.plugin.idea.paradox.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 import com.windea.plugin.idea.paradox.ParadoxColor;
 
 public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
@@ -19,7 +18,9 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name) throws IncorrectOperationException;
+  PsiElement setName(@NotNull String name);
+
+  void checkSetName(@NotNull String name);
 
   @Nullable
   PsiElement getNameIdentifier();

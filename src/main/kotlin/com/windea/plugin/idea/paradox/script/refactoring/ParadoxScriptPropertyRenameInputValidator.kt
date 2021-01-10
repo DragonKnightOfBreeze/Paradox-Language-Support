@@ -9,7 +9,7 @@ import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 
 class ParadoxScriptPropertyRenameInputValidator : RenameInputValidator {
-	private val regex = "[a-zA-Z0-9.:\$_-]+".toRegex()
+	private val regex = "[^#@=\\s{}]+[^=\\s{}]*".toRegex()
 	private val pattern = or( psiElement(PROPERTY))
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {

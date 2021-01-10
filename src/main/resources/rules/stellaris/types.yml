@@ -784,6 +784,38 @@ types:
       delayed_tooltip?: $_tooltip_delayed
       token: .token
 
+  star_class:
+    path: "common/star_classes"
+    localisation:
+      name!: $
+      description?: $_desc
+    key_filter: "!random_list"
+
+  star_class_random_list:
+    path: "common/star_classes"
+    name_key: "name"
+    key_filter: "random_list"
+
+  starbase_building:
+    path: "common/starbase_buildings"
+    localisation:
+      name!: sm_$
+      description!: sm_$_desc
+
+  starbase_level:
+    path: "common/starbase_levels"
+
+  starbase_module:
+    path: "common/starbase_modules"
+    localisation:
+      name!: sm_$
+      description?: sm_$_desc
+
+  starbase_type:
+    path: "common/starbase_types"
+    localisation:
+      name!: $
+
   system_type:
     path: "common/system_types"
     localisation:
@@ -801,7 +833,6 @@ types:
     localisation:
       name!: $
       description!: $_desc
-
     subtypes:
       planet:
         predicate:
@@ -894,38 +925,6 @@ types:
       max:
         predicate:
           max: "int"
-
-  star_class:
-    path: "common/star_classes"
-    localisation:
-      name!: $
-      description?: $_desc
-    key_filter: "!random_list"
-
-  star_class_random_list:
-    path: "common/star_classes"
-    name_key: "name"
-    key_filter: "random_list"
-
-  starbase_building:
-    path: "common/starbase_buildings"
-    localisation:
-      name!: sb_$
-      description!: sb_$_desc
-
-  starbase_level:
-    path: "common/starbase_levels"
-
-  starbase_module:
-    path: "common/starbase_modules"
-    localisation:
-      name!: sm_$
-      description!: sm_$_desc
-
-  starbase_type:
-    path: "common/starbase_types"
-    localisation:
-      name!: $
 
   subject:
     path: "common/subjects"

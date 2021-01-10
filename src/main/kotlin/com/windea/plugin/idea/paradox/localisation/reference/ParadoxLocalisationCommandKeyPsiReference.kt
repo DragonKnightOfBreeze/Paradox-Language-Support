@@ -9,8 +9,7 @@ import com.windea.plugin.idea.paradox.localisation.psi.*
 class ParadoxLocalisationCommandKeyPsiReference(
 	element: ParadoxLocalisationCommandKey,
 	rangeInElement: TextRange
-): PsiReferenceBase<ParadoxLocalisationCommandKey>(element,rangeInElement){
-	private val name = element.name
+) : PsiReferenceBase<ParadoxLocalisationCommandKey>(element, rangeInElement) {
 	private val project = element.project
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
@@ -18,15 +17,17 @@ class ParadoxLocalisationCommandKeyPsiReference(
 	}
 	
 	//解析为scripted_loc
-	//TODO 不完全 - 有些localisationCommandKey并没有对应的scripted_loc
+	//TODO 不完全 - 有些localisationCommandKey并没有对应的scripted_loc，如GetName
 	
 	override fun resolve(): PsiElement? {
-		return findScriptProperty(name?: return null,"scripted_loc",project,element.resolveScope)
+		val name = element.commandKeyToken?.text?: return null
+		return findScriptProperty(name , "scripted_loc", project, element.resolveScope)
 	}
 	
-	override fun getVariants(): Array<Any> {
+	//注意要传入elementName而非element
+	override fun getVariants(): Array<out Any> {
+		val icon = localisationCommandKeyIcon
 		return findScriptProperties("scripted_loc", project).mapArray {
-			val icon = localisationCommandKeyIcon
 			val fileName = it.containingFile.name
 			LookupElementBuilder.create(it).withIcon(icon).withTypeText(fileName).withPsiElement(it)
 		}

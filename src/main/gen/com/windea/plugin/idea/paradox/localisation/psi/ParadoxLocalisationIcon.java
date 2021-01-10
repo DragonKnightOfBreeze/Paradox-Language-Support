@@ -23,6 +23,8 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, Pa
   @NotNull
   PsiElement setName(@NotNull String name);
 
+  void checkSetName(@NotNull String name);
+
   @Nullable
   PsiElement getNameIdentifier();
 

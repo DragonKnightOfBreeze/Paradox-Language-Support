@@ -22,6 +22,8 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, StubBa
   @NotNull
   PsiElement setName(@NotNull String name);
 
+  void checkSetName(@NotNull String name);
+
   @Nullable
   PsiElement getNameIdentifier();
 

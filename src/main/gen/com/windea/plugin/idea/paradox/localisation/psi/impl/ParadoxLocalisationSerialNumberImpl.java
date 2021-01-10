@@ -46,6 +46,11 @@ public class ParadoxLocalisationSerialNumberImpl extends ParadoxLocalisationName
   }
 
   @Override
+  public void checkSetName(@NotNull String name) {
+    ParadoxLocalisationPsiImplUtil.checkSetName(this, name);
+  }
+
+  @Override
   @Nullable
   public PsiElement getNameIdentifier() {
     return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);

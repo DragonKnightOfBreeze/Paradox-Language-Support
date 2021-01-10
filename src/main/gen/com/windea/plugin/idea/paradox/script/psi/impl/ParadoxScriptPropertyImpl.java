@@ -59,6 +59,11 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
+  public void checkSetName(@NotNull String name) {
+    ParadoxScriptPsiImplUtil.checkSetName(this, name);
+  }
+
+  @Override
   @Nullable
   public PsiElement getNameIdentifier() {
     return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
