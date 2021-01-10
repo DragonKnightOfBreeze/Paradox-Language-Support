@@ -11,7 +11,7 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 16 * 1024
+	override fun getCacheSize() = 100 * 1024 //50000+
 	
 	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,defaultToFirst:Boolean): ParadoxLocalisationProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)

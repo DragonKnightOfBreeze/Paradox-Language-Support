@@ -325,12 +325,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   // PARAMETER_SEPARATOR [property_reference_param]
   private static boolean property_reference_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_reference_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, PARAMETER_SEPARATOR);
+    p = r; // pin = 1
     r = r && property_reference_2_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // [property_reference_param]

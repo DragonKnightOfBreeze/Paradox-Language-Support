@@ -6,7 +6,9 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
+import com.windea.plugin.idea.paradox.localisation.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
+import com.windea.plugin.idea.paradox.script.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 import com.windea.plugin.idea.paradox.util.*
@@ -76,6 +78,16 @@ val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("ca
 val ruleGroups = ParadoxRuleGroupProvider.getRuleGroups()
 
 //Extension Properties
+
+val PsiElement.paradoxLocale:ParadoxLocale? get() = getLocale(this)
+
+private fun getLocale(element:PsiElement):ParadoxLocale?{
+	return when(val file = element.containingFile){
+		is ParadoxScriptFile ->  inferredParadoxLocale
+		is ParadoxLocalisationFile -> file.locale?.paradoxLocale
+		else -> null
+	}
+}
 
 val VirtualFile.paradoxFileInfo:ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 

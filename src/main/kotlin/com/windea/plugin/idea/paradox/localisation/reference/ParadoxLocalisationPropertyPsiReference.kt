@@ -1,17 +1,17 @@
-@file:Suppress("UNCHECKED_CAST", "UnstableApiUsage", "UnstableApiUsage")
-
 package com.windea.plugin.idea.paradox.localisation.reference
 
 import com.intellij.codeInsight.lookup.*
+import com.intellij.model.psi.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
+@Suppress("UnstableApiUsage")
 class ParadoxLocalisationPropertyPsiReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), PsiPolyVariantReference,PsiCompletableReference {
 	private val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 	private val project = element.project
 	
@@ -34,6 +34,15 @@ class ParadoxLocalisationPropertyPsiReference(
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
 		return findLocalisationProperties(locale, project).mapArray {
+			val name = it.name
+			val icon = it.getIcon(0)
+			val fileName = it.containingFile.name
+			LookupElementBuilder.create(name).withIcon(icon).withTypeText(fileName).withPsiElement(it)
+		}
+	}
+	
+	override fun getCompletionVariants(): Collection<LookupElement> {
+		return findLocalisationProperties(locale, project).map {
 			val name = it.name
 			val icon = it.getIcon(0)
 			val fileName = it.containingFile.name

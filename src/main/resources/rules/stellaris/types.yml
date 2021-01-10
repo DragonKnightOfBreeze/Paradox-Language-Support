@@ -930,7 +930,7 @@ types:
     alias: "terraform"
     path: "common/terraform"
     key_filter: "terraform_link"
-    name_keys: [ "from", "to" ]
+    name_key: none
 
   trade_conversion:
     path: "common/trade_conversions"

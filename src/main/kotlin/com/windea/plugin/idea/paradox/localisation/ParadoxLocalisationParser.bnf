@@ -90,7 +90,7 @@ escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN{
 }
 
 property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PARAMETER_SEPARATOR [property_reference_param]] PROPERTY_REFERENCE_END {
-  pin=1
+   pin(".*")=1
   extends=rich_text
   methods=[getName setName getTextOffset getReference getParadoxColor]
 }
@@ -122,10 +122,7 @@ command_scope ::= COMMAND_SCOPE_TOKEN{
 }
 command_Key ::= property_reference | COMMAND_KEY_TOKEN{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
-  implements=[
-    "com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-	 "com.intellij.model.psi.PsiExternalReferenceHost"
-  ]
+  implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[getName setName checkRename getNameIdentifier getReference]
 }
 

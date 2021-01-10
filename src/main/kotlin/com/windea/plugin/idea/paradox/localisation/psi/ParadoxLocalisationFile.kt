@@ -17,7 +17,4 @@ class ParadoxLocalisationFile(
 	
 	val properties: List<ParadoxLocalisationProperty>
 		get() = findChildrenByClass(ParadoxLocalisationProperty::class.java).toList()
-	
-	val paradoxLocale: ParadoxLocale?
-		get() = locale?.paradoxLocale
 }

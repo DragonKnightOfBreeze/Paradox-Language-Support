@@ -1,13 +1,12 @@
 package com.windea.plugin.idea.paradox.localisation.psi.impl
 
+import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
-import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createCommandKey
-import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createCommandScope
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
 import com.windea.plugin.idea.paradox.localisation.reference.*

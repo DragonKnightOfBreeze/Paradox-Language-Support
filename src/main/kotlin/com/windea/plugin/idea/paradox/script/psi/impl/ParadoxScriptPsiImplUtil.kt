@@ -1,5 +1,6 @@
 package com.windea.plugin.idea.paradox.script.psi.impl
 
+import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*

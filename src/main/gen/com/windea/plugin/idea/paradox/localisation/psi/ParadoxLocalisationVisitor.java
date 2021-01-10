@@ -4,7 +4,6 @@ package com.windea.plugin.idea.paradox.localisation.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.model.psi.PsiExternalReferenceHost;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
@@ -20,7 +19,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitCommandKey(@NotNull ParadoxLocalisationCommandKey o) {
     visitNamedElement(o);
-    // visitPsiExternalReferenceHost(o);
   }
 
   public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
