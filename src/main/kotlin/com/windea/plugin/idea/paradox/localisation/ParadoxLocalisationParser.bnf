@@ -122,7 +122,10 @@ command_scope ::= COMMAND_SCOPE_TOKEN{
 }
 command_Key ::= property_reference | COMMAND_KEY_TOKEN{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
-  implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
+  implements=[
+    "com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
+	 "com.intellij.model.psi.PsiExternalReferenceHost"
+  ]
   methods=[getName setName checkRename getNameIdentifier getReference]
 }
 

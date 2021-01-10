@@ -4,9 +4,10 @@ package com.windea.plugin.idea.paradox.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.model.psi.PsiExternalReferenceHost;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandKeyPsiReference;
 
-public interface ParadoxLocalisationCommandKey extends ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationCommandKey extends ParadoxLocalisationNamedElement, PsiExternalReferenceHost {
 
   @Nullable
   ParadoxLocalisationPropertyReference getPropertyReference();

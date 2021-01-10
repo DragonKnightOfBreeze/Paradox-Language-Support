@@ -10,6 +10,8 @@ object ParadoxScriptPropertyKeyIndex : StringStubIndexExtension<ParadoxScriptPro
 	
 	override fun getKey() = key
 	
+	override fun getCacheSize() = 4 * 1024
+	
 	fun getOne(name: String,type:String? = null, project: Project, scope: GlobalSearchScope): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
