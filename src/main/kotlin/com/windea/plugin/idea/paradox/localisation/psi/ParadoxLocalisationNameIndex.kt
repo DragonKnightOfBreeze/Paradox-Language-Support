@@ -6,8 +6,8 @@ import com.intellij.psi.stubs.*
 import com.intellij.util.CommonProcessors.*
 import com.windea.plugin.idea.paradox.*
 
-object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradoxLocalisation.property.index")
+object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
+	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
 	
 	override fun getKey() = key
 	
@@ -77,33 +77,6 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)
-		for(key in keys) {
-			val group = get(key, project, scope)
-			val nextIndex = index + group.size
-			for(element in group) {
-				val elementLocale = element.paradoxLocale
-				if(locale == null) {
-					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-					if(elementLocale == inferredParadoxLocale) {
-						result.add(index++, element)
-					} else {
-						result.add(element)
-					}
-				} else if(locale == elementLocale) {
-					result.add(element)
-				}
-			}
-			index = nextIndex
-		}
-		return result
-	}
-	
-	fun getAll1(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
-		val result = mutableListOf<ParadoxLocalisationProperty>()
-		var index = 0
-		val processor = CollectProcessor<String>()
-		processAllKeys(project,processor)
-		val keys = processor.results
 		for(key in keys) {
 			val group = get(key, project, scope)
 			val nextIndex = index + group.size

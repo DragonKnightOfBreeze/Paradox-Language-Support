@@ -51,13 +51,13 @@
     ]]></change-notes>
 
   <resource-bundle>messages.ParadoxBundle</resource-bundle>
-  
+
   <extensions defaultExtensionNs="com.intellij">
     <!--region Paradox Core-->
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="com.windea.plugin.idea.paradox.core.ParadoxFileTypeOverrider" order="first"/>
     <renameHandler implementation="com.windea.plugin.idea.paradox.core.refactoring.PsiCheckedRenameHandler"/>
-    
+
     <!--<sdkType implementation="com.windea.plugin.idea.paradox.library.StellarisSdkType"/>-->
     <library.type implementation="com.windea.plugin.idea.paradox.core.library.StellarisLibraryType"/>
 
@@ -68,7 +68,7 @@
     <applicationService
         serviceImplementation="com.windea.plugin.idea.paradox.core.settings.ParadoxSettingsState"/>
     <!--endregion-->
-    
+
     <!--region Paradox Script Language-->
     <fileType
         language="Paradox Script"
@@ -80,10 +80,12 @@
     <lang.parserDefinition
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptParserDefinition"/>
-    <stubElementTypeHolder class="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptStubElementTypes"
-                           externalIdPrefix="paradoxScript."/>
-    <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptVariableKeyIndex"/>
-    <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptPropertyKeyIndex"/>
+    <stubElementTypeHolder
+        class="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptStubElementTypes"
+        externalIdPrefix="paradoxScript."/>
+    <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxDefinitionNameIndex"/>
+    <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptVariableNameIndex"/>
+    <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptLocNameIndex"/>
 
     <lang.syntaxHighlighterFactory
         language="Paradox Script"
@@ -183,7 +185,7 @@
         implementationClass="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationParserDefinition"/>
     <stubElementTypeHolder class="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationStubElementTypes"
                            externalIdPrefix="paradoxLocalisation."/>
-    <stubIndex implementation="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationPropertyKeyIndex"/>
+    <stubIndex implementation="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNameIndex"/>
 
     <lang.syntaxHighlighterFactory
         language="Paradox Localisation"

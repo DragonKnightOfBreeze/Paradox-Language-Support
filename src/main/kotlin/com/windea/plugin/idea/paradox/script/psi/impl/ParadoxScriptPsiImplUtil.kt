@@ -1,6 +1,5 @@
 package com.windea.plugin.idea.paradox.script.psi.impl
 
-import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
@@ -62,7 +61,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptProperty
 	@JvmStatic
 	fun getName(element: ParadoxScriptProperty): String {
-		return element.stub?.key ?: element.propertyKey.text.unquote()
+		return element.stub?.name ?: element.propertyKey.text.unquote()
 	}
 	
 	//TODO 检查是否是项目中的definition，这样才允许重命名

@@ -11,6 +11,10 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 	"PARADOX_LOCALISATION_PROPERTY",
 	ParadoxLocalisationLanguage
 ) {
+	override fun getExternalId(): String {
+		return "paradoxLocalisation.property"
+	}
+	
 	override fun createPsi(stub: ParadoxLocalisationPropertyStub): ParadoxLocalisationProperty {
 		return ParadoxLocalisationPropertyImpl(stub, this)
 	}
@@ -25,10 +29,6 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 		return ParadoxLocalisationPropertyStubImpl(parentStub, key)
 	}
 	
-	override fun getExternalId(): String {
-		return "paradoxLocalisation.property"
-	}
-	
 	override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.key)
 	}
@@ -38,7 +38,7 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 	}
 	
 	override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
-		sink.occurrence(ParadoxLocalisationPropertyKeyIndex.key,stub.key)
+		sink.occurrence(ParadoxLocalisationNameIndex.key,stub.key)
 	}
 	
 	companion object{

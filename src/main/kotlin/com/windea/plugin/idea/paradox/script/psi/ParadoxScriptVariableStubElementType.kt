@@ -11,6 +11,10 @@ class ParadoxScriptVariableStubElementType : ILightStubElementType<ParadoxScript
 	"PARADOX_SCRIPT_VARIABLE",
 	ParadoxScriptLanguage
 ) {
+	override fun getExternalId(): String {
+		return "paradoxScript.variable"
+	}
+	
 	override fun createPsi(stub: ParadoxScriptVariableStub): ParadoxScriptVariable {
 		return ParadoxScriptVariableImpl(stub, this)
 	}
@@ -25,10 +29,6 @@ class ParadoxScriptVariableStubElementType : ILightStubElementType<ParadoxScript
 		return ParadoxScriptVariableStubImpl(parentStub, key)
 	}
 	
-	override fun getExternalId(): String {
-		return "paradoxScript.variable"
-	}
-	
 	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.key)
 	}
@@ -38,7 +38,7 @@ class ParadoxScriptVariableStubElementType : ILightStubElementType<ParadoxScript
 	}
 	
 	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {
-		sink.occurrence(ParadoxScriptVariableKeyIndex.key,stub.key)
+		sink.occurrence(ParadoxScriptVariableNameIndex.key,stub.key)
 	}
 	
 	companion object{

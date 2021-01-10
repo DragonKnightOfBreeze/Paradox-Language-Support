@@ -21,19 +21,19 @@ class ParadoxLocalisationPropertyPsiReference(
 	
 	override fun resolve(): PsiElement? {
 		val name = element.propertyReferenceId?.text?: return null
-		return findLocalisationProperty(name, locale, project)
+		return findLocalisation(name, locale, project)
 	}
 
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val name = element.propertyReferenceId?.text?: return ResolveResult.EMPTY_ARRAY
-		return findLocalisationProperties(name, locale, project).mapArray {
+		return findLocalisations(name, locale, project).mapArray {
 			PsiElementResolveResult(it)
 		}
 	}
 
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
-		return findLocalisationProperties(locale, project).mapArray {
+		return findLocalisations(locale, project).mapArray {
 			val name = it.name
 			val icon = it.getIcon(0)
 			val fileName = it.containingFile.name
@@ -42,7 +42,7 @@ class ParadoxLocalisationPropertyPsiReference(
 	}
 	
 	override fun getCompletionVariants(): Collection<LookupElement> {
-		return findLocalisationProperties(locale, project).map {
+		return findLocalisations(locale, project).map {
 			val name = it.name
 			val icon = it.getIcon(0)
 			val fileName = it.containingFile.name

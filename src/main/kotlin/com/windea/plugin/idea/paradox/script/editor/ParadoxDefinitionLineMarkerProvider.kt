@@ -37,7 +37,7 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 		{ _tooltip(definitionInfo.name.escapeXml(),definitionInfo.type) },
 		{ mouseEvent, _ ->
 			val project = element.project
-			val elements = findScriptProperties(definitionInfo.name,definitionInfo.type,project).toTypedArray()
+			val elements = findDefinitions(definitionInfo.name,definitionInfo.type,project).toTypedArray()
 			when(elements.size) {
 				0 -> {}
 				1 -> OpenSourceUtil.navigate(true, elements.first())

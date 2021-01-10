@@ -47,7 +47,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val project = element.project
 		
 		//注明所有对应名称的脚本属性，或者本地化属性（如果存在）
-		val scriptProperties = findScriptProperties(name, null, project).toTypedArray()
+		val scriptProperties = findDefinitions(name, null, project).toTypedArray()
 		if(scriptProperties.isNotEmpty()) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
@@ -55,7 +55,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				.create()
 			return
 		}
-		val localisationProperties = findLocalisationProperties(name, null, project).toTypedArray()
+		val localisationProperties = findLocalisations(name, null, project).toTypedArray()
 		if(localisationProperties.isNotEmpty()) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)

@@ -5,8 +5,8 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.windea.plugin.idea.paradox.*
 
-object ParadoxScriptPropertyKeyIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradoxScript.property.index")
+object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
+	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definition.name.index")
 	
 	override fun getKey() = key
 	

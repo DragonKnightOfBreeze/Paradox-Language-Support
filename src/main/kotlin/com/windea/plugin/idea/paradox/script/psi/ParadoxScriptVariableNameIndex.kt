@@ -4,12 +4,12 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 
-object ParadoxScriptVariableKeyIndex: StringStubIndexExtension<ParadoxScriptVariable>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradoxScript.variable.index")
+object ParadoxScriptVariableNameIndex: StringStubIndexExtension<ParadoxScriptVariable>() {
+	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.variable.index")
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 1 * 1024
+	override fun getCacheSize() = 256
 	
 	fun getOne(name: String, project: Project, scope: GlobalSearchScope): ParadoxScriptVariable? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptVariable::class.java)

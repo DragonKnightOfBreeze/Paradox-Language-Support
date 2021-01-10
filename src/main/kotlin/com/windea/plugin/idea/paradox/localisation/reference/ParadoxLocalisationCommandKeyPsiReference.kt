@@ -18,18 +18,17 @@ class ParadoxLocalisationCommandKeyPsiReference(
 		return element.setName(newElementName)
 	}
 	
-	//解析为scripted_loc
 	//TODO 不完全 - 有些localisationCommandKey并没有对应的scripted_loc，如GetName
 	
 	override fun resolve(): PsiElement? {
 		val name = element.commandKeyToken?.text?: return null
-		return findScriptProperty(name , "scripted_loc", project)
+		return findScriptLoc(name , project)
 	}
 	
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
 		val icon = localisationCommandKeyIcon
-		return findScriptProperties("scripted_loc", project).mapArray {
+		return findScriptLocs(project).mapArray {
 			val fileName = it.containingFile.name
 			LookupElementBuilder.create(it).withIcon(icon).withTypeText(fileName).withPsiElement(it)
 		}
@@ -37,7 +36,7 @@ class ParadoxLocalisationCommandKeyPsiReference(
 	
 	override fun getCompletionVariants(): Collection<LookupElement> {
 		val icon = localisationCommandKeyIcon
-		return findScriptProperties("scripted_loc", project).map {
+		return findScriptLocs(project).map {
 			val fileName = it.containingFile.name
 			LookupElementBuilder.create(it).withIcon(icon).withTypeText(fileName).withPsiElement(it)
 		}
