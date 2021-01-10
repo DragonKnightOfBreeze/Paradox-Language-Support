@@ -34,6 +34,7 @@
 * [X] 解析规则文件`definitions.yml`的规则`name_from_value`
 * [X] 为`types.yml`规则文件的schema补充描述。
 * [X] 为`locations.yml`规则文件的schema补充描述。
+* [X] 调试可以自动提示commandKey，但暂时不能自动提示localisation，操作被取消（？？？）
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
