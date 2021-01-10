@@ -66,8 +66,8 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  public void checkSetName(@NotNull String name) {
-    ParadoxLocalisationPsiImplUtil.checkSetName(this, name);
+  public void checkRename() {
+    ParadoxLocalisationPsiImplUtil.checkRename(this);
   }
 
   @Override

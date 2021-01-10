@@ -1,4 +1,4 @@
-package com.windea.plugin.idea.paradox.settings
+package com.windea.plugin.idea.paradox.core.settings
 
 import com.intellij.openapi.options.*
 import com.windea.plugin.idea.paradox.message

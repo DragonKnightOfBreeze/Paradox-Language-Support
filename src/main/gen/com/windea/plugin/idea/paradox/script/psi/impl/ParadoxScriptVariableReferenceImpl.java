@@ -47,8 +47,8 @@ public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl i
   }
 
   @Override
-  public void checkSetName(@NotNull String name) {
-    ParadoxScriptPsiImplUtil.checkSetName(this, name);
+  public void checkRename() {
+    ParadoxScriptPsiImplUtil.checkRename(this);
   }
 
   @Override

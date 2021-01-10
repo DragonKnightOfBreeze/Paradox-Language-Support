@@ -8,6 +8,7 @@ import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.script.psi.*
+import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptElementFactory.createPropertyKey
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptElementFactory.createValue
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptElementFactory.createVariableName
 import com.windea.plugin.idea.paradox.script.reference.*
@@ -34,7 +35,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkSetName(element:ParadoxScriptVariable,name:String){
+	fun checkRename(element:ParadoxScriptVariable){
 		
 	}
 	
@@ -68,14 +69,13 @@ object ParadoxScriptPsiImplUtil {
 	//TODO 检查是否是项目中的definition，这样才允许重命名
 	@JvmStatic
 	fun setName(element: ParadoxScriptProperty, name: String): PsiElement {
-		//element.propertyKey.replace(createPropertyKey(element.project, name))
-		//return element
-		throw IncorrectOperationException("Cannot rename this element")
+		element.propertyKey.replace(createPropertyKey(element.project, name))
+		return element
 	}
 	
 	@JvmStatic
-	fun checkSetName(element:ParadoxScriptProperty,name:String){
-		throw IncorrectOperationException("Cannot rename this element")
+	fun checkRename(element:ParadoxScriptProperty){
+		
 	}
 	
 	@JvmStatic
@@ -129,7 +129,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkSetName(element:ParadoxScriptVariableReference,name:String){
+	fun checkRename(element:ParadoxScriptVariableReference){
 		
 	}
 	

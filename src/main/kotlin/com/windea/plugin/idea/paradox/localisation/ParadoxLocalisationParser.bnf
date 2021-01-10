@@ -64,7 +64,7 @@ locale ::= LOCALE_ID ":" {
   pin(".*")=1
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkSetName getNameIdentifier getIcon getParadoxLocale]
+  methods=[getName setName checkRename getNameIdentifier getIcon getParadoxLocale]
 }
 
 property ::= property_key ":" [NUMBER] property_value {
@@ -73,7 +73,7 @@ property ::= property_key ":" [NUMBER] property_value {
   extends="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
   stubClass="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationPropertyStub"
-  methods=[getName setName checkSetName getNameIdentifier getIcon getValue getParadoxLocale]
+  methods=[getName setName checkRename getNameIdentifier getIcon getValue getParadoxLocale]
 }
 property_key ::= PROPERTY_KEY_ID
 property_value ::= LEFT_QUOTE rich_text * RIGHT_QUOTE{
@@ -95,7 +95,7 @@ property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PARAM
   extends=rich_text
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkSetName getNameIdentifier getTextOffset getReference getParadoxColor]
+  methods=[getName setName checkRename getNameIdentifier getTextOffset getReference getParadoxColor]
 }
 private property_reference_name ::= command | PROPERTY_REFERENCE_ID
 private property_reference_param ::= PROPERTY_REFERENCE_PARAMETER
@@ -105,7 +105,7 @@ icon ::= ICON_START icon_name [PARAMETER_SEPARATOR [icon_param]] ICON_END {
   extends=rich_text
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkSetName getNameIdentifier getTextOffset getReference]
+  methods=[getName setName checkRename getNameIdentifier getTextOffset getReference]
 }
 private icon_name ::= command | property_reference | ICON_ID
 private icon_param ::= ICON_PARAMETER | property_reference
@@ -121,12 +121,12 @@ private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_Key {
 command_scope ::= COMMAND_SCOPE_TOKEN{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkSetName getNameIdentifier getReference]
+  methods=[getName setName checkRename getNameIdentifier getReference]
 }
 command_Key ::= property_reference | COMMAND_KEY_TOKEN{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkSetName getNameIdentifier getReference]
+  methods=[getName setName checkRename getNameIdentifier getReference]
 }
 
 serial_number ::= SERIAL_NUMBER_START SERIAL_NUMBER_ID SERIAL_NUMBER_END {
@@ -134,7 +134,7 @@ serial_number ::= SERIAL_NUMBER_START SERIAL_NUMBER_ID SERIAL_NUMBER_END {
   extends=rich_text
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkSetName getNameIdentifier getTextOffset getParadoxSerialNumber]
+  methods=[getName setName checkRename getNameIdentifier getTextOffset getParadoxSerialNumber]
 }
 
 colorful_text ::= COLORFUL_TEXT_START COLOR_CODE rich_text* [COLORFUL_TEXT_END]{
@@ -142,5 +142,5 @@ colorful_text ::= COLORFUL_TEXT_START COLOR_CODE rich_text* [COLORFUL_TEXT_END]{
   extends=rich_text
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkSetName getNameIdentifier getTextOffset getParadoxColor]
+  methods=[getName setName checkRename getNameIdentifier getTextOffset getParadoxColor]
 }

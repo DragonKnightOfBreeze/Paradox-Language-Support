@@ -59,8 +59,8 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   }
 
   @Override
-  public void checkSetName(@NotNull String name) {
-    ParadoxLocalisationPsiImplUtil.checkSetName(this, name);
+  public void checkRename() {
+    ParadoxLocalisationPsiImplUtil.checkRename(this);
   }
 
   @Override

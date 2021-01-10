@@ -52,8 +52,8 @@ public class ParadoxLocalisationCommandKeyImpl extends ParadoxLocalisationNamedE
   }
 
   @Override
-  public void checkSetName(@NotNull String name) {
-    ParadoxLocalisationPsiImplUtil.checkSetName(this, name);
+  public void checkRename() {
+    ParadoxLocalisationPsiImplUtil.checkRename(this);
   }
 
   @Override

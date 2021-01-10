@@ -225,6 +225,12 @@ fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable
 	return file.findDescendantOfType { it.name == name }
 }
 
+fun findScriptVariablesInFile(name: String, file: PsiFile): List<ParadoxScriptVariable> {
+	//在所在文件中递归查找（不一定定义在顶层）
+	//仅查找第一个
+	return findScriptVariableInFile(name,file).toSingletonListOrEmpty()
+}
+
 fun findScriptVariablesInFile(file:PsiFile):List<ParadoxScriptVariable>{
 	//在所在文件中递归查找（不一定定义在顶层）
 	if(file !is ParadoxScriptFile) return emptyList()

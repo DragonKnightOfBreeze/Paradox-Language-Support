@@ -3,9 +3,9 @@ package com.windea.plugin.idea.paradox.localisation.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.script.psi.*
-import com.windea.plugin.idea.paradox.settings.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	companion object {

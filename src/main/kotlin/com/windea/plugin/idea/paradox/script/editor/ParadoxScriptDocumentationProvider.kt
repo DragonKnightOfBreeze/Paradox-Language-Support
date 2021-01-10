@@ -4,10 +4,10 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
 import com.windea.plugin.idea.paradox.script.psi.*
-import com.windea.plugin.idea.paradox.settings.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	companion object {

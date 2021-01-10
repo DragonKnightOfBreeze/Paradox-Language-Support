@@ -10,10 +10,6 @@ object ParadoxScriptPropertyKeyIndex : StringStubIndexExtension<ParadoxScriptPro
 	
 	override fun getKey() = key
 	
-	override fun get(key: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
-		return getAll(key, project = project, scope = scope)
-	}
-	
 	fun getOne(name: String,type:String? = null, project: Project, scope: GlobalSearchScope): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {

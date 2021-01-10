@@ -5,6 +5,7 @@ import com.intellij.codeInsight.documentation.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
@@ -13,6 +14,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
+import com.intellij.refactoring.actions.BaseRefactoringAction.*
 
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
 
@@ -161,4 +163,21 @@ fun String.escapeXml() = StringUtil.escapeXmlEntities(this)
 
 fun StringBuilder.appendPsiLink(refText:String, label:String, plainLink:Boolean=false){
 	DocumentationManagerUtil.createHyperlink(this,refText,label,plainLink)
+}
+
+//com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
+fun DataContext.findElement():PsiElement?{
+	var element = this.getData(CommonDataKeys.PSI_ELEMENT)
+	if(element == null) {
+		val editor = this.getData(CommonDataKeys.EDITOR)
+		val file = this.getData(CommonDataKeys.PSI_FILE)
+		if(editor != null && file != null) {
+			element = getElementAtCaret(editor, file)
+		}
+		val languages = this.getData(LangDataKeys.CONTEXT_LANGUAGES)
+		if(element == null || element is SyntheticElement || languages == null) {
+			return null
+		}
+	}
+	return element
 }

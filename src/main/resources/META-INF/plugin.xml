@@ -51,11 +51,24 @@
     ]]></change-notes>
 
   <resource-bundle>messages.ParadoxBundle</resource-bundle>
-
+  
   <extensions defaultExtensionNs="com.intellij">
+    <!--region Paradox Core-->
     <!--suppress PluginXmlValidity -->
-    <fileTypeOverrider implementation="com.windea.plugin.idea.paradox.ParadoxFileTypeOverrider" order="first"/>
+    <fileTypeOverrider implementation="com.windea.plugin.idea.paradox.core.ParadoxFileTypeOverrider" order="first"/>
+    <renameHandler implementation="com.windea.plugin.idea.paradox.core.refactoring.PsiCheckedRenameHandler"/>
+    
+    <!--<sdkType implementation="com.windea.plugin.idea.paradox.library.StellarisSdkType"/>-->
+    <library.type implementation="com.windea.plugin.idea.paradox.core.library.StellarisLibraryType"/>
 
+    <applicationConfigurable
+        id="settings.language.paradox"
+        groupId="language"
+        instance="com.windea.plugin.idea.paradox.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationService
+        serviceImplementation="com.windea.plugin.idea.paradox.core.settings.ParadoxSettingsState"/>
+    <!--endregion-->
+    
     <!--region Paradox Script Language-->
     <fileType
         language="Paradox Script"
@@ -259,20 +272,6 @@
         groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.invalidFileEncoding"
         enabledByDefault="true" level="WARNING"
         implementationClass="com.windea.plugin.idea.paradox.localisation.inspections.InvalidFileEncodingInspection"/>
-    <!--endregion-->
-
-    <!--region Paradox Settings-->
-    <applicationConfigurable
-        id="settings.language.paradox"
-        groupId="language"
-        instance="com.windea.plugin.idea.paradox.settings.ParadoxSettingsConfigurable"/>
-    <applicationService
-        serviceImplementation="com.windea.plugin.idea.paradox.settings.ParadoxSettingsState"/>
-    <!--endregion-->
-
-    <!--region Paradox Library-->
-    <!--<sdkType implementation="com.windea.plugin.idea.paradox.library.StellarisSdkType"/>-->
-    <library.type implementation="com.windea.plugin.idea.paradox.library.StellarisLibraryType"/>
     <!--endregion-->
   </extensions>
 </idea-plugin>

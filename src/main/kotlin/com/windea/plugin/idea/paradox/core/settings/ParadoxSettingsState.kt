@@ -1,7 +1,6 @@
-package com.windea.plugin.idea.paradox.settings
+package com.windea.plugin.idea.paradox.core.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.*
 
 @State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])

@@ -29,12 +29,12 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationLocale, name: String): PsiElement {
-		throw IncorrectOperationException("Cannot rename this element")
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationLocale,name:String){
-		throw IncorrectOperationException("Cannot rename this element")
+	fun checkRename(element: ParadoxLocalisationLocale){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
@@ -67,7 +67,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationProperty,name:String){
+	fun checkRename(element: ParadoxLocalisationProperty){
 		
 	}
 	
@@ -106,7 +106,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationPropertyReference,name:String){
+	fun checkRename(element: ParadoxLocalisationPropertyReference){
 		
 	}
 	
@@ -147,12 +147,12 @@ object ParadoxLocalisationPsiImplUtil {
 	fun setName(element: ParadoxLocalisationIcon, name: String): PsiElement {
 		//element.iconId?.replace(createIcon(element.project, name).iconId!!)
 		//return element
-		throw IncorrectOperationException("Cannot rename this element")
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationIcon,name:String){
-		throw IncorrectOperationException("Cannot rename this element")
+	fun checkRename(element: ParadoxLocalisationIcon){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
@@ -180,12 +180,12 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandScope, name: String): PsiElement {
-		throw IncorrectOperationException("Cannot rename this element")
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationCommandScope,name:String){
-		throw IncorrectOperationException("Cannot rename this element")
+	fun checkRename(element: ParadoxLocalisationCommandScope){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
@@ -209,12 +209,12 @@ object ParadoxLocalisationPsiImplUtil {
 	//TODO 只有项目中的commandKey才能重命名，同时更改scripted_loc的name
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandKey, name: String): PsiElement {
-		throw IncorrectOperationException("Cannot rename this element")
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationCommandKey,name:String){
-		throw IncorrectOperationException("Cannot rename this element")
+	fun checkRename(element: ParadoxLocalisationCommandKey){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
@@ -237,12 +237,12 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationSerialNumber, name: String): PsiElement {
-		throw IncorrectOperationException("Cannot rename this element")
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationSerialNumber,name:String){
-		throw IncorrectOperationException("Cannot rename this element")
+	fun checkRename(element: ParadoxLocalisationSerialNumber){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
@@ -269,12 +269,12 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationColorfulText, name: String): PsiElement {
-		throw IncorrectOperationException("Cannot rename this element")
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun checkSetName(element: ParadoxLocalisationColorfulText,name:String){
-		throw IncorrectOperationException("Cannot rename this element")
+	fun checkRename(element: ParadoxLocalisationColorfulText){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic

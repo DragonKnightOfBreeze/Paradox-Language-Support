@@ -17,7 +17,7 @@ public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationName
   @NotNull
   PsiElement setName(@NotNull String name);
 
-  void checkSetName(@NotNull String name);
+  void checkRename();
 
   @NotNull
   PsiElement getNameIdentifier();

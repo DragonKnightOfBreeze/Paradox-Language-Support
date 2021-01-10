@@ -26,7 +26,7 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   @NotNull
   PsiElement setName(@NotNull String name);
 
-  void checkSetName(@NotNull String name);
+  void checkRename();
 
   @NotNull
   PsiElement getNameIdentifier();

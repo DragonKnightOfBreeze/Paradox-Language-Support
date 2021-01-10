@@ -1,8 +1,6 @@
-package com.windea.plugin.idea.paradox.library
+package com.windea.plugin.idea.paradox.core.library
 
-import com.intellij.openapi.components.*
 import com.intellij.openapi.roots.libraries.*
-import com.intellij.util.xmlb.*
 
 //不知道是否应该保留，反正就这样吧
 

@@ -7,10 +7,10 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.highlighter.*
 import com.windea.plugin.idea.paradox.script.highlighter.*
 import com.windea.plugin.idea.paradox.script.psi.*
-import com.windea.plugin.idea.paradox.settings.*
 
 class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private val state = ParadoxSettingsState.getInstance()

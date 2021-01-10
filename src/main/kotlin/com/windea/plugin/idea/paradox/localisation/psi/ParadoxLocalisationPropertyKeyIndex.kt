@@ -1,5 +1,6 @@
 package com.windea.plugin.idea.paradox.localisation.psi
 
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
@@ -12,10 +13,6 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradoxLocalisation.property.index")
 	
 	override fun getKey() = key
-	
-	override fun get(key: String, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
-		return getAll(key, null, project, scope, false)
-	}
 	
 	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,defaultToFirst:Boolean): ParadoxLocalisationProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
@@ -77,43 +74,38 @@ object ParadoxLocalisationPropertyKeyIndex : StringStubIndexExtension<ParadoxLoc
 		return result
 	}
 	
-	class KeysProcessor: CollectProcessor<StubIndexKey<String, ParadoxLocalisationProperty>>()
-	
-	fun getAll1(names:Iterable<String>,locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,keepOrder:Boolean): List<ParadoxLocalisationProperty> {
+	fun getAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
+		ProgressManager.checkCanceled()
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
-		
 		val keys = getAllKeys(project)
 		for(key in keys) {
-			if(key in names) {
-				val group = get(key, project, scope)
-				val nextIndex = index + group.size
-				for(element in group) {
-					val elementLocale = element.paradoxLocale
-					if(locale == null) {
-						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-						if(elementLocale == inferredParadoxLocale) {
-							result.add(index++, element)
-						} else {
-							result.add(element)
-						}
+			val group = get(key, project, scope)
+			val nextIndex = index + group.size
+			for(element in group) {
+				val elementLocale = element.paradoxLocale
+				if(locale == null) {
+					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
+					if(elementLocale == inferredParadoxLocale) {
+						result.add(index++, element)
 					} else {
-						if(locale == elementLocale) {
-							result.add(element)
-						}
+						result.add(element)
 					}
+				} else if(locale == elementLocale) {
+					result.add(element)
 				}
-				index = nextIndex
 			}
+			index = nextIndex
 		}
-		if(keepOrder) result.sortBy { names.indexOf(it.name) }
 		return result
 	}
 	
-	fun getAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
+	fun getAll1(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
-		val keys = getAllKeys(project)
+		val processor = CollectProcessor<String>()
+		processAllKeys(project,processor)
+		val keys = processor.results
 		for(key in keys) {
 			val group = get(key, project, scope)
 			val nextIndex = index + group.size
