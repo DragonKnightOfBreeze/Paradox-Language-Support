@@ -21,6 +21,9 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
   @NotNull
   String getName();
 
+  @NotNull
+  PsiElement setName(@NotNull String name);
+
   int getTextOffset();
 
   @Nullable

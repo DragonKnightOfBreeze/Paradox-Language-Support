@@ -11,7 +11,7 @@ import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.
 class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
 	override fun getTokenizer(element: PsiElement): Tokenizer<*> {
 		return when(element.elementType) {
-			PROPERTY_KEY_ID,COMMAND_KEY, ICON_ID -> TEXT_TOKENIZER
+			PROPERTY_KEY_ID,COMMAND_SCOPE,COMMAND_KEY, ICON_ID -> TEXT_TOKENIZER
 			STRING_TOKEN -> TEXT_TOKENIZER
 			COMMENT,ROOT_COMMENT,END_OF_LINE_COMMENT -> TEXT_TOKENIZER
 			else -> EMPTY_TOKENIZER

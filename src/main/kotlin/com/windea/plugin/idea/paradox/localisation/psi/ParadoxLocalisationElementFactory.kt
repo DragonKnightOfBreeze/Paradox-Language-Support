@@ -2,7 +2,9 @@ package com.windea.plugin.idea.paradox.localisation.psi
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.localisation.*
+import org.jetbrains.annotations.*
 
 object ParadoxLocalisationElementFactory {
 	@JvmStatic
@@ -48,5 +50,17 @@ object ParadoxLocalisationElementFactory {
 	@JvmStatic
 	fun createColorfulText(project: Project, name: String,value:String = ""): ParadoxLocalisationColorfulText {
 		return createPropertyValue(project, "§$name$value§!").richTextList.first() as ParadoxLocalisationColorfulText
+	}
+	
+	@JvmStatic
+	fun createCommandScope(project: Project, name: String): @Nullable ParadoxLocalisationCommandScope {
+		val command = createPropertyValue(project, "[$name.GetName]").richTextList.first() as ParadoxLocalisationCommand
+		return PsiTreeUtil.getChildOfType(command,ParadoxLocalisationCommandScope::class.java)!!
+	}
+	
+	@JvmStatic
+	fun createCommandKey(project: Project, name: String): @Nullable ParadoxLocalisationCommandKey {
+		val command = createPropertyValue(project, "[$name]").richTextList.first() as ParadoxLocalisationCommand
+		return PsiTreeUtil.getChildOfType(command,ParadoxLocalisationCommandKey::class.java)!!
 	}
 }

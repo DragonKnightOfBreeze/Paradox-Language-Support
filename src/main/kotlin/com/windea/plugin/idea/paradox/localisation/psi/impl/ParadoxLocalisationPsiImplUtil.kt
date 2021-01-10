@@ -1,18 +1,16 @@
-@file:Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER")
-
 package com.windea.plugin.idea.paradox.localisation.psi.impl
 
-import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
+import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createCommandKey
+import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createCommandScope
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
 import com.windea.plugin.idea.paradox.localisation.reference.*
-import com.windea.plugin.idea.paradox.script.psi.*
 import javax.swing.*
 
 //NOTE getName 确定进行重构和导航时显示的PsiElement的名字
@@ -20,6 +18,7 @@ import javax.swing.*
 //NOTE getTextOffset 确定选中一个PsiElement时，哪一部分会高亮显示
 //NOTE getReference 确定选中一个PsiElement时，哪些其他的PsiElement会同时高亮显示
 
+@Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationLocale
 	@JvmStatic
@@ -33,7 +32,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationLocale){
+	fun checkRename(element: ParadoxLocalisationLocale) {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
@@ -56,7 +55,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationProperty
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationProperty): String {
-		return element.stub?.key?: element.propertyKey.text
+		return element.stub?.key ?: element.propertyKey.text
 	}
 	
 	//TODO 检查是否是项目中的localisation，这样才允许重命名
@@ -67,7 +66,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationProperty){
+	fun checkRename(element: ParadoxLocalisationProperty) {
 		
 	}
 	
@@ -94,18 +93,24 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	//region ParadoxLocalisationPropertyReference
 	@JvmStatic
-	fun getName(element: ParadoxLocalisationPropertyReference): String {
-		return element.propertyReferenceId?.text.orEmpty()
-	}
-	
-	@JvmStatic
 	fun getTextOffset(element: ParadoxLocalisationPropertyReference): Int {
 		return element.startOffset + 1
 	}
 	
 	@JvmStatic
+	fun getName(element: ParadoxLocalisationPropertyReference): String {
+		return element.propertyReferenceId?.text.orEmpty()
+	}
+	
+	@JvmStatic
+	fun setName(element: ParadoxLocalisationPropertyReference, name: String): PsiElement {
+		element.propertyReferenceId?.replace(createPropertyReference(element.project, name).propertyReferenceId!!)
+		return element
+	}
+	
+	@JvmStatic
 	fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPropertyPsiReference? {
-		val propertyReferenceId = element.propertyReferenceId?:return null
+		val propertyReferenceId = element.propertyReferenceId ?: return null
 		return ParadoxLocalisationPropertyPsiReference(element, propertyReferenceId.textRangeInParent)
 	}
 	
@@ -134,7 +139,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationIcon){
+	fun checkRename(element: ParadoxLocalisationIcon) {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
@@ -150,12 +155,12 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationIcon): ParadoxLocalisationIconPsiReference? {
-		val iconId = element.iconId?:return null
-		return ParadoxLocalisationIconPsiReference(element,iconId.textRangeInParent)
+		val iconId = element.iconId ?: return null
+		return ParadoxLocalisationIconPsiReference(element, iconId.textRangeInParent)
 	}
 	//endregion
 	
-	//region ParadoxLocalisationCommandKey
+	//region ParadoxLocalisationCommandScope
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationCommandScope): String {
 		return element.text
@@ -175,8 +180,14 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun setName(element: ParadoxLocalisationCommandKey, name: String): PsiElement {
+		element.commandKeyToken?.replace(createCommandKey(element.project, name).commandKeyToken!!)
+		return element
+	}
+	
+	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandKey): ParadoxLocalisationCommandKeyPsiReference? {
-		val commandKeyToken = element.commandKeyToken?:return null
+		val commandKeyToken = element.commandKeyToken ?: return null
 		return ParadoxLocalisationCommandKeyPsiReference(element, commandKeyToken.textRangeInParent)
 	}
 	//endregion
@@ -193,7 +204,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationSerialNumber){
+	fun checkRename(element: ParadoxLocalisationSerialNumber) {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
@@ -225,7 +236,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationColorfulText){
+	fun checkRename(element: ParadoxLocalisationColorfulText) {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	

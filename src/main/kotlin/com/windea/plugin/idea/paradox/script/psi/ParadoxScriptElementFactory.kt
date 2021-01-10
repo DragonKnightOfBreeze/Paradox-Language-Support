@@ -2,6 +2,7 @@ package com.windea.plugin.idea.paradox.script.psi
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.script.*
 
 object ParadoxScriptElementFactory {

@@ -93,7 +93,7 @@ escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN{
 property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PARAMETER_SEPARATOR [property_reference_param]] PROPERTY_REFERENCE_END {
   pin=1
   extends=rich_text
-  methods=[getName getTextOffset getReference getParadoxColor]
+  methods=[getName setName getTextOffset getReference getParadoxColor]
 }
 private property_reference_name ::= command | PROPERTY_REFERENCE_ID
 private property_reference_param ::= PROPERTY_REFERENCE_PARAMETER
@@ -120,7 +120,7 @@ command_scope ::= COMMAND_SCOPE_TOKEN{
   methods=[getName getReference]
 }
 command_Key ::= property_reference | COMMAND_KEY_TOKEN{
-  methods=[getName getReference]
+  methods=[getName setName getReference]
 }
 
 serial_number ::= SERIAL_NUMBER_START SERIAL_NUMBER_ID SERIAL_NUMBER_END {

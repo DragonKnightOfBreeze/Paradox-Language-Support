@@ -17,6 +17,9 @@ public interface ParadoxLocalisationCommandKey extends PsiElement {
   @Nullable
   String getName();
 
+  @NotNull
+  PsiElement setName(@NotNull String name);
+
   @Nullable
   ParadoxLocalisationCommandKeyPsiReference getReference();
 

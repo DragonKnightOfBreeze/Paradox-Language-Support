@@ -47,6 +47,12 @@ public class ParadoxLocalisationCommandKeyImpl extends ASTWrapperPsiElement impl
   }
 
   @Override
+  @NotNull
+  public PsiElement setName(@NotNull String name) {
+    return ParadoxLocalisationPsiImplUtil.setName(this, name);
+  }
+
+  @Override
   @Nullable
   public ParadoxLocalisationCommandKeyPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);

@@ -83,7 +83,11 @@ fun String.containsBlankLine(): Boolean {
 
 fun String.quote() = if(startsWith('"') && endsWith('"')) this else "\"$this\""
 
-fun String.quoteIfNecessary() = if(this.containsBlank()) quote() else this
+fun String.quoteIfNecessary() = if(containsBlank()) quote() else this
+
+private val wildcardBooleanValues = arrayOf("true","false","yes","no")
+
+fun String.quoteAsStringLike() = if(this in wildcardBooleanValues || isNumber() || containsBlank()) quote() else this
 
 fun String.onlyQuoteIfNecessary() = this.unquote().quoteIfNecessary()
 

@@ -13,10 +13,6 @@ class ParadoxScriptVariablePsiReference(
 	private val project = element.project
 	private val file = element.containingFile
 	
-	override fun handleElementRename(newElementName: String): PsiElement {
-		return element.setName(newElementName)
-	}
-	
 	override fun resolve(): ParadoxScriptVariable? {
 		//首先尝试从当前文件中查找引用，然后从全局范围中查找引用
 		val name = element.variableReferenceId.text

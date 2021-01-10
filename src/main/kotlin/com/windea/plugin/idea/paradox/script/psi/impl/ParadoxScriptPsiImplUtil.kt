@@ -1,10 +1,7 @@
-@file:Suppress("UNUSED_PARAMETER", "UNUSED_DESTRUCTURED_PARAMETER_ENTRY", "IntroduceWhenSubject", "MoveVariableDeclarationIntoWhen")
-
 package com.windea.plugin.idea.paradox.script.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.script.psi.*
@@ -21,6 +18,7 @@ import kotlin.collections.component2
 import kotlin.collections.component3
 import kotlin.collections.component4
 
+@Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptVariable
 	@JvmStatic
@@ -123,6 +121,12 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun setName(element: ParadoxScriptVariableReference, name: String): PsiElement {
+		element.replace(createValue(element.project, name))
+		return element
+	}
+	
+	@JvmStatic
 	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptVariablePsiReference {
 		return ParadoxScriptVariablePsiReference(element, TextRange(0, element.textLength))
 	}
@@ -170,6 +174,12 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getValue(element: ParadoxScriptString): String {
 		return element.text.unquote()
+	}
+	
+	@JvmStatic
+	fun setValue(element: ParadoxScriptString, name: String): PsiElement {
+		element.replace(createValue(element.project, name.quoteAsStringLike()))
+		return element
 	}
 	
 	@JvmStatic
