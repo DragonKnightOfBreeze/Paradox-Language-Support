@@ -188,9 +188,9 @@ fun JarFile.toJarEntries(): Map<String, JarEntry> {
 		.collect(Collectors.toMap({ it.name.removePrefix(pathPrefix) },{it}))
 }
 
-fun JarFile.toJarDirectoryEntryMap(pathPrefix:String): Map<String, MutableList<JarEntry>> {
+fun JarFile.toJarDirectoryEntryMap(pathPrefix:String,fileExtension:String): Map<String, MutableList<JarEntry>> {
 	return this.stream()
-		.filter { it.name.startsWith(pathPrefix) && !it.isDirectory }
+		.filter { !it.isDirectory && it.name.startsWith(pathPrefix) && it.name.endsWith(fileExtension) }
 		.collect(Collectors.groupingBy { it.name.removePrefix(pathPrefix).substringBefore('/',"") })
 }
 

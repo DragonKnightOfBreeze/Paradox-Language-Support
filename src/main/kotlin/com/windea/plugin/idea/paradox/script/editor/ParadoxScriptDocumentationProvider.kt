@@ -19,20 +19,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private val state = ParadoxSettingsState.getInstance()
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
-		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_TOKEN) return getCommandFieldInfo(originalElement)
+		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_TOKEN) return getScriptedLocInfo(originalElement)
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			else -> null
-		}
-	}
-	
-	private fun getCommandFieldInfo(element: PsiElement): String {
-		return buildString {
-			definition {
-				append("(localisation command field) <b>").append(element.text).append("</b>")
-			}
 		}
 	}
 	
@@ -76,21 +68,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getScriptedLocInfo(element: PsiElement): String {
+		val name = element.text
+		return buildString {
+			definition {
+				append("(localisation command field) <b>").append(name).append("</b>")
+				append("<br>")
+				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append("scripted_loc")
+			}
+		}
+	}
+	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
-		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_TOKEN) return getCommandFieldDoc(originalElement)
+		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_TOKEN) return getScriptedLocDoc(originalElement)
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			else -> null
-		}
-	}
-	
-	private fun getCommandFieldDoc(element: PsiElement): String {
-		return buildString {
-			definition {
-				append("(localisation command field) <b>").append(element.text).append("</b>")
-			}
 		}
 	}
 	
@@ -169,6 +164,17 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getScriptedLocDoc(element: PsiElement): String {
+		val name = element.text
+		return buildString {
+			definition {
+				append("(localisation command field) <b>").append(name).append("</b>")
+				append("<br>")
+				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append("scripted_loc")
+			}
+		}
+	}
+	
 	//private fun getPropertySections(element: ParadoxScriptProperty,name:String): Map<String, String> {
 	//	val project = element.project
 	//	val scope = element.resolveScope
@@ -239,7 +245,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
-		return findDefinition(link,null,context.project)
+		return findDefinition(link, null, context.project)
 	}
 	
 	private fun getLocale(element: PsiElement): ParadoxLocale? {

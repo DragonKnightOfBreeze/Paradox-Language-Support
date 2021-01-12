@@ -19,6 +19,14 @@
       <option name="PARADOX_LOCALISATION" value="true"/>
     </context>
   </template>
+  <template name="scommand"
+            value="[$SELECTION$]"
+            description="Surround with command markers"
+            toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="PARADOX_LOCALISATION" value="true"/>
+    </context>
+  </template>
   <template name="ref"
             value="$DELIMITER$$TEXT$$DELIMITER$$END$"
             description="Insert a property reference fragment"
@@ -41,9 +49,9 @@
       <option name="PARADOX_LOCALISATION" value="true"/>
     </context>
   </template>
-  <template name="code"
+  <template name="command"
             value="[$TEXT$]$END$"
-            description="Insert an inline code fragment"
+            description="Insert an command fragment"
             toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
@@ -52,7 +60,7 @@
   </template>
   <template name="icon"
             value="£$TEXT$£$END$"
-            description="Insert an inline icon fragment"
+            description="Insert an icon fragment"
             toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>

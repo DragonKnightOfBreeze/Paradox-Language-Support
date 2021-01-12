@@ -28,40 +28,29 @@ object ParadoxRuleGroupProvider {
 	
 	private fun addRuleGroups() {
 		val jarFile = "rules".toJarFile()
-		val jarEntries = jarFile.toJarDirectoryEntryMap("rules/")
+		val jarEntries = jarFile.toJarDirectoryEntryMap("rules/",".yml")
 		val concurrent = jarEntries.size
 		//添加规则组
-		val executor = Executors.newFixedThreadPool(concurrent)
-		val countDown = CountDownLatch(concurrent)
 		for((name,entries) in jarEntries) {
 			try {
-				executor.submit {
-					//添加规则组
-					val groupName = if(name.isEmpty()) "core" else name
-					val group = mutableMapOf<String, Map<String, Any>>()
-					for(entry in entries) {
-						val fileName = entry.name.substringAfter('/')
-						if(fileName.endsWith(".yml")) {
-							val ruleName = fileName.substringBeforeLast('.')
-							val rule = getRule(jarFile.getInputStream(entry))
-							group[ruleName] = rule
-						}
-					}
-					ruleGroups[groupName] = ParadoxRuleGroup(group)
-					countDown.countDown()
+				//添加规则组
+				val groupName = if(name.isEmpty()) "core" else name
+				val group = mutableMapOf<String, Map<String, Any>>()
+				for(entry in entries) {
+					val rule = getRule(jarFile.getInputStream(entry))
+					group.putAll(rule)
 				}
+				ruleGroups[groupName] = ParadoxRuleGroup(group)
 			} catch(e: Exception) {
 				e.printStackTrace()
 			}
 		}
-		countDown.await()
 	}
 	
 	private fun getRule(inputStream: InputStream): Map<String, Map<String, Any>> {
 		try {
 			return extractRule(inputStream)
 		} catch(e: Exception) {
-			e.printStackTrace()
 			return emptyMap()
 		}
 	}
