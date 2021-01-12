@@ -36,12 +36,14 @@
 * [X] 为`locations.yml`规则文件的schema补充描述。
 * [X] 调试可以自动提示commandKey，但暂时不能自动提示localisation，操作被取消（？？？）
 * [X] 移除标准库后，调试可以自动提示localisation，怀疑是调试环境性能原因
+* [X] 修复规则文件`locations.yml`解析代码中的bug
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
+* [ ] 解析规则文件`definitions.yml`的规则`predicate`
+* [ ] 解析规则文件`definitions.yml`的规则`subTypes`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
-* [ ] 解析规则文件`definition.yml`的规则`subTypes`
+* [ ] 解析规则文件`definitions.yml`的规则`type_per_file`
 * [ ] 编写规则文件`enums.yml`
-* [ ] 编写规则文件`definitions.yml`
 * [ ] 修复图标能加载但不能正常渲染的bug（IDE新版本底层代码错误？）
 * [ ] 初步实现功能：添加模块（基于游戏类型）
 * [ ] 让`scriptRootBlock`直接或间接继承自`scriptProperty`

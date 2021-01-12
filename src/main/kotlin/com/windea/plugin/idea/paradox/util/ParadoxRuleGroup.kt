@@ -30,10 +30,10 @@ class ParadoxRuleGroup(
 					if(!name.matchesPath(path.parent)) return false
 				}
 			}
-			val fileExtensionData = get("file_extension") as String? ?: "txt"
-			if(fileExtensionData != path.fileExtension) return false
 			val fileExtensionsData = get("file_extensions") as List<String>?
 			if(fileExtensionsData != null && !fileExtensionsData.contains(path.fileExtension)) return false
+			val fileExtensionData = get("file_extension") as String? ?: "txt"
+			if(fileExtensionData != path.fileExtension) return false
 			val fileNameData = get("file_name") as String?
 			if(fileNameData != null && fileNameData != path.fileName) return false
 			val fileNamesData = get("file_names") as List<String>?
@@ -41,6 +41,7 @@ class ParadoxRuleGroup(
 			return true
 		}
 	}
+	
 	//TODO subtypes以及subtypes的predicate
 	class Type(
 		key: String, data: Map<String, Any>
