@@ -47,7 +47,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getParadoxLocale(element: ParadoxLocalisationLocale): ParadoxLocale? {
-		return ParadoxLocale.map[element.name]
+		return paradoxLocaleMap[element.name]
 	}
 	//endregion
 	
@@ -117,7 +117,7 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getParadoxColor(element: ParadoxLocalisationPropertyReference): ParadoxColor? {
 		val colorCode = element.propertyReferenceParameter?.text?.firstOrNull()
 		if(colorCode != null && colorCode.isUpperCase()) {
-			return ParadoxColor.map[colorCode.toString()]
+			return paradoxColorMap[colorCode.toString()]
 		}
 		return null
 	}
@@ -185,6 +185,11 @@ object ParadoxLocalisationPsiImplUtil {
 		val commandScopeToken = element.commandScopeToken
 		return ParadoxLocalisationCommandScopePsiReference(element, commandScopeToken.textRangeInParent)
 	}
+	
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationCommandScope, @IconFlags flags: Int): Icon {
+		return localisationCommandScopeIcon
+	}
 	//endregion
 	
 	//region ParadoxLocalisationCommandField
@@ -212,6 +217,11 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
 		val commandFieldToken = element.commandFieldToken ?: return null
 		return ParadoxLocalisationCommandFieldPsiReference(element, commandFieldToken.textRangeInParent)
+	}
+	
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationCommandField, @IconFlags flags: Int): Icon {
+		return localisationCommandFieldIcon
 	}
 	//endregion
 	
@@ -243,7 +253,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getParadoxSerialNumber(element: ParadoxLocalisationSerialNumber): ParadoxSerialNumber? {
-		return ParadoxSerialNumber.map[element.name]
+		return paradoxSerialNumberMap[element.name]
 	}
 	//endregion
 	
@@ -275,7 +285,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getParadoxColor(element: ParadoxLocalisationColorfulText): ParadoxColor? {
-		return ParadoxColor.map[element.name]
+		return paradoxColorMap[element.name]
 	}
 	//endregion
 }

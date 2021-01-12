@@ -2,7 +2,6 @@ package com.windea.plugin.idea.paradox
 
 import com.intellij.util.ui.*
 import java.awt.*
-import java.util.*
 
 //File
 
@@ -78,6 +77,7 @@ data class ParadoxDefinitionInfo(
 }
 
 //Localisation
+//rules/core/enums.yml
 
 class ParadoxLocale(data:Map<String,Any>) {
 	val name:String by data

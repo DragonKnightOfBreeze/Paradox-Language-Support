@@ -112,18 +112,18 @@ command ::= COMMAND_START command_expression? COMMAND_END{
   extends=rich_text
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationRichText"
 }
-private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_Key {
+private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_field {
   pin(".*")=1
 }
 command_scope ::= COMMAND_SCOPE_TOKEN{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getReference]
+  methods=[getName setName checkRename getNameIdentifier getReference getIcon]
 }
-command_Key ::= property_reference | COMMAND_FIELD_TOKEN{
+command_field ::= property_reference | COMMAND_FIELD_TOKEN{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getReference]
+  methods=[getName setName checkRename getNameIdentifier getReference getIcon]
 }
 
 serial_number ::= SERIAL_NUMBER_START SERIAL_NUMBER_ID SERIAL_NUMBER_END {

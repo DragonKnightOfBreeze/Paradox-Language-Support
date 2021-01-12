@@ -2,6 +2,7 @@
 
 package com.windea.plugin.idea.paradox.localisation.psi;
 
+import com.intellij.lexer.*;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 

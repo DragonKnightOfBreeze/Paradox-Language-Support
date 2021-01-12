@@ -27,7 +27,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
-		val icon = localisationCommandFieldIcon
+		val icon = scriptedLocIcon
 		return findScriptLocs(project).mapArray {
 			val fileName = it.containingFile.name
 			LookupElementBuilder.create(it).withIcon(icon).withTypeText(fileName).withPsiElement(it)
@@ -35,7 +35,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	}
 	
 	override fun getCompletionVariants(): Collection<LookupElement> {
-		val icon = localisationCommandFieldIcon
+		val icon = scriptedLocIcon
 		return findScriptLocs(project).map {
 			val fileName = it.containingFile.name
 			LookupElementBuilder.create(it).withIcon(icon).withTypeText(fileName).withPsiElement(it)

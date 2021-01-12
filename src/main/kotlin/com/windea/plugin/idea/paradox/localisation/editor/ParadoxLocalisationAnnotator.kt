@@ -65,7 +65,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//如果是属性引用，需要为属性引用参数加上对应的颜色
 		val color = element.paradoxColor
 		if(color != null) {
-			val colorId = color.key
+			val colorId = color.name
 			val e = element.propertyReferenceParameter
 			if(e != null) {
 				val startOffset = e.startOffset

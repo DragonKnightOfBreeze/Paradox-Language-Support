@@ -6,6 +6,8 @@ import java.io.*
 import java.net.*
 import java.nio.file.*
 import java.util.*
+import java.util.jar.*
+import java.util.stream.*
 import javax.swing.*
 
 fun Boolean.toInt() = if(this) 1 else 0
@@ -173,7 +175,27 @@ infix fun String.matchesPath(other: String): Boolean {
 	return false
 }
 
-//Specific Models And Extensions
+//Jar Extensions
+
+fun String.toJarFile():JarFile{
+	return ("".toClassPathResource()!!.openConnection() as JarURLConnection).jarFile
+}
+
+fun JarFile.toJarEntries(): Map<String, JarEntry> {
+	val pathPrefix = "$this/"
+	return this.stream()
+		.filter { it.name.startsWith(pathPrefix) && !it.isDirectory }
+		.collect(Collectors.toMap({ it.name.removePrefix(pathPrefix) },{it}))
+}
+
+fun JarFile.toJarDirectoryEntryMap(): Map<String, MutableList<JarEntry>> {
+	val pathPrefix = "$this/"
+	return this.stream()
+		.filter { it.name.startsWith(pathPrefix) && !it.isDirectory }
+		.collect(Collectors.groupingBy { it.name.removePrefix(pathPrefix).substringBefore('/',"") })
+}
+
+//Expression Extensions
 
 class ConditionalKey(
 	val expression: String

@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
+import javax.swing.*
 
 object ChangeLocaleIntention : IntentionAction {
 	private val _name = message("paradox.localisation.intention.changeLocale")
@@ -39,6 +40,8 @@ object ChangeLocaleIntention : IntentionAction {
 		values: Array<ParadoxLocale>
 	) : BaseListPopupStep<ParadoxLocale>(_title, *values) {
 		override fun getTextFor(value: ParadoxLocale) = value.popupText
+		
+		override fun getIconFor(value: ParadoxLocale?) = localisationLocaleIcon
 		
 		override fun getDefaultOptionIndex() = 0
 		

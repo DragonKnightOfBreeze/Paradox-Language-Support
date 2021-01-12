@@ -1,6 +1,5 @@
 package com.windea.plugin.idea.paradox.script.psi;
 
-import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
@@ -11,7 +10,7 @@ import static com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*;
 
 %public
 %class ParadoxScriptLexer
-%implements FlexLexer
+%implements com.intellij.lexer.FlexLexer
 %function advance
 %type IElementType
 %unicode

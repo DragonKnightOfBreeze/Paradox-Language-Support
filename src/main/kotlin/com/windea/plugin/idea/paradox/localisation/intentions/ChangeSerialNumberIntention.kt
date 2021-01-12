@@ -30,7 +30,7 @@ object ChangeSerialNumberIntention : IntentionAction {
 		if(editor == null || file == null) return
 		val element = file.findElementAt(editor.caretModel.offset)?.parent
 		if(element is ParadoxLocalisationSerialNumber) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, ParadoxSerialNumber.values)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, paradoxSerialNumbers)).showInBestPositionFor(editor)
 		}
 	}
 	

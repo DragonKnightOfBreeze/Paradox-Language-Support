@@ -12,7 +12,7 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
 
 %public
 %class ParadoxLocalisationLexer
-%implements FlexLexer
+%implements com.intellij.lexer.FlexLexer
 %function advance
 %type IElementType
 %unicode

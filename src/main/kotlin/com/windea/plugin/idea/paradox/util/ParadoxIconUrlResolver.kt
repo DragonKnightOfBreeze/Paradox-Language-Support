@@ -26,7 +26,9 @@ object ParadoxIconUrlResolver {
 	private val urlCache = ConcurrentHashMap<String, String>()
 	private val executor = Executors.newCachedThreadPool()
 	private val doResolveCache = CopyOnWriteArraySet<String>()
-
+	
+	private const val paradoxwikisUrl = "https://paradox.paradoxwikis.com"
+	private const val huijiwikiUrl = "https://qunxing.huijiwiki.com"
 	private const val unknownIconUrl = "https://huiji-public.huijistatic.com/qunxing/uploads/d/dd/Unknown.png"
 	
 	fun resolve(name: String,defaultToUnknown:Boolean=true): String {

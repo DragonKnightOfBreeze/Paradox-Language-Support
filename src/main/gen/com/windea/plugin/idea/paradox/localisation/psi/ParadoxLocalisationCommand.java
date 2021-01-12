@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText {
 
   @Nullable
-  ParadoxLocalisationCommandKey getCommandKey();
+  ParadoxLocalisationCommandField getCommandField();
 
   @NotNull
   List<ParadoxLocalisationCommandScope> getCommandScopeList();

@@ -17,7 +17,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     // visitRichText(o);
   }
 
-  public void visitCommandKey(@NotNull ParadoxLocalisationCommandKey o) {
+  public void visitCommandField(@NotNull ParadoxLocalisationCommandField o) {
     visitNamedElement(o);
   }
 

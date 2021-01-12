@@ -10,7 +10,7 @@ public interface ParadoxLocalisationTypes {
 
   IElementType COLORFUL_TEXT = new ParadoxLocalisationElementType("COLORFUL_TEXT");
   IElementType COMMAND = new ParadoxLocalisationElementType("COMMAND");
-  IElementType COMMAND_KEY = new ParadoxLocalisationElementType("COMMAND_KEY");
+  IElementType COMMAND_FIELD = new ParadoxLocalisationElementType("COMMAND_FIELD");
   IElementType COMMAND_SCOPE = new ParadoxLocalisationElementType("COMMAND_SCOPE");
   IElementType ESCAPE = new ParadoxLocalisationElementType("ESCAPE");
   IElementType ICON = new ParadoxLocalisationElementType("ICON");
@@ -65,8 +65,8 @@ public interface ParadoxLocalisationTypes {
       else if (type == COMMAND) {
         return new ParadoxLocalisationCommandImpl(node);
       }
-      else if (type == COMMAND_KEY) {
-        return new ParadoxLocalisationCommandKeyImpl(node);
+      else if (type == COMMAND_FIELD) {
+        return new ParadoxLocalisationCommandFieldImpl(node);
       }
       else if (type == COMMAND_SCOPE) {
         return new ParadoxLocalisationCommandScopeImpl(node);

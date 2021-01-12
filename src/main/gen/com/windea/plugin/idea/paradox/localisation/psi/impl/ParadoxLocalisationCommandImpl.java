@@ -29,8 +29,8 @@ public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextI
 
   @Override
   @Nullable
-  public ParadoxLocalisationCommandKey getCommandKey() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationCommandKey.class);
+  public ParadoxLocalisationCommandField getCommandField() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationCommandField.class);
   }
 
   @Override

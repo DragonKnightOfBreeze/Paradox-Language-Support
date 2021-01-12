@@ -39,21 +39,6 @@ const val paradoxBundleName = "messages.ParadoxBundle"
 val localisationFileExtensions = arrayOf("yml") //暂时不包括*.yaml文件
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings","cwt") //兼容cwtools的规则文件*.cwt
 
-const val paradoxwikisUrl = "https://paradox.paradoxwikis.com"
-const val huijiwikiUrl = "https://qunxing.huijiwiki.com"
-
-val inferredParadoxLocale = when(System.getProperty("user.language")) {
-	"zh" -> ParadoxLocale.SIMP_CHINESE
-	"en" -> ParadoxLocale.ENGLISH
-	"pt" -> ParadoxLocale.BRAZ_POR
-	"fr" -> ParadoxLocale.FRENCH
-	"de" -> ParadoxLocale.GERMAN
-	"pl" -> ParadoxLocale.PONISH
-	"ru" -> ParadoxLocale.RUSSIAN
-	"es" -> ParadoxLocale.SPANISH
-	else -> ParadoxLocale.ENGLISH
-}
-
 const val descriptorFileName = "descriptor.mod"
 val exeFileNames = arrayOf("stellaris.exe")
 
@@ -62,7 +47,8 @@ val exeFileNames = arrayOf("stellaris.exe")
 val localisationFileIcon = IconLoader.findIcon("/icons/paradoxLocalisationFile.svg")!!
 val localisationLocaleIcon = IconLoader.findIcon("/icons/paradoxLocalisationLocale.svg")!!
 val localisationPropertyIcon = IconLoader.findIcon("/icons/paradoxLocalisationProperty.svg")!!
-val localisationCommandFieldIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandField.svg")
+val localisationCommandScopeIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandScope.svg")!!
+val localisationCommandFieldIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandField.svg")!!
 
 val scriptFileIcon = IconLoader.findIcon("/icons/paradoxScriptFile.svg")!!
 val scriptVariableIcon = IconLoader.findIcon("/icons/paradoxScriptVariable.svg")!!
@@ -74,6 +60,7 @@ val definitionLocalisationIcon = IconLoader.findIcon("/icons/paradoxDefinitionLo
 val localisationIcon = IconLoader.findIcon("/icons/paradoxLocalisation.svg")!!
 val stringScriptPropertyIcon =IconLoader.findIcon("/icons/paradoxStringScriptProperty.svg")!!
 val stringLocalisationPropertyIcon = IconLoader.findIcon("/icons/paradoxStringLocalisationProperty.svg")!!
+val scriptedLocIcon = IconLoader.findIcon("/icons/paradoxScriptedLoc.svg")
 
 val definitionGutterIcon = definitionIcon.resize(12)
 val definitionLocalisationGutterIcon = definitionLocalisationIcon.resize(12)
