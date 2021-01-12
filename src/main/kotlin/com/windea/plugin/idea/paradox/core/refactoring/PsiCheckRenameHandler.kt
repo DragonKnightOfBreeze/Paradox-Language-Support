@@ -9,7 +9,7 @@ import com.intellij.refactoring.rename.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.core.psi.*
 
-class PsiCheckedRenameHandler : PsiElementRenameHandler() {
+class PsiCheckRenameHandler : PsiElementRenameHandler() {
 	override fun isAvailableOnDataContext(dataContext: DataContext): Boolean {
 		return getElement(dataContext) is PsiCheckRenameElement
 	}

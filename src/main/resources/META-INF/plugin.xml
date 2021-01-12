@@ -56,7 +56,7 @@
     <!--region Paradox Core-->
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="com.windea.plugin.idea.paradox.core.ParadoxFileTypeOverrider" order="first"/>
-    <renameHandler implementation="com.windea.plugin.idea.paradox.core.refactoring.PsiCheckedRenameHandler"/>
+    <renameHandler implementation="com.windea.plugin.idea.paradox.core.refactoring.PsiCheckRenameHandler"/>
 
     <!--<sdkType implementation="com.windea.plugin.idea.paradox.library.StellarisSdkType"/>-->
     <library.type implementation="com.windea.plugin.idea.paradox.core.library.StellarisLibraryType"/>

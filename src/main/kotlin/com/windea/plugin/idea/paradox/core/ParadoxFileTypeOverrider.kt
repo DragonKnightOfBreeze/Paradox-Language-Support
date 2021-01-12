@@ -52,10 +52,13 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	}
 	
 	private fun isValidScriptPath(path: ParadoxPath, gameType: ParadoxGameType): Boolean {
+		//规则文件也是脚本文件
+		if(path.path == descriptorFileName) return true
+		
 		val ruleGroup = ruleGroups[gameType.key] ?: return false
 		val locations = ruleGroup.locations
+		//首先尝试直接通过path.parent作为key来匹配
 		val fastLocation = locations[path.parent]
-		//首先尝试直接通过path作为key来匹配
 		if(fastLocation != null) {
 			val fastResult = fastLocation.matches(path, false)
 			if(fastResult) return true
