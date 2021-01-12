@@ -43,9 +43,11 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(_invalidEscapeName, INVALID_STRING_ESCAPE)
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(_badCharacterName, BAD_CHARACTER)
 
-	@JvmField val COLOR_KEYS = paradoxColorMap.mapValues { (_,color)->
+	val COLOR_KEYS by lazy {
+		paradoxColorMap.mapValues { (_,color)->
 		createTextAttributesKey("${_colorName}_${color.name}", IDENTIFIER.defaultAttributes.clone().apply {
 			foregroundColor = color.color
 		})
+	}
 	}
 }

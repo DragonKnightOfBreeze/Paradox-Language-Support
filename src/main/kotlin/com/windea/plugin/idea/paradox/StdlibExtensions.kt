@@ -178,7 +178,7 @@ infix fun String.matchesPath(other: String): Boolean {
 //Jar Extensions
 
 fun String.toJarFile():JarFile{
-	return ("".toClassPathResource()!!.openConnection() as JarURLConnection).jarFile
+	return (this.toClassPathResource()!!.openConnection() as JarURLConnection).jarFile
 }
 
 fun JarFile.toJarEntries(): Map<String, JarEntry> {
@@ -188,8 +188,7 @@ fun JarFile.toJarEntries(): Map<String, JarEntry> {
 		.collect(Collectors.toMap({ it.name.removePrefix(pathPrefix) },{it}))
 }
 
-fun JarFile.toJarDirectoryEntryMap(): Map<String, MutableList<JarEntry>> {
-	val pathPrefix = "$this/"
+fun JarFile.toJarDirectoryEntryMap(pathPrefix:String): Map<String, MutableList<JarEntry>> {
 	return this.stream()
 		.filter { it.name.startsWith(pathPrefix) && !it.isDirectory }
 		.collect(Collectors.groupingBy { it.name.removePrefix(pathPrefix).substringBefore('/',"") })

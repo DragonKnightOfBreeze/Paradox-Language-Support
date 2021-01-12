@@ -4,33 +4,35 @@ import com.windea.plugin.idea.paradox.*
 import org.yaml.snakeyaml.*
 import java.io.*
 import java.util.concurrent.*
+import java.util.concurrent.atomic.*
 
 /**
  * Paradox规则组映射的提供器。
  */
 object ParadoxRuleGroupProvider {
-	@Volatile
 	private var shouldLoad = true
-	private val ruleGroups: MutableMap<String, ParadoxRuleGroup> = ConcurrentHashMap()
+	private val ruleGroups = ConcurrentHashMap<String, ParadoxRuleGroup>()
 	
+	init{
+		addRuleGroups()
+	}
+	
+	@Synchronized
 	fun getRuleGroups(): Map<String, ParadoxRuleGroup> {
 		if(shouldLoad) {
-			synchronized(ruleGroups){
-				if(shouldLoad) {
-					shouldLoad = false
-					addRuleGroups()
-				}
-			}
+			shouldLoad = false
+			addRuleGroups()
 		}
 		return ruleGroups
 	}
 	
 	private fun addRuleGroups() {
 		val jarFile = "rules".toJarFile()
-		val jarEntries = jarFile.toJarDirectoryEntryMap()
+		val jarEntries = jarFile.toJarDirectoryEntryMap("rules/")
 		val concurrent = jarEntries.size
-		//并发添加规则组
+		//添加规则组
 		val executor = Executors.newFixedThreadPool(concurrent)
+		val countDown = CountDownLatch(concurrent)
 		for((name,entries) in jarEntries) {
 			try {
 				executor.submit {
@@ -38,16 +40,21 @@ object ParadoxRuleGroupProvider {
 					val groupName = if(name.isEmpty()) "core" else name
 					val group = mutableMapOf<String, Map<String, Any>>()
 					for(entry in entries) {
-						val ruleName = entry.name.substringAfter('/')
-						val rule = getRule(jarFile.getInputStream(entry))
-						group[ruleName] = rule
+						val fileName = entry.name.substringAfter('/')
+						if(fileName.endsWith(".yml")) {
+							val ruleName = fileName.substringBeforeLast('.')
+							val rule = getRule(jarFile.getInputStream(entry))
+							group[ruleName] = rule
+						}
 					}
 					ruleGroups[groupName] = ParadoxRuleGroup(group)
-				}.get()
+					countDown.countDown()
+				}
 			} catch(e: Exception) {
 				e.printStackTrace()
 			}
 		}
+		countDown.await()
 	}
 	
 	private fun getRule(inputStream: InputStream): Map<String, Map<String, Any>> {

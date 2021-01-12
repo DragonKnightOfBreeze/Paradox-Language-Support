@@ -1,6 +1,7 @@
 package com.windea.plugin.idea.paradox.core
 
 import com.intellij.openapi.fileTypes.impl.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.windea.plugin.idea.paradox.*
@@ -52,7 +53,6 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	}
 	
 	private fun isValidScriptPath(path: ParadoxPath, gameType: ParadoxGameType): Boolean {
-		//规则文件也是脚本文件
 		if(path.path == descriptorFileName) return true
 		
 		val ruleGroup = paradoxRuleGroups[gameType.key] ?: return false
