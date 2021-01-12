@@ -30,7 +30,7 @@ object ChangeLocaleIntention : IntentionAction {
 		if(editor == null || file == null) return
 		val element = file.findElementAt(editor.caretModel.offset)?.parent
 		if(element is ParadoxLocalisationLocale) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, ParadoxLocale.values)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, paradoxLocales)).showInBestPositionFor(editor)
 		}
 	}
 	

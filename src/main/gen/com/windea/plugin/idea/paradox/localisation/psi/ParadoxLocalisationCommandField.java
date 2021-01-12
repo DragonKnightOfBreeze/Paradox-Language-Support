@@ -4,15 +4,15 @@ package com.windea.plugin.idea.paradox.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandKeyPsiReference;
+import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandFieldPsiReference;
 
-public interface ParadoxLocalisationCommandKey extends ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationCommandField extends ParadoxLocalisationNamedElement {
 
   @Nullable
   ParadoxLocalisationPropertyReference getPropertyReference();
 
   @Nullable
-  PsiElement getCommandKeyToken();
+  PsiElement getCommandFieldToken();
 
   @Nullable
   String getName();
@@ -26,6 +26,6 @@ public interface ParadoxLocalisationCommandKey extends ParadoxLocalisationNamedE
   PsiElement getNameIdentifier();
 
   @Nullable
-  ParadoxLocalisationCommandKeyPsiReference getReference();
+  ParadoxLocalisationCommandFieldPsiReference getReference();
 
 }

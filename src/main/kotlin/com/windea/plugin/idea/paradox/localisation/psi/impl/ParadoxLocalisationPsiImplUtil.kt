@@ -187,31 +187,31 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxLocalisationCommandKey
+	//region ParadoxLocalisationCommandField
 	@JvmStatic
-	fun getName(element: ParadoxLocalisationCommandKey): String? {
-		return element.commandKeyToken?.text
+	fun getName(element: ParadoxLocalisationCommandField): String? {
+		return element.commandFieldToken?.text
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxLocalisationCommandKey, name: String): PsiElement {
+	fun setName(element: ParadoxLocalisationCommandField, name: String): PsiElement {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationCommandKey){
+	fun checkRename(element: ParadoxLocalisationCommandField){
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationCommandKey): PsiElement? {
-		return element.commandKeyToken
+	fun getNameIdentifier(element: ParadoxLocalisationCommandField): PsiElement? {
+		return element.commandFieldToken
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxLocalisationCommandKey): ParadoxLocalisationCommandKeyPsiReference? {
-		val commandKeyToken = element.commandKeyToken ?: return null
-		return ParadoxLocalisationCommandKeyPsiReference(element, commandKeyToken.textRangeInParent)
+	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
+		val commandFieldToken = element.commandFieldToken ?: return null
+		return ParadoxLocalisationCommandFieldPsiReference(element, commandFieldToken.textRangeInParent)
 	}
 	//endregion
 	

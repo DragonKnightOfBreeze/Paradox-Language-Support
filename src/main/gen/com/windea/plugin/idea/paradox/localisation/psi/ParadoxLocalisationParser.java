@@ -96,14 +96,14 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_reference | COMMAND_KEY_TOKEN
+  // property_reference | COMMAND_FIELD_TOKEN
   public static boolean command_Key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_Key")) return false;
-    if (!nextTokenIs(b, "<command key>", COMMAND_KEY_TOKEN, PROPERTY_REFERENCE_START)) return false;
+    if (!nextTokenIs(b, "<command key>", COMMAND_FIELD_TOKEN, PROPERTY_REFERENCE_START)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COMMAND_KEY, "<command key>");
     r = property_reference(b, l + 1);
-    if (!r) r = consumeToken(b, COMMAND_KEY_TOKEN);
+    if (!r) r = consumeToken(b, COMMAND_FIELD_TOKEN);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

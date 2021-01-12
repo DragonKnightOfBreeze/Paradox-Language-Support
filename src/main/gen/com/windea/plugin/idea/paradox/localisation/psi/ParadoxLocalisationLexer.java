@@ -2,7 +2,6 @@
 
 package com.windea.plugin.idea.paradox.localisation.psi;
 
-import com.intellij.lexer.*;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
@@ -42,7 +41,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
   public static final int WAITING_ICON_NAME_FINISHED = 26;
   public static final int WAITING_ICON_PARAMETER = 28;
   public static final int WAITING_SERIAL_NUMBER = 30;
-  public static final int WAITING_COMMAND_SCOPE_OR_KEY = 32;
+  public static final int WAITING_COMMAND_SCOPE_OR_FIELD = 32;
   public static final int WAITING_COMMAND_SEPARATOR = 34;
   public static final int WAITING_COLOR_CODE = 36;
   public static final int WAITING_COLORFUL_TEXT = 38;
@@ -701,7 +700,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
             // fall through
           case 68: break;
           case 17: 
-            { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;
+            { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
             } 
             // fall through
           case 69: break;
@@ -736,7 +735,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
             // fall through
           case 75: break;
           case 24: 
-            { codeLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;
+            { codeLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
             } 
             // fall through
           case 76: break;
@@ -771,7 +770,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
             // fall through
           case 82: break;
           case 31: 
-            { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;
+            { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
             } 
             // fall through
           case 83: break;
@@ -806,7 +805,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
             // fall through
           case 89: break;
           case 38: 
-            { yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_SEPARATOR;
+            { yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_SEPARATOR;
             } 
             // fall through
           case 90: break;
@@ -911,7 +910,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
             // fall through
           case 101: break;
           case 50: 
-            { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_KEY_TOKEN;
+            { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_TOKEN;
             } 
             // fall through
           case 102: break;

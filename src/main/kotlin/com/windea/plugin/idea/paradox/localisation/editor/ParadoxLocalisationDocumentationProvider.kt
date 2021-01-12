@@ -20,7 +20,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationLocale -> getLocaleInfo(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
-			element is ParadoxLocalisationCommandKey -> getCommandKeyInfo(element)
+			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
 			element is ParadoxLocalisationSerialNumber -> getSerialNumberInfo(element)
 			element is ParadoxLocalisationColorfulText -> getColorInfo(element)
 			else -> null
@@ -70,10 +70,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getCommandKeyInfo(element: ParadoxLocalisationCommandKey): String {
+	private fun getCommandFieldInfo(element: ParadoxLocalisationCommandField): String {
 		return buildString {
 			definition {
-				append("(localisation command key) <b>").append(element.name).append("</b>")
+				append("(localisation command field) <b>").append(element.name).append("</b>")
 			}
 		}
 	}
@@ -100,7 +100,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationLocale -> getLocaleDoc(element)
 			element is ParadoxLocalisationIcon -> getIconDoc(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
-			element is ParadoxLocalisationCommandKey -> getCommandKeyDoc(element)
+			element is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
 			element is ParadoxLocalisationSerialNumber -> getSerialNumberDoc(element)
 			element is ParadoxLocalisationColorfulText -> getColorDoc(element)
 			else -> null
@@ -181,10 +181,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getCommandKeyDoc(element: ParadoxLocalisationCommandKey): String {
+	private fun getCommandFieldDoc(element: ParadoxLocalisationCommandField): String {
 		return buildString {
 			definition {
-				append("(localisation command key) <b>").append(element.name).append("</b>")
+				append("(localisation command field) <b>").append(element.name).append("</b>")
 			}
 		}
 	}

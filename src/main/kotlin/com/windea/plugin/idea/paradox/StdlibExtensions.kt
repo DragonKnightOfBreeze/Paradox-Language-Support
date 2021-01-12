@@ -144,6 +144,10 @@ fun <T : Any> T?.toSingletonListOrEmpty(): List<T> {
 	return if(this == null) Collections.emptyList() else Collections.singletonList(this)
 }
 
+inline fun <reified T> Any?.cast(): T = this as T
+
+inline fun <reified T> Any?.castOrNull(): T? = this as? T
+
 fun Icon.resize(width: Int, height: Int=width): Icon {
 	return IconUtil.toSize(this, width, height)
 }
@@ -171,7 +175,7 @@ infix fun String.matchesPath(other: String): Boolean {
 
 //Specific Models And Extensions
 
-class ConditionalString(
+class ConditionalKey(
 	val expression: String
 ) : CharSequence{
 	val name: String = expression.trimEnd('!', '?')
@@ -184,7 +188,7 @@ class ConditionalString(
 	
 	override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = expression.subSequence(startIndex, endIndex)
 	
-	override fun equals(other: Any?): Boolean = other is ConditionalString && expression == other.expression
+	override fun equals(other: Any?): Boolean = other is ConditionalKey && expression == other.expression
 	
 	override fun hashCode(): Int = expression.hashCode()
 	
@@ -197,13 +201,11 @@ class ConditionalString(
 	operator fun component3(): Boolean = required
 }
 
-fun String.toConditionalKey() = ConditionalString(this)
+fun String.toConditionalKey() = ConditionalKey(this)
 
 class PredicateExpression(
 	val expression:String
 ):CharSequence{
-	//TODO
-	
 	override val length = expression.length
 	
 	override fun get(index: Int): Char = expression[index]
@@ -215,5 +217,4 @@ class PredicateExpression(
 	override fun hashCode(): Int = expression.hashCode()
 	
 	override fun toString(): String = expression
-	
 }

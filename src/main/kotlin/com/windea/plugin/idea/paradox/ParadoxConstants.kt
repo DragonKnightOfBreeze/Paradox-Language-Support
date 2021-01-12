@@ -62,7 +62,7 @@ val exeFileNames = arrayOf("stellaris.exe")
 val localisationFileIcon = IconLoader.findIcon("/icons/paradoxLocalisationFile.svg")!!
 val localisationLocaleIcon = IconLoader.findIcon("/icons/paradoxLocalisationLocale.svg")!!
 val localisationPropertyIcon = IconLoader.findIcon("/icons/paradoxLocalisationProperty.svg")!!
-val localisationCommandKeyIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandKey.svg")
+val localisationCommandFieldIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandField.svg")
 
 val scriptFileIcon = IconLoader.findIcon("/icons/paradoxScriptFile.svg")!!
 val scriptVariableIcon = IconLoader.findIcon("/icons/paradoxScriptVariable.svg")!!

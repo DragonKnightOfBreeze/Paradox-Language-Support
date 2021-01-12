@@ -55,7 +55,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		//规则文件也是脚本文件
 		if(path.path == descriptorFileName) return true
 		
-		val ruleGroup = ruleGroups[gameType.key] ?: return false
+		val ruleGroup = paradoxRuleGroups[gameType.key] ?: return false
 		val locations = ruleGroup.locations
 		//首先尝试直接通过path.parent作为key来匹配
 		val fastLocation = locations[path.parent]

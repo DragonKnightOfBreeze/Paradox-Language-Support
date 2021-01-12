@@ -73,7 +73,28 @@ val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("ca
 
 //Caches 
 
-val ruleGroups = ParadoxRuleGroupProvider.getRuleGroups()
+val paradoxRuleGroups = ParadoxRuleGroupProvider.getRuleGroups()
+
+private val coreParadoxRuleGroup = paradoxRuleGroups.getValue("core")
+
+val paradoxLocales = coreParadoxRuleGroup.enums.getValue("locale").data.mapArray { ParadoxLocale(it.cast()) }
+val paradoxLocaleMap = paradoxLocales.associateBy { it.name }
+
+val paradoxSerialNumbers = coreParadoxRuleGroup.enums.getValue("serialNumber").data.mapArray { ParadoxSerialNumber(it.cast()) }
+val paradoxSerialNumberMap = paradoxSerialNumbers.associateBy { it.name }
+
+val paradoxColors = coreParadoxRuleGroup.enums.getValue("color").data.mapArray { ParadoxColor(it.cast()) }
+val paradoxColorMap = paradoxColors.associateBy { it.name }
+
+val paradoxCommandScopes = coreParadoxRuleGroup.enums.getValue("commandScope").data.mapArray { ParadoxCommandScope(it.cast()) }
+val paradoxPrimaryCommandScopes = paradoxCommandScopes.filter { it.isPrimary }.toTypedArray()
+val paradoxSecondaryCommandScopes = paradoxCommandScopes.filter{it.isSecondary}.toTypedArray()
+val paradoxCommandScopeMap = paradoxCommandScopes.associateBy { it.name }
+val paradoxPrimaryCommandScopeMap = paradoxCommandScopeMap.filterValues { it.isPrimary }
+val paradoxSecondaryCommandScopeMap = paradoxCommandScopeMap.filterValues { it.isSecondary }
+
+val paradoxCommandFields = coreParadoxRuleGroup.enums.getValue("commandField").data.mapArray { ParadoxCommandField(it.cast()) }
+val paradoxCommandFieldMap = paradoxCommandFields.associateBy { it.name }
 
 //Extension Properties
 
@@ -218,11 +239,11 @@ private fun getDefinitionInfo(element: ParadoxScriptProperty, check: Boolean = t
 
 private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
-	val ruleGroup = ruleGroups[gameType.key] ?: return null
+	val ruleGroup = paradoxRuleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val scriptPath = element.paradoxScriptPath?: return null
 	val definition = ruleGroup.types.values.find { it.matches(element,elementName, path, scriptPath) } ?: return null
-	return definition.toMetadata(element, elementName)
+	return definition.toDefinitionInfo(element, elementName)
 }
 
 //Find Extensions

@@ -18,7 +18,7 @@ class ParadoxPath(
 	val length = subPaths.size
 	
 	override fun equals(other: Any?): Boolean {
-		return other is ParadoxPath && path == other.path
+		return this === other || other is ParadoxPath && path == other.path
 	}
 	
 	override fun hashCode(): Int {
@@ -67,97 +67,112 @@ data class ParadoxDefinitionInfo(
 	val name:String,
 	val type:String,
 	val rootKey:String,
-	val localisation: Map<ConditionalString,String>,
+	val localisation: List<Pair<ConditionalKey,String>>,
 	val scopes:Map<String,String>,
 	val fromVersion:String
 ){
+	val localisationKeys = localisation.mapTo(linkedSetOf()) { it.first }
+	val localisationNames = localisation.mapTo(linkedSetOf()) { it.second }
 	val hasLocalisation = localisation.isNotEmpty()
 	val hasScopes = scopes.isNotEmpty()
-	
-	override fun equals(other: Any?): Boolean {
-		return other is ParadoxDefinitionInfo && type == other.type && name == other.name
-	}
-	
-	override fun hashCode(): Int {
-		return Objects.hash(type, name)
-	}
-	
-	override fun toString(): String {
-		return "$name: $type"
-	}
 }
 
 //Localisation
 
-enum class ParadoxLocale(
-	val key: String,
-	val description: String
-) {
-	SIMP_CHINESE("l_simp_chinese", "Simple Chinese"),
-	ENGLISH("l_english", "English"),
-	BRAZ_POR("l_braz_por", "Brazil Portuguese"),
-	FRENCH("l_french", "French"),
-	GERMAN("l_german", "German"),
-	PONISH("l_polish", "Polish"),
-	RUSSIAN("l_russian", "Russian"),
-	SPANISH("l_spanish", "Spanish"),
-	DEFAULT("l_default", "Default");
+class ParadoxLocale(data:Map<String,Any>) {
+	val name:String by data
+	val description:String by data
+	val popupText = "$name - $description"
 	
-	val popupText = "'$key' - $description"
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxLocale && name == other.name
+	}
 	
-	companion object {
-		val values = values()
-		val map = values().associateBy { it.key }
-		val keys = values().mapArray { it.key }
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
+	
+	override fun toString(): String {
+		return "ParadoxLocale: $name"
 	}
 }
 
-enum class ParadoxSerialNumber(
-	val key: String,
-	val description:String,
-	val placeholderText :String
-) {
-	Cardinal("C","Cardinal Number 1, 2, 3...","1"),
-	Ordinal("O","Ordinal Number 1st, 2nd, 3rd...","1st"),
-	Roman("R","Roman Number I, II, III...","I");
+class ParadoxSerialNumber(data:Map<String,Any>) {
+	val name: String by data
+	val description:String by data
+	val placeholderText :String by data
+	val popupText = "$name - $description"
 	
-	val popupText = "'$key' - $description"
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxSerialNumber && name == other.name 
+	}
 	
-	companion object{
-		val values = values()
-		val map = values().associateBy { it.key }
-		val keys = values().mapArray { it.key }
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
+	
+	override fun toString(): String {
+		return "ParadoxSerialNumber: $name"
 	}
 }
 
-enum class ParadoxColor(
-	val key: String,
-	val description: String,
-	val color: Color,
-	val colorText:String
-) {
-	Blue("B", "Blue", Color(0x0000ff),"#0000ff"),
-	Teal("E", "Teal", Color(0x008080),"#008080"),
-	Green("G", "Green", Color(0x00ff00),"#00ff00"),
-	Orange("H", "Orange", Color(0xffa500),"#ffa500"),
-	Brown("L", "Brown", Color(0xa52a2a),"#a52a2a"),
-	Purple("M", "Purple", Color(0x800080),"#800080"),
-	LightRed("P", "Light Red", Color(0xcd5c5c),"#cd5c5c"),
-	Red("R", "Red", Color(0xff0000),"#ff0000"),
-	DarkOrange("S", "Dark Orange", Color(0xff8c00),"#ff8c00"),
-	LightGrey("T", "Light Grey", Color(0xd3d3d3),"#d3d3d3"),
-	White("W", "White", Color(0xffffff),"#ffffff"),
-	Yellow("Y", "Yellow", Color(0xffff00),"#ffff00");
-	
-	val popupText = "'$key' - $description"
+class ParadoxColor(data:Map<String,Any>){
+	val name: String by data
+	val description: String by data
+	val colorRgb:Int by data
+	val colorText:String by data
+
+	val popupText = "$name - $description"
+	val color: Color = Color(colorRgb)
 	val icon = ColorIcon(16, color)
 	val gutterIcon = ColorIcon(12, color)
 	
-	companion object {
-		val values = values()
-		val map = values().associateBy { it.key }
-		val keys = values().mapArray { it.key }
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxColor && name == other.name
+	}
+	
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
+	
+	override fun toString(): String {
+		return "ParadoxColor: $name"
 	}
 }
 
+class ParadoxCommandScope(data:Map<String,Any>) {
+	val name:String by data
+	val description: String by data
+	val isPrimary:Boolean by data
+	val isSecondary:Boolean by data
+	
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxCommandScope && name == other.name
+	}
+	
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
+	
+	override fun toString(): String {
+		return "ParadoxCommandScope: $name"
+	}
+}
 
+class ParadoxCommandField(data:Map<String,Any>){
+	val name:String by data
+	val description:String by data
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxCommandField && name == other.name
+	}
+	
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
+	
+	override fun toString(): String {
+		return "ParadoxCommandField: $name"
+	}
+}

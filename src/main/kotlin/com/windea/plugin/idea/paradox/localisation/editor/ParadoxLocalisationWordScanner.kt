@@ -7,7 +7,7 @@ import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.
 
 class ParadoxLocalisationWordScanner: DefaultWordsScanner(
 	ParadoxLocalisationLexerAdapter(),
-	TokenSet.create(PROPERTY_KEY_ID, PROPERTY_REFERENCE_ID, ICON_ID,COMMAND_SCOPE,COMMAND_KEY),
+	TokenSet.create(PROPERTY_KEY_ID, PROPERTY_REFERENCE_ID, ICON_ID,COMMAND_SCOPE,COMMAND_FIELD),
 	TokenSet.create(COMMENT, ROOT_COMMENT, END_OF_LINE_COMMENT),
 	TokenSet.create(STRING_TOKEN)
 ){

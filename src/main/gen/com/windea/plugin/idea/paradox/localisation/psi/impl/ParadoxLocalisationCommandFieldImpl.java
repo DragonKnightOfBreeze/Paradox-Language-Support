@@ -1,7 +1,6 @@
 // This is a generated file. Not intended for manual editing.
 package com.windea.plugin.idea.paradox.localisation.psi.impl;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -9,16 +8,17 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
-import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandKeyPsiReference;
+import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationCommandFieldPsiReference;
 
-public class ParadoxLocalisationCommandKeyImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationCommandKey {
+public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationNamedElementImpl implements
+    ParadoxLocalisationCommandField {
 
-  public ParadoxLocalisationCommandKeyImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationCommandFieldImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitCommandKey(this);
+    visitor.visitCommandField(this);
   }
 
   @Override
@@ -35,8 +35,8 @@ public class ParadoxLocalisationCommandKeyImpl extends ParadoxLocalisationNamedE
 
   @Override
   @Nullable
-  public PsiElement getCommandKeyToken() {
-    return findChildByType(COMMAND_KEY_TOKEN);
+  public PsiElement getCommandFieldToken() {
+    return findChildByType(COMMAND_FIELD_TOKEN);
   }
 
   @Override
@@ -64,7 +64,7 @@ public class ParadoxLocalisationCommandKeyImpl extends ParadoxLocalisationNamedE
 
   @Override
   @Nullable
-  public ParadoxLocalisationCommandKeyPsiReference getReference() {
+  public ParadoxLocalisationCommandFieldPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 

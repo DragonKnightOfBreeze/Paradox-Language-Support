@@ -684,7 +684,7 @@ types:
   scripted_effect:
     path: "common/scripted_effects"
 
-  # bind to: localisationCommandKey
+  # bind to: localisationCommandField
   # TODO scopes from comment 
   scripted_loc:
     path: "common/scripted_loc"

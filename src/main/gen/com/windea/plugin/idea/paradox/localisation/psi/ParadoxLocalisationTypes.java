@@ -28,7 +28,7 @@ public interface ParadoxLocalisationTypes {
   IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("§");
   IElementType COLOR_CODE = new ParadoxLocalisationTokenType("COLOR_CODE");
   IElementType COMMAND_END = new ParadoxLocalisationTokenType("]");
-  IElementType COMMAND_KEY_TOKEN = new ParadoxLocalisationTokenType("COMMAND_KEY_TOKEN");
+  IElementType COMMAND_FIELD_TOKEN = new ParadoxLocalisationTokenType("COMMAND_FIELD_TOKEN");
   IElementType COMMAND_SCOPE_TOKEN = new ParadoxLocalisationTokenType("COMMAND_SCOPE_TOKEN");
   IElementType COMMAND_SEPARATOR = new ParadoxLocalisationTokenType(".");
   IElementType COMMAND_START = new ParadoxLocalisationTokenType("[");

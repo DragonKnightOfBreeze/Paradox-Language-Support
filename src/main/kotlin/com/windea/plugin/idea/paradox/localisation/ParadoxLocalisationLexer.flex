@@ -1,6 +1,5 @@
 package com.windea.plugin.idea.paradox.localisation.psi;
 
-import com.intellij.lexer.*;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
@@ -33,7 +32,7 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
 %state WAITING_ICON_NAME_FINISHED
 %state WAITING_ICON_PARAMETER
 %state WAITING_SERIAL_NUMBER
-%state WAITING_COMMAND_SCOPE_OR_KEY
+%state WAITING_COMMAND_SCOPE_OR_FIELD
 %state WAITING_COMMAND_SEPARATOR
 %state WAITING_COLOR_CODE
 %state WAITING_COLORFUL_TEXT
@@ -94,14 +93,14 @@ ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+
 SERIAL_NUMBER_ID=[a-zA-Z]
 COMMAND_SCOPE_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_:@]+[ \u00a0\t]*\.
 COMMAND_SEPARATOR=\.
-COMMAND_KEY_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_]+[ \u00a0\t]*\]
+COMMAND_FIELD_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_]+[ \u00a0\t]*\]
 COLOR_CODE=[a-zA-Z]
 //双引号和百分号实际上不需要转义
 STRING_TOKEN=[^\"%$£§\[\r\n\\]+
 
 CHECK_ICON_START=£.?
 CHECK_SERIAL_NUMBER_START=%.?.?
-//CHECK_COMMAND_START=\[([a-zA-Z0-9_:@$\-' ]*?[.\]])? //TODO command是否要求方括号中间有分隔符？
+//CHECK_COMMAND_START=\[([a-zA-Z0-9_:@$\-' ]*?[.\]])?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
@@ -157,7 +156,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "£" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
   "%" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_SERIAL_NUMBER_START);}
-  "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;}
+  "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
   {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
@@ -168,7 +167,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   //{WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }//属性引用名字可以包含空格，虽然不知道凭什么
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
-  "[" { codeLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;}
+  "[" { codeLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "|" { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER); return PARAMETER_SEPARATOR;}
   {PROPERTY_REFERENCE_ID} {return PROPERTY_REFERENCE_ID;}
@@ -186,7 +185,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "£" { yybegin(nextStateForText()); return ICON_END;}
   "$" { propertyReferenceLocation=2; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
-  "[" { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;}
+  "[" { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "|" { yybegin(WAITING_ICON_PARAMETER); return PARAMETER_SEPARATOR;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {ICON_ID} { yybegin(WAITING_ICON_NAME_FINISHED); return ICON_ID;}
@@ -197,7 +196,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "£" { yybegin(nextStateForText()); return ICON_END;}
   "$" { propertyReferenceLocation=2; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
-  "[" { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;}
+  "[" { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "|" { yybegin(WAITING_ICON_PARAMETER); return PARAMETER_SEPARATOR;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
 }
@@ -218,7 +217,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {SERIAL_NUMBER_ID} {return SERIAL_NUMBER_ID;}
 }
-<WAITING_COMMAND_SCOPE_OR_KEY>{
+<WAITING_COMMAND_SCOPE_OR_FIELD>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
   {WHITE_SPACE} { return WHITE_SPACE; }
   "]" {yybegin(nextStateForCode()); return COMMAND_END;}
@@ -226,7 +225,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {COMMAND_SCOPE_TOKEN_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_TOKEN;}
-  {COMMAND_KEY_TOKEN_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_KEY_TOKEN;}
+  {COMMAND_FIELD_TOKEN_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_TOKEN;}
 }
 <WAITING_COMMAND_SEPARATOR>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
@@ -235,7 +234,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
-  {COMMAND_SEPARATOR} {yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_SEPARATOR;}
+  {COMMAND_SEPARATOR} {yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_SEPARATOR;}
 }
 <WAITING_COLOR_CODE>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
@@ -250,7 +249,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "£" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
   "%" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_SERIAL_NUMBER_START);}
-  "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_KEY); return COMMAND_START;}
+  "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {depth--; yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}

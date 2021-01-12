@@ -5,77 +5,64 @@ import com.windea.plugin.idea.paradox.script.psi.*
 
 @Suppress("UNCHECKED_CAST")
 class ParadoxRuleGroup(
-	data: Map<String, Map<String, Any>>
-) : Map<String, Map<String, Any>> by data {
-	val locations = get("locations")?.let { 
-		(it as Map<String, Map<String, Any>>).mapValues { (k, v) -> Location(k, v) }
-	} ?: emptyMap()
-	val types = get("types")?.let { 
-		(it as Map<String, Map<String, Any>>).mapValues { (k, v) -> Type(k, v) }
-	} ?: emptyMap()
-	val definitions = get("definitions") ?: emptyMap()
-	val enums = get("enums") ?: emptyMap()
+	val data: Map<String, Map<String, Any>>
+){
+	val locations = data.getOrDefault("locations",emptyMap()).mapValues { (k, v) -> Location(k, v.cast()) }
+	val types = data.getOrDefault("types",emptyMap()).mapValues { (k, v) -> Type(k, v.cast()) }
+	val definitions = data.getOrDefault("definitions",emptyMap()).mapValues { (k, v) -> Definition(k, v.cast()) }
+	val enums = data.getOrDefault("enums",emptyMap()).mapValues { (k, v) -> Enum(k, v.cast()) }
 	
-	class Location(
-		key:String,data:Map<String,Any>
-	):Map<String,Any> by data{
-		val name = key
-		
+	class Location(val key:String, val data:Map<String,Any>){
 		fun matches(path:ParadoxPath,checkPath:Boolean = true):Boolean{
 			if(checkPath) {
-				val pathStrictData = get("path_strict") as Boolean? ?: true
+				val pathStrictData = data["path_strict"] as Boolean? ?: true
 				if(pathStrictData) {
-					if(name != path.parent) return false
+					if(key != path.parent) return false
 				} else {
-					if(!name.matchesPath(path.parent)) return false
+					if(!key.matchesPath(path.parent)) return false
 				}
 			}
-			val fileExtensionsData = get("file_extensions") as List<String>?
+			val fileExtensionsData = data["file_extensions"] as List<String>?
 			if(fileExtensionsData != null && !fileExtensionsData.contains(path.fileExtension)) return false
-			val fileExtensionData = get("file_extension") as String? ?: "txt"
+			val fileExtensionData = data["file_extension"] as String? ?: "txt"
 			if(fileExtensionData != path.fileExtension) return false
-			val fileNameData = get("file_name") as String?
+			val fileNameData = data["file_name"] as String?
 			if(fileNameData != null && fileNameData != path.fileName) return false
-			val fileNamesData = get("file_names") as List<String>?
+			val fileNamesData = data["file_names"] as List<String>?
 			if(fileNamesData != null && !fileNamesData.contains(path.fileName)) return false
 			return true
 		}
 	}
 	
-	//TODO subtypes以及subtypes的predicate
-	class Type(
-		key: String, data: Map<String, Any>
-	) : Map<String, Any> by data {
-		val name = key
-		
+	class Type(val key: String,val data: Map<String, Any>){
 		//不要单纯地遍历列表进行匹配，需要先通过某种方式过滤不合法的scriptProperty
 		//暂时认为3级的scriptProperty不再需要匹配
-		//path和propertyPath不要重复获取
+		//path和scriptPath不要重复获取
 		
-		fun matches(element:ParadoxScriptProperty,elementName: String, path: ParadoxPath, scriptPath: ParadoxPath): Boolean {
+		fun matches(element:ParadoxScriptProperty, elementName: String, path: ParadoxPath, scriptPath: ParadoxPath): Boolean {
 			//valueType必须匹配，默认是block
-			val valueTypeData = get("value_type") as String? ?: "block"
+			val valueTypeData = data["value_type"] as String? ?: "block"
 			val value = element.propertyValue?.value?:return false
 			val isValueTypeMatched = checkScriptValueType(value,valueTypeData)
 			if(!isValueTypeMatched) return false
 			//判断文件扩展名是否匹配
-			val fileExtensionData = get("file_extension") as String? ?: "txt"
+			val fileExtensionData = data["file_extension"] as String? ?: "txt"
 			if(fileExtensionData != path.fileExtension) return false
 			//判断路径是否匹配
-			val pathData = get("path") as String? ?: return false
-			val pathStrictData = get("path_strict") as Boolean? ?: true
+			val pathData = data["path"] as String? ?: return false
+			val pathStrictData = data["path_strict"] as Boolean? ?: true
 			if(pathStrictData) {
 				if(pathData != path.parent) return false
 			} else {
 				if(!pathData.matchesPath(path.parent)) return false
 			}
 			//判断文件名是否匹配
-			val fileNameData = get("file_name") as String?
+			val fileNameData = data["file_name"] as String?
 			if(fileNameData != null) {
 				if(fileNameData != path.fileName) return false
 			}
 			//处理是否需要跳过rootKey
-			val skipRootKeyData = get("skip_root_key") as String?
+			val skipRootKeyData = data["skip_root_key"] as String?
 			if(skipRootKeyData != null) {
 				//skip_root_key=any表示跳过任意的rootKey
 				if(scriptPath.length != 2 || skipRootKeyData != "any" && skipRootKeyData != scriptPath.root) return false
@@ -83,7 +70,7 @@ class ParadoxRuleGroup(
 				if(scriptPath.length != 1) return false
 			}
 			//过滤key
-			val keyFilterData = get("key_filter") as String?
+			val keyFilterData = data["key_filter"] as String?
 			if(keyFilterData != null) {
 				val keyConditions = keyFilterData.split(',')
 				for(keyCondition in keyConditions) {
@@ -97,56 +84,74 @@ class ParadoxRuleGroup(
 			return true
 		}
 		
-		fun getName(element: ParadoxScriptProperty): String {
+		fun toDefinitionInfo(element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
+			val name = getName(element)
+			val type = getType()
+			val rootKey = getRootKey(elementName)
+			val localisation = getLocalisation(element,name)
+			val scopes = getScopes()
+			val fromVersion = getFromVersion()
+			return ParadoxDefinitionInfo(name, type, rootKey, localisation, scopes, fromVersion)
+		}
+		
+		private fun getName(element: ParadoxScriptProperty): String {
 			//几种情况：从value得到，从指定的key的value得到，完全匿名，直接使用elementName
-			val nameFromValueData = get("name_from_value") as Boolean? ?: false
+			val nameFromValueData = data["name_from_value"] as Boolean? ?: false
 			if(nameFromValueData){
 				val value = element.propertyValue?.value
 				if(value is ParadoxScriptStringValue) return value.value
 			}
-			val nameKeyData = get("name_key") as String? ?: return element.name
+			val nameKeyData = data["name_key"] as String? ?: return element.name
 			if(nameKeyData == "none") return anonymousName //完全匿名 
 			val nameProperty = element.findProperty(nameKeyData) ?: return anonymousName
 			return nameProperty.value ?: anonymousName
 		}
 		
-		fun getLocalisation(name: String): Map<ConditionalString, String> {
-			val localisationData = get("localisation") as Map<String, String>? ?: return emptyMap()
-			val result = mutableMapOf<ConditionalString, String>()
-			for((k, v) in localisationData) {
+		private fun getType():String{
+			return key
+		}
+		
+		private fun getLocalisation(element:ParadoxScriptProperty,name: String): List<Pair<ConditionalKey, String>> {
+			val localisationData = data["localisation"] as Map<String, String>? ?: return emptyList()
+			val result = mutableListOf<Pair<ConditionalKey, String>>()
+			for((keyData, valueData) in localisationData) {
 				when {
-					//如果以.开始，表示对应的属性的值是localisation的key
-					v.startsWith('.') -> { }
+					//如果以.开始，表示对应的属性的值是localisation的key，值可以是string，也可以是string数组
+					valueData.startsWith('.') -> {
+						val k = keyData.toConditionalKey()
+						val value = element.findProperty(valueData.drop(1))?.propertyValue?.value?: continue
+						when{
+							value is ParadoxScriptString -> result.add(k to value.value)
+							value is ParadoxScriptBlock && value.isArray -> for(v in value.valueList) {
+								if(v is ParadoxScriptString) result.add(k to v.value)
+							}
+						}
+					}
 					//如果包含占位符$，表示用name替换掉占位符后是localisation的key
-					else -> result[k.toConditionalKey()] = replacePlaceholder(v, name)
+					else -> {
+						val k = keyData.toConditionalKey()
+						val v = buildString { for(c in valueData) if(c == '$') append(name) else append(c) }
+						result.add(k to v)
+					}
 				}
 			}
 			return result
 		}
 		
-		private fun replacePlaceholder(placeholder: String, name: String): String {
-			return buildString {
-				for(c in placeholder) {
-					if(c == '$') append(name) else append(c)
-				}
-			}
+		private fun getScopes(): Map<String, String> {
+			return data["replace_scopes"] as Map<String, String>? ?: return emptyMap()
 		}
 		
-		fun getScopes(): Map<String, String> {
-			return get("replace_scopes") as Map<String, String>? ?: return emptyMap()
+		private fun getRootKey(elementName:String):String{
+			return elementName
 		}
 		
-		fun getFromVersion(): String {
-			return get("from_version") as String? ?: ""
-		}
-		
-		fun toMetadata(element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
-			val name = getName(element)
-			val type = this.name
-			val localisation = getLocalisation(name)
-			val scopes = getScopes()
-			val fromVersion = getFromVersion()
-			return ParadoxDefinitionInfo(name, type, elementName, localisation, scopes, fromVersion)
+		private fun getFromVersion(): String {
+			return data["from_version"] as String? ?: ""
 		}
 	}
+	
+	class Definition(val key:String,val data:Map<String,Any>)
+	
+	class Enum(val name:String,val data:List<Any>)
 }

@@ -59,8 +59,8 @@ object ParadoxLocalisationElementFactory {
 	}
 	
 	@JvmStatic
-	fun createCommandKey(project: Project, name: String): @Nullable ParadoxLocalisationCommandKey {
+	fun createCommandField(project: Project, name: String): @Nullable ParadoxLocalisationCommandField {
 		val command = createPropertyValue(project, "[$name]").richTextList.first() as ParadoxLocalisationCommand
-		return PsiTreeUtil.getChildOfType(command,ParadoxLocalisationCommandKey::class.java)!!
+		return PsiTreeUtil.getChildOfType(command, ParadoxLocalisationCommandField::class.java)!!
 	}
 }
