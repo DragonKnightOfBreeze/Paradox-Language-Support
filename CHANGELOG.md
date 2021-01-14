@@ -38,6 +38,8 @@
 * [X] 移除标准库后，调试可以自动提示localisation，怀疑是调试环境性能原因
 * [X] 修复规则文件`locations.yml`解析代码中的bug
 * [X] 改为从规则文件读取枚举数据
+* [X] 为本地化文件提示`locale` `serialNumber` `colorCode` `commandScope` `commandField`
+* [ ] 将`serialNumber`重命名为`sequentialNumber`
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`和`name_suffix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
 * [ ] 解析规则文件`definitions.yml`的规则`predicate`

@@ -29,7 +29,6 @@ object ParadoxRuleGroupProvider {
 	private fun addRuleGroups() {
 		val jarFile = "rules".toJarFile()
 		val jarEntries = jarFile.toJarDirectoryEntryMap("rules/",".yml")
-		val concurrent = jarEntries.size
 		//添加规则组
 		for((name,entries) in jarEntries) {
 			try {

@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText {
+public interface ParadoxLocalisationCommandIdentifier extends PsiElement {
 
-  @NotNull
-  List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList();
+  @Nullable
+  ParadoxLocalisationCommandIdentifier getPrevIdentifier();
+
+  @Nullable
+  ParadoxLocalisationCommandIdentifier getNextIdentifier();
 
 }

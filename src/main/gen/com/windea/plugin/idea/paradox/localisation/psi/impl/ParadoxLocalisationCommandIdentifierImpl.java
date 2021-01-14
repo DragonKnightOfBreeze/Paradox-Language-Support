@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
 
-public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationCommand {
+public class ParadoxLocalisationCommandIdentifierImpl extends ASTWrapperPsiElement implements ParadoxLocalisationCommandIdentifier {
 
-  public ParadoxLocalisationCommandImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationCommandIdentifierImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitCommand(this);
+    visitor.visitCommandIdentifier(this);
   }
 
   @Override
@@ -28,9 +28,15 @@ public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextI
   }
 
   @Override
-  @NotNull
-  public List<ParadoxLocalisationCommandIdentifier> getCommandIdentifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationCommandIdentifier.class);
+  @Nullable
+  public ParadoxLocalisationCommandIdentifier getPrevIdentifier() {
+    return ParadoxLocalisationPsiImplUtil.getPrevIdentifier(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationCommandIdentifier getNextIdentifier() {
+    return ParadoxLocalisationPsiImplUtil.getNextIdentifier(this);
   }
 
 }

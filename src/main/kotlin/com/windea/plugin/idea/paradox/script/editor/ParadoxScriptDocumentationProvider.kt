@@ -19,7 +19,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private val state = ParadoxSettingsState.getInstance()
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
-		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_TOKEN) return getScriptedLocInfo(originalElement)
+		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_ID) return getScriptedLocInfo(originalElement)
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableInfo(element)
@@ -80,7 +80,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
-		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_TOKEN) return getScriptedLocDoc(originalElement)
+		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_ID) return getScriptedLocDoc(originalElement)
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableDoc(element)

@@ -34,7 +34,7 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
 %state WAITING_SERIAL_NUMBER
 %state WAITING_COMMAND_SCOPE_OR_FIELD
 %state WAITING_COMMAND_SEPARATOR
-%state WAITING_COLOR_CODE
+%state WAITING_COLOR_ID
 %state WAITING_COLORFUL_TEXT
 
 %state WAITING_CHECK_ICON_START
@@ -91,10 +91,10 @@ PROPERTY_REFERENCE_PARAMETER=[a-zA-Z0-9+\-*%=\[.\]]+
 ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+
 SERIAL_NUMBER_ID=[a-zA-Z]
-COMMAND_SCOPE_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_:@]+[ \u00a0\t]*\.
+COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+[ \u00a0\t]*\.
 COMMAND_SEPARATOR=\.
-COMMAND_FIELD_TOKEN_WITH_SUFFIX=[a-zA-Z0-9_]+[ \u00a0\t]*\]
-COLOR_CODE=[a-zA-Z]
+COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_]+[ \u00a0\t]*\]
+COLOR_ID=[a-zA-Z]
 //双引号和百分号实际上不需要转义
 STRING_TOKEN=[^\"%$£§\[\r\n\\]+
 
@@ -224,8 +224,8 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
-  {COMMAND_SCOPE_TOKEN_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_TOKEN;}
-  {COMMAND_FIELD_TOKEN_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_TOKEN;}
+  {COMMAND_SCOPE_ID_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_ID;}
+  {COMMAND_FIELD_ID_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_ID;}
 }
 <WAITING_COMMAND_SEPARATOR>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
@@ -236,12 +236,12 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {COMMAND_SEPARATOR} {yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_SEPARATOR;}
 }
-<WAITING_COLOR_CODE>{
+<WAITING_COLOR_ID>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
   {WHITE_SPACE} { yybegin(WAITING_COLORFUL_TEXT); return WHITE_SPACE; }
   "§!" {depth--; yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
-  {COLOR_CODE} {yybegin(WAITING_COLORFUL_TEXT); return COLOR_CODE;}
+  {COLOR_ID} {yybegin(WAITING_COLORFUL_TEXT); return COLOR_ID;}
 }
 <WAITING_COLORFUL_TEXT>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
@@ -302,7 +302,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
     boolean isColorfulTextStart = yylength() == 2 && !Character.isWhitespace(yycharat(1)) && yycharat(1) != '"' ;
     yypushback(yylength()-1);
     if(isColorfulTextStart){
-        yybegin(WAITING_COLOR_CODE);
+        yybegin(WAITING_COLOR_ID);
         depth++;
         return COLORFUL_TEXT_START;
     }else{

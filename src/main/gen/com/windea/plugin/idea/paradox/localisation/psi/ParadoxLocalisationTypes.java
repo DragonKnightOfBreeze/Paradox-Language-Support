@@ -11,6 +11,7 @@ public interface ParadoxLocalisationTypes {
   IElementType COLORFUL_TEXT = new ParadoxLocalisationElementType("COLORFUL_TEXT");
   IElementType COMMAND = new ParadoxLocalisationElementType("COMMAND");
   IElementType COMMAND_FIELD = new ParadoxLocalisationElementType("COMMAND_FIELD");
+  IElementType COMMAND_IDENTIFIER = new ParadoxLocalisationElementType("COMMAND_IDENTIFIER");
   IElementType COMMAND_SCOPE = new ParadoxLocalisationElementType("COMMAND_SCOPE");
   IElementType ESCAPE = new ParadoxLocalisationElementType("ESCAPE");
   IElementType ICON = new ParadoxLocalisationElementType("ICON");
@@ -26,10 +27,10 @@ public interface ParadoxLocalisationTypes {
   IElementType COLON = new ParadoxLocalisationTokenType(":");
   IElementType COLORFUL_TEXT_END = new ParadoxLocalisationTokenType("§!");
   IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("§");
-  IElementType COLOR_CODE = new ParadoxLocalisationTokenType("COLOR_CODE");
+  IElementType COLOR_ID = new ParadoxLocalisationTokenType("COLOR_ID");
   IElementType COMMAND_END = new ParadoxLocalisationTokenType("]");
-  IElementType COMMAND_FIELD_TOKEN = new ParadoxLocalisationTokenType("COMMAND_FIELD_TOKEN");
-  IElementType COMMAND_SCOPE_TOKEN = new ParadoxLocalisationTokenType("COMMAND_SCOPE_TOKEN");
+  IElementType COMMAND_FIELD_ID = new ParadoxLocalisationTokenType("COMMAND_FIELD_ID");
+  IElementType COMMAND_SCOPE_ID = new ParadoxLocalisationTokenType("COMMAND_SCOPE_ID");
   IElementType COMMAND_SEPARATOR = new ParadoxLocalisationTokenType(".");
   IElementType COMMAND_START = new ParadoxLocalisationTokenType("[");
   IElementType COMMENT = new ParadoxLocalisationTokenType("COMMENT");
@@ -67,6 +68,9 @@ public interface ParadoxLocalisationTypes {
       }
       else if (type == COMMAND_FIELD) {
         return new ParadoxLocalisationCommandFieldImpl(node);
+      }
+      else if (type == COMMAND_IDENTIFIER) {
+        return new ParadoxLocalisationCommandIdentifierImpl(node);
       }
       else if (type == COMMAND_SCOPE) {
         return new ParadoxLocalisationCommandScopeImpl(node);

@@ -49,7 +49,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 				.withFix(ChangeColorIntention)
 				.create()
 		} else {
-			val e = element.colorCode
+			val e = element.colorId
 			if(e != null) annotateColor(element.name, holder, e.textRange)
 		}
 	}

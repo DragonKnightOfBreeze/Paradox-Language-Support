@@ -21,7 +21,7 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	//TODO 不完全 - 有些localisationCommandField并没有对应的scripted_loc，如GetName
 	
 	override fun resolve(): PsiElement? {
-		val name = element.commandFieldToken?.text?: return null
+		val name = element.commandFieldId?.text?: return null
 		return findScriptLoc(name , project)
 	}
 	

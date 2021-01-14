@@ -36,18 +36,19 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
+    create_token_set_(COMMAND_FIELD, COMMAND_IDENTIFIER, COMMAND_SCOPE),
     create_token_set_(COLORFUL_TEXT, COMMAND, ESCAPE, ICON,
       PROPERTY_REFERENCE, RICH_TEXT, SERIAL_NUMBER, STRING),
   };
 
   /* ********************************************************** */
-  // COLORFUL_TEXT_START COLOR_CODE rich_text* [COLORFUL_TEXT_END]
+  // COLORFUL_TEXT_START COLOR_ID rich_text* [COLORFUL_TEXT_END]
   public static boolean colorful_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "colorful_text")) return false;
     if (!nextTokenIs(b, COLORFUL_TEXT_START)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, COLORFUL_TEXT, null);
-    r = consumeTokens(b, 1, COLORFUL_TEXT_START, COLOR_CODE);
+    r = consumeTokens(b, 1, COLORFUL_TEXT_START, COLOR_ID);
     p = r; // pin = 1
     r = r && report_error_(b, colorful_text_2(b, l + 1));
     r = p && colorful_text_3(b, l + 1) && r;
@@ -132,26 +133,33 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_reference | COMMAND_FIELD_TOKEN
+  // property_reference | COMMAND_FIELD_ID
   public static boolean command_field(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_field")) return false;
-    if (!nextTokenIs(b, "<command field>", COMMAND_FIELD_TOKEN, PROPERTY_REFERENCE_START)) return false;
+    if (!nextTokenIs(b, "<command field>", COMMAND_FIELD_ID, PROPERTY_REFERENCE_START)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COMMAND_FIELD, "<command field>");
     r = property_reference(b, l + 1);
-    if (!r) r = consumeToken(b, COMMAND_FIELD_TOKEN);
+    if (!r) r = consumeToken(b, COMMAND_FIELD_ID);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // COMMAND_SCOPE_TOKEN
+  public static boolean command_identifier(PsiBuilder b, int l) {
+    Marker m = enter_section_(b);
+    exit_section_(b, m, COMMAND_IDENTIFIER, true);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // COMMAND_SCOPE_ID
   public static boolean command_scope(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_scope")) return false;
-    if (!nextTokenIs(b, COMMAND_SCOPE_TOKEN)) return false;
+    if (!nextTokenIs(b, COMMAND_SCOPE_ID)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, COMMAND_SCOPE_TOKEN);
+    r = consumeToken(b, COMMAND_SCOPE_ID);
     exit_section_(b, m, COMMAND_SCOPE, r);
     return r;
   }

@@ -31,8 +31,8 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationName
 
   @Override
   @NotNull
-  public PsiElement getCommandScopeToken() {
-    return notNullChild(findChildByType(COMMAND_SCOPE_TOKEN));
+  public PsiElement getCommandScopeId() {
+    return notNullChild(findChildByType(COMMAND_SCOPE_ID));
   }
 
   @Override
@@ -68,6 +68,18 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationName
   @NotNull
   public Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationCommandIdentifier getPrevIdentifier() {
+    return ParadoxLocalisationPsiImplUtil.getPrevIdentifier(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationCommandIdentifier getNextIdentifier() {
+    return ParadoxLocalisationPsiImplUtil.getNextIdentifier(this);
   }
 
 }

@@ -37,8 +37,8 @@ public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationName
 
   @Override
   @Nullable
-  public PsiElement getCommandFieldToken() {
-    return findChildByType(COMMAND_FIELD_TOKEN);
+  public PsiElement getCommandFieldId() {
+    return findChildByType(COMMAND_FIELD_ID);
   }
 
   @Override
@@ -74,6 +74,18 @@ public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationName
   @NotNull
   public Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationCommandIdentifier getPrevIdentifier() {
+    return ParadoxLocalisationPsiImplUtil.getPrevIdentifier(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationCommandIdentifier getNextIdentifier() {
+    return ParadoxLocalisationPsiImplUtil.getNextIdentifier(this);
   }
 
 }

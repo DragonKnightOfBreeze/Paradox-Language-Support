@@ -35,8 +35,8 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationName
 
   @Override
   @Nullable
-  public PsiElement getColorCode() {
-    return findChildByType(COLOR_CODE);
+  public PsiElement getColorId() {
+    return findChildByType(COLOR_ID);
   }
 
   @Override

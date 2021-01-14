@@ -2,7 +2,6 @@
 
 package com.windea.plugin.idea.paradox.localisation.psi;
 
-import com.intellij.lexer.*;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
@@ -17,7 +16,7 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
  * <a href="http://www.jflex.de/">JFlex</a> 1.7.0
  * from the specification file <tt>ParadoxLocalisationLexer.flex</tt>
  */
-public class ParadoxLocalisationLexer implements FlexLexer {
+public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -44,7 +43,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
   public static final int WAITING_SERIAL_NUMBER = 30;
   public static final int WAITING_COMMAND_SCOPE_OR_FIELD = 32;
   public static final int WAITING_COMMAND_SEPARATOR = 34;
-  public static final int WAITING_COLOR_CODE = 36;
+  public static final int WAITING_COLOR_ID = 36;
   public static final int WAITING_COLORFUL_TEXT = 38;
   public static final int WAITING_CHECK_ICON_START = 40;
   public static final int WAITING_CHECK_SERIAL_NUMBER_START = 42;
@@ -811,7 +810,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
             // fall through
           case 90: break;
           case 39: 
-            { yybegin(WAITING_COLORFUL_TEXT); return COLOR_CODE;
+            { yybegin(WAITING_COLORFUL_TEXT); return COLOR_ID;
             } 
             // fall through
           case 91: break;
@@ -874,7 +873,7 @@ public class ParadoxLocalisationLexer implements FlexLexer {
     boolean isColorfulTextStart = yylength() == 2 && !Character.isWhitespace(yycharat(1)) && yycharat(1) != '"' ;
     yypushback(yylength()-1);
     if(isColorfulTextStart){
-        yybegin(WAITING_COLOR_CODE);
+        yybegin(WAITING_COLOR_ID);
         depth++;
         return COLORFUL_TEXT_START;
     }else{
@@ -911,12 +910,12 @@ public class ParadoxLocalisationLexer implements FlexLexer {
             // fall through
           case 101: break;
           case 50: 
-            { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_TOKEN;
+            { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_ID;
             } 
             // fall through
           case 102: break;
           case 51: 
-            { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_TOKEN;
+            { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_ID;
             } 
             // fall through
           case 103: break;

@@ -83,6 +83,8 @@ enums:
     colorRgb: 0xffff00
     colorText: "##ffff00"
 
+  # TODO commandScope和commandField应当区分gameType
+
   commandScope:
   - name: "Actor"
     description: "Used in diplomatic response messages. The faction initiating an action"
@@ -115,6 +117,7 @@ enums:
   # - name: <event_target>
   #   description: "Event target tags are used without preceding them with event_target: in localisation"
   #   isPrimary: true
+  #   isSecondary: false
   - name: "Capital"
     description: "The capital of the current scope"
     isPrimary: false

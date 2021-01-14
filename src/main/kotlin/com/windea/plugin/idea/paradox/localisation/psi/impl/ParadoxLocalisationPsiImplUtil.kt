@@ -3,12 +3,14 @@ package com.windea.plugin.idea.paradox.localisation.psi.impl
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
+import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
 import com.windea.plugin.idea.paradox.localisation.reference.*
 import javax.swing.*
 
@@ -115,9 +117,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getParadoxColor(element: ParadoxLocalisationPropertyReference): ParadoxColor? {
-		val colorCode = element.propertyReferenceParameter?.text?.firstOrNull()
-		if(colorCode != null && colorCode.isUpperCase()) {
-			return paradoxColorMap[colorCode.toString()]
+		val colorId = element.propertyReferenceParameter?.text?.firstOrNull()
+		if(colorId != null && colorId.isUpperCase()) {
+			return paradoxColorMap[colorId.toString()]
 		}
 		return null
 	}
@@ -159,6 +161,30 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
+	//region ParadoxLocalisationCommandIdentifier
+	@JvmStatic
+	fun getPrevIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandIdentifier? {
+		var separator = element.prevSibling ?: return null
+		if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.prevSibling ?: return null
+		if(separator.elementType != COMMAND_SEPARATOR) return null
+		var prev = separator.prevSibling ?: return null
+		if(prev.elementType == TokenType.WHITE_SPACE) prev = prev.prevSibling ?: return null
+		if(prev !is ParadoxLocalisationCommandIdentifier) return null
+		return prev
+	}
+	
+	@JvmStatic
+	fun getNextIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandIdentifier? {
+		var separator = element.nextSibling ?: return null
+		if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.nextSibling ?: return null
+		if(separator.elementType != COMMAND_SEPARATOR) return null
+		var next = separator.nextSibling ?: return null
+		if(next.elementType == TokenType.WHITE_SPACE) next = next.nextSibling ?: return null
+		if(next !is ParadoxLocalisationCommandIdentifier) return null
+		return next
+	}
+	//endregion
+	
 	//region ParadoxLocalisationCommandScope
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationCommandScope): String {
@@ -177,13 +203,13 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxLocalisationCommandScope): PsiElement {
-		return element.commandScopeToken
+		return element.commandScopeId
 	}
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
-		val commandScopeToken = element.commandScopeToken
-		return ParadoxLocalisationCommandScopePsiReference(element, commandScopeToken.textRangeInParent)
+		val commandScopeId = element.commandScopeId
+		return ParadoxLocalisationCommandScopePsiReference(element, commandScopeId.textRangeInParent)
 	}
 	
 	@JvmStatic
@@ -195,7 +221,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationCommandField
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationCommandField): String? {
-		return element.commandFieldToken?.text
+		return element.commandFieldId?.text
 	}
 	
 	@JvmStatic
@@ -210,13 +236,13 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxLocalisationCommandField): PsiElement? {
-		return element.commandFieldToken
+		return element.commandFieldId
 	}
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
-		val commandFieldToken = element.commandFieldToken ?: return null
-		return ParadoxLocalisationCommandFieldPsiReference(element, commandFieldToken.textRangeInParent)
+		val commandFieldId = element.commandFieldId ?: return null
+		return ParadoxLocalisationCommandFieldPsiReference(element, commandFieldId.textRangeInParent)
 	}
 	
 	@JvmStatic
@@ -260,7 +286,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationColorfulText
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationColorfulText): String {
-		return element.colorCode?.text?.toUpperCase().orEmpty()
+		return element.colorId?.text?.toUpperCase().orEmpty()
 	}
 	
 	@JvmStatic
@@ -275,7 +301,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxLocalisationColorfulText): PsiElement? {
-		return element.colorCode
+		return element.colorId
 	}
 	
 	@JvmStatic
