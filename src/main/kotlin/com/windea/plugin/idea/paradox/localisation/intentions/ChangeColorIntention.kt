@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
+import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createColorfulText
 
 object ChangeColorIntention : IntentionAction {
 	private val _name = message("paradox.localisation.intention.changeColor")

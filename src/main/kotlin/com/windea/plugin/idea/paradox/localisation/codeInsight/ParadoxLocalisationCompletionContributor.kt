@@ -111,8 +111,8 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	
 	init {
 		extend(CompletionType.BASIC, localePattern, LocaleCompletionProvider())
-		extend(CompletionType.BASIC, serialNumberPattern, SerialNumberCompletionProvider())
-		extend(CompletionType.BASIC, colorIdPattern, ColorCompletionProvider())
+		extend(CompletionType.BASIC, serialNumberPattern, SerialNumberCompletionProvider()) //无法被匹配，但仍然留着
+		extend(CompletionType.BASIC, colorIdPattern, ColorCompletionProvider()) //无法被匹配，但仍然留着
 		extend(CompletionType.BASIC, commandScopePattern, CommandCompletionProvider())
 		extend(CompletionType.BASIC, commandFieldPattern, CommandCompletionProvider())
 	}
