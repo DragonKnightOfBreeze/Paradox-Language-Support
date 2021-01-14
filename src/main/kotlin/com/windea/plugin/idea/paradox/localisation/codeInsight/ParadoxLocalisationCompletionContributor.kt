@@ -45,7 +45,6 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandFieldIcon)
 		}
 		
-		private const val eventTargetPrefix = "event_target:"
 		private val eventTargetPrefixElement = LookupElementBuilder.create(eventTargetPrefix).bold().withPriority(-80.0)
 	}
 	

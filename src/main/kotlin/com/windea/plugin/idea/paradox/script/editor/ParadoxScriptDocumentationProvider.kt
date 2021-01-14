@@ -97,7 +97,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			getDocTextFromPreviousComment(element).ifNotEmpty { docText ->
+			val docText = getDocTextFromPreviousComment(element)
+			if(docText.isNotEmpty()){
 				content {
 					append(docText)
 				}
@@ -117,7 +118,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//之前的单行注释文本
 			if(state.renderLineCommentText) {
-				getDocTextFromPreviousComment(element).ifNotEmpty { docText ->
+				val docText = getDocTextFromPreviousComment(element)
+				if(docText.isNotEmpty()){
 					content {
 						append(docText)
 					}
@@ -142,7 +144,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//之前的单行注释文本
 			if(state.renderLineCommentText) {
-				getDocTextFromPreviousComment(element).ifNotEmpty { docText ->
+				val docText = getDocTextFromPreviousComment(element)
+				if(docText.isNotEmpty()){
 					content {
 						append(docText)
 					}

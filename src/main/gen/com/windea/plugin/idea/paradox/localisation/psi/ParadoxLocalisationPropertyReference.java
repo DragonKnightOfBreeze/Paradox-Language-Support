@@ -4,7 +4,6 @@ package com.windea.plugin.idea.paradox.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.windea.plugin.idea.paradox.ParadoxColor;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationPropertyPsiReference;
 
 public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisationRichText {
@@ -28,8 +27,5 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
 
   @Nullable
   ParadoxLocalisationPropertyPsiReference getReference();
-
-  @Nullable
-  ParadoxColor getParadoxColor();
 
 }

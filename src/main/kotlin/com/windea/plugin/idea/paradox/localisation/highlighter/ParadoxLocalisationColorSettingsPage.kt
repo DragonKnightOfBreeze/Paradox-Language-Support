@@ -19,11 +19,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 		private val _markerName = message("paradox.localisation.displayName.marker")
 		private val _parameterName = message("paradox.localisation.displayName.parameter")
 		private val _propertyReferenceName = message("paradox.localisation.displayName.propertyReference")
-		private val _commandScopeName = message("paradox.localisation.displayName.commandScope")
-		private val _commandFieldName = message("paradox.localisation.displayName.commandField")
 		private val _iconName = message("paradox.localisation.displayName.icon")
 		private val _serialNumberName = message("paradox.localisation.displayName.serialNumber")
 		private val _colorName = message("paradox.localisation.displayName.color")
+		private val _commandScopeName = message("paradox.localisation.displayName.commandScope")
+		private val _commandFieldName = message("paradox.localisation.displayName.commandField")
 		private val _validEscapeName = message("paradox.localisation.displayName.validEscape")
 		private val _invalidEscapeName = message("paradox.localisation.displayName.invalidEscape")
 		private val _badCharacterName = message("paradox.localisation.displayName.badCharacter")
@@ -38,11 +38,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(_markerName, ParadoxLocalisationAttributesKeys.MARKER_KEY),
 			AttributesDescriptor(_parameterName, ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
 			AttributesDescriptor(_propertyReferenceName, ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY),
-			AttributesDescriptor(_commandScopeName, ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
-			AttributesDescriptor(_commandFieldName, ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
 			AttributesDescriptor(_iconName, ParadoxLocalisationAttributesKeys.ICON_KEY),
 			AttributesDescriptor(_serialNumberName, ParadoxLocalisationAttributesKeys.SERIAL_NUMBER_KEY),
 			AttributesDescriptor(_colorName, ParadoxLocalisationAttributesKeys.COLOR_KEY),
+			AttributesDescriptor(_commandScopeName, ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
+			AttributesDescriptor(_commandFieldName, ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
 			AttributesDescriptor(_validEscapeName, ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY),
 			AttributesDescriptor(_invalidEscapeName, ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY),
 			AttributesDescriptor(_badCharacterName, ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)

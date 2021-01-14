@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
-import com.windea.plugin.idea.paradox.ParadoxColor;
 
 public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationColorfulText {
 
@@ -65,12 +64,6 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationName
   @Override
   public int getTextOffset() {
     return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxColor getParadoxColor() {
-    return ParadoxLocalisationPsiImplUtil.getParadoxColor(this);
   }
 
 }

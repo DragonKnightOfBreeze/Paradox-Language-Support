@@ -46,11 +46,6 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getIcon(element: ParadoxLocalisationLocale, @IconFlags flags: Int): Icon {
 		return localisationLocaleIcon
 	}
-	
-	@JvmStatic
-	fun getParadoxLocale(element: ParadoxLocalisationLocale): ParadoxLocale? {
-		return paradoxLocaleMap[element.name]
-	}
 	//endregion
 	
 	//region ParadoxLocalisationProperty
@@ -85,11 +80,6 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getValue(element: ParadoxLocalisationProperty): String? {
 		return element.propertyValue?.text?.unquote()
 	}
-	
-	@JvmStatic
-	fun getParadoxLocale(element: ParadoxLocalisationProperty): ParadoxLocale? {
-		return (element.containingFile as? ParadoxLocalisationFile)?.paradoxLocale
-	}
 	//endregion
 	
 	//region ParadoxLocalisationPropertyReference
@@ -113,15 +103,6 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPropertyPsiReference? {
 		val propertyReferenceId = element.propertyReferenceId ?: return null
 		return ParadoxLocalisationPropertyPsiReference(element, propertyReferenceId.textRangeInParent)
-	}
-	
-	@JvmStatic
-	fun getParadoxColor(element: ParadoxLocalisationPropertyReference): ParadoxColor? {
-		val colorId = element.propertyReferenceParameter?.text?.firstOrNull()
-		if(colorId != null && colorId.isUpperCase()) {
-			return paradoxColorMap[colorId.toString()]
-		}
-		return null
 	}
 	//endregion
 	
@@ -276,11 +257,6 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getTextOffset(element: ParadoxLocalisationSerialNumber): Int {
 		return element.startOffset + 1
 	}
-	
-	@JvmStatic
-	fun getParadoxSerialNumber(element: ParadoxLocalisationSerialNumber): ParadoxSerialNumber? {
-		return paradoxSerialNumberMap[element.name]
-	}
 	//endregion
 	
 	//region ParadoxLocalisationColorfulText
@@ -307,11 +283,6 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getTextOffset(element: ParadoxLocalisationColorfulText): Int {
 		return element.startOffset + 1
-	}
-	
-	@JvmStatic
-	fun getParadoxColor(element: ParadoxLocalisationColorfulText): ParadoxColor? {
-		return paradoxColorMap[element.name]
 	}
 	//endregion
 }

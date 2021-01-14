@@ -20,11 +20,11 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 		private val MARKER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.MARKER_KEY)
 		private val PARAMETER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PARAMETER_KEY)
 		private val PROPERTY_REFERENCE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY)
-		private val COMMAND_SCOPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY)
-		private val COMMAND_FIELD_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY)
 		private val ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.ICON_KEY)
 		private val SERIAL_NUMBER_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.SERIAL_NUMBER_KEY)
 		private val COLOR_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COLOR_KEY)
+		private val COMMAND_SCOPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY)
+		private val COMMAND_FIELD_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY)
 		private val VALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY)
 		private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
 		private val BAD_CHARACTER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)
@@ -38,8 +38,10 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 		PROPERTY_REFERENCE_ID -> PROPERTY_REFERENCE_KEYS
 		STRING_TOKEN, LEFT_QUOTE, RIGHT_QUOTE -> STRING_KEYS
 		PROPERTY_REFERENCE_START, PARAMETER_SEPARATOR, PROPERTY_REFERENCE_END,
-		COMMAND_START, COMMAND_END, ICON_START, ICON_END,
-		SERIAL_NUMBER_START, SERIAL_NUMBER_END, COLORFUL_TEXT_START, COLORFUL_TEXT_END -> MARKER_KEYS
+		ICON_START, ICON_END,
+		SERIAL_NUMBER_START, SERIAL_NUMBER_END, 
+		COLORFUL_TEXT_START, COLORFUL_TEXT_END,
+		COMMAND_START, COMMAND_END -> MARKER_KEYS
 		PROPERTY_REFERENCE_PARAMETER, ICON_PARAMETER -> PARAMETER_KEYS
 		NUMBER -> NUMBER_KEYS
 		COMMAND_SCOPE -> COMMAND_SCOPE_KEYS

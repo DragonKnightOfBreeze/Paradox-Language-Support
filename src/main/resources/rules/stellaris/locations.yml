@@ -215,10 +215,7 @@ locations:
   common/war_goals:
     file_extension: txt
   common:
-    file_names:
-    - achievements.txt
-    - alerts.txt
-    - message_types.txt
+    file_names: [ achievements.txt, alerts.txt, message_types.txt ]
   dlc:
     file_extension: dlc
     path_strict: false

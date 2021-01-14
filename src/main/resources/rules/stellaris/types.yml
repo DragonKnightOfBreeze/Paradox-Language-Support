@@ -97,8 +97,8 @@ types:
   button_effect:
     path: "common/button_effects"
     replace_scopes:
-      this: selected_object | player_country
-      from: player_country
+      this: "selected_object | player_country"
+      from: "player_country"
 
   bypass:
     path: "common/bypass"
@@ -711,7 +711,7 @@ types:
 
   component_slot:
     path: "common/section_templates"
-    skip_root_key: ship_section_template
+    skip_root_key: "ship_section_template"
     name_key: name
 
   sector_focus:
@@ -781,8 +781,8 @@ types:
         predicate:
           cost: none
     graph_related_types:
-    - event
-    - anomaly_category
+    - "event"
+    - "anomaly_category"
 
   species_archetype:
     path: "common/species_archetypes"
@@ -1104,8 +1104,8 @@ types:
         predicate:
           major: true
     graph_related_types:
-    - special_project
-    - anomaly_category
+    - "special_project"
+    - "anomaly_category"
 
   color_define:
     path: "flags"

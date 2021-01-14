@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
-import com.windea.plugin.idea.paradox.ParadoxSerialNumber;
 
 public class ParadoxLocalisationSerialNumberImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationSerialNumber {
 
@@ -59,12 +58,6 @@ public class ParadoxLocalisationSerialNumberImpl extends ParadoxLocalisationName
   @Override
   public int getTextOffset() {
     return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxSerialNumber getParadoxSerialNumber() {
-    return ParadoxLocalisationPsiImplUtil.getParadoxSerialNumber(this);
   }
 
 }

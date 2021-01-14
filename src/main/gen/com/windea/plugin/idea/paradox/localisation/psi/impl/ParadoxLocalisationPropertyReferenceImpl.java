@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
-import com.windea.plugin.idea.paradox.ParadoxColor;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationPropertyPsiReference;
 
 public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationPropertyReference {
@@ -68,12 +67,6 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   @Nullable
   public ParadoxLocalisationPropertyPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxColor getParadoxColor() {
-    return ParadoxLocalisationPsiImplUtil.getParadoxColor(this);
   }
 
 }

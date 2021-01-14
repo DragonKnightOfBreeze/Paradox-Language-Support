@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import com.windea.plugin.idea.paradox.ParadoxLocale;
 import javax.swing.Icon;
 
 public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationLocale {
@@ -62,12 +61,6 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedEleme
   @NotNull
   public Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocale getParadoxLocale() {
-    return ParadoxLocalisationPsiImplUtil.getParadoxLocale(this);
   }
 
 }

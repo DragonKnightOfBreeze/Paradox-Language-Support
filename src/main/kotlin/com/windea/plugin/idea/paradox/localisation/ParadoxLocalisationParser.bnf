@@ -40,7 +40,7 @@
 	  SERIAL_NUMBER_END="%"
       COMMAND_START="["
       COMMAND_SCOPE_ID='regexp:[a-zA-Z0-9_:@]+'
-      COMMAND_FIELD_ID='regexp:[a-zA-Z0-9_]+'
+      COMMAND_FIELD_ID='regexp:[a-zA-Z0-9_:@]+'
       COMMAND_SEPARATOR='.'
       COMMAND_END="]"
 	  COLORFUL_TEXT_START="§"
@@ -63,7 +63,7 @@ locale ::= LOCALE_ID ":" {
   pin(".*")=1
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getIcon getParadoxLocale]
+  methods=[getName setName checkRename getNameIdentifier getIcon]
 }
 
 property ::= property_key ":" [NUMBER] property_value {
@@ -72,7 +72,7 @@ property ::= property_key ":" [NUMBER] property_value {
   extends="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
   stubClass="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationPropertyStub"
-  methods=[getName setName checkRename getNameIdentifier getIcon getValue getParadoxLocale]
+  methods=[getName setName checkRename getNameIdentifier getIcon getValue]
 }
 property_key ::= PROPERTY_KEY_ID
 property_value ::= LEFT_QUOTE rich_text * RIGHT_QUOTE{
@@ -92,7 +92,7 @@ escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN{
 property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PARAMETER_SEPARATOR [property_reference_param]] PROPERTY_REFERENCE_END {
    pin(".*")=1
   extends=rich_text
-  methods=[getName setName getTextOffset getReference getParadoxColor]
+  methods=[getName setName getTextOffset getReference]
 }
 private property_reference_name ::= command | PROPERTY_REFERENCE_ID
 private property_reference_param ::= PROPERTY_REFERENCE_PARAMETER
@@ -136,7 +136,7 @@ serial_number ::= SERIAL_NUMBER_START SERIAL_NUMBER_ID SERIAL_NUMBER_END {
   extends=rich_text
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getTextOffset getParadoxSerialNumber]
+  methods=[getName setName checkRename getNameIdentifier getTextOffset]
 }
 
 colorful_text ::= COLORFUL_TEXT_START COLOR_ID rich_text* [COLORFUL_TEXT_END]{
@@ -144,5 +144,5 @@ colorful_text ::= COLORFUL_TEXT_START COLOR_ID rich_text* [COLORFUL_TEXT_END]{
   extends=rich_text
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getTextOffset getParadoxColor]
+  methods=[getName setName checkRename getNameIdentifier getTextOffset]
 }

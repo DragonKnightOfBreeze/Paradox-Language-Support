@@ -19,10 +19,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
 			element is ParadoxLocalisationLocale -> getLocaleInfo(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
-			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
-			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
 			element is ParadoxLocalisationSerialNumber -> getSerialNumberInfo(element)
 			element is ParadoxLocalisationColorfulText -> getColorInfo(element)
+			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
+			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
 			else -> null
 		}
 	}
@@ -62,6 +62,14 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
+	private fun getSerialNumberInfo(element: ParadoxLocalisationSerialNumber): String {
+		return buildString {
+			definition {
+				append("(localisation serial number) <b>").append(element.name).append("</b>")
+			}
+		}
+	}
+	
 	private fun getCommandScopeInfo(element: ParadoxLocalisationCommandScope): String {
 		return buildString {
 			definition {
@@ -74,14 +82,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		return buildString {
 			definition {
 				append("(localisation command field) <b>").append(element.name).append("</b>")
-			}
-		}
-	}
-	
-	private fun getSerialNumberInfo(element: ParadoxLocalisationSerialNumber): String {
-		return buildString {
-			definition {
-				append("(localisation serial number) <b>").append(element.name).append("</b>")
 			}
 		}
 	}
@@ -127,7 +127,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			}
 			//之前的单行注释文本
 			if(state.renderLineCommentText) {
-				getDocTextFromPreviousComment(element).ifNotEmpty { docText ->
+				val docText = getDocTextFromPreviousComment(element)
+				if(docText.isNotEmpty()){
 					content {
 						append(docText)
 					}
@@ -173,22 +174,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getCommandScopeDoc(element: ParadoxLocalisationCommandScope): String {
-		return buildString {
-			definition {
-				append("(localisation command scope) <b>").append(element.name).append("</b>")
-			}
-		}
-	}
-	
-	private fun getCommandFieldDoc(element: ParadoxLocalisationCommandField): String {
-		return buildString {
-			definition {
-				append("(localisation command field) <b>").append(element.name).append("</b>")
-			}
-		}
-	}
-	
 	private fun getSerialNumberDoc(element: ParadoxLocalisationSerialNumber): String {
 		return buildString {
 			definition {
@@ -208,6 +193,35 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				val description = element.paradoxColor?.description
 				if(description != null) {
 					append(" - ").append(description)
+				}
+			}
+		}
+	}
+	
+	private fun getCommandScopeDoc(element: ParadoxLocalisationCommandScope): String {
+		return buildString {
+			definition {
+				append("(localisation command scope) <b>").append(element.name).append("</b>")
+			}
+			//来自规则文件
+			val paradoxCommandScope = element.paradoxCommandScope
+			if(paradoxCommandScope != null){
+				content{
+					append(paradoxCommandScope.description)
+				}
+			}
+		}
+	}
+	
+	private fun getCommandFieldDoc(element: ParadoxLocalisationCommandField): String {
+		return buildString {
+			definition {
+				append("(localisation command field) <b>").append(element.name).append("</b>")
+			}
+			val paradoxCommandField = element.paradoxCommandField
+			if(paradoxCommandField != null){
+				content{
+					append(paradoxCommandField.description)
 				}
 			}
 		}

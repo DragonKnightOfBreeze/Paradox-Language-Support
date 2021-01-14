@@ -30,6 +30,9 @@ const val defaultFolder = "<folder>"
 
 const val anonymousName = "<anonymous>"
 
+const val eventTargetPrefix = "event_target:"
+const val eventTargetPrefixLength = eventTargetPrefix.length
+
 val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
 val booleanValues = arrayOf("yes", "no")

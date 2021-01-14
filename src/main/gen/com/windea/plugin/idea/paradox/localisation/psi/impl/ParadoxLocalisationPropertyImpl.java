@@ -11,7 +11,6 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationPropertyStub;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import com.windea.plugin.idea.paradox.ParadoxLocale;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -86,12 +85,6 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   @Nullable
   public String getValue() {
     return ParadoxLocalisationPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocale getParadoxLocale() {
-    return ParadoxLocalisationPsiImplUtil.getParadoxLocale(this);
   }
 
 }

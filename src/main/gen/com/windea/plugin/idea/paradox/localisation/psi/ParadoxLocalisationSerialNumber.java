@@ -4,7 +4,6 @@ package com.windea.plugin.idea.paradox.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.windea.plugin.idea.paradox.ParadoxSerialNumber;
 
 public interface ParadoxLocalisationSerialNumber extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
 
@@ -23,8 +22,5 @@ public interface ParadoxLocalisationSerialNumber extends ParadoxLocalisationRich
   PsiElement getNameIdentifier();
 
   int getTextOffset();
-
-  @Nullable
-  ParadoxSerialNumber getParadoxSerialNumber();
 
 }

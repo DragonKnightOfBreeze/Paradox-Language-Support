@@ -39,6 +39,7 @@
 * [X] 修复规则文件`locations.yml`解析代码中的bug
 * [X] 改为从规则文件读取枚举数据
 * [X] 为本地化文件提示`locale` `serialNumber` `colorCode` `commandScope` `commandField`
+* [X] 验证`commandScope` `commandField`
 * [ ] 将`serialNumber`重命名为`sequentialNumber`
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`和`name_suffix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`

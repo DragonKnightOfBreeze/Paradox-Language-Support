@@ -6,7 +6,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import com.windea.plugin.idea.paradox.ParadoxLocale;
 import javax.swing.Icon;
 
 public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationPropertyStub> {
@@ -36,8 +35,5 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
 
   @Nullable
   String getValue();
-
-  @Nullable
-  ParadoxLocale getParadoxLocale();
 
 }

@@ -3,6 +3,8 @@ enums:
   ### see: https://stellaris.paradoxwikis.com/Localisation_modding
 
   locale:
+  - name: "l_simp_chinese"
+    description: "Simple Chinese"
   - name: "l_english"
     description: "English"
   - name: "l_braz_por"
@@ -17,8 +19,6 @@ enums:
     description: "Russian"
   - name: "l_spanish"
     description: "Spanish"
-  - name: "l_simp_chinese"
-    description: "Simple Chinese"
   - name: "l_default"
     description: "Default"
 
@@ -99,7 +99,7 @@ enums:
     isPrimary: true
     isSecondary: false
   - name: "Root"
-    description: "The event's ROOT scope"
+    description: "The event's root scope"
     isPrimary: true
     isSecondary: false
   - name: "This"
@@ -107,7 +107,7 @@ enums:
     isPrimary: true
     isSecondary: false
   - name: "From"
-    description: "The calling event's ROOT scope. For events further back in the call stack, From can also be used as a isSecondary scope"
+    description: "The calling event's root scope. For events further back in the call stack, From can also be used as a isSecondary scope"
     isPrimary: true
     isSecondary: true
   - name: "Prev"
