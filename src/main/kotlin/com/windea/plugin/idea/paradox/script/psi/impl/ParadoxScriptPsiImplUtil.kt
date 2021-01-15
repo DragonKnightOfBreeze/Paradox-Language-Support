@@ -120,7 +120,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun findValues(element:ParadoxScriptProperty,value:String): ListParadoxScriptValue> {
+	fun findValues(element:ParadoxScriptProperty,value:String): List<ParadoxScriptValue> {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
 		return block.valueList.filter { it.value == value }
 	}

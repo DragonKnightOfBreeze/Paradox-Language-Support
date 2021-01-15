@@ -37,7 +37,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		//}
 	}
 	
-	private fun getLocalisationInfo(element: ParadoxLocalisationProperty):String{
+	private fun getLocalisationInfo(element: ParadoxLocalisationProperty): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
@@ -118,7 +118,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		//}
 	}
 	
-	private fun getLocalisationDoc(element:ParadoxLocalisationProperty):String{
+	private fun getLocalisationDoc(element: ParadoxLocalisationProperty): String {
 		val name = element.name
 		return buildString {
 			definition {
@@ -128,7 +128,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			//之前的单行注释文本
 			if(state.renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
-				if(docText.isNotEmpty()){
+				if(docText.isNotEmpty()) {
 					content {
 						append(docText)
 					}
@@ -152,7 +152,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation locale) <b>").append(element.name).append("</b>")
 				val description = element.paradoxLocale?.description
 				if(description != null) {
-					append(" - ").append(description)
+					content {
+						append(description)
+					}
 				}
 			}
 		}
@@ -180,7 +182,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation serial number) <b>").append(element.name).append("</b>")
 				val description = element.paradoxSerialNumber?.description
 				if(description != null) {
-					append(" - ").append(description)
+					content {
+						append(description)
+					}
 				}
 			}
 		}
@@ -192,7 +196,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation color) <b>").append(element.name).append("</b>")
 				val description = element.paradoxColor?.description
 				if(description != null) {
-					append(" - ").append(description)
+					content {
+						append(description)
+					}
 				}
 			}
 		}
@@ -205,8 +211,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			}
 			//来自规则文件
 			val paradoxCommandScope = element.paradoxCommandScope
-			if(paradoxCommandScope != null){
-				content{
+			if(paradoxCommandScope != null) {
+				content {
 					append(paradoxCommandScope.description)
 				}
 			}
@@ -219,8 +225,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation command field) <b>").append(element.name).append("</b>")
 			}
 			val paradoxCommandField = element.paradoxCommandField
-			if(paradoxCommandField != null){
-				content{
+			if(paradoxCommandField != null) {
+				content {
 					append(paradoxCommandField.description)
 				}
 			}
@@ -241,7 +247,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
-		return findDefinition(link,null,context.project)
+		return findDefinition(link, null, context.project)
 	}
 	
 	private fun getLocale(element: PsiElement): ParadoxLocale? {

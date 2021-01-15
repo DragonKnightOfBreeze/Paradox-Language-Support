@@ -739,7 +739,7 @@ types:
     localisation:
       name!: $
       plural!: $_plural
-      class!: .class # TODO 是否需要？
+      # class!: .class
     subtypes:
       station:
         predicate:
@@ -976,11 +976,11 @@ types:
           randomized: true
       ruler_trait:
         predicate:
-          leader_class: [ ruler ]
+          leader_class: [ "ruler" ]
         name_prefix: "trait_ruler_"
       general_trait:
         predicate:
-          leader_class: [ general ]
+          leader_class: [ "general" ]
         name_prefix: "trait_ruler_"
       leader_trait:
         predicate:
@@ -988,15 +988,15 @@ types:
         name_prefix: "leader_trait_"
       governor_trait:
         predicate:
-          leader_class: [ admiral ]
+          leader_class: [ "admiral" ]
         name_prefix: "trait_ruler_"
       scientist_trait:
         predicate:
-          leader_class: [ scientist ]
+          leader_class: [ "scientist" ]
         name_prefix: "trait_ruler_"
       admiral_trait:
         predicate:
-          leader_class: [ admiral ]
+          leader_class: [ "admiral" ]
         name_prefix: "trait_ruler_"
       species_trait:
         predicate:
@@ -1093,10 +1093,8 @@ types:
           diplomatic: true
       default:
         predicate:
-          # 0..1
-          hide_window: false
-          # 0..1
-          diplomatic: false
+          hide_window?: false
+          diplomatic?: false
       triggered:
         predicate:
           is_triggered_only: true

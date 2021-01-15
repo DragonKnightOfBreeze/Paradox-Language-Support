@@ -6,7 +6,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import error.NonExistentClass;
 import javax.swing.Icon;
 
 public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
@@ -49,6 +48,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, StubBa
   @Nullable
   ParadoxScriptValue findValue(@NotNull String value);
 
-  NonExistentClass findValues(@NotNull String value);
+  @NotNull
+  List<ParadoxScriptValue> findValues(@NotNull String value);
 
 }
