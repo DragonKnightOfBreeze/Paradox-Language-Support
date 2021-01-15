@@ -145,9 +145,9 @@ class ParadoxRuleGroup(
 			//预测表达式
 			val predicateData = data["predicate"] as Map<String,Any>?
 			if(predicateData != null){
-				val propValue = element.propertyValue
-				if(propValue is ParadoxScriptBlock){
-					val propMap = propValue.propertyList.associateBy { it.name }
+				val value = element.propertyValue?.value
+				if(value is ParadoxScriptBlock){
+					val propMap = value.propertyList.associateBy { it.name }
 					for((k,v) in predicateData){
 						val (key,optional) = k.toConditionalKey()
 						val prop = propMap[key] ?: if(optional) continue else return false
@@ -161,7 +161,7 @@ class ParadoxRuleGroup(
 								val p = prop.propertyValue?.value
 								return p == null || p.isNullLike()
 							}
-							//TODO 
+							//TODO 判断类型、定义类型、数字范围等
 							else -> continue
 						}
 					}

@@ -3,7 +3,7 @@ types:
     path: "common/agendas"
     name_prefix: "agenda_"
     localisation:
-      name!: $
+      name!: "$"
 
   ai_budget:
     path: "common/ai_budget"
@@ -12,9 +12,9 @@ types:
     path: "common/ambient_objects"
     name_key: "name"
     localisation:
-      name!: .name
-      description?: .description
-      tooltip?: .tooltip
+      name!: ".name"
+      description?: ".description"
+      tooltip?: ".tooltip"
     subtypes:
       show_name:
         predicate:
@@ -26,8 +26,8 @@ types:
   anomaly_category:
     path: "common/anomalies"
     localisation:
-      name!: $
-      description!: .desc
+      name!: "$"
+      description!: ".desc"
     graph_related_types:
     - "event"
     - "special_project"
@@ -35,15 +35,15 @@ types:
   archaeological_site_type:
     path: "common/archaeological_site_types"
     localisation:
-      name!: $
-      description!: .desc
+      name!: "$"
+      description!: ".desc"
 
   army:
     path: "common/armies"
     localisation:
-      name!: $
-      plural!: $_plural
-      description!: $_desc
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
     subtypes:
       defensive_army:
         predicate:
@@ -56,15 +56,15 @@ types:
     path: "common/artifact_actions"
     name_prefix: "artifact_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   ascension_perk:
     path: "common/ascension_perks"
     name_prefix: "ap_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   asteroid_belt:
     path: "common/asteroid_belt"
@@ -72,20 +72,20 @@ types:
   attitude: #TODO
     path: "common/attitudes"
     localisation:
-      name!: attribute_$
+      name!: "attribute_$"
 
   bombardment_stance:
     path: "common/bombardment_stances"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   building:
     path: "common/buildings"
     name_prefix: "building_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     subtypes:
       capital_building:
         predicate:
@@ -112,8 +112,8 @@ types:
     path: "common/casus_belli"
     name_prefix: "cb_"
     localisation:
-      name!: casus_belli_$
-      hint?: casus_belli_$_acquire_hint
+      name!: "casus_belli_$"
+      hint?: "casus_belli_$_acquire_hint"
 
   colony_automation:
     path: "common/colony_automation"
@@ -128,8 +128,8 @@ types:
     path: "common/colony_types"
     name_prefix: "col_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   country_customization:
     path: "common/country_customization"
@@ -141,10 +141,10 @@ types:
     path: "common/component_sets"
     name_key: "key"
     localisation:
-      name!: $
-      description?: $_DESC
-      ship_description?: ship_$_DESC
-      station_description?: station_$_DESC
+      name!: "$"
+      description?: "$_DESC"
+      ship_description?: "ship_$_DESC"
+      station_description?: "station_$_DESC"
     subtypes:
       required_component:
         predicate:
@@ -160,9 +160,9 @@ types:
   component_template:
     path: "common/component_templates"
     localisation:
-      name!: $
-      tag?: .tags
-      ai_tag?: .ai_tags
+      name!: "$"
+      tag?: ".tags"
+      ai_tag?: ".ai_tags"
     subtypes:
       utility_component_template:
         key_filter: "utility_component_template"
@@ -177,8 +177,8 @@ types:
   decision:
     path: "common/decisions"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   define:
     path: "common/defines"
@@ -198,8 +198,8 @@ types:
     # path_strict: true
     name_prefix: "d_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     subtypes:
       colonisable:
         predicate:
@@ -209,10 +209,10 @@ types:
           station: "shipclass_research_station | shipclass_mining_station"
       blocker:
         predicate:
-          category: $deplosit_category.blocker
+          category: "$deplosit_category.blocker"
       important:
         predicate:
-          category: $deposit_category.important
+          category: "$deposit_category.important"
       null:
         predicate:
           is_null: true
@@ -238,19 +238,19 @@ types:
     path: "common/diplomatic_actions"
     name_prefix: "action_"
     localisation:
-      title?: $_TITLE
-      description?: $_DESC
-      long_description?: $_LONG_DESC
-      type?: $_TYPE
-      type_description?: $_TYPE_DESC
+      title?: "$_TITLE"
+      description?: "$_DESC"
+      long_description?: "$_LONG_DESC"
+      type?: "$_TYPE"
+      type_description?: "$_TYPE_DESC"
 
   district:
     path: "common/districts"
     name_prefix: "district_"
     localisation:
-      name!: $
-      plural!: $_plural
-      description!: $_desc
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
     subtypes:
       capped:
         predicate:
@@ -262,12 +262,12 @@ types:
   dynamic_text:
     path: "common/dynamic_text"
     localisation:
-      text!: .text
+      text!: ".text"
 
   economic_category:
     path: "common/economic_categories"
     localisation:
-      name!: $
+      name!: "$"
     subtypes:
       hidden:
         predicate:
@@ -283,8 +283,8 @@ types:
   edict:
     path: "common/edicts"
     localisation:
-      name!: edit_$
-      description!: edit_$_desc
+      name!: "edit_$"
+      description!: "edit_$_desc"
     subtypes:
       edit_ambition:
         predicate:
@@ -298,15 +298,15 @@ types:
     path: "common/ethics"
     key_filter: "!ethic_categories"
     localisation:
-      name!: $
-      description!: $_desc
-      tag: .tags
+      name!: "$"
+      description!: "$_desc"
+      tag: ".tags"
 
   event_chain:
     path: "common/event_chains"
     localisation:
-      title!: $_title
-      description!: $_desc
+      title!: "$_title"
+      description!: "$_desc"
 
   fallen_empire:
     path: "common/fallen_empires"
@@ -315,38 +315,38 @@ types:
     path: "common/federation_law_categories"
     name_prefix: "law_category_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     from_version: "2.8"
 
   federation_law:
     path: "common/federation_laws"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     from_version: "2.8"
 
   federation_perk:
     path: "common/federation_perks"
     localisation:
-      name?: $
-      description?: $_desc
+      name?: "$"
+      description?: "$_desc"
     from_version: "2.8"
 
   federation_type:
     path: "common/federation_types"
     name_suffix: "_federation"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     from_version: "2.8"
 
   galactic_focus:
     path: "common/galactic_focuses"
     name_prefix: "galactic_focus_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     from_version: "2.8"
 
   # TODO subtypes
@@ -362,10 +362,10 @@ types:
     path: "common/governments"
     name_prefix: "gov_"
     localisation:
-      name!: $
-      description!: $_desc
-      rule_title!: .rule_title
-      rule_title_female?: .rule_title_female
+      name!: "$"
+      description!: "$_desc"
+      rule_title!: ".rule_title"
+      rule_title_female?: ".rule_title_female"
       heir_title?: heir_title
       heir_title_female?: heir_title_female
 
@@ -373,15 +373,15 @@ types:
     path: "common/governments/authorities"
     name_prefix: "auth_"
     localisation:
-      name!: $
-      description!: $_desc
-      tag: .tags
+      name!: "$"
+      description!: "$_desc"
+      tag: ".tags"
 
   civic_or_origin:
     path: "common/governments/civics"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     subtypes:
       civic:
         predicate:
@@ -398,8 +398,8 @@ types:
     key_filter: "swap_type"
     name_key: "name"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   graphical_culture:
     path: "common/graphical_culture"
@@ -419,28 +419,28 @@ types:
     path: "common/mandates"
     name_prefix: "mandate_"
     localisation:
-      name!: MANDATE_$
-      description!: MANDATE_$_DESC
+      name!: "MANDATE_$"
+      description!: "MANDATE_$_DESC"
 
   map_mode:
     path: "common/map_modes"
     name_suffix: "_map_mode"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   megastructure:
     path: "common/megastructures"
     localisation:
-      name!: $
-      description!: $_DESC
+      name!: "$"
+      description!: "$_DESC"
     subtypes:
       base_level:
         predicate:
           placement_rules: none
         localisation:
-          details!: $_MEGASTRUCTURE_DETAILS
-          delayed_info?: $_CONSTRUCTION_INFO_DELAYED
+          details!: "$_MEGASTRUCTURE_DETAILS"
+          delayed_info?: "$_CONSTRUCTION_INFO_DELAYED"
       not_base_level:
         predicate:
           prerequisites: any
@@ -448,7 +448,7 @@ types:
   name_list:
     path: "common/name_lists"
     localisation:
-      name!: name_list_$
+      name!: "name_list_$"
     subtypes:
       randomized:
         predicate:
@@ -457,14 +457,14 @@ types:
   notification_modifier:
     path: "common/notification_modifiers"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   observation_station_mission:
     path: "common/observation_station_missions"
     localisation:
-      name!: mission_$
-      description!: mission_$_desc
+      name!: "mission_$"
+      description!: "mission_$_desc"
 
   # TODO subtypes
   # TODO scopes from comment (root/this = xxx, xxx xx)
@@ -476,7 +476,7 @@ types:
     path: "common/opinion_modifiers"
     name_prefix: "opnion_"
     localisation:
-      name!: $
+      name!: "$"
     subtypes:
       triggered_opnion_modifier:
         predicate:
@@ -492,15 +492,15 @@ types:
     alias: "personality"
     path: "common/personalities"
     localisation:
-      name!: personality_$
-      description!: personality_$_desc
+      name!: "personality_$"
+      description!: "personality_$_desc"
 
   planet_class:
     path: "common/planet_classes"
     key_filter: "!random_list"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     subtypes:
       star:
         predicate:
@@ -512,9 +512,9 @@ types:
         predicate:
           colonizable: true
         localisation:
-          habitability!: mod_$_habitability
-          preference_trait: trait_$_preference
-          preference_trait_description: trait_$_preference_desc
+          habitability!: "mod_$_habitability"
+          preference_trait: "trait_$_preference"
+          preference_trait_description: "trait_$_preference_desc"
 
   planet_class_random_list:
     path: "common/planet_classes"
@@ -535,8 +535,8 @@ types:
   policy:
     path: "common/policies"
     localisation:
-      name!: policy_$
-      description!: policy_$_desc
+      name!: "policy_$"
+      description!: "policy_$_desc"
 
   policy_option:
     path: "common/policies"
@@ -544,24 +544,24 @@ types:
     key_filter: "option"
     name_key: "name"
     localisation:
-      title!: $
-      name!: $_name
-      description!: $_desc
+      title!: "$"
+      name!: "$_name"
+      description!: "$_desc"
 
   social_strata:
     alias: "pop_category"
     path: "common/pop_categories"
     localisation:
-      name!: pop_cat_$
-      plural!: pop_cat_$_plural
-      description!: pop_cat_$_desc
+      name!: "pop_cat_$"
+      plural!: "pop_cat_$_plural"
+      description!: "pop_cat_$_desc"
 
   faction_type:
     alias: "pop_faction_type"
     path: "common/pop_faction_types"
     localisation:
-      name!: pft_$
-      description!: pft_$_desc
+      name!: "pft_$"
+      description!: "pft_$_desc"
     #subtypes: 
     #  unique:
     #    predicate: 
@@ -574,9 +574,9 @@ types:
     alias: "pop_job"
     path: "common/pop_jobs"
     localisation:
-      name!: job_$
-      plural!: job_$_plural
-      description!: job_$_desc
+      name!: "job_$"
+      plural!: "job_$_plural"
+      description!: "job_$_desc"
     subtypes:
       capped:
         predicate:
@@ -650,25 +650,25 @@ types:
     path: "common/relics"
     name_prefix: "r_"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   resolution_category:
     path: "common/resolution_categories"
     name_prefix: "resolution_category_"
     localisation:
-      name!: $
-      group!: .group
+      name!: "$"
+      group!: ".group"
     from_version: "2.8"
 
   resolution:
     path: "common/resolutions"
     name_prefix: "resolution_"
     localisation:
-      name!: $
-      description!: $_desc
-      effect_success!: $_effect_success
-      effect_failure!: $_effect_failure
+      name!: "$"
+      description!: "$_desc"
+      effect_success!: "$_effect_success"
+      effect_failure!: "$_effect_failure"
     subtypes:
       require_target:
         predicate:
@@ -705,9 +705,9 @@ types:
     subtypes:
       designable:
         predicate:
-          ship_size?: $ship_size.designable
+          ship_size?: "$ship_size.designable"
         localisation:
-          name!: $
+          name!: "$"
 
   component_slot:
     path: "common/section_templates"
@@ -717,7 +717,7 @@ types:
   sector_focus:
     path: "common/sector_focuses"
     localisation:
-      name!: $
+      name!: "$"
     replace_scopes:
       root: "sector"
       this: "sector"
@@ -725,7 +725,7 @@ types:
   sector_type:
     path: "common/sector_types"
     localisation:
-      name!: $
+      name!: "$"
     replace_scopes:
       root: "system"
       this: "system"
@@ -737,9 +737,9 @@ types:
   ship_size:
     path: "common/ship_sizes"
     localisation:
-      name!: $
-      plural!: $_plural
-      # class!: .class
+      name!: "$"
+      plural!: "$_plural"
+      # class!: ".class"
     subtypes:
       station:
         predicate:
@@ -771,8 +771,8 @@ types:
     path: "common/special_projects"
     name_key: "key"
     localisation:
-      name!: $
-      description!: $_DESC
+      name!: "$"
+      description!: "$_DESC"
     subtypes:
       not_cost:
         predicate:
@@ -790,22 +790,22 @@ types:
   species_class:
     path: "common/species_classes"
     localisation:
-      name!: $
-      plural!: $_plural
-      description!: $_desc
-      insult!: $_insult_01
-      insult_plural!: $_insult_plural_01
-      compliment!: $_compliment_01
-      compliment_plural!: $_compliment_plural_01
-      spawn!: $_spawn
-      spawn_plural!: $_spawn_plural
-      sound_01!: $_sound_01
-      sound_02!: $_sound_02
-      sound_03!: $_sound_03
-      sound_04!: $_sound_04
-      sound_05!: $_sound_05
-      organ!: $_organ
-      mouth!: $_mouth
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
+      insult!: "$_insult_01"
+      insult_plural!: "$_insult_plural_01"
+      compliment!: "$_compliment_01"
+      compliment_plural!: "$_compliment_plural_01"
+      spawn!: "$_spawn"
+      spawn_plural!: "$_spawn_plural"
+      sound_01!: "$_sound_01"
+      sound_02!: "$_sound_02"
+      sound_03!: "$_sound_03"
+      sound_04!: "$_sound_04"
+      sound_05!: "$_sound_05"
+      organ!: "$_organ"
+      mouth!: "$_mouth"
     subtypes:
       randomized:
         predicate:
@@ -826,16 +826,16 @@ types:
   species_right:
     path: "common/species_rights"
     localisation:
-      name!: $
-      tooltip!: $_tooltip
-      delayed_tooltip?: $_tooltip_delayed
-      token: .token
+      name!: "$"
+      tooltip!: "$_tooltip"
+      delayed_tooltip?: "$_tooltip_delayed"
+      token: ".token"
 
   star_class:
     path: "common/star_classes"
     localisation:
-      name!: $
-      description?: $_desc
+      name!: "$"
+      description?: "$_desc"
     key_filter: "!random_list"
 
   star_class_random_list:
@@ -846,8 +846,8 @@ types:
   starbase_building:
     path: "common/starbase_buildings"
     localisation:
-      name!: sm_$
-      description!: sm_$_desc
+      name!: "sm_$"
+      description!: "sm_$_desc"
 
   starbase_level:
     path: "common/starbase_levels"
@@ -855,26 +855,26 @@ types:
   starbase_module:
     path: "common/starbase_modules"
     localisation:
-      name!: sm_$
-      description?: sm_$_desc
+      name!: "sm_$"
+      description?: "sm_$_desc"
 
   starbase_type:
     path: "common/starbase_types"
     localisation:
-      name!: $
+      name!: "$"
 
   start_screen_message:
     path: "common/start_screen_messages"
     key_filter: "part"
     name_key: "location"
     localisation:
-      localization: .localization
+      localization: ".localization"
 
   static_modifier:
     path: "common/static_modifiers"
     localisation:
-      name!: $
-      description?: $_desc
+      name!: "$"
+      description?: "$_desc"
     subtypes:
       planet:
         predicate:
@@ -884,8 +884,8 @@ types:
     alias: "strategic_resources"
     path: "common/strategic_resources"
     localisation:
-      name?: $
-      description?: $_desc
+      name?: "$"
+      description?: "$_desc"
     subtypes:
       tradable:
         predicate:
@@ -897,21 +897,21 @@ types:
   subject:
     path: "common/subjects"
     localisation:
-      name!: SUBJECT_$
-      description!: SUBJECT_DESC_$
+      name!: "SUBJECT_$"
+      description!: "SUBJECT_DESC_$"
 
   system_type:
     path: "common/system_types"
     localisation:
-      name!: $
+      name!: "$"
 
   technology:
     path: "common/technology"
     name_prefix: "tech_"
     localisation:
-      name!: $
-      description!: $_desc
-      # category: .category
+      name!: "$"
+      description!: "$_desc"
+      # category: ".category"
     subtypes:
       repeatable:
         predicate:
@@ -938,8 +938,8 @@ types:
   tradition_category:
     path: "common/tradition_categories"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   tradition_swap_category:
     path: "common/tradition_categories"
@@ -947,14 +947,14 @@ types:
     key_filter: "tradition_swap"
     name_key: "name"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   tradition:
     path: "common/traditions"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   tradition_swap:
     path: "common/traditions"
@@ -962,14 +962,14 @@ types:
     key_filter: "tradition_swap"
     name_key: "name"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
 
   trait:
     path: "common/traits"
     localisation:
-      name!: $
-      description!: $_desc
+      name!: "$"
+      description!: "$_desc"
     subtypes:
       randomized:
         predicate:
@@ -1007,8 +1007,8 @@ types:
     path: "common/war_goals"
     name_prefix: "wg_"
     localisation:
-      name!: war_goal_$
-      description!: war_goal_$_desc
+      name!: "war_goal_$"
+      description!: "war_goal_$_desc"
     subtypes: 
       total_war:
         predicate: 
@@ -1026,7 +1026,7 @@ types:
     skip_root_key: "alerts"
     name_prefix: "alert_"
     localisation:
-      name: .name
+      name: ".name"
 
   message_type:
     path: "common"
