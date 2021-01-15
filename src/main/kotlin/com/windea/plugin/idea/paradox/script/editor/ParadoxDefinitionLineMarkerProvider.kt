@@ -34,7 +34,14 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 		element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
 		element.textRange,
 		definitionGutterIcon,
-		{ _tooltip(definitionInfo.name.escapeXml(),definitionInfo.type) },
+		{ 
+			val name = definitionInfo.name.escapeXml()
+			val type = buildString{
+				append(definitionInfo.type)
+				definitionInfo.subtypes.joinTo(this,", ",", ")
+			}
+			_tooltip(name, type) 
+		},
 		{ mouseEvent, _ ->
 			val project = element.project
 			val elements = findDefinitions(definitionInfo.name,definitionInfo.type,project).toTypedArray()

@@ -20,6 +20,7 @@ class ParadoxStringDefinitionGutterIconRenderer(
 		private fun _tooltip(name:String,type:String) = message("paradox.script.gutterIcon.definition.tooltip",name, type)
 	}
 	
+	//TODO 暂不标注子类型
 	private val definitionInfo = properties.firstOrNull()?.paradoxDefinitionInfo
 	private val tooltip = _tooltip(definitionInfo?.name?.escapeXml() ?: name.escapeXml(),definitionInfo?.type?:"?")
 	

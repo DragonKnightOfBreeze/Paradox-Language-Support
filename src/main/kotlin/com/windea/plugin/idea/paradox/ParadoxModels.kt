@@ -65,6 +65,7 @@ data class ParadoxFileInfo(
 data class ParadoxDefinitionInfo(
 	val name: String,
 	val type: String,
+	val subtypes: List<String>,
 	val localisation: List<Pair<ConditionalKey, String>>,
 	val scopes: Map<String, String>,
 	val fromVersion: String

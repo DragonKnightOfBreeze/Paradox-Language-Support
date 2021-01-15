@@ -110,12 +110,18 @@ class ParadoxRuleGroup(
 		}
 		
 		fun toDefinitionInfo(element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
+			val subtypesData = getSubtypesData(data,element,elementName)
 			val name = getName(data, element)
 			val type = getType(data,key)
-			val localisation = getLocalisation(data,element, name)
-			val scopes = getScopes(data)
+			val subtypes = subtypesData.entries.map { (k,v)-> getType(v,k) }
+			val localisation = getLocalisation(data,element, name).apply {
+				for((_, v) in subtypesData) addAll(getLocalisation(v,element,name))
+			}
+			val scopes = getScopes(data).apply { 
+				for((_,v) in subtypesData) putAll(getScopes(v))
+			}
 			val fromVersion = getFromVersion(data)
-			return ParadoxDefinitionInfo(name, type, localisation, scopes, fromVersion)
+			return ParadoxDefinitionInfo(name, type,subtypes, localisation, scopes, fromVersion)
 		}
 		
 		private fun getSubtypesData(data:Map<String,Any>,element:ParadoxScriptProperty,elementName:String):Map<String,Map<String,Any>>{
@@ -182,8 +188,8 @@ class ParadoxRuleGroup(
 			return "$name ($alias)"
 		}
 		
-		private fun getLocalisation(data:Map<String,Any>,element:ParadoxScriptProperty,name: String): List<Pair<ConditionalKey, String>> {
-			val localisationData = data["localisation"] as Map<String, String>? ?: return emptyList()
+		private fun getLocalisation(data:Map<String,Any>,element:ParadoxScriptProperty,name: String): MutableList<Pair<ConditionalKey, String>> {
+			val localisationData = data["localisation"] as Map<String, String>? ?: return mutableListOf()
 			val result = mutableListOf<Pair<ConditionalKey, String>>()
 			for((keyData, valueData) in localisationData) {
 				when {
@@ -209,8 +215,8 @@ class ParadoxRuleGroup(
 			return result
 		}
 		
-		private fun getScopes(data:Map<String,Any>): Map<String, String> {
-			return data["replace_scopes"] as Map<String, String>? ?: return emptyMap()
+		private fun getScopes(data:Map<String,Any>): MutableMap<String, String> {
+			return data["replace_scopes"] as MutableMap<String, String>? ?: return mutableMapOf()
 		}
 		
 		private fun getFromVersion(data:Map<String,Any>): String {
