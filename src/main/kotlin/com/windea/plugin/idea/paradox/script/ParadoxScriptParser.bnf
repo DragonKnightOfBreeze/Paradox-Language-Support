@@ -74,7 +74,7 @@ property ::= property_key property_separator property_value {
   extends="com.windea.plugin.idea.paradox.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptNamedElement"
   stubClass="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptPropertyStub"
-  methods=[getName setName checkRename getNameIdentifier getIcon getValue getUnquotedValue getTruncatedValue findProperty findValue]
+  methods=[getName setName checkRename getNameIdentifier getIcon getValue getUnquotedValue getTruncatedValue findProperty findProperties findValue findValues]
 }
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID
 private property_separator ::= "=" | "<" | ">" | "<=" | ">=" | "<>"

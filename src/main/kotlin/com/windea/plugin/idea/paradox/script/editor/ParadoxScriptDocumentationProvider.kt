@@ -55,7 +55,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				definitionInfo.let { (name, type, _, localisation) ->
+				definitionInfo.let { (name, type, localisation) ->
 					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
 					if(localisation.isNotEmpty()) {
 						append("<br>")
@@ -132,7 +132,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				definitionInfo.let { (name, type, _, localisation) ->
+				definitionInfo.let { (name, type, localisation) ->
 					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
 					if(localisation.isNotEmpty()) {
 						append("<br>")

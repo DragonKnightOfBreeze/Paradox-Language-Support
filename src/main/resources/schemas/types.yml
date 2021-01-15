@@ -50,21 +50,16 @@ definitions:
           Script file extension of this definition.
       value_type:
         type: string
-        default: block
+        default: object
         description:
-          定义的值的类型。默认为block。
-          Value type of this definition, default to block.
+          定义的值的类型。默认为object。
+          Value type of this definition, default to object.
       name_from_value:
         type: boolean
         default: false
         description:
-          从值获取类型信息，值的类型必须是stringValue。
+          从值获取类型信息，值的类型必须是string。
           Resolve type info from value, value type must be stringValue.
-      predicate:
-        type: object
-        description:
-          确定可能的位置后，通过给定的条件进行过滤。
-          After located possible location, filter by specified condition.
       skip_root_key:
         type: string
         description:
@@ -75,6 +70,11 @@ definitions:
         description:
           过滤属性的键的表达式。
           Expression of filtering property key.
+      predicate:
+        type: object
+        description:
+          确定可能的位置后，通过给定的条件进行过滤。
+          After located possible location, filter by specified condition.
       name_key:
         type: string
         description:

@@ -108,9 +108,21 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun findProperties(element:ParadoxScriptProperty,propertyName:String):List<ParadoxScriptProperty>{
+		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
+		return block.propertyList.filter { it.name == propertyName }
+	}
+	
+	@JvmStatic
 	fun findValue(element:ParadoxScriptProperty,value:String): ParadoxScriptValue? {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return null
 		return block.valueList.find { it.value == value }
+	}
+	
+	@JvmStatic
+	fun findValues(element:ParadoxScriptProperty,value:String): ListParadoxScriptValue> {
+		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
+		return block.valueList.filter { it.value == value }
 	}
 	//endregion
 	

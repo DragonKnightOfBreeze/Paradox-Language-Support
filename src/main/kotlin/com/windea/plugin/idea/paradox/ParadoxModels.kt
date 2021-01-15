@@ -63,12 +63,11 @@ data class ParadoxFileInfo(
 //Script
 
 data class ParadoxDefinitionInfo(
-	val name:String,
-	val type:String,
-	val rootKey:String,
-	val localisation: List<Pair<ConditionalKey,String>>,
-	val scopes:Map<String,String>,
-	val fromVersion:String
+	val name: String,
+	val type: String,
+	val localisation: List<Pair<ConditionalKey, String>>,
+	val scopes: Map<String, String>,
+	val fromVersion: String
 ){
 	val localisationKeys = localisation.mapTo(linkedSetOf()) { it.first }
 	val localisationNames = localisation.mapTo(linkedSetOf()) { it.second }

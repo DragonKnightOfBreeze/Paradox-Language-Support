@@ -11,6 +11,7 @@ import static com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*;
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptPropertyStub;
 import com.windea.plugin.idea.paradox.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import error.NonExistentClass;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -100,9 +101,20 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
+  @NotNull
+  public List<ParadoxScriptProperty> findProperties(@NotNull String propertyName) {
+    return ParadoxScriptPsiImplUtil.findProperties(this, propertyName);
+  }
+
+  @Override
   @Nullable
   public ParadoxScriptValue findValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.findValue(this, value);
+  }
+
+  @Override
+  public NonExistentClass findValues(@NotNull String value) {
+    return ParadoxScriptPsiImplUtil.findValues(this, value);
   }
 
 }

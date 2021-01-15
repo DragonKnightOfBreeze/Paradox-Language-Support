@@ -47,20 +47,6 @@ fun isPreviousComment(element: PsiElement): Boolean {
 	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == COMMENT
 }
 
-fun checkScriptValueType(value: ParadoxScriptValue, valueType: String): Boolean {
-	return when(valueType) {
-		"block" -> value is ParadoxScriptBlock
-		//"array" -> value is ParadoxScriptBlock && value.isArray
-		//"object" ->value is ParadoxScriptBlock && value.isObject
-		"string" -> value is ParadoxScriptString
-		"boolean" -> value is ParadoxScriptBoolean
-		"number" -> value is ParadoxScriptNumber
-		"color" -> value is ParadoxScriptColor
-		"code" -> value is ParadoxScriptCode
-		else -> false
-	}
-}
-
 //Keys
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
@@ -265,6 +251,29 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	return definition.toDefinitionInfo(element, elementName)
 }
 
+
+fun ParadoxScriptValue.checkType(type: String): Boolean {
+	return when(type) {
+		"object" -> this is ParadoxScriptBlock && isObject
+		"array" -> this is ParadoxScriptBlock && isArray
+		"string" -> this is ParadoxScriptString
+		"boolean" -> this is ParadoxScriptBoolean
+		"number" -> this is ParadoxScriptNumber
+		"color" -> this is ParadoxScriptColor
+		"code" -> this is ParadoxScriptCode
+		else -> false
+	}
+}
+
+fun ParadoxScriptValue.isNullLike():Boolean{
+	return when{
+		this is ParadoxScriptBlock -> this.isEmpty 
+		this is ParadoxScriptString -> this.textMatches("")
+		this is ParadoxScriptNumber -> this.text.toIntOrNull() == 0 //兼容0.0和0.00这样的情况
+		this is ParadoxScriptBoolean -> this.textMatches("no")
+		else -> false
+	}
+}
 //Find Extensions
 
 //使用stubIndex以提高性能
