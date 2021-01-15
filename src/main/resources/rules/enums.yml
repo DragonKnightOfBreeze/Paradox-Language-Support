@@ -89,58 +89,45 @@ enums:
   - name: "Actor"
     description: "Used in diplomatic response messages. The faction initiating an action"
     isPrimary: true
-    isSecondary: false
   - name: "Recipient"
     description: "Used in diplomatic response messages. The faction targeted by the action"
     isPrimary: true
-    isSecondary: false
   - name: "Third_party"
     description: "Used in diplomatic response messages. A third party involved in the action"
     isPrimary: true
-    isSecondary: false
   - name: "Root"
     description: "The event's root scope"
     isPrimary: true
-    isSecondary: false
   - name: "This"
     description: "The current scope"
     isPrimary: true
-    isSecondary: false
   - name: "From"
     description: "The calling event's root scope. For events further back in the call stack, From can also be used as a isSecondary scope"
     isPrimary: true
     isSecondary: true
+    isRepeatable: true
   - name: "Prev"
     description: "The previous scope. It is not obvious to me what Prev.From points to, but some project descriptions use it"
     isPrimary: true
     isSecondary: true
-  # - name: <event_target>
-  #   description: "Event target tags are used without preceding them with event_target: in localisation"
-  #   isPrimary: true
-  #   isSecondary: false
+    isRepeatable: true
   - name: "Capital"
     description: "The capital of the current scope"
-    isPrimary: false
     isSecondary: true
   - name: "Leader"
     description: "The leader of the current scope (e.g. admiral of fleet, ruler of country)"
-    isPrimary: false
     isSecondary: true
   - name: "MainAttacker"
     description: "The main attacker of the current scope (must be used in a war scope), used in war name formats"
-    isPrimary: false
     isSecondary: true
   - name: "Owner"
     description: "The current scope's owner"
-    isPrimary: false
     isSecondary: true
   - name: "Planet"
     description: "The planet where the current scope is located"
-    isPrimary: false
     isSecondary: true
   - name: "Solar_System"
     description: "The system where the isPrimary scope is located"
-    isPrimary: false
     isSecondary: true
 
   commandField:
@@ -240,7 +227,3 @@ enums:
     description: "Prints 'Her' or 'His' based on the character's gender."
   - name: "LastKilledCountryName"
     description: "Prints the name of the last killed country."
-  # - name: <scope_variable>
-  #  description: ""
-  # - name: <scripted_loc>
-  #  description: ""

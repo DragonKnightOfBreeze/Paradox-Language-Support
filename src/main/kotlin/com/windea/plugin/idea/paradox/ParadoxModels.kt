@@ -141,11 +141,20 @@ class ParadoxColor(data:Map<String,Any>){
 }
 
 class ParadoxCommandScope(data:Map<String,Any>) {
-	val name:String by data
-	val description: String by data
-	val isPrimary:Boolean by data
-	val isSecondary:Boolean by data
+	private val dataWithDefault = data.withDefault { key->
+		when(key){
+			"isPrimary" -> false
+			"isSecondary" -> false
+			"isRepeatable" -> false
+			else -> null
+		}
+	}
 	
+	val name:String by dataWithDefault
+	val description: String by dataWithDefault
+	val isPrimary:Boolean by dataWithDefault
+	val isSecondary:Boolean by dataWithDefault
+	val isRepeatable:Boolean by dataWithDefault
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxCommandScope && name == other.name
@@ -161,8 +170,15 @@ class ParadoxCommandScope(data:Map<String,Any>) {
 }
 
 class ParadoxCommandField(data:Map<String,Any>){
-	val name:String by data
-	val description:String by data
+	private val dataWithDefault = data.withDefault { key->
+		when(key){
+			"description" -> ""
+			else -> null
+		}
+	}
+	
+	val name:String by dataWithDefault
+	val description:String by dataWithDefault
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxCommandField && name == other.name

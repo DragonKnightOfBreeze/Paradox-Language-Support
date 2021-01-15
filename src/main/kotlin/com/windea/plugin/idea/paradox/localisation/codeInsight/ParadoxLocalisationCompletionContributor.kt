@@ -74,14 +74,6 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	
 	class CommandCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			//如果存在next，则必定是commandScope，否则必定是commandScope/commandField
-			//如果存在prev，则必定是secondaryCommandScope/commandField，否则必定是primaryCommandScope/commandField
-			//如果存在prevPrev，则必定是repeatableCommandScope/commandField
-			
-			//primaryCommandScope也可以是event_target（以"event_target:"开始）
-			//commandField也可以是scopeVariable或者scriptedLoc
-			//如果prefix为"event_target:"，则不进行提示
-			
 			val position = parameters.position //COMMAND_SCOPE_ID, COMMAND_FIELD_ID
 			val prefix = position.text.dropLast(dummyIdentifierLength).trim()
 			if(prefix == eventTargetPrefix) return 
@@ -90,16 +82,26 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			if(parent !is ParadoxLocalisationCommandIdentifier) return
 			
 			val handledResult = result.withPrefixMatcher(prefix)
-			val prev = parent.prevIdentifier
+			val prev = parent.prevIdentifier as? ParadoxLocalisationCommandScope
 			if(prev == null){
 				handledResult.addAllElements(primaryCommandScopeElements)
 				handledResult.addElement(eventTargetPrefixElement)
 			}else{
-				val prevPrev = prev.prevIdentifier
-				if(prevPrev == null){
-					handledResult.addAllElements(secondaryCommandScopeElements)
-				}else{
-					handledResult.addAllElements(repeatableCommandScopeElements)
+				val prevScope = prev.paradoxCommandScope
+				if(prevScope != null){
+					val prevPrev = prev.prevIdentifier as? ParadoxLocalisationCommandScope
+					if(prevPrev == null) {
+						if(prevScope.isPrimary) {
+							handledResult.addAllElements(secondaryCommandScopeElements)
+						}
+					}else{
+						val prevPrevScope = prevPrev.paradoxCommandScope
+						if(prevPrevScope != null){
+							if(prevPrevScope.isPrimary && prevScope.isRepeatable){
+								handledResult.addAllElements(repeatableCommandScopeElements)
+							}
+						}
+					}
 				}
 			}
 			val next = parent.nextIdentifier

@@ -86,11 +86,12 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//验证commandField是否合法（预定义，scopeVariable，scriptedLoc）
 		//检查出错误时不再继续检查
 		val commandIdentifiers = element.commandIdentifierList
+		val commandLength = commandIdentifiers.size
 		for((index,commandIdentifier) in commandIdentifiers.withIndex()) {
 			when {
 				commandIdentifier is ParadoxLocalisationCommandScope -> {
 					val name = commandIdentifier.name
-					if(name.startsWith(eventTargetPrefix)){
+					if(index == 1 && name.startsWith(eventTargetPrefix)){
 						if(name.length == eventTargetPrefixLength) {
 							val message = message("paradox.localisation.annotator.eventTargetNameCannotBeEmpty")
 							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
@@ -110,7 +111,11 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 							val message= message("paradox.localisation.annotator.incorrectCommandScope.secondary",name)
 							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
 							break
-						}else if(index > 1 && !(paradoxCommandScope.isPrimary && paradoxCommandScope.isSecondary)) {
+						}else if(index == 1 && commandLength > 3 && !paradoxCommandScope.isRepeatable){
+							val message= message("paradox.localisation.annotator.incorrectCommandScope.repeatable",name)
+							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+							break
+						}else if(index > 1 && !(paradoxCommandScope.isRepeatable)) {
 							val message= message("paradox.localisation.annotator.incorrectCommandScope.repeatable",name)
 							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
 							break
