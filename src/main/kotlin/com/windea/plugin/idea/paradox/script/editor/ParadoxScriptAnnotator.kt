@@ -37,7 +37,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//注明无法解析的情况
 		val reference = element.reference
 		if(reference.resolve() == null) {
-			holder.newAnnotation(ERROR, message("paradox.script.annotator.unresolvedVariable", element.name))
+			holder.newAnnotation(WARNING, message("paradox.script.annotator.unresolvedVariable", element.name))
 				.create()
 		}
 	}
@@ -51,7 +51,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(scriptProperties.isNotEmpty()) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
-				.gutterIconRenderer(ParadoxStringDefinitionGutterIconRenderer(name, scriptProperties))
+				//.gutterIconRenderer(ParadoxStringDefinitionGutterIconRenderer(name, scriptProperties))
 				.create()
 			return
 		}
@@ -59,7 +59,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(localisationProperties.isNotEmpty()) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
-				.gutterIconRenderer(ParadoxStringLocalisationGutterIconRenderer(name, localisationProperties))
+				//.gutterIconRenderer(ParadoxStringLocalisationGutterIconRenderer(name, localisationProperties))
 				.create()
 		}
 	}

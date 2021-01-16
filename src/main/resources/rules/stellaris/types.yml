@@ -472,9 +472,9 @@ types:
     path: "common/on_actions"
     name_prefix: "on_"
 
-  opnion_modifier:
+  opinion_modifier:
     path: "common/opinion_modifiers"
-    name_prefix: "opnion_"
+    name_prefix: ["opinion_", "triggered_opinion"] # 可能
     localisation:
       name!: "$"
     subtypes:
@@ -866,7 +866,7 @@ types:
   start_screen_message:
     path: "common/start_screen_messages"
     key_filter: "part"
-    name_key: "location"
+    name_key: "localization"
     localisation:
       localization: ".localization"
 

@@ -17,6 +17,7 @@ class ParadoxLocalisationPropertyPsiReference(
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setName(newElementName)
+		//TODO 重命名关联的definition
 	}
 	
 	override fun resolve(): PsiElement? {

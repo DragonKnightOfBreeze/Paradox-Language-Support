@@ -12,7 +12,8 @@ class ParadoxScriptStringPropertyPsiReference(
 	private val project = element.project
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
-		return element
+		return element.setValue(newElementName)
+		//TODO 重命名关联的definition
 	}
 	
 	override fun resolve(): PsiElement? {

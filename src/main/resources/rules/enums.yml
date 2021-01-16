@@ -81,7 +81,7 @@ enums:
   - name: "Y"
     description: "Yellow"
     colorRgb: 0xffff00
-    colorText: "##ffff00"
+    colorText: "#ffff00"
 
   # TODO commandScope和commandField应当区分gameType
 

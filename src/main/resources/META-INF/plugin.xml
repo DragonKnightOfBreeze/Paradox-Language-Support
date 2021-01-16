@@ -139,7 +139,7 @@
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptDocumentationProvider"/>
     <elementDescriptionProvider
         implementation="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptDescriptionProvider"/>
-
+    
     <lang.findUsagesProvider
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptFindUsagesProvider"/>

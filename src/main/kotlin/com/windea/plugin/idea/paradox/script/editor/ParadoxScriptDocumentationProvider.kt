@@ -57,9 +57,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
 				definitionInfo.let { (name, type, subtypes, localisation) ->
 					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-					if(subtypes.isNotEmpty()) {
-						subtypes.joinTo(this,", ",", ")
-					}
+					if(subtypes.isNotEmpty()) { subtypes.joinTo(this,", ",", ") }
 					if(localisation.isNotEmpty()) {
 						append("<br>")
 						for((k, v) in localisation) {
@@ -137,9 +135,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
 				definitionInfo.let { (name, type, subtypes, localisation) ->
 					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-					if(subtypes.isNotEmpty()) {
-						subtypes.joinTo(this,", ",", ")
-					}
+					if(subtypes.isNotEmpty()) { subtypes.joinTo(this,", ",", ") }
 					if(localisation.isNotEmpty()) {
 						append("<br>")
 						for((k, v) in localisation) {

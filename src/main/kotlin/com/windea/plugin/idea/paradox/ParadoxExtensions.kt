@@ -153,7 +153,7 @@ private fun resolveScriptPath(element: PsiElement): ParadoxPath? {
 
 val VirtualFile.paradoxFileInfo: ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 
-val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this)
+val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.originalFile) //使用原始文件
 
 val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.containingFile)
 

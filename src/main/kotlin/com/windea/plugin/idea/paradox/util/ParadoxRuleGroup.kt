@@ -24,8 +24,8 @@ class ParadoxRuleGroup(
 			}
 			val fileExtensionsData = data["file_extensions"] as List<String>?
 			if(fileExtensionsData != null && !fileExtensionsData.contains(path.fileExtension)) return false
-			val fileExtensionData = data["file_extension"] as String? ?: "txt"
-			if(fileExtensionData != path.fileExtension) return false
+			val fileExtensionData = data["file_extension"] as String?
+			if(fileExtensionsData != null && fileExtensionData != path.fileExtension) return false
 			val fileNameData = data["file_name"] as String?
 			if(fileNameData != null && fileNameData != path.fileName) return false
 			val fileNamesData = data["file_names"] as List<String>?
@@ -112,8 +112,10 @@ class ParadoxRuleGroup(
 		fun toDefinitionInfo(element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
 			val subtypesData = getSubtypesData(data,element,elementName)
 			val name = getName(data, element)
-			val type = getType(data,key)
-			val subtypes = subtypesData.entries.map { (k,v)-> getType(v,k) }
+			val type = getType(key)
+			//val type = getType(data,key)
+			//val subtypes = subtypesData.entries.map { (k,v)-> getType(v,k) }
+			val subtypes = subtypesData.entries.map { (k, _)-> getType(k) }
 			val localisation = getLocalisation(data,element, name).apply {
 				for((_, v) in subtypesData) addAll(getLocalisation(v,element,name))
 			}
@@ -183,10 +185,15 @@ class ParadoxRuleGroup(
 			return nameProperty.value ?: anonymousName
 		}
 		
-		private fun getType(data:Map<String,Any>,name:String):String{
-			val alias = data["alias"] as String? ?: return name
-			return "$name ($alias)"
+		//暂时不注明别名
+		private fun getType(name:String):String{
+			return name
 		}
+		
+		//private fun getType(data:Map<String,Any>,name:String):String{
+		//	val alias = data["alias"] as String? ?: return name
+		//	return "$name ($alias)"
+		//}
 		
 		private fun getLocalisation(data:Map<String,Any>,element:ParadoxScriptProperty,name: String): MutableList<Pair<ConditionalKey, String>> {
 			val localisationData = data["localisation"] as Map<String, String>? ?: return mutableListOf()

@@ -38,7 +38,7 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 			val name = definitionInfo.name.escapeXml()
 			val type = buildString{
 				append(definitionInfo.type)
-				definitionInfo.subtypes.joinTo(this,", ",", ")
+				if(definitionInfo.subtypes.isNotEmpty()){ definitionInfo.subtypes.joinTo(this,", ",", ")}
 			}
 			_tooltip(name, type) 
 		},

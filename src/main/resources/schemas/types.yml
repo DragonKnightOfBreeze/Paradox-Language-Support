@@ -81,12 +81,16 @@ definitions:
           作为定义的名字的子属性的键。
           Child proeprty key that resolved as definition name.
       name_prefix:
-        type: string
+        type: [string, array]
+        items:
+          type: string
         description:
           名字的前缀。
           Name prefix.
       name_suffix:
-        type: string
+        type: [string, array]
+        items:
+          type: string
         description:
           名字的后缀。
           Name suffix.

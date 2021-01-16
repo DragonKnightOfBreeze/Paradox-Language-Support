@@ -32,7 +32,7 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 				parentType == FILE && type != ROOT_BLOCK -> true
 				parentType == FILE -> false
 				type == PROPERTY && isDefinition(node) -> false
-				type == VARIABLE && isScriptedVariable(node,parent) -> false
+				type == VARIABLE && isScriptVariable(node,parent) -> false
 				parentType == ROOT_BLOCK && type == PROPERTY -> false
 				parentType == ROOT_BLOCK || parentType == BLOCK -> true
 				parentType == PROPERTY || parentType == PROPERTY_VALUE -> false
@@ -45,7 +45,7 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 			return element.paradoxDefinitionInfo != null
 		}
 		
-		private fun isScriptedVariable(node: ASTNode,parent:ASTNode): Boolean {
+		private fun isScriptVariable(node: ASTNode,parent:ASTNode): Boolean {
 			if(parent.elementType != ROOT_BLOCK) return false
 			val file = node.psi.containingFile
 			val parentPath = file.paradoxFileInfo?.path?.parent ?: return false
