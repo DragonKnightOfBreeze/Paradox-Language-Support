@@ -9,7 +9,7 @@ import com.intellij.xml.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
-class ParadoxLocalisationPathReference(
+class ParadoxDefinitionPathReference(
 	element: PsiElement,
 	rangeInElement: TextRange,
 	private val anchor:String,

@@ -8,6 +8,10 @@ class ParadoxLocalisationIconPsiReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
 ): PsiReferenceBase<ParadoxLocalisationIcon>(element,rangeInElement){
+	override fun handleElementRename(newElementName: String): PsiElement {
+		return element
+	}
+	
 	override fun resolve(): PsiElement? {
 		//TODO
 		return null

@@ -1,18 +1,12 @@
 package com.windea.plugin.idea.paradox.core.reference
 
-import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.paths.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
-import com.intellij.psi.xml.*
-import com.intellij.xml.*
 import com.intellij.xml.util.*
-import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
-import com.windea.plugin.idea.paradox.localisation.reference.*
+import com.windea.plugin.idea.paradox.localisation.reference.ParadoxDefinitionPathReference
 import com.windea.plugin.idea.paradox.script.psi.*
-import com.windea.plugin.idea.paradox.script.reference.*
 
 //用于兼容markdown锚点
 //同样需要兼容markdown navigator的markdown锚点
@@ -40,7 +34,7 @@ class ParadoxPathReferenceProvider: PathReferenceProvider {
 				if(anchorReference !is AnchorReference) return false
 				val anchorText = anchorReference.canonicalText
 				if(anchorText.isEmpty()) return false //排除空锚点
-				val newReference = ParadoxLocalisationPathReference(anchorReference.element,anchorReference.rangeInElement,anchorText,fileReference)
+				val newReference = ParadoxDefinitionPathReference(anchorReference.element, anchorReference.rangeInElement, anchorText, fileReference)
 				references.dropLast(1)
 				references.add(newReference)
 			}

@@ -13,7 +13,7 @@ class ParadoxScriptStringPropertyPsiReference(
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setValue(newElementName)
-		//TODO 重命名关联的definition
+		//TODO 重命名关联的definitionLocalisation
 	}
 	
 	override fun resolve(): PsiElement? {
