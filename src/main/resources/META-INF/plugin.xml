@@ -258,7 +258,7 @@
       <category>Paradox localisation</category>
     </intentionAction>
     <intentionAction>
-      <className>com.windea.plugin.idea.paradox.localisation.intentions.ChangeSerialNumberIntention</className>
+      <className>com.windea.plugin.idea.paradox.localisation.intentions.ChangeSequentialNumberIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
 

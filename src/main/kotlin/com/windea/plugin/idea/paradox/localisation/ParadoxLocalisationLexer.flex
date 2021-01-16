@@ -31,14 +31,14 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
 %state WAITING_ICON
 %state WAITING_ICON_NAME_FINISHED
 %state WAITING_ICON_PARAMETER
-%state WAITING_SERIAL_NUMBER
+%state WAITING_SEQUENTIAL_NUMBER
 %state WAITING_COMMAND_SCOPE_OR_FIELD
 %state WAITING_COMMAND_SEPARATOR
 %state WAITING_COLOR_ID
 %state WAITING_COLORFUL_TEXT
 
 %state WAITING_CHECK_ICON_START
-%state WAITING_CHECK_SERIAL_NUMBER_START
+%state WAITING_CHECK_SEQUENTIAL_NUMBER_START
 //%state WAITING_CHECK_COMMAND_START
 %state WAITING_CHECK_COLORFUL_TEXT_START
 %state WAITING_CHECK_RIGHT_QUOTE
@@ -90,7 +90,7 @@ PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-' \u00a0]+
 PROPERTY_REFERENCE_PARAMETER=[a-zA-Z0-9+\-*%=\[.\]]+
 ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+
-SERIAL_NUMBER_ID=[a-zA-Z]
+SEQUENTIAL_NUMBER_ID=[a-zA-Z]
 COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+[ \u00a0\t]*\.
 COMMAND_SEPARATOR=\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+[ \u00a0\t]*\]
@@ -99,7 +99,7 @@ COLOR_ID=[a-zA-Z]
 STRING_TOKEN=[^\"%$£§\[\r\n\\]+
 
 CHECK_ICON_START=£.?
-CHECK_SERIAL_NUMBER_START=%.?.?
+CHECK_SEQUENTIAL_NUMBER_START=%.?.?
 //CHECK_COMMAND_START=\[([a-zA-Z0-9_:@$\-' ]*?[.\]])?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
@@ -155,7 +155,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "£" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
-  "%" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_SERIAL_NUMBER_START);}
+  "%" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);}
   "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
@@ -209,13 +209,13 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {ICON_PARAMETER} {return ICON_PARAMETER;}
 }
-<WAITING_SERIAL_NUMBER>{
+<WAITING_SEQUENTIAL_NUMBER>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
-  "%" {yybegin(nextStateForText()); return SERIAL_NUMBER_END;}
+  "%" {yybegin(nextStateForText()); return SEQUENTIAL_NUMBER_END;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
-  {SERIAL_NUMBER_ID} {return SERIAL_NUMBER_ID;}
+  {SEQUENTIAL_NUMBER_ID} {return SEQUENTIAL_NUMBER_ID;}
 }
 <WAITING_COMMAND_SCOPE_OR_FIELD>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
@@ -248,7 +248,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "£" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
-  "%" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_SERIAL_NUMBER_START);}
+  "%" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);}
   "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {depth--; yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -278,16 +278,16 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
     }
   }
 }
-<WAITING_CHECK_SERIAL_NUMBER_START>{
-  {CHECK_SERIAL_NUMBER_START} {
+<WAITING_CHECK_SEQUENTIAL_NUMBER_START>{
+  {CHECK_SEQUENTIAL_NUMBER_START} {
     //特殊处理
     //如果匹配的字符串的第3个字符存在且为百分号，则认为整个字符串代表一个编号
     //否则认为是常规字符串
-    boolean isSerialNumberStart = yylength() == 3 && yycharat(2) == '%';
+    boolean isSequentialNumberStart = yylength() == 3 && yycharat(2) == '%';
     yypushback(yylength()-1);
-    if(isSerialNumberStart){
-        yybegin(WAITING_SERIAL_NUMBER);
-        return SERIAL_NUMBER_START;
+    if(isSequentialNumberStart){
+        yybegin(WAITING_SEQUENTIAL_NUMBER);
+        return SEQUENTIAL_NUMBER_START;
     }else{
         yybegin(nextStateForCheck());
         return STRING_TOKEN;

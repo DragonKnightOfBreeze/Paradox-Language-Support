@@ -22,7 +22,7 @@ enums:
   - name: "l_default"
     description: "Default"
 
-  serialNumber:
+  sequentialNumber:
   - name: "C"
     description: "Cardinal Number 1, 2, 3..."
     placeholderText: "1"

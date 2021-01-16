@@ -20,7 +20,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 		private val _parameterName = message("paradox.localisation.displayName.parameter")
 		private val _propertyReferenceName = message("paradox.localisation.displayName.propertyReference")
 		private val _iconName = message("paradox.localisation.displayName.icon")
-		private val _serialNumberName = message("paradox.localisation.displayName.serialNumber")
+		private val _sequentialNumberName = message("paradox.localisation.displayName.sequentialNumber")
 		private val _colorName = message("paradox.localisation.displayName.color")
 		private val _commandScopeName = message("paradox.localisation.displayName.commandScope")
 		private val _commandFieldName = message("paradox.localisation.displayName.commandField")
@@ -39,7 +39,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(_parameterName, ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
 			AttributesDescriptor(_propertyReferenceName, ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY),
 			AttributesDescriptor(_iconName, ParadoxLocalisationAttributesKeys.ICON_KEY),
-			AttributesDescriptor(_serialNumberName, ParadoxLocalisationAttributesKeys.SERIAL_NUMBER_KEY),
+			AttributesDescriptor(_sequentialNumberName, ParadoxLocalisationAttributesKeys.SEQUENTIAL_NUMBER_KEY),
 			AttributesDescriptor(_colorName, ParadoxLocalisationAttributesKeys.COLOR_KEY),
 			AttributesDescriptor(_commandScopeName, ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
 			AttributesDescriptor(_commandFieldName, ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),

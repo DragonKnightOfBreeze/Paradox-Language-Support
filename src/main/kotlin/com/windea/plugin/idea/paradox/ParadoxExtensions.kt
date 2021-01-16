@@ -74,10 +74,10 @@ val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 		return null
 	}
 
-val ParadoxLocalisationSerialNumber.paradoxSerialNumber: ParadoxSerialNumber?
+val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequentialNumber?
 	get() {
 		val name = this.name
-		return paradoxSerialNumberMap[name]
+		return paradoxSequentialNumberMap[name]
 	}
 
 val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?

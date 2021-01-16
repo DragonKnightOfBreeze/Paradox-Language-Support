@@ -14,7 +14,7 @@ import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElemen
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createLocale
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
-import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createSerialNumber
+import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createSequentialNumber
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
 import com.windea.plugin.idea.paradox.localisation.reference.*
 import javax.swing.*
@@ -146,30 +146,30 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxLocalisationSerialNumber
+	//region ParadoxLocalisationSequentialNumber
 	@JvmStatic
-	fun getName(element: ParadoxLocalisationSerialNumber): String {
-		return element.serialNumberId?.text?.toUpperCase().orEmpty()
+	fun getName(element: ParadoxLocalisationSequentialNumber): String {
+		return element.sequentialNumberId?.text?.toUpperCase().orEmpty()
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxLocalisationSerialNumber, name: String): PsiElement {
-		element.serialNumberId?.replace(createSerialNumber(element.project, name).serialNumberId!!)
+	fun setName(element: ParadoxLocalisationSequentialNumber, name: String): PsiElement {
+		element.sequentialNumberId?.replace(createSequentialNumber(element.project, name).sequentialNumberId!!)
 		return element
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxLocalisationSerialNumber) {
+	fun checkRename(element: ParadoxLocalisationSequentialNumber) {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationSerialNumber): PsiElement? {
-		return element.serialNumberId
+	fun getNameIdentifier(element: ParadoxLocalisationSequentialNumber): PsiElement? {
+		return element.sequentialNumberId
 	}
 	
 	@JvmStatic
-	fun getTextOffset(element: ParadoxLocalisationSerialNumber): Int {
+	fun getTextOffset(element: ParadoxLocalisationSequentialNumber): Int {
 		return element.startOffset + 1
 	}
 	//endregion

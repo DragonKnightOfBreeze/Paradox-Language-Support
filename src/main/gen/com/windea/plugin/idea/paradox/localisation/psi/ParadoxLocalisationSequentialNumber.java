@@ -5,10 +5,11 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ParadoxLocalisationSerialNumber extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationSequentialNumber
+    extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
 
   @Nullable
-  PsiElement getSerialNumberId();
+  PsiElement getSequentialNumberId();
 
   @NotNull
   String getName();

@@ -19,7 +19,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
 			element is ParadoxLocalisationLocale -> getLocaleInfo(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
-			element is ParadoxLocalisationSerialNumber -> getSerialNumberInfo(element)
+			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberInfo(element)
 			element is ParadoxLocalisationColorfulText -> getColorInfo(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
@@ -62,10 +62,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getSerialNumberInfo(element: ParadoxLocalisationSerialNumber): String {
+	private fun getSequentialNumberInfo(element: ParadoxLocalisationSequentialNumber): String {
 		return buildString {
 			definition {
-				append("(localisation serial number) <b>").append(element.name).append("</b>")
+				append("(localisation sequential number) <b>").append(element.name).append("</b>")
 			}
 		}
 	}
@@ -101,7 +101,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationIcon -> getIconDoc(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
-			element is ParadoxLocalisationSerialNumber -> getSerialNumberDoc(element)
+			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberDoc(element)
 			element is ParadoxLocalisationColorfulText -> getColorDoc(element)
 			else -> null
 		}
@@ -176,11 +176,11 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getSerialNumberDoc(element: ParadoxLocalisationSerialNumber): String {
+	private fun getSequentialNumberDoc(element: ParadoxLocalisationSequentialNumber): String {
 		return buildString {
 			definition {
-				append("(localisation serial number) <b>").append(element.name).append("</b>")
-				val description = element.paradoxSerialNumber?.description
+				append("(localisation sequential number) <b>").append(element.name).append("</b>")
+				val description = element.paradoxSequentialNumber?.description
 				if(description != null) {
 					content {
 						append(description)

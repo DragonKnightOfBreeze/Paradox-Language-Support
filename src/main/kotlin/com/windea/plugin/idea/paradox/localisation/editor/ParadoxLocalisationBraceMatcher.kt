@@ -12,7 +12,7 @@ class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
 			BracePair(ParadoxLocalisationTypes.COLORFUL_TEXT_START, ParadoxLocalisationTypes.COLORFUL_TEXT_END, true),
 			BracePair(ParadoxLocalisationTypes.ICON_START, ParadoxLocalisationTypes.ICON_END, true),
 			BracePair(ParadoxLocalisationTypes.PROPERTY_REFERENCE_START, ParadoxLocalisationTypes.PROPERTY_REFERENCE_END, true),
-			BracePair(ParadoxLocalisationTypes.SERIAL_NUMBER_START, ParadoxLocalisationTypes.SERIAL_NUMBER_END, true)
+			BracePair(ParadoxLocalisationTypes.SEQUENTIAL_NUMBER_START, ParadoxLocalisationTypes.SEQUENTIAL_NUMBER_END, true)
 		)
 	}
 

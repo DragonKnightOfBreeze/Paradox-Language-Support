@@ -16,12 +16,7 @@ object ParadoxRichTextRenderer {
 	}
 	
 	fun renderTo(element: ParadoxLocalisationPropertyValue, buffer: StringBuilder) {
-		try {
-			element.richTextList.forEach { renderTo(it, buffer) }
-		} catch(e: Exception) {
-			e.printStackTrace()
-			buffer.append("<code>(syntax error)</code>")
-		}
+		element.richTextList.forEach { renderTo(it, buffer) }
 	}
 	
 	private fun renderTo(element: ParadoxLocalisationRichText, buffer: StringBuilder) {
@@ -30,7 +25,7 @@ object ParadoxRichTextRenderer {
 			is ParadoxLocalisationEscape -> renderEscapeTo(element, buffer)
 			is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, buffer)
 			is ParadoxLocalisationIcon -> renderIconTo(element,buffer)
-			is ParadoxLocalisationSerialNumber -> renderSerialNumberTo(element, buffer)
+			is ParadoxLocalisationSequentialNumber -> renderSequentialNumberTo(element, buffer)
 			is ParadoxLocalisationCommand -> renderCodeTo(element,buffer)
 			is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, buffer)
 		}
@@ -76,8 +71,8 @@ object ParadoxRichTextRenderer {
 		}
 	}
 	
-	private fun renderSerialNumberTo(element: ParadoxLocalisationSerialNumber, buffer: StringBuilder) {
-		val placeholderText = element.paradoxSerialNumber?.placeholderText
+	private fun renderSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, buffer: StringBuilder) {
+		val placeholderText = element.paradoxSequentialNumber?.placeholderText
 		if(placeholderText != null) {
 			buffer.append(placeholderText)
 			return

@@ -10,21 +10,22 @@ import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.highlighter.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
+@Suppress("ControlFlowWithEmptyBody", "UNUSED_PARAMETER")
 class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
-			//is ParadoxLocalisationProperty -> annotateProperty(element, holder)
+			is ParadoxLocalisationProperty -> annotateProperty(element, holder)
 			is ParadoxLocalisationLocale -> annotateLocale(element, holder)
 			is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
-			is ParadoxLocalisationSerialNumber -> annotateSerialNumber(element, holder)
+			is ParadoxLocalisationSequentialNumber -> annotateSequentialNumber(element, holder)
 			is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
 			is ParadoxLocalisationCommand -> annotateCommand(element, holder)
 		}
 	}
 	
-	//private fun annotateProperty(element: ParadoxLocalisationProperty, holder: AnnotationHolder) {
-	//	
-	//}
+	private fun annotateProperty(element: ParadoxLocalisationProperty, holder: AnnotationHolder) {
+
+	}
 	
 	private fun annotateLocale(element: ParadoxLocalisationLocale, holder: AnnotationHolder) {
 		val paradoxLocale = element.paradoxLocale
@@ -54,10 +55,10 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun annotateSerialNumber(element: ParadoxLocalisationSerialNumber, holder: AnnotationHolder) {
-		val paradoxSerialNumber = element.paradoxSerialNumber
-		if(paradoxSerialNumber == null) {
-			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedSerialNumber", element.name))
+	private fun annotateSequentialNumber(element: ParadoxLocalisationSequentialNumber, holder: AnnotationHolder) {
+		val paradoxSequentialNumber = element.paradoxSequentialNumber
+		if(paradoxSequentialNumber == null) {
+			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedSequentialNumber", element.name))
 				.create()
 		}
 	}
@@ -87,44 +88,45 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//检查出错误时不再继续检查
 		val commandIdentifiers = element.commandIdentifierList
 		val commandLength = commandIdentifiers.size
-		for((index,commandIdentifier) in commandIdentifiers.withIndex()) {
-			when {
-				commandIdentifier is ParadoxLocalisationCommandScope -> {
-					val name = commandIdentifier.name
-					if(index == 1 && name.startsWith(eventTargetPrefix)){
-						if(name.length == eventTargetPrefixLength) {
-							val message = message("paradox.localisation.annotator.eventTargetNameCannotBeEmpty")
-							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-							break
-						}
-					}else {
-						val paradoxCommandScope = commandIdentifier.paradoxCommandScope
-						if(paradoxCommandScope == null){
-							val message= message("paradox.localisation.annotator.unsupportedCommandScope",name)
-							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-							break
-						}else if(index == 0 && !paradoxCommandScope.isPrimary){
-							val message= message("paradox.localisation.annotator.incorrectCommandScope.primary",name)
-							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-							break
-						}else if(index == 1 && !paradoxCommandScope.isSecondary){
-							val message= message("paradox.localisation.annotator.incorrectCommandScope.secondary",name)
-							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-							break
-						}else if(index == 1 && commandLength > 3 && !paradoxCommandScope.isRepeatable){
-							val message= message("paradox.localisation.annotator.incorrectCommandScope.repeatable",name)
-							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-							break
-						}else if(index > 1 && !(paradoxCommandScope.isRepeatable)) {
-							val message= message("paradox.localisation.annotator.incorrectCommandScope.repeatable",name)
-							holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-							break
-						}
+		for((index, commandIdentifier) in commandIdentifiers.withIndex()) {
+			if(commandIdentifier is ParadoxLocalisationCommandScope) {
+				val name = commandIdentifier.name
+				val paradoxCommandScope = commandIdentifier.paradoxCommandScope
+				if(index == 0) {
+					//primaryCommandScope, event_target
+					if(paradoxCommandScope == null) {
+						
+					} else if(!paradoxCommandScope.isPrimary) {
+						val message = message("paradox.localisation.annotator.incorrectCommandScope.primary", name)
+						holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+						break
+					}
+				} else if(index == commandLength - 2) {
+					//secondaryCommandScope
+					if(paradoxCommandScope == null) {
+						val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
+						holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+						break
+					} else if(!paradoxCommandScope.isSecondary) {
+						val message = message("paradox.localisation.annotator.incorrectCommandScope.secondary", name)
+						holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+						break
+					}
+				} else {
+					//repeatableCommandScope
+					if(paradoxCommandScope == null) {
+						val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
+						holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+						break
+					} else if(!paradoxCommandScope.isRepeatable) {
+						val message = message("paradox.localisation.annotator.incorrectCommandScope.repeatable", name)
+						holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+						break
 					}
 				}
-				commandIdentifier is ParadoxLocalisationCommandField -> {
-					//TODO
-				}
+			} else if(commandIdentifier is ParadoxLocalisationCommandField) {
+				//commandField, scopeVariable, scriptedLoc
+				
 			}
 		}
 	}

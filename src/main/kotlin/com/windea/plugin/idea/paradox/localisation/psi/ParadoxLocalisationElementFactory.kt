@@ -43,8 +43,8 @@ object ParadoxLocalisationElementFactory {
 	}
 
 	@JvmStatic
-	fun createSerialNumber(project: Project, name: String): ParadoxLocalisationSerialNumber {
-		return createPropertyValue(project, "%$name%").richTextList.first() as ParadoxLocalisationSerialNumber
+	fun createSequentialNumber(project: Project, name: String): ParadoxLocalisationSequentialNumber {
+		return createPropertyValue(project, "%$name%").richTextList.first() as ParadoxLocalisationSequentialNumber
 	}
 
 	@JvmStatic

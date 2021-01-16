@@ -18,7 +18,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		private const val dummyIdentifierLength = dummyIdentifier.length
 		
 		private val localePattern = psiElement(LOCALE_ID)
-		private val serialNumberPattern = psiElement(SERIAL_NUMBER_ID)
+		private val sequentialNumberPattern = psiElement(SEQUENTIAL_NUMBER_ID)
 		private val colorIdPattern = psiElement(COLOR_ID)
 		private val commandScopePattern = psiElement(COMMAND_SCOPE_ID)
 		private val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
@@ -26,7 +26,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		private val localeElements = paradoxLocales.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationLocaleIcon)
 		}
-		private val serialNumberElements = paradoxSerialNumbers.map {
+		private val sequentialNumberElements = paradoxSequentialNumbers.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description)
 		}
 		private val colorElements = paradoxColors.map{
@@ -44,8 +44,6 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		private val commandFieldElements = paradoxCommandFields.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandFieldIcon)
 		}
-		
-		private val eventTargetPrefixElement = LookupElementBuilder.create(eventTargetPrefix).bold().withPriority(-80.0)
 	}
 	
 	class LocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -56,11 +54,11 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		}
 	}
 	
-	class SerialNumberCompletionProvider : CompletionProvider<CompletionParameters>() {
+	class SequentialNumberCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			val position = parameters.position //SERIAL_NUMBER_ID
+			val position = parameters.position //SEQUENTIAL_NUMBER_ID
 			val prefix = position.text.dropLast(dummyIdentifierLength)
-			result.withPrefixMatcher(prefix).addAllElements(serialNumberElements)
+			result.withPrefixMatcher(prefix).addAllElements(sequentialNumberElements)
 		}
 	}
 	
@@ -82,30 +80,18 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			if(parent !is ParadoxLocalisationCommandIdentifier) return
 			
 			val handledResult = result.withPrefixMatcher(prefix)
-			val prev = parent.prevIdentifier as? ParadoxLocalisationCommandScope
+			val prev = parent.prevIdentifier
 			if(prev == null){
+				//primaryCommandScope, event_target
 				handledResult.addAllElements(primaryCommandScopeElements)
-				handledResult.addElement(eventTargetPrefixElement)
 			}else{
-				val prevScope = prev.paradoxCommandScope
-				if(prevScope != null){
-					val prevPrev = prev.prevIdentifier as? ParadoxLocalisationCommandScope
-					if(prevPrev == null) {
-						if(prevScope.isPrimary) {
-							handledResult.addAllElements(secondaryCommandScopeElements)
-						}
-					}else{
-						val prevPrevScope = prevPrev.paradoxCommandScope
-						if(prevPrevScope != null){
-							if(prevPrevScope.isPrimary && prevScope.isRepeatable){
-								handledResult.addAllElements(repeatableCommandScopeElements)
-							}
-						}
-					}
-				}
+				//repeatableCommandScope, secondaryCommandScope
+				handledResult.addAllElements(repeatableCommandScopeElements)
+				handledResult.addAllElements(secondaryCommandScopeElements)
 			}
 			val next = parent.nextIdentifier
 			if(next == null){
+				//commandField, scopeVariable, scriptedLoc
 				handledResult.addAllElements(commandFieldElements)
 			}
 		}
@@ -113,7 +99,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	
 	init {
 		extend(CompletionType.BASIC, localePattern, LocaleCompletionProvider())
-		extend(CompletionType.BASIC, serialNumberPattern, SerialNumberCompletionProvider()) //无法被匹配，但仍然留着
+		extend(CompletionType.BASIC, sequentialNumberPattern, SequentialNumberCompletionProvider()) //无法被匹配，但仍然留着
 		extend(CompletionType.BASIC, colorIdPattern, ColorCompletionProvider()) //无法被匹配，但仍然留着
 		extend(CompletionType.BASIC, commandScopePattern, CommandCompletionProvider())
 		extend(CompletionType.BASIC, commandFieldPattern, CommandCompletionProvider())

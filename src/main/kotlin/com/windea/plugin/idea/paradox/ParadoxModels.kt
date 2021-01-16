@@ -97,14 +97,14 @@ class ParadoxLocale(data:Map<String,Any>) {
 	}
 }
 
-class ParadoxSerialNumber(data:Map<String,Any>) {
+class ParadoxSequentialNumber(data:Map<String,Any>) {
 	val name: String by data
 	val description:String by data
 	val placeholderText :String by data
 	val popupText = "$name - $description"
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxSerialNumber && name == other.name 
+		return this === other || other is ParadoxSequentialNumber && name == other.name 
 	}
 	
 	override fun hashCode(): Int {
@@ -112,7 +112,7 @@ class ParadoxSerialNumber(data:Map<String,Any>) {
 	}
 	
 	override fun toString(): String {
-		return "ParadoxSerialNumber: $name"
+		return "ParadoxSequentialNumber: $name"
 	}
 }
 

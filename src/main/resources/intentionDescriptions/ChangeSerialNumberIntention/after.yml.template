@@ -1,2 +1,2 @@
 l_english:
-  KEY_WITH_SERIAL_NUMBER:0 "Serial number: %R%"
+  KEY_WITH_SEQUENTIAL_NUMBER:0 "Sequential number: %R%"

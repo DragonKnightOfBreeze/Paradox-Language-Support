@@ -12,7 +12,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
 		private val _propertyName = message("paradox.localisation.name.property")
 		private val _localeName = message("paradox.localisation.name.locale")
 		private val _iconName = message("paradox.localisation.name.icon")
-		private val _serialNumberName = message("paradox.localisation.name.serialNumber")
+		private val _sequentialNumberName = message("paradox.localisation.name.sequentialNumber")
 		private val _colorfulTextName = message("paradox.localisation.name.colorfulText")
 	}
 	
@@ -25,8 +25,8 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
 			is ParadoxLocalisationProperty -> _propertyName
 			is ParadoxLocalisationLocale -> _localeName
 			is ParadoxLocalisationIcon ->_iconName
-			is ParadoxLocalisationColorfulText -> _serialNumberName
-			is ParadoxLocalisationSerialNumber -> _colorfulTextName
+			is ParadoxLocalisationColorfulText -> _sequentialNumberName
+			is ParadoxLocalisationSequentialNumber -> _colorfulTextName
 			else -> ""
 		}
 	}

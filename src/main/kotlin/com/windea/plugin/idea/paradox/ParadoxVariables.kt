@@ -11,8 +11,8 @@ private val coreParadoxRuleGroup = paradoxRuleGroups.getValue("core")
 val paradoxLocales = coreParadoxRuleGroup.enums.getValue("locale").data.mapArray { ParadoxLocale(it.cast()) }
 val paradoxLocaleMap = paradoxLocales.associateBy { it.name }
 
-val paradoxSerialNumbers = coreParadoxRuleGroup.enums.getValue("serialNumber").data.mapArray { ParadoxSerialNumber(it.cast()) }
-val paradoxSerialNumberMap = paradoxSerialNumbers.associateBy { it.name }
+val paradoxSequentialNumbers = coreParadoxRuleGroup.enums.getValue("sequentialNumber").data.mapArray { ParadoxSequentialNumber(it.cast()) }
+val paradoxSequentialNumberMap = paradoxSequentialNumbers.associateBy { it.name }
 
 val paradoxColors = coreParadoxRuleGroup.enums.getValue("color").data.mapArray { ParadoxColor(it.cast()) }
 val paradoxColorMap = paradoxColors.associateBy { it.name }

@@ -40,13 +40,13 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   public static final int WAITING_ICON = 24;
   public static final int WAITING_ICON_NAME_FINISHED = 26;
   public static final int WAITING_ICON_PARAMETER = 28;
-  public static final int WAITING_SERIAL_NUMBER = 30;
+  public static final int WAITING_SEQUENTIAL_NUMBER = 30;
   public static final int WAITING_COMMAND_SCOPE_OR_FIELD = 32;
   public static final int WAITING_COMMAND_SEPARATOR = 34;
   public static final int WAITING_COLOR_ID = 36;
   public static final int WAITING_COLORFUL_TEXT = 38;
   public static final int WAITING_CHECK_ICON_START = 40;
-  public static final int WAITING_CHECK_SERIAL_NUMBER_START = 42;
+  public static final int WAITING_CHECK_SEQUENTIAL_NUMBER_START = 42;
   public static final int WAITING_CHECK_COLORFUL_TEXT_START = 44;
   public static final int WAITING_CHECK_RIGHT_QUOTE = 46;
 
@@ -700,7 +700,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 69: break;
           case 18: 
-            { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_SERIAL_NUMBER_START);
+            { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);
             } 
             // fall through
           case 70: break;
@@ -785,12 +785,12 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 86: break;
           case 35: 
-            { return SERIAL_NUMBER_ID;
+            { return SEQUENTIAL_NUMBER_ID;
             } 
             // fall through
           case 87: break;
           case 36: 
-            { yybegin(nextStateForText()); return SERIAL_NUMBER_END;
+            { yybegin(nextStateForText()); return SEQUENTIAL_NUMBER_END;
             } 
             // fall through
           case 88: break;
@@ -815,7 +815,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 92: break;
           case 41: 
-            { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_SERIAL_NUMBER_START);
+            { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);
             } 
             // fall through
           case 93: break;
@@ -849,11 +849,11 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { //特殊处理
     //如果匹配的字符串的第3个字符存在且为百分号，则认为整个字符串代表一个编号
     //否则认为是常规字符串
-    boolean isSerialNumberStart = yylength() == 3 && yycharat(2) == '%';
+    boolean isSequentialNumberStart = yylength() == 3 && yycharat(2) == '%';
     yypushback(yylength()-1);
-    if(isSerialNumberStart){
-        yybegin(WAITING_SERIAL_NUMBER);
-        return SERIAL_NUMBER_START;
+    if(isSequentialNumberStart){
+        yybegin(WAITING_SEQUENTIAL_NUMBER);
+        return SEQUENTIAL_NUMBER_START;
     }else{
         yybegin(nextStateForCheck());
         return STRING_TOKEN;

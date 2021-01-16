@@ -21,7 +21,7 @@ public interface ParadoxLocalisationTypes {
   IElementType PROPERTY_REFERENCE = new ParadoxLocalisationElementType("PROPERTY_REFERENCE");
   IElementType PROPERTY_VALUE = new ParadoxLocalisationElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = new ParadoxLocalisationElementType("RICH_TEXT");
-  IElementType SERIAL_NUMBER = new ParadoxLocalisationElementType("SERIAL_NUMBER");
+  IElementType SEQUENTIAL_NUMBER = new ParadoxLocalisationElementType("SEQUENTIAL_NUMBER");
   IElementType STRING = new ParadoxLocalisationElementType("STRING");
 
   IElementType COLON = new ParadoxLocalisationTokenType(":");
@@ -51,9 +51,9 @@ public interface ParadoxLocalisationTypes {
   IElementType PROPERTY_REFERENCE_START = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_START");
   IElementType RIGHT_QUOTE = new ParadoxLocalisationTokenType("\"");
   IElementType ROOT_COMMENT = new ParadoxLocalisationTokenType("ROOT_COMMENT");
-  IElementType SERIAL_NUMBER_END = new ParadoxLocalisationTokenType("%");
-  IElementType SERIAL_NUMBER_ID = new ParadoxLocalisationTokenType("SERIAL_NUMBER_ID");
-  IElementType SERIAL_NUMBER_START = new ParadoxLocalisationTokenType("SERIAL_NUMBER_START");
+  IElementType SEQUENTIAL_NUMBER_END = new ParadoxLocalisationTokenType("%");
+  IElementType SEQUENTIAL_NUMBER_ID = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_ID");
+  IElementType SEQUENTIAL_NUMBER_START = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_START");
   IElementType STRING_TOKEN = new ParadoxLocalisationTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = new ParadoxLocalisationTokenType("VALID_ESCAPE_TOKEN");
 
@@ -96,8 +96,8 @@ public interface ParadoxLocalisationTypes {
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);
       }
-      else if (type == SERIAL_NUMBER) {
-        return new ParadoxLocalisationSerialNumberImpl(node);
+      else if (type == SEQUENTIAL_NUMBER) {
+        return new ParadoxLocalisationSequentialNumberImpl(node);
       }
       else if (type == STRING) {
         return new ParadoxLocalisationStringImpl(node);

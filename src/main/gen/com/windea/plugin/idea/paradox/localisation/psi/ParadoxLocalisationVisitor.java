@@ -64,7 +64,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitSerialNumber(@NotNull ParadoxLocalisationSerialNumber o) {
+  public void visitSequentialNumber(@NotNull ParadoxLocalisationSequentialNumber o) {
     visitRichText(o);
     // visitNamedElement(o);
   }
