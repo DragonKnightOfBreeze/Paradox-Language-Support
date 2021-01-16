@@ -102,10 +102,18 @@ icon ::= ICON_START icon_name [PARAMETER_SEPARATOR [icon_param]] ICON_END {
   extends=rich_text
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getTextOffset getReference]
+  methods=[getName setName checkRename getNameIdentifier getTextOffset getReference getIcon]
 }
 private icon_name ::= command | property_reference | ICON_ID
 private icon_param ::= ICON_PARAMETER | property_reference
+
+sequential_number ::= SEQUENTIAL_NUMBER_START SEQUENTIAL_NUMBER_ID SEQUENTIAL_NUMBER_END {
+  pin(".*")=1
+  extends=rich_text
+  mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
+  implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
+  methods=[getName setName checkRename getNameIdentifier getTextOffset getIcon]
+}
 
 command ::= COMMAND_START command_expression? COMMAND_END{
   pin(".*")=1
@@ -115,6 +123,7 @@ command ::= COMMAND_START command_expression? COMMAND_END{
 private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_field {
   pin(".*")=1
 }
+//noinspection BnfUnusedRule
 command_identifier ::= {
   methods=[getPrevIdentifier getNextIdentifier]
 }
@@ -129,14 +138,6 @@ command_field ::= property_reference | COMMAND_FIELD_ID{
   mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[getName setName checkRename getNameIdentifier getReference getIcon getPrevIdentifier getNextIdentifier]
-}
-
-sequential_number ::= SEQUENTIAL_NUMBER_START SEQUENTIAL_NUMBER_ID SEQUENTIAL_NUMBER_END {
-  pin(".*")=1
-  extends=rich_text
-  mixin="com.windea.plugin.idea.paradox.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
-  implements="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getTextOffset]
 }
 
 colorful_text ::= COLORFUL_TEXT_START COLOR_ID rich_text* [COLORFUL_TEXT_END]{

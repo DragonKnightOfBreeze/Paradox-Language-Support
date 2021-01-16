@@ -85,7 +85,7 @@
         externalIdPrefix="paradoxScript."/>
     <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptVariableNameIndex"/>
-    <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptLocNameIndex"/>
+    <stubIndex implementation="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptLocalisationNameIndex"/>
 
     <lang.syntaxHighlighterFactory
         language="Paradox Script"

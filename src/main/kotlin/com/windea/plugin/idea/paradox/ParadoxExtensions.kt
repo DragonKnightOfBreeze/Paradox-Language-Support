@@ -320,16 +320,16 @@ fun findScriptVariables(project: Project, scope: GlobalSearchScope = GlobalSearc
 	return ParadoxScriptVariableNameIndex.getAll(project, scope)
 }
 
-fun findScriptLoc(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
-	return ParadoxScriptLocNameIndex.getOne(name, project, scope)
+fun findScriptLocalisation(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
+	return ParadoxScriptLocalisationNameIndex.getOne(name, project, scope)
 }
 
-fun findScriptLocs(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
-	return ParadoxScriptLocNameIndex.getAll(name, project, scope)
+fun findScriptLocalisations(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+	return ParadoxScriptLocalisationNameIndex.getAll(name, project, scope)
 }
 
-fun findScriptLocs(project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
-	return ParadoxScriptLocNameIndex.getAll(project, scope)
+fun findScriptLocalisations(project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+	return ParadoxScriptLocalisationNameIndex.getAll(project, scope)
 }
 
 fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), defaultToFirst: Boolean = false): ParadoxLocalisationProperty? {
@@ -348,52 +348,20 @@ fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, pr
 	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, keepOrder)
 }
 
-//TODO REMOVE
-//将部分特定的查找方法作为扩展方法
+//Util Extensions
 
-//fun findRelatedLocalisationProperties(scriptPropertyName: String, project: Project, locale: ParadoxLocale? = null, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {
-//	return ParadoxLocalisationNameIndex.filter(locale, project, GlobalSearchScope.allScope(project)) { name ->
-//		isRelatedLocalisationPropertyName(name, scriptPropertyName)
-//	}.sortedBy { it.name }
-//}
-
-//xxx, xxx_desc, xxx_effect_desc
-//pop_job->job_, pop_category->pop_cat_
-
-//private fun isRelatedLocalisationPropertyName(name: String, scriptPropertyName: String): Boolean {
-//	val fqName = name.removePrefix("job_").removePrefix("pop_cat_")
-//	return fqName == scriptPropertyName
-//	       || fqName == scriptPropertyName + "_desc"
-//	       || fqName == scriptPropertyName + "_effect_desc"
-//}
-//
-//fun ParadoxLocalisationProperty.getRelatedLocalisationPropertyKey(): String {
-//	val name = this.name
-//	return when {
-//		name.endsWith("_effect_desc") -> "paradox.documentation.effect"
-//		name.endsWith("desc") -> "paradox.documentation.desc"
-//		else -> "paradox.documentation.name"
-//	}
-//}
-
-//Inline Extensions
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun message(@PropertyKey(resourceBundle = paradoxBundleName) key: String, vararg params: Any): String {
+fun message(@PropertyKey(resourceBundle = paradoxBundleName) key: String, vararg params: Any): String {
 	return ParadoxBundle.getMessage(key, *params)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun String.resolveIconUrl(defaultToUnknown: Boolean = true): String {
+fun String.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolve(this, defaultToUnknown)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxLocalisationPropertyValue.renderRichText(): String {
+fun ParadoxLocalisationPropertyValue.renderRichText(): String {
 	return ParadoxRichTextRenderer.render(this)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxLocalisationPropertyValue.renderRichTextTo(buffer: StringBuilder) {
+fun ParadoxLocalisationPropertyValue.renderRichTextTo(buffer: StringBuilder) {
 	ParadoxRichTextRenderer.renderTo(this, buffer)
 }

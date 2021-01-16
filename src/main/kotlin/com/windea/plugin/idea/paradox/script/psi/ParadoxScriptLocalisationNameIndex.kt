@@ -4,8 +4,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 
-object ParadoxScriptLocNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.scriptedLoc.name.index")
+object ParadoxScriptLocalisationNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
+	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.scriptLocalisation.name.index")
 	
 	override fun getKey() = key
 	

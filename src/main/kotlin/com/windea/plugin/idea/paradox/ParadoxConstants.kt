@@ -1,8 +1,6 @@
 package com.windea.plugin.idea.paradox
 
 import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
-import com.windea.plugin.idea.paradox.util.*
 
 //Strings
 
@@ -50,6 +48,8 @@ val exeFileNames = arrayOf("stellaris.exe")
 val localisationFileIcon = IconLoader.findIcon("/icons/paradoxLocalisationFile.svg")!!
 val localisationLocaleIcon = IconLoader.findIcon("/icons/paradoxLocalisationLocale.svg")!!
 val localisationPropertyIcon = IconLoader.findIcon("/icons/paradoxLocalisationProperty.svg")!!
+val localisationIconIcon = IconLoader.findIcon("/icons/paradoxLocalisationIcon.svg")!!
+val localisationSequentialNumberIcon = IconLoader.findIcon("/icons/paradoxLocalisationSequentialNumber.svg")!!
 val localisationCommandScopeIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandScope.svg")!!
 val localisationCommandFieldIcon = IconLoader.findIcon("/icons/paradoxLocalisationCommandField.svg")!!
 
@@ -63,7 +63,7 @@ val definitionLocalisationIcon = IconLoader.findIcon("/icons/paradoxDefinitionLo
 val localisationIcon = IconLoader.findIcon("/icons/paradoxLocalisation.svg")!!
 val stringScriptPropertyIcon =IconLoader.findIcon("/icons/paradoxStringScriptProperty.svg")!!
 val stringLocalisationPropertyIcon = IconLoader.findIcon("/icons/paradoxStringLocalisationProperty.svg")!!
-val scriptedLocIcon = IconLoader.findIcon("/icons/paradoxScriptedLoc.svg")
+val scriptLocalisationIcon = IconLoader.findIcon("/icons/paradoxScriptLocalisation.svg")
 
 val definitionGutterIcon = definitionIcon.resize(12)
 val definitionLocalisationGutterIcon = definitionLocalisationIcon.resize(12)

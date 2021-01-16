@@ -27,10 +27,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationLocaleIcon)
 		}
 		private val sequentialNumberElements = paradoxSequentialNumbers.map {
-			LookupElementBuilder.create(it.name).withTypeText(it.description)
-		}
-		private val colorElements = paradoxColors.map{
-			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(it.icon)
+			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationSequentialNumberIcon)
 		}
 		private val primaryCommandScopeElements = paradoxPrimaryCommandScopes.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandScopeIcon)
@@ -43,6 +40,9 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		}
 		private val commandFieldElements = paradoxCommandFields.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandFieldIcon)
+		}
+		private val colorElements = paradoxColors.map{
+			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(it.icon)
 		}
 	}
 	
@@ -59,14 +59,6 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			val position = parameters.position //SEQUENTIAL_NUMBER_ID
 			val prefix = position.text.dropLast(dummyIdentifierLength)
 			result.withPrefixMatcher(prefix).addAllElements(sequentialNumberElements)
-		}
-	}
-	
-	class ColorCompletionProvider : CompletionProvider<CompletionParameters>() {
-		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			val position = parameters.position //COLOR_ID
-			val prefix = position.text.dropLast(dummyIdentifierLength)
-			result.withPrefixMatcher(prefix).addAllElements(colorElements)
 		}
 	}
 	
@@ -97,12 +89,20 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		}
 	}
 	
+	class ColorCompletionProvider : CompletionProvider<CompletionParameters>() {
+		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+			val position = parameters.position //COLOR_ID
+			val prefix = position.text.dropLast(dummyIdentifierLength)
+			result.withPrefixMatcher(prefix).addAllElements(colorElements)
+		}
+	}
+	
 	init {
 		extend(CompletionType.BASIC, localePattern, LocaleCompletionProvider())
 		extend(CompletionType.BASIC, sequentialNumberPattern, SequentialNumberCompletionProvider()) //无法被匹配，但仍然留着
-		extend(CompletionType.BASIC, colorIdPattern, ColorCompletionProvider()) //无法被匹配，但仍然留着
 		extend(CompletionType.BASIC, commandScopePattern, CommandCompletionProvider())
 		extend(CompletionType.BASIC, commandFieldPattern, CommandCompletionProvider())
+		extend(CompletionType.BASIC, colorIdPattern, ColorCompletionProvider()) //无法被匹配，但仍然留着
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

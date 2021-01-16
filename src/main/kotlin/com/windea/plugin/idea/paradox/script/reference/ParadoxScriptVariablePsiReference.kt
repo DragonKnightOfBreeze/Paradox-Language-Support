@@ -34,14 +34,14 @@ class ParadoxScriptVariablePsiReference(
 	override fun getVariants(): Array<out Any> {
 		//同时需要同时查找当前文件中的和全局的
 		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapArray {
-			LookupElementBuilder.create(it.name).withIcon(it.getIcon(0)).withTypeText(it.containingFile.name).withPsiElement(it)
+			LookupElementBuilder.create(it).withIcon(scriptVariableIcon).withTypeText(it.containingFile.name)
 		}
 	}
 	
 	override fun getCompletionVariants(): Collection<LookupElement> {
 		//同时需要同时查找当前文件中的和全局的
 		return (findScriptVariablesInFile(file) + findScriptVariables(project)).map {
-			LookupElementBuilder.create(it.name).withIcon(it.getIcon(0)).withTypeText(it.containingFile.name).withPsiElement(it)
+			LookupElementBuilder.create(it).withIcon(scriptVariableIcon).withTypeText(it.containingFile.name)
 		}
 	}
 }

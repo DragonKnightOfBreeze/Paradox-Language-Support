@@ -40,6 +40,8 @@ object ChangeSequentialNumberIntention : IntentionAction {
 	) : BaseListPopupStep<ParadoxSequentialNumber>(_title, *values) {
 		override fun getTextFor(value: ParadoxSequentialNumber) = value.popupText
 		
+		override fun getIconFor(value: ParadoxSequentialNumber) = localisationSequentialNumberIcon
+		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true

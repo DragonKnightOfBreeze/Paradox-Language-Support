@@ -20,9 +20,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationLocale -> getLocaleInfo(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
 			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberInfo(element)
-			element is ParadoxLocalisationColorfulText -> getColorInfo(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
+			element is ParadoxLocalisationColorfulText -> getColorInfo(element)
 			else -> null
 		}
 	}
@@ -99,9 +99,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyDoc(element)
 			element is ParadoxLocalisationLocale -> getLocaleDoc(element)
 			element is ParadoxLocalisationIcon -> getIconDoc(element)
+			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberDoc(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
-			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberDoc(element)
 			element is ParadoxLocalisationColorfulText -> getColorDoc(element)
 			else -> null
 		}
@@ -150,11 +150,11 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		return buildString {
 			definition {
 				append("(localisation locale) <b>").append(element.name).append("</b>")
-				val description = element.paradoxLocale?.description
-				if(description != null) {
-					content {
-						append(description)
-					}
+			}
+			val description = element.paradoxLocale?.description
+			if(description != null) {
+				content {
+					append(description)
 				}
 			}
 		}
@@ -180,25 +180,11 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		return buildString {
 			definition {
 				append("(localisation sequential number) <b>").append(element.name).append("</b>")
-				val description = element.paradoxSequentialNumber?.description
-				if(description != null) {
-					content {
-						append(description)
-					}
-				}
 			}
-		}
-	}
-	
-	private fun getColorDoc(element: ParadoxLocalisationColorfulText): String {
-		return buildString {
-			definition {
-				append("(localisation color) <b>").append(element.name).append("</b>")
-				val description = element.paradoxColor?.description
-				if(description != null) {
-					content {
-						append(description)
-					}
+			val description = element.paradoxSequentialNumber?.description
+			if(description != null) {
+				content {
+					append(description)
 				}
 			}
 		}
@@ -228,6 +214,20 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			if(paradoxCommandField != null) {
 				content {
 					append(paradoxCommandField.description)
+				}
+			}
+		}
+	}
+	
+	private fun getColorDoc(element: ParadoxLocalisationColorfulText): String {
+		return buildString {
+			definition {
+				append("(localisation color) <b>").append(element.name).append("</b>")
+			}
+			val description = element.paradoxColor?.description
+			if(description != null) {
+				content {
+					append(description)
 				}
 			}
 		}

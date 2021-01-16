@@ -34,19 +34,13 @@ class ParadoxLocalisationPropertyPsiReference(
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
 		return findLocalisations(locale, project).mapArray {
-			val name = it.name
-			val icon = it.getIcon(0)
-			val fileName = it.containingFile.name
-			LookupElementBuilder.create(name).withIcon(icon).withTypeText(fileName).withPsiElement(it)
+			LookupElementBuilder.create(it).withIcon(localisationIcon).withTypeText(it.containingFile.name)
 		}
 	}
 	
 	override fun getCompletionVariants(): Collection<LookupElement> {
 		return findLocalisations(locale, project).map {
-			val name = it.name
-			val icon = it.getIcon(0)
-			val fileName = it.containingFile.name
-			LookupElementBuilder.create(name).withIcon(icon).withTypeText(fileName).withPsiElement(it)
+			LookupElementBuilder.create(it).withIcon(localisationIcon).withTypeText(it.containingFile.name)
 		}
 	}
 }

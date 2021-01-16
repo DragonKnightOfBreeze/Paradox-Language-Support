@@ -29,6 +29,4 @@ class ParadoxScriptStringPropertyPsiReference(
 			.ifEmpty { findLocalisations(name, inferredParadoxLocale, project, defaultToAll = true) }
 			.mapArray { PsiElementResolveResult(it) }
 	}
-	
-	
 }

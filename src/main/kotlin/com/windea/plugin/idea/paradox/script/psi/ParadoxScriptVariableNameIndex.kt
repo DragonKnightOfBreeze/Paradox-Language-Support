@@ -5,7 +5,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 
 object ParadoxScriptVariableNameIndex: StringStubIndexExtension<ParadoxScriptVariable>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.variable.index")
+	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.scriptVariable.index")
 	
 	override fun getKey() = key
 	

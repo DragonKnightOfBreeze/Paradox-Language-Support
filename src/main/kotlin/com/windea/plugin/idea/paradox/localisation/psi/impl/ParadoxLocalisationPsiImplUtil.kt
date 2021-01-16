@@ -144,6 +144,11 @@ object ParadoxLocalisationPsiImplUtil {
 		val iconId = element.iconId ?: return null
 		return ParadoxLocalisationIconPsiReference(element, iconId.textRangeInParent)
 	}
+	
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationIcon, @IconFlags flags: Int): Icon {
+		return localisationIconIcon
+	}
 	//endregion
 	
 	//region ParadoxLocalisationSequentialNumber
@@ -171,6 +176,11 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getTextOffset(element: ParadoxLocalisationSequentialNumber): Int {
 		return element.startOffset + 1
+	}
+	
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationSequentialNumber, @IconFlags flags: Int): Icon {
+		return localisationSequentialNumberIcon
 	}
 	//endregion
 	

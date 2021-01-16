@@ -18,8 +18,8 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 			is ParadoxLocalisationLocale -> annotateLocale(element, holder)
 			is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
 			is ParadoxLocalisationSequentialNumber -> annotateSequentialNumber(element, holder)
-			is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
 			is ParadoxLocalisationCommand -> annotateCommand(element, holder)
+			is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
 		}
 	}
 	
@@ -61,25 +61,6 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedSequentialNumber", element.name))
 				.create()
 		}
-	}
-	
-	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
-		//如果是颜色文本，则为颜色代码文本加上对应的颜色
-		val paradoxColor = element.paradoxColor
-		if(paradoxColor == null) {
-			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedColor", element.name))
-				.create()
-		} else {
-			val e = element.colorId
-			if(e != null) annotateColor(element.name, holder, e.textRange)
-		}
-	}
-	
-	private fun annotateColor(colorId: String, holder: AnnotationHolder, range: TextRange) {
-		val attributesKey = ParadoxLocalisationAttributesKeys.COLOR_KEYS[colorId] ?: return
-		holder.newSilentAnnotation(INFORMATION)
-			.range(range).textAttributes(attributesKey)
-			.create()
 	}
 	
 	private fun annotateCommand(element: ParadoxLocalisationCommand, holder: AnnotationHolder) {
@@ -129,5 +110,24 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 				
 			}
 		}
+	}
+	
+	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
+		//如果是颜色文本，则为颜色代码文本加上对应的颜色
+		val paradoxColor = element.paradoxColor
+		if(paradoxColor == null) {
+			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedColor", element.name))
+				.create()
+		} else {
+			val e = element.colorId
+			if(e != null) annotateColor(element.name, holder, e.textRange)
+		}
+	}
+	
+	private fun annotateColor(colorId: String, holder: AnnotationHolder, range: TextRange) {
+		val attributesKey = ParadoxLocalisationAttributesKeys.COLOR_KEYS[colorId] ?: return
+		holder.newSilentAnnotation(INFORMATION)
+			.range(range).textAttributes(attributesKey)
+			.create()
 	}
 }

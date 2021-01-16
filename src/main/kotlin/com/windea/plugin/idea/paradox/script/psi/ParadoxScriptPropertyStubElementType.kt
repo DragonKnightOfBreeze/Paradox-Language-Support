@@ -47,7 +47,7 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
 		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
-		if(stub.type == "scripted_loc") sink.occurrence(ParadoxScriptLocNameIndex.key,stub.name)
+		if(stub.type == "scripted_loc") sink.occurrence(ParadoxScriptLocalisationNameIndex.key,stub.name)
 	}
 	
 	//companion object {

@@ -9,7 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*;
 import com.windea.plugin.idea.paradox.localisation.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.windea.plugin.idea.paradox.localisation.reference.ParadoxLocalisationIconPsiReference;
+import javax.swing.Icon;
 
 public class ParadoxLocalisationIconImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationIcon {
 
@@ -77,6 +79,12 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationNamedElement
   @Nullable
   public ParadoxLocalisationIconPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
 }

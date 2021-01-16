@@ -39,9 +39,9 @@ object ChangeColorIntention : IntentionAction {
 		private val value: ParadoxLocalisationColorfulText,
 		values: Array<ParadoxColor>
 	) : BaseListPopupStep<ParadoxColor>(_title, *values) {
-		override fun getIconFor(value: ParadoxColor) = value.icon
-		
 		override fun getTextFor(value: ParadoxColor) = value.popupText
+		
+		override fun getIconFor(value: ParadoxColor) = value.icon
 		
 		override fun getDefaultOptionIndex() = 0
 		

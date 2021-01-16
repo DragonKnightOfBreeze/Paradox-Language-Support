@@ -22,23 +22,19 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	
 	override fun resolve(): PsiElement? {
 		val name = element.commandFieldId?.text?: return null
-		return findScriptLoc(name , project)
+		return findScriptLocalisation(name , project)
 	}
 	
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
-		val icon = scriptedLocIcon
-		return findScriptLocs(project).mapArray {
-			val fileName = it.containingFile.name
-			LookupElementBuilder.create(it).withIcon(icon).withTypeText(fileName).withPsiElement(it)
+		return findScriptLocalisations(project).mapArray {
+			LookupElementBuilder.create(it).withIcon(scriptLocalisationIcon).withTypeText(it.containingFile.name)
 		}
 	}
 	
 	override fun getCompletionVariants(): Collection<LookupElement> {
-		val icon = scriptedLocIcon
-		return findScriptLocs(project).map {
-			val fileName = it.containingFile.name
-			LookupElementBuilder.create(it).withIcon(icon).withTypeText(fileName).withPsiElement(it)
+		return findScriptLocalisations(project).map {
+			LookupElementBuilder.create(it).withIcon(scriptLocalisationIcon).withTypeText(it.containingFile.name)
 		}
 	}
 }

@@ -4,9 +4,10 @@ package com.windea.plugin.idea.paradox.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
-public interface ParadoxLocalisationSequentialNumber
-    extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
 
   @Nullable
   PsiElement getSequentialNumberId();
@@ -23,5 +24,8 @@ public interface ParadoxLocalisationSequentialNumber
   PsiElement getNameIdentifier();
 
   int getTextOffset();
+
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
 }
