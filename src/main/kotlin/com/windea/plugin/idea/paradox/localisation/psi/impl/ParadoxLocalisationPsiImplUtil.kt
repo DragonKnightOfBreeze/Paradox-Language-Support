@@ -26,6 +26,8 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {
+	private val cannotBeRenamedMessage = message("cannotBeRenamed")
+	
 	//region ParadoxLocalisationLocale
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationLocale): String {
@@ -40,7 +42,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun checkRename(element: ParadoxLocalisationLocale) {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		throw IncorrectOperationException(cannotBeRenamedMessage)
 	}
 	
 	@JvmStatic
@@ -126,7 +128,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun checkRename(element: ParadoxLocalisationIcon) {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		throw IncorrectOperationException(cannotBeRenamedMessage)
 	}
 	
 	@JvmStatic
@@ -165,7 +167,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun checkRename(element: ParadoxLocalisationSequentialNumber) {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		throw IncorrectOperationException(cannotBeRenamedMessage)
 	}
 	
 	@JvmStatic
@@ -198,7 +200,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun checkRename(element: ParadoxLocalisationColorfulText) {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		throw IncorrectOperationException(cannotBeRenamedMessage)
 	}
 	
 	@JvmStatic
@@ -250,7 +252,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun checkRename(element: ParadoxLocalisationCommandScope) {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		throw IncorrectOperationException(cannotBeRenamedMessage)
 	}
 	
 	@JvmStatic
@@ -284,7 +286,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun checkRename(element: ParadoxLocalisationCommandField) {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		throw IncorrectOperationException(cannotBeRenamedMessage)
 	}
 	
 	@JvmStatic

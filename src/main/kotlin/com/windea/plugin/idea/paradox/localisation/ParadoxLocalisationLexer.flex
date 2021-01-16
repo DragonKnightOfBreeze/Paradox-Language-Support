@@ -160,6 +160,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "%" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);}
   "[" { commandLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
   {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
   {STRING_TOKEN} {  return STRING_TOKEN;}
@@ -173,6 +174,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "[" { commandLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "|" { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER); return PARAMETER_SEPARATOR;}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {PROPERTY_REFERENCE_ID} {return PROPERTY_REFERENCE_ID;}
 }
 <WAITING_PROPERTY_REFERENCE_PARAMETER>{
@@ -180,6 +182,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {PROPERTY_REFERENCE_PARAMETER} {return PROPERTY_REFERENCE_PARAMETER;}
 }
 
@@ -192,6 +195,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "[" { commandLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "|" { yybegin(WAITING_ICON_PARAMETER); return PARAMETER_SEPARATOR;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {ICON_ID} { yybegin(WAITING_ICON_NAME_FINISHED); return ICON_ID;}
 }
 <WAITING_ICON_NAME_FINISHED>{
@@ -203,6 +207,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "[" { commandLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "|" { yybegin(WAITING_ICON_PARAMETER); return PARAMETER_SEPARATOR;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
 }
 <WAITING_ICON_PARAMETER>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
@@ -211,6 +216,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "£" {yybegin(nextStateForText()); return ICON_END;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {ICON_PARAMETER} {return ICON_PARAMETER;}
 }
 
@@ -220,6 +226,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "%" {yybegin(nextStateForText()); return SEQUENTIAL_NUMBER_END;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {SEQUENTIAL_NUMBER_ID} {return SEQUENTIAL_NUMBER_ID;}
 }
 
@@ -230,6 +237,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "$" { propertyReferenceLocation=3; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {COMMAND_SCOPE_ID_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_ID;}
   {COMMAND_FIELD_ID_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_ID;}
 }
@@ -240,6 +248,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
   "$" { propertyReferenceLocation=3; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+  "§!" {yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {COMMAND_SEPARATOR} {yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_SEPARATOR;}
 }
 

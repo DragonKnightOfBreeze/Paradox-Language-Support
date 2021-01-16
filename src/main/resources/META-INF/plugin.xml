@@ -139,7 +139,6 @@
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptDocumentationProvider"/>
     <elementDescriptionProvider
         implementation="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptDescriptionProvider"/>
-    
     <lang.findUsagesProvider
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxScriptFindUsagesProvider"/>
@@ -152,6 +151,9 @@
     <codeInsight.lineMarkerProvider
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxDefinitionLocalisationLineMarkerProvider"/>
+    <codeInsight.typeInfo 
+        language="Paradox Script"
+        implementationClass="com.windea.plugin.idea.paradox.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>

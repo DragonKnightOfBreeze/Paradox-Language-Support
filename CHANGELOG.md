@@ -45,6 +45,7 @@
 * [X] 解析规则文件`definitions.yml`的规则`predicate`
 * [X] 解析规则文件`definitions.yml`的规则`subTypes`
 * [X] 将`serialNumber`重命名为`sequentialNumber`
+* [X] 实现`ParadoxScriptExpressionTypeProvider`
 * [ ] 为规则文件`definitions.yml`添加规则`name_prefix`和`name_suffix`（完成`common`目录的）
 * [ ] 为规则文件`definitions.yml`添加规则`icon`
 * [ ] 解析规则文件`definitions.yml`的规则`type_from_file`

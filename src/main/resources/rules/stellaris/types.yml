@@ -577,6 +577,7 @@ types:
       name!: "job_$"
       plural!: "job_$_plural"
       description!: "job_$_desc"
+      effect: ".description"
     subtypes:
       capped:
         predicate:
@@ -1048,7 +1049,7 @@ types:
   dlc_info:
     path: "dlc_metadata"
     skip_root_key: "dlcs"
-    # name_key: "name"
+    name_key: "name"
 
   # skip path: dlc_metadata/dlc_recommendations
   # dlc_recomendation:

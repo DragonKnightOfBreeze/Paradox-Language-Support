@@ -82,7 +82,7 @@ val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequenti
 
 val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?
 	get() {
-		val name = this.name
+		val name = this.name.toCapitalizedWord() //忽略大小写，首字母大写
 		if(name.startsWith(eventTargetPrefix)) return null
 		return paradoxCommandScopeMap[name]
 	}
@@ -252,8 +252,26 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 }
 
 
+fun ParadoxScriptValue.getType(): String?{
+	return when(this){
+		is ParadoxScriptBlock -> when {
+			this.isEmpty -> "array | object"
+			this.isArray -> "array"
+			this.isObject -> "object"
+			else -> null
+		}
+		is ParadoxScriptString -> "string"
+		is ParadoxScriptBoolean -> "boolean"
+		is ParadoxScriptNumber -> "number"
+		is ParadoxScriptColor -> "color"
+		is ParadoxScriptCode -> "code"
+		else -> null
+	}
+}
+
 fun ParadoxScriptValue.checkType(type: String): Boolean {
 	return when(type) {
+		"block" -> this is ParadoxScriptBlock
 		"object" -> this is ParadoxScriptBlock && isObject
 		"array" -> this is ParadoxScriptBlock && isArray
 		"string" -> this is ParadoxScriptString
