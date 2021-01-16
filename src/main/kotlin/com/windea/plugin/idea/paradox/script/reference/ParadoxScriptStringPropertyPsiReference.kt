@@ -20,14 +20,14 @@ class ParadoxScriptStringPropertyPsiReference(
 		val name = element.text.unquote()
 		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
 		return findDefinition(name, null, project)
-		       ?: findLocalisation(name, inferredParadoxLocale, project, defaultToFirst = true)
+		       ?: findLocalisation(name, inferredParadoxLocale, project, orDefault = true)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val name = element.text.unquote()
 		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
 		return findDefinitions(name, null, project)
-			.ifEmpty { findLocalisations(name, inferredParadoxLocale, project, defaultToAll = true) }
+			.ifEmpty { findLocalisations(name, inferredParadoxLocale, project, orDefault = true) }
 			.mapArray { PsiElementResolveResult(it) }
 	}
 }

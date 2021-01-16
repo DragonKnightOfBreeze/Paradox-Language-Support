@@ -12,7 +12,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	override fun getCacheSize() = 4 * 1024
 	
-	fun getOne(name: String,type:String? = null, project: Project, scope: GlobalSearchScope): ParadoxScriptProperty? {
+	fun getOne(name: String,type:String?, project: Project, scope: GlobalSearchScope): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
 			if(type == null || type == element.paradoxDefinitionInfo?.type) return element
@@ -20,7 +20,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		return null
 	}
 	
-	fun getAll(name: String,type:String? = null, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+	fun getAll(name: String,type:String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
@@ -29,7 +29,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		return result
 	}
 	
-	fun getAll(type:String? = null,project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+	fun getAll(type:String?,project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {
@@ -40,7 +40,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		return result
 	}
 	
-	inline fun filter(type:String? = null,project: Project, scope: GlobalSearchScope, predicate:(String)->Boolean): List<ParadoxScriptProperty> {
+	inline fun filter(type:String?,project: Project, scope: GlobalSearchScope, predicate:(String)->Boolean): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {

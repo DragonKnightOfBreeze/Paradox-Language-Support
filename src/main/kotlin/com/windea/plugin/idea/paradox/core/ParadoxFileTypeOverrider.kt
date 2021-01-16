@@ -78,7 +78,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	}
 	
 	private fun getFileType(file: VirtualFile): ParadoxFileType? {
-		if(file is StubVirtualFile || !file.isDirectory) {
+		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) {
 			val fileName = file.name.toLowerCase()
 			val fileExtension = fileName.substringAfterLast('.')
 			return when {
@@ -91,7 +91,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	}
 	
 	private fun getRootType(file: VirtualFile): ParadoxRootType? {
-		if(file is StubVirtualFile || !file.isDirectory) return null
+		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
 		val fileName = file.name
 		for(child in file.children) {
 			val childName = child.name

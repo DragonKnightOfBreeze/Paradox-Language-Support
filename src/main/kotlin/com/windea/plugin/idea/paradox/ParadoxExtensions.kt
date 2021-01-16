@@ -350,12 +350,12 @@ fun findScriptLocalisations(project: Project, scope: GlobalSearchScope = GlobalS
 	return ParadoxScriptLocalisationNameIndex.getAll(project, scope)
 }
 
-fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), defaultToFirst: Boolean = false): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, defaultToFirst)
+fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), orDefault: Boolean = false): ParadoxLocalisationProperty? {
+	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, orDefault)
 }
 
-fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), defaultToAll: Boolean = true): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, defaultToAll)
+fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), orDefault: Boolean = true): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, orDefault)
 }
 
 fun findLocalisations(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {

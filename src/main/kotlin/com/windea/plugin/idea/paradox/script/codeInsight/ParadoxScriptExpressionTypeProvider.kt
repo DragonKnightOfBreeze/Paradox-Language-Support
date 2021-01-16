@@ -2,8 +2,10 @@ package com.windea.plugin.idea.paradox.script.codeInsight
 
 import com.intellij.lang.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.script.psi.*
+import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 
 class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<ParadoxScriptNamedElement>() {
 	companion object{
@@ -41,11 +43,21 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<ParadoxScriptNa
 	}
 	
 	override fun getExpressionsAt(elementAt: PsiElement): List<ParadoxScriptNamedElement> {
+		val element = when(elementAt.elementType){
+			VARIABLE_NAME_ID -> elementAt.parent?.parent as? ParadoxScriptVariable
+			VARIABLE_NAME -> elementAt.parent as? ParadoxScriptVariable
+			VARIABLE -> elementAt as? ParadoxScriptVariable
+			VARIABLE_REFERENCE_ID -> (elementAt.parent as? ParadoxScriptVariableReference)?.reference?.resolve()
+			PROPERTY_KEY_ID -> elementAt.parent?.parent as? ParadoxScriptProperty
+			PROPERTY_KEY -> elementAt.parent as? ParadoxScriptProperty
+			PROPERTY -> (elementAt as? ParadoxScriptProperty)?.reference?.resolve()
+			STRING_TOKEN -> (elementAt.parent as? ParadoxScriptString)?.reference?.resolve() as? ParadoxScriptProperty 
+			QUOTED_STRING_TOKEN -> (elementAt.parent as? ParadoxScriptString)?.reference?.resolve() as? ParadoxScriptProperty 
+			else -> null
+		}
 		return when {
-			elementAt is ParadoxScriptProperty -> return elementAt.toSingletonList()
-			elementAt is ParadoxScriptPropertyKey -> return (elementAt.parent as? ParadoxScriptProperty).toSingletonListOrEmpty()
-			elementAt is ParadoxScriptVariable -> return elementAt.toSingletonListOrEmpty()
-			elementAt is ParadoxScriptVariableName -> return (elementAt.parent as? ParadoxScriptVariable).toSingletonListOrEmpty()
+			element is ParadoxScriptVariable -> return element.toSingletonList()
+			element is ParadoxScriptProperty -> return element.toSingletonList()
 			else -> emptyList()
 		}
 	}

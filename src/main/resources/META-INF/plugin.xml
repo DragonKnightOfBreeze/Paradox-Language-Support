@@ -154,7 +154,9 @@
     <codeInsight.typeInfo 
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
-
+    <anchorReferenceProvider
+        implementation="com.windea.plugin.idea.paradox.core.reference.ParadoxPathReferenceProvider"/>
+    
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 
