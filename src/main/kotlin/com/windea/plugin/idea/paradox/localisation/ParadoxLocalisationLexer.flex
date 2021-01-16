@@ -58,9 +58,9 @@ import static com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisatio
   }
 
   public int nextStateForCommand(){
-    if(codeLocation == 0) return nextStateForText();
-    else if (codeLocation == 1) return WAITING_PROPERTY_REFERENCE;
-    else if (codeLocation == 2) return WAITING_ICON;
+    if(commandLocation == 0) return nextStateForText();
+    else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
+    else if (commandLocation == 2) return WAITING_ICON;
     else return nextStateForText();
   }
 
@@ -158,7 +158,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "£" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
   "%" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);}
-  "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
+  "[" { commandLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
   {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
@@ -170,7 +170,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   //{WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }//属性引用名字可以包含空格，虽然不知道凭什么
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
-  "[" { codeLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
+  "[" { commandLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "|" { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER); return PARAMETER_SEPARATOR;}
   {PROPERTY_REFERENCE_ID} {return PROPERTY_REFERENCE_ID;}
@@ -189,7 +189,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "£" { yybegin(nextStateForText()); return ICON_END;}
   "$" { propertyReferenceLocation=2; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
-  "[" { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
+  "[" { commandLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "|" { yybegin(WAITING_ICON_PARAMETER); return PARAMETER_SEPARATOR;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   {ICON_ID} { yybegin(WAITING_ICON_NAME_FINISHED); return ICON_ID;}
@@ -200,7 +200,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "£" { yybegin(nextStateForText()); return ICON_END;}
   "$" { propertyReferenceLocation=2; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   \" { yybegin(WAITING_PROPERTY_EOL); return RIGHT_QUOTE;}
-  "[" { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
+  "[" { commandLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "|" { yybegin(WAITING_ICON_PARAMETER); return PARAMETER_SEPARATOR;}
   "§" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
 }
@@ -256,7 +256,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "$" { propertyReferenceLocation=0; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
   "£" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
   "%" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);}
-  "[" { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
+  "[" { commandLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;}
   "§" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {depth--; yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}

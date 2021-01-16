@@ -357,9 +357,9 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   }
 
   public int nextStateForCommand(){
-    if(codeLocation == 0) return nextStateForText();
-    else if (codeLocation == 1) return WAITING_PROPERTY_REFERENCE;
-    else if (codeLocation == 2) return WAITING_ICON;
+    if(commandLocation == 0) return nextStateForText();
+    else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
+    else if (commandLocation == 2) return WAITING_ICON;
     else return nextStateForText();
   }
 
@@ -696,7 +696,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 69: break;
           case 17: 
-            { codeLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
+            { commandLocation=0; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
             } 
             // fall through
           case 70: break;
@@ -731,7 +731,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 76: break;
           case 24: 
-            { codeLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
+            { commandLocation=1; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
             } 
             // fall through
           case 77: break;
@@ -766,7 +766,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 83: break;
           case 31: 
-            { codeLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
+            { commandLocation=2; yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_START;
             } 
             // fall through
           case 84: break;

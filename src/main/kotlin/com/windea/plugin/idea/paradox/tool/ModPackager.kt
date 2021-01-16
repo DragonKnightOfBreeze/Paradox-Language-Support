@@ -27,7 +27,8 @@ object ModPackager {
 	}
 	
 	private fun doPackageMods(modDirs: Array<File>, packageName: String, parallelism: Int) {
-		try {//并发打包mod
+		try {
+			//并发打包mod
 			val executor = Executors.newWorkStealingPool(parallelism)
 			val total = modDirs.size
 			val done = AtomicInteger(0)
@@ -66,7 +67,7 @@ object ModPackager {
 			}.let { formatTime(it) }
 			println("Package mod '${modDir.path}' finished. (cost: $time)")
 		} catch(e: Exception) {
-			println("Package mods failed. An exception is thrown:")
+			println("Package mod '${modDir.path}' failed. An exception is thrown:")
 			e.printStackTrace()
 		}
 	}
