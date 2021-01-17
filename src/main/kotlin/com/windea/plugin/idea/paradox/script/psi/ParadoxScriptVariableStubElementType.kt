@@ -1,9 +1,6 @@
 package com.windea.plugin.idea.paradox.script.psi
 
-import com.intellij.lang.*
-import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.stubs.*
-import com.intellij.util.*
 import com.windea.plugin.idea.paradox.script.*
 import com.windea.plugin.idea.paradox.script.psi.impl.*
 

@@ -40,7 +40,10 @@ const val paradoxBundleName = "messages.ParadoxBundle"
 val localisationFileExtensions = arrayOf("yml") //暂时不包括*.yaml文件
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings","cwt") //兼容cwtools的规则文件*.cwt
 
+val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
+
 const val descriptorFileName = "descriptor.mod"
+
 val exeFileNames = arrayOf("stellaris.exe")
 
 //Icons

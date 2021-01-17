@@ -7,52 +7,9 @@ import com.windea.plugin.idea.paradox.script.psi.*
 class ParadoxRuleGroup(
 	val data: Map<String, Map<String, Any>>
 ){
-	val locations = data.getOrDefault("locations",emptyMap()).mapValues { (k, v) -> Location(k, v.cast()) }
 	val types = data.getOrDefault("types",emptyMap()).mapValues { (k, v) -> Type(k, v.cast()) }
 	val definitions = data.getOrDefault("definitions",emptyMap()).mapValues { (k, v) -> Definition(k, v.cast()) }
 	val enums = data.getOrDefault("enums",emptyMap()).mapValues { (k, v) -> Enum(k, v.cast()) }
-	
-	class Location(val key:String, val data:Map<String,Any>){
-		fun fastMatches(path:ParadoxPath):Boolean{
-			//判断文件名是否匹配
-			val fileNameData = data["file_name"]
-			when{
-				fileNameData is String -> if(fileNameData != path.fileName) return false
-				fileNameData is List<*> -> if(!fileNameData.contains(path.fileName)) return false
-			}
-			//判断文件扩展名是否匹配
-			val fileExtensionData = data["file_extension"]
-			when{
-				fileExtensionData is String -> if(fileExtensionData != path.fileExtension) return false
-				fileExtensionData is List<*> -> if(!fileExtensionData.contains(path.fileExtension)) return false
-			}
-			return true
-		}
-		
-		fun matches(path:ParadoxPath):Boolean{
-			//判断路径是否匹配
-			val pathData = data["path"] as String? ?: return false
-			val pathStrictData = data["path_strict"] as Boolean? ?: true
-			if(pathStrictData) {
-				if(pathData != path.parent) return false
-			} else {
-				if(!pathData.matchesPath(path.parent)) return false
-			}
-			//判断文件名是否匹配
-			val fileNameData = data["file_name"]
-			when{
-				fileNameData is String -> if(fileNameData != path.fileName) return false
-				fileNameData is List<*> -> if(!fileNameData.contains(path.fileName)) return false
-			}
-			//判断文件扩展名是否匹配
-			val fileExtensionData = data["file_extension"]
-			when{
-				fileExtensionData is String -> if(fileExtensionData != path.fileExtension) return false
-				fileExtensionData is List<*> -> if(!fileExtensionData.contains(path.fileExtension)) return false
-			}
-			return true
-		}
-	}
 	
 	class Type(val key: String,val data: Map<String, Any>){
 		//不要单纯地遍历列表进行匹配，需要先通过某种方式过滤不合法的scriptProperty

@@ -1,7 +1,6 @@
 package com.windea.plugin.idea.paradox.core
 
 import com.intellij.openapi.fileTypes.impl.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import com.windea.plugin.idea.paradox.*
@@ -26,14 +25,15 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 				val gameType = getGameType()
 				//只解析特定根目录下的文件
 				return when {
-					fileType == ParadoxFileType.Script && isValidScriptPath(path, gameType) -> {
+					//根据正则指定需要排除的文件
+					fileType == ParadoxFileType.Script && !fileName.matches(ignoredScriptFileNameRegex) -> {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey,fileInfo)
 						}
 						ParadoxScriptFileType
 					}
-					fileType == ParadoxFileType.Localisation && isValidLocalisationPath(path) -> {
+					fileType == ParadoxFileType.Localisation-> {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
@@ -50,27 +50,6 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			file.putUserData(paradoxFileInfoKey, null)
 		}
 		return null
-	}
-	
-	private fun isValidScriptPath(path: ParadoxPath, gameType: ParadoxGameType): Boolean {
-		if(path.path == descriptorFileName) return true
-		
-		val ruleGroup = paradoxRuleGroups[gameType.key] ?: return false
-		val locations = ruleGroup.locations
-		//首先尝试直接通过path.parent作为key来匹配
-		val fastLocation = locations[path.parent]
-		if(fastLocation != null) {
-			val fastResult = fastLocation.fastMatches(path)
-			if(fastResult) return true
-		}
-		//然后遍历locations进行匹配
-		val location = locations.values.find { it.matches(path) }
-		return location != null
-	}
-	
-	private fun isValidLocalisationPath(path: ParadoxPath): Boolean {
-		val root = path.root
-		return root == "localisation" || root == "localisation_synced"
 	}
 	
 	private fun getPath(subPaths: List<String>): ParadoxPath {
