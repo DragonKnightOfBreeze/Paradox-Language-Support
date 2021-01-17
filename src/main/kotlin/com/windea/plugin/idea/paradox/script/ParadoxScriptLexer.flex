@@ -77,7 +77,7 @@ IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>])
   "}" {depth--;  yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++;  yybegin(nextState()); return LEFT_BRACE;}
   "=" {yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;}
-  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(nextState()); return WHITE_SPACE; }
   {WHITE_SPACE} { return WHITE_SPACE; }
   {END_OF_LINE_COMMENT} {  return END_OF_LINE_COMMENT; }
 }
@@ -88,14 +88,14 @@ IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>])
   {NUMBER} {yybegin(WAITING_VARIABLE_EOL); return NUMBER_TOKEN; }
   {STRING} {yybegin(WAITING_VARIABLE_EOL); return STRING_TOKEN;}
   {QUOTED_STRING} {yybegin(WAITING_VARIABLE_EOL); return QUOTED_STRING_TOKEN;}
-  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(nextState()); return WHITE_SPACE; }
   {WHITE_SPACE} { return WHITE_SPACE; }
   {END_OF_LINE_COMMENT} {  return END_OF_LINE_COMMENT; }
 }
 <WAITING_VARIABLE_EOL> {
   "}" {depth--;  yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++;  yybegin(nextState()); return LEFT_BRACE;}
-  {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+  {EOL} { yybegin(nextState()); return WHITE_SPACE; }
   {WHITE_SPACE} { return WHITE_SPACE; }
   {END_OF_LINE_COMMENT} { return END_OF_LINE_COMMENT; }
 }
@@ -107,6 +107,7 @@ IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>])
   {EOL} { return WHITE_SPACE; }
   {WHITE_SPACE} { return WHITE_SPACE; }
   {COMMENT} {  return COMMENT; }
+  {VARIABLE_NAME_ID} { yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID; }
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;}
   {BOOLEAN} { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN; }

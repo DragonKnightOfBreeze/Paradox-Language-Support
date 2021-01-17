@@ -50,10 +50,11 @@
 
 //root_block也是block，但不能直接extends，否则root下面会是value而非root_block
 root ::= root_block
-root_block ::= ( END_OF_LINE_COMMENT | COMMENT | variable | property | value) * {
+root_block ::= root_block_item * {
   extends=block
   methods=[isEmpty isNotEmpty isObject isArray getComponents getIcon]
 }
+private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property | value
 
 variable ::= variable_name variable_separator variable_value {
   pin=1
@@ -124,4 +125,4 @@ block ::= "{" block_item * "}" {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[isEmpty isNotEmpty isObject isArray getComponents findProperty findValue]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value

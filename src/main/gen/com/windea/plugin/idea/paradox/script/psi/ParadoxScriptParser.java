@@ -68,12 +68,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // END_OF_LINE_COMMENT | COMMENT | property | value
+  // END_OF_LINE_COMMENT | COMMENT | variable | property | value
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     r = consumeToken(b, END_OF_LINE_COMMENT);
     if (!r) r = consumeToken(b, COMMENT);
+    if (!r) r = variable(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
     return r;
@@ -196,22 +197,23 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ( END_OF_LINE_COMMENT | COMMENT | variable | property | value) *
+  // root_block_item *
   public static boolean root_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block")) return false;
     Marker m = enter_section_(b, l, _COLLAPSE_, ROOT_BLOCK, "<root block>");
     while (true) {
       int c = current_position_(b);
-      if (!root_block_0(b, l + 1)) break;
+      if (!root_block_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "root_block", c)) break;
     }
     exit_section_(b, l, m, true, false, null);
     return true;
   }
 
+  /* ********************************************************** */
   // END_OF_LINE_COMMENT | COMMENT | variable | property | value
-  private static boolean root_block_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_block_0")) return false;
+  static boolean root_block_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_block_item")) return false;
     boolean r;
     r = consumeToken(b, END_OF_LINE_COMMENT);
     if (!r) r = consumeToken(b, COMMENT);

@@ -50,6 +50,7 @@
 * [X] 修复`InvalidFileEncodingInspection`中的NPE
 * [X] 完成规则文件`types.yml`
 * [X] 改为根据正则指定需要排除的脚本文件
+* [X] 提高脚本文件语法兼容性
 * [ ] 为规则文件`types.yml`添加规则`name_prefix`和`name_suffix`（仅限`common`目录）
 * [ ] 为规则文件`types.yml`添加规则`icon`
 * [ ] 解析规则文件`types.yml`的规则`type_from_file`
