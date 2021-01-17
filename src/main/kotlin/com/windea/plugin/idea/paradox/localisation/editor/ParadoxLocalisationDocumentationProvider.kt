@@ -151,10 +151,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation locale) <b>").append(element.name).append("</b>")
 			}
-			val description = element.paradoxLocale?.description
-			if(description != null) {
+			val paradoxLocale = element.paradoxLocale
+			if(paradoxLocale != null) {
 				content {
-					append(description)
+					append(paradoxLocale.description)
 				}
 			}
 		}
@@ -181,10 +181,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation sequential number) <b>").append(element.name).append("</b>")
 			}
-			val description = element.paradoxSequentialNumber?.description
-			if(description != null) {
+			val paradoxSequentialNumber = element.paradoxSequentialNumber
+			if(paradoxSequentialNumber != null) {
 				content {
-					append(description)
+					append(paradoxSequentialNumber.description)
 				}
 			}
 		}
@@ -224,10 +224,12 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation color) <b>").append(element.name).append("</b>")
 			}
-			val description = element.paradoxColor?.description
-			if(description != null) {
+			val paradoxColor = element.paradoxColor
+			if(paradoxColor != null) {
+				val description = paradoxColor.description
+				val colorText = paradoxColor.colorText
 				content {
-					append(description)
+					append(description).append(" (").append(colorText).append(")") //注明颜色
 				}
 			}
 		}

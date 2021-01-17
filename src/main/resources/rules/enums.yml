@@ -33,55 +33,65 @@ enums:
     description: "Roman Number I, II, III..."
     placeholderText: "I"
 
+  # interface/fonts.gfx#bitmapfonts.textcolors
+  
   color:
-  - name: "B"
-    description: "Blue"
-    colorRgb: 0x0000ff
-    colorText: "#0000ff"
-  - name: "E"
-    description: "Teal"
-    colorRgb: 0x008080
-    colorText: "#008080"
-  - name: "G"
-    description: "Green"
-    colorRgb: 0x00ff00
-    colorText: "#00ff00"
-  - name: "H"
-    description: "Orange"
-    colorRgb: 0xffa500
-    colorText: "#ffa500"
-  - name: "L"
-    description: "Brown"
-    colorRgb: 0xa52a2a
-    colorText: "#a52a2a"
   - name: "M"
     description: "Purple"
-    colorRgb: 0x800080
-    colorText: "#800080"
-  - name: "P"
-    description: "Light Red"
-    colorRgb: 0xcd5c5c
-    colorText: "#cd5c5c"
+    colorRgb: 0xa335ee
+    colorText: "#a335ee"
+  - name: "L"
+    description: "Brown"
+    colorRgb: 0xc3b091
+    colorText: "#c3b091"
+  - name: "G"
+    description: "Green"
+    colorRgb: 0x29e126
+    colorText: "#29e126"
   - name: "R"
     description: "Red"
-    colorRgb: 0xff0000
-    colorText: "#ff0000"
-  - name: "S"
-    description: "Dark Orange"
-    colorRgb: 0xff8c00
-    colorText: "#ff8c00"
+    colorRgb: 0xfc5646
+    colorText: "#fc5646"
+  - name: "B"
+    description: "Blue"
+    colorRgb: 0x33a7ff
+    colorText: "#33a7ff"
+  - name: "Y"
+    description: "Yellow"
+    colorRgb: 0xf7fc34
+    colorText: "#f7fc34"
+  - name: "H"
+    description: "Orange"
+    colorRgb: 0xfbaa29
+    colorText: "#fbaa29"
   - name: "T"
     description: "Light Grey"
-    colorRgb: 0xd3d3d3
-    colorText: "#d3d3d3"
+    colorRgb: 0xffffff
+    colorText: "#ffffff"
+  - name: "E"
+    description: "Teal"
+    colorRgb: 0x87ffcf
+    colorText: "#87ffcf"
+  - name: "S"
+    description: "Dark Orange"
+    colorRgb: 0xe49c2a
+    colorText: "#e49c2a"
   - name: "W"
     description: "White"
     colorRgb: 0xffffff
     colorText: "#ffffff"
-  - name: "Y"
-    description: "Yellow"
-    colorRgb: 0xffff00
-    colorText: "#ffff00"
+  - name: "P"
+    description: "Light Red"
+    colorRgb: 0xe16e6e
+    colorText: "#e16e6e"
+  - name: "g"
+    description: "Grey"
+    colorRgb: 0x808080
+    colorText: "#808080"
+  - name: "l"
+    description: "Light Blue"
+    colorRgb: 0x33a7ff
+    colorText: "#33a7ff"
 
   # TODO commandScope和commandField应当区分gameType
 

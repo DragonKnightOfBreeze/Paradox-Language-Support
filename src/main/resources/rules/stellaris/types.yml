@@ -1342,68 +1342,96 @@ types:
     type_from_file: true
     key_filter: "gfx_settings"
 
-  text_colors:
-    path: "interface"
-    path_strict: false
-    file_extension: "gfx"
-    skip_root_key: "bitmapfonts"
-    key_filter: "textcolors"
-
-  bimap_font:
-    path: "interface"
-    path_strict: false
-    file_extension: "gfx"
-    skip_root_key: "bitmapfonts"
-    key_filter: "bitmapfont"
-    name_key: "name"
-
-  bitmapfont_override:
-    path: "interface"
-    path_strict: false
-    file_extension: "gfx"
-    skip_root_key: "bitmapfonts"
-    key_filter: "bitmapfont_override"
-
+  # TODO 可以递归定义
+  # TODO 待补充子类型
   gui_type:
     path: "interface"
     path_strict: false
     file_extension: "gui"
     key_filter: "guiTypes"
-    severity: "warning"
-
-  progress_bar_type:
-    path: "interface"
-    path_strict: false
-    file_extension: "gfx"
-    skip_root_key: "spriteTypes"
-    key_filter: "progressbartype"
     name_key: "name"
     severity: "warning"
-
-  pie_chart_type:
-    path: "interface"
-    path_strict: false
-    file_extension: "gfx"
-    skip_root_key: "spriteTypes"
-    key_filter: "PieChartType"
-    name_key: "name"
-    severity: "warning"
-
+    subtypes:
+      windowType:
+        key_filter: "windowType"
+      containerWindowType:
+        key_filter: "containerWindowType"
+      positionType:
+        key_filter: "positionType"
+      listBoxType:
+        key_filter: "listBoxType"
+      editBoxType:
+        key_filter: "editBoxType"
+      gridBoxType:
+        key_filter: "gridBoxType"
+      textboxType:
+        key_filter: "textboxType"
+      instantTextBoxType:
+        key_filter: "instantTextBoxType"
+      scrollbarType:
+        key_filter: "scrollbarType"
+      extendedScrollbarType:
+        key_filter: "extendedScrollbarType"
+      buttonType:
+        key_filter: "buttonType"
+      guiButtonType:
+        key_filter: "guiButtonType"
+      iconType:
+        key_filter: "iconType"
+      smoothListBoxType:
+        key_filter: "smoothListBoxType"
+        
   sprite_type:
     path: "interface"
     path_strict: false
     file_extension: "gfx"
     skip_root_key: "spriteTypes"
-    key_filter: "!progressbartype,!PieChartType"
     name_key: "name"
     severity: "warning"
     subtypes:
+      sprite_type:
+        key_filter: "sprite_type"
       cornered_tile_sprite_type:
         key_filter: "corneredTileSpriteType"
       flag_sprite_type:
         key_filter: "flagSpriteType"
       text_sprite_type:
         key_filter: "textSpriteType"
+      progress_bar_type:
+        key_filter: "progressbartype"
+      pie_chart_type:
+        key_filter: "PieChartType"
+
+  animated_map_text:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "objectTypes"
+    key_filter: "animatedmaptext"
+    name_key: "name"
+
+  animated_map_text_bitmapfont:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "objectTypes"
+    key_filter: "bitmapfont"
+    name_key: "name"
+
+  bimap_font:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "bitmapfonts"
+    key_filter: "bitmapfont"
+    name_key: "name"
+
+  bitmap_font_override:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "bitmapfonts"
+    key_filter: "bitmapfont_override"
+
+  resource_group:
+    path: "interface/resource_groups"
+    file_extension: "txt"
 
   map_galaxy_setting:
     path: "map/galaxy"
