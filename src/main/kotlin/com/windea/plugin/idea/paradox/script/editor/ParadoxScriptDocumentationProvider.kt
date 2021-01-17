@@ -161,7 +161,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				if(localisation.isNotEmpty()) {
 					val richTextMap = mutableMapOf<String, String>()
 					for((name, key) in localisation) {
-						val e = findLocalisation(key, element.paradoxLocale, element.project, default = true)
+						val e = findLocalisation(key, element.paradoxLocale, element.project, hasDefault = true)
 						val richText = e?.propertyValue?.renderRichText() ?: continue
 						val sectionName = name.value.toCapitalizedWords()
 						richTextMap[sectionName] = richText
@@ -199,7 +199,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-		return findLocalisation(link, context.paradoxLocale, context.project, default = true)
+		return findLocalisation(link, context.paradoxLocale, context.project, hasDefault = true)
 	}
 	
 	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {

@@ -12,16 +12,16 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	
 	override fun getCacheSize() = 100 * 1024 //50000+
 	
-	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,default:Boolean,first:Boolean): ParadoxLocalisationProperty? {
+	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean,preferFirst:Boolean): ParadoxLocalisationProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
-		return if(first){
-			elements.firstOrNull { element->locale == null || locale == element.paradoxLocale } ?: if(default) elements.firstOrNull() else null 
+		return if(preferFirst){
+			elements.firstOrNull { element->locale == null || locale == element.paradoxLocale } ?: if(hasDefault) elements.firstOrNull() else null 
 		} else{
-			elements.lastOrNull { element -> locale == null || locale == element.paradoxLocale }?: if(default) elements.lastOrNull() else null
+			elements.lastOrNull { element -> locale == null || locale == element.paradoxLocale }?: if(hasDefault) elements.lastOrNull() else null
 		}
 	}
 	
-	fun getAll(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,default:Boolean): List<ParadoxLocalisationProperty> {
+	fun getAll(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean): List<ParadoxLocalisationProperty> {
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
@@ -35,7 +35,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 					result.add(element)
 				}
 			} else {
-				if(locale == elementLocale || default) {
+				if(locale == elementLocale || hasDefault) {
 					result.add(element)
 				}
 			}
@@ -43,7 +43,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		return result
 	}
 	
-	fun getAll(names:Iterable<String>,locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,default:Boolean,keepOrder:Boolean): List<ParadoxLocalisationProperty> {
+	fun getAll(names:Iterable<String>,locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean,keepOrder:Boolean): List<ParadoxLocalisationProperty> {
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)
@@ -62,11 +62,9 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 							result.add(element)
 							nextIndex++
 						}
-					} else {
-						if(locale == elementLocale || default) {
-							result.add(element)
-							nextIndex++
-						}
+					} else if(locale == elementLocale || hasDefault) {
+						result.add(element)
+						nextIndex++
 					}
 				}
 				index = nextIndex
@@ -76,24 +74,27 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		return result
 	}
 	
-	fun getAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
+	fun getAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean): List<ParadoxLocalisationProperty> {
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)
 		for(key in keys) {
 			val group = get(key, project, scope)
-			val nextIndex = index + group.size
+			var nextIndex = index
 			for(element in group) {
 				val elementLocale = element.paradoxLocale
 				if(locale == null) {
 					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
 					if(elementLocale == inferredParadoxLocale) {
 						result.add(index++, element)
+						nextIndex++
 					} else {
 						result.add(element)
+						nextIndex++
 					}
-				} else if(locale == elementLocale) {
+				} else if(locale == elementLocale || hasDefault) {
 					result.add(element)
+					nextIndex++
 				}
 			}
 			index = nextIndex
@@ -101,27 +102,28 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		return result
 	}
 	
-	inline fun filter(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, predicate: (String) -> Boolean): List<ParadoxLocalisationProperty> {
+	inline fun filter(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean,predicate: (String) -> Boolean): List<ParadoxLocalisationProperty> {
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)
 		for(key in keys) {
 			if(predicate(key)) {
 				val group = get(key, project, scope)
-				val nextIndex = index + group.size
+				var nextIndex = index
 				for(element in group) {
 					val elementLocale = element.paradoxLocale
 					if(locale == null) {
 						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
 						if(elementLocale == inferredParadoxLocale) {
 							result.add(index++, element)
+							nextIndex++
 						} else {
 							result.add(element)
+							nextIndex++
 						}
-					} else {
-						if(locale == elementLocale) {
-							result.add(element)
-						}
+					} else if(locale == elementLocale || hasDefault) {
+						result.add(element)
+						nextIndex++
 					}
 				}
 				index = nextIndex

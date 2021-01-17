@@ -355,20 +355,20 @@ fun findScriptLocalisations(project: Project, scope: GlobalSearchScope = GlobalS
 }
 
 
-fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), default: Boolean = false): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, default, !state.preferOverridden)
+fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = false): ParadoxLocalisationProperty? {
+	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !state.preferOverridden)
 }
 
-fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), default: Boolean = true): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, default)
+fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = true): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, hasDefault)
 }
 
-fun findLocalisations(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(locale, project, scope)
+fun findLocalisations(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project),hasDefault: Boolean = false): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(locale, project, scope,hasDefault)
 }
 
-fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), default:Boolean= false,keepOrder: Boolean = false): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, default,keepOrder)
+fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault:Boolean= false,keepOrder: Boolean = false): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, hasDefault,keepOrder)
 }
 
 //Util Extensions

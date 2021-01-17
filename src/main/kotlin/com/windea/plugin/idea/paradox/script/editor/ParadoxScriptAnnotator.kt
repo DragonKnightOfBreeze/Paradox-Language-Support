@@ -47,20 +47,33 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val project = element.project
 		
 		//注明所有对应名称的脚本属性，或者本地化属性（如果存在）
-		val scriptProperties = findDefinitions(name, null, project).toTypedArray()
-		if(scriptProperties.isNotEmpty()) {
+		val definition = findDefinition(name, null, project)
+		if(definition != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
-				//.gutterIconRenderer(ParadoxStringDefinitionGutterIconRenderer(name, scriptProperties))
 				.create()
 			return
 		}
-		val localisationProperties = findLocalisations(name, null, project).toTypedArray()
-		if(localisationProperties.isNotEmpty()) {
+		val localisation = findLocalisation(name, null, project,hasDefault = true)
+		if(localisation != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
-				//.gutterIconRenderer(ParadoxStringLocalisationGutterIconRenderer(name, localisationProperties))
 				.create()
 		}
+		//val definitions = findDefinitions(name, null, project).toTypedArray()
+		//if(definitions.isNotEmpty()) {
+		//	holder.newSilentAnnotation(INFORMATION)
+		//		.textAttributes(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
+		//		.gutterIconRenderer(ParadoxStringDefinitionGutterIconRenderer(name, definitions))
+		//		.create()
+		//	return
+		//}
+		//val localisations = findLocalisations(name, null, project,hasDefault = true).toTypedArray()
+		//if(localisations.isNotEmpty()) {
+		//	holder.newSilentAnnotation(INFORMATION)
+		//		.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
+		//		.gutterIconRenderer(ParadoxStringLocalisationGutterIconRenderer(name, localisations))
+		//		.create()
+		//}
 	}
 }

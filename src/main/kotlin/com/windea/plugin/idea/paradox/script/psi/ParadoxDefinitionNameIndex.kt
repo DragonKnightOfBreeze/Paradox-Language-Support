@@ -12,9 +12,9 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	override fun getCacheSize() = 4 * 1024
 	
-	fun getOne(name: String,type:String?, project: Project, scope: GlobalSearchScope,first:Boolean): ParadoxScriptProperty? {
+	fun getOne(name: String,type:String?, project: Project, scope: GlobalSearchScope,preferFirst:Boolean): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
-		return if(first) elements.firstOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type }
+		return if(preferFirst) elements.firstOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type }
 		else elements.lastOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type }
 	}
 	
