@@ -14,8 +14,9 @@ class InvalidFileEncodingInspection : LocalInspectionTool() {
 	}
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
-		val charset = file.virtualFile.charset
-		val hasBom = file.virtualFile.bom != null
+		val virtualFile = file.virtualFile?:return null
+		val charset = virtualFile.charset
+		val hasBom = virtualFile.bom != null
 		val isValid = charset == Charsets.UTF_8 && hasBom
 		if(!isValid){
 			val holder = ProblemsHolder(manager,file,isOnTheFly)
@@ -39,10 +40,10 @@ class InvalidFileEncodingInspection : LocalInspectionTool() {
 
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			//TODO 让IDE知道修改bom是对文档进行了修改
-			file.virtualFile.charset = Charsets.UTF_8
-			file.virtualFile.bom = utf8Bom
-			file.virtualFile.refresh(false,false)
-			file.subtreeChanged()
+			val virtualFile = file.virtualFile
+			virtualFile.charset = Charsets.UTF_8
+			virtualFile.bom = utf8Bom
+			file.clearCaches()
 		}
 	}
 }

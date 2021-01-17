@@ -382,6 +382,7 @@ types:
     localisation:
       name!: "$"
       description!: "$_desc"
+      effect?: ".description"
     subtypes:
       civic:
         predicate:
@@ -577,7 +578,7 @@ types:
       name!: "job_$"
       plural!: "job_$_plural"
       description!: "job_$_desc"
-      effect: ".description"
+      effect?: ".description"
     subtypes:
       capped:
         predicate:
