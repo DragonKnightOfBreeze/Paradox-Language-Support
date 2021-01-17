@@ -9,6 +9,8 @@ class ParadoxSettingsComponent {
 		private val _performanceTitle = message("paradox.settings.performance")
 		private val _validateScriptName = message("paradox.settings.performance.validateScript")
 		private val _validateScriptComment = message("paradox.settings.performance.validateScript.comment")
+		private val _preferOverriddenName = message("paradox.settings.performance.preferOverridden")
+		private val _preferOverriddenComment = message("paradox.settings.performance.preferOverridden.comment")
 		private val _renderLineCommentText = message("paradox.settings.performance.renderLineCommentText")
 		private val _renderLineCommentTextComment = message("paradox.settings.performance.renderLineCommentText.comment")
 		private val _renderDefinitionText = message("paradox.settings.performance.renderDefinitionText")
@@ -18,6 +20,7 @@ class ParadoxSettingsComponent {
 	}
 	
 	lateinit var validateScriptCheckBox: JCheckBox
+	lateinit var preferOverriddenCheckBox: JCheckBox
 	lateinit var renderLineCommentTextCheckBox: JCheckBox
 	lateinit var renderDefinitionTextCheckBox: JCheckBox
 	lateinit var renderLocalisationTextCheckBox: JCheckBox
@@ -27,6 +30,10 @@ class ParadoxSettingsComponent {
 			row {
 				checkBox(_validateScriptName, true, _validateScriptComment)
 					.apply { validateScriptCheckBox = component }
+			}
+			row {
+				checkBox(_preferOverriddenName, true, _preferOverriddenComment)
+					.apply { preferOverriddenCheckBox = component }
 			}
 			row {
 				checkBox(_renderLineCommentText, true, _renderLineCommentTextComment)

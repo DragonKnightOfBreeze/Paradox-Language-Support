@@ -11,12 +11,9 @@ object ParadoxScriptLocalisationNameIndex : StringStubIndexExtension<ParadoxScri
 	
 	override fun getCacheSize() = 1024
 	
-	fun getOne(name: String, project: Project, scope: GlobalSearchScope): ParadoxScriptProperty? {
+	fun getOne(name: String, project: Project, scope: GlobalSearchScope,first:Boolean): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
-		for(element in elements) {
-			return element
-		}
-		return null
+		return if(first) elements.firstOrNull() else elements.lastOrNull()
 	}
 	
 	fun getAll(name: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {

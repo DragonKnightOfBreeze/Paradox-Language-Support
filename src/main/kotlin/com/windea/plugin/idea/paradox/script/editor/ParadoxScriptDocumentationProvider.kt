@@ -55,14 +55,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				definitionInfo.let { (name, type, subtypes, localisation) ->
-					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-					if(subtypes.isNotEmpty()) { subtypes.joinTo(this,", ",", ") }
-					if(localisation.isNotEmpty()) {
-						append("<br>")
-						for((k, v) in localisation) {
-							append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#", v).append("</b>")
-						}
+				val (name, type, subtypes, localisation) = definitionInfo
+				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
+				if(subtypes.isNotEmpty()) {
+					subtypes.joinTo(this, ", ", ", ")
+				}
+				if(localisation.isNotEmpty()) {
+					append("<br>")
+					for((k, v) in localisation) {
+						append("<br>(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
 					}
 				}
 			}
@@ -99,7 +100,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//之前的单行注释文本
 			val docText = getDocTextFromPreviousComment(element)
-			if(docText.isNotEmpty()){
+			if(docText.isNotEmpty()) {
 				content {
 					append(docText)
 				}
@@ -120,7 +121,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//之前的单行注释文本
 			if(state.renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
-				if(docText.isNotEmpty()){
+				if(docText.isNotEmpty()) {
 					content {
 						append(docText)
 					}
@@ -133,39 +134,47 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				definitionInfo.let { (name, type, subtypes, localisation) ->
-					append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-					if(subtypes.isNotEmpty()) { subtypes.joinTo(this,", ",", ") }
-					if(localisation.isNotEmpty()) {
-						append("<br>")
-						for((k, v) in localisation) {
-							append("<br>(definition localisation) ").append(k.name).append(" = <b>").appendPsiLink("#", v).append("</b>")
-						}
+				val (name, type, subtypes, localisation) = definitionInfo
+				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
+				if(subtypes.isNotEmpty()) {
+					subtypes.joinTo(this, ", ", ", ")
+				}
+				if(localisation.isNotEmpty()) {
+					append("<br>")
+					for((k, v) in localisation) {
+						append("<br>(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
 					}
 				}
 			}
 			//之前的单行注释文本
 			if(state.renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
-				if(docText.isNotEmpty()){
+				if(docText.isNotEmpty()) {
 					content {
 						append(docText)
 					}
 				}
 			}
-			//相关的本地化文本
-			//if(state.renderLocalisationText) {
-			//	if(canGetDefinitionInfo(element)) {
-			//		val sections = getPropertySections(element, name)
-			//		if(sections.isNotEmpty()) {
-			//			sections {
-			//				for((title, value) in sections) {
-			//					section(title, value)
-			//				}
-			//			}
-			//		}
-			//	}
-			//}
+			//本地化文本
+			if(state.renderDefinitionText) {
+				val localisation = definitionInfo.localisation
+				if(localisation.isNotEmpty()) {
+					val richTextMap = mutableMapOf<String, String>()
+					for((name, key) in localisation) {
+						val e = findLocalisation(key, element.paradoxLocale, element.project, default = true)
+						val richText = e?.propertyValue?.renderRichText() ?: continue
+						val sectionName = name.value.toCapitalizedWords()
+						richTextMap[sectionName] = richText
+					}
+					if(richTextMap.isNotEmpty()) {
+						sections {
+							for((title, richText) in richTextMap) {
+								section(title, richText)
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -180,62 +189,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	//private fun getPropertySections(element: ParadoxScriptProperty,name:String): Map<String, String> {
-	//	val project = element.project
-	//	val scope = element.resolveScope
-	//	val sectionMap = linkedMapOf<String, String>()
-	//	
-	//	//添加渲染后的对应的图标到文档注释中
-	//	val iconUrl = name.resolveIconUrl(false)
-	//	if(iconUrl.isNotEmpty()) {
-	//		val value = iconTag(iconUrl, iconSize * 2)
-	//		sectionMap[_iconTitle] = value
-	//	}
-	//	
-	//	//添加渲染后的相关的本地化属性的值的文本到文档注释中
-	//	val localisationProperties = findRelatedLocalisationProperties(name, project, inferredParadoxLocale,scope)
-	//		.distinctBy { it.name } //过滤重复的属性
-	//	if(localisationProperties.isNotEmpty()) {
-	//		for(property in localisationProperties) {
-	//			val value = property.propertyValue?.renderRichText()
-	//			if(value != null) sectionMap[message(property.getRelatedLocalisationPropertyKey())] = value
-	//		}
-	//	}
-	//	
-	//	//添加渲染后的作为其属性的值的文本到文档注释中
-	//	val propertyValue = element.propertyValue?.value
-	//	val properties = if(propertyValue is ParadoxScriptBlock) propertyValue.propertyList else null
-	//	if(properties != null && properties.isNotEmpty()) {
-	//		for(property in properties) {
-	//			when(property.name) {
-	//				"description" -> {
-	//					val k = property.value ?: continue
-	//					val value = findLocalisationProperty(k, inferredParadoxLocale, project)?.propertyValue?.renderRichText()
-	//					sectionMap[_effectTitle] = value ?: k
-	//				}
-	//				"tags" -> {
-	//					val pv = property.propertyValue?.value as? ParadoxScriptBlock ?: continue
-	//					val tags = pv.valueList.mapNotNull { if(it is ParadoxScriptString) it.value else null }
-	//					val propValues = tags.mapNotNull { tag ->
-	//						findLocalisationProperty(tag, inferredParadoxLocale, project)?.propertyValue
-	//					}
-	//					if(propValues.isEmpty()) continue
-	//					val value = buildString {
-	//						var addNewLine = false
-	//						for(propValue in propValues) {
-	//							if(addNewLine) append("<br>") else addNewLine = true
-	//							propValue.renderRichTextTo(this)
-	//						}
-	//					}
-	//					sectionMap[_tagsTitle] = value
-	//				}
-	//			}
-	//		}
-	//	}
-	//	
-	//	return sectionMap
-	//}
-	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
 		return when {
 			link == null || context == null -> null
@@ -246,15 +199,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-		return findLocalisation(link, getLocale(context), context.project, orDefault = true)
+		return findLocalisation(link, context.paradoxLocale, context.project, default = true)
 	}
 	
 	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
 		return findDefinition(link, null, context.project)
-	}
-	
-	private fun getLocale(element: PsiElement): ParadoxLocale? {
-		val file = element.containingFile
-		return if(file is ParadoxLocalisationFile) file.paradoxLocale else inferredParadoxLocale
 	}
 }

@@ -29,6 +29,7 @@ class ParadoxSettingsConfigurable: SearchableConfigurable {
 		val settings = ParadoxSettingsState.getInstance()
 		val settingsComponent = component!!
 		return settingsComponent.validateScriptCheckBox.isSelected != settings.validateScript
+		       || settingsComponent.preferOverriddenCheckBox.isSelected != settings.preferOverridden
 		       || settingsComponent.renderLineCommentTextCheckBox.isSelected != settings.renderLineCommentText
 		       || settingsComponent.renderDefinitionTextCheckBox.isSelected != settings.renderDefinitionText
 		       || settingsComponent.renderLocalisationTextCheckBox.isSelected != settings.renderLocalisationText
@@ -38,6 +39,7 @@ class ParadoxSettingsConfigurable: SearchableConfigurable {
 		val settings = ParadoxSettingsState.getInstance()
 		val settingsComponent = component ?: return
 		settings.validateScript = settingsComponent.validateScriptCheckBox.isSelected
+		settings.preferOverridden = settingsComponent.preferOverriddenCheckBox.isSelected
 		settings.renderLineCommentText = settingsComponent.renderLineCommentTextCheckBox.isSelected
 		settings.renderDefinitionText = settingsComponent.renderDefinitionTextCheckBox.isSelected
 		settings.renderLocalisationText = settingsComponent.renderLocalisationTextCheckBox.isSelected
@@ -47,6 +49,7 @@ class ParadoxSettingsConfigurable: SearchableConfigurable {
 		val settings = ParadoxSettingsState.getInstance()
 		val settingsComponent = component ?: return
 		settingsComponent.validateScriptCheckBox.isSelected = settings.validateScript
+		settingsComponent.preferOverriddenCheckBox.isSelected = settings.preferOverridden
 		settingsComponent.renderLineCommentTextCheckBox.isSelected = settings.renderLineCommentText
 		settingsComponent.renderDefinitionTextCheckBox.isSelected = settings.renderDefinitionText
 		settingsComponent.renderLocalisationTextCheckBox.isSelected = settings.renderLocalisationText

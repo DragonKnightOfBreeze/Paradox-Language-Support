@@ -17,7 +17,7 @@ class ParadoxDefinitionPathReference(
 ): PsiReferenceBase<PsiElement>(element,rangeInElement), AnchorReference, EmptyResolveMessageProvider {
 	override fun resolve(): PsiElement? {
 		val file = getFile() ?: return null
-		return findLocalisation(anchor,null,element.project, GlobalSearchScope.fileScope(file))
+		return findLocalisation(anchor,null,element.project, GlobalSearchScope.fileScope(file),default=true)
 	}
 	
 	override fun getUnresolvedMessagePattern(): String {

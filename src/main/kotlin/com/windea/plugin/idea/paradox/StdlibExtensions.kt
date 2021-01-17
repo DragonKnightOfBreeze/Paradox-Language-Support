@@ -112,9 +112,9 @@ fun String.toCapitalizedWords(): String {
 				}
 				c == '_' || c == '-' || c == '.' -> {
 					isWordStart = true
-					append('_')
+					append(' ')
 				}
-				else -> append(c)
+				else -> append(c.toLowerCase())
 			}
 		}
 	}
@@ -199,9 +199,15 @@ fun JarFile.toJarDirectoryEntryMap(pathPrefix:String,fileExtension:String): Map<
 class ConditionalKey(
 	val expression: String
 ) : CharSequence{
-	val name: String = expression.trimEnd('!', '?')
-	val optional: Boolean = expression.endsWith('?')
-	val required: Boolean = expression.endsWith('!')
+	companion object {
+		private val markers = charArrayOf('?', '!', '*', '+')
+	}
+	
+	val marker: Char? = expression.lastOrNull { it in markers }
+	val value: String = if(marker != null) expression.dropLast(1) else expression
+	val optional: Boolean = marker == '?' || marker == '*'
+	val required: Boolean = marker == '!' || marker == '+'
+	val multiple: Boolean = marker == '*' || marker == '+'
 	
 	override val length = expression.length
 	
@@ -215,11 +221,13 @@ class ConditionalKey(
 	
 	override fun toString(): String = expression
 	
-	operator fun component1(): String = name
+	operator fun component1(): String = value
 	
 	operator fun component2(): Boolean = optional
 	
 	operator fun component3(): Boolean = required
+	
+	operator fun component4():Boolean = multiple
 }
 
 fun String.toConditionalKey() = ConditionalKey(this)
@@ -227,6 +235,10 @@ fun String.toConditionalKey() = ConditionalKey(this)
 class PredicateExpression(
 	val expression:String
 ):CharSequence{
+	val marker: Char? = expression.firstOrNull { it == '!' }
+	val value: String = if(marker != null) expression.drop(1) else expression
+	val not: Boolean = marker == '!'
+	
 	override val length = expression.length
 	
 	override fun get(index: Int): Char = expression[index]
@@ -238,4 +250,8 @@ class PredicateExpression(
 	override fun hashCode(): Int = expression.hashCode()
 	
 	override fun toString(): String = expression
+	
+	operator fun component1(): String = value
+	
+	operator fun component2(): Boolean = not
 }

@@ -243,7 +243,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun getLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-		return findLocalisation(link, getLocale(context), context.project, orDefault = true)
+		return findLocalisation(link, getLocale(context), context.project, default = true)
 	}
 	
 	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {

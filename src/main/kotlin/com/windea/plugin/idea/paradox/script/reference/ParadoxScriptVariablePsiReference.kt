@@ -5,6 +5,7 @@ import com.intellij.model.psi.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
 @Suppress("UnstableApiUsage")

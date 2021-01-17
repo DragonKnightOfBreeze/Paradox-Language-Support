@@ -70,8 +70,8 @@ data class ParadoxDefinitionInfo(
 	val scopes: Map<String, String>,
 	val fromVersion: String
 ){
-	val localisationKeys = localisation.mapTo(linkedSetOf()) { it.first }
-	val localisationNames = localisation.mapTo(linkedSetOf()) { it.second }
+	val localisationNames = localisation.mapTo(linkedSetOf()) { it.first }
+	val localisationKeys = localisation.mapTo(linkedSetOf()) { it.second }
 	val hasLocalisation = localisation.isNotEmpty()
 	val hasScopes = scopes.isNotEmpty()
 }

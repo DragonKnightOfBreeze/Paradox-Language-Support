@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
+import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
@@ -295,18 +296,8 @@ fun ParadoxScriptValue.isNullLike():Boolean{
 //Find Extensions
 
 //使用stubIndex以提高性能
+private	val state = ParadoxSettingsState.getInstance()
 
-fun findDefinition(name: String, type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
-	return ParadoxDefinitionNameIndex.getOne(name, type, project, scope)
-}
-
-fun findDefinitions(name: String, type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionNameIndex.getAll(name, type, project, scope)
-}
-
-fun findDefinitions(type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionNameIndex.getAll(type, project, scope)
-}
 
 fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable? {
 	//在所在文件中递归查找（不一定定义在顶层）
@@ -315,8 +306,7 @@ fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable
 }
 
 fun findScriptVariablesInFile(name: String, file: PsiFile): List<ParadoxScriptVariable> {
-	//在所在文件中递归查找（不一定定义在顶层）
-	//仅查找第一个
+	//在所在文件中递归查找（不一定定义在顶层），仅查找第一个
 	return findScriptVariableInFile(name, file).toSingletonListOrEmpty()
 }
 
@@ -327,7 +317,7 @@ fun findScriptVariablesInFile(file: PsiFile): List<ParadoxScriptVariable> {
 }
 
 fun findScriptVariable(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptVariable? {
-	return ParadoxScriptVariableNameIndex.getOne(name, project, scope)
+	return ParadoxScriptVariableNameIndex.getOne(name, project, scope, !state.preferOverridden)
 }
 
 fun findScriptVariables(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptVariable> {
@@ -338,8 +328,22 @@ fun findScriptVariables(project: Project, scope: GlobalSearchScope = GlobalSearc
 	return ParadoxScriptVariableNameIndex.getAll(project, scope)
 }
 
+
+fun findDefinition(name: String, type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
+	return ParadoxDefinitionNameIndex.getOne(name, type, project, scope, !state.preferOverridden)
+}
+
+fun findDefinitions(name: String, type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+	return ParadoxDefinitionNameIndex.getAll(name, type, project, scope)
+}
+
+fun findDefinitions(type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+	return ParadoxDefinitionNameIndex.getAll(type, project, scope)
+}
+
+
 fun findScriptLocalisation(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
-	return ParadoxScriptLocalisationNameIndex.getOne(name, project, scope)
+	return ParadoxScriptLocalisationNameIndex.getOne(name, project, scope, !state.preferOverridden)
 }
 
 fun findScriptLocalisations(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
@@ -350,20 +354,21 @@ fun findScriptLocalisations(project: Project, scope: GlobalSearchScope = GlobalS
 	return ParadoxScriptLocalisationNameIndex.getAll(project, scope)
 }
 
-fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), orDefault: Boolean = false): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, orDefault)
+
+fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), default: Boolean = false): ParadoxLocalisationProperty? {
+	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, default, !state.preferOverridden)
 }
 
-fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), orDefault: Boolean = true): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, orDefault)
+fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), default: Boolean = true): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, default)
 }
 
 fun findLocalisations(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.getAll(locale, project, scope)
 }
 
-fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), keepOrder: Boolean = false): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, keepOrder)
+fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), default:Boolean= false,keepOrder: Boolean = false): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, default,keepOrder)
 }
 
 //Util Extensions
