@@ -96,7 +96,7 @@ class ParadoxRuleGroup(
 			//过滤key
 			val keyFilterData = data["key_filter"] as String?
 			if(keyFilterData != null) {
-				val keyConditions = keyFilterData.split(',')
+				val keyConditions = keyFilterData.split(',').map{ it.trim() }
 				for(keyCondition in keyConditions) {
 					if(keyCondition.isNotEmpty() && keyCondition[0] == '!') {
 						if(elementName == keyCondition.drop(1)) return false

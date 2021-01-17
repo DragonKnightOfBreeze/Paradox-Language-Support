@@ -42,16 +42,17 @@
 * [X] 验证`commandScope` `commandField`
 * [X] 修复不能changeLocale之类的bug
 * [X] 完善对于`commandScope`和`commandField`的提示和验证
-* [X] 解析规则文件`definitions.yml`的规则`predicate`
-* [X] 解析规则文件`definitions.yml`的规则`subTypes`
+* [X] 解析规则文件`types.yml`的规则`predicate`
+* [X] 解析规则文件`types.yml`的规则`subTypes`
 * [X] 将`serialNumber`重命名为`sequentialNumber`
 * [X] 实现`ParadoxScriptExpressionTypeProvider`
 * [X] 实现`ParadoxPathReferenceProvider`
 * [X] 修复`InvalidFileEncodingInspection`中的NPE
-* [ ] 为规则文件`definitions.yml`添加规则`name_prefix`和`name_suffix`（完成`common`目录的）
-* [ ] 为规则文件`definitions.yml`添加规则`icon`
-* [ ] 解析规则文件`definitions.yml`的规则`type_from_file`
-* [ ] 解析规则文件`definitions.yml`的规则`type_per_file`
+* [X] 完成规则文件`types.yml`
+* [ ] 为规则文件`types.yml`添加规则`name_prefix`和`name_suffix`（仅限`common`目录）
+* [ ] 为规则文件`types.yml`添加规则`icon`
+* [ ] 解析规则文件`types.yml`的规则`type_from_file`
+* [ ] 解析规则文件`types.yml`的规则`type_per_file`
 * [ ] 编写规则文件`enums.yml`
 * [ ] 修复图标能加载但不能正常渲染的bug（IDE新版本底层代码错误？）
 * [ ] 初步实现功能：添加模块（基于游戏类型）

@@ -538,7 +538,7 @@ types:
   opinion_modifier:
     path: "common/opinion_modifiers"
     file_extension: "txt"
-    name_prefix: ["opinion_", "triggered_opinion"] # 可能
+    name_prefix: [ "opinion_", "triggered_opinion" ] # 可能
     localisation:
       name!: "$"
     subtypes:
@@ -634,9 +634,9 @@ types:
     localisation:
       name!: "pft_$"
       description!: "pft_$_desc"
-    subtypes: 
+    subtypes:
       unique:
-        predicate: 
+        predicate:
           unique: true
 
   job:
@@ -1133,9 +1133,9 @@ types:
     localisation:
       name!: "war_goal_$"
       description!: "war_goal_$_desc"
-    subtypes: 
+    subtypes:
       total_war:
-        predicate: 
+        predicate:
           total_war: true
 
   alert_icon:
@@ -1183,7 +1183,7 @@ types:
   event_namespace:
     path: "events"
     file_extension: "txt"
-    value_type: "string" 
+    value_type: "string"
 
   event:
     path: "events"
@@ -1237,24 +1237,26 @@ types:
     path: "flags"
     file_extension: "txt"
     skip_root_key: "colors"
-  
+
   font:
     path: "fonts"
     file_extension: "asset"
     key_filter: "font"
     name_key: "name"
 
-  asset_selector:
-    path: "gfx/portraits/asset_selectors"
-    # TODO subtypes
+  advisor_window:
+    path: "gfx/advisorwindow"
+    file_extension: "txt"
 
   light:
     path: "gfx/lights"
-    file_extension: "txt"
+    file_extension: "asset"
+    key_filter: "light"
     name_key: "name"
-
+    
   model_entity:
-    path: "gfx"
+    path: "gfx/models"
+    path_strict: false
     file_extension: "asset"
     key_filter: "entity"
     name_key: "name"
@@ -1262,6 +1264,7 @@ types:
 
   model_mesh:
     path: "gfx/models"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "objectTypes"
     key_filter: "pdxmesh"
@@ -1270,6 +1273,7 @@ types:
 
   model_animation:
     path: "gfx/models"
+    path_strict: false
     file_extension: "asset"
     key_filter: "animation"
     name_key: "name"
@@ -1277,13 +1281,16 @@ types:
 
   particle:
     path: "gfx/particles"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "objectTypes"
+    key_filter: "pdxparticle"
     name_key: "name"
     severity: "warning"
 
   particle_type:
     path: "gfx/particles"
+    path_strict: false
     file_extension: "asset"
     key_filter: "particle"
     name_key: "name"
@@ -1292,6 +1299,11 @@ types:
   pingmap:
     path: "gfx/pingmap"
     file_extension: "txt"
+
+  asset_selector:
+    path: "gfx/portraits/asset_selectors"
+    file_extension: "txt"
+    # TODO subtypes
 
   portrait:
     path: "gfx/portraits/portraits"
@@ -1308,21 +1320,38 @@ types:
   projectile:
     path: "gfx/projectiles"
     file_extension: "txt"
+    key_filter: "projectile_gfx_beam,projectile_gfx_ballistic,projectile_gfx_missile"
     name_key: "name"
     severity: "warning"
+    subtypes: 
+      beam_projectile:
+        key_filter: "projectile_gfx_beam"
+      ballistic_projectile:
+        key_filter: "projectile_gfx_ballistic"
+      missile_projectile:
+        key_filter: "projectile_gfx_missile"
 
   planet_killer_animation:
     path: "gfx/projectiles/planet_destruction"
     file_extension: "txt"
 
-  textcolors:
+  world_gfx:
+    path: "gfx/worldgfx"
+    file_extension: "txt"
+    type_per_file: true
+    type_from_file: true
+    key_filter: "gfx_settings"
+
+  text_colors:
     path: "interface"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "bitmapfonts"
     key_filter: "textcolors"
 
-  bimapfont:
+  bimap_font:
     path: "interface"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "bitmapfonts"
     key_filter: "bitmapfont"
@@ -1330,18 +1359,21 @@ types:
 
   bitmapfont_override:
     path: "interface"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "bitmapfonts"
     key_filter: "bitmapfont_override"
 
   gui_type:
     path: "interface"
+    path_strict: false
     file_extension: "gui"
     key_filter: "guiTypes"
     severity: "warning"
 
   progress_bar_type:
     path: "interface"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "spriteTypes"
     key_filter: "progressbartype"
@@ -1350,6 +1382,7 @@ types:
 
   pie_chart_type:
     path: "interface"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "spriteTypes"
     key_filter: "PieChartType"
@@ -1358,14 +1391,13 @@ types:
 
   sprite_type:
     path: "interface"
+    path_strict: false
     file_extension: "gfx"
     skip_root_key: "spriteTypes"
     key_filter: "!progressbartype,!PieChartType"
     name_key: "name"
     severity: "warning"
     subtypes:
-      normal:
-        key_filter: "spriteType"
       cornered_tile_sprite_type:
         key_filter: "corneredTileSpriteType"
       flag_sprite_type:
@@ -1400,38 +1432,50 @@ types:
 
   sound:
     path: "sound"
+    path_strict: false
     file_extension: "asset"
     key_filter: "sound"
-    name_key: "name # link to a *.wav file"
+    name_key: "name" # link to a *.wav file
 
   sound_category:
     path: "sound"
+    path_strict: false
     file_extension: "asset"
     key_filter: "category"
     name_key: "name"
 
   sound_group:
     path: "sound"
+    path_strict: false
     file_extension: "asset"
     key_filter: "soundgroup"
     name_key: "name "
 
   sound_master_compressor:
     path: "sound"
+    path_strict: false
     file_extension: "asset"
     key_filter: "master_compressor"
 
   sound_music_compressor:
     path: "sound"
+    path_strict: false
     file_extension: "asset"
     key_filter: "music_compressor"
 
   sound_falloff:
     path: "sound"
+    path_strict: false
     file_extension: "asset"
     key_filter: "falloff"
 
   sound_effect:
     path: "sound"
+    path_strict: false
     file_extension: "asset"
     key_filter: "soundeffect"
+
+  advisor_voice_type:
+    path: "sound/advisor_voice_types"
+    localisation: 
+      name!: ".name"
