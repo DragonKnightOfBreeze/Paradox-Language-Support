@@ -105,12 +105,10 @@ enums:
     description: "The calling event's root scope. For events further back in the call stack, From can also be used as a isSecondary scope"
     isPrimary: true
     isSecondary: true
-    isRepeatable: true
   - name: "Prev"
     description: "The previous scope. It is not obvious to me what Prev.From points to, but some project descriptions use it"
     isPrimary: true
     isSecondary: true
-    isRepeatable: true
   - name: "Capital"
     description: "The capital of the current scope"
     isSecondary: true

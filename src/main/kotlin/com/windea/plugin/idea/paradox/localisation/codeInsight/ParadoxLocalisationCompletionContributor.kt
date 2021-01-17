@@ -35,9 +35,6 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		private val secondaryCommandScopeElements = paradoxSecondaryCommandScopes.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandScopeIcon)
 		}
-		private val repeatableCommandScopeElements = paradoxRepeatableCommandScopes.map{
-			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandScopeIcon)
-		}
 		private val commandFieldElements = paradoxCommandFields.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandFieldIcon)
 		}
@@ -74,11 +71,11 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			val handledResult = result.withPrefixMatcher(prefix)
 			val prev = parent.prevIdentifier
 			if(prev == null){
-				//primaryCommandScope, event_target
+				//primaryCommandScope, secondaryCommandScope, event_target
 				handledResult.addAllElements(primaryCommandScopeElements)
+				handledResult.addAllElements(secondaryCommandScopeElements)
 			}else{
-				//repeatableCommandScope, secondaryCommandScope
-				handledResult.addAllElements(repeatableCommandScopeElements)
+				//secondaryCommandScope
 				handledResult.addAllElements(secondaryCommandScopeElements)
 			}
 			val next = parent.nextIdentifier

@@ -26,6 +26,16 @@ definitions:
         description:
           路径是否是严格的，如果是，该路径的子路径下的脚本文件将会被忽略，默认为是。
           Whether path should be strict, it true, script file in subpaths of this path is not included. default to true.
+      file_name:
+        type: [ string, array ]
+        description:
+          定义的脚本文件的名字。
+          Script file name of this definition.
+      file_extension:
+        type: [ string, array ]
+        description:
+          定义的脚本文件的扩展名。
+          Script file extension of this definition.
       type_from_file:
         type: boolean
         default: false
@@ -38,16 +48,6 @@ definitions:
         description:
           每个脚本文件是否只能包含一个定义。
           Whether definition should be defined at most one per script file.
-      file_name:
-        type: string
-        description:
-          定义的脚本文件的名字。
-          Script file name of this definition.
-      file_extension:
-        type: string
-        description:
-          定义的脚本文件的扩展名。
-          Script file extension of this definition.
       value_type:
         type: string
         default: object
@@ -81,14 +81,14 @@ definitions:
           作为定义的名字的子属性的键。
           Child proeprty key that resolved as definition name.
       name_prefix:
-        type: [string, array]
+        type: [ string, array ]
         items:
           type: string
         description:
           名字的前缀。
           Name prefix.
       name_suffix:
-        type: [string, array]
+        type: [ string, array ]
         items:
           type: string
         description:

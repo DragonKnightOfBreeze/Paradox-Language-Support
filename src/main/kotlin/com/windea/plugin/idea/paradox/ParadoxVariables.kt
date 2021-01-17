@@ -19,12 +19,10 @@ val paradoxColorMap = paradoxColors.associateBy { it.name }
 
 val paradoxCommandScopes = coreParadoxRuleGroup.enums.getValue("commandScope").data.mapArray { ParadoxCommandScope(it.cast()) }
 val paradoxPrimaryCommandScopes = paradoxCommandScopes.filter { it.isPrimary }.toTypedArray()
-val paradoxSecondaryCommandScopes = paradoxCommandScopes.filter{it.isRepeatable}.toTypedArray()
-val paradoxRepeatableCommandScopes = paradoxPrimaryCommandScopes.filter{it.isSecondary}.toTypedArray()
+val paradoxSecondaryCommandScopes = paradoxCommandScopes.filter{it.isSecondary}.toTypedArray()
 val paradoxCommandScopeMap = paradoxCommandScopes.associateBy { it.name }
 val paradoxPrimaryCommandScopeMap = paradoxCommandScopeMap.filterValues { it.isPrimary }
 val paradoxSecondaryCommandScopeMap = paradoxCommandScopeMap.filterValues { it.isSecondary }
-val paradoxRepeatableCommandScopeMap = paradoxCommandScopeMap.filterValues{ it.isRepeatable }
 
 val paradoxCommandFields = coreParadoxRuleGroup.enums.getValue("commandField").data.mapArray { ParadoxCommandField(it.cast()) }
 val paradoxCommandFieldMap = paradoxCommandFields.associateBy { it.name }

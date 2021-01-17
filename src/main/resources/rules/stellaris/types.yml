@@ -1,15 +1,18 @@
 types:
   agenda:
     path: "common/agendas"
+    file_extension: "txt"
     name_prefix: "agenda_"
     localisation:
       name!: "$"
 
   ai_budget:
     path: "common/ai_budget"
+    file_extension: "txt"
 
   ambient_object:
     path: "common/ambient_objects"
+    file_extension: "txt"
     name_key: "name"
     localisation:
       name!: ".name"
@@ -25,6 +28,7 @@ types:
 
   anomaly_category:
     path: "common/anomalies"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: ".desc"
@@ -34,12 +38,14 @@ types:
 
   archaeological_site_type:
     path: "common/archaeological_site_types"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: ".desc"
 
   army:
     path: "common/armies"
+    file_extension: "txt"
     localisation:
       name!: "$"
       plural!: "$_plural"
@@ -54,6 +60,7 @@ types:
 
   artifact_action:
     path: "common/artifact_actions"
+    file_extension: "txt"
     name_prefix: "artifact_"
     localisation:
       name!: "$"
@@ -61,6 +68,7 @@ types:
 
   ascension_perk:
     path: "common/ascension_perks"
+    file_extension: "txt"
     name_prefix: "ap_"
     localisation:
       name!: "$"
@@ -68,20 +76,24 @@ types:
 
   asteroid_belt:
     path: "common/asteroid_belt"
+    file_extension: "txt"
 
   attitude: #TODO
     path: "common/attitudes"
+    file_extension: "txt"
     localisation:
       name!: "attribute_$"
 
   bombardment_stance:
     path: "common/bombardment_stances"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
 
   building:
     path: "common/buildings"
+    file_extension: "txt"
     name_prefix: "building_"
     localisation:
       name!: "$"
@@ -96,12 +108,14 @@ types:
 
   button_effect:
     path: "common/button_effects"
+    file_extension: "txt"
     replace_scopes:
       this: "selected_object | player_country"
       from: "player_country"
 
   bypass:
     path: "common/bypass"
+    file_extension: "txt"
     # name_key: "name"
     subtypes: # TODO
       scripted:
@@ -110,6 +124,7 @@ types:
 
   casus_belli:
     path: "common/casus_belli"
+    file_extension: "txt"
     name_prefix: "cb_"
     localisation:
       name!: "casus_belli_$"
@@ -117,15 +132,18 @@ types:
 
   colony_automation:
     path: "common/colony_automation"
+    file_extension: "txt"
     type_per_file: true
     # path_strict: true
     name_prefix: "automate_"
 
   colony_automation_exception:
     path: "common/colony_automation_exceptions"
+    file_extension: "txt"
 
   colony_type:
     path: "common/colony_types"
+    file_extension: "txt"
     name_prefix: "col_"
     localisation:
       name!: "$"
@@ -133,12 +151,15 @@ types:
 
   country_customization:
     path: "common/country_customization"
+    file_extension: "txt"
 
   color:
     path: "common/colors"
+    file_extension: "txt"
 
   component_set:
     path: "common/component_sets"
+    file_extension: "txt"
     name_key: "key"
     localisation:
       name!: "$"
@@ -152,13 +173,16 @@ types:
 
   component_slot_template:
     path: "common/component_slot_templates"
+    file_extension: "txt"
 
   component_tags:
     path: "common/component_tags"
+    file_extension: "txt"
     type_from_file: true
 
   component_template:
     path: "common/component_templates"
+    file_extension: "txt"
     localisation:
       name!: "$"
       tag?: ".tags"
@@ -173,18 +197,22 @@ types:
 
   country_type:
     path: "common/country_types"
+    file_extension: "txt"
 
   decision:
     path: "common/decisions"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
 
   define:
     path: "common/defines"
+    file_extension: "txt"
 
   deposit_category:
     path: "common/deposit_categories"
+    file_extension: "txt"
     subtypes:
       blocker:
         predicate:
@@ -195,6 +223,7 @@ types:
 
   deposit:
     path: "common/deposits"
+    file_extension: "txt"
     # path_strict: true
     name_prefix: "d_"
     localisation:
@@ -223,6 +252,7 @@ types:
   # TODO 没弄懂！
   diplo_phrase:
     path: "common/diplo_phrases"
+    file_extension: "txt"
     #type_from_file: true
     #type_per_file: true
     subtypes:
@@ -231,11 +261,13 @@ types:
 
   diplomacy_economy:
     path: "common/diplomacy_economy"
+    file_extension: "txt"
     type_from_file: true
     from_version: "2.6"
 
   diplomatic_action:
     path: "common/diplomatic_actions"
+    file_extension: "txt"
     name_prefix: "action_"
     localisation:
       title?: "$_TITLE"
@@ -246,6 +278,7 @@ types:
 
   district:
     path: "common/districts"
+    file_extension: "txt"
     name_prefix: "district_"
     localisation:
       name!: "$"
@@ -261,11 +294,13 @@ types:
 
   dynamic_text:
     path: "common/dynamic_text"
+    file_extension: "txt"
     localisation:
       text!: ".text"
 
   economic_category:
     path: "common/economic_categories"
+    file_extension: "txt"
     localisation:
       name!: "$"
     subtypes:
@@ -278,10 +313,12 @@ types:
 
   economic_plan:
     path: "common/economic_plans"
+    file_extension: "txt"
     name_suffix: "_plan"
 
   edict:
     path: "common/edicts"
+    file_extension: "txt"
     localisation:
       name!: "edit_$"
       description!: "edit_$_desc"
@@ -292,10 +329,12 @@ types:
 
   ethic_category:
     path: "common/ethics"
+    file_extension: "txt"
     skip_root_key: "ethic_categories"
 
   ethic:
     path: "common/ethics"
+    file_extension: "txt"
     key_filter: "!ethic_categories"
     localisation:
       name!: "$"
@@ -304,15 +343,18 @@ types:
 
   event_chain:
     path: "common/event_chains"
+    file_extension: "txt"
     localisation:
       title!: "$_title"
       description!: "$_desc"
 
   fallen_empire:
     path: "common/fallen_empires"
+    file_extension: "txt"
 
   federation_law_category:
     path: "common/federation_law_categories"
+    file_extension: "txt"
     name_prefix: "law_category_"
     localisation:
       name!: "$"
@@ -321,6 +363,7 @@ types:
 
   federation_law:
     path: "common/federation_laws"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
@@ -328,6 +371,7 @@ types:
 
   federation_perk:
     path: "common/federation_perks"
+    file_extension: "txt"
     localisation:
       name?: "$"
       description?: "$_desc"
@@ -335,6 +379,7 @@ types:
 
   federation_type:
     path: "common/federation_types"
+    file_extension: "txt"
     name_suffix: "_federation"
     localisation:
       name!: "$"
@@ -343,6 +388,7 @@ types:
 
   galactic_focus:
     path: "common/galactic_focuses"
+    file_extension: "txt"
     name_prefix: "galactic_focus_"
     localisation:
       name!: "$"
@@ -353,13 +399,16 @@ types:
   # TODO scopes from comment (root = xxx, xxx xx)
   game_rule:
     path: "common/game_rules"
+    file_extension: "txt"
 
   global_ship_design:
     path: "common/global_ship_designs"
+    file_extension: "txt"
     name_key: "name"
 
   government:
     path: "common/governments"
+    file_extension: "txt"
     name_prefix: "gov_"
     localisation:
       name!: "$"
@@ -371,6 +420,7 @@ types:
 
   authority:
     path: "common/governments/authorities"
+    file_extension: "txt"
     name_prefix: "auth_"
     localisation:
       name!: "$"
@@ -379,6 +429,7 @@ types:
 
   civic_or_origin:
     path: "common/governments/civics"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
@@ -395,6 +446,7 @@ types:
 
   swapped_civic:
     path: "common/governments/civics"
+    file_extension: "txt"
     skip_root_key: any
     key_filter: "swap_type"
     name_key: "name"
@@ -404,6 +456,7 @@ types:
 
   graphical_culture:
     path: "common/graphical_culture"
+    file_extension: "txt"
     subtypes:
       ship_color:
         predicate:
@@ -411,13 +464,16 @@ types:
 
   lawsuit:
     path: "common/lawsuits"
+    file_extension: "txt"
     # name_key: none
 
   leader_class:
     path: "common/leader_classes"
+    file_extension: "txt"
 
   mandate:
     path: "common/mandates"
+    file_extension: "txt"
     name_prefix: "mandate_"
     localisation:
       name!: "MANDATE_$"
@@ -425,6 +481,7 @@ types:
 
   map_mode:
     path: "common/map_modes"
+    file_extension: "txt"
     name_suffix: "_map_mode"
     localisation:
       name!: "$"
@@ -432,6 +489,7 @@ types:
 
   megastructure:
     path: "common/megastructures"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_DESC"
@@ -448,6 +506,7 @@ types:
 
   name_list:
     path: "common/name_lists"
+    file_extension: "txt"
     localisation:
       name!: "name_list_$"
     subtypes:
@@ -457,12 +516,14 @@ types:
 
   notification_modifier:
     path: "common/notification_modifiers"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
 
   observation_station_mission:
     path: "common/observation_station_missions"
+    file_extension: "txt"
     localisation:
       name!: "mission_$"
       description!: "mission_$_desc"
@@ -471,10 +532,12 @@ types:
   # TODO scopes from comment (root/this = xxx, xxx xx)
   on_action:
     path: "common/on_actions"
+    file_extension: "txt"
     name_prefix: "on_"
 
   opinion_modifier:
     path: "common/opinion_modifiers"
+    file_extension: "txt"
     name_prefix: ["opinion_", "triggered_opinion"] # 可能
     localisation:
       name!: "$"
@@ -492,12 +555,14 @@ types:
   ai_personality:
     alias: "personality"
     path: "common/personalities"
+    file_extension: "txt"
     localisation:
       name!: "personality_$"
       description!: "personality_$_desc"
 
   planet_class:
     path: "common/planet_classes"
+    file_extension: "txt"
     key_filter: "!random_list"
     localisation:
       name!: "$"
@@ -519,11 +584,13 @@ types:
 
   planet_class_random_list:
     path: "common/planet_classes"
+    file_extension: "txt"
     key_filter: "random_list"
     name_key: "name"
 
   planet_modfiier:
     path: "common/planet_modifiers"
+    file_extension: "txt"
     name_prefix: "pm_"
     subtypes:
       null:
@@ -535,12 +602,14 @@ types:
 
   policy:
     path: "common/policies"
+    file_extension: "txt"
     localisation:
       name!: "policy_$"
       description!: "policy_$_desc"
 
   policy_option:
     path: "common/policies"
+    file_extension: "txt"
     skip_root_key: any
     key_filter: "option"
     name_key: "name"
@@ -551,6 +620,7 @@ types:
 
   social_strata:
     alias: "pop_category"
+    file_extension: "txt"
     path: "common/pop_categories"
     localisation:
       name!: "pop_cat_$"
@@ -559,21 +629,20 @@ types:
 
   faction_type:
     alias: "pop_faction_type"
+    file_extension: "txt"
     path: "common/pop_faction_types"
     localisation:
       name!: "pft_$"
       description!: "pft_$_desc"
-    #subtypes: 
-    #  unique:
-    #    predicate: 
-    #      unique: true
-    #  non_unique:
-    #    predicate: 
-    #      unique?: false
+    subtypes: 
+      unique:
+        predicate: 
+          unique: true
 
   job:
     alias: "pop_job"
     path: "common/pop_jobs"
+    file_extension: "txt"
     localisation:
       name!: "job_$"
       plural!: "job_$_plural"
@@ -589,67 +658,79 @@ types:
 
   precursor_civilization:
     path: "common/precursor_civilizations"
+    file_extension: "txt"
     name_prefix: "precursor_"
 
   empire_name_parts_list:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "empire_name_parts_list"
     name_key: "key"
 
   empire_name_format:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "empire_name_format"
     name_key: "format"
     name_prefix: "format."
 
   federation_name_parts_list:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "federation_name_parts_list"
     name_key: "key"
 
   federation_name_format:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "federation_name_format"
     name_key: "format"
     name_prefix: "format."
 
   pop_faction_name_parts_list:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "pop_faction_name_parts_list"
     name_key: "key"
 
   pop_faction_name_format:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "pop_faction_name_format"
     name_key: "format"
     name_prefix: "format."
 
   pre_communications_name_parts_list:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "pre_communications_name_parts_list"
     name_key: "key"
 
   pre_communications_name_format:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "pre_communications_name_format"
     name_key: "format"
     name_prefix: "format."
 
   war_name_parts_list:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "war_name_parts_list"
     name_key: "key"
 
   war_name_format:
     path: "common/random_names"
+    file_extension: "txt"
     key_filter: "war_name_format"
     name_key: "format"
     name_prefix: "format."
 
-    # skip path: common/random_names/base 
+  # skip path: common/random_names/base 
 
   relic:
     path: "common/relics"
+    file_extension: "txt"
     name_prefix: "r_"
     localisation:
       name!: "$"
@@ -657,6 +738,7 @@ types:
 
   resolution_category:
     path: "common/resolution_categories"
+    file_extension: "txt"
     name_prefix: "resolution_category_"
     localisation:
       name!: "$"
@@ -665,6 +747,7 @@ types:
 
   resolution:
     path: "common/resolutions"
+    file_extension: "txt"
     name_prefix: "resolution_"
     localisation:
       name!: "$"
@@ -685,11 +768,13 @@ types:
 
   scripted_effect:
     path: "common/scripted_effects"
+    file_extension: "txt"
 
   # bind to: localisationCommandField
   # TODO scopes from comment 
   scripted_loc:
     path: "common/scripted_loc"
+    file_extension: "txt"
     key_filter: "defined_text"
     name_key: "name"
 
@@ -697,11 +782,13 @@ types:
   # TODO scopes from comment (root/this = xxx, xxx xx)
   scripted_trigger:
     path: "common/scripted_triggers"
+    file_extension: "txt"
 
   # skip path: common/scripted_variables
 
   section_template:
     path: "common/section_templates"
+    file_extension: "txt"
     key_filter: "ship_section_template"
     name_key: "key"
     subtypes:
@@ -713,11 +800,13 @@ types:
 
   component_slot:
     path: "common/section_templates"
+    file_extension: "txt"
     skip_root_key: "ship_section_template"
     name_key: name
 
   sector_focus:
     path: "common/sector_focuses"
+    file_extension: "txt"
     localisation:
       name!: "$"
     replace_scopes:
@@ -726,6 +815,7 @@ types:
 
   sector_type:
     path: "common/sector_types"
+    file_extension: "txt"
     localisation:
       name!: "$"
     replace_scopes:
@@ -734,10 +824,12 @@ types:
 
   ship_behavior:
     path: "common/ship_behaviors"
+    file_extension: "txt"
     name_key: "name"
 
   ship_size:
     path: "common/ship_sizes"
+    file_extension: "txt"
     localisation:
       name!: "$"
       plural!: "$_plural"
@@ -758,6 +850,7 @@ types:
 
   solar_system_initializer:
     path: "common/solar_system_initializers"
+    file_extension: "txt"
     key_filter: "!random_list"
     subtypes:
       fallen_empire_initialzer:
@@ -766,11 +859,13 @@ types:
 
   solar_system_initializer_random_list:
     path: "common/solar_system_initializers"
+    file_extension: "txt"
     key_filter: "random_list"
     name_key: "name"
 
   special_project:
     path: "common/special_projects"
+    file_extension: "txt"
     name_key: "key"
     localisation:
       name!: "$"
@@ -788,9 +883,11 @@ types:
 
   species_archetype:
     path: "common/species_archetypes"
+    file_extension: "txt"
 
   species_class:
     path: "common/species_classes"
+    file_extension: "txt"
     localisation:
       name!: "$"
       plural!: "$_plural"
@@ -818,15 +915,18 @@ types:
 
   species_name:
     path: "common/species_names"
+    file_extension: "txt"
     skip_root_key: "!named_lists"
     name_key: "name"
 
   species_named_list:
     path: "common/species_names"
+    file_extension: "txt"
     skip_root_key: "named_lists"
 
   species_right:
     path: "common/species_rights"
+    file_extension: "txt"
     localisation:
       name!: "$"
       tooltip!: "$_tooltip"
@@ -835,6 +935,7 @@ types:
 
   star_class:
     path: "common/star_classes"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description?: "$_desc"
@@ -842,31 +943,37 @@ types:
 
   star_class_random_list:
     path: "common/star_classes"
+    file_extension: "txt"
     name_key: "name"
     key_filter: "random_list"
 
   starbase_building:
     path: "common/starbase_buildings"
+    file_extension: "txt"
     localisation:
       name!: "sm_$"
       description!: "sm_$_desc"
 
   starbase_level:
     path: "common/starbase_levels"
+    file_extension: "txt"
 
   starbase_module:
     path: "common/starbase_modules"
+    file_extension: "txt"
     localisation:
       name!: "sm_$"
       description?: "sm_$_desc"
 
   starbase_type:
     path: "common/starbase_types"
+    file_extension: "txt"
     localisation:
       name!: "$"
 
   start_screen_message:
     path: "common/start_screen_messages"
+    file_extension: "txt"
     key_filter: "part"
     name_key: "localization"
     localisation:
@@ -874,6 +981,7 @@ types:
 
   static_modifier:
     path: "common/static_modifiers"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description?: "$_desc"
@@ -885,6 +993,7 @@ types:
   resource:
     alias: "strategic_resources"
     path: "common/strategic_resources"
+    file_extension: "txt"
     localisation:
       name?: "$"
       description?: "$_desc"
@@ -898,17 +1007,20 @@ types:
 
   subject:
     path: "common/subjects"
+    file_extension: "txt"
     localisation:
       name!: "SUBJECT_$"
       description!: "SUBJECT_DESC_$"
 
   system_type:
     path: "common/system_types"
+    file_extension: "txt"
     localisation:
       name!: "$"
 
   technology:
     path: "common/technology"
+    file_extension: "txt"
     name_prefix: "tech_"
     localisation:
       name!: "$"
@@ -924,27 +1036,33 @@ types:
 
   technology_category:
     path: "common/technology/category"
+    file_extension: "txt"
 
   technology_tier:
     path: "common/technology/tier"
+    file_extension: "txt"
 
   terraform_link:
     alias: "terraform"
     path: "common/terraform"
+    file_extension: "txt"
     key_filter: "terraform_link"
     name_key: none
 
   trade_conversion:
     path: "common/trade_conversions"
+    file_extension: "txt"
 
   tradition_category:
     path: "common/tradition_categories"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
 
   tradition_swap_category:
     path: "common/tradition_categories"
+    file_extension: "txt"
     skip_root_key: any
     key_filter: "tradition_swap"
     name_key: "name"
@@ -954,12 +1072,14 @@ types:
 
   tradition:
     path: "common/traditions"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
 
   tradition_swap:
     path: "common/traditions"
+    file_extension: "txt"
     skip_root_key: any
     key_filter: "tradition_swap"
     name_key: "name"
@@ -969,6 +1089,7 @@ types:
 
   trait:
     path: "common/traits"
+    file_extension: "txt"
     localisation:
       name!: "$"
       description!: "$_desc"
@@ -1007,6 +1128,7 @@ types:
 
   war_goal:
     path: "common/war_goals"
+    file_extension: "txt"
     name_prefix: "wg_"
     localisation:
       name!: "war_goal_$"
@@ -1047,8 +1169,10 @@ types:
   #   type_from_file: true
   #   # name_key: "name"
 
-  dlc_info:
+  dlc:
+    alias: "dlc_metadata"
     path: "dlc_metadata"
+    file_extension: "txt"
     skip_root_key: "dlcs"
     name_key: "name"
 
@@ -1058,10 +1182,12 @@ types:
 
   event_namespace:
     path: "events"
+    file_extension: "txt"
     value_type: "string" 
 
   event:
     path: "events"
+    file_extension: "txt"
     name_key: "id"
     subtypes:
       scopeless:
@@ -1107,12 +1233,14 @@ types:
     - "special_project"
     - "anomaly_category"
 
-  color_define:
+  flag_color:
     path: "flags"
+    file_extension: "txt"
     skip_root_key: "colors"
   
   font:
     path: "fonts"
+    file_extension: "asset"
     key_filter: "font"
     name_key: "name"
 
@@ -1122,6 +1250,7 @@ types:
 
   light:
     path: "gfx/lights"
+    file_extension: "txt"
     name_key: "name"
 
   model_entity:
@@ -1162,24 +1291,29 @@ types:
 
   pingmap:
     path: "gfx/pingmap"
+    file_extension: "txt"
 
   portrait:
     path: "gfx/portraits/portraits"
+    file_extension: "txt"
     skip_root_key: "portraits"
     severity: "warning"
 
   portrait_group:
     path: "gfx/portraits/portraits"
+    file_extension: "txt"
     skip_root_key: "portrait_groups"
     severity: "warning"
 
   projectile:
     path: "gfx/projectiles"
+    file_extension: "txt"
     name_key: "name"
     severity: "warning"
 
   planet_killer_animation:
     path: "gfx/projectiles/planet_destruction"
+    file_extension: "txt"
 
   textcolors:
     path: "interface"
@@ -1241,23 +1375,28 @@ types:
 
   map_galaxy_setting:
     path: "map/galaxy"
+    file_extension: "txt"
 
   map_setup_scenario:
     path: "map/setup_scenarios"
+    file_extension: "txt"
     name_key: "name"
 
   song:
     path: "music"
+    file_extension: "txt"
     key_filter: "song"
     name_key: "name"
 
   music:
     path: "music"
+    file_extension: "txt"
     key_filter: "music"
     name_key: "name"
 
   prescripted_country:
     path: "prescripted_countries"
+    file_extension: "txt"
 
   sound:
     path: "sound"

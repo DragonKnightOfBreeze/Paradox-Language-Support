@@ -145,7 +145,6 @@ class ParadoxCommandScope(data:Map<String,Any>) {
 		when(key){
 			"isPrimary" -> false
 			"isSecondary" -> false
-			"isRepeatable" -> false
 			else -> null
 		}
 	}
@@ -154,7 +153,6 @@ class ParadoxCommandScope(data:Map<String,Any>) {
 	val description: String by dataWithDefault
 	val isPrimary:Boolean by dataWithDefault
 	val isSecondary:Boolean by dataWithDefault
-	val isRepeatable:Boolean by dataWithDefault
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxCommandScope && name == other.name

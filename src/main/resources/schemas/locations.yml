@@ -11,11 +11,6 @@ definitions:
   location:
     type: object
     properties:
-      path:
-        type: string
-        description:
-          脚本文件路径，相对于游戏或模组路径。
-          Script file path, relative to game or mod path.
       path_strict:
         type: boolean
         default: true # TODO 暂且如此
@@ -23,26 +18,12 @@ definitions:
           路径是否是严格的，如果是，该路径的子路径下的脚本文件将会被忽略，默认为是。
           Whether path should be strict, it true, script file in subpaths of this path is not included. default to true.
       file_name:
-        type: string
-        description:
-          脚本文件的名字。
-          Script file name.
-      file_names:
-        type: array
-        items: 
-          type: string
+        type: [string, array]
         description:
           脚本文件的名字。
           Script file name.
       file_extension:
-        type: string
-        description:
-          脚本文件的扩展名。
-          Script file extension.
-      file_extensions:
-        type: array
-        items: 
-          type: string
+        type: [string, array]
         description:
           脚本文件的扩展名。
           Script file extension.

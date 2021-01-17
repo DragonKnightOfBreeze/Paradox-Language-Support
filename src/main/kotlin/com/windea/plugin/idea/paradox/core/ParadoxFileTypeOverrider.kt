@@ -60,7 +60,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		//首先尝试直接通过path.parent作为key来匹配
 		val fastLocation = locations[path.parent]
 		if(fastLocation != null) {
-			val fastResult = fastLocation.matches(path, false)
+			val fastResult = fastLocation.fastMatches(path)
 			if(fastResult) return true
 		}
 		//然后遍历locations进行匹配

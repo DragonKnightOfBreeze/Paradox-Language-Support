@@ -286,12 +286,16 @@ fun ParadoxScriptValue.checkType(type: String): Boolean {
 
 fun ParadoxScriptValue.isNullLike():Boolean{
 	return when{
-		this is ParadoxScriptBlock -> this.isEmpty 
+		this is ParadoxScriptBlock -> this.isEmpty || this.isAlwaysYes() //兼容always=yes
 		this is ParadoxScriptString -> this.textMatches("")
 		this is ParadoxScriptNumber -> this.text.toIntOrNull() == 0 //兼容0.0和0.00这样的情况
 		this is ParadoxScriptBoolean -> this.textMatches("no")
 		else -> false
 	}
+}
+
+fun ParadoxScriptBlock.isAlwaysYes():Boolean{
+	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" }?:false
 }
 //Find Extensions
 

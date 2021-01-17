@@ -13,23 +13,43 @@ class ParadoxRuleGroup(
 	val enums = data.getOrDefault("enums",emptyMap()).mapValues { (k, v) -> Enum(k, v.cast()) }
 	
 	class Location(val key:String, val data:Map<String,Any>){
-		fun matches(path:ParadoxPath,checkPath:Boolean = true):Boolean{
-			if(checkPath) {
-				val pathStrictData = data["path_strict"] as Boolean? ?: true
-				if(pathStrictData) {
-					if(key != path.parent) return false
-				} else {
-					if(!key.matchesPath(path.parent)) return false
-				}
+		fun fastMatches(path:ParadoxPath):Boolean{
+			//判断文件名是否匹配
+			val fileNameData = data["file_name"]
+			when{
+				fileNameData is String -> if(fileNameData != path.fileName) return false
+				fileNameData is List<*> -> if(!fileNameData.contains(path.fileName)) return false
 			}
-			val fileExtensionsData = data["file_extensions"] as List<String>?
-			if(fileExtensionsData != null && !fileExtensionsData.contains(path.fileExtension)) return false
-			val fileExtensionData = data["file_extension"] as String?
-			if(fileExtensionsData != null && fileExtensionData != path.fileExtension) return false
-			val fileNameData = data["file_name"] as String?
-			if(fileNameData != null && fileNameData != path.fileName) return false
-			val fileNamesData = data["file_names"] as List<String>?
-			if(fileNamesData != null && !fileNamesData.contains(path.fileName)) return false
+			//判断文件扩展名是否匹配
+			val fileExtensionData = data["file_extension"]
+			when{
+				fileExtensionData is String -> if(fileExtensionData != path.fileExtension) return false
+				fileExtensionData is List<*> -> if(!fileExtensionData.contains(path.fileExtension)) return false
+			}
+			return true
+		}
+		
+		fun matches(path:ParadoxPath):Boolean{
+			//判断路径是否匹配
+			val pathData = data["path"] as String? ?: return false
+			val pathStrictData = data["path_strict"] as Boolean? ?: true
+			if(pathStrictData) {
+				if(pathData != path.parent) return false
+			} else {
+				if(!pathData.matchesPath(path.parent)) return false
+			}
+			//判断文件名是否匹配
+			val fileNameData = data["file_name"]
+			when{
+				fileNameData is String -> if(fileNameData != path.fileName) return false
+				fileNameData is List<*> -> if(!fileNameData.contains(path.fileName)) return false
+			}
+			//判断文件扩展名是否匹配
+			val fileExtensionData = data["file_extension"]
+			when{
+				fileExtensionData is String -> if(fileExtensionData != path.fileExtension) return false
+				fileExtensionData is List<*> -> if(!fileExtensionData.contains(path.fileExtension)) return false
+			}
 			return true
 		}
 	}
@@ -45,9 +65,6 @@ class ParadoxRuleGroup(
 			val value = element.propertyValue?.value?:return false
 			val isValueTypeMatched = value.checkType(valueTypeData)
 			if(!isValueTypeMatched) return false
-			//判断文件扩展名是否匹配
-			val fileExtensionData = data["file_extension"] as String? ?: "txt"
-			if(fileExtensionData != path.fileExtension) return false
 			//判断路径是否匹配
 			val pathData = data["path"] as String? ?: return false
 			val pathStrictData = data["path_strict"] as Boolean? ?: true
@@ -57,9 +74,16 @@ class ParadoxRuleGroup(
 				if(!pathData.matchesPath(path.parent)) return false
 			}
 			//判断文件名是否匹配
-			val fileNameData = data["file_name"] as String?
-			if(fileNameData != null) {
-				if(fileNameData != path.fileName) return false
+			val fileNameData = data["file_name"]
+			when{
+				fileNameData is String -> if(fileNameData != path.fileName) return false
+				fileNameData is List<*> -> if(!fileNameData.contains(path.fileName)) return false
+			}
+			//判断文件扩展名是否匹配
+			val fileExtensionData = data["file_extension"]
+			when{
+				fileExtensionData is String -> if(fileExtensionData != path.fileExtension) return false
+				fileExtensionData is List<*> -> if(!fileExtensionData.contains(path.fileExtension)) return false
 			}
 			//处理是否需要跳过rootKey
 			val skipRootKeyData = data["skip_root_key"] as String?
@@ -92,11 +116,11 @@ class ParadoxRuleGroup(
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when{
 							//TODO always=yes
-							v == true || v == "any" -> {
+							v == true -> {
 								val p = prop.propertyValue?.value
 								return p != null && !p.isNullLike()
 							}
-							v == false || v == "none" -> {
+							v == false-> {
 								val p = prop.propertyValue?.value
 								return p == null || p.isNullLike()
 							}
@@ -113,9 +137,9 @@ class ParadoxRuleGroup(
 			val subtypesData = getSubtypesData(data,element,elementName)
 			val name = getName(data, element)
 			val type = getType(key)
+			val subtypes = subtypesData.entries.map { (k, _)-> getType(k) }
 			//val type = getType(data,key)
 			//val subtypes = subtypesData.entries.map { (k,v)-> getType(v,k) }
-			val subtypes = subtypesData.entries.map { (k, _)-> getType(k) }
 			val localisation = getLocalisation(data,element, name).apply {
 				for((_, v) in subtypesData) addAll(getLocalisation(v,element,name))
 			}
@@ -154,12 +178,19 @@ class ParadoxRuleGroup(
 						val (key,optional) = k.toConditionalKey()
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when{
-							//TODO always=yes
-							v == true || v == "any" -> {
+							v == true -> {
+								val p = prop.propertyValue?.value
+								return p is ParadoxScriptBoolean && p.textMatches("yes")
+							}
+							v == false->{
+								val p = prop.propertyValue?.value
+								return p is ParadoxScriptBoolean && p.textMatches("no")
+							}
+							v == "any" -> {
 								val p = prop.propertyValue?.value
 								return p != null && !p.isNullLike()
 							}
-							v == false || v == "none" -> {
+							v == "none" -> {
 								val p = prop.propertyValue?.value
 								return p == null || p.isNullLike()
 							}
