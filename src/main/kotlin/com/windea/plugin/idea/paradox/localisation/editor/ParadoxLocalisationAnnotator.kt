@@ -67,40 +67,40 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//验证commandScope是否存在且合法，不验证event_target
 		//验证commandField是否合法（预定义，scopeVariable，scriptedLoc）
 		//检查出错误时不再继续检查
-		val commandIdentifiers = element.commandIdentifierList
-		for((index, commandIdentifier) in commandIdentifiers.withIndex()) {
-			if(commandIdentifier is ParadoxLocalisationCommandScope) {
-				val name = commandIdentifier.name
-				val paradoxCommandScope = commandIdentifier.paradoxCommandScope
-				if(index == 0) {
-					//primaryCommandScope, secondaryCommandScope, event_target
-					//if(paradoxCommandScope == null) {
-					//	val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
-					//	holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-					//	break
-					//}
-				} else {
-					//secondaryCommandScope
-					if(paradoxCommandScope == null) {
-						//val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
-						//holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-						//break
-					}else if(!paradoxCommandScope.isSecondary) {
-						val message = message("paradox.localisation.annotator.incorrectCommandScope.secondary", name)
-						holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-						break
-					}
-				}
-			} else if(commandIdentifier is ParadoxLocalisationCommandField) {
-				//commandField, scopeVariable, scriptedLoc
-				//val paradoxCommandField = commandIdentifier.paradoxCommandField
-				//if(paradoxCommandField == null){
-				//	val message = message("paradox.localisation.annotator.unsupportedCommandField", name)
-				//	holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
-				//	break
-				//}
-			}
-		}
+		//val commandIdentifiers = element.commandIdentifierList
+		//for((index, commandIdentifier) in commandIdentifiers.withIndex()) {
+		//	if(commandIdentifier is ParadoxLocalisationCommandScope) {
+		//		val name = commandIdentifier.name
+		//		val paradoxCommandScope = commandIdentifier.paradoxCommandScope
+		//		if(index == 0) {
+		//			//primaryCommandScope, secondaryCommandScope, event_target
+		//			if(paradoxCommandScope == null) {
+		//				val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
+		//				holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+		//				break
+		//			}
+		//		} else {
+		//			//secondaryCommandScope, event_target
+		//			if(paradoxCommandScope == null) {
+		//				val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
+		//				holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+		//				break
+		//			}else if(!paradoxCommandScope.isSecondary) {
+		//				val message = message("paradox.localisation.annotator.incorrectCommandScope.secondary", name)
+		//				holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+		//				break
+		//			}
+		//		}
+		//	} else if(commandIdentifier is ParadoxLocalisationCommandField) {
+		//		//commandField, scopeVariable, scriptedLoc
+		//		val paradoxCommandField = commandIdentifier.paradoxCommandField
+		//		if(paradoxCommandField == null){
+		//			val message = message("paradox.localisation.annotator.unsupportedCommandField", name)
+		//			holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
+		//			break
+		//		}
+		//	}
+		//}
 	}
 	
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
