@@ -27,7 +27,7 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		//这里使用scriptProperty.paradoxDefinitionInfo.name而非scriptProperty.name
 		val definitionInfo = psi.paradoxDefinitionInfoNoCheck
-		return ParadoxScriptPropertyStubImpl(parentStub, definitionInfo?.name ?: "@",definitionInfo?.type?: "")
+		return ParadoxScriptPropertyStubImpl(parentStub, definitionInfo?.name ?: "@", definitionInfo?.type ?: "")
 	}
 	
 	//override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
@@ -42,12 +42,13 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-		return ParadoxScriptPropertyStubImpl(parentStub, dataStream.readNameString()!!,dataStream.readNameString()!!)
+		return ParadoxScriptPropertyStubImpl(parentStub, dataStream.readNameString()!!, dataStream.readNameString()!!)
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
 		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
-		if(stub.type == "scripted_loc") sink.occurrence(ParadoxScriptLocalisationNameIndex.key,stub.name)
+		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
+		if(stub.type == "scripted_loc") sink.occurrence(ParadoxScriptLocalisationNameIndex.key, stub.name)
 	}
 	
 	//companion object {
