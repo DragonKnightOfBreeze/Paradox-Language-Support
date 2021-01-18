@@ -46,21 +46,25 @@ object ParadoxRichTextRenderer {
 	
 	private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, buffer: StringBuilder) {
 		val reference = element.reference
+		val rgbText = element.paradoxColor?.colorText
 		if(reference != null) {
 			val resolve = reference.resolve() as? ParadoxLocalisationProperty
 			if(resolve != null) {
 				val propertyValue = resolve.propertyValue
 				if(propertyValue != null) {
-					val rgbText = element.paradoxColor?.colorText
-					if(rgbText != null) buffer.append("<span style='color: $rgbText;'>")
+					if(rgbText != null) buffer.append("<span style='color: ").append(rgbText).append(";'>")
 					renderTo(propertyValue, buffer)
 					if(rgbText != null) buffer.append("</span>")
 					return
 				}
 			}
 		}
-		//如果解析引用失败，则直接使用原始文本
-		buffer.append("<code>").append(element.text).append("</code>")
+		//如果解析引用失败，则直接使用原始文本，如果有颜色码，则使用该颜色渲染，保留颜色码
+		if(rgbText !=null) {
+			buffer.append("<code style='color: ").append(rgbText).append(";'>").append(element.text).append("</code>")
+		}else{
+			buffer.append("<code>").append(element.text).append("</code>")
+		}
 	}
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, buffer: StringBuilder) {
@@ -89,7 +93,7 @@ object ParadoxRichTextRenderer {
 	private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, buffer: StringBuilder) {
 		//如果解析引用失败，则清除非法的标记，直接渲染其中的富文本
 		val rgbText = element.paradoxColor?.colorText
-		if(rgbText != null) buffer.append("<span style='color: $rgbText;'>")
+		if(rgbText != null) buffer.append("<span style='color: ").append(rgbText).append(";'>")
 		for(v in element.richTextList) {
 			renderTo(v, buffer)
 		}
