@@ -16,7 +16,7 @@ public interface ParadoxLocalisationCommandField extends ParadoxLocalisationComm
   @Nullable
   PsiElement getCommandFieldId();
 
-  @Nullable
+  @NotNull
   String getName();
 
   @NotNull

@@ -42,7 +42,7 @@ public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationName
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }

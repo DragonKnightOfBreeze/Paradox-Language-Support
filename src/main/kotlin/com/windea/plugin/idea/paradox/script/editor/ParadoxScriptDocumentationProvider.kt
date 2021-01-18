@@ -99,10 +99,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			val docText = getDocTextFromPreviousComment(element)
-			if(docText.isNotEmpty()) {
-				content {
-					append(docText)
+			if(state.renderLineCommentText) {
+				val docText = getDocTextFromPreviousComment(element)
+				if(docText.isNotEmpty()) {
+					content {
+						append(docText)
+					}
 				}
 			}
 		}

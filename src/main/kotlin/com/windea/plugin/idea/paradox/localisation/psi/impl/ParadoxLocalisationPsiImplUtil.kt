@@ -98,7 +98,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationPropertyReference): String {
-		return element.propertyReferenceId?.text.orEmpty()
+		return element.propertyReferenceId?.text?.trim().orEmpty()
 	}
 	
 	@JvmStatic
@@ -241,7 +241,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationCommandScope
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationCommandScope): String {
-		return element.text
+		return element.text.trim()
 	}
 	
 	@JvmStatic
@@ -274,8 +274,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	//region ParadoxLocalisationCommandField
 	@JvmStatic
-	fun getName(element: ParadoxLocalisationCommandField): String? {
-		return element.commandFieldId?.text
+	fun getName(element: ParadoxLocalisationCommandField): String {
+		return element.commandFieldId?.text?.trim().orEmpty()
 	}
 	
 	@JvmStatic

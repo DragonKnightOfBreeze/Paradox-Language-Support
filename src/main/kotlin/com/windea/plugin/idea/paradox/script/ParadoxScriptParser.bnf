@@ -36,7 +36,7 @@
 	  NUMBER_TOKEN='regexp:0|[+-]?[1-9][0-9]*|[+-]?[0-9]+\.[0-9]+'
 	  STRING_TOKEN='regexp:[^@\s{}="][^\s{}="]*'
 	  QUOTED_STRING_TOKEN='regexp:"([^"\r\n\\]|\\.)*?"'
-	  COLOR_TOKEN="regexp:(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[0-9. \t]*}"
+	  COLOR_TOKEN="regexp:(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}"
       CODE_TEXT_TOKEN="regexp:[^\r\n\]}]+"
 	]
 }
@@ -57,7 +57,7 @@ root_block ::= root_block_item * {
 private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property | value
 
 variable ::= variable_name variable_separator variable_value {
-  pin=1
+  pin(".*")=1
   elementTypeFactory="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptStubElementTypes.getVariableType"
   extends="com.windea.plugin.idea.paradox.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptNamedElement"
@@ -70,7 +70,7 @@ private variable_separator ::= "="
 variable_value ::= boolean | number | string
 
 property ::= property_key property_separator property_value {
-  pin=1
+  pin(".*")=1
   elementTypeFactory="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptStubElementTypes.getPropertyType"
   extends="com.windea.plugin.idea.paradox.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptNamedElement"
@@ -115,12 +115,12 @@ color ::= COLOR_TOKEN {
   methods=[getValue getColor setColor]
 }
 code ::= CODE_START code_text CODE_END{
-  pin=1
+  pin(".*")=1
   extends=string_value
 }
 private code_text ::= CODE_TEXT_TOKEN
 block ::= "{" block_item * "}" {
-  pin=1
+  pin(".*")=1
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[isEmpty isNotEmpty isObject isArray getComponents findProperty findValue]

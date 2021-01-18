@@ -53,6 +53,7 @@
 * [X] 提高脚本文件语法兼容性
 * [X] 本地化文件使用正确的`localisationColor`
 * [X] 添加`com.windea.plugin.idea.paradox.script.psi.ParadoxDefinitionTypeIndex`
+* [X] 提高脚本文件和本地化文件的语法兼容性
 * [ ] 为规则文件`types.yml`添加规则`name_prefix`和`name_suffix`（仅限`common`目录）
 * [ ] 为规则文件`types.yml`添加规则`icon`
 * [ ] 解析规则文件`types.yml`的规则`type_from_file`
