@@ -25,7 +25,6 @@ object ParadoxIconUrlResolver {
 	private val bodyHandler = BodyHandlers.ofLines()
 	private val urlCache = ConcurrentHashMap<String, String>()
 	private val executor = Executors.newCachedThreadPool()
-	private val doResolveCache = CopyOnWriteArraySet<String>()
 	
 	private const val paradoxwikisUrl = "https://paradox.paradoxwikis.com"
 	private const val huijiwikiUrl = "https://qunxing.huijiwiki.com"
@@ -57,10 +56,11 @@ object ParadoxIconUrlResolver {
 	private fun resolveUrlAsync(name: String){
 		executor.execute {
 			try {
+				urlCache[name] = ""
 				val url = doResolveUrl(name)
 				urlCache[name] = url
 			}catch(e: Exception){
-				urlCache[name] = ""
+				//忽略
 			}
 		}
 	}
