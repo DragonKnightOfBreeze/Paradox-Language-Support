@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.core.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
 import com.windea.plugin.idea.paradox.script.psi.*
@@ -130,7 +131,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
-		generate(element.project)
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }

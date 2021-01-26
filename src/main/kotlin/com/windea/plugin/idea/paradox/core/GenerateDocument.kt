@@ -1,4 +1,4 @@
-package com.windea.plugin.idea.paradox.script.editor
+package com.windea.plugin.idea.paradox.core
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
@@ -7,12 +7,13 @@ import java.io.*
 
 //用于生成markdown文档
 
+@Volatile
 private var shouldGenerate = true
 
 fun generate(project: Project) {
 	if(shouldGenerate) {
 		shouldGenerate = false
-		runWriteActionAndWait {
+		runUndoTransparentWriteAction {
 			val root = "D:\\Documents\\Projects\\Dream\\Kareeze-Stories\\stellaris-mod\\documents\\generated"
 			val documentNameTypeMap = mapOf(
 				"权利制度" to "authority",
