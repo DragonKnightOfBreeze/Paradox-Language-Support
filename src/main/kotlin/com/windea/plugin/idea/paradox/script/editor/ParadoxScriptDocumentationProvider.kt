@@ -4,7 +4,6 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.*
-import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
 import com.windea.plugin.idea.paradox.script.psi.*
@@ -159,16 +158,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			if(settings.renderDefinitionText) {
 				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
-					val richTextMap = mutableMapOf<String, String>()
+					val richTexts = mutableListOf<Pair<String, String>>()
 					for((name, key) in localisation) {
 						val e = findLocalisation(key, element.paradoxLocale, element.project, hasDefault = true)
 						val richText = e?.renderText() ?: continue
 						val sectionName = name.value.toCapitalizedWords()
-						richTextMap[sectionName] = richText
+						richTexts.add(sectionName to richText)
 					}
-					if(richTextMap.isNotEmpty()) {
+					if(richTexts.isNotEmpty()) {
 						sections {
-							for((title, richText) in richTextMap) {
+							for((title, richText) in richTexts) {
 								section(title, richText)
 							}
 						}
