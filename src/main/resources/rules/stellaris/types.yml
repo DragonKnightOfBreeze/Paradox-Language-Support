@@ -441,7 +441,7 @@ types:
   swapped_civic:
     path: "common/governments/civics"
     file_extension: "txt"
-    skip_root_key: any
+    skip_root_key: true
     key_filter: "swap_type"
     name_key: "name"
     localisation:
@@ -616,7 +616,7 @@ types:
   policy_option:
     path: "common/policies"
     file_extension: "txt"
-    skip_root_key: any
+    skip_root_key: true
     key_filter: "option"
     name_key: "name"
     localisation:
@@ -1069,7 +1069,7 @@ types:
   tradition_swap_category:
     path: "common/tradition_categories"
     file_extension: "txt"
-    skip_root_key: any
+    skip_root_key: true
     key_filter: "tradition_swap"
     name_key: "name"
     localisation:
@@ -1086,7 +1086,7 @@ types:
   tradition_swap:
     path: "common/traditions"
     file_extension: "txt"
-    skip_root_key: any
+    skip_root_key: true
     key_filter: "tradition_swap"
     name_key: "name"
     localisation:

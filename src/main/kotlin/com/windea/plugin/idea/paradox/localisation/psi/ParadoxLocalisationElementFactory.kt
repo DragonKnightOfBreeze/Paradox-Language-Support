@@ -53,13 +53,13 @@ object ParadoxLocalisationElementFactory {
 	}
 	
 	@JvmStatic
-	fun createCommandScope(project: Project, name: String): @Nullable ParadoxLocalisationCommandScope {
+	fun createCommandScope(project: Project, name: String): ParadoxLocalisationCommandScope {
 		val command = createPropertyValue(project, "[$name.GetName]").richTextList.first() as ParadoxLocalisationCommand
 		return PsiTreeUtil.getChildOfType(command,ParadoxLocalisationCommandScope::class.java)!!
 	}
 	
 	@JvmStatic
-	fun createCommandField(project: Project, name: String): @Nullable ParadoxLocalisationCommandField {
+	fun createCommandField(project: Project, name: String): ParadoxLocalisationCommandField {
 		val command = createPropertyValue(project, "[$name]").richTextList.first() as ParadoxLocalisationCommand
 		return PsiTreeUtil.getChildOfType(command, ParadoxLocalisationCommandField::class.java)!!
 	}

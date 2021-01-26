@@ -8,9 +8,10 @@ fun main() {
 		"起源" to "origin",
 		"政府" to "government"
 	)
-	generateDocument(root,docNameTypeMap)
+	generateDocuments(root,docNameTypeMap)
 }
 
-fun generateDocument(root: String, docNameTypeMap: Map<String, String>) {
-	TODO()
+fun generateDocuments(root: String, docNameTypeMap: Map<String, String>) {
+	
 }
+

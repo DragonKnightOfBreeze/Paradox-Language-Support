@@ -93,7 +93,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getUnquotedValue(element:ParadoxScriptProperty):String?{
-		return element.propertyValue?.text
+		return element.propertyValue?.value?.text
 	}
 	
 	@JvmStatic

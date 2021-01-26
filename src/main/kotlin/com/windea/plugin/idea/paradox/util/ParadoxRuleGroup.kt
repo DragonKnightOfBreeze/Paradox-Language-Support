@@ -18,10 +18,12 @@ class ParadoxRuleGroup(
 		
 		fun matches(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, scriptPath: ParadoxPath): Boolean {
 			//valueType必须匹配，默认是object
-			val valueTypeData = data["value_type"] as String? ?: "object"
-			val value = element.propertyValue?.value ?: return false
-			val isValueTypeMatched = value.checkType(valueTypeData)
-			if(!isValueTypeMatched) return false
+			val valueTypeData = data["value_type"] ?: "object"
+			if(valueTypeData is String) {
+				val value = element.propertyValue?.value ?: return false
+				val isValueTypeMatched = value.checkType(valueTypeData)
+				if(!isValueTypeMatched) return false
+			}
 			//判断路径是否匹配
 			val pathData = data["path"] as String? ?: return false
 			val pathStrictData = data["path_strict"] as Boolean? ?: true
@@ -32,27 +34,30 @@ class ParadoxRuleGroup(
 			}
 			//判断文件名是否匹配
 			val fileNameData = data["file_name"]
-			when {
-				fileNameData is String -> if(fileNameData != path.fileName) return false
-				fileNameData is List<*> -> if(!fileNameData.contains(path.fileName)) return false
+			if(fileNameData is String) {
+				if(fileNameData != path.fileName) return false
+			} else if(fileNameData is List<*>) {
+				if(!fileNameData.contains(path.fileName)) return false
 			}
 			//判断文件扩展名是否匹配
 			val fileExtensionData = data["file_extension"]
-			when {
-				fileExtensionData is String -> if(fileExtensionData != path.fileExtension) return false
-				fileExtensionData is List<*> -> if(!fileExtensionData.contains(path.fileExtension)) return false
+			if(fileExtensionData is String) {
+				if(fileExtensionData != path.fileExtension) return false
+			} else if(fileExtensionData is List<*>) {
+				if(!fileExtensionData.contains(path.fileExtension)) return false
 			}
 			//处理是否需要跳过rootKey
-			val skipRootKeyData = data["skip_root_key"] as String?
-			if(skipRootKeyData != null) {
-				//skip_root_key=any表示跳过任意的rootKey
-				if(scriptPath.length != 2 || skipRootKeyData != "any" && skipRootKeyData != scriptPath.root) return false
+			val skipRootKeyData = data["skip_root_key"]
+			if(skipRootKeyData is String) {
+				if(scriptPath.length != 2 || skipRootKeyData != scriptPath.root) return false
+			} else if(skipRootKeyData is Boolean) {
+				if(scriptPath.length != 2 || !skipRootKeyData) return false
 			} else {
 				if(scriptPath.length != 1) return false
 			}
 			//过滤key
-			val keyFilterData = data["key_filter"] as String?
-			if(keyFilterData != null) {
+			val keyFilterData = data["key_filter"]
+			if(keyFilterData is String) {
 				val keyConditions = keyFilterData.split(',').map { it.trim() }
 				for(keyCondition in keyConditions) {
 					if(keyCondition.isNotEmpty() && keyCondition[0] == '!') {
@@ -63,24 +68,26 @@ class ParadoxRuleGroup(
 				}
 			}
 			//预测表达式
-			val predicateData = data["predicate"] as Map<String, Any>?
-			if(predicateData != null) {
-				val propValue = element.propertyValue
-				if(propValue is ParadoxScriptBlock) {
-					val propMap = propValue.propertyList.associateBy { it.name }
+			val predicateData = data["predicate"]
+			if(predicateData is Map<*, *>) {
+				val predicateValue = element.propertyValue?.value
+				if(predicateValue is ParadoxScriptBlock) {
+					val propMap = predicateValue.propertyList.associateBy { it.name }
 					for((k, v) in predicateData) {
-						val (key, optional) = k.toConditionalKey()
+						val (key, optional) = k.toString().toConditionalKey()
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when {
 							v == true || v == "any" -> {
 								val p = prop.propertyValue?.value
-								return p != null && !p.isNullLike()
+								val isNullLike = p == null || p.isNullLike()
+								if(isNullLike) return false
 							}
 							v == false || v == "none" -> {
 								val p = prop.propertyValue?.value
-								return p == null || p.isNullLike()
+								val isNullLike = p == null || p.isNullLike()
+								if(!isNullLike) return false
 							}
-							//TODO 
+							//TODO 判断类型、定义类型、数字范围等
 							else -> continue
 						}
 					}
@@ -113,8 +120,8 @@ class ParadoxRuleGroup(
 		
 		private fun matchesSubtypesData(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): Boolean {
 			//过滤key
-			val keyFilterData = data["key_filter"] as String?
-			if(keyFilterData != null) {
+			val keyFilterData = data["key_filter"]
+			if(keyFilterData is String) {
 				val keyConditions = keyFilterData.split(',')
 				for(keyCondition in keyConditions) {
 					if(keyCondition.isNotEmpty() && keyCondition[0] == '!') {
@@ -125,30 +132,24 @@ class ParadoxRuleGroup(
 				}
 			}
 			//预测表达式
-			val predicateData = data["predicate"] as Map<String, Any>?
-			if(predicateData != null) {
-				val value = element.propertyValue?.value
-				if(value is ParadoxScriptBlock) {
-					val propMap = value.propertyList.associateBy { it.name }
+			val predicateData = data["predicate"]
+			if(predicateData is Map<*, *>) {
+				val predicateValue = element.propertyValue?.value
+				if(predicateValue is ParadoxScriptBlock) {
+					val propMap = predicateValue.propertyList.associateBy { it.name }
 					for((k, v) in predicateData) {
-						val (key, optional) = k.toConditionalKey()
+						val (key, optional) = k.toString().toConditionalKey()
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when {
-							v == true -> {
+							v == true || v == "any" -> {
 								val p = prop.propertyValue?.value
-								return p is ParadoxScriptBoolean && p.textMatches("yes")
+								val isNullLike = p == null || p.isNullLike()
+								if(isNullLike) return false
 							}
-							v == false -> {
+							v == false || v == "none" -> {
 								val p = prop.propertyValue?.value
-								return p is ParadoxScriptBoolean && p.textMatches("no")
-							}
-							v == "any" -> {
-								val p = prop.propertyValue?.value
-								return p != null && !p.isNullLike()
-							}
-							v == "none" -> {
-								val p = prop.propertyValue?.value
-								return p == null || p.isNullLike()
+								val isNullLike = p == null || p.isNullLike()
+								if(!isNullLike) return false
 							}
 							//TODO 判断类型、定义类型、数字范围等
 							else -> continue
@@ -166,10 +167,14 @@ class ParadoxRuleGroup(
 				val value = element.propertyValue?.value
 				if(value is ParadoxScriptStringValue) return value.value
 			}
-			val nameKeyData = data["name_key"] as String? ?: return element.name
-			if(nameKeyData == "none") return anonymousName //完全匿名 
-			val nameProperty = element.findProperty(nameKeyData) ?: return anonymousName
-			return nameProperty.value ?: anonymousName
+			//是否指定了name_key，或者完全匿名
+			val nameKeyData = data["name_key"]
+			if(nameKeyData is String) {
+				return element.findProperty(nameKeyData)?.value ?: return anonymousName
+			} else if(nameKeyData is Boolean) {
+				if(!nameKeyData) return anonymousName //完全匿名 
+			}
+			return element.name
 		}
 		
 		//暂时不注明别名
