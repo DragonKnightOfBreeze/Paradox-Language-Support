@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.script.highlighter.*
 
 @Suppress("DEPRECATION")
 object ParadoxLocalisationAttributesKeys {
@@ -24,6 +25,7 @@ object ParadoxLocalisationAttributesKeys {
 	private val _validEscapeName = message("paradox.localisation.externalName.validEscape")
 	private val _invalidEscapeName = message("paradox.localisation.externalName.invalidEscape")
 	private val _badCharacterName = message("paradox.localisation.externalName.badCharacter")
+	private val _localisationName = message("paradox.localisation.externalName.localisation")
 	
 	@JvmField val SEPARATOR_KEY = createTextAttributesKey(_separatorName, OPERATION_SIGN)
 	@JvmField val NUMBER_KEY = createTextAttributesKey(_numberName, NUMBER)
@@ -42,6 +44,7 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val VALID_ESCAPE_KEY = createTextAttributesKey(_validEscapeName, VALID_STRING_ESCAPE)
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(_invalidEscapeName, INVALID_STRING_ESCAPE)
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(_badCharacterName, BAD_CHARACTER)
+	@JvmField val LOCALISATION_KEY = createTextAttributesKey(_localisationName, PROPERTY_KEY_KEY)
 
 	val COLOR_KEYS by lazy {
 		paradoxColorMap.mapValues { (_,color)->

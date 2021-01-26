@@ -1,20 +1,18 @@
 package com.windea.plugin.idea.paradox.script.editor
 
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.windea.plugin.idea.paradox.*
 import java.io.*
-import kotlin.concurrent.*
 
 //用于生成markdown文档
 
-@Volatile
 private var shouldGenerate = true
 
 fun generate(project: Project) {
-	thread {
-		if(shouldGenerate) {
-			shouldGenerate = false
+	if(shouldGenerate) {
+		shouldGenerate = false
+		runWriteActionAndWait {
 			val root = "D:\\Documents\\Projects\\Dream\\Kareeze-Stories\\stellaris-mod\\documents\\generated"
 			val documentNameTypeMap = mapOf(
 				"权利制度" to "authority",
@@ -24,7 +22,7 @@ fun generate(project: Project) {
 			)
 			generateDocuments(root, documentNameTypeMap, project)
 		}
-	}.start()
+	}
 }
 
 private fun generateDocuments(root: String, documentNameTypeMap: Map<String, String>, project: Project) {
