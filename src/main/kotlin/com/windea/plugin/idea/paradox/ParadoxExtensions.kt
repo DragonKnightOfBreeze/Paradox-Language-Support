@@ -16,11 +16,11 @@ import org.jetbrains.annotations.*
 //Extensions
 
 fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
-	return append("<a href='psi_element://").append(prefix).append(target).append("'>").append(target).append("</a>")
+	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
 }
 
 fun StringBuilder.appendIconTag(url: String, size: Int = iconSize): StringBuilder {
-	return append("<img src='").append(url).append("' width='").append(size).append("' height='").append(size).append("'/>")
+	return append("<img src=\"").append(url).append("\" width=\"").append(size).append("\" height=\"").append(size).append("\"/>")
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/

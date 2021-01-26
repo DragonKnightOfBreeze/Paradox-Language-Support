@@ -34,7 +34,7 @@ object ParadoxLocalisationTextRenderer {
 	private fun renderEscapeTo(element: ParadoxLocalisationEscape, buffer: StringBuilder) {
 		val elementText = element.text
 		when {
-			elementText == "\\n" -> buffer.append("<br>")
+			elementText == "\\n" -> buffer.append("<br>\n")
 			elementText == "\\t" -> buffer.append("&emsp;")
 			elementText.length > 1 -> buffer.append(elementText[1])
 		}
@@ -46,7 +46,7 @@ object ParadoxLocalisationTextRenderer {
 		if(reference != null) {
 			val property = reference.resolve() as? ParadoxLocalisationProperty
 			if(property != null) {
-				if(rgbText != null) buffer.append("<span style='color: ").append(rgbText).append(";'>")
+				if(rgbText != null) buffer.append("<span style=\"color: ").append(rgbText).append("\">")
 				renderTo(property, buffer)
 				if(rgbText != null) buffer.append("</span>")
 				return
@@ -54,7 +54,7 @@ object ParadoxLocalisationTextRenderer {
 		}
 		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，保留颜色码
 		if(rgbText != null) {
-			buffer.append("<code style='color: ").append(rgbText).append(";'>").append(element.text).append("</code>")
+			buffer.append("<code style=\"color: ").append(rgbText).append("\">").append(element.text).append("</code>")
 		} else {
 			buffer.append("<code>").append(element.text).append("</code>")
 		}
@@ -86,7 +86,7 @@ object ParadoxLocalisationTextRenderer {
 	private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, buffer: StringBuilder) {
 		//如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
 		val rgbText = element.paradoxColor?.colorText
-		if(rgbText != null) buffer.append("<span style='color: ").append(rgbText).append(";'>")
+		if(rgbText != null) buffer.append("<span style=\"color: ").append(rgbText).append("\">")
 		for(v in element.richTextList) {
 			renderTo(v, buffer)
 		}
