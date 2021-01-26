@@ -9,8 +9,6 @@ class ParadoxScriptStringPropertyPsiReference(
 	element: ParadoxScriptString,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxScriptString>(element, rangeInElement), PsiPolyVariantReference {
-	private val project = element.project
-	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setValue(newElementName)
 		//TODO 重命名关联的definitionLocalisation
@@ -18,6 +16,7 @@ class ParadoxScriptStringPropertyPsiReference(
 	
 	override fun resolve(): PsiElement? {
 		val name = element.text.unquote()
+		val project = element.project
 		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
 		return findDefinition(name, null, project)
 		       ?: findLocalisation(name, inferredParadoxLocale, project, hasDefault = true)
@@ -25,6 +24,7 @@ class ParadoxScriptStringPropertyPsiReference(
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val name = element.text.unquote()
+		val project = element.project
 		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
 		return findDefinitions(name, null, project)
 			.ifEmpty { findLocalisations(name, inferredParadoxLocale, project, hasDefault = true) }

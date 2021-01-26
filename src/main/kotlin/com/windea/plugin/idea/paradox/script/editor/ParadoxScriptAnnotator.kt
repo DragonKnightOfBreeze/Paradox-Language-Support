@@ -13,8 +13,6 @@ import com.windea.plugin.idea.paradox.script.highlighter.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
 class ParadoxScriptAnnotator : Annotator, DumbAware {
-	private val state = ParadoxSettingsState.getInstance()
-	
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxScriptProperty -> annotateProperty(element, holder)

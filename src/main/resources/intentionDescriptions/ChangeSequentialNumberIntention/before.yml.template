@@ -1,2 +1,2 @@
 l_english:
-  KEY_WITH_SEQUENTIAL_NUMBER:0 "Sequential number: %O%"
+  KEY:0 "Sequential number: %<spot>O</spot>%"

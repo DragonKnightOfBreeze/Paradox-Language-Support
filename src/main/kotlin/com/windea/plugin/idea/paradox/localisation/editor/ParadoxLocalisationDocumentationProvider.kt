@@ -12,8 +12,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		private val _textTitle = message("paradox.documentation.text")
 	}
 	
-	private val state = ParadoxSettingsState.getInstance()
-	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when {
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
@@ -126,7 +124,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation) <b>").append(name).append("</b>")
 			}
 			//之前的单行注释文本
-			if(state.renderLineCommentText) {
+			if(settings.renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -135,9 +133,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				}
 			}
 			//本地化文本
-			if(state.renderLocalisationText) {
-				val richText = element.propertyValue?.renderRichText()
-				if(richText != null) {
+			if(settings.renderLocalisationText) {
+				val richText = element.renderText()
+				if(richText.isNotEmpty()) {
 					sections {
 						section(_textTitle, richText)
 					}

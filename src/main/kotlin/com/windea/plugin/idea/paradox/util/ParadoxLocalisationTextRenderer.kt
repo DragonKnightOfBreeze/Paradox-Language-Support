@@ -4,34 +4,30 @@ import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
 /**
- * 富文本的渲染器。
- *
- * 基于类型和颜色渲染富文本。
+ * 本地化文本的渲染器。
  */
-object ParadoxRichTextRenderer {
-	fun render(element:ParadoxLocalisationPropertyValue):String{
-		val buffer = StringBuilder()
-		renderTo(element,buffer)
-		return buffer.toString()
+object ParadoxLocalisationTextRenderer {
+	fun render(element: ParadoxLocalisationProperty): String {
+		return buildString { renderTo(element, this) }
 	}
 	
-	fun renderTo(element: ParadoxLocalisationPropertyValue, buffer: StringBuilder) {
-		element.richTextList.forEach { renderTo(it, buffer) }
+	fun renderTo(element: ParadoxLocalisationProperty, buffer: StringBuilder) {
+		element.propertyValue?.richTextList?.forEach { renderTo(it, buffer) }
 	}
 	
 	private fun renderTo(element: ParadoxLocalisationRichText, buffer: StringBuilder) {
 		when(element) {
-			is ParadoxLocalisationString -> renderStringTo(element,buffer)
+			is ParadoxLocalisationString -> renderStringTo(element, buffer)
 			is ParadoxLocalisationEscape -> renderEscapeTo(element, buffer)
 			is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, buffer)
-			is ParadoxLocalisationIcon -> renderIconTo(element,buffer)
+			is ParadoxLocalisationIcon -> renderIconTo(element, buffer)
 			is ParadoxLocalisationSequentialNumber -> renderSequentialNumberTo(element, buffer)
-			is ParadoxLocalisationCommand -> renderCodeTo(element,buffer)
+			is ParadoxLocalisationCommand -> renderCodeTo(element, buffer)
 			is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, buffer)
 		}
 	}
 	
-	private fun renderStringTo(element:ParadoxLocalisationString,buffer: StringBuilder){
+	private fun renderStringTo(element: ParadoxLocalisationString, buffer: StringBuilder) {
 		buffer.append(element.text.escapeXml())
 	}
 	
@@ -48,21 +44,18 @@ object ParadoxRichTextRenderer {
 		val reference = element.reference
 		val rgbText = element.paradoxColor?.colorText
 		if(reference != null) {
-			val resolve = reference.resolve() as? ParadoxLocalisationProperty
-			if(resolve != null) {
-				val propertyValue = resolve.propertyValue
-				if(propertyValue != null) {
-					if(rgbText != null) buffer.append("<span style='color: ").append(rgbText).append(";'>")
-					renderTo(propertyValue, buffer)
-					if(rgbText != null) buffer.append("</span>")
-					return
-				}
+			val property = reference.resolve() as? ParadoxLocalisationProperty
+			if(property != null) {
+				if(rgbText != null) buffer.append("<span style='color: ").append(rgbText).append(";'>")
+				renderTo(property, buffer)
+				if(rgbText != null) buffer.append("</span>")
+				return
 			}
 		}
-		//如果解析引用失败，则直接使用原始文本，如果有颜色码，则使用该颜色渲染，保留颜色码
-		if(rgbText !=null) {
+		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，保留颜色码
+		if(rgbText != null) {
 			buffer.append("<code style='color: ").append(rgbText).append(";'>").append(element.text).append("</code>")
-		}else{
+		} else {
 			buffer.append("<code>").append(element.text).append("</code>")
 		}
 	}
@@ -81,7 +74,7 @@ object ParadoxRichTextRenderer {
 			buffer.append(placeholderText)
 			return
 		}
-		//如果解析引用失败，则直接使用原始文本
+		//如果处理文本失败，则直接使用原始文本
 		buffer.append("<code>").append(element.text).append("</code>")
 	}
 	
@@ -91,7 +84,7 @@ object ParadoxRichTextRenderer {
 	}
 	
 	private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, buffer: StringBuilder) {
-		//如果解析引用失败，则清除非法的标记，直接渲染其中的富文本
+		//如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
 		val rgbText = element.paradoxColor?.colorText
 		if(rgbText != null) buffer.append("<span style='color: ").append(rgbText).append(";'>")
 		for(v in element.richTextList) {

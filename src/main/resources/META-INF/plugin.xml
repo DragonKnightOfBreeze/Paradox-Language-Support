@@ -266,7 +266,19 @@
       <className>com.windea.plugin.idea.paradox.localisation.intentions.ChangeSequentialNumberIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
-
+    <intentionAction>
+      <className>com.windea.plugin.idea.paradox.localisation.intentions.CopyRawTextIntention</className>
+      <category>Paradox localisation</category>
+    </intentionAction>
+    <intentionAction>
+      <className>com.windea.plugin.idea.paradox.localisation.intentions.CopyPlainTextIntention</className>
+      <category>Paradox localisation</category>
+    </intentionAction>
+    <intentionAction>
+      <className>com.windea.plugin.idea.paradox.localisation.intentions.CopyRichTextIntention</className>
+      <category>Paradox localisation</category>
+    </intentionAction>
+    
     <localInspection
         language="Paradox Localisation"
         shortName="ParadoxLocalisationDuplicatePropertyKeys"

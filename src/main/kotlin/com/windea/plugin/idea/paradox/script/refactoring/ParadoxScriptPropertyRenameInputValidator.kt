@@ -5,19 +5,20 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
-import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 
 class ParadoxScriptPropertyRenameInputValidator : RenameInputValidator {
-	private val regex = "[^#@=\\s{}]+[^=\\s{}]*".toRegex()
-	private val pattern = or( psiElement(PROPERTY))
+	companion object {
+		private val regex = "[^#@=\\s{}]+[^=\\s{}]*".toRegex()
+		private val elementPattern = or(psiElement(PROPERTY))
+	}
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
 		return regex.matches(newName)
 	}
 
 	override fun getPattern(): ElementPattern<out PsiElement> {
-		return pattern
+		return elementPattern
 	}
 }
 

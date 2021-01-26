@@ -8,14 +8,10 @@ import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
-@Suppress("UnstableApiUsage")
 class ParadoxScriptVariablePsiReference(
 	element: ParadoxScriptVariableReference,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxScriptVariableReference>(element, rangeInElement), PsiPolyVariantReference, PsiCompletableReference {
-	private val project = element.project
-	private val file = element.containingFile
-	
+) : PsiReferenceBase<ParadoxScriptVariableReference>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		return element.setName(newElementName)
 	}
@@ -23,6 +19,8 @@ class ParadoxScriptVariablePsiReference(
 	override fun resolve(): ParadoxScriptVariable? {
 		//首先尝试从当前文件中查找引用，然后从全局范围中查找引用
 		val name = element.variableReferenceId.text
+		val project = element.project
+		val file = element.containingFile
 		return findScriptVariableInFile(name, file)
 		       ?: findScriptVariable(name, project)
 	}
@@ -30,6 +28,8 @@ class ParadoxScriptVariablePsiReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		//首先尝试从当前文件中查找引用，然后从全局范围中查找引用
 		val name = element.variableReferenceId.text
+		val project = element.project
+		val file = element.containingFile
 		return findScriptVariablesInFile(name,file)
 			.ifEmpty { findScriptVariables(name, project) }
 			.mapArray { PsiElementResolveResult(it) }
@@ -37,15 +37,10 @@ class ParadoxScriptVariablePsiReference(
 	
 	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
+		val project = element.project
+		val file = element.containingFile
 		//同时需要同时查找当前文件中的和全局的
 		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapArray {
-			LookupElementBuilder.create(it).withIcon(scriptVariableIcon).withTypeText(it.containingFile.name)
-		}
-	}
-	
-	override fun getCompletionVariants(): Collection<LookupElement> {
-		//同时需要同时查找当前文件中的和全局的
-		return (findScriptVariablesInFile(file) + findScriptVariables(project)).map {
 			LookupElementBuilder.create(it).withIcon(scriptVariableIcon).withTypeText(it.containingFile.name)
 		}
 	}

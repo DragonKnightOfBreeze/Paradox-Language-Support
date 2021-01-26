@@ -48,6 +48,7 @@ fun isPreviousComment(element: PsiElement): Boolean {
 	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == COMMENT
 }
 
+val settings get() = ParadoxSettingsState.getInstance()
 //Keys
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
@@ -253,8 +254,8 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 }
 
 
-fun ParadoxScriptValue.getType(): String?{
-	return when(this){
+fun ParadoxScriptValue.getType(): String? {
+	return when(this) {
 		is ParadoxScriptBlock -> when {
 			this.isEmpty -> "array | object"
 			this.isArray -> "array"
@@ -284,8 +285,8 @@ fun ParadoxScriptValue.checkType(type: String): Boolean {
 	}
 }
 
-fun ParadoxScriptValue.isNullLike():Boolean{
-	return when{
+fun ParadoxScriptValue.isNullLike(): Boolean {
+	return when {
 		this is ParadoxScriptBlock -> this.isEmpty || this.isAlwaysYes() //兼容always=yes
 		this is ParadoxScriptString -> this.textMatches("")
 		this is ParadoxScriptNumber -> this.text.toIntOrNull() == 0 //兼容0.0和0.00这样的情况
@@ -294,14 +295,12 @@ fun ParadoxScriptValue.isNullLike():Boolean{
 	}
 }
 
-fun ParadoxScriptBlock.isAlwaysYes():Boolean{
-	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" }?:false
+fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
+	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
 }
 //Find Extensions
 
 //使用stubIndex以提高性能
-private	val state = ParadoxSettingsState.getInstance()
-
 
 fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable? {
 	//在所在文件中递归查找（不一定定义在顶层）
@@ -321,7 +320,7 @@ fun findScriptVariablesInFile(file: PsiFile): List<ParadoxScriptVariable> {
 }
 
 fun findScriptVariable(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptVariable? {
-	return ParadoxScriptVariableNameIndex.getOne(name, project, scope, !state.preferOverridden)
+	return ParadoxScriptVariableNameIndex.getOne(name, project, scope, !settings.preferOverridden)
 }
 
 fun findScriptVariables(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptVariable> {
@@ -334,7 +333,7 @@ fun findScriptVariables(project: Project, scope: GlobalSearchScope = GlobalSearc
 
 
 fun findDefinition(name: String, type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
-	return ParadoxDefinitionNameIndex.getOne(name, type, project, scope, !state.preferOverridden)
+	return ParadoxDefinitionNameIndex.getOne(name, type, project, scope, !settings.preferOverridden)
 }
 
 fun findDefinitions(name: String, type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
@@ -347,7 +346,7 @@ fun findDefinitions(type: String? = null, project: Project, scope: GlobalSearchS
 
 
 fun findScriptLocalisation(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
-	return ParadoxScriptLocalisationNameIndex.getOne(name, project, scope, !state.preferOverridden)
+	return ParadoxScriptLocalisationNameIndex.getOne(name, project, scope, !settings.preferOverridden)
 }
 
 fun findScriptLocalisations(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
@@ -360,35 +359,59 @@ fun findScriptLocalisations(project: Project, scope: GlobalSearchScope = GlobalS
 
 
 fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = false): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !state.preferOverridden)
+	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !settings.preferOverridden)
 }
 
 fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = true): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, hasDefault)
 }
 
-fun findLocalisations(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project),hasDefault: Boolean = false): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(locale, project, scope,hasDefault)
+fun findLocalisations(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = false): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(locale, project, scope, hasDefault)
 }
 
-fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault:Boolean= false,keepOrder: Boolean = false): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, hasDefault,keepOrder)
+fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = false, keepOrder: Boolean = false): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, hasDefault, keepOrder)
 }
 
-//Util Extensions
+//Inline Extensions
 
-fun message(@PropertyKey(resourceBundle = paradoxBundleName) key: String, vararg params: Any): String {
+@Suppress("NOTHING_TO_INLINE")
+inline fun message(@PropertyKey(resourceBundle = paradoxBundleName) key: String, vararg params: Any): String {
 	return ParadoxBundle.getMessage(key, *params)
 }
 
-fun String.resolveIconUrl(defaultToUnknown: Boolean = true): String {
+@Suppress("NOTHING_TO_INLINE")
+inline fun String.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolve(this, defaultToUnknown)
 }
 
-fun ParadoxLocalisationPropertyValue.renderRichText(): String {
-	return ParadoxRichTextRenderer.render(this)
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxLocalisationProperty.renderText(): String {
+	return ParadoxLocalisationTextRenderer.render(this)
 }
 
-fun ParadoxLocalisationPropertyValue.renderRichTextTo(buffer: StringBuilder) {
-	ParadoxRichTextRenderer.renderTo(this, buffer)
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxLocalisationProperty.renderTextTo(buffer: StringBuilder) {
+	ParadoxLocalisationTextRenderer.renderTo(this, buffer)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxLocalisationProperty.extractText(): String {
+	return ParadoxLocalisationTextExtractor.extract(this)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
+	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxScriptFile.extractData(): List<Any> {
+	return ParadoxScriptDataExtractor.extract(this)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxLocalisationFile.extractData(): Map<String, String> {
+	return ParadoxLocalisationDataExtractor.extract(this)
 }

@@ -1,5 +1,6 @@
 package com.windea.plugin.idea.paradox
 
+import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.util.*
 
 //Caches 

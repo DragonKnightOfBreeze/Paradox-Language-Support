@@ -16,8 +16,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		private val _tagsTitle = message("paradox.documentation.tags")
 	}
 	
-	private val state = ParadoxSettingsState.getInstance()
-	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_ID) return getScriptedLocInfo(originalElement)
 		return when(element) {
@@ -99,7 +97,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			if(state.renderLineCommentText) {
+			if(settings.renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -121,7 +119,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			if(state.renderLineCommentText) {
+			if(settings.renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -149,7 +147,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//之前的单行注释文本
-			if(state.renderLineCommentText) {
+			if(settings.renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -158,13 +156,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//本地化文本
-			if(state.renderDefinitionText) {
+			if(settings.renderDefinitionText) {
 				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
 					val richTextMap = mutableMapOf<String, String>()
 					for((name, key) in localisation) {
 						val e = findLocalisation(key, element.paradoxLocale, element.project, hasDefault = true)
-						val richText = e?.propertyValue?.renderRichText() ?: continue
+						val richText = e?.renderText() ?: continue
 						val sectionName = name.value.toCapitalizedWords()
 						richTextMap[sectionName] = richText
 					}

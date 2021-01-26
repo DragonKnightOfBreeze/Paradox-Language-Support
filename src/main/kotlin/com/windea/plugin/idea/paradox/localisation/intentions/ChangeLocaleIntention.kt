@@ -9,12 +9,12 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
-import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationElementFactory.createLocale
-import javax.swing.*
 
-object ChangeLocaleIntention : IntentionAction {
-	private val _name = message("paradox.localisation.intention.changeLocale")
-	private val _title = message("paradox.localisation.intention.changeLocale.title")
+class ChangeLocaleIntention : IntentionAction {
+	companion object {
+		private val _name = message("paradox.localisation.intention.changeLocale")
+		private val _title = message("paradox.localisation.intention.changeLocale.title")
+	}
 	
 	override fun startInWriteAction() = false
 	
@@ -24,13 +24,15 @@ object ChangeLocaleIntention : IntentionAction {
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
-		val element = file.findElementAt(editor.caretModel.offset)?.parent
+		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return false
+		val element = originalElement.parent
 		return element is ParadoxLocalisationLocale
 	}
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
-		val element = file.findElementAt(editor.caretModel.offset)?.parent
+		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
+		val element = originalElement.parent
 		if(element is ParadoxLocalisationLocale) {
 			JBPopupFactory.getInstance().createListPopup(Popup(element, paradoxLocales)).showInBestPositionFor(editor)
 		}

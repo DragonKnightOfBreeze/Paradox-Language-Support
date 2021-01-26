@@ -10,25 +10,29 @@ import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
-object ChangeSequentialNumberIntention : IntentionAction {
-	private val _name = message("paradox.localisation.intention.changeSequentialNumber")
-	private val _title = message("paradox.localisation.intention.changeSequentialNumber.title")
+class ChangeSequentialNumberIntention : IntentionAction {
+	companion object {
+		private val _name = message("paradox.localisation.intention.changeSequentialNumber")
+		private val _title = message("paradox.localisation.intention.changeSequentialNumber.title")
+	}
 	
 	override fun startInWriteAction() = false
 	
 	override fun getText() = _name
 	
-	override fun getFamilyName() = _title
+	override fun getFamilyName() = _name
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
-		val element = file.findElementAt(editor.caretModel.offset)?.parent
+		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return false
+		val element = originalElement.parent
 		return element is ParadoxLocalisationSequentialNumber
 	}
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
-		val element = file.findElementAt(editor.caretModel.offset)?.parent
+		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
+		val element = originalElement.parent
 		if(element is ParadoxLocalisationSequentialNumber) {
 			JBPopupFactory.getInstance().createListPopup(Popup(element, paradoxSequentialNumbers)).showInBestPositionFor(editor)
 		}
