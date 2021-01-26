@@ -130,6 +130,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+		generate(element.project)
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }

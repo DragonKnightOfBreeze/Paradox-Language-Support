@@ -37,7 +37,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider: LineMarkerProviderDescrip
 		definitionLocalisationGutterIcon,
 		{ definitionInfo.localisation.joinToString("<br>"){ (k,v)-> _tooltip(v,k.value) }},
 		{ mouseEvent, _ ->
-			val names = definitionInfo.localisationKeys
+			val names = definitionInfo.localisationValueKeys
 			val project = element.project
 			val elements = findLocalisations(names, null, project,hasDefault=true,keepOrder= true).toTypedArray()
 			when(elements.size) {
