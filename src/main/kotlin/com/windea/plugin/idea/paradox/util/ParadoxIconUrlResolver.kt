@@ -7,6 +7,8 @@ import java.net.http.HttpResponse.*
 import java.time.*
 import java.util.concurrent.*
 
+//TODO 更为可靠的实现方式
+
 //https://qunxing.huijiwiki.com/
 //https://paradox.paradoxwikis.com/
 //https://qunxing.huijiwiki.com/wiki/%E6%96%87%E4%BB%B6:Xxx.png

@@ -1,10 +1,10 @@
-package com.windea.plugin.idea.paradox.tool
+package com.windea.plugin.idea.paradox.util
 
 import com.windea.plugin.idea.paradox.*
 import java.io.*
 import java.util.concurrent.*
 
-object ModOverriddenFileSelector {
+object ParadoxModOverriddenFileSelector {
 	private val ignoredFileShortNames = arrayOf("README", "CHANGELOG", "CREDITS")
 	
 	/**

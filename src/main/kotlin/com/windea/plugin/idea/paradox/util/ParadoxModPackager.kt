@@ -1,4 +1,4 @@
-package com.windea.plugin.idea.paradox.tool
+package com.windea.plugin.idea.paradox.util
 
 import com.intellij.util.io.*
 import java.io.*
@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.*
 import java.util.zip.*
 import kotlin.system.*
 
-object ModPackager {
+object ParadoxModPackager {
 	private const val defaultPackageName = "mod.zip"
 	
 	/**

@@ -396,7 +396,7 @@ types:
     from_version: "2.8"
 
   # TODO subtypes
-  # TODO scopes from comment (root = xxx, xxx xx)
+  # TODO scopes
   game_rule:
     path: "common/game_rules"
     file_extension: "txt"
@@ -427,22 +427,16 @@ types:
       description!: "$_desc"
       tag: ".tags"
 
-  civic_or_origin:
+  civic:
     path: "common/governments/civics"
     file_extension: "txt"
+    predicate:
+      is_origin?: false
+    name_prefix: "civic_"
     localisation:
       name!: "$"
       description!: "$_desc"
       effect?: ".description"
-    subtypes:
-      civic:
-        predicate:
-          is_origin?: false
-        name_prefix: "civic_"
-      origin:
-        predicate:
-          is_origin: true
-        name_prefix: "origin_"
 
   swapped_civic:
     path: "common/governments/civics"
@@ -453,6 +447,18 @@ types:
     localisation:
       name!: "$"
       description!: "$_desc"
+      effect?: ".description"
+
+  origin:
+    path: "common/governments/civics"
+    file_extension: "txt"
+    predicate:
+      is_origin: true
+    name_prefix: "origin_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      effect?: ".description"
 
   graphical_culture:
     path: "common/graphical_culture"
@@ -529,7 +535,7 @@ types:
       description!: "mission_$_desc"
 
   # TODO subtypes
-  # TODO scopes from comment (root/this = xxx, xxx xx)
+  # TODO scopes
   on_action:
     path: "common/on_actions"
     file_extension: "txt"
@@ -771,7 +777,7 @@ types:
     file_extension: "txt"
 
   # bind to: localisationCommandField
-  # TODO scopes from comment 
+  # TODO scopes 
   scripted_loc:
     path: "common/scripted_loc"
     file_extension: "txt"
@@ -779,7 +785,7 @@ types:
     name_key: "name"
 
   # TODO subtypes
-  # TODO scopes from comment (root/this = xxx, xxx xx)
+  # TODO scopes
   scripted_trigger:
     path: "common/scripted_triggers"
     file_extension: "txt"
@@ -1253,7 +1259,7 @@ types:
     file_extension: "asset"
     key_filter: "light"
     name_key: "name"
-    
+
   model_entity:
     path: "gfx/models"
     path_strict: false
@@ -1323,7 +1329,7 @@ types:
     key_filter: "projectile_gfx_beam,projectile_gfx_ballistic,projectile_gfx_missile"
     name_key: "name"
     severity: "warning"
-    subtypes: 
+    subtypes:
       beam_projectile:
         key_filter: "projectile_gfx_beam"
       ballistic_projectile:
@@ -1380,7 +1386,7 @@ types:
         key_filter: "iconType"
       smoothListBoxType:
         key_filter: "smoothListBoxType"
-        
+
   sprite_type:
     path: "interface"
     path_strict: false
@@ -1505,5 +1511,5 @@ types:
 
   advisor_voice_type:
     path: "sound/advisor_voice_types"
-    localisation: 
+    localisation:
       name!: ".name"

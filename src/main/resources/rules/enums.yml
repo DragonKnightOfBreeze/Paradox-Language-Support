@@ -1,6 +1,8 @@
 enums:
-  ### localisation
+  ### stellaris localisation
   ### see: https://stellaris.paradoxwikis.com/Localisation_modding
+
+  # localisation locale
 
   locale:
   - name: "l_simp_chinese"
@@ -22,6 +24,8 @@ enums:
   - name: "l_default"
     description: "Default"
 
+  # localisation sequential number
+
   sequentialNumber:
   - name: "C"
     description: "Cardinal Number 1, 2, 3..."
@@ -33,7 +37,8 @@ enums:
     description: "Roman Number I, II, III..."
     placeholderText: "I"
 
-  # interface/fonts.gfx#bitmapfonts.textcolors
+  # localisation color
+  # see: interface/fonts.gfx#bitmapfonts.textcolors
   
   color:
   - name: "M"
@@ -93,6 +98,7 @@ enums:
     colorRgb: 0x33a7ff
     colorText: "#33a7ff"
 
+  # localisation command scope
   # TODO commandScope和commandField应当区分gameType
 
   commandScope:
@@ -137,6 +143,8 @@ enums:
   - name: "Solar_System"
     description: "The system where the isPrimary scope is located"
     isSecondary: true
+
+  # localisation command field
 
   commandField:
   - name: "GetAdj"
