@@ -14,17 +14,18 @@ types:
     path: "common/ambient_objects"
     file_extension: "txt"
     name_key: "name"
-    localisation:
-      name!: ".name"
-      description?: ".description"
-      tooltip?: ".tooltip"
     subtypes:
       show_name:
         predicate:
           show_name: true
+        localisation:
+          name!: ".name"
       selectable:
         predicate:
           selectable: true
+        localisation:
+          description?: ".description"
+          tooltip?: ".tooltip"
 
   anomaly_category:
     path: "common/anomalies"
@@ -78,7 +79,7 @@ types:
     path: "common/asteroid_belt"
     file_extension: "txt"
 
-  attitude: #TODO
+  attitude:
     path: "common/attitudes"
     file_extension: "txt"
     localisation:
@@ -249,7 +250,7 @@ types:
         predicate:
           is_null?: false
 
-  # TODO 没弄懂！
+  # TODO how it works
   diplo_phrase:
     path: "common/diplo_phrases"
     file_extension: "txt"
@@ -1348,8 +1349,8 @@ types:
     type_from_file: true
     key_filter: "gfx_settings"
 
-  # TODO 可以递归定义
-  # TODO 待补充子类型
+  # TODO can be defined recursively
+  # TODO subtypes
   gui_type:
     path: "interface"
     path_strict: false

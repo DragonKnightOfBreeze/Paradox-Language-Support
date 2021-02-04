@@ -8,7 +8,7 @@ class ParadoxScriptVariableStubImpl(
 	override val key: String
 ) : StubBase<ParadoxScriptVariable>(parent, ParadoxScriptStubElementTypes.VARIABLE), ParadoxScriptVariableStub{
 	override fun toString(): String {
-		return "ParadoxScriptVariableStub: $key"
+		return "ParadoxScriptVariableStub: (key=$key)"
 	}
 }
 

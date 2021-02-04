@@ -37,8 +37,9 @@ val booleanValues = arrayOf("yes", "no")
 
 const val paradoxBundleName = "messages.ParadoxBundle"
 
-val localisationFileExtensions = arrayOf("yml") //暂时不包括*.yaml文件
-val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings","cwt") //兼容cwtools的规则文件*.cwt
+val localisationFileExtensions = arrayOf("yml")
+val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
+val scriptRuleFileExtensions = arrayOf("pls","cwt")
 
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
 

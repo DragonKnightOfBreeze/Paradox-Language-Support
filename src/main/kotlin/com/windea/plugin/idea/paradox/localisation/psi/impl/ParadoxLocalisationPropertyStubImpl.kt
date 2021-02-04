@@ -10,7 +10,7 @@ class ParadoxLocalisationPropertyStubImpl(
 	override val paradoxLocale: ParadoxLocale? = null
 ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub{
 	override fun toString(): String {
-		return "ParadoxLocalisationPropertyStub: $key"
+		return "ParadoxLocalisationPropertyStub: (key=$key,paradoxLocale=$paradoxLocale)"
 	}
 }
 

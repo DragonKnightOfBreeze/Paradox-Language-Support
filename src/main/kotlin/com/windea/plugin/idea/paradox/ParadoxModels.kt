@@ -31,7 +31,8 @@ class ParadoxPath(
 
 enum class ParadoxFileType{
 	Script,
-	Localisation
+	Localisation,
+	ScriptRule
 }
 
 enum class ParadoxGameType(

@@ -9,7 +9,7 @@ class ParadoxScriptPropertyStubImpl(
 	override val type: String
 ) : StubBase<ParadoxScriptProperty>(parent, ParadoxScriptStubElementTypes.PROPERTY), ParadoxScriptPropertyStub{
 	override fun toString(): String {
-		return "ParadoxScriptPropertyStub: $name"
+		return "ParadoxScriptPropertyStub: (name=$name,type=$type)"
 	}
 }
 

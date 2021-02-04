@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.newvfs.impl.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.*
 import com.windea.plugin.idea.paradox.script.*
-import com.windea.plugin.idea.paradox.script.editor.*
 
 @Suppress("UnstableApiUsage")
 class ParadoxFileTypeOverrider : FileTypeOverrider {
@@ -42,6 +41,9 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						}
 						ParadoxLocalisationFileType
 					}
+					fileType == ParadoxFileType.ScriptRule -> {
+						ParadoxScriptFileType
+					}
 					else -> null
 				}
 			}
@@ -65,6 +67,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			return when {
 				fileExtension in scriptFileExtensions -> ParadoxFileType.Script
 				fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
+				fileExtension in scriptRuleFileExtensions -> ParadoxFileType.ScriptRule
 				else -> null
 			}
 		}

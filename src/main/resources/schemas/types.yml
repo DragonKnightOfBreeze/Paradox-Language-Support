@@ -61,7 +61,7 @@ definitions:
           从值获取类型信息，值的类型必须是string。
           Resolve type info from value, value type must be stringValue.
       skip_root_key:
-        type: string
+        type: [ string, boolean ]
         description:
           需要跳过的顶级属性的键的表达式。
           Expression of skipped root property key.
@@ -94,6 +94,8 @@ definitions:
         description:
           名字的后缀。
           Name suffix.
+      definition:
+        type: object # TODO
       localisation:
         type: object
         additionalProperties:
