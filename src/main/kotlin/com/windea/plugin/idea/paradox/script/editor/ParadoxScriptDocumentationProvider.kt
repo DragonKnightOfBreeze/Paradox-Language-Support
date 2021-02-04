@@ -38,8 +38,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
 		val name = element.name
-		val definitionInfo = element.paradoxDefinitionInfo
-		if(definitionInfo != null) return getDefinitionInfo(element, definitionInfo)
+		val typeInfo = element.paradoxTypeInfo
+		if(typeInfo != null) return getTypeInfo(element, typeInfo)
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
@@ -49,11 +49,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+	private fun getTypeInfo(element: ParadoxScriptProperty, typeInfo: ParadoxTypeInfo): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				val (name, type, subtypes, localisation) = definitionInfo
+				val (name, type, subtypes, localisation) = typeInfo
 				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
 				if(subtypes.isNotEmpty()) {
 					subtypes.joinTo(this, ", ", ", ")
@@ -110,8 +110,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
 		val name = element.name
-		val definitionInfo = element.paradoxDefinitionInfo
-		if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo)
+		val typeInfo = element.paradoxTypeInfo
+		if(typeInfo != null) return getDefinitionDoc(element, typeInfo)
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
@@ -130,11 +130,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+	private fun getDefinitionDoc(element: ParadoxScriptProperty, typeInfo: ParadoxTypeInfo): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				val (name, type, subtypes, localisation) = definitionInfo
+				val (name, type, subtypes, localisation) = typeInfo
 				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
 				if(subtypes.isNotEmpty()) {
 					subtypes.joinTo(this, ", ", ", ")
@@ -157,7 +157,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//本地化文本
 			if(settings.renderDefinitionText) {
-				val localisation = definitionInfo.localisation
+				val localisation = typeInfo.localisation
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((name, key) in localisation) {

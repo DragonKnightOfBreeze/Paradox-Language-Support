@@ -1,4 +1,4 @@
-package com.windea.plugin.idea.paradox.core
+package com.windea.plugin.idea.paradox.tool
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
@@ -38,13 +38,13 @@ private fun generateDocuments(root: String, documentNameTypeMap: Map<String, Str
 private fun getDocumentText(documentName: String, type: String, project: Project): String {
 	val definitions = findDefinitions(type, project).filter { it.paradoxFileInfo?.rootType == ParadoxRootType.Stdlib }
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
-		val definitionInfo = it.paradoxDefinitionInfo
-		val id = definitionInfo?.name
-		val name = definitionInfo?.localisation?.find { (k, _) -> k.value == "name" }
-		val description = definitionInfo?.localisation?.find { (k, _) -> k.value == "description" }?.let { (_, v) ->
+		val typeInfo = it.paradoxTypeInfo
+		val id = typeInfo?.name
+		val name = typeInfo?.localisation?.find { (k, _) -> k.value == "name" }
+		val description = typeInfo?.localisation?.find { (k, _) -> k.value == "description" }?.let { (_, v) ->
 			findLocalisation(v, null, project)?.extractText()
 		}
-		val effect = definitionInfo?.localisation?.find { (k, _) -> k.value == "effect" }?.let { (_, v) ->
+		val effect = typeInfo?.localisation?.find { (k, _) -> k.value == "effect" }?.let { (_, v) ->
 			findLocalisation(v, null, project)?.extractText()
 		}
 		buildString {

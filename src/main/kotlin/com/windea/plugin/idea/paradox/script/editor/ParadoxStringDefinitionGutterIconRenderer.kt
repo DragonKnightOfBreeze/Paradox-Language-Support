@@ -21,8 +21,8 @@ class ParadoxStringDefinitionGutterIconRenderer(
 	}
 	
 	//TODO 暂不标注子类型
-	private val definitionInfo = properties.firstOrNull()?.paradoxDefinitionInfo
-	private val tooltip = _tooltip(definitionInfo?.name?.escapeXml() ?: name.escapeXml(),definitionInfo?.type?:"?")
+	private val typeInfo = properties.firstOrNull()?.paradoxTypeInfo
+	private val tooltip = _tooltip(typeInfo?.name?.escapeXml() ?: name.escapeXml(),typeInfo?.type?:"?")
 	
 	override fun getIcon() = stringScriptPropertyGutterIcon
 	override fun getTooltipText() = tooltip

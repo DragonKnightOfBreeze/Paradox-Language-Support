@@ -23,21 +23,21 @@ class ParadoxDefinitionLocalisationLineMarkerProvider: LineMarkerProviderDescrip
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
 			is ParadoxScriptProperty -> {
-				val definitionInfo = element.paradoxDefinitionInfo ?: return null
-				if(!definitionInfo.hasLocalisation) return null //没有localisation时不加上gutterIcon
-				LineMarker(element, definitionInfo)
+				val typeInfo = element.paradoxTypeInfo ?: return null
+				if(!typeInfo.hasLocalisation) return null //没有localisation时不加上gutterIcon
+				LineMarker(element, typeInfo)
 			}
 			else -> null
 		}
 	}
 	
-	class LineMarker(element: ParadoxScriptProperty,definitionInfo: ParadoxDefinitionInfo) : LineMarkerInfo<PsiElement>(
+	class LineMarker(element: ParadoxScriptProperty,typeInfo: ParadoxTypeInfo) : LineMarkerInfo<PsiElement>(
 		element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
 		element.textRange,
 		definitionLocalisationGutterIcon,
-		{ definitionInfo.localisation.joinToString("<br>"){ (k,v)-> _tooltip(v,k.value) }},
+		{ typeInfo.localisation.joinToString("<br>"){ (k,v)-> _tooltip(v,k.value) }},
 		{ mouseEvent, _ ->
-			val names = definitionInfo.localisationValueKeys
+			val names = typeInfo.localisationValueKeys
 			val project = element.project
 			val elements = findLocalisations(names, null, project,hasDefault=true,keepOrder= true).toTypedArray()
 			when(elements.size) {

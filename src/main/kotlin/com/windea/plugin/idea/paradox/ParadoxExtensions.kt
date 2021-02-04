@@ -53,11 +53,11 @@ val settings get() = ParadoxSettingsState.getInstance()
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val paradoxPathKey = Key<ParadoxPath>("paradoxPath")
-val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo")
+val paradoxTypeInfoKey = Key<ParadoxTypeInfo>("paradoxTypeInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxPath")
 val cachedParadoxScriptPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxScriptPath")
-val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
+val cachedParadoxTypeInfoKey = Key<CachedValue<ParadoxTypeInfo>>("cachedParadoxTypeInfo")
 
 //Extension Properties
 
@@ -227,30 +227,30 @@ private fun getGameType(): ParadoxGameType {
 }
 
 
-val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = getDefinitionInfo(this)
+val ParadoxScriptProperty.paradoxTypeInfo: ParadoxTypeInfo? get() = getTypeInfo(this)
 
-val ParadoxScriptProperty.paradoxDefinitionInfoNoCheck: ParadoxDefinitionInfo? get() = getDefinitionInfo(this, false)
+val ParadoxScriptProperty.paradoxTypeInfoNoCheck: ParadoxTypeInfo? get() = getTypeInfo(this, false)
 
-internal fun canGetDefinitionInfo(element: ParadoxScriptProperty): Boolean {
+internal fun canGetTypeInfo(element: ParadoxScriptProperty): Boolean {
 	//最低到2级scriptProperty
 	val parent = element.parent
 	return parent is ParadoxScriptRootBlock || parent?.parent?.parent?.parent is ParadoxScriptRootBlock
 }
 
-private fun getDefinitionInfo(element: ParadoxScriptProperty, check: Boolean = true): ParadoxDefinitionInfo? {
-	if(check && !canGetDefinitionInfo(element)) return null
-	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
-		CachedValueProvider.Result.create(resolveDefinitionInfo(element), element)
+private fun getTypeInfo(element: ParadoxScriptProperty, check: Boolean = true): ParadoxTypeInfo? {
+	if(check && !canGetTypeInfo(element)) return null
+	return CachedValuesManager.getCachedValue(element, cachedParadoxTypeInfoKey) {
+		CachedValueProvider.Result.create(resolveTypeInfo(element), element)
 	}
 }
 
-private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
+private fun resolveTypeInfo(element: ParadoxScriptProperty): ParadoxTypeInfo? {
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
 	val ruleGroup = paradoxRuleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val scriptPath = element.paradoxScriptPath ?: return null
 	val definition = ruleGroup.types.values.find { it.matches(element, elementName, path, scriptPath) } ?: return null
-	return definition.toDefinitionInfo(element, elementName)
+	return definition.toTypeInfo(element, elementName)
 }
 
 

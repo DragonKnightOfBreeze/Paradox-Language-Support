@@ -87,7 +87,7 @@ fun String.quote() = if(startsWith('"') && endsWith('"')) this else "\"$this\""
 
 fun String.quoteIfNecessary() = if(containsBlank()) quote() else this
 
-private val wildcardBooleanValues = arrayOf("true","false","yes","no")
+private val wildcardBooleanValues = arrayOf("true", "false", "yes", "no")
 
 fun String.quoteAsStringLike() = if(this in wildcardBooleanValues || isNumber() || containsBlank()) quote() else this
 
@@ -150,7 +150,7 @@ inline fun <reified T> Any?.cast(): T = this as T
 
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
-fun Icon.resize(width: Int, height: Int=width): Icon {
+fun Icon.resize(width: Int, height: Int = width): Icon {
 	return IconUtil.toSize(this, width, height)
 }
 
@@ -162,7 +162,7 @@ fun URL.toPath(): Path {
 	return Path.of(this.toURI())
 }
 
-fun <C: CharSequence> C.ifNotEmpty(block: (C) -> Unit) {
+fun <C : CharSequence> C.ifNotEmpty(block: (C) -> Unit) {
 	if(this.isNotEmpty()) block(this)
 }
 
@@ -177,7 +177,7 @@ infix fun String.matchesPath(other: String): Boolean {
 
 //Jar Extensions
 
-fun String.toJarFile():JarFile{
+fun String.toJarFile(): JarFile {
 	return (this.toClassPathResource()!!.openConnection() as JarURLConnection).jarFile
 }
 
@@ -185,37 +185,41 @@ fun JarFile.toJarEntries(): Map<String, JarEntry> {
 	val pathPrefix = "$this/"
 	return this.stream()
 		.filter { it.name.startsWith(pathPrefix) && !it.isDirectory }
-		.collect(Collectors.toMap({ it.name.removePrefix(pathPrefix) },{it}))
+		.collect(Collectors.toMap({ it.name.removePrefix(pathPrefix) }, { it }))
 }
 
-fun JarFile.toJarDirectoryEntryMap(pathPrefix:String,fileExtension:String): Map<String, MutableList<JarEntry>> {
+fun JarFile.toJarDirectoryEntryMap(pathPrefix: String, fileExtension: String): Map<String, MutableList<JarEntry>> {
 	return this.stream()
 		.filter { !it.isDirectory && it.name.startsWith(pathPrefix) && it.name.endsWith(fileExtension) }
-		.collect(Collectors.groupingBy { it.name.removePrefix(pathPrefix).substringBefore('/',"") })
+		.collect(Collectors.groupingBy { it.name.removePrefix(pathPrefix).substringBefore('/', "") })
 }
 
 //Expression Extensions
 
-class ConditionalKey(
+interface Expression : CharSequence {
 	val expression: String
-) : CharSequence{
+	
+	override val length get() = expression.length
+	
+	override fun get(index: Int) = expression.get(index)
+	
+	override fun subSequence(startIndex: Int, endIndex: Int) = expression.subSequence(startIndex, endIndex)
+}
+
+class ConditionalExpression(
+	override val expression: String
+) : Expression {
 	companion object {
 		private val markers = charArrayOf('?', '!', '*', '+')
 	}
 	
-	val marker: Char? = expression.lastOrNull { it in markers }
+	val marker: Char? = expression.lastOrNull()?.takeIf { it in markers }
 	val value: String = if(marker != null) expression.dropLast(1) else expression
 	val optional: Boolean = marker == '?' || marker == '*'
 	val required: Boolean = marker == '!' || marker == '+'
 	val multiple: Boolean = marker == '*' || marker == '+'
 	
-	override val length = expression.length
-	
-	override fun get(index: Int): Char = expression[index]
-	
-	override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = expression.subSequence(startIndex, endIndex)
-	
-	override fun equals(other: Any?): Boolean = other is ConditionalKey && expression == other.expression
+	override fun equals(other: Any?): Boolean = other is ConditionalExpression && expression == other.expression
 	
 	override fun hashCode(): Int = expression.hashCode()
 	
@@ -227,15 +231,15 @@ class ConditionalKey(
 	
 	operator fun component3(): Boolean = required
 	
-	operator fun component4():Boolean = multiple
+	operator fun component4(): Boolean = multiple
 }
 
-fun String.toConditionalKey() = ConditionalKey(this)
+fun String.toConditionalExpression() = ConditionalExpression(this)
 
 class PredicateExpression(
-	val expression:String
-):CharSequence{
-	val marker: Char? = expression.firstOrNull { it == '!' }
+	override val expression: String
+) : Expression {
+	val marker: Char? = expression.firstOrNull()?.takeIf { it == '!' }
 	val value: String = if(marker != null) expression.drop(1) else expression
 	val not: Boolean = marker == '!'
 	
@@ -255,3 +259,5 @@ class PredicateExpression(
 	
 	operator fun component2(): Boolean = not
 }
+
+fun String.toPredicateExpression() = PredicateExpression(this)

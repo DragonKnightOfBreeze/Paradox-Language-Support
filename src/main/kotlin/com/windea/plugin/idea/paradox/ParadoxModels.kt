@@ -62,11 +62,11 @@ data class ParadoxFileInfo(
 
 //Script
 
-data class ParadoxDefinitionInfo(
+data class ParadoxTypeInfo(
 	val name: String,
 	val type: String,
 	val subtypes: List<String>,
-	val localisation: List<Pair<ConditionalKey, String>>,
+	val localisation: List<Pair<ConditionalExpression, String>>,
 	val scopes: Map<String, String>,
 	val fromVersion: String
 ){

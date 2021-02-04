@@ -7,9 +7,9 @@ import com.windea.plugin.idea.paradox.script.psi.*
 class ParadoxRuleGroup(
 	val data: Map<String, Map<String, Any>>
 ) {
-	val types = data.getOrDefault("types", emptyMap()).mapValues { (k, v) -> Type(k, v.cast()) }
-	val definitions = data.getOrDefault("definitions", emptyMap()).mapValues { (k, v) -> Definition(k, v.cast()) }
-	val enums = data.getOrDefault("enums", emptyMap()).mapValues { (k, v) -> Enum(k, v.cast()) }
+	val types = data["types"]?.mapValues { (k, v) -> Type(k, v.cast()) } ?: emptyMap()
+	val definitions = data["definitions"]?.mapValues { (k, v) -> Definition(k, v.cast()) } ?: emptyMap()
+	val enums = data["enums"]?.mapValues { (k, v) -> Enum(k, v.cast()) } ?: emptyMap()
 	
 	class Type(val key: String, val data: Map<String, Any>) {
 		//不要单纯地遍历列表进行匹配，需要先通过某种方式过滤不合法的scriptProperty
@@ -74,7 +74,7 @@ class ParadoxRuleGroup(
 				if(predicateValue is ParadoxScriptBlock) {
 					val propMap = predicateValue.propertyList.associateBy { it.name }
 					for((k, v) in predicateData) {
-						val (key, optional) = k.toString().toConditionalKey()
+						val (key, optional) = k.toString().toConditionalExpression()
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when {
 							v == true || v == "any" -> {
@@ -96,13 +96,11 @@ class ParadoxRuleGroup(
 			return true
 		}
 		
-		fun toDefinitionInfo(element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
-			val subtypesData = getSubtypesData(data, element, elementName)
+		fun toTypeInfo(element: ParadoxScriptProperty, elementName: String): ParadoxTypeInfo {
+			val subtypesData = filterSubtypesData(data, element, elementName)
 			val name = getName(data, element)
-			val type = getType(key)
-			val subtypes = subtypesData.entries.map { (k, _) -> getType(k) }
-			//val type = getType(data,key)
-			//val subtypes = subtypesData.entries.map { (k,v)-> getType(v,k) }
+			val type = key
+			val subtypes = subtypesData.entries.map { (k, _) -> k }
 			val localisation = getLocalisation(data, element, name).apply {
 				for((_, v) in subtypesData) addAll(getLocalisation(v, element, name))
 			}
@@ -110,10 +108,10 @@ class ParadoxRuleGroup(
 				for((_, v) in subtypesData) putAll(getScopes(v))
 			}
 			val fromVersion = getFromVersion(data)
-			return ParadoxDefinitionInfo(name, type, subtypes, localisation, scopes, fromVersion)
+			return ParadoxTypeInfo(name, type, subtypes, localisation, scopes, fromVersion)
 		}
 		
-		private fun getSubtypesData(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): Map<String, Map<String, Any>> {
+		private fun filterSubtypesData(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): Map<String, Map<String, Any>> {
 			val subtypes = data["subtypes"] as Map<String, Map<String, Any>>? ?: return emptyMap()
 			return subtypes.filterValues { matchesSubtypesData(it, element, elementName) }
 		}
@@ -138,7 +136,7 @@ class ParadoxRuleGroup(
 				if(predicateValue is ParadoxScriptBlock) {
 					val propMap = predicateValue.propertyList.associateBy { it.name }
 					for((k, v) in predicateData) {
-						val (key, optional) = k.toString().toConditionalKey()
+						val (key, optional) = k.toString().toConditionalExpression()
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when {
 							v == true || v == "any" -> {
@@ -177,24 +175,14 @@ class ParadoxRuleGroup(
 			return element.name
 		}
 		
-		//暂时不注明别名
-		private fun getType(name: String): String {
-			return name
-		}
-		
-		//private fun getType(data:Map<String,Any>,name:String):String{
-		//	val alias = data["alias"] as String? ?: return name
-		//	return "$name ($alias)"
-		//}
-		
-		private fun getLocalisation(data: Map<String, Any>, element: ParadoxScriptProperty, name: String): MutableList<Pair<ConditionalKey, String>> {
+		private fun getLocalisation(data: Map<String, Any>, element: ParadoxScriptProperty, name: String): MutableList<Pair<ConditionalExpression, String>> {
 			val localisationData = data["localisation"] as Map<String, String>? ?: return mutableListOf()
-			val result = mutableListOf<Pair<ConditionalKey, String>>()
+			val result = mutableListOf<Pair<ConditionalExpression, String>>()
 			for((keyData, valueData) in localisationData) {
 				when {
 					//如果以.开始，表示对应的属性的值是localisation的key，值可以是string，也可以是string数组
 					valueData.startsWith('.') -> {
-						val k = keyData.toConditionalKey()
+						val k = keyData.toConditionalExpression()
 						val value = element.findProperty(valueData.drop(1))?.propertyValue?.value ?: continue
 						when {
 							value is ParadoxScriptString -> result.add(k to value.value)
@@ -205,7 +193,7 @@ class ParadoxRuleGroup(
 					}
 					//如果包含占位符$，表示用name替换掉占位符后是localisation的key
 					else -> {
-						val k = keyData.toConditionalKey()
+						val k = keyData.toConditionalExpression()
 						val v = buildString { for(c in valueData) if(c == '$') append(name) else append(c) }
 						result.add(k to v)
 					}
