@@ -47,10 +47,6 @@ types:
   army:
     path: "common/armies"
     file_extension: "txt"
-    localisation:
-      name!: "$"
-      plural!: "$_plural"
-      description!: "$_desc"
     subtypes:
       defensive_army:
         predicate:
@@ -58,6 +54,10 @@ types:
       occupation_army:
         predicate:
           occupation: true
+    localisation:
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
 
   artifact_action:
     path: "common/artifact_actions"
@@ -95,10 +95,6 @@ types:
   building:
     path: "common/buildings"
     file_extension: "txt"
-    name_prefix: "building_"
-    localisation:
-      name!: "$"
-      description!: "$_desc"
     subtypes:
       capital_building:
         predicate:
@@ -106,6 +102,10 @@ types:
       branch_office_building:
         predicate:
           branch_office_building: true
+    name_prefix: "building_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
 
   button_effect:
     path: "common/button_effects"
@@ -114,14 +114,15 @@ types:
       this: "selected_object | player_country"
       from: "player_country"
 
+  # TODO subtypes
   bypass:
     path: "common/bypass"
     file_extension: "txt"
-    # name_key: "name"
-    subtypes: # TODO
+    subtypes:
       scripted:
         predicate:
           connection_type: "scripted_connection"
+    # name_key: "name"
 
   casus_belli:
     path: "common/casus_belli"
@@ -161,16 +162,16 @@ types:
   component_set:
     path: "common/component_sets"
     file_extension: "txt"
+    subtypes:
+      required_component:
+        predicate:
+          required_component_set: true
     name_key: "key"
     localisation:
       name!: "$"
       description?: "$_DESC"
       ship_description?: "ship_$_DESC"
       station_description?: "station_$_DESC"
-    subtypes:
-      required_component:
-        predicate:
-          required_component_set: true
 
   component_slot_template:
     path: "common/component_slot_templates"
@@ -184,10 +185,6 @@ types:
   component_template:
     path: "common/component_templates"
     file_extension: "txt"
-    localisation:
-      name!: "$"
-      tag?: ".tags"
-      ai_tag?: ".ai_tags"
     subtypes:
       utility_component_template:
         key_filter: "utility_component_template"
@@ -195,6 +192,10 @@ types:
         key_filter: "weapon_component_template"
       strike_craft_component_template:
         key_filter: "strike_craft_component_template"
+    localisation:
+      name!: "$"
+      tag?: ".tags"
+      ai_tag?: ".ai_tags"
 
   country_type:
     path: "common/country_types"
@@ -227,9 +228,6 @@ types:
     file_extension: "txt"
     # path_strict: true
     name_prefix: "d_"
-    localisation:
-      name!: "$"
-      description!: "$_desc"
     subtypes:
       colonisable:
         predicate:
@@ -249,6 +247,9 @@ types:
       not_null:
         predicate:
           is_null?: false
+    localisation:
+      name!: "$"
+      description!: "$_desc"
 
   # TODO how it works
   diplo_phrase:
@@ -280,11 +281,6 @@ types:
   district:
     path: "common/districts"
     file_extension: "txt"
-    name_prefix: "district_"
-    localisation:
-      name!: "$"
-      plural!: "$_plural"
-      description!: "$_desc"
     subtypes:
       capped:
         predicate:
@@ -292,6 +288,11 @@ types:
       uncapped:
         predicate:
           is_capped_by_modifier?: false
+    name_prefix: "district_"
+    localisation:
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
 
   dynamic_text:
     path: "common/dynamic_text"
@@ -302,8 +303,6 @@ types:
   economic_category:
     path: "common/economic_categories"
     file_extension: "txt"
-    localisation:
-      name!: "$"
     subtypes:
       hidden:
         predicate:
@@ -311,6 +310,8 @@ types:
       has_parent:
         predicate:
           parent: any
+    localisation:
+      name!: "$"
 
   economic_plan:
     path: "common/economic_plans"
@@ -320,13 +321,13 @@ types:
   edict:
     path: "common/edicts"
     file_extension: "txt"
-    localisation:
-      name!: "edit_$"
-      description!: "edit_$_desc"
     subtypes:
       edit_ambition:
         predicate:
           is_ambition: true
+    localisation:
+      name!: "edit_$"
+      description!: "edit_$_desc"
 
   ethic_category:
     path: "common/ethics"
@@ -497,9 +498,6 @@ types:
   megastructure:
     path: "common/megastructures"
     file_extension: "txt"
-    localisation:
-      name!: "$"
-      description!: "$_DESC"
     subtypes:
       base_level:
         predicate:
@@ -510,16 +508,19 @@ types:
       not_base_level:
         predicate:
           prerequisites: any
+    localisation:
+      name!: "$"
+      description!: "$_DESC"
 
   name_list:
     path: "common/name_lists"
     file_extension: "txt"
-    localisation:
-      name!: "name_list_$"
     subtypes:
       randomized:
         predicate:
           randomized?: true
+    localisation:
+      name!: "name_list_$"
 
   notification_modifier:
     path: "common/notification_modifiers"
@@ -545,16 +546,17 @@ types:
   opinion_modifier:
     path: "common/opinion_modifiers"
     file_extension: "txt"
-    name_prefix: [ "opinion_", "triggered_opinion" ] # 可能
-    localisation:
-      name!: "$"
     subtypes:
       triggered_opnion_modifier:
         predicate:
           trigger: any
+        name_prefix: "opinion_"
       block_triggered:
         predicate:
           block_triggered: true
+        name_prefix: "triggered_opinion_"
+    localisation:
+      name!: "$"
     hard_coded_file_names:
     - "01_personality_opinions.txt"
     - "00_opinion_modifiers.txt"
@@ -571,9 +573,6 @@ types:
     path: "common/planet_classes"
     file_extension: "txt"
     key_filter: "!random_list"
-    localisation:
-      name!: "$"
-      description!: "$_desc"
     subtypes:
       star:
         predicate:
@@ -588,6 +587,9 @@ types:
           habitability!: "mod_$_habitability"
           preference_trait: "trait_$_preference"
           preference_trait_description: "trait_$_preference_desc"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
 
   planet_class_random_list:
     path: "common/planet_classes"
@@ -598,7 +600,6 @@ types:
   planet_modfiier:
     path: "common/planet_modifiers"
     file_extension: "txt"
-    name_prefix: "pm_"
     subtypes:
       null:
         predicate:
@@ -606,6 +607,7 @@ types:
       not_null:
         predicate:
           is_null?: false
+    name_prefix: "pm_"
 
   policy:
     path: "common/policies"
@@ -627,8 +629,8 @@ types:
 
   social_strata:
     alias: "pop_category"
-    file_extension: "txt"
     path: "common/pop_categories"
+    file_extension: "txt"
     localisation:
       name!: "pop_cat_$"
       plural!: "pop_cat_$_plural"
@@ -636,15 +638,15 @@ types:
 
   faction_type:
     alias: "pop_faction_type"
-    file_extension: "txt"
     path: "common/pop_faction_types"
-    localisation:
-      name!: "pft_$"
-      description!: "pft_$_desc"
+    file_extension: "txt"
     subtypes:
       unique:
         predicate:
           unique: true
+    localisation:
+      name!: "pft_$"
+      description!: "pft_$_desc"
 
   job:
     alias: "pop_job"
@@ -895,6 +897,13 @@ types:
   species_class:
     path: "common/species_classes"
     file_extension: "txt"
+    subtypes:
+      randomized:
+        predicate:
+          randomized?: true
+      playable:
+        predicate:
+          playable?: true # not: {always = no}
     localisation:
       name!: "$"
       plural!: "$_plural"
@@ -912,13 +921,6 @@ types:
       sound_05!: "$_sound_05"
       organ!: "$_organ"
       mouth!: "$_mouth"
-    subtypes:
-      randomized:
-        predicate:
-          randomized?: true
-      playable:
-        predicate:
-          playable?: true # not: {always = no}
 
   species_name:
     path: "common/species_names"
@@ -989,21 +991,18 @@ types:
   static_modifier:
     path: "common/static_modifiers"
     file_extension: "txt"
-    localisation:
-      name!: "$"
-      description?: "$_desc"
     subtypes:
       planet:
         predicate:
           icon_frame: any
+    localisation:
+      name!: "$"
+      description?: "$_desc"
 
   resource:
     alias: "strategic_resources"
     path: "common/strategic_resources"
     file_extension: "txt"
-    localisation:
-      name?: "$"
-      description?: "$_desc"
     subtypes:
       tradable:
         predicate:
@@ -1011,6 +1010,9 @@ types:
       limited:
         predicate:
           max: any
+    localisation:
+      name?: "$"
+      description?: "$_desc"
 
   subject:
     path: "common/subjects"
@@ -1028,11 +1030,6 @@ types:
   technology:
     path: "common/technology"
     file_extension: "txt"
-    name_prefix: "tech_"
-    localisation:
-      name!: "$"
-      description!: "$_desc"
-      # category: ".category"
     subtypes:
       repeatable:
         predicate:
@@ -1040,6 +1037,11 @@ types:
       start_tech:
         predicate:
           start_tech: true
+    name_prefix: "tech_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      # category: ".category"
 
   technology_category:
     path: "common/technology/category"
@@ -1097,9 +1099,6 @@ types:
   trait:
     path: "common/traits"
     file_extension: "txt"
-    localisation:
-      name!: "$"
-      description!: "$_desc"
     subtypes:
       randomized:
         predicate:
@@ -1132,18 +1131,21 @@ types:
         predicate:
           leader_trait?: false
         name_prefix: "trait_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
 
   war_goal:
     path: "common/war_goals"
     file_extension: "txt"
-    name_prefix: "wg_"
-    localisation:
-      name!: "war_goal_$"
-      description!: "war_goal_$_desc"
     subtypes:
       total_war:
         predicate:
           total_war: true
+    name_prefix: "wg_"
+    localisation:
+      name!: "war_goal_$"
+      description!: "war_goal_$_desc"
 
   alert_icon:
     path: "common"
@@ -1196,6 +1198,9 @@ types:
     path: "events"
     file_extension: "txt"
     name_key: "id"
+    graph_related_types:
+    - "special_project"
+    - "anomaly_category"
     subtypes:
       scopeless:
         key_filter: "event"
@@ -1236,9 +1241,6 @@ types:
       major:
         predicate:
           major: true
-    graph_related_types:
-    - "special_project"
-    - "anomaly_category"
 
   flag_color:
     path: "flags"
@@ -1329,7 +1331,6 @@ types:
     file_extension: "txt"
     key_filter: "projectile_gfx_beam,projectile_gfx_ballistic,projectile_gfx_missile"
     name_key: "name"
-    severity: "warning"
     subtypes:
       beam_projectile:
         key_filter: "projectile_gfx_beam"
@@ -1337,6 +1338,7 @@ types:
         key_filter: "projectile_gfx_ballistic"
       missile_projectile:
         key_filter: "projectile_gfx_missile"
+    severity: "warning"
 
   planet_killer_animation:
     path: "gfx/projectiles/planet_destruction"
@@ -1357,7 +1359,6 @@ types:
     file_extension: "gui"
     key_filter: "guiTypes"
     name_key: "name"
-    severity: "warning"
     subtypes:
       windowType:
         key_filter: "windowType"
@@ -1387,6 +1388,7 @@ types:
         key_filter: "iconType"
       smoothListBoxType:
         key_filter: "smoothListBoxType"
+    severity: "warning"
 
   sprite_type:
     path: "interface"
@@ -1394,7 +1396,6 @@ types:
     file_extension: "gfx"
     skip_root_key: "spriteTypes"
     name_key: "name"
-    severity: "warning"
     subtypes:
       sprite_type:
         key_filter: "sprite_type"
@@ -1408,7 +1409,8 @@ types:
         key_filter: "progressbartype"
       pie_chart_type:
         key_filter: "PieChartType"
-
+    severity: "warning"
+    
   animated_map_text:
     path: "interface"
     file_extension: "gfx"
