@@ -70,5 +70,5 @@
 
 # TODO
 
-* [ ] `commandKey`、`localisationProperty`为什么不能进行自定代码补全？为什么一个不调用，另一个`processCanceled`？
-* [ ] 整合来自cwtools的规则文件，更改扩展名和文件格式，加入到项目的rules目录下
+* [ ] 补充stellaris的规则文件
+* [ ] 提供接口支持所有paradox游戏
