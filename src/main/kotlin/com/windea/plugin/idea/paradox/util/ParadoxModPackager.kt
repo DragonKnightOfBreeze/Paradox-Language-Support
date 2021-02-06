@@ -33,26 +33,28 @@ object ParadoxModPackager {
 			val total = modDirs.size
 			val done = AtomicInteger(0)
 			val countDownLatch = CountDownLatch(total)
-			println("Package mods... (total: $total)")
-			for(modDir in modDirs) {
-				executor.execute {
-					println("Package mod '${modDir.path}'... (total: $total, done: $done)")
-					val time = measureTimeMillis {
-						try {
-							doPackage(modDir, packageName)
-						} catch(e: Exception) {
-							println("Package mods failed. An exception is thrown:")
-							e.printStackTrace()
-						}
-					}.let { formatTime(it) }
-					countDownLatch.countDown()
-					done.incrementAndGet()
-					println("Package mod '${modDir.path}' finished. (total: $total, done: $done, cost: $time)")
+			val time = measureTimeMillis {
+				println("Package mods... (total: $total)")
+				for(modDir in modDirs) {
+					executor.execute {
+						println("Package mod '${modDir.path}'... (total: $total, done: $done)")
+						val time = measureTimeMillis {
+							try {
+								doPackage(modDir, packageName)
+							} catch(e: Exception) {
+								println("Package mods failed. An exception is thrown:")
+								e.printStackTrace()
+							}
+						}.let { formatTime(it) }
+						countDownLatch.countDown()
+						done.incrementAndGet()
+						println("Package mod '${modDir.path}' finished. (total: $total, done: $done, cost: $time)")
+					}
 				}
-			}
-			//等待所有的mod打包完毕（可能需要很长时间）
-			countDownLatch.await()
-			println("Package mods finished. (total: $total)")
+				//等待所有的mod打包完毕（可能需要很长时间）
+				countDownLatch.await()
+			}.let { formatTime(it) }
+			println("Package mods finished. (total: $total, cost: $time)")
 		} catch(e: Exception) {
 			println("Package mods failed. An exception is thrown:")
 			e.printStackTrace()
