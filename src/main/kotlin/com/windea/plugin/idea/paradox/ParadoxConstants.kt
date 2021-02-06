@@ -41,11 +41,9 @@ val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
 val scriptRuleFileExtensions = arrayOf("pls","cwt")
 
-val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
-
 const val descriptorFileName = "descriptor.mod"
-
 val exeFileNames = arrayOf("stellaris.exe")
+val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
 
 //Icons
 

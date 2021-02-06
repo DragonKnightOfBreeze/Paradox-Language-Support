@@ -26,7 +26,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 				val gameType = getGameType()
 				//只解析特定根目录下的文件
 				return when {
-					//根据正则指定需要排除的文件
+					//脚本文件，根据正则指定需要排除的文件
 					fileType == ParadoxFileType.Script && !fileName.matches(ignoredScriptFileNameRegex) -> {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
@@ -34,6 +34,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						}
 						ParadoxScriptFileType
 					}
+					//本地化文件
 					fileType == ParadoxFileType.Localisation-> {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
@@ -41,6 +42,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						}
 						ParadoxLocalisationFileType
 					}
+					//脚本规则文件，相比脚本文件应当仅提供基础的语言功能支持
 					fileType == ParadoxFileType.ScriptRule -> {
 						ParadoxScriptFileType
 					}

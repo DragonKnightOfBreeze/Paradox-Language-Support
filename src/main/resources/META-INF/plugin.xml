@@ -8,45 +8,68 @@
   <depends>com.intellij.modules.lang</depends>
 
   <description><![CDATA[
-    <p>Support for Paradox Language.</p>
     <p>
-      This plugin is under developing,
-      if you have found any bugs or problems, feel free to report them in
-      project's <a href="https://github.com/DragonKnightOfBreeze/Idea-Plugins/issues">Github Issue Page</a>.
+      Support for Paradox Language.
     </p>
     <p>
-      Welcome to have a look at
-      <a href="https://github.com/DragonKnightOfBreeze/Idea-Plugins/tree/master/paradox-language-support">this project</a> and
-      <a href="https://github.com/DragonKnightOfBreeze?tab=repositories">my other projects</a>.
+      This plugin is under developing, so some complex functions may not be implemented yet.
+      If you want more perfect language support, please consider using <b>VSCode</b> with <b>CWTools</b> plugin.
+    </p>
+    <p>
+      Create the descriptor file <b>descriptor.mod</b> in the root directory of your Mod to provide language support.
+      If you want to add game directory and third party mod as dependencies, just add them as libraries to the project module of your mod, like what Java and Kotlin does.
+    </p>
+    <p>
+      Currently Only Support <b>Stellaris</b>.
+      Currently the rule file to implement functions such as validate and provide code completion is not perfect yet.
+    </p>
+    <p>
+      The <a href="https://dragonknightofbreeze.github.io/paradox-language-support">reference documents</a> will be provided in the future.  
+    </p>
+    <p>
+      If you have found any bugs or problems, feel free to report them in project's <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue Page</a>.
+    </p>
+    <p>
+      Welcome to have a look at <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">this project</a> and <a href="https://github.com/DragonKnightOfBreeze?tab=repositories">my other projects</a>.
     </p>
 
     <br>
 
-    <p>Paradox语言支持。</p>
     <p>
-      这个插件正在开发中，如果遇到BUG或问题，欢迎在
-      项目的<a href="https://github.com/DragonKnightOfBreeze/Idea-Plugins/issues">Github Issue页面</a>中提出。
+      Paradox语言支持。
     </p>
     <p>
-      欢迎查看
-      <a href="https://github.com/DragonKnightOfBreeze/Idea-Plugins/tree/master/paradox-language-support">本项目</a>和
-      <a href="https://github.com/DragonKnightOfBreeze?tab=repositories">我的其他项目</a>。
+      这个插件正在开发中，部分比较复杂的功能可能尚未实现。
+      如果需要更加完善的语言支持，请考虑使用<b>VSCode</b>以及<b>CWTools</b>插件。
+    </p>
+    <p>
+      在你的模组根文件夹下创建描述符文件<b>descriptor.mod</b>，即可提供语言支持。
+      如果需要添加游戏目录以及第三方模组作为依赖，如同Java和Kotlin一样，将它们作为库添加到你的模组对应的项目模块即可。
+    </p>
+    <p>
+      目前仅支持<b>Stellaris</b>。
+      目前用于提供验证和代码补全等功能的规则文件尚不完善。
+    </p>
+    <p>
+      <a href="https://dragonknightofbreeze.github.io/paradox-language-support">参考文档</a>将会在未来提供。
+    </p>
+    <p>
+      如果遇到BUG或问题，欢迎在项目的<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue页面</a>提出。
+    </p>
+    <p>
+      欢迎查看<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">本项目</a>和<a href="https://github.com/DragonKnightOfBreeze?tab=repositories">我的其他项目</a>。
     </p>
     ]]></description>
 
   <change-notes><![CDATA[
     <p>
-      Please see the
-      <a href="https://github.com/DragonKnightOfBreeze/Idea-Plugins/blob/master/paradox-language-support/CHANGELOG.md">CHANGELOG</a>
-      document written by Simple Chinese.
+      Please see the <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md">CHANGELOG</a> document written by Simple Chinese.
     </p>
 
     <br>
 
     <p>
-      请查看
-      <a href="https://github.com/DragonKnightOfBreeze/Idea-Plugins/blob/master/paradox-language-support/CHANGELOG.md">CHANGELOG</a>
-      文档。
+      请查看<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md">CHANGELOG</a>文档。
     </p>
     ]]></change-notes>
 
@@ -80,6 +103,7 @@
     <lang.parserDefinition
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptParserDefinition"/>
+    
     <stubElementTypeHolder
         class="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptStubElementTypes"
         externalIdPrefix="paradoxScript."/>
@@ -152,7 +176,7 @@
     <codeInsight.lineMarkerProvider
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxDefinitionLocalisationLineMarkerProvider"/>
-    <codeInsight.definition 
+    <codeInsight.typeInfo 
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
     <anchorReferenceProvider
@@ -188,8 +212,10 @@
     <lang.parserDefinition
         language="Paradox Localisation"
         implementationClass="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationParserDefinition"/>
-    <stubElementTypeHolder class="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationStubElementTypes"
-                           externalIdPrefix="paradoxLocalisation."/>
+    
+    <stubElementTypeHolder 
+        class="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationStubElementTypes"
+        externalIdPrefix="paradoxLocalisation."/>
     <stubIndex implementation="com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationNameIndex"/>
 
     <lang.syntaxHighlighterFactory
