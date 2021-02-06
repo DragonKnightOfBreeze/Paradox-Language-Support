@@ -13,7 +13,6 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 	companion object {
 		private val _name = message("paradox.script.gutterIcon.definition")
 		private val _title = message("paradox.script.gutterIcon.definition.title")
-		private fun _tooltip(name: String,type:String) = message("paradox.script.gutterIcon.definition.tooltip", name,type)
 	}
 	
 	override fun getName() = _name
@@ -23,28 +22,26 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
 			is ParadoxScriptProperty -> {
-				val typeInfo = element.paradoxTypeInfo ?: return null
-				LineMarker(element, typeInfo)
+				val definition = element.paradoxDefinition ?: return null
+				LineMarker(element, definition)
 			}
 			else -> null
 		}
 	}
 	
-	class LineMarker(element: ParadoxScriptProperty,typeInfo: ParadoxTypeInfo) : LineMarkerInfo<PsiElement>(
+	class LineMarker(element: ParadoxScriptProperty,definition: ParadoxDefinition) : LineMarkerInfo<PsiElement>(
 		element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
 		element.textRange,
 		definitionGutterIcon,
-		{ 
-			val name = typeInfo.name.escapeXml()
-			val type = buildString{
-				append(typeInfo.type)
-				if(typeInfo.subtypes.isNotEmpty()){ typeInfo.subtypes.joinTo(this,", ",", ")}
+		{
+			buildString {
+				val (name, type, subtypes) = definition
+				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type,subtypes)
 			}
-			_tooltip(name, type) 
 		},
 		{ mouseEvent, _ ->
 			val project = element.project
-			val elements = findDefinitions(typeInfo.name,typeInfo.type,project).toTypedArray()
+			val elements = findDefinitions(definition.name,definition.type.name,project).toTypedArray()
 			when(elements.size) {
 				0 -> {}
 				1 -> OpenSourceUtil.navigate(true, elements.first())

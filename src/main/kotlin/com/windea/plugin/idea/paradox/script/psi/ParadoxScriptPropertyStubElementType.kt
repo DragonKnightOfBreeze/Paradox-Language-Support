@@ -7,8 +7,8 @@ import com.windea.plugin.idea.paradox.script.psi.impl.*
 
 //注意：这里的node和psi会变更，因此无法从userDataMap直接获取数据！
 //这之后，virtualFile会变为LightVirtualFIle，无法从virtualFile获取数据！psiFile也会变更
-//检查createStub的psi和parentStub，尝试获取typeInfo
-//或者：尝试直接从shouldCreateStub的node获取typeInfo，缓存同步到createStub
+//检查createStub的psi和parentStub，尝试获取definition
+//或者：尝试直接从shouldCreateStub的node获取definition，缓存同步到createStub
 //或者：重写com.intellij.psi.stubs.DefaultStubBuilder.StubBuildingWalkingVisitor.createStub，尝试从更多信息中获取
 //要求：必须能够获取paradoxPath和paradoxPropertyPath！即使psiFIle在内存中也要缓存信息
 
@@ -25,9 +25,9 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	}
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-		//这里使用scriptProperty.paradoxTypeInfo.name而非scriptProperty.name
-		val typeInfo = psi.paradoxTypeInfoNoCheck
-		return ParadoxScriptPropertyStubImpl(parentStub, typeInfo?.name ?: "@", typeInfo?.type ?: "")
+		//这里使用scriptProperty.paradoxDefinition.name而非scriptProperty.name
+		val definition = psi.paradoxDefinitionNoCheck
+		return ParadoxScriptPropertyStubImpl(parentStub, definition?.name ?: "@", definition?.type?.name ?: "")
 	}
 	
 	//override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {

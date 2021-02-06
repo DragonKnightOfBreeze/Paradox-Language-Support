@@ -3,9 +3,7 @@ package com.windea.plugin.idea.paradox.localisation.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
-import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
-import com.windea.plugin.idea.paradox.script.psi.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	companion object {
@@ -29,7 +27,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		return getLocalisationInfo(element)
 		//return buildString {
 		//	definition {
-		//		element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
+		//		element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
 		//		append("(localisation property) <b>").append(element.name).append("</b>")
 		//	}
 		//}
@@ -37,57 +35,64 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getLocalisationInfo(element: ParadoxLocalisationProperty): String {
 		return buildString {
+			val name = element.name
 			definition {
-				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
-				append("(localisation) <b>").append(element.name).append("</b>")
+				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
+				append("(localisation) <b>").append(name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getLocaleInfo(element: ParadoxLocalisationLocale): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation locale) <b>").append(element.name).append("</b>")
+				append("(localisation locale) <b>").append(name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getIconInfo(element: ParadoxLocalisationIcon): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation icon) <b>").append(element.name).append("</b>")
+				append("(localisation icon) <b>").append(name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getSequentialNumberInfo(element: ParadoxLocalisationSequentialNumber): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation sequential number) <b>").append(element.name).append("</b>")
+				append("(localisation sequential number) <b>").append(name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getCommandScopeInfo(element: ParadoxLocalisationCommandScope): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation command scope) <b>").append(element.name).append("</b>")
+				append("(localisation command scope) <b>").append(name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getCommandFieldInfo(element: ParadoxLocalisationCommandField): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation command field) <b>").append(element.name).append("</b>")
+				append("(localisation command field) <b>").append(name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getColorInfo(element: ParadoxLocalisationColorfulText): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation color) <b>").append(element.name).append("</b>")
+				append("(localisation color) <b>").append(name).append("</b>")
 			}
 		}
 	}
@@ -110,7 +115,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		//val name = element.name
 		//return buildString {
 		//	definition {
-		//		element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
+		//		element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
 		//		append("(localisation property) <b>").append(name).append("</b>")
 		//	}
 		//}
@@ -120,7 +125,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val name = element.name
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
+				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
 				append("(localisation) <b>").append(name).append("</b>")
 			}
 			//之前的单行注释文本
@@ -146,8 +151,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getLocaleDoc(element: ParadoxLocalisationLocale): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation locale) <b>").append(element.name).append("</b>")
+				append("(localisation locale) <b>").append(name).append("</b>")
 			}
 			val paradoxLocale = element.paradoxLocale
 			if(paradoxLocale != null) {
@@ -176,8 +182,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getSequentialNumberDoc(element: ParadoxLocalisationSequentialNumber): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation sequential number) <b>").append(element.name).append("</b>")
+				append("(localisation sequential number) <b>").append(name).append("</b>")
 			}
 			val paradoxSequentialNumber = element.paradoxSequentialNumber
 			if(paradoxSequentialNumber != null) {
@@ -190,8 +197,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getCommandScopeDoc(element: ParadoxLocalisationCommandScope): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation command scope) <b>").append(element.name).append("</b>")
+				append("(localisation command scope) <b>").append(name).append("</b>")
 			}
 			//来自规则文件
 			val paradoxCommandScope = element.paradoxCommandScope
@@ -205,8 +213,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getCommandFieldDoc(element: ParadoxLocalisationCommandField): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation command field) <b>").append(element.name).append("</b>")
+				append("(localisation command field) <b>").append(name).append("</b>")
 			}
 			val paradoxCommandField = element.paradoxCommandField
 			if(paradoxCommandField != null) {
@@ -219,8 +228,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getColorDoc(element: ParadoxLocalisationColorfulText): String {
 		return buildString {
+			val name = element.name
 			definition {
-				append("(localisation color) <b>").append(element.name).append("</b>")
+				append("(localisation color) <b>").append(name).append("</b>")
 			}
 			val paradoxColor = element.paradoxColor
 			if(paradoxColor != null) {
@@ -234,24 +244,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
-		return when {
-			link == null || context == null -> null
-			link.startsWith("#") -> getLocalisationLink(link.drop(1), context)
-			link.startsWith("$") -> getScriptLink(link.drop(1), context)
-			else -> null
-		}
-	}
-	
-	private fun getLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-		return findLocalisation(link, getLocale(context), context.project, hasDefault = true)
-	}
-	
-	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
-		return findDefinition(link, null, context.project)
-	}
-	
-	private fun getLocale(element: PsiElement): ParadoxLocale? {
-		val file = element.containingFile
-		return if(file is ParadoxLocalisationFile) file.paradoxLocale else inferredParadoxLocale
+		if(link == null || context == null) return null
+		return resolveLink(link,context)
 	}
 }

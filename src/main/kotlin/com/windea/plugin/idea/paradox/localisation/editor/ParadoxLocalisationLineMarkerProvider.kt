@@ -13,7 +13,6 @@ class ParadoxLocalisationLineMarkerProvider : LineMarkerProviderDescriptor() {
 	companion object {
 		private val _name = message("paradox.localisation.gutterIcon.localisation")
 		private val _title = message("paradox.localisation.gutterIcon.localisation.title")
-		private fun _tooltip(name: String) = message("paradox.localisation.gutterIcon.localisation.tooltip", name)
 	}
 	
 	override fun getName() = _name
@@ -31,7 +30,11 @@ class ParadoxLocalisationLineMarkerProvider : LineMarkerProviderDescriptor() {
 		element.propertyKey.propertyKeyId,
 		element.textRange,
 		localisationGutterIcon,
-		{ _tooltip(it.text.unquote()) },
+		{
+			buildString {
+				append("(localisation) <b>").append(it.text.unquote()).append("</b>")
+			}
+		},
 		{ mouseEvent, _ ->
 			val name = element.name
 			val project = element.project

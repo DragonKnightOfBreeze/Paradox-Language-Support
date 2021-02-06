@@ -13,7 +13,7 @@ definitions:
     type: object
     properties:
       alias:
-        type: string
+        type: [string, array]
         description: Alias of definition.
       path:
         type: string

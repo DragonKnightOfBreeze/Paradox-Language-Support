@@ -13,15 +13,7 @@ import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 import com.windea.plugin.idea.paradox.util.*
 import org.jetbrains.annotations.*
 
-//Extensions
-
-fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
-	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
-}
-
-fun StringBuilder.appendIconTag(url: String, size: Int = iconSize): StringBuilder {
-	return append("<img src=\"").append(url).append("\" width=\"").append(size).append("\" height=\"").append(size).append("\"/>")
-}
+//Misc Extensions
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
 fun getDocTextFromPreviousComment(element: PsiElement): String {
@@ -53,11 +45,11 @@ val settings get() = ParadoxSettingsState.getInstance()
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val paradoxPathKey = Key<ParadoxPath>("paradoxPath")
-val paradoxTypeInfoKey = Key<ParadoxTypeInfo>("paradoxTypeInfo")
+val paradoxDefinitionKey = Key<ParadoxDefinition>("paradoxDefinition")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxPath")
 val cachedParadoxScriptPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxScriptPath")
-val cachedParadoxTypeInfoKey = Key<CachedValue<ParadoxTypeInfo>>("cachedParadoxTypeInfo")
+val cachedParadoxDefinitionKey = Key<CachedValue<ParadoxDefinition>>("cachedParadoxDefinition")
 
 //Extension Properties
 
@@ -227,30 +219,30 @@ private fun getGameType(): ParadoxGameType {
 }
 
 
-val ParadoxScriptProperty.paradoxTypeInfo: ParadoxTypeInfo? get() = getTypeInfo(this)
+val ParadoxScriptProperty.paradoxDefinition: ParadoxDefinition? get() = getDefinition(this)
 
-val ParadoxScriptProperty.paradoxTypeInfoNoCheck: ParadoxTypeInfo? get() = getTypeInfo(this, false)
+val ParadoxScriptProperty.paradoxDefinitionNoCheck: ParadoxDefinition? get() = getDefinition(this, false)
 
-internal fun canGetTypeInfo(element: ParadoxScriptProperty): Boolean {
+internal fun canGetDefinition(element: ParadoxScriptProperty): Boolean {
 	//最低到2级scriptProperty
 	val parent = element.parent
 	return parent is ParadoxScriptRootBlock || parent?.parent?.parent?.parent is ParadoxScriptRootBlock
 }
 
-private fun getTypeInfo(element: ParadoxScriptProperty, check: Boolean = true): ParadoxTypeInfo? {
-	if(check && !canGetTypeInfo(element)) return null
-	return CachedValuesManager.getCachedValue(element, cachedParadoxTypeInfoKey) {
-		CachedValueProvider.Result.create(resolveTypeInfo(element), element)
+private fun getDefinition(element: ParadoxScriptProperty, check: Boolean = true): ParadoxDefinition? {
+	if(check && !canGetDefinition(element)) return null
+	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionKey) {
+		CachedValueProvider.Result.create(resolveDefinition(element), element)
 	}
 }
 
-private fun resolveTypeInfo(element: ParadoxScriptProperty): ParadoxTypeInfo? {
+private fun resolveDefinition(element: ParadoxScriptProperty): ParadoxDefinition? {
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
 	val ruleGroup = paradoxRuleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val scriptPath = element.paradoxScriptPath ?: return null
 	val definition = ruleGroup.types.values.find { it.matches(element, elementName, path, scriptPath) } ?: return null
-	return definition.toTypeInfo(element, elementName)
+	return definition.toDefinition(element, elementName)
 }
 
 
@@ -374,6 +366,48 @@ fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, pr
 	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, hasDefault, keepOrder)
 }
 
+//Link Extensions
+fun resolveLink(link:String,context:PsiElement):PsiElement?{
+	return when {
+		link.startsWith("#") -> resolveLocalisationLink(link, context)
+		link.startsWith("$") -> resolveScriptLink(link, context)
+		else -> null
+	}
+}
+
+private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
+	return findLocalisation(link.drop(1), context.paradoxLocale, context.project, hasDefault = true)
+}
+
+private fun resolveScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
+	return findDefinition(link.drop(1), null, context.project)
+}
+
+//Build String Extensions
+
+fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
+	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
+}
+
+fun StringBuilder.appendIconTag(url: String, size: Int = iconSize): StringBuilder {
+	return append("<img src=\"").append(url).append("\" width=\"").append(size).append("\" height=\"").append(size).append("\"/>")
+}
+
+fun StringBuilder.appendFileInfo(fileInfo:ParadoxFileInfo):StringBuilder {
+	return append("[").append(fileInfo.path).append("]")
+}
+
+fun StringBuilder.appendType(type:ParadoxType,subtypes:List<ParadoxType>):StringBuilder{
+	append(type.name)
+	if(subtypes.isNotEmpty()) {
+		subtypes.joinTo(this, ", ", ", ") { subtype -> subtype.name}
+	}
+	return this
+}
+
+fun StringBuilder.appendBr():StringBuilder{
+	return append("<br>")
+}
 //Inline Extensions
 
 @Suppress("NOTHING_TO_INLINE")

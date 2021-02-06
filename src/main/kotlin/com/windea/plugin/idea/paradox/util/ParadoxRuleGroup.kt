@@ -17,6 +17,11 @@ class ParadoxRuleGroup(
 		//path和scriptPath不要重复获取
 		
 		fun matches(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, scriptPath: ParadoxPath): Boolean {
+			return matchesData(data,element, elementName, path, scriptPath)
+		}
+		
+		private fun matchesData(data:Map<String,Any>,element: ParadoxScriptProperty, elementName: String, 
+			path: ParadoxPath, scriptPath: ParadoxPath): Boolean {
 			//valueType必须匹配，默认是object
 			val valueTypeData = data["value_type"] ?: "object"
 			if(valueTypeData is String) {
@@ -96,26 +101,6 @@ class ParadoxRuleGroup(
 			return true
 		}
 		
-		fun toTypeInfo(element: ParadoxScriptProperty, elementName: String): ParadoxTypeInfo {
-			val subtypesData = filterSubtypesData(data, element, elementName)
-			val name = getName(data, element)
-			val type = key
-			val subtypes = subtypesData.entries.map { (k, _) -> k }
-			val localisation = getLocalisation(data, element, name).apply {
-				for((_, v) in subtypesData) addAll(getLocalisation(v, element, name))
-			}
-			val scopes = getScopes(data).apply {
-				for((_, v) in subtypesData) putAll(getScopes(v))
-			}
-			val fromVersion = getFromVersion(data)
-			return ParadoxTypeInfo(name, type, subtypes, localisation, scopes, fromVersion)
-		}
-		
-		private fun filterSubtypesData(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): Map<String, Map<String, Any>> {
-			val subtypes = data["subtypes"] as Map<String, Map<String, Any>>? ?: return emptyMap()
-			return subtypes.filterValues { matchesSubtypesData(it, element, elementName) }
-		}
-		
 		private fun matchesSubtypesData(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): Boolean {
 			//过滤key
 			val keyFilterData = data["key_filter"]
@@ -158,6 +143,24 @@ class ParadoxRuleGroup(
 			return true
 		}
 		
+		fun toDefinition(element: ParadoxScriptProperty, elementName: String): ParadoxDefinition {
+			val name = getName(data, element)
+			val type = getType(data,key)
+			val subtypesData = data["subtypes"] as Map<String,Map<String,Any>>? ?: emptyMap()
+			val filteredSubtypesData = if(subtypesData.isEmpty()) subtypesData else subtypesData.filterValues {
+				matchesSubtypesData(it, element, elementName)
+			}
+			val subtypes = filteredSubtypesData.entries.map { (key, data) -> getType(data,key) }
+			val localisation = getLocalisation(data, element, name).apply {
+				for((_, v) in filteredSubtypesData) addAll(getLocalisation(v, element, name))
+			}
+			val scopes = getScopes(data).apply {
+				for((_, v) in filteredSubtypesData) putAll(getScopes(v))
+			}
+			val fromVersion = getFromVersion(data)
+			return ParadoxDefinition(name, type, subtypes, localisation, scopes, fromVersion)
+		}
+		
 		private fun getName(data: Map<String, Any>, element: ParadoxScriptProperty): String {
 			//几种情况：从value得到，从指定的key的value得到，完全匿名，直接使用elementName
 			val nameFromValueData = data["name_from_value"] as Boolean? ?: false
@@ -173,6 +176,15 @@ class ParadoxRuleGroup(
 				if(!nameKeyData) return anonymousName //完全匿名 
 			}
 			return element.name
+		}
+		
+		private fun getType(data:Map<String,Any>,name:String):ParadoxType{
+			val aliasData = data["alias"]
+			return when{
+				aliasData is String -> return ParadoxType(name,listOf(aliasData))
+				aliasData is List<*> -> return ParadoxType(name, aliasData.cast())
+				else -> ParadoxType(name)
+			}
 		}
 		
 		private fun getLocalisation(data: Map<String, Any>, element: ParadoxScriptProperty, name: String): MutableList<Pair<ConditionalExpression, String>> {

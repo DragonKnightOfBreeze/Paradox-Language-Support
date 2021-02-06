@@ -2,6 +2,7 @@ package com.windea.plugin.idea.paradox
 
 import com.intellij.util.ui.*
 import java.awt.*
+import java.util.*
 
 //File
 
@@ -63,10 +64,27 @@ data class ParadoxFileInfo(
 
 //Script
 
-data class ParadoxTypeInfo(
+data class ParadoxType(
+	val name:String,
+	val aliases:List<String> = emptyList()
+){
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxType && name == other.name
+	}
+	
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
+	
+	override fun toString(): String {
+		return name
+	}
+}
+
+data class ParadoxDefinition(
 	val name: String,
-	val type: String,
-	val subtypes: List<String>,
+	val type: ParadoxType,
+	val subtypes: List<ParadoxType>,
 	val localisation: List<Pair<ConditionalExpression, String>>,
 	val scopes: Map<String, String>,
 	val fromVersion: String
@@ -75,6 +93,18 @@ data class ParadoxTypeInfo(
 	val localisationValueKeys = localisation.mapTo(linkedSetOf()) { it.second }
 	val hasLocalisation = localisation.isNotEmpty()
 	val hasScopes = scopes.isNotEmpty()
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxDefinition && name == other.name && type == other.type
+	}
+	
+	override fun hashCode(): Int {
+		return Objects.hash(name,type)
+	}
+	
+	override fun toString(): String {
+		return "$name: $type"
+	}
 }
 
 //Localisation
@@ -94,7 +124,7 @@ class ParadoxLocale(data:Map<String,Any>) {
 	}
 	
 	override fun toString(): String {
-		return "ParadoxLocale: $name"
+		return name
 	}
 }
 
@@ -105,7 +135,7 @@ class ParadoxSequentialNumber(data:Map<String,Any>) {
 	val popupText = "$name - $description"
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxSequentialNumber && name == other.name 
+		return this === other || other is ParadoxSequentialNumber && name == other.name
 	}
 	
 	override fun hashCode(): Int {
@@ -113,7 +143,7 @@ class ParadoxSequentialNumber(data:Map<String,Any>) {
 	}
 	
 	override fun toString(): String {
-		return "ParadoxSequentialNumber: $name"
+		return name
 	}
 }
 
@@ -137,7 +167,7 @@ class ParadoxColor(data:Map<String,Any>){
 	}
 	
 	override fun toString(): String {
-		return "ParadoxColor: $name"
+		return name
 	}
 }
 
@@ -155,17 +185,11 @@ class ParadoxCommandScope(data:Map<String,Any>) {
 	val isPrimary:Boolean by dataWithDefault
 	val isSecondary:Boolean by dataWithDefault
 	
-	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxCommandScope && name == other.name
-	}
+	override fun equals(other: Any?) = this === other || other is ParadoxCommandScope && name == other.name
 	
-	override fun hashCode(): Int {
-		return name.hashCode()
-	}
+	override fun hashCode() = name.hashCode()
 	
-	override fun toString(): String {
-		return "ParadoxCommandScope: $name"
-	}
+	override fun toString() = name
 }
 
 class ParadoxCommandField(data:Map<String,Any>){
@@ -188,6 +212,6 @@ class ParadoxCommandField(data:Map<String,Any>){
 	}
 	
 	override fun toString(): String {
-		return "ParadoxCommandField: $name"
+		return name
 	}
 }

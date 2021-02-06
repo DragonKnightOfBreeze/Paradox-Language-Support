@@ -17,14 +17,14 @@
 * [X] 解析`typeMetadata`的`name` `type` `localisation` `scope` `fromVersion`，TODO：`subTypes`
 * [X] 解决`scriptProperty.paradoxTypeMetadata.name`和`scriptProperty.name`的兼容性问题
 * [X] 编写规则文件`locations.txt`并应用
-* [X] `typeMetadata`重命名为`typeInfo`
+* [X] `typeMetadata`重命名为`definitionInfo`
 * [X] 修复索引的相关bug（不保证索引的key完全正确）
 * [X] 修复`00_edicts.txt`无限重复解析的bug（应当是scriptVariable索引的问题）
 * [X] definition文档中列出definitionLocalisation
 * [X] definition文档中列出definitionLocalisation并且绑定psi链接
 * [X] 修复索引的相关bug
 * [X] 添加配置`renderLineCommentText`
-* [X] 尝试得到`typeInfo`时，`element`必须是`scriptProperty`且`value`必须是`scriptBlock`
+* [X] 尝试得到`definitionInfo`时，`element`必须是`scriptProperty`且`value`必须是`scriptBlock`
 * [X] 解析`localisationCommandKey`
 * [X] 让`PsiNamedElement`也实现`PsiCheckNameElement`
 * [X] 改为使用自定义的`com.windea.plugin.idea.paradox.core.psi.PsiCheckRenameElement`，整理目录
@@ -57,6 +57,7 @@
 * [X] 本地化文件渲染`propertyReference`时，如果有颜色参数，即使`propertyReference`未解析或者是变量，仍然正确渲染颜色，保留颜色参数
 * [X] 实现本地化属性的`CopyRawTextIntention`、`CopyPlainTextIntention`、`CopyRichTextIntention`
 * [X] `DefinitionInfo`改为`TypeInfo`
+* [X] `TypeInfo`改为`Definition`，支持解析`alias`，部分提取buildString的扩展
 * [ ] 为规则文件`types.yml`添加规则`name_prefix`和`name_suffix`（已完成`common`目录）
 * [ ] 为规则文件`types.yml`添加规则`icon`
 * [ ] 解析规则文件`types.yml`的规则`type_from_file`

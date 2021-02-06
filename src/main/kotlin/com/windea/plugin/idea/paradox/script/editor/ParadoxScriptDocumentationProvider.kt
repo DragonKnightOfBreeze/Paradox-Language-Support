@@ -4,20 +4,15 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.*
-import com.windea.plugin.idea.paradox.core.*
-import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
-	companion object {
-		private val _iconTitle = message("paradox.documentation.icon")
-		private val _effectTitle = message("paradox.documentation.effect")
-		private val _tagsTitle = message("paradox.documentation.tags")
-	}
-	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
-		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_ID) return getScriptedLocInfo(originalElement)
+		//处理是scripted_loc的特殊情况
+		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_ID) {
+			return getScriptLocalisationInfo(originalElement)
+		}
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableInfo(element)
@@ -28,59 +23,62 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getVariableInfo(element: ParadoxScriptVariable): String {
 		return buildString {
+			val name = element.name
 			definition {
-				element.paradoxFileInfo?.path?.let { paradoxPath -> append("[").append(paradoxPath).append("]<br>") }
-				append("(script variable) <b>").append(element.name.escapeXml()).append("</b>")
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				append("(script variable) <b>").append(name.escapeXml()).append("</b>")
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 		}
 	}
 	
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
-		val name = element.name
-		val typeInfo = element.paradoxTypeInfo
-		if(typeInfo != null) return getTypeInfo(element, typeInfo)
+		val definition = element.paradoxDefinition
+		if(definition != null) return getDefinition(element, definition)
 		return buildString {
+			val name = element.name
 			definition {
-				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(script property) <b>").append(name.escapeXml()).append("</b>")
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 		}
 	}
 	
-	private fun getTypeInfo(element: ParadoxScriptProperty, typeInfo: ParadoxTypeInfo): String {
+	private fun getDefinition(element: ParadoxScriptProperty, definition: ParadoxDefinition): String {
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				val (name, type, subtypes, localisation) = typeInfo
-				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-				if(subtypes.isNotEmpty()) {
-					subtypes.joinTo(this, ", ", ", ")
-				}
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				val (name, type, subtypes, localisation) = definition
+				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
 				if(localisation.isNotEmpty()) {
-					append("<br>")
+					appendBr().appendBr()
+					var isFirst = true
 					for((k, v) in localisation) {
-						append("<br>(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
+						if(isFirst) isFirst = false else appendBr()
+						append("(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
 					}
 				}
 			}
 		}
 	}
 	
-	private fun getScriptedLocInfo(element: PsiElement): String {
-		val name = element.text
+	private fun getScriptLocalisationInfo(element: PsiElement): String {
 		return buildString {
+			val name = element.text
 			definition {
 				append("(localisation command field) <b>").append(name).append("</b>")
-				append("<br>")
-				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append("scripted_loc")
+				appendBr().appendBr()
+				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append("scripted_loc")
 			}
 		}
 	}
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
-		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_ID) return getScriptedLocDoc(originalElement)
+		//处理是scripted_loc的特殊情况
+		if(originalElement != null && originalElement.elementType == COMMAND_FIELD_ID) {
+			return getScriptLocalisationDoc(originalElement)
+		}
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableDoc(element)
@@ -91,9 +89,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getVariableDoc(element: ParadoxScriptVariable): String {
 		return buildString {
+			val name = element.name
 			definition {
-				element.paradoxFileInfo?.path?.let { paradoxPath -> append("[").append(paradoxPath).append("]<br>") }
-				append("(script variable) <b>").append(element.name).append("</b>")
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				append("(script variable) <b>").append(name).append("</b>")
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
@@ -109,12 +108,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
-		val name = element.name
-		val typeInfo = element.paradoxTypeInfo
-		if(typeInfo != null) return getDefinitionDoc(element, typeInfo)
+		val definition = element.paradoxDefinition
+		if(definition != null) return getDefinitionDoc(element, definition)
 		return buildString {
+			val name = element.name
 			definition {
-				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]<br>") }
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(script property) <b>").append(name.escapeXml()).append("</b>")
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
@@ -130,19 +129,18 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionDoc(element: ParadoxScriptProperty, typeInfo: ParadoxTypeInfo): String {
+	private fun getDefinitionDoc(element: ParadoxScriptProperty, definition: ParadoxDefinition): String {
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.path?.let { append("[").append(it).append("]") }
-				val (name, type, subtypes, localisation) = typeInfo
-				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(type)
-				if(subtypes.isNotEmpty()) {
-					subtypes.joinTo(this, ", ", ", ")
-				}
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				val (name, type, subtypes, localisation) = definition
+				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
 				if(localisation.isNotEmpty()) {
-					append("<br>")
+					appendBr().appendBr()
+					var isFirst = true
 					for((k, v) in localisation) {
-						append("<br>(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
+						if(isFirst) isFirst = false else appendBr()
+						append("(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
 					}
 				}
 			}
@@ -157,7 +155,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//本地化文本
 			if(settings.renderDefinitionText) {
-				val localisation = typeInfo.localisation
+				val localisation = definition.localisation
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((name, key) in localisation) {
@@ -178,31 +176,19 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getScriptedLocDoc(element: PsiElement): String {
-		val name = element.text
+	private fun getScriptLocalisationDoc(element: PsiElement): String {
 		return buildString {
+			val name = element.text
 			definition {
 				append("(localisation command field) <b>").append(name).append("</b>")
-				append("<br>")
-				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append("scripted_loc")
+				appendBr().appendBr()
+				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append("scripted_loc")
 			}
 		}
 	}
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
-		return when {
-			link == null || context == null -> null
-			link.startsWith("#") -> getLocalisationLink(link.drop(1), context)
-			link.startsWith("$") -> getScriptLink(link.drop(1), context)
-			else -> null
-		}
-	}
-	
-	private fun getLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-		return findLocalisation(link, context.paradoxLocale, context.project, hasDefault = true)
-	}
-	
-	private fun getScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
-		return findDefinition(link, null, context.project)
+		if(link == null || context == null) return null
+		return resolveLink(link, context)
 	}
 }

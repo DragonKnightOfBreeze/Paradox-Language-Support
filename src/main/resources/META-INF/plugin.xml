@@ -152,7 +152,7 @@
     <codeInsight.lineMarkerProvider
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.editor.ParadoxDefinitionLocalisationLineMarkerProvider"/>
-    <codeInsight.typeInfo 
+    <codeInsight.definition 
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
     <anchorReferenceProvider

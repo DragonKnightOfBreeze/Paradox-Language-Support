@@ -22,7 +22,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
 		//如果是定义，则加上下划线突出显示
-		if(element.paradoxTypeInfo != null) {
+		if(element.paradoxDefinition != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.range(element.propertyKey)
 				.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)
@@ -57,20 +57,5 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
 				.create()
 		}
-		//val definitions = findDefinitions(name, null, project).toTypedArray()
-		//if(definitions.isNotEmpty()) {
-		//	holder.newSilentAnnotation(INFORMATION)
-		//		.textAttributes(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
-		//		.gutterIconRenderer(ParadoxStringDefinitionGutterIconRenderer(name, definitions))
-		//		.create()
-		//	return
-		//}
-		//val localisations = findLocalisations(name, null, project,hasDefault = true).toTypedArray()
-		//if(localisations.isNotEmpty()) {
-		//	holder.newSilentAnnotation(INFORMATION)
-		//		.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
-		//		.gutterIconRenderer(ParadoxStringLocalisationGutterIconRenderer(name, localisations))
-		//		.create()
-		//}
 	}
 }

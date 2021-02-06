@@ -25,7 +25,7 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val elements = StubIndex.getElements(this.getKey(), type, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
-			val name = element.paradoxTypeInfo?.name
+			val name = element.paradoxDefinition?.name
 			if(name != null && predicate(name)) result.add(element)
 		}
 		return result

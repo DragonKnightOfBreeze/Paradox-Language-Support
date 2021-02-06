@@ -38,13 +38,13 @@ private fun generateDocuments(root: String, documentNameTypeMap: Map<String, Str
 private fun getDocumentText(documentName: String, type: String, project: Project): String {
 	val definitions = findDefinitions(type, project).filter { it.paradoxFileInfo?.rootType == ParadoxRootType.Stdlib }
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
-		val typeInfo = it.paradoxTypeInfo
-		val id = typeInfo?.name
-		val name = typeInfo?.localisation?.find { (k, _) -> k.value == "name" }
-		val description = typeInfo?.localisation?.find { (k, _) -> k.value == "description" }?.let { (_, v) ->
+		val definition = it.paradoxDefinition
+		val id = definition?.name
+		val name = definition?.localisation?.find { (k, _) -> k.value == "name" }
+		val description = definition?.localisation?.find { (k, _) -> k.value == "description" }?.let { (_, v) ->
 			findLocalisation(v, null, project)?.extractText()
 		}
-		val effect = typeInfo?.localisation?.find { (k, _) -> k.value == "effect" }?.let { (_, v) ->
+		val effect = definition?.localisation?.find { (k, _) -> k.value == "effect" }?.let { (_, v) ->
 			findLocalisation(v, null, project)?.extractText()
 		}
 		buildString {
