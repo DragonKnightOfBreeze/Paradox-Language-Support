@@ -39,7 +39,7 @@ const val paradoxBundleName = "messages.ParadoxBundle"
 
 val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
-val scriptRuleFileExtensions = arrayOf("pls","cwt")
+val scriptRuleFileExtensions = arrayOf("cw","cwt") //兼容cwtools
 
 const val descriptorFileName = "descriptor.mod"
 val exeFileNames = arrayOf("stellaris.exe")

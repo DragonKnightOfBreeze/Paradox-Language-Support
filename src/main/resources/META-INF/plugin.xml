@@ -95,7 +95,7 @@
     <!--region Paradox Script Language-->
     <fileType
         language="Paradox Script"
-        name="Paradox Script File" fieldName="INSTANCE" extensions="pls;cwt"
+        name="Paradox Script File" fieldName="INSTANCE"
         implementationClass="com.windea.plugin.idea.paradox.script.ParadoxScriptFileType"/>
     <lang.fileViewProviderFactory
         language="Paradox Script"
