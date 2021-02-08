@@ -47,7 +47,7 @@ val paradoxPathKey = Key<ParadoxPath>("paradoxPath")
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo")
 val cachedParadoxPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxPath")
-val cachedParadoxScriptPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxScriptPath")
+val cachedParadoxPropertyPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxPropertyPath")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 
@@ -105,43 +105,38 @@ private fun getLocale(element: PsiElement): ParadoxLocale? {
 }
 
 
-val PsiElement.paradoxScriptPath: ParadoxPath? get() = getScriptPath(this)
+val PsiElement.paradoxPropertyPath: ParadoxPath? get() = getPropertyPath(this)
 
-private fun getScriptPath(element: PsiElement): ParadoxPath? {
-	if(!canGetScriptPath(element)) return null
-	return CachedValuesManager.getCachedValue(element, cachedParadoxScriptPathKey) {
-		CachedValueProvider.Result.create(resolveScriptPath(element), element)
+private fun getPropertyPath(element: PsiElement): ParadoxPath? {
+	if(!canGetPropertyPath(element)) return null
+	return CachedValuesManager.getCachedValue(element, cachedParadoxPropertyPathKey) {
+		CachedValueProvider.Result.create(resolvePropertyPath(element), element)
 	}
 }
 
-internal fun canGetScriptPath(element: PsiElement): Boolean {
+internal fun canGetPropertyPath(element: PsiElement): Boolean {
 	return element is ParadoxScriptProperty || element is ParadoxScriptValue
 }
 
-private fun resolveScriptPath(element: PsiElement): ParadoxPath? {
-	return when {
-		element is ParadoxScriptProperty || element is ParadoxScriptValue -> {
-			val subPaths = mutableListOf<String>()
-			var current = element
-			while(current !is PsiFile) {
-				when {
-					current is ParadoxScriptProperty -> {
-						subPaths.add(0, current.name)
-					}
-					current is ParadoxScriptValue -> {
-						val parent = current.parent ?: break
-						if(parent is ParadoxScriptBlock) {
-							subPaths.add(0, parent.indexOfChild(current).toString())
-						}
-						current = parent
-					}
-				}
-				current = current.parent ?: break
+private fun resolvePropertyPath(element: PsiElement): ParadoxPath {
+	val subPaths = mutableListOf<String>()
+	var current = element
+	while(current !is PsiFile) {
+		when {
+			current is ParadoxScriptProperty -> {
+				subPaths.add(0, current.name)
 			}
-			ParadoxPath(subPaths)
+			current is ParadoxScriptValue -> {
+				val parent = current.parent ?: break
+				if(parent is ParadoxScriptBlock) {
+					subPaths.add(0, parent.indexOfChild(current).toString())
+				}
+				current = parent
+			}
 		}
-		else -> null
+		current = current.parent ?: break
 	}
+	return ParadoxPath(subPaths)
 }
 
 
@@ -240,8 +235,8 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
 	val ruleGroup = paradoxRuleGroups[gameType.key] ?: return null
 	val elementName = element.name
-	val scriptPath = element.paradoxScriptPath ?: return null
-	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, scriptPath) } ?: return null
+	val propertyPath = element.paradoxPropertyPath ?: return null
+	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, propertyPath) } ?: return null
 	return definition.toDefinitionInfo(element, elementName)
 }
 

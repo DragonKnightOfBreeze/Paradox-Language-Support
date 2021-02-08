@@ -13,9 +13,9 @@ class ParadoxRuleGroup(
 	class Definition(val key: String, val data: Map<String, Any>) {
 		//不要单纯地遍历列表进行匹配，需要先通过某种方式过滤不合法的scriptProperty
 		//暂时认为3级以及以下的scriptProperty不再需要匹配
-		//path和scriptPath不要重复获取
+		//path和propertyPath不要重复获取
 		
-		fun matches(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, scriptPath: ParadoxPath): Boolean {
+		fun matches(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
 			//valueType必须匹配，默认是object
 			val valueTypeData = data["value_type"] ?: "object"
 			if(valueTypeData is String) {
@@ -46,9 +46,9 @@ class ParadoxRuleGroup(
 			//处理是否需要跳过rootKey
 			val skipRootKeyData = data["skip_root_key"]
 			when(skipRootKeyData) {
-				is String -> if(scriptPath.length != 2 || skipRootKeyData != scriptPath.root) return false
-				is Boolean -> if(scriptPath.length != 2 || !skipRootKeyData) return false
-				else -> if(scriptPath.length != 1) return false
+				is String -> if(propertyPath.length != 2 || skipRootKeyData != propertyPath.root) return false
+				is Boolean -> if(propertyPath.length != 2 || !skipRootKeyData) return false
+				else -> if(propertyPath.length != 1) return false
 			}
 			//过滤key
 			val keyFilterData = data["key_filter"]

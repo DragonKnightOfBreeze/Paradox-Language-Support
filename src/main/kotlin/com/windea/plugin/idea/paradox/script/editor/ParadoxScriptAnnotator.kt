@@ -21,13 +21,15 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
-		//如果是定义，则加上下划线突出显示
-		if(element.paradoxDefinitionInfo != null) {
-			holder.newSilentAnnotation(INFORMATION)
-				.range(element.propertyKey)
-				.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)
-				.create()
-		}
+		//如果是定义，则
+		if(element.paradoxDefinitionInfo != null) annotateDefinition(element, holder)
+	}
+	
+	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder) {
+		holder.newSilentAnnotation(INFORMATION)
+			.range(element.propertyKey)
+			.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)
+			.create()
 	}
 	
 	private fun annotateVariableReference(element: ParadoxScriptVariableReference, holder: AnnotationHolder) {
@@ -51,7 +53,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				.create()
 			return
 		}
-		val localisation = findLocalisation(name, null, project,hasDefault = true)
+		val localisation = findLocalisation(name, null, project, hasDefault = true)
 		if(localisation != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
