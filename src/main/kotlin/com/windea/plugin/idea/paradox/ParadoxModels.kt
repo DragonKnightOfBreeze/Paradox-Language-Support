@@ -1,6 +1,7 @@
 package com.windea.plugin.idea.paradox
 
 import com.intellij.util.ui.*
+import com.windea.plugin.idea.paradox.script.psi.*
 import java.awt.*
 import java.util.*
 
@@ -85,14 +86,13 @@ data class ParadoxDefinitionInfo(
 	val name: String,
 	val type: ParadoxType,
 	val subtypes: List<ParadoxType>,
-	val localisation: List<Pair<ConditionalExpression, String>>,
-	val scopes: Map<String, String>,
+	val localisation: Map<String, String>,
+	val properties: Map<String, Any?>,
+	val scopes: Map<String, Map<String,String>>,
 	val fromVersion: String
 ){
-	val localisationNames = localisation.mapTo(linkedSetOf()) { it.first }
-	val localisationValueKeys = localisation.mapTo(linkedSetOf()) { it.second }
-	val hasLocalisation = localisation.isNotEmpty()
-	val hasScopes = scopes.isNotEmpty()
+	val resolvedLocalisation = mutableListOf<Pair<ConditionalExpression,String>>()
+	val resolvedLocalisationNames = mutableListOf<String>()
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxDefinitionInfo && name == other.name && type == other.type
@@ -104,6 +104,51 @@ data class ParadoxDefinitionInfo(
 	
 	override fun toString(): String {
 		return "$name: $type"
+	}
+	
+	fun resolveLocalisation(element: ParadoxScriptProperty) {
+		for((key,value) in localisation) {
+			//如果value以.开始，表示对应的属性的值是localisationKey，否则直接表示localisationKey，$为名字的占位符
+			when{
+				value.startsWith(".") -> {
+					val k = key.toConditionalExpression()
+					val propName = value.drop(1)
+					val prop = element.findProperty(propName)?.propertyValue?.value ?: continue
+					when{
+						prop is ParadoxScriptBlock && prop.isArray -> {
+							for(propValue in prop.valueList) {
+								if(propValue is ParadoxScriptString) {
+									val v = propValue.value
+									resolvedLocalisation.add(k to v)
+									resolvedLocalisationNames.add(v)
+								}  
+							}
+						}
+						prop is ParadoxScriptString -> {
+							val v = prop.value
+							resolvedLocalisation.add(k to v)
+							resolvedLocalisationNames.add(v)
+						}
+					}
+				}
+				else -> {
+					val k = key.toConditionalExpression()
+					val v = formatPlaceholder(value,name)
+					resolvedLocalisation.add(k to v)
+					resolvedLocalisationNames.add(v)
+				}
+			}
+		}
+	}
+	
+	private fun formatPlaceholder(placeholder: String, name: String): String {
+		return buildString {
+			for(c in placeholder) if(c == '$') append(name) else append(c)
+		}
+	}
+	
+	fun resolveProperties(){
+		
 	}
 }
 

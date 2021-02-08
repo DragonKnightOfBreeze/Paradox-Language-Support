@@ -49,8 +49,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val (name, type, subtypes, localisation) = definitionInfo
+				val (name, type, subtypes) = definitionInfo
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
+				val localisation = definitionInfo.resolvedLocalisation
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()
 					var isFirst = true
@@ -133,8 +134,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val (name, type, subtypes, localisation) = definitionInfo
+				val (name, type, subtypes) = definitionInfo
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
+				val localisation = definitionInfo.resolvedLocalisation
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()
 					var isFirst = true
@@ -155,7 +157,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//本地化文本
 			if(settings.renderDefinitionText) {
-				val localisation = definitionInfo.localisation
+				val localisation = definitionInfo.resolvedLocalisation
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((name, key) in localisation) {

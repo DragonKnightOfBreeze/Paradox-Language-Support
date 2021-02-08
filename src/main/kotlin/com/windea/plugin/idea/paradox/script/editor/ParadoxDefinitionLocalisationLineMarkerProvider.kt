@@ -23,7 +23,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 		return when(element) {
 			is ParadoxScriptProperty -> {
 				val definition = element.paradoxDefinitionInfo ?: return null
-				if(!definition.hasLocalisation) return null //没有localisation时不加上gutterIcon
+				if(definition.localisation.isEmpty()) return null //没有localisation时不加上gutterIcon
 				LineMarker(element, definition)
 			}
 			else -> null
@@ -36,21 +36,20 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 		definitionLocalisationGutterIcon,
 		{
 			buildString {
-				val localisation = definitionInfo.localisation
+				val localisation = definitionInfo.resolvedLocalisation
 				var isFirst = true
 				for((k, v) in localisation) {
 					if(isFirst) isFirst = false else appendBr()
-					append("(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
+					append("(definition localisation) ").append(k).append(" = <b>").appendPsiLink("#", v).append("</b>")
 				}
 			}
 		},
 		{ mouseEvent, _ ->
-			val names = definitionInfo.localisationValueKeys
+			val names = definitionInfo.resolvedLocalisationNames
 			val project = element.project
 			val elements = findLocalisations(names, null, project, hasDefault = true, keepOrder = true).toTypedArray()
 			when(elements.size) {
-				0 -> {
-				}
+				0 -> { }
 				1 -> OpenSourceUtil.navigate(true, elements.first())
 				else -> NavigationUtil.getPsiElementPopup(elements, _title).show(RelativePoint(mouseEvent))
 			}

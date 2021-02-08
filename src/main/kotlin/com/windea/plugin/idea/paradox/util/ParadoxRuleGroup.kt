@@ -94,11 +94,14 @@ class ParadoxRuleGroup(
 		fun toDefinitionInfo(element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
 			val name = getName(data, element)
 			val type = getType(data, key)
-			val subtypes = getSubtypes(data, element, elementName)
-			val localisation = getLocalisation(data, element, name, subtypes)
-			val scopes = getScopes(data,subtypes)
-			val fromVersion = getFromVersion(data)
-			return ParadoxDefinitionInfo(name, type, subtypes, localisation, scopes, fromVersion)
+			val subtypes = getSubtypes(element, elementName)
+			val localisation = getLocalisation(subtypes)
+			val properties= getProperties(subtypes)
+			val scopes = getScopes()
+			val fromVersion = getFromVersion()
+			val definitionInfo =  ParadoxDefinitionInfo(name, type, subtypes, localisation,properties, scopes, fromVersion)
+			definitionInfo.resolveLocalisation(element)
+			return definitionInfo
 		}
 		
 		private fun getName(data: Map<String, Any>, element: ParadoxScriptProperty): String {
@@ -127,7 +130,7 @@ class ParadoxRuleGroup(
 			}
 		}
 		
-		private fun getSubtypes(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): List<ParadoxType> {
+		private fun getSubtypes(element: ParadoxScriptProperty, elementName: String): List<ParadoxType> {
 			val subtypesData = data["subtypes"] as? Map<String, Map<String, Any>> ?: return emptyList()
 			val filteredSubtypesData = if(subtypesData.isEmpty()) subtypesData else subtypesData.filterValues {
 				matchesSubtype(it, element, elementName)
@@ -174,88 +177,55 @@ class ParadoxRuleGroup(
 			return true
 		}
 		
-		private fun getLocalisation(data: Map<String, Any>, element: ParadoxScriptProperty, name: String, subtypes: List<ParadoxType>): List<Pair<ConditionalExpression, String>> {
-			val localisationData = data["localisation"] as? Map<String, Any?> ?: return emptyList()
-			val result = mutableListOf<Pair<ConditionalExpression, String>>()
+		private fun getLocalisation(subtypes: List<ParadoxType>): Map<String,String> {
+			val localisationData = data["localisation"] as? Map<String, Any?> ?: return emptyMap()
+			val result = mutableMapOf<String,String>()
 			for((keyData, valueData) in localisationData) {
-				//如果key以subtype:开始，则是subtypeExpression，否则就是localisationName
+				//如果key以subtype:开始，则是subtypeExpression，否则就是name
 				when {
 					keyData.startsWith("subtype:") -> {
 						val expression = keyData.drop(8).toPredicateExpression()
-						valueData as? Map<String, String> ?: continue
 						if(expression.matches(subtypes){ it.name }) {
-							for((keyData1, valueData1) in valueData) {
-								extractLocalisation(keyData1, valueData1, element, result, name)
-							}
+							valueData as? Map<String, String> ?: continue
+							result.putAll(valueData)
 						}
 					}
 					else -> {
 						valueData as? String ?: continue
-						extractLocalisation(keyData, valueData, element, result, name)
+						result.put(keyData,valueData)
 					}
 				}
 			}
 			return result
 		}
 		
-		private fun extractLocalisation(keyData: String, valueData: String, element: ParadoxScriptProperty, result: MutableList<Pair<ConditionalExpression, String>>, name: String) {
-			when {
-				//如果value以.开始，表示对应的属性的值是localisation的key，值可以是string，也可以是string数组
-				valueData.startsWith('.') -> {
-					val k = keyData.toConditionalExpression()
-					val value = element.findProperty(valueData.drop(1))?.propertyValue?.value ?: return
-					when {
-						value is ParadoxScriptBlock && value.isArray -> {
-							for(value1 in value.valueList) {
-								if(value1 is ParadoxScriptString) result.add(k to value1.value)
-							}
-						}
-						value is ParadoxScriptString -> {
-							result.add(k to value.value)
-						}
-					}
-				}
-				//如果包含占位符$，表示用name替换掉占位符后是localisation的key
-				else -> {
-					val k = keyData.toConditionalExpression()
-					val v = replaceLocalisationPlaceholder(valueData, name)
-					result.add(k to v)
-				}
-			}
-		}
-		
-		private fun replaceLocalisationPlaceholder(placeholder: String, name: String): String {
-			return buildString {
-				for(c in placeholder) if(c == '$') append(name) else append(c)
-			}
-		}
-		
-		private fun getScopes(data: Map<String, Any>, subtypes: List<ParadoxType>): Map<String, String> {
-			val scopesData = data["scopes"] as? Map<String, Any?> ?: return emptyMap()
-			val result = mutableMapOf<String, String>()
-			for((keyData, valueData) in scopesData) {
-				//如果key以subtype:开始，则是subtypeExpression，否则就是scopeName
+		private fun getProperties(subtypes: List<ParadoxType>): Map<String,Any?> {
+			val propertiesData = data["properties"] as? Map<String, Any?> ?: return emptyMap()
+			val result = mutableMapOf<String,Any?>()
+			for((keyData, valueData) in propertiesData) {
+				//如果key以subtype:开始，则是subtypeExpression，否则就是name
 				when {
 					keyData.startsWith("subtype:") -> {
 						val expression = keyData.drop(8).toPredicateExpression()
-						valueData as? Map<String, String> ?: continue
 						if(expression.matches(subtypes){ it.name }) {
-							for((keyData1, valueData1) in valueData) {
-								//TODO
-							}
+							valueData as? Map<String, Any?> ?: continue
+							result.putAll(valueData)
 						}
 					}
 					else -> {
-						valueData as? String ?: continue
-						//TODO
+						result.put(keyData,valueData)
 					}
 				}
 			}
 			return result
 		}
 		
-		private fun getFromVersion(data: Map<String, Any>): String {
-			return data["from_version"] as String? ?: ""
+		private fun getScopes(): Map<String, Map<String,String>> {
+			return data["scopes"] as? Map<String, Map<String,String>> ?:  emptyMap()
+		}
+		
+		private fun getFromVersion(): String {
+			return data["from_version"] as? String ?: ""
 		}
 	}
 	
