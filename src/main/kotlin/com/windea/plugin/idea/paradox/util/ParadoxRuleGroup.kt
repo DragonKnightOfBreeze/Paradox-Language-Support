@@ -93,10 +93,10 @@ class ParadoxRuleGroup(
 		
 		fun toDefinitionInfo(element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
 			val name = getName(data, element)
-			val type = getType(data,key)
-			val subtypes = getSubtypes(data,element,elementName)
-			val localisation = getLocalisation(data, element, name,subtypes)
-			val scopes = getScopes(data)
+			val type = getType(data, key)
+			val subtypes = getSubtypes(data, element, elementName)
+			val localisation = getLocalisation(data, element, name, subtypes)
+			val scopes = getScopes(data,subtypes)
 			val fromVersion = getFromVersion(data)
 			return ParadoxDefinitionInfo(name, type, subtypes, localisation, scopes, fromVersion)
 		}
@@ -118,34 +118,31 @@ class ParadoxRuleGroup(
 			return element.name
 		}
 		
-		private fun getType(data:Map<String,Any>,name:String):ParadoxType{
+		private fun getType(data: Map<String, Any>, name: String): ParadoxType {
 			val aliasData = data["alias"]
-			return when{
-				aliasData is String -> return ParadoxType(name,listOf(aliasData))
+			return when {
+				aliasData is String -> return ParadoxType(name, listOf(aliasData))
 				aliasData is List<*> -> return ParadoxType(name, aliasData.cast())
 				else -> ParadoxType(name)
 			}
 		}
 		
-		private fun getSubtypes(data:Map<String,Any>,element:ParadoxScriptProperty,elementName:String):List<ParadoxType>{
-			val subtypesData = data["subtypes"] as? Map<String,Map<String,Any>> ?: return emptyList()
+		private fun getSubtypes(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): List<ParadoxType> {
+			val subtypesData = data["subtypes"] as? Map<String, Map<String, Any>> ?: return emptyList()
 			val filteredSubtypesData = if(subtypesData.isEmpty()) subtypesData else subtypesData.filterValues {
 				matchesSubtype(it, element, elementName)
 			}
-			return filteredSubtypesData.entries.map { (key, data) -> getType(data,key) }
+			return filteredSubtypesData.entries.map { (key, data) -> getType(data, key) }
 		}
 		
 		private fun matchesSubtype(data: Map<String, Any>, element: ParadoxScriptProperty, elementName: String): Boolean {
 			//过滤key
 			val keyFilterData = data["key_filter"]
 			if(keyFilterData is String) {
-				val keyConditions = keyFilterData.split(',')
-				for(keyCondition in keyConditions) {
-					if(keyCondition.isNotEmpty() && keyCondition[0] == '!') {
-						if(elementName == keyCondition.drop(1)) return false
-					} else {
-						if(elementName != keyCondition) return false
-					}
+				val keyExpressions = keyFilterData.split(',').map { it.trim() }
+				for(keyExpression in keyExpressions) {
+					val expression = keyExpression.toPredicateExpression()
+					return expression.matches(elementName)
 				}
 			}
 			//预测表达式
@@ -177,21 +174,20 @@ class ParadoxRuleGroup(
 			return true
 		}
 		
-		private fun getLocalisation(data: Map<String, Any>, element: ParadoxScriptProperty, name: String,subtypes:List<ParadoxType>): List<Pair<ConditionalExpression, String>> {
+		private fun getLocalisation(data: Map<String, Any>, element: ParadoxScriptProperty, name: String, subtypes: List<ParadoxType>): List<Pair<ConditionalExpression, String>> {
 			val localisationData = data["localisation"] as? Map<String, Any?> ?: return emptyList()
 			val result = mutableListOf<Pair<ConditionalExpression, String>>()
 			for((keyData, valueData) in localisationData) {
-				//如果key以$开始，则是subtypeName，否则就是localisationName
-				when{
-					keyData.startsWith('$') -> {
-						val subtypeName = keyData.drop(1)
-						valueData as? Map<String,String> ?:continue
-						if(subtypes.any { it.name == subtypeName }){
-							for((keyData1,valueData1) in valueData){
+				//如果key以subtype:开始，则是subtypeExpression，否则就是localisationName
+				when {
+					keyData.startsWith("subtype:") -> {
+						val expression = keyData.drop(8).toPredicateExpression()
+						valueData as? Map<String, String> ?: continue
+						if(expression.matches(subtypes){ it.name }) {
+							for((keyData1, valueData1) in valueData) {
 								extractLocalisation(keyData1, valueData1, element, result, name)
 							}
 						}
-						
 					}
 					else -> {
 						valueData as? String ?: continue
@@ -228,19 +224,34 @@ class ParadoxRuleGroup(
 			}
 		}
 		
-		private fun replaceLocalisationPlaceholder(placeholder: String, name: String) :String{
+		private fun replaceLocalisationPlaceholder(placeholder: String, name: String): String {
 			return buildString {
-				for(c in placeholder) if(c == '$') append(name) else append(c) 
+				for(c in placeholder) if(c == '$') append(name) else append(c)
 			}
 		}
 		
-		private fun getScopes(data: Map<String, Any>): Map<String, String> {
-			val scopesData = data["scopes"] as? Map<String,Any?> ?: return emptyMap()
-			val result = mutableMapOf<String,String>()
-			for((keyData,valueData) in scopesData){
-				//TODO
+		private fun getScopes(data: Map<String, Any>, subtypes: List<ParadoxType>): Map<String, String> {
+			val scopesData = data["scopes"] as? Map<String, Any?> ?: return emptyMap()
+			val result = mutableMapOf<String, String>()
+			for((keyData, valueData) in scopesData) {
+				//如果key以subtype:开始，则是subtypeExpression，否则就是scopeName
+				when {
+					keyData.startsWith("subtype:") -> {
+						val expression = keyData.drop(8).toPredicateExpression()
+						valueData as? Map<String, String> ?: continue
+						if(expression.matches(subtypes){ it.name }) {
+							for((keyData1, valueData1) in valueData) {
+								//TODO
+							}
+						}
+					}
+					else -> {
+						valueData as? String ?: continue
+						//TODO
+					}
+				}
 			}
-			return result 
+			return result
 		}
 		
 		private fun getFromVersion(data: Map<String, Any>): String {

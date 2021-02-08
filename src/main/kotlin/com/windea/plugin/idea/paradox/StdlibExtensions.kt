@@ -241,7 +241,7 @@ class PredicateExpression(
 ) : Expression {
 	val marker: Char? = expression.firstOrNull()?.takeIf { it == '!' }
 	val value: String = if(marker != null) expression.drop(1) else expression
-	val not: Boolean = marker == '!'
+	val invert: Boolean = marker == '!'
 	
 	override val length = expression.length
 	
@@ -257,7 +257,19 @@ class PredicateExpression(
 	
 	operator fun component1(): String = value
 	
-	operator fun component2(): Boolean = not
+	operator fun component2(): Boolean = invert
+	
+	fun matches(other:String):Boolean{
+		return if(invert) value != other else value == other
+	}
+	
+	fun matches(other:List<String>):Boolean{
+		return if(invert) value !in other else value !in other
+	}
+	
+	inline fun <T> matches(other:List<T>,selector:(T)->String):Boolean{
+		return if(invert) other.all{ value != selector(it) } else other.any { value == selector(it) }
+	}
 }
 
 fun String.toPredicateExpression() = PredicateExpression(this)

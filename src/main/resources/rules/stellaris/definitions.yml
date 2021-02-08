@@ -22,11 +22,13 @@ definitions:
         predicate:
           selectable: true
     localisation:
-      $show_name:
+      subtype:show_name:
         name!: ".name"
-      $selectable:
+      subtype:selectable:
         description?: ".description"
         tooltip?: ".tooltip"
+    properties:
+      subtype:show_name
 
   anomaly_category:
     path: "common/anomalies"
@@ -509,7 +511,7 @@ definitions:
     localisation:
       name!: "$"
       description!: "$_DESC"
-      $base_level:
+      subtype:base_level:
         details!: "$_MEGASTRUCTURE_DETAILS"
         delayed_info?: "$_CONSTRUCTION_INFO_DELAYED"
 
@@ -586,7 +588,7 @@ definitions:
     localisation:
       name!: "$"
       description!: "$_desc"
-      $colonizable:
+      subtype:colonizable:
         habitability!: "mod_$_habitability"
         preference_trait: "trait_$_preference"
         preference_trait_description: "trait_$_preference_desc"
@@ -805,7 +807,7 @@ definitions:
         predicate:
           ship_size?: "$ship_size.designable"
     localisation:
-      $designable:
+      subtype:designable:
         name!: "$"
 
   component_slot:
