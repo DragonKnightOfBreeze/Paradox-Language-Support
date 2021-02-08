@@ -1,3 +1,5 @@
+# scopes - from replace_scope
+
 definitions:
   agenda:
     path: "common/agendas"
@@ -5,10 +7,35 @@ definitions:
     name_prefix: "agenda_"
     localisation:
       name!: "$"
+    properties:
+      weight_modifier:
+        enum:factor_weight: float
+        $$modifier_rule*: $$modifier_rule
+      modifier:
+        $$modifier*: $$modifier
+    scopes:
+      weight_modifier: [ this: leader, root: leader, from: country ]
+      modifier: [ this: country, root: country ]
 
   ai_budget:
     path: "common/ai_budget"
     file_extension: "txt"
+    proeprties:
+      resource: $resource
+      type: enum:ai_budget_type
+      category: $economic_category
+      potential:
+        $$trigger*: $$trigger
+      fraction?:
+        enum:weight_or_base: float
+        $$modifer_rule*: $$modifier_rule
+      static_max?:
+        base: int
+        $$modifier_rule*: $$modifier_rule
+      static_min?:
+        base: int
+        $$modifier_rule*: $$modifier_rule
+    global_scopes: [ this: country, root: country ]
 
   ambient_object:
     path: "common/ambient_objects"
@@ -28,7 +55,16 @@ definitions:
         description?: ".description"
         tooltip?: ".tooltip"
     properties:
-      subtype:show_name
+      subtype:show_name:
+        name: localisation # not localisation_synced
+      subtype:!show_name:
+        name: string
+      subtype:selectable:
+        description: localisation
+        tooltip: localisation
+      entity: $model_entity
+      selectable: boolean
+      show_name: boolean
 
   anomaly_category:
     path: "common/anomalies"
@@ -36,6 +72,33 @@ definitions:
     localisation:
       name!: "$"
       description!: ".desc"
+    properties:
+      should_ai_use?: boolean # default: no
+      should_ai_and_humans_use: boolean # default: yes
+      desc?:
+      - localisation 
+      - trigger: 
+          $$trigger*: $$trigger
+        text: localisation
+      picture?: $sprite
+      level: int # 1..10
+      null_spawn_chance?: float # 0.0..1.0, default: 0
+      max_once?: boolean # default: no
+      max_once_global?: boolean # default:no
+      spawn_chance: # default: 0
+        base?: float
+        $$modifier_rule_add_factor*: $$modifier_rule_factor
+      on_spawn?:
+        $$effect*: $$effect
+      on_success:
+      - $event.ship
+      - int: 
+        - $event.ship
+        - max_once?: boolean # default: yes
+          max_once_global?: boolean # default: no
+          anomaly_event: $event.ship
+          $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+    global_scopes: [root: planet, this: planet, from: ship]
     graph_related_types:
     - "event"
     - "special_project"
@@ -46,7 +109,15 @@ definitions:
     localisation:
       name!: "$"
       description!: ".desc"
-
+    properties:
+      picture?: $sprite
+      desc?:
+      - localisation
+      - trigger:
+          $$trigger*: $$trigger
+        text: localisation
+    # push_scope: archaeological_site
+    
   army:
     path: "common/armies"
     file_extension: "txt"
@@ -81,12 +152,24 @@ definitions:
   asteroid_belt:
     path: "common/asteroid_belt"
     file_extension: "txt"
+    properties:
+      mesh+: string
+      shader?: string
 
   attitude:
     path: "common/attitudes"
     file_extension: "txt"
     localisation:
       name!: "attribute_$"
+    properties:
+      type: string
+      behaviour:
+        attack?: boolean
+        weaken?: boolean
+        alliance?: boolean
+        vassalize?: boolean
+        trade?: boolean
+        coexist?: boolean
 
   bombardment_stance:
     path: "common/bombardment_stances"
@@ -113,6 +196,18 @@ definitions:
   button_effect:
     path: "common/button_effects"
     file_extension: "txt"
+    properties:
+      potential:
+        $$trigger*: $$trigger
+      allow:
+        $$trigger*: $$trigger
+      effect?:
+        $$trigger*: $$trigger
+    scopes:
+      potential: [ this: any, root: any, from: country ]
+      allow: [ this: any, root: any, from: country ]
+      effect: [ this: any, root: any, from: country ]
+    # TODO where is it from?
     replace_scopes:
       this: "selected_object | player_country"
       from: "player_country"
@@ -157,6 +252,22 @@ definitions:
   country_customization:
     path: "common/country_customization"
     file_extension: "txt"
+    properties:
+      colony_shelter:
+        default: $building
+        $planet_class.colonizable: $building
+      graphical_culture_for_random_empire?:
+        $graphical_culture*:
+          modifier*:
+            add: int
+            species_portrait: $portrait
+      weight?:
+        base?: int
+        $$modifier_rule_add*: $$modifier_rule_add
+    scopes:
+      weight: [ this: country, root: country ]
+
+
 
   color:
     path: "common/colors"
@@ -320,6 +431,25 @@ definitions:
     path: "common/economic_plans"
     file_extension: "txt"
     name_suffix: "_plan"
+    properties:
+      type: string
+      income:
+        $resource+: int
+      focus:
+        $resource+: int
+      subplan+:
+        potential:
+          $$trigger*: $$trigger
+        income:
+          $resource+: int
+        focus:
+          $resource+: int
+      pops: int
+      empire_size: float
+      ai_weight:
+        weight: float
+        $$modifier_rule*: $$modifier_rule
+    global_scopes: [ this: country, root: country ]
 
   edict:
     path: "common/edicts"
@@ -420,8 +550,8 @@ definitions:
       description!: "$_desc"
       rule_title!: ".rule_title"
       rule_title_female?: ".rule_title_female"
-      heir_title?: heir_title
-      heir_title_female?: heir_title_female
+      heir_title?: "heir_title"
+      heir_title_female?: "heir_title_female"
 
   authority:
     path: "common/governments/authorities"
@@ -489,6 +619,19 @@ definitions:
     localisation:
       name!: "MANDATE_$"
       description!: "MANDATE_$_DESC"
+    properties:
+      valid:
+        $$trigger*: $$trigger
+      parameters?:
+        self?: enum:scope
+        enemy?: enum:scope
+        master?: enum:scope
+        planet?: enum:scope
+      on_term_started?:
+        $$effect*: $$effect
+      on_term_ended?:
+        $$effect*: $$effect
+    global_scopes: [ this: planet, root: planet ]
 
   map_mode:
     path: "common/map_modes"
@@ -497,6 +640,18 @@ definitions:
     localisation:
       name!: "$"
       description!: "$_desc"
+    properties:
+      icon: $sprite # gfx_reference
+      enable_terra_incognita: boolean
+      can_change_point_of_view?: boolean
+      shortcut?: string # shortcut
+      display_claims?: boolean
+      color+:
+        value!: [color, enum:map_mode_color_value ]
+        custom_tooltip?: localisation
+        hardcoded_tooltip?: enum:map_mode_color_hardcoded_tooltip
+        condition:
+          $$trigger*: $$trigger
 
   megastructure:
     path: "common/megastructures"
@@ -531,6 +686,8 @@ definitions:
     localisation:
       name!: "$"
       description!: "$_desc"
+    properties:
+      icon: path
 
   observation_station_mission:
     path: "common/observation_station_missions"
@@ -553,12 +710,32 @@ definitions:
       triggered_opnion_modifier:
         predicate:
           trigger: any
-      block_triggered:
+      block_triggered_opinion_modifier:
         predicate:
           block_triggered: true
-    name_prefix: ["opinion_", "triggered_opinion_"]
+    name_prefix: [ "opinion_", "triggered_opinion_" ]
     localisation:
       name!: "$"
+    properties:
+      opinion:
+      - float
+      - base?: float
+        $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+      triggerd: boolean
+      block_triggered: boolean
+      subtype:!triggered_opnion_modifier:
+        decay?:
+          base?: int
+          $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+        accumulative?: boolean # default: no
+        min: int # -9999..-1
+        max: int # 1..9999
+        unique?: boolean
+        monthly?: [yes, int]
+      subtype:triggered_opnion_modifier:
+        trygger:
+          $$trigger*: $$trigger
+    global_scopes: [this: country, root: country, from: country]
     hard_coded_file_names:
     - "01_personality_opinions.txt"
     - "00_opinion_modifiers.txt"
@@ -610,6 +787,13 @@ definitions:
         predicate:
           is_null?: false
     name_prefix: "pm_"
+    prperties:
+      is_null?: boolean #default: no
+      spawn_chance:
+        value?: int
+        $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+      subtype:!null:
+        modifier: $static_modifier
 
   policy:
     path: "common/policies"
@@ -671,6 +855,10 @@ definitions:
     path: "common/precursor_civilizations"
     file_extension: "txt"
     name_prefix: "precursor_"
+    properties:
+      size: int
+      possible?:
+        $$trigger*: $$trigger
 
   empire_name_parts_list:
     path: "common/random_names"
@@ -746,6 +934,25 @@ definitions:
     localisation:
       name!: "$"
       description!: "$_desc"
+    properties:
+      activation_duration: int # 0..inf
+      portrait: $sprite
+      sound: $sound_effect
+      resources:
+        category: $economic_category
+        $$economic_template*: $$economic_template
+      ai_weight:
+        enum:factor_weight: float
+        $$modifier_rule*: $$modifier_rule
+      $$triggered_country_modifier_country: $$triggered_country_modifier_country
+      score: int # 0..inf
+      active_effect: 
+        $$effect*: $$effect
+      possible:
+        $$trigger*: $$trigger
+    global_scopes: [root: country, this: country]
+    
+      
 
   resolution_category:
     path: "common/resolution_categories"
@@ -821,18 +1028,44 @@ definitions:
     file_extension: "txt"
     localisation:
       name!: "$"
-    replace_scopes:
-      root: "sector"
-      this: "sector"
+    properties:
+      ai_weight:
+        weight: float
+        $$modifer_rule*: $$modifer_rule
+      district*:
+        key: $district
+        weight:
+          weight: float
+          $$modifer_rule*: $$modifer_rule
+      building*:
+        key: $building
+        weight:
+          weight: float
+          $$modifer_rule*: $$modifer_rule
+    global_scopes: [ root: sector, this: sector ]
 
   sector_type:
     path: "common/sector_types"
     file_extension: "txt"
     localisation:
       name!: "$"
-    replace_scopes:
-      root: "system"
-      this: "system"
+    properties:
+      system_scores?:
+        base?: int
+        $$modifier_rule*: $$modifier_rule
+      local_capital_scores:
+        base?: int
+        modifier?:
+          mult: float
+          $$trigger*: $$trigger
+      resource_conversion_table:
+        energy: int
+        monerals: int
+      resources:
+        category: $economic_category
+        $$economic_template*: $$economic_template
+      max_jumps: int
+    global_scopes: [ root: system, this: system ]
 
   ship_behavior:
     path: "common/ship_behaviors"
@@ -990,6 +1223,13 @@ definitions:
     name_key: "localization"
     localisation:
       localization: ".localization"
+    properties:
+      location: int
+      localization: localisation
+      trigger:
+        $$trigger*: $$trigger
+    scopes:
+      trigger: [ root: country, this: country ]
 
   static_modifier:
     path: "common/static_modifiers"
@@ -1001,6 +1241,16 @@ definitions:
     localisation:
       name!: "$"
       description?: "$_desc"
+    properties:
+      subtype:planet:
+        icon: path
+        icon_frame: int # 0..9
+      icon?: path
+      important?: boolean
+      custom_tooltip?: localisation
+      show_only_custom_tooltip?: boolean
+      apply_modifier_to_other_planets?: $static_modifier
+      $$modifier*: $$modifier
 
   resource:
     alias: "strategic_resources"
@@ -1029,6 +1279,15 @@ definitions:
     file_extension: "txt"
     localisation:
       name!: "$"
+    properties:
+      potential:
+        $$trigger*: $$trigger
+      weight_modifier?:
+        base?: int
+        $$modifier_rule*: $$modifier_rule
+    scopes:
+      potential: [ this: system, root: system ]
+      weight_modifier: [ this: system, root: system ]
 
   technology:
     path: "common/technology"
@@ -1064,6 +1323,14 @@ definitions:
   trade_conversion:
     path: "common/trade_conversions"
     file_extension: "txt"
+    properties:
+      weight:
+        weight: int
+      conversion_rate:
+        $resource+: float
+      economic_category: $economic_category
+    scopes:
+      potential: [ this: country, root: country ]
 
   tradition_category:
     path: "common/tradition_categories"
@@ -1127,7 +1394,7 @@ definitions:
       species_trait:
         predicate:
           leader_trait?: false
-    name_prefix: ["trait", "trait_ruler_", "leader_trait_"]
+    name_prefix: [ "trait", "trait_ruler_", "leader_trait_" ]
     localisation:
       name!: "$"
       description!: "$_desc"
@@ -1407,7 +1674,7 @@ definitions:
       pie_chart_type:
         key_filter: "PieChartType"
     severity: "warning"
-    
+
   animated_map_text:
     path: "interface"
     file_extension: "gfx"
