@@ -42,7 +42,7 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 		
 		private fun isDefinition(node: ASTNode):Boolean{
 			val element = node.psi as? ParadoxScriptProperty?:return false
-			return element.paradoxDefinition != null
+			return element.paradoxDefinitionInfo != null
 		}
 		
 		private fun isScriptVariable(node: ASTNode,parent:ASTNode): Boolean {

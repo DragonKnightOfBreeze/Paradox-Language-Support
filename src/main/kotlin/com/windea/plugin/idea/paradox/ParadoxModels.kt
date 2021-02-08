@@ -6,7 +6,7 @@ import java.util.*
 
 //File
 
-class ParadoxPath(
+data class ParadoxPath(
 	val subPaths:List<String>
 ){
 	val path = subPaths.joinToString("/")
@@ -81,7 +81,7 @@ data class ParadoxType(
 	}
 }
 
-data class ParadoxDefinition(
+data class ParadoxDefinitionInfo(
 	val name: String,
 	val type: ParadoxType,
 	val subtypes: List<ParadoxType>,
@@ -95,7 +95,7 @@ data class ParadoxDefinition(
 	val hasScopes = scopes.isNotEmpty()
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxDefinition && name == other.name && type == other.type
+		return this === other || other is ParadoxDefinitionInfo && name == other.name && type == other.type
 	}
 	
 	override fun hashCode(): Int {

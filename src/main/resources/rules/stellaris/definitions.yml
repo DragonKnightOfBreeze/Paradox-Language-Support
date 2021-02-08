@@ -1,265 +1,1513 @@
 definitions:
-  ambient_object:
-    subtype[show_name]:
-      name: $localisation
-    subtype[!show_name]:
-      name: string
-    subtype[selectable]:
-      description: $localisation
-      tooltip: $localisation
-    entity: $model_entity
-    selectable: boolean
-    show_name: boolean
-
-  asteroid_belt_type:
-    mesh: string
-    shader: string
-
-  attribute:
-    type: string
-    behaviour:
-      ### 0..1
-      attack: boolean
-      ### 0..1
-      weaken: boolean
-      ### 0..1
-      alliance: boolean
-      ### 0..1
-      vassalize: boolean
-      ### 0..1
-      trade: boolean
-      ### 0..1
-      coexist: boolean
-
-  button_effect:
-    ### replace_scope: {this: any, root: any, from: country}
-    potential:
-      $trigger.name: $trigger.value
-    ### replace_scope: {this: any, root: any, from: country}
-    allow:
-      $trigger.name: $trigger.value
-    ### replace_scope: {this: any, root: any, from: country}
-    ### 0..1
-    effect:
-      $trigger.name: $trigger.value
-
-  country_customization:
-    colony_shelter:
-      default: $building[capital]
-      ### 0..inf
-      $planet_class: $building[colonizable]
-    ### 0..inf
-    graphical_culture_for_random_empire:
-      ### 0..inf
-      $graphical_culture:
-        ### 0..inf
-        modifier:
-          add: int
-          species_portrait: $portrait
-    ### replace_scope: {this: country, root: country}
-    ### 0..1
-    weight:
-      ### 0..1
-      base: int
-      $modifier_rule_add.name: $modifier_rule_add.value
-
-  system_type:
-    ### replace_scope: {this: system, root: system}
-    potential:
-      $trigger.name: $trigger.value
-    ### 0..1
-    weight_modifier:
-      ### 0..1
-      base: int
-      $modifier_rule: $modifier_rule
-
-  start_screen_message:
-    location: int
-    localisation: $localisation
-    ### replace_scope: {root: country, this: country}
-    trigger:
-      $trigger.name: $trigger.value
-
-  precursor_civilization:
-    size: int
-    ### 0..1
-    possible:
-      $trigger.name: $trigger.value
-
-  sector_type:
-    system_scores:
-      ### 0..1
-      base: int
-      $modifier_rule.name: $modifier_rule.value
-    local_capital_scores:
-      ### 0..1
-      base: int
-      ### 0..1
-      modifier:
-        mult: float
-        $trigger.name: $trigger.value
-    resource_conversion_table:
-      energy: int
-      minerals: int
-    resources: $resources # TODO
-    max_jumps: int
-
-  sector_focus:
-    ai_weight:
-      weight: float
-      $modifier_rule.name: $modifier_rule.value
-    ### 0..inf
-    district:
-      key: $district
-      weight:
-        weight: float
-        $modifier_rule.name: $modifier_rule.value
-    ### 0..inf
-    building:
-      key: $building
-      weight:
-        weight: float
-        $modifier_rule.name: $modifier_rule.value
-
-  map_mode:
-    icon: $sprite
-    enable_terra_incognita: boolean
-    ### 0..1
-    can_change_point_of_view: boolean
-    ### 0..1
-    shortcut: string
-    ### 0..1
-    display_claims: boolean
-    ### 1..inf
-    color:
-      ### required | 3..4
-      value: $country | float[]
-      ### 0..1
-      custom_tooltip: $localisation
-      ### 0..1
-      hardcoded_tooltip: $opnion | $country
-      ### replace_scope: {root: country, this: country, from: country}
-      condition:
-        $trigger.name: $trigger.value
+  agenda:
+    path: "common/agendas"
+    file_extension: "txt"
+    name_prefix: "agenda_"
+    localisation:
+      name!: "$"
 
   ai_budget:
-    resource: $resource
-    type: $expenditure | $upkeep
-    category: $economic_category
-    potential:
-      $trigger.name: $trigger.value
-    ### 0..1
-    fraction:
-      weight: float
-      $modifier_rule.name: $modifier_rule.value
-    ### 0..1
-    static_max:
-      base: int
-      $modifier_rule.name: $modifier_rule.value
-    ### 0..1
-    static_min:
-      base: int
-      $modifier_rule.name: $modifier_rule.value
+    path: "common/ai_budget"
+    file_extension: "txt"
 
-  trade_conversion:
-    ### replace_scope: {this: country, from: country}
-    potential:
-      $trigger.name: $trigger.value
-    weight:
-      weight: int
-    conversion_rate:
-      ### 1..inf
-      $resource: float
-    economic_category: $economic_category
+  ambient_object:
+    path: "common/ambient_objects"
+    file_extension: "txt"
+    name_key: "name"
+    subtypes:
+      show_name:
+        predicate:
+          show_name: true
+      selectable:
+        predicate:
+          selectable: true
+    localisation:
+      $show_name:
+        name!: ".name"
+      $selectable:
+        description?: ".description"
+        tooltip?: ".tooltip"
+
+  anomaly_category:
+    path: "common/anomalies"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: ".desc"
+    graph_related_types:
+    - "event"
+    - "special_project"
+
+  archaeological_site_type:
+    path: "common/archaeological_site_types"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: ".desc"
+
+  army:
+    path: "common/armies"
+    file_extension: "txt"
+    subtypes:
+      defensive_army:
+        predicate:
+          defensive: true
+      occupation_army:
+        predicate:
+          occupation: true
+    localisation:
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
+
+  artifact_action:
+    path: "common/artifact_actions"
+    file_extension: "txt"
+    name_prefix: "artifact_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  ascension_perk:
+    path: "common/ascension_perks"
+    file_extension: "txt"
+    name_prefix: "ap_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  asteroid_belt:
+    path: "common/asteroid_belt"
+    file_extension: "txt"
+
+  attitude:
+    path: "common/attitudes"
+    file_extension: "txt"
+    localisation:
+      name!: "attribute_$"
+
+  bombardment_stance:
+    path: "common/bombardment_stances"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  building:
+    path: "common/buildings"
+    file_extension: "txt"
+    subtypes:
+      capital_building:
+        predicate:
+          capital: true
+      branch_office_building:
+        predicate:
+          branch_office_building: true
+    name_prefix: "building_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  button_effect:
+    path: "common/button_effects"
+    file_extension: "txt"
+    replace_scopes:
+      this: "selected_object | player_country"
+      from: "player_country"
+
+  # TODO subtypes
+  bypass:
+    path: "common/bypass"
+    file_extension: "txt"
+    # name_key: "name"
+    subtypes:
+      scripted:
+        predicate:
+          connection_type: "scripted_connection"
+
+  casus_belli:
+    path: "common/casus_belli"
+    file_extension: "txt"
+    name_prefix: "cb_"
+    localisation:
+      name!: "casus_belli_$"
+      hint?: "casus_belli_$_acquire_hint"
+
+  colony_automation:
+    path: "common/colony_automation"
+    file_extension: "txt"
+    type_per_file: true
+    # path_strict: true
+    name_prefix: "automate_"
+
+  colony_automation_exception:
+    path: "common/colony_automation_exceptions"
+    file_extension: "txt"
+
+  colony_type:
+    path: "common/colony_types"
+    file_extension: "txt"
+    name_prefix: "col_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  country_customization:
+    path: "common/country_customization"
+    file_extension: "txt"
+
+  color:
+    path: "common/colors"
+    file_extension: "txt"
+
+  component_set:
+    path: "common/component_sets"
+    file_extension: "txt"
+    name_key: "key"
+    subtypes:
+      required_component:
+        predicate:
+          required_component_set: true
+    localisation:
+      name!: "$"
+      description?: "$_DESC"
+      ship_description?: "ship_$_DESC"
+      station_description?: "station_$_DESC"
+
+  component_slot_template:
+    path: "common/component_slot_templates"
+    file_extension: "txt"
+
+  component_tags:
+    path: "common/component_tags"
+    file_extension: "txt"
+    type_from_file: true
+
+  component_template:
+    path: "common/component_templates"
+    file_extension: "txt"
+    subtypes:
+      utility_component_template:
+        key_filter: "utility_component_template"
+      weapon_componet_template:
+        key_filter: "weapon_component_template"
+      strike_craft_component_template:
+        key_filter: "strike_craft_component_template"
+    localisation:
+      name!: "$"
+      tag?: ".tags"
+      ai_tag?: ".ai_tags"
+
+  country_type:
+    path: "common/country_types"
+    file_extension: "txt"
+
+  decision:
+    path: "common/decisions"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  define:
+    path: "common/defines"
+    file_extension: "txt"
+
+  deposit_category:
+    path: "common/deposit_categories"
+    file_extension: "txt"
+    subtypes:
+      blocker:
+        predicate:
+          blocker: true
+      import:
+        predicate:
+          important: true
+
+  deposit:
+    path: "common/deposits"
+    file_extension: "txt"
+    # path_strict: true
+    name_prefix: "d_"
+    subtypes:
+      colonisable:
+        predicate:
+          if_for_colonisable: true
+      orbital:
+        predicate:
+          station: "shipclass_research_station | shipclass_mining_station"
+      blocker:
+        predicate:
+          category: "$deplosit_category.blocker"
+      important:
+        predicate:
+          category: "$deposit_category.important"
+      null:
+        predicate:
+          is_null: true
+      not_null:
+        predicate:
+          is_null?: false
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  # TODO how it works
+  diplo_phrase:
+    path: "common/diplo_phrases"
+    file_extension: "txt"
+    #type_from_file: true
+    #type_per_file: true
+    subtypes:
+      greetings:
+        key_filter: "greetings"
+
+  diplomacy_economy:
+    path: "common/diplomacy_economy"
+    file_extension: "txt"
+    type_from_file: true
+    from_version: "2.6"
+
+  diplomatic_action:
+    path: "common/diplomatic_actions"
+    file_extension: "txt"
+    name_prefix: "action_"
+    localisation:
+      title?: "$_TITLE"
+      description?: "$_DESC"
+      long_description?: "$_LONG_DESC"
+      type?: "$_TYPE"
+      type_description?: "$_TYPE_DESC"
+
+  district:
+    path: "common/districts"
+    file_extension: "txt"
+    subtypes:
+      capped:
+        predicate:
+          is_capped_by_modifier: true
+      uncapped:
+        predicate:
+          is_capped_by_modifier?: false
+    name_prefix: "district_"
+    localisation:
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
+
+  dynamic_text:
+    path: "common/dynamic_text"
+    file_extension: "txt"
+    localisation:
+      text!: ".text"
+
+  economic_category:
+    path: "common/economic_categories"
+    file_extension: "txt"
+    subtypes:
+      hidden:
+        predicate:
+          hidden: true
+      has_parent:
+        predicate:
+          parent: any
+    localisation:
+      name!: "$"
 
   economic_plan:
-    type: string
-    income:
-      ### 1..inf
-      $resource: int
-    focus:
-      ### 1..inf
-      $resource: int
-    subplan:
-      potential:
-        ### replace_scope: {this: country, root: country}
-        $trigger.name: $trigger.value
-      income:
-        ### 1..inf
-        $resource: int
-      focus:
-        ### 1..inf
-        $resource: int
-    pops: int
-    empire_size: float
-    ### replace_scope: {this: country, root: country}
-    ai_weight:
-      weight: float
-      $modifier_rule.name: $modifier_rule.value
+    path: "common/economic_plans"
+    file_extension: "txt"
+    name_suffix: "_plan"
+
+  edict:
+    path: "common/edicts"
+    file_extension: "txt"
+    subtypes:
+      edit_ambition:
+        predicate:
+          is_ambition: true
+    localisation:
+      name!: "edit_$"
+      description!: "edit_$_desc"
+
+  ethic_category:
+    path: "common/ethics"
+    file_extension: "txt"
+    skip_root_key: "ethic_categories"
+
+  ethic:
+    path: "common/ethics"
+    file_extension: "txt"
+    key_filter: "!ethic_categories"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      tag: ".tags"
+
+  event_chain:
+    path: "common/event_chains"
+    file_extension: "txt"
+    localisation:
+      title!: "$_title"
+      description!: "$_desc"
+
+  fallen_empire:
+    path: "common/fallen_empires"
+    file_extension: "txt"
+
+  federation_law_category:
+    path: "common/federation_law_categories"
+    file_extension: "txt"
+    name_prefix: "law_category_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+    from_version: "2.8"
+
+  federation_law:
+    path: "common/federation_laws"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+    from_version: "2.8"
+
+  federation_perk:
+    path: "common/federation_perks"
+    file_extension: "txt"
+    localisation:
+      name?: "$"
+      description?: "$_desc"
+    from_version: "2.8"
+
+  federation_type:
+    path: "common/federation_types"
+    file_extension: "txt"
+    name_suffix: "_federation"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+    from_version: "2.8"
+
+  galactic_focus:
+    path: "common/galactic_focuses"
+    file_extension: "txt"
+    name_prefix: "galactic_focus_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+    from_version: "2.8"
+
+  # TODO subtypes
+  # TODO scopes
+  game_rule:
+    path: "common/game_rules"
+    file_extension: "txt"
+
+  global_ship_design:
+    path: "common/global_ship_designs"
+    file_extension: "txt"
+    name_key: "name"
+
+  government:
+    path: "common/governments"
+    file_extension: "txt"
+    name_prefix: "gov_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      rule_title!: ".rule_title"
+      rule_title_female?: ".rule_title_female"
+      heir_title?: heir_title
+      heir_title_female?: heir_title_female
+
+  authority:
+    path: "common/governments/authorities"
+    file_extension: "txt"
+    name_prefix: "auth_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      tag: ".tags"
+
+  civic:
+    path: "common/governments/civics"
+    file_extension: "txt"
+    predicate:
+      is_origin?: false
+    name_prefix: "civic_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      effect?: ".description"
+
+  swapped_civic:
+    path: "common/governments/civics"
+    file_extension: "txt"
+    skip_root_key: true
+    key_filter: "swap_type"
+    name_key: "name"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      effect?: ".description"
+
+  origin:
+    path: "common/governments/civics"
+    file_extension: "txt"
+    predicate:
+      is_origin: true
+    name_prefix: "origin_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      effect?: ".description"
+
+  graphical_culture:
+    path: "common/graphical_culture"
+    file_extension: "txt"
+    subtypes:
+      ship_color:
+        predicate:
+          ship_color: true
+
+  lawsuit:
+    path: "common/lawsuits"
+    file_extension: "txt"
+    # name_key: none
+
+  leader_class:
+    path: "common/leader_classes"
+    file_extension: "txt"
+
+  mandate:
+    path: "common/mandates"
+    file_extension: "txt"
+    name_prefix: "mandate_"
+    localisation:
+      name!: "MANDATE_$"
+      description!: "MANDATE_$_DESC"
+
+  map_mode:
+    path: "common/map_modes"
+    file_extension: "txt"
+    name_suffix: "_map_mode"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  megastructure:
+    path: "common/megastructures"
+    file_extension: "txt"
+    subtypes:
+      base_level:
+        predicate:
+          placement_rules: none
+      not_base_level:
+        predicate:
+          prerequisites: any
+    localisation:
+      name!: "$"
+      description!: "$_DESC"
+      $base_level:
+        details!: "$_MEGASTRUCTURE_DETAILS"
+        delayed_info?: "$_CONSTRUCTION_INFO_DELAYED"
+
+  name_list:
+    path: "common/name_lists"
+    file_extension: "txt"
+    subtypes:
+      randomized:
+        predicate:
+          randomized?: true
+    localisation:
+      name!: "name_list_$"
+
+  notification_modifier:
+    path: "common/notification_modifiers"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  observation_station_mission:
+    path: "common/observation_station_missions"
+    file_extension: "txt"
+    localisation:
+      name!: "mission_$"
+      description!: "mission_$_desc"
+
+  # TODO subtypes
+  # TODO scopes
+  on_action:
+    path: "common/on_actions"
+    file_extension: "txt"
+    name_prefix: "on_"
+
+  opinion_modifier:
+    path: "common/opinion_modifiers"
+    file_extension: "txt"
+    subtypes:
+      triggered_opnion_modifier:
+        predicate:
+          trigger: any
+      block_triggered:
+        predicate:
+          block_triggered: true
+    name_prefix: ["opinion_", "triggered_opinion_"]
+    localisation:
+      name!: "$"
+    hard_coded_file_names:
+    - "01_personality_opinions.txt"
+    - "00_opinion_modifiers.txt"
+
+  ai_personality:
+    alias: "personality"
+    path: "common/personalities"
+    file_extension: "txt"
+    localisation:
+      name!: "personality_$"
+      description!: "personality_$_desc"
+
+  planet_class:
+    path: "common/planet_classes"
+    file_extension: "txt"
+    key_filter: "!random_list"
+    subtypes:
+      star:
+        predicate:
+          star: true
+      planet:
+        predicate:
+          star?: false
+      colonizable:
+        predicate:
+          colonizable: true
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      $colonizable:
+        habitability!: "mod_$_habitability"
+        preference_trait: "trait_$_preference"
+        preference_trait_description: "trait_$_preference_desc"
+
+  planet_class_random_list:
+    path: "common/planet_classes"
+    file_extension: "txt"
+    key_filter: "random_list"
+    name_key: "name"
+
+  planet_modfiier:
+    path: "common/planet_modifiers"
+    file_extension: "txt"
+    subtypes:
+      null:
+        predicate:
+          is_null: true
+      not_null:
+        predicate:
+          is_null?: false
+    name_prefix: "pm_"
+
+  policy:
+    path: "common/policies"
+    file_extension: "txt"
+    localisation:
+      name!: "policy_$"
+      description!: "policy_$_desc"
+
+  policy_option:
+    path: "common/policies"
+    file_extension: "txt"
+    skip_root_key: true
+    key_filter: "option"
+    name_key: "name"
+    localisation:
+      title!: "$"
+      name!: "$_name"
+      description!: "$_desc"
+
+  social_strata:
+    alias: "pop_category"
+    path: "common/pop_categories"
+    file_extension: "txt"
+    localisation:
+      name!: "pop_cat_$"
+      plural!: "pop_cat_$_plural"
+      description!: "pop_cat_$_desc"
+
+  faction_type:
+    alias: "pop_faction_type"
+    path: "common/pop_faction_types"
+    file_extension: "txt"
+    subtypes:
+      unique:
+        predicate:
+          unique: true
+    localisation:
+      name!: "pft_$"
+      description!: "pft_$_desc"
+
+  job:
+    alias: "pop_job"
+    path: "common/pop_jobs"
+    file_extension: "txt"
+    localisation:
+      name!: "job_$"
+      plural!: "job_$_plural"
+      description!: "job_$_desc"
+      effect?: ".description"
+    subtypes:
+      capped:
+        predicate:
+          is_capped_by_modifier: true
+      uncapped:
+        predicate:
+          is_capped_by_modifier?: false
+
+  precursor_civilization:
+    path: "common/precursor_civilizations"
+    file_extension: "txt"
+    name_prefix: "precursor_"
+
+  empire_name_parts_list:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "empire_name_parts_list"
+    name_key: "key"
+
+  empire_name_format:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "empire_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  federation_name_parts_list:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "federation_name_parts_list"
+    name_key: "key"
+
+  federation_name_format:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "federation_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  pop_faction_name_parts_list:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "pop_faction_name_parts_list"
+    name_key: "key"
+
+  pop_faction_name_format:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "pop_faction_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  pre_communications_name_parts_list:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "pre_communications_name_parts_list"
+    name_key: "key"
+
+  pre_communications_name_format:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "pre_communications_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  war_name_parts_list:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "war_name_parts_list"
+    name_key: "key"
+
+  war_name_format:
+    path: "common/random_names"
+    file_extension: "txt"
+    key_filter: "war_name_format"
+    name_key: "format"
+    name_prefix: "format."
+
+  # skip path: common/random_names/base 
+
+  relic:
+    path: "common/relics"
+    file_extension: "txt"
+    name_prefix: "r_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  resolution_category:
+    path: "common/resolution_categories"
+    file_extension: "txt"
+    name_prefix: "resolution_category_"
+    localisation:
+      name!: "$"
+      group!: ".group"
+    from_version: "2.8"
+
+  resolution:
+    path: "common/resolutions"
+    file_extension: "txt"
+    name_prefix: "resolution_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      effect_success!: "$_effect_success"
+      effect_failure!: "$_effect_failure"
+    subtypes:
+      require_target:
+        predicate:
+          target: true
+      not_require_target:
+        predicate:
+          target: false
+    replace_scopes:
+      this: "country"
+      root: "country"
+    from_version: "2.8"
+
+  scripted_effect:
+    path: "common/scripted_effects"
+    file_extension: "txt"
+
+  # bind to: localisationCommandField
+  # TODO scopes 
+  scripted_loc:
+    path: "common/scripted_loc"
+    file_extension: "txt"
+    key_filter: "defined_text"
+    name_key: "name"
+
+  # TODO subtypes
+  # TODO scopes
+  scripted_trigger:
+    path: "common/scripted_triggers"
+    file_extension: "txt"
+
+  # skip path: common/scripted_variables
+
+  section_template:
+    path: "common/section_templates"
+    file_extension: "txt"
+    key_filter: "ship_section_template"
+    name_key: "key"
+    subtypes:
+      designable:
+        predicate:
+          ship_size?: "$ship_size.designable"
+    localisation:
+      $designable:
+        name!: "$"
+
+  component_slot:
+    path: "common/section_templates"
+    file_extension: "txt"
+    skip_root_key: "ship_section_template"
+    name_key: name
+
+  sector_focus:
+    path: "common/sector_focuses"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+    replace_scopes:
+      root: "sector"
+      this: "sector"
+
+  sector_type:
+    path: "common/sector_types"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+    replace_scopes:
+      root: "system"
+      this: "system"
+
+  ship_behavior:
+    path: "common/ship_behaviors"
+    file_extension: "txt"
+    name_key: "name"
+
+  ship_size:
+    path: "common/ship_sizes"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      plural!: "$_plural"
+      # class!: ".class"
+    subtypes:
+      station:
+        predicate:
+          is_space_station: true
+      ship:
+        predicate:
+          is_space_station: false
+      starbase:
+        predicate:
+          class: "shipclass_starbase"
+      designable:
+        predicate:
+          designable?: true
+
+  solar_system_initializer:
+    path: "common/solar_system_initializers"
+    file_extension: "txt"
+    key_filter: "!random_list"
+    subtypes:
+      fallen_empire_initialzer:
+        predicate:
+          usage: "fallen_empire_init"
+
+  solar_system_initializer_random_list:
+    path: "common/solar_system_initializers"
+    file_extension: "txt"
+    key_filter: "random_list"
+    name_key: "name"
+
+  special_project:
+    path: "common/special_projects"
+    file_extension: "txt"
+    name_key: "key"
+    localisation:
+      name!: "$"
+      description!: "$_DESC"
+    subtypes:
+      not_cost:
+        predicate:
+          cost: any
+      cost:
+        predicate:
+          cost: none
+    graph_related_types:
+    - "event"
+    - "anomaly_category"
+
+  species_archetype:
+    path: "common/species_archetypes"
+    file_extension: "txt"
+
+  species_class:
+    path: "common/species_classes"
+    file_extension: "txt"
+    subtypes:
+      randomized:
+        predicate:
+          randomized?: true
+      playable:
+        predicate:
+          playable?: true
+    localisation:
+      name!: "$"
+      plural!: "$_plural"
+      description!: "$_desc"
+      insult!: "$_insult_01"
+      insult_plural!: "$_insult_plural_01"
+      compliment!: "$_compliment_01"
+      compliment_plural!: "$_compliment_plural_01"
+      spawn!: "$_spawn"
+      spawn_plural!: "$_spawn_plural"
+      sound_01!: "$_sound_01"
+      sound_02!: "$_sound_02"
+      sound_03!: "$_sound_03"
+      sound_04!: "$_sound_04"
+      sound_05!: "$_sound_05"
+      organ!: "$_organ"
+      mouth!: "$_mouth"
+
+  species_name:
+    path: "common/species_names"
+    file_extension: "txt"
+    skip_root_key: "!named_lists"
+    name_key: "name"
+
+  species_named_list:
+    path: "common/species_names"
+    file_extension: "txt"
+    skip_root_key: "named_lists"
+
+  species_right:
+    path: "common/species_rights"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      tooltip!: "$_tooltip"
+      delayed_tooltip?: "$_tooltip_delayed"
+      token: ".token"
+
+  star_class:
+    path: "common/star_classes"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description?: "$_desc"
+    key_filter: "!random_list"
+
+  star_class_random_list:
+    path: "common/star_classes"
+    file_extension: "txt"
+    name_key: "name"
+    key_filter: "random_list"
+
+  starbase_building:
+    path: "common/starbase_buildings"
+    file_extension: "txt"
+    localisation:
+      name!: "sm_$"
+      description!: "sm_$_desc"
+
+  starbase_level:
+    path: "common/starbase_levels"
+    file_extension: "txt"
+
+  starbase_module:
+    path: "common/starbase_modules"
+    file_extension: "txt"
+    localisation:
+      name!: "sm_$"
+      description?: "sm_$_desc"
+
+  starbase_type:
+    path: "common/starbase_types"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+
+  start_screen_message:
+    path: "common/start_screen_messages"
+    file_extension: "txt"
+    key_filter: "part"
+    name_key: "localization"
+    localisation:
+      localization: ".localization"
+
+  static_modifier:
+    path: "common/static_modifiers"
+    file_extension: "txt"
+    subtypes:
+      planet:
+        predicate:
+          icon_frame: any
+    localisation:
+      name!: "$"
+      description?: "$_desc"
+
+  resource:
+    alias: "strategic_resources"
+    path: "common/strategic_resources"
+    file_extension: "txt"
+    subtypes:
+      tradable:
+        predicate:
+          tradable: true
+      limited:
+        predicate:
+          max: any
+    localisation:
+      name?: "$"
+      description?: "$_desc"
+
+  subject:
+    path: "common/subjects"
+    file_extension: "txt"
+    localisation:
+      name!: "SUBJECT_$"
+      description!: "SUBJECT_DESC_$"
+
+  system_type:
+    path: "common/system_types"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+
+  technology:
+    path: "common/technology"
+    file_extension: "txt"
+    subtypes:
+      repeatable:
+        predicate:
+          level: any
+      start_tech:
+        predicate:
+          start_tech: true
+    name_prefix: "tech_"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+      # category: ".category"
+
+  technology_category:
+    path: "common/technology/category"
+    file_extension: "txt"
+
+  technology_tier:
+    path: "common/technology/tier"
+    file_extension: "txt"
+
+  terraform_link:
+    alias: "terraform"
+    path: "common/terraform"
+    file_extension: "txt"
+    key_filter: "terraform_link"
+    name_key: none
+
+  trade_conversion:
+    path: "common/trade_conversions"
+    file_extension: "txt"
+
+  tradition_category:
+    path: "common/tradition_categories"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  tradition_swap_category:
+    path: "common/tradition_categories"
+    file_extension: "txt"
+    skip_root_key: true
+    key_filter: "tradition_swap"
+    name_key: "name"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  tradition:
+    path: "common/traditions"
+    file_extension: "txt"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  tradition_swap:
+    path: "common/traditions"
+    file_extension: "txt"
+    skip_root_key: true
+    key_filter: "tradition_swap"
+    name_key: "name"
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  trait:
+    path: "common/traits"
+    file_extension: "txt"
+    subtypes:
+      randomized:
+        predicate:
+          randomized: true
+      ruler_trait:
+        predicate:
+          leader_class: [ "ruler" ]
+      general_trait:
+        predicate:
+          leader_class: [ "general" ]
+      leader_trait:
+        predicate:
+          leader_trait: any
+      governor_trait:
+        predicate:
+          leader_class: [ "admiral" ]
+      scientist_trait:
+        predicate:
+          leader_class: [ "scientist" ]
+      admiral_trait:
+        predicate:
+          leader_class: [ "admiral" ]
+      species_trait:
+        predicate:
+          leader_trait?: false
+    name_prefix: ["trait", "trait_ruler_", "leader_trait_"]
+    localisation:
+      name!: "$"
+      description!: "$_desc"
+
+  war_goal:
+    path: "common/war_goals"
+    file_extension: "txt"
+    subtypes:
+      total_war:
+        predicate:
+          total_war: true
+    name_prefix: "wg_"
+    localisation:
+      name!: "war_goal_$"
+      description!: "war_goal_$_desc"
+
+  alert_icon:
+    path: "common"
+    file_name: "alerts.txt"
+    key_filter: "icon"
+    name_key: none
+
+  alert:
+    path: "common"
+    file_name: "alerts.txt"
+    skip_root_key: "alerts"
+    name_prefix: "alert_"
+    localisation:
+      name: ".name"
+
+  message_type:
+    path: "common"
+    file_name: "message_types.txt"
+    key_filter: "message_type"
+    name_key: "key"
+
+  achievement:
+    path: "common"
+    file_name: "achievements.txt"
+
+  # skip path: dlc
+  # dlc:
+  #   path: "dlc"
+  #   path_strict: false
+  #   type_from_file: true
+  #   # name_key: "name"
+
+  dlc:
+    alias: "dlc_metadata"
+    path: "dlc_metadata"
+    file_extension: "txt"
+    skip_root_key: "dlcs"
+    name_key: "name"
+
+  # skip path: dlc_metadata/dlc_recommendations
+  # dlc_recomendation:
+  #   path: "dlc_metadata/dlc_recommendations"
+
+  event_namespace:
+    path: "events"
+    file_extension: "txt"
+    value_type: "string"
+
+  event:
+    path: "events"
+    file_extension: "txt"
+    name_key: "id"
+    graph_related_types:
+    - "special_project"
+    - "anomaly_category"
+    subtypes:
+      scopeless:
+        key_filter: "event"
+      country_event:
+        key_filter: "country_event"
+        push_scope: "country"
+      observer_event:
+        key_filter: "observer_event"
+        push_scope: "country"
+      pop_event:
+        key_filter: "pop_event"
+        push_scope: "pop"
+      pop_faction_event:
+        key_filter: "pop_faction_event"
+        push_scope: "pop_faction"
+      planet_event:
+        key_filter: "planet_event"
+        push_scope: "planet"
+      ship_event:
+        key_filter: "ship_event"
+        push_scope: "ship"
+      fleet_event:
+        key_filter: "fleet_event"
+        push_scope: "fleet"
+      hidden_event:
+        predicate:
+          hide_window: true
+      diplomatic_event:
+        predicate:
+          diplomatic: true
+      default:
+        predicate:
+          hide_window?: false
+          diplomatic?: false
+      triggered:
+        predicate:
+          is_triggered_only: true
+      major:
+        predicate:
+          major: true
+
+  flag_color:
+    path: "flags"
+    file_extension: "txt"
+    skip_root_key: "colors"
+
+  font:
+    path: "fonts"
+    file_extension: "asset"
+    key_filter: "font"
+    name_key: "name"
+
+  advisor_window:
+    path: "gfx/advisorwindow"
+    file_extension: "txt"
+
+  light:
+    path: "gfx/lights"
+    file_extension: "asset"
+    key_filter: "light"
+    name_key: "name"
+
+  model_entity:
+    path: "gfx/models"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "entity"
+    name_key: "name"
+    severity: "warning"
+
+  model_mesh:
+    path: "gfx/models"
+    path_strict: false
+    file_extension: "gfx"
+    skip_root_key: "objectTypes"
+    key_filter: "pdxmesh"
+    name_key: "name"
+    severity: "warning"
+
+  model_animation:
+    path: "gfx/models"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "animation"
+    name_key: "name"
+    severity: "warning"
+
+  particle:
+    path: "gfx/particles"
+    path_strict: false
+    file_extension: "gfx"
+    skip_root_key: "objectTypes"
+    key_filter: "pdxparticle"
+    name_key: "name"
+    severity: "warning"
+
+  particle_type:
+    path: "gfx/particles"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "particle"
+    name_key: "name"
+    severity: "warning"
+
+  pingmap:
+    path: "gfx/pingmap"
+    file_extension: "txt"
+
+  asset_selector:
+    path: "gfx/portraits/asset_selectors"
+    file_extension: "txt"
+    # TODO subtypes
+
+  portrait:
+    path: "gfx/portraits/portraits"
+    file_extension: "txt"
+    skip_root_key: "portraits"
+    severity: "warning"
+
+  portrait_group:
+    path: "gfx/portraits/portraits"
+    file_extension: "txt"
+    skip_root_key: "portrait_groups"
+    severity: "warning"
+
+  projectile:
+    path: "gfx/projectiles"
+    file_extension: "txt"
+    key_filter: "projectile_gfx_beam,projectile_gfx_ballistic,projectile_gfx_missile"
+    name_key: "name"
+    subtypes:
+      beam_projectile:
+        key_filter: "projectile_gfx_beam"
+      ballistic_projectile:
+        key_filter: "projectile_gfx_ballistic"
+      missile_projectile:
+        key_filter: "projectile_gfx_missile"
+    severity: "warning"
+
+  planet_killer_animation:
+    path: "gfx/projectiles/planet_destruction"
+    file_extension: "txt"
+
+  world_gfx:
+    path: "gfx/worldgfx"
+    file_extension: "txt"
+    type_per_file: true
+    type_from_file: true
+    key_filter: "gfx_settings"
+
+  # TODO can be defined recursively
+  # TODO subtypes
+  gui_type:
+    path: "interface"
+    path_strict: false
+    file_extension: "gui"
+    key_filter: "guiTypes"
+    name_key: "name"
+    subtypes:
+      windowType:
+        key_filter: "windowType"
+      containerWindowType:
+        key_filter: "containerWindowType"
+      positionType:
+        key_filter: "positionType"
+      listBoxType:
+        key_filter: "listBoxType"
+      editBoxType:
+        key_filter: "editBoxType"
+      gridBoxType:
+        key_filter: "gridBoxType"
+      textboxType:
+        key_filter: "textboxType"
+      instantTextBoxType:
+        key_filter: "instantTextBoxType"
+      scrollbarType:
+        key_filter: "scrollbarType"
+      extendedScrollbarType:
+        key_filter: "extendedScrollbarType"
+      buttonType:
+        key_filter: "buttonType"
+      guiButtonType:
+        key_filter: "guiButtonType"
+      iconType:
+        key_filter: "iconType"
+      smoothListBoxType:
+        key_filter: "smoothListBoxType"
+    severity: "warning"
+
+  sprite_type:
+    path: "interface"
+    path_strict: false
+    file_extension: "gfx"
+    skip_root_key: "spriteTypes"
+    name_key: "name"
+    subtypes:
+      sprite_type:
+        key_filter: "sprite_type"
+      cornered_tile_sprite_type:
+        key_filter: "corneredTileSpriteType"
+      flag_sprite_type:
+        key_filter: "flagSpriteType"
+      text_sprite_type:
+        key_filter: "textSpriteType"
+      progress_bar_type:
+        key_filter: "progressbartype"
+      pie_chart_type:
+        key_filter: "PieChartType"
+    severity: "warning"
+    
+  animated_map_text:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "objectTypes"
+    key_filter: "animatedmaptext"
+    name_key: "name"
+
+  animated_map_text_bitmapfont:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "objectTypes"
+    key_filter: "bitmapfont"
+    name_key: "name"
+
+  bimap_font:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "bitmapfonts"
+    key_filter: "bitmapfont"
+    name_key: "name"
+
+  bitmap_font_override:
+    path: "interface"
+    file_extension: "gfx"
+    skip_root_key: "bitmapfonts"
+    key_filter: "bitmapfont_override"
+
+  resource_group:
+    path: "interface/resource_groups"
+    file_extension: "txt"
+
+  map_galaxy_setting:
+    path: "map/galaxy"
+    file_extension: "txt"
+
+  map_setup_scenario:
+    path: "map/setup_scenarios"
+    file_extension: "txt"
+    name_key: "name"
+
+  song:
+    path: "music"
+    file_extension: "txt"
+    key_filter: "song"
+    name_key: "name"
+
+  music:
+    path: "music"
+    file_extension: "txt"
+    key_filter: "music"
+    name_key: "name"
 
   prescripted_country:
-    name: string
-    adjective: $localisation_synced
-    spawn_enabled: boolean | always
-    default?: yes
-    ignore_portrait_duplication?: boolean
-    spawn_as_fallen?: boolean
-    ship_prefix: $localisation_synced
-    species?:
-      class: $species_class
-      portrait: $portrait | $portrait_group
-      name: $localisation_synced
-      plural: $localisation_synced
-      adjective: $localisation_synced
-      name_list: $name_list
-      trait*: $trait.species_trait
-    secondary_species?:
-      class: $species_class
-      portrait: $portrait | $portrait_group
-      name: $localisation_synced
-      plural: $localisa/tion_synced
-      adjective: $localisation_synced
-      name_list: $name_list
-      trait*: $trait.species_trait
-    playable?: $scripted_trigger
-    # room: icon[gfx/portraits/city_sets] | asset_selector.room
-    room: icon[gfx/portraits/city_sets] | icon[gfx/portraits/asset_selectors]
-    authority?: $authority
-    civics?:
-    - $civic
-    government?: $government
-    origin?: $origin
-    ethic+: $ethic
-    flags?:
-    - value_set[country_flag]
-    planet_name: $localisation_synced
-    planet_class: $planet_class.habitable_planet
-    initializer?: $solar_system_initializer
-    system_name: $localisation_synced
-    graphical_culture: $graphical_culture
-    city_graphical_culture: $graphical_culture
-    empire_flag:
-      icon:
-        category: string # directory[/flags]
-        file: string # filename[/flags/{category}]
-      background:
-        category: string # directory[/flags]
-        file: # filename[/flags/{category}]
-      color:
-      - $color
-      - "null"
-    ruler:
-      name: localisation_synced
-      gender: enum[gender]
-      portrait: $portrait | $portrait_group
-      texture: int
-      hair?: int
-      clothes?: int
-      ruler_title?: $localisation_synced
-      ruler_title_male?: $localisation_synced
-      rule_title_female?: $localisation_synced
-      hair_title?: $localisation_synced
-      hair_title_male?: $localisation_synced
-      hair_title_female?: $localisation_synced
-      leader_class?: $leader_class
-      trait*: $trait.leader_trait
+    path: "prescripted_countries"
+    file_extension: "txt"
+
+  sound:
+    path: "sound"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "sound"
+    name_key: "name" # link to a *.wav file
+
+  sound_category:
+    path: "sound"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "category"
+    name_key: "name"
+
+  sound_group:
+    path: "sound"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "soundgroup"
+    name_key: "name "
+
+  sound_master_compressor:
+    path: "sound"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "master_compressor"
+
+  sound_music_compressor:
+    path: "sound"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "music_compressor"
+
+  sound_falloff:
+    path: "sound"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "falloff"
+
+  sound_effect:
+    path: "sound"
+    path_strict: false
+    file_extension: "asset"
+    key_filter: "soundeffect"
+
+  advisor_voice_type:
+    path: "sound/advisor_voice_types"
+    localisation:
+      name!: ".name"

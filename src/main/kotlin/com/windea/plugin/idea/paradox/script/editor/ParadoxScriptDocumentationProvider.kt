@@ -33,7 +33,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
-		val definition = element.paradoxDefinition
+		val definition = element.paradoxDefinitionInfo
 		if(definition != null) return getDefinition(element, definition)
 		return buildString {
 			val name = element.name
@@ -45,11 +45,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinition(element: ParadoxScriptProperty, definition: ParadoxDefinition): String {
+	private fun getDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val (name, type, subtypes, localisation) = definition
+				val (name, type, subtypes, localisation) = definitionInfo
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()
@@ -108,7 +108,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
-		val definition = element.paradoxDefinition
+		val definition = element.paradoxDefinitionInfo
 		if(definition != null) return getDefinitionDoc(element, definition)
 		return buildString {
 			val name = element.name
@@ -129,11 +129,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionDoc(element: ParadoxScriptProperty, definition: ParadoxDefinition): String {
+	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val (name, type, subtypes, localisation) = definition
+				val (name, type, subtypes, localisation) = definitionInfo
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()
@@ -155,7 +155,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//本地化文本
 			if(settings.renderDefinitionText) {
-				val localisation = definition.localisation
+				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((name, key) in localisation) {

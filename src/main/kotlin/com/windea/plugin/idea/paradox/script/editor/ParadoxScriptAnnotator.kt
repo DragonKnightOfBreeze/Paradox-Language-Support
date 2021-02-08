@@ -22,7 +22,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
 		//如果是定义，则加上下划线突出显示
-		if(element.paradoxDefinition != null) {
+		if(element.paradoxDefinitionInfo != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.range(element.propertyKey)
 				.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)

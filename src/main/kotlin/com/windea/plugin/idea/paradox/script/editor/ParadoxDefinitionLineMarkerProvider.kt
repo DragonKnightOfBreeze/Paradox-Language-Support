@@ -22,26 +22,26 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
 			is ParadoxScriptProperty -> {
-				val definition = element.paradoxDefinition ?: return null
+				val definition = element.paradoxDefinitionInfo ?: return null
 				LineMarker(element, definition)
 			}
 			else -> null
 		}
 	}
 	
-	class LineMarker(element: ParadoxScriptProperty,definition: ParadoxDefinition) : LineMarkerInfo<PsiElement>(
+	class LineMarker(element: ParadoxScriptProperty,definitionInfo: ParadoxDefinitionInfo) : LineMarkerInfo<PsiElement>(
 		element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
 		element.textRange,
 		definitionGutterIcon,
 		{
 			buildString {
-				val (name, type, subtypes) = definition
+				val (name, type, subtypes) = definitionInfo
 				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type,subtypes)
 			}
 		},
 		{ mouseEvent, _ ->
 			val project = element.project
-			val elements = findDefinitions(definition.name,definition.type.name,project).toTypedArray()
+			val elements = findDefinitions(definitionInfo.name,definitionInfo.type.name,project).toTypedArray()
 			when(elements.size) {
 				0 -> {}
 				1 -> OpenSourceUtil.navigate(true, elements.first())

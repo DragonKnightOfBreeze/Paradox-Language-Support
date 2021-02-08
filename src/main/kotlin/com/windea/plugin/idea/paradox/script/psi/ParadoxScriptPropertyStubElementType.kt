@@ -25,8 +25,8 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	}
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-		//这里使用scriptProperty.paradoxDefinition.name而非scriptProperty.name
-		val definition = psi.paradoxDefinitionNoCheck
+		//这里使用scriptProperty.paradoxDefinitionInfo.name而非scriptProperty.name
+		val definition = psi.paradoxDefinitionInfoNoCheck
 		return ParadoxScriptPropertyStubImpl(parentStub, definition?.name ?: "@", definition?.type?.name ?: "")
 	}
 	

@@ -18,7 +18,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return when{
 			element is ParadoxScriptVariable -> getVariableHint(element)
 			element is ParadoxScriptProperty -> {
-				val definition = element.paradoxDefinition ?: return getPropertyHint(element)
+				val definition = element.paradoxDefinitionInfo ?: return getPropertyHint(element)
 				getDefinitionHint(definition) 
 			}
 			element is ParadoxScriptVariableReference -> {
@@ -29,7 +29,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 				val e = element.reference.resolve()?: return "(unknown)"
 				when{
 					e is ParadoxScriptProperty -> {
-						val definition = e.paradoxDefinition?:return "string"
+						val definition = e.paradoxDefinitionInfo ?: return "string"
 						getDefinitionHint(definition) 
 					}
 					e is ParadoxLocalisationProperty -> "localisation"
@@ -49,9 +49,9 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return element.propertyValue?.value?.getType()?:"(unknown)"
 	}
 	
-	private fun getDefinitionHint(definition:ParadoxDefinition):String{
+	private fun getDefinitionHint(definitionInfo:ParadoxDefinitionInfo):String{
 		return buildString{
-			val (_,type,subtypes) = definition
+			val (_,type,subtypes) = definitionInfo
 			appendType(type,subtypes)
 		}
 	}
