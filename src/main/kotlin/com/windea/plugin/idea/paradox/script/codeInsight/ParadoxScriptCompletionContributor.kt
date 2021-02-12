@@ -25,7 +25,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 	class DefinitionPropertyNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 		//1. 向上得到最近的definition，从而得到definitionInfo.properties，并且算出相对的definitionPropertyPath
 		//2. 根据properties和definitionPropertyPath确定提示结果，注意当匹配子类型时才会加入对应的提示结果，否则不加入
-		//3. key可能是：$$类型、$类型、枚举、基本类型int/float/boolean、枚举、字符串
+		//3. key可能是：$$类型、$类型、枚举、基本类型int/float、枚举、字符串
 		//4. value可能是：类型表达式、情况列表、子属性（映射）
 		//5. 忽略正在填写的propertyName
 		
@@ -101,8 +101,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 							LookupElementBuilder.create(it).withIcon(scriptPropertyIcon).withInsertHandler(insertHandler)
 						}
 					}
-					//基本类型（忽略）
-					wildcardKeyString == "int" || wildcardKeyString == "float" || wildcardKeyString == "boolean" -> {}
+					//基本类型int/float（忽略）
+					wildcardKeyString == "int" || wildcardKeyString == "float"-> {}
 					//字符串
 					else -> {
 						//如果不是multiple并且wildcard的KeyString被识别，则这里不提示
