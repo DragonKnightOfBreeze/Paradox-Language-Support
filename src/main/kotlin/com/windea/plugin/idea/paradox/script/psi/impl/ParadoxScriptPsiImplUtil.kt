@@ -265,7 +265,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun isEmpty(element: ParadoxScriptBlock): Boolean {
 		element.forEachChild {
-			if(it is ParadoxScriptProperty || it is ParadoxLocalisationProperty) return false
+			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return false
 		}
 		return true
 	}
@@ -273,7 +273,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun isNotEmpty(element: ParadoxScriptBlock): Boolean {
 		element.forEachChild {
-			if(it is ParadoxScriptProperty || it is ParadoxLocalisationProperty) return true
+			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return true
 		}
 		return true
 	}
@@ -286,7 +286,7 @@ object ParadoxScriptPsiImplUtil {
 				is ParadoxScriptValue -> return false
 			}
 		}
-		return false
+		return true
 	}
 	
 	@JvmStatic
@@ -297,7 +297,7 @@ object ParadoxScriptPsiImplUtil {
 				is ParadoxScriptValue -> return true
 			}
 		}
-		return false
+		return true
 	}
 	
 	@JvmStatic

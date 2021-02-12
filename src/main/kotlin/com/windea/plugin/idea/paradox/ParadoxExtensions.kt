@@ -225,9 +225,9 @@ fun ParadoxScriptValue.getType(): String? {
 
 fun ParadoxScriptValue.checkType(type: String): Boolean {
 	return when(type) {
-		"block" -> this is ParadoxScriptBlock
-		"object" -> this is ParadoxScriptBlock && isObject
+		"block","array | object" -> this is ParadoxScriptBlock
 		"array" -> this is ParadoxScriptBlock && isArray
+		"object" -> this is ParadoxScriptBlock && isObject
 		"string" -> this is ParadoxScriptString
 		"boolean" -> this is ParadoxScriptBoolean
 		"int" -> this is ParadoxScriptInt
