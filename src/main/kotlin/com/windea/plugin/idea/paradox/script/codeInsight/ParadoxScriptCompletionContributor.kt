@@ -2,6 +2,7 @@ package com.windea.plugin.idea.paradox.script.codeInsight
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.editor.*
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -22,32 +23,45 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 	}
 	
 	class DefinitionPropertyNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+		//1. 向上得到最近的definition，从而得到definitionInfo.properties，并且算出相对的definitionPropertyPath
+		//2. 根据properties和definitionPropertyPath确定提示结果，注意当匹配子类型时才会加入对应的提示结果，否则不加入
+		//3. key可能是：$$类型、$类型、枚举、基本类型int/float/boolean、枚举、字符串
+		//4. value可能是：类型表达式、情况列表、子属性（映射）
+		//5. 忽略正在填写的propertyName
+		
+		private val insertHandler = InsertHandler<LookupElement> { context, _ ->
+			val s = " = "
+			EditorModificationUtil.insertStringAtCaret(context.editor, s , false, true, 3)
+		}
+		
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			//1. 向上得到最近的definition，从而得到definitionInfo.properties，并且算出相对的definitionPropertyPath
-			//2. 根据properties和definitionPropertyPath确定提示结果，注意当匹配子类型时才会加入对应的提示结果，否则不加入
-			//3. key可能是：$$类型、$类型、枚举、基本类型int/float/boolean、枚举、字符串
-			//4. value可能是：类型表达式、情况列表、子属性（映射）
-			//5. 忽略正在填写的propertyName
 			val position = parameters.position
-			val (definitionInfo, path) = position.resolveDefinitionInfoAndDefinitionPropertyPath() ?: return
+			//block中的string也可能是propertyName
+			if(position.elementType == STRING_TOKEN && position.parent?.parent !is ParadoxScriptBlock) return
+			
+			//寻找definitionInfo和definitionPropertyPath，注意需要使用originalPosition，并且忽略正在补全的字符串
+			val parentBlock = parameters.originalPosition?.parentOfType<ParadoxScriptBlock>()
+			val (definitionInfo, path) = parentBlock?.resolveDefinitionInfoAndDefinitionPropertyPath() ?: return
 			//properties可能有多种情况
 			//处理path
-			val parentPaths = path.parentSubPaths
+			val subpaths = path.subpaths
 			//预匹配properties，得到wildcardKeyStrings
 			val wildcardKeyExpressions = mutableListOf<ConditionalExpression>()
-			if(parentPaths.isEmpty()){
+			if(subpaths.isEmpty()){
 				val properties = definitionInfo.properties
 				properties.keys.mapTo(wildcardKeyExpressions){ it.toConditionalExpression() }
 			}else {
-				for(properties in definitionInfo.resolvePropertiesList(parentPaths)) {
+				for(properties in definitionInfo.resolvePropertiesList(subpaths)) {
 					properties.keys.mapTo(wildcardKeyExpressions){ it.toConditionalExpression() }
 				}
 			}
+			
 			//一般来说key不能重复
 			val existPropertyNames by lazy { 
 				(position.parentOfType<ParadoxScriptProperty>()?.propertyValue?.value as? ParadoxScriptBlock)
 					?.propertyList?.mapTo(mutableSetOf()) { it.name } ?: emptyList() 
 			}
+			
 			//解析wildcardKeyStrings，进行提示
 			val lookupElements = mutableListOf<LookupElement>()	
 			for(wildcardKeyExpression in wildcardKeyExpressions){
@@ -72,7 +86,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 						//如果不是multiple并且wildcard的KeyString被识别，则这里不提示（一般来说都是multiple）
 						if(!multiple && matchedDefinitions.any { it.name in existPropertyNames }) continue
 						matchedDefinitions.mapTo(lookupElements) { 
-							LookupElementBuilder.create(it).withIcon(definitionIcon).withTypeText(it.containingFile.name) 
+							LookupElementBuilder.create(it).withIcon(definitionIcon).withTypeText(it.containingFile.name).withInsertHandler(insertHandler)
 						}
 					}  
 					//枚举
@@ -84,7 +98,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 						//如果不是multiple并且wildcard的KeyString被识别，则这里不提示
 						if(!multiple && enumValues.any { it in existPropertyNames }) continue
 						enumValues.mapTo(lookupElements){
-							LookupElementBuilder.create(it).withIcon(scriptPropertyIcon)
+							LookupElementBuilder.create(it).withIcon(scriptPropertyIcon).withInsertHandler(insertHandler)
 						}
 					}
 					//基本类型（忽略）
@@ -93,13 +107,14 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					else -> {
 						//如果不是multiple并且wildcard的KeyString被识别，则这里不提示
 						if(!multiple && wildcardKeyString in existPropertyNames) continue
-						val lookupElement = LookupElementBuilder.create(wildcardKeyString).withIcon(scriptPropertyIcon)
+						val lookupElement = LookupElementBuilder.create(wildcardKeyString).withIcon(scriptPropertyIcon).withInsertHandler(insertHandler)
 						lookupElements.add(lookupElement)
 					}
 				}
 			}
 			result.addAllElements(lookupElements)
 		}
+		
 	}
 	
 	init {
@@ -108,7 +123,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		extend(null, or(
 			psiElement(PROPERTY_KEY_ID),
 			psiElement(QUOTED_PROPERTY_KEY_ID),
-			psiElement(STRING_TOKEN).withParent(ParadoxScriptBlock::class.java)
+			psiElement(STRING_TOKEN)
 		), DefinitionPropertyNameCompletionProvider())
 	}
 	

@@ -53,44 +53,39 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	
 	class SequentialNumberCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			val position = parameters.position //SEQUENTIAL_NUMBER_ID
-			val prefix = position.text.dropLast(dummyIdentifierLength)
-			result.withPrefixMatcher(prefix).addAllElements(sequentialNumberElements)
+			result.addAllElements(sequentialNumberElements)
 		}
 	}
 	
 	class CommandCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			val position = parameters.position //COMMAND_SCOPE_ID, COMMAND_FIELD_ID
+			val position  = parameters.position
 			val prefix = position.text.dropLast(dummyIdentifierLength).trim()
 			if(prefix == eventTargetPrefix) return 
 			
 			val parent = position.parent //COMMAND_SCOPE, COMMAND_FIELD
 			if(parent !is ParadoxLocalisationCommandIdentifier) return
 			
-			val handledResult = result.withPrefixMatcher(prefix)
 			val prev = parent.prevIdentifier
 			if(prev == null){
 				//primaryCommandScope, secondaryCommandScope, event_target
-				handledResult.addAllElements(primaryCommandScopeElements)
-				handledResult.addAllElements(secondaryCommandScopeElements)
+				result.addAllElements(primaryCommandScopeElements)
+				result.addAllElements(secondaryCommandScopeElements)
 			}else{
 				//secondaryCommandScope
-				handledResult.addAllElements(secondaryCommandScopeElements)
+				result.addAllElements(secondaryCommandScopeElements)
 			}
 			val next = parent.nextIdentifier
 			if(next == null){
 				//commandField, scopeVariable, scriptedLoc
-				handledResult.addAllElements(commandFieldElements)
+				result.addAllElements(commandFieldElements)
 			}
 		}
 	}
 	
 	class ColorCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			val position = parameters.position //COLOR_ID
-			val prefix = position.text.dropLast(dummyIdentifierLength)
-			result.withPrefixMatcher(prefix).addAllElements(colorElements)
+			result.addAllElements(colorElements)
 		}
 	}
 	

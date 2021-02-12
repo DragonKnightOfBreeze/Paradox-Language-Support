@@ -249,8 +249,7 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 	}
 }
 
-
-fun PsiElement.resolvePropertyPath(): ParadoxPath? {
+fun PsiElement.resolvePath(): ParadoxPath? {
 	val subpaths = mutableListOf<String>()
 	var current = this
 	while(current !is PsiFile) {
@@ -271,6 +270,21 @@ fun PsiElement.resolvePropertyPath(): ParadoxPath? {
 	return if(subpaths.isEmpty()) null else ParadoxPath(subpaths)
 }
 
+fun PsiElement.resolvePropertyPath(): ParadoxPath? {
+	val subpaths = mutableListOf<String>()
+	var current = this
+	while(current !is PsiFile) {
+		when {
+			current is ParadoxScriptProperty -> {
+				subpaths.add(0, current.name)
+			}
+			//忽略scriptValue
+		}
+		current = current.parent ?: break
+	}
+	return if(subpaths.isEmpty()) null else ParadoxPath(subpaths)
+}
+
 fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDefinitionInfo,ParadoxPath>? {
 	val subpaths = mutableListOf<String>()
 	var current = this
@@ -280,13 +294,6 @@ fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDef
 				val definitionInfo = current.paradoxDefinitionInfo
 				if(definitionInfo != null) return definitionInfo to ParadoxPath(subpaths)
 				subpaths.add(0, current.name)
-			}
-			current is ParadoxScriptValue -> {
-				val parent = current.parent ?: break
-				if(parent is ParadoxScriptBlock) {
-					subpaths.add(0, parent.indexOfChild(current).toString())
-				}
-				current = parent
 			}
 		}
 		current = current.parent ?: break

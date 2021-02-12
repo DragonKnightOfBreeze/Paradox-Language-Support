@@ -13,11 +13,11 @@ data class ParadoxPath(
 	val path = subpaths.joinToString("/")
 	val fileName = subpaths.lastOrNull().orEmpty()
 	val fileExtension = fileName.substringAfterLast('.')
-	val parentSubPaths = subpaths.dropLast(1)
-	val parent = parentSubPaths.joinToString("/")
-	val root = parentSubPaths.firstOrNull().orEmpty()
+	val parentSubpaths = subpaths.dropLast(1)
+	val parent = parentSubpaths.joinToString("/")
+	val root = parentSubpaths.firstOrNull().orEmpty()
 	val length = subpaths.size
-	val parentLength = parentSubPaths.size
+	val parentLength = parentSubpaths.size
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxPath && path == other.path
@@ -160,12 +160,13 @@ data class ParadoxDefinitionInfo(
 		}
 	}
 	
-	fun resolvePropertiesList(parentPaths:List<String>):List<Map<String,Any?>> {
+	fun resolvePropertiesList(subpaths:List<String>):List<Map<String,Any?>> {
 		var propertiesList = listOf(properties)
-		for(parentPath in parentPaths) {
+		for(path in subpaths) {
 			val propertiesList1 = mutableListOf<Map<String, Any?>>()
-			for(property in propertiesList) {
-				val props = property[parentPath]
+			for(properties in propertiesList) {
+				//注意这里的properties的key是expression，而不是单纯的wildcardString
+				val props = properties.findOrNull { (k,_) -> k.toConditionalExpression().value == path }
 				when {
 					props is Map<*, *> -> {
 						props as? Map<String, Any?> ?: continue

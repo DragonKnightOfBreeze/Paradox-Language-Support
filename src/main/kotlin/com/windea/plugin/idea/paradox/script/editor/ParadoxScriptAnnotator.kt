@@ -22,7 +22,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
 		//如果是定义，则
-		if(element.paradoxDefinitionInfo != null) annotateDefinition(element, holder)
+		val definitionInfo = element.paradoxDefinitionInfo
+		if(definitionInfo != null) annotateDefinition(element, holder)
+		//如果是定义的属性，则
+		val pair = element.resolveDefinitionInfoAndDefinitionPropertyPath()
+		if(pair != null) annotateDefinitionProperty(element, holder,pair)
 	}
 	
 	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder) {
@@ -30,6 +34,12 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			.range(element.propertyKey)
 			.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)
 			.create()
+	}
+	
+	private fun annotateDefinitionProperty(element: ParadoxScriptProperty, holder: AnnotationHolder, pair: Pair<ParadoxDefinitionInfo, ParadoxPath>){
+		//验证definitionProperty的名字、数量是否合法
+		val (definitionInfo,path) = pair
+		//TODO
 	}
 	
 	private fun annotateVariableReference(element: ParadoxScriptVariableReference, holder: AnnotationHolder) {

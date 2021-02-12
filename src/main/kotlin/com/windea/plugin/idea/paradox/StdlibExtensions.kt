@@ -9,6 +9,7 @@ import java.util.*
 import java.util.jar.*
 import java.util.stream.*
 import javax.swing.*
+import kotlin.NoSuchElementException
 
 fun Boolean.toInt() = if(this) 1 else 0
 
@@ -138,6 +139,19 @@ fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList
 	return indices
 }
 
+fun <K,V> Map<K,V>.find(predicate:(Map.Entry<K,V>)->Boolean):V?{
+	for(entry in this) {
+		if(predicate(entry)) return entry.value
+	}
+	throw NoSuchElementException()
+}
+
+fun <K,V> Map<K,V>.findOrNull(predicate:(Map.Entry<K,V>)->Boolean):V?{
+	for(entry in this) {
+		if(predicate(entry)) return entry.value
+	}
+	return null
+}
 
 inline fun <reified T> T.toSingletonArray(): Array<T> {
 	return arrayOf(this)

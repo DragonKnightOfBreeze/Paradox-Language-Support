@@ -16,8 +16,8 @@ class ParadoxRuleGroup(
 		//path和propertyPath不要重复获取
 		
 		fun matches(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
-			//valueType必须匹配，默认是object
-			val valueTypeData = data["value_type"] ?: "object"
+			//valueType必须匹配，默认是block（不要是object，会与代码提示的代码逻辑相冲突）
+			val valueTypeData = data["value_type"] ?: "block"
 			if(valueTypeData is String) {
 				val value = element.propertyValue?.value ?: return false
 				val isValueTypeMatched = value.checkType(valueTypeData)
