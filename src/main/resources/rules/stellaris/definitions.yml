@@ -117,22 +117,57 @@ definitions:
           $$trigger*: $$trigger
         text: localisation
     # push_scope: archaeological_site
-    
+
+  ### push_scope = planet
   army:
     path: "common/armies"
     file_extension: "txt"
     subtypes:
-      defensive_army:
+      defensive:
         predicate:
           defensive: true
-      occupation_army:
+      occupation:
         predicate:
           occupation: true
+      rebel:
+        predicate:
+          rebel: true
     localisation:
       name!: "$"
       plural!: "$_plural"
       description!: "$_desc"
-
+    properties:
+      defensive?: boolean
+      occupation?: boolean
+      rebel?: boolean
+      is_building_spawned?: boolean
+      is_pop_spawned?: boolean
+      hs_morale?: boolean
+      has_species?: boolean
+      pop_limited?: boolean
+      damage?: float # default: 1.00
+      health?: float # default: 1.00
+      morale?: float # default: 1.00
+      morale_damage?: float # default: 1.00
+      collateral_damage?: float # default: 1.00
+      war_exhaustion?: float # default: 1.00
+      time?: int
+      icon_frame?: int
+      prerequisites: $technology[]
+      resources?:
+        category: $economic_category
+        $$economic_template*: $$economic_template
+      ### replace_scope = { this = country root = country }
+      show_tech_unlock_if?: 
+        $$trigger*: $$trigger
+      potential?:
+        $$trigger*: $$trigger
+      allow?:
+        $$trigger*: $$trigger
+      on_queued?:
+        $$effect*: $$effect
+      on_unqueued?:
+        $$effect*: $$effect
   artifact_action:
     path: "common/artifact_actions"
     file_extension: "txt"
@@ -267,8 +302,6 @@ definitions:
     scopes:
       weight: [ this: country, root: country ]
 
-
-
   color:
     path: "common/colors"
     file_extension: "txt"
@@ -351,7 +384,7 @@ definitions:
           station: "shipclass_research_station | shipclass_mining_station"
       blocker:
         predicate:
-          category: "$deplosit_category.blocker"
+          category: "$deposit_category.blocker"
       important:
         predicate:
           category: "$deposit_category.important"

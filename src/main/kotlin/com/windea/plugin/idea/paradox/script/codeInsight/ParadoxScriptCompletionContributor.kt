@@ -3,6 +3,7 @@ package com.windea.plugin.idea.paradox.script.codeInsight
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.patterns.PlatformPatterns.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.script.psi.*
@@ -33,18 +34,24 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			//处理path
 			val parentPaths = path.parentSubPaths
 			//预匹配properties，得到wildcardKeyStrings
-			val wildcardKeyStrings = mutableListOf<String>()
+			val wildcardKeyExpressions = mutableListOf<ConditionalExpression>()
 			if(parentPaths.isEmpty()){
 				val properties = definitionInfo.properties
-				wildcardKeyStrings.addAll(properties.keys)
+				properties.keys.mapTo(wildcardKeyExpressions){ it.toConditionalExpression() }
 			}else {
 				for(properties in definitionInfo.resolvePropertiesList(parentPaths)) {
-					wildcardKeyStrings.addAll(properties.keys)
+					properties.keys.mapTo(wildcardKeyExpressions){ it.toConditionalExpression() }
 				}
+			}
+			//一般来说key不能重复
+			val existPropertyNames by lazy { 
+				(position.parentOfType<ParadoxScriptProperty>()?.propertyValue?.value as? ParadoxScriptBlock)
+					?.propertyList?.mapTo(mutableSetOf()) { it.name } ?: emptyList() 
 			}
 			//解析wildcardKeyStrings，进行提示
 			val lookupElements = mutableListOf<LookupElement>()	
-			for(wildcardKeyString in wildcardKeyStrings){
+			for(wildcardKeyExpression in wildcardKeyExpressions){
+				val (wildcardKeyString,_,_,multiple) = wildcardKeyExpression
 				//TODO 提取方法findByWildcardKeyString
 				when{
 					//$$类型
@@ -62,6 +69,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 								matchedSubtypes != null && matchedSubtypes.any{ it.name in subtypes }
 							}
 						}
+						//如果不是multiple并且wildcard的KeyString被识别，则这里不提示（一般来说都是multiple）
+						if(!multiple && matchedDefinitions.any { it.name in existPropertyNames }) continue
 						matchedDefinitions.mapTo(lookupElements) { 
 							LookupElementBuilder.create(it).withIcon(definitionIcon).withTypeText(it.containingFile.name) 
 						}
@@ -72,6 +81,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 						val ruleGroup = paradoxRuleGroups[gameType.key]?:return
 						val enum = ruleGroup.enums[wildcardKeyString.drop(5)]?:return
 						val enumValues = enum.enumValues
+						//如果不是multiple并且wildcard的KeyString被识别，则这里不提示
+						if(!multiple && enumValues.any { it in existPropertyNames }) continue
 						enumValues.mapTo(lookupElements){
 							LookupElementBuilder.create(it).withIcon(scriptPropertyIcon)
 						}
@@ -80,6 +91,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					wildcardKeyString == "int" || wildcardKeyString == "float" || wildcardKeyString == "boolean" -> {}
 					//字符串
 					else -> {
+						//如果不是multiple并且wildcard的KeyString被识别，则这里不提示
+						if(!multiple && wildcardKeyString in existPropertyNames) continue
 						val lookupElement = LookupElementBuilder.create(wildcardKeyString).withIcon(scriptPropertyIcon)
 						lookupElements.add(lookupElement)
 					}

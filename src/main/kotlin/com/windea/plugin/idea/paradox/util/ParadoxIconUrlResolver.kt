@@ -20,7 +20,7 @@ import java.util.concurrent.*
  * 基于名称以及qunxing.huijiwiki.com和paradox.paradoxwikis.com上的文件解析图标地址。
  */
 object ParadoxIconUrlResolver {
-	private const val delay:Long = 500
+	private const val delay:Long = 300
 	private val timeout = Duration.ofMinutes(3)
 	
 	private val httpClient = HttpClient.newBuilder().connectTimeout(timeout).build()

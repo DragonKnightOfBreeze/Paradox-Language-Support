@@ -60,6 +60,7 @@
 * [X] `TypeInfo`改为`Definition`，支持解析`alias`，部分提取buildString的扩展
 * [X] 更新项目文档和说明
 * [X] 脚本文件支持根据规则文件提示propertyName（未测试，规则文件未完成）
+* [X] 脚本文件支持根据规则文件提示propertyName，处理不能重复的情况（未测试，规则文件未完成）
 * [ ] 为规则文件`types.yml`添加规则`name_prefix`和`name_suffix`（已完成`common`目录）
 * [ ] 为规则文件`types.yml`添加规则`icon`
 * [ ] 解析规则文件`types.yml`的规则`type_from_file`

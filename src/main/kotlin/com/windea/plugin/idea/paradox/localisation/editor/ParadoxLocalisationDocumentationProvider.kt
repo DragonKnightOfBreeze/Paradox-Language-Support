@@ -6,10 +6,6 @@ import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
-	companion object {
-		private val _textTitle = message("paradox.documentation.text")
-	}
-	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when {
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
@@ -142,7 +138,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				val richText = element.renderText()
 				if(richText.isNotEmpty()) {
 					sections {
-						section(_textTitle, richText)
+						section("Text", richText)
 					}
 				}
 			}
