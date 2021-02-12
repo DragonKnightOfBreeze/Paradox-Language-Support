@@ -8,15 +8,16 @@ import java.util.*
 //File
 
 data class ParadoxPath(
-	val subPaths:List<String>
+	val subpaths:List<String>
 ){
-	val path = subPaths.joinToString("/")
-	val fileName = subPaths.lastOrNull().orEmpty()
+	val path = subpaths.joinToString("/")
+	val fileName = subpaths.lastOrNull().orEmpty()
 	val fileExtension = fileName.substringAfterLast('.')
-	val parentSubPaths = subPaths.dropLast(1)
+	val parentSubPaths = subpaths.dropLast(1)
 	val parent = parentSubPaths.joinToString("/")
 	val root = parentSubPaths.firstOrNull().orEmpty()
-	val length = subPaths.size
+	val length = subpaths.size
+	val parentLength = parentSubPaths.size
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxPath && path == other.path
@@ -82,6 +83,7 @@ data class ParadoxType(
 	}
 }
 
+@Suppress("UNCHECKED_CAST")
 data class ParadoxDefinitionInfo(
 	val name: String,
 	val type: ParadoxType,
@@ -91,6 +93,7 @@ data class ParadoxDefinitionInfo(
 	val scopes: Map<String, Map<String,String>>,
 	val fromVersion: String
 ){
+	val typeText = buildTypeText()
 	val resolvedLocalisation = mutableListOf<Pair<ConditionalExpression,String>>()
 	val resolvedLocalisationNames = mutableListOf<String>()
 	
@@ -104,6 +107,16 @@ data class ParadoxDefinitionInfo(
 	
 	override fun toString(): String {
 		return "$name: $type"
+	}
+	
+	
+	private fun buildTypeText(): String {
+		return buildString {
+			append(type.name)
+			if(subtypes.isNotEmpty()) {
+				subtypes.joinTo(this, ", ", ", ") { subtype -> subtype.name }
+			}
+		}
 	}
 	
 	fun resolveLocalisation(element: ParadoxScriptProperty) {
@@ -147,8 +160,32 @@ data class ParadoxDefinitionInfo(
 		}
 	}
 	
-	fun resolveProperties(){
-		
+	fun resolvePropertiesList(parentPaths:List<String>):List<Map<String,Any?>> {
+		var propertiesList = listOf(properties)
+		for(parentPath in parentPaths) {
+			val propertiesList1 = mutableListOf<Map<String, Any?>>()
+			for(property in propertiesList) {
+				val props = property[parentPath]
+				when {
+					props is Map<*, *> -> {
+						props as? Map<String, Any?> ?: continue
+						propertiesList1.add(props)
+					}
+					props is List<*> -> {
+						for(prop in props) {
+							when {
+								prop is Map<*, *> -> {
+									prop as? Map<String, Any?> ?: continue
+									propertiesList1.add(prop)
+								}
+							}
+						}
+					}
+				}
+			}
+			propertiesList = propertiesList1
+		}
+		return propertiesList
 	}
 }
 

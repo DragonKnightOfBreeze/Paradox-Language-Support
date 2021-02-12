@@ -6,7 +6,7 @@ import com.windea.plugin.idea.paradox.util.*
 
 val paradoxRuleGroups = ParadoxRuleGroupProvider.getRuleGroups()
 
-private val coreParadoxRuleGroup = paradoxRuleGroups.getValue("core")
+private val coreParadoxRuleGroup = paradoxRuleGroups["core"]?:error("Core rule file 'rules/*.yml' is missed.")
 
 val paradoxLocales = coreParadoxRuleGroup.enums.getValue("locale").data.mapArray { ParadoxLocale(it.cast()) }
 val paradoxLocaleMap = paradoxLocales.associateBy { it.name }

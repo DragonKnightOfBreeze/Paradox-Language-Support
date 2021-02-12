@@ -33,7 +33,8 @@
 	  PROPERTY_KEY_ID='regexp:[^#@=\s{}]+[^=\s{}]*'
 	  QUOTED_PROPERTY_KEY_ID='regexp:"([^"(\r\n\\]|\\.)*?"'
 	  BOOLEAN_TOKEN='regexp:(yes)|(no)'
-	  NUMBER_TOKEN='regexp:0|[+-]?[1-9][0-9]*|[+-]?[0-9]+\.[0-9]+'
+	  INT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)'
+	  FLOAT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)(\.[0-9]+)'
 	  STRING_TOKEN='regexp:[^@\s{}="][^\s{}="]*'
 	  QUOTED_STRING_TOKEN='regexp:"([^"\r\n\\]|\\.)*?"'
 	  COLOR_TOKEN="regexp:(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}"
@@ -94,10 +95,16 @@ boolean ::= BOOLEAN_TOKEN {
   implements="com.intellij.psi.PsiLiteralValue"
   methods=[getValue]
 }
-number ::= NUMBER_TOKEN {
+number ::= int | float {
   extends=value
   implements="com.intellij.psi.PsiLiteralValue"
   methods=[getValue]
+}
+int ::= INT_TOKEN {
+  extends=number
+}
+float ::= FLOAT_TOKEN{
+  extends=float
 }
 string_value ::= color | code | string{
   extends=value

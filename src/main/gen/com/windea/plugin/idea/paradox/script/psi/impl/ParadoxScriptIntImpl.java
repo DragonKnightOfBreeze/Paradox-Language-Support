@@ -10,15 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*;
 import com.windea.plugin.idea.paradox.script.psi.*;
 
-public class ParadoxScriptNumberImpl extends ParadoxScriptValueImpl implements ParadoxScriptNumber {
+public class ParadoxScriptIntImpl extends ParadoxScriptNumberImpl implements ParadoxScriptInt {
 
-  public ParadoxScriptNumberImpl(@NotNull ASTNode node) {
+  public ParadoxScriptIntImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitNumber(this);
+    visitor.visitInt(this);
   }
 
   @Override
@@ -28,15 +28,9 @@ public class ParadoxScriptNumberImpl extends ParadoxScriptValueImpl implements P
   }
 
   @Override
-  @Nullable
-  public ParadoxScriptFloat getFloat() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptFloat.class);
-  }
-
-  @Override
   @NotNull
-  public String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  public PsiElement getIntToken() {
+    return notNullChild(findChildByType(INT_TOKEN));
   }
 
 }

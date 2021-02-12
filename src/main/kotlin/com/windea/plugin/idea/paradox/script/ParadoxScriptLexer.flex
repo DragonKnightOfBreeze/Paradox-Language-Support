@@ -44,10 +44,11 @@ VARIABLE_NAME_ID=@[a-zA-Z0-9_-]+
 PROPERTY_KEY_ID=[^#@={}\s]+[^={}\s]*
 QUOTED_PROPERTY_KEY_ID=\"([^\"(\r\n\\]|\\.)*?\"
 VARIABLE_REFERENCE_ID=@[a-zA-Z0-9_-]+
-BOOLEAN=(yes)|(no)
-NUMBER=0|[+-]?[1-9][0-9]*|[+-]?[0-9]+\.[0-9]+
-STRING=[^@\s\{\}=\"][^\s\{\}=\"]*
-QUOTED_STRING=\"([^\"\r\n\\]|\\.)*?\"
+BOOLEAN_TOKEN=(yes)|(no)
+INT_TOKEN=[+-]?(0|[1-9][0-9]*)
+FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
+STRING_TOKEN=[^@\s\{\}=\"][^\s\{\}=\"]*
+QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
 COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}
 CODE_TEXT_TOKEN=[^\r\n\]}]+
 
@@ -68,10 +69,11 @@ IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>])
   //在这里根据后面是否有"="判断是否是property
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;}
-  {BOOLEAN} { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN; }
-  {NUMBER} { yybegin(WAITING_PROPERTY_EOL); return NUMBER_TOKEN; }
-  {STRING} {yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;}
-  {QUOTED_STRING} {yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;}
+  {BOOLEAN_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN; }
+  {INT_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return INT_TOKEN; }
+  {FLOAT_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return FLOAT_TOKEN; }
+  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_VARIABLE_EQUAL_SIGN> {
   "}" {depth--;  yybegin(nextState()); return RIGHT_BRACE;}
@@ -84,10 +86,11 @@ IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>])
 <WAITING_VARIABLE_VALUE> {
   "}" {depth--;  yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++;  yybegin(nextState()); return LEFT_BRACE;}
-  {BOOLEAN} { yybegin(WAITING_VARIABLE_EOL); return BOOLEAN_TOKEN; }
-  {NUMBER} {yybegin(WAITING_VARIABLE_EOL); return NUMBER_TOKEN; }
-  {STRING} {yybegin(WAITING_VARIABLE_EOL); return STRING_TOKEN;}
-  {QUOTED_STRING} {yybegin(WAITING_VARIABLE_EOL); return QUOTED_STRING_TOKEN;}
+  {BOOLEAN_TOKEN} { yybegin(WAITING_VARIABLE_EOL); return BOOLEAN_TOKEN; }
+  {INT_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return INT_TOKEN; }
+  {FLOAT_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return FLOAT_TOKEN; }
+  {STRING_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return QUOTED_STRING_TOKEN;}
   {EOL} { yybegin(nextState()); return WHITE_SPACE; }
   {WHITE_SPACE} { return WHITE_SPACE; }
   {END_OF_LINE_COMMENT} {  return END_OF_LINE_COMMENT; }
@@ -110,10 +113,11 @@ IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>])
   {VARIABLE_NAME_ID} { yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID; }
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;}
-  {BOOLEAN} { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN; }
-  {NUMBER} { yybegin(WAITING_PROPERTY_EOL); return NUMBER_TOKEN; }
-  {STRING} {yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;}
-  {QUOTED_STRING} {yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;}
+  {BOOLEAN_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN; }
+  {INT_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return INT_TOKEN; }
+  {FLOAT_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return FLOAT_TOKEN; }
+  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_PROPERTY>{
   {PROPERTY_KEY_ID} {yybegin(WATIING_PROPERTY_SEPARATOR); return PROPERTY_KEY_ID;}
@@ -141,10 +145,11 @@ IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>])
   {END_OF_LINE_COMMENT} {  return END_OF_LINE_COMMENT; }
   {VARIABLE_REFERENCE_ID} {yybegin(WAITING_PROPERTY_EOL); return VARIABLE_REFERENCE_ID;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;}
-  {BOOLEAN} { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN; }
-  {NUMBER} { yybegin(WAITING_PROPERTY_EOL); return NUMBER_TOKEN; }
-  {QUOTED_STRING} { yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN; }
-  {STRING} { yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN; }
+  {BOOLEAN_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN; }
+  {INT_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return INT_TOKEN; }
+  {FLOAT_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return FLOAT_TOKEN; }
+  {QUOTED_STRING_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN; }
+  {STRING_TOKEN} { yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN; }
 }
 <WAITING_PROPERTY_EOL> {
   "}" {depth--;  yybegin(nextState()); return RIGHT_BRACE;}

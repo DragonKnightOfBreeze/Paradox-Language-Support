@@ -12,6 +12,7 @@ import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 import com.windea.plugin.idea.paradox.util.*
 import org.jetbrains.annotations.*
+import kotlin.Pair
 
 //Misc Extensions
 
@@ -43,11 +44,8 @@ fun isPreviousComment(element: PsiElement): Boolean {
 val settings get() = ParadoxSettingsState.getInstance()
 //Keys
 
-val paradoxPathKey = Key<ParadoxPath>("paradoxPath")
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo")
-val cachedParadoxPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxPath")
-val cachedParadoxPropertyPathKey = Key<CachedValue<ParadoxPath>>("cachedParadoxPropertyPath")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 
@@ -105,41 +103,6 @@ private fun getLocale(element: PsiElement): ParadoxLocale? {
 }
 
 
-val PsiElement.paradoxPropertyPath: ParadoxPath? get() = getPropertyPath(this)
-
-private fun getPropertyPath(element: PsiElement): ParadoxPath? {
-	if(!canGetPropertyPath(element)) return null
-	return CachedValuesManager.getCachedValue(element, cachedParadoxPropertyPathKey) {
-		CachedValueProvider.Result.create(resolvePropertyPath(element), element)
-	}
-}
-
-internal fun canGetPropertyPath(element: PsiElement): Boolean {
-	return element is ParadoxScriptProperty || element is ParadoxScriptValue
-}
-
-private fun resolvePropertyPath(element: PsiElement): ParadoxPath {
-	val subPaths = mutableListOf<String>()
-	var current = element
-	while(current !is PsiFile) {
-		when {
-			current is ParadoxScriptProperty -> {
-				subPaths.add(0, current.name)
-			}
-			current is ParadoxScriptValue -> {
-				val parent = current.parent ?: break
-				if(parent is ParadoxScriptBlock) {
-					subPaths.add(0, parent.indexOfChild(current).toString())
-				}
-				current = parent
-			}
-		}
-		current = current.parent ?: break
-	}
-	return ParadoxPath(subPaths)
-}
-
-
 val VirtualFile.paradoxFileInfo: ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 
 val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.originalFile) //使用原始文件
@@ -164,23 +127,23 @@ private fun getFileInfo(file: PsiFile): ParadoxFileInfo? {
 private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
 	val fileType = getFileType(file) ?: return null
 	val fileName = file.name
-	val subPaths = mutableListOf(fileName)
+	val subpaths = mutableListOf(fileName)
 	var currentFile = file.parent
 	while(currentFile != null) {
 		val rootType = getRootType(currentFile)
 		if(rootType != null) {
-			val path = getPath(subPaths)
+			val path = getPath(subpaths)
 			val gameType = getGameType()
 			return ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
 		}
-		subPaths.add(0, currentFile.name)
+		subpaths.add(0, currentFile.name)
 		currentFile = currentFile.parent
 	}
 	return null
 }
 
-private fun getPath(subPaths: List<String>): ParadoxPath {
-	return ParadoxPath(subPaths)
+private fun getPath(subpaths: List<String>): ParadoxPath {
+	return ParadoxPath(subpaths)
 }
 
 private fun getFileType(file: PsiFile): ParadoxFileType? {
@@ -235,7 +198,7 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
 	val ruleGroup = paradoxRuleGroups[gameType.key] ?: return null
 	val elementName = element.name
-	val propertyPath = element.paradoxPropertyPath ?: return null
+	val propertyPath = element.resolvePropertyPath() ?: return null
 	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, propertyPath) } ?: return null
 	return definition.toDefinitionInfo(element, elementName)
 }
@@ -251,6 +214,8 @@ fun ParadoxScriptValue.getType(): String? {
 		}
 		is ParadoxScriptString -> "string"
 		is ParadoxScriptBoolean -> "boolean"
+		is ParadoxScriptInt -> "int"
+		is ParadoxScriptFloat -> "float"
 		is ParadoxScriptNumber -> "number"
 		is ParadoxScriptColor -> "color"
 		is ParadoxScriptCode -> "code"
@@ -265,6 +230,8 @@ fun ParadoxScriptValue.checkType(type: String): Boolean {
 		"array" -> this is ParadoxScriptBlock && isArray
 		"string" -> this is ParadoxScriptString
 		"boolean" -> this is ParadoxScriptBoolean
+		"int" -> this is ParadoxScriptInt
+		"float" -> this is ParadoxScriptFloat
 		"number" -> this is ParadoxScriptNumber
 		"color" -> this is ParadoxScriptColor
 		"code" -> this is ParadoxScriptCode
@@ -281,6 +248,52 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 		else -> false
 	}
 }
+
+
+fun PsiElement.resolvePropertyPath(): ParadoxPath? {
+	val subpaths = mutableListOf<String>()
+	var current = this
+	while(current !is PsiFile) {
+		when {
+			current is ParadoxScriptProperty -> {
+				subpaths.add(0, current.name)
+			}
+			current is ParadoxScriptValue -> {
+				val parent = current.parent ?: break
+				if(parent is ParadoxScriptBlock) {
+					subpaths.add(0, parent.indexOfChild(current).toString())
+				}
+				current = parent
+			}
+		}
+		current = current.parent ?: break
+	}
+	return if(subpaths.isEmpty()) null else ParadoxPath(subpaths)
+}
+
+fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDefinitionInfo,ParadoxPath>? {
+	val subpaths = mutableListOf<String>()
+	var current = this
+	while(current !is PsiFile) {
+		when {
+			current is ParadoxScriptProperty -> {
+				val definitionInfo = current.paradoxDefinitionInfo
+				if(definitionInfo != null) return definitionInfo to ParadoxPath(subpaths)
+				subpaths.add(0, current.name)
+			}
+			current is ParadoxScriptValue -> {
+				val parent = current.parent ?: break
+				if(parent is ParadoxScriptBlock) {
+					subpaths.add(0, parent.indexOfChild(current).toString())
+				}
+				current = parent
+			}
+		}
+		current = current.parent ?: break
+	}
+	return null
+}
+
 
 fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
@@ -329,6 +342,10 @@ fun findDefinitions(name: String, type: String? = null, project: Project, scope:
 
 fun findDefinitions(type: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
 	return ParadoxDefinitionNameIndex.getAll(type, project, scope)
+}
+
+fun findDefinitionsByType(type:String,project:Project,scope: GlobalSearchScope = GlobalSearchScope.allScope(project)):List<ParadoxScriptProperty>{
+	return ParadoxDefinitionTypeIndex.getAll(type,project,scope)
 }
 
 

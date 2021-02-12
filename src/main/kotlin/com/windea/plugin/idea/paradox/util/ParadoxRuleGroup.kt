@@ -229,5 +229,13 @@ class ParadoxRuleGroup(
 		}
 	}
 	
-	class Enum(val key: String, val data: List<Any>)
+	class Enum(val key: String, val data: List<Any>){
+		val enumValues = data.mapNotNull { 
+			when{
+				it is String -> it
+				it is Map<*,*> -> (it as Map<String, Any?>)["name"]?.toString()
+				else -> null
+			}
+		}
+	}
 }

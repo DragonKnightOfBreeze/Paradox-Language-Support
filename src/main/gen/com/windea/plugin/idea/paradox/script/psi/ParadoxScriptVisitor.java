@@ -26,6 +26,14 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitStringValue(o);
   }
 
+  public void visitFloat(@NotNull ParadoxScriptFloat o) {
+    visitPsiElement(o);
+  }
+
+  public void visitInt(@NotNull ParadoxScriptInt o) {
+    visitNumber(o);
+  }
+
   public void visitNumber(@NotNull ParadoxScriptNumber o) {
     visitValue(o);
   }

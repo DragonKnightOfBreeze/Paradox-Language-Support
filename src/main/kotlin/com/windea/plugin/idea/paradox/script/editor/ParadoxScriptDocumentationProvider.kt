@@ -49,8 +49,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val (name, type, subtypes) = definitionInfo
-				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
+				val name = definitionInfo.name
+				val typeText = definitionInfo.typeText
+				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
 				val localisation = definitionInfo.resolvedLocalisation
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()
@@ -134,8 +135,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val (name, type, subtypes) = definitionInfo
-				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").appendType(type, subtypes)
+				val name = definitionInfo.name
+				val typeText = definitionInfo.typeText
+				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
 				val localisation = definitionInfo.resolvedLocalisation
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()

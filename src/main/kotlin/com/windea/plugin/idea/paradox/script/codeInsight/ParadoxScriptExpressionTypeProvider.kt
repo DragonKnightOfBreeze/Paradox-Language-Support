@@ -50,10 +50,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 	}
 	
 	private fun getDefinitionHint(definitionInfo:ParadoxDefinitionInfo):String{
-		return buildString{
-			val (_,type,subtypes) = definitionInfo
-			appendType(type,subtypes)
-		}
+		return definitionInfo.typeText
 	}
 	
 	override fun getErrorHint(): String {
@@ -74,8 +71,10 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 			STRING -> elementAt as? ParadoxScriptString
 			BOOLEAN_TOKEN -> elementAt.parent as? ParadoxScriptBoolean
 			BOOLEAN -> elementAt as? ParadoxScriptBoolean
-			NUMBER_TOKEN -> elementAt.parent as? ParadoxScriptNumber
-			NUMBER -> elementAt as? ParadoxScriptNumber
+			INT_TOKEN -> elementAt.parent as? ParadoxScriptInt
+			INT -> elementAt as? ParadoxScriptInt
+			FLOAT_TOKEN -> elementAt.parent as? ParadoxScriptFloat
+			FLOAT -> elementAt as? ParadoxScriptFloat
 			COLOR_TOKEN -> elementAt.parent as? ParadoxScriptColor
 			COLOR -> elementAt as? ParadoxScriptColor
 			CODE_TEXT_TOKEN, CODE_START, CODE_END -> elementAt.parent as? ParadoxScriptCode

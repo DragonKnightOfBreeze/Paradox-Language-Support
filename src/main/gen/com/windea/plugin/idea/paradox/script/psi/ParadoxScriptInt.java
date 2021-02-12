@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ParadoxScriptNumber extends ParadoxScriptValue {
-
-  @Nullable
-  ParadoxScriptFloat getFloat();
+public interface ParadoxScriptInt extends ParadoxScriptNumber {
 
   @NotNull
-  String getValue();
+  PsiElement getIntToken();
 
 }

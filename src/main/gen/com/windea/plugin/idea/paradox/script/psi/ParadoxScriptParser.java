@@ -37,8 +37,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(BLOCK, BOOLEAN, CODE, COLOR,
-      NUMBER, ROOT_BLOCK, STRING, STRING_VALUE,
-      VALUE, VARIABLE_REFERENCE),
+      INT, NUMBER, ROOT_BLOCK, STRING,
+      STRING_VALUE, VALUE, VARIABLE_REFERENCE),
   };
 
   /* ********************************************************** */
@@ -126,14 +126,39 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NUMBER_TOKEN
-  public static boolean number(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "number")) return false;
-    if (!nextTokenIs(b, NUMBER_TOKEN)) return false;
+  // FLOAT_TOKEN
+  public static boolean float_$(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "float_$")) return false;
+    if (!nextTokenIs(b, FLOAT_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, NUMBER_TOKEN);
-    exit_section_(b, m, NUMBER, r);
+    r = consumeToken(b, FLOAT_TOKEN);
+    exit_section_(b, m, FLOAT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // INT_TOKEN
+  public static boolean int_$(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "int_$")) return false;
+    if (!nextTokenIs(b, INT_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, INT_TOKEN);
+    exit_section_(b, m, INT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // int | float
+  public static boolean number(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "number")) return false;
+    if (!nextTokenIs(b, "<number>", FLOAT_TOKEN, INT_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _COLLAPSE_, NUMBER, "<number>");
+    r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

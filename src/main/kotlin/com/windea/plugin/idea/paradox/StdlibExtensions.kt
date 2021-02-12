@@ -67,6 +67,14 @@ fun String.isNumber(): Boolean {
 	return true
 }
 
+fun CharSequence.surroundsWith(prefix:Char,suffix:Char,ignoreCase: Boolean = false): Boolean {
+	return this.startsWith(prefix,ignoreCase) && this.endsWith(suffix,ignoreCase)
+}
+
+fun CharSequence.surroundsWith(prefix:CharSequence,suffix:CharSequence,ignoreCase: Boolean = false): Boolean {
+	return this.startsWith(prefix,ignoreCase) && this.endsWith(suffix,ignoreCase)
+}
+
 fun String.containsBlank() = this.any { it.isWhitespace() }
 
 fun String.containsBlankLine(): Boolean {
@@ -129,6 +137,7 @@ fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList
 	}
 	return indices
 }
+
 
 inline fun <reified T> T.toSingletonArray(): Array<T> {
 	return arrayOf(this)
@@ -206,9 +215,10 @@ interface Expression : CharSequence {
 	override fun subSequence(startIndex: Int, endIndex: Int) = expression.subSequence(startIndex, endIndex)
 }
 
-class ConditionalExpression(
-	override val expression: String
-) : Expression {
+/**
+ * 条件表达式，如：`name?`, `name!`。
+ */
+class ConditionalExpression(override val expression: String) : Expression {
 	companion object {
 		private val markers = charArrayOf('?', '!', '*', '+')
 	}
@@ -236,18 +246,13 @@ class ConditionalExpression(
 
 fun String.toConditionalExpression() = ConditionalExpression(this)
 
-class PredicateExpression(
-	override val expression: String
-) : Expression {
+/**
+ * 预测表达式，如：`isValid`, `!isValid`。
+ */
+class PredicateExpression(override val expression: String) : Expression {
 	val marker: Char? = expression.firstOrNull()?.takeIf { it == '!' }
 	val value: String = if(marker != null) expression.drop(1) else expression
 	val invert: Boolean = marker == '!'
-	
-	override val length = expression.length
-	
-	override fun get(index: Int): Char = expression[index]
-	
-	override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = expression.subSequence(startIndex, endIndex)
 	
 	override fun equals(other: Any?): Boolean = other is PredicateExpression && expression == other.expression
 	
@@ -273,3 +278,26 @@ class PredicateExpression(
 }
 
 fun String.toPredicateExpression() = PredicateExpression(this)
+
+/**
+ * 类型表达式，如：`weapon`, `weapon.sword`, `weapon.(sword|spear)`
+ */
+class TypeExpression(override val expression: String):Expression{
+	private val dotIndex = expression.indexOf('.').let{ if(it == -1) expression.length else it }
+	 val type = expression.take(dotIndex)
+	 val subtypes = expression.drop(dotIndex).let{
+		 if(it.surroundsWith('(',')')) it.substring(1,it.length-1).split('|').map { s -> s.trim() } else listOf(it)
+	 }
+	
+	override fun equals(other: Any?): Boolean = other is TypeExpression && expression == other.expression
+	
+	override fun hashCode(): Int = expression.hashCode()
+	
+	override fun toString(): String = expression
+	
+	operator fun component1(): String = type
+	
+	operator fun component2(): List<String> = subtypes
+}
+
+fun String.toTypeExpression() = TypeExpression(this)

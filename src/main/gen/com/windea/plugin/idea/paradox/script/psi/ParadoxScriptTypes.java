@@ -12,6 +12,8 @@ public interface ParadoxScriptTypes {
   IElementType BOOLEAN = new ParadoxScriptElementType("BOOLEAN");
   IElementType CODE = new ParadoxScriptElementType("CODE");
   IElementType COLOR = new ParadoxScriptElementType("COLOR");
+  IElementType FLOAT = new ParadoxScriptElementType("FLOAT");
+  IElementType INT = new ParadoxScriptElementType("INT");
   IElementType NUMBER = new ParadoxScriptElementType("NUMBER");
   IElementType PROPERTY = ParadoxScriptStubElementTypes.getPropertyType("PROPERTY");
   IElementType PROPERTY_KEY = new ParadoxScriptElementType("PROPERTY_KEY");
@@ -33,13 +35,14 @@ public interface ParadoxScriptTypes {
   IElementType COMMENT = new ParadoxScriptTokenType("COMMENT");
   IElementType END_OF_LINE_COMMENT = new ParadoxScriptTokenType("END_OF_LINE_COMMENT");
   IElementType EQUAL_SIGN = new ParadoxScriptTokenType("=");
+  IElementType FLOAT_TOKEN = new ParadoxScriptTokenType("FLOAT_TOKEN");
   IElementType GE_SIGN = new ParadoxScriptTokenType(">=");
   IElementType GT_SIGN = new ParadoxScriptTokenType(">");
+  IElementType INT_TOKEN = new ParadoxScriptTokenType("INT_TOKEN");
   IElementType LEFT_BRACE = new ParadoxScriptTokenType("{");
   IElementType LE_SIGN = new ParadoxScriptTokenType("<=");
   IElementType LT_SIGN = new ParadoxScriptTokenType("<");
   IElementType NOT_EQUAL_SIGN = new ParadoxScriptTokenType("<>");
-  IElementType NUMBER_TOKEN = new ParadoxScriptTokenType("NUMBER_TOKEN");
   IElementType PROPERTY_KEY_ID = new ParadoxScriptTokenType("PROPERTY_KEY_ID");
   IElementType QUOTED_PROPERTY_KEY_ID = new ParadoxScriptTokenType("QUOTED_PROPERTY_KEY_ID");
   IElementType QUOTED_STRING_TOKEN = new ParadoxScriptTokenType("QUOTED_STRING_TOKEN");
@@ -63,6 +66,12 @@ public interface ParadoxScriptTypes {
       }
       else if (type == COLOR) {
         return new ParadoxScriptColorImpl(node);
+      }
+      else if (type == FLOAT) {
+        return new ParadoxScriptFloatImpl(node);
+      }
+      else if (type == INT) {
+        return new ParadoxScriptIntImpl(node);
       }
       else if (type == NUMBER) {
         return new ParadoxScriptNumberImpl(node);
