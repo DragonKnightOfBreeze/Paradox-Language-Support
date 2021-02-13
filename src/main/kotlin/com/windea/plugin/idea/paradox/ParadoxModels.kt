@@ -165,7 +165,7 @@ data class ParadoxDefinitionInfo(
 		for(path in subpaths) {
 			val propertiesList1 = mutableListOf<Map<String, Any?>>()
 			for(properties in propertiesList) {
-				//注意这里的properties的key是expression，而不是单纯的wildcardString
+				//注意这里的properties的key是expression，而不是单纯的pattern
 				val props = properties.findOrNull { (k,_) -> k.toConditionalExpression().value == path }
 				when {
 					props is Map<*, *> -> {
@@ -297,4 +297,10 @@ class ParadoxCommandField(data:Map<String,Any>){
 	override fun toString(): String {
 		return name
 	}
+}
+
+//Others
+
+enum class ValidateState{
+	Ok, Unresolved,Dupliate
 }

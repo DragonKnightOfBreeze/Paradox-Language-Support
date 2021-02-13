@@ -5,7 +5,6 @@ import com.intellij.util.xmlb.*
 
 @State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])
 class ParadoxSettingsState : PersistentStateComponent<ParadoxSettingsState> {
-	@JvmField var validateScript = true
 	@JvmField var preferOverridden = false
 	@JvmField var renderLineCommentText = false
 	@JvmField var renderDefinitionText = true

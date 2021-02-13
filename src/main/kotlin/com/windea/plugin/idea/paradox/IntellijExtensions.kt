@@ -96,7 +96,7 @@ fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopO
 	return lastSeen.psi
 }
 
-fun LookupElement.withPriority(priority: Double): LookupElement {
+fun LookupElement.withPriority(priority: Double): PrioritizedLookupElement {
 	return PrioritizedLookupElement.withPriority(this, priority)
 }
 

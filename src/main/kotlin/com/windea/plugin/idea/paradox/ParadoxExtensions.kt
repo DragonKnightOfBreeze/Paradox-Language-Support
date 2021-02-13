@@ -427,6 +427,7 @@ fun StringBuilder.appendType(type:ParadoxType,subtypes:List<ParadoxType>):String
 fun StringBuilder.appendBr():StringBuilder{
 	return append("<br>")
 }
+
 //Inline Extensions
 
 @Suppress("NOTHING_TO_INLINE")
@@ -468,3 +469,6 @@ inline fun ParadoxScriptFile.extractData(): List<Any> {
 inline fun ParadoxLocalisationFile.extractData(): Map<String, String> {
 	return ParadoxLocalisationDataExtractor.extract(this)
 }
+
+//Rule Extensions
+

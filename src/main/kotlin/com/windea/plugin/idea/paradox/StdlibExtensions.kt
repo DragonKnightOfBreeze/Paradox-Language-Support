@@ -48,14 +48,27 @@ fun Boolean.toStringYesNo() = if(this) "yes" else "no"
 
 fun String.toBooleanYesNo() = this == "yes"
 
-fun String.isNumber(): Boolean {
+fun String.isInt():Boolean{
+	var isFirstChar = true
+	for(char in this.toCharArray()) {
+		if(char.isDigit()) continue
+		if(isFirstChar) {
+			isFirstChar = false
+			if(char == '+' || char == '-') continue
+		}
+		return false
+	}
+	return true
+}
+
+fun String.isFloat(): Boolean {
 	var isFirstChar = true
 	var missingDot = true
 	for(char in this.toCharArray()) {
 		if(char.isDigit()) continue
 		if(isFirstChar) {
-			if(char == '+' || char == '-') continue
 			isFirstChar = false
+			if(char == '+' || char == '-') continue
 		}
 		if(missingDot) {
 			if(char == '.') {
@@ -98,7 +111,7 @@ fun String.quoteIfNecessary() = if(containsBlank()) quote() else this
 
 private val wildcardBooleanValues = arrayOf("true", "false", "yes", "no")
 
-fun String.quoteAsStringLike() = if(this in wildcardBooleanValues || isNumber() || containsBlank()) quote() else this
+fun String.quoteAsStringLike() = if(this in wildcardBooleanValues || isFloat() || containsBlank()) quote() else this
 
 fun String.onlyQuoteIfNecessary() = this.unquote().quoteIfNecessary()
 
@@ -293,6 +306,7 @@ class PredicateExpression(override val expression: String) : Expression {
 
 fun String.toPredicateExpression() = PredicateExpression(this)
 
+//TODO 支持 t1 | t2
 /**
  * 类型表达式，如：`weapon`, `weapon.sword`, `weapon.(sword|spear)`
  */
