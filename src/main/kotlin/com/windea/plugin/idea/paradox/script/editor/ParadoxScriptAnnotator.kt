@@ -49,8 +49,15 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun annotateDefinitionProperties(existProperties:List<ParadoxScriptProperty>,keyPatternExpressions: List<ConditionalExpression>,project: Project,
-		definitionInfo: ParadoxDefinitionInfo, ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subpaths:List<String> = listOf()){
+	private fun annotateDefinitionProperties(existProperties:List<ParadoxScriptProperty>,
+		keyPatternExpressions: List<ConditionalExpression>,project: Project, definitionInfo: ParadoxDefinitionInfo, 
+		ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subpaths:List<String> = listOf()){
+		
+		//用于保存要求的pattern
+		val requiredData = keyPatternExpressions.filter { it.required }.mapTo(mutableSetOf()) { it.value }
+		//用于检查不可重复的keyPattern是否重复 
+		val multipleData = mutableSetOf<String>()
+		
 		loop@ for(existProperty in existProperties){
 			//如果definitionProperty本身就是definition，则跳过检查
 			if(existProperty.paradoxDefinitionInfo != null) continue
@@ -59,8 +66,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			val typeText = definitionInfo.typeText
 			val childSubpaths = subpaths + existPropertyName
 			
-			val requiredData = keyPatternExpressions.filter { it.required }.mapTo(mutableSetOf()) { it.value }
-			val state = resolveKeyPatternExpressions(keyPatternExpressions, project, existPropertyName, ruleGroup,requiredData)
+			
+			val state = resolveKeyPatternExpressions(keyPatternExpressions, project, existPropertyName, ruleGroup,requiredData,multipleData)
 			
 			//如果有问题
 			when(state) {
@@ -102,9 +109,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun resolveKeyPatternExpressions(keyPatternExpressions: List<ConditionalExpression>, project: Project,
-		existPropertyName: String, ruleGroup: ParadoxRuleGroup, requiredData: MutableSet<String>): ValidateState {
-		val multipleData = mutableSetOf<String>() //用于检查不可重复的keyPattern是否重复 
+	private fun resolveKeyPatternExpressions(keyPatternExpressions: List<ConditionalExpression>, 
+		project: Project, existPropertyName: String, ruleGroup: ParadoxRuleGroup, 
+		requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
 		for(keyPatternExpression in keyPatternExpressions) {
 			val keyPattern = keyPatternExpression.value
 			
@@ -112,7 +119,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				//$$类型
 				keyPattern.startsWith("$$") -> {
 					//TODO
-					return afterResolved(keyPatternExpression, multipleData,requiredData)
+					return afterResolved(keyPatternExpression, requiredData, multipleData)
 				}
 				//$类型（可能有子类型）
 				keyPattern.startsWith("$") -> {
@@ -125,7 +132,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 						}
 					}
 					if(matchedDefinitions.isNotEmpty()) {
-						return afterResolved(keyPatternExpression, multipleData,requiredData)
+						return afterResolved(keyPatternExpression, requiredData, multipleData)
 					}
 				}
 				//枚举
@@ -133,25 +140,25 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					val enum = ruleGroup.enums[keyPattern.drop(5)] ?: continue
 					val enumValues = enum.enumValues
 					if(existPropertyName in enumValues) {
-						return afterResolved(keyPatternExpression, multipleData,requiredData)
+						return afterResolved(keyPatternExpression, requiredData, multipleData)
 					}
 				}
 				//基本类型int
 				keyPattern == "int" -> {
 					if(existPropertyName.isInt()) {
-						return afterResolved(keyPatternExpression, multipleData,requiredData)
+						return afterResolved(keyPatternExpression, requiredData, multipleData)
 					}
 				}
 				//基本类型float
 				keyPattern == "float" -> {
 					if(existPropertyName.isFloat()) {
-						return afterResolved(keyPatternExpression, multipleData,requiredData)
+						return afterResolved(keyPatternExpression, requiredData, multipleData)
 					}
 				}
 				//字符串
 				else -> {
 					if(existPropertyName == keyPattern) {
-						return afterResolved(keyPatternExpression, multipleData,requiredData)
+						return afterResolved(keyPatternExpression, requiredData, multipleData)
 					}
 				}
 			}
@@ -160,7 +167,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		return ValidateState.Unresolved
 	}
 	
-	private fun afterResolved(keyPatternExpression:ConditionalExpression, multipleData: MutableSet<String>,requiredData: MutableSet<String>): ValidateState {
+	private fun afterResolved(keyPatternExpression:ConditionalExpression, requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
 		val (keyPattern,_,required,multiple) = keyPatternExpression
 		if(!multiple) {
 			if(keyPattern in multipleData) {

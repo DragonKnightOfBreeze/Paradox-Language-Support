@@ -69,9 +69,9 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 				(position.parentOfType<ParadoxScriptProperty>()?.propertyValue?.value as? ParadoxScriptBlock)
 					?.propertyList?.mapTo(mutableSetOf()) { it.name } ?: emptyList() 
 			}
-			val gameType = position.paradoxFileInfo?.gameType?:return
+			val gameType = parameters.originalFile.paradoxFileInfo?.gameType?:return
 			val ruleGroup = paradoxRuleGroups[gameType.key]?:return
-			val project = position.project
+			val project = parameters.originalFile.project
 			
 			//解析keyPatterns，进行提示
 			val lookupElements = mutableListOf<LookupElement>()	

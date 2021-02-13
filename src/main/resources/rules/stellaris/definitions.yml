@@ -1811,5 +1811,18 @@ definitions:
 
   advisor_voice_type:
     path: "sound/advisor_voice_types"
+    file_extension: "txt"
     localisation:
       name!: ".name"
+      
+      
+      
+  test:
+    path: "test"
+    file_extension: "txt"
+    properties:
+      a?: int
+      b+: float
+      c: $ethic
+      int!: int
+      $ethic: int
