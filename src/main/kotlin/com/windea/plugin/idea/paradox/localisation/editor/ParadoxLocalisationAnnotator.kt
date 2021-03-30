@@ -63,6 +63,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		}
 	}
 	
+	//TODO 不能严格验证
 	private fun annotateCommand(element: ParadoxLocalisationCommand, holder: AnnotationHolder) {
 		//验证commandScope是否存在且合法，不验证event_target
 		//验证commandField是否合法（预定义，scopeVariable，scriptedLoc）

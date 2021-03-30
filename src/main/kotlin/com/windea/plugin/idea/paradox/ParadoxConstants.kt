@@ -28,6 +28,14 @@ const val defaultFolder = "<folder>"
 
 const val anonymousName = "<anonymous>"
 
+const val primitivePrefix="$"
+const val primitivePrefixLength = primitivePrefix.length
+const val aliasPrefix="alias:"
+const val aliasPrefixLength=aliasPrefix.length
+const val typePrefix="type:"
+const val typePrefixLength = typePrefix.length
+const val enumPrefix="enum:"
+const val enumPrefixLength=enumPrefix.length
 const val eventTargetPrefix = "event_target:"
 const val eventTargetPrefixLength = eventTargetPrefix.length
 

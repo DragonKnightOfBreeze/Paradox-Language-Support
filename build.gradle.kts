@@ -1,15 +1,15 @@
 plugins {
 	java
-	kotlin("jvm") version "1.4.0"
-	id("org.jetbrains.intellij") version "0.4.21"
-	id("org.jetbrains.grammarkit") version "2020.1.2"
+	kotlin("jvm") version "1.4.30"
+	id("org.jetbrains.intellij") version "0.7.2"
+	id("org.jetbrains.grammarkit") version "2020.3.2"
 }
 
 group = "com.windea"
 version = "0.1"
 
 intellij {
-	version = "2020.3"
+	version = "2020.3.2"
 	pluginName = "Paradox Language Support"
 }
 
@@ -30,11 +30,11 @@ repositories {
 
 dependencies{
 	implementation(kotlin("stdlib"))
-	implementation(kotlin("reflect:1.4.0"))
+	implementation(kotlin("reflect"))
 }
 
 sourceSets {
-		main {
+	main {
 		java.srcDir("src/main/gen")
 		java.srcDir("src/main/kotlin")
 	}
@@ -42,18 +42,14 @@ sourceSets {
 
 tasks {
 	compileKotlin {
-		incremental = true
-		//javaPackagePrefix = "com.windea.plugin.idea"
-		kotlinOptions.jvmTarget = "11"
+		kotlinOptions.jvmTarget = "8"
 	}
 	compileTestKotlin {
-		incremental = true
-		//javaPackagePrefix = "com.windea.plugin.idea"
-		kotlinOptions.jvmTarget = "11"
+		kotlinOptions.jvmTarget = "8"
 	}
 }
 
 grammarKit {
-	jflexRelease = "1.7.0-1"
-	grammarKitRelease = "2020.1"
+	jflexRelease = "1.7.0-2"
+	grammarKitRelease = "2020.3.2"
 }

@@ -66,8 +66,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			val typeText = definitionInfo.typeText
 			val childSubpaths = subpaths + existPropertyName
 			
-			
-			val state = resolveKeyPatternExpressions(keyPatternExpressions, project, existPropertyName, ruleGroup,requiredData,multipleData)
+			val state = resolveExpressions(keyPatternExpressions, project, existPropertyName, ruleGroup,requiredData,multipleData)
 			
 			//如果有问题
 			when(state) {
@@ -109,21 +108,27 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun resolveKeyPatternExpressions(keyPatternExpressions: List<ConditionalExpression>, 
-		project: Project, existPropertyName: String, ruleGroup: ParadoxRuleGroup, 
-		requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
-		for(keyPatternExpression in keyPatternExpressions) {
+	private fun resolveExpressions(expressions: List<ConditionalExpression>, project: Project,
+		existPropertyName: String, ruleGroup: ParadoxRuleGroup, requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
+		for(keyPatternExpression in expressions) {
 			val keyPattern = keyPatternExpression.value
-			
 			when {
-				//$$类型
-				keyPattern.startsWith("$$") -> {
+				//别名
+				keyPattern.startsWith(aliasPrefix) -> {
 					//TODO
 					return afterResolved(keyPatternExpression, requiredData, multipleData)
 				}
-				//$类型（可能有子类型）
-				keyPattern.startsWith("$") -> {
-					val (type, subtypes) = keyPattern.drop(1).toTypeExpression()
+				//类型
+				keyPattern.startsWith(primitivePrefix) -> {
+					val key = keyPattern.drop(primitivePrefixLength)
+					if(existPropertyName.isTypeOf(key)){
+						return afterResolved(keyPatternExpression, requiredData, multipleData)
+					}
+				}
+				//定义
+				keyPattern.startsWith(typePrefix) -> {
+					val key = keyPattern.drop(typePrefixLength)
+					val (type, subtypes) = key.toTypeExpression()
 					var matchedDefinitions = findDefinitions(existPropertyName, type, project)
 					if(subtypes.isNotEmpty()) {
 						matchedDefinitions = matchedDefinitions.filter { matchedDefinition ->
@@ -136,22 +141,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					}
 				}
 				//枚举
-				keyPattern.startsWith("enum:") -> {
-					val enum = ruleGroup.enums[keyPattern.drop(5)] ?: continue
+				keyPattern.startsWith(enumPrefix) -> {
+					val key = keyPattern.drop(enumPrefixLength)
+					val enum = ruleGroup.enums[key] ?: continue
 					val enumValues = enum.enumValues
 					if(existPropertyName in enumValues) {
-						return afterResolved(keyPatternExpression, requiredData, multipleData)
-					}
-				}
-				//基本类型int
-				keyPattern == "int" -> {
-					if(existPropertyName.isInt()) {
-						return afterResolved(keyPatternExpression, requiredData, multipleData)
-					}
-				}
-				//基本类型float
-				keyPattern == "float" -> {
-					if(existPropertyName.isFloat()) {
 						return afterResolved(keyPatternExpression, requiredData, multipleData)
 					}
 				}
@@ -163,7 +157,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				}
 			}
 		}
-		
 		return ValidateState.Unresolved
 	}
 	

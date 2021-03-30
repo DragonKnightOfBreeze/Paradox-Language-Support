@@ -42,11 +42,10 @@ inline fun <T, reified R> Sequence<T>.mapArray(block: (T) -> R): Array<R> {
 	return this.toList().mapArray(block)
 }
 
+
+private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
+
 fun String.isBoolean() = this == "yes" || this == "no"
-
-fun Boolean.toStringYesNo() = if(this) "yes" else "no"
-
-fun String.toBooleanYesNo() = this == "yes"
 
 fun String.isInt():Boolean{
 	var isFirstChar = true
@@ -80,6 +79,21 @@ fun String.isFloat(): Boolean {
 	}
 	return true
 }
+
+fun String.isColor():Boolean{
+	return this.matches(isColorRegex)
+}
+
+fun String.isTypeOf(type:String):Boolean{
+	return (type=="boolean" && isBoolean()) || (type == "int" && isInt()) || (type =="float" && isFloat())
+	       || (type == "color" && isColor()) || type == "string"
+}
+
+
+fun Boolean.toStringYesNo() = if(this) "yes" else "no"
+
+fun String.toBooleanYesNo() = this == "yes"
+
 
 fun CharSequence.surroundsWith(prefix:Char,suffix:Char,ignoreCase: Boolean = false): Boolean {
 	return this.startsWith(prefix,ignoreCase) && this.endsWith(suffix,ignoreCase)

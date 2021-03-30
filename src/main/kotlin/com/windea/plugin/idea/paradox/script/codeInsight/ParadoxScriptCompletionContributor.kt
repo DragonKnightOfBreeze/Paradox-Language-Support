@@ -11,17 +11,21 @@ import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 import com.windea.plugin.idea.paradox.util.*
-import org.jetbrains.annotations.*
 
 @Suppress("UNCHECKED_CAST")
 class ParadoxScriptCompletionContributor : CompletionContributor() {
-	class BooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
-		private val lookupElements = booleanValues.map { value ->
+	companion object{
+		private val booleanLookupElements = booleanValues.map { value ->
 			LookupElementBuilder.create(value).bold().withPriority(80.0)
 		}
-		
+		private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
+			EditorModificationUtil.insertStringAtCaret(context.editor, " = ", false, true, 3)
+		}
+	}
+	
+	class BooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			result.addAllElements(lookupElements)
+			result.addAllElements(booleanLookupElements)
 		}
 	}
 	
@@ -36,10 +40,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//4. value可能是：类型表达式、情况列表、子属性（映射）
 		//5. 忽略正在填写的propertyName
 		
-		private val insertHandler = InsertHandler<LookupElement> { context, _ ->
-			val s = " = "
-			EditorModificationUtil.insertStringAtCaret(context.editor, s , false, true, 3)
-		}
+		
 		
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 			val position = parameters.position
@@ -74,23 +75,29 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			val project = parameters.originalFile.project
 			
 			//解析keyPatterns，进行提示
-			val lookupElements = mutableListOf<LookupElement>()	
-			resolveKeyPatternExpressions(keyPatternExpressions, project, existPropertyNames, lookupElements, ruleGroup)
+			val lookupElements = resolveExpressions(keyPatternExpressions, project, existPropertyNames, ruleGroup)
 			result.addAllElements(lookupElements)
 		}
 		
-		private fun resolveKeyPatternExpressions(keyPatternExpressions: List<ConditionalExpression>, project: Project,
-			existPropertyNames: Collection<String>, lookupElements: MutableList<LookupElement>, ruleGroup: ParadoxRuleGroup) {
-			for(keyPatternExpression in keyPatternExpressions) {
+		private fun resolveExpressions(expressions: List<ConditionalExpression>, project: Project, 
+			existPropertyNames: Collection<String>, ruleGroup: ParadoxRuleGroup): List<LookupElement> {
+			val lookupElements = mutableListOf<LookupElement>()
+			for(keyPatternExpression in expressions) {
 				val (keyPattern, _, _, multiple) = keyPatternExpression
 				when {
-					//$$类型
-					keyPattern.startsWith("$$") -> {
+					//别名
+					keyPattern.startsWith(aliasPrefix) -> {
 						//TODO
 					}
-					//$类型（可能有子类型）
-					keyPattern.startsWith("$") -> {
-						val (type, subtypes) = keyPattern.drop(1).toTypeExpression()
+					//类型
+					keyPattern.startsWith(primitivePrefix) -> {
+						val key = keyPattern.drop(primitivePrefixLength)
+						if(key == "boolean") lookupElements.addAll(booleanLookupElements)
+					}
+					//定义
+					keyPattern.startsWith(typePrefix) -> {
+						val key = keyPattern.drop(typePrefixLength)
+						val (type, subtypes) = key.toTypeExpression()
 						var matchedDefinitions = findDefinitionsByType(type, project)
 						if(subtypes.isNotEmpty()) {
 							matchedDefinitions = matchedDefinitions.filter { matchedDefinition ->
@@ -99,34 +106,34 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 							}
 						}
 						//如果不是multiple并且keyPattern的KeyString被识别，则这里不提示（一般来说都是multiple）
-						if(!multiple && matchedDefinitions.any { it.name in existPropertyNames }) return
+						if(!multiple && matchedDefinitions.any { it.name in existPropertyNames }) break
 						matchedDefinitions.mapTo(lookupElements) {
-							LookupElementBuilder.create(it).withIcon(definitionIcon).withTypeText(it.containingFile.name).withInsertHandler(insertHandler)
+							LookupElementBuilder.create(it).withIcon(definitionIcon)
+								.withTypeText(it.containingFile.name).withInsertHandler(separatorInsertHandler)
 						}
 					}
 					//枚举
-					keyPattern.startsWith("enum:") -> {
-						val enum = ruleGroup.enums[keyPattern.drop(5)] ?: return
+					keyPattern.startsWith(enumPrefix) -> {
+						val key = keyPattern.drop(enumPrefixLength)
+						val enum = ruleGroup.enums[key] ?: break
 						val enumValues = enum.enumValues
 						//如果不是multiple并且keyPattern的KeyString被识别，则这里不提示
-						if(!multiple && enumValues.any { it in existPropertyNames }) return
+						if(!multiple && enumValues.any { it in existPropertyNames }) break
 						enumValues.mapTo(lookupElements) {
-							LookupElementBuilder.create(it).withIcon(scriptPropertyIcon).withInsertHandler(insertHandler)
+							LookupElementBuilder.create(it).withIcon(scriptPropertyIcon).withInsertHandler(separatorInsertHandler)
 						}
-					}
-					//基本类型int/float
-					keyPattern == "int" || keyPattern == "float" -> {
-						//忽略
 					}
 					//字符串
 					else -> {
 						//如果不是multiple并且keyPattern的KeyString被识别，则这里不提示
-						if(!multiple && keyPattern in existPropertyNames) return
-						val lookupElement = LookupElementBuilder.create(keyPattern).withIcon(scriptPropertyIcon).withInsertHandler(insertHandler)
+						if(!multiple && keyPattern in existPropertyNames) break
+						val lookupElement = LookupElementBuilder.create(keyPattern)
+							.withIcon(scriptPropertyIcon).withInsertHandler(separatorInsertHandler)
 						lookupElements.add(lookupElement)
 					}
 				}
 			}
+			return lookupElements
 		}
 	}
 	
