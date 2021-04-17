@@ -1,4 +1,4 @@
-# scopes - from replace_scope
+# TODO 确认scope
 
 definitions:
   agenda:
@@ -10,9 +10,9 @@ definitions:
     properties:
       weight_modifier:
         enum:factor_weight: float
-        $$modifier_rule*: $$modifier_rule
+        alias:modifier_rule*: alias:modifier_rule
       modifier:
-        $$modifier*: $$modifier
+        alias:modifier*: alias:modifier
     scopes:
       weight_modifier: [ this: leader, root: leader, from: country ]
       modifier: [ this: country, root: country ]
@@ -21,20 +21,20 @@ definitions:
     path: "common/ai_budget"
     file_extension: "txt"
     proeprties:
-      resource: $resource
+      resource: type:resource
       type: enum:ai_budget_type
-      category: $economic_category
+      category: type:economic_category
       potential:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       fraction?:
         enum:weight_or_base: float
-        $$modifer_rule*: $$modifier_rule
+        alias:modifer_rule*: alias:modifier_rule
       static_max?:
         base: int
-        $$modifier_rule*: $$modifier_rule
+        alias:modifier_rule*: alias:modifier_rule
       static_min?:
         base: int
-        $$modifier_rule*: $$modifier_rule
+        alias:modifier_rule*: alias:modifier_rule
     global_scopes: [ this: country, root: country ]
 
   ambient_object:
@@ -62,7 +62,7 @@ definitions:
       subtype:selectable:
         description: localisation
         tooltip: localisation
-      entity: $model_entity
+      entity: type:model_entity
       selectable: boolean
       show_name: boolean
 
@@ -78,26 +78,26 @@ definitions:
       desc?:
       - localisation 
       - trigger: 
-          $$trigger*: $$trigger
+          alias:trigger*: alias:trigger
         text: localisation
-      picture?: $sprite
+      picture?: type:sprite
       level: int # 1..10
       null_spawn_chance?: float # 0.0..1.0, default: 0
       max_once?: boolean # default: no
       max_once_global?: boolean # default:no
       spawn_chance: # default: 0
         base?: float
-        $$modifier_rule_add_factor*: $$modifier_rule_factor
+        alias:modifier_rule_add_factor*: alias:modifier_rule_factor
       on_spawn?:
-        $$effect*: $$effect
+        alias:effect*: alias:effect
       on_success:
-      - $event.ship
+      - type:event.ship
       - int: 
-        - $event.ship
+        - type:event.ship
         - max_once?: boolean # default: yes
           max_once_global?: boolean # default: no
-          anomaly_event: $event.ship
-          $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+          anomaly_event: type:event.ship
+          alias:modifier_rule_add_factor*: alias:modifier_rule_add_factor
     global_scopes: [root: planet, this: planet, from: ship]
     graph_related_types:
     - "event"
@@ -110,11 +110,11 @@ definitions:
       name!: "$"
       description!: ".desc"
     properties:
-      picture?: $sprite
+      picture?: type:sprite
       desc?:
       - localisation
       - trigger:
-          $$trigger*: $$trigger
+          alias:trigger*: alias:trigger
         text: localisation
     # push_scope: archaeological_site
 
@@ -153,21 +153,21 @@ definitions:
       war_exhaustion?: float # default: 1.00
       time?: int
       icon_frame?: int
-      prerequisites: $technology[]
+      prerequisites: type:technology[]
       resources?:
-        category: $economic_category
-        $$economic_template*: $$economic_template
+        category: type:economic_category
+        alias:economic_template*: alias:economic_template
       ### replace_scope = { this = country root = country }
       show_tech_unlock_if?: 
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       potential?:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       allow?:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       on_queued?:
-        $$effect*: $$effect
+        alias:effect*: alias:effect
       on_unqueued?:
-        $$effect*: $$effect
+        alias:effect*: alias:effect
   artifact_action:
     path: "common/artifact_actions"
     file_extension: "txt"
@@ -233,11 +233,11 @@ definitions:
     file_extension: "txt"
     properties:
       potential:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       allow:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       effect?:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
     scopes:
       potential: [ this: any, root: any, from: country ]
       allow: [ this: any, root: any, from: country ]
@@ -289,16 +289,16 @@ definitions:
     file_extension: "txt"
     properties:
       colony_shelter:
-        default: $building
-        $planet_class.colonizable: $building
+        default: type:building
+        type:planet_class.colonizable: type:building
       graphical_culture_for_random_empire?:
-        $graphical_culture*:
+        type:graphical_culture*:
           modifier*:
             add: int
-            species_portrait: $portrait
+            species_portrait: type:portrait
       weight?:
         base?: int
-        $$modifier_rule_add*: $$modifier_rule_add
+        alias:modifier_rule_add*: alias:modifier_rule_add
     scopes:
       weight: [ this: country, root: country ]
 
@@ -467,21 +467,21 @@ definitions:
     properties:
       type: string
       income:
-        $resource+: int
+        type:resource+: int
       focus:
-        $resource+: int
+        type:resource+: int
       subplan+:
         potential:
-          $$trigger*: $$trigger
+          alias:trigger*: alias:trigger
         income:
-          $resource+: int
+          type:resource+: int
         focus:
-          $resource+: int
+          type:resource+: int
       pops: int
       empire_size: float
       ai_weight:
         weight: float
-        $$modifier_rule*: $$modifier_rule
+        alias:modifier_rule*: alias:modifier_rule
     global_scopes: [ this: country, root: country ]
 
   edict:
@@ -654,16 +654,16 @@ definitions:
       description!: "MANDATE_$_DESC"
     properties:
       valid:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       parameters?:
         self?: enum:scope
         enemy?: enum:scope
         master?: enum:scope
         planet?: enum:scope
       on_term_started?:
-        $$effect*: $$effect
+        alias:effect*: alias:effect
       on_term_ended?:
-        $$effect*: $$effect
+        alias:effect*: alias:effect
     global_scopes: [ this: planet, root: planet ]
 
   map_mode:
@@ -674,7 +674,7 @@ definitions:
       name!: "$"
       description!: "$_desc"
     properties:
-      icon: $sprite # gfx_reference
+      icon: type:sprite # gfx_reference
       enable_terra_incognita: boolean
       can_change_point_of_view?: boolean
       shortcut?: string # shortcut
@@ -684,7 +684,7 @@ definitions:
         custom_tooltip?: localisation
         hardcoded_tooltip?: enum:map_mode_color_hardcoded_tooltip
         condition:
-          $$trigger*: $$trigger
+          alias:trigger*: alias:trigger
 
   megastructure:
     path: "common/megastructures"
@@ -753,13 +753,13 @@ definitions:
       opinion:
       - float
       - base?: float
-        $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+        alias:modifier_rule_add_factor*: alias:modifier_rule_add_factor
       triggerd: boolean
       block_triggered: boolean
       subtype:!triggered_opnion_modifier:
         decay?:
           base?: int
-          $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+          alias:modifier_rule_add_factor*: alias:modifier_rule_add_factor
         accumulative?: boolean # default: no
         min: int # -9999..-1
         max: int # 1..9999
@@ -767,7 +767,7 @@ definitions:
         monthly?: [yes, int]
       subtype:triggered_opnion_modifier:
         trygger:
-          $$trigger*: $$trigger
+          alias:trigger*: alias:trigger
     global_scopes: [this: country, root: country, from: country]
     hard_coded_file_names:
     - "01_personality_opinions.txt"
@@ -824,9 +824,9 @@ definitions:
       is_null?: boolean #default: no
       spawn_chance:
         value?: int
-        $$modifier_rule_add_factor*: $$modifier_rule_add_factor
+        alias:modifier_rule_add_factor*: alias:modifier_rule_add_factor
       subtype:!null:
-        modifier: $static_modifier
+        modifier: type:static_modifier
 
   policy:
     path: "common/policies"
@@ -891,7 +891,7 @@ definitions:
     properties:
       size: int
       possible?:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
 
   empire_name_parts_list:
     path: "common/random_names"
@@ -969,20 +969,20 @@ definitions:
       description!: "$_desc"
     properties:
       activation_duration: int # 0..inf
-      portrait: $sprite
-      sound: $sound_effect
+      portrait: type:sprite
+      sound: type:sound_effect
       resources:
-        category: $economic_category
-        $$economic_template*: $$economic_template
+        category: type:economic_category
+        alias:economic_template*: alias:economic_template
       ai_weight:
         enum:factor_weight: float
-        $$modifier_rule*: $$modifier_rule
-      $$triggered_country_modifier_country: $$triggered_country_modifier_country
+        alias:modifier_rule*: alias:modifier_rule
+      alias:triggered_country_modifier_country: alias:triggered_country_modifier_country
       score: int # 0..inf
       active_effect: 
-        $$effect*: $$effect
+        alias:effect*: alias:effect
       possible:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
     global_scopes: [root: country, this: country]
     
       
@@ -1064,17 +1064,17 @@ definitions:
     properties:
       ai_weight:
         weight: float
-        $$modifer_rule*: $$modifer_rule
+        alias:modifer_rule*: alias:modifer_rule
       district*:
-        key: $district
+        key: type:district
         weight:
           weight: float
-          $$modifer_rule*: $$modifer_rule
+          alias:modifer_rule*: alias:modifer_rule
       building*:
-        key: $building
+        key: type:building
         weight:
           weight: float
-          $$modifer_rule*: $$modifer_rule
+          alias:modifer_rule*: alias:modifer_rule
     global_scopes: [ root: sector, this: sector ]
 
   sector_type:
@@ -1085,18 +1085,18 @@ definitions:
     properties:
       system_scores?:
         base?: int
-        $$modifier_rule*: $$modifier_rule
+        alias:modifier_rule*: alias:modifier_rule
       local_capital_scores:
         base?: int
         modifier?:
           mult: float
-          $$trigger*: $$trigger
+          alias:trigger*: alias:trigger
       resource_conversion_table:
         energy: int
         monerals: int
       resources:
-        category: $economic_category
-        $$economic_template*: $$economic_template
+        category: type:economic_category
+        alias:economic_template*: alias:economic_template
       max_jumps: int
     global_scopes: [ root: system, this: system ]
 
@@ -1260,7 +1260,7 @@ definitions:
       location: int
       localization: localisation
       trigger:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
     scopes:
       trigger: [ root: country, this: country ]
 
@@ -1282,8 +1282,8 @@ definitions:
       important?: boolean
       custom_tooltip?: localisation
       show_only_custom_tooltip?: boolean
-      apply_modifier_to_other_planets?: $static_modifier
-      $$modifier*: $$modifier
+      apply_modifier_to_other_planets?: type:static_modifier
+      alias:modifier*: alias:modifier
 
   resource:
     alias: "strategic_resources"
@@ -1314,10 +1314,10 @@ definitions:
       name!: "$"
     properties:
       potential:
-        $$trigger*: $$trigger
+        alias:trigger*: alias:trigger
       weight_modifier?:
         base?: int
-        $$modifier_rule*: $$modifier_rule
+        alias:modifier_rule*: alias:modifier_rule
     scopes:
       potential: [ this: system, root: system ]
       weight_modifier: [ this: system, root: system ]
@@ -1360,8 +1360,8 @@ definitions:
       weight:
         weight: int
       conversion_rate:
-        $resource+: float
-      economic_category: $economic_category
+        type:resource+: float
+      economic_category: type:economic_category
     scopes:
       potential: [ this: country, root: country ]
 
@@ -1823,6 +1823,6 @@ definitions:
     properties:
       a?: int
       b+: float
-      c: $ethic
+      c: type:ethic
       int!: int
-      $ethic: int
+      type:ethic: int

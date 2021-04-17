@@ -8,7 +8,6 @@ import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 
-@Suppress("DialogTitleCapitalization")
 class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 	companion object{
 		private val noExpressionFoundMessage = message("noExpressionFound")

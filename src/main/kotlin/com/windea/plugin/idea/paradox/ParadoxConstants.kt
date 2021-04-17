@@ -25,19 +25,7 @@ val paradoxScriptSampleText = "sampleText/ParadoxScript.txt".toClassPathResource
 const val commentFolder = "#..."
 const val blockFolder = "{...}"
 const val defaultFolder = "<folder>"
-
 const val anonymousName = "<anonymous>"
-
-const val primitivePrefix="$"
-const val primitivePrefixLength = primitivePrefix.length
-const val aliasPrefix="alias:"
-const val aliasPrefixLength=aliasPrefix.length
-const val typePrefix="type:"
-const val typePrefixLength = typePrefix.length
-const val enumPrefix="enum:"
-const val enumPrefixLength=enumPrefix.length
-const val eventTargetPrefix = "event_target:"
-const val eventTargetPrefixLength = eventTargetPrefix.length
 
 val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
@@ -52,6 +40,19 @@ val scriptRuleFileExtensions = arrayOf("cw","cwt") //兼容cwtools
 const val descriptorFileName = "descriptor.mod"
 val exeFileNames = arrayOf("stellaris.exe")
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
+
+//Pattern Prefixes
+
+const val primitivePrefix="$"
+const val primitivePrefixLength = primitivePrefix.length
+const val aliasPrefix="alias:"
+const val aliasPrefixLength=aliasPrefix.length
+const val typePrefix="type:"
+const val typePrefixLength = typePrefix.length
+const val enumPrefix="enum:"
+const val enumPrefixLength=enumPrefix.length
+const val eventTargetPrefix = "event_target:"
+const val eventTargetPrefixLength = eventTargetPrefix.length
 
 //Icons
 
@@ -85,4 +86,3 @@ val stringLocalisationPropertyGutterIcon = stringLocalisationPropertyIcon.resize
 //val assetKeyGutterIcon = IconUtil.toSize(AllIcons.Nodes.Related, 12, 12)
 
 val stellarisIcon = IconLoader.findIcon("icons/stellaris.png")!!
-//TODO Other Games

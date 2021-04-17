@@ -11,7 +11,6 @@
         <option name="ABBREVIATIONS" value="true" />
         <option name="ASIDE" value="true" />
         <option name="ATXHEADERSPACE" value="true" />
-        <option name="AUTOLINKS" value="true" />
         <option name="DEFINITIONS" value="true" />
         <option name="DEFINITION_BREAK_DOUBLE_BLANK_LINE" value="true" />
         <option name="FENCED_CODE_BLOCKS" value="true" />
@@ -37,12 +36,14 @@
         <option name="GFM_TABLE_RENDERING" value="true" />
         <option name="GITBOOK_URL_ENCODING" value="true" />
         <option name="GITLAB_EXT" value="true" />
+        <option name="HEADER_ID_NON_ASCII_TO_LOWERCASE" value="true" />
+        <option name="HEADER_ID_NO_DUPED_DASHES" value="true" />
+        <option name="HEADER_ID_REF_TEXT_TRIM_TRAILING_SPACES" value="true" />
         <option name="JEKYLL_FRONT_MATTER" value="true" />
         <option name="MACROS_EXT" value="true" />
         <option name="NO_TEXT_ATTRIBUTES" value="true" />
         <option name="PARSE_HTML_ANCHOR_ID" value="true" />
         <option name="PRODUCTION_SPEC_PARSER" value="true" />
-        <option name="PUML_FENCED_CODE" value="true" />
         <option name="SIM_TOC_BLANK_LINE_SPACER" value="true" />
       </ParserOptions>
     </ParserSettings>
@@ -78,6 +79,8 @@
       </StylesheetProvider>
       <ScriptProviders>
         <provider providerId="com.vladsch.md.nav.editor.hljs.html.script" providerName="HighlightJS Script" />
+        <provider providerId="com.vladsch.md.nav.editor.katex.html.script" providerName="Katex Script" />
+        <provider providerId="com.vladsch.md.nav.editor.mermaid.html.script" providerName="Mermaid Script" />
       </ScriptProviders>
       <cssText />
       <cssUriHistory />

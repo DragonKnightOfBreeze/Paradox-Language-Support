@@ -10,8 +10,10 @@ import java.util.concurrent.atomic.*
  * Paradox规则组映射的提供器。
  */
 object ParadoxRuleGroupProvider {
-	private var shouldLoad = true
+	private val yaml = Yaml()
 	private val ruleGroups = ConcurrentHashMap<String, ParadoxRuleGroup>()
+	
+	@Volatile private var shouldLoad = true
 	
 	init{
 		addRuleGroups()
@@ -28,9 +30,9 @@ object ParadoxRuleGroupProvider {
 	
 	private fun addRuleGroups() {
 		val jarFile = "rules".toJarFile()
-		val jarEntries = jarFile.toJarDirectoryEntryMap("rules/",".yml")
+		val entryGroup = jarFile.toJarDirectoryEntryMap("rules/",".yml")
 		//添加规则组
-		for((name,entries) in jarEntries) {
+		for((name,entries) in entryGroup) {
 			try {
 				//添加规则组
 				val groupName = if(name.isEmpty()) "core" else name
@@ -53,8 +55,6 @@ object ParadoxRuleGroupProvider {
 			return emptyMap()
 		}
 	}
-	
-	private val yaml = Yaml()
 	
 	private fun extractRule(inputStream: InputStream): Map<String, Map<String,Any>> {
 		return yaml.load(inputStream) ?: emptyMap()

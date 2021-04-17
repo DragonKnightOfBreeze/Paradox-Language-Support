@@ -42,6 +42,7 @@ fun isPreviousComment(element: PsiElement): Boolean {
 }
 
 val settings get() = ParadoxSettingsState.getInstance()
+
 //Keys
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
@@ -49,7 +50,7 @@ val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 
-//Extension Properties
+//ParadoxPsiElement Extensions
 
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
@@ -176,7 +177,6 @@ private fun getGameType(): ParadoxGameType {
 	return ParadoxGameType.Stellaris //TODO
 }
 
-
 val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = getDefinitionInfo(this)
 
 val ParadoxScriptProperty.paradoxDefinitionInfoNoCheck: ParadoxDefinitionInfo? get() = getDefinitionInfo(this, false)
@@ -202,7 +202,6 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, propertyPath) } ?: return null
 	return definition.toDefinitionInfo(element, elementName)
 }
-
 
 fun ParadoxScriptValue.getType(): String? {
 	return when(this) {
@@ -305,9 +304,8 @@ fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDef
 fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
 }
-//Find Extensions
 
-//使用stubIndex以提高性能
+//Find Extensions
 
 fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable? {
 	//在所在文件中递归查找（不一定定义在顶层）
@@ -386,6 +384,7 @@ fun findLocalisations(names: Iterable<String>, locale: ParadoxLocale? = null, pr
 }
 
 //Link Extensions
+
 fun resolveLink(link:String,context:PsiElement):PsiElement?{
 	return when {
 		link.startsWith("#") -> resolveLocalisationLink(link, context)
@@ -469,6 +468,3 @@ inline fun ParadoxScriptFile.extractData(): List<Any> {
 inline fun ParadoxLocalisationFile.extractData(): Map<String, String> {
 	return ParadoxLocalisationDataExtractor.extract(this)
 }
-
-//Rule Extensions
-

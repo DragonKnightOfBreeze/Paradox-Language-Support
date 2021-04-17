@@ -45,9 +45,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	
 	class LocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			val position = parameters.position //LOCALE_ID
-			val prefix = position.text.dropLast(dummyIdentifierLength)
-			result.withPrefixMatcher(prefix).addAllElements(localeElements)
+			result.addAllElements(localeElements)
 		}
 	}
 	
