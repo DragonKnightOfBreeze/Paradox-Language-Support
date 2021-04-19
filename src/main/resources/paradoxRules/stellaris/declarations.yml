@@ -1,7 +1,5 @@
-### Stellaris Declarations
-
-# dlc list
-# see: dlc_metadata/dlc_info.txt
+### dlc
+### see: dlc_metadata/dlc_info.txt
 
 dlc:
 - id: dlc001
@@ -261,7 +259,7 @@ dlc:
   affects_gameplay: yes
   recommendations: [dlc012, dlc016, dlc017, dlc020, dlc023]
 
-# localisation locale
+### localisation locale
 
 locale:
 - name: "l_simp_chinese"
@@ -283,7 +281,7 @@ locale:
 - name: "l_default"
   description: "Default"
 
-# localisation sequential number
+### localisation sequential number
 
 sequentialNumber:
 - name: "C"
@@ -296,8 +294,8 @@ sequentialNumber:
   description: "Roman Number I, II, III..."
   placeholderText: "I"
 
-# localisation color
-# see: interface/fonts.gfx#bitmapfonts.textcolors
+### localisation color
+### see: interface/fonts.gfx#bitmapfonts.textcolors
 
 color:
 - name: "M"
@@ -357,7 +355,7 @@ color:
   colorRgb: 0x33a7ff
   colorText: "#33a7ff"
 
-# localisation command scope
+### localisation command scope
 
 commandScope:
 - name: "Actor"
@@ -402,7 +400,7 @@ commandScope:
   description: "The system where the isPrimary scope is located"
   isSecondary: true
 
-# localisation command field
+### localisation command field
 
 commandField:
 - name: "GetAdj"
