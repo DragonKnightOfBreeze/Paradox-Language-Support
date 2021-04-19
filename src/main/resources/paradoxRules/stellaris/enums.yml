@@ -15,3 +15,22 @@ map_mode_color_hardcoded_tooltip:
 - opinion
 - country
 
+aggro_range_measure_from:
+- self
+- return_point
+
+primitive_ages:
+- stone_age
+- bronze_age
+- iron_age
+- late_medieval_age
+- renaissance_age
+- steam_age
+- industrial_age
+- machine_age
+- atomic_age
+- early_space_age
+
+optimisation_batch:
+- begin
+- end

@@ -14,6 +14,9 @@
     <file type="web" url="file://$PROJECT_DIR$" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="SuppressKotlinCodeStyleNotification">
+    <option name="disableForAll" value="true" />
+  </component>
   <component name="idea.plugin.psiviewer.controller.project.PsiViewerProjectService">
     <option name="HIGHLIGHT" value="false" />
     <option name="FILTER_WHITESPACE" value="false" />

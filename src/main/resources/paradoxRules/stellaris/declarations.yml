@@ -3,7 +3,8 @@
 # dlc list
 # see: dlc_metadata/dlc_info.txt
 
-dlc001:
+dlc:
+- id: dlc001
   name: "Symbols of Domination"
   steam_id: ""
   microsoft_store_id: ""
@@ -15,7 +16,7 @@ dlc001:
   show: no
   affects_gameplay: no
   recommendations:
-dlc002:
+- id: dlc002
   name: "Arachnoid Portrait Pack"
   steam_id: "447680"
   microsoft_store_id: "9MT1H9QPRPZG"
@@ -27,7 +28,7 @@ dlc002:
   show: no
   affects_gameplay: no
   recommendations:
-dlc003:
+- id: dlc003
   name: "Paradox Account Sign-up Bonus"
   steam_id: ""
   microsoft_store_id: ""
@@ -39,7 +40,7 @@ dlc003:
   show: no
   affects_gameplay: no
   recommendations:
-dlc004:
+- id: dlc004
   name: "Plantoid"
   localizable_name: "PLANTOID_TITLE"
   steam_id: "498870"
@@ -52,7 +53,7 @@ dlc004:
   show: yes
   affects_gameplay: no
   recommendations: [dlc017, dlc021, dlc023]
-dlc010:
+- id: dlc010
   name: "Creatures of the Void Portrait Pack"
   localizable_name: "CREATURES_OF_THE_VOID_TITLE"
   steam_id: "633310"
@@ -65,7 +66,7 @@ dlc010:
   show: no
   affects_gameplay: no
   recommendations:
-dlc011:
+- id: dlc011
   name: "Original Game Soundrack"
   localizable_name: "SOUNDTRACK_TITLE"
   steam_id: "492740"
@@ -78,7 +79,7 @@ dlc011:
   show: no
   affects_gameplay: no
   recommendations:
-dlc012:
+- id: dlc012
   name: "Leviathans Story Pack"
   localizable_name: "LEVIATHANS_TITLE"
   steam_id: "518910"
@@ -91,7 +92,7 @@ dlc012:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc019, dlc021, dlc017]
-dlc013:
+- id: dlc013
   name: "Horizon Signal"
   steam_id: ""
   microsoft_store_id: ""
@@ -103,7 +104,7 @@ dlc013:
   show: no
   affects_gameplay: yes
   recommendations:
-dlc014:
+- id: dlc014
   name: "Utopia"
   localizable_name: "UTOPIA_TITLE"
   steam_id: "553280"
@@ -116,7 +117,7 @@ dlc014:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc020, dlc016, dlc021, dlc017, dlc022]
-dlc015:
+- id: dlc015
   name: "Anniversary Portraits"
   localizable_name: "ANNIVERSARY_TITLE"
   steam_id: "633310"
@@ -129,7 +130,7 @@ dlc015:
   show: no
   affects_gameplay: no
   recommendations:
-dlc016:
+- id: dlc016
   name: "Synthetic Dawn Story Pack"
   localizable_name: "SYNTHETIC_DAWN_TITLE"
   steam_id: "642750"
@@ -142,7 +143,7 @@ dlc016:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc014, dlc017, dlc023, dlc019]
-dlc017:
+- id: dlc017
   name: "Apocalypse"
   localizable_name: "APOCALYPSE_TITLE"
   steam_id: "716670"
@@ -155,7 +156,7 @@ dlc017:
   show: yes
   affects_gameplay: yes
   recommendations:  [dlc014, dlc020, dlc012, dlc016, dlc004]
-dlc018:
+- id: dlc018
   name: "Humanoids Species Pack"
   localizable_name: "HUMANOIDS_TITLE"
   steam_id: "756010"
@@ -168,7 +169,7 @@ dlc018:
   show: yes
   affects_gameplay: no
   recommendations:  dlc023
-dlc019:
+- id: dlc019
   name: "Distant Stars Story Pack"
   localizable_name: "DISTANT_STARS_TITLE"
   steam_id: "844810"
@@ -181,7 +182,7 @@ dlc019:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc021, dlc012, dlc016, dlc023]
-dlc020:
+- id: dlc020
   name: "Megacorp"
   localizable_name: "MEGACORP_TITLE"
   steam_id: "944290"
@@ -194,7 +195,7 @@ dlc020:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc014, dlc017, dlc023, dlc022]
-dlc021:
+- id: dlc021
   name: "Ancient Relics Story Pack"
   localizable_name: "ANCIENT_RELICS_TITLE"
   steam_id: "1045980"
@@ -207,7 +208,7 @@ dlc021:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc014, dlc019, dlc012, dlc004]
-dlc022:
+- id: dlc022
   name: "Lithoids Species Pack"
   localizable_name: "LITHOIDS_TITLE"
   steam_id: "1140000"
@@ -220,7 +221,7 @@ dlc022:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc014, dlc023, dlc021]
-dlc023:
+- id: dlc023
   name: "Federations"
   localizable_name: "FEDERATIONS_TITLE"
   steam_id: "1140001"
@@ -233,7 +234,7 @@ dlc023:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc020, dlc016, dlc019, dlc004, dlc018]
-dlc024:
+- id: dlc024
   name: "Necroids Species Pack"
   localizable_name: "NECROIDS_TITLE"
   steam_id: "1341520"
@@ -246,7 +247,7 @@ dlc024:
   show: yes
   affects_gameplay: yes
   recommendations: [dlc022, dlc021, dlc017]
-dlc025:
+- id: dlc025
   name: "Nemesis"
   localizable_name: "NEMESIS_TITLE"
   steam_id: "1522090"
