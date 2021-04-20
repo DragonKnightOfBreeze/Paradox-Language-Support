@@ -212,7 +212,7 @@ alias[effect:remove_opinion_modifier]:
 # Removes a specific modifier from the scopes planet/country/pop/system
 alias[effect:remove_modifier]: <static_modifier>
 
-  ### flags
+### flags
 
 # Sets an arbitrarily-named flag on the scoped country
 alias[effect:set_country_flag]: value_set[country_flag]
@@ -479,7 +479,7 @@ alias[effect:set_location]#:
   direction@0..1: in_system
   direction@0..1#: out_system
 
-  ### variables
+### variables
 
 # Sets or creates an arbitrarily-named variable with a specific value in the current scope
 alias[effect:set_variable]:
@@ -2060,7 +2060,7 @@ alias[effect:steal_relic]:
   relic#: all
   relic##: random
 
-### 2.6
+### v2.6
 
 # Add <value> favors for scoped country to use on target country.
 alias[effect:add_favors]:
@@ -2173,7 +2173,7 @@ alias[effect:remove_war_participant]: scope_group[target_country]
 # Ends all treaties with the target.
 alias[effect:end_all_treaties_with]: scope_group[target_country]
 
-### 2.7
+### v2.7
 
 # Prints the countries that match the limit triggers in a list for a tooltip.
 alias[effect:country_list_tooltip]:
@@ -2236,7 +2236,7 @@ alias[effect:set_truce]:
 # Force-end truce with target country
 alias[effect:end_truce]: scope_group[target_country]
 
-### 2.8
+### v2.8
 
 # Removes a module from a certain slot or all slots on a starbase
 alias[effect:remove_starbase_module]:
@@ -2267,7 +2267,7 @@ alias[effect:set_government_cooldown]##: no
 # Sets the country's origin to a certain value. Note: This will not run effects executed during galaxy generation.
 alias[effect:set_origin]: <civic_or_origin.origin>
 
-### 3.0
+### v3.0
 
 # Gives the player the reward for the specified crisis objective
 alias[effect:complete_crisis_objective]: <crisis_objective>

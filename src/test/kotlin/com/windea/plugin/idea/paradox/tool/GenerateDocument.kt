@@ -3,6 +3,7 @@ package com.windea.plugin.idea.paradox.tool
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 import java.io.*
 
 //用于生成markdown文档
@@ -40,11 +41,15 @@ private fun getDocumentText(documentName: String, type: String, project: Project
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
 		val definition = it.paradoxDefinitionInfo
 		val id = definition?.name
-		val name = definition?.localisation?.find { (k, _) -> k.value == "name" }
-		val description = definition?.localisation?.find { (k, _) -> k.value == "description" }?.let { (_, v) ->
+		val name = definition?.localisation?.find { (k, _) ->
+			k.toConditionalExpression().value == "name" 
+		}
+		val description = definition?.localisation?.find { (k, _) ->
+			k.toConditionalExpression().value == "description"
+		}?.let { v -> 
 			findLocalisation(v, null, project)?.extractText()
 		}
-		val effect = definition?.localisation?.find { (k, _) -> k.value == "effect" }?.let { (_, v) ->
+		val effect = definition?.localisation?.find { (k, _) -> k.toConditionalExpression().value == "effect" }?.let { v ->
 			findLocalisation(v, null, project)?.extractText()
 		}
 		buildString {
