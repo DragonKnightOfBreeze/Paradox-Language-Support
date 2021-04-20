@@ -8,6 +8,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 import com.windea.plugin.idea.paradox.util.*
@@ -36,11 +37,9 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//1. 向上得到最近的definition，从而得到definitionInfo.properties，并且算出相对的definitionPropertyPath
 		//2. 根据properties和definitionPropertyPath确定提示结果，注意当匹配子类型时才会加入对应的提示结果，否则不加入
-		//3. key可能是：$$类型、$类型、枚举、基本类型int/float、枚举、字符串
+		//3. key可能是：基本类型、类型、枚举、别名、枚举、字符串等
 		//4. value可能是：类型表达式、情况列表、子属性（映射）
 		//5. 忽略正在填写的propertyName
-		
-		
 		
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 			val position = parameters.position

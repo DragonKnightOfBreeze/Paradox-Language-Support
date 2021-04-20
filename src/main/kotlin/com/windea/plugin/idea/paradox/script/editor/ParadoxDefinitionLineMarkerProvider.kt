@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.ui.awt.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
 class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
@@ -21,7 +22,9 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 	
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
+			//必须是scriptProperty，且对应一个definition
 			is ParadoxScriptProperty -> {
+				if(element.paradoxFileInfo == null) return null
 				val definition = element.paradoxDefinitionInfo ?: return null
 				LineMarker(element, definition)
 			}

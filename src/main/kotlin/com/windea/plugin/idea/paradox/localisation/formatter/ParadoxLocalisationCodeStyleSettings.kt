@@ -1,5 +1,3 @@
-@file:Suppress("PropertyName")
-
 package com.windea.plugin.idea.paradox.localisation.formatter
 
 import com.intellij.psi.codeStyle.*

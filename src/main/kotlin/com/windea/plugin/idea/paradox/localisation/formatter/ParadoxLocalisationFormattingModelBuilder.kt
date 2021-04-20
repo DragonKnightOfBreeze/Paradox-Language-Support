@@ -1,5 +1,3 @@
-@file:Suppress("HasPlatformType")
-
 package com.windea.plugin.idea.paradox.localisation.formatter
 
 import com.intellij.formatting.*

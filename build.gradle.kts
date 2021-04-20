@@ -2,30 +2,29 @@ plugins {
 	java
 	kotlin("jvm") version "1.4.30"
 	id("org.jetbrains.intellij") version "0.7.2"
-	id("org.jetbrains.grammarkit") version "2021.1"
+	id("org.jetbrains.grammarkit") version "2021.1.2"
 }
 
 group = "com.windea"
-version = "0.1"
+version = "0.2"
 
 intellij {
 	version = "2021.1"
 	pluginName = "Paradox Language Support"
 }
 
-buildscript {
+buildscript{
 	repositories {
 		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
-		jcenter()
+		maven("https://plugins.gradle.org/m2")
 	}
 }
 
 repositories {
-	maven("https://dl.bintray.com/kotlin/kotlin-eap")
 	maven("https://maven.aliyun.com/nexus/content/groups/public")
 	mavenCentral()
-	jcenter()
+	maven("https://plugins.gradle.org/m2")
 }
 
 dependencies{
@@ -42,14 +41,12 @@ sourceSets {
 
 tasks {
 	compileKotlin {
-		kotlinOptions.jvmTarget = "8"
+		kotlinOptions.jvmTarget = "1.8"
 	}
 	compileTestKotlin {
-		kotlinOptions.jvmTarget = "8"
+		kotlinOptions.jvmTarget = "1.8"
 	}
-}
-
-grammarKit {
-	jflexRelease = "1.7.0-2"
-	grammarKitRelease = "2020.3.2"
+	publishPlugin{
+		token(System.getenv("IDEA_TOKEN"))
+	}
 }

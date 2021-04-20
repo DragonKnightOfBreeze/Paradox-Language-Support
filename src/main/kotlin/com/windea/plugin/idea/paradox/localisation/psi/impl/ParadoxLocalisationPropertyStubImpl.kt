@@ -2,6 +2,7 @@ package com.windea.plugin.idea.paradox.localisation.psi.impl
 
 import com.intellij.psi.stubs.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
 class ParadoxLocalisationPropertyStubImpl(

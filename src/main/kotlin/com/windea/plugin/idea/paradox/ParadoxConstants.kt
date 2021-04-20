@@ -37,6 +37,8 @@ val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
 val scriptRuleFileExtensions = arrayOf("cw","cwt") //兼容cwtools
 
+val localisationFileRootDirectories = arrayOf("localisation","localisation_synced")
+
 const val descriptorFileName = "descriptor.mod"
 val exeFileNames = arrayOf("stellaris.exe")
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)

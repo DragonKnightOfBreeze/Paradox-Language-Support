@@ -1,5 +1,3 @@
-@file:Suppress("HasPlatformType")
-
 package com.windea.plugin.idea.paradox.script.highlighter
 
 import com.intellij.openapi.editor.colors.*
@@ -10,6 +8,7 @@ import com.intellij.psi.tree.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 
+@Suppress("HasPlatformType")
 class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 	companion object {
 		private val SEPARATOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.SEPARATOR_KEY)

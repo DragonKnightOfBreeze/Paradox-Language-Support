@@ -1,5 +1,3 @@
-@file:Suppress("DuplicatedCode")
-
 package com.windea.plugin.idea.paradox.localisation.inspections
 
 import com.intellij.codeInspection.*

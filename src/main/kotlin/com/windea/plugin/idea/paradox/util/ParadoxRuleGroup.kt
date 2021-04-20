@@ -1,6 +1,7 @@
 package com.windea.plugin.idea.paradox.util
 
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
 @Suppress("UNCHECKED_CAST")

@@ -1,4 +1,4 @@
-@file:Suppress("HasPlatformType")
+
 
 package com.windea.plugin.idea.paradox.localisation.codeInsight
 
@@ -11,7 +11,9 @@ import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.localisation.psi.ParadoxLocalisationTypes.*
+import com.windea.plugin.idea.paradox.model.*
 
+@Suppress("HasPlatformType")
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	companion object{
 		private const val dummyIdentifier = "windea"

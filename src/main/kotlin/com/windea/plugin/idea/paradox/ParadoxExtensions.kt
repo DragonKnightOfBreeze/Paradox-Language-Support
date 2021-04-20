@@ -8,6 +8,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
+import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
 import com.windea.plugin.idea.paradox.util.*
@@ -310,18 +311,19 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable? {
 	//在所在文件中递归查找（不一定定义在顶层）
 	if(file !is ParadoxScriptFile) return null
-	return file.findDescendantOfType { it.name == name }
+	return file.descendantsOfType<ParadoxScriptVariable>().find{ it.name == name }
 }
 
 fun findScriptVariablesInFile(name: String, file: PsiFile): List<ParadoxScriptVariable> {
 	//在所在文件中递归查找（不一定定义在顶层），仅查找第一个
-	return findScriptVariableInFile(name, file).toSingletonListOrEmpty()
+	if(file !is ParadoxScriptFile) return emptyList()
+	return file.descendantsOfType<ParadoxScriptVariable>().filter{ it.name == name }.toList()
 }
 
 fun findScriptVariablesInFile(file: PsiFile): List<ParadoxScriptVariable> {
 	//在所在文件中递归查找（不一定定义在顶层）
 	if(file !is ParadoxScriptFile) return emptyList()
-	return file.collectDescendantsOfType()
+	return file.descendantsOfType<ParadoxScriptVariable>().toList()
 }
 
 fun findScriptVariable(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptVariable? {

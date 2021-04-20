@@ -72,6 +72,10 @@
 * [ ] 初步实现功能：添加模块（基于游戏类型）
 * [ ] 让`scriptRootBlock`直接或间接继承自`scriptProperty`
 
+### 0.2
+
+* 更新IDEA版本到2021.1
+
 # TODO
 
 * [ ] 补充stellaris的规则文件

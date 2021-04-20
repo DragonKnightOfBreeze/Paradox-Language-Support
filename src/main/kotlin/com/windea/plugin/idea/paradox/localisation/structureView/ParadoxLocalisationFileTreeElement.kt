@@ -1,11 +1,10 @@
-@file:Suppress("HasPlatformType", "UNCHECKED_CAST")
-
 package com.windea.plugin.idea.paradox.localisation.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 
+@Suppress("HasPlatformType", "UNCHECKED_CAST")
 class ParadoxLocalisationFileTreeElement(
 	private val element: ParadoxLocalisationFile
 ) : PsiTreeElementBase<ParadoxLocalisationFile>(element) {

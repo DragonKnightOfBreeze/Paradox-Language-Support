@@ -14,9 +14,9 @@ class PsiCheckRenameHandler : PsiElementRenameHandler() {
 		return getElement(dataContext) is PsiCheckRenameElement
 	}
 	
-	override fun invoke(project: Project, elements: Array<out PsiElement>?, dataContext: DataContext?) {
+	override fun invoke(project: Project, elements: Array<out PsiElement>, dataContext: DataContext?) {
 		val editor = dataContext?.getData(CommonDataKeys.EDITOR)
-		if(elements!= null && editor != null) {
+		if(editor != null) {
 			for(element in elements){
 				if(element is PsiCheckRenameElement && !check(element,editor)) return
 			}

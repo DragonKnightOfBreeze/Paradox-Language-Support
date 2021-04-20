@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.ui.awt.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
 class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescriptor() {
@@ -21,6 +22,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 	
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
+			//必须是scriptProperty，且对应一个definition
 			is ParadoxScriptProperty -> {
 				val definition = element.paradoxDefinitionInfo ?: return null
 				if(definition.localisation.isEmpty()) return null //没有localisation时不加上gutterIcon

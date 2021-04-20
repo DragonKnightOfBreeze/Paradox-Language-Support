@@ -1,5 +1,3 @@
-@file:Suppress("HasPlatformType")
-
 package com.windea.plugin.idea.paradox.localisation.highlighter
 
 import com.intellij.openapi.editor.colors.*

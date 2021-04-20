@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 
 class ParadoxLocalisationFileViewProvider(
 	manager: PsiManager,

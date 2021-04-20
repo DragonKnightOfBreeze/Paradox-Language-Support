@@ -8,6 +8,7 @@ import com.intellij.openapi.roots.libraries.ui.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.vfs.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.model.*
 import javax.swing.*
 
 abstract class ParadoxLibraryType(

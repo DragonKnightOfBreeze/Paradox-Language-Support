@@ -21,7 +21,11 @@ class ParadoxLocalisationLineMarkerProvider : LineMarkerProviderDescriptor() {
 	
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
-			is ParadoxLocalisationProperty -> LineMarker(element)
+			//必须是localisationProperty
+			is ParadoxLocalisationProperty -> {
+				if(element.paradoxFileInfo == null) return null
+				LineMarker(element)
+			}
 			else -> null
 		}
 	}
