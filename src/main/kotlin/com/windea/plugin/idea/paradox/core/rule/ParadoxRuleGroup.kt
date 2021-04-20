@@ -1,9 +1,12 @@
-package com.windea.plugin.idea.paradox.util
+package com.windea.plugin.idea.paradox.core.rule
 
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.script.psi.*
 
+/**
+ * Paradox规则组。
+ */
 @Suppress("UNCHECKED_CAST")
 class ParadoxRuleGroup(
 	val data: Map<String, Map<String, Any>>

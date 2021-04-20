@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.windea"
-version = "0.2"
+version = "0.2.1"
 
 intellij {
 	version = "2021.1"
@@ -47,6 +47,6 @@ tasks {
 		kotlinOptions.jvmTarget = "1.8"
 	}
 	publishPlugin{
-		token(System.getenv("IDEA_TOKEN"))
+		token("perm:ZHJhZ29ua25pZ2h0b2ZicmVlemU=.OTItMzc3MQ==.FWLHSOKRYti2oDwA7UfzQF3Iy1vaIM")
 	}
 }

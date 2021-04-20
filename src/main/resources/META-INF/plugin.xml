@@ -78,7 +78,9 @@
   <extensions defaultExtensionNs="com.intellij">
     <!--region Paradox Core-->
     <!--suppress PluginXmlValidity -->
-    <fileTypeOverrider implementation="com.windea.plugin.idea.paradox.core.ParadoxFileTypeOverrider" order="first"/>
+    <applicationService serviceImplementation="com.windea.plugin.idea.paradox.core.rule.ParadoxRuleGroupProvider" preload="true" order="first"/>
+    <!--suppress PluginXmlValidity -->
+    <fileTypeOverrider implementation="com.windea.plugin.idea.paradox.core.ParadoxFileTypeOverrider"/>
     <renameHandler implementation="com.windea.plugin.idea.paradox.core.refactoring.PsiCheckRenameHandler"/>
 
     <!--<sdkType implementation="com.windea.plugin.idea.paradox.library.StellarisSdkType"/>-->

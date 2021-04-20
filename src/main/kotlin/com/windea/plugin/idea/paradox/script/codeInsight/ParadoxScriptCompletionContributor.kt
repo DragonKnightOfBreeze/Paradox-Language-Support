@@ -8,10 +8,9 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.windea.plugin.idea.paradox.*
-import com.windea.plugin.idea.paradox.model.*
+import com.windea.plugin.idea.paradox.core.rule.*
 import com.windea.plugin.idea.paradox.script.psi.*
 import com.windea.plugin.idea.paradox.script.psi.ParadoxScriptTypes.*
-import com.windea.plugin.idea.paradox.util.*
 
 @Suppress("UNCHECKED_CAST")
 class ParadoxScriptCompletionContributor : CompletionContributor() {
@@ -70,7 +69,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					?.propertyList?.mapTo(mutableSetOf()) { it.name } ?: emptyList() 
 			}
 			val gameType = parameters.originalFile.paradoxFileInfo?.gameType?:return
-			val ruleGroup = paradoxRuleGroups[gameType.key]?:return
+			val ruleGroup = rules.paradoxRuleGroups[gameType.key]?:return
 			val project = parameters.originalFile.project
 			
 			//解析keyPatterns，进行提示
@@ -79,7 +78,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		}
 		
 		private fun resolveExpressions(expressions: List<ConditionalExpression>, project: Project, 
-			existPropertyNames: Collection<String>, ruleGroup: ParadoxRuleGroup): List<LookupElement> {
+			existPropertyNames: Collection<String>, ruleGroup: ParadoxRuleGroup
+		): List<LookupElement> {
 			val lookupElements = mutableListOf<LookupElement>()
 			for(keyPatternExpression in expressions) {
 				val (keyPattern, _, _, multiple) = keyPatternExpression

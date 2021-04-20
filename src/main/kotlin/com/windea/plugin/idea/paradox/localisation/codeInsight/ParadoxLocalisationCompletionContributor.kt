@@ -25,22 +25,22 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		private val commandScopePattern = psiElement(COMMAND_SCOPE_ID)
 		private val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
 		
-		private val localeElements = paradoxLocales.map {
+		private val localeElements = rules.paradoxLocales.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationLocaleIcon)
 		}
-		private val sequentialNumberElements = paradoxSequentialNumbers.map {
+		private val sequentialNumberElements = rules.paradoxSequentialNumbers.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationSequentialNumberIcon)
 		}
-		private val primaryCommandScopeElements = paradoxPrimaryCommandScopes.map {
+		private val primaryCommandScopeElements = rules.paradoxPrimaryCommandScopes.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandScopeIcon)
 		}
-		private val secondaryCommandScopeElements = paradoxSecondaryCommandScopes.map {
+		private val secondaryCommandScopeElements = rules.paradoxSecondaryCommandScopes.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandScopeIcon)
 		}
-		private val commandFieldElements = paradoxCommandFields.map {
+		private val commandFieldElements = rules.paradoxCommandFields.map {
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandFieldIcon)
 		}
-		private val colorElements = paradoxColors.map{
+		private val colorElements = rules.paradoxColors.map{
 			LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(it.icon)
 		}
 	}

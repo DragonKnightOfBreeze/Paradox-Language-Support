@@ -1,11 +1,13 @@
 package com.windea.plugin.idea.paradox
 
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
+import com.windea.plugin.idea.paradox.core.rule.*
 import com.windea.plugin.idea.paradox.core.settings.*
 import com.windea.plugin.idea.paradox.localisation.psi.*
 import com.windea.plugin.idea.paradox.model.*
@@ -16,6 +18,22 @@ import org.jetbrains.annotations.*
 import kotlin.Pair
 
 //Misc Extensions
+
+val settings get() = ParadoxSettingsState.getInstance()
+
+val rules get() = ServiceManager.getService(ParadoxRuleGroupProvider::class.java).ruleGroupsCache
+
+val inferredParadoxLocale get() = when(System.getProperty("user.language")) {
+	"zh" -> rules.paradoxLocaleMap.getValue("l_simp_chinese")
+	"en" -> rules.paradoxLocaleMap.getValue("l_english")
+	"pt" -> rules.paradoxLocaleMap.getValue("l_braz_por")
+	"fr" -> rules.paradoxLocaleMap.getValue("l_french")
+	"de" -> rules.paradoxLocaleMap.getValue("l_german")
+	"pl" -> rules.paradoxLocaleMap.getValue("l_ponish")
+	"ru" -> rules.paradoxLocaleMap.getValue("l_russian")
+	"es" -> rules.paradoxLocaleMap.getValue("l_spanish")
+	else -> rules.paradoxLocaleMap.getValue("l_english")
+}
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
 fun getDocTextFromPreviousComment(element: PsiElement): String {
@@ -42,8 +60,6 @@ fun isPreviousComment(element: PsiElement): Boolean {
 	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == COMMENT
 }
 
-val settings get() = ParadoxSettingsState.getInstance()
-
 //Keys
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
@@ -56,14 +72,14 @@ val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("ca
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
 		val name = this.name
-		return paradoxLocaleMap[name]
+		return rules.paradoxLocaleMap[name]
 	}
 
 val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 	get() {
 		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
 		if(colorId != null && colorId.isUpperCase()) {
-			return paradoxColorMap[colorId.toString()]
+			return rules.paradoxColorMap[colorId.toString()]
 		}
 		return null
 	}
@@ -71,26 +87,26 @@ val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequentialNumber?
 	get() {
 		val name = this.name
-		return paradoxSequentialNumberMap[name]
+		return rules.paradoxSequentialNumberMap[name]
 	}
 
 val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?
 	get() {
 		val name = this.name.toCapitalizedWord() //忽略大小写，首字母大写
 		if(name.startsWith(eventTargetPrefix)) return null
-		return paradoxCommandScopeMap[name]
+		return rules.paradoxCommandScopeMap[name]
 	}
 
 val ParadoxLocalisationCommandField.paradoxCommandField: ParadoxCommandField?
 	get() {
 		val name = this.name
-		return paradoxCommandFieldMap[name]
+		return rules.paradoxCommandFieldMap[name]
 	}
 
 val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
 	get() {
 		val name = this.name
-		return paradoxColorMap[name]
+		return rules.paradoxColorMap[name]
 	}
 
 
@@ -197,7 +213,7 @@ private fun getDefinitionInfo(element: ParadoxScriptProperty, check: Boolean = t
 
 private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
-	val ruleGroup = paradoxRuleGroups[gameType.key] ?: return null
+	val ruleGroup = rules.paradoxRuleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val propertyPath = element.resolvePropertyPath() ?: return null
 	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, propertyPath) } ?: return null

@@ -1,5 +1,6 @@
 package com.windea.plugin.idea.paradox.script.psi
 
+import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import com.windea.plugin.idea.paradox.*
 import com.windea.plugin.idea.paradox.script.*
@@ -46,9 +47,16 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
+		//索引definition的名称和类型，如果是scripted_loc，也要索引scriptLocalisation的名称
 		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
 		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
 		if(stub.type == "scripted_loc") sink.occurrence(ParadoxScriptLocalisationNameIndex.key, stub.name)
+	}
+	
+	override fun shouldCreateStub(node: ASTNode): Boolean {
+		//仅当是definition时才会创建索引
+		val element = node.psi as? ParadoxScriptProperty?:return false
+		return element.paradoxDefinitionInfo != null
 	}
 	
 	//companion object {

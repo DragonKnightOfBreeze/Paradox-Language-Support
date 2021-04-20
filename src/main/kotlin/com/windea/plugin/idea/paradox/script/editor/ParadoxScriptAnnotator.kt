@@ -5,12 +5,11 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.paradox.*
+import com.windea.plugin.idea.paradox.core.rule.*
 import com.windea.plugin.idea.paradox.model.*
 import com.windea.plugin.idea.paradox.localisation.highlighter.*
 import com.windea.plugin.idea.paradox.script.highlighter.*
 import com.windea.plugin.idea.paradox.script.psi.*
-import com.windea.plugin.idea.paradox.model.*
-import com.windea.plugin.idea.paradox.util.*
 
 @Suppress("UNCHECKED_CAST")
 class ParadoxScriptAnnotator : Annotator, DumbAware {
@@ -42,11 +41,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			properties.keys.mapTo(keyPatternExpressions){ it.toConditionalExpression() }
 			
 			val gameType = element.paradoxFileInfo?.gameType?:return
-			val ruleGroup = paradoxRuleGroups[gameType.key]?:return
+			val ruleGroup = rules.paradoxRuleGroups[gameType.key]?:return
 			val project = element.project
 			
 			//遍历existProperties
-			annotateDefinitionProperties(existProperties, keyPatternExpressions, project, definitionInfo, ruleGroup, holder)
+			//annotateDefinitionProperties(existProperties, keyPatternExpressions, project, definitionInfo, ruleGroup, holder)
 		}
 	}
 	
