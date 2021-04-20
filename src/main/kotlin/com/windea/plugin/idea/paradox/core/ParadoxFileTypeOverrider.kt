@@ -43,10 +43,6 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						}
 						ParadoxLocalisationFileType
 					}
-					//脚本规则文件，相比脚本文件应当仅提供基础的语言功能支持
-					fileType == ParadoxFileType.ScriptRule -> {
-						ParadoxScriptFileType
-					}
 					else -> null
 				}
 			}
@@ -70,7 +66,6 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			return when {
 				fileExtension in scriptFileExtensions -> ParadoxFileType.Script
 				fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
-				fileExtension in scriptRuleFileExtensions -> ParadoxFileType.ScriptRule
 				else -> null
 			}
 		}

@@ -24,7 +24,6 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 		return when(element) {
 			//必须是scriptProperty，且对应一个definition
 			is ParadoxScriptProperty -> {
-				if(element.paradoxFileInfo == null) return null
 				val definition = element.paradoxDefinitionInfo ?: return null
 				LineMarker(element, definition)
 			}

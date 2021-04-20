@@ -98,7 +98,8 @@
     <fileType
         language="Paradox Script"
         name="Paradox Script File" fieldName="INSTANCE"
-        implementationClass="com.windea.plugin.idea.paradox.script.ParadoxScriptFileType"/>
+        implementationClass="com.windea.plugin.idea.paradox.script.ParadoxScriptFileType"
+        extensions="cw;cwt"/>
     <lang.fileViewProviderFactory
         language="Paradox Script"
         implementationClass="com.windea.plugin.idea.paradox.script.psi.ParadoxScriptFileViewProviderFactory"/>
