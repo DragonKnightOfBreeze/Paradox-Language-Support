@@ -28,7 +28,6 @@ public interface CwtTypes {
   IElementType KEY_TOKEN = new CwtTokenType("KEY_TOKEN");
   IElementType LEFT_BRACE = new CwtTokenType("{");
   IElementType LEFT_QUOTE = new CwtTokenType("LEFT_QUOTE");
-  IElementType NOT_EQUAL_SIGN = new CwtTokenType("!=");
   IElementType OPTION_COMMENT = new CwtTokenType("OPTION_COMMENT");
   IElementType QUOTED_KEY_TOKEN = new CwtTokenType("QUOTED_KEY_TOKEN");
   IElementType QUOTED_STRING_TOKEN = new CwtTokenType("QUOTED_STRING_TOKEN");

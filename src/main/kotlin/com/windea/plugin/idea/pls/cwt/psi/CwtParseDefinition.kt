@@ -1,7 +1,6 @@
 package com.windea.plugin.idea.pls.cwt.psi
 
 import com.intellij.lang.*
-import com.intellij.lexer.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
@@ -14,10 +13,8 @@ class CwtParseDefinition:ParserDefinition {
 		val WHITE_SPACES=TokenSet.create(WHITE_SPACE)
 		val COMMENTS = TokenSet.create(COMMENT, OPTION_COMMENT, DOCUMENTATION_COMMENT)
 		val STRINGS = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val FILE = CwtFile()
+		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
 	}
-	
-	override fun createLexer(project: Project?) = CwtLexerAdapter()
 	
 	override fun getWhitespaceTokens() = WHITE_SPACES
 	
@@ -25,9 +22,13 @@ class CwtParseDefinition:ParserDefinition {
 	
 	override fun getStringLiteralElements() = STRINGS
 	
-	override fun getFileNodeType(): IFileElementType = FILE
+	override fun getFileNodeType() = FILE
+	
+	override fun createFile(viewProvider: FileViewProvider) =  CwtFile(viewProvider)
+	
+	override fun createElement(node: ASTNode?) = Factory.createElement(node)
 	
 	override fun createParser(project: Project?) = CwtParser()
 	
-	override fun createElement(node: ASTNode?) = Factory.createElement()
+	override fun createLexer(project: Project?) = CwtLexerAdapter()
 }

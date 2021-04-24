@@ -15,9 +15,7 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 		val STRINGS = TokenSet.create(STRING_TOKEN)
 		val FILE = ParadoxLocalisationStubElementTypes.FILE
 	}
-
-	override fun createLexer(project: Project?) = ParadoxLocalisationLexerAdapter()
-
+	
 	override fun getWhitespaceTokens() = WHITE_SPACES
 
 	override fun getCommentTokens() = COMMENTS
@@ -26,10 +24,14 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 	
 	override fun getFileNodeType() = FILE
 	
-	override fun createParser(project: Project?) = ParadoxLocalisationParser()
-
 	override fun createFile(viewProvider: FileViewProvider) = ParadoxLocalisationFile(viewProvider)
 
+	override fun createElement(node: ASTNode) = Factory.createElement(node)
+	
+	override fun createParser(project: Project?) = ParadoxLocalisationParser()
+	
+	override fun createLexer(project: Project?) = ParadoxLocalisationLexerAdapter()
+	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
 		return when {
 			//数字和属性值之间必须有空格
@@ -41,8 +43,6 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 			else -> MAY
 		}
 	}
-
-	override fun createElement(node: ASTNode) = Factory.createElement(node)
 }
 
 

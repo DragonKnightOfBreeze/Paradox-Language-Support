@@ -17,19 +17,19 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		val FILE = ParadoxScriptStubElementTypes.FILE
 	}
 
-	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter()
-
 	override fun getWhitespaceTokens() = WHITE_SPACES
-
-	override fun getCommentTokens() = COMMENTS
-
-	override fun getStringLiteralElements() = STRINGS
-
-	override fun createParser(project: Project?) = ParadoxScriptParser()
 	
-	override fun createFile(viewProvider: FileViewProvider) = ParadoxScriptFile(viewProvider)
-
+	override fun getCommentTokens() = COMMENTS
+	
+	override fun getStringLiteralElements() = STRINGS
+	
 	override fun getFileNodeType() = FILE
 	
+	override fun createFile(viewProvider: FileViewProvider) = ParadoxScriptFile(viewProvider)
+	
 	override fun createElement(node: ASTNode) = Factory.createElement(node)
+	
+	override fun createParser(project: Project?) = ParadoxScriptParser()
+	
+	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter()
 }
