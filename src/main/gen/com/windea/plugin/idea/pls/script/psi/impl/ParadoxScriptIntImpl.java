@@ -1,0 +1,35 @@
+// This is a generated file. Not intended for manual editing.
+package com.windea.plugin.idea.pls.script.psi.impl;
+
+import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+
+import static com.windea.plugin.idea.pls.script.psi.ParadoxScriptTypes.*;
+import com.windea.plugin.idea.pls.script.psi.*;
+
+public class ParadoxScriptIntImpl extends ParadoxScriptNumberImpl implements ParadoxScriptInt {
+
+  public ParadoxScriptIntImpl(@NotNull ASTNode node) {
+    super(node);
+  }
+
+  @Override
+  public void accept(@NotNull ParadoxScriptVisitor visitor) {
+    visitor.visitInt(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getIntToken() {
+    return notNullChild(findChildByType(INT_TOKEN));
+  }
+
+}

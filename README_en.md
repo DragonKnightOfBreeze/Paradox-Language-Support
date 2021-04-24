@@ -21,5 +21,14 @@ Welcome to have a look at [this project](https://github.com/DragonKnightOfBreeze
 
 # Reference
 
-* More information: [plugin.xml](src/main/resources/META-INF/plugin.xml)
+About this plugin
+
+* Plugin Information: [plugin.xml](src/main/resources/META-INF/plugin.xml)
 * Change Log: [CHANGELOG.md](CHANGELOG.md) (Written in Simple Chinese)
+
+Related links
+
+* [cwtools](https://github.com/cwtools/cwtools)
+* [cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
+* [cwtools-stellaris-config](https://github.com/cwtools/cwtools-stellaris-config)
+

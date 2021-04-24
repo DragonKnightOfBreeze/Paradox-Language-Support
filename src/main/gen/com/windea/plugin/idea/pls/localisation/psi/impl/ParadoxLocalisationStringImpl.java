@@ -1,0 +1,35 @@
+// This is a generated file. Not intended for manual editing.
+package com.windea.plugin.idea.pls.localisation.psi.impl;
+
+import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+
+import static com.windea.plugin.idea.pls.localisation.psi.ParadoxLocalisationTypes.*;
+import com.windea.plugin.idea.pls.localisation.psi.*;
+
+public class ParadoxLocalisationStringImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationString {
+
+  public ParadoxLocalisationStringImpl(@NotNull ASTNode node) {
+    super(node);
+  }
+
+  @Override
+  public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
+    visitor.visitString(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof ParadoxLocalisationVisitor) accept((ParadoxLocalisationVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getStringToken() {
+    return notNullChild(findChildByType(STRING_TOKEN));
+  }
+
+}

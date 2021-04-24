@@ -1,0 +1,93 @@
+{
+	parserClass="com.windea.plugin.idea.pls.cwt.psi.CwtParser"
+	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+	psiClassPrefix="Cwt"
+	psiImplClassSuffix="Impl"
+	psiPackage="com.windea.plugin.idea.pls.cwt.psi"
+	psiImplPackage="com.windea.plugin.idea.pls.cwt.psi.impl"
+	elementTypeHolderClass="com.windea.plugin.idea.pls.cwt.psi.CwtTypes"
+	tokenTypeClass="com.windea.plugin.idea.pls.cwt.psi.CwtTokenType"
+	elementTypeClass="com.windea.plugin.idea.pls.cwt.psi.CwtElementType"
+	psiImplUtilClass="com.windea.plugin.idea.pls.cwt.psi.impl.CwtPsiImplUtil"
+
+	tokens=[
+	  EQUAL_SIGN="="
+	  LEFT_BRACE="{"
+	  RIGHT_BRACE="}"
+	  LEFT_QUOTE='"'
+	  RIGHT_QUOTE='"'
+	  EOL="regexp:\R"
+	  BLANK="regexp:\s+"
+	  
+	  COMMENT="regexp:#[^\r\n]*" //以"#"开始，单行
+	  OPTION_COMMENT="regexp:##[^\r\n]*" //以"##"开始，单行
+	  DOCUMENTATION_COMMENT="regexp:###[^\r\n]*" //以"###"开始，单行
+	  
+	  KEY_TOKEN='regexp:[^#={}\s][^={}\s]*'
+	  QUOTED_KEY_TOKEN='regexp:([^"\\\r\n]|\\.)+'
+	  BOOLEAN_TOKEN='regexp:(yes)|(no)'
+	  INT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)'
+	  FLOAT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)(\.[0-9]+)'
+	  STRING_TOKEN='regexp:[^#={}\s"][^={}\s"]*'
+	  QUOTED_STRING_TOKEN='regexp:([^"\\\r\n]|\\.)+'
+	]
+}
+
+root ::= root_block
+root_block ::= root_block_item * {
+  extends=block
+  methods=[getIcon isEmpty isNotEmpty isObject isArray]
+}
+private root_block_item ::=  comment | property | value
+
+private comment ::= COMMENT | OPTION_COMMENT | DOCUMENTATION_COMMENT
+
+property ::= key separator value {
+  pin=1
+  methods=[getIcon getKey getUnquotedKey getValue getUnquotedValue]
+}
+
+key ::= unquoted_key | quoted_key{
+  methods=[getName getUnquotedName]
+}
+private unquoted_key ::= KEY_TOKEN
+private quoted_key ::= LEFT_QUOTE QUOTED_KEY_TOKEN RIGHT_QUOTE{
+ pin=1
+}
+
+private separator ::= "="
+
+value ::= boolean | number | string | block{
+  methods=[getIcon getValue getUnquotedValue]
+}
+
+boolean ::= BOOLEAN_TOKEN {
+  extends=value
+  methods=[getValue]
+}
+number ::= int | float {
+  extends=value
+  methods=[getValue]
+}
+int ::= INT_TOKEN {
+  extends=number
+  methods=[getValue]
+}
+float ::= FLOAT_TOKEN{
+  extends=number
+  methods=[getValue]
+}
+string ::= quoted_string | unquoted_string{
+  extends=value
+  methods=[getValue getUnquotedValue]
+}
+private unquoted_string ::= STRING_TOKEN
+private quoted_string ::= LEFT_QUOTE QUOTED_STRING_TOKEN RIGHT_QUOTE{
+  pin=1
+}
+block ::= "{" block_item * "}" {
+  pin=1
+  extends=value
+  methods=[getIcon isEmpty isNotEmpty isObject isArray]
+}
+private block_item ::= comment | property | value

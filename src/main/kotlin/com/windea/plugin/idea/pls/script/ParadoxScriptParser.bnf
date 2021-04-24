@@ -1,0 +1,135 @@
+{
+	parserClass="com.windea.plugin.idea.pls.script.psi.ParadoxScriptParser"
+	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+	psiClassPrefix="ParadoxScript"
+	psiImplClassSuffix="Impl"
+	psiPackage="com.windea.plugin.idea.pls.script.psi"
+	psiImplPackage="com.windea.plugin.idea.pls.script.psi.impl"
+	elementTypeHolderClass="com.windea.plugin.idea.pls.script.psi.ParadoxScriptTypes"
+	tokenTypeClass="com.windea.plugin.idea.pls.script.psi.ParadoxScriptTokenType"
+	elementTypeClass="com.windea.plugin.idea.pls.script.psi.ParadoxScriptElementType"
+	psiImplUtilClass="com.windea.plugin.idea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
+
+	tokens=[
+	  EQUAL_SIGN="="
+	  LT_SIGN="<"
+	  GT_SIGN=">"
+	  LE_SIGN="<="
+	  GE_SIGN=">="
+	  NOT_EQUAL_SIGN="<>"
+	  //0123.45
+	  LEFT_BRACE="{"
+	  RIGHT_BRACE="}"
+	  CODE_START="@\["
+	  CODE_END="]"
+	  LEFT_QUOTE='"'
+	  RIGHT_QUOTE='"'
+	  EOL="regexp:\R"
+	  BLANK="regexp:\s+"
+	  COMMENT="regexp:#[^\r\n]*"
+	  END_OF_LINE_COMMENT="regexp:#[^\r\n]*"
+	  VARIABLE_NAME_ID="regexp:@[a-zA-Z0-9_-]+"
+	  VARIABLE_REFERENCE_ID="regexp:@[a-zA-Z0-9_-]+"
+	  PROPERTY_KEY_ID='regexp:[^#@=\s{}]+[^=\s{}]*'
+	  QUOTED_PROPERTY_KEY_ID='regexp:"([^"(\r\n\\]|\\.)*?"'
+	  BOOLEAN_TOKEN='regexp:(yes)|(no)'
+	  INT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)'
+	  FLOAT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)(\.[0-9]+)'
+	  STRING_TOKEN='regexp:[^@\s{}="][^\s{}="]*'
+	  QUOTED_STRING_TOKEN='regexp:"([^"\r\n\\]|\\.)*?"'
+	  COLOR_TOKEN="regexp:(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}"
+      CODE_TEXT_TOKEN="regexp:[^\r\n\]}]+"
+	]
+}
+
+//忽略空白，在ParserDefinition里面定义PsiElement之间的空白类型
+//regex必须定向到token，而非rule
+//即使idea提示不需要转义，一些字符在regexp中仍然需要转义
+
+//DONE 列表的元素可以是字符串
+//DONE 分隔符可以是比较运算符
+
+//root_block也是block，但不能直接extends，否则root下面会是value而非root_block
+root ::= root_block
+root_block ::= root_block_item * {
+  extends=block
+  methods=[isEmpty isNotEmpty isObject isArray getComponents getIcon]
+}
+private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property | value
+
+variable ::= variable_name variable_separator variable_value {
+  pin(".*")=1
+  elementTypeFactory="com.windea.plugin.idea.pls.script.psi.ParadoxScriptStubElementTypes.getVariableType"
+  extends="com.windea.plugin.idea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  implements="com.windea.plugin.idea.pls.script.psi.ParadoxScriptNamedElement"
+  stubClass="com.windea.plugin.idea.pls.script.psi.ParadoxScriptVariableStub"
+  methods=[getName setName checkRename getNameIdentifier getIcon getValue getUnquotedValue]
+}
+
+variable_name ::= VARIABLE_NAME_ID
+private variable_separator ::= "="
+variable_value ::= boolean | number | string
+
+property ::= property_key property_separator property_value {
+  pin(".*")=1
+  elementTypeFactory="com.windea.plugin.idea.pls.script.psi.ParadoxScriptStubElementTypes.getPropertyType"
+  extends="com.windea.plugin.idea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  implements="com.windea.plugin.idea.pls.script.psi.ParadoxScriptNamedElement"
+  stubClass="com.windea.plugin.idea.pls.script.psi.ParadoxScriptPropertyStub"
+  methods=[getName setName checkRename getNameIdentifier getIcon getValue getUnquotedValue getTruncatedValue findProperty findProperties findValue findValues]
+}
+property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID
+private property_separator ::= "=" | "<" | ">" | "<=" | ">=" | "<>"
+property_value ::= value
+
+value ::= variable_reference | boolean | number | string_value | block{
+  implements="com.intellij.psi.PsiLiteralValue"
+  methods=[getIcon getValue]
+}
+variable_reference ::= VARIABLE_REFERENCE_ID {
+  extends=value
+  methods=[getName setName getReference getReferenceValue]
+}
+boolean ::= BOOLEAN_TOKEN {
+  extends=value
+  implements="com.intellij.psi.PsiLiteralValue"
+  methods=[getValue]
+}
+number ::= int | float {
+  extends=value
+  implements="com.intellij.psi.PsiLiteralValue"
+  methods=[getValue]
+}
+int ::= INT_TOKEN {
+  extends=number
+}
+float ::= FLOAT_TOKEN{
+  extends=number
+}
+string_value ::= color | code | string{
+  extends=value
+  implements="com.intellij.psi.PsiLiteralValue"
+  methods=[getValue]
+}
+string ::= STRING_TOKEN | QUOTED_STRING_TOKEN {
+  extends=string_value
+  implements="com.intellij.psi.PsiLiteralValue"
+  methods=[getValue setValue getReference getReferneceName]
+}
+color ::= COLOR_TOKEN {
+  extends=string_value
+  implements="com.intellij.psi.PsiLiteralValue"
+  methods=[getValue getColor setColor]
+}
+code ::= CODE_START code_text CODE_END{
+  pin(".*")=1
+  extends=string_value
+}
+private code_text ::= CODE_TEXT_TOKEN
+block ::= "{" block_item * "}" {
+  pin(".*")=1
+  extends=value
+  implements="com.intellij.psi.PsiListLikeElement"
+  methods=[isEmpty isNotEmpty isObject isArray getComponents findProperty findValue]
+}
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value

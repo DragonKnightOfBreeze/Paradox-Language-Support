@@ -21,5 +21,13 @@ Paradox语言支持。
 
 # 参考
 
-* 更多信息：[plugin.xml](src/main/resources/META-INF/plugin.xml)
+关于本插件
+
+* 插件信息：[plugin.xml](src/main/resources/META-INF/plugin.xml)
 * 更新日志：[CHANGELOG.md](CHANGELOG.md)
+
+相关链接
+
+* [cwtools](https://github.com/cwtools/cwtools)
+* [cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
+* [cwtools-stellaris-config](https://github.com/cwtools/cwtools-stellaris-config)
