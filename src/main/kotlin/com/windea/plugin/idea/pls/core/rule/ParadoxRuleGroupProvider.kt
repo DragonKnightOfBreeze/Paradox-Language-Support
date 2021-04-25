@@ -23,23 +23,23 @@ class ParadoxRuleGroupProvider {
 	
 	private fun addRuleGroups() {
 		val rulesUrl = rulesPath.toUrl(locationClass)
-		val rulesFile = VfsUtil.findFileByURL(rulesUrl)?:error("Paradox rules path is not exist.")
+		val rulesFile = VfsUtil.findFileByURL(rulesUrl) ?: error("Paradox rules path is not exist.")
 		val coreGroup = mutableMapOf<String, Map<String, Any>>()
-		val coreGroupName = corePath
+		val coreGroupName = "core"
 		for(child in rulesFile.children) {
-			if(child.isDirectory){
+			if(child.isDirectory) {
 				val group = mutableMapOf<String, Map<String, Any>>()
 				val groupName = child.name
 				for(ruleFile in child.children) {
-					if(ruleFile.extension == ruleFileExtension){
+					if(ruleFile.extension == ruleFileExtension) {
 						val rule = getRule(ruleFile.inputStream)
 						group.putAll(rule)
 					}
 				}
 				ruleGroups[groupName] = ParadoxRuleGroup(group)
-			}else{
+			} else {
 				val ruleFile = child
-				if(ruleFile.extension == ruleFileExtension){
+				if(ruleFile.extension == ruleFileExtension) {
 					val rule = getRule(ruleFile.inputStream)
 					coreGroup.putAll(rule)
 				}

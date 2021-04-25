@@ -99,7 +99,8 @@
     <fileType
       language="Cwt Config"
       name="Cwt Config FIle" fieldName="INSTANCE"
-      implementationClass="com.windea.plugin.idea.pls.cwt.CwtFileType"/>
+      implementationClass="com.windea.plugin.idea.pls.cwt.CwtFileType"
+      extensions="cwt"/>
     <lang.parserDefinition
       language="Cwt Config"
       implementationClass="com.windea.plugin.idea.pls.cwt.psi.CwtParseDefinition"/>
