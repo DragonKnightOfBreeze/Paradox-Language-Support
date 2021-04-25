@@ -22,8 +22,6 @@
 	  RIGHT_BRACE="}"
 	  CODE_START="@\["
 	  CODE_END="]"
-	  LEFT_QUOTE='"'
-	  RIGHT_QUOTE='"'
 	  EOL="regexp:\R"
 	  BLANK="regexp:\s+"
 	  COMMENT="regexp:#[^\r\n]*"

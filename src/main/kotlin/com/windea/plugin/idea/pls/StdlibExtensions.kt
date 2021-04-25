@@ -87,7 +87,13 @@ fun CharSequence.surroundsWith(prefix:CharSequence,suffix:CharSequence,ignoreCas
 	return this.startsWith(prefix,ignoreCase) && this.endsWith(suffix,ignoreCase)
 }
 
-fun String.containsBlank() = this.any { it.isWhitespace() }
+fun String.containsBlank(): Boolean {
+	return any { it.isWhitespace() }
+}
+
+fun String.containsLineBreak():Boolean{
+	return any{ it == '\n' || it == '\r' }
+}
 
 fun String.containsBlankLine(): Boolean {
 	var newLine = 0

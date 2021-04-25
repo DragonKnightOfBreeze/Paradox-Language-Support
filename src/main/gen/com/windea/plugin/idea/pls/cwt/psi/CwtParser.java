@@ -125,15 +125,14 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // unquoted_key | quoted_key
+  // KEY_TOKEN
   public static boolean key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "key")) return false;
-    if (!nextTokenIs(b, "<key>", KEY_TOKEN, LEFT_QUOTE)) return false;
+    if (!nextTokenIs(b, KEY_TOKEN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, KEY, "<key>");
-    r = unquoted_key(b, l + 1);
-    if (!r) r = quoted_key(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, KEY_TOKEN);
+    exit_section_(b, m, KEY, r);
     return r;
   }
 
@@ -154,39 +153,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // key separator value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    if (!nextTokenIs(b, "<property>", KEY_TOKEN, LEFT_QUOTE)) return false;
+    if (!nextTokenIs(b, KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, PROPERTY, "<property>");
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
     r = key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, separator(b, l + 1));
     r = p && value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  /* ********************************************************** */
-  // LEFT_QUOTE QUOTED_KEY_TOKEN RIGHT_QUOTE
-  static boolean quoted_key(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "quoted_key")) return false;
-    if (!nextTokenIs(b, LEFT_QUOTE)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeTokens(b, 1, LEFT_QUOTE, QUOTED_KEY_TOKEN, RIGHT_QUOTE);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  /* ********************************************************** */
-  // LEFT_QUOTE QUOTED_STRING_TOKEN RIGHT_QUOTE
-  static boolean quoted_string(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "quoted_string")) return false;
-    if (!nextTokenIs(b, LEFT_QUOTE)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeTokens(b, 1, LEFT_QUOTE, QUOTED_STRING_TOKEN, RIGHT_QUOTE);
-    p = r; // pin = 1
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -229,28 +202,15 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // quoted_string | unquoted_string
+  // STRING_TOKEN
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
-    if (!nextTokenIs(b, "<string>", LEFT_QUOTE, STRING_TOKEN)) return false;
+    if (!nextTokenIs(b, STRING_TOKEN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
-    r = quoted_string(b, l + 1);
-    if (!r) r = unquoted_string(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, STRING_TOKEN);
+    exit_section_(b, m, STRING, r);
     return r;
-  }
-
-  /* ********************************************************** */
-  // KEY_TOKEN
-  static boolean unquoted_key(PsiBuilder b, int l) {
-    return consumeToken(b, KEY_TOKEN);
-  }
-
-  /* ********************************************************** */
-  // STRING_TOKEN
-  static boolean unquoted_string(PsiBuilder b, int l) {
-    return consumeToken(b, STRING_TOKEN);
   }
 
   /* ********************************************************** */

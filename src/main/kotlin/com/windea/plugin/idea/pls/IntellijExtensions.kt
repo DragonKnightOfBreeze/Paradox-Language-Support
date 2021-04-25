@@ -181,3 +181,12 @@ fun DataContext.findElement():PsiElement?{
 	}
 	return element
 }
+
+/**
+ * 判断指定的节点是否在文档中跨多行。
+ */
+fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
+	val range = node.textRange
+	val limit = if(range.endOffset < document.textLength) document.getLineNumber(range.endOffset) else document.lineCount - 1
+	return document.getLineNumber(range.startOffset) < limit
+}

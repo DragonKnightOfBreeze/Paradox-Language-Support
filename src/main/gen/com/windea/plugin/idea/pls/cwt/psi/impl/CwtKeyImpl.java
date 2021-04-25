@@ -28,15 +28,9 @@ public class CwtKeyImpl extends ASTWrapperPsiElement implements CwtKey {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getKeyToken() {
-    return findChildByType(KEY_TOKEN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getQuotedKeyToken() {
-    return findChildByType(QUOTED_KEY_TOKEN);
+    return findNotNullChildByType(KEY_TOKEN);
   }
 
 }

@@ -1,5 +1,6 @@
 package com.windea.plugin.idea.pls.script.highlighter
 
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*

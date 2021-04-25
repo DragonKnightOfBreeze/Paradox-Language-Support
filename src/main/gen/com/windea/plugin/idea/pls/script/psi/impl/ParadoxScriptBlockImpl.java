@@ -7,6 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static com.windea.plugin.idea.pls.script.psi.ParadoxScriptTypes.*;
 import com.windea.plugin.idea.pls.script.psi.*;
 
 public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements ParadoxScriptBlock {

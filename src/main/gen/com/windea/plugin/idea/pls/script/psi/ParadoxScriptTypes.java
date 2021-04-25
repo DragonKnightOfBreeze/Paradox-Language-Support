@@ -47,7 +47,6 @@ public interface ParadoxScriptTypes {
   IElementType QUOTED_PROPERTY_KEY_ID = new ParadoxScriptTokenType("QUOTED_PROPERTY_KEY_ID");
   IElementType QUOTED_STRING_TOKEN = new ParadoxScriptTokenType("QUOTED_STRING_TOKEN");
   IElementType RIGHT_BRACE = new ParadoxScriptTokenType("}");
-  IElementType RIGHT_QUOTE = new ParadoxScriptTokenType("\"");
   IElementType STRING_TOKEN = new ParadoxScriptTokenType("STRING_TOKEN");
   IElementType VARIABLE_NAME_ID = new ParadoxScriptTokenType("VARIABLE_NAME_ID");
   IElementType VARIABLE_REFERENCE_ID = new ParadoxScriptTokenType("VARIABLE_REFERENCE_ID");
@@ -72,9 +71,6 @@ public interface ParadoxScriptTypes {
       }
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);
-      }
-      else if (type == NUMBER) {
-        return new ParadoxScriptNumberImpl(node);
       }
       else if (type == PROPERTY) {
         return new ParadoxScriptPropertyImpl(node);

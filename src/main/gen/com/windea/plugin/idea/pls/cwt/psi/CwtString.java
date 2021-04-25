@@ -7,10 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface CwtString extends CwtValue {
 
-  @Nullable
-  PsiElement getQuotedStringToken();
-
-  @Nullable
+  @NotNull
   PsiElement getStringToken();
 
   //WARNING: getValue(...) is skipped

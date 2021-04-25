@@ -54,7 +54,7 @@ CODE_TEXT_TOKEN=[^\r\n\]}]+
 
 //为了兼容cwt规则文件（<xxx>格式的propertyKey），需要弄得很麻烦
 //要求=周围可以没有空格，但其他分隔符如<=周围必须有
-IS_PROPERTY=(([^#@={}\s][^={}\s]*)|(\"([^\"(\r\n\\]|\\.)*?\"))((\s*=)|(\s+[=<>]))
+IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
 
 %%
 

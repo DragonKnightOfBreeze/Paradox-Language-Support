@@ -7,11 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface CwtKey extends PsiElement {
 
-  @Nullable
+  @NotNull
   PsiElement getKeyToken();
-
-  @Nullable
-  PsiElement getQuotedKeyToken();
 
   //WARNING: getName(...) is skipped
   //matching getName(CwtKey, ...)

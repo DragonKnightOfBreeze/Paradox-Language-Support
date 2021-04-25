@@ -4,12 +4,13 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
 import com.windea.plugin.idea.pls.script.psi.*
+import com.windea.plugin.idea.pls.script.psi.ParadoxScriptTypes.*
 
 class ParadoxScriptBraceMatcher : PairedBraceMatcher {
 	companion object{
 		private val bracePairs = arrayOf(
-			BracePair(ParadoxScriptTypes.LEFT_BRACE, ParadoxScriptTypes.RIGHT_BRACE, true),
-			BracePair(ParadoxScriptTypes.CODE_START, ParadoxScriptTypes.CODE_END, true)
+			BracePair(LEFT_BRACE, RIGHT_BRACE, true),
+			BracePair(CODE_START, CODE_END, true)
 		)
 	}
 

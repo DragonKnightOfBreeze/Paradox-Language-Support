@@ -31,21 +31,18 @@ import static com.windea.plugin.idea.pls.cwt.psi.CwtTypes.*;
 EOL=\R
 BLANK=[ \t\n\x0B\f\r]+
 SPACE=[ \t\x08\f]+
-POSSIBLE_SPACE=[ \t\x08\f]*
 
 COMMENT=#[^\r\n]*
 OPTION_COMMENT=##[^\r\n]*
 DOCUMENTATION_COMMENT=###[^\r\n]*
 
-KEY_TOKEN=[^#={}\s][^={}\s]*
-QUOTED_KEY_TOKEN=([^\"\\\r\n]|\\.)+
+KEY_TOKEN=([^#={}\s][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
-STRING_TOKEN=[^#={}\s\"][^={}\s\"]*
-QUOTED_STRING_TOKEN=([^\"\\\r\n]|\\.)+
+STRING_TOKEN=([^#={}\s\"][^={}\s\"]*)|(\"([^\"\\\r\n]|\\.)*\")
 
-IS_PROPERTY=({KEY_TOKEN}|{QUOTED_KEY_TOKEN})?{POSSIBLE_SPACE}=
+IS_PROPERTY=({KEY_TOKEN})?({SPACE})?=
 
 %%
 <YYINITIAL> {
@@ -63,13 +60,11 @@ IS_PROPERTY=({KEY_TOKEN}|{QUOTED_KEY_TOKEN})?{POSSIBLE_SPACE}=
   {INT_TOKEN} { yybegin(WAITING_VALUE_END); return INT_TOKEN; }
   {FLOAT_TOKEN} { yybegin(WAITING_VALUE_END); return FLOAT_TOKEN; }
   {STRING_TOKEN} {yybegin(WAITING_VALUE_END); return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_VALUE_END); return QUOTED_STRING_TOKEN;}
   
   <WAITING_PROPERTY_KEY>{
     "{" {yybegin(YYINITIAL); return LEFT_BRACE;}
     "}" {yybegin(YYINITIAL); return RIGHT_BRACE;}
     {KEY_TOKEN} {yybegin(WATIING_PROPERTY_SEPARATOR); return KEY_TOKEN;}
-    {QUOTED_KEY_TOKEN} {yybegin(WATIING_PROPERTY_SEPARATOR); return QUOTED_KEY_TOKEN;}
   }
   
   <WATIING_PROPERTY_SEPARATOR>{
@@ -96,7 +91,6 @@ IS_PROPERTY=({KEY_TOKEN}|{QUOTED_KEY_TOKEN})?{POSSIBLE_SPACE}=
     {INT_TOKEN} { yybegin(WAITING_PROPERTY_END); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN; }
     {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
-    {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
   }
   
   <WAITING_PROPERTY_END>{

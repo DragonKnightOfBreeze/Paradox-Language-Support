@@ -28,8 +28,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 	
 	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptSampleText
 	
-	override fun createCustomSettings(settings: CodeStyleSettings) =
-		ParadoxScriptCodeStyleSettings(settings)
+	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxScriptCodeStyleSettings(settings)
 
 	//需要重载这个方法以显示indentOptions设置页面
 	override fun getIndentOptionsEditor() = IndentOptionsEditor(this)

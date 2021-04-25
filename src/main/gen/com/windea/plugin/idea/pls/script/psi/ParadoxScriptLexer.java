@@ -2,6 +2,7 @@
 
 package com.windea.plugin.idea.pls.script.psi;
 
+import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;

@@ -4,6 +4,7 @@ package com.windea.plugin.idea.pls.script.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.PsiLiteralValue;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -26,7 +27,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
-    visitPsiElement(o);
+    visitNumber(o);
   }
 
   public void visitInt(@NotNull ParadoxScriptInt o) {

@@ -2,7 +2,6 @@ package com.windea.plugin.idea.pls.script.highlighter
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
-import com.intellij.openapi.options.colors.ColorDescriptor.*
 import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.message
 import com.windea.plugin.idea.pls.script.*
@@ -48,7 +47,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 
 	override fun getAttributeDescriptors() = attributesDescriptors
 
-	override fun getColorDescriptors() = EMPTY_ARRAY
+	override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
 
 	override fun getDisplayName() = paradoxScriptName
 

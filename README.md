@@ -29,5 +29,6 @@ Paradox语言支持。
 相关链接
 
 * [cwtools](https://github.com/cwtools/cwtools)
-* [cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
-* [cwtools-stellaris-config](https://github.com/cwtools/cwtools-stellaris-config)
+* [cwtools vscode](https://github.com/cwtools/cwtools-vscode)
+* [.cwt config file guidance](https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance)
+* [cwtools stellaris config](https://github.com/cwtools/cwtools-stellaris-config)

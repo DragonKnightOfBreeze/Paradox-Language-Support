@@ -8,7 +8,6 @@ import com.intellij.psi.tree.*
 import com.windea.plugin.idea.pls.script.psi.*
 import com.windea.plugin.idea.pls.script.psi.ParadoxScriptTypes.*
 
-@Suppress("HasPlatformType")
 class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 	companion object {
 		private val SEPARATOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.SEPARATOR_KEY)

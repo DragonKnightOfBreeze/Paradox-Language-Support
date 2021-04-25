@@ -28,15 +28,9 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
   }
 
   @Override
-  @Nullable
-  public PsiElement getQuotedStringToken() {
-    return findChildByType(QUOTED_STRING_TOKEN);
-  }
-
-  @Override
-  @Nullable
+  @NotNull
   public PsiElement getStringToken() {
-    return findChildByType(STRING_TOKEN);
+    return findNotNullChildByType(STRING_TOKEN);
   }
 
 }

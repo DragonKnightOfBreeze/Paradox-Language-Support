@@ -271,9 +271,6 @@
     <lang.braceMatcher
         language="Paradox Localisation"
         implementationClass="com.windea.plugin.idea.pls.localisation.editor.ParadoxLocalisationBraceMatcher"/>
-    <lang.foldingBuilder
-        language="Paradox Localisation"
-        implementationClass="com.windea.plugin.idea.pls.localisation.editor.ParadoxLocalisationFoldingBuilder"/>
     <lang.commenter
         language="Paradox Localisation"
         implementationClass="com.windea.plugin.idea.pls.localisation.editor.ParadoxLocalisationCommenter"/>

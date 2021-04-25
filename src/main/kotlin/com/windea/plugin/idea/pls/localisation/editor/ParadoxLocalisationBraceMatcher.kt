@@ -4,15 +4,16 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
 import com.windea.plugin.idea.pls.localisation.psi.*
+import com.windea.plugin.idea.pls.localisation.psi.ParadoxLocalisationTypes.*
 
 class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
 	companion object{
 		private val bracePairs = arrayOf(
-			BracePair(ParadoxLocalisationTypes.PROPERTY_REFERENCE_START, ParadoxLocalisationTypes.PROPERTY_REFERENCE_END, true),
-			BracePair(ParadoxLocalisationTypes.ICON_START, ParadoxLocalisationTypes.ICON_END, true),
-			BracePair(ParadoxLocalisationTypes.SEQUENTIAL_NUMBER_START, ParadoxLocalisationTypes.SEQUENTIAL_NUMBER_END, true),
-			BracePair(ParadoxLocalisationTypes.COMMAND_START, ParadoxLocalisationTypes.COMMAND_END, true),
-			BracePair(ParadoxLocalisationTypes.COLORFUL_TEXT_START, ParadoxLocalisationTypes.COLORFUL_TEXT_END, true)
+			BracePair(PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END,false),
+			BracePair(ICON_START, ICON_END,false),
+			BracePair(SEQUENTIAL_NUMBER_START, SEQUENTIAL_NUMBER_END,false),
+			BracePair(COMMAND_START, COMMAND_END,false),
+			BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END,false)
 		)
 	}
 

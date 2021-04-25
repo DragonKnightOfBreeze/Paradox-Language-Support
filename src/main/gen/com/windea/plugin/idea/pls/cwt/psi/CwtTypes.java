@@ -27,12 +27,8 @@ public interface CwtTypes {
   IElementType INT_TOKEN = new CwtTokenType("INT_TOKEN");
   IElementType KEY_TOKEN = new CwtTokenType("KEY_TOKEN");
   IElementType LEFT_BRACE = new CwtTokenType("{");
-  IElementType LEFT_QUOTE = new CwtTokenType("LEFT_QUOTE");
   IElementType OPTION_COMMENT = new CwtTokenType("OPTION_COMMENT");
-  IElementType QUOTED_KEY_TOKEN = new CwtTokenType("QUOTED_KEY_TOKEN");
-  IElementType QUOTED_STRING_TOKEN = new CwtTokenType("QUOTED_STRING_TOKEN");
   IElementType RIGHT_BRACE = new CwtTokenType("}");
-  IElementType RIGHT_QUOTE = new CwtTokenType("\"");
   IElementType STRING_TOKEN = new CwtTokenType("STRING_TOKEN");
 
   class Factory {

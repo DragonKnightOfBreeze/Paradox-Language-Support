@@ -37,8 +37,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(BLOCK, BOOLEAN, CODE, COLOR,
-      INT, NUMBER, ROOT_BLOCK, STRING,
-      STRING_VALUE, VALUE, VARIABLE_REFERENCE),
+      FLOAT, INT, NUMBER, ROOT_BLOCK,
+      STRING, STRING_VALUE, VALUE, VARIABLE_REFERENCE),
   };
 
   /* ********************************************************** */
