@@ -26,7 +26,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 	
 	override fun getLanguage() = ParadoxScriptLanguage
 	
-	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptSampleText
+	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptDemoText
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxScriptCodeStyleSettings(settings)
 

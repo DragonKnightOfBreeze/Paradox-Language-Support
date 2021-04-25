@@ -8,10 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.pls.cwt.psi.CwtTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.windea.plugin.idea.pls.cwt.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
-public class CwtPropertyImpl extends ASTWrapperPsiElement implements CwtProperty {
+public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty {
 
   public CwtPropertyImpl(@NotNull ASTNode node) {
     super(node);
@@ -37,6 +38,36 @@ public class CwtPropertyImpl extends ASTWrapperPsiElement implements CwtProperty
   @Nullable
   public CwtValue getValue() {
     return findChildByClass(CwtValue.class);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return CwtPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return CwtPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@NotNull String name) {
+    return CwtPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  @NotNull
+  public String getPropertyKey() {
+    return CwtPsiImplUtil.getPropertyKey(this);
+  }
+
+  @Override
+  @NotNull
+  public String getPropertyValue() {
+    return CwtPsiImplUtil.getPropertyValue(this);
   }
 
 }

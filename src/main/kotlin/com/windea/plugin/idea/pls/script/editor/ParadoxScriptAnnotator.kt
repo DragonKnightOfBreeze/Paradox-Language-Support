@@ -51,7 +51,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateDefinitionProperties(existProperties:List<ParadoxScriptProperty>,
 		keyPatternExpressions: List<ConditionalExpression>,project: Project, definitionInfo: ParadoxDefinitionInfo, 
-		ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subpaths:List<String> = listOf()){
+		ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subpaths:List<String> = emptyList()){
 		
 		//用于保存要求的pattern
 		val requiredData = keyPatternExpressions.filter { it.required }.mapTo(mutableSetOf()) { it.value }

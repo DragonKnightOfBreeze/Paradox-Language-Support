@@ -10,8 +10,4 @@ public interface CwtFloat extends CwtNumber {
   @NotNull
   PsiElement getFloatToken();
 
-  //WARNING: getValue(...) is skipped
-  //matching getValue(CwtFloat, ...)
-  //methods are not found in CwtPsiImplUtil
-
 }

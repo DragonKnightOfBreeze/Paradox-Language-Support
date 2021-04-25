@@ -22,7 +22,7 @@ class ParadoxRuleGroupProvider {
 	}
 	
 	private fun addRuleGroups() {
-		val rulesUrl = rulesPath.toUrl()?:error("Paradox rules path is not exist.")
+		val rulesUrl = rulesPath.toUrl(locationClass)
 		val rulesFile = VfsUtil.findFileByURL(rulesUrl)?:error("Paradox rules path is not exist.")
 		val coreGroup = mutableMapOf<String, Map<String, Any>>()
 		val coreGroupName = corePath

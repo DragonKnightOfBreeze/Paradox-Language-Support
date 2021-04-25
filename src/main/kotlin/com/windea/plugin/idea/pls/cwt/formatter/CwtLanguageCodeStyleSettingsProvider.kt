@@ -13,7 +13,7 @@ class CwtLanguageCodeStyleSettingsProvider:LanguageCodeStyleSettingsProvider() {
 	
 	override fun getLanguage() = CwtLanguage
 	
-	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptSampleText
+	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptDemoText
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
 	

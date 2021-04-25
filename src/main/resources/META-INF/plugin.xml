@@ -124,6 +124,9 @@
     <lang.commenter
         language="Cwt Config"
         implementationClass="com.windea.plugin.idea.pls.cwt.editor.CwtCommenter"/>
+    <lang.psiStructureViewFactory
+        language="Cwt Config"
+        implementationClass="com.windea.plugin.idea.pls.cwt.structureView.CwtStructureViewFactory"/>
     <lang.formatter
         language="Cwt Config"
         implementationClass="com.windea.plugin.idea.pls.cwt.formatter.CwtFormattingModelBuilder"/>

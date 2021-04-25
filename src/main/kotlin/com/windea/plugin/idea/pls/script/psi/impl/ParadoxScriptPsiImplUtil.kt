@@ -16,10 +16,16 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.component3
 import kotlin.collections.component4
+import kotlin.math.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptVariable
+	@JvmStatic
+	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
+		return scriptVariableIcon
+	}
+	
 	@JvmStatic
 	fun getName(element: ParadoxScriptVariable): String {
 		return element.stub?.key ?: element.variableName.text.orEmpty()
@@ -42,11 +48,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
-		return scriptVariableIcon
-	}
-	
-	@JvmStatic
 	fun getValue(element: ParadoxScriptVariable): String? {
 		return element.variableValue?.text?.unquote()
 	}
@@ -58,6 +59,11 @@ object ParadoxScriptPsiImplUtil {
 	//endregion
 	
 	//region ParadoxScriptProperty
+	@JvmStatic
+	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
+		return scriptPropertyIcon
+	}
+	
 	@JvmStatic
 	fun getName(element: ParadoxScriptProperty): String {
 		return element.stub?.name ?: element.propertyKey.text.unquote()
@@ -81,11 +87,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
-		return scriptPropertyIcon
-	}
-	
-	@JvmStatic
 	fun getValue(element: ParadoxScriptProperty): String? {
 		return element.propertyValue?.text?.unquote()
 	}
@@ -97,7 +98,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getTruncatedValue(element:ParadoxScriptProperty):String?{
-		return element.propertyValue?.value?.let{ if(it is ParadoxScriptBlock) blockFolder else it.text }
+		return element.propertyValue?.value?.let{ if(it is ParadoxScriptBlock) blockFolder else it.text.truncate(truncateLimit) }
 	}
 	
 	@JvmStatic

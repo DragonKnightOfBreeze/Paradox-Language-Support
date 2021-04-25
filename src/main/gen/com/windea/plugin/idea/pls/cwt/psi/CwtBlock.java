@@ -4,8 +4,9 @@ package com.windea.plugin.idea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiListLikeElement;
 
-public interface CwtBlock extends CwtValue {
+public interface CwtBlock extends CwtValue, PsiListLikeElement {
 
   @NotNull
   List<CwtProperty> getPropertyList();
@@ -13,24 +14,15 @@ public interface CwtBlock extends CwtValue {
   @NotNull
   List<CwtValue> getValueList();
 
-  //WARNING: getIcon(...) is skipped
-  //matching getIcon(CwtBlock, ...)
-  //methods are not found in CwtPsiImplUtil
+  boolean isEmpty();
 
-  //WARNING: isEmpty(...) is skipped
-  //matching isEmpty(CwtBlock, ...)
-  //methods are not found in CwtPsiImplUtil
+  boolean isNotEmpty();
 
-  //WARNING: isNotEmpty(...) is skipped
-  //matching isNotEmpty(CwtBlock, ...)
-  //methods are not found in CwtPsiImplUtil
+  boolean isObject();
 
-  //WARNING: isObject(...) is skipped
-  //matching isObject(CwtBlock, ...)
-  //methods are not found in CwtPsiImplUtil
+  boolean isArray();
 
-  //WARNING: isArray(...) is skipped
-  //matching isArray(CwtBlock, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  List<PsiElement> getComponents();
 
 }

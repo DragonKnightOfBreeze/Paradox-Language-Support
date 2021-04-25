@@ -4,19 +4,18 @@ package com.windea.plugin.idea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
 public interface CwtValue extends PsiElement {
 
-  //WARNING: getIcon(...) is skipped
-  //matching getIcon(CwtValue, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  //WARNING: getValue(...) is skipped
-  //matching getValue(CwtValue, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  String getValue();
 
-  //WARNING: getUnquotedValue(...) is skipped
-  //matching getUnquotedValue(CwtValue, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  String getTruncatedValue();
 
 }

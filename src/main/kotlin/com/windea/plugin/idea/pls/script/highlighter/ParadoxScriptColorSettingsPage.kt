@@ -51,5 +51,5 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 
 	override fun getDisplayName() = paradoxScriptName
 
-	override fun getDemoText() = paradoxScriptSampleText
+	override fun getDemoText() = paradoxScriptDemoText
 }

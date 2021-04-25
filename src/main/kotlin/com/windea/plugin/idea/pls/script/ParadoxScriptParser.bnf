@@ -51,7 +51,6 @@
 root ::= root_block
 root_block ::= root_block_item * {
   extends=block
-  methods=[isEmpty isNotEmpty isObject isArray getComponents getIcon]
 }
 private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property | value
 

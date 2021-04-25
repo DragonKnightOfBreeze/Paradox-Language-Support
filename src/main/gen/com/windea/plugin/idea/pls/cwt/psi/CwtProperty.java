@@ -4,8 +4,10 @@ package com.windea.plugin.idea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
-public interface CwtProperty extends PsiElement {
+public interface CwtProperty extends CwtNamedElement {
 
   @NotNull
   CwtKey getKey();
@@ -13,24 +15,23 @@ public interface CwtProperty extends PsiElement {
   @Nullable
   CwtValue getValue();
 
-  //WARNING: getIcon(...) is skipped
-  //matching getIcon(CwtProperty, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  //WARNING: getKey(...) is skipped
-  //matching getKey(CwtProperty, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  String getName();
 
-  //WARNING: getUnquotedKey(...) is skipped
-  //matching getUnquotedKey(CwtProperty, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  PsiElement setName(@NotNull String name);
 
-  //WARNING: getValue(...) is skipped
-  //matching getValue(CwtProperty, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  String getPropertyKey();
 
-  //WARNING: getUnquotedValue(...) is skipped
-  //matching getUnquotedValue(CwtProperty, ...)
+  @NotNull
+  String getPropertyValue();
+
+  //WARNING: getPropertyTruncatedValue(...) is skipped
+  //matching getPropertyTruncatedValue(CwtProperty, ...)
   //methods are not found in CwtPsiImplUtil
 
 }

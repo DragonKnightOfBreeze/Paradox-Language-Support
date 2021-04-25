@@ -119,8 +119,8 @@ class ParadoxRuleGroup(
 			val nameKeyData = data["name_key"]
 			//完全匿名 
 			when(nameKeyData) {
-				is String -> return element.findProperty(nameKeyData)?.value ?: return anonymousName
-				is Boolean -> if(!nameKeyData) return anonymousName
+				is String -> return element.findProperty(nameKeyData)?.value ?: return anonymousString
+				is Boolean -> if(!nameKeyData) return anonymousString
 			}
 			return element.name
 		}

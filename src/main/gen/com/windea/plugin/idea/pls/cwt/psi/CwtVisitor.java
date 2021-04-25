@@ -4,11 +4,13 @@ package com.windea.plugin.idea.pls.cwt.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiListLikeElement;
 
 public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull CwtBlock o) {
     visitValue(o);
+    // visitPsiListLikeElement(o);
   }
 
   public void visitBoolean(@NotNull CwtBoolean o) {
@@ -32,7 +34,7 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitProperty(@NotNull CwtProperty o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
@@ -44,6 +46,10 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitValue(@NotNull CwtValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNamedElement(@NotNull CwtNamedElement o) {
     visitPsiElement(o);
   }
 

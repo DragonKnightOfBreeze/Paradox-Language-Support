@@ -9,8 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.windea.plugin.idea.pls.script.psi.ParadoxScriptTypes.*;
 import com.windea.plugin.idea.pls.script.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import javax.swing.Icon;
 
 public class ParadoxScriptRootBlockImpl extends ParadoxScriptBlockImpl implements ParadoxScriptRootBlock {
 
@@ -27,38 +25,6 @@ public class ParadoxScriptRootBlockImpl extends ParadoxScriptBlockImpl implement
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return ParadoxScriptPsiImplUtil.isEmpty(this);
-  }
-
-  @Override
-  public boolean isNotEmpty() {
-    return ParadoxScriptPsiImplUtil.isNotEmpty(this);
-  }
-
-  @Override
-  public boolean isObject() {
-    return ParadoxScriptPsiImplUtil.isObject(this);
-  }
-
-  @Override
-  public boolean isArray() {
-    return ParadoxScriptPsiImplUtil.isArray(this);
-  }
-
-  @Override
-  @NotNull
-  public List<PsiElement> getComponents() {
-    return ParadoxScriptPsiImplUtil.getComponents(this);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
 }

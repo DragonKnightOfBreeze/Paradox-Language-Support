@@ -39,4 +39,30 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtValue.class);
   }
 
+  @Override
+  public boolean isEmpty() {
+    return CwtPsiImplUtil.isEmpty(this);
+  }
+
+  @Override
+  public boolean isNotEmpty() {
+    return CwtPsiImplUtil.isNotEmpty(this);
+  }
+
+  @Override
+  public boolean isObject() {
+    return CwtPsiImplUtil.isObject(this);
+  }
+
+  @Override
+  public boolean isArray() {
+    return CwtPsiImplUtil.isArray(this);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiElement> getComponents() {
+    return CwtPsiImplUtil.getComponents(this);
+  }
+
 }

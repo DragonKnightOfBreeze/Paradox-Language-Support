@@ -33,4 +33,16 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
     return findNotNullChildByType(STRING_TOKEN);
   }
 
+  @Override
+  @NotNull
+  public String getValue() {
+    return CwtPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  @NotNull
+  public String getTruncatedValue() {
+    return CwtPsiImplUtil.getTruncatedValue(this);
+  }
+
 }

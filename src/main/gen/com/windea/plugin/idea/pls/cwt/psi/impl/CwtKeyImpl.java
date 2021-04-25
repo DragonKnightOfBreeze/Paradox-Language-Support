@@ -33,4 +33,10 @@ public class CwtKeyImpl extends ASTWrapperPsiElement implements CwtKey {
     return findNotNullChildByType(KEY_TOKEN);
   }
 
+  @Override
+  @NotNull
+  public String getName() {
+    return CwtPsiImplUtil.getName(this);
+  }
+
 }

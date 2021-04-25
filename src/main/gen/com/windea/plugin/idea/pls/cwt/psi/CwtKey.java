@@ -10,12 +10,7 @@ public interface CwtKey extends PsiElement {
   @NotNull
   PsiElement getKeyToken();
 
-  //WARNING: getName(...) is skipped
-  //matching getName(CwtKey, ...)
-  //methods are not found in CwtPsiImplUtil
-
-  //WARNING: getUnquotedName(...) is skipped
-  //matching getUnquotedName(CwtKey, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  String getName();
 
 }

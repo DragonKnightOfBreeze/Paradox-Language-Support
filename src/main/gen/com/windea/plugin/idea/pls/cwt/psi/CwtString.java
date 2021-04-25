@@ -10,12 +10,10 @@ public interface CwtString extends CwtValue {
   @NotNull
   PsiElement getStringToken();
 
-  //WARNING: getValue(...) is skipped
-  //matching getValue(CwtString, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  String getValue();
 
-  //WARNING: getUnquotedValue(...) is skipped
-  //matching getUnquotedValue(CwtString, ...)
-  //methods are not found in CwtPsiImplUtil
+  @NotNull
+  String getTruncatedValue();
 
 }

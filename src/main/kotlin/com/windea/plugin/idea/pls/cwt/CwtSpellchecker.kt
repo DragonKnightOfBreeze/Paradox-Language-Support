@@ -9,8 +9,8 @@ import com.windea.plugin.idea.pls.cwt.psi.CwtTypes.*
 class CwtSpellchecker:SpellcheckingStrategy() {
 	override fun getTokenizer(element: PsiElement?): Tokenizer<*> {
 		return when(element.elementType){
-			KEY_TOKEN, QUOTED_KEY_TOKEN -> TEXT_TOKENIZER
-			STRING_TOKEN, QUOTED_STRING_TOKEN -> TEXT_TOKENIZER
+			KEY_TOKEN -> TEXT_TOKENIZER
+			STRING_TOKEN -> TEXT_TOKENIZER
 			COMMENT, OPTION_COMMENT, DOCUMENTATION_COMMENT -> TEXT_TOKENIZER
 			else -> EMPTY_TOKENIZER
 		}

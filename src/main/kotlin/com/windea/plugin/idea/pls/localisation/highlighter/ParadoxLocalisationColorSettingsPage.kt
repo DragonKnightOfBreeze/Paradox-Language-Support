@@ -59,6 +59,6 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
 	override fun getDisplayName() = paradoxLocalisationName
 
-	override fun getDemoText() = paradoxLocalisationSampleText
+	override fun getDemoText() = paradoxLocalisationDemoText
 }
 

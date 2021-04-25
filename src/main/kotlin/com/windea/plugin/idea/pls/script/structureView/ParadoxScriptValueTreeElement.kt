@@ -20,7 +20,7 @@ class ParadoxScriptValueTreeElement(
 	override fun getPresentableText(): String? {
 		return when{
 			element is ParadoxScriptBlock -> blockFolder
-			else -> element.text.truncate(20) //不去除包围的双引号
+			else -> element.text.truncate(truncateLimit) //不去除包围的双引号
 		}
 	}
 }

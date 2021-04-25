@@ -12,7 +12,7 @@ class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
 		return when(node.elementType){
 			BLOCK -> blockFolder
-			else -> defaultFolder
+			else -> throw InternalError()
 		}
 	}
 

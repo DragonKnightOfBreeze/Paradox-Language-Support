@@ -16,7 +16,7 @@ import com.windea.plugin.idea.pls.localisation.*
 class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 	override fun getLanguage() = ParadoxLocalisationLanguage
 	
-	override fun getCodeSample(settingsType: SettingsType) = paradoxLocalisationSampleText
+	override fun getCodeSample(settingsType: SettingsType) = paradoxLocalisationDemoText
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
 	

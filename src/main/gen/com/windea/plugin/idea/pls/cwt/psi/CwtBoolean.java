@@ -10,8 +10,4 @@ public interface CwtBoolean extends CwtValue {
   @NotNull
   PsiElement getBooleanToken();
 
-  //WARNING: getValue(...) is skipped
-  //matching getValue(CwtBoolean, ...)
-  //methods are not found in CwtPsiImplUtil
-
 }

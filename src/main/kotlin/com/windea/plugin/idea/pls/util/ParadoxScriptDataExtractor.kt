@@ -12,16 +12,16 @@ import com.windea.plugin.idea.pls.script.psi.*
 object ParadoxScriptDataExtractor {
 	fun extract(file: PsiFile):List<Any>{
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type")
-		val rootBlock = file.findChildByClass(ParadoxScriptRootBlock::class.java) ?: return listOf()
+		val rootBlock = file.findChildByClass(ParadoxScriptRootBlock::class.java) ?: return emptyList()
 		return extractBlock(rootBlock)
 	}
 	
 	private fun extractBlock(block:ParadoxScriptBlock):List<Any>{
 		return when{
-			block.isEmpty -> listOf()
+			block.isEmpty -> emptyList()
 			block.isArray -> block.valueList.mapNotNull{extractValue(it) }
 			block.isObject -> block.propertyList.mapNotNull { extractProperty(it)}
-			else -> listOf()
+			else -> emptyList()
 		}
 	}
 	

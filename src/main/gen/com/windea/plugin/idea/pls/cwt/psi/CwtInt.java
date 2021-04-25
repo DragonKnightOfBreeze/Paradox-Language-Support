@@ -10,8 +10,4 @@ public interface CwtInt extends CwtNumber {
   @NotNull
   PsiElement getIntToken();
 
-  //WARNING: getValue(...) is skipped
-  //matching getValue(CwtInt, ...)
-  //methods are not found in CwtPsiImplUtil
-
 }

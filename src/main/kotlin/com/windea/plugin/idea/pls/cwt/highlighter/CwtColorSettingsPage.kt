@@ -48,5 +48,5 @@ class CwtColorSettingsPage:ColorSettingsPage {
 	
 	override fun getDisplayName() = cwtName
 	
-	override fun getDemoText() = cwtSampleText
+	override fun getDemoText() = cwtDemoText
 }

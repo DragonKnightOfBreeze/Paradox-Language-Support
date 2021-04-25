@@ -12,7 +12,7 @@ class CwtParseDefinition:ParserDefinition {
 	companion object{
 		val WHITE_SPACES=TokenSet.create(WHITE_SPACE)
 		val COMMENTS = TokenSet.create(COMMENT, OPTION_COMMENT, DOCUMENTATION_COMMENT)
-		val STRINGS = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
+		val STRINGS = TokenSet.create(STRING_TOKEN)
 		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
 	}
 	

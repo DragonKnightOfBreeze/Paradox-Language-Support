@@ -7,8 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface CwtNumber extends CwtValue {
 
-  //WARNING: getValue(...) is skipped
-  //matching getValue(CwtNumber, ...)
-  //methods are not found in CwtPsiImplUtil
-
 }
