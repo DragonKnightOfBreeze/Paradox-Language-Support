@@ -5,12 +5,12 @@ import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.localisation.psi.*
 
 /**
- * Paradox本地化文件的数据提取器。
+ * Paradox本地化文件的数据提解析器。
  *
  * 返回值类型：`Map<String,String>`
  */
-object ParadoxLocalisationDataExtractor {
-	fun extract(file: PsiFile):Map<String,String>{
+object ParadoxLocalisationDataResolver {
+	fun resolve(file: PsiFile):Map<String,String>{
 		if(file !is ParadoxLocalisationFile) throw IllegalArgumentException("Invalid file type")
 
 		val result = mutableMapOf<String,String>()

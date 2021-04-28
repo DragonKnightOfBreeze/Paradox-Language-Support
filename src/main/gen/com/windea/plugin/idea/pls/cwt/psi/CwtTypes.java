@@ -10,24 +10,30 @@ public interface CwtTypes {
 
   IElementType BLOCK = new CwtElementType("BLOCK");
   IElementType BOOLEAN = new CwtElementType("BOOLEAN");
+  IElementType DOCUMENTATION_COMMENT = new CwtElementType("DOCUMENTATION_COMMENT");
   IElementType FLOAT = new CwtElementType("FLOAT");
   IElementType INT = new CwtElementType("INT");
-  IElementType KEY = new CwtElementType("KEY");
   IElementType NUMBER = new CwtElementType("NUMBER");
+  IElementType OPTION = new CwtElementType("OPTION");
+  IElementType OPTION_COMMENT = new CwtElementType("OPTION_COMMENT");
+  IElementType OPTION_KEY = new CwtElementType("OPTION_KEY");
   IElementType PROPERTY = new CwtElementType("PROPERTY");
+  IElementType PROPERTY_KEY = new CwtElementType("PROPERTY_KEY");
   IElementType ROOT_BLOCK = new CwtElementType("ROOT_BLOCK");
   IElementType STRING = new CwtElementType("STRING");
   IElementType VALUE = new CwtElementType("VALUE");
 
   IElementType BOOLEAN_TOKEN = new CwtTokenType("BOOLEAN_TOKEN");
   IElementType COMMENT = new CwtTokenType("COMMENT");
-  IElementType DOCUMENTATION_COMMENT = new CwtTokenType("DOCUMENTATION_COMMENT");
+  IElementType DOCUMENTATION_START = new CwtTokenType("###");
+  IElementType DOCUMENTATION_TOKEN = new CwtTokenType("DOCUMENTATION_TOKEN");
   IElementType EQUAL_SIGN = new CwtTokenType("=");
   IElementType FLOAT_TOKEN = new CwtTokenType("FLOAT_TOKEN");
   IElementType INT_TOKEN = new CwtTokenType("INT_TOKEN");
-  IElementType KEY_TOKEN = new CwtTokenType("KEY_TOKEN");
   IElementType LEFT_BRACE = new CwtTokenType("{");
-  IElementType OPTION_COMMENT = new CwtTokenType("OPTION_COMMENT");
+  IElementType OPTION_KEY_TOKEN = new CwtTokenType("OPTION_KEY_TOKEN");
+  IElementType OPTION_START = new CwtTokenType("##");
+  IElementType PROPERTY_KEY_TOKEN = new CwtTokenType("PROPERTY_KEY_TOKEN");
   IElementType RIGHT_BRACE = new CwtTokenType("}");
   IElementType STRING_TOKEN = new CwtTokenType("STRING_TOKEN");
 
@@ -40,17 +46,29 @@ public interface CwtTypes {
       else if (type == BOOLEAN) {
         return new CwtBooleanImpl(node);
       }
+      else if (type == DOCUMENTATION_COMMENT) {
+        return new CwtDocumentationCommentImpl(node);
+      }
       else if (type == FLOAT) {
         return new CwtFloatImpl(node);
       }
       else if (type == INT) {
         return new CwtIntImpl(node);
       }
-      else if (type == KEY) {
-        return new CwtKeyImpl(node);
+      else if (type == OPTION) {
+        return new CwtOptionImpl(node);
+      }
+      else if (type == OPTION_COMMENT) {
+        return new CwtOptionCommentImpl(node);
+      }
+      else if (type == OPTION_KEY) {
+        return new CwtOptionKeyImpl(node);
       }
       else if (type == PROPERTY) {
         return new CwtPropertyImpl(node);
+      }
+      else if (type == PROPERTY_KEY) {
+        return new CwtPropertyKeyImpl(node);
       }
       else if (type == ROOT_BLOCK) {
         return new CwtRootBlockImpl(node);

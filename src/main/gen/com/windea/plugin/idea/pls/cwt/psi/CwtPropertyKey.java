@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface CwtKey extends PsiElement {
+public interface CwtPropertyKey extends PsiElement {
 
   @NotNull
-  PsiElement getKeyToken();
+  PsiElement getPropertyKeyToken();
 
   @NotNull
   String getName();

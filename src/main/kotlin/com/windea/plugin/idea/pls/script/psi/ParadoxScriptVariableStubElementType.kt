@@ -41,13 +41,13 @@ class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVaria
 		sink.occurrence(ParadoxScriptVariableNameIndex.key,stub.key)
 	}
 	
-	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//仅当是scripted_variable才创建索引
-		if(node.treeParent.elementType != ParadoxScriptTypes.ROOT_BLOCK) return false
-		val file = node.psi.containingFile
-		val parentPath = file.paradoxFileInfo?.path?.parent ?: return false
-		return "common/scripted_variables".matchesPath(parentPath)
-	}
+	//override fun shouldCreateStub(node: ASTNode): Boolean {
+	//	//仅当是scripted_variable才创建索引
+	//	if(node.treeParent.elementType != ParadoxScriptTypes.ROOT_BLOCK) return false
+	//	val file = node.psi.containingFile
+	//	val parentPath = file.paradoxFileInfo?.path?.parent ?: return false
+	//	return "common/scripted_variables".matchesPath(parentPath)
+	//}
 	
 	//companion object{
 	//	fun intern(table: CharTable,node: LighterASTNode?):String{

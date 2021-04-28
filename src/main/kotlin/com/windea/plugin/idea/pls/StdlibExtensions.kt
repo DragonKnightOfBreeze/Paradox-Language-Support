@@ -199,7 +199,7 @@ fun URL.toFile(): File {
 }
 
 fun URL.toPath(): Path {
-	return Path.of(this.toURI())
+	return Paths.get(this.toURI())
 }
 
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> Unit) {

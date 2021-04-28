@@ -98,7 +98,7 @@
     <!--region Cwt Language-->
     <fileType
       language="Cwt Config"
-      name="Cwt Config FIle" fieldName="INSTANCE"
+      name="Cwt Config File" fieldName="INSTANCE"
       implementationClass="com.windea.plugin.idea.pls.cwt.CwtFileType"
       extensions="cwt"/>
     <lang.parserDefinition

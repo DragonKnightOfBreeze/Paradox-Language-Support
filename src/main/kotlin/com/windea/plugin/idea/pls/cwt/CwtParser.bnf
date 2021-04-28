@@ -16,16 +16,20 @@
 	  RIGHT_BRACE="}"
 	  EOL="regexp:\R"
 	  BLANK="regexp:\s+"
+	  OPTION_START="##"
+	  DOCUMENTATION_START="###"
 	  
-	  COMMENT="regexp:#[^\r\n]*" //以"#"开始，单行
-	  OPTION_COMMENT="regexp:##[^\r\n]*" //以"##"开始，单行
-	  DOCUMENTATION_COMMENT="regexp:###[^\r\n]*" //以"###"开始，单行
+	  COMMENT="regexp:(#)|(#[^#\r\n][^\r\n]*)" //以"#"开始，单行
+	  //OPTION_COMMENT="regexp:##[^\r\n]*" //以"##"开始，单行
+	  //DOCUMENTATION_COMMENT="regexp:###[^\r\n]*" //以"###"开始，单行
 	  
-	  KEY_TOKEN='regexp:([^#={}\s][^={}\s]*)|("([^"\\\r\n]|\\.)*")'
+	  PROPERTY_KEY_TOKEN='regexp:([^#={}\s][^={}\s]*)|("([^"\\\r\n]|\\.)*")'
+	  OPTION_KEY_TOKEN='regexp:([^#={}\s][^={}\s]*)|("([^"\\\r\n]|\\.)*")'
 	  BOOLEAN_TOKEN='regexp:(yes)|(no)'
 	  INT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)'
 	  FLOAT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)(\.[0-9]+)'
 	  STRING_TOKEN='regexp:([^#={}\s"][^={}\s"]*)|("([^"\\\r\n]|\\.)*")'
+	  DOCUMENTATION_TOKEN='regexp:([^\r\n]*)'
 	]
 }
 
@@ -35,16 +39,34 @@ root_block ::= root_block_item * {
 }
 private root_block_item ::=  comment | property | value
 
-private comment ::= COMMENT | OPTION_COMMENT | DOCUMENTATION_COMMENT
+private comment ::= documentation_comment | option_comment | COMMENT
+documentation_comment ::= "###" DOCUMENTATION_TOKEN *{
+  pin(".*")=1
+}
+option_comment ::= "##" option_comment_item *{
+  pin(".*")=1
+}
+private option_comment_item ::= option | value
 
-property ::= key separator value {
-  pin=1
+property ::= property_key separator value {
+  pin(".*")=1
   mixin="com.windea.plugin.idea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="com.windea.plugin.idea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName getPropertyKey getPropertyValue getPropertyTruncatedValue]
+  methods=[getIcon getName setName checkRename getPropertyName getPropertyValue getPropertyTruncatedValue]
 }
 
-key ::= KEY_TOKEN{
+option ::= option_key separator value{
+  pin(".*")=1
+  mixin="com.windea.plugin.idea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  implements="com.windea.plugin.idea.pls.cwt.psi.CwtNamedElement"
+  methods=[getIcon getName setName checkRename getOptionName getOptionValue getOptionTruncatedValue]
+}
+
+property_key ::= PROPERTY_KEY_TOKEN{
+  methods=[getName]
+}
+
+option_key ::= OPTION_KEY_TOKEN{
   methods=[getName]
 }
 
@@ -76,4 +98,4 @@ block ::= "{" block_item * "}" {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[isEmpty isNotEmpty isObject isArray getComponents]
 }
-private block_item ::= comment | property | value
+private block_item ::= comment | property | option | value

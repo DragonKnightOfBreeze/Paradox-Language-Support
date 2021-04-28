@@ -8,7 +8,7 @@ import com.windea.plugin.idea.pls.cwt.psi.*
 import javax.swing.*
 
 object CwtPsiImplUtil {
-	//region CwtBlock
+	//region CwtProperty
 	@JvmStatic
 	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
 		return cwtPropertyIcon
@@ -16,7 +16,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: CwtProperty):String{
-		return element.propertyKey
+		return element.propertyName
 	}
 	
 	@JvmStatic
@@ -30,8 +30,8 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPropertyKey(element: CwtProperty):String{
-		return element.key.name
+	fun getPropertyName(element: CwtProperty):String{
+		return element.propertyKey.name
 	}
 	
 	@JvmStatic
@@ -45,10 +45,54 @@ object CwtPsiImplUtil {
 	}
 	//endregion
 	
-	//region CwtKey
+	//region CwtOption
 	@JvmStatic
-	fun getName(element: CwtKey):String{
-		return element.keyToken.text.unquote()
+	fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
+		return cwtOptionIcon
+	}
+	
+	@JvmStatic
+	fun getName(element: CwtOption):String{
+		return element.optionName
+	}
+	
+	@JvmStatic
+	fun setName(element:CwtOption,name:String): PsiElement {
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun checkRename(element: CwtOption){
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getOptionName(element: CwtOption):String{
+		return element.optionKey.name
+	}
+	
+	@JvmStatic
+	fun getOptionValue(element:CwtOption):String{
+		return element.value?.value.orEmpty()
+	}
+	
+	@JvmStatic
+	fun getOptionTruncatedValue(element:CwtOption):String{
+		return element.value?.truncatedValue.orEmpty()
+	}
+	//endregion
+	
+	//region CwtPropertyKey
+	@JvmStatic
+	fun getName(element: CwtPropertyKey):String{
+		return element.propertyKeyToken.text.unquote()
+	}
+	//endregion
+	
+	//region CwtOptionKey
+	@JvmStatic
+	fun getName(element: CwtOptionKey):String{
+		return element.optionKeyToken.text.unquote()
 	}
 	//endregion
 	

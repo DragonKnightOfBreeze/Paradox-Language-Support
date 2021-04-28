@@ -67,7 +67,7 @@ val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 
-//ParadoxPsiElement Extensions
+//Paradox PsiElement Extensions
 
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
@@ -478,11 +478,11 @@ inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxScriptFile.extractData(): List<Any> {
-	return ParadoxScriptDataExtractor.extract(this)
+inline fun ParadoxScriptFile.resolveData(): List<Any> {
+	return ParadoxScriptDataResolver.resolve(this)
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxLocalisationFile.extractData(): Map<String, String> {
-	return ParadoxLocalisationDataExtractor.extract(this)
+inline fun ParadoxLocalisationFile.resolveData(): Map<String, String> {
+	return ParadoxLocalisationDataResolver.resolve(this)
 }

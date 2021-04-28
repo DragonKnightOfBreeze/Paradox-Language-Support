@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface CwtProperty extends CwtNamedElement {
+public interface CwtOption extends CwtNamedElement {
 
   @NotNull
-  CwtPropertyKey getPropertyKey();
+  CwtOptionKey getOptionKey();
 
   @Nullable
   CwtValue getValue();
@@ -27,12 +27,12 @@ public interface CwtProperty extends CwtNamedElement {
   void checkRename();
 
   @NotNull
-  String getPropertyName();
+  String getOptionName();
 
   @NotNull
-  String getPropertyValue();
+  String getOptionValue();
 
   @NotNull
-  String getPropertyTruncatedValue();
+  String getOptionTruncatedValue();
 
 }

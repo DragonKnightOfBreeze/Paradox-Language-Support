@@ -11,14 +11,14 @@ import static com.windea.plugin.idea.pls.cwt.psi.CwtTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.windea.plugin.idea.pls.cwt.psi.*;
 
-public class CwtKeyImpl extends ASTWrapperPsiElement implements CwtKey {
+public class CwtOptionCommentImpl extends ASTWrapperPsiElement implements CwtOptionComment {
 
-  public CwtKeyImpl(@NotNull ASTNode node) {
+  public CwtOptionCommentImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull CwtVisitor visitor) {
-    visitor.visitKey(this);
+    visitor.visitOptionComment(this);
   }
 
   @Override
@@ -29,14 +29,14 @@ public class CwtKeyImpl extends ASTWrapperPsiElement implements CwtKey {
 
   @Override
   @NotNull
-  public PsiElement getKeyToken() {
-    return findNotNullChildByType(KEY_TOKEN);
+  public List<CwtOption> getOptionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtOption.class);
   }
 
   @Override
   @NotNull
-  public String getName() {
-    return CwtPsiImplUtil.getName(this);
+  public List<CwtValue> getValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtValue.class);
   }
 
 }

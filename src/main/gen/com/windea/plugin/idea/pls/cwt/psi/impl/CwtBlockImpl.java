@@ -29,6 +29,24 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
 
   @Override
   @NotNull
+  public List<CwtDocumentationComment> getDocumentationCommentList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtDocumentationComment.class);
+  }
+
+  @Override
+  @NotNull
+  public List<CwtOption> getOptionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtOption.class);
+  }
+
+  @Override
+  @NotNull
+  public List<CwtOptionComment> getOptionCommentList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtOptionComment.class);
+  }
+
+  @Override
+  @NotNull
   public List<CwtProperty> getPropertyList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtProperty.class);
   }

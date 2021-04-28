@@ -5,44 +5,44 @@ import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.script.psi.*
 
 /**
- * Paradox脚本文件的数据提取器。
+ * Paradox脚本文件的数据解析器。
  *
  * 返回值类型：`List<Any>`或`List<Pair<String,Any>>`
  */
-object ParadoxScriptDataExtractor {
-	fun extract(file: PsiFile):List<Any>{
+object ParadoxScriptDataResolver {
+	fun resolve(file: PsiFile):List<Any>{
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type")
 		val rootBlock = file.findChildByClass(ParadoxScriptRootBlock::class.java) ?: return emptyList()
-		return extractBlock(rootBlock)
+		return resolveBlock(rootBlock)
 	}
 	
-	private fun extractBlock(block:ParadoxScriptBlock):List<Any>{
+	private fun resolveBlock(block:ParadoxScriptBlock):List<Any>{
 		return when{
 			block.isEmpty -> emptyList()
-			block.isArray -> block.valueList.mapNotNull{extractValue(it) }
-			block.isObject -> block.propertyList.mapNotNull { extractProperty(it)}
+			block.isArray -> block.valueList.mapNotNull{resolveValue(it) }
+			block.isObject -> block.propertyList.mapNotNull { resolveProperty(it)}
 			else -> emptyList()
 		}
 	}
 	
-	private fun extractValue(value:ParadoxScriptValue):Any?{
+	private fun resolveValue(value:ParadoxScriptValue):Any?{
 		return when(value){
 			is ParadoxScriptBoolean -> value.value.toBooleanYesNo()
 			is ParadoxScriptNumber -> value.value.toFloat()
 			is ParadoxScriptString -> value.value
 			is ParadoxScriptColor -> value.color
 			//如果引用的变量存在，则使用它的值，否则使用变量名
-			is ParadoxScriptVariableReference -> value.referenceValue?.let{extractValue(it)} ?: value.text
-			is ParadoxScriptBlock -> extractBlock(value)
+			is ParadoxScriptVariableReference -> value.referenceValue?.let{resolveValue(it)} ?: value.text
+			is ParadoxScriptBlock -> resolveBlock(value)
 			else -> value.value
 		}
 	}
 	
-	private fun extractProperty(property:ParadoxScriptProperty):Pair<String,Any?>?{
+	private fun resolveProperty(property:ParadoxScriptProperty):Pair<String,Any?>?{
 		//注意这里名字可以重复！！
 		val name = property.name
 		val value = property.propertyValue?.value
 		if(name.isEmpty() || value== null) return null
-		return name to extractValue(value)
+		return name to resolveValue(value)
 	}
 }

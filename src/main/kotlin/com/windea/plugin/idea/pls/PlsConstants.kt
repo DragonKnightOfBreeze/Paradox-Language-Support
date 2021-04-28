@@ -84,6 +84,7 @@ val paradoxScriptFileIcon = IconLoader.getIcon("/icons/paradoxScriptFile.svg",lo
 val paradoxLocalisationFileIcon = IconLoader.getIcon("/icons/paradoxLocalisationFile.svg",locationClass)
 
 val cwtPropertyIcon = IconLoader.getIcon("/icons/cwtProperty.svg", locationClass)
+val cwtOptionIcon = IconLoader.getIcon("/icons/cwtOption.svg", locationClass)
 val cwtValueIcon = IconLoader.getIcon("/icons/cwtValue.svg", locationClass)
 
 val scriptVariableIcon = IconLoader.getIcon("/icons/paradoxScriptVariable.svg",locationClass)

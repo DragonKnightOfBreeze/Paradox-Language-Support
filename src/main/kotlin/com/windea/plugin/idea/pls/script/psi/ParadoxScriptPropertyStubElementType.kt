@@ -53,11 +53,11 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		if(stub.type == "scripted_loc") sink.occurrence(ParadoxScriptLocalisationNameIndex.key, stub.name)
 	}
 	
-	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//仅当是definition时才会创建索引
-		val element = node.psi as? ParadoxScriptProperty?:return false
-		return element.paradoxDefinitionInfo != null
-	}
+	//override fun shouldCreateStub(node: ASTNode): Boolean {
+	//	//仅当是definition时才会创建索引
+	//	val element = node.psi as? ParadoxScriptProperty?:return false
+	//	return element.paradoxDefinitionInfo != null
+	//}
 	
 	//companion object {
 	//	fun intern(table: CharTable, node: LighterASTNode?): String {

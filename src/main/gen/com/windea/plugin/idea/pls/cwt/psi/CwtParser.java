@@ -67,12 +67,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // comment | property | value
+  // comment | property | option | value
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     r = comment(b, l + 1);
     if (!r) r = property(b, l + 1);
+    if (!r) r = option(b, l + 1);
     if (!r) r = value(b, l + 1);
     return r;
   }
@@ -90,14 +91,39 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT | OPTION_COMMENT | DOCUMENTATION_COMMENT
+  // documentation_comment | option_comment | COMMENT
   static boolean comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comment")) return false;
     boolean r;
-    r = consumeToken(b, COMMENT);
-    if (!r) r = consumeToken(b, OPTION_COMMENT);
-    if (!r) r = consumeToken(b, DOCUMENTATION_COMMENT);
+    r = documentation_comment(b, l + 1);
+    if (!r) r = option_comment(b, l + 1);
+    if (!r) r = consumeToken(b, COMMENT);
     return r;
+  }
+
+  /* ********************************************************** */
+  // "###" DOCUMENTATION_TOKEN *
+  public static boolean documentation_comment(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "documentation_comment")) return false;
+    if (!nextTokenIs(b, DOCUMENTATION_START)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, DOCUMENTATION_COMMENT, null);
+    r = consumeToken(b, DOCUMENTATION_START);
+    p = r; // pin = 1
+    r = r && documentation_comment_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // DOCUMENTATION_TOKEN *
+  private static boolean documentation_comment_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "documentation_comment_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, DOCUMENTATION_TOKEN)) break;
+      if (!empty_element_parsed_guard_(b, "documentation_comment_1", c)) break;
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -125,18 +151,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // KEY_TOKEN
-  public static boolean key(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key")) return false;
-    if (!nextTokenIs(b, KEY_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, KEY_TOKEN);
-    exit_section_(b, m, KEY, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // int | float
   public static boolean number(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "number")) return false;
@@ -150,18 +164,92 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key separator value
-  public static boolean property(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property")) return false;
-    if (!nextTokenIs(b, KEY_TOKEN)) return false;
+  // option_key separator value
+  public static boolean option(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option")) return false;
+    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
-    r = key(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, OPTION, null);
+    r = option_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, separator(b, l + 1));
     r = p && value(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // "##" option_comment_item *
+  public static boolean option_comment(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment")) return false;
+    if (!nextTokenIs(b, OPTION_START)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, null);
+    r = consumeToken(b, OPTION_START);
+    p = r; // pin = 1
+    r = r && option_comment_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // option_comment_item *
+  private static boolean option_comment_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!option_comment_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "option_comment_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // option | value
+  static boolean option_comment_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_item")) return false;
+    boolean r;
+    r = option(b, l + 1);
+    if (!r) r = value(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // OPTION_KEY_TOKEN
+  public static boolean option_key(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_key")) return false;
+    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, OPTION_KEY_TOKEN);
+    exit_section_(b, m, OPTION_KEY, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // property_key separator value
+  public static boolean property(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property")) return false;
+    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
+    r = property_key(b, l + 1);
+    p = r; // pin = 1
+    r = r && report_error_(b, separator(b, l + 1));
+    r = p && value(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // PROPERTY_KEY_TOKEN
+  public static boolean property_key(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_key")) return false;
+    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    exit_section_(b, m, PROPERTY_KEY, r);
+    return r;
   }
 
   /* ********************************************************** */

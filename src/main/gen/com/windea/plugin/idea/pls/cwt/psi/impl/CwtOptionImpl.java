@@ -12,14 +12,14 @@ import com.windea.plugin.idea.pls.cwt.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty {
+public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
-  public CwtPropertyImpl(@NotNull ASTNode node) {
+  public CwtOptionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull CwtVisitor visitor) {
-    visitor.visitProperty(this);
+    visitor.visitOption(this);
   }
 
   @Override
@@ -30,8 +30,8 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
 
   @Override
   @NotNull
-  public CwtPropertyKey getPropertyKey() {
-    return findNotNullChildByClass(CwtPropertyKey.class);
+  public CwtOptionKey getOptionKey() {
+    return findNotNullChildByClass(CwtOptionKey.class);
   }
 
   @Override
@@ -65,20 +65,20 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
 
   @Override
   @NotNull
-  public String getPropertyName() {
-    return CwtPsiImplUtil.getPropertyName(this);
+  public String getOptionName() {
+    return CwtPsiImplUtil.getOptionName(this);
   }
 
   @Override
   @NotNull
-  public String getPropertyValue() {
-    return CwtPsiImplUtil.getPropertyValue(this);
+  public String getOptionValue() {
+    return CwtPsiImplUtil.getOptionValue(this);
   }
 
   @Override
   @NotNull
-  public String getPropertyTruncatedValue() {
-    return CwtPsiImplUtil.getPropertyTruncatedValue(this);
+  public String getOptionTruncatedValue() {
+    return CwtPsiImplUtil.getOptionTruncatedValue(this);
   }
 
 }

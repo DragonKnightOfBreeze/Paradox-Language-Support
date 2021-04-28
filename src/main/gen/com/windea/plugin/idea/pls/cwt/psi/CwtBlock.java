@@ -9,6 +9,15 @@ import com.intellij.psi.PsiListLikeElement;
 public interface CwtBlock extends CwtValue, PsiListLikeElement {
 
   @NotNull
+  List<CwtDocumentationComment> getDocumentationCommentList();
+
+  @NotNull
+  List<CwtOption> getOptionList();
+
+  @NotNull
+  List<CwtOptionComment> getOptionCommentList();
+
+  @NotNull
   List<CwtProperty> getPropertyList();
 
   @NotNull

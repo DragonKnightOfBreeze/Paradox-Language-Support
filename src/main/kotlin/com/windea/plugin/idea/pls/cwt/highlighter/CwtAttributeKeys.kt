@@ -2,17 +2,14 @@ package com.windea.plugin.idea.pls.cwt.highlighter
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
-import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.psi.tree.*
 import com.windea.plugin.idea.pls.*
-import com.windea.plugin.idea.pls.cwt.psi.*
 
 object CwtAttributeKeys {
 	private val _separatorName = message("cwt.externalName.separator")
 	private val _bracesName = message("cwt.externalName.braces")
-	private val _keyName = message("cwt.externalName.key")
+	private val _propertyKeyName = message("cwt.externalName.propertyKey")
+	private val _optionKeyName = message("cwt.externalName.optionKey")
 	private val _keywordName = message("cwt.externalName.keyword")
 	private val _numberName = message("cwt.externalName.number")
 	private val _stringName = message("cwt.externalName.string")
@@ -25,7 +22,8 @@ object CwtAttributeKeys {
 	
 	@JvmField val SEPARATOR_KEY = createTextAttributesKey(_separatorName, OPERATION_SIGN)
 	@JvmField val BRACES_KEY = createTextAttributesKey(_bracesName, BRACES)
-	@JvmField val KEY_KEY = createTextAttributesKey(_keyName, INSTANCE_FIELD)
+	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey(_propertyKeyName, INSTANCE_FIELD)
+	@JvmField val OPTION_KEY_KEY = createTextAttributesKey(_optionKeyName, DOC_COMMENT_TAG_VALUE)
 	@JvmField val KEYWORD_KEY = createTextAttributesKey(_keywordName, KEYWORD)
 	@JvmField val NUMBER_KEY = createTextAttributesKey(_numberName, NUMBER)
 	@JvmField val STRING_KEY = createTextAttributesKey(_stringName, STRING)
