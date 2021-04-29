@@ -1,0 +1,37 @@
+# Tested briefly on vanilla combat effects
+
+types = {
+    type[combat_effect] = {
+        path = "game/common/combat_effects"
+    }
+}
+
+# We define this as an alias because we can define these in place, for example in
+# terrain_types.
+single_alias[combat_effect] = {
+    ## cardinality = 0..1
+    ### Effect display name
+    name = localisation
+    ## cardinality = 0..1
+    ### Image file (Unknown how mapped)
+    image = localisation
+    # May be able to have mutliples of these and with complex rhs. Documentation is unclear.
+    ## cardinality = 0..1
+    ### advantage bonuts for static effects or multiplier for dynamic effects
+    advantage = int_value_field
+    ## replace_scope = { ROOT = character THIS = combat }
+    ## cardinality = 0..inf
+    alias_name[modifier] = alias_match_left[modifier]
+    ## cardinality = 0..1
+    ### Is this an adjacency effect
+    ## cardinality = 0..1
+    adjacency = bool
+    ## cardinality = 0..1
+    ### Is this a fortification effect
+    fortification = bool
+    ## cardinality = 0..1
+    ### whether this effect should appear in advantage breakdown as is, no - code takes care of substituting proper modifiers for a detailed breakdown
+    visible = bool
+}
+
+combat_effect = single_alias_right[combat_effect]

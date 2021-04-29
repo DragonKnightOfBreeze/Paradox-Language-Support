@@ -1,0 +1,165 @@
+types = {
+    type[council_task] = {
+        path = "game/common/council_tasks"
+    }
+}
+
+council_task = {
+	## cardinality = 0..1
+	### Is the default task for the specified position (no by default, only applicable on task_type_general with task_progress_infinite)
+	default_task = bool
+	### Position that can perform this task (positions can be found in common/council_positions)
+	position = <council_position> 
+	### Type of the task [task_type_general|task_type_county|task_type_court]
+	task_type = enum[task_types]
+	## cardinality = 0..1
+	### What can a county task target? Not relevant for other task-types. Valid: all, realm, domain, neighbor_land, neighbor_land_or_water. neighbor_land_or_water only works for the AI
+	county_target = enum[county_targets]
+	## cardinality = 0..1
+	### What can a county task target for the AI? Not relevant for other task-types. If not set, defaults to what you set for the county_target. You might want this more restrictive for performance reasons
+	ai_county_target = enum[county_targets]
+	## cardinality = 0..1
+	### Script value for county target scores. Defaults to completely random if not set. Scopes are the same as all other council task script. Score of 0 or below means "don't do this". AI picks weighted random from all targets with a score above 0
+	ai_target_score = int_value_field
+	### Type of the progress task [task_progress_infinite|task_progress_percentage|task_progress_value]
+	task_progress = enum[task_progress_types]
+	## cardinality = 0..1
+	### When using task_progress_value, this defines the current progress
+	task_current_value = int_value_field
+	## cardinality = 0..1
+	### When using task_progress_value, this defines the max progress; the point at which the task is considered complete
+	task_max_value = int_value_field
+	## cardinality = 0..1
+	### Should the task restart once is finished automatically? Defaults to yes.
+	restart_on_finish = bool 
+	## cardinality = 0..1
+	### Own realm counties will have a slightly different color from other-realm counties. Defaults to no.
+	highlight_own_realm = bool
+
+	## cardinality = 0..inf
+	## push_scope = character
+	### Modifier applied to the councillor while performing this task. Can take a "scale" parameter to scale by (a script value; see _script_values.info). Scopes are the same as for valid_character. You can define more than one of these if you need multiple scaling factors.
+    councillor_modifier = single_alias_right[scaled_modifier]
+    ### Modifier applied to the council owner when the councillor is performing this task. Can take a "scale" parameter to scale by (a script value; see _script_values.info). Scopes are the same as for valid_character. You can define more than one of these if you need multiple scaling factors.
+	## cardinality = 0..inf
+    ## push_scope = character
+    council_owner_modifier = single_alias_right[scaled_modifier]
+	## cardinality = 0..inf
+	## push_scope = title
+	### Modifier applied to the county where this task is being performed. Can take a "scale" parameter to scale by (a script value; see _script_values.info). Scopes are the same as for valid_county. You can define more than one of these if you need multiple scaling factors.
+	county_modifier = single_alias_right[scaled_modifier]
+	
+	# In the below, root is the councillor. Also saved as scope:councillor, and scope:councillor_liege is the councillor's liege
+	## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Check if the task is shown for the COUNCILLOR character. Task will stop if this is at any time false. This task will not be visible at all. Root is the councillor. Also saved as scope:councillor, and scope:councillor_liege is the councillor's liege.
+	is_shown = single_alias_right[trigger_clause]
+	## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+	### Check if the task is valid for the COUNCILLOR character. Otherwise the task will be grayed out showing the reason(s). Root is the councillor. Also saved as scope:councillor, and scope:councillor_liege is the councillor's liege.
+	is_valid_showing_failures_only = single_alias_right[trigger_clause]
+	## cardinality = 0..1
+    ## replace_scope = { root = character }
+	### Effect when the task starts. Root is the councillor. Also saved as scope:councillor, and scope:councillor_liege is the councillor's liege.
+	on_start_task = single_alias_right[effect_clause]
+	## cardinality = 0..1
+    ## replace_scope = { root = character }
+	### Effect when the task finishes. Root is the councillor. Also saved as scope:councillor, and scope:councillor_liege is the councillor's liege.
+	on_finish_task = single_alias_right[effect_clause]
+	## cardinality = 0..1
+    ## replace_scope = { root = character }
+	### Effect when the task is cancelled. Root is the councillor. Also saved as scope:councillor, and scope:councillor_liege is the councillor's liege.
+	on_cancel_task = single_alias_right[effect_clause]
+	## cardinality = 0..1
+    ## replace_scope = { root = character }
+	### Effect once a month while task is active. Root is the councillor. Also saved as scope:councillor, and scope:councillor_liege is the councillor's liege.
+	on_monthly = single_alias_right[effect_clause]
+	
+	# In the below, scopes are the same as for valid_targets, except with the addition of scope:province, representing the capital province of the county, and scope:county representing the county title
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Check if the county scope is valid. Task will stop if this is at any time false. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege, scope:province is the capital province of the county andscope:county is the county title.
+	potential_county = single_alias_right[trigger_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Check if the county scope is valid. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege, scope:province is the capital province of the county andscope:county is the county title.
+	valid_county = single_alias_right[trigger_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Effect when the task is starts. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege, scope:province is the capital province of the county andscope:county is the county title.
+    on_start_task_county = single_alias_right[effect_clause] 
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+    ### Effect when the task finishes. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege, scope:province is the capital province of the county andscope:county is the county title.
+	on_finish_task_county = single_alias_right[effect_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Effect when the task is cancelled. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege, scope:province is the capital province of the county andscope:county is the county title.
+	on_cancel_task_county = single_alias_right[effect_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Effect once a month while task is active. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege, scope:province is the capital province of the county andscope:county is the county title.
+	on_monthly_county = single_alias_right[effect_clause]
+	
+	# In the below, scopes are the same as for valid_targets, except with the addition of scope:target_character, representing the character being targeted
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+    ### Check if the court scope is valid. Task will stop if this is at any time false. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege and scope:target_character is the character being targeted.
+    potential_target_court = single_alias_right[trigger_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Check if the court scope is valid. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege and scope:target_character is the character being targeted.
+	valid_target_court = single_alias_right[trigger_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Effect when the task is starts. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege and scope:target_character is the character being targeted.
+	on_start_task_court = single_alias_right[effect_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Effect when the task finishes. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege and scope:target_character is the character being targeted.
+	on_finish_task_court = single_alias_right[effect_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Effect when the task is cancelled. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege and scope:target_character is the character being targeted.
+	on_cancel_task_court = single_alias_right[effect_clause]
+	## cardinality = 0..1
+	## replace_scope = { root = character }
+	### Effect once a month while task is active. Root is the councillor. Also saved as scope:councillor, scope:councillor_liege is the councillor's liege and scope:target_character is the character being targeted.
+    on_monthly_court = single_alias_right[effect_clause]
+	
+	## cardinality = 0..1
+	### Likeliness of the AI using the task.
+	ai_will_do = int_value_field
+    ## cardinality = 0..1
+    ### Some tasks just affect an existing process, such as development. Use this to obtain/calculate the full progress rate of that task. For tooltips and ETAs, that value will be used as the overall progress. In the progress rate breakdown for the task, that value minus the value provided by the task itself will be listed under the entry COUNCIL_TASK_OTHER_SOURCES. If you use this MAKE SURE that you actually apply everything that affects progress to the underlying value. E.G., for county control, make sure to have county_modifier that applies the county control gain.
+    full_progress = int_value_field
+    ## cardinality = 0..1
+    ### This loc key replaces the COUNCIL_TASK_OTHER_SOURCES line in the progress breakdown.
+    custom_other_loc = localisation
+    ## cardinality = 0..1
+    ### For task_progress_percentage, how fast it progresses. Scope is councillor for global tasks. Same scopes as the count effects for county tasks. Rate is applied daily, scaled down by a factor of 30. It is presented in the UI as monthly despite days per month deviating slightly from 30. For task_progress_value, this can be used to communicate to the player. The value can also be obtained in script using council_task_monthly_progress on the councillor.
+    progress = int_value_field
+    ## cardinality = 0..1
+    ### Dynamic description for effect description. Scopes based on task type. To add the modifier effects, you can do stuff like this [councillor.GetModifierDescForTask('task_foreign_affairs')].
+    effect_desc = single_alias_right[complex_desc]
+}
+
+enums = {
+    enum[county_targets] = {
+        all
+        realm
+        domain
+        neighbor_land
+        neighbor_land_or_water
+    }
+    enum[task_progress_types] = {
+        task_progress_infinite
+        task_progress_percentage
+        task_progress_value
+    }
+    enum[task_types] = {
+        task_type_general
+        task_type_county
+        task_type_court
+    }
+}

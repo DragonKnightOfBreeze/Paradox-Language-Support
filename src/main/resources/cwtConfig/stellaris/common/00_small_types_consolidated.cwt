@@ -1,0 +1,531 @@
+
+#I got frustrated at there being SO MANY files, so I have thrown a whole lot together in here -Caligula
+
+types = {
+	type[ambient_object] = {
+		name_field = "name"
+		path = "game/common/ambient_objects"
+		subtype[show_name] = {
+			show_name = yes
+		}
+		localisation = {
+			subtype[show_name] = {
+				## required
+				name = "$"
+			}
+		}
+		subtype[selectable] = {
+			selectable = yes
+		}
+	}
+#	type[country_color] = { #commented out as it threw errors anyway
+#		path = "game/common/colors"
+#		## type_key_filter = country
+#		subtype[default] = {}
+#		## type_key_filter = fallen_empire
+#		subtype[fallen_empire] = {}
+#		## type_key_filter = faction
+#		subtype[faction] = {}
+#		## type_key_filter = pirate
+#		subtype[pirate] = {}
+#		## type_key_filter = species
+#		subtype[species] = {}
+#	}
+	type[asteroid_belt_type] = { #reason for this rename is the way vanilla names stuff, creating ambiguity.
+		path = "game/common/asteroid_belts"
+	}
+	type[attitude] = {
+		path = "game/common/attitudes"
+		localisation = {
+			## required
+			name = "attitude_$"
+		}
+	}
+	type[button_effect] = {
+		path = "game/common/button_effects"
+	}
+	type[country_customization] = {
+		path = "game/common/country_customization"
+	}
+	type[system_type] = {
+		path = "game/common/system_types"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	## type_key_filter = part
+	type[start_screen_message] = {
+		path = "game/common/start_screen_messages"
+	}
+	type[precursors] = {
+		path = "common/precursor_civilizations"
+	}
+	## replace_scope = { root = system this = system }
+	type[sector_type] = {
+		path = "game/common/sector_types"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	## replace_scope = { root = sector this = sector }
+	type[sector_focus] = {
+		path = "game/common/sector_focuses"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[map_mode] = {
+		path = "game/common/map_modes"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+	}
+	type[ai_budget] = {
+		path = "game/common/ai_budget"
+	}
+	type[trade_conversion] = {
+		path = "game/common/trade_conversions"
+	}
+	type[economic_plan] = {
+		path = "game/common/economic_plans"
+	}
+	type[diplomacy_economy] = {
+        path = "game/common/diplomacy_economy"
+#        name_from_file = yes
+        type_per_file = yes
+	}
+	type[message_type] = {
+		name_field = key
+		path = "game/common/message_types"
+	}
+}
+
+ambient_object = {
+	subtype[show_name] = {
+		###A localisation key. Does not use localisation_synced.
+		name = localisation
+	}
+	subtype[!show_name] = {
+		name = scalar
+	}
+	subtype[selectable] = {
+		description = localisation
+		tooltip = localisation
+	}
+	entity = <model_entity>
+	selectable = bool
+	###Determines whether you can read the name of the object ingame.
+	show_name = bool
+}
+
+
+#country_color = { #commented out as it threw errors on every line anyway
+#	subtype[default] = {
+#		##cardinality = 0..inf
+#		colour[rgb]
+#		##cardinality = 0..inf
+#		colour[hsv]
+#	}
+#	subtype[fallen_empire] = {
+#		##cardinality = 0..inf
+#		colour[rgb]
+#		##cardinality = 0..inf
+#		colour[hsv]
+#	}
+#	subtype[faction] = {
+#		##cardinality = 0..inf
+#		colour[rgb]
+#		##cardinality = 0..inf
+#		colour[hsv]
+#	}
+#	subtype[pirate] = {
+#		##cardinality = 0..inf
+#		colour[rgb]
+#		##cardinality = 0..inf
+#		colour[hsv]
+#	}
+#	subtype[species] = {
+#		##cardinality = 0..inf
+#		colour[rgb]
+#		##cardinality = 0..inf
+#		colour[hsv]
+#	}
+#}
+
+
+#TODO Confirm
+#TODO Add mesh/shader references
+asteroid_belt_type = {
+	## cardinality = 1..inf
+	mesh = scalar
+	## cardinality = 0..1
+	shader = scalar
+}
+
+
+
+##TODO confirm and refine
+attitude = {
+	type = scalar
+	behaviour = {
+		## cardinality = 0..1
+		attack = bool
+		## cardinality = 0..1
+		weaken = bool
+		## cardinality = 0..1
+		alliance = bool
+		## cardinality = 0..1
+		vassalize = bool
+		## cardinality = 0..1
+		trade = bool
+		## cardinality = 0..1
+		coexist = bool
+	}
+}
+
+
+# TODO Confirm
+# TODO Document
+button_effect = {
+	## replace_scope = { this = any root = any from = country }
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { this = any root = any from = country }
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { this = any root = any from = country }
+	## cardinality = 0..1
+	effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+}
+
+
+
+#TODO Confirm
+#TODO DOcument
+#TODO Expand shelter
+country_customization = {
+	colony_shelter = {
+		#the building should be defined as capital! and probably level 0 as well. Please add a check for this
+		#the planet classes should be defined as colonizable!
+		default = <building>
+		## cardinality = 0..inf
+		<planet_class> = <building>
+	}
+	## cardinality = 0..1
+	graphical_culture_for_random_empire = {
+		## cardinality = 0..inf
+		<graphical_culture> = {
+			## cardinality = 0..inf
+			modifier = {
+				add = int
+				species_portrait = <portrait>
+			}
+		}
+	}
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	weight = {
+		## cardinality = 0..1
+		base = int
+		alias_name[modifier_rule_add] = alias_match_left[modifier_rule_add]
+	}
+}
+
+
+
+
+system_type = {
+	## replace_scope = { this = system root = system }
+	#TODO: it appears so, but the file uses owner (not space_owner). Check pls
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## replace_scope = { this = system root = system }
+	#TODO: it appears so, but the file uses owner (not space_owner). Check pls
+	## cardinality = 0..1
+	weight_modifier = {
+		## cardinality = 0..1
+		base = int
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+
+start_screen_message = {
+	location = int
+	localization = localisation
+
+	## replace_scope = { root = country this = country }
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+# Sets the chance for a system getting a specific precursor and distributes star flags named after the precursor. Or something like that.
+precursors = {
+	size = int
+
+	## cardinality = 0..1
+	possible = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+
+sector_type = {
+	system_scores = {
+		## cardinality = 0..1
+		base = int
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+	local_capital_scores = {
+		## cardinality = 0..1
+		base = int
+		## cardinality = 0..1
+		modifier = {
+			mult = float
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+	resource_conversion_table = {
+		energy = int
+		minerals = int
+	}
+	resources = {
+		category = <economic_category>
+	}
+	max_jumps = int
+}
+
+
+sector_focus = {
+	## cardinality = 0..1
+	hidden = yes
+	## cardinality = 0..1
+	clear_blockers = bool
+	
+	## cardinality = 0..1
+	ai_weight = {
+		weight = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	## cardinality = 0..inf
+	district = {
+		key = <district>
+		weight = {
+			weight = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+
+	## cardinality = 0..inf
+	building = {
+		key = <building>
+		## cardinality = 0..1
+		###only works on buildings and upgrades; puts them at the front of the list (otherwise it will pick a district first, then a building, then an upgrade)
+		priority = yes
+		## cardinality = 0..1
+		###gets built whether or not a pop would work the jobs
+		exempt_from_jobs_check = yes
+		weight = {
+			weight = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+}
+
+
+#TODO Confirm
+#TODO Colours
+map_mode = {
+	icon =  <sprite>
+	enable_terra_incognita = bool
+	## cardinality = 0..1
+	can_change_point_of_view = bool
+	## cardinality = 0..1
+	shortcut = scalar
+	## cardinality = 0..1
+	display_claims = bool
+
+	## cardinality = 1..inf
+	color = {
+		## cardinality = 0..1
+		type = country_and_borders
+		## cardinality = 0..1
+		type = country
+		## cardinality = 0..1
+		type = borders
+		## cardinality = 0..1
+		zoom = int
+
+		## cardinality = 1..1
+        value = country
+		## cardinality = 1..1
+		value = {
+			##cardinality = 3..4
+			float
+		}
+		## cardinality = 0..1
+		custom_tooltip = localisation
+		## cardinality = 0..1
+		hardcoded_tooltip = enum[hardcoded_map_mode_tooltip]
+		## replace_scope = { root = country this = country from = country }
+        condition = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+    }
+}
+enums = {
+	enum[hardcoded_map_mode_tooltip] = {
+		opinion
+		country
+		intel
+	}
+}
+
+## replace_scope = { this = country root = country }
+ai_budget = {
+	resource = <resource>
+	type = expenditure
+	type = upkeep
+	category = <economic_category>
+
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	fraction = {
+		enum[weight_or_base] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	## cardinality = 0..1
+	static_max = {
+		base = int
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	## cardinality = 0..1
+	static_min = {
+		base = int
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+trade_conversion = {
+	## replace_scope = { this = country from = country }
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	weight = {
+		weight = int
+	}
+	conversion_rate = {
+		## cardinality = 1..inf
+		<resource> = float
+	}
+	economic_category = <economic_category>
+}
+
+
+
+economic_plan = {
+	type = scalar
+
+	income = {
+		## cardinality = 1..inf
+		<resource> = int
+	}
+
+	focus = {
+		## cardinality = 1..inf
+		<resource> = int
+	}
+
+	## cardinality = 1..inf
+	subplan = {
+		## replace_scope = { this = country root = country }
+		potential = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		income = {
+			## cardinality = 1..inf
+			<resource> = int
+		}
+	
+		focus = {
+			## cardinality = 1..inf
+			<resource> = int
+		}
+	}
+
+	pops = int
+	empire_size = float
+
+	## replace_scope = { this = country root = country }
+	ai_weight = {
+		weight = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+
+diplomacy_economy = {
+	once = {
+		#Not sure if you can define your own stuff here so used an enum
+		## cardinality = 0..inf
+		enum[diplomacy_economy_tags] = {
+			## replace_scopes = { this = country root = country from = country }
+			trigger = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			resources = {
+				category = <economic_category>
+				alias_name[economic_template] = alias_match_left[economic_template]
+			}
+		}
+	}
+	per_relation = {
+		#Not sure if you can define your own stuff here so used an enum
+		## cardinality = 0..inf
+		enum[diplomacy_economy_tags] = {
+			## replace_scopes = { this = country root = country from = country }
+			trigger = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			resources = {
+				category = <economic_category>
+				alias_name[economic_template] = alias_match_left[economic_template]
+			}
+		}
+	}
+}
+
+message_type = {
+	icon =	<sprite>
+	icon_frame = int
+	key = scalar
+	## cardinality = 0..1
+	name = localisation
+	## cardinality = 0..1
+	sound = <sound_effect>
+	## cardinality = 0..1
+	sound_is_advisor = bool
+	ping = <pingmap>
+	## cardinality = 0..1
+	auto_opens = scalar
+}

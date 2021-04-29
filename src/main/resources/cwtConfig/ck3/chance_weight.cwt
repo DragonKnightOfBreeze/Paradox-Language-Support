@@ -1,0 +1,157 @@
+enums = {
+    # Aren't these just value fields?
+    enum[weight_chance_modifier_operators] = {
+        add
+        subtract
+        multiply
+        divide
+        factor
+    }
+}
+
+# TODO: Figure out if the chance-weight difference is really needed
+
+# This should all probably be combined into a weight alias.
+
+### Appears in the tooltip only if the conditions are fulfilled.
+alias[weight:modifier] = single_alias_right[weight_chance_modifier]
+### Always appears in the tooltip, if any.
+alias[weight:always_modifier] = single_alias_right[weight_chance_modifier]
+alias[weight:compatibility_modifier] = {
+    ## cardinality = 0..1
+    trigger = single_alias_right[trigger_clause]
+    who = scope[character]
+    compatibility_target = scope[character]
+    multiplier = value_field
+    ## cardinality = 0..1
+    ai_value_modifier = {
+        ## cardinality = 0..inf
+        trigger = single_alias_right[trigger_clause]
+        ## cardinality = 0..inf
+        enum[ai_values] = int_value_field
+    }
+    ## cardinality = 0..inf
+    opinion_modifier = single_alias_right[opinion_chance_modifier]
+}
+
+single_alias[weight_block] = {
+    ## cardinality = 0..1
+    base = float
+
+    ## cardinality = 0..inf
+    ### Appears in the tooltip only if the conditions are fulfilled.
+    modifier = single_alias_right[weight_chance_modifier]
+
+    ## cardinality = 0..inf
+    ### Always appears in the tooltip, if any.
+    always_modifier = single_alias_right[weight_chance_modifier]
+
+    ## cardinality = 0..inf
+    opinion_modifier = single_alias_right[opinion_chance_modifier]
+
+    ## cardinality = 0..inf
+    compatibility_modifier = single_alias_right[compatibility_chance_modifier]
+
+    ## cardinality = 0..inf
+    <scripted_modifier.ai_target_modifier> = {
+        VALUE = int_value_field
+    }
+
+    ## cardinality = 0..inf
+    <scripted_modifier> = yes
+}
+
+single_alias[weight_chance_modifier] = {
+    ## cardinality = 0..inf
+    enum[weight_chance_modifier_operators] = value_field
+
+    ## cardinality = 0..inf
+    alias_name[trigger] = alias_match_left[trigger]
+
+    ## cardinality = 0..1
+    desc = localisation
+}
+# TODO: Separate these out into target or opinion target
+alias[weight:opinion_modifier] = {
+    ## cardinality = 0..1
+    trigger = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    who = scope[character]
+    ## cardinality = 0..1
+    opinion_target = scope[character]
+    ## cardinality = 0..1
+    target = scope[character]
+    multiplier = value_field
+    ## cardinality = 0..1
+    min = value_field
+    ## cardinality = 0..1
+    max = value_field
+    ## cardinality = 0..1
+    desc = single_alias_right[complex_desc]
+    ## cardinality = 0..1
+    desc = localisation
+    # ## cardinality = 0..inf
+    # enum[weight_chance_modifier_operators] = value_field
+}
+alias[weight:ai_value_modifier] = {
+    ## cardinality = 0..inf
+    enum[weight_chance_modifier_operators] = value_field
+    ## cardinality = 0..inf
+    alias_name[trigger] = alias_match_left[trigger]
+    ## cardinality = 0..1
+    desc = single_alias_right[complex_desc]
+    ## cardinality = 0..1
+    desc = localisation
+    ## cardinality = 0..inf
+    enum[ai_value] = int_value_field
+}
+
+alias[weight:compare_modifier] = {
+    ## cardinality = 0..1
+    target = scope_field
+    ## cardinality = 0..1
+    trigger = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    skill = enum[event_skills]
+    ## cardinality = 0..1
+    value = value[key]
+    ## cardinality = 0..1
+    multiplier = value_field
+    ## cardinality = 0..1
+    min = value_field
+    ## cardinality = 0..1
+    max = value_field
+    ## cardinality = 0..1
+    desc = single_alias_right[complex_desc]
+    ## cardinality = 0..1
+    desc = localisation
+}
+
+
+single_alias[chance_block] = {
+    # TODO: Requires further testing, might necessiate splitting into chance_block and chance_block_with_base or something
+    ## cardinality = 0..1
+    base = float
+    ## cardinality = 0..inf
+    alias_name[weight] = alias_match_left[weight]
+
+}
+
+# Temporary alias of an alias until a proper refactor
+single_alias[ai_chance_block] = single_alias_right[chance_block]
+
+# Temporary alias of an alias until a proper refactor
+single_alias[weight_block] = single_alias_right[chance_block]
+
+single_alias[weight_chance_modifier] = {
+    ## cardinality = 0..inf
+    enum[weight_chance_modifier_operators] = value_field
+
+    ## cardinality = 0..inf
+    alias_name[trigger] = alias_match_left[trigger]
+
+    ## cardinality = 0..1
+    desc = single_alias_right[complex_desc]
+    ## cardinality = 0..1
+    desc = localisation
+}

@@ -1,0 +1,74 @@
+types = {
+	type[decision] = {
+		path = "game/common/decisions"
+	}
+}
+
+## replace_scope = { root = character this = character }
+decision = {
+    ## cardinality = 0..1
+    ###override title, default: "<key>"; supports dynamic descriptions like in events (first_valid, ...); scope: character
+    title = localisation
+    ## cardinality = 0..1
+    ###override title, default: "<key>"; supports dynamic descriptions like in events (first_valid, ...); scope: character
+    title = single_alias_right[complex_desc]
+
+    # cardinality = 1..1
+    ### set decision image
+    picture = scalar
+
+    ## cardinality = 0..1
+    ### Major decisions are highlighted in the list, and will be considered important by default.
+    ###Important decisions will spawn an Action when they can be taken. The player can change whether or not a decision type is important to them.
+    major = bool
+
+    ## cardinality = 0..1
+    ### # override tooltip when selecting the decision from the decision list, default: "<key>_tooltip"; supports dynamic descriptions like in events (first_valid, ...); scope: character
+    selection_tooltip = localisation
+    ## cardinality = 0..1
+    selection_tooltip = single_alias_right
+    desc = localisation
+    desc = single_alias_right
+    ## cardinality = 0..1
+    confirm_text = localisation
+    ## cardinality = 0..1
+    ## cardinality = 0..1
+    confirm_text = single_alias_right
+
+    ## cardinality = 0..inf
+    immediate = single_alias_right[effect_clause]
+    ## cardinality = 0..1
+    is_shown = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    is_valid_showing_failures_only = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    is_valid = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    cost = single_alias_right[cost]
+
+    ## cardinality = 0..1
+    effect = single_alias_right[effect_clause]
+
+    ## cardinality = 0..1
+    ### Specify up to one custom widget to embed in the decision
+    ### GUI files must be placed at the decision_view_widgets path (see paths.settings). The name of the file must match the widget name.
+    ###
+    ### Usually these widgets require a custom controller. This should be documented in the widget's GUI file.
+    ### The data context type available in the GUI depends on the controller type.
+    widget = single_alias_right[complex_gui]
+
+    ## cardinality = 0..1
+    ### Trigger whether the AI should look at it or not
+    ai_potential = single_alias_right[trigger_clause]
+    # There might be a better way to this
+    ## cardinality = 0..1
+    ai_will_do = single_alias_right[weight_block]
+    ## cardinality = 0..1
+    ai_will_do = value_field[0..inf]
+    ## cardinality = 0..1
+    ai_goal = bool
+    ## cadinality = ~1..1
+    ### How many months between when the AI should check for this decision?
+    ai_check_interval = int[0..inf]
+}

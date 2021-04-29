@@ -1,0 +1,65 @@
+types = {
+    ## type_key_filter = war
+    type[war_history] = {
+        path = "game/history/wars"
+        localisation = {
+            Name = name
+        }
+    }
+}
+
+war_history = {
+    ## cardinality = 0..1
+    ### The name of the war. Can be left out, will be generated then.
+    name = localisation
+
+    ### Start date of the war.
+    start_date = date_field
+    ### End date of the war.
+    end_date = date_field
+    
+    ### The type of the casus belli.
+    casus_belli = <casus_belli_type>
+    
+    ## cardinality = 0..1
+    ### The claimant scope. Only needed if the casus belli needs a claimant scope.
+    claimant = <character>
+    ## cardinality = 0..1
+    ### The list of target titles. Only needed if the casus belli targets titles.
+    targeted_titles = single_alias_right[title_list]
+    
+    ### List of attackers. The first one will be the primary attacker.
+    attackers = single_alias_right[character_id_list]
+    ### List of defenders. The first one will be the primary defender.
+    defenders = single_alias_right[character_id_list]
+
+    # TODO: That's just a guess.
+    ## cardinality = 0..inf
+    ### Location history of the war participants by dates.
+    enum[war_history_participants] = {
+        ## cardinality = 1..inf
+        date_field = {
+            ### Location of the character at the given time.
+            location = <province>
+        }
+    }
+}
+
+
+single_alias[character_id_list] = {
+    ## cardinality = 1..inf
+    <character>
+}
+enums = {
+    complex_enum[war_history_participants] = {
+        path = "game/history/wars"
+        name = {
+            attackers = {
+                enum_name
+            }
+            defenders = {
+                enum_name
+            }
+        }
+    }
+}

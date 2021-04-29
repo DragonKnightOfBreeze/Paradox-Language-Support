@@ -1,0 +1,14 @@
+types = {
+    type[nickname] = {
+        path = "game/common/nicknames"
+    }
+}
+
+nickname = {
+    ## cardinality = 0..1
+    ### Whether it should be considered negative. Can be checked with has_bad_nickname. Defaults to no.
+    is_bad = bool
+    ## cardinality = 0..1
+    ### Whether it should be used as a prefix, displaxed before the first name. Defaults to no.
+    is_prefix = bool
+}

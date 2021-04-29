@@ -1,0 +1,193 @@
+types = {
+    type[character_interaction] = {
+        path = "game/common/character_interactions"
+    }
+}
+
+enums = {
+    enum[ai_targets] = {
+        known_secrets
+        hooked_characters
+        neighboring_rulers
+        peer_vassals
+        guests
+        dynasty
+        courtiers
+        prisoners
+        sub_realm_characters
+        realm_characters
+        vassals
+        liege
+        self
+        head_of_faith
+        spouses
+        family
+        children
+        primary_war_enemies
+        war_enemies
+        war_allies
+        scripted_relations
+    }
+    
+    enum[greeting] = {
+        positive
+        negative
+    }
+    
+    enum[target_type] = {
+        title
+    }
+    
+    enum[target_filter] = {
+        actor_domain_titles
+        recipient_domain_titles
+        secondary_actor_domain_titles
+        secondary_recipient_domain_titles
+        actor_domain_titles_including_leases
+        recipient_domain_titles_including_leases
+        secondary_actor_domain_titles_including_leases
+        secondary_recipient_domain_titles_including_leases
+        actor_de_jure_titles
+        recipient_de_jure_titles
+        secondary_actor_de_jure_titles
+        secondary_recipient_de_jure_titles
+    }
+}
+# TODO: Check if of the int_value_fields accept values or just ints
+character_interaction = {
+    ## cardinality = 0..1
+    hidden = bool
+    ## cardinality = 0..1
+    category = <character_interaction_category>
+    ## cardinality = 0..1
+    special_interaction = scalar
+    ## cardinality = 0..1
+    force_notification = bool
+    ## cardinality = 0..1
+    interface = scalar
+    ## cardinality = 0..1
+    interface_priority = int_value_field
+    ## cardinality = 0..1
+    common_interaction = bool
+    ## cardinality = 0..1
+    use_diplomatic_range = bool
+    ## cardinality = 0..1
+    target_type = enum[target_type]
+    ## cardinality = 0..1
+    target_filter = enum[target_filter]
+    ## cardinality = 0..1
+    greeting = enum[greeting]
+    ## cardinality = 0..1
+    notification_text = localisation
+    ## cardinality = 0..1
+    answer_accept_key = localisation
+    ## cardinality = 0..1
+    answer_reject_key = localisation
+    ## cardinality = 0..1
+    send_name = localisation
+    ## cardinality = 0..1
+    prompt = localisation
+    ## cardinality = 0..1
+    desc = localisation
+    ## cardinality = 0..1
+    desc = single_alias_right[complex_desc]
+    ## cardinality = 0..1
+    cooldown = {
+        enum[duration] = int
+    }
+    ## cardinality = 0..1
+    redirect = single_alias_right[effect_clause]
+    
+    ## cardinality = 0..1
+    is_shown = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    is_valid_showing_failures_only = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    has_valid_target = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    has_valid_target_showing_failures_only = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    is_valid = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    can_send = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    can_be_picked = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    can_be_picked_title = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    can_send_despite_rejection = bool
+    ## cardinality = 0..1
+    is_highlighted = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    highlighted_reason = localisation
+    
+    ## cardinality = 0..1
+    on_send = single_alias_right[effect_clause]
+    ## cardinality = 0..1
+    on_accept = single_alias_right[effect_clause]
+    ## cardinality = 0..1
+    on_decline = single_alias_right[effect_clause]
+    ## cardinality = 0..1
+    auto_accept = bool
+    ## cardinality = 0..1
+    auto_accept = {
+        alias_name[trigger:custom_description] = alias_match_left[trigger:custom_description]
+    }
+    ## cardinality = 0..1
+    on_auto_accept = single_alias_right[effect_clause]
+
+    ## cardinality = 0..1
+    popup_on_receive = bool
+    ## cardinality = 0..1
+	pause_on_receive = bool
+    
+    ## cardinality = 0..1
+    populate_recipient_list = single_alias_right[effect_clause]
+    ## cardinality = 0..1
+    populate_actor_list = single_alias_right[effect_clause]
+    
+    ## cardinality = 0..1
+    ai_accept = single_alias_right[ai_chance_block]
+    ## cardinality = 0..1
+    ai_targets = {
+        ai_recipients = enum[ai_targets]
+        ## cardinality = 0..1
+        max = int_value_field
+    }
+    ## cardinality = 0..1
+    ai_frequency = int_value_field
+    ## cardinality = 0..1
+    ai_potential = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    ai_will_do = single_alias_right[ai_chance_block]
+    ## cardinality = 0..1
+    ai_min_reply_days = int_value_field
+    ## cardinality = 0..1
+    ai_max_reply_days = int_value_field
+    
+    ## cardinality = 0..inf
+    send_option = {
+        ## cardinality = 0..1
+        is_shown = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        is_valid = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        current_description = localisation
+        ## cardinality = 0..1
+        flag = scalar
+        ## cardinality = 0..1
+        localization = localisation
+        ## cardinality = 0..1
+        starts_enabled = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        can_be_changed = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        can_invalidate_interaction = bool
+        ## cardinality = 0..1
+        should_use_extra_icon = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        extra_icon = scalar
+        ## cardinality = 0..1
+	    send_options_exclusive = bool
+    }
+}

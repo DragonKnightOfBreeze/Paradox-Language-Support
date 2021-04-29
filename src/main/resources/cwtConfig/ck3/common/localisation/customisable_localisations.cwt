@@ -1,0 +1,92 @@
+types = {
+    type[customisable_localisation] = {
+        path = "game/common/customizable_localization"
+        ## push_scope = character
+        subtype[character] = {
+            type = character
+        }
+        ## push_scope = title
+        subtype[landed_title] = {
+            type = landed_title
+        }
+        ## push_scope = province
+        subtype[province] = {
+            type = province
+        }
+        ## push_scope = activity
+        subtype[activity] = {
+            type = activity
+        }
+        ## push_scope = secret
+        subtype[secret] = {
+            type = secret
+        }
+        ## push_scope = scheme
+        subtype[scheme] = {
+            type = scheme
+        }
+        ## push_scope = combat
+        subtype[combat] = {
+            type = combat
+        }
+        ## push_scope = combat_side
+        subtype[combat_side] = {
+            type = combat_side
+        }
+        ## push_scope = title_and_vassal_change
+        subtype[title_and_vassal_change] = {
+            type = title_and_vassal_change
+        }
+        ## push_scope = faith
+        subtype[faith] = {
+            type = faith
+        }
+        ## push_scope = dynasty
+        subtype[dynasty] = {
+            type = dynasty
+        }
+    }
+}
+
+customisable_localisation = {
+    ### Scope type used.
+    type = enum[customisable_localisation_type]
+
+    ## cardinality = 0..1
+    ### Whether the localisation should selected randomly from the valid options. Otherwise the first valid one will be selected. Defaults to no.
+    random_valid = bool
+    
+    ## cardinality = 1..inf
+    text = {
+        ### The actual localisation key to display.
+        localization_key = localisation
+
+        ## cardinality = 0..1
+        ### Whether this should be selected if none of the other options are valid, even if the trigger for this is false. There should be maximum one. Defaults to no.
+        fallback = bool
+
+        ## cardinality = 0..1
+        ### Trigger to have this localisation. Defaults to yes.
+        trigger = single_alias_right[trigger_clause]
+
+        ## cardinality = 0..1
+        ### Weight multiplier for this localistion. Only used with random_valid = yes. Defaults to 1.
+        weight_multiplier = single_alias_right[weight_block]
+    }
+}
+
+enums = {
+    enum[customisable_localisation_type] = {
+        character
+        landed_title
+        province
+        activity
+        secret
+        scheme
+        combat
+        combat_side
+        title_and_vassal_change
+        faith
+        dynasty
+    }
+}

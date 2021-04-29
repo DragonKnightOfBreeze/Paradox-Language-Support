@@ -1,0 +1,1956 @@
+﻿### Adds a character as an agent to the scheme and forces them to stay {     scheme = target_Scheme     days/months/years = duration }
+alias[effect:force_add_to_scheme] = {
+    scheme = scope[scheme]
+    enum[duration] = int
+}
+
+### Sets the religious head title of the faith to the given title. set_religious_head_title = scope
+alias[effect:set_religious_head_title] = scope[landed_title]
+
+### removes a character flag
+alias[effect:remove_character_flag] = value[character_flag]
+
+### accept a characters invitation to the activity
+alias[effect:accept_invitation_for_character] = scope[character]
+
+### Sets the task of the scope councillor { type = council_position_type_key target = for_targeted_tasks  }
+alias[effect:set_council_task] = {
+    type = <council_task>
+    target = scalar # TODO: Verify. Probably depends on the type of the council task [court/county/general]
+}
+
+### kills a character, death = { killer = X death_reason = Y }, where X is a character and Y is one of the death reason keys. Or death = natural which will pick a natural death reason to kill the character from.
+alias[effect:death] = {
+    death_reason = <death_reason>
+    ## cardinality = 0..1
+    killer = scope[character]
+}
+
+### kills a character, death = { killer = X death_reason = Y }, where X is a character and Y is one of the death reason keys. Or death = natural which will pick a natural death reason to kill the character from.
+alias[effect:death] = natural
+
+
+### sets the culture of a county usage: set_county_culture = english/root.character_culture
+alias[effect:set_county_culture] = scope[culture]
+
+### Refunds all perks of the RHS lifestyle. Example: refund_perks = intrigue_lifestyle
+alias[effect:refund_perks] = <lifestyle>
+
+### Forbid the scope character from joining the target scheme as an agent (and kick the character out if already in the scheme)
+alias[effect:forbid_from_scheme] = scope[scheme]
+
+### Hands out titles in the target kingdom to the GHW attacker beneficiaries. do_ghw_title_handout = scope:title_and_vassal_change
+alias[effect:do_ghw_title_handout] = scope[title_and_vassal_change]
+
+### Sets the target of the great holy war. set_great_holy_war_target = { target_character = someone target_title = some title }
+alias[effect:set_great_holy_war_target] = {
+    target_character = scope[character]
+    target_title = scope[landed_title]
+}
+
+### Changes the trait rank = { trait = trait_group rank = change max = maximum new rank }
+alias[effect:change_trait_rank] = {
+    trait = value[trait_group]
+    rank = int
+    ## cardinality = 0..1
+    max = int
+}
+
+### sets the death reason and the killer of a dead character, set_death_reason = { killer = X death_reason = Y }, both parameters are optional
+alias[effect:set_death_reason] = {
+    ## cardinality = 0..1
+    killer = scope[character]
+    ## cardinality = 0..1
+    death_reason = <death_reason>
+}
+
+### change the obligation level of the scoped character's vassal contract vassal_contract_set_obligation_level = 1 # index to obligation level vassal_contract_set_obligation_level = feudal_obligation_low
+alias[effect:vassal_contract_set_obligation_level] = replace_me # TODO: Implemented type for vassal contracts.
+
+### Sets the truce against the specified character 'character' specifies the target character 'override' says whether it should replace the previous truce even if shorter 'years / months / days' sets the duration of the truce 'result' specifies the result from the scope character's point of view ('white_peace' by default) 'casus_belli_type' sets the casus belli type the truce is for, mutually exclusive with 'war' 'casus_belli' sets the casus belli scope that caused the truce, mutually exclusive with 'casus_belli_type' add_truce_one_way = { character = X years/months/days = Y override = yes/no result = victory/defeat/white_peace casus_belli/war = Z }
+alias[effect:add_truce_one_way] = {
+    character = scope[character]
+    ## cardinality = 0..1
+    override = bool
+    enum[duration] = int_value_field
+    
+    # All three are mutually exclusive, how to handle?
+    ## cardinality = 0..1
+    casus_belli = scope[casus_belli] # Probably, never used in vanilla files.
+    ## cardinality = 0..1
+    war = scope[war]
+    ## cardinality = 0..1
+    name = localisation
+
+    ## cardinality = 0..1
+    result = enum[war_result]
+}
+
+### Exposes the scope secret
+alias[effect:expose_secret] = scope[character]
+
+### Switch on a trigger for the evaluation of another trigger with an optional fallback trigger. switch = { 	trigger = simple_assign_trigger 	case_1 = { <effects> } 	case_2 = { <effects> } 	case_n = { <effects> } 	fallback = { <effects> }
+alias[effect:switch] = {
+    trigger = alias_keys_field[trigger]
+    ## cardinality = 0..inf
+	scalar = {
+		## cardinality = 0..inf
+		alias_name[effect] = alias_match_left[effect]
+	}
+}
+
+### Recalculates the effect of a scripted relation recalculate_scripted_relation= friend
+alias[effect:recalculate_scripted_relation] = <scripted_relation>
+
+### Remove a modifier from a province remove_province_modifier = name
+alias[effect:remove_province_modifier] = <modifier_container>
+
+### Sets the capital county of the title to the target county set_capital_county = <some county title>
+alias[effect:set_capital_county] = scope[landed_title] # Probably no way to restrict to county title?
+
+### Tries to create an important action notification. Will keep the current one if already exists. important_action_type = important_action_type_key - the important action object key to create. Must be defined. actor = character_actor - optional, can be used by the important action effect recipient = character_actor - optional, can be used by the important action effect secondary_actor = character_secontary_actor - optional, can be used by the important action effect secondary_recipient = character_secondary_recipient - optional, can be used by the important action effect landed_title = landed_title - optional, can be used by the important action effect
+alias[effect:try_create_important_action] = replace_me # TODO: Important actions type.
+
+### Adds focus progress
+alias[effect:add_focus_progress] = int_value_field
+
+### 'Consume' all imprisonment reasons that the scoped character has on the target character. Until they get a new reason, they cannot imprison the target again.
+alias[effect:consume_imprisonment_reasons] = scope[character]
+
+### 'Consume' all execute reasons that the scoped character has on the target character. Until they get a new reason, they cannot execute the target again.
+alias[effect:consume_execute_reasons] = scope[character]
+
+### Sets the primary title for a character set_primary_title_to = <title>
+alias[effect:set_primary_title_to] = scope[landed_title] # TODO: Doesn't seem to work with `title:something`.
+
+### = character_target  makes the character the new owner of the story
+alias[effect:make_story_owner] = scope[character]
+
+### = { liege = 'Character that should become the new liege' change = 'previously created title_and_vassal_change', adds a liege change
+alias[effect:change_liege] = {
+    liege = scope:character
+    change = scope:title_and_vassal_change
+}
+
+### Adds a trait to a character (if the add_trait effect would not add the trait - i.e. when already having the trait, having an opposing trait, not fulfilling the trait's is_potential trigger or being outside of the trait's range - a tooltip will be shown but the trait will not be added)
+alias[effect:add_trait_force_tooltip] = <trait>
+
+### ends the combat as the losing side (doesn't end the combat if evaluated to false)
+alias[effect:lose_combat] = replace_me # Never used in vanilla files.
+
+### Removes the scope secret
+alias[effect:remove_secret] = bool # Only seen used as `= yes` in vanilla files.
+
+### Starts the GHW war. start_ghw_war = undirected_great_holy_war
+alias[effect:start_ghw_war] = <casus_belli_type>
+
+### Rest the coat of arms for the scoped landed title, dynasty or house to its template reset_coa = yes
+alias[effect:reset_coa] = scalar # Only used once as ` = THIS`.
+
+### increases (or decreases) stress of a character
+alias[effect:add_stress] = int_value_field
+
+### makes a claim weak (character adds the claim if not having it already)
+alias[effect:make_claim_weak] = scope[landed_title]
+
+### Removes a variable remove_variable = variable_name
+alias[effect:remove_variable] = value[variable]
+
+### Assigns the target character to the first available council position of the type available. { type = council_position_type_key target = character_taking_the_position fire_on_actions = [yes] }
+alias[effect:assign_councillor_type] = {
+    type = <council_position>
+    target = scope[character]
+    ## cardinality = 0..1
+    fire_on_actions = scalar
+}
+
+### Empties the list clear_variable_list = variable_name
+alias[effect:clear_local_variable_list] = value[local_variable_list]
+
+### Either create = story_cycle or create_story = { type = story_type save_scope_as/save_temporary_scope_as = scope_name # optional way to get a reference to the new story }. Creates and initializes a story cycle with the current character as owner
+alias[effect:create_story] = <story_cycle>
+
+### Either create = story_cycle or create_story = { type = story_type save_scope_as/save_temporary_scope_as = scope_name # optional way to get a reference to the new story }. Creates and initializes a story cycle with the current character as owner
+alias[effect:create_story] = {
+    type = <story_cycle>
+
+    ## cardinality = 0..1
+    save_scope_as = value_set[event_target]
+    ## cardinality = 0..1
+    save_temporary_scope_as = value_set[temporary_scope]
+}
+
+### add law to scoped title, overriding any current law from the same group add_title_law = princely_elective_succession_law
+alias[effect:add_title_law] = <law.title_specific>
+
+### Adds lifestyle XP to the given character
+alias[effect:add_diplomacy_lifestyle_xp] = int_value_field
+
+### just a tooltip, the scope as object (for grouping, localization)
+alias[effect:custom_label] = localisation
+
+### Activate an inactive holy site<faith_scope> = { activate_holy_site = <holy_site_name> }
+alias[effect:activate_holy_site] = <holy_site>
+
+### The target character removes their pledge as an attacker in the GHW. unpledge_attacker = some character
+alias[effect:unpledge_attacker] = scope[character]
+
+### Forbids the target character from exposing the secret, disable_exposure_by = target_character
+alias[effect:disable_exposure_by] = scope[character]
+
+### Allows (previously broken) alliance with the target character
+alias[effect:allow_alliance] = scope[character]
+
+### Removed a flag from an existing relation flag = flag_name (declared in scripted_relation) target = other_character relation = scripted_relation
+alias[effect:remove_relation_flag] = single_alias_right[relation_flag_clause]
+
+### the character in the scope joins the assigned faction skiping the can_character_join trigger
+alias[effect:join_faction_skip_check] = scope[faction]
+
+### adds dynasty prestige levels
+alias[effect:add_dynasty_prestige_level] = int_value_field # TODO: Test out if variables/values work?
+
+### the character in the scope is forced to join a faction by a character for a defined time, join_faction_forced = {     faction = X     forced_by = Y     days/months/years = duration }
+alias[effect:join_faction_forced] = {
+    faction = scope[faction]
+    forced_by = scope[character]
+    enum[duration] = int
+}
+
+### Lease out the scoped title lease_out_to = scope:a_holy_order
+alias[effect:lease_out_to] = scope[holy_order]
+
+### add_joined_faction_discontent = X adds (or subtracts) discontent to the factions the scope character is in
+alias[effect:add_joined_faction_discontent] = int_value_field # TODO: Test out if variables/values work?
+
+### Wraps effects that get a custom description instead of the auto-generated one. Also ensures no bullet point appears custom_description_no_bullet = { 	text = <effect_localization_key> 	subject = <optional subject scope> #defaults to current scope 	object = <optional object scope> 	value = <optional script value> 	... effects ... }
+alias[effect:custom_description_no_bullet] = {
+    text = <effect_localisation>
+    ## cardinality = 0..1
+    subject = scope_field
+    ## cardinality = 0..1
+    object = scope_field
+    ## cardinality = 0..1
+    value = value_field
+    ## cardinality = 0..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Changes the amount of gold in the war chest by the given amount. change_war_chest_gold = script value
+alias[effect:change_war_chest_gold] = value_field
+
+### Set the primary spouse of a character set_primary_spouse = scope
+alias[effect:set_primary_spouse] = scope[character]
+
+### Changes the real father of the character scope
+alias[effect:set_real_father] = scope[character]
+
+### end a pregnancy
+alias[effect:end_pregnancy] = scalar
+
+### Adds the event target to a variable list add_to_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
+alias[effect:add_to_variable_list] = {
+    name = value_set[variable_list]
+    
+    ## cardinality = 0..1
+    target = value_field
+    ## cardinality = 0..1
+    target = scope_field
+}
+
+### removes the target character from the scope war
+alias[effect:remove_participant] = scope[character]
+
+### Remove all instances of a modifier from a house remove_all_house_modifier_instances = name
+alias[effect:remove_all_house_modifier_instances] = <modifier_container>
+
+### Clamps a variable the specified max and min clamp_variable = { name = X max = Y min = Z } Where X is the name of the variable Where Y and Z are script values
+alias[effect:clamp_variable] = {
+    name = value[variable]
+    max = value_field
+    min = value_field
+}
+
+### Adds stewardship skill
+alias[effect:add_stewardship_skill] = int_value_field
+
+### Sets if the title is landless (can be held by rulers with no land) set_landless_title = yes
+alias[effect:set_landless_title] = yes
+
+### Marries the scoped character to the target character matrilineally marry_matrilineal = target
+alias[effect:marry_matrilineal] = scope[character]
+
+### Breaks the betrothal between the scope character to the target character, break_betrothal = target
+alias[effect:break_betrothal] = scope[character]
+
+### Effect only shown in tooltips (but not executed)
+alias[effect:show_as_tooltip] = single_alias_right[effect_clause]
+
+### starts a title and vassal change and saves it as a temporary event target create_title_and_vassal_change = { type = conquest (or other type) save_scope_as = change (name of resulting saved scope) add_claim_on_loss = yes (optional) }
+alias[effect:create_title_and_vassal_change] = {
+    type = value[event_target]
+    save_scope_as = value_set[event_target]
+    ## cardinality = 0..1
+    add_claim_on_loss = bool
+}
+
+### Sets the color of the title to the same as the target title (shifted very slightly to not be identical) set_color_from_title = <some title>
+alias[effect:set_color_from_title] = scope[landed_title]
+
+### The target character pledges themselves as a defender in the GHW. Must be of the same faith as the GHW target. pledge_defender = some character
+alias[effect:pledge_defender] = scope[character]
+
+### Execute the specified decision for the scoped character
+alias[effect:execute_decision] = <decision>
+
+### Adds lifestyle XP to the given character
+alias[effect:add_learning_lifestyle_xp] = int_value_field
+
+### Changes the value or a numeric variable change_variable = { name = X operation = Y } Where X is the name of the numeric variable to modify Where the valid operations are add, subtract, multiply, divide and modulo Where Y is a fixed point value, script value or event target of a value type
+alias[effect:change_global_variable] = {
+    name = value[global_variable]
+    alias_name[arithmetic_operation] = alias_match_left[arithmetic_operation]
+}
+
+### Changes what faith a county has
+alias[effect:set_county_faith] = scope[faith]
+
+### Sets if the title should always go to the primary heir in partition succession set_always_follows_primary_heir = yes
+alias[effect:set_always_follows_primary_heir] = yes
+
+### 'Consume' 1 revoke title reason that the scoped character has on the target character.
+alias[effect:consume_revoke_title_reason] = scope[character]
+
+### Tries to open the defined view. interaction = interaction_key - the interaction object key to open redirect = [yes|no] - yes by default, redirect the actor and recipients ( only works if secondary_actor and secondary_recipient are not setup or are invalid) actor = character_actor - must be defined, must coincide with the current player recipient = character_actor - must be defined secondary_actor = character_secontary_actor - optional secondary_recipient = character_secondary_recipient - optional
+alias[effect:open_interaction_window] = {
+    interaction = <character_interaction>
+    ## cardinality = 0..1
+    redirect = bool
+    ### Must coincide with the current player.
+    actor = scope[character]
+    recipient = scope[character]
+    ## cardinality = 0..1
+    secondary_actor = scope[character]
+    ## cardinality = 0..1
+    secondary_recipient = scope[character]
+}
+
+### Breaks the alliance with the target character
+alias[effect:break_alliance] = scope[character]
+
+### adds dynasty prestige
+alias[effect:add_dynasty_prestige] = int_value_field
+
+### Tries to open the defined view without scope data. Take care to set player if effect is executed not through UI but through synchronized code. Else all the window will open for all players. open_view = { view = <view name> view_message = <view specific instruction> # optional player = scope:character # optional, else shows for all players who execute the effect } simplified: open_view = <view name>
+alias[effect:open_view] = scalar # TODO: How to handle GUI files?
+
+### Tries to open the defined view without scope data. Take care to set player if effect is executed not through UI but through synchronized code. Else all the window will open for all players. open_view = { view = <view name> view_message = <view specific instruction> # optional player = scope:character # optional, else shows for all players who execute the effect } simplified: open_view = <view name>
+alias[effect:open_view] = {
+    view = scalar # TODO: How to handle GUI files?
+    ## cardinality = 0..1
+    view_message = scalar # TODO: No idea.
+    ## cardinality = 0..1
+    player = scope[character]
+}
+
+### Remove a modifier from a house remove_house_modifier = name
+alias[effect:remove_house_modifier] = <modifier_container>
+
+### Adds the given law to the scoped character. Skips the cost and the pass effect, and the revoke effects of the current law
+alias[effect:add_realm_law_skip_effects] = <law>
+
+### Adds lifestyle XP to the given character
+alias[effect:add_stewardship_lifestyle_xp] = int_value_field
+
+### Adds the event target to a variable list add_to_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
+alias[effect:add_to_global_variable_list] = {
+    name = value_set[global_variable_list]
+    
+    ## cardinality = 0..1
+    target = value_field
+    ## cardinality = 0..1
+    target = scope_field
+}
+
+### Adds a character as an agent to the scheme
+alias[effect:add_to_scheme] = scope[scheme]
+
+### Removes the special character for the scope faction
+alias[effect:remove_special_title] = replace_me # TODO: Never used in vanilla.
+
+### Add doctrine to faith<faith_scope> = { add_doctrine = <doctrine_name> }
+alias[effect:add_doctrine] = <doctrine>
+
+### Removes the current scope from a named list remove_from_list = <string>
+alias[effect:remove_from_list] = value[list]
+
+### Set a new realm capital character = { set_realm_capital = new_title }
+alias[effect:set_realm_capital] = scope[landed_title]
+
+### = { attacker = scope:attacker   defender = scope:defender   claimant = scope:claimant    change = scope:change victory = yes/no   take_occupied = yes/no } , this effect will add a scope:cb_prestige_factor with a value based on what's being taken civil_war = yes # Will vassalize people based on their capital location rather than being fully contained. Won't steal land from people not vassalized
+alias[effect:setup_claim_cb] = {
+    titles = value[list]
+    attacker = scope[character]
+    defender = scope[character]
+    claimant = scope[character]
+    ## cardinality = 0..1
+    change = scope[title_and_vassal_change]
+    ## cardinality = 0..1
+    victory = bool
+    ## cardinality = 0..1
+    take_occupied = bool
+    ## cardinality = 0..1
+    civil_war = bool
+}
+
+### Adds prestige, gold and piety based on contribution to allied attackers. parameters: prestige, gold, piety.
+alias[effect:add_from_contribution_attackers] = {
+    ## cardinality = 0..1
+    prestige = value_field
+    ## cardinality = 0..1
+    piety = value_field
+    ## cardinality = 0..1
+    gold = value_field # TODO: Verify. Never used in vanilla files.
+    ## cardinality = 0..1
+    opinion = { # Not sure. Only used like this.
+        modifier = <opinion_modifier>
+    }
+}
+
+### Sets the both-way truce against the specified character 'character' specifies the target character 'override' says whether it should replace the previous truce even if shorter 'years / months / days' sets the duration of the truce 'result' specifies the result from the scope character's point of view ('white_peace' by default) 'casus_belli_type' sets the casus belli type the truce is for, mutually exclusive with 'war' 'casus_belli' sets the casus belli scope that caused the truce, mutually exclusive with 'casus_belli_type' 'war' sets the war that caused the truce, mutually exclusive with 'casus_belli' add_truce_both_ways = { character = X years/months/days = Y override = yes/no result = victory/defeat/white_peace casus_belli/war = Z }
+alias[effect:add_truce_both_ways] = {
+    character = scope[character]
+    ## cardinality = 0..1
+    override = bool
+    enum[duration] = int_value_field
+    
+    # All three are mutually exclusive, how to handle?
+    ## cardinality = 0..1
+    casus_belli = scope[casus_belli] # Probably, never used in vanilla files.
+    ## cardinality = 0..1
+    war = scope[war]
+    ## cardinality = 0..1
+    name = localisation
+
+    ## cardinality = 0..1
+    result = enum[war_result]
+}
+
+### Force the Councillor to revert to the default task. Any relevant percentage progress will be lost (even if the councillor was performing the default task already).
+alias[effect:start_default_task] = yes
+
+### Removes the target from a variable list remove_list_variable = { name = X target = Y } Where X is the name of the variable Where Y is an event target
+alias[effect:remove_list_local_variable] = {
+    name = value[local_variable_list]
+
+    ## cardinality = 0..1
+    target = value_field
+    ## cardinality = 0..1
+    target = scope_field
+}
+
+### the character in the scope joins the assigned faction
+alias[effect:join_faction] = scope[faction]
+
+### Sets the coat of arms of a landed title, dynasty, or house to the right hand side coat of arms or that of an object of the same type set_coa = k_england set_coa = scope:new_coa
+alias[effect:set_coa] = <coat_of_arms>
+
+### Sets the coat of arms of a landed title, dynasty, or house to the right hand side coat of arms or that of an object of the same type set_coa = k_england set_coa = scope:new_coa
+alias[effect:set_coa] = scope[landed_title]
+
+### duel effect that selects an effect based on comparing specified skill of a character to a value or another character's skill. Alternatively, the compare value can be scripted completely duel = { 	skill = X 	target = Y 	value = Z 	localization = W ... random list body } Where X is the skill to compare, Y is the target character (requires skill to be set) or integer value Z (works with or without the skill), the rest of the effect is the same as random_list If the skill is unspecified, the effect needs a value Z (which can use scripted math) which it will then use as the duel vlue directly If localization = W is specified, the effect localization W will be used (entry in effect_localization database, not a localization key directly) The skill difference (or scripted duel value) is available as scope:duel_value inside the outcome entries, the duel target is accessible as scope:duel_target Valid skill, target, combinations: skill + target, skill + value, only value  Since there is now no automatic weighting, we should be using weight numbers in a comparable range to the scope:duel_value value. Since that will always be between -20 and 20 (unless you do something very unusual), and typically in a more narrow range than that, we should stick to those ranges.  Only use larger weights if you want the duel_value to have a smaller impact on the weighting, and only use smaller weights if you want the duel_value to have a huge impact on the weighting.  In addition, it is fully possible for the compare_modifier to reduce the weight to 0, which would mean that it will not be possible to happen at all. I've requested code support to make it so that we can define min and max values for weights, but until further notice we should use ranges that are guaranteed to not hit 0, or include min values in the compare_modifier itself.  Lastly, remember that if you want the outcome of a duel to scale linearly from (almost) 0% to (almost) 100%, the duel_value should be applied 50% to the good outcome, and -50% to the bad outcome. If you only apply it on one side, you will retain a (presumably significant) chunk of chance for the other outcome.
+alias[effect:duel] = {
+    ## cardinality = 0..1
+    skill = enum[event_option_skills]
+
+    ## cardinality = 0..1
+    ### Requires `skill` to be set.
+    target = scope[character]
+
+    ## cardinality = 0..1
+    ### Works with or without `skill`. Required if `skill` not set.
+    value = value_field
+
+    ## cardinality = 0..1
+    localization = <effect_localisation> # Never used in vanilla.
+
+    ## cardinality = 0..1
+    desc = localisation
+
+    ## cardinality = 0..inf
+    int = {
+        ## cardinality = 0..1
+        desc = localisation
+        ## cardinality = 0..1
+        trigger = alias_match_left[trigger]
+
+        ## cardinality = 0..inf
+        alias_name[weight] = alias_match_left[weight]
+        
+        alias_name[effect] = alias_match_left[effect]
+    } # TODO: Check this is everything.
+}
+
+### Empties the list clear_variable_list = variable_name
+alias[effect:clear_variable_list] = value[variable_list]
+
+### Adds a temporary opinion modifier, add_opinion = { modifier = X days/months/years = Y target = Z } X is a scripted modifier name. Y can be a value or a range "{ A B }" If no timeout are specified, the modifier's scripted default timeout will be used.
+alias[effect:add_opinion] = {
+    target = scope[character]
+    modifier = <opinion_modifier>
+    ## cardinality = 0..1
+    opinion = int_value_field
+}
+
+### gives (or takes) piety experience to a character
+alias[effect:add_piety_experience] = value_field
+
+### Remove doctrine from faith<faith_scope> = { remove_doctrine = <doctrine_name> }
+alias[effect:remove_doctrine] = <doctrine>
+
+### Logs the current date to the debug.log
+alias[effect:debug_log_date] = yes
+
+### Recalculates the line of succession of the scoped character
+alias[effect:scriptedtests_recalculate_succession] = yes
+
+### Sets a variable set_variable = { name = X value = Y days = Z } Where X is the name of the variable used to then access it Where Y is any event target, bool, value, script value or flag (flag:W) An optional days where Z is the number of days or script value This variable will be accessible with <type_>var:X. With type being in a scope object or in a top scope
+alias[effect:set_global_variable] = {
+    name = value_set[global_variable]
+
+    ## cardinality = 0..1
+    enum[duration] = int
+
+    ## cardinality = 0..1
+    value = value_field
+    ## cardinality = 0..1
+    value = scope_field
+}
+
+### Sets a variable set_variable = { name = X value = Y days = Z } Where X is the name of the variable used to then access it Where Y is any event target, bool, value, script value or flag (flag:W) An optional days where Z is the number of days or script value This variable will be accessible with <type_>var:X. With type being in a scope object or in a top scope
+alias[effect:set_global_variable] = value_set[global_variable]
+
+### Set a new DeJure liege title set_de_jure_liege_title = new_de_jure_liege
+alias[effect:set_de_jure_liege_title] = scope[landed_title]
+
+### gives (or takes) piety to a character
+alias[effect:add_piety] = value_field
+
+### Effect not shown in tooltips
+alias[effect:hidden_effect] = {
+    ## cardinality = 1..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Adds learning skill
+alias[effect:add_learning_skill] = int_value_field # TODO: Should check all those add_*_skill effects if they accept a field or just a constant int.
+
+### gives (or takes) prestige to a character
+alias[effect:add_prestige] = int_value_field
+
+### The scope character's player will now play as the target character. Scope must be player-controlled. Target cannot be player-controlled. Example: make_unprunable = yes
+alias[effect:set_player_character] = scope[character]
+
+### sets the culture of the character to be the same as the culture of the target
+alias[effect:set_culture_same_as] = scope[character]
+
+### ù?`¬Ÿ²@ðøßª’
+alias[effect:send_interface_toast] = {
+    ## cardinality = 0..1
+    ### Default `send_interface_toast`.
+    type = <message>
+    ## cardinality = 0..1
+    title = localisation
+    ## cardinality = 0..1
+	desc = localisation
+    ## cardinality = 0..1
+    tooltip = localisation
+    ## cardinality = 0..1
+    left_icon = scope[character]
+    ## cardinality = 0..1
+    left_icon = scope[landed_title]
+    ## cardinality = 0..1
+    right_icon = scope[character]
+    ## cardinality = 0..1
+    right_icon = scope[landed_title]
+    ## cardinality = 0..1
+    goto = scope[character]
+    ## cardinality = 0..1
+    goto = scope[landed_title]
+		
+    ## cardinality = 0..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Ends a story and executes it's on_end effect, the story can no longer be accessed after this
+alias[effect:end_story] = yes
+
+### Sets a new owner for the secret
+alias[effect:set_secret_owner] = scope[character]
+
+### The target character removes their pledge as a defender in the GHW. unpledge_defender = some character
+alias[effect:unpledge_defender] = scope[character]
+
+### Add a modifier to a house add_house_modifier = name add_house_modifier = { modifier = name days/weeks/months/years = int }
+alias[effect:add_house_modifier] = single_alias_right[added_modifier]
+
+### The target character pledges themselves as an attacker in the GHW. Must be of the same faith as the GHW declarer. pledge_attacker = some character
+alias[effect:pledge_attacker] = scope[character]
+
+### Add progress to the scope scheme. (progress is in 0.0 - 100.0 range)
+alias[effect:add_scheme_progress] = value_field
+
+### The character in scope gets deposed.
+alias[effect:depose] = yes
+
+### Recruits the target to become a courtier. Example scope:liege = { recruit_courtier = scope:new_courtier }
+alias[effect:recruit_courtier] = scope[character]
+
+### Sets a variable set_variable = { name = X value = Y days = Z } Where X is the name of the variable used to then access it Where Y is any event target, bool, value, script value or flag (flag:W) An optional days where Z is the number of days or script value This variable will be accessible with <type_>var:X. With type being in a scope object or in a top scope
+alias[effect:set_local_variable] = {
+    name = value_set[local_variable]
+
+    ## cardinality = 0..1
+    enum[duration] = int
+
+    ## cardinality = 0..1
+    value = value_field
+    ## cardinality = 0..1
+    value = scope_field
+}
+
+### Sets a variable set_variable = { name = X value = Y days = Z } Where X is the name of the variable used to then access it Where Y is any event target, bool, value, script value or flag (flag:W) An optional days where Z is the number of days or script value This variable will be accessible with <type_>var:X. With type being in a scope object or in a top scope
+alias[effect:set_local_variable] = value_set[local_variable]
+
+### Adds prestige, gold and piety based on contribution to allied defenders. parameters: prestige, gold, piety.
+alias[effect:add_from_contribution_defenders] = {
+    ## cardinality = 0..1
+    prestige = value_field
+    ## cardinality = 0..1
+    piety = value_field
+    ## cardinality = 0..1
+    gold = value_field # TODO: Verify. Never used in vanilla files.
+    ## cardinality = 0..1
+    opinion = { # Not sure. Only used like this.
+        modifier = <opinion_modifier>
+    }
+}
+
+### = { holder = 'Character that should get the title' change = 'previously created title_and_vassal_change', adds a title change, will transfer vassals take_baronies = yes # Optional; if set, will cause baronies to be taken (rather than vassalized) as well if this title is a county
+alias[effect:change_title_holder_include_vassals] = single_alias_right[title_change]
+
+### Empties the list clear_variable_list = variable_name
+alias[effect:clear_global_variable_list] = value[global_variable_list]
+
+### Spends the scope secret, spend_by = target_character
+alias[effect:spend_by] = scope[character]
+
+### gives an unpressed claim to a character
+alias[effect:add_unpressed_claim] = scope[landed_title]
+
+### Remove all instances of a modifier from a province remove_all_province_modifier_instances = name
+alias[effect:remove_all_province_modifier_instances] = <modifier_container>
+
+### Add a modifier to a province add_province_modifier = name add_province_modifier = { modifier = name days/weeks/months/years = int }
+alias[effect:add_province_modifier] = single_alias_right[added_modifier]
+
+### sets the casus belli of the scope war
+alias[effect:set_casus_belli] = <casus_belli_type>
+
+### Sets a scheme cooldown for the scope character towards = { target=target_character type=scheme_type days/weeks/months/years = duration }
+alias[effect:add_scheme_cooldown] = {
+    target = scope[character]
+    type = <scheme>
+    enum[duration] = int
+}
+
+### increase the obligation level of the scoped character's vassal contract
+alias[effect:vassal_contract_increase_obligation_level] = replace_me # TODO: Define obligations.
+
+### Destroys a title
+alias[effect:destroy_title] = scope[landed_title]
+
+### Change the first name of a character change_first_name = <localization_key> change_first_name = scope:name/var:name # containing a flag with a localization key change_first_name = { template_character = scope:character } # copy name from the template character
+alias[effect:change_first_name] = localisation
+
+### Change the first name of a character change_first_name = <localization_key> change_first_name = scope:name/var:name # containing a flag with a localization key change_first_name = { template_character = scope:character } # copy name from the template character
+alias[effect:change_first_name] = scope[flag] # TODO: ? Not sure.
+
+### Change the first name of a character change_first_name = <localization_key> change_first_name = scope:name/var:name # containing a flag with a localization key change_first_name = { template_character = scope:character } # copy name from the template character
+alias[effect:change_first_name] = {
+    template_character = scope[character]
+}
+
+### The target character becomes the designated winner of the GHW. set_designated_winner = some character
+alias[effect:set_designated_winner] = scope[character]
+
+### Executes enclosed effects if limit criteria of preceding 'if' or 'else_if' is not met if = { limit = { <triggers> } <effects> } else = { <effects> }
+alias[effect:else] = {
+    ## cardinality = 1..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### ends the combat as the winning side (doesn't end the combat if evaluated to false)
+alias[effect:win_combat] = replace_me # Never used in vanilla files.
+
+### starts a war  = { casus_belli/cb = X target = Y claimant = Z target_title = W1 target_title = W2 ... } where X is a casus belli type, Y is the target character, Z i the (optional) claimant, W1, W2.... are targeted titles. If there are no title targets, the effect will pick one of possible title targets.
+alias[effect:start_war] = {
+    enum[cb] = <casus_belli_type>
+    target = scope[character]
+    ## cardinality = 0..1
+    claiman = scope[character]
+    ## cardinality = 0..inf
+    target_title = scope[landed_title]
+}
+
+### Add a modifier to a dynasty add_dynasty_modifier = name add_dynasty_modifier = { modifier = name days/weeks/months/years = int }
+alias[effect:add_dynasty_modifier] = single_alias_right[added_modifier]
+
+### Creates a dynamic title The title will be saved to scope:new_title usage: create_dynamic_title = { 	tier = <tier> 	name = key/dynamic description	adjective = key/dynamic description (optional; name used if not specified)}
+alias[effect:create_dynamic_title] = {
+    tier = enum[title_tiers]
+    name = localisation
+    ## cardinality = 0..1
+    adjective = localisation
+}
+
+### Tries to create an suggestuib notification. Will keep the current one if already exists. suggestion_type = suggestion_type_key - the suggestion action object key to create. Must be defined. actor = character_actor - optional, can be used by the suggestion effect recipient = character_actor - optional, can be used by the suggestion effect secondary_actor = character_secontary_actor - optional, can be used by the suggestion effect secondary_recipient = character_secondary_recipient - optional, can be used by the suggestion effect landed_title = landed_title - optional, can be used by the suggestion effect
+alias[effect:try_create_suggestion] = replace_me # TODO: Define suggestions type.
+
+### Changes the value or a numeric variable change_variable = { name = X operation = Y } Where X is the name of the numeric variable to modify Where the valid operations are add, subtract, multiply, divide and modulo Where Y is a fixed point value, script value or event target of a value type
+alias[effect:change_local_variable] = {
+    name = value[local_variable]
+    alias_name[arithmetic_operation] = alias_match_left[arithmetic_operation]
+}
+
+### Sets if the title should disallow automatic claims (meaning claims will only be added by script, and by pressed claims being inherited). set_no_automatic_claims = yes
+alias[effect:set_no_automatic_claims] = yes
+
+### Add innovation to a culture
+alias[effect:add_innovation] = <innovation>
+
+### The scoped province gets its levy refilled. refill_levy = yes/no
+alias[effect:refill_levy] = bool
+
+### increases (or decreases) the piety level of a character
+alias[effect:add_piety_level] = int_value_field
+
+### 'Consume' all divorce reason that the scoped character has on the target character. Until they get a new reason, they cannot divorce the target again.
+alias[effect:consume_divorce_reasons] = scope[character]
+
+### add_faction_discontent = X adds (or subtracts) discontent to the scope faction
+alias[effect:add_faction_discontent] = int_value_field
+
+### adds (or removes) tyranny to (or from) a character
+alias[effect:add_tyranny] = int_value_field
+
+### Adds the perk for this character
+alias[effect:add_perk] = <lifestyle_perk>
+
+### Sets focus progress
+alias[effect:set_focus_progress] = replace_me # TODO: Check. Never used in vanilla.
+
+### Removes a variable remove_variable = variable_name
+alias[effect:remove_local_variable] = value[local_variable]
+
+### releases the character from the prison, imprison = X, where X is a boolean value
+alias[effect:release_from_prison] = bool
+
+### Sets the given character as designated heir
+alias[effect:set_designated_heir] = scope[character]
+
+### Allow the character to join the scheme as an agent
+alias[effect:allow_in_scheme] = bool # Probably.
+
+### Log a string to the debug log when this effect executes, debug_log = message, the message can be a localization string with ROOT, SCOPE and PREV available
+alias[effect:debug_log] = localisation
+
+### Adds lifestyle per points to the given character
+alias[effect:add_diplomacy_lifestyle_perk_points] = int_value_field
+
+### Sets if this character has absolute country control, unlock_character_movement = yes/no/boolean event target
+alias[effect:set_absolute_country_control] = bool
+
+### Add the scope character as the target character's guest
+alias[effect:visit_court_of] = scope[character]
+
+### Sets if the title should be destroyed on succession. set_destroy_on_succession = yes
+alias[effect:set_destroy_on_succession] = yes
+
+### Sets the sexuality of the character
+alias[effect:set_sexuality] = <game_concept.sexuality>
+
+### Saves the current scope as an arbitrarily-named temporary target to be referenced later in the same effect save_temporary_event_target_as = <string>
+alias[effect:save_temporary_scope_as] = value_set[temporary_scope]
+
+### Adds a temporary reverse opinion modifier, reverse_add_opinion = { modifier = X days/months/years = Y target = Z } X is a scripted modifier name. Y can be a value or a range "{ A B }" If no timeout are specified, the modifier's scripted default timeout will be used.
+alias[effect:reverse_add_opinion] = {
+    target = scope[character]
+    modifier = <opinion_modifier>
+    ## cardinality = 0..1
+    opinion = int_value_field
+}
+
+### starts a scheme  = { type = X target = Y }
+alias[effect:start_scheme] = {
+    type = <scheme>
+    target = scope[character]
+}
+
+### Exposes the scheme to the defender
+alias[effect:expose_scheme] = yes
+
+### decline a characters invitation to the activity
+alias[effect:decline_invitation_for_character] = scope[character]
+
+### Changes the value or a numeric variable change_variable = { name = X operation = Y } Where X is the name of the numeric variable to modify Where the valid operations are add, subtract, multiply, divide and modulo Where Y is a fixed point value, script value or event target of a value type
+alias[effect:change_variable] = {
+    name = value[variable]
+    alias_name[arithmetic_operation] = alias_match_left[arithmetic_operation]
+}
+
+### Add the target character as the scope character's guest
+alias[effect:add_visiting_courtier] = scope[character]
+
+### The scoped province gets its garrison refilled. refill_levy = yes/no
+alias[effect:refill_garrison] = bool
+
+### spawns an activity, spawn_activity = { owner = X type = Y days/months/years = Z }, Z is expiration time can be a value or an inclusive "{A B}" interval from which the value will be picked
+alias[effect:spawn_activity] = replace_me # TODO
+
+### Wraps effects that get a custom description instead of the auto-generated one custom_description = { 	text = <effect_localization_key> 	subject = <optional subject scope> #defaults to current scope 	object = <optional object scope> 	value = <optional script value> 	... effects ... }
+alias[effect:custom_description] = {
+    text = <effect_localization>
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Set the culture for this character
+alias[effect:set_culture] = <culture>
+
+### adds (or removes) dread to a character
+alias[effect:add_dread] = int_value_field
+
+### Exposes the target character as an agent of the current scheme
+alias[effect:expose_scheme_agent] = scope[character]
+
+### adds the target character to the scope war as a defender
+alias[effect:add_defender] = scope[character]
+
+### Changes the fervor of the faith by the given value. change_fervor = script value
+alias[effect:change_fervor] = int_value_field
+
+### The scope character creates a cadet branch of the house he is in [yes|no]
+alias[effect:create_cadet_branch] = bool
+
+### Imprisons the target character as this character's prisoner, imprison = { target = X reason = Y type = Z }, where X is a character, Y is a flag, Z is a static modifier
+alias[effect:imprison] = {
+    target = scope[character]
+    type = <modifier_container> # Accepts static modifiers that act as imprisonment types (dungeon/house_arrest)
+    ## cardinality = 0..1
+    reason = scalar # TODO: Can't find in vanilla files.
+}
+
+### Changes the amount of piety in the war chest by the given amount. change_war_chest_piety = script value
+alias[effect:change_war_chest_piety] = int_value_field
+
+### Remove all instances of a modifier from a dynasty remove_all_dynasty_modifier_instances = name
+alias[effect:remove_all_dynasty_modifier_instances] = <modifier_container>
+
+### The scoped GHW gives out its war-chest in full or in part. divide_war_chest = { 	defenders = yes (default to attackers instead) 	faction = script value (default 1 for 100%) 	gold = no (default = yes) 	piety = no (default = yes) 	prestige = no (default = yes) }
+alias[effect:divide_war_chest] = {
+    ## cardinality = 0..1
+    defenders = bool
+    ## cardinality = 0..1
+    fraction = value_field
+    ## cardinality = 0..1
+    gold = bool
+    ## cardinality = 0..1
+    piety = bool
+    ## cardinality = 0..1
+    prestige = bool
+}
+
+### Remove all instances of a modifier from a county remove_all_county_modifier_instances = name
+alias[effect:remove_all_county_modifier_instances] = <modifier_container>
+
+### The scope character fires the target character form teh council.
+alias[effect:fire_councillor] = scope[character]
+
+### Removes a temporary opinion modifier, remove_opinion = { target = X modifier = Y single = Z (no by default) } where X is a character, Y is the opinion modifier, Z tells whether to remove all instances of the modifier or just one
+alias[effect:remove_opinion] = {
+    modifier = <opinion_modifier>
+    target = scope[character]
+}
+
+### Changes what faith a character has executing the effects for it
+alias[effect:set_character_faith] = scope[faith]
+
+### = { holder = 'Character that should get the title' change = 'previously created title_and_vassal_change', adds a title change, will not transfer vassalstake_baronies = yes # Optional; if set, will cause baronies to be taken (rather than vassalized) as well if this title is a county
+alias[effect:change_title_holder] = single_alias_right[title_change]
+
+### Get random available innovation from another culture
+alias[effect:get_random_innovation_from] = scope[culture]
+
+### The scoped character (courtier or guest) leaves their current court and moves into the pool scope:guest = { move_to_pool = yes }
+alias[effect:move_to_pool] = yes
+
+### Adds martial skill
+alias[effect:add_martial_skill] = int_value_field
+
+### Removes the target from a variable list remove_list_variable = { name = X target = Y } Where X is the name of the variable Where Y is an event target
+alias[effect:remove_list_variable] = {
+    name = value[variable_list]
+
+    ## cardinality = 0..1
+    target = value_field
+    ## cardinality = 0..1
+    target = scope_field
+}
+
+### the scope faction is destoryed [yes|no]
+alias[effect:destroy_faction] = bool
+
+### The GHW stops having a designated winner. reset_designated_winner = yes
+alias[effect:reset_designated_winner] = yes
+
+### Sets if the title should use a definitive form name (no 'Kingdom of') set_definitive_form = yes
+alias[effect:set_definitive_form] = yes
+
+### Sets a variable set_variable = { name = X value = Y days = Z } Where X is the name of the variable used to then access it Where Y is any event target, bool, value, script value or flag (flag:W) An optional days where Z is the number of days or script value This variable will be accessible with <type_>var:X. With type being in a scope object or in a top scope
+alias[effect:set_variable] = {
+    name = value_set[variable]
+
+    ## cardinality = 0..1
+    enum[duration] = int
+
+    ## cardinality = 0..1
+    value = value_field
+    ## cardinality = 0..1
+    value = scope_field
+}
+
+### Sets a variable set_variable = { name = X value = Y days = Z } Where X is the name of the variable used to then access it Where Y is any event target, bool, value, script value or flag (flag:W) An optional days where Z is the number of days or script value This variable will be accessible with <type_>var:X. With type being in a scope object or in a top scope
+alias[effect:set_variable] = value_set[variable]
+
+### Add random available innovation<culture> = { add_random_innovation = culture_group_military/culture_group_civic/culture_group_regional/yes }
+alias[effect:add_random_innovation] = enum[innovation_group]
+
+### Add random available innovation<culture> = { add_random_innovation = culture_group_military/culture_group_civic/culture_group_regional/yes }
+alias[effect:add_random_innovation] = yes
+
+### 'Consume' all banish reasons that the scoped character has on the target character. Until they get a new reason, they cannot banish the target again.
+alias[effect:consume_banish_reasons] = scope[character]
+
+### Uses a hook a character has (removes if weak, puts on cooldown if strong), use_hook = some_character
+alias[effect:use_hook] = scope[character]
+
+### Removes the special character for the scope faction
+alias[effect:remove_special_character] = replace_me # TODO: Not used in vanilla.
+
+### Adds lifestyle per points to the given character
+alias[effect:add_intrigue_lifestyle_perk_points] = int_value_field
+
+### the charcter in the scope leaves the assigned faction
+alias[effect:leave_faction] = scope[faction]
+
+### Adds lifestyle per points to the given character
+alias[effect:add_martial_lifestyle_perk_points] = int_value_field
+
+### Plays the specified music cue.
+alias[effect:play_music_cue] = scalar # TODO: Music folder.
+
+### Multiplies focus progress
+alias[effect:multiply_focus_progress] = replace_me # TODO: Not used in vanilla.
+
+### Adds the current scope to an arbitrarily-named list (or creates the list if not already present) to be referenced later in the (unbroken) event chain add_to_list = <string> NOTE, if adding a permanent target to a temporary list, the whole list becomes permanent
+alias[effect:add_to_list] = value_set[list]
+
+### Set the character to lowborn
+alias[effect:set_to_lowborn] = yes
+
+### = { attacker = scope:attacker  defender = scope:defender  change = scope:change victory = yes/no title = some title - Optional; will make it target a specific dejure title rather than *everything* that is dejure the attacker's }, this effect will add a scope:cb_prestige_factor with a value based on what's being taken
+alias[effect:setup_de_jure_cb] = {
+    ## cardinality = 0..1
+    title = scope[landed_title]
+    attacker = scope[character]
+    defender = scope[character]
+    ## cardinality = 0..1
+    change = scope[title_and_vassal_change]
+    ## cardinality = 0..1
+    victory = bool
+}
+
+### changes the government of a character
+alias[effect:change_government] = <government>
+
+### The character gets banished.
+alias[effect:banish] = yes
+
+### makes a claim strong (character adds the claim if not having it already)
+alias[effect:make_claim_strong] = scope[landed_title]
+
+### Rounds a variable to the nearest specified value clamp_variable = { name = X nearest = Y } Where X is the name of the variable Where Y is a script value
+alias[effect:round_global_variable] = {
+    name = value[global_variable]
+    nearest = value_field
+}
+
+### Changes the development level of a title. If the title has higher tier than county, the effect will propagate down to all counties below it.
+alias[effect:change_development_level] = int_value_field
+
+### adds gold to a character
+alias[effect:add_gold] = int_value_field
+
+### Removes the target character (guest or courtier) from the scope character's court scope:host = { remove_courtier_or_guest = scope:guest } # move to pool, staying in same province scope:host = { 	remove_courtier_or_guest = { 		character = scope:guest 		new_location = scope:some_province # optionally specify a new location 	} }
+alias[effect:remove_courtier_or_guest] = scope[character]
+
+### Adds dynasty perk. add_dynasty_perk = key
+alias[effect:add_dynasty_perk] = replace_me # TODO: Define dynasty perks.
+
+### Remove a modifier from a dynasty remove_dynasty_modifier = name
+alias[effect:remove_dynasty_modifier] = <modifier_container>
+
+### Revoke the lease of the scoped title revoke_lease = yes
+alias[effect:revoke_lease] = yes
+
+### ù?`¬Ÿ²@ðøßª’
+alias[effect:send_interface_message] = {
+    ## cardinality = 0..1
+    ### Default `send_interface_toast`.
+    type = <message>
+    ## cardinality = 0..1
+    title = localisation
+    ## cardinality = 0..1
+	desc = localisation
+    ## cardinality = 0..1
+    tooltip = localisation
+    ## cardinality = 0..1
+    left_icon = scope[character]
+    ## cardinality = 0..1
+    left_icon = scope[landed_title]
+    ## cardinality = 0..1
+    right_icon = scope[character]
+    ## cardinality = 0..1
+    right_icon = scope[landed_title]
+    ## cardinality = 0..1
+    goto = scope[character]
+    ## cardinality = 0..1
+    goto = scope[landed_title]
+		
+    ## cardinality = 0..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### The target character stops having a beneficiary. reset_beneficiary = yes
+alias[effect:reset_beneficiary] = yes
+
+### Add the target character to the scope character's court
+alias[effect:add_courtier] = scope[character]
+
+### Create a new holy order create_holy_order = {     leader = scope:a_character     capital = scope:a_barony_title     save_scope_as = new_holy_order # optional way to get a reference to the new holy order }
+## push_scope = holy_order
+alias[effect:create_holy_order] = {
+    save_scope_as = value_set[event_target]
+}
+
+### Adds intrigue skill
+alias[effect:add_intrigue_skill] = int_value_field
+
+### Saves a numerical or bool value as an arbitrarily-named target to be referenced later in the (unbroken) event chain save_scope_value_as = { name = <string> value = x }
+alias[effect:save_scope_value_as] = {
+    name = value_set[event_target]
+    value = value_field
+}
+
+### Removes a hook on a character, remove_hook = { target = X, type = Y }, if type is specified, the hook will only be removed if it is of that type
+alias[effect:remove_hook] = {
+    target = scope[character]
+    ## cardinality = 0..1
+    type = <hook_types>
+}
+
+### Starts a great holy war. start_great_holy_war = {target_character = someonetarget_title = some titledelay = script value # Number of days until the war should startwar = some war # Optional. Will make this a directed GHW instead of undirected, and tie it to this specific war}
+alias[effect:start_great_holy_war] = {
+    target_character = scope[character]
+    target_title = scope[landed_title]
+    ## cardinality = 0..1
+    delay = value_field
+    ## cardinality = 0..1
+    war = scope[war]
+}
+
+### removes an explicit (not from a living parent/grand parent) claim
+alias[effect:remove_claim] = scope[landed_title]
+
+### invite a character to the activity
+alias[effect:invite_character_to_activity] = scope[character]
+
+### adds a character flag usage: add_character_flag = X add_character_flag = { flag = X days/weeks/years = Y } where X is the name of the flag and Y is a value or value interval "{ min max }"
+alias[effect:add_character_flag] = {
+    flag = value_set[character_flag]
+    ## cardinality = 0..1
+    enum[duration] = int
+}
+
+### adds a character flag usage: add_character_flag = X add_character_flag = { flag = X days/weeks/years = Y } where X is the name of the flag and Y is a value or value interval "{ min max }"
+alias[effect:add_character_flag] = value_set[character_flag]
+
+### adds the target character to the scope war as an attacker
+alias[effect:add_attacker] = scope[character]
+
+### gives (or takes) prestige experience to a character
+alias[effect:add_prestige_experience] = int_value_field
+
+### The councillor finish the current assigned task successfully.
+alias[effect:finish_council_task] = yes
+
+### Set the default education focus for this character
+alias[effect:set_default_education] = yes
+
+### Remove a modifier from a county remove_county_modifier = name
+alias[effect:remove_county_modifier] = <modifier_container>
+
+### a random effect, random = { chance = X modifier = Y effects... } where X is a chance of the enclosed effects being fired and can be modified by optional value modifier list (AKA MTTH) Y
+alias[effect:random] = {
+    chance = int_value_field
+
+    ## cardinality = 0..inf
+    modifier = single_alias_right[weight_chance_modifier]
+
+    ## cardinality = 1..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Creates a character save_event_target_as = flag - save the character as an event target save_temporary_event_target_as = flag - save the character as a temporary event target name =  age =  gender = male/female/character scope gender_female_chance = script_value  - Range (0..100)opposite_gender = character scope trait = add this trait random_traits_list = { count = { 1 5 } traitID = { some triggers } traitID = { some triggers } } - A number of traits specified by count (1 if not specified) will be picked from the traits that have their triggers met. Scopes are the same as where create_character is used. More than one grouping like this can be defined  random_traits = yes/no health =  fertility =  mother =  father =  real_father = (should only be set if the real father is not the same as father=) employer = will end up in this court, will become a pool character unless specified or father/mother is landed location = pool province; mutually exclusive with employer template_character =  faith, culture and dynasty are set from 1. template_character 2. father 3. mother 4. employer (not employer for dynasty) unless specified directly faith = faith tag OR a faith scope random_faith = { catholic = { some triggers } cathar = { some triggers }. Random one where the triggers are met will be picked. Scopes are the same as where create_character is used  random_faith_in_religion = religion tag OR a faith scope (there's no religion scope) culture = culture name OR a culture scope random_culture = { norse = { some triggers } norwegian = { some triggers }. Random one where the triggers are met will be picked. Scopes are the same as where create_character is used  random_culture_in_group = culture group name OR a culture scope (there's no group scope) dynasty_house = dynasty house name OR a dynasty house scope dynasty = generate/none - What to do if dynasty_house is not specified, rather than falling back to template character etc. martial/diplomacy/intrigue...  =  will get random unles
+alias[effect:create_character] = {
+    ## cardinality = 0..1
+    save_scope_as = value_set[event_target]
+    ## cardinality = 0..1
+    save_temporary_scope_value_as = value_set[temporary_scope]
+    ## cardinality = 0..1
+    name = localisation
+    ## cardinality = 0..1
+    age = int_value_field
+    ## cardinality = 0..1
+    gender = enum[genders]
+    ## cardinality = 0..1
+    gender = scope[character]
+    ## cardinality = 0..1
+    gender_female_chance = value_field
+    ## cardinality = 0..1
+    opposite_gender = scope[character]
+    ## cardinality = 0..inf
+    trait = <trait>
+    ## cardinality = 0..inf
+    random_traits_list = single_match_right[random_traits_list]
+    ## cardinality = 0..1
+    random_traits = bool
+    ## cardinality = 0..1
+    health = float
+    ## cardinality = 0..1
+    fertility = float
+    ## cardinality = 0..1
+    mother = scope[character]
+    ## cardinality = 0..1
+    father = scope[character]
+    ## cardinality = 0..1
+    real_father = scope[character]
+    ## cardinality = 0..1
+    employer = scope[character]
+    ## cardinality = 0..1
+    location = scope[province]
+    ## cardinality = 0..1
+    template = scalar # TODO: Need to define character templates.
+    ## cardinality = 0..1
+    template_character = scope[character]
+    ## cardinality = 0..1
+    faith = <faith>
+    ## cardinality = 0..1
+    faith = scope[faith]
+    ## cardinality = 0..1
+    random_faith = {
+        ## cardinality = 0..inf
+        <faith> = {
+            ## cardinality = 0..inf
+            alias_name[trigger] = alias_match_left[trigger]
+        }
+        ## cardinality = 0..inf
+        scope[faith] = {
+            ## cardinality = 0..inf
+            alias_name[trigger] = alias_match_left[trigger]
+        }
+    }
+    ## cardinality = 0..1
+    random_faith_in_religion = <religion>
+    ## cardinality = 0..1
+    random_faith_in_religion = scope[faith]
+    ## cardinality = 0..1
+    culture = <culture>
+    ## cardinality = 0..1
+    culture = scope[culture]
+    ## cardinality = 0..1
+    random_culture = {
+        ## cardinality = 0..inf
+        <culture> = {
+            ## cardinality = 0..inf
+            alias_name[trigger] = alias_match_left[trigger]
+        }
+        ## cardinality = 0..inf
+        scope[culture] = {
+            ## cardinality = 0..inf
+            alias_name[trigger] = alias_match_left[trigger]
+        }
+    }
+    ## cardinality = 0..1
+    random_culture_in_group = <culture_group>
+    ## cardinality = 0..1
+    random_culture_in_group = scope[culture]
+    ## cardinality = 0..1
+    dynasty_house = scalar # TODO: Define dynasty house type.
+    ## cardinality = 0..1
+    dynasty_house = scope[dynasty_house]
+    ## cardinality = 0..1
+    dynasty = enum[dynasty_inheritance]
+    ## cardinality = 0..1
+    enum[event_option_skills] = int_value_field
+    ## cardinality = 0..1
+    ## push_scope = character
+    after_creation = { 
+        alias_name[effect] = alias_match_left[effect]
+    }
+}
+
+### Saves a numerical or bool value as an arbitrarily-named temporary target to be referenced later in the same effect save_temporary_scope_value_as = { name = <string> value = x }
+alias[effect:save_temporary_scope_value_as] = {
+    name = value_set[temporary_scope]
+    value = value_field
+}
+
+### Clamps a variable the specified max and min clamp_variable = { name = X max = Y min = Z } Where X is the name of the variable Where Y and Z are script values
+alias[effect:clamp_local_variable] = {
+    name = value[local_variable]
+    max = value_field
+    min = value_field
+}
+
+### Saves the current scope as an arbitrarily-named target to be referenced later in the (unbroken) event chain save_event_target_as = <string>
+alias[effect:save_scope_as] = value_set[event_target]
+
+### ends the war with the specified winner, end_war = attacker/defender/white_peace
+alias[effect:end_war] = enum[war_ender]
+
+### Marries the scoped character to the target character marry = target
+alias[effect:marry] = scope[character]
+
+### Adds a flag to an existing relation flag = flag_name (declared in scripted_relation) target = other_character relation = scripted_relation  Flags must be defined in the scripted relation before they can be used.  There is a limited number of possible relation flags, set in code. They cannot have a timeout, because they are only possible due to being extremely undemanding of resources.
+alias[effect:add_relation_flag] = single_alias_right[relation_flag_clause]
+
+### The target character becomes the character that should declare war instead of the religious head. set_war_declarer = some character
+alias[effect:set_war_declarer] = scope[character]
+
+### sets the target character as already called to the scope war
+alias[effect:set_called_to] = scope[character]
+
+### Adds lifestyle XP to the given character
+alias[effect:add_martial_lifestyle_xp] = int_value_field
+
+### Sets the child to be (or not be) a child of a concubine during pregnancy
+alias[effect:set_child_of_concubine_on_pregnancy] = yes # TODO: Probably. Not used.
+
+### Executes enclosed effects if limit criteria are met if = { limit = { <triggers> } <effects> }
+alias[effect:if] = {
+    limit = {
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Sets the special title for the scope faction
+alias[effect:set_special_title] = scope[landed_title]
+
+### Removes a variable remove_variable = variable_name
+alias[effect:remove_global_variable] = value[global_variable]
+
+### The scoped character (courtier/guest/pool character) leaves their current court (if any) and moves into the pool of the specified province scope:guest = { move_to_pool_at = scope:some_province }
+alias[effect:move_to_pool_at] = scope[province]
+
+### Remove all instances of a modifier from a character remove_all_character_modifier_instances = name
+alias[effect:remove_all_character_modifier_instances] = <modifier_container>
+
+### Adds lifestyle per points to the given character
+alias[effect:add_stewardship_lifestyle_perk_points] = int_value_field
+
+### Removes the target from a variable list remove_list_variable = { name = X target = Y } Where X is the name of the variable Where Y is an event target
+alias[effect:remove_list_global_variable] = {
+    name = value[global_variable_list]
+
+    ## cardinality = 0..1
+    target = value_field
+    ## cardinality = 0..1
+    target = scope_field
+}
+
+### Betroth the scope character to the target character, create_betrothal = target (at least one of the characters need to not be adult)
+alias[effect:create_betrothal] = scope[character]
+
+### Add a modifier to a county add_county_modifier = name add_county_modifier = { modifier = name days/weeks/months/years = int }
+alias[effect:add_county_modifier] = single_alias_right[added_modifier]
+
+### Spawns an army for this character Usage: spawn_army = { levies = int/script value # optional, number of men men_at_arms = { # optional, multiple can be specified. Need either levies or MAA type = key men/stacks = int/script value } location = province origin = province # optional, location used if not set. This is used for where to base bonuses and the like on war = war # optional. If set, the stack will disband after the war ends inheritable = yes/no # Default: yes uses_supply = yes/no # Default: yes army = army # optional. If set, the stack will merge into this army save_scope_as/save_temporary_scope_as = new_army # optional way to get a reference to the new army. Note this might not be set if the army wasn't spawned (e.g. if the character is not at war) name = description # gives the troops a specific name that shows up in interfaces }
+alias[effect:spawn_army] = {
+    name = localisation
+    
+    ## cardinality = 0..1
+    levies = int_value_field
+    ## cardinality = 0..inf
+    men_at_arms = {
+        type = <regiment_type>
+        stacks = int_value_field
+    }
+    ## cardinality = 0..1
+    location = <province>
+    ## cardinality = 0..1
+    location = scope[province]
+    ## cardinality = 0..1
+    origin = <province>
+    ## cardinality = 0..1
+    origin = scope[province]
+    ## cardinality = 0..1
+    war = scope[war]
+    ## cardinality = 0..1
+    inheritable = bool
+    ## cardinality = 0..1
+    uses_supply = bool
+    ## cardinality = 0..1
+    army = scope[army]
+
+    ## cardinality = 0..1
+    ### Cannot be set if army cannot be spawned (eg. char not at war).
+    save_scope_as = value_set[event_target]
+    ## cardinality = 0..1
+    ### Cannot be set if army cannot be spawned (eg. char not at war).
+    save_temporary_scope_as = value_set[temporary_scope]
+}
+
+### Assigns the target character to the first available council position of the type available assign_council_task = {     council_task = council_task_scope     target = character_taking_the_position    fire_on_actions = [yes] }
+alias[effect:assign_council_task] = {
+    council_task = scope[council_task]
+    target = scope[character]
+    ## cardinality = 0..1
+    fire_on_actions = bool
+}
+
+### Adds a trait to a character (the trait will not be added and no tooltip will be shown if the character isn't eligible for the trait, i.e. when already having the trait, having an opposing trait, not fulfilling the trait's is_potential trigger or being outside of the trait's range)
+alias[effect:add_trait] = <trait>
+
+### Give a nickname to this character
+alias[effect:give_nickname] = <nickname>
+
+### Changes the county control of a title. If the title has higher tier than county, the effect will propagate down to all counties below it.
+alias[effect:change_county_control] = int_value_field
+
+### add_targeting_factions_discontent = X adds (or subtracts) discontent to all the factions that are targeting the scope character
+alias[effect:add_targeting_factions_discontent] = int_value_field
+
+### Executes enclosed effects if limit criteria of preceding 'if' or 'else_if' is not met, and its own limit is met if = { limit = { <triggers> } <effects> } else_if = { limit = { <triggers> } <effects> }
+alias[effect:else_if] = {
+    limit = {
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Adds the given law to the scoped character
+alias[effect:add_realm_law] = <law>
+
+### Sets the trait rank = { trait = trait_group rank = new rank }
+alias[effect:set_trait_rank] = {
+    trait = value[trait_group]
+    rank = int
+}
+
+### makes a character pregnant   father= 'the real father'  number_of_children= X  known_bastard=yes/no
+alias[effect:make_pregnant] = {
+    father = scope[character]
+    number_of_children = int_value_field
+    ## cardinality = 0..1
+    known_bastard = bool
+}
+
+### Reveals the scope secret to the target character
+alias[effect:reveal_to] = scope[character]
+
+### Conditionally cause an assert during read time assert_read = X, where X is yes or the string to be printed in the assert
+alias[effect:assert_read] = yes
+
+### Conditionally cause an assert during read time assert_read = X, where X is yes or the string to be printed in the assert
+alias[effect:assert_read] = scalar
+
+### Add the scope character to the target character's court
+alias[effect:set_employer] = scope[character]
+
+### Rounds a variable to the nearest specified value clamp_variable = { name = X nearest = Y } Where X is the name of the variable Where Y is a script value
+alias[effect:round_variable] = {
+    name = value[variable]
+    nearest = value_field
+}
+
+### Sets the dynasty house of the character
+alias[effect:set_house] = scope[dynasty_house]
+
+### Sets if the title should be destroyed on succession if there's no heir matching its restrictions. set_destroy_if_invalid_heir = yes
+alias[effect:set_destroy_if_invalid_heir] = yes
+
+### completes the activity, complete_activity = yes ends the activity and runs the on_complete effect, complete_activity = no ends the activity without running the effect
+alias[effect:complete_activity] = bool
+
+### Copy title history from another title copy_title_history = source_title
+alias[effect:copy_title_history] = scope[landed_title]
+
+### Adds the event target to a variable list add_to_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
+alias[effect:add_to_local_variable_list] = {
+    name = value_set[local_variable_list]
+
+    ## cardinality = 0..1
+    target = value_field
+    ## cardinality = 0..1
+    target = scope_field
+}
+
+### sets the father of a character
+alias[effect:set_father] = scope[character]
+
+### Adds prowess skill
+alias[effect:add_prowess_skill] = int_value_field
+
+### The scoped character will put their beneficiary on the throne if they're the #1 participant if this is called with 'yes'. Call with 'no' to turn it off again. set_override_designate_winner = yes/no
+alias[effect:set_override_designated_winner] = bool
+
+### The scope character will no longer be prunable after their death. Use with care, as this will make everyone related to them unprunable too. So you should only use this if someone absolutely *needs* to stick around several years after their death. Example: make_unprunable = yes
+alias[effect:make_unprunable] = bool
+
+### Removes the target character as a concubine of the scope character
+alias[effect:remove_concubine] = scope[character]
+
+### Clamps a variable the specified max and min clamp_variable = { name = X max = Y min = Z } Where X is the name of the variable Where Y and Z are script values
+alias[effect:clamp_global_variable] = {
+    name = value[global_variable]
+    max = value_field
+    min = value_field
+}
+
+### gives a pressed claim to a character
+alias[effect:add_pressed_claim] = scope[landed_title]
+
+### gives a pressed claim to a character
+alias[effect:add_pressed_claim] = <title> # TODO: Doesn't seem to work correctly atm, probably some bad typing with titles.
+
+### Adds the current scope to an arbitrarily-named list (or creates the list if not already present) to be referenced later in the same effect add_to_temporary_list = <string> NOTE, if adding a temporary target to a permanent list, the list will stay permanent  This is used to build lists in triggers. If used within an any-trigger, placement within the trigger is quite important. The game will iterate through every instance of the any-trigger until it finds a single instance that fulfills the requirements, and then it will stop. In order to add every instance of a scope that fulfills certain conditions, use "count = all" while also placing this "effect" at the very end of the any-trigger (so that every condition is evaluated for every iteration).
+alias[effect:add_to_temporary_list] = value_set[temporary_list]
+
+### Adds a hook on a character add_hook = { type = X, target = Y, secret = Z, days/months/years = W  } (days/months/years optional (taken from hook type otherwise) and can be a value or an interval, secret required for hook types that require it)
+alias[effect:add_hook] = {
+    type = <hook_types>
+    target = scope[character]
+}
+
+### Refunds all perks of the character. Example: refund_all_perks = yes
+alias[effect:refund_all_perks] = yes
+
+### Rounds a variable to the nearest specified value clamp_variable = { name = X nearest = Y } Where X is the name of the variable Where Y is a script value
+alias[effect:round_local_variable] = {
+    name = value[local_variable]
+    nearest = value_field
+}
+
+### Add a modifier to a character add_character_modifier = name add_character_modifier = { modifier = name days/weeks/months/years = int }
+alias[effect:add_character_modifier] = single_alias_right[added_modifier]
+
+### Adds lifestyle per points to the given character
+alias[effect:add_learning_lifestyle_perk_points] = int_value_field
+
+### the title in the scope leaves the assigned faction
+alias[effect:title_leave_faction] = scope[faction]
+
+### the scoped landed title creates a faction of the specified type against the specified target, title_create_faction = { type = X target = Y }
+alias[effect:title_create_faction] = replace_me # TODO: Define factions type.
+
+### Repeats enclosed effects while limit criteria are met or until set iteration count is reached while = { limit = { <triggers> } <effects> }  while = { count = 3 <effects> } Default max of 1000.
+alias[effect:while] = {
+    limit = {
+        ## cardinality = 1..inf
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+    ## cardinality = 0..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Repeats enclosed effects while limit criteria are met or until set iteration count is reached while = { limit = { <triggers> } <effects> }  while = { count = 3 <effects> } Default max of 1000.
+alias[effect:while] = {
+    count = int
+    ## cardinality = 0..inf
+    alias_name[effect] = alias_match_left[effect]
+}
+
+### Changes the charater's prison type. Scoped character is the prisoner. Accepts any static modifier (see also improson effect). change_prison_type = house_arrest
+alias[effect:change_prison_type] = <modifier_container>
+
+### Makes a battle event show up in combat, and the combat result summary. The key is used for loc, with '_friendly' or '_enemy' appended. If this side is not the player's side, the two portraits get flipped. battle_event = { left_portrait = someone right_portrait = someone key = string }
+alias[effect:battle_event] = {
+    key = localisation
+    left_portrait = scope[character]
+    ## cardinality = 0..1
+    right_portrait = scope[character]
+    ## cardinality = 0..1
+    target_right = yes
+    type = enum[battle_event_type]
+}
+
+### = { attacker = scope:attacker   defender = scope:defender    change = scope:change victory = yes/no   take_occupied = yes/no } , this effect will add a scope:cb_prestige_factor with a value based on what's being taken
+alias[effect:setup_invasion_cb] = {
+    titles = value[list]
+    attacker = scope[character]
+    defender = scope[character]
+    claimant = scope[character]
+    ## cardinality = 0..1
+    change = scope[title_and_vassal_change]
+    ## cardinality = 0..1
+    victory = bool
+    ## cardinality = 0..1
+    take_occupied = bool
+}
+
+### Makes the target character a concubine of the scope character, the target should not be imprisoned
+alias[effect:make_concubine] = scope[character]
+
+### gives a title to a character
+alias[effect:get_title] = scope[landed_title]
+
+### gives a title to a character
+alias[effect:get_title] = <title>
+
+### = scope:change Execute and destory the target title and vassal change, the change cannot be used after calling this effect
+alias[effect:resolve_title_and_vassal_change] = scope[title_and_vassal_change]
+
+### Changes what faith a character has, as if they used the faith-view interaction (minus the piety cost). So vassals who'd accept will get converted, as will capitals
+alias[effect:set_character_faith_with_conversion] = scope[faith]
+
+### Removes a trait from a character. Tooltip will not been shown if the character doesn't has the trait.
+alias[effect:remove_trait] = <trait>
+
+### Remove the perk for this character
+alias[effect:remove_perk] = <lifestyle_perk>
+
+### Adds lifestyle XP to the given character
+alias[effect:add_intrigue_lifestyle_xp] = int_value_field
+
+### scheme_freeze_days = X freezes the scheme for X days (0 unfreezes the scheme)
+alias[effect:scheme_freeze_days] = int_value_field
+
+### the scoped character creates a faction of the specified type against the specified target, create_faction = { type = X target = Y }
+alias[effect:create_faction] = replace_me # TODO: Define factions.
+
+### Changes the amount of prestige in the war chest by the given amount. change_war_chest_prestige = script value
+alias[effect:change_war_chest_prestige] = int_value_field
+
+### Sets the special character for the scope faction
+alias[effect:set_special_character] = scope[faction]
+
+### Returns the scope character to the employers court.
+alias[effect:return_to_court] = yes
+
+### Removes a trait from a character. Tooltip will be shown even if the character doesn't has the trait.
+alias[effect:remove_trait_force_tooltip] = <trait>
+
+### Conditionally cause an assert during run time assert_if = { limit = { X } text = Y }, where X is a trigger and Y is an optional string
+alias[effect:assert_if] = {
+    limit = {
+        ## cardinality = 1..inf
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+    ## cardinality = 0..1
+    text = localisation
+}
+
+### Ends the truce against the specified character, and theirs against the scoped character. cancel_truce_both_ways = scope:character
+alias[effect:cancel_truce_both_ways] = scope[character]
+
+### remove all title laws from the scoped title clear_title_laws = yes
+alias[effect:clear_title_laws] = yes
+
+### Divorces the scope character from the target character. divorce = target
+alias[effect:divorce] = scope[character]
+
+### Add building to the province<province> = { add_building = <building_name> }
+alias[effect:add_building] = <building>
+
+### decrease the obligation level of the scoped character's vassal contract
+alias[effect:vassal_contract_decrease_obligation_level] = replace_me # TODO: Define vassal contracts.
+
+### Log the current scope to the game log when this effect executes yes = full scope info, no=only current scope
+alias[effect:debug_log_scopes] = bool
+
+### The target character becomes the beneficiary of the scoped character. set_beneficiary = some character
+alias[effect:set_beneficiary] = scope[character]
+
+### Create an alliance between the scoped character and the target. The allied through characters determine who gets checked against for if the alliance should persist or not. create_alliance = { 	target = scope 	allied_through_owner = scope 	allied_through_target = scope } OR as a short hand use just the target to use the owner and target as the allied through characters create_alliance = scope
+alias[effect:create_alliance] = scope[character]
+
+### Create an alliance between the scoped character and the target. The allied through characters determine who gets checked against for if the alliance should persist or not. create_alliance = { 	target = scope 	allied_through_owner = scope 	allied_through_target = scope } OR as a short hand use just the target to use the owner and target as the allied through characters create_alliance = scope
+alias[effect:create_alliance] = {
+	target = scope[character]
+	allied_through_owner = scope[character]
+	allied_through_target = scope[character]
+}
+
+### Changes the development progress of a title. If the title has higher tier than county, the effect will propagate down to all counties below it.
+alias[effect:change_development_progress] = int_value_field
+
+### Ends the truce against the specified character. cancel_truce_one_way = scope:character
+alias[effect:cancel_truce_one_way] = scope[character]
+
+### Ends a specific scheme and removes it without any other effect
+alias[effect:end_scheme] = yes
+
+### Change the progress of de jure drift of a title<drifting_title> = { change_de_jure_drift_progress = {    target = <drift_target_title>    values = <progress_change_value> } }
+alias[effect:change_de_jure_drift_progress] = {
+    target = scope[landed_title]
+    value = int_value_field
+}
+
+### Adds an participant to the secret
+alias[effect:add_secret_participant] = scope[character]
+
+### Add building slot to the province
+alias[effect:add_building_slot] = int
+
+### removes the specified scheme modifier
+alias[effect:remove_scheme_modifier] = <modifier_container>
+
+### the landed title in the scope joins the assigned faction
+alias[effect:title_join_faction] = replace_me # TODO: Define factions.
+
+### adds the specified scheme modifier, add_scheme_modifier = { type = X days = Y } (days are optional, the modifier will expire in Y days if specified)
+alias[effect:add_scheme_modifier] = {
+    type = <modifier_container>
+    ## cardinality = 0..1
+    days = int
+}
+
+### Clears a saved scope from the top scope save_scope_as = cool_scope -> clear_saved_scope = cool_scope
+alias[effect:clear_saved_scope] = value[event_target]
+
+### adds a secret add_secret = { type = X target = Y }  Note that if you create a Secret in the immediate effect, the tooltips for other effects run in that Secret's scope (such as reveal_to) are likely to be displayed incorrectly, or not to be displayed at all. This is due to the game generating the tooltip before it actually has a Secret that exists to work off of.  Test rigorously and use custom tooltips if necessary. Creating a Secret in the immediate and then running effects on it in an event option should produce perfectly normal tooltips.
+alias[effect:add_secret] = {
+    type = <secret_type>
+    target = scope[character]
+}
+
+### Set the focus for this character
+alias[effect:set_focus] = <focus>
+
+### Set the focus for this character
+alias[effect:set_focus] = no
+
+### Adds diplomacy skill
+alias[effect:add_diplomacy_skill] = int_value_field
+
+### triggers an event or on_action trigger_event = { id = X days/months/years = Y } (for events) or trigger_event = { on_action = X days/months/years = Y } (for on_actions) Days/months/years are optional and equal to 0 if not specified. If specified, Y can be a value or an inclusive interval "{ A B }" from which the duration will be picked randomly.
+alias[effect:trigger_event] = <event>
+
+### triggers an event or on_action trigger_event = { id = X days/months/years = Y } (for events) or trigger_event = { on_action = X days/months/years = Y } (for on_actions) Days/months/years are optional and equal to 0 if not specified. If specified, Y can be a value or an inclusive interval "{ A B }" from which the duration will be picked randomly.
+alias[effect:trigger_event] = {
+    id = <event>
+    ## cardinality = 0..1
+    enum[duration] = int
+    ## cardinality = 0..1
+    enum[duration] = {
+        ## cardinality = 1..inf
+        int
+    }
+}
+
+### triggers an event or on_action trigger_event = { id = X days/months/years = Y } (for events) or trigger_event = { on_action = X days/months/years = Y } (for on_actions) Days/months/years are optional and equal to 0 if not specified. If specified, Y can be a value or an inclusive interval "{ A B }" from which the duration will be picked randomly.
+alias[effect:trigger_event] = {
+    on_action = <on_action>
+    ## cardinality = 0..1
+    enum[duration] = int
+    ## cardinality = 0..1
+    enum[duration] = {
+        ## cardinality = 1..inf
+        int
+    }
+}
+
+### increases (or decreases) the prestige level of a character
+alias[effect:add_prestige_level] = int_value_field
+
+### Stress impact according to specified traits (trait = value), use base = value for a base value that's always added
+alias[effect:stress_impact] = {
+    ## cardinality = 0..1
+    base = value_field
+    ## cardinality = 0..inf
+    <trait> = value_field
+}
+
+### Generates a coat of arms for the scoped landed title, dynasty or house generate_coa = yes
+alias[effect:generate_coa] = yes
+
+### just a tooltip, the scope as subject (for grouping, localization)
+alias[effect:custom_tooltip] = localisation
+
+### Sets the child to a known or unknown bastard during pregnancy
+alias[effect:set_known_bastard_on_pregnancy] = yes
+
+### Sets if the title should be deleted from the gamestate completely when it is destroyed. set_delete_on_destroy = yes
+alias[effect:set_delete_on_destroy] = yes
+
+### Remove a modifier from a character remove_character_modifier = name
+alias[effect:remove_character_modifier] = <modifier_container>
+
+### becomes and independent ruler. becomes_independent = { change = 'previously created title_and_vassal_change'
+alias[effect:becomes_independent] = {
+    change = scope[title_and_vassal_change]
+}
+
+### The scope faction starts the war agains their target. faction_start_war = {     title = [optional] }
+alias[effect:faction_start_war] = {
+    ## cardinality = 0..1
+    title = localisation
+}
+
+### Tries to open the defined view with scope data. Take care to set player if effect is executed not through UI but through synchronized code. Else all the window will open for all players. open_view_data = { view = <view name> view_message = <view specific instruction> # optional player = scope:character # optional, else shows for all players who execute the effect } simplified: open_view_data = <view name> for example: scope:faith = { open_view_data = faith_conversion }
+alias[effect:open_view_data] = replace_me # TODO: Figure out views.
+
+### Changes the development progress of a title. If the title has higher tier than county, the effect will propagate down to all counties below it. Will overflow, so adding +100 to a county with 50 progress left will increase the level by 1 and result in 50 progress towards the next level
+alias[effect:change_development_progress_with_overflow] = int_value_field
+
+### remove all title laws from the scoped title. DOES apply law removal costs and effects. clear_title_laws_effects = yes
+alias[effect:clear_title_laws_effects] = yes
+
+### Sets the name and adjective of the scoped title back to being based on its key. Won't cause the prefix to change reset_title_name = yes
+alias[effect:reset_title_name] = yes
+
+### Sets the prefix of the scoped title back to being based on its key. Won't cause its adjective or name to change reset_title_prefix = yes
+alias[effect:reset_title_prefix] = yes
+
+### sets the name (localization key) of the scoped title. The adjective will be constructed by adding '_adj' to the localisation key. Won't cause the prefix to change set_title_name = TEST_NAME_PLEASE_IGNORE
+alias[effect:set_title_name] = localisation
+
+### sets the prefix of the scoped title. Won't cause its name or adjective to change set_title_prefix = PREFIX_THE
+alias[effect:set_title_prefix] = localisation
+
+### Discover all innovations from the target culture get_all_innovations_from = <culture>
+alias[effect:get_all_innovations_from] = <culture>
+
+### Adds a hook on a character add_hook = { type = X, target = Y, secret = Z, days/months/years = W  } Note: days/months/years optional (taken from hook type otherwise) and can be a value or an interval, secret required for hook types that require it. Does NOT send a toast to the player.
+alias[effect:add_hook_no_toast] = {
+    type = <hook_types>
+    target = scope[character]
+    secret = <secret_type>
+    enum[duration] = int
+}
+
+### Adds the right hand side character as knowing of the killer of the scoped object dead_person = { add_knows_of_killer = root }
+alias[effect:add_knows_of_killer] = scope[character]
+
+### Apply the new level for the most desired AI obligation level the liege in the contract wants
+alias[effect:apply_ai_vassal_obligation_liege_most_desired] = replace_me # TODO: Obligations.
+
+### Apply the new level for the most desired AI obligation level the vassal in the contract wants
+alias[effect:apply_ai_vassal_obligation_vassal_most_desired] = replace_me # TODO: Obligations
+
+### Change the current weight of the scoped character change_current_weight = 20
+alias[effect:change_current_weight] = int_value_field
+
+### Change the target weight of the scoped character change_target_weight = 20
+alias[effect:change_target_weight] = int_value_field
+
+### Clears forced voting clear_forced_vote = yes
+alias[effect:clear_forced_vote] = yes
+
+### copies the inheritable appearance attributes (inheritable genes in the character's DNA string) from the target character to the scoped character
+alias[effect:copy_inheritable_appearance_from] = scope[character]
+
+### Forces the character to vote the same as the target force_vote_as = { target = someone days/months/years = x }
+alias[effect:force_vote_as] = {
+    target = scope[character]
+    enum[duration] = int
+}
+
+### Activates an inactive trait. Tooltip will not be shown if the character cannot have the trait.
+alias[effect:make_trait_active] = <trait>
+
+### Activates an inactive trait. Tooltip will be shown even if the character cannot have the trait.
+alias[effect:make_trait_active_force_tooltip] = <trait>
+
+### Makes a current trait of a character inactive. Tooltip will not be shown if the character doesn't have the trait.
+alias[effect:make_trait_inactive] = <trait>
+
+### Makes a current trait of a character inactive. Tooltip will be shown even if the character doesn't have the trait.
+alias[effect:make_trait_inactive_force_tooltip] = <trait>
+
+### the scope character pays gold to the target character, pay_gold = { target = X gold = Y } (AI budget category long term)
+alias[effect:pay_long_term_gold] = {
+    target = scope[character]
+    gold = int_value_field
+}
+
+### the scope character immediately pays gold corresponding to their income to the target character, pay_income = { target = X days/months/years = Y } (AI budget long term)
+alias[effect:pay_long_term_income] = {
+    target = scope[character]
+    enum[duration] = int
+}
+
+### the scope character pays gold to the target character, pay_gold = { target = X gold = Y } (AI budget category short term)
+alias[effect:pay_short_term_gold] = {
+    target = scope[character]
+    enum[duration] = int
+}
+
+### the scope character immediately pays gold corresponding to their income to the target character, pay_income = { target = X days/months/years = Y } (AI budget short term)
+alias[effect:pay_short_term_income] = {
+    target = scope[character]
+    enum[duration] = int
+}
+
+### Remove the cooldown on taking a decision for the scoped character remove_decision_cooldown = decision_name
+alias[effect:remove_decision_cooldown] = <decision>
+
+### Remove the cooldown on using an interaction for the scoped character remove_interaction_cooldown = interaction_name
+alias[effect:remove_interaction_cooldown] = <character_interaction>
+
+### Remove the cooldown on using an interaction against the target character for the scoped character remove_interaction_cooldown_against = { interaction = interaction_name target = character }
+alias[effect:remove_interaction_cooldown_against] = {
+    interaction = <character_interaction>
+    target = scope[character]
+}
+
+### removes gold from a character (AI's long term budget)
+alias[effect:remove_long_term_gold] = int_value_field
+
+### Removes any nickname from the current character [yes|no]
+alias[effect:remove_nickname] = bool
+
+### Removes the given law from the scoped character. This will leave the law group empty, so only do this if you're getting rid of a law group
+alias[effect:remove_realm_law] = <law>
+
+### Remove the cooldown on using a scheme against the target character for the scoped character remove_scheme_cooldown_against = { scheme = scheme_name target = character }
+alias[effect:remove_scheme_cooldown_against] = {
+    scheme = <scheme>
+    target = scope[character]
+}
+
+### removes gold from a character (AI's short term budget)
+alias[effect:remove_short_term_gold] = int_value_field
+
+### Recalculates the modifier of the scoped character
+alias[effect:scriptedtests_recalculate_character_modifier] = yes
+
+### Changes what faith a character has NOT executing the effects for it. USE ONLY IN HISOTRY SETUP!
+alias[effect:set_character_faith_history] = scope[faith]
+
+### Changes what age the character became immortal at. Only works if already immortal set_immortal_age = 20
+alias[effect:set_immortal_age] = int_value_field
+
+### Sets the scoped character's killer as being publicly known set_killer_public = bool
+alias[effect:set_killer_public] = bool
+
+### Set the number of children
+alias[effect:set_num_pregnancy_children] = int
+
+### Set the assumed father of the pregnancy
+alias[effect:set_pregnancy_assumed_father] = scope[character]
+
+### Blocks the vassal contract from being modified with regards to being checked by 'vassal_contract_is_blocked_from_modification'
+alias[effect:set_vassal_contract_modification_blocked] = replace_me # TODO: Obligations.
+
+### Removes the war currently associated with the faction faction_remove_war = yes
+alias[effect:faction_remove_war] = yes
+
+### Removes the religious head title of the faith remove_religious_head_title = yes
+alias[effect:remove_religious_head_title] = yes
+
+### Add a special building to the province (will also add/change a special slot if needed)
+alias[effect:add_special_building] = <building>
+
+### Add a special building slot to the province<province> = { add_special_building_slot = <building_name> }
+alias[effect:add_special_building_slot] = <building>
+
+### Changes the scoped province's holding to another type, removing all buildings that are invalid for the new holding. This might also allow to construct a new holding in an empty province, but it is untested.
+alias[effect:set_holding_type] = <holding>
+
+### Assign a commander for the scoped army set_commander = scope:a_character
+alias[effect:assign_commander] = scope[character]
+
+### Removes the currently assigned commander from the scoped army remove_commander = yes
+alias[effect:remove_commander] = yes
+
+### adds effect to be read internally (no effect in the gamestate)
+alias[effect:add_internal_flag] = scalar # Not sure.
+
+### add law to scoped title, overriding any current law from the same group. DOES apply law change costs and effects. add_title_law = princely_elective_succession_law
+alias[effect:add_title_law_effects] = <law.title_specific>
+
+### Closes all views. close_all_views = yes
+alias[effect:close_all_views] = yes
+
+### Tries to close the defined view. Take care to set player if effect is executed not through UI but through synchronized code. Else all the window will open for all players. close_view = {     view = <view name>     player = scope:character # optional, else closes for all players who execute the effect }simplified: close_view = <view name>
+alias[effect:close_view] = replace_me # TODO: Handle views.
+
+### Betroth the scope character to the target character matrilineally, create_betrothal_matrilineal = target (at least one of the characters need to not be adult)
+alias[effect:create_betrothal_matrilineal] = scope[character]
+
+### Pans the camera to the specified province pan_camera_to_province = scope:army.location
+alias[effect:pan_camera_to_province] = scope[province]
+
+### Pans the camera to the specified title pan_camera_to_title = capital_barony
+alias[effect:pan_camera_to_title] = scope[landed_title]
+
+### remove law from scoped title. This will leave the law group empty, so only do this if you're getting rid of a law group. DOES NOT apply law removal costs and effects. remove_title_law = princely_elective_succession_law
+alias[effect:remove_title_law] = <law.title_specific>
+
+### remove law from scoped title. This will leave the law group empty, so only do this if you're getting rid of a law group. DOES apply law removal costs and effects. remove_title_law = princely_elective_succession_law
+alias[effect:remove_title_law_effects] = <law.title_specific>
+
+### Sets the chance for a generated character to be asexual set_generated_asexuality_chance = 20
+alias[effect:set_generated_asexuality_chance] = int
+
+### Sets the chance for a generated character to be bisexual set_generated_bisexuality_chance = 20
+alias[effect:set_generated_bisexuality_chance] = int
+
+### Sets the chance for a generated character to be homosexual set_generated_homosexuality_chance = 20
+alias[effect:set_generated_homosexuality_chance] = int
+
+### Starts the tutorial lesson with the given key. Does nothing if the tutorial is not running, the lesson is completed (or already running), or the lesson cannot be triggered (e.g. trigger fails)
+alias[effect:start_tutorial_lesson] = replace_me # TODO: Define tutorials.
+
+##### Custom effects (dynamic ones) ######
+### Sets scripted relationship.
+alias[effect:set_relation_<scripted_relation>] = scope[character]
+### Removes scripted relationship.
+alias[effect:remove_relation_<scripted_relation>] = scope[character]
+
+### Sets if the title can be named after it's holder's dynasty. set_can_be_named_after_dynasty_effect = no
+alias[effect:set_can_be_named_after_dynasty] = bool
+
+### gives (or takes) piety without experience to a character
+alias[effect:add_piety_no_experience] = int_value_field
+
+### gives (or takes) prestige without experience to a character
+alias[effect:add_prestige_no_experience] = int_value_field
+
+### Copies a piece of localized text from the target character for the given key. copy_localized_text = { key = key target = character }
+alias[effect:copy_localized_text] = {
+    key = value[variable]
+    target = scope[character]
+}
+
+### Removes a piece of localized text from being stored on the character with a given key, you should do this whenever you are done with the custom text so as to not bloat saves remove_localized_text = key
+alias[effect:remove_localized_text] = value[variable]
+
+### Sets the mother of a character
+alias[effect:set_mother] = scope[character]
+
+### Adds a random building to the province, using the AI's construction logic<province> = { generate_building = yes }
+alias[effect:generate_building] = yes

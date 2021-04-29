@@ -1,0 +1,141 @@
+types = {
+    type[scheme] = {
+        path = "game/common/schemes"
+        localisation = {
+            ## primary
+            name = "$"
+            action = "$_action"
+        }
+    }
+}
+
+scheme = {
+    ### Skill to base the scheme on.
+    skill = enum[attributes]
+
+    ## cardinality = 0..1
+    ### Defaults to `no`. Hostile schemes are affected my hostile scheme modifiers, other schemes are personal and thus affected by personal scheme modifiers.
+    hostile = bool
+
+    ### Can be started or not.
+    allow = single_alias_right[trigger_clause]
+
+    ### If the conditions become invalid, scheme ends.
+    valid = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### How much AI must want to join to actually join, no idea about default.
+    agent_join_threshold = int
+
+    ## cardinality = 0..1
+    ### AI falls below this, it leaves, no idea about default.
+    agent_leave_threshold = int
+
+    ## cardinality = 0..1
+    ### Defaults to `yes`.
+    uses_agents = bool
+
+    ## cardinality = 0..1
+    ### Defaults to `yes`.
+    uses_resistance = bool
+
+    ## cardinality = 0..1
+    valid_agent = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    agent_join_chance = single_alias_right[chance_block]
+
+    ## cardinality = 0..1
+    ### Uses `agent` as `root`.
+    agent_success_chance = single_alias_right[chance_block]
+
+    ## cardinality = 0..1
+    ### Uses `scheme` as `root`.
+    base_success_chance = single_alias_right[chance_block]
+
+    # All fields here only use integers in vanilla files, but perhaps values could be used?
+    # Badly documented as `maximum_success_chance`.
+    ## cardinality = 0..1
+    ### Defaults to `100`. (?)
+    maximum_success = int[0..100]
+
+    ## cardinality = 0..1
+    ### Defaults to `0`. (?)
+    minimum_success = int[0..100]
+
+    ## cardinality = 0..1
+    ### Defaults to `100`. (?)
+    maximum_secrecy = int[0..100]
+    
+    ## cardinality = 0..1
+    ### Defaults to `0`. (?)
+    minimum_secrecy = int[0..100]
+
+    ## cardinality = 0..1
+    ### Defaults to `100`. (?)
+    maximum_progress_chance = int[0..100]
+
+    ## cardinality = 0..1
+    ### Defaults to `5`. (?)
+    minimum_progress_chance = int[0..100]
+
+    # Vanilla seduce scheme has this commented out, so probably optional.
+    ## cardinality = 0..1
+    cooldown = {
+        enum[duration] = int
+    }
+
+    ## cardinality = 0..1
+    ### Defaults to `no`. If `yes`, secrecy mechanics are used, otherwise always 100% secrecy.
+    is_secret = bool
+
+    ## cardinality = 0..1
+    ### Some schemes do not have to always be a secret, for example seduction of consorts...
+    use_secrecy = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### Used for monthly expose checks, chance is based on `base_secrecy + success_chance + scheme_modifiers` clamped between 0-100.
+    base_secrecy = int
+
+    ### What happens when scheme reaches full progress.
+    on_ready = single_alias_right[effect_clause]
+
+    # Potentially optional? All vanilla schemes have this.
+    ### What happens every month the scheme is active.
+    on_monthly = single_alias_right[effect_clause]
+
+    ### What happens when scheme is invalidated (based on `valid` trigger).
+    on_invalidated = single_alias_right[effect_clause]
+
+    # Potentially optional?
+    ### Each skill points add this much power (speed) to the scheme.
+    power_per_skill_point = float
+
+    # Potentially optional?
+    ### Each skill point of the target adds this much resistance.
+    resistance_per_skill_point = float
+
+    ## cardinality = 0..1
+    power_per_agent_skill_point = float
+
+    # Vanilla murder scheme does not have the following two, so optional.
+    ## cardinality = 0..1
+    ### Defaults to `1`. Schemes not using this should set to `0`.
+    spymaster_power_per_skill_point = float
+
+    ## cardinality = 0..1
+    spymaster_resistance_per_skill_point = float
+
+    # Never used in vanilla.
+    ## cardinality = 0..1
+    ### Defaults to `1`.
+    tier_resistance = int
+
+    # Not documented in .info, present in vanilla files.
+    ### What the game tells the player happens when successful.
+    success_desc = localisation
+
+    ## cardinality = 0..1
+    ### What the game tells the player happens when discovered.
+    discovery_desc = localisation
+}

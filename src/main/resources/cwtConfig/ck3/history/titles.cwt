@@ -1,0 +1,62 @@
+types = {
+    type[title_history] = {
+        path = "game/history/titles"
+        type_per_file = yes
+    }
+}
+title_history = {
+    ## cardinality = 1..inf
+    <title> = {
+        ## cardinality = 1..inf
+        date_field = {
+            ## cardinality = 1..inf
+            alias_name[title_history_effect] = alias_match_left[title_history_effect]
+        }
+    }
+}
+
+### Changes the title's de jure provinces' development.
+alias[title_history_effect:change_development_level] = int
+
+### Sets the holder by character ID.
+alias[title_history_effect:holder] = <character>
+### Sets the holder to a previous one by date of the start of their previous reign.
+alias[title_history_effect:holder] = date_field
+### Setting it to 0 makes the title have no holder therefore destroys the title.
+alias[title_history_effect:holder] = 0
+
+### Sets the de facto liege by title.
+alias[title_history_effect:liege] = <title>
+### Setting it to 0 makes the title have no de facto liege therefore independent.
+alias[title_history_effect:liege] = 0
+
+### Sets the de jure liege by title.
+alias[title_history_effect:de_jure_liege] = <title>
+### Setting it to 0 makes the title have no de jure liege.
+alias[title_history_effect:de_jure_liege] = 0
+
+### Copies another title's history before the given date.
+alias[title_history_effect:insert_title_history] = <title>
+
+### Sets the holder's government.
+alias[title_history_effect:government] = <government>
+
+### Sets title specific laws.
+alias[title_history_effect:succession_laws] = {
+    ## cardinality = 1..inf
+    <law.title_specific>
+}
+
+### Removes all title specific laws.
+alias[title_history_effect:remove_succession_laws] = yes
+
+### Sets the title's name to the given localisation.
+alias[title_history_effect:name] = localisation
+### Sets the title's name to another given title's.
+alias[title_history_effect:name] = <title>
+
+### Resets the title's name to the default one.
+alias[title_history_effect:reset_name] = yes
+
+### Effects not covered by the other effects.
+alias[title_history_effect:effect] = single_alias_right[effect_clause]

@@ -1,0 +1,106 @@
+enums = {
+    enum[duration] = {
+        days
+        months
+        years
+    }
+    enum[minmax] = {
+        min
+        max
+    }
+    enum[sexualities] = {
+        heterosexual
+        homosexual
+        bisexual
+        asexual
+        none
+    }
+    enum[genders] = {
+        male
+        female
+    }
+    enum[event_option_skills] = {
+        diplomacy
+        intrigue
+        learning
+        martial
+        prowess
+        stewardship
+    }
+    enum[ai_value] = {
+        very_low_positive_ai_value # 10
+        low_positive_ai_value # 20
+        medium_positive_ai_value # 35
+        high_positive_ai_value # 50
+        very_high_positive_ai_value # 75
+        dominant_positive_ai_value # 200
+        very_low_negative_ai_value # -10
+        low_negative_ai_value # -20
+        medium_negative_ai_value # -35
+        high_negative_ai_value # -50
+        very_high_negative_ai_value # -75
+        dominant_negative_ai_value # -200
+        high_positive_ai_value_inverse # Is this location appropriate?
+        high_negative_ai_value_inverse # Ditto
+    }
+    enum[trait_compatability] = {
+        high_negative_trait_compatibility # -31 #About 8% of characters will have compatibility below this value for avarage character
+        medium_negative_trait_compatibility # -16 #About 21% of characters will have compatibility below this value for avarage character
+        low_negative_trait_compatibility # -1 #About 43% of characters will have compatibility below this value for avarage character
+        neutral_trait_compatibility # 0 # ~20% of chars are neutral towards avarage character
+        low_positive_trait_compatibility # 1 # ~38% of chars has compatibility over this value for avarage character
+        medium_positive_trait_compatibility # 11 # ~21% of chars has compatibility over this value for avarage character
+        high_positive_trait_compatibility # 26 # ~8% of char has compatibility over this value for avarage character
+    }
+    enum[ai_values_divergence] = {
+        very_low_ai_values_divergence # 150 #About 10% (>1 to 24%) of character will be at or below this value for the avarage character.
+        low_ai_values_divergence # 200 #About 30% (3-57%) of characters will be at or below this value for the avarage character
+        medium_ai_values_divergence # 250  #About 52% (10-85%) of characters will be at or below this value for the avarage character
+        high_ai_values_divergence # 300 #About 71% (24-85%) of characters will be at or below this value for the avarage character
+        very_high_ai_values_divergence #  350 #About 85% (46-98%) of characters will be at or below this value for the avarage character
+        #Percentages in parentheses are the observed spans
+    }
+    enum[attributes] = {
+        diplomacy
+        martial
+        stewardship
+        learning
+        intrigue
+    }
+    enum[title_tiers] = {
+        barony
+        county
+        duchy
+        kingdom
+        empire
+    }
+    enum[war_ender] = {
+        attacker
+        defender
+        white_peace
+    }
+    enum[war_result] = {
+        victory
+        defeat
+        white_peace
+    }
+    enum[cb] = {
+        casus_belli
+        cb
+    }
+    enum[dynasty_inheritance] = {
+        generate
+        inherit
+        none
+    }
+    enum[battle_event_type] = {
+        wound
+        imprison
+        death
+    }
+}
+
+# Duration alias for LHS use:
+alias[duration:days] = int_value_field
+alias[duration:months] = int_value_field
+alias[duration:years] = int_value_field

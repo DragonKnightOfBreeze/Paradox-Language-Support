@@ -1,0 +1,15 @@
+types = {
+    type[playable_difficulty_info] = {
+        path = "game/common/playable_difficulty_infos"
+
+        localisation = {
+            Name = "$"
+        }
+    }
+}
+
+playable_difficulty_info = {
+    ## replace_scope = { ROOT = character THIS = character }
+    ### Trigger to control if the entry is shown for a character
+    is_shown = single_alias_right[trigger_clause]
+}

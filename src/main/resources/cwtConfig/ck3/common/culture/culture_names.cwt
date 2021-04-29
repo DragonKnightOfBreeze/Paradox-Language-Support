@@ -1,0 +1,14 @@
+types = {
+    type[culture_name] = {
+        path = "game/common/culture/culture_names"
+    }
+}
+# TODO: Filter _male and _female
+## severity = information
+### Ties names from different cultures to one another.
+culture_name = {
+    ## cardinality = 0..inf
+    enum[male_names]
+    ## cardinality = 0..inf
+    enum[female_names]
+}

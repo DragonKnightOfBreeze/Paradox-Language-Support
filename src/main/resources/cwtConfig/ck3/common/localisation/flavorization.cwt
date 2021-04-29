@@ -1,0 +1,97 @@
+types = {
+    type[flavorization] = {
+        path = "game/common/flavorization"
+    }
+}
+
+# I tried my best to explain these, it's really twisted.
+flavorization = {
+    ### Type of the flavorization. For titles in certain cases the holder is tested and for characters the primary title.
+    type = enum[flavorization_type]
+    ## cardinality = 0..1
+    ### Characters must belong to this gender to get this flavozization. If left out, the flavorization won't be gender neutral, it will default to male.
+    gender = enum[genders]
+    ## cardinality = 0..1
+    ### Subtype of the flavorization. It can change which scope is tested for certain conditions. Only for characters.
+    special = enum[flavorization_special]
+    ## cardinality = 0..1
+    ### The scope must have this tier to get this flavozization. Too many non-tiered flavorizations is bad for performance though.
+    tier = enum[title_tiers]
+    ## cardinality = 0..1
+    ### How important is the flavorization. Defaults to 1.
+    priority = int
+    # Who thought it will be useful to make this default to yes? I almost can't find a vanilla example without top_liege = no. I tried my best to explain this abomination.
+    ## cardinality = 0..1
+    ### Whether certain conditions, probably culture and religion, should be tested on the top liege instead of the actual ruler, their spouse, her child for queen mother, their parents for ruler child and their liege for councillors. Defaults to yes.
+    top_liege = bool
+    ## cardinality = 0..1
+    ### Whether this will only be applied to independet rulers and titles. Defaults to no.
+    only_independent = bool
+    ## cardinality = 0..1
+    ### Whether this will only be applied to the person holding the title, not their spouse and such. Defaults to no.
+    only_holder = bool
+    ## cardinality = 0..1
+    ### Whether this will only be applied to faction leaders. Defaults to no.
+    faction = bool
+    ## cardinality = 0..1
+    ### Which council position the character should hold to get this flavozization. Might only work with special = councillor.
+    council_position = <council_position>
+    ## cardinality = 0..1
+    ### Which holding should the scope be to get this flavorization. Only works with tier = barony.
+    holding = <holding>
+    ## cardinality = 0..1
+    ### Which titles should the scope be to get this flavorization.
+    titles = {
+        ## cardinality = 1..inf
+        <title>
+    }
+    ## cardinality = 0..1
+    ### Which de jure liege should the scope belong to to get this flavorization.
+    de_jure_liege = {
+        ## cardinality = 1..inf
+        <title>
+    }
+    ## cardinality = 0..1
+    ### Which governments should the scope have to get this flavorization.
+    governments = {
+        ## cardinality = 1..inf
+        <government>
+    }
+    ## cardinality = 0..1
+    ### Which cultures should the scope have to get this flavorization.
+    cultures = {
+        ## cardinality = 1..inf
+        <culture>
+    }
+    ## cardinality = 0..1
+    ### Which culture groups should the scope have to get this flavorization.
+    culture_groups = {
+        ## cardinality = 1..inf
+        <culture_group>
+    }
+    ## cardinality = 0..1
+    ### Which faiths should the scope have to get this flavorization.
+    faiths = {
+        ## cardinality = 1..inf
+        <faith>
+    }
+    ## cardinality = 0..1
+    ### Which religions should the scope have to get this flavorization.
+    religions = {
+        ## cardinality = 1..inf
+        <religion>
+    }
+}
+enums = {
+    enum[flavorization_type] = {
+        character
+        title
+    }
+    enum[flavorization_special] = {
+        holder
+        ruler_child
+        queen_mother
+        head_of_faith
+        councillor
+    }
+}

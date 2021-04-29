@@ -1,0 +1,650 @@
+types = {
+	## type_key_filter <> widget
+	## type_key_filter <> template
+	## type_key_filter <> types
+	type[window] = {
+        path = "game/gui"
+		severity = warning
+	}
+    ## type_key_filter <> window
+    ## type_key_filter <> template
+    ## type_key_filter <> types
+	type[widget] = {
+        path = "game/gui"
+		severity = warning
+    }
+    type[gui_type] = {
+        skip_root_key = { types }
+        path = "game/gui"
+    }
+}
+
+single_alias[coords] = {
+    ## cardinality = 2..2
+    int
+}
+
+enums = {
+    enum[gui_direction] = {
+        top|left
+        top|right
+        top|hcenter
+        bottom|left
+        bottom|right
+        bottom|hcenter
+        center
+        center|hcenter
+        right
+        right|vcenter
+        left|vcenter
+        hcenter
+    }
+    enum[gui_align_direction] = {
+        left
+        right
+        center
+        top
+        vcenter|hcenter
+    }
+    enum[gui_layer] = {
+        windows_layer
+        confirmation
+        top
+        middle
+        bottom
+        frontend
+    }
+    enum[gui_using] = {
+        Window_Background
+        Window_Decoration
+        Window_Decoration_Spike
+        Window_Decoration_Thin
+        Window_Size_Sidebar
+        Window_Size_MainTab
+        Window_Size_CharacterList
+        Window_Size_CharacterList_Small
+        Window_Background_Sidebar
+        Window_Margins
+        Window_Margins_Sidebar
+        Window_Position_MainTab
+        Window_Position_MainTab_Hide
+        Animation_FadeIn_Standard
+        Animation_FadeIn_Quick
+        Animation_FadeOut_Standard
+        Animation_FadeOut_Quick
+        Background_Area
+        Background_Area_Dark
+        Background_Bottom_Fade
+        Background_Inset_Bottom
+        Background_Letter
+        Sound_WindowShow_Standard
+        Sound_WindowHide_Standard
+        tooltip_above
+        tooltip_ws
+        tooltip_nw
+        tooltip_ne
+        tooltip_es
+        FontNormal
+        FontSmall
+        Font_Size_Medium
+        Font_Size_Big
+        Font_Type_WindowHeader
+    }
+    enum[gui_spriteType] = {
+        Corneredtiled
+        Corneredstretched
+    }
+    enum[gui_blend_mode] = {
+        overlay
+        alphamultiply
+        colordodge
+    }
+    enum[gui_gfx_type] = {
+        updownframedbuttongfx
+
+    }
+    enum[gui_font] = {
+        TitleFont
+    }
+    enum[gui_text_format] = {
+        "#dark"
+        "#white"
+        "#medium"
+    }
+    enum[gui_layout_policy] = {
+        expanding
+        fixed
+    }
+    enum[gui_card_dir] = {
+        horizontal
+    }
+}
+
+single_alias[window] = {
+    name = localisation
+    ## cardinality = 0..1
+    widgetid = scalar
+    ## cardinality = 0..1
+	size = single_alias_right[coords]
+    # datacontext = "[CreateClaimantFactionAgainstWindow.GetCharacterInteractionConfirmationWindow]"
+    ## cardinality = 0..inf
+	datacontext = scalar
+    ## cardinality = 0..1
+	parentanchor = enum[gui_direction]
+    ## cardinality = 0..1
+	widgetanchor = enum[gui_direction]
+    ## cardinality = 0..1
+	position = single_alias_right[coords]
+    ## cardinality = 0..1
+    movable = bool
+    ## cardinality = 0..1
+    allow_outside = bool
+	layer = enum[gui_layer]
+
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+
+    ## cardinality = 0..inf
+    state = {
+        name = localisation
+        ## cardinality = 0..inf
+        using = enum[gui_using]
+        ## cardinality = 0..1
+        position = single_alias_right[coords]
+        # TODO: gui loc string
+        ## cardinality = 0..inf
+        on_start = scalar
+        ## cardinality = 0..1
+        position_x = int
+    }
+    ## cardinality = 0..1
+    filter_mouse = all
+    #window = single_alias_right[window]
+    # vbox = single_alias_right[vbox1]
+    # hbox = single_alias_right[hbox1]
+    alias_name[gui] = alias_match_left[gui]
+
+}
+
+alias[gui:<gui_type>] = {
+    ## cardinality = 0..1
+    name = localisation
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutpolicy_vertical = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    spacing = int
+    ## cardinality = 0..1
+    ignoreinvisible = bool
+    ## cardinality = 0..1
+    minimumsize = single_alias_right[coords]
+    ## cardinality = 0..1
+    scissor = yes
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datamodel = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    tooltip = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datacontext = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..inf
+    item = {
+        alias_name[gui] = alias_match_left[gui]
+    }
+    alias_name[margin] = alias_match_left[margin]
+    alias_name[gui] = alias_match_left[gui]
+}
+
+alias[gui:vbox] = {
+    ## cardinality = 0..1
+    name = localisation
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutpolicy_vertical = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    spacing = int
+    ## cardinality = 0..1
+    ignoreinvisible = bool
+    ## cardinality = 0..1
+    minimumsize = single_alias_right[coords]
+    ## cardinality = 0..1
+    scissor = yes
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datamodel = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    tooltip = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datacontext = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..inf
+    item = {
+        alias_name[gui] = alias_match_left[gui]
+    }
+    alias_name[margin] = alias_match_left[margin]
+    alias_name[gui] = alias_match_left[gui]
+}
+alias[gui:hbox] = {
+    ## cardinality = 0..1
+    name = localisation
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutpolicy_vertical = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    minimumsize = single_alias_right[coords]
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datacontext = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datamodel = scalar
+    ## cardinality = 0..1
+    spacing = int
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    tooltip = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    ## cardinality = 0..inf
+    item = {
+        alias_name[gui] = alias_match_left[gui]
+    }
+    alias_name[margin] = alias_match_left[margin]
+    alias_name[gui] = alias_match_left[gui]
+}
+alias[gui:divider] = {
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+}
+alias[gui:spacer] = {
+    size = single_alias_right[coords]
+}
+alias[gui:icon] = {
+    ## cardinality = 0..1
+    name = scalar
+    ## cardinality = 0..1
+    parentanchor = enum[gui_direction]
+    texture = filepath
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    ## cardinality = 0..1
+    alwaystransparent = bool
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..1
+    framesize = single_alias_right[coords]
+    ## cardinality = 0..1
+    frame = int
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    frame = scalar
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    tooltip = scalar
+}
+single_alias[background] = {
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    ## cardinality = 0..1
+    texture = filepath
+    ## cardinality = 0..1
+    shaderfile = filepath
+    ## cardinality = 0..1
+    spriteType = enum[gui_spriteType]
+    ## cardinality = 0..1
+    spriteborder = single_alias_right[coords]
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    ## cardinality = 0..1
+    framesize = single_alias_right[coords]
+    alias_name[margin] = alias_match_left[margin]
+    ## cardinality = 0..1
+    alpha = float[0.0..1.0]
+    ## cardinality = 0..inf
+    modify_texture = {
+        ## cardinality = 0..1
+        name = scalar
+        texture = filepath
+        ## cardinality = 0..1
+        spriteType = enum[gui_spriteType]
+        ## cardinality = 0..1
+        spriteborder = single_alias_right[coords]
+        blend_mode = enum[gui_blend_mode]
+        ## cardinality = 0..1
+        alpha = float[0.0..1.0]
+    }
+}
+alias[gui:background] = single_alias_right[background]
+alias[margin:margin_left] = int
+alias[margin:margin_right] = int
+alias[margin:margin_top] = int
+alias[margin:margin_bottom] = int
+alias[margin:margin] = single_alias_right[coords]
+
+alias[gui:margin_widget] = {
+    size = single_alias_right[coords]
+    alias_name[margin] = alias_match_left[margin]
+    widget = single_alias_right[complex_gui]
+}
+
+alias[gui:scrollbox] = {
+    ## cardinality = 0..1
+    name = localisation
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutpolicy_vertical = enum[gui_layout_policy]
+}
+
+alias[gui:button] = {
+    gfxtype = enum[gui_gfx_type]
+    ## cardinality = 0..1
+    framesize = single_alias_right[coords]
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    onclick = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    visible = scalar
+    texture = filepath
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    tintcolor = scalar
+
+    tooltip = localisation
+    using = tooltip_ws
+}
+
+alias[gui:expand] = {
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutpolicy_vertical = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    minimumsize = single_alias_right[coords]
+}
+
+alias[gui:fixedgridbox] = {
+    name = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datamodel = scalar
+    flipdirection = bool
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    addcolumn = int
+    addrow = int
+    ## cardinality = 0..1
+    maxhorizontalslots = int
+    ## cardinality = 0..1
+    maxverticalslots = int
+    ## cardinality = 1..inf
+    item = {
+        alias_name[gui] = alias_match_left[gui]
+    }
+}
+
+single_alias[gui_text] = {
+    ## cardinality = 0..1
+    name = scalar
+    # TODO: gui loc string
+    text = localisation
+    #text = scalar
+    alias_name[margin] = alias_match_left[margin]
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    ## cardinality = 0..1
+    font = enum[gui_font]
+    ## cardinality = 0..1
+    fontsize = int
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    tooltip = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datacontext = scalar
+    ## cardinality = 0..1
+    autoresize = bool
+    ## cardinality = 0..1
+    parentanchor = enum[gui_direction]
+    ## cardinality = 0..1
+    default_format = enum[gui_text_format]
+    ## cardinality = 0..1
+    minimumsize = single_alias_right[coords]
+    ## cardinality = 0..1
+    background = single_alias_right[background]
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    align = enum[gui_align_direction]
+    ## cardinality = 0..1
+    multiline = yes
+    ## cardinality = 0..1
+    max_width = int
+    ## cardinality = 0..1
+	parentanchor = enum[gui_direction]
+    ## cardinality = 0..1
+	widgetanchor = enum[gui_direction]
+    ## cardinality = 0..1
+	position = single_alias_right[coords]
+
+}
+
+alias[gui:text_single] = single_alias_right[gui_text]
+alias[gui:text_multi] = single_alias_right[gui_text]
+alias[gui:textbox] = single_alias_right[gui_text]
+alias[gui:text_label_center] = single_alias_right[gui_text]
+# alias[gui:text_label_left] = single_alias_right[gui_text]
+alias[gui:label] = single_alias_right[gui_text]
+
+single_alias[simple_gui] = {
+    ## cardinality = 0..1
+    name = scalar
+    # TODO: gui loc string bool
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    tooltip = scalar
+    ## cardinality = 0..inf
+    # TODO: gui loc string
+    datacontext = scalar
+    ## cardinality = 0..inf
+    alwaystransparent = bool
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+
+}
+
+single_alias[gui_state] = {
+    name = scalar
+    start_sound = {
+        # TODO sound
+        soundeffect = scalar
+        ## cardinality = 0..1
+        soundparam = {
+            name = StateChange
+            value = float[0..100]
+        }
+    }
+}
+
+single_alias[complex_gui] = {
+    ## cardinality = 0..1
+    name = scalar
+    # TODO: gui loc string bool
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    tooltip = scalar
+    ## cardinality = 0..inf
+    # TODO: gui loc string
+    datacontext = scalar
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    alias_name[gui] = alias_match_left[gui]
+    ## cardinality = 0..inf
+    state = single_alias_right[gui_state]
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutpolicy_vertical = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutstretchfactor_vertical = int
+    ## cardinality = 0..1
+    layoutstretchfactor_horizontal = int
+    ## cardinality = 0..1
+    parentanchor = enum[gui_direction]
+    alias_name[margin] = alias_match_left[margin]
+    ## cardinality = 0..1
+    direction = enum[gui_card_dir]
+}
+
+single_alias[gui_box] = {
+    name = scalar
+    # TODO: gui loc string bool
+    ## cardinality = 0..1
+    visible = scalar
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    tooltip = scalar
+    ## cardinality = 0..inf
+    # TODO: gui loc string
+    datacontext = scalar
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    datamodel = scalar
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    alias_name[margin] = alias_match_left[margin]
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+    ## cardinality = 1..inf
+    item = {
+        alias_name[gui] = alias_match_left[gui]
+    }
+}
+
+alias[gui:coa_realm_medium] = single_alias_right[simple_gui]
+alias[gui:coa_title_medium] = single_alias_right[simple_gui]
+alias[gui:coa_title_medium_crown] = single_alias_right[simple_gui]
+alias[gui:coa_house_big] = single_alias_right[simple_gui]
+alias[gui:coa_dynasty_medium] = single_alias_right[simple_gui]
+alias[gui:portrait_shoulders] = single_alias_right[simple_gui]
+alias[gui:portrait_head] = single_alias_right[simple_gui]
+alias[gui:widget] = single_alias_right[complex_gui]
+alias[gui:container] = single_alias_right[complex_gui]
+alias[gui:tooltipwidget] = single_alias_right[complex_gui]
+alias[gui:flowcontainer] = single_alias_right[complex_gui]
+alias[gui:overlappingitembox] = single_alias_right[gui_box]
+
+widget = single_alias_right[complex_gui]
+
+single_alias[progressbar] = {
+    ## cardinality = 0..1
+    name = scalar
+    # TODO: gui loc string bool
+    ## cardinality = 0..1
+    visible = scalar
+    size = single_alias_right[coords]
+    # TODO: gui loc string
+    value = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    tooltip = scalar
+    ## cardinality = 0..inf
+    using = enum[gui_using]
+    ## cardinality = 0..1
+    parentanchor = enum[gui_direction]
+    ## cardinality = 0..1
+    layoutpolicy_horizontal = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    layoutpolicy_vertical = enum[gui_layout_policy]
+    ## cardinality = 0..1
+    min = int
+    ## cardinality = 0..1
+    min = int
+    ## cardinality = 0..1
+    direction = enum[gui_card_dir]
+}
+
+alias[gui:progressbar_yellow] = single_alias_right[progressbar]
+alias[gui:progressbar_yellow_transparent] = single_alias_right[progressbar]
+alias[gui:progressbar_frozen_transparent] = single_alias_right[progressbar]
+alias[gui:progresspie] = single_alias_right[progressbar]
+
+single_alias[gui_button] = {
+    ## cardinality = 0..1
+    name = scalar
+    ## cardinality = 0..1
+    size = single_alias_right[coords]
+
+    # TODO: gui loc string
+    # ## cardinality = 0..1
+    onclick = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    tooltip = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    enabled = scalar
+    # TODO: gui loc string
+    ## cardinality = 0..1
+    visible = scalar
+
+    ## cardinality = 0..1
+    # TODO: gui loc string
+    text = localisation
+    ## cardinality = 0..1
+    default_format = enum[gui_text_format]
+    ## cardinality = 0..1
+    using = enum[gui_using]
+
+    ## cardinality = 0..inf
+    # TODO: gui loc string
+    datacontext = scalar
+
+}
+
+alias[gui:button_standard] = single_alias_right[gui_button]
+alias[gui:button_edit_text] = single_alias_right[gui_button]
+alias[gui:button_dynasty_tree] = single_alias_right[gui_button]
+alias[gui:button_checkbox] = single_alias_right[gui_button]
+alias[gui:button_standard_big] = single_alias_right[gui_button]
+
+window = single_alias_right[window]

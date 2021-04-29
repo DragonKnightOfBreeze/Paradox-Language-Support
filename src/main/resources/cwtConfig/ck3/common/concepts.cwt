@@ -1,0 +1,13 @@
+types = {
+    type[game_concept] = {
+        path = "game/common/game_concepts"
+        subtype[relation] = {
+            parent = <game_concept.relation>
+            parent = relation
+        }
+        subtype[sexuality] = {
+            parent = <game_concept.sexuality>
+            parent = sexuality
+        }
+    }
+}

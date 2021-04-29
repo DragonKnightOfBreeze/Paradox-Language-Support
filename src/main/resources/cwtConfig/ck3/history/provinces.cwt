@@ -1,0 +1,58 @@
+types = {
+    type[province_mapping] = {
+        path = "game/history/province_mapping"
+        type_per_file = yes
+    }
+    type[province_history] = {
+        path = "game/history/provinces"
+        type_per_file = yes
+    }
+}
+
+province_mapping = {
+    ## cardinality = 1..inf
+    <province> = <province>
+}
+
+province_history = {
+    ## cardinality = 1..inf
+    <province> = {
+        ## cardinality = 1..inf
+        alias_name[province_history_effect] = alias_match_left[province_history_effect]
+        ## cardinality = 0..inf
+        date_field = {
+            ## cardinality = 1..inf
+            alias_name[province_history_effect] = alias_match_left[province_history_effect]
+        }
+    }
+}
+
+### Culture of the procince. This will be copied to other provinces if set in province mapping.
+alias[province_history_effect:culture] = <culture>
+### Faith of the procince. This will be copied to other provinces if set in province mapping.
+alias[province_history_effect:religion] = <faith>
+### Faith of the procince. This will be copied to other provinces if set in province mapping.
+alias[province_history_effect:faith] = <faith>
+### Terrain of the procince. This will be copied to other provinces if set in province mapping.
+alias[province_history_effect:terrain] = <terrain>
+
+### Holding type of the procince.
+alias[province_history_effect:holding] = <holding>
+### Special values for holding type. None means there will be no holding and random will fill holdings automatically. Defaults to random.
+alias[province_history_effect:holding] = enum[holding_options]
+
+### Set buildings in the holding (requires an explicit holding to be present - auto doesn't work). In a later history entry, this overrides all previous buildings.
+alias[province_history_effect:buildings] = single_alias_right[regular_building_list]
+### Enables and sets the special building slot for the target building.
+alias[province_history_effect:special_building_slot] = <building.special>
+### Enables and sets the special building slot, and also builds the actual building.
+alias[province_history_effect:special_building] = <building.special>
+### Builds the target capital duchy building. (only for duchy capitals)
+alias[province_history_effect:duchy_capital_building] = <building.duchy_capital>
+
+enums = {
+    enum[holding_options] = {
+        none
+        random
+    }
+}
