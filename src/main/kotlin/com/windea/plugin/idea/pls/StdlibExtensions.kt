@@ -215,6 +215,12 @@ infix fun String.matchesPath(other: String): Boolean {
 	return false
 }
 
+//Specific Collections
+
+class ReversibleList<T>(list:List<T>, reverse:Boolean = false):List<T> by list
+
+class ReversibleMap<K,V>(map:Map<K,V>, reverse:Boolean = false):Map<K,V> by map
+
 //Expression Extensions
 
 interface Expression : CharSequence {

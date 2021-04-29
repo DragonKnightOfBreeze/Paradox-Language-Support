@@ -172,7 +172,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // option_key separator value
+  // option_key option_separator value
   public static boolean option(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option")) return false;
     if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
@@ -180,7 +180,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, OPTION, null);
     r = option_key(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, separator(b, l + 1));
+    r = r && report_error_(b, option_separator(b, l + 1));
     r = p && value(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
@@ -234,7 +234,20 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_key separator value
+  // "=" | "<>"
+  public static boolean option_separator(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_separator")) return false;
+    if (!nextTokenIs(b, "<option separator>", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, OPTION_SEPARATOR, "<option separator>");
+    r = consumeToken(b, EQUAL_SIGN);
+    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // property_key property_separator value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
     if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
@@ -242,7 +255,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
     r = property_key(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, separator(b, l + 1));
+    r = r && report_error_(b, property_separator(b, l + 1));
     r = p && value(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
@@ -257,6 +270,18 @@ public class CwtParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, PROPERTY_KEY_TOKEN);
     exit_section_(b, m, PROPERTY_KEY, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // "="
+  public static boolean property_separator(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_separator")) return false;
+    if (!nextTokenIs(b, EQUAL_SIGN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, EQUAL_SIGN);
+    exit_section_(b, m, PROPERTY_SEPARATOR, r);
     return r;
   }
 
@@ -289,12 +314,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
     return r;
-  }
-
-  /* ********************************************************** */
-  // "="
-  static boolean separator(PsiBuilder b, int l) {
-    return consumeToken(b, EQUAL_SIGN);
   }
 
   /* ********************************************************** */

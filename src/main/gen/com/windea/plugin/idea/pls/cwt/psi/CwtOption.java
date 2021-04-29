@@ -13,6 +13,9 @@ public interface CwtOption extends CwtNamedElement {
   CwtOptionKey getOptionKey();
 
   @Nullable
+  CwtOptionSeparator getOptionSeparator();
+
+  @Nullable
   CwtValue getValue();
 
   @NotNull

@@ -36,6 +36,12 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
   @Override
   @Nullable
+  public CwtOptionSeparator getOptionSeparator() {
+    return findChildByClass(CwtOptionSeparator.class);
+  }
+
+  @Override
+  @Nullable
   public CwtValue getValue() {
     return findChildByClass(CwtValue.class);
   }

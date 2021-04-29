@@ -13,6 +13,9 @@ public interface CwtProperty extends CwtNamedElement {
   CwtPropertyKey getPropertyKey();
 
   @Nullable
+  CwtPropertySeparator getPropertySeparator();
+
+  @Nullable
   CwtValue getValue();
 
   @NotNull

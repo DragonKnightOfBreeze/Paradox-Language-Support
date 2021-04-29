@@ -49,11 +49,19 @@ public class CwtVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitOptionSeparator(@NotNull CwtOptionSeparator o) {
+    visitPsiElement(o);
+  }
+
   public void visitProperty(@NotNull CwtProperty o) {
     visitNamedElement(o);
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPropertySeparator(@NotNull CwtPropertySeparator o) {
     visitPsiElement(o);
   }
 

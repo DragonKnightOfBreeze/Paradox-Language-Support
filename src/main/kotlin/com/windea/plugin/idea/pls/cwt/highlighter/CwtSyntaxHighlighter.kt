@@ -28,7 +28,7 @@ class CwtSyntaxHighlighter : SyntaxHighlighterBase() {
 	}
 	
 	override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
-		EQUAL_SIGN -> SEPARATOR_KEYS
+		EQUAL_SIGN, NOT_EQUAL_SIGN -> SEPARATOR_KEYS
 		LEFT_BRACE, RIGHT_BRACE -> BRACES_KEYS
 		PROPERTY_KEY_TOKEN -> PROPERTY_KEY_KEYS
 		OPTION_KEY_TOKEN -> OPTION_KEY_KEYS

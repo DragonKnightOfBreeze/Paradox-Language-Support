@@ -1,7 +1,9 @@
 package com.windea.plugin.idea.pls.util
 
 import com.intellij.psi.*
+import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.cwt.psi.*
+import com.windea.plugin.idea.pls.cwt.psi.impl.*
 import com.windea.plugin.idea.pls.model.*
 import java.util.*
 
@@ -70,7 +72,7 @@ object CwtConfigResolver {
 						properties = emptyList()
 					}
 					value.isArray -> {
-						values = value.valueList.map{ resolveValue(it) }
+						values = value.valueList.map { resolveValue(it) }
 						properties = emptyList()
 					}
 					value.isObject -> {
@@ -108,15 +110,18 @@ object CwtConfigResolver {
 	
 	private fun getOptions(optionComments: MutableList<CwtOptionComment>): CwtConfigOptions {
 		var cardinality: String? = null
+		var optional: Boolean? = null
 		var required: Boolean? = null
+		var type_key_filter: ReversibleList<String>? = null
+		var severity: String? = null
 		var push_scope: String? = null
 		var replace_scope: Map<String, String>? = null
-		var severity: String? = null
-		var scope: String? = null
 		var scopes: List<String>? = null
+		var graph_related_types: List<String>? = null
 		for(optionComment in optionComments) {
 			for(value in optionComment.valueList) {
 				when(value.value) {
+					"optional" -> optional = true
 					"required" -> required = true
 				}
 			}
@@ -126,6 +131,23 @@ object CwtConfigResolver {
 				when(optionName) {
 					"cardinality" -> {
 						if(optionValue is CwtString) cardinality = optionValue.value
+					}
+					"type_key_filter" -> {
+						val optionSeparator = option.optionSeparator?.text ?: continue
+						val reverse = optionSeparator == "<>"
+						when {
+							optionValue is CwtString -> type_key_filter = ReversibleList(listOf(optionValue.value),reverse)
+							optionValue is CwtBlock -> {
+								val list = mutableListOf<String>()
+								for(v in optionValue.valueList) {
+									if(v is CwtString) list.add(v.value)
+								}
+								type_key_filter = ReversibleList(list,reverse)
+							}
+						}
+					}
+					"severity" -> {
+						if(optionValue is CwtString) severity = optionValue.value
 					}
 					"push_scope" -> {
 						if(optionValue is CwtString) push_scope = optionValue.value
@@ -141,18 +163,30 @@ object CwtConfigResolver {
 							replace_scope = map
 						}
 					}
-					"severity" -> {
-						if(optionValue is CwtString) severity = optionValue.value
-					}
 					"scope" -> {
 						when {
-							optionValue is CwtString -> scope = optionValue.value
-							optionValue is CwtBlock -> scopes = optionValue.valueList.map { it.value }
+							optionValue is CwtString -> scopes = listOf(optionValue.value)
+							optionValue is CwtBlock -> {
+								val list = mutableListOf<String>()
+								for(v in optionValue.valueList) {
+									if(v is CwtString) list.add(v.value)
+								}
+								scopes = list
+							}
+						}
+					}
+					"graph_related_types" -> {
+						if(optionValue is CwtBlock) {
+							val list = mutableListOf<String>()
+							for(v in optionValue.valueList) {
+								if(v is CwtString) list.add(v.value)
+							}
+							graph_related_types = list
 						}
 					}
 				}
 			}
 		}
-		return CwtConfigOptions(cardinality, required, push_scope, replace_scope, severity, scope, scopes)
+		return CwtConfigOptions(cardinality, optional, required, type_key_filter, severity, push_scope, replace_scope, scopes, graph_related_types)
 	}
 }

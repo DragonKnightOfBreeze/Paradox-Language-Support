@@ -35,6 +35,7 @@ class CwtBlock(
 				.after(LEFT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //左花括号之后如果非换行按情况可能需要空格
 				.before(RIGHT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //右花括号之前如果非换行按情况可能需要空格
 				.around(EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号之间按情况可能需要空格
+				.around(NOT_EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号之间按情况可能需要空格
 		}
 	}
 

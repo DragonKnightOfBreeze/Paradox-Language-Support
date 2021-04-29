@@ -36,6 +36,12 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
 
   @Override
   @Nullable
+  public CwtPropertySeparator getPropertySeparator() {
+    return findChildByClass(CwtPropertySeparator.class);
+  }
+
+  @Override
+  @Nullable
   public CwtValue getValue() {
     return findChildByClass(CwtValue.class);
   }

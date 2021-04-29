@@ -166,6 +166,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   "{" {yybegin(WAITING_OPTION); return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); return RIGHT_BRACE;}
   "=" {yybegin(WAITING_OPTION_VALUE); return EQUAL_SIGN;}
+  "<>" {yybegin(WAITING_OPTION_VALUE); return NOT_EQUAL_SIGN;}
     
   {COMMENT} {return COMMENT;}
 }

@@ -12,6 +12,7 @@
 
 	tokens=[
 	  EQUAL_SIGN="="
+	  NOT_EQUAL_SIGN="<>"
 	  LEFT_BRACE="{"
 	  RIGHT_BRACE="}"
 	  EOL="regexp:\R"
@@ -49,14 +50,14 @@ option_comment ::= "##" option_comment_item *{
 }
 private option_comment_item ::= option | value
 
-property ::= property_key separator value {
+property ::= property_key property_separator value {
   pin(".*")=1
   mixin="com.windea.plugin.idea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="com.windea.plugin.idea.pls.cwt.psi.CwtNamedElement"
   methods=[getIcon getName setName checkRename getPropertyName getPropertyValue getPropertyTruncatedValue]
 }
 
-option ::= option_key separator value{
+option ::= option_key option_separator value{
   pin(".*")=1
   mixin="com.windea.plugin.idea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="com.windea.plugin.idea.pls.cwt.psi.CwtNamedElement"
@@ -71,7 +72,9 @@ option_key ::= OPTION_KEY_TOKEN{
   methods=[getName]
 }
 
-private separator ::= "="
+property_separator ::= "="
+
+option_separator ::= "=" | "<>"
 
 value ::= boolean | number | string | block{
   methods=[getIcon getValue getTruncatedValue]
