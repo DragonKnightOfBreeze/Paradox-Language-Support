@@ -4,7 +4,6 @@ import com.intellij.extapi.psi.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.pls.cwt.*
 import com.windea.plugin.idea.pls.cwt.CwtLanguage
-import com.windea.plugin.idea.pls.script.psi.*
 
 class CwtFile(
   viewProvider: FileViewProvider

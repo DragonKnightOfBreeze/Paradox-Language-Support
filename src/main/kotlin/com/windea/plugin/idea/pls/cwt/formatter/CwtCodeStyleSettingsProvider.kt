@@ -3,7 +3,7 @@ package com.windea.plugin.idea.pls.cwt.formatter
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import com.windea.plugin.idea.pls.*
-import com.windea.plugin.idea.pls.script.*
+import com.windea.plugin.idea.pls.cwt.*
 
 class CwtCodeStyleSettingsProvider: CodeStyleSettingsProvider(){
 	override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
@@ -13,7 +13,7 @@ class CwtCodeStyleSettingsProvider: CodeStyleSettingsProvider(){
 	override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
 		return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
 			override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
-				return object : TabbedLanguageCodeStylePanel(ParadoxScriptLanguage, currentSettings, settings) {
+				return object : TabbedLanguageCodeStylePanel(CwtLanguage, currentSettings, settings) {
 					override fun initTabs(settings: CodeStyleSettings?) {
 						addIndentOptionsTab(settings)
 						addSpacesTab(settings)

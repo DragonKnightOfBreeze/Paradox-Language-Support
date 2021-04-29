@@ -7,8 +7,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.cwt.psi.*
-import com.windea.plugin.idea.pls.script.psi.*
-import com.windea.plugin.idea.pls.script.structureView.*
 
 class CwtStructureViewModel(
 	editor: Editor?,

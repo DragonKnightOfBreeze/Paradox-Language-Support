@@ -187,7 +187,7 @@ authority = {
 			}
 		}
 	}
-	## replace_scope = { this = no_scope root = no_scope } #this can check has_dlc and other likewise triggers, but thats it.
+	## replace_scope = { this = no_scope root = no_scope }#this can check has_dlc and other likewise triggers, but thats it.
 	## cardinality = 0..1
 	random_weight = {
 		## cardinality = 0..1

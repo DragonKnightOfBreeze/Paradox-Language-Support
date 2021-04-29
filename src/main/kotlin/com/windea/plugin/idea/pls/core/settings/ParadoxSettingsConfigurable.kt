@@ -6,7 +6,7 @@ import javax.swing.*
 
 class ParadoxSettingsConfigurable: SearchableConfigurable {
 	companion object{
-		 private val _name =  message("paradox.settings")
+		 private val _name =  message("pls.settings")
 	}
 	
 	private var component: ParadoxSettingsComponent? = null

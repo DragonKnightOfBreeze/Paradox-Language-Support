@@ -203,7 +203,7 @@
       <option name="IMP_DECLARE_ALIGN_DEFAULT" value="true" />
     </MSSQLCodeStyleSettings>
     <MarkdownNavigatorCodeStyleSettings>
-      <option name="WRAP_ON_TYPING" value="1" />
+      <option name="WRAP_ON_TYPING" value="0" />
       <option name="USE_ACTUAL_CHAR_WIDTH" value="false" />
       <option name="KEEP_TRAILING_SPACES" value="2" />
       <option name="CODE_KEEP_TRAILING_SPACES" value="2" />

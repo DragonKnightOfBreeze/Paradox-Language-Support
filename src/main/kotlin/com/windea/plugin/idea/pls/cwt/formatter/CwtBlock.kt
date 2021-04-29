@@ -6,6 +6,7 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.formatter.common.*
+import com.intellij.psi.tree.*
 import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.cwt.*
 import com.windea.plugin.idea.pls.cwt.psi.CwtTypes.*
@@ -42,24 +43,27 @@ class CwtBlock(
 	override fun buildChildren(): List<Block> {
 		return myNode.nodes().map { CwtBlock(it, settings) }
 	}
-
-	override fun getIndent(): Indent {
+	
+	override fun getIndent(): Indent? {
 		//配置缩进
-		//block中的元素需要缩进
-		val parentNode = myNode.treeParent
-		when {
-			parentNode?.elementType != BLOCK -> return Indent.getNoneIndent()
-			else -> return Indent.getNoneIndent()
+		//block中的属性、值、注释需要缩进
+		val elementType = myNode.elementType
+		val parentElementType = myNode.treeParent?.elementType
+		return when {
+			parentElementType != BLOCK -> Indent.getNoneIndent()
+			elementType == LEFT_BRACE || elementType == RIGHT_BRACE -> Indent.getNoneIndent()
+			else -> Indent.getNormalIndent()
 		}
 	}
-
+	
 	override fun getChildIndent(): Indent? {
 		//配置换行时的自动缩进
 		//在file和rootBlock中不要缩进，在block中要缩进
+		val elementType = myNode.elementType
 		return when{
-			myNode.psi is PsiFile -> Indent.getNoneIndent()
-			myNode.elementType == ROOT_BLOCK -> Indent.getNoneIndent()
-			myNode.elementType == BLOCK -> Indent.getNormalIndent()
+			elementType is IFileElementType -> Indent.getNoneIndent()
+			elementType == ROOT_BLOCK -> Indent.getNoneIndent()
+			elementType == BLOCK -> Indent.getNormalIndent()
 			else -> null
 		}
 	}

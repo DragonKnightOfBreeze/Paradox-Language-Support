@@ -4,12 +4,12 @@ import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.*
 
 @State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])
-class ParadoxSettingsState : PersistentStateComponent<ParadoxSettingsState> {
-	@JvmField var preferOverridden = false
-	@JvmField var renderLineCommentText = false
-	@JvmField var renderDefinitionText = true
-	@JvmField var renderLocalisationText = true
-	
+data class ParadoxSettingsState(
+	@JvmField var preferOverridden: Boolean = false,
+	@JvmField var renderLineCommentText: Boolean = false,
+	@JvmField var renderDefinitionText: Boolean = true,
+	@JvmField var renderLocalisationText: Boolean = true
+) : PersistentStateComponent<ParadoxSettingsState> {
 	override fun getState() = this
 
 	override fun loadState(state: ParadoxSettingsState) = XmlSerializerUtil.copyBean(state, this)

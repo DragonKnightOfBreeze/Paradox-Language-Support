@@ -6,15 +6,15 @@ import javax.swing.*
 
 class ParadoxSettingsComponent {
 	companion object {
-		private val _performanceTitle = message("paradox.settings.performance")
-		private val _preferOverriddenName = message("paradox.settings.performance.preferOverridden")
-		private val _preferOverriddenComment = message("paradox.settings.performance.preferOverridden.comment")
-		private val _renderLineCommentText = message("paradox.settings.performance.renderLineCommentText")
-		private val _renderLineCommentTextComment = message("paradox.settings.performance.renderLineCommentText.comment")
-		private val _renderDefinitionText = message("paradox.settings.performance.renderDefinitionText")
-		private val _renderDefinitionTextComment = message("paradox.settings.performance.renderDefinitionText.comment")
-		private val _renderLocalisationText = message("paradox.settings.performance.renderLocalisationText")
-		private val _renderLocalisationTextComment = message("paradox.settings.performance.renderLocalisationText.comment")
+		private val _genericTitle = message("pls.settings.generic")
+		private val _preferOverriddenName = message("pls.settings.performance.preferOverridden")
+		private val _preferOverriddenComment = message("pls.settings.performance.preferOverridden.comment")
+		private val _renderLineCommentText = message("pls.settings.performance.renderLineCommentText")
+		private val _renderLineCommentTextComment = message("pls.settings.performance.renderLineCommentText.comment")
+		private val _renderDefinitionText = message("pls.settings.performance.renderDefinitionText")
+		private val _renderDefinitionTextComment = message("pls.settings.performance.renderDefinitionText.comment")
+		private val _renderLocalisationText = message("pls.settings.performance.renderLocalisationText")
+		private val _renderLocalisationTextComment = message("pls.settings.performance.renderLocalisationText.comment")
 	}
 	
 	lateinit var preferOverriddenCheckBox: JCheckBox
@@ -23,22 +23,22 @@ class ParadoxSettingsComponent {
 	lateinit var renderLocalisationTextCheckBox: JCheckBox
 	
 	val panel = panel {
-		titledRow(_performanceTitle) {
+		titledRow(_genericTitle) {
 			row {
-				checkBox(_preferOverriddenName, true, _preferOverriddenComment)
-					.apply { preferOverriddenCheckBox = component }
+				checkBox(_preferOverriddenName, true,_preferOverriddenComment)
+					.applyToComponent { preferOverriddenCheckBox = this }
 			}
 			row {
 				checkBox(_renderLineCommentText, true, _renderLineCommentTextComment)
-					.apply { renderLineCommentTextCheckBox = component }
+					.applyToComponent { renderLineCommentTextCheckBox = this }
 			}
 			row {
 				checkBox(_renderDefinitionText, true, _renderDefinitionTextComment)
-					.apply { renderDefinitionTextCheckBox = component }
+					.applyToComponent { renderDefinitionTextCheckBox = this }
 			}
 			row {
 				checkBox(_renderLocalisationText, true, _renderLocalisationTextComment)
-					.apply { renderLocalisationTextCheckBox = component }
+					.applyToComponent { renderLocalisationTextCheckBox = this }
 			}
 		}
 	}

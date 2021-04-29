@@ -82,6 +82,7 @@
 * 初步支持cwt config语言
 * 更新并统一文件图标
 * 解析cwt config语言的optionComment和documentComment
+* 修复格式化功能的BUG
 
 # TODO
 

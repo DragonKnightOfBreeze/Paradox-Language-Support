@@ -103,6 +103,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   
   "###" { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
   "##" {  yybegin(WAITING_OPTION); return OPTION_START; }
+   
   {COMMENT} {return COMMENT; }
       
   {BOOLEAN_TOKEN} { yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN; }
@@ -137,6 +138,8 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
       
   "{" {return LEFT_BRACE;}
   "}" {return RIGHT_BRACE;}
+
+  {COMMENT} {return COMMENT; }
   
   {IS_OPTION_KEY} {yypushback(yylength()); yybegin(WAITING_OPTION_KEY);}
   
@@ -176,6 +179,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   
   "###" { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
   "##" {  yybegin(WAITING_OPTION); return OPTION_START; }
+ 
   {COMMENT} {return COMMENT; }
       
   {BOOLEAN_TOKEN} { yybegin(WAITING_OPTION_END); return BOOLEAN_TOKEN; }

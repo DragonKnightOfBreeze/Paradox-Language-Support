@@ -20,10 +20,10 @@ abstract class ParadoxLibraryType(
 	private val namePrefix = "$createActionName: "
 	
 	companion object {
-		private val _chooserTitle = message("paradox.library.chooser.title")
-		private val _chooserDescription = message("paradox.library.chooser.description")
-		private val _invalidLibraryPathMessage = message("paradox.library.dialog.invalidLibraryPath.message")
-		private val _invalidLibraryPathTitle = message("paradox.library.dialog.invalidLibraryPath.title")
+		private val _chooserTitle = message("pls.library.chooser.title")
+		private val _chooserDescription = message("pls.library.chooser.description")
+		private val _invalidLibraryPathMessage = message("pls.library.dialog.invalidLibraryPath.message")
+		private val _invalidLibraryPathTitle = message("pls.library.dialog.invalidLibraryPath.title")
 	}
 	
 	//必须是一个文件夹，但必须包含descriptor.mod或者.exe文件

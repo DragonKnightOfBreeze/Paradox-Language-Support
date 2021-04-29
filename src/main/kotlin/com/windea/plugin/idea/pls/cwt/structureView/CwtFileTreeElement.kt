@@ -4,8 +4,6 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.psi.util.*
 import com.windea.plugin.idea.pls.cwt.psi.*
-import com.windea.plugin.idea.pls.script.psi.*
-import com.windea.plugin.idea.pls.script.structureView.*
 
 class CwtFileTreeElement(
 	private val element: CwtFile
