@@ -1,0 +1,85 @@
+types = {
+	type[state] = {
+		path = "game/history/states"
+		name_field = id
+	}
+	type[state_category] = {
+		path = "game/common/state_category"
+		skip_root_key = state_categories
+	}
+}
+
+## replace_scope = { this = state root = state }
+state = {
+	id = int
+	name = localisation
+	## cardinality = 0..1
+	resources = {
+		## cardinality = ~1..inf
+		<resource> = float
+	}
+	history = {
+		owner = enum[country_tags]
+		## cardinality = 0..1
+		controller = enum[country_tags]
+		## cardinality = 0..inf
+		victory_points = {
+			# provinces overlap the ints, have to use 2 provinces here, floats will return error
+			## cardinality = 2..2
+			enum[provinces]
+		}
+		## cardinality = 0..1
+		buildings = {
+			## cardinality = 0..inf
+			<building> = int[0..20]
+			## cardinality = 0..inf
+			enum[provinces] = {
+				## cardinality = 0..inf
+				<building> = int[0..20]
+			}
+		}
+		alias_name[effect] = alias_match_left[effect]
+		## cardinality = 0..inf
+		date_field = {
+			## cardinality = 0..1
+			owner = enum[country_tags]
+			## cardinality = 0..1
+			controller = enum[country_tags]
+			## cardinality = 0..inf
+			victory_points = {
+				# provinces overlap the ints, have to use 2 provinces here, floats will return error
+				## cardinality = 2..2
+				enum[provinces]
+			}
+			## cardinality = 0..1
+			buildings = {
+				## cardinality = 0..inf
+				<building> = int[0..20]
+				## cardinality = 0..inf
+				enum[provinces] = {
+					## cardinality = 0..inf
+					<building> = int[0..20]
+				}
+			}
+			alias_name[effect] = alias_match_left[effect]
+		}
+	}
+	provinces = {
+		## cardinality = ~1..inf
+		enum[provinces]
+	}
+	manpower = int[0..inf]
+	## cardinality = 0..1
+	buildings_max_level_factor = float
+	state_category = <state_category>
+	## cardinality = 0..1
+	impassable = yes
+}
+
+state_category = {
+	local_building_slots = int
+	color = {
+		## cardinality = 3..3
+		int
+	}
+}

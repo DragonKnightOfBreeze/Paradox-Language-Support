@@ -1,0 +1,23 @@
+
+alias[effect:event_target:scalar] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+
+
+
+
+alias[trigger:event_target:scalar] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+
+
+effects:
+
+
+
+
+triggers

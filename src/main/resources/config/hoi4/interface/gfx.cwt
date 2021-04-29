@@ -1,0 +1,104 @@
+types = {
+	type[spriteType] = {
+		path = "game/interface"
+		skip_root_key = spriteTypes
+		path_extension = .gfx
+		name_field = "name"
+		## type_key_filter = spriteType
+		subtype[spriteType] = { }
+		## type_key_filter = frameAnimatedSpriteType
+		subtype[spriteType] = { }
+		## type_key_filter = corneredTileSpriteType
+		subtype[corneredTileSpriteType] = { }
+		## type_key_filter = maskedShieldType
+		subtype[maskedShieldType] = { }
+		## type_key_filter = textSpriteType
+		subtype[textSpriteType] = { }
+		## type_key_filter = progressbartype
+		subtype[progressbartype] = { }
+	}
+}
+
+spriteType = {
+	name = scalar
+	## cardinality = 0..1
+	effectFile = scalar
+	## cardinality = 0..1
+	noOfFrames = int
+	## cardinality = 0..1
+	animation_rate_fps = float
+	## cardinality = 0..1
+	looping = bool
+	## cardinality = 0..1
+	play_on_show = bool
+	## cardinality = 0..inf
+	animation = {
+		## cardinality = 0..1
+		animationmaskfile = scalar
+		## cardinality = 0..1
+		animationtexturefile = scalar
+		## cardinality = 0..1
+		animationrotation = float
+		## cardinality = 0..1
+		animationlooping = bool
+		## cardinality = 0..1
+		animationtime = float
+		## cardinality = 0..1
+		animationdelay = float
+		## cardinality = 0..1
+		animationtype = scalar
+		## cardinality = 0..1
+		animationblendmode = scalar
+		## cardinality = 0..1
+		animationrotationoffset = { x = float y = float }
+		## cardinality = 0..1
+		animationtexturescale = { x = float y = float }
+		## cardinality = 0..1
+		animationframes = {
+			## cardinality = 1..inf
+			int
+		}
+	}
+	## cardinality = 0..1
+	loadType = scalar
+	## cardinality = 0..1
+	transparencecheck = bool
+	## cardinality = 0..1
+	legacy_lazy_load = bool
+	## cardinality = 0..1
+	pause_on_loop = float
+	## cardinality = 0..1
+	alwaystransparent = bool
+	subtype[spriteType] = {
+		textureFile = filepath
+	}
+	subtype[frameAnimatedSpriteType] = {
+		textureFile = filepath
+	}
+	subtype[corneredTileSpriteType] = {
+		textureFile = filepath
+		borderSize = { x = int y = int }
+		## cardinality = 0..1
+		tilingCenter = bool
+		size = { x = int y = int }
+	}
+	subtype[maskedShieldType]  = {
+		textureFile1 = scalar
+		textureFile2 = scalar
+	}
+	subtype[progressbartype]  = {
+		textureFile1 = scalar
+		textureFile2 = scalar
+		size = { x = int y = int }
+		horizontal = bool
+		color = {
+			## cardinality = 3..3
+			float
+		}
+		colortwo = {
+			## cardinality = 3..3
+			float
+		}
+		steps = int
+	}
+}

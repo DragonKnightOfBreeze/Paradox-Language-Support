@@ -1,0 +1,30 @@
+alias[trigger:<scripted_trigger>] = bool
+
+types = {
+    type[scripted_trigger] = {
+        path = "game/common/scripted_triggers"
+
+        # Not a hard requirement, but vanilla convention is that
+        ## starts_with = likes_
+        subtype[offmap_like] = {
+
+        }
+
+        localisation = {
+            subtype[offmap_like] = {
+                name = "$"
+            }
+        }
+    }
+}
+
+scripted_trigger = {
+    subtype[offmap_like] = {
+        # TODO: Figure out
+        ## cardinality = 0..1
+        ### Check the wiki or something this is super confusing.
+        context = value_set[offmap_like_context]
+    }
+
+    alias_name[trigger] = alias_match_left[trigger]
+}

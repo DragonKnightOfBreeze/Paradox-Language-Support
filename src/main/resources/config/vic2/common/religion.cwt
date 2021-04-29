@@ -1,0 +1,31 @@
+types = {
+	type[religion_group] = {
+		path = "game/common"
+		path_file = "religion.cwt"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[religion] = {
+		path = "game/common"
+		path_file = "religion.cwt"
+		skip_root_key = any
+		localisation = {
+			## required
+			name = "$"
+			## optional
+			desc = "$_religion_desc"
+		}
+	}
+}
+
+religion = {
+	icon = int
+
+    color = {
+		## cardinality = 3..3
+		float[0..1]
+    }
+}
+

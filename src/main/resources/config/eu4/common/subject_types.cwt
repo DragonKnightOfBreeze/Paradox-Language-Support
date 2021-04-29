@@ -1,0 +1,391 @@
+
+types = {
+	type[subject_type] = {
+		path = "game/common/subject_types"
+		localisation = {
+			## required
+			name = "$_title"
+			## required
+			plural = "$_title_plural"
+			## required
+			longform = "$_long_desc"
+			## required
+			is_ours = "$_is_our"
+		}
+	}
+}
+
+subject_type = {
+	## cardinality = 0..1
+	###copy_from copies everything except count, is_potential_overlord, and can_be_established
+	copy_from = <subject_type>
+	## cardinality = 0..1
+	###count = x means it "counts as" x in some triggers.
+	count = <subject_type>
+
+	## cardinality = 0..1
+	sprite = <sprite>
+	## cardinality = 0..1
+	###The one that the overlord sees
+	diplomacy_overlord_sprite = <sprite>
+	## cardinality = 0..1
+	###The one that the subject sees
+	diplomacy_subject_sprite = <sprite>
+
+	## cardinality = 0..1
+	##replace_scope = { root = country this = country }
+	###This part is not copied in copy_from. Actual default is equivalent to always = yes. In overlord scope.
+	is_potential_overlord = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	##replace_scope = { root = country this = country from = country }
+	###This part is not copied in copy_from. Actual default is equivalent to always = yes. Root = subject, from = overlord.
+	can_be_established = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## cardinality = 0..1
+	has_overlords_ruler = bool
+	## cardinality = 0..1
+	can_fight_independence_war = bool
+	## cardinality = 0..1
+	###Whether they can leave the relationship whenever they want
+	is_voluntary = bool
+	## cardinality = 0..1
+	transfer_trade_power = bool
+	## cardinality = 0..1
+	transfer_trade_if_merchant_republic = bool
+	## cardinality = 0..1
+	joins_overlords_wars = bool
+	## cardinality = 0..1
+	joins_colonial_wars = bool
+	## cardinality = 0..1
+	can_be_integrated = bool
+	## cardinality = 0..1
+	###"Release Colony" in SubjectView
+	can_release_and_play = bool
+	## cardinality = 0..1
+	uses_tariffs = bool
+	## cardinality = 0..1
+	###If the country is automatically created. ( Makes for special checks during history )
+	dynamically_created_during_history = bool
+	## cardinality = 0..1
+	###Whether subject assumes control of overlord's colonies in same colonial region.
+	eats_overlords_colonies = bool
+	## cardinality = 0..1
+	###Regulates most rules that should hold only for colonies
+	has_colonial_parent = bool
+	## cardinality = 0..1
+	overlord_can_attack = bool
+	## cardinality = 0..1
+	overlord_can_be_subject = bool
+	## cardinality = 0..1
+	can_have_subjects_of_other_types = bool
+	## cardinality = 0..1
+	can_be_annexed = bool
+	## cardinality = 0..1
+	takes_diplo_slot = bool
+	## cardinality = 0..1
+	has_power_projection = bool
+	## cardinality = 0..1
+	can_release_in_peace = bool
+	## cardinality = 0..1
+	uses_military_focus = bool
+	## cardinality = 0..1
+	created_by_overlord = bool
+	## cardinality = 0..1
+	transfer_subjects_when_made = bool
+	## cardinality = 0..1
+	restoration_cb = <casus_belli>
+	## cardinality = 0..1
+	###Whether overlord always gets called (declinable) against countries without the same overlord. When this is 'no' overlord will only join if the defender would have been blocked (by its subject type) from attacking the attacker.
+	overlord_protects_external = bool
+	## cardinality = 0..1
+	###Whether distance between borders counts this subject type as part of its overlord's borders.
+	counts_for_borders = bool
+	## cardinality = 0..1
+	###Whether the overlord can enforce peace on the subject's enemy even when the subject is the attacker
+	overlord_enforce_peace_attacking = bool
+	## cardinality = 0..1
+	###Whether the overlord can use the subject's claims and cores for declaring war
+	can_use_claims = bool
+	## cardinality = 0..1
+	gives_daimyo_bonuses = bool
+	## cardinality = 0..1
+	###Only for AI. Bidirectional.
+	gets_help_with_rebels = bool
+	## cardinality = 0..1
+	###Whether the Overlord gets popups about Subject's rebels and sees them in Stability View.
+	share_rebel_popup = bool
+	## cardinality = 0..1
+	###Whether separatist rebels enforcing demands will become subjects of the overlord.
+	separatists_become_subjects = bool
+	## cardinality = 0..1				
+	allows_taking_land_without_independence = bool
+	## cardinality = 0..1
+	###Whether this subject type can be made into a vassal with the "Transfer Subject" Age Ability.
+	can_transfer_in_peace = bool
+	## cardinality = 0..1
+	can_set_mil_focus = bool
+	## cardinality = 0..1
+	###Requires Cradle of Civilization
+	can_send_missionary_to_subject = bool
+	## cardinality = 0..1
+	###Only works together with has_overlords_ruler
+	can_union_break = bool
+	## cardinality = 0..1
+	overlord_can_fabricate_for = bool
+
+	## cardinality = 0..1
+	can_send_tribute = bool
+	
+	## cardinality = 0..1
+	###0 means no limit
+	max_government_rank = int
+	## cardinality = 0..1
+	###How many cities the subject needs before giving bonuses to overlord
+	cities_required_for_bonuses = int
+	## cardinality = 0..1
+	###Overlord and subject will each get this much extra trust with each other at game start
+	trust_on_start = int
+
+	## cardinality = 0..1
+	base_liberty_desire = float
+	## cardinality = 0..1
+	liberty_desire_revolution = int
+	## cardinality = 0..1
+	liberty_desire_negative_prestige = float
+	## cardinality = 0..1
+	liberty_desire_development_ratio = float
+	## cardinality = 0..1
+	liberty_desire_same_dynasty = float
+	## cardinality = 0..1
+	liberty_desire_revolution = float
+	## cardinality = 0..1
+	###1.0 represents the amount payed by vassals
+	pays_overlord = float
+	## cardinality = 0..1
+	###1.0 represents bonus from having a vassal
+	forcelimit_bonus = float
+	## cardinality = 0..1
+	###Percent of subject FL to use as base for modifiers
+	forcelimit_to_overlord = float
+	## cardinality = 0..1
+	###How much the AI subject should spend etc. on army and forts. 0 should make them spend nothing. Very high values will probably not make a big difference since there will be sanity checks.
+	military_focus = float
+
+	## cardinality = 0..1
+	###relative_power_class decides how Subjects are grouped together when considering relative strenghth towards overlord: If it is 0 they won't consider relative power and if it is 1 they will only consider their own power (and those supporting their independence) compared to their Overlord's. Otherwise they will sum up the power of every Subject of the same relative_power_class as themselves, and all countries who support either themselves or one of their allies in the same relative_power_class.
+	relative_power_class = int[0..2]
+	## cardinality = 0..1
+	###diplomacy_view_class decides how subjects are grouped together in diplomacy view and in foreign province view: 0 means it won't be listed, 1 means it will be listed together only with the same subject type. Other values means it will be listed together with all subjects of the same diplomacy_view_class
+	diplomacy_view_class = int[0..2]
+	
+	## cardinality = 0..1
+	##replace_scope = { root = country this = country from = country }
+	###Root = subject, from = overlord.
+	can_fight = {
+		## cardinality = 0..inf
+		same_overlord = <subject_type>
+		## cardinality = 0..inf
+		other_overlord = <subject_type>
+		## cardinality = 0..1
+		other_overlord = all
+		## cardinality = 0..1
+		neighboring_primitives = yes
+		## cardinality = 0..1
+		colonial_region_nations = yes
+		## cardinality = 0..1
+		independent_nations = yes
+		## cardinality = 0..1
+		can_send_tribute = yes
+	}
+	## cardinality = 0..1
+	###Root = subject, from = overlord.
+	##replace_scope = { root = country this = country from = country }
+	can_rival = {
+		## cardinality = 0..inf
+		same_overlord = <subject_type>
+		## cardinality = 0..inf
+		other_overlord = <subject_type>
+		## cardinality = 0..1
+		other_overlord = all
+		## cardinality = 0..1
+		neighboring_primitives = yes
+		## cardinality = 0..1
+		colonial_region_nations = yes
+		## cardinality = 0..1
+		independent_nations = yes
+		## cardinality = 0..1
+		can_send_tribute = yes
+	}
+	## cardinality = 0..1
+	###Root = subject, from = overlord.
+	##replace_scope = { root = country this = country from = country }
+	can_ally = {
+		## cardinality = 0..inf
+		same_overlord = <subject_type>
+		## cardinality = 0..inf
+		other_overlord = <subject_type>
+		## cardinality = 0..1
+		other_overlord = all
+		## cardinality = 0..1
+		neighboring_primitives = yes
+		## cardinality = 0..1
+		colonial_region_nations = yes
+		## cardinality = 0..1
+		independent_nations = yes
+		## cardinality = 0..1
+		can_send_tribute = yes
+	}
+	## cardinality = 0..1
+	###Root = subject, from = overlord.
+	##replace_scope = { root = country this = country from = country }
+	can_marry = {
+		## cardinality = 0..inf
+		same_overlord = <subject_type>
+		## cardinality = 0..inf
+		other_overlord = <subject_type>
+		## cardinality = 0..1
+		other_overlord = all
+		## cardinality = 0..1
+		neighboring_primitives = yes
+		## cardinality = 0..1
+		colonial_region_nations = yes
+		## cardinality = 0..1
+		independent_nations = yes
+		## cardinality = 0..1
+		can_send_tribute = yes
+	}
+
+	## cardinality = 0..1
+	embargo_rivals = bool
+	## cardinality = 0..1
+	support_loyalists = bool
+	## cardinality = 0..1
+	subsidize_armies = bool
+	## cardinality = 0..1
+	scutage = bool
+	## cardinality = 0..1
+	send_officers = bool
+	## cardinality = 0..1
+	divert_trade = bool
+	## cardinality = 0..1
+	placate_rulers = bool
+	## cardinality = 0..1
+	place_relative_on_throne = bool
+	## cardinality = 0..1
+	enforce_religion = bool
+	## cardinality = 0..1
+	customize_subject = bool
+	## cardinality = 0..1
+	replace_governor = bool
+	## cardinality = 0..1
+	grant_province = bool
+	## cardinality = 0..1
+	enforce_culture = bool
+	## cardinality = 0..1
+	siphon_income = bool
+	## cardinality = 0..1
+	fortify_march = bool
+	## cardinality = 0..1
+	seize_territory = bool
+	## cardinality = 0..1
+	start_colonial_war = bool
+	## cardinality = 0..1
+	grant_core_claim = bool
+	## cardinality = 0..1
+	sacrifice_ruler = bool
+	## cardinality = 0..1
+	sacrifice_heir = bool
+	## cardinality = 0..1
+	increase_tariffs = bool
+	## cardinality = 0..1
+	decrease_tariffs = bool
+	## cardinality = 0..1
+	takeondebt = bool
+	## cardinality = 0..1
+	bestow_gifts = bool
+	## cardinality = 0..1
+	send_additional_troops = bool
+	## cardinality = 0..1
+	demand_artifacts = bool
+	## cardinality = 0..1
+	demand_additional_tribute = bool
+	## cardinality = 0..1
+	force_seppuku = bool
+	## cardinality = 0..1
+	press_sailors = bool
+	## cardinality = 0..1
+	contribute_to_capital = bool
+	## cardinality = 0..1
+	force_isolation = bool
+	## cardinality = 0..1
+	return_land = bool
+	## cardinality = 0..1
+	conscript_general = bool
+	## cardinality = 0..1
+	knowledge_sharing = bool
+	## cardinality = 0..1
+	block_settlement_growth = bool
+	## cardinality = 0..1
+	allow_settlement_growth = bool
+	## cardinality = 0..1
+	sword_hunt = bool
+	## cardinality = 0..1
+	sankin_kotai = bool
+	## cardinality = 0..1
+	expel_ronin = bool
+
+	## cardinality = 0..inf
+	###Use "clear" to clear after copy_from. Otherwise it just adds a static modifier.
+	modifier_subject = clear
+	## cardinality = 0..inf
+	###Use "clear" to clear after copy_from. Otherwise it just adds a static modifier.
+	modifier_subject = {
+		modifier = <static_modifier>
+		## cardinality = 0..1
+		##replace_scope = { root = country this = country from = country }
+		###Root = subject, from = overlord.
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..1
+		expiration_message_overlord = localisation
+		## cardinality = 0..1
+		expiration_message_subject = localisation
+	}
+	## cardinality = 0..inf
+	###Use "clear" to clear after copy_from. Otherwise it just adds a static modifier.
+	modifier_overlord = clear
+	## cardinality = 0..inf
+	###Use "clear" to clear after copy_from. Otherwise it just adds a static modifier.
+	modifier_overlord = {
+		modifier = <static_modifier>
+		## cardinality = 0..1
+		##replace_scope = { root = country this = country from = country }
+		###Root = subject, from = overlord.
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..1
+		expiration_message_overlord = localisation
+		## cardinality = 0..1
+		expiration_message_subject = localisation
+	}
+
+	## cardinality = 0..1
+	###If not "null" it will look for a modifier with that name in 00_opinion_modifiers.txt and other files in that directory.
+	overlord_opinion_modifier = null
+	## cardinality = 0..1
+	###If not "null" it will look for a modifier with that name in 00_opinion_modifiers.txt and other files in that directory.
+	overlord_opinion_modifier = <opinion_modifier>
+	## cardinality = 0..1
+	###If not "null" it will look for a modifier with that name in 00_opinion_modifiers.txt and other files in that directory.
+	subject_opinion_modifier = null
+	## cardinality = 0..1
+	###If not "null" it will look for a modifier with that name in 00_opinion_modifiers.txt and other files in that directory.
+	subject_opinion_modifier = <opinion_modifier>
+}
+

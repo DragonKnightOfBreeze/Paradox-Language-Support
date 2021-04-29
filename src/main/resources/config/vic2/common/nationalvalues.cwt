@@ -1,0 +1,14 @@
+nv_order = {
+	mobilisation_size = 0.04
+	mobilisation_economy_impact = 1.0
+}
+
+nv_liberty = {
+	mobilisation_size = 0.02
+	mobilisation_economy_impact = 0.75
+}
+
+nv_equality = {
+	mobilisation_size = 0.06
+	mobilisation_economy_impact = 1.25
+}

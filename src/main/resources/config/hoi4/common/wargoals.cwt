@@ -1,0 +1,61 @@
+types = {
+	type[wargoal] = {
+		path = "game/common/wargoals"
+		skip_root_key = wargoal_types
+	}
+}
+
+## replace_scope = { this = country root = country prev = country }
+wargoal = {
+	## cardinality = 0..1
+	war_name = localisation
+	## cardinality = 0..1
+	allowed = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	available = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	## replace_scope = { this = state root = country prev = country }
+	take_states = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	puppet = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	liberate = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	generate_base_cost = int
+	## cardinality = 0..1
+	generate_per_state_cost = int
+
+	## cardinality = 0..1
+	take_states_limit = int
+	## cardinality = 0..1
+	take_states_cost = int
+	## cardinality = 0..1
+	puppet_cost = int
+	## cardinality = 0..1
+	annex_threat_factor = float
+	## cardinality = 0..1
+	annex_cost = int
+	## cardinality = 0..1
+	force_government_cost = int
+
+	## cardinality = 0..1
+	expire = int
+
+	## cardinality = 0..1
+	threat = float
+}

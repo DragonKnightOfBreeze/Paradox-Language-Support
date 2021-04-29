@@ -1,0 +1,62 @@
+
+types = {
+	type[colonial_region] = {
+		path = "game/common/colonial_regions"
+		localisation = {
+			## optional
+			name = "$"
+			## optional
+			short = "short_$"
+		}
+	}
+}
+
+colonial_region = {
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+
+	## cardinality = 0..1
+	tax_income = int
+	## cardinality = 0..1
+	native_size = int
+	## cardinality = 0..1
+	native_ferocity = int
+	## cardinality = 0..1
+	native_hostileness = int
+	
+	## cardinality = 0..1
+	trade_goods = {
+		## cardinality = 1..inf
+		<trade_good> = int
+	}
+	
+	## cardinality = 0..1
+	culture = {
+		## cardinality = 1..inf
+		<culture> = int
+	}
+	
+	## cardinality = 0..1
+	religion = {
+		## cardinality = 1..inf
+		<religion> = int
+	}
+
+	## cardinality = 0..1
+	provinces = {
+		## cardinality = 1..inf
+		<province_id>
+	}
+
+	## cardinality = 0..inf
+	names = {
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		name = localisation
+	}
+}

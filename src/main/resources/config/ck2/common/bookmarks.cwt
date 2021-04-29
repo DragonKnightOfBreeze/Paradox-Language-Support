@@ -1,0 +1,147 @@
+types = {
+    type[bookmark] = {
+        path_strict = yes
+        path = "game/common/bookmarks"
+        subtype[era] = {
+            era = yes
+        }
+        subtype[regular] = {
+            ## cardinality = 0..1
+            era = no
+        }
+        localisation = {
+            name = name
+            description = desc
+        }
+    }
+}
+
+bookmark = {
+    ### Localisation key for the bookmark's name.
+    name = localisation
+
+    ### Localisation key for the bookmark's description.
+    desc = localisation
+
+    ### The bookmark's date.
+    date = date_field
+
+    ## cardinality = 0..1
+    ### If yes, the bookmark will be shown on the era select screen when starting a new game. At most five eras will be shown.
+    era = bool
+
+    subtype[era] = {
+        ### The picture used on the era select screen.
+        picture = <sprite>
+    }
+
+    ## cardinality = 0..1
+    ### If yes, this bookmark will be used when pressing the "Custom start" button. At least one bookmark with this parameter needs to exist. Defaults to "no".
+    custom_start = bool
+
+    # Doing this the dumb way for now, I need to see where else character creation blocks are used before even attempting to generalise it.
+    ## cardinality = 0..inf
+    ### Suggested characters to play as at this bookmark. For eras, the first six will be shown on the era select screen.
+    selectable_character = {
+        ### The character's ID. Prooobably needs to be alive during the bookmark's date.
+        id = <character>
+
+        subtype[era] = {
+            ### The character's age at the time of the bookmark.
+            age = int
+
+            ### The character's name. Convention is ERA_CHAR_NAME_[character ID]
+            name = localisation
+
+            ### The character's primary title to use for CoA.
+            title = <title>
+
+            ### The character's title's localised (cultural) name of the title.
+            title_name = localisation
+
+            ## cardinality = 0..1
+            ### If yes, replace the primary title by the dynasty CoA. For cultures that use dynasty_title_names. Defaults to "no".
+            coa_dynasty = bool
+
+            ## cardinality = 0..1
+            ### Shows that the character requires a specific DLC to be playable (because of exclusive religions or governments). Defaults to no DLC.
+            dlc = enum[dlcs]
+
+            ### The character's characteristics.
+            character = {
+                ## cardinality = 0..1
+                ### If yes then the character is female. Defaults to "no".
+                female = bool
+
+                ### The character's DNA for their portrait.
+                dna = portrait_dna_field
+
+                ### The character's properties for their portrait.
+                properties = portrait_properties_field
+
+                ### The character's religion.
+                religion = <religion>
+
+                ### The character's culture.
+                culture = <culture>
+
+                ### The character's government.
+                government = <government>
+
+                ### The character's dynasty's ID.
+                dynasty = <dynasty>
+            }
+        }
+        subtype[!era] = {
+            ## cardinality = 0..1
+            ### The character's age at the time of the bookmark.
+            age = int
+
+            ## cardinality = 0..1
+            ### The character's name. Convention is ERA_CHAR_NAME_[character ID]
+            name = localisation
+
+            ## cardinality = 0..1
+            ### The character's primary title to use for CoA.
+            title = <title>
+
+            ## cardinality = 0..1
+            ### The character's title's localised (cultural) name of the title.
+            title_name = localisation
+
+            ## cardinality = 0..1
+            ### If yes, replace the primary title by the dynasty CoA. For cultures that use dynasty_title_names. Defaults to "no".
+            coa_dynasty = bool
+
+            ## cardinality = 0..1
+            ### Shows that the character requires a specific DLC to be playable (because of exclusive religions or governments). Defaults to no DLC.
+            dlc = enum[dlcs]
+
+            ## cardinality = 0..1
+            ### The character's characteristics.
+            character = {
+                ## cardinality = 0..1
+                ### If yes then the character is female. Defaults to "no".
+                female = bool
+
+                ### The character's DNA for their portrait.
+                dna = portrait_dna_field
+
+                ### The character's properties for their portrait.
+                properties = portrait_properties_field
+
+                ### The character's religion.
+                religion = <religion>
+
+                ### The character's culture.
+                culture = <culture>
+
+                ### The character's government.
+                government = <government>
+
+                ### The character's dynasty's ID.
+                dynasty = <dynasty>
+            }
+        }
+    }
+}

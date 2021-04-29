@@ -1,0 +1,25 @@
+types = {
+    ## type_key_filter = intelligence_agency
+    type[intelligence_agency] = {
+        path = "game/common/intelligence_agencies"
+    }
+}
+
+intelligence_agency = {
+	picture = <spriteType>
+    names = {
+        ## cardinality = 0..inf
+        localisation
+        ## cardinality = 0..inf
+        localisation_inline
+    }
+
+    default = {
+        ## cardinality = ~1..inf
+        alias_name[trigger] = alias_match_left[trigger]
+     }
+    available = {
+        ## cardinality = ~1..inf
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+}

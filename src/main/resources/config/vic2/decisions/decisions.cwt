@@ -1,0 +1,45 @@
+
+types = {
+	type[decision] = {
+		path = "game/decisions"
+		skip_root_key = political_decisions
+		localisation = {
+			## required
+			## replace_scope = { root = country this = country }
+			name = "$_title"
+			## required
+			## replace_scope = { root = country this = country }
+			desc = "$_desc"
+		}
+	}
+}
+
+
+decision = {
+	## cardinality = 0..1
+	major = yes
+
+	## replace_scope = { root = country this = country }
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## replace_scope = { root = country this = country }
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { root = country this = country }
+	effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	#Not sure other settings are used or do anything
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	ai_will_do = {
+		factor = int[0..1]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+}
+

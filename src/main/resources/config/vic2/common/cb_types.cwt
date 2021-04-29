@@ -1,0 +1,109 @@
+
+types = {
+	type[cb_types] = {
+		path = "game/common"
+		path_file = "cb_types.txt"
+		start_from_root = yes
+		subtype[casus_belli] = { 
+			sprite_index = int
+		}
+		## type_key_filter = peace_order
+		subtype[peace_order] = {}
+	}
+}
+
+enums = {
+	enum[peace_options] = {
+		po_annex
+		po_demand_state
+		po_add_to_sphere
+		po_disarmament
+		po_reparations
+		po_transfer_provinces
+		po_remove_prestige
+		po_make_puppet
+		po_release_puppet
+		po_status_quo
+		po_install_communist_gov_type
+		po_uninstall_communist_gov_type
+		po_remove_cores
+		po_colony	
+	}
+}
+
+cb_types = {
+	subtype[peace_order] = {
+		## cardinality = 0..inf
+		<casus_belli>
+	}
+	subtype[casus_belli] = { 
+		sprite_index = int
+
+		## cardinality = 0..1
+		is_triggered_only = yes
+
+		## cardinality = 0..1
+		months = int
+
+		## cardinality = 0..1
+		constructing_cb = bool
+
+		## cardinality = 0..1
+		crisis = bool
+		
+		## scope country 
+		can_use = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		break_truce_prestige_factor = int
+		break_truce_infamy_factor = int
+		break_truce_militancy_factor = int
+		truce_months = int
+		
+		badboy_factor = int
+		prestige_factor = int
+		peace_cost_factor = int
+		penalty_factor = int
+
+		## cardinality = 0..1
+		all_allowed_states = bool
+
+		## cardinality = 0..1
+		po_transfer_provinces = bool
+
+		## cardinality = 0..1
+		po_remove_cores = bool
+
+		tws_battle_factor = 2.0 # battle score twice that of 
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = country }
+		allowed_countries = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = province from = country }
+		allowed_states = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = province from = country }
+		allowed_substate_regions = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## replace_scope = { root = country this = country from = country }
+		on_add = {
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		# TODO how to handle on_po_accepted that takes {} as srgument?		
+		enum[peace_options] = bool
+		
+		war_name = localisation
+	}
+
+}
+

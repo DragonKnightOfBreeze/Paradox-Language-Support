@@ -1,0 +1,181 @@
+
+types = {
+	## graph_related_types = { }
+	type[event] = {
+		name_field = "id"
+
+		path = "game/events"
+
+		localisation = {
+			## primary
+			title = title
+		}
+		
+		## type_key_filter = country_event
+		## push_scope = country
+		subtype[country] = {
+		}
+		## type_key_filter = province_event
+		## push_scope = province
+		subtype[province] = {
+		}
+		subtype[mean_time_to_happen] = {
+			mean_time_to_happen = {
+			}
+		}
+		subtype[hidden] = {
+			hidden = yes
+		}
+		subtype[triggered] = {
+			is_triggered_only = yes
+		}
+	}
+}
+
+event = {
+	id = scalar
+
+	subtype[hidden] = {
+		title = scalar
+		desc = scalar
+		picture = <sprite>
+		picture = enum[dlc_event_pictures]
+		picture = none
+	}
+
+
+	subtype[!hidden] = {
+		title = localisation
+		desc = localisation
+
+		## cardinality = 0..1
+		goto = <province_id>
+		## cardinality = 0..1
+		goto = value[event_target]
+		## cardinality = 0..1
+		goto = root
+		## cardinality = 0..1
+		goto = from
+
+		desc = {
+			trigger = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			desc = localisation
+		}
+		picture = scalar #todo: until such a time as I know how to check this
+		picture = {
+			trigger = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			picture = scalar #todo: until such a time as I know how to check this
+		}
+
+	}
+
+	## cardinality = 0..1
+	## severity = warning
+	hidden = yes
+
+	## cardinality = 0..1
+	###If yes, every country will be notified which options are selected.
+	major = bool
+	
+	## cardinality = 0..1
+	###Only displays the event to country validating the trigger
+	major_trigger = { alias_name[trigger] = alias_match_left[trigger] }
+
+	## cardinality = 0..1
+	is_triggered_only = bool
+
+	#well, technically you can get an event every 12 days without it, I just don't think you should
+	subtype[!mean_time_to_happen] = {
+		## severity = warning
+		is_triggered_only = yes
+	}
+
+	subtype[triggered] = { #experiment
+		## severity = info
+		## cardinality = 0..0
+		mean_time_to_happen = {
+			days = 1
+		}
+	}
+
+	## cardinality = 0..1
+	fire_only_once = bool
+
+
+	subtype[!triggered] = {
+		mean_time_to_happen = {
+			enum[days_months_years] = int
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+	subtype[triggered] = {
+		## cardinality = 0..1
+		mean_time_to_happen = {
+			enum[days_months_years] = 1
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+
+	## cardinality = 0..1
+	is_mtth_scaled_to_size = float #todo: what does this do?
+
+	## cardinality = 0..1
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	immediate = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	## cardinality = 1..inf
+	option = {
+		subtype[hidden] = {
+			## cardinality = 0..1
+			name = localisation
+		}
+		subtype[!hidden] = {
+			## severity = warning
+			name = localisation
+
+			## cardinality = 0..1
+			goto = <province_id>
+			## cardinality = 0..1
+			goto = value[event_target]
+			## cardinality = 0..1
+			goto = root
+			## cardinality = 0..1
+			goto = from
+		}
+
+		## cardinality = 0..1
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		alias_name[effect] = alias_match_left[effect]
+
+		## cardinality = 0..1
+		ai_chance = {
+			factor = float[0..10000]
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+
+		## cardinality = 0..inf
+		required_personality = <ruler_personality>
+
+		## cardinality = 0..1
+		highlight = yes
+	}
+
+	## cardinality = 0..1
+	after = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+}

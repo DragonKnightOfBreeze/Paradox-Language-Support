@@ -1,0 +1,61 @@
+types = {
+    type[job_action] = {
+        path_strict = yes
+        path = "game/common/job_actions"
+
+        subtype[offmap] = {
+            offmap = yes
+        }
+        subtype[onmap] = {
+            ## cardinality = 0..1
+            offmap = no
+        }
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+        }
+    }
+}
+
+job_action = {
+    ### All modifiers are multiplied by the value of this attribute of the character with the job.
+    attribute = enum[attributes]
+
+    ## replace_scope = { this = character root = character from = character }
+    ### Potential for the job action's button to appear in the UI and be usable. ROOT is the character with the job, FROM is the liege.
+    potential = single_alias_right[trigger_clause]
+
+    subtype[onmap] = {
+        ## replace_scope = { this = province root = province from = character fromfrom = character }
+        ### Conditions for a province to be selectable as a target for the job. ROOT is the province, FROM is the liege, FROMFROM is the character with the job.
+        trigger = single_alias_right[trigger_clause]
+
+        ## cardinality = 0..inf
+        ### Changes the colours of provinces when selecting a province as the target.
+        display_on_map = {
+            ### Gets added to the tooltip.
+            tooltip = localisation
+
+            ## replace_scope = { this = province root = province from = character fromfrom = character }
+            ### Conditions for this display to be used. ROOT is the province, FROM is the liege, FROMFROM is the character with the job.
+            trigger = single_alias_right[trigger_clause]
+
+            alias_name[color] = alias_match_left[color]
+        }
+    }
+
+    ## cardinality = 0..1
+    ### If yes, the action doesn't require a province as target and will be used as soon as the button is pressed. Defaults to "no".
+    offmap = bool
+
+    # TODO: Confirm scope
+    ### Modifiers applied to the province or liege? Weird
+    alias_name[modifier] = alias_match_left[modifier]
+
+    ### The UI displays the chance for these events to happen along with their "title" localisation. Only used for the UI.
+    events = {
+        ## cardinality = 0..inf
+        <event>
+    }
+}

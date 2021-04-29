@@ -1,0 +1,68 @@
+
+types = {
+    ## type_key_filter <> slots
+    type[artifact] = {
+        path = "game/common/artifacts"
+        path_strict = yes
+        localisation = {
+            name = "$"
+            description = "$_desc"
+        }
+    }
+}
+
+artifact = {
+    ## cardinality = 0..inf
+    ### Modifiers the artifact applies to its owner.
+    ## replace_scope = { this = character root = character }
+    alias_name[modifier] = alias_match_left[modifier]
+
+    ## cardinality = 0..1
+    ### The artifact's quality. Vanilla uses 1-5.
+    quality = int
+
+    # TODO: figure out who fromfrom is, afaik it's the original author, used in on_government_type_warfare
+    ## cardinality = 0..1
+    ### Conditions for the artifact to be active. Unowned artifacts are active only if they don't have this block.
+    ## replace_scope = { this = character root = character fromfrom = character }
+    active = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### Flags automatically assigned to each created artifact of this type.
+    flags = {
+        ## cardinality = 0..inf
+        value_set[artifact_flag]
+    }
+
+    ## cardinality = 0..1
+    ### If no, can only have a single artifact of this type in a character's inventory. Defaults to "yes".
+    stacking = bool
+
+    ## cardinality = 0..1
+    ### If yes, destroy_artifact has no effect on this artifact. Defaults to "no".
+    indestructible = bool
+
+    ### 118x118px picture; also uses this value plus "_small" (59x59px)
+    picture = <sprite>
+
+    ## cardinality = 0..1
+    ### Associated slot to equip the artifact.
+    slot = enum[artifact_slots]
+
+    ## cardinality = 0..1
+    ### Conditions for the artifact_can_be_gifted_to trigger.
+    ## replace_scope = { this = character root = character }
+    allowed_gift  = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### Command modifiers the artifact applies to its owner.
+    ## replace_scope = { this = character root = character }
+    command_modifier = {
+        alias_name[command_modifier] = alias_match_left[command_modifier]
+    }
+
+    # TODO: Docs only used once though
+    ## cardinality = 0..1
+    ### 
+    history = bool
+}

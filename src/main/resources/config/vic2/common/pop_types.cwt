@@ -1,0 +1,42 @@
+types = {
+	type[pop_chances] = {
+		path = "game/common"
+		path_file = "pop_types.txt"
+		skip_root_key = any
+        ## type_key_filter = promotion_chance
+		subtype[promotion_chance] = { }
+        ## type_key_filter = demotion_chance
+		subtype[demotion_chance] = { }
+        ## type_key_filter = migration_chance
+		subtype[migration_chance] = { }
+        ## type_key_filter = colonialmigration_chance
+		subtype[colonialmigration_chance] = { }
+        ## type_key_filter = emigration_chance
+		subtype[emigration_chance] = { }
+        ## type_key_filter = assimilation_chance
+		subtype[assimilation_chance] = { }
+        ## type_key_filter = conversion_chance
+		subtype[conversion_chance] = { }
+	}
+	type[parliament_issue] = {
+		path = "game/common/parliament_issues"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+}
+
+pop_chances = {
+	factor = float
+
+	## cardinality = 0..inf
+	group = {
+		## cardinality = 0..inf
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	## cardinality = 0..inf
+	alias_name[modifier_rule] = alias_match_left[modifier_rule]
+
+}

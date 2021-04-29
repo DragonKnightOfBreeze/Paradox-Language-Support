@@ -1,0 +1,230 @@
+types = {
+    type[society] = {
+        path_strict = yes
+        path = "game/common/societies"
+
+        subtype[non_interference] = {
+            non_interference = {
+
+            }
+        }
+
+        subtype[has_associated_religion] = {
+            associated_religion = <religion>
+        }
+
+        subtype[secret] = {
+            is_secret = yes
+        }
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+            leader = "$_leader_desc"
+            currency = "currency_name_$" # actually monthly_currency_gain>name; TODO: ask Dayshine if that's covered by his rules or at least could be
+
+            # TODO enforce rank loc; probably do rank via nested type
+        }
+    }
+}
+
+society = {
+    ### The primary attribute used for scoring the society members.
+    primary_attribute = enum[attributes]
+
+    ## cardinality = 0..1
+    ### If yes,  the society can't be joined openly, society clothing will not be visible to non-members and so on. Defaults to "no".
+    is_secret = bool
+
+    # TODO: What does that mean?
+    ## cardinality = 0..1
+    ### If yes, the society is considered to be religious, which is used for opinion value. Defaults to "no".
+    is_religious = yes
+
+    ## cardinality = 0..1
+    ### If set, this religion's scope will be accessible from script in the same way as character or province religion is.
+    associated_religion = <religion>
+
+    ## cardinality = 0..1
+    ### Used for the is_criminal trigger. Defaults to "no".
+    criminal = yes
+
+    ## cardinality = 0..1
+    ### Used for the is_devil_worshipper trigger. Also suppresses the "religious differences" opinion modifiers with other members of the same society. Defaults to "no".
+    devil_worshipper = bool
+
+    ## cardinality = 0..1
+    ### If no, the society's influence will not be displayed. Defaults to "yes".
+    society_influence = bool
+
+    ### Opinion modifier applied between members of this society.
+    opinion_to_other_members = int
+
+    # Fairly sure I've deduced the usage correctly :P
+    subtype[secret] = {
+        ## cardinality = 0..1
+        ### Opinion modifier for members of this society towards characters perceived to be members but not actually members.
+        opinion_to_pretenders = int
+
+        ## cardinality = 0..1
+        ### Opinion modifier for non-members towards characters perceived to be members of this society.
+        opinion_to_perceived_members = int
+    }
+
+    ### Opinion modifier multiplied by difference of rank, applied for lower-ranked member towards higher ranked.
+    opinion_per_rank_above = int
+
+    ## cardinality = 0..1
+    ### Decision that ranks up a member in the society. Why is this not required?
+    society_rank_up_decision = <decision>
+
+    ### Sound effect to play while the society is selected in the societies tab.
+    sound = <sound>
+
+    # TODO: Better explanation
+    ### GFX resource to use for the society's ranks
+    society_ranks_gfx = <sprite>
+
+    ## replace_scope = { this = character root = character from = character }
+    ## cardinality = 0..1
+    ### Non-interfering AI characters will not take any hostile action towards the character. Only characters within the society will be non-interfering. ROOT is the target of diplomatic actions, FROM is the character taking the action.
+    non_interference = single_alias_right[trigger_clause]
+
+    subtype[non_interference] = {
+        ## cardinality = 0..1
+        ### Localisation key to be shown under "influence", explaining what characters are non-interfering.
+        non_interference_tooltip = localisation
+    }
+
+    ## replace_scope = { this = society root = society }
+    ### Determine if the society is active. If not met, it will be impossible to see or join the society, and no members will be generated for it at game start, and all existing members will be booted out of it within a month. Note that events and the like that reference the society will continue to act as if the society existed normally. ROOT is the society.
+    active = single_alias_right[trigger_clause]
+
+    ### If yes, the society is indestructible. Indestructible societies will use the startup_populate trigger to find an existing character to lead the society. It will choose the character in the world who would get the highest society membership score, with landed characters having their score reduced to 1/100th of what they'd otherwise get, since affecting a landed character is much more disruptive than affecting a courtier. If there's no eligible character, the on_society_failed_to_find_new_leader on-action will fire. Defaults to "no".
+    indestructible = bool
+
+    ## replace_scope = { this = character root = character }
+    ### Conditions for a character to be able to join the society.
+    can_join_society = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = character }
+    ### Conditions for a character to be able to see the society in the societies menu.
+    show_society = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Conditions for a character to be able to remain in the society. Usually a subset of can_join_society to avoid situations where you join and are immediately booted out.
+    potential = single_alias_right[trigger_clause]
+
+    # TODO: See if cardinality is really fixed
+    ## cardinality = 4..4
+    ### Definition for each rank of the society. Vanilla uses 1-4, probably a good idea to stick to that.
+    society_rank = {
+        ### The rank's level.
+        level = int[1..4]
+
+        ### How many characters are allowed to occupy that rank. Checked via the is_society_rank_full condition.
+        limit = int
+
+        ## cardinality = 0..1
+        ### Maximum number of members selected during startup_populate. If omitted, the rank will not be populated automatically.
+        startup_limit = int
+
+        ## cardinality = 0..1
+        ### Modifiers applied to members of that rank.
+        modifier = {
+            ## cardinality = 0..inf
+            alias_name[modifier] = alias_match_left[modifier]
+        }
+
+        ## cardinality = 0..1
+        ### Decisions that become available starting with that rank, cumulative with the previous ranks.
+        decisions = {
+            ## cardinality = 0..inf
+            <decision>
+        }
+
+        ## cardinality = 0..1
+        ### Localisation key for modifiers in society ranks that is localized and added to the tooltip for rank icons.
+        custom_tooltip = localisation
+
+        ## cardinality = 0..1
+        ## replace_scope = { this = character root = character from = character }
+        ### Define when other (AI) characters in the society will be obedient (roughly equivalent to "debug_yesmen") towards characters of this rank. ROOT is the rank holder, FROM is the potentially obedient character.
+        obedient = single_alias_right[trigger_clause]
+
+        ## cardinality = 0..1
+        ### The localisation key to be shown for the given rank, explaining what characters are obedient.
+        obedience_tooltip = localisation
+    }
+
+    ## cardinality = 0..1
+    ### Absolutely meaningless block of code. So yeah. ???
+    plots = {
+        ## cardinality = 0..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### Absolutely meaningless block of code. So yeah. ???
+    ambitions = {
+        ## cardinality = 0..inf
+        scalar
+    }
+
+    ### Defines how much power the member gains every month.
+    monthly_currency_gain = {
+        ### The currency's name.
+        name = localisation
+
+        ## cardinality = 0..inf
+        ### How much currency to gain per point of a given attribute.
+        per_attribute = {
+            name = enum[attributes]
+            value = float
+        }
+
+        ## cardinality = 0..inf
+        ### How much currency to gain if the member has a given trait.
+        has_trait = {
+            trait = <trait>
+            value = float
+        }
+
+        ## cardinality = 0..inf
+        ### How much currency to gain if the member is of a given rank.
+        society_rank = {
+            rank = int[1..4]
+            value = float
+        }
+
+        ## cardinality = 0..inf
+        ### How much currency to gain based on arbitrary conditions.
+        triggered_gain = {
+            desc = localisation
+            trigger = single_alias_right[trigger_clause]
+            value = float
+        }
+    }
+
+    ### How much score does a member have per point of the society's primary attribute.
+    member_score_per_attribute = float
+
+    ### How much score does a member have per rank level.
+    member_score_per_rank = float
+
+    # TODO: See if additive modifier works
+    ### Additional score based on arbitrary conditions.
+    member_score = {
+        value = float
+
+        ## cardinality = 0..inf
+        alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+    }
+
+    ## replace_scope = { this = character root = character }
+    ### Conditions used at game start to find characters to lead and join the society.
+    startup_populate = {
+        trigger = single_alias_right[trigger_clause]
+    }
+}

@@ -1,0 +1,254 @@
+types = {
+	type[country_leader_trait] = {
+		skip_root_key = leader_traits
+		path = "game/common/country_leader"
+	}
+	type[unit_leader_trait] = {
+		path = "game/common/unit_leader"
+		skip_root_key = leader_traits
+		subtype[corps_commander] = {
+			type = corps_commander
+		}
+		subtype[field_marshal] = {
+			type = field_marshal
+		}
+		subtype[naval_commander] = {
+			type = navy
+		}
+		subtype[land_commander] = {
+			type = land
+		}
+		subtype[assignable_trait] = {
+			trait_type = assignable_trait
+			trait_type = assignable_terrain_trait
+		}
+		subtype[gainable_trait] = {
+			gain_xp = {
+			}
+		}
+		subtype[gainable_trait] = {
+			gain_xp_leader = {
+			}
+		}
+	}
+}
+
+## push_scope = country
+country_leader_trait = {
+	## cardinality = 0..1
+	name = localisation
+	## cardinality = 0..1
+	random = bool
+	## cardinality = 0..1
+	sprite = int
+	alias_name[modifier] = alias_match_left[modifier]
+	## cardinality = 0..100
+	alias_name[ai_strategy_rule] = alias_match_left[ai_strategy_rule]
+	## cardinality = 0..1
+	equipment_bonus = {
+		## cardinality = 0..inf
+		<equipment> = {
+			## cardinality = 0..1
+			instant = bool
+			alias_name[unit_stat] = alias_match_left[unit_stat]
+			alias_name[naval_stat] = alias_match_left[naval_stat]
+			alias_name[air_stat] = alias_match_left[air_stat]
+		}
+		## cardinality = 0..inf
+		enum[tech_category] = {
+			## cardinality = 0..1
+			instant = bool
+			alias_name[unit_stat] = alias_match_left[unit_stat]
+			alias_name[naval_stat] = alias_match_left[naval_stat]
+			alias_name[air_stat] = alias_match_left[air_stat]
+		}
+		## cardinality = 0..inf
+		enum[unit_types] = {
+			## cardinality = 0..1
+			instant = bool
+			alias_name[unit_stat] = alias_match_left[unit_stat]
+			alias_name[naval_stat] = alias_match_left[naval_stat]
+			alias_name[air_stat] = alias_match_left[air_stat]
+		}
+		## cardinality = 0..inf
+		<unit> = {
+			## cardinality = 0..1
+			instant = bool
+			alias_name[unit_stat] = alias_match_left[unit_stat]
+			alias_name[naval_stat] = alias_match_left[naval_stat]
+			alias_name[air_stat] = alias_match_left[air_stat]
+		}
+	}
+	## cardinality = 0..inf
+	# targeted_modifier = single_alias_right[targeted_modifier]
+	alias_name[targeted_modifier_rule] = alias_match_left[targeted_modifier_rule]
+	alias_name[ai_strategy_rule] = alias_match_left[ai_strategy_rule]
+	## cardinality = 0..1
+	## replace_scope = { ROOT = country THIS = country }
+	ai_will_do = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+## push_scope = unit_leader
+unit_leader_trait = {
+	type = enum[unit_leader_types]
+	type = {
+		## cardinality = ~1..inf
+		enum[unit_leader_types]
+	}
+	## cardinality = 0..1
+	trait_type = enum[trait_types]
+	subtype[!naval_commander] = {
+		## cardinality = 0..4
+		### Direct bonus to this skill.
+		enum[unit_leader_skills] = int
+		### Bonus for gaining this skill.
+		## cardinality = 0..4
+		enum[army_leader_skill_factors] = int
+	}
+	subtype[naval_commander] = {
+		## cardinality = 0..1
+		gain_xp_on_spotting = int
+		## cardinality = 0..1
+		sub_unit_modifiers = {
+			## cardinality = 1..inf
+			<unit> = {
+				alias_name[unit_stat] = alias_match_left[unit_stat]
+				alias_name[naval_stat] = alias_match_left[naval_stat]
+				alias_name[air_stat] = alias_match_left[air_stat]
+			}
+		}
+		### Bonus for gaining this skill.
+		## cardinality = 0..4
+		enum[naval_leader_skill_factors] = int
+	}
+	subtype[gainable_trait] = {
+		## replace_scope = { this = combat root = combat from = combat }
+		gain_xp = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## replace_scope = { this = unit_leader root = unit_leader from = country }
+		gain_xp_leader = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		cost = int
+		gui_row = int
+		## cardinality = 0..1
+		gui_column = int
+		## cardinality = 0..1
+		custom_gain_xp_trigger_tooltip = localisation
+	}
+	subtype[assignable_trait] = {
+		gui_row = int
+		## cardinality = 0..1
+		gui_column = int
+		## cardinality = 0..5
+		parent = <unit_leader_trait>
+		## cardinality = 0..5
+		mutually_exclusive = <unit_leader_trait>
+		## cardinality = 0..1
+		prerequisites = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..1
+		custom_prerequisite_tooltip = localisation
+		## cardinality = 0..1
+		num_parents_needed = int
+	}
+	## cardinality = 0..1
+	field_marshal_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+		alias_name[unit_leader_modifier] = alias_match_left[unit_leader_modifier]
+	}
+	## cardinality = 0..1
+	corps_commander_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+		alias_name[unit_leader_modifier] = alias_match_left[unit_leader_modifier]
+	}
+	## cardinality = 0..1
+	custom_effect_tooltip = localisation
+	## cardinality = 0..1
+	override_effect_tooltip = localisation
+	## cardinality = 0..1
+	allowed = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	## replace_scope = { ROOT = unit_leader THIS = unit_leader }
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+		alias_name[unit_leader_modifier] = alias_match_left[unit_leader_modifier]
+	}
+	## cardinality = 0..1
+	## replace_scope = { ROOT = unit_leader THIS = unit_leader }
+	non_shared_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+		alias_name[unit_leader_modifier] = alias_match_left[unit_leader_modifier]
+	}
+	## cardinality = 0..5
+	enable_ability = <ability>
+	## cardinality = 0..1
+	new_commander_weight = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+	## cardinality = 0..1
+	trait_xp_factor = {
+		<unit_leader_trait> = float
+	}
+	## cardinality = 0..1
+	ai_will_do = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+enums = {
+	enum[unit_leader_skills] = {
+		attack_skill
+		defense_skill
+		logistics_skill
+		planning_skill
+	}
+	enum[army_leader_skill_factors] = {
+		attack_skill_factor
+		defense_skill_factor
+		logistics_skill_factor
+		planning_skill_factor
+	}
+	enum[naval_leader_skill_factors] = {
+		attack_skill_factor
+		coordination_skill_factor
+		maneuvering_skill_factor
+		planning_skill_factor
+	}
+	enum[unit_leader_types] = {
+		all
+		corps_commander
+		field_marshal
+		navy
+		land
+		operative
+	}
+	enum[trait_types] = {
+		assignable_terrain_trait
+		basic_terrain_trait
+		personality_trait
+		assignable_trait
+		status_trait
+		exile
+		basic_trait
+	}
+	enum[combat_modifiers] = {
+		fort_attack
+		river_crossing
+		amphibious_attack
+		paradrop
+	}
+
+}

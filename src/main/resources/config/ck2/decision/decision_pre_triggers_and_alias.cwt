@@ -1,0 +1,264 @@
+single_alias[general_decisions] = {
+
+    ## cardinality = 0..1
+    ### Will show an alert once decision is enabled
+    is_high_prio = bool
+
+    ## cardinality = 0..1
+    ### Determines how seldom the AI checks whether they can and should do the decision, in months. Defult is 1(every month).
+    ai_check_interval = int
+
+    # TODO: Docs
+    ## cardinality = 0..1
+    ### Defaults to no.
+    is_mercenary = bool
+
+    # TODO: Docs?
+    ## cardinality = 0..1
+    ### Will use the icon of the religion stated
+    icon_religion = <religion>
+
+    alias_name[decision_pre_trigger] = alias_match_left[decision_pre_trigger]
+    
+    ## replace_scope = { this = character root = character }
+    ### Conditions for the decision to appear
+    potential = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = character }
+    ### Conditions for the decision to be enabled
+    allow = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = character }
+    effect = single_alias_right[effect_clause]
+
+    ## replace_scope = { this = character root = character }
+    ## cardinality = 0..1
+    ### Commands executed when taking the decision
+    revoke_allowed = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = character }
+    ## cardinality = 0..1
+    ### Factors for an AI character to take the decision (1 = 100% chance)
+    ai_will_do = single_alias_right[decision_ai_will_do_clause]
+}
+
+single_alias[filtered_decisions] = {
+    ## cardinality = 0..1
+    ### Will show an alert once decision is enabled
+    is_high_prio = bool
+
+    ## cardinality = 0..1
+    ### Determines how seldom the AI checks whether they can and should do the decision, in months. Defult is 1(every month).
+    ai_check_interval = int
+
+    # TODO: Docs?
+    ## cardinality = 0..1
+    ### Will use the icon of the religion stated
+    icon_religion = <religion>
+
+    # TODO: Docs?
+    ## cardinality = 0..1
+    ### Will use the icon of the gfx stated
+    diplomacy_icon = <sprite>
+
+    ## cardinality = 0..1
+    filter = enum[filter_targets_character]
+    ## cardinality = 0..1
+    ai_target_filter = enum[filter_targets_character]
+
+    ## cardinality = 0..1
+    show_third_party_potential = bool
+    ## cardinality = 0..1
+    third_party_filter = enum[filter_targets_character]
+
+    alias_name[decision_pre_trigger] = alias_match_left[decision_pre_trigger]
+    
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ### Conditions on the decision taker for the decision to appear. Not taken into account when filter = self, use potential instead.
+    third_party_potential = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ### Conditions on the decision taker for the decision to appear. Not taken into account when filter = self, use potential instead.
+    from_potential = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = character from = character }
+    ### Conditions for the decision to appear
+    potential = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ### Conditions for the decision to be enabled
+    allow = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = character from = character }
+    effect = single_alias_right[effect_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ### Commands executed when taking the decision
+    revoke_allowed = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ### Factors for an AI character to take the decision (1 = 100% chance)
+    ai_will_do = single_alias_right[decision_ai_will_do_clause]
+
+    # TODO: Docs Defaults and Ranges
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ai_acceptance = {
+        factor = int
+        yes_threshold = int
+        show_maybe_for_human = bool
+
+        ##cardinality = 0..inf
+        alias_name[additive_modifier_with_loc_key] = alias_match_left[additive_modifier_with_loc_key]
+    }
+}
+
+single_alias[filtered_decisions_settlements] = {
+    ## cardinality = 0..1
+    ### Will show an alert once decision is enabled
+    is_high_prio = bool
+
+    ## cardinality = 0..1
+    ### Determines how seldom the AI checks whether they can and should do the decision, in months. Defult is 1(every month).
+    ai_check_interval = int
+
+    filter = enum[filter_targets_settlements]
+    ai_target_filter = enum[filter_targets_settlements]
+
+    alias_name[decision_pre_trigger] = alias_match_left[decision_pre_trigger]
+    
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = holding from = character }
+    ### Conditions on the decision taker for the decision to appear. Not taken into account when filter = self, use potential instead.
+    from_potential = single_alias_right[trigger_clause]
+
+    ### Conditions for the decision to appear
+    ## replace_scope = { this = holding root = holding from = character }
+    potential = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = holding root = holding from = character }
+    ### Conditions for the decision to be enabled
+    allow = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = holding root = holding from = character }
+    effect = single_alias_right[effect_clause]
+
+    ## replace_scope = { this = character root = holding from = character }
+    ### Commands executed when taking the decision
+    revoke_allowed = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = holding from = character }
+    ### Factors for an AI character to take the decision (1 = 100% chance)
+    ai_will_do = single_alias_right[decision_ai_will_do_clause]
+}
+
+single_alias[filtered_decisions_titles] = {
+    ## cardinality = 0..1
+    ### Will show an alert once decision is enabled
+    is_high_prio = bool
+
+    ## cardinality = 0..1
+    ### Determines how seldom the AI checks whether they can and should do the decision, in months. Defult is 1(every month).
+    ai_check_interval = int
+
+    ## cardinality = 0..1
+    filter = enum[filter_targets_titles]
+    ## cardinality = 0..1
+    ai_target_filter = enum[filter_targets_titles]
+
+    alias_name[decision_pre_trigger] = alias_match_left[decision_pre_trigger]
+    
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = title from = character }
+    ### Conditions on the decision taker for the decision to appear. Not taken into account when filter = self, use potential instead.
+    from_potential = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = title root = title from = character }
+    ### Conditions for the decision to appear
+    potential = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = title root = title from = character }
+    ### Conditions for the decision to be enabled
+    allow = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = title root = title from = character }
+    effect = single_alias_right[effect_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = title from = character }
+    ### Commands executed when taking the decision
+    revoke_allowed = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = title from = character }
+    ### Factors for an AI character to take the decision (1 = 100% chance)
+    ai_will_do = single_alias_right[decision_ai_will_do_clause]
+}
+
+single_alias[general_offmap_decisions] = {
+    button_name = <gui_button>
+
+    ## cardinality = 0..1
+    ### Will show an alert once decision is enabled
+    is_high_prio = bool
+
+    ## cardinality = 0..1
+    ### Determines how seldom the AI checks whether they can and should do the decision, in months. Defult is 1(every month).
+    ai_check_interval = int
+
+    alias_name[decision_pre_trigger] = alias_match_left[decision_pre_trigger]
+    
+    ## replace_scope = { this = character root = title }
+    ### Conditions for the decision to appear
+    potential = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = title }
+    ### Conditions for the decision to be enabled
+    allow = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = character root = title }
+    effect = single_alias_right[effect_clause]
+
+    ## replace_scope = { this = character root = title }
+    ### Commands executed when taking the decision
+    revoke_allowed = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = title }
+    ### Factors for an AI character to take the decision (1 = 100% chance)
+    ai_will_do = single_alias_right[decision_ai_will_do_clause]
+}
+
+# TODO: Docs for all
+
+###
+# scope = character
+alias[decision_pre_trigger:only_playable] = bool
+
+### 
+# scope = character
+alias[decision_pre_trigger:only_rulers] = bool
+
+### 
+# scope = character
+alias[decision_pre_trigger:only_independent] = bool
+
+###
+# scope = character
+alias[decision_pre_trigger:is_in_society] = bool
+
+###
+# scope = character
+alias[decision_pre_trigger:ai] = bool
+
+### This decision is shown in the Religion View for each decadent character
+# scope = character
+alias[decision_pre_trigger:hide_in_decisions_list] = bool

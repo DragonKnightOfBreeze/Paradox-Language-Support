@@ -1,0 +1,153 @@
+types = {
+    type[building] = {
+        path_strict = yes
+        path = "game/common/buildings"
+        skip_root_key = any
+
+        # Making gold/piety/prestige_cost mutually exclusive
+        subtype[gold] = {
+            gold_cost = int
+
+            ## cardinality = 0..0
+            piety_cost = int
+
+            ## cardinality = 0..0
+            prestige_cost = int
+        }
+        subtype[piety] = {
+            ## cardinality = 0..0
+            gold_cost = int
+
+            piety_cost = int
+
+            ## cardinality = 0..0
+            prestige_cost = int
+        }
+        subtype[prestige] = {
+            ## cardinality = 0..0
+            gold_cost = int
+
+            ## cardinality = 0..0
+            piety_cost = int
+
+            prestige_cost = int
+        }
+
+        localisation = {
+            ## required
+            name = "$"
+            # TODO: make a rule for using lower-level buildings' descs?
+            description = desc
+        }
+    }
+}
+
+building = {
+    ### Localisation key for the building's description.
+    desc = localisation
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = province root = province from = character fromfrom = title }
+    ### Conditions for the building to appear on the holding's buildings list.
+    potential = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### If yes, the game will use the name of the first building in the chain and add the level after it in roman numerals. Defaults to "yes".
+    add_number_to_name = bool
+
+    ## cardinality = 0..1
+    ### The replaced building will not appear in the holding's buildings list list even if the potential evaluates to true.
+    replaces = <building>
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = province root = province from = character fromfrom = title }
+    ### Conditions for the building to be constructible. If not met, an icon will show up in place of the build button showing what's missing.
+    trigger = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = province root = province from = character fromfrom = title }
+    ### Conditions for the building to apply its effects. Defaults to always active.
+    is_active_trigger = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### If yes, can only be built in a coastal province. Defaults to "no".
+    port = bool
+
+    ## cardinality = 0..1
+    ### What other buildings this building requires. If not met, an icon will show up in place of the build button showing what's missing.
+    prerequisites = {
+        ## cardinality = 0..inf
+        <building>
+    }
+
+    # TODO: See if it accepts just a building, without {}
+    ## cardinality = 0..1
+    ### What other buildings prevent this building from being built.
+    not_if_x_exists = {
+        ## cardinality = 0..inf
+        <building>
+    }
+
+    ## cardinality = 0..1
+    ### What building this building upgrades from.
+    upgrades_from = <building>
+
+    subtype[gold] = {
+        ### The gold cost of the building. Mutually exclusive with piety/prestige.
+        gold_cost = int
+    }
+
+    subtype[piety] = {
+        ### The gold cost of the building. Mutually exclusive with gold/prestige.
+        piety_cost = int
+    }
+
+    subtype[prestige] = {
+        ### The gold cost of the building. Mutually exclusive with gold/piety.
+        prestige_cost = int
+    }
+
+    ### Base time to build, in days.
+    build_time = int
+
+    ## cardinality = 0..inf
+    ### Modifiers the building applies to its owner. Note that only one special unit type is allowed per holding.
+    alias_name[modifier] = alias_match_left[modifier]
+
+    # TODO: See if it's weight or what. Prolly weight.
+    ## cardinality = 0..1
+    ### Chances for the AI to choose constructing this building.
+    ai_creation_factor = int
+
+    ## cardinality = 0..1
+    ### Modifies the AI creation factor by this value if the AI is feudal or tribal striving to be feudal.
+    ai_feudal_modifier = int
+
+    ## cardinality = 0..1
+    ### Modifies the AI creation factor by this value if the AI is republican or tribal striving to be republican.
+    ai_republic_modifier = int
+
+    ## cardinality = 0..1
+    ### On new game, this building will be pre-built in an eligible province if it has higher tech than [this value] + [trigger requirements] + [rand(0-1)]
+    extra_tech_building_start = float
+
+    ## cardinality = 0..1
+    ### If yes, the building will provide vision of the province it is built in. Defaults to "no".
+    scouting = bool
+
+    ## cardinality = 0..1
+    ### When the holding is converted to a city, this building is replaced by a building of that type.
+    convert_to_city = <building>
+
+    ## cardinality = 0..1
+    ### When the holding is converted to a castle, this building is replaced by a building of that type.
+    convert_to_castle = <building>
+
+    ## cardinality = 0..1
+    ### When the holding is converted to a temple, this building is replaced by a building of that type.
+    convert_to_temple = <building>
+
+    ## cardinality = 0..1
+    ### When the holding is converted to a tribe, this building is replaced by a building of that type.
+    convert_to_tribal = <building>
+}

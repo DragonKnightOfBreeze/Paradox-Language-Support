@@ -1,0 +1,19 @@
+types = {
+	type[ace] = {
+		path = "game/common/aces"
+		skip_root_key = modifiers
+	}
+}
+
+ace = {
+	type = enum[air_units]
+	type = {
+		## cardinality = ~1..inf
+		enum[air_units]
+	}
+	chance = float
+	## replace_scope = { ROOT = air THIS = air}
+	effect = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+}

@@ -1,0 +1,48 @@
+types = {
+    type[modifier_definition] = {
+        path = "game/common/modifier_definitions"
+    }
+}
+
+modifier_definition = {
+    ### the tooltips will be colored accordingly depending if value is positive or not
+    ## cardinality = 0..1
+    color_type = enum[modifier_color_type]
+
+    ### type of values in tooltip.
+    ## cardinality = 0..1
+    value_type = enum[modifier_value_type]
+
+    ### number of precision for tooltips
+    ## cardinality = 0..1
+    precision = int
+    
+    ### post fix for values in tooltip
+    ## cardinality = 0..1
+    postfix = enum[modifier_post_fix]
+
+    ### cateogies can be defined if wanted. some tooltips only display certain categories. multiple cateogies can be defined for a single modifier@modifier_token
+    ## cardinality = 0..inf
+    category = enum[modifier_category]
+}
+
+enums = {
+    enum[modifier_color_type] = {
+        good
+        neutral
+        bad
+    }
+
+    enum[modifier_value_type] = {
+        number percentage percentage_in_hundred yes_no
+    }
+
+    enum[modifier_post_fix] = {
+        none days hours daily
+    }
+
+    enum[modifier_category] = {
+        none all naval air unit_leader country state army peace politics ai defensive aggressive 
+        war_production military_advancements military_equipment autonomy government_in_exile intelligence_agency
+    }
+}

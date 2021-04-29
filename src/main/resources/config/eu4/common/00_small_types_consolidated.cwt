@@ -1,0 +1,472 @@
+
+types = {
+	type[great_project] = {
+		path = "game/common/great_projects"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			great_project_title = "great_project_$"
+			## required
+			construct = "construct_$_title"
+			## required
+			construct_desc = "construct_$_desc"
+			## required
+			cancel = "cancel_$_title"
+			## required
+			cancel_desc = "cancel_$_desc"
+		}
+	}
+	type[faction] = {
+		path = "game/common/factions"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_FACTION_DESC"
+			## required
+			influence_modifier = "$_influence"
+			#Old Chinese factions lack this and I can't see what it does
+#			## required
+#			support = "support_$_title"
+#			## required
+#			support_desc = "support_$_desc"
+		}
+	}
+	type[fervor] = {
+		path = "game/common/fervor"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			short = "$_short"
+		}
+	}
+	type[cult] = {
+		path = "game/common/fetishist_cults"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+	}
+	type[revolt_trigger] = {
+		path = "game/common/revolt_triggers"
+	}
+	type[insult] = {
+		path = "game/common/insults"
+		localisation = {
+			## required
+			insult = "$"
+		}
+	}
+	type[natives] = {
+		path = "game/common/natives"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[decree] = {
+		path = "game/common/decrees"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+			## required
+			title = "$_title"
+		}
+	}
+	type[isolationism] = {
+		path = "game/common/isolationism"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+			## required
+			title = "$_title"
+		}
+	}
+	type[naval_doctrine] = {
+		path = "game/common/naval_doctrines"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+	}
+	type[policy] = {
+		path = "game/common/policies"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "desc_$"
+		}
+	}
+	type[professionalism_modifier] = {
+		path = "game/common/professionalism"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[edict] = {
+		path = "game/common/state_edicts"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[power_projection_modifier] = {
+		path = "game/common/powerprojection"
+
+		subtype[positive] = {
+			power = float[0.1..inf]
+		}
+
+		subtype[negative] = {
+			power = float[-1000.0..-0.1]
+		}
+
+	}
+	type[client_state] = {
+		path = "game/common/client_states"
+	}
+	## type_key_filter = bookmark
+	type[bookmark] = {
+		path = "game/common/bookmarks"
+		name_field = "name"
+	}
+	type[dynasty_colors] = {
+		path = "game/common/dynasty_colors"
+		name_from_file = yes
+		type_per_file = yes
+	}
+	type[region_colors] = {
+		path = "game/common/region_colors"
+		name_from_file = yes
+		type_per_file = yes
+	}
+	#todo: The name of the file must be a country tag, culture or cultural group
+	type[province_names] = {
+		path = "game/common/province_names"
+		name_from_file = yes
+		type_per_file = yes
+	}
+	type[achievement] = {
+		path = "game/common"
+		path_file = "achievements.txt"
+	}
+}
+
+
+
+achievement = {
+	id = int
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	visible = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { root = country this = country }
+	possible = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	## replace_scope = { root = country this = province }
+	provinces_to_highlight = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { root = country this = country }
+	happened = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+
+great_project = {
+	ambient_object = <ambient_object>
+	province = <province_id>
+	is_canal = yes
+	time = int
+
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+}
+
+
+faction = {
+	monarch_power = enum[power_categories]
+	always = yes
+
+	## cardinality = 0..1
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+}
+
+
+fervor = {
+	cost = int
+	effect = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## replace_scope = { root = country this = country }
+	ai_will_do = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+
+cult = {
+	alias_name[modifier] = alias_match_left[modifier]
+	sprite = int
+	## replace_scope = { root = country this = country }
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { root = country this = country }
+	ai_will_do = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+## replace_scope = { root = province this = province }
+revolt_trigger = {
+	## replace_scope = { root = province this = province }
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+insult = {
+	## replace_scope = { root = country this = country from = country }
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}
+
+
+
+natives = {
+	graphical_culture = enum[graphical_cultures]
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+	icon = int
+
+	unit = <unit_type>
+
+	provinces = {
+		## cardinality = 1..inf
+		<province_id>
+	}
+}
+
+
+decree = {
+	cost = int
+	duration = int
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## replace_scope = { root = country this = country from = country }
+	###ai_will_do has to be 10 for AI to do it (with >=99 Meritocracy).
+	ai_will_do = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+
+isolationism = {
+	isolation_value = int[0..inf]
+
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+}
+
+
+
+naval_doctrine = {
+	## replace_scope = { root = country this = country from = country }
+	can_select = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	country_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	button_gfx = int
+}
+
+
+policy = {
+	monarch_power = enum[power_categories]
+
+	## replace_scope = { this = country root = country }
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## replace_scope = { this = country root = country }
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	alias_name[modifier] = alias_match_left[modifier]
+
+	alias_name[ability] = alias_match_left[ability]
+
+	## replace_scope = { this = country root = country }
+	ai_will_do = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+
+professionalism_modifier = {
+	## cardinality = 0..1
+	hidden = yes
+	army_professionalism = float[0.0..1.0]
+
+	marker_sprite = <sprite>
+	unit_sprite_start = scalar #todo: Is the first part of a sprite name, actually
+
+	trigger = {
+		always = yes
+	}
+
+	alias_name[modifier] = alias_match_left[modifier]
+
+	## cardinality = 0..1
+	may_build_supply_depot = yes
+	## cardinality = 0..1
+	may_refill_garrison = yes
+	## cardinality = 0..1
+	may_return_manpower_on_disband = yes
+	## cardinality = 0..1
+	reserves_organisation = yes
+}
+
+
+
+edict = {
+	## replace_scope = { root = province this = province }
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## replace_scope = { root = country this = country }
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	color = {
+		## cardinality = 3..3
+		int[0..255
+	}
+
+	## replace_scope = { root = province this = province }
+	##has to be around at least 10 to be picked (depends on maintenance cost and general economy)
+	ai_will_do = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+
+power_projection = {
+	power = float
+
+	subtype[positive] = {
+		## cardinality = 0..1
+		max = float
+	}
+
+	subtype[negative] = {
+		## cardinality = 0..1
+		min = float
+	}
+
+	## cardinality = 0..1
+	yearly_decay = float
+}
+
+
+
+client_state = {
+	region = <region>
+
+	## cardinality = 1..inf
+	name = {
+		name = localisation
+		## replace_scope = { this = province root = province from = country }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+}
+
+bookmark = {
+	name = localisation
+	desc = localisation
+	date = date_field
+
+	## cardinality = 0..1
+	center = <province_id>
+
+	#todo: presumably this can only be used once, ever
+	## cardinality = 0..1
+	default = yes
+
+	## cardinality = 0..12
+	country = enum[country_tags]
+
+	## cardinality = 0..12
+	easy_country = enum[country_tags]
+}
+
+dynasty_colors = {
+	## cardinality = 1..inf
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+}
+
+region_colors = {
+	## cardinality = 1..inf
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+}
+
+province_names = {
+	## cardinality = 0..inf
+	<province_id> = scalar #todo: name
+	## cardinality = 0..inf
+	<province_id> = {
+		## cardinality = 1..2
+		scalar #todo: name
+	}
+}
+

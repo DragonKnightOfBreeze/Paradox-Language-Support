@@ -1,0 +1,146 @@
+
+types = {
+	type[province_id] = {
+		path = "game/map"
+		path_file = "positions.txt"
+		localisation = {
+			## optional
+			name = "PROV$"
+			## optional
+			adj = "PROV_ADJ$"
+		}
+	}
+	type[area] = {
+		path = "game/map"
+		path_file = "area.txt"
+
+		subtype[used] = {
+			## cardinality = 1..inf
+			scalar
+		}
+
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[continent] = { #seems to not need locs
+		path = "game/map"
+		path_file = "continent.txt"
+	}
+	type[climate] = {
+		path = "game/map"
+		path_file = "climate.txt"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "desc_$"
+		}
+	}
+	type[region] = {
+		path = "game/map"
+		path_file = "region.txt"
+		localisation = {
+			## required
+			type = "$"
+			#these two are usually needed, but only if the regions are not sea regions
+			## optional
+			name = "$_name"
+			## optional
+			adj = "$_adj"
+		}
+	}
+	type[superregion] = {
+		path = "game/map"
+		path_file = "superregion.txt"
+		localisation = {
+			#these are usually needed, but only if the regions are not sea regions
+			## optional
+			type = "$"
+			## optional
+			name = "$_name"
+			## optional
+			adj = "$_adj"
+		}
+	}
+	type[province_group] = {
+		path = "game/map"
+		path_file = "provincegroup.txt"
+		
+		subtype[used] = {
+			## cardinality = 1..inf
+			scalar
+		}
+
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+}
+
+
+province_id = {
+	position = {
+		## cardinality = 14..14
+		float 
+	}
+	rotation = {
+		## cardinality = 7..7
+		float
+	}
+	height = {
+		## cardinality = 7..7
+		float
+	}
+}
+
+
+area = {
+	## cardinality = 0..inf
+	<province_id>
+
+	## cardinality = 0..1
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+}
+
+continent = {
+	## cardinality = 0..inf
+	<province_id>
+}
+
+climate = {
+	## cardinality = 0..inf
+	<province_id>
+}
+
+region = {
+	## cardinality = 0..1
+	areas = {
+		## cardinality = 1..inf
+		<area.used>
+	}
+
+	## cardinality = 0..inf	
+	monsoon = {
+		## cardinality = 2..2
+		scalar #no idea what the numbers are (00.00.00)
+	}
+}
+
+superregion = {
+	## cardinality = 0..inf
+	restrict_charter
+
+	## cardinality = 0..inf
+	<region>
+}
+
+province_group = {
+	## cardinality = 0..inf
+	<province_id>
+}

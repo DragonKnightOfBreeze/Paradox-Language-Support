@@ -1,0 +1,19 @@
+types = {
+	type[continent] = {
+		path = "game/map"
+		path_file = "continent.txt"
+		localisation = {
+			type = "$"
+		}
+	}
+}
+
+continent = {
+    # TODO check that all province are used but only once!
+    provinces = {
+        ## cardinality = 1..inf
+        <province_id>
+    }
+    ## cardinality = 0..inf
+    alias_name[modifier] = alias_match_left[modifier]
+}

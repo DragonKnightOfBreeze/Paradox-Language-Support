@@ -1,0 +1,63 @@
+enums = {
+	enum[dlc] = {
+		"Poland: United and Ready"
+		"Together for Victory"
+		"Death or Dishonor"
+		"Waking the Tiger"
+		"Man the Guns"
+		"La Resistance"
+		"Battle for the Bosporus"
+	}
+
+	enum[hours_days_months] = {
+		hours
+		days
+		months
+	}
+
+	enum[tech_bonus] = {
+		bonus
+		ahead_reduction
+	}
+
+	enum[diplomatic_relations] = {
+		non_aggression_pact
+		guarantee
+		puppet
+		military_access
+		docking_rights
+		declare_war
+		join_allies
+		call_allies
+	}
+
+	enum[add_factor] = {
+		add
+		factor
+	}
+
+	enum[base_factor] = {
+		base
+		factor
+	}
+
+	enum[naval_missions] = {
+		"MISSION_TRAINING"
+		"MISSION_PATROL"
+		"MISSION_STRIKE_FORCE"
+		"MISSION_CONVOY_ESCORT"
+		"MISSION_CONVOY_RAIDING"
+		"MISSION_MINES_PLANTING"
+		"MISSION_MINES_SWEEPING"
+	}
+
+	enum[equipment_categories] = {
+		naval
+	}
+
+	enum[experience_types] = {
+		army
+		navy
+		air
+	}
+}

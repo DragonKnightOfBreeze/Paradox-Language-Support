@@ -1,0 +1,70 @@
+
+types = {
+	type[dlc_categories] = {
+		path = "game/dlc_metadata/dlc_info"
+		skip_root_key = categories
+	}
+	type[dlc_info] = {
+		path = "game/dlc_metadata/dlc_info"
+		skip_root_key = dlcs
+		localisation = {
+			## required
+			instant = "DLC_$_TOOLTIP_INSTANT"
+			## required
+			delayed = "DLC_$_TOOLTIP_DELAYED"
+			## required
+			landing_text = "LANDING_$_TEXT"
+			## required
+			landing_flavor_text = "LANDING_$_FLAVOR_TEXT"
+		}
+	}
+	type[dlc_recommendation] = {
+		path = "game/dlc_metadata/dlc_recommendations"
+		name_from_file = yes
+		type_per_file = yes
+	}
+}
+
+dlc_info = {
+	name = localisation_synced
+	id = int
+	category = <dlc_categories>
+	## cardinality = 0..1
+	recommendations = {
+		## cardinality = 1..5
+		<dlc_info>
+	}
+	## cardinality = 0..1
+	interesting_countries = {
+		## cardinality = 1..4
+		enum[country_tags]
+	}
+	## cardinality = 0..1
+	hide_if_dlc_owned = <dlc_info>
+	## cardinality = 0..1
+	change_landingpage = <dlc_info>
+	## cardinality = 0..1
+	hide_if_unowned = yes
+	## cardinality = 0..1
+	show_example_image = yes
+	## cardinality = 0..1
+	show_example_image_tooltips = yes
+	## cardinality = 0..1
+	icon = scalar
+}
+
+dlc_recommendation = {
+	## cardinality = 0..inf
+	enum[DLCNUM] = {
+		## cardinality = 0..inf
+		reason = {
+			tooltip_desc = localisation
+			tooltip_reason = localisation
+			weight = float
+			## replace_scope = { this = country root = country }
+			trigger = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+		}
+	}
+}

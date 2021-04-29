@@ -1,0 +1,247 @@
+## scope = pop
+alias[effect:assimilate] = bool
+## scope = pop
+alias[effect:consciousness] = float
+## scope = pop
+alias[effect:dominant_issue] = {
+	value = <issue>
+	factor = int
+}
+## scope = pop
+alias[effect:ideology] = {
+	value = <ideology>
+	factor = int
+}
+## scope = pop
+alias[effect:literacy] = float
+## scope = pop
+alias[effect:militancy] = float
+## scope = pop
+alias[effect:money] = int
+## scope = pop
+alias[effect:move_issue_percentage] = { 
+	from =<issue> 
+	to = <issue>
+	value = float
+}
+## scope = pop
+alias[effect:move_pop] = <province_id>
+## scope = pop
+alias[effect:pop_type] = <pop_type>
+## scope = pop
+alias[effect:reduce_pop] = float
+## scope = pop
+alias[effect:scaled_consciousness] = {
+	factor = n
+	## cardinality = 0..1
+	ideology = <ideology>
+	## cardinality = 0..1
+	issue = <issue>
+}
+## scope = pop
+alias[effect:scaled_militancy] = float
+
+
+## scope = province
+alias[effect:add_core] = enum[country_tags]
+## scope = province
+alias[effect:add_province_modifier] = {
+	name = scalar
+	duration = int
+}
+## scope = province
+alias[effect:change_controller] = enum[country_tags]
+## scope = province
+alias[effect:change_province_name] = scalar
+## scope = state
+alias[effect:change_region_name] = scalar
+## scope = state
+alias[effect:flashpoint_tension] = int
+## scope = province
+alias[effect:fort] = int
+## scope = province
+alias[effect:infrastructure] = int
+## scope = province
+alias[effect:life_rating] = int
+## scope = province
+alias[effect:naval_base] = int
+## scope = province
+alias[effect:remove_core] = enum[country_tags]
+## scope = province
+alias[effect:remove_province_modifier] = <modifier>
+## scope = province
+alias[effect:RGO_size] = int
+## scope = province
+alias[effect:secede_province] = enum[country_tags]
+## scope = province
+alias[effect:trade_goods] = <goods>
+
+## scope = country
+alias[effect:activate_technology] = <technology>
+## scope = country
+alias[effect:add_accepted_culture] = <culture>
+## scope = country
+alias[effect:remove_accepted_culture] = <culture>
+## scope = country
+alias[effect:add_country_modifier] = {
+	name = <modifier>
+	duration = int
+}
+## scope = country
+alias[effect:add_crisis_interest] = bool
+## scope = country
+alias[effect:add_crisis_temperature] = int
+## scope = country
+alias[effect:badboy] = int
+## scope = country
+alias[effect:capital] = <province_id>
+## scope = country
+alias[effect:civilized] = bool
+## scope = country
+alias[effect:kill_leader] = <leader>
+## scope = country
+alias[effect:define_general] = {
+	name = scalar
+	personality = <trait>
+	background = <background>
+}
+## scope = country
+alias[effect:nationalvalue] = <national_values> 
+## scope = country
+alias[effect:plurality] = float
+## scope = country
+alias[effect:prestige] = float
+## scope = country
+alias[effect:prestige_factor] = int 
+## scope = country
+alias[effect:primary_culture] = <culture>
+## scope = country
+alias[effect:religion] = <religion>
+## scope = country
+alias[effect:remove_country_modifier] = <modifier> 
+## scope = country
+alias[effect:research_points] = int
+## scope = country
+alias[effect:war_exhaustion] = float
+## scope = country
+alias[effect:years_of_research] = int
+## scope = country
+alias[effect:nationalize] = bool
+
+## scope = country
+alias[effect:economic_reform] = <economic_reform>
+## scope = country
+alias[effect:election] = bool
+## scope = country
+alias[effect:enable_ideology] = <ideology> 
+## scope = country
+alias[effect:government] = <government>
+## scope = country
+alias[effect:is_slave] = <bool>
+## scope = country
+alias[effect:military_reform] = <military_reform>
+## scope = country
+alias[effect:political_reform] = <political_reform>
+## scope = country
+alias[effect:ruling_party_ideology] = <ideology>
+## scope = country
+alias[effect:social_reform] = <social_reform>
+## scope = country
+alias[effect:upper_house] = {
+	ideology = <ideology>
+	value = float
+}
+## scope = country
+alias[effect:add_casus_belli] = {
+	target = enum[country_tags]
+	type = <casus_belli>
+	months = int
+}
+## scope = country
+alias[effect:annex_to] = enum[country_tags]
+## scope = country
+alias[effect:casus_belli] = {
+	target = enum[country_tags]
+	type = <casus_belli>
+	months = int
+}
+## scope = country
+alias[effect:create_alliance] = enum[country_tags]
+## scope = country
+alias[effect:create_vassal] = enum[country_tags]
+## scope = country
+alias[effect:diplomatic_influence] = {
+	who = enum[country_tags]
+	value = int
+}
+## scope = country
+alias[effect:end_military_access] = enum[country_tags]
+## scope = country
+alias[effect:end_war] = enum[country_tags]
+## scope = country
+alias[effect:inherit] = enum[country_tags]
+## scope = country
+alias[effect:leave_alliance] = enum[country_tags]
+## scope = country
+alias[effect:military_access] = enum[country_tags]
+## scope = country
+alias[effect:neutrality] = bool
+## scope = country
+alias[effect:relation] = {
+	who = enum[country_tags]
+	value = int
+}
+## scope = country
+alias[effect:release] = enum[country_tags]
+## scope = country
+alias[effect:release_vassal] = enum[country_tags]
+#TODO war = tag
+## scope = country
+alias[effect:war] = {
+	target = enum[country_tags]
+	attacker_goal = { casus_belli = <casus_belli> }
+	defender_goal = { casus_belli = <casus_belli> }
+	## cardinality = 0..1
+	call_ally = bool
+}
+
+## scope = country
+alias[effect:add_tax_relative_income] = float
+## scope = country
+alias[effect:[resource name]] = int
+## scope = country
+alias[effect:treasury] = int
+## scope = country
+alias[effect:change_tag] = enum[country_tags]
+## scope = country
+alias[effect:change_tag_no_core_switch] = enum[country_tags]
+## scope = country
+alias[effect:change_variable] = value[variable]
+## scope = province
+alias[effect:clr_province_flag] = value[province_flag]
+## scope = country
+alias[effect:clr_country_flag] = value[country_flag]
+## scope = any
+alias[effect:clr_global_flag] = value[global_flag]
+#TODO <event_id> as argumnet
+## scope = country
+alias[effect:country_event] = {
+	id = <event.country>
+	## cardinality = 0..1
+	days = int
+}
+## scope = province
+alias[effect:province_event] = {
+	id = <event.province>
+	## cardinality = 0..1
+	days = int
+}
+# TODO part of scope alias[effect:random_list] = 
+## scope = province
+alias[effect:set_province_flag] = value[province_flag]
+## scope = country
+alias[effect:set_country_flag] = value[country_flag]
+## scope = any
+alias[effect:set_global_flag] = value[global_flag]
+## scope = any
+alias[effect:set_variable] = value[variable]

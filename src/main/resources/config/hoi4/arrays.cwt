@@ -1,0 +1,37 @@
+values = {
+	value[array] = {
+		# Global arrays
+		### Array of major powers.
+		majors
+
+		# Country dynamic variables
+		### Array of allies (faction members).
+		allies
+
+		### Array of controlled states.
+		controlled_states
+
+		### Array of core states.
+		core_states
+
+		### Array of enemies at war with.
+		enemies
+
+		### Array of governments in exile this country hosts.
+		exiles
+
+		### Array of faction members.
+		faction_members
+
+		### Array of country's neighbors.
+		neighbors
+
+		### Array of subjects.
+		subjects
+
+		subject_countries
+		subject_states
+		### Arguments for debugging commands
+		args
+	}
+}

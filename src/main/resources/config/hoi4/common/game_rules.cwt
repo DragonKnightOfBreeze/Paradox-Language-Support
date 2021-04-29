@@ -1,0 +1,44 @@
+types = {
+	type[game_rule] = {
+		path = "game/common/game_rules"
+		path_strict = yes
+	}
+}
+
+game_rule = {
+	name = localisation
+	## cardinality = 0..1
+	required_dlc = enum[dlc]
+	## cardinality = 0..1
+	desc = localisation
+	### Used for filtering. A single rule can be in multiple groups.
+	group = localisation
+	### Optional icon.
+	## cardinality = 0..1
+	## severity = warning
+	icon = <spriteType>
+	### Unless other specified, the first option is the default option.
+	## cardinality = 0..inf
+	option = {
+		name = value_set[game_rule_options]
+		text = localisation
+		desc = localisation
+		### Achievements cannot be earned if one or more game rules are set to an option that has this property set to no. If not specified, this is set to yes for default options and no for all other options.
+		## cardinality = 0..1
+		allow_achievements = bool
+		## cardinality = 0..1
+		required_dlc = enum[dlc]
+	}
+	### Specify an option with the "default" token to override the behavior of treating the first option as the default.
+	## cardinality = 0..1
+	default = {
+		name = value_set[game_rule_options]
+		text = localisation
+		desc = localisation
+		### Achievements cannot be earned if one or more game rules are set to an option that has this property set to no. If not specified, this is set to yes for default options and no for all other options.
+		## cardinality = 0..1
+		allow_achievements = bool
+		## cardinality = 0..1
+		required_dlc = enum[dlc]
+	}
+}

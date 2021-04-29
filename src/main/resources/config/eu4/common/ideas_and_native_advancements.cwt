@@ -1,0 +1,115 @@
+
+types = {
+	type[idea_group] = {
+		path = "game/common/ideas"
+		
+		localisation = {
+			## required
+			name = "$"
+			## required
+			bonus = "$_bonus"
+			subtype[country_idea] = {
+				## required
+				start = "$_start"
+			}
+		}
+
+		subtype[selectable] = {
+			category = scalar
+		}
+		subtype[country_idea] = {
+			free = yes
+		}
+	}
+	## type_key_filter <> { start trigger bonus ai_will_do }
+	type[idea] = {
+		path = "game/common/ideas"
+		skip_root_key = any
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+	}
+	type[native_advancement_group] = {
+		path = "game/common/native_advancements"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	## type_key_filter <> { ai_will_do }
+	type[native_advancement] = {
+		path = "game/common/native_advancements"
+		skip_root_key = any
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+	}
+}
+
+
+idea_group = {
+	subtype[selectable] = {
+		## cardinality = 0..1
+		important = yes
+
+		ai_will_do = {
+			factor = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+		category = enum[power_categories]
+	}
+
+
+	bonus = {
+		alias_name[modifier] = alias_match_left[modifier]
+
+		alias_name[ability] = alias_match_left[ability]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## cardinality = 7..7
+	<idea> = {
+		alias_name[modifier] = alias_match_left[modifier]
+
+		alias_name[ability] = alias_match_left[ability]
+	}
+	
+	
+	subtype[country_idea] = {
+		start = {
+			alias_name[modifier] = alias_match_left[modifier]
+			
+			alias_name[ability] = alias_match_left[ability]
+		}
+		free = yes
+	}
+}
+
+
+#todo: not sure if these are referred to anywhere. Maybe they count as ideas.
+native_advancement_group = {
+	category = enum[power_categories]
+	
+	## cardinality = 5..5
+	<native_advancement> = {
+		alias_name[modifier] = alias_match_left[modifier]
+		
+		alias_name[ability] = alias_match_left[ability]
+	}
+	
+	###ai_will do does not actually determine weighting, but AI will not pick an idea with ai_will_do = 0
+	ai_will_do = {
+		factor = int[0..1]
+	}
+}

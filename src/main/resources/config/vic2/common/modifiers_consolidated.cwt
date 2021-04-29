@@ -1,0 +1,39 @@
+types = {
+	type[event_modifier] = {
+		path = "game/common"
+		path_file = "event_modifiers.txt"
+		
+		subtype[not_flag] = {
+			## cardinality 1..inf
+			scalar = scalar
+		}
+		
+		localisation = {
+			subtype[not_flag] = {
+				name = "$"
+				description = "desc_$"
+			}
+		}
+	}
+	type[static_modifier] = { #todo: As far as I can tell, you cannot add to them.
+		path = "game/common"
+		path_file = "static_modifiers.txt"
+		
+		localisation = {
+			## optional
+			name = "$"
+		}
+	}
+}
+
+event_modifier = {
+	## cardinality = 0..inf
+	alias_name[modifier] = alias_match_left[modifier]
+
+	picture = int
+}
+
+static_modifier = {
+	## cardinality = 0..inf
+	alias_name[modifier] = alias_match_left[modifier]
+}

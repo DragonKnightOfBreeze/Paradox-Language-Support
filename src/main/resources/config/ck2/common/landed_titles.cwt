@@ -1,0 +1,736 @@
+# Most of this is actually hardcoded (https://github.com/tboby/cwtools/commit/8d63675a6b8d0acab491fe85726bf61beff914a1) due to how the hierarchy works. The type here is just for validation.
+
+types = {
+    # WISHLIST: Would be nice to have a rule to not show it in breadcrumbs
+    type[title_validation_only] = {
+        path = "game/common/landed_titles"
+        type_per_file = yes
+    }
+}
+
+title_validation_only = {
+    ## cardinality = 0..inf
+    alias_name[empire] = alias_match_left[empire]
+    ## cardinality = 0..inf
+    alias_name[kingdom] = alias_match_left[kingdom]
+    ## cardinality = 0..inf
+    alias_name[duchy] = alias_match_left[duchy]
+    ## cardinality = 0..inf
+    alias_name[duchy_hired] = alias_match_left[duchy_hired]
+    ## cardinality = 0..inf
+    alias_name[county] = alias_match_left[county]
+    ## cardinality = 0..inf
+    alias_name[barony] = alias_match_left[barony]
+}
+
+alias[empire:<title.empire>] = {
+    ### Listed province must be controlled to create a regular titular tilte. Affects ability to recruit mercenaries. Ruler can relocate their capital here without restriction.
+    capital = enum[provinces]
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### ???. Defaults to "no".
+    has_top_de_jure_capital = bool
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Special conditions to create a title via the create de jure title mechanic. ROOT is the character creating.
+    allow  = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this religion.
+    religion = <religion>
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this culture.
+    culture = <culture>
+
+    # TODO: Confirm
+    ## cardinality = 0..1
+    ### Seems to be used for mercs to determine their CoA.
+    graphical_culture = <graphical_culture>
+
+    ## cardinality = 0..1
+    ### If yes, title will continue to exist even if owner has no land. Defaults to "no".
+    landless = bool
+
+    # TODO: Probably; confimr
+    ## cardinality = 0..1
+    ### If yes, title will always display as primary title. Defaults to "no".
+    primary = bool
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's title if non-standard.
+    title = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for female holder's title if non-standard.
+    title_female = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's form of address if non-standard.
+    foa = localisation
+
+    # TODO: Elaborate, confirm
+    ## cardinality = 0..1
+    ### Gives localization key for prefix to title name if non-standard. Currently only works on titles which have a culture set?
+    title_prefix = localisation
+
+    ## cardinality = 0..1
+    ### If yes, skips the title_prefix. Used for titles like Byzantine Empire, to avoid names like Empire of Byzantine Empire. Defaults to "no".
+    short_name = bool
+
+    ## cardinality = 0..1
+    ### Used to determine naming instead of actual rank.
+    name_tier = enum[title_tiers]
+
+    ## cardinality = 0..1
+    ### If yes, this title can't be vassalised. Not that it matters for empires. Defaults to "no".
+    independent = bool
+
+    ## cardinality = 0..1
+    ### Randomly-generated male rulers will take titles from this list instead of the usual list for their culture.
+    male_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### Randomly-generated female rulers will take titles from this list instead of the usual list for their culture.
+    female_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### If set, title holder is head of given religion.
+    controls_religion = <religion>
+
+    ## cardinality = 0..1
+    ### If yes, this title will be destroyed if non-tribal title of the same rank is acquired. Defaults to "no".
+    tribe = bool
+
+    ## cardinality = 0..1
+    ### If no, titular title can be created without holding set capital province. Defaults to "yes".
+    creation_requires_capital = bool
+
+    ## cardinality = 0..1
+    ### If yes, this title is a caliphate. Defaults to "no".
+    caliphate = bool
+
+    ## cardinality = 0..1
+    ### If no, disables naming realm from the ruling dynasty. Defaults to "yes".
+    dynasty_title_names = bool
+
+    ## cardinality = 0..1
+    ### If yes, activates the born in the purple mechanic. Defaults to "no".
+    purple_born_heirs = bool
+
+    ## cardinality = 0..inf
+    ### The empire is renamed to this when held by a ruler of this culture.
+    <culture> = scalar
+
+    ## cardinality = 0..1
+    ### If yes, lists the capital province as part of the title. Defaults to "no".
+    location_ruler_title = bool
+
+    ## cardinality = 0..1
+    ### Title is considered to have this many more provinces than actual for purpose of determining the relative prestige of the title. AI will always make most prestigious title primary. Can cause strange behavior regarding a ruler's tier if set to a very high or negative value.
+    dignity = int
+
+    ## cardinality = 0..1
+    ### If no, titles cannot de jure drift in or out of the title. Defaults to "yes".
+    assimilate = bool
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### If yes, "The Emperor can revoke duchies at no prestige cost and no opinion penalty with other vassals". Defaults to "no".
+    duchy_revokation = bool
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Effects to fire for the character gaining the title. ROOT is the character.
+    gain_effect = {
+        ## cardinality = 1..inf
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    ## cardinality = 0..1
+    ### If no, claims cannot be made on the title, even via script. Defaults to "yes".
+    can_be_claimed = yes
+
+    ## cardinality = 0..1
+    ### If no, the title cannot be usurped. Defaults to "yes".
+    can_be_usurped = yes
+
+    ## cardinality = 0..1
+    ### How many more troops the AI should assume someone with this as their primary title has. Has no effect on anything except AI. Higher numbers means others are less willing to attack them, and they're more willing to attack others.
+    extra_ai_eval_troops = int
+
+    ## cardinality = 0..1
+    ### ??? Defaults to "no".
+    rebel = bool
+
+    ## cardinality = 0..1
+    ### ??? Defaults to "no".
+    pirate = bool
+
+    alias_name[coa] = alias_match_left[coa]
+    alias_name[pagan_coa] = alias_match_left[pagan_coa]
+
+    alias_name[color] = alias_match_left[color]
+    alias_name[color2] = alias_match_left[color2]
+
+    alias_name[kingdom] = alias_match_left[kingdom]
+    alias_name[duchy] = alias_match_left[duchy]
+    alias_name[duchy_hired] = alias_match_left[duchy_hired]
+    alias_name[county] = alias_match_left[county]
+    alias_name[barony] = alias_match_left[barony]
+}
+
+alias[kingdom:<title.kingdom>] = {
+    ### Listed province must be controlled to create a regular titular tilte. Affects ability to recruit mercenaries. Ruler can relocate their capital here without restriction.
+    capital = enum[provinces]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Special conditions to create a title via the create de jure title mechanic. ROOT is the character creating.
+    allow = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this religion.
+    religion = <religion>
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this culture. Used as a condition for liberation revolts.
+    culture = <culture>
+
+    # TODO: Confirm
+    ## cardinality = 0..1
+    ### Seems to be used for mercs to determine their CoA.
+    graphical_culture = <graphical_culture>
+
+    ## cardinality = 0..1
+    ### If yes, title will continue to exist even if owner has no land. Defaults to "no".
+    landless = bool
+
+    # TODO: Probably; confimr
+    ## cardinality = 0..1
+    ### If yes, title will always display as primary title. Defaults to "no".
+    primary = bool
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's title if non-standard.
+    title = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for female holder's title if non-standard.
+    title_female = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's form of address if non-standard.
+    foa = localisation
+
+    # TODO: Elaborate, confirm
+    ## cardinality = 0..1
+    ### Gives localization key for prefix to title name if non-standard. Currently only works on titles which have a culture set?
+    title_prefix = localisation
+
+    ## cardinality = 0..1
+    ### If yes, skips the title_prefix. Used for titles like Byzantine Empire, to avoid names like Empire of Byzantine Empire. Defaults to "no".
+    short_name = bool
+
+    ## cardinality = 0..1
+    ### Used to determine naming instead of actual rank.
+    name_tier = enum[title_tiers]
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion.
+    <religion> = int
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion group.
+    <religion_group> = int
+
+    ## cardinality = 0..1
+    ### Randomly-generated male rulers will take titles from this list instead of the usual list for their culture.
+    male_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### Randomly-generated female rulers will take titles from this list instead of the usual list for their culture.
+    female_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### If yes, this title can't be vassalised. Defaults to "no".
+    independent = bool
+
+    ## cardinality = 0..1
+    ### If set, title holder is head of given religion.
+    controls_religion = <religion>
+
+    ## cardinality = 0..1
+    ### If yes, this title will be destroyed if non-tribal title of the same rank is acquired. Defaults to "no".
+    tribe = bool
+
+    ## cardinality = 0..1
+    ### If no, titular title can be created without holding set capital province. Defaults to "yes".
+    creation_requires_capital = bool
+
+    ## cardinality = 0..1
+    ### If yes, this title is a caliphate. Defaults to "no".
+    caliphate = bool
+
+    ## cardinality = 0..1
+    ### If no, disables naming realm from the ruling dynasty. Defaults to "yes".
+    dynasty_title_names = bool
+
+    ## cardinality = 0..1
+    ### If yes, activates the born in the purple mechanic. Defaults to "no".
+    purple_born_heirs = bool
+
+    ## cardinality = 0..inf
+    ### The empire is renamed to this when held by a ruler of this culture.
+    <culture> = scalar
+
+    ## cardinality = 0..1
+    ### If yes, lists the capital province as part of the title. Defaults to "no".
+    location_ruler_title = bool
+
+    ## cardinality = 0..1
+    ### Title is considered to have this many more provinces than actual for purpose of determining the relative prestige of the title. AI will always make most prestigious title primary. Can cause strange behavior regarding a ruler's tier if set to a very high or negative value.
+    dignity = int
+
+    ## cardinality = 0..1
+    ### If no, titles cannot de jure drift in or out of the title. Defaults to "yes".
+    assimilate = bool
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### If yes, "The Emperor can revoke duchies at no prestige cost and no opinion penalty with other vassals". Defaults to "no".
+    duchy_revokation = bool
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Effects to fire for the character gaining the title. ROOT is the character.
+    gain_effect = {
+        ## cardinality = 1..inf
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    ## cardinality = 0..1
+    ### If no, claims cannot be made on the title, even via script. Defaults to "yes".
+    can_be_claimed = yes
+
+    ## cardinality = 0..1
+    ### If no, the title cannot be usurped. Defaults to "yes".
+    can_be_usurped = yes
+
+    ## cardinality = 0..1
+    ### How many more troops the AI should assume someone with this as their primary title has. Has no effect on anything except AI. Higher numbers means others are less willing to attack them, and they're more willing to attack others.
+    extra_ai_eval_troops = int
+
+    alias_name[coa] = alias_match_left[coa]
+    alias_name[pagan_coa] = alias_match_left[pagan_coa]
+
+    alias_name[color] = alias_match_left[color]
+    alias_name[color2] = alias_match_left[color2]
+
+    alias_name[duchy] = alias_match_left[duchy]
+    alias_name[duchy_hired] = alias_match_left[duchy_hired]
+    alias_name[county] = alias_match_left[county]
+    alias_name[barony] = alias_match_left[barony]
+}
+
+alias[duchy:<title.duchy>] = {
+    ### Listed province must be controlled to create a regular titular tilte. Affects ability to recruit mercenaries. Ruler can relocate their capital here without restriction.
+    capital = enum[provinces]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Special conditions to create a title via the create de jure title mechanic. ROOT is the character creating.
+    allow = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this religion.
+    religion = <religion>
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this culture.
+    culture = <culture>
+
+    # TODO: Confirm
+    ## cardinality = 0..1
+    ### Seems to be used for mercs to determine their CoA.
+    graphical_culture = <graphical_culture>
+
+    ## cardinality = 0..1
+    ### If yes, title will continue to exist even if owner has no land. Defaults to "no".
+    landless = bool
+
+    # TODO: Probably; confimr
+    ## cardinality = 0..1
+    ### If yes, title will always display as primary title. Defaults to "no".
+    primary = bool
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's title if non-standard.
+    title = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for female holder's title if non-standard.
+    title_female = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's form of address if non-standard.
+    foa = localisation
+
+    # TODO: Elaborate, confirm
+    ## cardinality = 0..1
+    ### Gives localization key for prefix to title name if non-standard. Currently only works on titles which have a culture set?
+    title_prefix = localisation
+
+    ## cardinality = 0..1
+    ### If yes, skips the title_prefix. Used for titles like Byzantine Empire, to avoid names like Empire of Byzantine Empire. Defaults to "no".
+    short_name = bool
+
+    ## cardinality = 0..1
+    ### Used to determine naming instead of actual rank.
+    name_tier = enum[title_tiers]
+
+    ## cardinality = 0..1
+    ### If yes, this title can't be vassalised. Defaults to "no".
+    independent = bool
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion.
+    <religion> = int
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion group.
+    <religion_group> = int
+
+    ## cardinality = 0..1
+    ### Randomly-generated male rulers will take titles from this list instead of the usual list for their culture.
+    male_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### Randomly-generated female rulers will take titles from this list instead of the usual list for their culture.
+    female_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### If set, title holder is head of given religion.
+    controls_religion = <religion>
+
+    ## cardinality = 0..1
+    ### If yes, this title will be destroyed if non-tribal title of the same rank is acquired. Defaults to "no".
+    tribe = bool
+
+    ## cardinality = 0..1
+    ### If no, titular title can be created without holding set capital province. Defaults to "yes".
+    creation_requires_capital = bool
+
+    ## cardinality = 0..1
+    ### If yes, this title is a caliphate. Defaults to "no".
+    caliphate = bool
+
+    ## cardinality = 0..1
+    ### If no, disables naming realm from the ruling dynasty. Defaults to "yes".
+    dynasty_title_names = bool
+
+    ## cardinality = 0..1
+    ### If yes, activates the born in the purple mechanic. Defaults to "no".
+    purple_born_heirs = bool
+
+    ## cardinality = 0..inf
+    ### The empire is renamed to this when held by a ruler of this culture.
+    <culture> = scalar
+
+    ## cardinality = 0..1
+    ### If yes, lists the capital province as part of the title. Defaults to "no".
+    location_ruler_title = bool
+
+    ## cardinality = 0..1
+    ### Title is considered to have this many more provinces than actual for purpose of determining the relative prestige of the title. AI will always make most prestigious title primary. Can cause strange behavior regarding a ruler's tier if set to a very high or negative value.
+    dignity = int
+
+    ## cardinality = 0..1
+    ### If no, titles cannot de jure drift in or out of the title. Defaults to "yes".
+    assimilate = bool
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Effects to fire for the character gaining the title. ROOT is the character.
+    gain_effect = {
+        ## cardinality = 1..inf
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    ## cardinality = 0..1
+    ### If no, claims cannot be made on the title, even via script. Defaults to "yes".
+    can_be_claimed = yes
+
+    ## cardinality = 0..1
+    ### If no, the title cannot be usurped. Defaults to "yes".
+    can_be_usurped = yes
+
+    ## cardinality = 0..1
+    ### How many more troops the AI should assume someone with this as their primary title has. Has no effect on anything except AI. Higher numbers means others are less willing to attack them, and they're more willing to attack others.
+    extra_ai_eval_troops = int
+
+    alias_name[coa] = alias_match_left[coa]
+    alias_name[pagan_coa] = alias_match_left[pagan_coa]
+
+    alias_name[color] = alias_match_left[color]
+    alias_name[color2] = alias_match_left[color2]
+
+    alias_name[county] = alias_match_left[county]
+    alias_name[barony] = alias_match_left[barony]
+}
+
+alias[duchy_hired:<title.duchy_hired>] = {
+    ### Listed province must be controlled to create a regular titular tilte. Affects ability to recruit mercenaries. Ruler can relocate their capital here without restriction.
+    capital = enum[provinces]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Special conditions to recruit the mercenary company. ROOT is the character hiring.
+    allow = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this religion. For holy orders, employer religion must match to be able to recruit.
+    religion = <religion>
+
+    ## cardinality = 0..1
+    ### Randomly-generated holders will have this culture.
+    culture = <culture>
+
+    # TODO: Confirm
+    ## cardinality = 0..1
+    ### Seems to be used for mercs to determine their CoA.
+    graphical_culture = <graphical_culture>
+
+    ## cardinality = 0..1
+    ### If yes, title will continue to exist even if owner has no land. Defaults to "no".
+    landless = bool
+
+    # TODO: Probably; confimr
+    ## cardinality = 0..1
+    ### If yes, title will always display as primary title. Defaults to "no".
+    primary = bool
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's title if non-standard.
+    title = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for female holder's title if non-standard.
+    title_female = localisation
+
+    # TODO: Elaborate
+    ## cardinality = 0..1
+    ### Gives localisation key for holder's form of address if non-standard.
+    foa = localisation
+
+    # TODO: Elaborate, confirm
+    ## cardinality = 0..1
+    ### Gives localization key for prefix to title name if non-standard. Currently only works on titles which have a culture set?
+    title_prefix = localisation
+
+    ## cardinality = 0..1
+    ### If yes, skips the title_prefix. Used for titles like Byzantine Empire, to avoid names like Empire of Byzantine Empire. Defaults to "no".
+    short_name = bool
+
+    ## cardinality = 0..1
+    ### Used to determine naming instead of actual rank.
+    name_tier = enum[title_tiers]
+
+    ## cardinality = 0..1
+    ### If yes, this title can't be vassalised. Defaults to "no".
+    independent = bool
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion.
+    <religion> = int
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion group.
+    <religion_group> = int
+
+    ## cardinality = 0..1
+    ### Randomly-generated male rulers will take titles from this list instead of the usual list for their culture.
+    male_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### Randomly-generated female rulers will take titles from this list instead of the usual list for their culture.
+    female_names = {
+        ## cardinality = 1..inf
+        scalar
+    }
+
+    ## cardinality = 0..1
+    ### If set, title holder is head of given religion.
+    controls_religion = <religion>
+
+    ## cardinality = 0..1
+    ### If yes, this title will be destroyed if non-tribal title of the same rank is acquired. Defaults to "no".
+    tribe = bool
+
+    ## cardinality = 0..1
+    ### If no, titular title can be created without holding set capital province. Defaults to "yes".
+    creation_requires_capital = bool
+
+    ## cardinality = 0..1
+    ### If yes, this title is a caliphate. Defaults to "no".
+    caliphate = bool
+
+    ## cardinality = 0..1
+    ### If no, disables naming realm from the ruling dynasty. Defaults to "yes".
+    dynasty_title_names = bool
+
+    ## cardinality = 0..1
+    ### If yes, activates the born in the purple mechanic. Defaults to "no".
+    purple_born_heirs = bool
+
+    ## cardinality = 0..inf
+    ### The empire is renamed to this when held by a ruler of this culture.
+    <culture> = scalar
+
+    ## cardinality = 0..1
+    ### If yes, lists the capital province as part of the title. Defaults to "no".
+    location_ruler_title = bool
+
+    ## cardinality = 0..1
+    ### Title is considered to have this many more provinces than actual for purpose of determining the relative prestige of the title. AI will always make most prestigious title primary. Can cause strange behavior regarding a ruler's tier if set to a very high or negative value.
+    dignity = int
+
+    ## cardinality = 0..1
+    ### If no, titles cannot de jure drift in or out of the title. Defaults to "yes".
+    assimilate = bool
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Effects to fire for the character gaining the title. ROOT is the character.
+    gain_effect = {
+        ## cardinality = 1..inf
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    ## cardinality = 0..1
+    ### If no, claims cannot be made on the title, even via script. Defaults to "yes".
+    can_be_claimed = yes
+
+    ## cardinality = 0..1
+    ### If no, the title cannot be usurped. Defaults to "yes".
+    can_be_usurped = yes
+
+    ## cardinality = 0..1
+    ### How many more troops the AI should assume someone with this as their primary title has. Has no effect on anything except AI. Higher numbers means others are less willing to attack them, and they're more willing to attack others.
+    extra_ai_eval_troops = int
+
+    # MERC STUFF START
+
+    ### If yes, this is hired title of the given type. Defaults to "no".
+    enum[mercenary_title_types] = bool
+
+    ### Determines troop composition.
+    mercenary_type = <mercenary>
+
+    ## cardinality = 0..1
+    ### Links to modifier in common/static_modifiers.txt that gives troop types for mercenaries and holy orders.
+    modifier = <static_modifier>
+
+    ## cardinality = 0..1
+    ### Mercenaries and holy orders increase in size by this percentage each century.
+    strength_grow_per_century = float
+
+    ## cardinality = 0..1
+    ### Monthly income of the mercenary/holy order.
+    monthly_income = int[1..512]
+
+    ## cardinality = 0..1
+    ### How far away a mercenary title can be hired. If not set, defaults to the MERCENARY_HIRE_DISTANCE_THRESHOLD define.
+    hire_range = int[0..inf]
+
+    # MERC STUFF END
+
+    alias_name[coa] = alias_match_left[coa]
+    alias_name[pagan_coa] = alias_match_left[pagan_coa]
+
+    alias_name[color] = alias_match_left[color]
+    alias_name[color2] = alias_match_left[color2]
+
+    alias_name[county] = alias_match_left[county]
+    alias_name[barony] = alias_match_left[barony]
+}
+
+alias[county:<title.county>] = {
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### ???. Defaults to "no".
+    top_de_jure_capital = no
+
+    ## cardinality = 0..inf
+    ### The county is renamed to this when held by a ruler of this culture.
+    <culture> = scalar
+
+    ## cardinality = 0..inf
+    ### Sets the county as a holy site for the given religion.
+    holy_site = <religion>
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion.
+    <religion> = int
+
+    ## cardinality = 0..inf
+    ### Weight for being targeted by AI crusade of given religion group.
+    <religion_group> = int
+
+    alias_name[color] = alias_match_left[color]
+    alias_name[color2] = alias_match_left[color2]
+
+    alias_name[barony] = alias_match_left[barony]
+}
+
+alias[barony:<title.barony>] = {
+    ## cardinality = 0..inf
+    ### The barony is renamed to this when held by a ruler of this culture.
+    <culture> = scalar
+
+    ## cardinality = 0..1
+    ### If yes, sets the barony to be a Pentarch seat either for ALL religions that use autocephaly.
+    pentarchy = bool
+
+    ## cardinality = 0..inf
+    ### If yes, sets the barony to be a Pentarch seat either for the given religion.
+    pentarchy = <religion>
+
+    ## cardinality = 0..1
+    ### If no, disables naming dynasties based on this barony. Defaults to "yes".
+    used_for_dynasty_names = bool
+}

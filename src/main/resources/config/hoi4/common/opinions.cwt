@@ -1,0 +1,29 @@
+types = {
+	type[opinion] = {
+		path = "game/common/opinion_modifiers"
+		skip_root_key = opinion_modifiers
+	}
+}
+
+opinion = {
+	value = int
+	##cardinality = 0..1
+	trade = bool
+	##cardinality = 0..1
+	decay = float
+	##cardinality = 0..1
+	min_trust = int
+	##cardinality = 0..1
+	max_trust = int
+	##cardinality = 0..1
+	target = bool
+	##cardinality = 0..1
+	enum[opinion_timer] = int
+}
+enums = {
+	enum[opinion_timer] = {
+		days
+		months
+		years
+	}
+}

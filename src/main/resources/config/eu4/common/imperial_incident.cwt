@@ -1,0 +1,35 @@
+types = {
+	type[imperial_incident] = {
+		path = "game/common/imperial_incidents"
+
+		localisation = {
+			## required
+			name = "$"
+			## required
+			member_alert = "$_member_alert"
+			## required
+			emberor_alert = "$_emperor_alert"
+		}
+	}
+}
+
+imperial_incident = {
+	event = <event.country>
+	default_option = int
+
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	can_stop = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## cardinality = 0..3
+	int[0..3] = {
+		## cardinality = 0..1
+		alias_name[effect] = alias_match_left[effect]
+		## cardinality = 0..1
+		factor = float[0..10000]
+		## cardinality = 0..1
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}

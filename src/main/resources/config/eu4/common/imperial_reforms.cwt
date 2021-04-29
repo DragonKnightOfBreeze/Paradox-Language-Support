@@ -1,0 +1,123 @@
+types = {
+	type[imperial_reform] = {
+		path = "game/common/imperial_reforms"
+
+		subtype[hre] = {
+			empire = hre
+		}
+		subtype[china] = {
+			empire = celestial_empire
+		}
+		subtype[member] = {
+			member = scalar
+		}
+		subtype[emperor] = {
+			emperor = scalar
+		}
+		subtype[province] = {
+			province = scalar
+		}
+		subtype[emperor_per_prince] = {
+			emperor_per_prince = scalar
+		}
+		subtype[elector_per_prince] = {
+			elector_per_prince = scalar
+		}
+		
+		localisation = {
+			## required
+			name = "$_title"
+			## required
+			desc = "$_desc"
+			subtype[member] = {
+				## required
+				member = "$_member"
+				## optional
+				member_desc = "desc_$_member"
+			}
+			subtype[emperor] = {
+				## required
+				emperor = "$_emperor"
+				## optional
+				emperor_desc = "desc_$_emperor"
+			}
+			subtype[province] = {
+				## optional
+				province = "$_province"
+			}
+			subtype[emperor_per_prince] = {
+				## required
+				emperor_per_prince = "$_emperor_per_prince"
+			}
+			subtype[elector_per_prince] = {
+				## required
+				elector_per_prince = "$_elector_per_prince"
+			}
+		}
+	}
+}
+
+imperial_reform = {
+	subtype[hre] = {
+		empire = hre
+		## cardinality = 0..1
+		required_reform = <imperial_reform.hre>
+		## cardinality = 0..1
+		disabled_by = <imperial_reform.hre>
+		gui_container = mainline
+		gui_container = left_branch
+		gui_container = right_branch
+		gui_container = nodlc
+		
+		## cardinality = 0..1
+		## push_scope = country
+		all = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+		## cardinality = 0..1
+		## push_scope = province
+		province = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+		## cardinality = 0..1
+		emperor_per_prince = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+		## cardinality = 0..1
+		elector_per_prince = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+		## cardinality = 0..1
+		potential = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+	subtype[china] = {
+		empire = celestial_empire
+		## cardinality = 0..1
+		required_reform = <imperial_reform.china>
+	}
+
+	## cardinality = 0..1
+	###Special AI check for a reform that may cause a war
+	war = yes
+	
+	## cardinality = 0..1
+	member = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## cardinality = 0..1
+	emperor = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	on_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	off_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+}

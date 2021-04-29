@@ -1,0 +1,245 @@
+types = {
+	type[operation] = {
+		path = "game/common/operations"
+		path_strict = yes
+	}
+}
+
+
+operation = {
+	icon = <spriteType>
+	map_icon = <spriteType>
+
+	name = localisation
+
+	desc = localisation
+
+	#outcome = <operation_phase>
+
+	### Priority determines in which order they are listed from the list of operations in the Intelligence Agency window. The higher the number the earlier in the list it will be
+	## cardinality = 0..1
+	priority = int
+
+	### Every operation needs a duration in days that it takes to execute it
+	days = int
+
+	### The danger level the target country will perceived once this operation is initiated (default = 0)
+	## cardinality = 0..1
+	danger_level = int
+
+	### The number of operatives requires to be assigned to an operation for it to start
+	operatives = int
+
+	### Every operation has a hard requirement of network strength in the target country Integer [0-100]
+	network_strength = int[0..100]
+
+	### Used for rescue operative operations
+	## cardinality = 0..1
+	prevent_captured_operative_to_die = bool
+
+	### Multiplier for the operation cost
+	## cardinality = 0..1
+	cost_multiplier = float
+
+	### Experience awarded by the operation
+	## cardinality = 0..1
+	experience = float
+
+	### Sets a fixed scaling instead of per target size
+	## cardinality = 0..1
+	scale_cost_independent_of_target = bool
+
+	### This is where all the separate phases are defined, There can be any number of phases, they will be evenly split over the total duration of the operation
+	## cardinality = 1..inf
+	phases = {
+		### Each phase for an operation may have a single actual phase assigned to it, which is determined here, Every <phase id> can have a base chance as well as any number of modifiers
+		## cardinality = 1..inf
+		<operation_phase> = {
+			## cardinality = 0..1
+			enum[base_factor] = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+
+	### Behaves like any other ai_will_do,  IF the total weight factor falls below OPERATION_AI_MINIMUM_SCORE, THEN the AI will cancel the operation if it was currently planning it
+	## cardinality = 0..1
+	ai_will_do = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	### Determines whether the operation is visible to the player, Default = { always = yes }
+	## cardinality = 0..1
+	## replace_scope = { THIS = country ROOT = country }
+	allowed = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	### Determines whether the operation can be launched by the player, Default = { always = yes }
+	## cardinality = 0..1
+	## replace_scope = { THIS = country ROOT = country FROM = country }
+	available = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	### Determines whether the operation will be visible to the player, If no trigger used it will fall back to a default where it shows operations with network strength below NOperatives::INTEL_NETWORK_MIN_DEFAULT_FOR_SHOWING or when reaching half its network requirements. It will also only show operations with one level higher operation count than you currently have.
+	## replace_scope = { THIS = country ROOT = country FROM = country }
+	## cardinality = 0..1
+	visible = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	risk_chance = float[0..1]
+
+	### List of modifiers that apply to risk_chance
+	## cardinality = 0..1
+	risk_modifiers = {
+		## cardinality = 0..inf
+		alias_keys_field[modifier]
+		## cardinality = 0..inf
+		alias_keys_field[unit_leader_modifier]
+	}
+
+	### Determines the potentially awarded token(s) - this is for display purposes only in tooltips
+	## cardinality = 0..1
+	awarded_tokens = {
+		## cardinality = 1..inf
+		<operation_token>
+	}
+
+	### List of traits that affect the cost of an operation
+	## cardinality = 0..1
+	cost_modifiers = {
+		## cardinality = 0..inf
+		alias_keys_field[modifier]
+		## cardinality = 0..inf
+		alias_keys_field[unit_leader_modifier]
+	}
+
+	### If no operation_target is defined it will be allowed for all countries
+	## replace_scope = { THIS = country ROOT = country }
+	## cardinality = 0..1
+	operation_target = {
+		targets = {
+			## cardinality = 1..inf
+			scope[country]
+		}
+	}
+
+
+	### Determines the valid countries for province selection. If set this will enable the UI to select a target province
+	## replace_scope = { THIS = country ROOT = country FROM = country FROM.FROM = state }
+	## cardinality = 0..1
+	selection_target = {
+		targets = {
+			## cardinality = 1..inf
+			scope[country]
+		}
+	}
+
+
+	### Determines the valid states for province selection
+	## replace_scope = { THIS = state ROOT = state }
+	## cardinality = 0..1
+	selection_target_state = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	### Determines the selector type. Currently supported are: [ province, strategic_region ]
+	## cardinality = 0..1
+	target_type = province
+	## cardinality = 0..1
+	target_type = strategic_region
+
+	### Equipment base cost for the operation, Note: Exceptionally supports `civilian_factories` as an equipment type. It works like the agency creation cost, where it allocates a number of factories over time
+	## cardinality = 0..1
+	equipment = {
+		## cardinality = 0..inf
+		<equipment> = int
+		## cardinality = 0..inf
+		civilian_factories = int
+		## cardinality = 0..inf
+		civilian_factories = {
+			amount = int
+			days = int
+		}
+	}
+
+	### Determines required token(s) - against target country - to launch the operation
+	## cardinality = 0..1
+	required_tokens = {
+		## cardinality = ~1..inf
+		<operation_token>
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { THIS = country ROOT = country FROM = country FROMFROM = state }
+	target_weight = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+
+	### Determines requirements other than equipment to launch the operation
+	## replace_scope = { THIS = country ROOT = country FROM = country }
+	## cardinality = 0..1
+	requirements = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	### Default: no - will refund all equipment cost for this operation at the end of the operation [ operation phases costs have their own specifier in the operation database ]
+	## cardinality = 0..1
+	return_on_complete = yes
+
+	### Executed when an operation starts
+	## replace_scope = { THIS = operation ROOT = country FROM = country }
+	## cardinality = 0..1
+	on_start = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	### For description purposes only. This is the effect that generates that text shown as a potential reward for completing the operation
+	## scope = any
+	## cardinality = 0..1
+	outcome_potential = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	### Chance for outcome_execute_extra to happen (assuming it exists), otherwise outcome_extra will be executed
+	## cardinality = 0..1
+	outcome_extra_chance = float[0..1]
+
+	### List of modifiers that apply to outcome_chance
+	## cardinality = 0..1
+	outcome_modifiers = {
+		## cardinality = 0..inf
+		alias_keys_field[modifier]
+		## cardinality = 0..inf
+		alias_keys_field[unit_leader_modifier]
+	}
+
+	### Executed when the operation has completed [ once per operation ]
+	## scope = any
+	## cardinality = 0..1
+	outcome_execute = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	### Same as outcome_execute
+	## scope = any
+	## cardinality = 0..1
+	outcome_extra_execute = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	### Used to warn the AI about an upcoming war with the target of the operation
+	## cardinality = 0..1
+	will_lead_to_war_with = bool
+}

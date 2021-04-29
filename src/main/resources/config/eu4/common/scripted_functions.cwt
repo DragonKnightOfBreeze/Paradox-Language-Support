@@ -1,0 +1,20 @@
+
+types = {
+	type[scripted_function] = {
+		path = "game/common/scripted_functions"
+	}
+}
+
+scripted_function = {
+	## cardinality = 0..1
+	condition = {
+		## cardinality = 0..1
+		tooltip = localisation
+		potential = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		allow = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+}

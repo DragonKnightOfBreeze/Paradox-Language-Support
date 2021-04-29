@@ -1,0 +1,20 @@
+types = {
+	type[personalities] = {
+		path = "game/common"
+		path_file = "traits.txt"
+	}
+	type[backgrounds] = {
+		path = "game/common"
+		path_file = "traits.txt"
+	}
+}
+
+personalities = {
+	## cardinality = 1..inf
+	alias_name[personality] = alias_match_left[personality]
+}
+
+backgrounds = {
+	## cardinality = 1..inf
+	alias_name[background] = alias_match_left[background]
+}

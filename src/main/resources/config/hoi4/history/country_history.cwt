@@ -1,0 +1,25 @@
+types = {
+	type[country_history] = {
+		path = "game/history/countries"
+		type_per_file = yes
+	}
+}
+
+country_history = {
+	capital = <state>
+
+	## cardinality = 0..1
+	oob = <oob>
+	alias_name[effect] = alias_match_left[effect]
+
+	## cardinality = 0..inf
+	date_field = {
+
+		## cardinality = 0..1
+		capital = <state> 
+		
+		## cardinality = 0..inf
+		oob = <oob>
+		alias_name[effect] = alias_match_left[effect]
+	}
+}

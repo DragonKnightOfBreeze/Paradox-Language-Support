@@ -1,0 +1,95 @@
+
+### Elevate a count in every duchy to duke, and vassalize the other counts.
+alias[alternate_start_setting_property:generate_dukes] = yes
+
+### The dukes will also get every county in their duchy, held personally.
+alias[alternate_start_setting_property:consolidate_dukes] = yes
+
+### Determines the types of holdings across the world.
+alias[alternate_start_setting_property:holding_type] = enum[alternate_start_holding_type]
+
+### Determines the amount of holding slots in provinces across the world.
+alias[alternate_start_setting_property:holding_slots] = enum[alternate_start_holding_slots]
+
+### Determines the randomisation of cultures.
+alias[alternate_start_setting_property:culture] = enum[alternate_start_culture_religion]
+
+### Determines the randomisation of religions.
+alias[alternate_start_setting_property:religion] = enum[alternate_start_culture_religion]
+
+###
+alias[alternate_start_setting_property:technology] = enum[alternate_start_technology]
+
+### Changes de jure kingdoms.
+alias[alternate_start_setting_property:dejure_kingdoms] = enum[alternate_start_dejure_kingdoms_empires]
+
+### Changes de jure empires.
+alias[alternate_start_setting_property:dejure_empires] = enum[alternate_start_dejure_kingdoms_empires]
+
+### No effect, but can be checked from script.
+alias[alternate_start_setting_property:holy_sites] = historical
+
+### Causes holy sites for any religion with provinces on the map to be randomized.
+alias[alternate_start_setting_property:holy_sites] = random
+
+### No effect, but can be checked from script.
+alias[alternate_start_setting_property:culture_names] = historical
+
+### Causes culture names to get randomized.
+alias[alternate_start_setting_property:culture_names] = random
+
+### No effect, but can be checked from script.
+alias[alternate_start_setting_property:religion_names] = historical
+
+### Causes religion names to get randomized.
+alias[alternate_start_setting_property:religion_names] = random
+
+### No effect, but can be checked from script.
+alias[alternate_start_setting_property:religion_features] = historical
+
+### Causes religions to have their features reset, and then generated from common/religion_features.
+alias[alternate_start_setting_property:religion_features] = random
+
+### If yes, elevate counts to dukes if they meet certain requirements.
+alias[alternate_start_setting_property:generate_random_dukes] = bool
+
+### If yes, elevate rulers to kings if they meet certain requirements.
+alias[alternate_start_setting_property:generate_random_kings] = bool
+
+### If yes, elevate rulers to emperors if they meet certain requirements.
+alias[alternate_start_setting_property:generate_random_emperors] = bool
+
+### Randomizes the holdings in the world.
+alias[alternate_start_setting_property:generate_random_holdings] = yes
+
+### Just check the docs for these.
+alias[alternate_start_setting_property:duke_threshold] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:duke_ignore_rate] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:duke_vassalization_rate] = int
+
+### Just check the docs for these.
+alias[alternate_start_setting_property:king_threshold] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:king_ignore_rate] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:king_vassalization_rate] = int
+
+### Just check the docs for these.
+alias[alternate_start_setting_property:emperor_threshold] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:emperor_ignore_rate] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:emperor_vassalization_rate] = int
+
+### Just check the docs for these.
+alias[alternate_start_setting_property:feudal_seeds] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:tribal_seeds] = int
+### Just check the docs for these.
+alias[alternate_start_setting_property:nomadic_seeds] = int
+
+# Actually can't be checked. The setting of the value doesn't work, sadly.
+### Custom parameter with no intrinsic effect. Can be checked in script with has_alternate_parameter
+alias[alternate_start_setting_property:value_set[alternate_start_setting_custom_property]] = scalar

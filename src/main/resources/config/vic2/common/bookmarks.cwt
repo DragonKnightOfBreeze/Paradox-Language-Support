@@ -1,0 +1,17 @@
+types = {
+	type[bookmark] = {
+		path = "game/common"
+		path_file = "bookmarks.txt"
+		name_field = "date"
+	}
+}
+
+bookmark =
+{
+	name = localisation
+	desc = localisation
+	date = date_field
+	cameraX = int 
+	cameraY = int
+}
+

@@ -1,0 +1,80 @@
+
+types = {
+	type[culture_group] = {
+		path = "game/common/cultures"
+		localisation = {
+			name = "$"
+		}
+	}
+	## type_key_filter <> { male_names female_names dynasty_names }
+	type[culture] = {
+		path = "game/common/cultures"
+		skip_root_key = any
+		localisation = {
+			name = "$"
+		}
+	}
+}
+
+
+culture_group = {
+	## cardinality = 0..1
+	graphical_culture = enum[graphical_cultures]
+	
+	## cardinality = 0..1
+	male_names = {
+		## cardinality = 1..inf
+		scalar
+	}
+	
+	## cardinality = 0..1
+	female_names = {
+		## cardinality = 1..inf
+		scalar
+	}
+	
+	## cardinality = 0..1
+	dynasty_names = {
+		## cardinality = 0..inf
+		scalar
+	}
+	
+	## cardinality = 1..inf
+	<culture> = {
+		## cardinality = 0..1
+		graphical_culture = enum[graphical_cultures]
+		
+		## cardinality = 0..1
+		primary = enum[country_tags]
+	
+		## cardinality = 0..1
+		male_names = {
+			## cardinality = 1..inf
+			scalar
+		}
+		
+		## cardinality = 0..1
+		female_names = {
+			## cardinality = 1..inf
+			scalar
+		}
+		
+		## cardinality = 0..1
+		dynasty_names = {
+			## cardinality = 0..inf
+			scalar
+		}
+		
+		## cardinality = 0..1
+		## replace_scope = { this = province root = province }
+		province = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+		
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country }
+		country = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+	}
+}
