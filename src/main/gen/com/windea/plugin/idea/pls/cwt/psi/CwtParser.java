@@ -102,7 +102,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "###" DOCUMENTATION_TOKEN *
+  // "###" documentation_text ?
   public static boolean documentation_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "documentation_comment")) return false;
     if (!nextTokenIs(b, DOCUMENTATION_START)) return false;
@@ -115,15 +115,23 @@ public class CwtParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // DOCUMENTATION_TOKEN *
+  // documentation_text ?
   private static boolean documentation_comment_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "documentation_comment_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!consumeToken(b, DOCUMENTATION_TOKEN)) break;
-      if (!empty_element_parsed_guard_(b, "documentation_comment_1", c)) break;
-    }
+    documentation_text(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // DOCUMENTATION_TOKEN
+  public static boolean documentation_text(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "documentation_text")) return false;
+    if (!nextTokenIs(b, DOCUMENTATION_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOCUMENTATION_TOKEN);
+    exit_section_(b, m, DOCUMENTATION_TEXT, r);
+    return r;
   }
 
   /* ********************************************************** */

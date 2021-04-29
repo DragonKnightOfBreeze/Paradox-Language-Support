@@ -21,6 +21,10 @@ public class CwtVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitDocumentationText(@NotNull CwtDocumentationText o) {
+    visitPsiElement(o);
+  }
+
   public void visitFloat(@NotNull CwtFloat o) {
     visitNumber(o);
   }

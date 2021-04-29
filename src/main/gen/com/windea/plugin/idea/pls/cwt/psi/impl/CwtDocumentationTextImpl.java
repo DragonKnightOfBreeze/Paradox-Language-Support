@@ -11,14 +11,14 @@ import static com.windea.plugin.idea.pls.cwt.psi.CwtTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.windea.plugin.idea.pls.cwt.psi.*;
 
-public class CwtDocumentationCommentImpl extends ASTWrapperPsiElement implements CwtDocumentationComment {
+public class CwtDocumentationTextImpl extends ASTWrapperPsiElement implements CwtDocumentationText {
 
-  public CwtDocumentationCommentImpl(@NotNull ASTNode node) {
+  public CwtDocumentationTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull CwtVisitor visitor) {
-    visitor.visitDocumentationComment(this);
+    visitor.visitDocumentationText(this);
   }
 
   @Override
@@ -28,9 +28,9 @@ public class CwtDocumentationCommentImpl extends ASTWrapperPsiElement implements
   }
 
   @Override
-  @Nullable
-  public CwtDocumentationText getDocumentationText() {
-    return findChildByClass(CwtDocumentationText.class);
+  @NotNull
+  public PsiElement getDocumentationToken() {
+    return findNotNullChildByType(DOCUMENTATION_TOKEN);
   }
 
 }

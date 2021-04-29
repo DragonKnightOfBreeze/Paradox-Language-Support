@@ -40,9 +40,10 @@ root_block ::= root_block_item * {
 private root_block_item ::=  comment | property | value
 
 private comment ::= documentation_comment | option_comment | COMMENT
-documentation_comment ::= "###" DOCUMENTATION_TOKEN *{
+documentation_comment ::= "###" documentation_text ?{
   pin(".*")=1
 }
+documentation_text ::= DOCUMENTATION_TOKEN
 option_comment ::= "##" option_comment_item *{
   pin(".*")=1
 }
@@ -96,6 +97,6 @@ block ::= "{" block_item * "}" {
   pin=1
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[isEmpty isNotEmpty isObject isArray getComponents]
+  methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents]
 }
 private block_item ::= comment | property | option | value

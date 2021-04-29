@@ -11,6 +11,7 @@ public interface CwtTypes {
   IElementType BLOCK = new CwtElementType("BLOCK");
   IElementType BOOLEAN = new CwtElementType("BOOLEAN");
   IElementType DOCUMENTATION_COMMENT = new CwtElementType("DOCUMENTATION_COMMENT");
+  IElementType DOCUMENTATION_TEXT = new CwtElementType("DOCUMENTATION_TEXT");
   IElementType FLOAT = new CwtElementType("FLOAT");
   IElementType INT = new CwtElementType("INT");
   IElementType NUMBER = new CwtElementType("NUMBER");
@@ -48,6 +49,9 @@ public interface CwtTypes {
       }
       else if (type == DOCUMENTATION_COMMENT) {
         return new CwtDocumentationCommentImpl(node);
+      }
+      else if (type == DOCUMENTATION_TEXT) {
+        return new CwtDocumentationTextImpl(node);
       }
       else if (type == FLOAT) {
         return new CwtFloatImpl(node);

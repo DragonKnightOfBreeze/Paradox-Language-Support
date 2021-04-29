@@ -5,14 +5,13 @@ import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.localisation.psi.*
 
 /**
- * Paradox本地化文件的数据提解析器。
+ * Paradox本地化文件的数据解析器。
  *
  * 返回值类型：`Map<String,String>`
  */
 object ParadoxLocalisationDataResolver {
 	fun resolve(file: PsiFile):Map<String,String>{
 		if(file !is ParadoxLocalisationFile) throw IllegalArgumentException("Invalid file type")
-
 		val result = mutableMapOf<String,String>()
 		file.forEachChild {
 			when(it){
@@ -29,3 +28,4 @@ object ParadoxLocalisationDataResolver {
 		return result
 	}
 }
+

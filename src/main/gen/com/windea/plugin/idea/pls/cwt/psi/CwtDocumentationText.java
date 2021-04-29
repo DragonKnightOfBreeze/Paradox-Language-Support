@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface CwtDocumentationComment extends PsiElement {
+public interface CwtDocumentationText extends PsiElement {
 
-  @Nullable
-  CwtDocumentationText getDocumentationText();
+  @NotNull
+  PsiElement getDocumentationToken();
 
 }

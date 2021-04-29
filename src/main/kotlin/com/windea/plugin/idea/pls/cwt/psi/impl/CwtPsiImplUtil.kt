@@ -48,7 +48,7 @@ object CwtPsiImplUtil {
 	//region CwtOption
 	@JvmStatic
 	fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
-		return cwtOptionIcon
+		return com.windea.plugin.idea.pls.cwtOptionIcon
 	}
 	
 	@JvmStatic

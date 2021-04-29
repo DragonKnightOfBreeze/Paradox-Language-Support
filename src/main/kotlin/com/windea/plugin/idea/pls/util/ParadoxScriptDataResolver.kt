@@ -12,7 +12,7 @@ import com.windea.plugin.idea.pls.script.psi.*
 object ParadoxScriptDataResolver {
 	fun resolve(file: PsiFile):List<Any>{
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type")
-		val rootBlock = file.findChildByClass(ParadoxScriptRootBlock::class.java) ?: return emptyList()
+		val rootBlock = file.rootBlock?:return emptyList()
 		return resolveBlock(rootBlock)
 	}
 	
@@ -23,6 +23,14 @@ object ParadoxScriptDataResolver {
 			block.isObject -> block.propertyList.mapNotNull { resolveProperty(it)}
 			else -> emptyList()
 		}
+	}
+	
+	private fun resolveProperty(property:ParadoxScriptProperty):Pair<String,Any?>?{
+		//注意这里名字可以重复！！
+		val name = property.name
+		val value = property.propertyValue?.value
+		if(name.isEmpty() || value== null) return null
+		return name to resolveValue(value)
 	}
 	
 	private fun resolveValue(value:ParadoxScriptValue):Any?{
@@ -36,13 +44,5 @@ object ParadoxScriptDataResolver {
 			is ParadoxScriptBlock -> resolveBlock(value)
 			else -> value.value
 		}
-	}
-	
-	private fun resolveProperty(property:ParadoxScriptProperty):Pair<String,Any?>?{
-		//注意这里名字可以重复！！
-		val name = property.name
-		val value = property.propertyValue?.value
-		if(name.isEmpty() || value== null) return null
-		return name to resolveValue(value)
 	}
 }
