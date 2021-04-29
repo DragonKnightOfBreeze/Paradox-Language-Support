@@ -12,6 +12,7 @@ Paradox语言支持。
 
 目前仅支持**Stellaris**。
 目前用于提供验证和代码补全等功能的规则文件尚不完善。
+（计划之后与**CWTools**共用规则文件）
 
 [参考文档](https://dragonknightofbreeze.github.io/paradox-language-support)将会在未来提供。
 

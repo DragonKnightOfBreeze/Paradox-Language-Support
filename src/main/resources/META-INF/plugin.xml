@@ -22,6 +22,7 @@
     <p>
       Currently Only Support <b>Stellaris</b>.
       Currently the rule file to implement functions such as validate and provide code completion is not perfect yet.
+      (Plan to use the same rule files with **CWTools** later.)
     </p>
     <p>
       The <a href="https://dragonknightofbreeze.github.io/paradox-language-support">reference documents</a> will be provided in the future.  
@@ -49,6 +50,7 @@
     <p>
       目前仅支持<b>Stellaris</b>。
       目前用于提供验证和代码补全等功能的规则文件尚不完善。
+      （计划之后与**CWTools**共用规则文件）
     </p>
     <p>
       <a href="https://dragonknightofbreeze.github.io/paradox-language-support">参考文档</a>将会在未来提供。

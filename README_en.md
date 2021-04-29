@@ -12,6 +12,7 @@ If you want to add game directory and third party mod as dependencies, just add 
 
 Currently Only Support **Stellaris**.
 Currently the rule file to implement functions such as validate and provide code completion is not perfect yet.
+(Plan to use the same rule files with **CWTools** later.)
 
 The [reference documents](https://dragonknightofbreeze.github.io/paradox-language-support) will be provided in the future.
 
