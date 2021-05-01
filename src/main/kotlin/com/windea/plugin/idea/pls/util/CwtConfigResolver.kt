@@ -2,9 +2,8 @@ package com.windea.plugin.idea.pls.util
 
 import com.intellij.psi.*
 import com.windea.plugin.idea.pls.*
+import com.windea.plugin.idea.pls.config.*
 import com.windea.plugin.idea.pls.cwt.psi.*
-import com.windea.plugin.idea.pls.cwt.psi.impl.*
-import com.windea.plugin.idea.pls.model.*
 import java.util.*
 
 /**
@@ -15,16 +14,16 @@ import java.util.*
 object CwtConfigResolver {
 	fun resolve(file: PsiFile): CwtConfig {
 		if(file !is CwtFile) throw java.lang.IllegalArgumentException("Invalid file type")
-		val rootBlock = file.rootBlock ?: return CwtConfig.empty
+		val rootBlock = file.rootBlock ?: return EmptyCwtConfig
 		return resolveRootBlock(rootBlock)
 	}
 	
 	fun resolveRootBlock(rootBlock: CwtRootBlock): CwtConfig {
 		return when {
-			rootBlock.isEmpty -> CwtConfig.empty
+			rootBlock.isEmpty -> EmptyCwtConfig
 			rootBlock.isArray -> CwtConfig(rootBlock.valueList.mapNotNull { resolveValue(it) }, emptyList())
 			rootBlock.isObject -> CwtConfig(emptyList(), rootBlock.propertyList.mapNotNull { resolveProperty(it) })
-			else -> CwtConfig.empty
+			else -> EmptyCwtConfig
 		}
 	}
 	
@@ -82,16 +81,15 @@ object CwtConfigResolver {
 				}
 			}
 		}
-		return CwtConfigValue(_value, values, properties, options, documentation)
+		return CwtConfigValue(_value, values, properties, documentation, options)
 	}
 	
-	private fun getDocumentationAndOptions(element: PsiElement): Pair<String, CwtConfigOptions> {
+	private fun getDocumentationAndOptions(element: PsiElement): Pair<String?, CwtConfigOptions?> {
 		var current = element
 		val documentationComments = LinkedList<CwtDocumentationComment>()
 		val optionComments = LinkedList<CwtOptionComment>()
 		while(true) {
-			current = current.prevSibling
-			if(current == null) break
+			current = current.prevSibling?:break
 			when {
 				current is PsiWhiteSpace || current is PsiComment -> continue
 				current is CwtDocumentationComment -> documentationComments.addFirst(current)
@@ -104,11 +102,13 @@ object CwtConfigResolver {
 		return documentation to options
 	}
 	
-	private fun getDocumentation(documentationComments: MutableList<CwtDocumentationComment>): String {
+	private fun getDocumentation(documentationComments: MutableList<CwtDocumentationComment>): String? {
+		if(documentationComments.isEmpty()) return null
 		return documentationComments.joinToString("\n") { it.documentationText?.text.orEmpty() }.trim()
 	}
 	
-	private fun getOptions(optionComments: MutableList<CwtOptionComment>): CwtConfigOptions {
+	private fun getOptions(optionComments: MutableList<CwtOptionComment>): CwtConfigOptions? {
+		if(optionComments.isEmpty()) return null
 		var cardinality: String? = null
 		var optional: Boolean? = null
 		var required: Boolean? = null

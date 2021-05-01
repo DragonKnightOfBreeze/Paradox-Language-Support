@@ -35,7 +35,7 @@ class ChangeColorIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, rules.paradoxColors)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, rule.paradoxColors)).showInBestPositionFor(editor)
 		}
 	}
 	

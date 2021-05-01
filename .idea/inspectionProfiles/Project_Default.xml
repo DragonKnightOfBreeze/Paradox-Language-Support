@@ -161,7 +161,6 @@
     <inspection_tool class="ReplaceSubstringWithIndexingOperation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ReplaceSubstringWithSubstringAfter" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ReplaceSubstringWithSubstringBefore" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="ReplaceSubstringWithTake" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="RestrictReturnStatementTargetMigration" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="SameParameterValue" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="highestModifier" value="public" />

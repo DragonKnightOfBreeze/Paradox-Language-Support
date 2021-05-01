@@ -42,14 +42,14 @@ private fun getDocumentText(documentName: String, type: String, project: Project
 		val definition = it.paradoxDefinitionInfo
 		val id = definition?.name
 		val name = definition?.localisation?.find { (k, _) ->
-			k.toConditionalExpression().value == "name" 
+			ConditionalExpression(k).value == "name" 
 		}
 		val description = definition?.localisation?.find { (k, _) ->
-			k.toConditionalExpression().value == "description"
+			ConditionalExpression(k).value == "description"
 		}?.let { v -> 
 			findLocalisation(v, null, project)?.extractText()
 		}
-		val effect = definition?.localisation?.find { (k, _) -> k.toConditionalExpression().value == "effect" }?.let { v ->
+		val effect = definition?.localisation?.find { (k, _) -> ConditionalExpression(k).value == "effect" }?.let { v ->
 			findLocalisation(v, null, project)?.extractText()
 		}
 		buildString {

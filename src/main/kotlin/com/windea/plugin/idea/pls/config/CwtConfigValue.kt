@@ -1,9 +1,9 @@
-package com.windea.plugin.idea.pls.model
+package com.windea.plugin.idea.pls.config
 
 data class CwtConfigValue(
 	val value:String?,
 	val values: List<CwtConfigValue>?,
 	val properties: List<CwtConfigProperty>?,
-	val options: CwtConfigOptions,
-	val documentation: String,
+	val documentation: String?,
+	val options: CwtConfigOptions?
 )

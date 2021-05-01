@@ -82,7 +82,9 @@
     <renameHandler implementation="com.windea.plugin.idea.pls.core.refactoring.PsiCheckRenameHandler"/>
     
     <!--suppress PluginXmlValidity -->
-    <applicationService serviceImplementation="com.windea.plugin.idea.pls.core.rule.ParadoxRuleGroupProvider" preload="true" order="first"/>
+    <applicationService serviceImplementation="com.windea.plugin.idea.pls.config.CwtConfigGroupProvider" preload="true" order="first"/>
+    <!--suppress PluginXmlValidity -->
+    <applicationService serviceImplementation="com.windea.plugin.idea.pls.config.ParadoxRuleGroupProvider" preload="true" order="first"/>
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="com.windea.plugin.idea.pls.core.ParadoxFileTypeOverrider"/>
 

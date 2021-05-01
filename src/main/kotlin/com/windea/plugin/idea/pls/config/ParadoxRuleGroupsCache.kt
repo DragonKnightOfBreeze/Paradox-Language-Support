@@ -1,12 +1,9 @@
-package com.windea.plugin.idea.pls.core.rule
+package com.windea.plugin.idea.pls.config
 
 import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.model.*
 
-/**
- * Paradox规则组缓存
- */
-class ParadoxRuleGroupCache(
+class ParadoxRuleGroupsCache(
 	ruleGroups:Map<String, ParadoxRuleGroup>
 ) {
 	val paradoxRuleGroups = ruleGroups

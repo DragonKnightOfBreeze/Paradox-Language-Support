@@ -1,12 +1,11 @@
-package com.windea.plugin.idea.pls.core.rule
+package com.windea.plugin.idea.pls.config
 
 import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.model.*
 import com.windea.plugin.idea.pls.script.psi.*
 
-/**
- * Paradox规则组。
- */
+//TODO 移除，和cwtConfig合并，仅保留declaretions对应的yaml文件并放到config根目录下，例如stellaris.declarations.yaml
+
 @Suppress("UNCHECKED_CAST")
 class ParadoxRuleGroup(
 	val data: Map<String, Map<String, Any>>
@@ -73,7 +72,7 @@ class ParadoxRuleGroup(
 				if(predicateValue is ParadoxScriptBlock) {
 					val propMap = predicateValue.propertyList.associateBy { it.name }
 					for((k, v) in predicateData) {
-						val (key, optional) = k.toString().toConditionalExpression()
+						val (key, optional) = ConditionalExpression(k.toString())
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when {
 							v == true || v == "any" -> {
@@ -148,7 +147,7 @@ class ParadoxRuleGroup(
 			if(keyFilterData is String) {
 				val keyExpressions = keyFilterData.split(',').map { it.trim() }
 				for(keyExpression in keyExpressions) {
-					val expression = keyExpression.toPredicateExpression()
+					val expression = PredicateExpression(keyExpression)
 					return expression.matches(elementName)
 				}
 			}
@@ -159,7 +158,7 @@ class ParadoxRuleGroup(
 				if(predicateValue is ParadoxScriptBlock) {
 					val propMap = predicateValue.propertyList.associateBy { it.name }
 					for((k, v) in predicateData) {
-						val (key, optional) = k.toString().toConditionalExpression()
+						val (key, optional) = ConditionalExpression(k.toString())
 						val prop = propMap[key] ?: if(optional) continue else return false
 						when {
 							v == true || v == "any" -> {
@@ -188,8 +187,8 @@ class ParadoxRuleGroup(
 				//如果key以subtype:开始，则是subtypeExpression，否则就是name
 				when {
 					keyData.startsWith("subtype:") -> {
-						val expression = keyData.drop(8).toPredicateExpression()
-						if(expression.matches(subtypes){ it.name }) {
+						val expression = PredicateExpression(keyData.drop(8))
+						if(expression.matches(subtypes) { it.name }) {
 							valueData as? Map<String, String> ?: continue
 							result.putAll(valueData)
 						}
@@ -210,8 +209,8 @@ class ParadoxRuleGroup(
 				//如果key以subtype:开始，则是subtypeExpression，否则就是name
 				when {
 					keyData.startsWith("subtype:") -> {
-						val expression = keyData.drop(8).toPredicateExpression()
-						if(expression.matches(subtypes){ it.name }) {
+						val expression = PredicateExpression(keyData.drop(8))
+						if(expression.matches(subtypes) { it.name }) {
 							valueData as? Map<String, Any?> ?: continue
 							result.putAll(valueData)
 						}

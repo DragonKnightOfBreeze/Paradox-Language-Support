@@ -7,8 +7,9 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
-import com.windea.plugin.idea.pls.core.rule.*
+import com.windea.plugin.idea.pls.config.*
 import com.windea.plugin.idea.pls.core.settings.*
+import com.windea.plugin.idea.pls.cwt.psi.*
 import com.windea.plugin.idea.pls.localisation.psi.*
 import com.windea.plugin.idea.pls.model.*
 import com.windea.plugin.idea.pls.script.psi.*
@@ -21,18 +22,20 @@ import kotlin.Pair
 
 val settings get() = ParadoxSettingsState.getInstance()
 
-val rules get() = ServiceManager.getService(ParadoxRuleGroupProvider::class.java).ruleGroupsCache
+val config get() = ServiceManager.getService(CwtConfigGroupProvider::class.java).configGroupsCache
+
+val rule get() = ServiceManager.getService(ParadoxRuleGroupProvider::class.java).ruleGroupsCache
 
 val inferredParadoxLocale get() = when(System.getProperty("user.language")) {
-	"zh" -> rules.paradoxLocaleMap.getValue("l_simp_chinese")
-	"en" -> rules.paradoxLocaleMap.getValue("l_english")
-	"pt" -> rules.paradoxLocaleMap.getValue("l_braz_por")
-	"fr" -> rules.paradoxLocaleMap.getValue("l_french")
-	"de" -> rules.paradoxLocaleMap.getValue("l_german")
-	"pl" -> rules.paradoxLocaleMap.getValue("l_ponish")
-	"ru" -> rules.paradoxLocaleMap.getValue("l_russian")
-	"es" -> rules.paradoxLocaleMap.getValue("l_spanish")
-	else -> rules.paradoxLocaleMap.getValue("l_english")
+	"zh" -> rule.paradoxLocaleMap.getValue("l_simp_chinese")
+	"en" -> rule.paradoxLocaleMap.getValue("l_english")
+	"pt" -> rule.paradoxLocaleMap.getValue("l_braz_por")
+	"fr" -> rule.paradoxLocaleMap.getValue("l_french")
+	"de" -> rule.paradoxLocaleMap.getValue("l_german")
+	"pl" -> rule.paradoxLocaleMap.getValue("l_ponish")
+	"ru" -> rule.paradoxLocaleMap.getValue("l_russian")
+	"es" -> rule.paradoxLocaleMap.getValue("l_spanish")
+	else -> rule.paradoxLocaleMap.getValue("l_english")
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
@@ -72,14 +75,14 @@ val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("ca
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
 		val name = this.name
-		return rules.paradoxLocaleMap[name]
+		return rule.paradoxLocaleMap[name]
 	}
 
 val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 	get() {
 		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
 		if(colorId != null && colorId.isUpperCase()) {
-			return rules.paradoxColorMap[colorId.toString()]
+			return rule.paradoxColorMap[colorId.toString()]
 		}
 		return null
 	}
@@ -87,26 +90,26 @@ val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequentialNumber?
 	get() {
 		val name = this.name
-		return rules.paradoxSequentialNumberMap[name]
+		return rule.paradoxSequentialNumberMap[name]
 	}
 
 val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?
 	get() {
 		val name = this.name.toCapitalizedWord() //忽略大小写，首字母大写
 		if(name.startsWith(eventTargetPrefix)) return null
-		return rules.paradoxCommandScopeMap[name]
+		return rule.paradoxCommandScopeMap[name]
 	}
 
 val ParadoxLocalisationCommandField.paradoxCommandField: ParadoxCommandField?
 	get() {
 		val name = this.name
-		return rules.paradoxCommandFieldMap[name]
+		return rule.paradoxCommandFieldMap[name]
 	}
 
 val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
 	get() {
 		val name = this.name
-		return rules.paradoxColorMap[name]
+		return rule.paradoxColorMap[name]
 	}
 
 
@@ -213,7 +216,7 @@ private fun getDefinitionInfo(element: ParadoxScriptProperty, check: Boolean = t
 
 private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
-	val ruleGroup = rules.paradoxRuleGroups[gameType.key] ?: return null
+	val ruleGroup = rule.paradoxRuleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val propertyPath = element.resolvePropertyPath() ?: return null
 	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, propertyPath) } ?: return null
@@ -475,6 +478,11 @@ inline fun ParadoxLocalisationProperty.extractText(): String {
 @Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
 	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun CwtFile.resolveConfig(): CwtConfig {
+	return CwtConfigResolver.resolve(this)
 }
 
 @Suppress("NOTHING_TO_INLINE")

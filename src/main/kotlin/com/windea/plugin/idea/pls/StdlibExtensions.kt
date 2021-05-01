@@ -6,6 +6,7 @@ import java.net.*
 import java.nio.file.*
 import java.util.*
 import javax.swing.*
+import kotlin.math.*
 
 fun String.toUrl(locationClass: Class<*>): URL = locationClass.getResource(this)!!
 
@@ -23,61 +24,6 @@ inline fun <T, reified R> Array<out T>.mapArray(block: (T) -> R): Array<R> {
 inline fun <T, reified R> Sequence<T>.mapArray(block: (T) -> R): Array<R> {
 	return this.toList().mapArray(block)
 }
-
-
-private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
-
-fun String.isBoolean() = this == "yes" || this == "no"
-
-fun String.isInt():Boolean{
-	var isFirstChar = true
-	for(char in this.toCharArray()) {
-		if(char.isDigit()) continue
-		if(isFirstChar) {
-			isFirstChar = false
-			if(char == '+' || char == '-') continue
-		}
-		return false
-	}
-	return true
-}
-
-fun String.isFloat(): Boolean {
-	var isFirstChar = true
-	var missingDot = true
-	for(char in this.toCharArray()) {
-		if(char.isDigit()) continue
-		if(isFirstChar) {
-			isFirstChar = false
-			if(char == '+' || char == '-') continue
-		}
-		if(missingDot) {
-			if(char == '.') {
-				missingDot = false
-				continue
-			}
-		}
-		return false
-	}
-	return true
-}
-
-fun String.isColor():Boolean{
-	return this.matches(isColorRegex)
-}
-
-fun String.isTypeOf(type:String):Boolean{
-	return (type=="boolean" && isBoolean()) || (type == "int" && isInt()) || (type =="float" && isFloat())
-	       || (type == "color" && isColor()) || type == "string"
-}
-
-
-fun Boolean.toInt() = if(this) 1 else 0
-
-fun Boolean.toStringYesNo() = if(this) "yes" else "no"
-
-fun String.toBooleanYesNo() = this == "yes"
-
 
 fun CharSequence.surroundsWith(prefix:Char,suffix:Char,ignoreCase: Boolean = false): Boolean {
 	return this.startsWith(prefix,ignoreCase) && this.endsWith(suffix,ignoreCase)
@@ -170,6 +116,27 @@ fun <K,V> Map<K,V>.findOrNull(predicate:(Map.Entry<K,V>)->Boolean):V?{
 	return null
 }
 
+inline fun <reified T> Any?.cast(): T = this as T
+
+inline fun <reified T> Any?.castOrNull(): T? = this as? T
+
+fun Icon.resize(width: Int, height: Int = width): Icon {
+	return IconUtil.toSize(this, width, height)
+}
+
+fun <C : CharSequence> C.ifNotEmpty(block: (C) -> Unit) {
+	if(this.isNotEmpty()) block(this)
+}
+
+/**
+ * 判断当前路径是否匹配另一个路径（等于或者是另一个路径的父路径）。
+ */
+infix fun String.matchesPath(other: String): Boolean {
+	if(this == other) return true
+	if(this == other.take(length) && other[length] == '/') return true
+	return false
+}
+
 inline fun <reified T> T.toSingletonArray(): Array<T> {
 	return arrayOf(this)
 }
@@ -186,13 +153,61 @@ fun <T : Any> T?.toSingletonListOrEmpty(): List<T> {
 	return if(this == null) Collections.emptyList() else Collections.singletonList(this)
 }
 
-inline fun <reified T> Any?.cast(): T = this as T
+//Is Extensions
 
-inline fun <reified T> Any?.castOrNull(): T? = this as? T
+private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
 
-fun Icon.resize(width: Int, height: Int = width): Icon {
-	return IconUtil.toSize(this, width, height)
+fun String.isBoolean() = this == "yes" || this == "no"
+
+fun String.isInt():Boolean{
+	var isFirstChar = true
+	for(char in this.toCharArray()) {
+		if(char.isDigit()) continue
+		if(isFirstChar) {
+			isFirstChar = false
+			if(char == '+' || char == '-') continue
+		}
+		return false
+	}
+	return true
 }
+
+fun String.isFloat(): Boolean {
+	var isFirstChar = true
+	var missingDot = true
+	for(char in this.toCharArray()) {
+		if(char.isDigit()) continue
+		if(isFirstChar) {
+			isFirstChar = false
+			if(char == '+' || char == '-') continue
+		}
+		if(missingDot) {
+			if(char == '.') {
+				missingDot = false
+				continue
+			}
+		}
+		return false
+	}
+	return true
+}
+
+fun String.isColor():Boolean{
+	return this.matches(isColorRegex)
+}
+
+fun String.isTypeOf(type:String):Boolean{
+	return (type=="boolean" && isBoolean()) || (type == "int" && isInt()) || (type =="float" && isFloat())
+		|| (type == "color" && isColor()) || type == "string"
+}
+
+//To Extensions
+
+fun Boolean.toInt() = if(this) 1 else 0
+
+fun Boolean.toStringYesNo() = if(this) "yes" else "no"
+
+fun String.toBooleanYesNo() = this == "yes"
 
 fun URL.toFile(): File {
 	return File(this.toURI())
@@ -202,41 +217,81 @@ fun URL.toPath(): Path {
 	return Paths.get(this.toURI())
 }
 
-fun <C : CharSequence> C.ifNotEmpty(block: (C) -> Unit) {
-	if(this.isNotEmpty()) block(this)
-}
-
-/**
- * 判断当前路径是否匹配另一个路径（等于或者是另一个路径的父路径）。
- */
-infix fun String.matchesPath(other: String): Boolean {
-	if(this == other) return true
-	if(this == other.take(length) && other[length] == '/') return true
-	return false
-}
-
 //Specific Collections
 
-class ReversibleList<T>(list:List<T>, reverse:Boolean = false):List<T> by list
+class ReversibleList<T>(list:List<T>, val reverse:Boolean = false):List<T> by list
 
-class ReversibleMap<K,V>(map:Map<K,V>, reverse:Boolean = false):Map<K,V> by map
+class ReversibleMap<K,V>(map:Map<K,V>, val reverse:Boolean = false):Map<K,V> by map
 
-//Expression Extensions
+//Specific Expressions
 
 interface Expression : CharSequence {
 	val expression: String
-	
+}
+
+abstract class AbstractExpression(override val expression: String):Expression{
 	override val length get() = expression.length
 	
 	override fun get(index: Int) = expression.get(index)
 	
 	override fun subSequence(startIndex: Int, endIndex: Int) = expression.subSequence(startIndex, endIndex)
+	
+	override fun equals(other: Any?): Boolean = other?.javaClass == javaClass && expression == (other as Expression).expression
+	
+	override fun hashCode(): Int = expression.hashCode()
+	
+	override fun toString(): String = expression
+}
+
+/**
+ * 范围表达式，用于表示限定脚本文件的属性的出现数量。
+ *
+ * @property min 最小值
+ * @property max 最大值，null表示无限
+ * @property limitMax 如果值为`false`，则表示出现数量超出最大值时不警告
+ */
+class RangeExpression(expression: String):AbstractExpression(expression){
+	val min:Int
+	val max:Int?
+	val limitMax:Boolean
+	
+	init {
+		when{
+			expression.isEmpty() -> {
+				min=0
+				max = null
+				limitMax = false
+			}
+			expression.first() == '~' -> {
+				val firstDotIndex = expression.indexOf('.')
+				min = expression.substring(1,firstDotIndex).toIntOrNull()?: 0
+				max = expression.substring(firstDotIndex+2).toIntOrNull()?:0
+				limitMax = true
+			}
+			else -> {
+				val firstDotIndex = expression.indexOf('.')
+				min = expression.substring(0,firstDotIndex).toIntOrNull()?: 0
+				max = expression.substring(firstDotIndex+2).toIntOrNull()?:0
+				limitMax = false
+			}
+		}
+	}
+	
+	operator fun component1():Int = min
+	
+	operator fun component2():Int? = max
+	
+	operator fun component3():Boolean = limitMax
+}
+
+class ConfigExpression(expression: String):AbstractExpression(expression){
+
 }
 
 /**
  * 条件表达式，如：`name?`, `name!`。
  */
-class ConditionalExpression(override val expression: String) : Expression {
+class ConditionalExpression(expression: String):AbstractExpression(expression){
 	companion object {
 		private val markers = charArrayOf('?', '!', '*', '+')
 	}
@@ -247,12 +302,6 @@ class ConditionalExpression(override val expression: String) : Expression {
 	val required: Boolean = marker == '!' || marker == '+'
 	val multiple: Boolean = marker == '*' || marker == '+'
 	
-	override fun equals(other: Any?): Boolean = other is ConditionalExpression && expression == other.expression
-	
-	override fun hashCode(): Int = expression.hashCode()
-	
-	override fun toString(): String = expression
-	
 	operator fun component1(): String = value
 	
 	operator fun component2(): Boolean = optional
@@ -262,21 +311,13 @@ class ConditionalExpression(override val expression: String) : Expression {
 	operator fun component4(): Boolean = multiple
 }
 
-fun String.toConditionalExpression() = ConditionalExpression(this)
-
 /**
  * 预测表达式，如：`isValid`, `!isValid`。
  */
-class PredicateExpression(override val expression: String) : Expression {
+class PredicateExpression(expression: String):AbstractExpression(expression){
 	val marker: Char? = expression.firstOrNull()?.takeIf { it == '!' }
 	val value: String = if(marker != null) expression.drop(1) else expression
 	val invert: Boolean = marker == '!'
-	
-	override fun equals(other: Any?): Boolean = other is PredicateExpression && expression == other.expression
-	
-	override fun hashCode(): Int = expression.hashCode()
-	
-	override fun toString(): String = expression
 	
 	operator fun component1(): String = value
 	
@@ -295,28 +336,17 @@ class PredicateExpression(override val expression: String) : Expression {
 	}
 }
 
-fun String.toPredicateExpression() = PredicateExpression(this)
-
-//TODO 支持 t1 | t2
 /**
  * 类型表达式，如：`weapon`, `weapon.sword`, `weapon.(sword|spear)`
  */
-class TypeExpression(override val expression: String):Expression{
+class TypeExpression(expression: String):AbstractExpression(expression){
 	private val dotIndex = expression.indexOf('.').let{ if(it == -1) expression.length else it }
 	 val type = expression.take(dotIndex)
 	 val subtypes = expression.drop(dotIndex).let{
 		 if(it.surroundsWith('(',')')) it.substring(1,it.length-1).split('|').map { s -> s.trim() } else listOf(it)
 	 }
 	
-	override fun equals(other: Any?): Boolean = other is TypeExpression && expression == other.expression
-	
-	override fun hashCode(): Int = expression.hashCode()
-	
-	override fun toString(): String = expression
-	
 	operator fun component1(): String = type
 	
 	operator fun component2(): List<String> = subtypes
 }
-
-fun String.toTypeExpression() = TypeExpression(this)

@@ -84,6 +84,9 @@
 * 解析cwt config语言的optionComment和documentComment
 * 修复格式化功能的BUG
 * 初步实现`CwtConfigResolver`
+* 实现`CwtConfigGroupsProvider`
+* 实现基于`cwtConfigGroupsCache`的更加具体的规则
+* 规则文件加载需要一定时间 - 可能需要特殊处理
 
 # TODO
 

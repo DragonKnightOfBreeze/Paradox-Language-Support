@@ -1,4 +1,4 @@
-package com.windea.plugin.idea.pls.model
+package com.windea.plugin.idea.pls.config
 
 import com.windea.plugin.idea.pls.*
 

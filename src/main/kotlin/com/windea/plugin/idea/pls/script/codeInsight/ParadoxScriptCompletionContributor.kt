@@ -8,7 +8,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import com.windea.plugin.idea.pls.*
-import com.windea.plugin.idea.pls.core.rule.*
+import com.windea.plugin.idea.pls.config.*
 import com.windea.plugin.idea.pls.script.psi.*
 import com.windea.plugin.idea.pls.script.psi.ParadoxScriptTypes.*
 
@@ -56,10 +56,10 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			val keyPatternExpressions = mutableListOf<ConditionalExpression>()
 			if(subpaths.isEmpty()){
 				val properties = definitionInfo.properties
-				properties.keys.mapTo(keyPatternExpressions){ it.toConditionalExpression() }
+				properties.keys.mapTo(keyPatternExpressions) { ConditionalExpression(it) }
 			}else {
 				for(properties in definitionInfo.resolvePropertiesList(subpaths)) {
-					properties.keys.mapTo(keyPatternExpressions){ it.toConditionalExpression() }
+					properties.keys.mapTo(keyPatternExpressions) { ConditionalExpression(it) }
 				}
 			}
 			
@@ -69,7 +69,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					?.propertyList?.mapTo(mutableSetOf()) { it.name } ?: emptyList() 
 			}
 			val gameType = parameters.originalFile.paradoxFileInfo?.gameType?:return
-			val ruleGroup = rules.paradoxRuleGroups[gameType.key]?:return
+			val ruleGroup = rule.paradoxRuleGroups[gameType.key]?:return
 			val project = parameters.originalFile.project
 			
 			//解析keyPatterns，进行提示
@@ -96,7 +96,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					//定义
 					keyPattern.startsWith(typePrefix) -> {
 						val key = keyPattern.drop(typePrefixLength)
-						val (type, subtypes) = key.toTypeExpression()
+						val (type, subtypes) = TypeExpression(key)
 						var matchedDefinitions = findDefinitionsByType(type, project)
 						if(subtypes.isNotEmpty()) {
 							matchedDefinitions = matchedDefinitions.filter { matchedDefinition ->

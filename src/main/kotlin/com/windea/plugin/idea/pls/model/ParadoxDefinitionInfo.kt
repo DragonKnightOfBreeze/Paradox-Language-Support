@@ -45,17 +45,17 @@ data class ParadoxDefinitionInfo(
 			//如果value以.开始，表示对应的属性的值是localisationKey，否则直接表示localisationKey，$为名字的占位符
 			when{
 				value.startsWith(".") -> {
-					val k = key.toConditionalExpression()
+					val k = ConditionalExpression(key)
 					val propName = value.drop(1)
 					val prop = element.findProperty(propName)?.propertyValue?.value ?: continue
-					when{
+					when {
 						prop is ParadoxScriptBlock && prop.isArray -> {
 							for(propValue in prop.valueList) {
 								if(propValue is ParadoxScriptString) {
 									val v = propValue.value
 									resolvedLocalisation.add(k to v)
 									resolvedLocalisationNames.add(v)
-								}  
+								}
 							}
 						}
 						prop is ParadoxScriptString -> {
@@ -66,8 +66,8 @@ data class ParadoxDefinitionInfo(
 					}
 				}
 				else -> {
-					val k = key.toConditionalExpression()
-					val v = formatPlaceholder(value,name)
+					val k = ConditionalExpression(key)
+					val v = formatPlaceholder(value, name)
 					resolvedLocalisation.add(k to v)
 					resolvedLocalisationNames.add(v)
 				}
@@ -87,7 +87,7 @@ data class ParadoxDefinitionInfo(
 			val propertiesList1 = mutableListOf<Map<String, Any?>>()
 			for(properties in propertiesList) {
 				//注意这里的properties的key是expression，而不是单纯的pattern
-				val props = properties.findOrNull { (k,_) -> k.toConditionalExpression().value == path }
+				val props = properties.findOrNull { (k,_) -> ConditionalExpression(k).value == path }
 				when {
 					props is Map<*, *> -> {
 						props as? Map<String, Any?> ?: continue

@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.windea.plugin.idea.pls.*
-import com.windea.plugin.idea.pls.core.rule.*
+import com.windea.plugin.idea.pls.config.*
 import com.windea.plugin.idea.pls.model.*
 import com.windea.plugin.idea.pls.localisation.highlighter.*
 import com.windea.plugin.idea.pls.script.highlighter.*
@@ -38,10 +38,10 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(!existProperties.isNullOrEmpty()){
 			val properties = definitionInfo.properties
 			val keyPatternExpressions = mutableListOf<ConditionalExpression>()
-			properties.keys.mapTo(keyPatternExpressions){ it.toConditionalExpression() }
+			properties.keys.mapTo(keyPatternExpressions) { ConditionalExpression(it) }
 			
 			val gameType = element.paradoxFileInfo?.gameType?:return
-			val ruleGroup = rules.paradoxRuleGroups[gameType.key]?:return
+			val ruleGroup = rule.paradoxRuleGroups[gameType.key]?:return
 			val project = element.project
 			
 			//遍历existProperties
@@ -99,7 +99,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			if(!childExistProperties.isNullOrEmpty()) {
 				val childKeyPatternExpressions = mutableListOf<ConditionalExpression>()
 				for(childProperties in definitionInfo.resolvePropertiesList(mutableListOf(existProperty.name))) {
-					childProperties.keys.mapTo(childKeyPatternExpressions){ it.toConditionalExpression() }
+					childProperties.keys.mapTo(childKeyPatternExpressions) { ConditionalExpression(it) }
 				}
 				//递归检查
 				//TODO 重构
@@ -128,7 +128,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				//定义
 				keyPattern.startsWith(typePrefix) -> {
 					val key = keyPattern.drop(typePrefixLength)
-					val (type, subtypes) = key.toTypeExpression()
+					val (type, subtypes) = TypeExpression(key)
 					var matchedDefinitions = findDefinitions(existPropertyName, type, project)
 					if(subtypes.isNotEmpty()) {
 						matchedDefinitions = matchedDefinitions.filter { matchedDefinition ->

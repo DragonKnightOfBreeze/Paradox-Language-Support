@@ -8,6 +8,9 @@ const val bundleName = "messages.PlsBundle"
 
 val locationClass = PlsBundle::class.java
 
+const val configPath = "/config"
+const val configFileExtension = "cwt"
+
 const val rulesPath = "/rules"
 const val ruleFileExtension = "yml"
 
