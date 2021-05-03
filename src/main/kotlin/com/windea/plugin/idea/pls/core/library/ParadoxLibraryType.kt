@@ -8,15 +8,24 @@ import com.intellij.openapi.roots.libraries.ui.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.vfs.*
 import com.windea.plugin.idea.pls.*
+import com.windea.plugin.idea.pls.core.library.ParadoxLibraryKind.*
 import com.windea.plugin.idea.pls.model.*
 import javax.swing.*
 
 abstract class ParadoxLibraryType(
 	libraryKind: ParadoxLibraryKind,
 	private val libraryIcon: Icon,
-	private val type: String
+	private val gameType: ParadoxGameType
 ) : LibraryType<ParadoxLibraryProperties>(libraryKind) {
-	private val createActionName = "Paradox/$type"
+	class Ck2LibraryType : ParadoxLibraryType(Ck2LibraryKind, stellarisIcon, ParadoxGameType.Ck2)
+	class Ck3LibraryType : ParadoxLibraryType(Ck3LibraryKind, stellarisIcon, ParadoxGameType.Ck3)
+	class Eu4LibraryType : ParadoxLibraryType(Eu4LibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
+	class Hoi4LibraryType : ParadoxLibraryType(Hoi4LibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
+	class IrLibraryType : ParadoxLibraryType(IrLibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
+	class StellarisLibraryType : ParadoxLibraryType(StellarisLibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
+	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind, stellarisIcon, ParadoxGameType.Vic2)
+	
+	private val createActionName = "Paradox/${gameType.text}"
 	private val namePrefix = "$createActionName: "
 	
 	companion object {
@@ -53,7 +62,7 @@ abstract class ParadoxLibraryType(
 					}
 					return file.nameWithoutExtension
 				}
-				childName.equals("$type.exe", true) -> return ParadoxRootType.Stdlib.text
+				childName.equals("${gameType.name}.exe", true) -> return ParadoxRootType.Stdlib.text
 				fileName == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher.text
 				fileName == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets.text
 				fileName == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets.text

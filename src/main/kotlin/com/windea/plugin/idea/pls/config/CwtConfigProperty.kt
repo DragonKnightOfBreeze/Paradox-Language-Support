@@ -5,6 +5,8 @@ data class CwtConfigProperty(
 	val value: String?,
 	val values: List<CwtConfigValue>?,
 	val properties: List<CwtConfigProperty>?,
-	val options: CwtConfigOptions?,
-	val documentation: String?
-) 
+	val documentation: String?,
+	val options: List<CwtConfigOption>?,
+	//val options: CwtConfigOptions?
+)
+

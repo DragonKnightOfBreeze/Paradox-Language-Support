@@ -5,14 +5,7 @@ import com.intellij.openapi.util.*
 //Core Constants
 
 const val bundleName = "messages.PlsBundle"
-
 val locationClass = PlsBundle::class.java
-
-const val configPath = "/config"
-const val configFileExtension = "cwt"
-
-const val rulesPath = "/rules"
-const val ruleFileExtension = "yml"
 
 //Names & Descriptions & Sample Text
 
@@ -56,7 +49,6 @@ val booleanValues = arrayOf("yes", "no")
 
 val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
-val scriptRuleFileExtensions = arrayOf("cw","cwt") //兼容cwtools
 
 const val descriptorFileName = "descriptor.mod"
 val exeFileNames = arrayOf("stellaris.exe")
@@ -80,7 +72,13 @@ const val eventTargetPrefixLength = eventTargetPrefix.length
 //Icons
 
 val paradoxIcon = IconLoader.getIcon("/icons/paradox.png",locationClass)
+val ck2Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
+val ck3Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
+val eu4Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
+val hoi4Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
+val irIcon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 val stellarisIcon = IconLoader.getIcon("/icons/stellaris.png",locationClass)
+val vic2Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 
 val cwtFileIcon = IconLoader.getIcon("/icons/cwtFile.svg", locationClass)
 val paradoxScriptFileIcon = IconLoader.getIcon("/icons/paradoxScriptFile.svg",locationClass)

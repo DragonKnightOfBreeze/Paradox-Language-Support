@@ -23,7 +23,7 @@ class ParadoxRuleGroupProvider {
 	@Synchronized
 	private fun initRuleGroups(): Map<String, ParadoxRuleGroup> {
 		val ruleGroups = ConcurrentHashMap<String, ParadoxRuleGroup>()
-		val rulesUrl = rulesPath.toUrl(locationClass)
+		val rulesUrl = "/rules".toUrl(locationClass)
 		val rulesFile = VfsUtil.findFileByURL(rulesUrl) ?: error("Paradox rules path '$rulesUrl' is not exist.")
 		val coreGroup = ConcurrentHashMap<String, Map<String, Any>>()
 		val coreGroupName = "core"
@@ -32,7 +32,7 @@ class ParadoxRuleGroupProvider {
 				val group = ConcurrentHashMap<String, Map<String, Any>>()
 				val groupName = child.name
 				for(file in child.children) {
-					if(file.extension == ruleFileExtension) {
+					if(file.extension == "yml") {
 						val rule = getRule(file.inputStream)
 						group.putAll(rule)
 					}
@@ -40,7 +40,7 @@ class ParadoxRuleGroupProvider {
 				ruleGroups[groupName] = ParadoxRuleGroup(group)
 			} else {
 				val ruleFile = child
-				if(ruleFile.extension == ruleFileExtension) {
+				if(ruleFile.extension == "yml") {
 					val rule = getRule(ruleFile.inputStream)
 					coreGroup.putAll(rule)
 				}

@@ -4,7 +4,7 @@ import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.model.*
 import com.windea.plugin.idea.pls.script.psi.*
 
-//TODO 移除，和cwtConfig合并，仅保留declaretions对应的yaml文件并放到config根目录下，例如stellaris.declarations.yaml
+//TODO 移除，和cwtConfig合并，仅保留declaretions对应的yaml文件并放到config根目录下，declarations.yaml
 
 @Suppress("UNCHECKED_CAST")
 class ParadoxRuleGroup(

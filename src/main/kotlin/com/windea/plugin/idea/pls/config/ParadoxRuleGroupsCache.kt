@@ -4,28 +4,26 @@ import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.model.*
 
 class ParadoxRuleGroupsCache(
-	ruleGroups:Map<String, ParadoxRuleGroup>
+	val ruleGroups: Map<String, ParadoxRuleGroup>
 ) {
-	val paradoxRuleGroups = ruleGroups
+	val coreRuleGroup = this.ruleGroups["core"]?:error("Core rule file 'rules/*.yml' is missed.")
 	
-	val coreParadoxRuleGroup = paradoxRuleGroups["core"]?:error("Core rule file 'rules/*.yml' is missed.")
+	val locales = coreRuleGroup.enums.getValue("locale").data.mapArray { ParadoxLocale(it.cast()) }
+	val localeMap = locales.associateBy { it.name }
 	
-	val paradoxLocales = coreParadoxRuleGroup.enums.getValue("locale").data.mapArray { ParadoxLocale(it.cast()) }
-	val paradoxLocaleMap = paradoxLocales.associateBy { it.name }
+	val sequentialNumbers = coreRuleGroup.enums.getValue("sequentialNumber").data.mapArray { ParadoxSequentialNumber(it.cast()) }
+	val sequentialNumberMap = sequentialNumbers.associateBy { it.name }
 	
-	val paradoxSequentialNumbers = coreParadoxRuleGroup.enums.getValue("sequentialNumber").data.mapArray { ParadoxSequentialNumber(it.cast()) }
-	val paradoxSequentialNumberMap = paradoxSequentialNumbers.associateBy { it.name }
+	val colors = coreRuleGroup.enums.getValue("color").data.mapArray { ParadoxColor(it.cast()) }
+	val colorMap = colors.associateBy { it.name }
 	
-	val paradoxColors = coreParadoxRuleGroup.enums.getValue("color").data.mapArray { ParadoxColor(it.cast()) }
-	val paradoxColorMap = paradoxColors.associateBy { it.name }
+	val commandScopes = coreRuleGroup.enums.getValue("commandScope").data.mapArray { ParadoxCommandScope(it.cast()) }
+	val primaryCommandScopes = commandScopes.filter { it.isPrimary }.toTypedArray()
+	val secondaryCommandScopes = commandScopes.filter{it.isSecondary}.toTypedArray()
+	val commandScopeMap = commandScopes.associateBy { it.name }
+	val primaryCommandScopeMap = commandScopeMap.filterValues { it.isPrimary }
+	val secondaryCommandScopeMap = commandScopeMap.filterValues { it.isSecondary }
 	
-	val paradoxCommandScopes = coreParadoxRuleGroup.enums.getValue("commandScope").data.mapArray { ParadoxCommandScope(it.cast()) }
-	val paradoxPrimaryCommandScopes = paradoxCommandScopes.filter { it.isPrimary }.toTypedArray()
-	val paradoxSecondaryCommandScopes = paradoxCommandScopes.filter{it.isSecondary}.toTypedArray()
-	val paradoxCommandScopeMap = paradoxCommandScopes.associateBy { it.name }
-	val paradoxPrimaryCommandScopeMap = paradoxCommandScopeMap.filterValues { it.isPrimary }
-	val paradoxSecondaryCommandScopeMap = paradoxCommandScopeMap.filterValues { it.isSecondary }
-	
-	val paradoxCommandFields = coreParadoxRuleGroup.enums.getValue("commandField").data.mapArray { ParadoxCommandField(it.cast()) }
-	val paradoxCommandFieldMap = paradoxCommandFields.associateBy { it.name }
+	val commandFields = coreRuleGroup.enums.getValue("commandField").data.mapArray { ParadoxCommandField(it.cast()) }
+	val commandFieldMap = commandFields.associateBy { it.name }
 }

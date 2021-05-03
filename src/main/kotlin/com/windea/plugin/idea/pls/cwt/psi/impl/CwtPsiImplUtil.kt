@@ -139,7 +139,7 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun isEmpty(element: CwtBlock): Boolean {
 		element.forEachChild {
-			if(it is CwtProperty || it is CwtValue) return false
+			if(it is CwtProperty || it is CwtValue || it is CwtOption) return false
 		}
 		return true
 	}
@@ -147,7 +147,7 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun isNotEmpty(element: CwtBlock): Boolean {
 		element.forEachChild {
-			if(it is CwtProperty || it is CwtValue) return true
+			if(it is CwtProperty || it is CwtValue || it is CwtOption) return true
 		}
 		return true
 	}
@@ -157,6 +157,7 @@ object CwtPsiImplUtil {
 		element.forEachChild {
 			when(it) {
 				is CwtProperty -> return true
+				is CwtOption -> return true
 				is CwtValue -> return false
 			}
 		}
@@ -168,6 +169,7 @@ object CwtPsiImplUtil {
 		element.forEachChild {
 			when(it) {
 				is CwtProperty -> return false
+				is CwtOption -> return false
 				is CwtValue -> return true
 			}
 		}

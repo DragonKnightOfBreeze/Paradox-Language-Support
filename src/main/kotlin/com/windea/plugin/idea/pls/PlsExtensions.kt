@@ -4,6 +4,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
+import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
@@ -27,15 +28,15 @@ val config get() = ServiceManager.getService(CwtConfigGroupProvider::class.java)
 val rule get() = ServiceManager.getService(ParadoxRuleGroupProvider::class.java).ruleGroupsCache
 
 val inferredParadoxLocale get() = when(System.getProperty("user.language")) {
-	"zh" -> rule.paradoxLocaleMap.getValue("l_simp_chinese")
-	"en" -> rule.paradoxLocaleMap.getValue("l_english")
-	"pt" -> rule.paradoxLocaleMap.getValue("l_braz_por")
-	"fr" -> rule.paradoxLocaleMap.getValue("l_french")
-	"de" -> rule.paradoxLocaleMap.getValue("l_german")
-	"pl" -> rule.paradoxLocaleMap.getValue("l_ponish")
-	"ru" -> rule.paradoxLocaleMap.getValue("l_russian")
-	"es" -> rule.paradoxLocaleMap.getValue("l_spanish")
-	else -> rule.paradoxLocaleMap.getValue("l_english")
+	"zh" -> rule.localeMap.getValue("l_simp_chinese")
+	"en" -> rule.localeMap.getValue("l_english")
+	"pt" -> rule.localeMap.getValue("l_braz_por")
+	"fr" -> rule.localeMap.getValue("l_french")
+	"de" -> rule.localeMap.getValue("l_german")
+	"pl" -> rule.localeMap.getValue("l_ponish")
+	"ru" -> rule.localeMap.getValue("l_russian")
+	"es" -> rule.localeMap.getValue("l_spanish")
+	else -> rule.localeMap.getValue("l_english")
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
@@ -75,14 +76,14 @@ val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("ca
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
 		val name = this.name
-		return rule.paradoxLocaleMap[name]
+		return rule.localeMap[name]
 	}
 
 val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 	get() {
 		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
 		if(colorId != null && colorId.isUpperCase()) {
-			return rule.paradoxColorMap[colorId.toString()]
+			return rule.colorMap[colorId.toString()]
 		}
 		return null
 	}
@@ -90,26 +91,26 @@ val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequentialNumber?
 	get() {
 		val name = this.name
-		return rule.paradoxSequentialNumberMap[name]
+		return rule.sequentialNumberMap[name]
 	}
 
 val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?
 	get() {
 		val name = this.name.toCapitalizedWord() //忽略大小写，首字母大写
 		if(name.startsWith(eventTargetPrefix)) return null
-		return rule.paradoxCommandScopeMap[name]
+		return rule.commandScopeMap[name]
 	}
 
 val ParadoxLocalisationCommandField.paradoxCommandField: ParadoxCommandField?
 	get() {
 		val name = this.name
-		return rule.paradoxCommandFieldMap[name]
+		return rule.commandFieldMap[name]
 	}
 
 val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
 	get() {
 		val name = this.name
-		return rule.paradoxColorMap[name]
+		return rule.colorMap[name]
 	}
 
 
@@ -154,7 +155,7 @@ private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
 		val rootType = getRootType(currentFile)
 		if(rootType != null) {
 			val path = getPath(subpaths)
-			val gameType = getGameType()
+			val gameType = getGameType(currentFile)?: ParadoxGameType.defaultValue()
 			return ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
 		}
 		subpaths.add(0, currentFile.name)
@@ -193,8 +194,16 @@ private fun getRootType(file: PsiDirectory): ParadoxRootType? {
 	return null
 }
 
-private fun getGameType(): ParadoxGameType {
-	return ParadoxGameType.Stellaris //TODO
+private fun getGameType(file:PsiDirectory): ParadoxGameType? {
+	if(!file.isDirectory) return null
+	for(child in file.files) {
+		val childName = child.name
+		if(childName.startsWith('.')){
+			val gameType = ParadoxGameType.resolve(childName.drop(1))
+			if(gameType != null) return gameType
+		}
+	}
+	return null
 }
 
 val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = getDefinitionInfo(this)
@@ -216,7 +225,7 @@ private fun getDefinitionInfo(element: ParadoxScriptProperty, check: Boolean = t
 
 private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
 	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
-	val ruleGroup = rule.paradoxRuleGroups[gameType.key] ?: return null
+	val ruleGroup = rule.ruleGroups[gameType.key] ?: return null
 	val elementName = element.name
 	val propertyPath = element.resolvePropertyPath() ?: return null
 	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, propertyPath) } ?: return null

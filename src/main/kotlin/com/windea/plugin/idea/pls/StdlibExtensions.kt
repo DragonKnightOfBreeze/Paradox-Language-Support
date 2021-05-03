@@ -5,10 +5,9 @@ import java.io.*
 import java.net.*
 import java.nio.file.*
 import java.util.*
+import java.util.concurrent.*
 import javax.swing.*
 import kotlin.math.*
-
-fun String.toUrl(locationClass: Class<*>): URL = locationClass.getResource(this)!!
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Array<out T?>.cast() = this as Array<T>
@@ -22,15 +21,27 @@ inline fun <T, reified R> Array<out T>.mapArray(block: (T) -> R): Array<R> {
 }
 
 inline fun <T, reified R> Sequence<T>.mapArray(block: (T) -> R): Array<R> {
-	return this.toList().mapArray(block)
+	return toList().mapArray(block)
 }
 
 fun CharSequence.surroundsWith(prefix:Char,suffix:Char,ignoreCase: Boolean = false): Boolean {
-	return this.startsWith(prefix,ignoreCase) && this.endsWith(suffix,ignoreCase)
+	return startsWith(prefix,ignoreCase) && endsWith(suffix,ignoreCase)
 }
 
 fun CharSequence.surroundsWith(prefix:CharSequence,suffix:CharSequence,ignoreCase: Boolean = false): Boolean {
-	return this.startsWith(prefix,ignoreCase) && this.endsWith(suffix,ignoreCase)
+	return startsWith(prefix,ignoreCase) && endsWith(suffix,ignoreCase)
+}
+
+fun CharSequence.removeSurrounding(prefix:CharSequence,suffix: CharSequence):CharSequence{
+	return removePrefix(prefix).removeSuffix(suffix)
+}
+
+fun String.removeSurrounding(prefix:CharSequence,suffix: CharSequence):String{
+	return removePrefix(prefix).removeSuffix(suffix)
+}
+
+fun String.resolveByRemoveSurrounding(prefix:CharSequence,suffix: CharSequence):String?{
+	return if(surroundsWith(prefix,suffix)) substring(prefix.length,length-suffix.length) else null
 }
 
 fun String.containsBlank(): Boolean {
@@ -209,13 +220,11 @@ fun Boolean.toStringYesNo() = if(this) "yes" else "no"
 
 fun String.toBooleanYesNo() = this == "yes"
 
-fun URL.toFile(): File {
-	return File(this.toURI())
-}
+fun URL.toFile() = File(this.toURI())
 
-fun URL.toPath(): Path {
-	return Paths.get(this.toURI())
-}
+fun URL.toPath() = Paths.get(this.toURI())
+
+fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
 
 //Specific Collections
 
@@ -236,11 +245,19 @@ abstract class AbstractExpression(override val expression: String):Expression{
 	
 	override fun subSequence(startIndex: Int, endIndex: Int) = expression.subSequence(startIndex, endIndex)
 	
-	override fun equals(other: Any?): Boolean = other?.javaClass == javaClass && expression == (other as Expression).expression
+	override fun equals(other: Any?) = other?.javaClass == javaClass && expression == (other as Expression).expression
 	
-	override fun hashCode(): Int = expression.hashCode()
+	override fun hashCode() = expression.hashCode()
 	
-	override fun toString(): String = expression
+	override fun toString() = expression
+}
+
+interface ExpressionResolver<T:Expression>{
+	fun resolve(expression:String):T
+}
+
+abstract class AbstractExpressionResolver<T:Expression>:ExpressionResolver<T>{
+	protected val cache = ConcurrentHashMap<String,T>()
 }
 
 /**
@@ -250,7 +267,11 @@ abstract class AbstractExpression(override val expression: String):Expression{
  * @property max 最大值，null表示无限
  * @property limitMax 如果值为`false`，则表示出现数量超出最大值时不警告
  */
-class RangeExpression(expression: String):AbstractExpression(expression){
+class RangeExpression private constructor(expression: String):AbstractExpression(expression){
+	companion object Resolver: AbstractExpressionResolver<RangeExpression>(){
+		override fun resolve(expression: String) = cache.getOrPut(expression) { RangeExpression(expression) }
+	}
+	
 	val min:Int
 	val max:Int?
 	val limitMax:Boolean
@@ -277,11 +298,11 @@ class RangeExpression(expression: String):AbstractExpression(expression){
 		}
 	}
 	
-	operator fun component1():Int = min
+	operator fun component1() = min
 	
-	operator fun component2():Int? = max
+	operator fun component2() = max
 	
-	operator fun component3():Boolean = limitMax
+	operator fun component3() = limitMax
 }
 
 class ConfigExpression(expression: String):AbstractExpression(expression){

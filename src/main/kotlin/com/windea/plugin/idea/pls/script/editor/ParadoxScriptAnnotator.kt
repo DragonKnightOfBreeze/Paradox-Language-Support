@@ -41,7 +41,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			properties.keys.mapTo(keyPatternExpressions) { ConditionalExpression(it) }
 			
 			val gameType = element.paradoxFileInfo?.gameType?:return
-			val ruleGroup = rule.paradoxRuleGroups[gameType.key]?:return
+			val ruleGroup = rule.ruleGroups[gameType.key]?:return
 			val project = element.project
 			
 			//遍历existProperties

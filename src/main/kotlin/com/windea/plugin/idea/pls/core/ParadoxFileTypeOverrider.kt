@@ -24,7 +24,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			val rootType = getRootType(currentFile)
 			if(rootType != null) {
 				val path = getPath(subpaths)
-				val gameType = getGameType()
+				val gameType = getGameType(currentFile)?:ParadoxGameType.defaultValue()
 				//只解析特定根目录下的文件
 				return when {
 					//脚本文件，根据正则指定需要排除的文件
@@ -60,16 +60,13 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	}
 	
 	private fun getFileType(file: VirtualFile): ParadoxFileType? {
-		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) {
-			val fileName = file.name.toLowerCase()
-			val fileExtension = fileName.substringAfterLast('.')
-			return when {
-				fileExtension in scriptFileExtensions -> ParadoxFileType.Script
-				fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
-				else -> null
-			}
+		if(file is StubVirtualFile && !file.isValid && file.isDirectory) return null
+		val fileExtension = file.extension
+		return when {
+			fileExtension in scriptFileExtensions -> ParadoxFileType.Script
+			fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
+			else -> null
 		}
-		return null
 	}
 	
 	private fun getRootType(file: VirtualFile): ParadoxRootType? {
@@ -88,8 +85,16 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		return null
 	}
 	
-	private fun getGameType(): ParadoxGameType {
-		return ParadoxGameType.Stellaris //TODO
+	private fun getGameType(file:VirtualFile): ParadoxGameType? {
+		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
+		for(child in file.children) {
+			val childName = child.name
+			if(childName.startsWith('.')){
+				val gameType = ParadoxGameType.resolve(childName.drop(1))
+				if(gameType != null) return gameType
+			}
+		}
+		return null
 	}
 }
 

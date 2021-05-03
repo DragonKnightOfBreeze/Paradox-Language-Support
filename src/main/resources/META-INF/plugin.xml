@@ -88,8 +88,13 @@
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="com.windea.plugin.idea.pls.core.ParadoxFileTypeOverrider"/>
 
-    <!--<sdkType implementation="com.windea.plugin.idea.pls.library.StellarisSdkType"/>-->
-    <library.type implementation="com.windea.plugin.idea.pls.core.library.StellarisLibraryType"/>
+    <library.type implementation="com.windea.plugin.idea.pls.core.library.ParadoxLibraryType$Ck2LibraryType"/>
+    <library.type implementation="com.windea.plugin.idea.pls.core.library.ParadoxLibraryType$Ck3LibraryType"/>
+    <library.type implementation="com.windea.plugin.idea.pls.core.library.ParadoxLibraryType$Eu4LibraryType"/>
+    <library.type implementation="com.windea.plugin.idea.pls.core.library.ParadoxLibraryType$Hoi4LibraryType"/>
+    <library.type implementation="com.windea.plugin.idea.pls.core.library.ParadoxLibraryType$IrLibraryType"/>
+    <library.type implementation="com.windea.plugin.idea.pls.core.library.ParadoxLibraryType$StellarisLibraryType"/>
+    <library.type implementation="com.windea.plugin.idea.pls.core.library.ParadoxLibraryType$Vic2LibraryType"/>
 
     <applicationConfigurable
         id="settings.language.paradox"

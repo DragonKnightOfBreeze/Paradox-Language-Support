@@ -11,7 +11,7 @@ import com.windea.plugin.idea.pls.localisation.psi.*
  */
 object ParadoxLocalisationDataResolver {
 	fun resolve(file: PsiFile):Map<String,String>{
-		if(file !is ParadoxLocalisationFile) throw IllegalArgumentException("Invalid file type")
+		if(file !is ParadoxLocalisationFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxLocalisationFile')")
 		val result = mutableMapOf<String,String>()
 		file.forEachChild {
 			when(it){
