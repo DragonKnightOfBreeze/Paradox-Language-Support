@@ -27,7 +27,7 @@ enum class ParadoxGameType(
 		}
 		
 		fun defaultValue(): ParadoxGameType{
-			return resolve(settings.defaultGameType)?: Stellaris
+			return settings.defaultGameType
 		}
 	}
 }

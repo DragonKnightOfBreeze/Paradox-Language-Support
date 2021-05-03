@@ -19,22 +19,22 @@ class CwtConfigGroupCache(val configGroup: Map<String, CwtConfig>, val gameType:
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
 		
-		const val typesKey = "types"
-		const val typeKeyPrefix = "type["
-		const val typeKeySuffix = "]"
-		const val enumsKey = "enums"
-		const val enumKeyPrefix = "enum["
-		const val enumKeySuffix = "]"
-		const val aliasKeyPrefix = "alias["
-		const val aliasKeySuffix = "]"
-		const val modifierPrefix = "modifier:"
-		const val effectPrefix = "effect:"
-		const val scopesKey = "scopes"
-		const val scopeGroupsKey = "scope_groups"
+		private const val typesKey = "types"
+		private const val typeKeyPrefix = "type["
+		private const val typeKeySuffix = "]"
+		private const val enumsKey = "enums"
+		private const val enumKeyPrefix = "enum["
+		private const val enumKeySuffix = "]"
+		private const val aliasKeyPrefix = "alias["
+		private const val aliasKeySuffix = "]"
+		private const val modifierPrefix = "modifier:"
+		private const val effectPrefix = "effect:"
+		private const val scopesKey = "scopes"
+		private const val scopeGroupsKey = "scope_groups"
 		
 		private fun resolveTypeKey(key: String) = key.resolveByRemoveSurrounding(typeKeyPrefix, typeKeySuffix)
 		private fun resolveEnumKey(key:String) = key.resolveByRemoveSurrounding(enumKeyPrefix, enumKeySuffix)
-		private fun resolveAliasKey(key:String) = key.resolveByRemoveSurrounding(aliasKeySuffix, aliasKeySuffix)
+		private fun resolveAliasKey(key:String) = key.resolveByRemoveSurrounding(aliasKeyPrefix, aliasKeySuffix)
 	}
 	
 	//? -> alias[?] = ...
@@ -42,7 +42,6 @@ class CwtConfigGroupCache(val configGroup: Map<String, CwtConfig>, val gameType:
 	val aliases:Map<String,CwtConfigProperty>
 	
 	//? -> type[?] = { ... }
-	//TODO 进一步解析
 	val types: Map<String, CwtConfigProperty>
 	
 	//? -> [a, b, 1, 2, yes]

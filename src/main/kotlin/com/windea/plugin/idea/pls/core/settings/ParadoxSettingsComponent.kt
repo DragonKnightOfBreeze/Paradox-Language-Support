@@ -1,6 +1,5 @@
 package com.windea.plugin.idea.pls.core.settings
 
-import com.intellij.ui.components.*
 import com.intellij.ui.layout.*
 import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.model.*
@@ -26,30 +25,31 @@ class ParadoxSettingsComponent {
 	lateinit var renderLineCommentTextCheckBox: JCheckBox
 	lateinit var renderDefinitionTextCheckBox: JCheckBox
 	lateinit var renderLocalisationTextCheckBox: JCheckBox
-	lateinit var defaultGameTypeTextField :JBTextField
+	lateinit var defaultGameTypeComboBox :JComboBox<ParadoxGameType>
 	
 	val panel = panel {
 		titledRow(_genericTitle) {
 			row {
-				checkBox(_preferOverriddenName, true).comment(_preferOverriddenComment)
-					.applyToComponent { preferOverriddenCheckBox = this }
+				checkBox(_preferOverriddenName, true).applyToComponent { preferOverriddenCheckBox = this }
+				commentNoWrap(_preferOverriddenComment)
 			}
 			row {
-				checkBox(_renderLineCommentText, true).comment(_renderLineCommentTextComment)
-					.applyToComponent { renderLineCommentTextCheckBox = this }
+				checkBox(_renderLineCommentText, true).applyToComponent { renderLineCommentTextCheckBox = this }
+				commentNoWrap(_renderLineCommentTextComment)
 			}
 			row {
-				checkBox(_renderDefinitionText, true).comment(_renderDefinitionTextComment)
-					.applyToComponent { renderDefinitionTextCheckBox = this }
+				checkBox(_renderDefinitionText, true).applyToComponent { renderDefinitionTextCheckBox = this }
+				commentNoWrap(_renderDefinitionTextComment)
 			}
 			row {
-				checkBox(_renderLocalisationText, true).comment(_renderLocalisationTextComment)
-					.applyToComponent { renderLocalisationTextCheckBox = this }
+				checkBox(_renderLocalisationText, true).applyToComponent { renderLocalisationTextCheckBox = this }
+				commentNoWrap(_renderLocalisationTextComment)
 			}
 			row{
-				textField(ParadoxSettingsState.getInstance()::defaultGameType).comment(_defaultGameTypeComment)
-					.applyToComponent { defaultGameTypeTextField = this }
-					.withErrorOnApplyIf(_unsupportedGameType) {ParadoxGameType.isValidKey(it.text) }
+				label(_defaultGameType)
+				comboBox(DefaultComboBoxModel(ParadoxGameType.values), ParadoxSettingsState.getInstance()::defaultGameType)
+					.applyToComponent { defaultGameTypeComboBox = this }
+				commentNoWrap(_defaultGameTypeComment)
 			}
 		}
 	}

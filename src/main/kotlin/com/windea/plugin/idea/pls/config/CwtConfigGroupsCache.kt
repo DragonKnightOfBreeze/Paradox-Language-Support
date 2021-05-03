@@ -1,5 +1,6 @@
 package com.windea.plugin.idea.pls.config
 
+import com.jetbrains.rd.util.*
 import com.windea.plugin.idea.pls.model.*
 import org.slf4j.*
 
@@ -8,29 +9,27 @@ class CwtConfigGroupsCache(val configGroups: Map<String, Map<String, CwtConfig>>
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
 	}
 	
-	val ck2: CwtConfigGroupCache
-	val ck3: CwtConfigGroupCache
-	val eu4: CwtConfigGroupCache 
-	val hoi4: CwtConfigGroupCache
-	val ir: CwtConfigGroupCache
-	val stellaris: CwtConfigGroupCache
-	val vic2: CwtConfigGroupCache
+	private val configGroupCaches:Map<ParadoxGameType,CwtConfigGroupCache>
+	
+	operator fun get(gameType: ParadoxGameType) = configGroupCaches.getValue(gameType)
+	
+	val ck2 get() = get(ParadoxGameType.Ck2)
+	val ck3 get() = get(ParadoxGameType.Ck3)
+	val eu4 get() = get(ParadoxGameType.Eu4)
+	val hoi4 get() = get(ParadoxGameType.Hoi4)
+	val ir get() = get(ParadoxGameType.Ir)
+	val stellaris get() = get(ParadoxGameType.Stellaris)
+	val vic2 get() = get(ParadoxGameType.Vic2)
 	
 	init {
 		logger.info("Resolve config groups...")
 		
-		ck2 = getConfigGroup(ParadoxGameType.Ck2)
-		ck3 = getConfigGroup(ParadoxGameType.Ck3)
-		eu4= getConfigGroup(ParadoxGameType.Eu4)
-		hoi4 = getConfigGroup(ParadoxGameType.Hoi4)
-		ir = getConfigGroup(ParadoxGameType.Ir)
-		stellaris = getConfigGroup(ParadoxGameType.Stellaris)
-		vic2 = getConfigGroup(ParadoxGameType.Vic2)
+		configGroupCaches = ConcurrentHashMap()
+		for((groupName,group) in configGroups) {
+			val gameType = ParadoxGameType.resolve(groupName)?:continue
+			configGroupCaches[gameType] = CwtConfigGroupCache(group,gameType,groupName)
+		}
 		
 		logger.info("Resolve config groups finished.")
-	}
-	
-	private fun getConfigGroup(gameType: ParadoxGameType): CwtConfigGroupCache {
-		return CwtConfigGroupCache(configGroups.getOrDefault(gameType.key, emptyMap()),gameType,gameType.key)
 	}
 }

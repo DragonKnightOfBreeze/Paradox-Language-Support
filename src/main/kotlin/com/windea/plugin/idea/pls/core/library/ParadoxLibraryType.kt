@@ -17,13 +17,13 @@ abstract class ParadoxLibraryType(
 	private val libraryIcon: Icon,
 	private val gameType: ParadoxGameType
 ) : LibraryType<ParadoxLibraryProperties>(libraryKind) {
-	class Ck2LibraryType : ParadoxLibraryType(Ck2LibraryKind, stellarisIcon, ParadoxGameType.Ck2)
-	class Ck3LibraryType : ParadoxLibraryType(Ck3LibraryKind, stellarisIcon, ParadoxGameType.Ck3)
-	class Eu4LibraryType : ParadoxLibraryType(Eu4LibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
-	class Hoi4LibraryType : ParadoxLibraryType(Hoi4LibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
-	class IrLibraryType : ParadoxLibraryType(IrLibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
+	class Ck2LibraryType : ParadoxLibraryType(Ck2LibraryKind, ck2Icon, ParadoxGameType.Ck2)
+	class Ck3LibraryType : ParadoxLibraryType(Ck3LibraryKind, ck3Icon, ParadoxGameType.Ck3)
+	class Eu4LibraryType : ParadoxLibraryType(Eu4LibraryKind, eu4Icon, ParadoxGameType.Eu4)
+	class Hoi4LibraryType : ParadoxLibraryType(Hoi4LibraryKind, hoi4Icon, ParadoxGameType.Hoi4)
+	class IrLibraryType : ParadoxLibraryType(IrLibraryKind, irIcon, ParadoxGameType.Ir)
 	class StellarisLibraryType : ParadoxLibraryType(StellarisLibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
-	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind, stellarisIcon, ParadoxGameType.Vic2)
+	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind, vic2Icon, ParadoxGameType.Vic2)
 	
 	private val createActionName = "Paradox/${gameType.text}"
 	private val namePrefix = "$createActionName: "

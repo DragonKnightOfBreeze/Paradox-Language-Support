@@ -10,7 +10,7 @@ data class ParadoxSettingsState(
 	@JvmField var renderLineCommentText: Boolean = false,
 	@JvmField var renderDefinitionText: Boolean = true,
 	@JvmField var renderLocalisationText: Boolean = true,
-	@JvmField var defaultGameType: String = "stellaris"
+	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris
 ) : PersistentStateComponent<ParadoxSettingsState> {
 	override fun getState() = this
 
