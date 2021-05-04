@@ -14,9 +14,12 @@ enum class ParadoxGameType(
 	Stellaris("stellaris", "Stellaris"),
 	Vic2("vic2","Victoria II");
 	
+	val exeFileName = "$key.exe"
+	
 	companion object{
 		val values = values() 
 		val map = values.associateBy { it.key }
+		val exeFileNames = values.map { it.exeFileName }
 		
 		fun resolve(key:String): ParadoxGameType? {
 			return map[key.toLowerCase()] 

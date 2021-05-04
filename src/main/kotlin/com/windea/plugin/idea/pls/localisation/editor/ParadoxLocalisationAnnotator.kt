@@ -63,6 +63,25 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		}
 	}
 	
+	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
+		//如果是颜色文本，则为颜色代码文本加上对应的颜色
+		val paradoxColor = element.paradoxColor
+		if(paradoxColor == null) {
+			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedColor", element.name))
+				.create()
+		} else {
+			val e = element.colorId
+			if(e != null) annotateColor(element.name, holder, e.textRange)
+		}
+	}
+	
+	private fun annotateColor(colorId: String, holder: AnnotationHolder, range: TextRange) {
+		val attributesKey = ParadoxLocalisationAttributesKeys.COLOR_KEYS[colorId] ?: return
+		holder.newSilentAnnotation(INFORMATION)
+			.range(range).textAttributes(attributesKey)
+			.create()
+	}
+	
 	//TODO 不能严格验证
 	private fun annotateCommand(element: ParadoxLocalisationCommand, holder: AnnotationHolder) {
 		//验证commandScope是否存在且合法，不验证event_target
@@ -102,24 +121,5 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//		}
 		//	}
 		//}
-	}
-	
-	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
-		//如果是颜色文本，则为颜色代码文本加上对应的颜色
-		val paradoxColor = element.paradoxColor
-		if(paradoxColor == null) {
-			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedColor", element.name))
-				.create()
-		} else {
-			val e = element.colorId
-			if(e != null) annotateColor(element.name, holder, e.textRange)
-		}
-	}
-	
-	private fun annotateColor(colorId: String, holder: AnnotationHolder, range: TextRange) {
-		val attributesKey = ParadoxLocalisationAttributesKeys.COLOR_KEYS[colorId] ?: return
-		holder.newSilentAnnotation(INFORMATION)
-			.range(range).textAttributes(attributesKey)
-			.create()
 	}
 }

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 //Core Constants
 
 const val bundleName = "messages.PlsBundle"
+
 val locationClass = PlsBundle::class.java
 
 //Names & Descriptions & Sample Text
@@ -44,16 +45,11 @@ const val emptyBlockString = "{}"
 const val anonymousString = "<anonymous>"
 
 val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
-
 val booleanValues = arrayOf("yes", "no")
-
 val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
-
 const val descriptorFileName = "descriptor.mod"
-val exeFileNames = arrayOf("stellaris.exe")
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
-
 const val truncateLimit = 20
 
 //Pattern Prefixes

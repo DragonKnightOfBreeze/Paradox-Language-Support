@@ -71,12 +71,12 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	
 	private fun getRootType(file: VirtualFile): ParadoxRootType? {
 		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
-		val fileName = file.name
+		val fileName = file.name.toLowerCase()
 		for(child in file.children) {
-			val childName = child.name
+			val childName = child.name.toLowerCase()
 			when {
-				exeFileNames.any { exeFileName -> childName.equals(exeFileName, true) } -> return ParadoxRootType.Stdlib
-				childName.equals(descriptorFileName, true) -> return ParadoxRootType.Mod
+				childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib
+				childName == descriptorFileName -> return ParadoxRootType.Mod
 				fileName == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
 				fileName == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
 				fileName == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets

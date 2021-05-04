@@ -15,7 +15,11 @@ TODO
    * root declarations - * (in root directory)
  */
 
-class CwtConfigGroupCache(val configGroup: Map<String, CwtConfig>, val gameType: ParadoxGameType,val name:String) {
+class CwtConfigGroupCache(
+	val group: Map<String, CwtConfig>, 
+	val gameType: ParadoxGameType,
+	val name:String
+) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
 		
@@ -55,7 +59,7 @@ class CwtConfigGroupCache(val configGroup: Map<String, CwtConfig>, val gameType:
 		enums = ConcurrentHashMap()
 		aliases = ConcurrentHashMap()
 		
-		for((_, config) in configGroup) {
+		for((_, config) in group) {
 			for(property in config.properties) {
 				val propertyKey = property.key
 				when(propertyKey) {

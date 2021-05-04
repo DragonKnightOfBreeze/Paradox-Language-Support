@@ -3,12 +3,12 @@ package com.windea.plugin.idea.pls.model
 import com.intellij.util.ui.*
 import java.awt.*
 
-class ParadoxColor(data:Map<String,Any>){
-	val name: String by data
-	val description: String by data
-	val colorRgb:Int by data
-	val colorText:String by data
-
+class ParadoxColor(
+	val name: String,
+	val description: String,
+	val colorRgb: Int,
+	val colorText: String
+) {
 	val popupText = "$name - $description"
 	val color: Color = Color(colorRgb)
 	val icon = ColorIcon(16, color)

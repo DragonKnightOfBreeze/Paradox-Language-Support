@@ -35,7 +35,7 @@ class ChangeSequentialNumberIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationSequentialNumber) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, rule.sequentialNumbers)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, config.sequentialNumbers)).showInBestPositionFor(editor)
 		}
 	}
 	

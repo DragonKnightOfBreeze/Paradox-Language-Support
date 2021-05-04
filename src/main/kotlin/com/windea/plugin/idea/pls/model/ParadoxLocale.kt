@@ -1,8 +1,9 @@
 package com.windea.plugin.idea.pls.model
 
-class ParadoxLocale(data:Map<String,Any>) {
-	val name:String by data
-	val description:String by data
+class ParadoxLocale(
+	val name: String,
+	val description: String
+) {
 	val popupText = "$name - $description"
 	
 	override fun equals(other: Any?): Boolean {

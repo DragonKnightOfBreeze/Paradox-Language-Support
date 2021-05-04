@@ -1,9 +1,10 @@
 package com.windea.plugin.idea.pls.model
 
-class ParadoxSequentialNumber(data:Map<String,Any>) {
-	val name: String by data
-	val description:String by data
-	val placeholderText :String by data
+class ParadoxSequentialNumber(
+	val name: String,
+	val description: String,
+	val placeholderText: String
+) {
 	val popupText = "$name - $description"
 	
 	override fun equals(other: Any?): Boolean {

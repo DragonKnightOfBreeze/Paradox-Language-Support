@@ -27,15 +27,15 @@ val config get() = ServiceManager.getService(CwtConfigGroupProvider::class.java)
 val rule get() = ServiceManager.getService(ParadoxRuleGroupProvider::class.java).ruleGroupsCache
 
 val inferredParadoxLocale get() = when(System.getProperty("user.language")) {
-	"zh" -> rule.localeMap.getValue("l_simp_chinese")
-	"en" -> rule.localeMap.getValue("l_english")
-	"pt" -> rule.localeMap.getValue("l_braz_por")
-	"fr" -> rule.localeMap.getValue("l_french")
-	"de" -> rule.localeMap.getValue("l_german")
-	"pl" -> rule.localeMap.getValue("l_ponish")
-	"ru" -> rule.localeMap.getValue("l_russian")
-	"es" -> rule.localeMap.getValue("l_spanish")
-	else -> rule.localeMap.getValue("l_english")
+	"zh" -> config.localeMap.getValue("l_simp_chinese")
+	"en" -> config.localeMap.getValue("l_english")
+	"pt" -> config.localeMap.getValue("l_braz_por")
+	"fr" -> config.localeMap.getValue("l_french")
+	"de" -> config.localeMap.getValue("l_german")
+	"pl" -> config.localeMap.getValue("l_ponish")
+	"ru" -> config.localeMap.getValue("l_russian")
+	"es" -> config.localeMap.getValue("l_spanish")
+	else -> config.localeMap.getValue("l_english")
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
@@ -75,14 +75,14 @@ val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("ca
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
 		val name = this.name
-		return rule.localeMap[name]
+		return config.localeMap[name]
 	}
 
 val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 	get() {
 		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
 		if(colorId != null && colorId.isUpperCase()) {
-			return rule.colorMap[colorId.toString()]
+			return config.colorMap[colorId.toString()]
 		}
 		return null
 	}
@@ -90,28 +90,27 @@ val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
 val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequentialNumber?
 	get() {
 		val name = this.name
-		return rule.sequentialNumberMap[name]
-	}
-
-val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?
-	get() {
-		val name = this.name.toCapitalizedWord() //忽略大小写，首字母大写
-		if(name.startsWith(eventTargetPrefix)) return null
-		return rule.commandScopeMap[name]
-	}
-
-val ParadoxLocalisationCommandField.paradoxCommandField: ParadoxCommandField?
-	get() {
-		val name = this.name
-		return rule.commandFieldMap[name]
+		return config.sequentialNumberMap[name]
 	}
 
 val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
 	get() {
 		val name = this.name
-		return rule.colorMap[name]
+		return config.colorMap[name]
 	}
 
+//val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?
+//	get() {
+//		val name = this.name.toCapitalizedWord() //忽略大小写，首字母大写
+//		if(name.startsWith(eventTargetPrefix)) return null
+//		return config.commandScopeMap[name]
+//	}
+//
+//val ParadoxLocalisationCommandField.paradoxCommandField: ParadoxCommandField?
+//	get() {
+//		val name = this.name
+//		return config.commandFieldMap[name]
+//	}
 
 val PsiElement.paradoxLocale: ParadoxLocale? get() = getLocale(this)
 
@@ -179,12 +178,12 @@ private fun getFileType(file: PsiFile): ParadoxFileType? {
 
 private fun getRootType(file: PsiDirectory): ParadoxRootType? {
 	if(!file.isDirectory) return null
-	val fileName = file.name
+	val fileName = file.name.toLowerCase()
 	for(child in file.files) {
-		val childName = child.name
+		val childName = child.name.toLowerCase()
 		when {
-			exeFileNames.any { exeFileName -> childName.equals(exeFileName, true) } -> return ParadoxRootType.Stdlib
-			childName.equals(descriptorFileName, true) -> return ParadoxRootType.Mod
+			childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib
+			childName == descriptorFileName -> return ParadoxRootType.Mod
 			fileName == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
 			fileName == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
 			fileName == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
