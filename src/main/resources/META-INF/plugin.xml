@@ -12,17 +12,19 @@
       Support for Paradox Language.
     </p>
     <p>
-      This plugin is under developing, so some complex functions may not be implemented yet.
-      If you want more perfect language support, please consider using <b>VSCode</b> with <b>CWTools</b> plugin.
+      This plugin is under developing, so some complex functions may not be implemented yet.<br>
+      If you want more perfect language support, please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
     </p>
     <p>
-      Create the descriptor file <b>descriptor.mod</b> in the root directory of your Mod to provide language support.
+      Create the descriptor file <code>descriptor.mod</code> in the root directory of your Mod to provide language support.<br>
+      Create the mark file <code>.${gameType}</code> in the root directory of your Mod to specify game type. (e.g. <code>.stellaris</code>)<br>
+      Game type can be: <code>ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2</code>.
+    </p>
+    <p>
       If you want to add game directory and third party mod as dependencies, just add them as libraries to the project module of your mod, like what Java and Kotlin does.
     </p>
     <p>
-      Currently Only Support <b>Stellaris</b>.
-      Currently the rule file to implement functions such as validate and provide code completion is not perfect yet.
-      (Plan to use the same rule files with **CWTools** later.)
+      This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
     </p>
     <p>
       The <a href="https://dragonknightofbreeze.github.io/paradox-language-support">reference documents</a> will be provided in the future.  
@@ -40,17 +42,19 @@
       Paradox语言支持。
     </p>
     <p>
-      这个插件正在开发中，部分比较复杂的功能可能尚未实现。
-      如果需要更加完善的语言支持，请考虑使用<b>VSCode</b>以及<b>CWTools</b>插件。
+      这个插件正在开发中，部分比较复杂的功能可能尚未实现。<br>
+      如果需要更加完善的语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
     </p>
     <p>
-      在你的模组根文件夹下创建描述符文件<b>descriptor.mod</b>，即可提供语言支持。
+      在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>，即可提供语言支持。<br>
+      在你的模组根文件夹下创建标记文件<code>.${gameType}</code>，即可指定游戏类型。（如<code>.stellaris</code>）<br>
+      游戏类型可以是：<code>ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2</code>。
+    </p>
+    <p>
       如果需要添加游戏目录以及第三方模组作为依赖，如同Java和Kotlin一样，将它们作为库添加到你的模组对应的项目模块即可。
     </p>
     <p>
-      目前仅支持<b>Stellaris</b>。
-      目前用于提供验证和代码补全等功能的规则文件尚不完善。
-      （计划之后与**CWTools**共用规则文件）
+      这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享用于规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
     </p>
     <p>
       <a href="https://dragonknightofbreeze.github.io/paradox-language-support">参考文档</a>将会在未来提供。

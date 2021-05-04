@@ -16,4 +16,7 @@ public interface CwtString extends CwtValue {
   @NotNull
   String getTruncatedValue();
 
+  @NotNull
+  String getStringValue();
+
 }

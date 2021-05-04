@@ -29,255 +29,201 @@ object CwtConfigResolver {
 	
 	private fun resolveProperty(property: CwtProperty): CwtConfigProperty? {
 		val key = property.propertyName
-		val (documentation, options) = getDocumentationAndOptions(property)
-		var value: String? = null
-		var values: List<CwtConfigValue>? = null
-		var properties: List<CwtConfigProperty>? = null
-		val propertyValue = property.value
+		val propValue = property.value?:return null
+		val resolved = CwtConfigProperty(key)
+		
 		when {
-			propertyValue == null -> return null
-			propertyValue is CwtString -> value = propertyValue.value
-			propertyValue is CwtBlock -> {
-				when {
-					propertyValue.isEmpty -> {
-						values = emptyList()
-						properties = emptyList()
-					}
-					propertyValue.isArray -> {
-						values = propertyValue.valueList.map { resolveValue(it) }
-						properties = emptyList()
-					}
-					propertyValue.isObject -> {
-						values = emptyList()
-						properties = propertyValue.propertyList.mapNotNull { resolveProperty(it) }
-					}
+			propValue is CwtBoolean -> resolved.booleanValue = propValue.booleanValue
+			propValue is CwtInt -> resolved.intValue = propValue.intValue
+			propValue is CwtFloat -> resolved.floatValue = propValue.floatValue
+			propValue is CwtString -> resolved.stringValue = propValue.stringValue
+			propValue is CwtBlock -> when {
+				propValue.isEmpty -> {
+					resolved.values = emptyList()
+					resolved.properties = emptyList()
+				}
+				propValue.isArray -> {
+					resolved.values = propValue.valueList.map { resolveValue(it) }
+					resolved.properties = emptyList()
+				}
+				propValue.isObject -> {
+					resolved.values = emptyList()
+					resolved.properties = propValue.propertyList.mapNotNull { resolveProperty(it) }
 				}
 			}
 		}
-		return CwtConfigProperty(key, value, values, properties, documentation, options)
-	}
-	
-	private fun resolveValue(value: CwtValue): CwtConfigValue {
-		val (documentation, options) = getDocumentationAndOptions(value)
-		var _value: String? = null
-		var values: List<CwtConfigValue>? = null
-		var properties: List<CwtConfigProperty>? = null
-		when {
-			value is CwtString -> _value = value.value
-			value is CwtBlock -> {
-				when {
-					value.isEmpty -> {
-						values = emptyList()
-						properties = emptyList()
-					}
-					value.isArray -> {
-						values = value.valueList.map { resolveValue(it) }
-						properties = emptyList()
-					}
-					value.isObject -> {
-						values = emptyList()
-						properties = value.propertyList.mapNotNull { resolveProperty(it) }
-					}
-				}
-			}
-		}
-		return CwtConfigValue(_value, values, properties, documentation, options)
-	}
-	
-	private fun getDocumentationAndOptions(element: PsiElement): Pair<String?, List<CwtConfigOption>?> {
-		var current = element
-		val documentationComments = LinkedList<CwtDocumentationComment>()
-		val optionComments = LinkedList<CwtOptionComment>()
+		
+		var current:PsiElement = property
+		val documentationElements = LinkedList<CwtDocumentationText>()
+		val optionElements = LinkedList<CwtOption>()
+		val optionValueElements = LinkedList<CwtValue>()
 		while(true) {
-			current = current.prevSibling?:break
+			current = current.prevSibling ?: break
 			when {
 				current is PsiWhiteSpace || current is PsiComment -> continue
-				current is CwtDocumentationComment -> documentationComments.addFirst(current)
-				current is CwtOptionComment -> optionComments.addFirst(current)
+				current is CwtDocumentationComment -> {
+					val documentationText = current.documentationText
+					if(documentationText != null) documentationElements.addFirst(documentationText)
+				}
+				current is CwtOptionComment -> {
+					val option = current.option
+					if(option != null){
+						optionElements.addFirst(option)
+					} else{
+						val optionValue = current.value
+						if(optionValue != null){
+							optionValueElements.addFirst(optionValue)
+						}
+					}
+				}
 				else -> break
 			}
 		}
-		val documentation = getDocumentation(documentationComments)
-		val options = getOptions(optionComments)
-		return documentation to options
-	}
-
-	private fun getDocumentation(documentationComments: List<CwtDocumentationComment>): String? {
-		if(documentationComments.isEmpty()) return null
-		return documentationComments.joinToString("\n") { it.documentationText?.text.orEmpty() }.trim()
+		resolved.documentation = getDocumentation(documentationElements)
+		resolved.options = getOptions(optionElements)
+		resolved.optionValues = getOptionValues(optionValueElements)
+		
+		return resolved
 	}
 	
-	private fun getOptions(optionComments:List<CwtOptionComment>):List<CwtConfigOption>?{
-		if(optionComments.isEmpty()) return null
-		val result = mutableListOf<CwtConfigOption>()
-		for(optionComment in optionComments) {
-			for(option in optionComment.optionList) {
-				val resolvedOption = resolveOption(option)
-				if(resolvedOption != null) result.add(resolvedOption)
+	private fun resolveValue(value: CwtValue): CwtConfigValue {
+		val resolved = CwtConfigValue()
+		
+		when {
+			value is CwtBoolean -> resolved.booleanValue = value.booleanValue
+			value is CwtInt -> resolved.intValue = value.intValue
+			value is CwtFloat -> resolved.floatValue = value.floatValue
+			value is CwtString -> resolved.stringValue = value.stringValue
+			value is CwtBlock -> when {
+				value.isEmpty -> {
+					resolved.values = emptyList()
+					resolved.properties = emptyList()
+				}
+				value.isArray -> {
+					resolved.values = value.valueList.map { resolveValue(it) }
+					resolved.properties = emptyList()
+				}
+				value.isObject -> {
+					resolved.values = emptyList()
+					resolved.properties = value.propertyList.mapNotNull { resolveProperty(it) }
+				}
 			}
 		}
-		return result
+		
+		var current:PsiElement = value
+		val documentationElements = LinkedList<CwtDocumentationText>()
+		val optionElements = LinkedList<CwtOption>()
+		val optionValueElements = LinkedList<CwtValue>()
+		while(true) {
+			current = current.prevSibling ?: break
+			when {
+				current is PsiWhiteSpace || current is PsiComment -> continue
+				current is CwtDocumentationComment -> {
+					val documentationText = current.documentationText
+					if(documentationText != null) documentationElements.addFirst(documentationText)
+				}
+				current is CwtOptionComment -> {
+					val option = current.option
+					if(option != null){
+						optionElements.addFirst(option)
+					} else{
+						val optionValue = current.value
+						if(optionValue != null){
+							optionValueElements.addFirst(optionValue)
+						}
+					}
+				}
+				else -> break
+			}
+		}
+		resolved.documentation = getDocumentation(documentationElements)
+		resolved.options = getOptions(optionElements)
+		resolved.optionValues = getOptionValues(optionValueElements)
+		
+		return resolved
 	}
 	
 	private fun resolveOption(option: CwtOption): CwtConfigOption? {
 		val key = option.optionName
-		var value: String? = null
-		var values: List<CwtConfigOptionValue>? = null
-		var options: List<CwtConfigOption>? = null
-		val optionValue = option.value
+		val separator =  CwtConfigSeparator.resolve(option.optionSeparator?.text?:return null)
+		val optionValue = option.value?:return null
+		val resolved = CwtConfigOption(key,separator)
+		
 		when {
-			optionValue == null -> return null
-			optionValue is CwtString -> value = optionValue.value
-			optionValue is CwtBlock -> {
-				when {
-					optionValue.isEmpty -> {
-						values = emptyList()
-						options = emptyList()
-					}
-					optionValue.isArray -> {
-						values = optionValue.valueList.map { resolveOptionValue(it) }
-						options = emptyList()
-					}
-					optionValue.isObject -> {
-						values = emptyList()
-						options = optionValue.optionList.mapNotNull { resolveOption(it) }
-					}
+			optionValue is CwtBoolean -> resolved.booleanValue = optionValue.booleanValue
+			optionValue is CwtInt-> resolved.intValue= optionValue.intValue
+			optionValue is CwtFloat -> resolved.floatValue = optionValue.floatValue
+			optionValue is CwtString -> resolved.stringValue = optionValue.stringValue
+			optionValue is CwtBlock -> when {
+				optionValue.isEmpty -> {
+					resolved.values = emptyList()
+					resolved.options = emptyList()
+				}
+				optionValue.isArray -> {
+					resolved.values = optionValue.valueList.map { resolveOptionValue(it) }
+					resolved.options = emptyList()
+				}
+				optionValue.isObject -> {
+					resolved.values = emptyList()
+					resolved.options = optionValue.optionList.mapNotNull { resolveOption(it) }
 				}
 			}
 		}
-		val separator =  CwtConfigSeparator.resolve(option.optionSeparator?.text?:return null)
-		return CwtConfigOption(key, value, values, options,separator)
+		
+		return resolved
 	}
 	
 	private fun resolveOptionValue(option: CwtValue): CwtConfigOptionValue {
-		var value: String? = null
-		var values: List<CwtConfigOptionValue>? = null
-		var options: List<CwtConfigOption>? = null
+		val resolved = CwtConfigOptionValue()
+		
 		when {
-			option is CwtString -> value = option.value
+			option is CwtBoolean -> resolved.booleanValue = option.booleanValue
+			option is CwtInt -> resolved.intValue = option.intValue
+			option is CwtFloat -> resolved.floatValue= option.floatValue
+			option is CwtString -> resolved.stringValue = option.stringValue
 			option is CwtBlock -> {
 				when {
 					option.isEmpty -> {
-						values = emptyList()
-						options = emptyList()
+						resolved.values = emptyList()
+						resolved.options = emptyList()
 					}
 					option.isArray -> {
-						values = option.valueList.map { resolveOptionValue(it) }
-						options = emptyList()
+						resolved.values = option.valueList.map { resolveOptionValue(it) }
+						resolved.options = emptyList()
 					}
 					option.isObject -> {
-						values = emptyList()
-						options = option.optionList.mapNotNull { resolveOption(it) }
+						resolved.values = emptyList()
+						resolved.options = option.optionList.mapNotNull { resolveOption(it) }
 					}
 				}
 			}
 		}
-		return CwtConfigOptionValue(value, values, options)
+		
+		return resolved
 	}
 	
-	//private fun getDocumentationAndOptions(element: PsiElement): Pair<String?, CwtConfigOptions?> {
-	//	var current = element
-	//	val documentationComments = LinkedList<CwtDocumentationComment>()
-	//	val optionComments = LinkedList<CwtOptionComment>()
-	//	while(true) {
-	//		current = current.prevSibling?:break
-	//		when {
-	//			current is PsiWhiteSpace || current is PsiComment -> continue
-	//			current is CwtDocumentationComment -> documentationComments.addFirst(current)
-	//			current is CwtOptionComment -> optionComments.addFirst(current)
-	//			else -> break
-	//		}
-	//	}
-	//	val documentation = getDocumentation(documentationComments)
-	//	val options = getOptions(optionComments)
-	//	return documentation to options
-	//}
-	//
-	//private fun getDocumentation(documentationComments: MutableList<CwtDocumentationComment>): String? {
-	//	if(documentationComments.isEmpty()) return null
-	//	return documentationComments.joinToString("\n") { it.documentationText?.text.orEmpty() }.trim()
-	//}
-	//
-	//private fun getOptions(optionComments: MutableList<CwtOptionComment>): CwtConfigOptions? {
-	//	if(optionComments.isEmpty()) return null
-	//	var cardinality: String? = null
-	//	var optional: Boolean? = null
-	//	var required: Boolean? = null
-	//	var type_key_filter: ReversibleList<String>? = null
-	//	var severity: String? = null
-	//	var push_scope: String? = null
-	//	var replace_scope: Map<String, String>? = null
-	//	var scopes: List<String>? = null
-	//	var graph_related_types: List<String>? = null
-	//	for(optionComment in optionComments) {
-	//		for(value in optionComment.valueList) {
-	//			when(value.value) {
-	//				"optional" -> optional = true
-	//				"required" -> required = true
-	//			}
-	//		}
-	//		for(option in optionComment.optionList) {
-	//			val optionName = option.name
-	//			val optionValue = option.value ?: continue
-	//			when(optionName) {
-	//				"cardinality" -> {
-	//					if(optionValue is CwtString) cardinality = optionValue.value
-	//				}
-	//				"type_key_filter" -> {
-	//					val optionSeparator = option.optionSeparator?.text ?: continue
-	//					val reverse = optionSeparator == "<>"
-	//					when {
-	//						optionValue is CwtString -> type_key_filter = ReversibleList(listOf(optionValue.value),reverse)
-	//						optionValue is CwtBlock -> {
-	//							val list = mutableListOf<String>()
-	//							for(v in optionValue.valueList) {
-	//								if(v is CwtString) list.add(v.value)
-	//							}
-	//							type_key_filter = ReversibleList(list,reverse)
-	//						}
-	//					}
-	//				}
-	//				"severity" -> {
-	//					if(optionValue is CwtString) severity = optionValue.value
-	//				}
-	//				"push_scope" -> {
-	//					if(optionValue is CwtString) push_scope = optionValue.value
-	//				}
-	//				"replace_scope" -> {
-	//					if(optionValue is CwtBlock) {
-	//						val map = mutableMapOf<String, String>()
-	//						for(o in optionValue.optionList) {
-	//							val n = o.optionName
-	//							val v = o.value
-	//							if(v is CwtString) map.put(n, v.value)
-	//						}
-	//						replace_scope = map
-	//					}
-	//				}
-	//				"scope" -> {
-	//					when {
-	//						optionValue is CwtString -> scopes = listOf(optionValue.value)
-	//						optionValue is CwtBlock -> {
-	//							val list = mutableListOf<String>()
-	//							for(v in optionValue.valueList) {
-	//								if(v is CwtString) list.add(v.value)
-	//							}
-	//							scopes = list
-	//						}
-	//					}
-	//				}
-	//				"graph_related_types" -> {
-	//					if(optionValue is CwtBlock) {
-	//						val list = mutableListOf<String>()
-	//						for(v in optionValue.valueList) {
-	//							if(v is CwtString) list.add(v.value)
-	//						}
-	//						graph_related_types = list
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	//	return CwtConfigOptions(cardinality, optional, required, type_key_filter, severity, push_scope, replace_scope, scopes, graph_related_types)
-	//}
+	private fun getDocumentation(documentationElements: List<CwtDocumentationText>): String? {
+		if(documentationElements.isEmpty()) return null
+		return documentationElements.joinToString("\n") { it.text.orEmpty() }.trim()
+	}
+	
+	private fun getOptions(optionElements:List<CwtOption>):List<CwtConfigOption>?{
+		if(optionElements.isEmpty()) return null
+		val options = mutableListOf<CwtConfigOption>()
+		for(optionElement in optionElements) {
+			val resolved = resolveOption(optionElement)?:continue
+			options.add(resolved)
+		}
+		return options
+	}
+	
+	private fun getOptionValues(optionValueElements:List<CwtValue>):List<CwtConfigOptionValue>?{
+		if(optionValueElements.isEmpty()) return null
+		val optionValues = mutableListOf<CwtConfigOptionValue>()
+		for(optionValueElement in optionValueElements) {
+			val resolved = resolveOptionValue(optionValueElement)
+			optionValues.add(resolved)
+		}
+		return optionValues
+	}
 }

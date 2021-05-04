@@ -33,4 +33,9 @@ public class CwtBooleanImpl extends CwtValueImpl implements CwtBoolean {
     return findNotNullChildByType(BOOLEAN_TOKEN);
   }
 
+  @Override
+  public boolean getBooleanValue() {
+    return CwtPsiImplUtil.getBooleanValue(this);
+  }
+
 }

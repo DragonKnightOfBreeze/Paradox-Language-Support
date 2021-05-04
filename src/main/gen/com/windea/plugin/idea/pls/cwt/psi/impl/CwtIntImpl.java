@@ -33,4 +33,9 @@ public class CwtIntImpl extends CwtNumberImpl implements CwtInt {
     return findNotNullChildByType(INT_TOKEN);
   }
 
+  @Override
+  public int getIntValue() {
+    return CwtPsiImplUtil.getIntValue(this);
+  }
+
 }

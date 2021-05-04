@@ -45,4 +45,10 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
     return CwtPsiImplUtil.getTruncatedValue(this);
   }
 
+  @Override
+  @NotNull
+  public String getStringValue() {
+    return CwtPsiImplUtil.getStringValue(this);
+  }
+
 }

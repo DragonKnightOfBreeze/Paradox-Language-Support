@@ -187,7 +187,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "##" option_comment_item *
+  // "##" option_comment_item
   public static boolean option_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment")) return false;
     if (!nextTokenIs(b, OPTION_START)) return false;
@@ -195,20 +195,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, null);
     r = consumeToken(b, OPTION_START);
     p = r; // pin = 1
-    r = r && option_comment_1(b, l + 1);
+    r = r && option_comment_item(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
-  }
-
-  // option_comment_item *
-  private static boolean option_comment_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_comment_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!option_comment_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "option_comment_1", c)) break;
-    }
-    return true;
   }
 
   /* ********************************************************** */

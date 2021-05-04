@@ -28,6 +28,6 @@ class ParadoxScriptStringPropertyPsiReference(
 		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
 		return findDefinitions(name, null, project)
 			.ifEmpty { findLocalisations(name, inferredParadoxLocale, project, hasDefault = true) }
-			.mapArray { PsiElementResolveResult(it) }
+			.mapToArray { PsiElementResolveResult(it) }
 	}
 }

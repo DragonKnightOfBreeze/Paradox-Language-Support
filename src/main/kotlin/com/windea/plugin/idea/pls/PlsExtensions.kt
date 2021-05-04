@@ -181,8 +181,11 @@ private fun getRootType(file: PsiDirectory): ParadoxRootType? {
 	val fileName = file.name.toLowerCase()
 	for(child in file.files) {
 		val childName = child.name.toLowerCase()
+		val childExpression = childName.substringAfterLast('.',"")
 		when {
-			childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib
+			//TODO 可能并不是这样命名，需要检查
+			//childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib
+			childExpression == "exe" -> return ParadoxRootType.Stdlib
 			childName == descriptorFileName -> return ParadoxRootType.Mod
 			fileName == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
 			fileName == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets

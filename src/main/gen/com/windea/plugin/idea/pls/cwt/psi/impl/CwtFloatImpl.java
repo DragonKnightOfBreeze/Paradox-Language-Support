@@ -33,4 +33,9 @@ public class CwtFloatImpl extends CwtNumberImpl implements CwtFloat {
     return findNotNullChildByType(FLOAT_TOKEN);
   }
 
+  @Override
+  public float getFloatValue() {
+    return CwtPsiImplUtil.getFloatValue(this);
+  }
+
 }

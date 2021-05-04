@@ -35,7 +35,7 @@ object ParadoxScriptDataResolver {
 	
 	private fun resolveValue(value:ParadoxScriptValue):Any?{
 		return when(value){
-			is ParadoxScriptBoolean -> value.value.toBooleanYesNo()
+			is ParadoxScriptBoolean -> value.value.toBooleanYesNoOrNull()
 			is ParadoxScriptNumber -> value.value.toFloat()
 			is ParadoxScriptString -> value.value
 			is ParadoxScriptColor -> value.color

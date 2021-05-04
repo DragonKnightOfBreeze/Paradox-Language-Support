@@ -74,19 +74,19 @@
 
 ### 0.2
 
-* 更新IDEA版本到2021.1
-* 修复类加载错误
+* [X] 更新IDEA版本到2021.1
+* [X] 修复类加载错误
 
 ### 0.3
 
-* 初步支持cwt config语言
-* 更新并统一文件图标
-* 解析cwt config语言的optionComment和documentComment
-* 修复格式化功能的BUG
-* 初步实现`CwtConfigResolver`
-* 实现`CwtConfigGroupsProvider`
-* 实现基于`cwtConfigGroupsCache`的更加具体的规则
-* 规则文件加载需要一定时间 - 可能需要特殊处理
+* [X] 初步支持cwt config语言
+* [X] 更新并统一文件图标
+* [X] 解析cwt config语言的optionComment和documentComment
+* [X] 修复格式化功能的BUG
+* [X] 初步实现`CwtConfigResolver`
+* [X] 实现`CwtConfigGroupsProvider`
+* [ ] 实现基于`cwtConfigGroupsCache`的更加具体的规则
+* [ ] 规则文件加载需要一定时间 - 可能需要特殊处理
 
 # TODO
 

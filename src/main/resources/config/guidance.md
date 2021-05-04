@@ -274,7 +274,10 @@ my_shipmy_ship_descmy_ship_required
 If `my_ship_mk_2` has subtype `advanced`, it would require:
 
 ```
-my_ship_mk_2my_ship_mk_2_descmy_ship_mk_2_requiredmy_ship_mk_2_advanced
+my_ship_mk_2
+my_ship_mk_2_desc
+my_ship_mk_2_required
+my_ship_mk_2_advanced
 ```
 
 
@@ -304,19 +307,29 @@ alias[effect:THIS] = { alias_name[effect] = alias_match_left[effect] }
 A single-alias allows re-use of a section of rules in multiple places. Defined in this way:
 
 ```
-single_alias[any_trigger_clause] = {    ## cardinality = 0..1    count = int    alias_name[trigger] = alias_match_left[trigger]}
+single_alias[any_trigger_clause] = {   
+  ## cardinality = 0..1    
+  count = int    
+  alias_name[trigger] = alias_match_left[trigger]
+}
 ```
 
 Used in this way:
 
 ```
-## push_scope = countryany_country = single_alias_right[any_trigger_clause]
+## push_scope = country
+any_country = single_alias_right[any_trigger_clause]
 ```
 
 Which becomes the equivalent of:
 
 ```
-## push_scope = countryany_country = {    ## cardinality = 0..1    count = int    alias_name[trigger] = alias_match_left[trigger]}
+## push_scope = country
+any_country = {    
+  ## cardinality = 0..1    
+  count = int    
+  alias_name[trigger] = alias_match_left[trigger]
+}
 ```
 
 

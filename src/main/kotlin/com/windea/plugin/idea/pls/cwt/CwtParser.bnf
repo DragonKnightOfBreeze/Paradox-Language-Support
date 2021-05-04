@@ -45,7 +45,7 @@ documentation_comment ::= "###" documentation_text ?{
   pin(".*")=1
 }
 documentation_text ::= DOCUMENTATION_TOKEN
-option_comment ::= "##" option_comment_item *{
+option_comment ::= "##" option_comment_item{
   pin(".*")=1
 }
 private option_comment_item ::= option | value
@@ -82,19 +82,22 @@ value ::= boolean | number | string | block{
 
 boolean ::= BOOLEAN_TOKEN {
   extends=value
+  methods=[getBooleanValue]
 }
 number ::= int | float {
   extends=value
 }
 int ::= INT_TOKEN {
   extends=number
+  methods=[getIntValue]
 }
 float ::= FLOAT_TOKEN{
   extends=number
+  methods=[getFloatValue]
 }
 string ::= STRING_TOKEN{
   extends=value
-  methods=[getValue getTruncatedValue]
+  methods=[getValue getTruncatedValue getStringValue]
 }
 block ::= "{" block_item * "}" {
   pin=1

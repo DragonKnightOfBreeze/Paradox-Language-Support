@@ -4,15 +4,16 @@
 
 Support for Paradox Language.
 
-This plugin is under developing, so some complex functions may not be implemented yet.
-If you want more perfect language support, please consider using **VSCode** with **CWTools** plugin.
+This plugin is under developing, so some complex functions may not be implemented yet.  
+If you want more perfect language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
 
-Create the descriptor file **descriptor.mod** in the root directory of your Mod to provide language support.
+Create the descriptor file `descriptor.mod` in the root directory of your Mod to provide language support.  
+Create the mark file `.${gameType}` in the root directory of your Mod to specify game type. (e.g. `.stellaris`)  
+Game type can be: `ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2`.
+
 If you want to add game directory and third party mod as dependencies, just add them as libraries to the project module of your mod, like what Java and Kotlin does.
 
-Currently Only Support **Stellaris**.
-Currently the rule file to implement functions such as validate and provide code completion is not perfect yet.
-(Plan to use the same rule files with **CWTools** later.)
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
 
 The [reference documents](https://dragonknightofbreeze.github.io/paradox-language-support) will be provided in the future.
 

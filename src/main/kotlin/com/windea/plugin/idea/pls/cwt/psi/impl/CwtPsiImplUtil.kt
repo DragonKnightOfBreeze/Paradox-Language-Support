@@ -113,6 +113,27 @@ object CwtPsiImplUtil {
 	}
 	//endregion
 	
+	//region CwtBoolean
+	@JvmStatic
+	fun getBooleanValue(element: CwtBoolean): Boolean {
+		return element.value.toBooleanYesNo()
+	}
+	//endregion
+	
+	//region CwtInt
+	@JvmStatic
+	fun getIntValue(element: CwtInt): Int {
+		return element.value.toIntOrNull()?:0
+	}
+	//endregion
+	
+	//region CwtFloat
+	@JvmStatic
+	fun getFloatValue(element: CwtFloat): Float {
+		return element.value.toFloatOrNull()?:0f
+	}
+	//endregion
+	
 	//region CwtString
 	@JvmStatic
 	fun getValue(element: CwtString): String {
@@ -122,6 +143,11 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getTruncatedValue(element: CwtString): String {
 		return element.value.truncate(truncateLimit)
+	}
+	
+	@JvmStatic
+	fun getStringValue(element: CwtString): String {
+		return element.value
 	}
 	//endregion
 	

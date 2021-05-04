@@ -197,13 +197,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation command scope) <b>").append(name).append("</b>")
 			}
-			//来自规则文件
-			val paradoxCommandScope = element.paradoxCommandScope
-			if(paradoxCommandScope != null) {
-				content {
-					append(paradoxCommandScope.description)
-				}
-			}
+			////来自规则文件
+			//val paradoxCommandScope = element.paradoxCommandScope
+			//if(paradoxCommandScope != null) {
+			//	content {
+			//		append(paradoxCommandScope.description)
+			//	}
+			//}
 		}
 	}
 	
@@ -213,12 +213,12 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation command field) <b>").append(name).append("</b>")
 			}
-			val paradoxCommandField = element.paradoxCommandField
-			if(paradoxCommandField != null) {
-				content {
-					append(paradoxCommandField.description)
-				}
-			}
+			//val paradoxCommandField = element.paradoxCommandField
+			//if(paradoxCommandField != null) {
+			//	content {
+			//		append(paradoxCommandField.description)
+			//	}
+			//}
 		}
 	}
 	

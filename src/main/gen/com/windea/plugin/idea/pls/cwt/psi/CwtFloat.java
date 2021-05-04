@@ -10,4 +10,6 @@ public interface CwtFloat extends CwtNumber {
   @NotNull
   PsiElement getFloatToken();
 
+  float getFloatValue();
+
 }

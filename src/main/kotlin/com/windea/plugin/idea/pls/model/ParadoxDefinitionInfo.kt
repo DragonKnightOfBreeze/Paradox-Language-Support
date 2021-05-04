@@ -30,7 +30,6 @@ data class ParadoxDefinitionInfo(
 		return "$name: $type"
 	}
 	
-	
 	private fun buildTypeText(): String {
 		return buildString {
 			append(type.name)

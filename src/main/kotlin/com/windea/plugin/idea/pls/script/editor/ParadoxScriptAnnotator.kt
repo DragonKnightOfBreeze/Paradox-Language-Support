@@ -41,72 +41,72 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			properties.keys.mapTo(keyPatternExpressions) { ConditionalExpression(it) }
 			
 			val gameType = element.paradoxFileInfo?.gameType?:return
-			val ruleGroup = rule.ruleGroups[gameType.key]?:return
+			val configGroup = config[gameType]
 			val project = element.project
 			
 			//遍历existProperties
-			//annotateDefinitionProperties(existProperties, keyPatternExpressions, project, definitionInfo, ruleGroup, holder)
+			//annotateDefinitionProperties(existProperties, keyPatternExpressions, project, definitionInfo, configGroup, holder)
 		}
 	}
 	
-	private fun annotateDefinitionProperties(existProperties:List<ParadoxScriptProperty>,
-		keyPatternExpressions: List<ConditionalExpression>,project: Project, definitionInfo: ParadoxDefinitionInfo, 
-		ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subpaths:List<String> = emptyList()){
-		
-		//用于保存要求的pattern
-		val requiredData = keyPatternExpressions.filter { it.required }.mapTo(mutableSetOf()) { it.value }
-		//用于检查不可重复的keyPattern是否重复 
-		val multipleData = mutableSetOf<String>()
-		
-		loop@ for(existProperty in existProperties){
-			//如果definitionProperty本身就是definition，则跳过检查
-			if(existProperty.paradoxDefinitionInfo != null) continue
-			
-			val existPropertyName = existProperty.name
-			val typeText = definitionInfo.typeText
-			val childSubpaths = subpaths + existPropertyName
-			
-			val state = resolveExpressions(keyPatternExpressions, project, existPropertyName, ruleGroup,requiredData,multipleData)
-			
-			//如果有问题
-			when(state) {
-				ValidateState.Unresolved -> {
-					holder.newAnnotation(ERROR, message("paradox.script.annotator.unresolvedDefinitionProperty", existPropertyName, typeText))
-						.range(existProperty.propertyKey)
-						.create()
-					continue@loop
-				}
-				ValidateState.Dupliate -> {
-					holder.newAnnotation(ERROR, message("paradox.script.annotator.duplicateDefinitionProperty", existPropertyName, typeText))
-						.range(existProperty.propertyKey)
-						.create()
-					continue@loop
-				}
-				else -> {}
-			}
-			
-			//如果有缺失的属性
-			if(requiredData.isNotEmpty()){
-				for(name in requiredData) {
-					holder.newAnnotation(ERROR, message("paradox.script.annotator.missingDefinitionProperty", name, typeText))
-						.range(existProperty.propertyKey)
-						.create()
-				}
-			}
-			
-			//没有问题再去检查可能的子属性
-			val childExistProperties = (existProperty.propertyValue?.value as? ParadoxScriptBlock)?.propertyList
-			if(!childExistProperties.isNullOrEmpty()) {
-				val childKeyPatternExpressions = mutableListOf<ConditionalExpression>()
-				for(childProperties in definitionInfo.resolvePropertiesList(mutableListOf(existProperty.name))) {
-					childProperties.keys.mapTo(childKeyPatternExpressions) { ConditionalExpression(it) }
-				}
-				//递归检查
-				//TODO 重构
-				annotateDefinitionProperties(childExistProperties, childKeyPatternExpressions, project, definitionInfo, ruleGroup, holder,childSubpaths )
-			}
-		}
-	}
+	//private fun annotateDefinitionProperties(existProperties:List<ParadoxScriptProperty>,
+	//	keyPatternExpressions: List<ConditionalExpression>,project: Project, definitionInfo: ParadoxDefinitionInfo, 
+	//	ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subpaths:List<String> = emptyList()){
+	//	
+	//	//用于保存要求的pattern
+	//	val requiredData = keyPatternExpressions.filter { it.required }.mapTo(mutableSetOf()) { it.value }
+	//	//用于检查不可重复的keyPattern是否重复 
+	//	val multipleData = mutableSetOf<String>()
+	//	
+	//	loop@ for(existProperty in existProperties){
+	//		//如果definitionProperty本身就是definition，则跳过检查
+	//		if(existProperty.paradoxDefinitionInfo != null) continue
+	//		
+	//		val existPropertyName = existProperty.name
+	//		val typeText = definitionInfo.typeText
+	//		val childSubpaths = subpaths + existPropertyName
+	//		
+	//		val state = resolveExpressions(keyPatternExpressions, project, existPropertyName, ruleGroup,requiredData,multipleData)
+	//		
+	//		//如果有问题
+	//		when(state) {
+	//			ValidateState.Unresolved -> {
+	//				holder.newAnnotation(ERROR, message("paradox.script.annotator.unresolvedDefinitionProperty", existPropertyName, typeText))
+	//					.range(existProperty.propertyKey)
+	//					.create()
+	//				continue@loop
+	//			}
+	//			ValidateState.Dupliate -> {
+	//				holder.newAnnotation(ERROR, message("paradox.script.annotator.duplicateDefinitionProperty", existPropertyName, typeText))
+	//					.range(existProperty.propertyKey)
+	//					.create()
+	//				continue@loop
+	//			}
+	//			else -> {}
+	//		}
+	//		
+	//		//如果有缺失的属性
+	//		if(requiredData.isNotEmpty()){
+	//			for(name in requiredData) {
+	//				holder.newAnnotation(ERROR, message("paradox.script.annotator.missingDefinitionProperty", name, typeText))
+	//					.range(existProperty.propertyKey)
+	//					.create()
+	//			}
+	//		}
+	//		
+	//		//没有问题再去检查可能的子属性
+	//		val childExistProperties = (existProperty.propertyValue?.value as? ParadoxScriptBlock)?.propertyList
+	//		if(!childExistProperties.isNullOrEmpty()) {
+	//			val childKeyPatternExpressions = mutableListOf<ConditionalExpression>()
+	//			for(childProperties in definitionInfo.resolvePropertiesList(mutableListOf(existProperty.name))) {
+	//				childProperties.keys.mapTo(childKeyPatternExpressions) { ConditionalExpression(it) }
+	//			}
+	//			//递归检查
+	//			//TODO 重构
+	//			annotateDefinitionProperties(childExistProperties, childKeyPatternExpressions, project, definitionInfo, ruleGroup, holder,childSubpaths )
+	//		}
+	//	}
+	//}
 	
 	private fun resolveExpressions(expressions: List<ConditionalExpression>, project: Project,
 		existPropertyName: String, ruleGroup: ParadoxRuleGroup, requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {

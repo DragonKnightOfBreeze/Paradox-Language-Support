@@ -30,7 +30,7 @@ class ParadoxScriptVariablePsiReference(
 		val file = element.containingFile
 		return findScriptVariablesInFile(name,file)
 			.ifEmpty { findScriptVariables(name, project) }
-			.mapArray { PsiElementResolveResult(it) }
+			.mapToArray { PsiElementResolveResult(it) }
 	}
 	
 	//注意要传入elementName而非element
@@ -38,7 +38,7 @@ class ParadoxScriptVariablePsiReference(
 		val project = element.project
 		val file = element.containingFile
 		//同时需要同时查找当前文件中的和全局的
-		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapArray {
+		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapToArray {
 			LookupElementBuilder.create(it).withIcon(scriptVariableIcon).withTypeText(it.containingFile.name)
 		}
 	}

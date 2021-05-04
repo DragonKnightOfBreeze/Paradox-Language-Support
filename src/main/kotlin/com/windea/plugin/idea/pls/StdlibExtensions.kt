@@ -7,21 +7,20 @@ import java.nio.file.*
 import java.util.*
 import java.util.concurrent.*
 import javax.swing.*
-import kotlin.math.*
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Array<out T?>.cast() = this as Array<T>
 
-inline fun <T, reified R> List<T>.mapArray(block: (T) -> R): Array<R> {
+inline fun <T, reified R> List<T>.mapToArray(block: (T) -> R): Array<R> {
 	return Array(size) { block(this[it]) }
 }
 
-inline fun <T, reified R> Array<out T>.mapArray(block: (T) -> R): Array<R> {
+inline fun <T, reified R> Array<out T>.mapToArray(block: (T) -> R): Array<R> {
 	return Array(size) { block(this[it]) }
 }
 
-inline fun <T, reified R> Sequence<T>.mapArray(block: (T) -> R): Array<R> {
-	return toList().mapArray(block)
+inline fun <T, reified R> Sequence<T>.mapToArray(block: (T) -> R): Array<R> {
+	return toList().mapToArray(block)
 }
 
 fun CharSequence.surroundsWith(prefix:Char,suffix:Char,ignoreCase: Boolean = false): Boolean {
@@ -148,22 +147,6 @@ infix fun String.matchesPath(other: String): Boolean {
 	return false
 }
 
-inline fun <reified T> T.toSingletonArray(): Array<T> {
-	return arrayOf(this)
-}
-
-inline fun <reified T> Sequence<T>.toArray(): Array<T> {
-	return this.toList().toTypedArray()
-}
-
-fun <T> T.toSingletonList(): List<T> {
-	return Collections.singletonList(this)
-}
-
-fun <T : Any> T?.toSingletonListOrEmpty(): List<T> {
-	return if(this == null) Collections.emptyList() else Collections.singletonList(this)
-}
-
 //Is Extensions
 
 private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
@@ -220,11 +203,21 @@ fun Boolean.toStringYesNo() = if(this) "yes" else "no"
 
 fun String.toBooleanYesNo() = this == "yes"
 
+fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if (this == "no") false else null
+
 fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())
 
 fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
+
+inline fun <reified T> T.toSingletonArray() = arrayOf(this)
+
+inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
+
+fun <T> T.toSingletonList() = Collections.singletonList(this)
+
+fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
 
 //Specific Collections
 
@@ -261,7 +254,7 @@ abstract class AbstractExpressionResolver<T:Expression>:ExpressionResolver<T>{
 }
 
 /**
- * 范围表达式，用于表示限定脚本文件的属性的出现数量。
+ * 范围表达式。
  *
  * @property min 最小值
  * @property max 最大值，null表示无限
@@ -303,10 +296,6 @@ class RangeExpression private constructor(expression: String):AbstractExpression
 	operator fun component2() = max
 	
 	operator fun component3() = limitMax
-}
-
-class ConfigExpression(expression: String):AbstractExpression(expression){
-
 }
 
 /**

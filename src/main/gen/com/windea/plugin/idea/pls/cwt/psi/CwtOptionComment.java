@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface CwtOptionComment extends PsiElement {
 
-  @NotNull
-  List<CwtOption> getOptionList();
+  @Nullable
+  CwtOption getOption();
 
-  @NotNull
-  List<CwtValue> getValueList();
+  @Nullable
+  CwtValue getValue();
 
 }

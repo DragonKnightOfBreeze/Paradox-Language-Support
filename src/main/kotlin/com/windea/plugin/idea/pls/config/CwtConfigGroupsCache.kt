@@ -1,6 +1,7 @@
 package com.windea.plugin.idea.pls.config
 
 import com.jetbrains.rd.util.*
+import com.windea.plugin.idea.pls.*
 import com.windea.plugin.idea.pls.model.*
 import org.slf4j.*
 
@@ -14,11 +15,11 @@ class CwtConfigGroupsCache(
 	
 	private val groupCaches:Map<ParadoxGameType,CwtConfigGroupCache>
 	
-	val locales:List<ParadoxLocale>
+	val locales:Array<ParadoxLocale>
 	val localeMap:Map<String,ParadoxLocale>
-	val sequentialNumbers:List<ParadoxSequentialNumber>
+	val sequentialNumbers:Array<ParadoxSequentialNumber>
 	val sequentialNumberMap:Map<String,ParadoxSequentialNumber>
-	val colors :List<ParadoxColor>
+	val colors :Array<ParadoxColor>
 	val colorMap :Map<String,ParadoxColor>
 	
 	val ck2 get() = get(ParadoxGameType.Ck2)
@@ -34,20 +35,20 @@ class CwtConfigGroupsCache(
 	init {
 		logger.info("Resolve declarations...")
 		
-		locales = declarations.getValue("locale").map {
+		locales = declarations.getValue("locale").mapToArray {
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
 			ParadoxLocale(name,description)
 		}
 		localeMap = locales.associateBy { it.name }
-		sequentialNumbers = declarations.getValue("sequentialNumber").map { 
+		sequentialNumbers = declarations.getValue("sequentialNumber").mapToArray { 
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
 			val placeholderText = it.getValue("placeholderText") as String
 			ParadoxSequentialNumber(name,description,placeholderText)
 		}
 		sequentialNumberMap = sequentialNumbers.associateBy { it.name }
-		colors = declarations.getValue("color").map { 
+		colors = declarations.getValue("color").mapToArray { 
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
 			val colorRgb = it.getValue("colorRgb") as Int

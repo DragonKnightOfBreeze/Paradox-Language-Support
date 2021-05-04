@@ -10,4 +10,6 @@ public interface CwtBoolean extends CwtValue {
   @NotNull
   PsiElement getBooleanToken();
 
+  boolean getBooleanValue();
+
 }
