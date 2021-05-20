@@ -85,6 +85,7 @@
 * [X] 修复格式化功能的BUG
 * [X] 初步实现`CwtConfigResolver`
 * [X] 实现`CwtConfigGroupsProvider`
+* [X] 更换包名
 * [ ] 实现基于`cwtConfigGroupsCache`的更加具体的规则
 * [ ] 规则文件加载需要一定时间 - 可能需要特殊处理
 

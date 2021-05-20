@@ -1,0 +1,108 @@
+{
+	parserClass="icu.windea.pls.cwt.psi.CwtParser"
+	extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+	psiClassPrefix="Cwt"
+	psiImplClassSuffix="Impl"
+	psiPackage="icu.windea.pls.cwt.psi"
+	psiImplPackage="icu.windea.pls.cwt.psi.impl"
+	elementTypeHolderClass="icu.windea.pls.cwt.psi.CwtTypes"
+	tokenTypeClass="icu.windea.pls.cwt.psi.CwtTokenType"
+	elementTypeClass="icu.windea.pls.cwt.psi.CwtElementType"
+	psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
+
+	tokens=[
+	  EQUAL_SIGN="="
+	  NOT_EQUAL_SIGN="<>"
+	  LEFT_BRACE="{"
+	  RIGHT_BRACE="}"
+	  EOL="regexp:\R"
+	  BLANK="regexp:\s+"
+	  OPTION_START="##"
+	  DOCUMENTATION_START="###"
+	  
+	  COMMENT="regexp:(#)|(#[^#\r\n][^\r\n]*)" //以"#"开始，单行
+	  //OPTION_COMMENT="regexp:##[^\r\n]*" //以"##"开始，单行
+	  //DOCUMENTATION_COMMENT="regexp:###[^\r\n]*" //以"###"开始，单行
+	  
+	  PROPERTY_KEY_TOKEN='regexp:([^#={}\s][^={}\s]*)|("([^"\\\r\n]|\\.)*")'
+	  OPTION_KEY_TOKEN='regexp:([^#={}\s][^={}\s]*)|("([^"\\\r\n]|\\.)*")'
+	  BOOLEAN_TOKEN='regexp:(yes)|(no)'
+	  INT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)'
+	  FLOAT_TOKEN='regexp:[+-]?(0|[1-9][0-9]*)(\.[0-9]+)'
+	  STRING_TOKEN='regexp:([^#={}\s"][^={}\s"]*)|("([^"\\\r\n]|\\.)*")'
+	  DOCUMENTATION_TOKEN='regexp:([^\r\n]*)'
+	]
+}
+
+root ::= root_block
+root_block ::= root_block_item * {
+  extends=block
+}
+private root_block_item ::=  comment | property | value
+
+private comment ::= documentation_comment | option_comment | COMMENT
+documentation_comment ::= "###" documentation_text ?{
+  pin(".*")=1
+}
+documentation_text ::= DOCUMENTATION_TOKEN
+option_comment ::= "##" option_comment_item{
+  pin(".*")=1
+}
+private option_comment_item ::= option | value
+
+property ::= property_key property_separator value {
+  pin(".*")=1
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  implements="icu.windea.pls.cwt.psi.CwtNamedElement"
+  methods=[getIcon getName setName checkRename getPropertyName getPropertyValue getPropertyTruncatedValue]
+}
+
+option ::= option_key option_separator value{
+  pin(".*")=1
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  implements="icu.windea.pls.cwt.psi.CwtNamedElement"
+  methods=[getIcon getName setName checkRename getOptionName getOptionValue getOptionTruncatedValue]
+}
+
+property_key ::= PROPERTY_KEY_TOKEN{
+  methods=[getName]
+}
+
+option_key ::= OPTION_KEY_TOKEN{
+  methods=[getName]
+}
+
+property_separator ::= "="
+
+option_separator ::= "=" | "<>"
+
+value ::= boolean | number | string | block{
+  methods=[getIcon getValue getTruncatedValue]
+}
+
+boolean ::= BOOLEAN_TOKEN {
+  extends=value
+  methods=[getBooleanValue]
+}
+number ::= int | float {
+  extends=value
+}
+int ::= INT_TOKEN {
+  extends=number
+  methods=[getIntValue]
+}
+float ::= FLOAT_TOKEN{
+  extends=number
+  methods=[getFloatValue]
+}
+string ::= STRING_TOKEN{
+  extends=value
+  methods=[getValue getTruncatedValue getStringValue]
+}
+block ::= "{" block_item * "}" {
+  pin=1
+  extends=value
+  implements="com.intellij.psi.PsiListLikeElement"
+  methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents]
+}
+private block_item ::= comment | property | option | value

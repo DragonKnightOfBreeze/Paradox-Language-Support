@@ -36,6 +36,6 @@ About this plugin
 Related links
 
 * [cwtools](https://github.com/cwtools/cwtools)
-* [cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
-* [cwtools-stellaris-config](https://github.com/cwtools/cwtools-stellaris-config)
+* [cwtools vscode](https://github.com/cwtools/cwtools-vscode)
+* [.cwt config file guidance](https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance)
 

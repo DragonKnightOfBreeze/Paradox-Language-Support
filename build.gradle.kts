@@ -5,8 +5,8 @@ plugins {
 	id("org.jetbrains.grammarkit") version "2021.1.2"
 }
 
-group = "com.windea"
-version = "0.3.0-preview1"
+group = "icu.windea"
+version = "0.3.0-preview-1"
 
 intellij {
 	version = "2021.1"
