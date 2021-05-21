@@ -124,12 +124,13 @@ class ParadoxRuleGroup(
 			return element.name
 		}
 		
-		private fun getType(data: Map<String, Any>, name: String): ParadoxType {
+		private fun getType(data: Map<String, Any>, name: String?): ParadoxType {
+			val _name = name.toString() //这里传进来的仍然可能是null
 			val aliasData = data["alias"]
 			return when {
-				aliasData is String -> return ParadoxType(name, listOf(aliasData))
-				aliasData is List<*> -> return ParadoxType(name, aliasData.cast())
-				else -> ParadoxType(name)
+				aliasData is String -> return ParadoxType(_name, listOf(aliasData))
+				aliasData is List<*> -> return ParadoxType(_name, aliasData.cast())
+				else -> ParadoxType(_name)
 			}
 		}
 		

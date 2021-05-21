@@ -9,15 +9,15 @@ class ParadoxSettingsComponent {
 	companion object {
 		private val _genericTitle = message("pls.settings.generic")
 		private val _preferOverriddenName = message("pls.settings.generic.preferOverridden")
-		private val _preferOverriddenComment = message("pls.settings.generic.preferOverridden.comment")
+		private val _preferOverriddenTooltip = message("pls.settings.generic.preferOverridden.tooltip")
 		private val _renderLineCommentText = message("pls.settings.generic.renderLineCommentText")
-		private val _renderLineCommentTextComment = message("pls.settings.generic.renderLineCommentText.comment")
+		private val _renderLineCommentTextTooltip = message("pls.settings.generic.renderLineCommentText.tooltip")
 		private val _renderDefinitionText = message("pls.settings.generic.renderDefinitionText")
-		private val _renderDefinitionTextComment = message("pls.settings.generic.renderDefinitionText.comment")
+		private val _renderDefinitionTextTooltip = message("pls.settings.generic.renderDefinitionText.tooltip")
 		private val _renderLocalisationText = message("pls.settings.generic.renderLocalisationText")
-		private val _renderLocalisationTextComment = message("pls.settings.generic.renderLocalisationText.comment")
+		private val _renderLocalisationTextTooltip = message("pls.settings.generic.renderLocalisationText.tooltip")
 		private val _defaultGameType = message("pls.settings.generic.defaultGameType")
-		private val _defaultGameTypeComment = message("pls.settings.generic.defaultGameType.comment")
+		private val _defaultGameTypeTooltip = message("pls.settings.generic.defaultGameType.tooltip")
 		private val _unsupportedGameType = message("unsupportedGameType")
 	}
 	
@@ -30,26 +30,36 @@ class ParadoxSettingsComponent {
 	val panel = panel {
 		titledRow(_genericTitle) {
 			row {
-				checkBox(_preferOverriddenName, true).applyToComponent { preferOverriddenCheckBox = this }
-				commentNoWrap(_preferOverriddenComment)
+				checkBox(_preferOverriddenName, true).applyToComponent {
+					toolTipText = _preferOverriddenTooltip 
+					preferOverriddenCheckBox = this 
+				}
 			}
 			row {
-				checkBox(_renderLineCommentText, true).applyToComponent { renderLineCommentTextCheckBox = this }
-				commentNoWrap(_renderLineCommentTextComment)
+				checkBox(_renderLineCommentText, true).applyToComponent {
+					toolTipText = _renderLineCommentTextTooltip
+					renderLineCommentTextCheckBox = this
+				}
 			}
 			row {
-				checkBox(_renderDefinitionText, true).applyToComponent { renderDefinitionTextCheckBox = this }
-				commentNoWrap(_renderDefinitionTextComment)
+				checkBox(_renderDefinitionText, true).applyToComponent {  
+					toolTipText = _renderDefinitionTextTooltip
+					renderDefinitionTextCheckBox = this 
+				}
 			}
 			row {
-				checkBox(_renderLocalisationText, true).applyToComponent { renderLocalisationTextCheckBox = this }
-				commentNoWrap(_renderLocalisationTextComment)
+				checkBox(_renderLocalisationText, true).applyToComponent {
+					toolTipText = _renderLocalisationTextTooltip
+					renderLocalisationTextCheckBox = this
+				}
 			}
 			row{
-				label(_defaultGameType)
-				comboBox(DefaultComboBoxModel(ParadoxGameType.values), ParadoxSettingsState.getInstance()::defaultGameType)
-					.applyToComponent { defaultGameTypeComboBox = this }
-				commentNoWrap(_defaultGameTypeComment)
+				label(_defaultGameType).applyToComponent { 
+					toolTipText = _defaultGameTypeTooltip
+				}
+				comboBox(DefaultComboBoxModel(ParadoxGameType.values), settings::defaultGameType).applyToComponent { 
+					defaultGameTypeComboBox = this 
+				}
 			}
 		}
 	}

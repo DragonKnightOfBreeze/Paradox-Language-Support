@@ -16,6 +16,10 @@ enum class ParadoxGameType(
 	
 	val exeFileName = "$key.exe"
 	
+	override fun toString(): String {
+		return text
+	}
+	
 	companion object{
 		val values = values() 
 		val map = values.associateBy { it.key }
