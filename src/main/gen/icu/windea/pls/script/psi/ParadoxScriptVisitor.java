@@ -4,8 +4,8 @@ package icu.windea.pls.script.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -24,6 +24,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitColor(@NotNull ParadoxScriptColor o) {
     visitStringValue(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
@@ -56,6 +57,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitStringValue(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitStringValue(@NotNull ParadoxScriptStringValue o) {

@@ -154,7 +154,7 @@ infix fun List<String>.relaxMatchesPath(other:List<String>):Boolean{
 	val size = size
 	val otherSize = other.size
 	if(size != otherSize) return false
-	for(index in 0..size){
+	for(index in 0 until size){
 		val path = this[index].toLowerCase()
 		if(path == "any") continue
 		val otherPath = other[index].toLowerCase()
@@ -305,6 +305,10 @@ class RangeExpression private constructor(expression: String) : AbstractExpressi
 				limitMax = false
 			}
 		}
+	}
+	
+	operator fun contains(value:Int):Boolean{ 
+		return value >= min && (max == null || value <= max)
 	}
 	
 	operator fun component1() = min

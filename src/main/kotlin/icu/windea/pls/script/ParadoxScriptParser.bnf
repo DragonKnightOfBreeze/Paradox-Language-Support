@@ -84,7 +84,7 @@ property_value ::= value
 
 value ::= variable_reference | boolean | number | string_value | block{
   implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getIcon getValue]
+  methods=[getIcon getValue getTruncatedValue]
 }
 variable_reference ::= VARIABLE_REFERENCE_ID {
   extends=value
@@ -92,29 +92,26 @@ variable_reference ::= VARIABLE_REFERENCE_ID {
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
-  implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue]
+  methods=[getBooleanValue]
 }
 number ::= int | float {
   extends=value
-  implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue]
 }
 int ::= INT_TOKEN {
   extends=number
+  methods=[getIntValue]
 }
 float ::= FLOAT_TOKEN{
   extends=number
+  methods=[getFloatValue]
 }
 string_value ::= color | code | string{
   extends=value
-  implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue]
 }
 string ::= STRING_TOKEN | QUOTED_STRING_TOKEN {
   extends=string_value
   implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue setValue getReference getReferneceName]
+  methods=[getValue setValue getReference getStringValue]
 }
 color ::= COLOR_TOKEN {
   extends=string_value
@@ -130,6 +127,6 @@ block ::= "{" block_item * "}" {
   pin(".*")=1
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[isEmpty isNotEmpty isObject isArray getComponents findProperty findValue]
+  methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents findProperty findValue]
 }
 private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value

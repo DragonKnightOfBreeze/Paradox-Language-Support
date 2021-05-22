@@ -33,4 +33,9 @@ public class ParadoxScriptFloatImpl extends ParadoxScriptNumberImpl implements P
     return notNullChild(findChildByType(FLOAT_TOKEN));
   }
 
+  @Override
+  public float getFloatValue() {
+    return ParadoxScriptPsiImplUtil.getFloatValue(this);
+  }
+
 }

@@ -4,9 +4,10 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
 import java.awt.Color;
 
-public interface ParadoxScriptColor extends ParadoxScriptStringValue {
+public interface ParadoxScriptColor extends ParadoxScriptStringValue, PsiLiteralValue {
 
   @NotNull
   PsiElement getColorToken();

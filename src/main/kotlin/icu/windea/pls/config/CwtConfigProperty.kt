@@ -1,5 +1,7 @@
 package icu.windea.pls.config
 
+import icu.windea.pls.*
+
 data class CwtConfigProperty(
 	val key: String,
 	var booleanValue:Boolean? = null,
@@ -11,5 +13,7 @@ data class CwtConfigProperty(
 	var documentation: String? = null,
 	var options: List<CwtConfigOption>? = null,
 	var optionValues:List<CwtConfigOptionValue>? = null
-)
+){
+	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> RangeExpression.resolve(s) }
+}
 

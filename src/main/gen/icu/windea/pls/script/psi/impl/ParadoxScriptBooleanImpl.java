@@ -34,9 +34,8 @@ public class ParadoxScriptBooleanImpl extends ParadoxScriptValueImpl implements 
   }
 
   @Override
-  @NotNull
-  public String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  public boolean getBooleanValue() {
+    return ParadoxScriptPsiImplUtil.getBooleanValue(this);
   }
 
 }

@@ -12,42 +12,47 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	override fun getCacheSize() = 4 * 1024
 	
-	fun getOne(name: String,type:String?, project: Project, scope: GlobalSearchScope,preferFirst:Boolean): ParadoxScriptProperty? {
+	fun getOne(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
-		return if(preferFirst) elements.firstOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type }
-		else elements.lastOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type }
+		return if(preferFirst) elements.firstOrNull { element -> matchesTypeExpression(element, typeExpression) }
+		else elements.lastOrNull { element -> matchesTypeExpression (element, typeExpression) }
 	}
 	
-	fun getAll(name: String,type:String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+	fun getAll(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
-			if(type == null || type == element.paradoxDefinitionInfo?.type) result.add(element)
+			if(matchesTypeExpression(element, typeExpression)) result.add(element)
 		}
 		return result
 	}
 	
-	fun getAll(type:String?,project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+	fun getAll(typeExpression: String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {
 			for(element in get(key, project, scope)) {
-				if(type == null || type == element.paradoxDefinitionInfo?.type) result.add(element)
+				if(matchesTypeExpression(element, typeExpression)) result.add(element)
 			}
 		}
 		return result
 	}
 	
-	inline fun filter(type:String?,project: Project, scope: GlobalSearchScope, predicate:(String)->Boolean): List<ParadoxScriptProperty> {
+	inline fun filter(typeExpression: String?, project: Project, scope: GlobalSearchScope, predicate: (String) -> Boolean): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {
 			if(predicate(key)) {
 				for(element in get(key, project, scope)) {
-					if(type == null || type == element.paradoxDefinitionInfo?.type)  result.add(element)
+					if(matchesTypeExpression(element, typeExpression)) result.add(element)
 				}
 			}
 		}
 		return result
+	}
+	
+	@PublishedApi
+	internal fun matchesTypeExpression(element: ParadoxScriptProperty, type: String?): Boolean {
+		return type == null || element.paradoxDefinitionInfo?.matchesTypeExpression(type) == true
 	}
 }

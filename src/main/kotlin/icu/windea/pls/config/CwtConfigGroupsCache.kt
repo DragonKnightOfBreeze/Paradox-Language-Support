@@ -1,5 +1,6 @@
 package icu.windea.pls.config
 
+import com.intellij.openapi.project.*
 import com.jetbrains.rd.util.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
@@ -7,7 +8,8 @@ import org.slf4j.*
 
 class CwtConfigGroupsCache(
 	val groups: Map<String, Map<String, CwtConfig>>,
-	val declarations:Map<String,List<Map<String,Any?>>>
+	val declarations:Map<String,List<Map<String,Any?>>>,
+	val project:Project
 ){
 	companion object{
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
@@ -64,7 +66,7 @@ class CwtConfigGroupsCache(
 		groupCaches = ConcurrentHashMap()
 		for((groupName,group) in groups) {
 			val gameType = ParadoxGameType.resolve(groupName)?:continue
-			groupCaches[gameType] = CwtConfigGroupCache(group,gameType,groupName)
+			groupCaches[gameType] = CwtConfigGroupCache(group,gameType,groupName,project)
 		}
 		
 		logger.info("Resolve config groups finished.")

@@ -33,4 +33,9 @@ public class ParadoxScriptIntImpl extends ParadoxScriptNumberImpl implements Par
     return notNullChild(findChildByType(INT_TOKEN));
   }
 
+  @Override
+  public int getIntValue() {
+    return ParadoxScriptPsiImplUtil.getIntValue(this);
+  }
+
 }

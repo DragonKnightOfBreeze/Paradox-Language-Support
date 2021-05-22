@@ -10,4 +10,6 @@ public interface ParadoxScriptInt extends ParadoxScriptNumber {
   @NotNull
   PsiElement getIntToken();
 
+  int getIntValue();
+
 }

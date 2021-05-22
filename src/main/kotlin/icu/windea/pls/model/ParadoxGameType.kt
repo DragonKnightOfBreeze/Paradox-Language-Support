@@ -34,7 +34,7 @@ enum class ParadoxGameType(
 		}
 		
 		fun defaultValue(): ParadoxGameType{
-			return settings.defaultGameType
+			return getSettings().defaultGameType
 		}
 	}
 }

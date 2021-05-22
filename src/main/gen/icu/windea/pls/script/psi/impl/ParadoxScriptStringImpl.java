@@ -58,4 +58,10 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implem
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
+  @Override
+  @NotNull
+  public String getStringValue() {
+    return ParadoxScriptPsiImplUtil.getStringValue(this);
+  }
+
 }

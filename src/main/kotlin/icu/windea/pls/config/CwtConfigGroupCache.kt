@@ -1,6 +1,6 @@
 package icu.windea.pls.config
 
-import com.intellij.diff.comparison.*
+import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -10,7 +10,8 @@ import java.util.concurrent.*
 class CwtConfigGroupCache(
 	val group: Map<String, CwtConfig>,
 	val gameType: ParadoxGameType,
-	val name: String
+	val name: String,
+	val project: Project
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
@@ -128,15 +129,9 @@ class CwtConfigGroupCache(
 					"unique" -> resolved.unique = prop.booleanValue ?: continue
 					"severity" -> resolved.severity = prop.stringValue ?: continue
 					"skip_root_key" -> {
-						val propValue = prop.stringValue
-						if(propValue != null) {
-							resolved.skip_root_key.add(listOf(propValue))
-						} else {
-							val propValues = prop.values
-							if(propValues != null) {
-								resolved.skip_root_key.add(propValues.mapNotNull { it.stringValue })
-							}
-						}
+						//值可能是string也可能是stringArray
+						val list = prop.stringValue?.toSingletonList() ?: prop.values?.mapNotNull { it.stringValue }?: emptyList()
+						if(list.isNotEmpty()) resolved.skip_root_key.add(list)
 					}
 					"localisation" -> {
 						val propProps = prop.properties
@@ -178,8 +173,8 @@ class CwtConfigGroupCache(
 					"starts_with" -> resolved.starts_with = option.stringValue ?: continue
 					"type_key_filter" -> {
 						val reversed = option.separator == CwtConfigSeparator.NOT_EQUAL
-						val optionValues = option.values ?: continue
-						val list = optionValues.mapNotNull { it.stringValue }
+						//值可能是string也可能是stringArray
+						val list = option.stringValue?.toSingletonList() ?: option.values?.mapNotNull { it.stringValue } ?: emptyList()
 						resolved.type_key_filter = ReversibleList(list, reversed)
 					}
 					"graph_related_types" -> {
@@ -279,10 +274,12 @@ class CwtConfigGroupCache(
 		//如果skip_root_key = <any>，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过
 		//skip_root_key可以为列表（多级），可以重复（其中之一匹配即可）
 		val skipRootKeyConfig = typeConfig.skip_root_key //String? | "any"
-		if(skipRootKeyConfig.isNotEmpty()) {
+		if(skipRootKeyConfig.isEmpty()) {
+			if(propertyPath.length != 1) return false
+		}else{
 			var skipResult = false
 			for(keys in skipRootKeyConfig) {
-				if(keys.relaxMatchesPath(path.subpaths)) {
+				if(keys.relaxMatchesPath(propertyPath.parentSubpaths)) {
 					skipResult = true
 					break
 				}
@@ -293,9 +290,9 @@ class CwtConfigGroupCache(
 		val typeKeyFilterConfig = typeConfig.type_key_filter
 		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
 			val filterResult = if(typeKeyFilterConfig.reverse) {
-				typeKeyFilterConfig.any { elementName in it }
-			} else {
 				typeKeyFilterConfig.all { elementName !in it }
+			} else {
+				typeKeyFilterConfig.any { elementName in it }
 			}
 			if(!filterResult) return false
 		}
@@ -320,7 +317,7 @@ class CwtConfigGroupCache(
 		}
 		//根据config对property进行内容匹配
 		val config = subtypeConfig.config
-		return matchContent(element, config)
+		return matchContent(element, config,project)
 	}
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
@@ -337,18 +334,13 @@ class CwtConfigGroupCache(
 		return ParadoxDefinitionInfo(name, type, subtypes, subtypesConfig, localisation, localisationConfig, graphRelatedTypes, unique, severity, pushScopes)
 	}
 	
-	private fun matchContent(element: ParadoxScriptProperty, config: CwtConfigProperty): Boolean {
-		//根据config对property进行内容匹配
-		return false //TODO
-	}
-	
 	private fun getName(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): String {
 		//如果name_from_file = yes，则返回文件名（不包含扩展）
 		val nameFromFileConfig = typeConfig.name_from_file
 		if(nameFromFileConfig) return element.containingFile.name.substringBeforeLast('.')
 		//如果name_field = <any>，则返回对应名字的property的value
 		val nameFieldConfig = typeConfig.name_field
-		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig)?.value ?: return anonymousString
+		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig)?.value.orEmpty()
 		//否则直接返回elementName
 		return elementName
 	}
@@ -378,7 +370,11 @@ class CwtConfigGroupCache(
 	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, name: String): MutableList<ParadoxLocalisationInfo> {
 		val result = mutableListOf<ParadoxLocalisationInfo>()
 		for(config in localisationConfig) {
-			val keyName = buildString { for(c in config.expression) if(c == '$') append(name) else append(c) }
+			//如果definition的name是匿名的（没有），那么对应的keyName全部设为匿名的
+			val keyName = when(name) {
+				anonymousString -> anonymousString
+				else -> buildString { for(c in config.expression) if(c == '$') append(name) else append(c) }
+			}
 			val info = ParadoxLocalisationInfo(config.name, keyName, config.required, config.primary)
 			result.add(info)
 		}

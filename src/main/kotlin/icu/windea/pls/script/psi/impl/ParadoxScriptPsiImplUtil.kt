@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi.impl
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createValue
@@ -173,26 +174,31 @@ object ParadoxScriptPsiImplUtil {
 	fun getValue(element: ParadoxScriptValue): String {
 		return element.text
 	}
+	
+	@JvmStatic
+	fun getTruncatedValue(element: ParadoxScriptValue):String{
+		return element.value
+	}
 	//endregion
 	
 	//region ParadoxScriptBoolean
 	@JvmStatic
-	fun getValue(element: ParadoxScriptBoolean): String {
-		return element.text
+	fun getBooleanValue(element: ParadoxScriptBoolean): Boolean {
+		return element.value.toBooleanYesNo()
 	}
 	//endregion
 	
-	//region ParadoxScriptNumber
+	//region ParadoxScriptInt
 	@JvmStatic
-	fun getValue(element: ParadoxScriptNumber): String {
-		return element.text
+	fun getIntValue(element: ParadoxScriptInt): Int {
+		return element.value.toIntOrNull()?:0
 	}
 	//endregion
 	
-	//region ParadoxScriptStringValue
+	//region ParadoxScriptFloat
 	@JvmStatic
-	fun getValue(element: ParadoxScriptStringValue): String {
-		return element.text
+	fun getFloatValue(element: ParadoxScriptFloat): Float {
+		return element.value.toFloatOrNull()?:0f
 	}
 	//endregion
 	
@@ -206,6 +212,11 @@ object ParadoxScriptPsiImplUtil {
 	fun setValue(element: ParadoxScriptString, name: String): PsiElement {
 		element.replace(createValue(element.project, name.quoteAsStringLike()))
 		return element
+	}
+	
+	@JvmStatic
+	fun getStringValue(element: ParadoxScriptString): String {
+		return element.value
 	}
 	
 	@JvmStatic
@@ -277,6 +288,16 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptBlock
 	@JvmStatic
+	fun getValue(element: ParadoxScriptBlock): String {
+		return emptyBlockString
+	}
+	
+	@JvmStatic
+	fun getTruncatedValue(element: ParadoxScriptBlock): String {
+		return blockFolder
+	}
+	
+	@JvmStatic
 	fun isEmpty(element: ParadoxScriptBlock): Boolean {
 		element.forEachChild {
 			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return false
@@ -315,6 +336,12 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
+		//如果存在元素为property，则认为所有合法的元素都是property
+		return if(element.isObject) element.propertyList else element.valueList
+	}
+	
+	@JvmStatic
 	fun findProperty(element: ParadoxScriptBlock, propertyName: String): ParadoxScriptProperty? {
 		return element.propertyList.find { it.name == propertyName }
 	}
@@ -322,12 +349,6 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun findValue(element: ParadoxScriptBlock, value: String): ParadoxScriptValue? {
 		return element.valueList.find { it.value == value }
-	}
-	
-	@JvmStatic
-	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
-		//如果存在元素为property，则认为所有合法的元素都是property
-		return if(element.isObject) element.propertyList else element.valueList
 	}
 	//endregion
 }

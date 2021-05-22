@@ -4,9 +4,10 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
 import icu.windea.pls.script.reference.ParadoxScriptStringPropertyPsiReference;
 
-public interface ParadoxScriptString extends ParadoxScriptStringValue {
+public interface ParadoxScriptString extends ParadoxScriptStringValue, PsiLiteralValue {
 
   @Nullable
   PsiElement getQuotedStringToken();
@@ -23,8 +24,7 @@ public interface ParadoxScriptString extends ParadoxScriptStringValue {
   @NotNull
   ParadoxScriptStringPropertyPsiReference getReference();
 
-  //WARNING: getReferneceName(...) is skipped
-  //matching getReferneceName(ParadoxScriptString, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull
+  String getStringValue();
 
 }

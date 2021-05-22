@@ -30,7 +30,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 			val elementLocale = element.paradoxLocale
 			if(locale == null) {
 				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-				if(elementLocale == inferredParadoxLocale) {
+				if(elementLocale == inferParadoxLocale()) {
 					result.add(index++, element)
 				} else {
 					result.add(element)
@@ -56,7 +56,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 					val elementLocale = element.paradoxLocale
 					if(locale == null) {
 						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-						if(elementLocale == inferredParadoxLocale) {
+						if(elementLocale == inferParadoxLocale()) {
 							result.add(index++, element)
 							nextIndex++
 						} else {
@@ -86,7 +86,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 				val elementLocale = element.paradoxLocale
 				if(locale == null) {
 					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-					if(elementLocale == inferredParadoxLocale) {
+					if(elementLocale == inferParadoxLocale()) {
 						result.add(index++, element)
 						nextIndex++
 					} else {
@@ -115,7 +115,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 					val elementLocale = element.paradoxLocale
 					if(locale == null) {
 						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-						if(elementLocale == inferredParadoxLocale) {
+						if(elementLocale == inferParadoxLocale()) {
 							result.add(index++, element)
 							nextIndex++
 						} else {

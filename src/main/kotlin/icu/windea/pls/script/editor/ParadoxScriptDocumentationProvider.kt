@@ -50,7 +50,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val name = definitionInfo.name
+				val name = definitionInfo.name.ifEmpty { anonymousString }
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
 				val localisation = definitionInfo.localisation
@@ -58,6 +58,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					appendBr().appendBr()
 					var isFirst = true
 					for((n, kn) in localisation) {
+						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
 						if(isFirst) isFirst = false else appendBr()
 						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
@@ -99,7 +100,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			if(settings.renderLineCommentText) {
+			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -121,7 +122,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 			//之前的单行注释文本
-			if(settings.renderLineCommentText) {
+			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -136,7 +137,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val name = definitionInfo.name
+				val name = definitionInfo.name.ifEmpty { anonymousString }
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
 				val localisation = definitionInfo.localisation
@@ -144,13 +145,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					appendBr().appendBr()
 					var isFirst = true
 					for((n,kn) in localisation) {
+						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
 						if(isFirst) isFirst = false else appendBr()
 						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
 				}
 			}
 			//之前的单行注释文本
-			if(settings.renderLineCommentText) {
+			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -159,11 +161,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//本地化文本
-			if(settings.renderDefinitionText) {
+			if(getSettings().renderDefinitionText) {
 				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((n, kn) in localisation) {
+						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
 						val e = findLocalisation(kn, element.paradoxLocale, element.project, hasDefault = true)
 						val richText = e?.renderText() ?: continue
 						val sectionName = n.toCapitalizedWords()

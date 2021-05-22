@@ -125,7 +125,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation) <b>").append(name).append("</b>")
 			}
 			//之前的单行注释文本
-			if(settings.renderLineCommentText) {
+			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -134,7 +134,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				}
 			}
 			//本地化文本
-			if(settings.renderLocalisationText) {
+			if(getSettings().renderLocalisationText) {
 				val richText = element.renderText()
 				if(richText.isNotEmpty()) {
 					sections {

@@ -1,6 +1,7 @@
 package icu.windea.pls.config
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
@@ -9,7 +10,9 @@ import org.slf4j.*
 import org.yaml.snakeyaml.*
 import java.util.concurrent.*
 
-class CwtConfigGroupProvider{
+class CwtConfigGroupProvider(
+	private val project: Project
+){
 	companion object{
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupProvider::class.java)
 		private val yaml = Yaml()
@@ -25,7 +28,7 @@ class CwtConfigGroupProvider{
 		declarations = ConcurrentHashMap<String,List<Map<String,Any?>>>()
 		configGroupsCache = ReadAction.compute<CwtConfigGroupsCache,Exception> {
 			initConfigGroups()
-			CwtConfigGroupsCache(groups,declarations)
+			CwtConfigGroupsCache(groups,declarations,project)
 		}
 	}
 	

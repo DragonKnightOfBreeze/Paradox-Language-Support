@@ -10,7 +10,6 @@ public interface ParadoxScriptBoolean extends ParadoxScriptValue {
   @NotNull
   PsiElement getBooleanToken();
 
-  @NotNull
-  String getValue();
+  boolean getBooleanValue();
 
 }

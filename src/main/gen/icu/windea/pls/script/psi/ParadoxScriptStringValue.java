@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxScriptStringValue extends ParadoxScriptValue {
 
-  @NotNull
-  String getValue();
-
 }

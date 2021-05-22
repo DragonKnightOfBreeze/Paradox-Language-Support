@@ -37,7 +37,7 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 		definitionGutterIcon,
 		{
 			buildString {
-				val name = definitionInfo.name
+				val name = definitionInfo.name.ifEmpty { anonymousString }
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
 			}

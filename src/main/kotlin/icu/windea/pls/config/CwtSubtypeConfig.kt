@@ -16,6 +16,6 @@ data class CwtSubtypeConfig(
 	var push_scope:String? = null,
 	var starts_with: String? = null,
 	var display_name:String? = null,
-	var abbreviation: String? = null,
+	var abbreviation: String? = null
 )
 

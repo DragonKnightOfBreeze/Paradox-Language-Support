@@ -1,8 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.script.psi.*
 import java.util.*
 
 @Suppress("UNCHECKED_CAST")
@@ -33,5 +31,15 @@ data class ParadoxDefinitionInfo(
 	
 	override fun toString(): String {
 		return "$name: $typeText"
+	}
+	
+	/**
+	 * 判断是否匹配指定的类型表达式（`type.subtype`）。
+	 */
+	fun matchesTypeExpression(typeExpression:String):Boolean{
+		val dotIndex = typeExpression.indexOf('.')
+		val type = if(dotIndex == -1) typeExpression else typeExpression.substring(0,dotIndex)
+		val subtype = if(dotIndex == -1) null else typeExpression.substring(dotIndex+1)
+		return type == this.type && (subtype == null || subtype in subtypes)
 	}
 }

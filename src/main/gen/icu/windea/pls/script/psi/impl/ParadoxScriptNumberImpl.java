@@ -27,10 +27,4 @@ public abstract class ParadoxScriptNumberImpl extends ParadoxScriptValueImpl imp
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
 }
