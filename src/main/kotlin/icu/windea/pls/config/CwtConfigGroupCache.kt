@@ -15,21 +15,6 @@ class CwtConfigGroupCache(
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
-		
-		private const val typesKey = "types"
-		private const val typeKeyPrefix = "type["
-		private const val typeKeySuffix = "]"
-		private const val subtypeKeyPrefix = "subtype["
-		private const val subtypeKeySuffix = "]"
-		private const val enumsKey = "enums"
-		private const val enumKeyPrefix = "enum["
-		private const val enumKeySuffix = "]"
-		private const val aliasKeyPrefix = "alias["
-		private const val aliasKeySuffix = "]"
-		private const val modifierPrefix = "modifier:"
-		private const val effectPrefix = "effect:"
-		private const val scopesKey = "scopes"
-		private const val scopeGroupsKey = "scope_groups"
 	}
 	
 	//? -> type[?] = { ... }
@@ -55,7 +40,7 @@ class CwtConfigGroupCache(
 				val key = prop.key
 				when(key) {
 					//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
-					typesKey -> {
+					"types" -> {
 						val typeProperties = prop.properties
 						if(typeProperties != null && typeProperties.isNotEmpty()) {
 							for(typeProperty in typeProperties) {
@@ -68,7 +53,7 @@ class CwtConfigGroupCache(
 						continue
 					}
 					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums中
-					enumsKey -> {
+					"enums" -> {
 						val enumProperties = prop.properties
 						if(enumProperties != null && enumProperties.isNotEmpty()) {
 							for(enumProperty in enumProperties) {
@@ -92,22 +77,6 @@ class CwtConfigGroupCache(
 		}
 		
 		logger.info("Resolve config group '$name' finished.")
-	}
-	
-	private fun resolveTypeName(key: String): String? {
-		return key.resolveByRemoveSurrounding(typeKeyPrefix, typeKeySuffix)
-	}
-	
-	private fun resolveSubtypeName(key: String): String? {
-		return key.resolveByRemoveSurrounding(subtypeKeyPrefix, subtypeKeySuffix)
-	}
-	
-	private fun resolveEnumName(key: String): String? {
-		return key.resolveByRemoveSurrounding(enumKeyPrefix, enumKeySuffix)
-	}
-	
-	private fun resolveAliasName(key: String): String? {
-		return key.resolveByRemoveSurrounding(aliasKeyPrefix, aliasKeySuffix)
 	}
 	
 	private fun resolveTypeConfig(config: CwtConfigProperty, name: String): CwtTypeConfig? {
@@ -316,8 +285,8 @@ class CwtConfigGroupCache(
 			if(!elementName.startsWith(startsWithConfig)) return false
 		}
 		//根据config对property进行内容匹配
-		val config = subtypeConfig.config
-		return matchContent(element, config,project)
+		val elementConfig = subtypeConfig.config
+		return matchContent(element, elementConfig,this)
 	}
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {

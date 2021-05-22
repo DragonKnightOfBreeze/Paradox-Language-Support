@@ -14,6 +14,7 @@ data class CwtConfigProperty(
 	var options: List<CwtConfigOption>? = null,
 	var optionValues:List<CwtConfigOptionValue>? = null
 ){
-	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> RangeExpression.resolve(s) }
+	//下面的属性需要懒加载
+	val cardinality by lazy { options?.find { it.key == "cardinality" }?.stringValue?.let { s -> RangeExpression.resolve(s) } }
 }
 

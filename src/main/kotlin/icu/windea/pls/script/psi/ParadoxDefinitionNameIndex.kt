@@ -13,12 +13,18 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	override fun getCacheSize() = 4 * 1024
 	
 	fun getOne(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptProperty? {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return null
+		
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		return if(preferFirst) elements.firstOrNull { element -> matchesTypeExpression(element, typeExpression) }
 		else elements.lastOrNull { element -> matchesTypeExpression (element, typeExpression) }
 	}
 	
 	fun getAll(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
@@ -28,6 +34,9 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	}
 	
 	fun getAll(typeExpression: String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {
@@ -39,6 +48,9 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	}
 	
 	inline fun filter(typeExpression: String?, project: Project, scope: GlobalSearchScope, predicate: (String) -> Boolean): List<ParadoxScriptProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
 		for(key in keys) {

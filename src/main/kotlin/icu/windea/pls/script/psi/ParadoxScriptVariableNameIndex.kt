@@ -12,6 +12,9 @@ object ParadoxScriptVariableNameIndex: StringStubIndexExtension<ParadoxScriptVar
 	override fun getCacheSize() = 1024
 	
 	fun getOne(name: String, project: Project, scope: GlobalSearchScope,preferFirst:Boolean): ParadoxScriptVariable? {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return null
+		
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptVariable::class.java)
 		return if(preferFirst) elements.firstOrNull() else elements.lastOrNull()
 	}
@@ -26,6 +29,9 @@ object ParadoxScriptVariableNameIndex: StringStubIndexExtension<ParadoxScriptVar
 	}
 	
 	fun getAll(project: Project, scope: GlobalSearchScope): List<ParadoxScriptVariable> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxScriptVariable>()
 		val keys = getAllKeys(project)
 		for(key in keys) {
@@ -37,6 +43,9 @@ object ParadoxScriptVariableNameIndex: StringStubIndexExtension<ParadoxScriptVar
 	}
 	
 	inline fun filter(project: Project, scope: GlobalSearchScope, predicate:(String)->Boolean): List<ParadoxScriptVariable> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxScriptVariable>()
 		val keys = getAllKeys(project)
 		for(key in keys) {

@@ -14,6 +14,9 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	override fun getCacheSize() = 100 * 1024 //50000+
 	
 	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean,preferFirst:Boolean): ParadoxLocalisationProperty? {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return null
+		
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
 		return if(preferFirst){
 			elements.firstOrNull { element->locale == null || locale == element.paradoxLocale } ?: if(hasDefault) elements.firstOrNull() else null 
@@ -23,6 +26,9 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	}
 	
 	fun getAll(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean): List<ParadoxLocalisationProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
@@ -45,6 +51,9 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	}
 	
 	fun getAll(names:Iterable<String>,locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean,keepOrder:Boolean): List<ParadoxLocalisationProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)
@@ -76,6 +85,9 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	}
 	
 	fun getAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope,hasDefault:Boolean): List<ParadoxLocalisationProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)
@@ -104,6 +116,9 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	}
 	
 	inline fun filter(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean,predicate: (String) -> Boolean): List<ParadoxLocalisationProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
 		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
 		val keys = getAllKeys(project)

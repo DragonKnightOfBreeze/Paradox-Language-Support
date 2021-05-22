@@ -57,7 +57,7 @@ class ParadoxSettingsComponent {
 				label(_defaultGameType).applyToComponent { 
 					toolTipText = _defaultGameTypeTooltip
 				}
-				comboBox(DefaultComboBoxModel(ParadoxGameType.values), getSettings::defaultGameType).applyToComponent { 
+				comboBox(DefaultComboBoxModel(ParadoxGameType.values), getSettings()::defaultGameType).applyToComponent { 
 					defaultGameTypeComboBox = this 
 				}
 			}

@@ -335,13 +335,24 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
 }
 
-//TODO 优化（分成两个索引或者其他方案）
-fun ParadoxLocalisationProperty.isLocalisation() :Boolean{
+/**
+ * 判断当前localisation所在的根目录是否是"localisation"或"localisation_synced"
+ */
+fun ParadoxLocalisationProperty.isInValidRootDirectory():Boolean{
+	return this.paradoxFileInfo?.path?.root.let{ it != null && it == "localisation" || it == "localisation_synced" }
+}
+
+/**
+ * 判断当前localisation所在的根目录是否是"localisation"
+ */
+fun ParadoxLocalisationProperty.isInLocalisationRootDirectory() :Boolean{
 	return this.paradoxFileInfo?.path?.root == "localisation"
 }
 
-//TODO 优化（分成两个索引或者其他方案）
-fun ParadoxLocalisationProperty.isLocalisationSynced() :Boolean{
+/**
+ * 判断当前localisation所在的根目录是否是"localisation_synced"
+ */
+fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory() :Boolean{
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
 }
 

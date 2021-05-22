@@ -23,7 +23,8 @@ class ParadoxLocalisationLineMarkerProvider : LineMarkerProviderDescriptor() {
 		return when(element) {
 			//必须是localisationProperty
 			is ParadoxLocalisationProperty -> {
-				if(element.paradoxFileInfo == null) return null
+				//所在的根目录必须是"localisation"或"localisation_snyced"
+				if(!element.isInValidRootDirectory()) return null
 				LineMarker(element)
 			}
 			else -> null
