@@ -110,7 +110,7 @@ private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProp
 		when {
 			//布尔值要完全匹配
 			propConfig.booleanValue != null -> {
-				if(propValue !is ParadoxScriptBoolean || propConfig.booleanValue != propConfig.booleanValue) return false
+				if(propValue !is ParadoxScriptBoolean || propValue.booleanValue != propConfig.booleanValue) return false
 			}
 			//块（数组/对象）需要匹配
 			propConfig.properties != null && propConfig.values != null -> {

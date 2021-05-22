@@ -60,7 +60,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	}
 	
 	private fun getFileType(file: VirtualFile): ParadoxFileType? {
-		if(file is StubVirtualFile && !file.isValid && file.isDirectory) return null
+		if(file is StubVirtualFile || !file.isValid || file.isDirectory) return null
 		val fileExtension = file.extension
 		return when {
 			fileExtension in scriptFileExtensions -> ParadoxFileType.Script

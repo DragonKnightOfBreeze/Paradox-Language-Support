@@ -164,3 +164,5 @@ java.lang.UnsupportedOperationException: D:/Documents/Projects/White-Wind-Story/
 	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
 	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 ```
+
+com.intellij.codeInsight.documentation.DocumentationComponent.getImageByKeyImpl

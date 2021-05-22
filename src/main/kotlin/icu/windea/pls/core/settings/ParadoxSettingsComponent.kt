@@ -30,13 +30,13 @@ class ParadoxSettingsComponent {
 	val panel = panel {
 		titledRow(_genericTitle) {
 			row {
-				checkBox(_preferOverriddenName, true).applyToComponent {
+				checkBox(_preferOverriddenName, false).applyToComponent {
 					toolTipText = _preferOverriddenTooltip 
 					preferOverriddenCheckBox = this 
 				}
 			}
 			row {
-				checkBox(_renderLineCommentText, true).applyToComponent {
+				checkBox(_renderLineCommentText, false).applyToComponent {
 					toolTipText = _renderLineCommentTextTooltip
 					renderLineCommentTextCheckBox = this
 				}
