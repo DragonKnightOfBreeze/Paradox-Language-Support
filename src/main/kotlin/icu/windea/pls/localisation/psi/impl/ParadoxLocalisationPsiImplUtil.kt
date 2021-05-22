@@ -39,7 +39,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationLocale, name: String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		element.localeId.replace(createLocale(element.project, name).localeId)
+		return element
 	}
 	
 	@JvmStatic
@@ -163,7 +164,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationSequentialNumber, name: String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		element.sequentialNumberId?.replace(createSequentialNumber(element.project, name).sequentialNumberId!!)
+		return element
 	}
 	
 	@JvmStatic
@@ -247,7 +249,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandScope, name: String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		element.commandScopeId.replace(createCommandScope(element.project, name).commandScopeId)
+		return element
 	}
 	
 	@JvmStatic
@@ -280,7 +283,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandField, name: String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
+		element.commandFieldId?.replace(createCommandField(element.project, name).commandFieldId!!)
+		return element
 	}
 	
 	@JvmStatic
