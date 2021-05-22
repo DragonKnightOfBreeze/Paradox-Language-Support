@@ -1,10 +1,4 @@
-1
-
-```
-Caused by: java.lang.NullPointerException: Parameter specified as non-null is null: method com.windea.plugin.idea.paradox.model.ParadoxType.<init>, parameter name
-```
-
-2
+BUG1 ✔
 
 ```
 Caused by: java.lang.NullPointerException: Parameter specified as non-null is null: method icu.windea.pls.model.ParadoxType.<init>, parameter name
@@ -43,6 +37,8 @@ Caused by: java.lang.NullPointerException: Parameter specified as non-null is nu
 
 
 ```
+
+BUG2
 
 ```
 com.intellij.psi.PsiInvalidElementAccessException: Element class com.intellij.psi.impl.source.tree.CompositeElement of type PARADOX_LOCALISATION_PROPERTY (class icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStubElementType)
@@ -94,6 +90,68 @@ com.intellij.psi.PsiInvalidElementAccessException: Element class com.intellij.ps
 	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.java:969)
 	at com.intellij.ide.IdeEventQueue.dispatchMouseEvent(IdeEventQueue.java:906)
 	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.java:836)
+	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$8(IdeEventQueue.java:449)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:808)
+	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$9(IdeEventQueue.java:448)
+	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:781)
+	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.java:502)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+```
+
+BUG3
+
+```
+java.lang.UnsupportedOperationException: D:/Documents/Projects/White-Wind-Story/stellaris-mod/src/common/traits/white_wind_story_species_traits.txt
+	at com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile.unsupported(StubVirtualFile.java:217)
+	at com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile.isValid(StubVirtualFile.java:94)
+	at icu.windea.pls.core.ParadoxFileTypeOverrider.getFileType(ParadoxFileTypeOverrider.kt:63)
+	at icu.windea.pls.core.ParadoxFileTypeOverrider.getOverriddenFileType(ParadoxFileTypeOverrider.kt:18)
+	at com.intellij.openapi.fileTypes.impl.FileTypeManagerImpl.lambda$getFileTypeByFile$13(FileTypeManagerImpl.java:601)
+	at com.intellij.openapi.extensions.impl.ExtensionProcessingHelper.computeSafeIfAny(ExtensionProcessingHelper.java:56)
+	at com.intellij.openapi.extensions.ExtensionPointName.computeSafeIfAny(ExtensionPointName.java:54)
+	at com.intellij.openapi.fileTypes.impl.FileTypeManagerImpl.getFileTypeByFile(FileTypeManagerImpl.java:601)
+	at com.intellij.openapi.fileTypes.impl.FileTypeManagerImpl.getFileTypeByFile(FileTypeManagerImpl.java:595)
+	at com.intellij.openapi.vfs.VirtualFile.getFileType(VirtualFile.java:354)
+	at com.intellij.openapi.fileTypes.ex.FileTypeChooser.getKnownFileTypeOrAssociate(FileTypeChooser.java:155)
+	at com.intellij.openapi.fileTypes.ex.FileTypeChooser.getKnownFileTypeOrAssociate(FileTypeChooser.java:167)
+	at com.intellij.ide.actions.CreateFileAction.lambda$createLightWeightPopup$0(CreateFileAction.java:103)
+	at com.intellij.ide.ui.newItemPopup.NewItemSimplePopupPanel$1.keyPressed(NewItemSimplePopupPanel.java:108)
+	at java.desktop/java.awt.Component.processKeyEvent(Component.java:6610)
+	at java.desktop/javax.swing.JComponent.processKeyEvent(JComponent.java:2852)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6429)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2263)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:5027)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2321)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4859)
+	at java.desktop/java.awt.KeyboardFocusManager.redispatchEvent(KeyboardFocusManager.java:1962)
+	at java.desktop/java.awt.DefaultKeyboardFocusManager.dispatchKeyEvent(DefaultKeyboardFocusManager.java:879)
+	at java.desktop/java.awt.DefaultKeyboardFocusManager.preDispatchKeyEvent(DefaultKeyboardFocusManager.java:1158)
+	at java.desktop/java.awt.DefaultKeyboardFocusManager.typeAheadAssertions(DefaultKeyboardFocusManager.java:1018)
+	at java.desktop/java.awt.DefaultKeyboardFocusManager.dispatchEvent(DefaultKeyboardFocusManager.java:844)
+	at com.intellij.ide.IdeKeyboardFocusManager.dispatchEvent(IdeKeyboardFocusManager.java:42)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4908)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2321)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2784)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4859)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:778)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:727)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)
+	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:751)
+	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:749)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:748)
+	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.java:969)
+	at com.intellij.ide.IdeEventQueue.dispatchKeyEvent(IdeEventQueue.java:893)
+	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.java:833)
 	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$8(IdeEventQueue.java:449)
 	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:808)
 	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$9(IdeEventQueue.java:448)

@@ -10,3 +10,10 @@ data class CwtTypeLocalisationConfig(
 	var required: Boolean = false,
 	var primary: Boolean = false
 )
+
+data class ParadoxLocalisationInfo(
+	val name:String,
+	val keyName:String,
+	val required:Boolean = false,
+	val primary:Boolean = false
+)

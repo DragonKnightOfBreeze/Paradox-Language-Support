@@ -14,15 +14,15 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	fun getOne(name: String,type:String?, project: Project, scope: GlobalSearchScope,preferFirst:Boolean): ParadoxScriptProperty? {
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
-		return if(preferFirst) elements.firstOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type?.name }
-		else elements.lastOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type?.name }
+		return if(preferFirst) elements.firstOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type }
+		else elements.lastOrNull { element -> type == null || type == element.paradoxDefinitionInfo?.type }
 	}
 	
 	fun getAll(name: String,type:String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
 		val result = mutableListOf<ParadoxScriptProperty>()
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
-			if(type == null || type == element.paradoxDefinitionInfo?.type?.name) result.add(element)
+			if(type == null || type == element.paradoxDefinitionInfo?.type) result.add(element)
 		}
 		return result
 	}
@@ -32,7 +32,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		val keys = getAllKeys(project)
 		for(key in keys) {
 			for(element in get(key, project, scope)) {
-				if(type == null || type == element.paradoxDefinitionInfo?.type?.name) result.add(element)
+				if(type == null || type == element.paradoxDefinitionInfo?.type) result.add(element)
 			}
 		}
 		return result
@@ -44,7 +44,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		for(key in keys) {
 			if(predicate(key)) {
 				for(element in get(key, project, scope)) {
-					if(type == null || type == element.paradoxDefinitionInfo?.type?.name)  result.add(element)
+					if(type == null || type == element.paradoxDefinitionInfo?.type)  result.add(element)
 				}
 			}
 		}

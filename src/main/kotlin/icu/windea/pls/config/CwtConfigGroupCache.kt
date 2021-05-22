@@ -1,5 +1,6 @@
 package icu.windea.pls.config
 
+import com.intellij.diff.comparison.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -116,7 +117,8 @@ class CwtConfigGroupCache(
 			for(prop in props) {
 				val key = prop.key
 				when(key) {
-					"path" -> resolved.path = prop.stringValue ?: continue
+					//这里path需要移除前缀"game/"，这个插件会忽略它
+					"path" -> resolved.path = prop.stringValue?.removePrefix("game/") ?: continue
 					"path_strict" -> resolved.path_strict = prop.booleanValue ?: continue
 					"path_file" -> resolved.path_file = prop.stringValue ?: continue
 					"path_extension" -> resolved.path_extension = prop.stringValue ?: continue
@@ -243,17 +245,144 @@ class CwtConfigGroupCache(
 	/**
 	 * 根据指定的scriptProperty，匹配类型规则，得到对应的definitionInfo。
 	 */
-	fun getDefinitionInfo(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): ParadoxDefinitionInfo? {
-		for((typeName, typeConfig) in types) {
+	fun inferDefinitionInfo(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): ParadoxDefinitionInfo? {
+		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
-				
+				return toDefinitionInfo(typeConfig, element, elementName)
 			}
 		}
-		return null //TODO
+		return null
 	}
 	
-	fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
+	/**
+	 * 判断
+	 */
+	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
+		//判断path是否匹配
+		val pathConfig = typeConfig.path ?: return false
+		val pathStrictConfig = typeConfig.path_strict
+		if(pathStrictConfig) {
+			if(pathConfig != path.parent) return false
+		} else {
+			if(!pathConfig.matchesPath(path.parent)) return false
+		}
+		//判断path_name是否匹配
+		val pathFileConfig = typeConfig.path_file //String?
+		if(pathFileConfig != null) {
+			if(pathFileConfig != path.fileName) return false
+		}
+		//判断path_extension是否匹配
+		val pathExtensionConfig = typeConfig.path_extension //String?
+		if(pathExtensionConfig != null) {
+			if(pathExtensionConfig != path.fileExtension) return false
+		}
+		//如果skip_root_key = <any>，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过
+		//skip_root_key可以为列表（多级），可以重复（其中之一匹配即可）
+		val skipRootKeyConfig = typeConfig.skip_root_key //String? | "any"
+		if(skipRootKeyConfig.isNotEmpty()) {
+			var skipResult = false
+			for(keys in skipRootKeyConfig) {
+				if(keys.relaxMatchesPath(path.subpaths)) {
+					skipResult = true
+					break
+				}
+			}
+			if(!skipResult) return false
+		}
+		//如果type_key_filter存在，则过滤key
+		val typeKeyFilterConfig = typeConfig.type_key_filter
+		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
+			val filterResult = if(typeKeyFilterConfig.reverse) {
+				typeKeyFilterConfig.any { elementName in it }
+			} else {
+				typeKeyFilterConfig.all { elementName !in it }
+			}
+			if(!filterResult) return false
+		}
+		return true
+	}
+	
+	private fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxScriptProperty, elementName: String): Boolean {
+		//如果type_key_filter存在，则过滤key
+		val typeKeyFilterConfig = subtypeConfig.type_key_filter
+		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
+			val filterResult = if(typeKeyFilterConfig.reverse) {
+				typeKeyFilterConfig.any { elementName in it }
+			} else {
+				typeKeyFilterConfig.all { elementName !in it }
+			}
+			if(!filterResult) return false
+		}
+		//如果starts_with存在，则要求elementName匹配这个前缀
+		val startsWithConfig = subtypeConfig.starts_with
+		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
+			if(!elementName.startsWith(startsWithConfig)) return false
+		}
+		//根据config对property进行内容匹配
+		val config = subtypeConfig.config
+		return matchContent(element, config)
+	}
+	
+	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
+		val name = getName(typeConfig, element, elementName)
+		val type = typeConfig.name
+		val subtypesConfig = getSubtypesConfig(typeConfig, element, elementName)
+		val subtypes = subtypesConfig.map { it.name }
+		val localisationConfig = getLocalisationConfig(typeConfig, subtypes)
+		val localisation = getLocalisation(localisationConfig, name)
+		val graphRelatedTypes = typeConfig.graph_related_types ?: emptyList()
+		val unique = typeConfig.unique
+		val severity = typeConfig.severity
+		val pushScopes = subtypesConfig.map { it.push_scope }
+		return ParadoxDefinitionInfo(name, type, subtypes, subtypesConfig, localisation, localisationConfig, graphRelatedTypes, unique, severity, pushScopes)
+	}
+	
+	private fun matchContent(element: ParadoxScriptProperty, config: CwtConfigProperty): Boolean {
+		//根据config对property进行内容匹配
 		return false //TODO
+	}
+	
+	private fun getName(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): String {
+		//如果name_from_file = yes，则返回文件名（不包含扩展）
+		val nameFromFileConfig = typeConfig.name_from_file
+		if(nameFromFileConfig) return element.containingFile.name.substringBeforeLast('.')
+		//如果name_field = <any>，则返回对应名字的property的value
+		val nameFieldConfig = typeConfig.name_field
+		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig)?.value ?: return anonymousString
+		//否则直接返回elementName
+		return elementName
+	}
+	
+	private fun getSubtypesConfig(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): List<CwtSubtypeConfig> {
+		val subtypesConfig = typeConfig.subtypes
+		val result = mutableListOf<CwtSubtypeConfig>()
+		for(subtypeConfig in subtypesConfig.values) {
+			if(matchesSubtype(subtypeConfig, element, elementName)) result.add(subtypeConfig)
+		}
+		return result
+	}
+	
+	private fun getSubtypes(subtypesConfig: List<CwtSubtypeConfig>): List<String> {
+		return subtypesConfig.map { it.name }
+	}
+	
+	private fun getLocalisationConfig(typeConfig: CwtTypeConfig, subtypes: List<String>): List<CwtTypeLocalisationConfig> {
+		val localisationConfig = typeConfig.localisation
+		val result = mutableListOf<CwtTypeLocalisationConfig>()
+		for((subtypeNameOrEmpty, config) in localisationConfig) {
+			if(subtypeNameOrEmpty.isEmpty() || subtypeNameOrEmpty in subtypes) result.addAll(config)
+		}
+		return result
+	}
+	
+	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, name: String): MutableList<ParadoxLocalisationInfo> {
+		val result = mutableListOf<ParadoxLocalisationInfo>()
+		for(config in localisationConfig) {
+			val keyName = buildString { for(c in config.expression) if(c == '$') append(name) else append(c) }
+			val info = ParadoxLocalisationInfo(config.name, keyName, config.required, config.primary)
+			result.add(info)
+		}
+		return result
 	}
 }
 

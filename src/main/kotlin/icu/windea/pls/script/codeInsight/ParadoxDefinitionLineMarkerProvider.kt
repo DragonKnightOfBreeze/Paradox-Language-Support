@@ -39,12 +39,12 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 			buildString {
 				val name = definitionInfo.name
 				val typeText = definitionInfo.typeText
-				append("<br>(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
+				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
 			}
 		},
 		{ mouseEvent, _ ->
 			val project = element.project
-			val elements = findDefinitions(definitionInfo.name,definitionInfo.type.name,project).toTypedArray()
+			val elements = findDefinitions(definitionInfo.name,definitionInfo.type,project).toTypedArray()
 			when(elements.size) {
 				0 -> {}
 				1 -> OpenSourceUtil.navigate(true, elements.first())

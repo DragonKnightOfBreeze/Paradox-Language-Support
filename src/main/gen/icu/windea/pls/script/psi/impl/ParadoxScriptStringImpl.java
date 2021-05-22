@@ -2,9 +2,6 @@
 package icu.windea.pls.script.psi.impl;
 
 import java.util.List;
-
-import icu.windea.pls.script.psi.*;
-import icu.windea.pls.script.reference.*;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;

@@ -24,8 +24,6 @@ val settings get() = ParadoxSettingsState.getInstance()
 
 val config get() = ServiceManager.getService(CwtConfigGroupProvider::class.java).configGroupsCache
 
-val rule get() = ServiceManager.getService(ParadoxRuleGroupProvider::class.java).ruleGroupsCache
-
 val inferredParadoxLocale get() = when(System.getProperty("user.language")) {
 	"zh" -> config.localeMap.getValue("l_simp_chinese")
 	"en" -> config.localeMap.getValue("l_english")
@@ -207,30 +205,23 @@ private fun getGameType(file:PsiDirectory): ParadoxGameType? {
 	return null
 }
 
-val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = getDefinitionInfo(this)
+val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = inferDefinitionInfo(this)
 
-val ParadoxScriptProperty.paradoxDefinitionInfoNoCheck: ParadoxDefinitionInfo? get() = getDefinitionInfo(this, false)
-
-internal fun canGetDefinitionInfo(element: ParadoxScriptProperty): Boolean {
-	//最低到2级scriptProperty
-	val parent = element.parent
-	return parent is ParadoxScriptRootBlock || parent?.parent?.parent?.parent is ParadoxScriptRootBlock
-}
-
-private fun getDefinitionInfo(element: ParadoxScriptProperty, check: Boolean = true): ParadoxDefinitionInfo? {
-	if(check && !canGetDefinitionInfo(element)) return null
+private fun inferDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
 		CachedValueProvider.Result.create(resolveDefinitionInfo(element), element)
 	}
 }
 
 private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
-	val (_, path, _, _, gameType) = element.paradoxFileInfo ?: return null
-	val ruleGroup = rule.ruleGroups[gameType.key] ?: return null
+	//NOTE cwt文件中定义的definition的minDepth是4（跳过3个rootKey）
+	val propertyPath = element.resolvePropertyPath(4) ?: return null 
+	val fileInfo = element.paradoxFileInfo ?: return null
+	val path = fileInfo.path
+	val gameType = fileInfo.gameType
 	val elementName = element.name
-	val propertyPath = element.resolvePropertyPath() ?: return null
-	val definition = ruleGroup.definitions.values.find { it.matches(element, elementName, path, propertyPath) } ?: return null
-	return definition.toDefinitionInfo(element, elementName)
+	val configGroup = config[gameType]
+	return configGroup.inferDefinitionInfo(element, elementName, path, propertyPath)
 }
 
 fun ParadoxScriptValue.getType(): String? {
@@ -299,16 +290,20 @@ fun PsiElement.resolvePath(): ParadoxPath? {
 	return if(subpaths.isEmpty()) null else ParadoxPath(subpaths)
 }
 
-fun PsiElement.resolvePropertyPath(): ParadoxPath? {
+fun PsiElement.resolvePropertyPath(maxDepth:Int = -1): ParadoxPath? {
 	val subpaths = mutableListOf<String>()
 	var current = this
-	while(current !is PsiFile) {
+	var depth = 0
+	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
 		when {
 			current is ParadoxScriptProperty -> {
 				subpaths.add(0, current.name)
+				depth++
 			}
 			//忽略scriptValue
 		}
+		//如果发现深度超出指定的最大深度，则直接返回null
+		if(maxDepth != -1 && maxDepth < depth) return null
 		current = current.parent ?: break
 	}
 	return if(subpaths.isEmpty()) null else ParadoxPath(subpaths)

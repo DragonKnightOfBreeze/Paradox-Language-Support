@@ -23,32 +23,32 @@ inline fun <T, reified R> Sequence<T>.mapToArray(block: (T) -> R): Array<R> {
 	return toList().mapToArray(block)
 }
 
-fun CharSequence.surroundsWith(prefix:Char,suffix:Char,ignoreCase: Boolean = false): Boolean {
-	return startsWith(prefix,ignoreCase) && endsWith(suffix,ignoreCase)
+fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
+	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
 }
 
-fun CharSequence.surroundsWith(prefix:CharSequence,suffix:CharSequence,ignoreCase: Boolean = false): Boolean {
-	return startsWith(prefix,ignoreCase) && endsWith(suffix,ignoreCase)
+fun CharSequence.surroundsWith(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): Boolean {
+	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
 }
 
-fun CharSequence.removeSurrounding(prefix:CharSequence,suffix: CharSequence):CharSequence{
+fun CharSequence.removeSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {
 	return removePrefix(prefix).removeSuffix(suffix)
 }
 
-fun String.removeSurrounding(prefix:CharSequence,suffix: CharSequence):String{
+fun String.removeSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	return removePrefix(prefix).removeSuffix(suffix)
 }
 
-fun String.resolveByRemoveSurrounding(prefix:CharSequence,suffix: CharSequence):String?{
-	return if(surroundsWith(prefix,suffix)) substring(prefix.length,length-suffix.length) else null
+fun String.resolveByRemoveSurrounding(prefix: CharSequence, suffix: CharSequence): String? {
+	return if(surroundsWith(prefix, suffix)) substring(prefix.length, length - suffix.length) else null
 }
 
 fun String.containsBlank(): Boolean {
 	return any { it.isWhitespace() }
 }
 
-fun String.containsLineBreak():Boolean{
-	return any{ it == '\n' || it == '\r' }
+fun String.containsLineBreak(): Boolean {
+	return any { it == '\n' || it == '\r' }
 }
 
 fun String.containsBlankLine(): Boolean {
@@ -112,14 +112,14 @@ fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList
 	return indices
 }
 
-fun <K,V> Map<K,V>.find(predicate:(Map.Entry<K,V>)->Boolean):V?{
+fun <K, V> Map<K, V>.find(predicate: (Map.Entry<K, V>) -> Boolean): V? {
 	for(entry in this) {
 		if(predicate(entry)) return entry.value
 	}
 	throw NoSuchElementException()
 }
 
-fun <K,V> Map<K,V>.findOrNull(predicate:(Map.Entry<K,V>)->Boolean):V?{
+fun <K, V> Map<K, V>.findOrNull(predicate: (Map.Entry<K, V>) -> Boolean): V? {
 	for(entry in this) {
 		if(predicate(entry)) return entry.value
 	}
@@ -147,13 +147,29 @@ infix fun String.matchesPath(other: String): Boolean {
 	return false
 }
 
+/**
+ * 判断当前子路径列表是否宽松匹配另一个子路径列表（长度必须相等，当前子路径列表中的子路径可以是"any"，表示匹配任意子路径，忽略大小写）。
+ */
+infix fun List<String>.relaxMatchesPath(other:List<String>):Boolean{
+	val size = size
+	val otherSize = other.size
+	if(size != otherSize) return false
+	for(index in 0..size){
+		val path = this[index].toLowerCase()
+		if(path == "any") continue
+		val otherPath = other[index].toLowerCase()
+		if(path != otherPath) return false
+	}
+	return true
+}
+
 //Is Extensions
 
 private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
 
 fun String.isBoolean() = this == "yes" || this == "no"
 
-fun String.isInt():Boolean{
+fun String.isInt(): Boolean {
 	var isFirstChar = true
 	for(char in this.toCharArray()) {
 		if(char.isDigit()) continue
@@ -186,12 +202,12 @@ fun String.isFloat(): Boolean {
 	return true
 }
 
-fun String.isColor():Boolean{
+fun String.isColor(): Boolean {
 	return this.matches(isColorRegex)
 }
 
-fun String.isTypeOf(type:String):Boolean{
-	return (type=="boolean" && isBoolean()) || (type == "int" && isInt()) || (type =="float" && isFloat())
+fun String.isTypeOf(type: String): Boolean {
+	return (type == "boolean" && isBoolean()) || (type == "int" && isInt()) || (type == "float" && isFloat())
 		|| (type == "color" && isColor()) || type == "string"
 }
 
@@ -203,7 +219,7 @@ fun Boolean.toStringYesNo() = if(this) "yes" else "no"
 
 fun String.toBooleanYesNo() = this == "yes"
 
-fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if (this == "no") false else null
+fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
 
 fun URL.toFile() = File(this.toURI())
 
@@ -221,9 +237,9 @@ fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyLi
 
 //Specific Collections
 
-class ReversibleList<T>(list:List<T>, val reverse:Boolean = false):List<T> by list
+data class ReversibleList<T>(val list: List<T>, val reverse: Boolean = false) : List<T> by list
 
-class ReversibleMap<K,V>(map:Map<K,V>, val reverse:Boolean = false):Map<K,V> by map
+data class ReversibleMap<K, V>(val map: Map<K, V>, val reverse: Boolean = false) : Map<K, V> by map
 
 //Specific Expressions
 
@@ -231,7 +247,7 @@ interface Expression : CharSequence {
 	val expression: String
 }
 
-abstract class AbstractExpression(override val expression: String):Expression{
+abstract class AbstractExpression(override val expression: String) : Expression {
 	override val length get() = expression.length
 	
 	override fun get(index: Int) = expression.get(index)
@@ -245,12 +261,12 @@ abstract class AbstractExpression(override val expression: String):Expression{
 	override fun toString() = expression
 }
 
-interface ExpressionResolver<T:Expression>{
-	fun resolve(expression:String):T
+interface ExpressionResolver<T : Expression> {
+	fun resolve(expression: String): T
 }
 
-abstract class AbstractExpressionResolver<T:Expression>:ExpressionResolver<T>{
-	protected val cache = ConcurrentHashMap<String,T>()
+abstract class AbstractExpressionResolver<T : Expression> : ExpressionResolver<T> {
+	protected val cache = ConcurrentHashMap<String, T>()
 }
 
 /**
@@ -260,32 +276,32 @@ abstract class AbstractExpressionResolver<T:Expression>:ExpressionResolver<T>{
  * @property max 最大值，null表示无限
  * @property limitMax 如果值为`false`，则表示出现数量超出最大值时不警告
  */
-class RangeExpression private constructor(expression: String):AbstractExpression(expression){
-	companion object Resolver: AbstractExpressionResolver<RangeExpression>(){
+class RangeExpression private constructor(expression: String) : AbstractExpression(expression) {
+	companion object Resolver : AbstractExpressionResolver<RangeExpression>() {
 		override fun resolve(expression: String) = cache.getOrPut(expression) { RangeExpression(expression) }
 	}
 	
-	val min:Int
-	val max:Int?
-	val limitMax:Boolean
+	val min: Int
+	val max: Int?
+	val limitMax: Boolean
 	
 	init {
-		when{
+		when {
 			expression.isEmpty() -> {
-				min=0
+				min = 0
 				max = null
 				limitMax = false
 			}
 			expression.first() == '~' -> {
 				val firstDotIndex = expression.indexOf('.')
-				min = expression.substring(1,firstDotIndex).toIntOrNull()?: 0
-				max = expression.substring(firstDotIndex+2).toIntOrNull()?:0
+				min = expression.substring(1, firstDotIndex).toIntOrNull() ?: 0
+				max = expression.substring(firstDotIndex + 2).toIntOrNull() ?: 0
 				limitMax = true
 			}
 			else -> {
 				val firstDotIndex = expression.indexOf('.')
-				min = expression.substring(0,firstDotIndex).toIntOrNull()?: 0
-				max = expression.substring(firstDotIndex+2).toIntOrNull()?:0
+				min = expression.substring(0, firstDotIndex).toIntOrNull() ?: 0
+				max = expression.substring(firstDotIndex + 2).toIntOrNull() ?: 0
 				limitMax = false
 			}
 		}
@@ -301,7 +317,8 @@ class RangeExpression private constructor(expression: String):AbstractExpression
 /**
  * 条件表达式，如：`name?`, `name!`。
  */
-class ConditionalExpression(expression: String):AbstractExpression(expression){
+@Deprecated("")
+class ConditionalExpression(expression: String) : AbstractExpression(expression) {
 	companion object {
 		private val markers = charArrayOf('?', '!', '*', '+')
 	}
@@ -324,7 +341,8 @@ class ConditionalExpression(expression: String):AbstractExpression(expression){
 /**
  * 预测表达式，如：`isValid`, `!isValid`。
  */
-class PredicateExpression(expression: String):AbstractExpression(expression){
+@Deprecated("")
+class PredicateExpression(expression: String) : AbstractExpression(expression) {
 	val marker: Char? = expression.firstOrNull()?.takeIf { it == '!' }
 	val value: String = if(marker != null) expression.drop(1) else expression
 	val invert: Boolean = marker == '!'
@@ -333,28 +351,29 @@ class PredicateExpression(expression: String):AbstractExpression(expression){
 	
 	operator fun component2(): Boolean = invert
 	
-	fun matches(other:String):Boolean{
+	fun matches(other: String): Boolean {
 		return if(invert) value != other else value == other
 	}
 	
-	fun matches(other:List<String>):Boolean{
+	fun matches(other: List<String>): Boolean {
 		return if(invert) value !in other else value !in other
 	}
 	
-	inline fun <T> matches(other:List<T>,selector:(T)->String):Boolean{
-		return if(invert) other.all{ value != selector(it) } else other.any { value == selector(it) }
+	inline fun <T> matches(other: List<T>, selector: (T) -> String): Boolean {
+		return if(invert) other.all { value != selector(it) } else other.any { value == selector(it) }
 	}
 }
 
 /**
  * 类型表达式，如：`weapon`, `weapon.sword`, `weapon.(sword|spear)`
  */
-class TypeExpression(expression: String):AbstractExpression(expression){
-	private val dotIndex = expression.indexOf('.').let{ if(it == -1) expression.length else it }
-	 val type = expression.take(dotIndex)
-	 val subtypes = expression.drop(dotIndex).let{
-		 if(it.surroundsWith('(',')')) it.substring(1,it.length-1).split('|').map { s -> s.trim() } else listOf(it)
-	 }
+@Deprecated("")
+class TypeExpression(expression: String) : AbstractExpression(expression) {
+	private val dotIndex = expression.indexOf('.').let { if(it == -1) expression.length else it }
+	val type = expression.take(dotIndex)
+	val subtypes = expression.drop(dotIndex).let {
+		if(it.surroundsWith('(', ')')) it.substring(1, it.length - 1).split('|').map { s -> s.trim() } else listOf(it)
+	}
 	
 	operator fun component1(): String = type
 	

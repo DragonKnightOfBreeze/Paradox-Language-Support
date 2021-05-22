@@ -91,9 +91,7 @@
     
     <!--suppress PluginXmlValidity -->
     <applicationService serviceImplementation="icu.windea.pls.config.CwtConfigGroupProvider" preload="true" order="first"/>
-    <!--suppress PluginXmlValidity -->
-    <applicationService serviceImplementation="icu.windea.pls.config.ParadoxRuleGroupProvider" preload="true" order="first"/>
-    <!--suppress PluginXmlValidity -->
+   <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
 
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck2LibraryType"/>

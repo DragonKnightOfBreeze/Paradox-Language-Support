@@ -38,7 +38,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxScriptVariable){
+	fun checkRename(element: ParadoxScriptVariable) {
 		
 	}
 	
@@ -53,7 +53,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getUnquotedValue(element: ParadoxScriptVariable):String?{
+	fun getUnquotedValue(element: ParadoxScriptVariable): String? {
 		return element.variableValue?.text
 	}
 	//endregion
@@ -77,7 +77,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxScriptProperty){
+	fun checkRename(element: ParadoxScriptProperty) {
 		
 	}
 	
@@ -92,35 +92,49 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getUnquotedValue(element: ParadoxScriptProperty):String?{
+	fun getUnquotedValue(element: ParadoxScriptProperty): String? {
 		return element.propertyValue?.value?.text
 	}
 	
 	@JvmStatic
-	fun getTruncatedValue(element: ParadoxScriptProperty):String?{
-		return element.propertyValue?.value?.let{ if(it is ParadoxScriptBlock) blockFolder else it.text.truncate(truncateLimit) }
+	fun getTruncatedValue(element: ParadoxScriptProperty): String? {
+		return element.propertyValue?.value?.let { if(it is ParadoxScriptBlock) blockFolder else it.text.truncate(truncateLimit) }
+	}
+	
+	//得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
+	@JvmStatic
+	fun getDepth(element: ParadoxScriptProperty): Int {
+		var current: PsiElement? = element
+		var depth = 0
+		while(true) {
+			current = current?.parent ?: break
+			if(current is PsiFile) break
+			if(current is ParadoxScriptBlock) depth++
+			if(current is ParadoxScriptRootBlock) break
+		}
+		return depth
 	}
 	
 	@JvmStatic
-	fun findProperty(element: ParadoxScriptProperty,propertyName:String): ParadoxScriptProperty?{
+	fun findProperty(element: ParadoxScriptProperty, propertyName: String): ParadoxScriptProperty? {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return null
 		return block.propertyList.find { it.name == propertyName }
 	}
 	
 	@JvmStatic
-	fun findProperties(element: ParadoxScriptProperty,propertyName:String):List<ParadoxScriptProperty>{
+	fun findProperties(element: ParadoxScriptProperty, propertyName: String): List<ParadoxScriptProperty> {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
 		return block.propertyList.filter { it.name == propertyName }
 	}
 	
 	@JvmStatic
-	fun findValue(element: ParadoxScriptProperty,value:String): ParadoxScriptValue? {
+	fun findValue(element: ParadoxScriptProperty, value: String): ParadoxScriptValue? {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return null
 		return block.valueList.find { it.value == value }
 	}
 	
 	@JvmStatic
-	fun findValues(element: ParadoxScriptProperty,value:String): List<ParadoxScriptValue> {
+	fun findValues(element: ParadoxScriptProperty, value: String): List<ParadoxScriptValue> {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
 		return block.valueList.filter { it.value == value }
 	}
@@ -144,7 +158,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReferenceValue(element: ParadoxScriptVariableReference): ParadoxScriptValue?{
+	fun getReferenceValue(element: ParadoxScriptVariableReference): ParadoxScriptValue? {
 		return element.reference.resolve()?.variableValue?.value
 	}
 	//endregion
@@ -301,12 +315,12 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun findProperty(element: ParadoxScriptBlock,propertyName:String): ParadoxScriptProperty?{
+	fun findProperty(element: ParadoxScriptBlock, propertyName: String): ParadoxScriptProperty? {
 		return element.propertyList.find { it.name == propertyName }
 	}
 	
 	@JvmStatic
-	fun findValue(element: ParadoxScriptBlock,value:String): ParadoxScriptValue? {
+	fun findValue(element: ParadoxScriptBlock, value: String): ParadoxScriptValue? {
 		return element.valueList.find { it.value == value }
 	}
 	

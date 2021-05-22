@@ -38,18 +38,18 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 		definitionLocalisationGutterIcon,
 		{
 			buildString {
-				val localisation = definitionInfo.resolvedLocalisation
+				val localisation = definitionInfo.localisation
 				var isFirst = true
-				for((k, v) in localisation) {
+				for((n, kn) in localisation) {
 					if(isFirst) isFirst = false else appendBr()
-					append("(definition localisation) ").append(k).append(" = <b>").appendPsiLink("#", v).append("</b>")
+					append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 				}
 			}
 		},
 		{ mouseEvent, _ ->
-			val names = definitionInfo.resolvedLocalisationNames
+			val keyNames = definitionInfo.localisationKeyNames
 			val project = element.project
-			val elements = findLocalisations(names, null, project, hasDefault = true, keepOrder = true).toTypedArray()
+			val elements = findLocalisations(keyNames, null, project, hasDefault = true, keepOrder = true).toTypedArray()
 			when(elements.size) {
 				0 -> { }
 				1 -> OpenSourceUtil.navigate(true, elements.first())

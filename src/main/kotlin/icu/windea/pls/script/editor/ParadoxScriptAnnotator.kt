@@ -108,72 +108,72 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	//	}
 	//}
 	
-	private fun resolveExpressions(expressions: List<ConditionalExpression>, project: Project,
-		existPropertyName: String, ruleGroup: ParadoxRuleGroup, requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
-		for(keyPatternExpression in expressions) {
-			val keyPattern = keyPatternExpression.value
-			when {
-				//别名
-				keyPattern.startsWith(aliasPrefix) -> {
-					//TODO
-					return afterResolved(keyPatternExpression, requiredData, multipleData)
-				}
-				//类型
-				keyPattern.startsWith(primitivePrefix) -> {
-					val key = keyPattern.drop(primitivePrefixLength)
-					if(existPropertyName.isTypeOf(key)){
-						return afterResolved(keyPatternExpression, requiredData, multipleData)
-					}
-				}
-				//定义
-				keyPattern.startsWith(typePrefix) -> {
-					val key = keyPattern.drop(typePrefixLength)
-					val (type, subtypes) = TypeExpression(key)
-					var matchedDefinitions = findDefinitions(existPropertyName, type, project)
-					if(subtypes.isNotEmpty()) {
-						matchedDefinitions = matchedDefinitions.filter { matchedDefinition ->
-							val matchedSubtypes = matchedDefinition.paradoxDefinitionInfo?.subtypes
-							matchedSubtypes != null && matchedSubtypes.any { it.name in subtypes }
-						}
-					}
-					if(matchedDefinitions.isNotEmpty()) {
-						return afterResolved(keyPatternExpression, requiredData, multipleData)
-					}
-				}
-				//枚举
-				keyPattern.startsWith(enumPrefix) -> {
-					val key = keyPattern.drop(enumPrefixLength)
-					val enum = ruleGroup.enums[key] ?: continue
-					val enumValues = enum.enumValues
-					if(existPropertyName in enumValues) {
-						return afterResolved(keyPatternExpression, requiredData, multipleData)
-					}
-				}
-				//字符串
-				else -> {
-					if(existPropertyName == keyPattern) {
-						return afterResolved(keyPatternExpression, requiredData, multipleData)
-					}
-				}
-			}
-		}
-		return ValidateState.Unresolved
-	}
-	
-	private fun afterResolved(keyPatternExpression:ConditionalExpression, requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
-		val (keyPattern,_,required,multiple) = keyPatternExpression
-		if(!multiple) {
-			if(keyPattern in multipleData) {
-				return ValidateState.Dupliate
-			} else {
-				multipleData.add(keyPattern)
-			}
-		}
-		if(required){
-			requiredData.remove(keyPattern)
-		}
-		return ValidateState.Ok
-	}
+	//private fun resolveExpressions(expressions: List<ConditionalExpression>, project: Project,
+	//	existPropertyName: String, ruleGroup: ParadoxRuleGroup, requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
+	//	for(keyPatternExpression in expressions) {
+	//		val keyPattern = keyPatternExpression.value
+	//		when {
+	//			//别名
+	//			keyPattern.startsWith(aliasPrefix) -> {
+	//				//TODO
+	//				return afterResolved(keyPatternExpression, requiredData, multipleData)
+	//			}
+	//			//类型
+	//			keyPattern.startsWith(primitivePrefix) -> {
+	//				val key = keyPattern.drop(primitivePrefixLength)
+	//				if(existPropertyName.isTypeOf(key)){
+	//					return afterResolved(keyPatternExpression, requiredData, multipleData)
+	//				}
+	//			}
+	//			//定义
+	//			keyPattern.startsWith(typePrefix) -> {
+	//				val key = keyPattern.drop(typePrefixLength)
+	//				val (type, subtypes) = TypeExpression(key)
+	//				var matchedDefinitions = findDefinitions(existPropertyName, type, project)
+	//				if(subtypes.isNotEmpty()) {
+	//					matchedDefinitions = matchedDefinitions.filter { matchedDefinition ->
+	//						val matchedSubtypes = matchedDefinition.paradoxDefinitionInfo?.subtypes
+	//						matchedSubtypes != null && matchedSubtypes.any { it.name in subtypes }
+	//					}
+	//				}
+	//				if(matchedDefinitions.isNotEmpty()) {
+	//					return afterResolved(keyPatternExpression, requiredData, multipleData)
+	//				}
+	//			}
+	//			//枚举
+	//			keyPattern.startsWith(enumPrefix) -> {
+	//				val key = keyPattern.drop(enumPrefixLength)
+	//				val enum = ruleGroup.enums[key] ?: continue
+	//				val enumValues = enum.enumValues
+	//				if(existPropertyName in enumValues) {
+	//					return afterResolved(keyPatternExpression, requiredData, multipleData)
+	//				}
+	//			}
+	//			//字符串
+	//			else -> {
+	//				if(existPropertyName == keyPattern) {
+	//					return afterResolved(keyPatternExpression, requiredData, multipleData)
+	//				}
+	//			}
+	//		}
+	//	}
+	//	return ValidateState.Unresolved
+	//}
+	//
+	//private fun afterResolved(keyPatternExpression:ConditionalExpression, requiredData: MutableSet<String>,multipleData: MutableSet<String>): ValidateState {
+	//	val (keyPattern,_,required,multiple) = keyPatternExpression
+	//	if(!multiple) {
+	//		if(keyPattern in multipleData) {
+	//			return ValidateState.Dupliate
+	//		} else {
+	//			multipleData.add(keyPattern)
+	//		}
+	//	}
+	//	if(required){
+	//		requiredData.remove(keyPattern)
+	//	}
+	//	return ValidateState.Ok
+	//}
 	
 	private fun annotateVariableReference(element: ParadoxScriptVariableReference, holder: AnnotationHolder) {
 		//注明无法解析的情况

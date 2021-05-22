@@ -53,13 +53,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val name = definitionInfo.name
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
-				val localisation = definitionInfo.resolvedLocalisation
+				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()
 					var isFirst = true
-					for((k, v) in localisation) {
+					for((n, kn) in localisation) {
 						if(isFirst) isFirst = false else appendBr()
-						append("(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
+						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
 				}
 			}
@@ -139,13 +139,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val name = definitionInfo.name
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
-				val localisation = definitionInfo.resolvedLocalisation
+				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
 					appendBr().appendBr()
 					var isFirst = true
-					for((k, v) in localisation) {
+					for((n,kn) in localisation) {
 						if(isFirst) isFirst = false else appendBr()
-						append("(definition localisation) ").append(k.value).append(" = <b>").appendPsiLink("#", v).append("</b>")
+						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
 				}
 			}
@@ -160,13 +160,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//本地化文本
 			if(settings.renderDefinitionText) {
-				val localisation = definitionInfo.resolvedLocalisation
+				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
-					for((name, key) in localisation) {
-						val e = findLocalisation(key, element.paradoxLocale, element.project, hasDefault = true)
+					for((n, kn) in localisation) {
+						val e = findLocalisation(kn, element.paradoxLocale, element.project, hasDefault = true)
 						val richText = e?.renderText() ?: continue
-						val sectionName = name.value.toCapitalizedWords()
+						val sectionName = n.toCapitalizedWords()
 						richTexts.add(sectionName to richText)
 					}
 					if(richTexts.isNotEmpty()) {
