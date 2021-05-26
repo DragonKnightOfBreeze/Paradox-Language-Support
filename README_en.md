@@ -4,7 +4,7 @@
 
 Support for Paradox Language.
 
-This plugin is under developing, so some complex functions may not be implemented yet.
+This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
 
 If you want more perfect language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
 

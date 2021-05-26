@@ -67,13 +67,14 @@ const val eventTargetPrefixLength = eventTargetPrefix.length
 
 //Icons
 
+//TODO 为每个游戏类型给定对应的游戏图标
 val paradoxIcon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 val ck2Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 val ck3Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 val eu4Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 val hoi4Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 val irIcon = IconLoader.getIcon("/icons/paradox.png",locationClass)
-val stellarisIcon = IconLoader.getIcon("/icons/stellaris.png",locationClass)
+val stellarisIcon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 val vic2Icon = IconLoader.getIcon("/icons/paradox.png",locationClass)
 
 val cwtFileIcon = IconLoader.getIcon("/icons/cwtFile.svg", locationClass)

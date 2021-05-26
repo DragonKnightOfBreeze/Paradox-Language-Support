@@ -12,14 +12,21 @@
       Support for Paradox Language.
     </p>
     <p>
-      This plugin is under developing, so some complex functions may not be implemented yet.<br>
+      This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
+    </p>
+    <p>
       If you want more perfect language support, please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
     </p>
     <p>
-      Create the descriptor file <code>descriptor.mod</code> in the root directory of your Mod to provide language support.<br>
+      Create the descriptor file <code>descriptor.mod</code> in the root directory of your Mod to provide language support.
+    <p/>
+    <p>
       Create the mark file <code>.${gameType}</code> in the root directory of your Mod to specify game type. (e.g. <code>.stellaris</code>)
     </p>
-      Supported game types: ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2.<br>
+    <p>
+      Supported game types: ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2.
+    </p>
+    <p>
       Supported paradox games: Crusader Kings II / Crusader Kings III / Europa Universalis IV / Hearts of Iron IV / Imperator: Rome / Stellaris / Victoria II.
     </p>
     <p>
@@ -44,14 +51,19 @@
       Paradox语言支持。
     </p>
     <p>
-      这个插件正在开发中，部分比较复杂的功能可能尚未实现。<br>
+      这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
+    </p>
+    <p>
       如果需要更加完善的语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
     </p>
     <p>
       在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>，即可提供语言支持。<br>
       在你的模组根文件夹下创建标记文件<code>.${gameType}</code>，即可指定游戏类型。（如<code>.stellaris</code>）
     </p>
-      支持的游戏类型：ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2。<br>
+    <p>
+      支持的游戏类型：ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2。
+    </p>
+    <p>
       支持的P社游戏：Crusader Kings II（十字军之王 II） / Crusader Kings III（十字军之王 III） / Europa Universalis IV（欧陆风云 IV） / Hearts of Iron IV（钢铁雄心 IV） / Imperator: Rome（帝国：罗马） / Stellaris（群星） / Victoria II（维多利亚 II）。
     </p>
     <p>

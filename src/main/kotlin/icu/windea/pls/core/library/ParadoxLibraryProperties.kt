@@ -2,7 +2,7 @@ package icu.windea.pls.core.library
 
 import com.intellij.openapi.roots.libraries.*
 
-//不知道是否应该保留，反正就这样吧
+//TODO 不知道是否应该保留，反正就这样吧
 
 class ParadoxLibraryProperties: LibraryProperties<ParadoxLibraryProperties>(){
 	companion object{

@@ -24,7 +24,9 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getSettings() = ParadoxSettingsState.getInstance()
 
-fun getConfig() = ServiceManager.getService(getDefaultProject(), CwtConfigGroupProvider::class.java).configGroupsCache
+fun getConfig(): CwtConfigGroupsCache {
+	return ServiceManager.getService(getDefaultProject(), CwtConfigGroupProvider::class.java).configGroupsCache
+}
 
 fun getConfig(project: Project) = ServiceManager.getService(project, CwtConfigGroupProvider::class.java).configGroupsCache
 

@@ -14,25 +14,25 @@ import javax.swing.*
 
 abstract class ParadoxLibraryType(
 	libraryKind: ParadoxLibraryKind,
-	private val libraryIcon: Icon,
-	private val gameType: ParadoxGameType
+	gameType: ParadoxGameType
 ) : LibraryType<ParadoxLibraryProperties>(libraryKind) {
-	class Ck2LibraryType : ParadoxLibraryType(Ck2LibraryKind, ck2Icon, ParadoxGameType.Ck2)
-	class Ck3LibraryType : ParadoxLibraryType(Ck3LibraryKind, ck3Icon, ParadoxGameType.Ck3)
-	class Eu4LibraryType : ParadoxLibraryType(Eu4LibraryKind, eu4Icon, ParadoxGameType.Eu4)
-	class Hoi4LibraryType : ParadoxLibraryType(Hoi4LibraryKind, hoi4Icon, ParadoxGameType.Hoi4)
-	class IrLibraryType : ParadoxLibraryType(IrLibraryKind, irIcon, ParadoxGameType.Ir)
-	class StellarisLibraryType : ParadoxLibraryType(StellarisLibraryKind, stellarisIcon, ParadoxGameType.Stellaris)
-	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind, vic2Icon, ParadoxGameType.Vic2)
+	class Ck2LibraryType : ParadoxLibraryType(Ck2LibraryKind, ParadoxGameType.Ck2)
+	class Ck3LibraryType : ParadoxLibraryType(Ck3LibraryKind, ParadoxGameType.Ck3)
+	class Eu4LibraryType : ParadoxLibraryType(Eu4LibraryKind, ParadoxGameType.Eu4)
+	class Hoi4LibraryType : ParadoxLibraryType(Hoi4LibraryKind, ParadoxGameType.Hoi4)
+	class IrLibraryType : ParadoxLibraryType(IrLibraryKind, ParadoxGameType.Ir)
+	class StellarisLibraryType : ParadoxLibraryType(StellarisLibraryKind, ParadoxGameType.Stellaris)
+	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind, ParadoxGameType.Vic2)
 	
+	private val libraryIcon = gameType.icon
 	private val createActionName = "Paradox/${gameType.text}"
 	private val namePrefix = "$createActionName: "
 	
 	companion object {
 		private val _chooserTitle = message("pls.library.chooser.title")
 		private val _chooserDescription = message("pls.library.chooser.description")
-		private val _invalidLibraryPathMessage = message("pls.library.dialog.invalidLibraryPath.message")
 		private val _invalidLibraryPathTitle = message("pls.library.dialog.invalidLibraryPath.title")
+		private val _invalidLibraryPathMessage = message("pls.library.dialog.invalidLibraryPath.message")
 	}
 	
 	//必须是一个文件夹，但必须包含descriptor.mod或者.exe文件
@@ -47,11 +47,14 @@ abstract class ParadoxLibraryType(
 	}
 	
 	//如果存在描述符文件，其中有name属性则取name属性的值，否则取库的文件名/目录
-	//如果存在游戏执行文件，则认为是标准库，否则认为不是一个合法的库
+	//如果存在游戏执行文件，则认为是标准库
+	//如果根目录名是特定的字符串，需要特殊处理，视为特殊的rootType
 	private fun getLibraryName(file: VirtualFile, project: Project): String? {
 		val fileName = file.name
 		for(child in file.children) {
 			val childName = child.name
+			val childExtension = child.extension
+			//要求：根目录包含描述符文件descriptor.mod或者对应的.exe文件，或者根目录名是特定的字符串
 			when {
 				childName.equals(descriptorFileName, true) -> {
 					val text = child.inputStream.reader().use { it.readText() }
@@ -62,10 +65,14 @@ abstract class ParadoxLibraryType(
 					}
 					return file.nameWithoutExtension
 				}
-				childName.equals("${gameType.name}.exe", true) -> return ParadoxRootType.Stdlib.text
-				fileName == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher.text
-				fileName == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets.text
-				fileName == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets.text
+				//TODO 严格验证
+				//根目录包含对应的.exe文件的情况
+				//childName.equals("${gameType.name}.exe", true) -> return ParadoxRootType.Stdlib.text
+				childExtension.equals("exe", true) -> return ParadoxRootType.Stdlib.text
+				//根目录名是特定字符串的情况
+				fileName.equals(ParadoxRootType.PdxLauncher.key, true) -> return ParadoxRootType.PdxLauncher.text
+				fileName.equals(ParadoxRootType.PdxOnlineAssets.key, true) -> return ParadoxRootType.PdxOnlineAssets.text
+				fileName.equals(ParadoxRootType.TweakerGuiAssets.key, true) -> return ParadoxRootType.TweakerGuiAssets.text
 			}
 		}
 		showInvalidLibraryDialog(project)

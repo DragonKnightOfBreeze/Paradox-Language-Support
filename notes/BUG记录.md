@@ -1,5 +1,3 @@
-BUG1 ✔
-
 ```
 Caused by: java.lang.NullPointerException: Parameter specified as non-null is null: method icu.windea.pls.model.ParadoxType.<init>, parameter name
 	at icu.windea.pls.model.ParadoxType.<init>(ParadoxType.kt)
@@ -34,11 +32,11 @@ Caused by: java.lang.NullPointerException: Parameter specified as non-null is nu
 	at com.intellij.psi.stubs.DefaultStubBuilder.buildStubTree(DefaultStubBuilder.java:22)
 	at com.intellij.psi.stubs.StubTreeBuilder.lambda$buildStubTree$1(StubTreeBuilder.java:143)
 	at com.intellij.psi.stubs.StubTreeBuilder.handleStubBuilderException(StubTreeBuilder.java:98)
-
-
 ```
 
-BUG2
+已解决
+
+***
 
 ```
 com.intellij.psi.PsiInvalidElementAccessException: Element class com.intellij.psi.impl.source.tree.CompositeElement of type PARADOX_LOCALISATION_PROPERTY (class icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStubElementType)
@@ -103,7 +101,9 @@ com.intellij.psi.PsiInvalidElementAccessException: Element class com.intellij.ps
 	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 ```
 
-BUG3
+已解决
+
+***
 
 ```
 java.lang.UnsupportedOperationException: D:/Documents/Projects/White-Wind-Story/stellaris-mod/src/common/traits/white_wind_story_species_traits.txt
@@ -165,4 +165,27 @@ java.lang.UnsupportedOperationException: D:/Documents/Projects/White-Wind-Story/
 	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 ```
 
+已解决
+
+***
+
+```
 com.intellij.codeInsight.documentation.DocumentationComponent.getImageByKeyImpl
+```
+
+JDK版本问题？
+
+***
+
+```
+java.lang.NullPointerException
+	at icu.windea.pls.PlsExtensionsKt.getConfig(PlsExtensions.kt:27)
+	at icu.windea.pls.PlsExtensionsKt.inferParadoxLocale(PlsExtensions.kt:32)
+	at icu.windea.pls.script.reference.ParadoxScriptStringPropertyPsiReference.resolve(ParadoxScriptStringPropertyPsiReference.kt:22)
+	at com.intellij.codeInsight.TargetElementUtilBase.getReferencedElement(TargetElementUtilBase.java:177)
+	at com.intellij.codeInsight.TargetElementUtilBase.doGetReferenceOrReferencedElement(TargetElementUtilBase.java:165)
+	at com.intellij.codeInsight.TargetElementUtilBase.getReferenceOrReferencedElement(TargetElementUtilBase.java:204)
+	at com.intellij.codeInsight.TargetElementUtilBase.getReferencedElement(TargetElementUtilBase.java:248)
+```
+
+为啥会是null？？

@@ -87,8 +87,11 @@
 * [X] 实现`CwtConfigGroupsProvider`
 * [X] 更换包名
 * [X] 支持基于cwt配置文件识别脚本文件中的定义（definition），并在gutterIcon、documentation等地方中显示
-* [ ] 解决BUG：origin和civic同时匹配了，可选的config的匹配逻辑存在BUG
-* [ ] 解决BUG：config的name可能重复，这时只要匹配其中之一即可
+* [X] 解决BUG：origin和civic同时匹配了，可选的config的匹配逻辑存在BUG
+* [X] 解决BUG：config的name可能重复，这时只要匹配其中之一即可（要求是连续的）
+* [ ] 解决BUG：解析图标生成的html无法正常渲染图标，尝试替换成在线解析dds
+* [ ] 支持基于cwt配置文件进行脚本文件代码提示
+* [ ] 支持基于cwt配置文件进行脚本文件代码验证
 * [ ] 实现基于`cwtConfigGroupsCache`的更加具体的规则
 * [ ] 规则文件加载需要一定时间 - 可能需要特殊处理
 
