@@ -11,7 +11,7 @@ class ParadoxSettingsConfigurable: SearchableConfigurable {
 	
 	private var component: ParadoxSettingsComponent? = null
 	
-	override fun getId() = "settings.language.paradox"
+	override fun getId() = "settings.language.pls"
 	
 	override fun getDisplayName() = _name
 	

@@ -19,7 +19,7 @@
     </p>
     <p>
       Create the descriptor file <code>descriptor.mod</code> in the root directory of your Mod to provide language support.
-    <p/>
+    </p>
     <p>
       Create the mark file <code>.${gameType}</code> in the root directory of your Mod to specify game type. (e.g. <code>.stellaris</code>)
     </p>
@@ -115,7 +115,7 @@
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Vic2LibraryType"/>
 
     <applicationConfigurable
-        id="settings.language.paradox"
+        id="settings.language.pls"
         groupId="language"
         instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService
