@@ -1,11 +1,5 @@
 # Summary
 
-[中文文档](README.md) | [English Documentation](README_en.md)
-
-[中文参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) | [English Reference Documentation](https://windea.icu/Paradox-Language-Support/#/en/)
-
-[Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
-
 Support for Paradox Language.
 
 This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.

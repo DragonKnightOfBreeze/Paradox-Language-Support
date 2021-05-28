@@ -1,11 +1,5 @@
 # 概述
 
-[中文文档](README.md) | [English Documentation](README_en.md)
-
-[中文参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) | [English Reference Documentation](https://windea.icu/Paradox-Language-Support/#/en/)
-
-[Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
-
 Paradox语言支持。
 
 这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
