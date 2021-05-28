@@ -1,0 +1,89 @@
+types = {
+    type[opinion_modifier] = {
+        path_strict = yes
+        path = "game/common/opinion_modifiers"
+
+        localisation = {
+            name = "$"
+        }
+    }
+}
+
+opinion_modifier = {
+    ## cardinality = 0..1
+    ### How much the opinion changes.
+    opinion = int
+
+    ## cardinality = 0..1
+    ### For how long by default does the modifier last once applied.
+    enum[duration] = int
+
+    ## cardinality = 0..1
+    ### If yes, the value will decay to 0 over the duration of the modifier. Defaults to "no".
+    decay = bool
+
+    ## cardinality = 0..1
+    ### If yes, heirs inherit this opinion modifier. Defaults to "no".
+    inherit = bool
+
+    ## cardinality = 0..1
+    ### If yes, the characters will become enemies of each other, effectively at war. Defaults to "no".
+    enemy = bool
+
+    ## cardinality = 0..1
+    ### If yes, the target, like a rival, counts as a foe for the is_foe trigger. Defaults to "no".
+    crime = bool
+
+    ## cardinality = 0..1
+    ### If yes, gives the holder a reason to imprison the target. Defaults to "no".
+    prison_reason = bool
+
+    ## cardinality = 0..1
+    ### If yes, gives the holder a reason to banish the target. Defaults to "no".
+    banish_reason = bool
+
+    ## cardinality = 0..1
+    ### If yes, gives the holder a reason to execute the target. Defaults to "no".
+    execute_reason = bool
+
+    ## cardinality = 0..1
+    ### If yes, gives the holder a reason to revoke the target's titles. Defaults to "no".
+    revoke_reason = bool
+
+    ## cardinality = 0..1
+    ### If yes, gives the holder a reason to divorce the target. Defaults to "no".
+    divorce_reason = bool
+
+    ## cardinality = 0..1
+    ### If yes, supresses all non-agression pacts between the characters while held. Defaults to "no".
+    disable_non_aggression_pacts = bool
+
+    ## cardinality = 0..1
+    ### If yes, counts as a non-agression pact between the characters while held. Defaults to "no".
+    non_aggression_pact = bool
+
+    # TODO: Figure out.
+    ## cardinality = 0..1
+    ### UNKNOWN. Defaults to "no".
+    preparing_invasion = bool
+
+    # TODO: Figure out.
+    ## cardinality = 0..1
+    ### UNKNOWN. Defaults to "no".
+    preparing_to_invade_me = bool
+
+    # TODO: Figure out.
+    ## cardinality = 0..1
+    ### UNKNOWN. Defaults to "no".
+    preparing_adventure_against_me = bool
+
+    # TODO: Confirm.
+    ## cardinality = 0..1
+    ### UNCONFIRMED Multiple copies of this modifier do not stack. Defaults to "yes", probably.
+    stacking = bool
+
+    # TODO: Confirm.
+    ## cardinality = 0..1
+    ### UNCONFIRMED The holder will be obedient towards the target, making them automatically agree to most demands. Defaults to "no".
+    obedient = bool
+}

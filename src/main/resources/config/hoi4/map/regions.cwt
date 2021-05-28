@@ -1,0 +1,82 @@
+types = {
+	type[supply_area] = {
+		path = "game/map/supplyareas"
+		name_field = "id"
+	}
+	type[strategic_region] = {
+		path = "game/map/strategicregions"
+		name_field = "id"
+	}
+}
+
+supply_area = {
+	id = int
+	name = localisation
+	value = int
+	states = {
+		## cardinality = 1..inf
+		<state>
+	}
+}
+
+strategic_region = {
+	id = int
+	name = localisation
+	provinces = {
+		## cardinality = ~1..inf
+		enum[provinces]
+	}
+	## cardinality = 0..1
+	naval_terrain = <terrain.naval_terrain>
+	## cardinality = 0..1
+	static_modifiers = {
+		## cardinality = 1..inf
+		<static_modifier> = always
+	}
+	### Black magic.
+	weather = {
+		## cardinality = 0..inf
+		### Periods of weather, months in vanilla.
+		period = {
+			between = {
+				### Day.month (both start at 0)
+				# float hacks as dates ftw
+				## cardinality = 2..2
+				float[0.0..30.9]
+			}
+			temperature = {
+				## cardinality = 2..2
+				float
+			}
+			temperature_day_night = {
+				## cardinality = 2..2
+				float
+			}
+			#hacks
+			## cardinality = 7..8
+			enum[region_weather] = float[0..inf]
+			min_snow_level = float
+		}
+	}
+}
+
+enums = {
+	enum[region_weather] = {
+		no_phenomenon
+		rain_light
+		rain_heavy
+		snow
+		blizzard
+		arctic_water
+		mud
+		sandstorm
+	}
+	complex_enum[provinces] = {
+		path = "game/map/strategicregions"
+		name = {
+			provinces = {
+				enum_name
+			}
+		}
+	}
+}

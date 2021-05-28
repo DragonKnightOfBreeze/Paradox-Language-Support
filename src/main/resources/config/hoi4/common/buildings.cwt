@@ -1,0 +1,103 @@
+types = {
+	type[building] = {
+		path = "game/common/building"
+		skip_root_key = buildings
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+		subtype[provincial] = {
+			provincial = yes
+		}
+		subtype[state] = {
+			provincial = no
+		}
+		subtype[state] = {
+		}
+	}
+}
+
+building = {
+	base_cost = int
+	## cardinality = 0..1
+	base_cost_conversion = int
+	## cardinality = 0..1
+	per_level_extra_cost = int
+
+	## cardinality = 0..1
+	max_level = int
+	value = int
+
+	icon_frame = int
+	## cardinality = 0..1
+	show_on_map = int
+	## cardinality = 0..1
+	show_on_map_meshes = int
+	## cardinality = 0..1
+	always_shown = bool
+	## cardinality = 0..1
+	has_destroyed_mesh = bool
+
+	## cardinality = 0..1
+	shares_slots = bool
+	## cardinality = 0..1
+	infrastructure_construction_effect = bool
+	## cardinality = 0..1
+	provincial = bool
+	## cardinality = 0..1
+	damage_factor = float
+
+	## cardinality = 0..1
+	### Yes, they spelled it costal.
+	only_costal = bool
+	## cardinality = 0..1
+	disabled_in_dmz = bool
+
+	## cardinality = 0..1
+	infrastructure = bool
+	## cardinality = 0..1
+	air_base = bool
+	## cardinality = 0..1
+	is_port = bool
+	## cardinality = 0..1
+	anti_air = bool
+	## cardinality = 0..1
+	refinery = yes
+	## cardinality = 0..1
+	radar = bool
+	## cardinality = 0..1
+	nuclear_reactor = bool
+
+	## cardinality = 0..1
+	military_production = float
+	## cardinality = 0..1
+	general_production = float
+	## cardinality = 0..1
+	naval_production = float
+
+	## cardinality = 0..1
+	land_fort = int
+	## cardinality = 0..1
+	naval_fort = int
+	## cardinality = 0..1
+	rocket_production = int
+	## cardinality = 0..1
+	rocket_launch_capacity = int
+	## cardinality = 0..1
+	air_defence = int
+
+	subtype[state] = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	## cardinality = 0..1
+	show_modifier = yes
+	## cardinality = 0..1
+	max_fuel_building = float
+	## cardinality = 0..1
+	fuel_silo = yes
+	## cardinality = 0..1
+	fuel_gain_from_states = float
+}

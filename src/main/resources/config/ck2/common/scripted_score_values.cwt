@@ -1,0 +1,66 @@
+alias[multiplicative_modifer:<scripted_score_value.multiplicative>] = yes
+alias[additive_modifer:<scripted_score_value.additive>] = yes
+alias[additive_modifer_with_loc_key:<scripted_score_value.additive_with_loc_key>] = yes
+
+# Of course, all that cardinality doesn't work out due to aliases, but a man can dream
+# Figured I could try via separate types, but sadly that won't work either because then everything will be parsed as both types
+types = {
+    type[scripted_score_value] = {
+        path_strict = yes
+        path = "game/common/scripted_score_values"
+
+        subtype[multiplicative] = {
+            ## cardinality = 1..inf
+            modifier = {
+
+            }
+        }
+        subtype[additive] = {
+            ## cardinality = 1..inf
+            additive_modifier = {
+                ## cardinality = 0..0
+                localisation_key = scalar
+            }
+        }
+        subtype[additive_with_loc_key] = {
+            ## cardinality = 1..inf
+            additive_modifier = {
+                localisation_key = scalar
+            }
+        }
+    }
+}
+
+scripted_score_value = {
+    ## cardinality = 0..inf
+    modifier = {
+        ### The base weight/chance will be multiplied by this value if the conditions are met.
+        factor = float
+
+        ### Conditions for the multiplicative modifier to apply.
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+
+    ## cardinality = 0..inf
+    additive_modifier = {
+        ### This value will be added to the base weight/chance if the conditions are met.
+        value = int
+
+        ## cardinality = 0..1
+        ### This value is necessary for additive modifiers shown in tooltips (succession voting and ai acceptance of decisions).
+        localisation_key = localisation
+
+        ### Conditions for the additive modifier to apply.
+        alias_name[trigger] = alias_match_left[trigger]
+    }
+
+    subtype[multiplicative] = {
+        mult = yes
+    }
+    subtype[additive] = {
+        add = yes
+    }
+    subtype[additive_with_loc_key] = {
+        add_loc = yes
+    }
+}

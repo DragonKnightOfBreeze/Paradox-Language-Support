@@ -1,0 +1,111 @@
+
+types = {
+    type[on_action] = {
+        path = "game/common"
+		path_file = "on_actions.txt"
+        start_from_root = yes
+        ## type_key_filter = on_yearly_pulse
+        subtype[on_yearly_pulse] = { }
+        ## type_key_filter = on_quarterly_pulse
+        subtype[on_quarterly_pulse] = { }
+        ## type_key_filter = on_battle_won
+        subtype[on_battle_won] = { }
+        ## type_key_filter = on_battle_lost
+        subtype[on_battle_lost] = { }
+        ## type_key_filter = on_surrender
+        subtype[on_surrender] = { }
+        ## type_key_filter = on_new_great_nation
+        subtype[on_new_great_nation] = { }
+        ## type_key_filter = on_lost_great_nation
+        subtype[on_lost_great_nation] = { }
+        ## type_key_filter = on_election_tick
+        subtype[on_election_tick] = { }
+        ## type_key_filter = on_colony_to_state
+        subtype[on_colony_to_state] = { }
+        ## type_key_filter = on_state_conquest
+        subtype[on_state_conquest] = { }
+        ## type_key_filter = on_colony_to_state_free_slaves
+        subtype[on_colony_to_state_free_slaves] = { }
+        ## type_key_filter = on_debtor_default
+        subtype[on_debtor_default] = { }
+        ## type_key_filter = on_debtor_default_small
+        subtype[on_debtor_default_small] = { }
+        ## type_key_filter = on_debtor_default_second
+        subtype[on_debtor_default_second] = { }
+        ## type_key_filter = on_civilize
+        subtype[on_civilize] = { }
+        ## type_key_filter = on_my_factories_nationalized
+        subtype[on_my_factories_nationalized] = { }
+        ## type_key_filter = on_crisis_declare_interest
+        subtype[on_crisis_declare_interest] = { }
+	}
+}
+
+on_yearly_pulse = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_quarterly_pulse = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_battle_won = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_battle_lost = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_surrender = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_new_great_nation = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_lost_great_nation = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_election_tick = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_colony_to_state = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_state_conquest = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_colony_to_state_free_slaves = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_debtor_default = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_debtor_default_small = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_debtor_default_second = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_civilize = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_my_factories_nationalized = {
+	## cardinality = 0..inf
+	int = <event.country>
+}
+on_crisis_declare_interest = { 
+	## cardinality = 0..inf
+	int = <event.country>
+}

@@ -1,0 +1,1635 @@
+#Scopes and Logical Operators
+
+#CWTools magic scope
+alias[trigger:scope_field] = { alias_name[trigger] = alias_match_left[trigger] }
+alias[effect:scope_field] = { alias_name[effect] = alias_match_left[effect] }
+
+#Complicated ones (separated from the rest for testing reasons)
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country tags listed /Europa Universalis IV/common/country_tags
+alias[effect:enum[country_tags]] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country tags listed /Europa Universalis IV/common/country_tags
+alias[trigger:enum[country_tags]] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = trade_node
+###Scopes to the province, which is also a trade node (defined in common/tradenodes)
+alias[effect:<trade_node>] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to the province ids listed /Europa Universalis IV/map/definition.csv
+alias[effect:<province_id>] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to the province ids listed /Europa Universalis IV/map/definition.csv
+alias[effect:<area.used>] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to the province ids listed /Europa Universalis IV/map/definition.csv
+alias[effect:<province_group.used>] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any region found in /Europa Universalis IV/map/region.txt
+alias[effect:<region>] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+###Refers to any superregion found in /Europa Universalis IV/map/superregion.txt
+alias[effect:<superregion>] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any continent found in /Europa Universalis IV/map/continent.txt
+alias[effect:<continent>] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any trade company found in /Europa Universalis IV/common/trade_companies/
+alias[effect:<trade_company>] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any colonial region found in /Europa Universalis IV/common/colonial_regions/
+alias[effect:<colonial_region>] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = { country province }
+## push_scope = trade_node
+###Scopes to the province, which is also a trade node (defined in common/tradenodes)
+alias[trigger:<trade_node>] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to the province ids listed /Europa Universalis IV/map/definition.csv
+alias[trigger:<province_id>] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to the areas listed /Europa Universalis IV/map/areas.txt
+alias[trigger:<area.used>] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to the province_group listed /Europa Universalis IV/map/provincegroup.txt
+alias[trigger:<province_group.used>] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any region found in /Europa Universalis IV/map/region.txt
+alias[trigger:<region>] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = province
+###Refers to any superregion found in /Europa Universalis IV/map/superregion.txt
+alias[trigger:<superregion>] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any continent found in /Europa Universalis IV/map/continent.txt
+alias[trigger:<continent>] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = { country province }
+## push_scope = province
+###Refers to any trade company found in /Europa Universalis IV/common/trade_companies/
+alias[trigger:<trade_company>] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any colonial region found in /Europa Universalis IV/common/colonial_regions/
+alias[trigger:<colonial_region>] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+
+
+
+#Effect scopes
+
+#Hides the enclosed effects
+#alias[effect:hidden_effect] = {
+#	alias_name[effect] = alias_match_left[effect]
+#}
+
+
+## scope = any
+###The enclosed effects will be displayed in tooltips but not executed
+alias[effect:tooltip] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = any
+alias[effect:if] = {
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+alias[effect:else_if] = {
+	## severity = info
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+alias[effect:else] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = any
+###The while scope is used to repeat execution of a set of effects whilst a set of trigger values remain true. Notes: A while scope loop will continue for 100,000 loops before it terminates if the trigger values never become false. It will also produce no tooltip.
+alias[effect:while] = {
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+###The trigger_switch scope is used in conjuction with triggers that return discrete values. You list each trigger value you wish to act on, and add the effects within.
+alias[effect:trigger_switch] = {
+	on_trigger = scalar
+
+	## cardinality = 2..inf
+	scalar = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	advisor_events_adm = { kill_advisor_by_category_effect = { ADM = yes } }
+	## cardinality = 0..1
+	advisor_events_dip = { kill_advisor_by_category_effect = { DIP = yes } }
+	## cardinality = 0..1
+	advisor_events_mil = { kill_advisor_by_category_effect = { MIL = yes } }
+}
+
+## scope = any
+###The random scope is used to add a single random roll to a set of effects. The chance is out of 100.
+alias[effect:random] = {
+	###Out of 100
+	chance = float[0.0..100.0]
+
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+###The random_list scope is used to add different sets of effects to a single random roll.
+alias[effect:random_list] = {
+	## cardinality = 2..inf
+	int = {
+		## cardinality = 0..1
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		alias_name[effect] = alias_match_left[effect]
+		#If this is wrong, check how it works in CK2 and it should be the same
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+	#If this is wrong, check how it works in CK2 and it should be the same
+	## cardinality = 0..1
+	fallback = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+}
+
+
+# ## scope = any
+#alias[effect:root] = {
+#	alias_name[effect] = alias_match_left[effect]
+#}
+
+# ## scope = any
+#alias[effect:prev] = {
+#	alias_name[effect] = alias_match_left[effect]
+#}
+
+# ## scope = any
+#alias[effect:from] = {
+#	alias_name[effect] = alias_match_left[effect]
+#}
+
+# ## scope = any
+#alias[effect:this] = {
+#	alias_name[effect] = alias_match_left[effect]
+#}
+
+
+
+
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country (if it exists) that is currently the Holy Roman Emperor.
+alias[effect:emperor] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country (if it exists) that is the current revolution target.
+alias[effect:revolution_target] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country (if it exists) that is the current crusade target.
+alias[effect:crusade_target] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Refers to the country (if it exists) that is the colonial parent of the current country scope.
+alias[effect:colonial_parent] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = country
+###Refers to the country (if it exists) that is the overlord of the current country scope.
+alias[effect:overlord] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = province
+###Refers to the capital province of the current country scope.
+alias[effect:capital_scope] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+#scope_field
+
+# scope = province
+# push_scope = country
+#Refers to the country that owns the current province scope.
+#alias[effect:owner] = {
+#	alias_name[effect] = alias_match_left[effect]
+#}
+
+# scope = province
+# push_scope = country
+#Refers to the country that controls the current province scope.
+#alias[effect:controller] = {
+#	alias_name[effect] = alias_match_left[effect]
+#}
+
+## scope = province
+## push_scope = province
+###Refers to the sea province on which the current land province scope has a port.
+alias[effect:sea_zone] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = province
+## push_scope = province
+###Refers to the area that the current province scope is in.
+alias[effect:area] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = province
+## push_scope = province
+###Refers to the province_group that the current province scope is in.
+alias[effect:province_group] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = province
+## push_scope = province
+###Refers to the region that the current province scope is in.
+alias[effect:region] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = trade_node
+## push_scope = country
+###The country in the trade node that generates the most trade power from provinces.
+alias[effect:most_province_trade_power] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = trade_node
+## push_scope = country
+###The country with the most trade power in the node.
+alias[effect:strongest_trade_power] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+
+
+## scope = country
+## push_scope = country
+###Scopes to all valid countries that meet the triggers in the limit.
+alias[effect:every_ally] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = country
+###Scopes to all members of the coalition against the current scope (if any).
+alias[effect:every_coalition_member] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = country
+###Scopes to all members of the coalition against the current scope (if any).
+alias[effect:every_coalition_member] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = { country province }
+## push_scope = country
+###Scopes to all countries in the world. Avoid this if you can use something more specific.
+alias[effect:every_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to all electors of the HRE.
+alias[effect:every_elector] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to all valid countries that meet the triggers in the limit.
+alias[effect:every_enemy_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to all countries that have been discovered by the current scope.
+alias[effect:every_known_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to all valid countries that meet the triggers in the limit.
+alias[effect:every_local_enemy] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to all countries that share a border (or sea zone?) with the current scope.
+alias[effect:every_neighbor_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to all valid countries that meet the triggers in the limit.
+alias[effect:every_rival_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to all subject nations under the current scope.
+alias[effect:every_subject_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one valid country that meet the triggers in the limit.
+alias[effect:random_ally] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = { country province }
+## push_scope = country
+###Scopes to one random member of the coalition against the current scope.
+alias[effect:random_coalition_member] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = { country province }
+## push_scope = country
+###Scopes to one random country among all countries in the world. Avoid this if you can use something more specific.
+alias[effect:random_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one random elector of the HRE.
+alias[effect:random_elector] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one valid country that meet the triggers in the limit.
+alias[effect:random_enemy_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one random country that has been discovered by the current scope.
+alias[effect:random_known_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one valid country that meet the triggers in the limit.
+alias[effect:random_local_enemy] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one random country that shares a border (or sea zone?) with the current scope.
+alias[effect:random_neighbor_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one valid country that meet the triggers in the limit.
+alias[effect:random_rival_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = country
+## push_scope = country
+###Scopes to one random subject country under the current scope.
+alias[effect:random_subject_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = country
+###Scopes to all provinces that this country has a core on, whether owned or not.
+alias[effect:every_core_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = country
+###Scopes to all provinces whose religion is heretic to the current scope.
+alias[effect:every_heretic_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = country
+###Scopes to all provinces the current scope owns.
+alias[effect:every_owned_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = { province country }
+###Scopes to all provinces in the world. Note: executing effects on every province without a limit will cause slowdown in game. Use something more specific if you can.
+alias[effect:every_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = country
+###Scopes to one random province that the current scope has a core on, whether owned or not.
+alias[effect:random_core_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = country
+###Scopes to one random province whose religion is heretic to the current scope.
+alias[effect:random_heretic_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = country
+###Scopes to one valid area that meet the triggers in the limit. You can use type = all to scope to all valid areas.
+alias[effect:random_owned_area] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = country
+###Scopes to one random province the current scope owns.
+alias[effect:random_owned_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = trade_node
+## scope = country
+###Scopes to all trade nodes.
+alias[effect:every_trade_node] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = trade_node
+## scope = country
+###Scopes to one valid tradenode (province) that meet the triggers in the limit. Active means the current scope is interacting with the trade node in some way.
+alias[effect:random_active_trade_node] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+
+## scope = province
+## push_scope = province
+###Scopes to all provinces sharing a border (or sea zone?) with the current scope that are colonizable and uncolonized.
+alias[effect:every_empty_neighbor_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to all provinces sharing a border (or sea zone?) with the current scope. Does not include empty provinces.
+alias[effect:every_neighbor_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to all provinces in the same state (area?).
+alias[effect:every_province_in_state] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to one random province sharing a border (or sea zone?) with the current scope that is colonizable and uncolonized.
+alias[effect:random_empty_neighbor_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to one random province sharing a border(or sea zone?) with the current scope. Does not include empty provinces.
+alias[effect:random_neighbor_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to one random province in the same state as the current scope.
+alias[effect:random_province_in_state] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## scope = { province country }
+## push_scope = province
+###Scopes to one random province among all provinces in the world.
+alias[effect:random_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+## scope = province
+###Scopes to all countries that have a core on the current scope, whether existing or not.
+alias[effect:every_core_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+## scope = province
+###Scopes to one random country that has a core on the current scope, whether existing or not.
+alias[effect:random_core_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+## push_scope = country
+## scope = trade_node
+###Scopes to all countries that are sending privateers to the current scope.
+alias[effect:every_privateering_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+## scope = trade_node
+###Scopes to one random country that is sending privateers to the current scope.
+alias[effect:random_privateering_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+## scope = trade_node
+###Scopes to all countries that own a province in the current scope.
+alias[effect:every_trade_node_member_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+## scope = trade_node
+###Scopes to one random country that owns a province in the current scope.
+alias[effect:random_trade_node_member_country] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = trade_node
+###Scopes to every province in the current trade node.
+alias[effect:every_trade_node_member_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = trade_node
+###Scopes to one random province in the current trade node.
+alias[effect:random_trade_node_member_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+
+## push_scope = country
+## scope = unit
+###Returns the unit's owner country scope.
+alias[effect:unit_owner] = {
+	## cardinality = 0..1
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+
+
+#Triggers
+#These are not required as they are covered by the `scope_field` rule
+# ## scope = any
+# ###This is "NOR" rather than "NAND"
+# alias[trigger:NOT] = {
+# 	alias_name[trigger] = alias_match_left[trigger]
+# }
+
+# ## scope = any
+# alias[trigger:OR] = {
+# 	alias_name[trigger] = alias_match_left[trigger]
+# }
+
+# ## scope = any
+# alias[trigger:AND] = {
+# 	alias_name[trigger] = alias_match_left[trigger]
+# }
+
+# ## scope = any
+# alias[trigger:root] = {
+# 	alias_name[trigger] = alias_match_left[trigger]
+# }
+
+# ## scope = any
+# alias[trigger:prev] = {
+# 	alias_name[trigger] = alias_match_left[trigger]
+# }
+
+# ## scope = any
+# alias[trigger:from] = {
+# 	alias_name[trigger] = alias_match_left[trigger]
+# }
+
+# ## scope = any
+# alias[trigger:this] = {
+# 	alias_name[trigger] = alias_match_left[trigger]
+# }
+
+
+
+## push_scope = country
+## scope = unit
+###Returns the unit's owner country scope.
+alias[trigger:unit_owner] = {
+	## cardinality = 0..1
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country (if it exists) that is currently the Holy Roman Emperor.
+alias[trigger:emperor] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country (if it exists) that is the current revolution target.
+alias[trigger:revolution_target] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = country
+###Refers to the country (if it exists) that is the current crusade target.
+alias[trigger:crusade_target] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = country
+###Refers to the country (if it exists) that is the colonial parent of the current country scope.
+alias[trigger:colonial_parent] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = country
+###Refers to the country (if it exists) that is the overlord of the current country scope.
+alias[trigger:overlord] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = province
+###Refers to the capital province of the current country scope.
+alias[trigger:capital_scope] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+#scope_field
+
+# scope = province
+# push_scope = country
+#Refers to the country that owns the current province scope.
+#alias[trigger:owner] = {
+#	alias_name[trigger] = alias_match_left[trigger]
+#}
+
+# scope = province
+# push_scope = country
+#Refers to the country that controls the current province scope.
+#alias[trigger:controller] = {
+#	alias_name[trigger] = alias_match_left[trigger]
+#}
+
+## scope = province
+## push_scope = province
+###Refers to the country that controls the current province scope.
+alias[trigger:sea_zone] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = province
+## push_scope = province
+###Refers to the area that the current province scope is in.
+alias[trigger:area] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = province
+## push_scope = province
+###Refers to the province_group that the current province scope is in.
+alias[trigger:province_group] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = province
+## push_scope = province
+###Refers to the region that the current province scope is in.
+alias[trigger:region] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = trade_node
+## push_scope = country
+###The country in the trade node that generates the most trade power from provinces.
+alias[trigger:most_province_trade_power] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = trade_node
+## push_scope = country
+###The country with the most trade power in the node.
+alias[trigger:strongest_trade_power] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+Trigger scopes
+## push_scope = Unit
+## scope = country
+###Scopes to all armies currently fielded by the current scope.
+alias[trigger:any_army] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all valid countries that meet the triggers.
+alias[trigger:all_ally] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all members of the coalition against the current scope (if any).
+alias[trigger:all_coalition_member] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = { country province }
+###Scopes to all countries in the world. Avoid this if you can use something more specific.
+alias[trigger:all_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all countries in the world including the current scope.
+alias[trigger:all_countries_including_self] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all electors of the HRE
+alias[trigger:all_elector] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all valid countries that meet the triggers.
+alias[trigger:all_enemy_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all countries that have been discovered by the current scope.
+alias[trigger:all_known_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all valid countries that meet the triggers.
+alias[trigger:all_local_enemy] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all countries that own a province that shares a border (or sea zone?) with a province owned by the current scope.
+alias[trigger:all_neighbor_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all valid countries that meet the triggers.
+alias[trigger:all_rival_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to all subject countries under the current scope.
+alias[trigger:all_subject_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to all provinces that the current scope has a core on, whether owned or not.
+alias[trigger:all_core_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to all provinces whose religion is heretic to the current scope.
+alias[trigger:all_heretic_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to all provinces owned by the current scope.
+alias[trigger:all_owned_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = { country province }
+## push_scope = province
+###Scopes to all provinces in the world. Avoid this if you can use something more specific.
+alias[trigger:all_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to all provinces in states of the current scope.
+alias[trigger:all_state_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to all states of the current scope.
+alias[trigger:all_states] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = trade_node
+## scope = country
+###Scopes to all active trade nodes.
+alias[trigger:all_active_trade_node] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = trade_node
+## scope = country
+###Scopes to all trade nodes.
+alias[trigger:all_trade_node] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one valid country that meet the triggers.
+alias[trigger:any_ally] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one member of the coalition against the current scope.
+alias[trigger:any_coalition_member] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = { country province }
+###Scopes to one country among all countries in the world. Avoid this if you can use something more specific.
+alias[trigger:any_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one elector of the HRE.
+alias[trigger:any_elector] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one valid country that meet the triggers.
+alias[trigger:any_enemy_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one country that has been discovered by the current scope.
+alias[trigger:any_known_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one valid country that meet the triggers.
+alias[trigger:any_local_enemy] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one country sharing a border (or sea zone?) with the current scope.
+alias[trigger:any_neighbor_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one valid country that meet the triggers.
+alias[trigger:any_rival_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = country
+###Scopes to one subject country under the current scope.
+alias[trigger:any_subject_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to one province that the current scope has a core on, whether owned or not.
+alias[trigger:any_core_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to one province whose religion is heretic to the current scope.
+alias[trigger:any_heretic_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = province
+###Scopes to one province owned by the current scope.
+alias[trigger:any_owned_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = { country province }
+## push_scope = province
+###Scopes to one province from among all provinces in the world. Avoid this if you can use something more specific.
+alias[trigger:any_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to all provinces sharing a border (or sea zone?) with the current scope that are colonizable and uncolonized.
+alias[trigger:all_empty_neighbor_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to all provinces in the same state as the current scope.
+alias[trigger:all_province_in_state] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to all provinces sharing a border (or sea zone?) with the current scope.
+alias[trigger:all_neighbor_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to one province sharing a border (or sea zone?) with the current scope that is colonizable and uncolonized.
+alias[trigger:any_empty_neighbor_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+
+## scope = province
+## push_scope = province
+###Scopes to one province in the same state as the current scope.
+alias[trigger:any_province_in_state] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to one province that shares a border with the current scope that is friendly to the current scope (meaning its owner is the same or has positive relations).
+alias[trigger:any_friendly_coast_border_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = province
+## push_scope = province
+###Scopes to one province that shares a border (or sea zone?) with the current scope.
+alias[trigger:any_neighbor_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = province
+###Scopes to all countries that have a core on the current scope, whether existing or not.
+alias[trigger:all_core_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = province
+###Scopes to all countries that have a core on the current scope, whether existing or not.
+alias[trigger:any_core_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+
+## push_scope = country
+## scope = trade_node
+###Scopes to all countries that are sending privateers to the current scope.
+alias[trigger:all_privateering_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = trade_node
+###Scopes to all countries that own a province in the current trade node.
+alias[trigger:all_trade_node_member_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = trade_node
+###Scopes to one country that is sending privateers to the current scope.
+alias[trigger:any_privateering_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = trade_node
+###Scopes to one country that owns a province in the current trade node.
+alias[trigger:any_trade_node_member_country] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = province
+## scope = trade_node
+###Scopes to all provinces in the current trade node.
+alias[trigger:all_trade_node_member_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = province
+## scope = province
+###Scopes to one province in the current trade node.
+alias[trigger:any_trade_node_member_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+#The wiki mislead me. This is also possible and used a lot
+
+## scope = any
+alias[trigger:if] = {
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+alias[trigger:else_if] = {
+	## severity = info
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+alias[trigger:else] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+
+#Those of which the wiki knows not
+
+## scope = country
+## push_scope = trade_node
+alias[trigger:any_active_trade_node] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = trade_node
+alias[effect:every_active_trade_node] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = trade_node
+alias[effect:random_trade_node] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = trade_node
+###Scopes to one country that owns a province in the current trade node.
+alias[trigger:any_trade_node] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+
+## scope = country
+## push_scope = trade_node
+alias[trigger:home_trade_node] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = trade_node
+alias[effect:home_trade_node_effect_scope] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+
+#todo: this is probably for missions only
+## scope = province
+## push_scope = province
+alias[trigger:region_for_scope_province] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = province
+## push_scope = province
+###Scopes to all provinces in the same area as the current scope.
+alias[trigger:area_for_scope_province] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = province
+###Returns true if at least X provinces of the scoped country match the specified condition(s).
+alias[trigger:num_of_owned_provinces_with] = {
+	value = int
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = province
+alias[trigger:num_of_provinces_owned_or_owned_by_non_sovereign_subjects_with] = {
+	value = int
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+alias[trigger:num_of_owned_states_with] = {
+	value = int
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+alias[trigger:num_of_states_owned_or_owned_by_non_sovereign_subjects_with] = {
+	value = int
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = province
+## push_scope = province
+###Scopes to the province the current province is expelling minorities to.
+alias[trigger:expulsion_target] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to the colonial regions listed /Europa Universalis IV/common/colonial_regions/00_colonial_regions.txt
+alias[trigger:colonial_region_for_scope_province] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = unit
+## push_scope = unit
+###Returns the enemy unit's scope.
+alias[trigger:enemy_unit] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = trade_node
+## push_scope = country
+###Any country active in trade node.
+alias[trigger:any_country_active_in_node] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}

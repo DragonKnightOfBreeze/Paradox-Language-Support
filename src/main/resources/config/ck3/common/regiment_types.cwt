@@ -1,0 +1,111 @@
+types = {
+    type[regiment_type] = {
+        path = "game/common/regiment_types"
+    }
+}
+
+regiment_type = {
+    ### Unit archetype of the regiment. Used for modifiers and counters.
+    type = value_set[unit_type]
+    ## cardinality = 0..1
+    ### Optional, use this name instead of the key when selecting icon graphics.
+    icon = scalar
+
+    ## cardinality = 0..1
+    ### If set, can't be recruited. For use by mercs/holy orders instead. Defaults to yes.
+    can_recruit = bool
+    ## cardinality = 0..1
+    ### Whether it's allowed to have this regiment type for mercenaries and holy orders. Defaults to yes.
+    allowed_in_hired_troops = bool
+    # TODO: IDK what these can do exactly.
+    ## cardinality = 0..1
+    ### Whether mercenaries are allowed to be select this regiment type if there are no valid options defined for them after filtering out regiments that haven't been unlocked. Defaults to no.
+    mercenary_fallback = bool
+    ## cardinality = 0..1
+    ### Whether holy orders are allowed to be select this regiment type if there are no valid options defined for them after filtering out regiments that haven't been unlocked. Defaults to no.
+    holy_order_fallback = bool
+
+    ## cardinality = 0..1
+	###  Damage dealt in pursuit phase if on winning side.
+	pursuit = int_value_field
+    ## cardinality = 0..1
+	###  Damage mitigated in pursuit phase if on losing side.
+	screen = int_value_field
+	###  Damage dealt.
+	damage = int_value_field
+	###  Ability to absorb damage.
+	toughness = int_value_field
+    ## cardinality = 0..1
+	###  How much it contributes to sieges.
+	siege_value = value_field
+
+	## cardinality = 0..1
+	###  If set, only affects the pursuit phase. Handy for siege weapons.
+	fights_in_main_phase = bool
+	## cardinality = 0..1
+	###  How good it is at countering forts.
+	siege_tier = int_value_field
+
+	### Costs. Support gold, prestige, and piety.
+	buy_cost = single_alias_right[cost]
+	###  Maintenance paid when the regiment is unraised and fully reinforced or when reinforcement is disabled.
+	low_maintenance_cost = single_alias_right[cost]
+	###  Maintenance paid when the regiment is raised or not fully reinforced.
+	high_maintenance_cost = single_alias_right[cost]
+	
+	## cardinality = 0..1
+	### Terrain bonuses pursuit, siege_value, etc.
+	terrain_bonus = {
+        ## cardinality = 1..inf
+		<terrain> = {
+            ## cardinality = 0..1
+            ###  Extra damage dealt in pursuit phase if on winning side.
+            ## cardinality = 0..1
+            pursuit = int_value_field
+            ###  Extra damage mitigated in pursuit phase if on losing side.
+            ## cardinality = 0..1
+            screen = int_value_field
+            ## cardinality = 0..1
+            ###  Extra damage dealt.
+            damage = int_value_field
+            ## cardinality = 0..1
+            ###  Extra ability to absorb damage.
+            ## cardinality = 0..1
+            toughness = int_value_field
+            ## cardinality = 0..1
+            ###  How much more it contributes to sieges.
+            siege_value = value_field
+        }
+	}
+	
+	## cardinality = 0..1
+	### What archetypes it counters, and how much. The number is how many subregiments it counters
+	counters = {
+        ## cardinality = 0..inf
+		value[unit_type] = int_value_field
+	}
+
+	### Size of one sub-regiment.
+    stack = int_value_field
+    ## cardinality = 0..1
+	### Maximal amount of sub-regiments.
+    max_sub_regiments = int_value_field
+
+	## push_scope = character
+    ## cardinality = 0..1
+	###  Script value in character scope. Used in addition to a quality calculation (based on TOUGHNESS_SCORE_MULT, etc.) to figure out what the AI should buy/disband.
+	ai_quality = int_value_field
+}
+
+alias[modifier:value[unit_type]_max_size_add] = int_value_field
+alias[modifier:value[unit_type]_max_size_mult] = value_field
+alias[modifier:value[unit_type]_siege_value_add] = int_value_field
+alias[modifier:value[unit_type]_siege_value_mult] = value_field
+alias[modifier:value[unit_type]_damage_add] = int_value_field
+alias[modifier:value[unit_type]_damage_mult] = value_field
+alias[modifier:value[unit_type]_toughness_add] = int_value_field
+alias[modifier:value[unit_type]_toughness_mult] = value_field
+alias[modifier:value[unit_type]_pursuit_add] = int_value_field
+alias[modifier:value[unit_type]_pursuit_mult] = value_field
+alias[modifier:value[unit_type]_screen_add] = int_value_field
+alias[modifier:value[unit_type]_screen_mult] = value_field

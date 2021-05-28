@@ -1,0 +1,167 @@
+key,scopes,event,comment
+on_startup,this = character root = character,character_event,Fires on game load (game start and loading from saves) for ALL characters (not only the player). Note: not called for ruler designed characters. Also see on_chronicle_start.
+on_yearly_pulse,this = character root = character,character_event,Fires every year.
+on_bi_yearly_pulse,this = character root = character,character_event,Fires every two years.
+on_five_year_pulse,this = character root = character,character_event,Fires every five years.
+on_decade_pulse,this = character root = character,character_event,Fires every ten years.
+on_yearly_childhood_pulse,this = character root = character,character_event,Fires every year from 2 to 16 years old. Maybe based on defines?
+on_childhood_pulse,this = character root = character,character_event,"Fires at ages 6.5, 8.5, and 10.5."
+on_adolescence_pulse,this = character root = character,character_event,Fires at ages 12.5 and 14.5.
+on_focus_pulse,this = character root = character,character_event,Fires every year for characters with a focus.
+on_province_major_modifier,this = province root = province,province_event,Fires when a province modifier with major = yes is removed.
+on_outbreak,this = province root = province,province_event,"Fires when a new outbreak starts. ROOT is the province, token_data is the disease name."
+on_combat_pulse,this = character root = character from = character fromfrom = character,character_event,FROM is the opposing army's commander? FROMFROM is the opposing army's liege?
+on_combat_starting,this = character root = character from = character fromfrom = character,character_event,"FROM is the character who is the commander of the opposing side, FROMFROM is the character who is the liege of the commander of the opposing side."
+on_siege_pulse,this = character root = character,character_event,"Fires for both the attacking and defending siege leaders roughly every 10 days, attacker first. ROOT is the appropriate siege leader."
+on_battle_won,this = character root = character,character_event,"ROOT is any commander except the leader on winning side, FROM is the opponent army leader."
+on_major_battle_won,this = character root = character,character_event,"ROOT is any commander except the leader on winning side, FROM is the opponent army leader."
+on_battle_won_leader,this = character root = character,character_event,"ROOT is the leader on winning side, FROM is the opponent army leader."
+on_major_battle_won_leader,this = character root = character,character_event,"ROOT is the leader on winning side, FROM is the opponent army leader."
+on_battle_won_owner,this = character root = character,character_event,"ROOT is winning army owner, FROM is opponent army owner."
+on_battle_lost,this = character root = character,character_event,"ROOT is any commander except the leader on losing side, FROM is the opponent army leader."
+on_major_battle_lost,this = character root = character,character_event,"ROOT is any commander except the leader on losing side, FROM is the opponent army leader."
+on_battle_lost_leader,this = character root = character,character_event,"ROOT is the leader on losing side, FROM is the opponent army leader."
+on_major_battle_lost_leader,this = character root = character,character_event,"ROOT is the leader on losing side, FROM is the opponent army leader."
+on_battle_lost_owner,this = character root = character,character_event,"ROOT is losing army owner, FROM is opponent army owner."
+on_siege_won_leader,this = character root = character from = title,character_event,"ROOT is the siege attacker, FROM is the barony won."
+on_siege_won_leader_fort,this = character root = character from = province,character_event,"ROOT is the siege attacker, FROM is the province"
+on_siege_won_leader_trade_post,this = character root = character from = province,character_event,"ROOT is the siege attacker, FROM is the province"
+on_siege_lost_leader,this = character root = character from = title,character_event,"ROOT is the siege defender, FROM is the barony lost."
+on_siege_lost_leader_fort,this = character root = character from = province,character_event,"ROOT is the siege defender, FROM is the province."
+on_siege_lost_leader_trade_post,this = character root = character from = province,character_event,"ROOT is the siege defender, FROM is the province."
+on_siege_over_winner,this = character root = character from = title,character_event,"ROOT is the owner of the winning unit, FROM is the barony won."
+on_siege_over_winner_fort,this = character root = character from = province,character_event,"ROOT is the owner of the winning unit, FROM is the province."
+on_siege_over_winner_trade_post,this = character root = character from = province,character_event,"ROOT is the owner of the winning unit, FROM is the province."
+on_siege_over_loc_chars,this = character root = character from = title,character_event,"Fires for all characters presumed to be in the settlement at the time. ROOT is the local character, FROM is the lost title, new_character is the siege winner unit owner."
+on_siege_over_loc_chars_fort,this = character root = character from = province,character_event,"Fires for all characters presumed to be in the province at the time. ROOT is the local character, FROM is the province, new_character is the siege winner unit owner."
+on_siege_over_loc_chars_trade_post,this = character root = character from = province,character_event,"Fires for all characters presumed to be in the province at the time. ROOT is the local character, FROM is the province, new_character is the siege winner unit owner."
+on_failed_assassination,this = character root = character from = character,character_event,"ROOT is the target, FROM is the plotter."
+on_failed_assassination_disc,this = character root = character from = character,character_event,"ROOT is the target, FROM is the plotter."
+on_assassination,this = character root = character from = character,character_event,"ROOT is the target, FROM is the plotter."
+on_assassination_disc,this = character root = character from = character,character_event,"ROOT is the target, FROM is the plotter."
+on_birth,this = character root = character,character_event,ROOT is the baby. Note that in case of twin this'll fire for both twins.
+on_adulthood,this = character root = character,character_event,ROOT is the new adult.
+on_post_birth,this = character root = character,character_event,ROOT is the baby. Note that in case of twin this'll fire only for the second twin.
+on_pregnancy,this = character root = character,character_event,Fires at 2 months of pregnancy. ROOT is the pregnant woman.
+on_marriage,this = character root = character from = character,character_event,"Fires for lieges of both spouses. ROOT is the liege, FROM is the spouse under ROOT, new_character is the other spouse."
+on_betrothal,this = character root = character from = character,character_event,"Fires for lieges of both betrothed. ROOT is the liege, FROM is the betrothed under ROOT, new_character is the other betrothed."
+on_become_imprisoned_any_reason,this = character root = character from = character,character_event,"Fires when someone gets imprisoned for any reason. ROOT is the prisoner, FROM is the imprisoner."
+on_avoided_imprison_started_war,this = character root = character from = character,character_event,"Fires if someone tries to imprison a landed character and fails. ROOT is the rebelling character, FROM is the ruler who tried to imprison."
+on_became_imprisoned,this = character root = character from = character,character_event,"Fires if someone becomes imprisoned by the diplomatic action. ROOT is the prisoner, FROM is the imprisoner."
+on_avoided_imprison_fled_country,this = character root = character from = character,character_event,"Fires if someone tries to imprison an unlanded character and fails. ROOT is the fleeing character, FROM is the ruler who tried to imprison."
+on_released_from_prison,this = character root = character from = character,character_event,"Fires if someone is released from prison. ROOT is the prisoner, FROM is the imprisoner."
+on_executed,this = character root = character from = character,character_event,"Fires if someone is executed. Might fire before on_death. ROOT is the executee, FROM is the executioner."
+on_exiled,this = character root = character,character_event,Fires if someone is exiled. ROOT is the character exiled. FROM is undefined? Find that hard to believe.
+on_prepared_invasion_monthly,this = character root = character from = character,character_event,"Fires every month for characters who are preparing an invasion. ROOT is the invader, FROM is the target character."
+on_prepared_invasion_aborts,this = character root = character from = character,character_event,"Fires if an invasion becomes invalid. ROOT is the invader, FROM is the target character."
+on_prepared_invasion_expires,this = character root = character from = character,character_event,"Fires if an invasion expires. ROOT is the invader, FROM is the target character."
+on_death,this = character root = character,character_event,"Fires for a dying character, before succession is dealt with (still has flags and titles). ROOT is the dead character."
+on_merc_rampage,this = character root = character,character_event,???
+on_merc_leave,this = character root = character,character_event,???
+on_merc_turn_coat_from,this = character root = character,character_event,???
+on_merc_turn_coat_to,this = character root = character,character_event,???
+on_holy_order_leave,this = character root = character,character_event,???
+on_loot_settlement,this = character root = character from = title,character_event,"ROOT is the raider, FROM is the looted settlement (title or province?)"
+on_loot_province,this = character root = character from = province,character_event,"Fires when someone is looting currently in a province. ROOT is the looter, FROM is the province."
+on_warleader_death,this = character root = character,character_event,"Never triggered, reserved for CB use."
+on_approve_law,this = character root = character from = title,character_event,"Respond to a proposed change of de facto law. ROOT is a ruler in the realm of the title, FROM is the title."
+on_approve_de_jure_law,this = character root = character from = title,character_event,"Respond to a proposed change of de jure law. ROOT is a ruler in the de jure realm of the title, FROM is the title."
+on_rebel_revolt,this = province root = province,province_event,When rebels appear. ROOT is the province.
+on_defect_to_rebels,this = character root = character from = province,character_event,"When province defects to rebels. ROOT is ???, FROM is the province."
+on_defect_from_rebels,this = character root = character from = province,character_event,"When rebels disperse. ROOT is ???, FROM is the province previously occupied by the rebels."
+on_crusade_creation,this = character root = character from = title fromfrom = character,character_event,"ROOT is the religious head, FROM is the attacked kingdom title, new_character is the targeted enemy."
+on_crusade_invalid,this = character root = character from = title fromfrom = character,character_event,"ROOT is the religious head, FROM is the attacked kingdom title, new_character is the targeted enemy."
+on_crusade_success,this = title root = title from = character fromfrom = character,title_event,"When the crusade succeeds. ROOT is the target title, FROM is the taker, new_character is the enemy."
+on_crusade_failure,this = title root = title from = character fromfrom = character,title_event,"When the crusade fails. ROOT is the target title, FROM is the head of religion, new_character is the enemy."
+on_forced_consort,this = character root = character from = character,character_event,"When a pagan ruler forces a prisoner to be his consort. ROOT is the prisoner, FROM is the ruler."
+on_reform_religion,this = character root = character,character_event,When a pagan religion is reformed and the old religion has become a heresy. ROOT is the character triggering the reformation
+on_county_religion_change,this = province root = province,province_event,When the religion changes in a province. ROOT is the province.
+on_vassal_accepts_religious_conversion,this = character root = character from = character fromfrom = character,character_event,"When a character accepts religious conversion (the diplomatic action). Fires for the vassal and each of his courtiers and vassals. ROOT is the character, FROM is the vassal, FROMFROM is the demander."
+on_heresy_takeover,this = character root = character from = character fromfrom = character,character_event,"A heresy has become the new norm, replacing the old orthodoxy. ROOT is the character, FROM is a temporary character with the heresy religion, FROMFROM is a temporary character with the old religion."
+on_become_doge,this = character root = character from = character,character_event,"Fires for a newly elected doge. ROOT is the new doge, FROM is the previous doge."
+on_elective_gavelkind_succession,this = character root = character,character_event,"ROOT is the vassal, FROM is the new liege."
+on_entering_port,this = unit root = unit from = character,unit_event,"Fires when a navy moves into a port. ROOT is the unit scope, FROM is the owner."
+on_rel_elector_chosen,this = character root = character from = character,character_event,"Fires when a new cardinal is elected (SoA only). ROOT is the new cardinal, FROM is the religious head."
+on_rel_head_chosen,this = character root = character from = character,character_event,"Fires when a new Pope is elected (SoA only). ROOT is the new Pope, FROM is the previous Pope."
+on_settlement_looted,this = character root = character from = title,character_event,"ROOT is the looter, FROM is the settlement title."
+on_navy_returns_with_loot,this = character root = character from = province,character_event,"ROOT is the navy's owner, FROM is the province."
+on_create_title,this = character root = character from = title,character_event,"ROOT is the creating character, FROM is the title."
+on_new_holder,this = character root = character from = title fromfrom = character,character_event,"ROOT is the character, FROM is the title, FROMFROM is the old holder."
+on_new_holder_inheritance,this = character root = character from = title fromfrom = character,character_event,"ROOT is the character, FROM is the title, FROMFROM is the old holder."
+on_new_holder_usurpation,this = character root = character from = title fromfrom = character,character_event,"ROOT is the character, FROM is the title, FROMFROM is the old holder."
+on_create_chronicle_if_empty,this = character root = character,character_event,Fires at the end of each year if the chronicle is empty.
+on_chronicle_owner_change,this = character root = character from = character,character_event,"Fires when the player changes character to another of the same dynasty. FROM is the old character, ROOT is the new holder."
+on_chronicle_start,this = character root = character,character_event,"Fires for the player character, when the game starts (but not when loading from saves). Also works when Charlemagne DLC is not active. Note: for ruler designed characters, fires twice (for the historical character and player ruler designed character)."
+on_character_convert_religion,this = character root = character from = religion,character_event,"Fires when character converts religion for whatever reason. ROOT is the character after conversion, FROM is the old religion."
+on_character_convert_secret_religion,this = character root = character from = religion,character_event,"Fires when character converts to their secret religion. ROOT is the character after conversion, FROM is the old religion."
+on_character_convert_culture,this = character root = character from = culture,character_event,"Fires when character converts culture for whatever reason. ROOT is the character after conversion, FROM is the old culture."
+on_acquire_nickname,this = character root = character,character_event,ROOT is the character getting the nickname.
+on_over_vassal_limit_succession,this = character root = character,character_event,Fires for vassals that can become independent as a result of liege being over vassal limit.
+on_war_started,this = character root = character from = character,character_event,"ROOT is the defender, FROM is the attacker."
+on_war_ended_victory,this = character root = character from = character,character_event,"Offensive war victory. ROOT is the defender, FROM is the attacker."
+on_war_ended_invalid,this = character root = character from = character,character_event,"ROOT is the defender, FROM is the attacker."
+on_war_ended_whitepeace,this = character root = character from = character,character_event,"Offensive war white peace. ROOT is the defender, FROM is the attacker."
+on_war_ended_defeat,this = character root = character from = character,character_event,"Offensive war defeat. ROOT is the defender, FROM is the attacker."
+on_divorce,this = character root = character from = character,character_event,"Fries whenever a character gets divorced regardless of the reason. ROOT is the spouse, FROM is the divorcer, new_character is the religious head if applicable."
+on_holding_building_start,this = character root = character from = title,character_event,"Fires whenever a character builds something in a holding. ROOT is the builder, FROM is the holding title."
+on_settlement_construction_start,this = character root = character from = title,character_event,"Fires whenever the construction of a new settlement/holding starts. ROOT is the builder, FROM is the title."
+on_settlement_construction_completed,this = character root = character from = title,character_event,"Fires whenever the construction of a new settlement/holding finishes. ROOT is the builder, FROM is the title."
+on_trade_post_construction_start,this = character root = character from = province,character_event,"Fires whenever the construction of a new trade post starts. ROOT is the builder, FROM is probably the province."
+on_trade_post_construction_completed,this = character root = character from = province,character_event,"Fires whenever the construction of a new trade post finishes. ROOT is the builder, FROM is probably the province."
+on_fort_construction_start,this = character root = character from = province,character_event,"Fires whenever the construction of a new fort starts. ROOT is the builder, FROM is probably the province."
+on_fort_construction_completed,this = character root = character from = province,character_event,"Fires whenever the construction of a new fort finishes. ROOT is the builder, FROM is probably the province."
+on_feud_started,this = character root = character from = character,character_event,"ROOT is the starter, FROM is the target."
+on_feud_ended,this = character root = character from = character,character_event,"ROOT is the ender, FROM is the target."
+on_blood_brother_death,this = character root = character,character_event,???
+on_ai_end_raid,this = character root = character,character_event,ROOT is the AI character.
+on_mercenary_hired,this = character root = character,character_event,ROOT is the mercenary captain.
+on_mercenary_dismissed,this = character root = character,character_event,ROOT is the mercenary captain.
+on_mercenary_captain_replacement,this = character root = character from = character fromfrom = character,character_event,"ROOT is the old captain, FROM is the instigator, FROMFROM is the proposed captain,"
+on_enforce_peace,this = character root = character,character_event,"Conclave ""enforce peace"" mechanic. ???"
+on_enforce_peace_start,this = character root = character,character_event,"Conclave ""enforce peace"" mechanic. ???"
+on_enforce_peace_six_vassals,this = character root = character,character_event,"Conclave ""enforce peace"" mechanic. ???"
+on_law_vote_passed,this = character root = character,character_event,???
+on_law_vote_failed,this = character root = character,character_event,???
+on_player_mercenary_income,this = character root = character,character_event,???
+on_artifact_inheritance,this = character root = character from = artifact fromfrom = character,character_event,"Fired whenever a character receives an artifact (one for each artifact). ROOT is the character, FROM is the artifact, FROMFROM is the old artifact holder."
+on_society_bi_yearly_pulse,this = character root = character,character_event,Fires every two years for characters in a society.
+on_society_created,this = character root = character from = society,character_event,"Fires when someone joins a society with no members. ROOT is the character, FROM is the society."
+on_society_destroyed,this = character root = character from = society,character_event,"Fires when the last member of a society leaves the society and is not replaced. ROOT is the character, FROM is the society."
+on_society_failed_to_find_new_leader,this = society root = society from = character,society_event,"Fires when a indestructible society fails to find a new leader from existing characters. ROOT is the society, FROM is the society's previous leader."
+on_society_progress_full,this = character root = character from = society,character_event,"Fires when a society's progress reaches 100. ROOT is the society's leader, FROM is the society."
+on_society_progress_zero,this = character root = character from = society,character_event,"Fires when a society's progress reaches 0. ROOT is the society's leader, FROM is the society."
+on_offmap_policy_changed,this = character root = character from = offmap,character_event,"Fires for an offmap power's governor when the power changes its policy. ROOT is the governor, FROM is the offmap."
+on_offmap_status_changed,this = character root = character from = offmap,character_event,"Fires for an offmap power's governor when the power changes its status. ROOT is the governor, FROM is the offmap."
+on_offmap_governor_changed,this = character root = character from = character fromfrom = offmap,character_event,"Fires for an offmap power's new governor when the power changes its governor. ROOT is the new guvnah, FROM is the old governor, FROMFROM is the offmap."
+on_offmap_ruler_changed,this = character root = character from = character fromfrom = offmap,character_event,"Fires for an offmap power's new ruler when the power changes its governor. ROOT is the new ruler, FROM is the old ruler, FROMFROM is the offmap."
+on_offmap_monthly_pulse,this = character root = character from = offmap,character_event,"Fires for an offmap power's governor once per month on a random day. ROOT is the governor, FROM is the offmap."
+on_offmap_yearly_pulse,this = character root = character from = offmap,character_event,"Fires for an offmap power's governor once per year during a random monthly update. ROOT is the governor, FROM is the offmap."
+on_eu4_conversion_start,this = character root = character,character_event,"Fires for the player (or a random character if in observe mode) just prior to the EU4 converter converting the game. Can be used to prepare the gamestate for EU4 conversion, then restore the original state. ROOT is the character."
+on_eu4_conversion_done,this = character root = character,character_event,Fires for the player (or a random character if in observe mode) just after the EU4 converter is done converting the game. ROOT is the character.
+on_tyranny_gained,this = character root = character from = character,character_event,"Fires for every character that gets the tyrant opinion penalty towards the tyrant when tyranny is caused by the code rather than script. Won't fire if you use add_opinion_modifer to add tyrrany. ROOT is the upset character, FROM is the tyrant."
+on_tyranny_gained_tyrant_only,this = character root = character,character_event,Fires once for the tyrant when tyranny is caused by the code rather than script. Won't fire if you use add_opinion_modifer to add tyrrany. ROOT is the tyrant.
+on_revoke_attempted_started_war,this = character root = character from = character fromfrom = title,character_event,"Fires for the character refusing a revoke title attempt and declaring war over it. ROOT is the character declaring a war, FROM is the revoker, FROMFROM is the title being revoked."
+on_retract_vassal_attempted_started_war,this = character root = character from = character fromfrom = title,character_event,"Fires for the character refusing a retract vassalage attempt and declaring war over it. ROOT is the character declaring a war, FROM is the revoker, FROMFROM is the vassal title being retracted."
+on_absorb_clan_attempted_started_war,this = character root = character from = character,character_event,"Fires for the character refusing an absorb clan attempt and declaring war over it. ROOT is the character declaring the war, FROM is the absorber."
+on_split_clan_attempted_started_war,this = character root = character from = character,character_event,"Fires for the character refusing a split clan attempt and declaring war over it. ROOT is the character declaring the war, FROM is the splitter."
+on_unit_entering_province,this = character root = character,character_event,Fires for all characters in a unit (leading a flank or subunit) when it enters a province. ROOT is the character
+on_command_unit,this = character root = character,character_event,Fires for a character when they are put in command of a flank. ROOT is the character.
+on_command_subunit,this = character root = character,character_event,Fires for a character when they are put in command of a subunit. ROOT is the character.
+on_alternate_start,this = character root = character,character_event,Fires for the very first character generated in a Random/Shattered World at the end of game setup (just before the Welcome screen is shown). ROOT is the very first character created.
+on_crusade_preparation_starts,this = character root = character,character_event,Fires when a Crusade begins preparation. Fires for all Crusades/Jihads/GHWs regardless if they have a preparation phase - use uses_new_crusade = yes trigger to limit effects. ROOT is the religious head.
+on_crusade_prepartion_ends,this = character root = character,character_event,Fires when a Crusade ends preparation. ROOT is the religious head.
+on_crusade_canceled,this = character root = character,character_event,Fires when a Crusade is canceled. ROOT is the religious head.
+on_crusade_monthly,this = character root = character,character_event,Fires once a month while a Crusade is preparing or active. ROOT is the religious head.
+on_crusade_target_changes,this = character root = character from = character fromfrom = title fromfromfrom = character,character_event,"Fires when the target of a Crusade chages (either through script or invalidation, or the target's heir inheriting). Happens immediately after the crusade_target_char and crusade_target_title scopes are updated). ROOT is the religious head, FROM is the previous target character, FROMFROM is the previous target title, FROMFROMFROM is the character who made the change if via diplomatic action, otherwise undefined."
+on_pledge_crusade_participation,this = character root = character,character_event,"Fires when a character pledges their participation, even if the war has started. Does not fire when the character is auto-pledged due to joining the war. ROOT is the character."
+on_pledge_crusade_defense,this = character root = character,character_event,"Fires when a character pledges their defense of the crusade target, even if the war has started. Does not fire when the character is auto-pledged due to joining the war. ROOT is the character."
+on_unpledge_crusade_participation,this = character root = character,character_event,"Fires when a character unpledges their participation, including the automatic unpledging on death and conversion. ROOT is the character."
+on_unpledge_crusade_defense,this = character root = character,character_event,"Fires when a character unpledges their defense, including the automatic unpledging on death and conversion. ROOT is the character."
+on_excommunicate_interaction,this = character root = character from = character fromfrom = character,character_event,"Fires when someone is excommunicated via the hardcoded diplomatic interaction. ROOT is the excommunicated character, FROM is the asker, FROMFROM is the religious head."
+on_character_renamed,this = character root = character,character_event,"Fires when a player renames a character. This includes the ""newborn"" event. ROOT is the renamed character."
+on_title_renamed,this = title root = title,title_event,Fires when a player renames a title. This includes renaming via the title screen. ROOT is the renamed title.
+on_province_renamed,this = province root = province,province_event,Fires when a player renames a province. This includes renaming via the province view. ROOT is the renamed province.
+on_artifact_renamed,this = artifact root = artifact,artifact_event,Fires when a player renames an artifact. ROOT is the renamed artifact.
+on_bloodline_renamed,this = bloodline root = bloodline,bloodline_event,Fires when a player renames an bloodline. ROOT is the renamed bloodline.
+on_employer_change,this = character root = character from = character fromfrom = character,character_event,"Fires when a change of employer has been detected. ROOT is the character that got a new employer, FROM is the previous employer (undefined if newly created), FROMFROM is the new employer."
+on_host_change,this = character root = character from = character fromfrom = character,character_event,"Fires when a change of host has been detected. ROOT is the character that got a new host, FROM is the previous host (undefined if newly created), FROMFROM is the new host."

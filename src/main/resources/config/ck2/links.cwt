@@ -1,0 +1,705 @@
+links = {
+    # Planned full example:
+    # link_name = {
+    #   desc = "A (shortish, one line) text string to show in the tooltip/completion"
+    #
+    #   input_scopes - the scopes in which this link can be used. If omitted, any
+    #   input_scopes = character
+    #   or
+    #   input_scopes = { character province }
+    #
+    #   output_scope - the single output scope, if omitted, any
+    #
+    #   prefix - The prefix this data link uses (eg var for var:blah). Requires "data" to be set
+    #   prefix = province
+    #   data - The type that this link refers to (e.g. province:5)
+    #   data = <province>
+    # }
+
+    # Custom data links ####
+    religion = {
+        output_scope = religion
+        from_data = yes
+        data_source = <religion>
+    }
+
+    religion_group = {
+        output_scope = religion
+        from_data = yes
+        data_source = <religion_group>
+    }
+
+    culture = {
+        output_scope = culture
+        from_data = yes
+        data_source = <culture>
+    }
+
+    culture_group = {
+        output_scope = culture
+        from_data = yes
+        data_source = <culture_group>
+    }
+
+    offmap = {
+        output_scope = offmap
+        from_data = yes
+        data_source = <offmap>
+    }
+
+    society = {
+        output_scope = society
+        from_data = yes
+        data_source = <society>
+    }
+
+    secret_religious_society_religion = {
+        prefix = secret_religious_society_
+        output_scope = society
+        from_data = yes
+        data_source = <religion.has_secret_cult>
+    }
+
+    trait.cached = {
+        output_scope = character
+        from_data = yes
+        data_source = <trait.cached>
+    }
+
+    character = {
+        prefix = c_
+        output_scope = character
+        from_data = yes
+        data_source = <character>
+    }
+
+    title = {
+        output_scope = title
+        from_data = yes
+        data_source = <title>
+    }
+
+    # Character scopes ###
+    artifact_owner = {
+        desc = "Scopes to all the artifact's owner"
+        input_scopes = artifact
+        output_scope = character
+    }
+    attacker = {
+        desc = "Scopes to the aggressor in a war"
+        input_scopes = war
+        output_scope = character
+    }
+    band_creator = {
+        desc = "Scopes to the creator of a dynamic mercenary band."
+        input_scopes = title
+        output_scope = character
+    }
+    best_crusade_claimant = {
+        desc = "Scopes to the best claimant for that title in context of crusade"
+        input_scopes = title
+        output_scope = character
+    }
+    best_fit_character_for_title = {
+        desc = "Scopes to a character who should get a chosen title, from a chosen character's perspective. Parameters: title, perspective (from whose perspective we are viewing the title), index (The index of the character in the list)best_fit_character_for_title = {"
+        input_scopes = character
+        output_scope = character
+    }
+    betrothed = {
+        desc = "Scopes to the character who the current scoped character is betrothed to."
+        input_scopes = character
+        output_scope = character
+    }
+    biggest_realm_size_relative = {
+        desc = "Scopes to relatives with biggest realm size."
+        input_scopes = character
+        output_scope = character
+    }
+    center_flank_leader = {
+        desc = "Scopes to the central flank leader of an army"
+        input_scopes = character
+        output_scope = character
+    }
+    left_flank_leader = {
+        desc = "Scopes to the left flank leader of an army"
+        input_scopes = character
+        output_scope = character
+    }
+    right_flank_leader = {
+        desc = "Scopes to the right flank leader of an army"
+        input_scopes = character
+        output_scope = character
+    }
+    consort = {
+        # TODO: Check desc
+        desc = "Scopes to the consort of this character"
+        input_scopes = character
+        output_scope = character
+    }
+    controller = {
+        desc = "Scopes to the character controlling a barony. Rarely used, more generic scope owner being favored."
+        input_scopes = title
+        output_scope = character
+    }
+    current_heir = {
+        desc = "Scopes to the character's heir. This is the character who inherits the primary title, regardless if he is dynastic heir or not."
+        input_scopes = character
+        output_scope = character
+    }
+    defender = {
+        desc = "Scopes to the defender in a war"
+        input_scopes = war
+        output_scope = character
+    }
+    dynasty_head = {
+        desc = "Scopes to the head of the dynasty"
+        input_scopes = character
+        output_scope = character
+    }
+    educator = {
+        desc = "Scopes to the educator of a child (Conclave DLC education)"
+        input_scopes = character
+        output_scope = character
+    }
+    employer = {
+        desc = "Scopes to the character's employer. Only works for landless characters, as landed rulers are considered their own employer, even if they work on their liege council."
+        input_scopes = character
+        output_scope = character
+    }
+    enemy = {
+        desc = "Scopes to the enemy in a siege"
+        input_scopes = siege
+        output_scope = siege
+    }
+    father = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+    father_even_if_dead = {
+        desc = "Scopes to the character's father"
+        input_scopes = character
+        output_scope = character
+    }
+    father_of_unborn = {
+        desc = "Scopes to the unborn child's father"
+        input_scopes = character
+        output_scope = character
+    }
+    founder = {
+        desc = "Scopes to the founder of the current bloodline"
+        input_scopes = bloodline
+        output_scope = character
+    }
+    guardian = {
+        desc = "Scopes to the child's guardian"
+        input_scopes = character
+        output_scope = character
+    }
+    # TODO: check offap power itself
+    governor = {
+        desc = "Scopes to the governor of the scope's offmap power. Scope can be the offmap power itself, the offmap power ruler, or the governor title."
+        input_scopes = { character title offmap }
+        output_scope = character
+    }
+    heir_under_seniority_law = {
+        desc = "Scopes to the character who'd be heir if Seniority succession was enacted"
+        input_scopes = title
+        output_scope = character
+    }
+    heir_under_primogeniture_law = {
+        desc = "Scopes to the character who'd be heir if Primogeniture succession was enacted"
+        input_scopes = title
+        output_scope = character
+    }
+    highest_ranked_relative = {
+        desc = "Scopes to relatives with highest feudal tier"
+        input_scopes = character
+        output_scope = character
+    }
+    holder_scope = {
+        desc = "Scopes to the owner of the province or title"
+        input_scopes = { title province }
+        output_scope = character
+    }
+    hospital_owner = {
+        desc = ""
+        input_scopes = province
+        output_scope = character
+    }
+    host = {
+        desc = "Scopes to the owner of where the character resides. Works both for landed and unlanded characters. If character is residing at court, the host would be the liege. For an imprisoned character, this yields their jailer."
+        input_scopes = character
+        output_scope = character
+    }
+    job_chancellor = {
+        desc = "Scopes to the character's current Chancellor, if they have one."
+        input_scopes = character
+        output_scope = character
+    }
+    job_marshal = {
+        desc = "Scopes to the character's current Marshal, if they have one."
+        input_scopes = character
+        output_scope = character
+    }
+    job_treasurer = {
+        desc = "Scopes to the character's current Steward, if they have one. Beware, it's treasurer, not steward!"
+        input_scopes = character
+        output_scope = character
+    }
+    job_spymaster = {
+        desc = "Scopes to the character's current Spymaster, if they have one."
+        input_scopes = character
+        output_scope = character
+    }
+    job_spiritual = {
+        desc = "Scopes to the character's current Chaplain, if they have one."
+        input_scopes = character
+        output_scope = character
+    }
+    killer = {
+        desc = "Scopes to the killer of a character"
+        input_scopes = character
+        output_scope = character
+    }
+    leader = {
+        desc = "Scopes to the leader of a force in a siege"
+        input_scopes = siege
+        output_scope = character
+    }
+    liege = {
+        desc = "Scopes to a character's direct liege"
+        input_scopes = character
+        output_scope = character
+    }
+    liege_before_war = {
+        desc = "Scopes to whoever was the character's liege before his rebellion"
+        input_scopes = character
+        output_scope = character
+    }
+    lover = {
+        desc = "Scopes to the character's lover"
+        input_scopes = character
+        output_scope = character
+    }
+    mercenary_employer = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+    most_participating_attacker = {
+        desc = "Scopes to the attacker that's done the most in a war"
+        input_scopes = war
+        output_scope = character
+    }
+    most_participating_crusader = {
+        desc = "Scopes to the non-theocracy attacker that's done the most in a war"
+        input_scopes = war
+        output_scope = character
+    }
+    most_participating_defender = {
+        desc = "Scopes to the defender that's done the most in a war"
+        input_scopes = war
+        output_scope = character
+    }
+    most_popular_vassal = {
+        desc = "Scopes to a the most popular vassal who meets its limitclause. Seems to use an average of opinion among all vassals (including mayors). Used to determine the new ruler when the 'Oust ruler' faction is successful."
+        input_scopes = character
+        output_scope = character
+    }
+    most_prestigious_clan_vassal = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+    mother = {
+        desc = "Scopes to the character's mother"
+        input_scopes = character
+        output_scope = character
+    }
+    mother_even_if_dead = {
+        desc = "Scopes to the character's mother, even if she's dead"
+        input_scopes = character
+        output_scope = character
+    }
+    new_character = {
+        desc = "Scopes to the character previously created in the event, via create_character or similar command."
+        #input_scopes = character
+        output_scope = character
+    }
+    offmap_prev_ruler = {
+        desc = "Scopes to the previous ruler of the scope's offmap power. Scope can be the offmap power itself, the current offmap power ruler, the governor, or the governor title."
+        input_scopes = { character title offmap }
+        output_scope = character
+    }
+    offmap_ruler = {
+        desc = "Scopes to the ruler of the scope's offmap power. Scope can be the offmap power itself, the governor, or the governor title."
+        input_scopes = { character title offmap }
+        output_scope = character
+    }
+    original_artifact_owner = {
+        desc = ""
+        input_scopes = artifact
+        output_scope = character
+    }
+    original_owner = {
+        desc = "Scopes to the original owner of the artifact. Both scopes function identically."
+        input_scopes = artifact
+        output_scope = character
+    }
+    owner = {
+        desc = "Scopes to the owner of the province, title, or artifact"
+        input_scopes = { title province artifact }
+        output_scope = character
+    }
+    parent_religion_head = {
+        desc = "Scopes to the religion head of the parent religion"
+        input_scopes = { character province }
+        output_scope = character
+    }
+    player_heir = {
+        desc = "Scopes to the scope's heir as listed on the character sheet (i.e. the character you would be playing if you were playing the scope and the scope died) rather than the heir to the primary title of the scope."
+        input_scopes = character
+        output_scope = character
+    }
+    plot_target_char = {
+        desc = "Scopes to the character that's being plotted against"
+        input_scopes = character
+        output_scope = character
+    }
+    preferred_war_target = {
+        desc = "Scopes to the character's attack target"
+        input_scopes = character
+        output_scope = character
+    }
+    previous_artifact_owner = {
+        desc = "Scopes to the previous owner of the artifact. Does not work on artifacts that have the history = no parameter."
+        input_scopes = artifact
+        output_scope = character
+    }
+    quest_target = {
+        desc = "Scopes to current target of the character's quest. Can be a character, province, or title depending on the quest."
+        input_scopes = character
+        output_scope = character
+    }
+    real_father = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+    real_father_even_if_dead = {
+        desc = "Scopes to the character's real father, if the character's known father is not their genetic parent. This will select the genetic parent even if the cuckolding is unknown. If character's known father is their actual father, produces no result. See true_father or true_father_even_if_dead if you would prefer to return the actual father every time."
+        input_scopes = character
+        output_scope = character
+    }
+    reincarnation_scope = {
+        desc = "Scopes to the character that currently scoped character is the reincarnation of"
+        input_scopes = character
+        output_scope = character
+    }
+    regent = {
+        desc = "Scopes to the character's regent"
+        input_scopes = character
+        output_scope = character
+    }
+    religion_head = {
+        desc = "Scopes to the character's religious head(s). Does NOT includes antipopes"
+        input_scopes = { character title }
+        output_scope = character
+    }
+    rightful_religious_head_scope = {
+        desc = "Scopes to the character's rightful religious head. Includes antipopes"
+        input_scopes = character
+        output_scope = character
+    }
+    ruler = {
+        desc = "Scopes to the province's owner. Rarely used, owner being preferred."
+        input_scopes = province
+        output_scope = character
+    }
+    spouse = {
+        desc = "Scopes to the character's primary spouse"
+        input_scopes = character
+        output_scope = character
+    }
+    spouse_even_if_dead = {
+        desc = "Scopes to the character's primary spouse, even if dead"
+        input_scopes = character
+        output_scope = character
+    }
+    strongest_clan_vassal = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+    supported_claimant = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+    suzerain = {
+        desc = "Scopes to the suzerain of a tributary character"
+        input_scopes = character
+        output_scope = character
+    }
+    title_to_get_rid_of = {
+        desc = "Scopes to titles over the demesne limit"
+        input_scopes = title
+        output_scope = character
+    }
+    top_liege = {
+        desc = "Scopes to a character's independent liege"
+        input_scopes = character
+        output_scope = character
+    }
+    trade_post_owner = {
+        desc = "Scopes to the owner of the trade post"
+        input_scopes = { title province }
+        output_scope = character
+    }
+    true_father = {
+        desc = "Scopes to the real_father if one exists; otherwise it scopes to the father."
+        input_scopes = character
+        output_scope = character
+    }
+    true_father_even_if_dead = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+    twin = {
+        desc = "Scopes to the character's twin. WARNING: If mods add additional twins (triplets, etc.), these scopes may produce unpredictable results."
+        input_scopes = character
+        output_scope = character
+    }
+    twin_even_if_dead = {
+        desc = ""
+        input_scopes = character
+        output_scope = character
+    }
+
+
+    # Titles ######
+
+    blood_brother = {
+        desc = ""
+        input_scopes = character
+        output_scope = title
+    }
+    capital_holding = {
+        desc = "Scopes to the character's capital holding title. Note: this is different from capital_scope which scopes to the capital province."
+        input_scopes = { character province }
+        output_scope = title
+    }
+    clan_title = {
+        desc = "Scopes to the clan of a nomad."
+        input_scopes = character
+        output_scope = title
+    }
+    county = {
+        desc = "Scopes to the county a barony is in"
+        input_scopes = { province title }
+        output_scope = title
+    }
+    crownlaw_title = {
+        desc = "Scopes to the title giving a character or title its crown laws"
+        input_scopes = { character title }
+        output_scope = title
+    }
+    crusade_target = {
+        desc = "Scopes to the target of the ongoing crusade of the character's religion"
+        input_scopes = character
+        output_scope = title
+    }
+    defacto_liege_title = {
+        desc = "Scopes to the title a title de facto belongs to"
+        input_scopes = title
+        output_scope = title
+    }
+    dejure_liege_title = {
+        desc = "Scopes to the title a character or title de jure belongs to"
+        input_scopes = { character title }
+        output_scope = title
+    }
+    duchy = {
+        desc = "Scopes to the duchy a province belongs to. (From county scope, you must use dejure_liege_title instead)"
+        input_scopes = province
+        output_scope = title
+    }
+    empire = {
+        desc = "Scopes to the empire a title belongs to"
+        input_scopes = { province title }
+        output_scope = title
+    }
+    family_palace = {
+        desc = "Scopes to the family palace title of a patrician."
+        input_scopes = character
+        output_scope = title
+    }
+    # TODO: offmap power
+    governor_title = {
+        desc = "Scopes to the governor title of the scope. Scope can be the offmap power itself, the offmap power ruler, or the governor."
+        input_scopes = { character offmap }
+        output_scope = title
+    }
+    invasion_target = {
+        desc = ""
+        output_scope = title
+    }
+    kingdom = {
+        desc = "Scopes to the kingdom a title belongs to"
+        input_scopes = { province title }
+        output_scope = title
+    }
+    new_title = {
+        desc = "Scopes to the title previously created in the same scope via create_titlecommand."
+        # input_scopes = character
+        output_scope = title
+    }
+    plot_target_title = {
+        desc = "Scopes to the title of the character the character is plotting against"
+        input_scopes = character
+        output_scope = title
+    }
+    primary_title = {
+        desc = "Scopes to the character's primary title"
+        input_scopes = character
+        output_scope = title
+    }
+    quest_target = {
+        desc = "Scopes to current target of the character's quest. Can be a character, province, or title depending on the quest."
+        input_scopes = character
+        output_scope = title
+    }
+    supported_claimant_title = {
+        desc = ""
+        input_scopes = character
+        output_scope = title
+    }
+    realm = {
+        desc = "Scopes to the independent realm the character or title is part of. It is the equivalent of top_liege for titles."
+        input_scopes = { character title }
+        output_scope = title
+    }
+    succ_law_title = {
+        desc = "Scopes to a title where has_law trigger can be used to check succession law."
+        input_scopes = title
+        output_scope = title
+    }
+    thirdparty_title_scope = {
+        desc = "Only valid if thirdparty title is involved in the war"
+        input_scopes = war
+        output_scope = title
+    }
+
+    # Province ###
+
+
+    capital_scope = {
+        desc = "Scopes to the character's (or title's, if a capital has been defined in landed_titles definitions) capital province"
+        # input_scopes = { character title province }
+        input_scopes = { character province }
+        output_scope = province
+    }
+    location = {
+        desc = "Scopes to the character's location (or county or barony title's province)"
+        input_scopes = { character title unit province siege }
+        output_scope = province
+    }
+    plot_target_province = {
+        desc = "Scopes to the province that the character's plot is targeting"
+        input_scopes = character
+        output_scope = province
+    }
+    quest_target = {
+        desc = "Scopes to current target of the character's quest. Can be a character, province, or title depending on the quest."
+        input_scopes = character
+        output_scope = province
+    }
+    sea_zone = {
+        desc = "Scopes to ALL sea provinces bordering the currently scoped province"
+        input_scopes = province
+        output_scope = province
+    }
+
+
+    # Offmap
+    offmap_power = {
+        desc = "Scopes to the offmap power of the scope. Scope can be the offmap power ruler, the governor, or the governor title."
+        input_scopes = { character title }
+        output_scope = offmap
+    }
+
+    # Siege
+    siege = {
+        desc = "Scopes to the siege the character is participating in"
+        input_scopes = character
+        output_scopes = siege
+    }
+
+    # Religion ###
+    religion_scope = {
+        desc = "Scopes to the religion of the current scope."
+        input_scopes = { character province society }
+        output_scope = religion
+    }
+    parent_religion = {
+        desc = "Scopes to the parent religion (if any) of the currently scoped entity's religion."
+        input_scopes = { character province religion } # TODO: ensure society works
+        output_scope = religion
+    }
+    secret_religion_scope = {
+        desc = "Scopes to the secret religion of the character."
+        input_scopes = character
+        output_scope = religion
+    }
+    true_religion_scope = {
+        desc = "Scopes to the true religion of the character."
+        input_scopes = character
+        output_scope = religion
+    }
+
+    # Culture ###
+    culture_scope = {
+        desc = "Scopes to the culture of the character or province."
+        input_scopes = { character province }
+        output_scope = culture
+    }
+    gfx_culture_scope = {
+        desc = "Scopes to the culturegfx of the character."
+        input_scopes = character
+        output_scope = gfx_culture
+    }
+
+    # Society #####
+    secret_religious_cult = {
+        desc = "Scopes to the secret religious cult of the character's true religion, or otherwise the secret religious cult of the religion of the scope."
+        input_scopes = { character province religion }
+        output_scope = society
+    }
+    society = {
+        desc = "Scopes to the society the character is a member of"
+        input_scopes = character
+        output_scope = society
+    }
+
+    # Artifacts ###
+    new_artifact = {
+        desc = "Scopes to the artifact just created using add_artifact."
+        input_scopes = character
+        outut_scope = artifact
+    }
+
+    # Bloodline ###
+    new_bloodline = {
+        desc = "Scopes to the he bloodline you just created in script"
+        # input_scopes = character
+        outut_scope = bloodline
+    }
+
+    # Faction ###
+    faction_claimant = {
+        input_scopes = character
+        output_scope = title
+    }
+}

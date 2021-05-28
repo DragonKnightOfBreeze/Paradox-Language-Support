@@ -1,0 +1,38 @@
+
+types = {
+	type[technology_group] = {
+		path = "game/common"
+		path_file = "technology.txt"
+		skip_root_key = groups
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+	}
+}
+
+
+
+technology_group = {
+	start_level = int
+	start_cost_modifier = float
+	## cardinality = 0..1
+	nation_designer_unit_type = <technology_group>
+	## cardinality = 0..1
+	is_primitive = yes
+	## cardinality = 0..1
+	nation_designer_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	nation_designer_cost = {
+		## replace_scope = { root = country this = country }
+		## cardinality = 0..1
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		value = int
+	}
+}

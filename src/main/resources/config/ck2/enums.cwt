@@ -1,0 +1,980 @@
+enums = {
+    enum[dlcs] = {
+        "The Sword of Islam"
+        "Legacy of Rome"
+        "Sunset Invasion"
+        "The Republic"
+        "The Old Gods"
+        "Sons of Abraham"
+        "Rajas of India"
+        "Charlemagne"
+        "Way of Life"
+        "Horse Lords"
+        "Zeus"
+        "Conclave"
+        "Reapers"
+        "Mystics"
+        "Jade Dragon"
+        "Holy Fury"
+        "The Reaper's Due"
+        "Monks And Mystics"
+    }
+    enum[title_tiers] = {
+        baron
+        count
+        duke
+        king
+        emperor
+    }
+    enum[holding_types] = {
+        castle
+        city
+        temple
+        tribal
+        nomad
+        hospital
+        fort
+        trade_post
+        family_palace
+    }
+    enum[holding_types_barony_only] = {
+        castle
+        city
+        temple
+        tribal
+        nomad
+    }
+    enum[holding_types_special] = {
+        hospital
+        fort
+        trade_post
+        family_palace
+    }
+    enum[combat_phases] = {
+        skirmish
+        melee
+        pursue
+    }
+    enum[attributes] = {
+        diplomacy
+        martial
+        stewardship
+        intrigue
+        learning
+    }
+    enum[attributes_and_combat] = {
+        diplomacy
+        martial
+        stewardship
+        intrigue
+        learning
+        combat_rating
+    }
+    enum[troop_types] = {
+        pikemen
+        knights
+        archers
+        light_infantry
+        heavy_infantry
+        light_cavalry
+        heavy_cavalry
+        galleys
+    }
+    enum[troop_types_land_only] = {
+        pikemen
+        knights
+        archers
+        light_infantry
+        heavy_infantry
+        light_cavalry
+        heavy_cavalry
+    }
+    enum[troop_types_sea_only] = {
+        galleys
+    }
+    enum[religion_visibility] = {
+        secret
+        public
+        true
+    }
+    # TODO - replace with frames when that happens, if ever
+    # Descriptors up to 94 taken from wiki, rest is mine
+    enum[event_modifier_icons] = {
+        ### Martial+
+        1
+        ### Martial-
+        19
+        ### Learning+
+        2
+        ### Learning-
+        20
+        ### Diplomacy+
+        3
+        ### Diplomacy-
+        21
+        ### Stewardship+
+        4
+        ### Stewardship-
+        22
+        ### Intrigue+
+        5
+        ### Intrigue-
+        23
+        ### Money+
+        6
+        ### Money-
+        24
+        ### Prestige+
+        7
+        ### Prestige-
+        25
+        ### Piety+
+        8
+        ### Piety-
+        26
+        ### Titles+
+        9
+        ### Titles-
+        27
+        ### Council+
+        10
+        ### Council-
+        28
+        ### Laws+
+        11
+        ### Laws-
+        29
+        ### Technology+
+        12
+        ### Technology-
+        30
+        ### Military+
+        13
+        ### Military-
+        31
+        ### Plots+
+        14
+        ### Plots-
+        32
+        ### Messages+
+        15
+        ### Messages-
+        33
+        ### Diplomatic actions+
+        16
+        ### Diplomatic actions-
+        34
+        ### Church+
+        17
+        ### Church-
+        35
+        ### Characters+
+        18
+        ### Characters-
+        36
+        ### Prison+
+        37
+        ### Prison-
+        38
+        ### Love+
+        39
+        ### Love-
+        40
+        ### Death+
+        41
+        ### Death-
+        42
+        ### Indian religion+
+        43
+        ### Indian religion-
+        44
+        ### Dog+
+        45
+        ### Dog-
+        65
+        ### Cat+
+        46
+        ### Cat-
+        66
+        ### Owl+
+        47
+        ### Owl-
+        67
+        ### Pagan religion+
+        48
+        ### Pagan religion-
+        49
+        ### Staff of Asclepius+
+        50
+        ### Staff of Asclepius-
+        51
+        ### Mystic+
+        52
+        ### Mystic-
+        53
+        ### Bonesaw+
+        54
+        ### Bonesaw-
+        55
+        ### Horseshoe+
+        56
+        ### Horseshoe-
+        57
+        ### Parrot+
+        58
+        ### Parrot-
+        68
+        ### Ham+
+        59
+        ### Ham-
+        60
+        ### Anchor+
+        61
+        ### Anchor-
+        62
+        ### Jewish religion+
+        63
+        ### Jewish religion-
+        64
+        ### Bed+
+        69
+        ### Bed-
+        70
+        ### Wolf+
+        71
+        ### Wolf-
+        72
+        ### Raven+
+        73
+        ### Raven-
+        74
+        ### Demon horns+
+        75
+        ### Demon horns-
+        76
+        ### Trident+
+        77
+        ### Trident-
+        78
+        ### Stars+
+        79
+        ### Stars-
+        80
+        ### Eye+
+        81
+        ### Eye-
+        82
+        ### Test tubes+
+        83
+        ### Test tubes-
+        84
+        ### Science flask+
+        85
+        ### Science flask-
+        86
+        ### Flower+
+        87
+        ### Flower-
+        88
+        ### Rat+
+        89
+        ### Rat-
+        90
+        ### Otter+
+        91
+        ### Otter-
+        92
+        ### Hedgehog+
+        93
+        ### Hedgehog-
+        94
+        ### Eastern religion+
+        95
+        ### Eastern religion-
+        96
+        ### Paper+
+        97
+        ### Paper-
+        98
+        ### Chinese scroll+
+        99
+        ### Chinese scroll-
+        100
+        ### Chinese temple+
+        101
+        ### Chinese temple-
+        102
+        ### Fireworks+
+        103
+        ### Fireworks-
+        104
+        ### Torch+
+        105
+        ### Torch-
+        106
+        ### Panda+
+        107
+        ### Panda-
+        108
+        ### Chinese dragon+
+        109
+        ### Chinese dragon-
+        110
+        ### Eagle+
+        111
+        ### Eagle-
+        112
+        ### Pregnancy+
+        113
+        ### Pregnancy-
+        114
+        ### Sword+
+        115
+        ### Sword-
+        116
+        ### Dueling+
+        117
+        ### Dueling-
+        118
+        ### Broken bone+
+        119
+        ### Broken bone-
+        120
+        ### Chicken+
+        121
+        ### Chicken-
+        122
+        ### Personal combat skill+
+        123
+        ### Personal combat skill-
+        124
+        ### Bear+
+        125
+        ### Bear-
+        126
+        ### Lion+
+        127
+        ### Lion-
+        128
+        ### Rain+
+        129
+        ### Rain-
+        130
+        ### Thunderstorm+
+        131
+        ### Thunderstorm-
+        132
+        ### Sun+
+        133
+        ### Sun-
+        134
+    }
+    enum[duration] = {
+        days
+        months
+        years
+    }
+    enum[duration_dy] = {
+        days
+        years
+    }
+    enum[duration_my] = {
+        months
+        years
+    }
+    enum[duration_dmy] = {
+        duration
+        months
+        years
+    }
+    enum[duration_duy] = {
+        duration
+        years
+    }
+    enum[duration_ddmy] = {
+        day
+        duration
+        months
+        years
+    }
+    # Hope I got this right.
+    enum[gender_successions] = {
+        ### Males only.
+        agnatic
+        ### Males preferred.
+        cognatic
+        ### Equal.
+        true_cognatic
+        ### Females preferred.
+        enatic_cognatic
+        ### Females only.
+        enatic
+    }
+    enum[terrain] = {
+        forest
+        hills
+        mountain
+        plains
+        farmlands
+        steppe
+        desert
+        jungle
+        arctic
+        woods
+        impassable_mountains
+        marsh
+    }
+
+    # TODO: Something to check this
+    enum[modifier_names] = {
+        modifier
+        name
+    }
+
+    # TODO: Docs
+    enum[filter_targets_character] = {
+        self
+        spouse
+        court
+        home_court
+        liege
+        vassals
+        sub_realm
+        realm
+        dynasty
+        close_relatives
+        rivals
+        friends
+        liege
+        rel_head
+        society
+        vassal_wars
+        independent_rulers
+        all
+        none
+        all_including_me
+        court_including_me
+        home_court_including_me
+        sub_realm_including_me
+        realm_including_me
+        dynasty_including_me
+        rel_head_including_me
+        independent_rulers_including_me
+        society_including_me
+    }
+
+    # TODO: Docs
+    enum[filter_targets_settlements] = {
+        capital
+        owned
+        vassal_owned
+        sub_realm_owned
+        realm_owned
+        dynasty_owned
+        all
+    }
+
+    # TODO: Docs
+    enum[filter_targets_titles] = {
+        capital
+        primary_title
+        owned
+        vassal_owned
+        sub_realm_owned
+        realm_owned
+        dynasty_owned
+        all
+        self
+    }
+
+    enum[technology_levels] = {
+        1
+        2
+        3
+        4
+        5
+        6
+        7
+        8
+    }
+
+    enum[alternate_start_setting_types] = {
+        ### A checkbox with two states.
+        checkbox
+        ### A slider with one selector.
+        slider
+        ### A slider with two bounding selectors.
+        double_slider
+        ### Any number of options which you can click through.
+        selection
+        ### The setting needs a gui window with "alt_setting_<alternate_start_setting>_entry", a button for each option (with the same name) and a "selection_indicator" icon. These will be used for a custom selector.
+        custom
+    }
+
+    enum[alternate_start_holding_type] = {
+        ### Does not touch holdings, but makes all rulers of one or two holding tribal provinces (note holdings, not slots) of Nomadic cultures Nomads.
+        historical
+        ### Makes every county in the game have a feudal, temple, and city holding, in that order.
+        feudal
+        ### Makes every county in the game have just a single tribal holding.
+        tribal
+        ### Makes every county in the game have no holdings whatsoever.
+        nomadic
+        ### Makes all Nomadic cultured provinces (as defined in the culture itself) have no holdings. Everything else has a single tribal holding.
+        tribal_nomadic
+    }
+
+    enum[alternate_start_holding_slots] = {
+        ### No change, but can be checked from script.
+        historical
+        ### Causes the number of holding slots to be randomized between 1 and 7. Formula is ( 2d7 + 1 ) / 2.
+        random
+        ### Causes the number of holding slots to be set to one in the whole world.
+        one
+        ### Causes the number of holding slots to be set to two in the whole world.
+        two
+        ### Causes the number of holding slots to be set to three in the whole world.
+        three
+        ### Causes the number of holding slots to be set to four in the whole world.
+        four
+        ### Causes the number of holding slots to be set to five in the whole world.
+        five
+        ### Causes the number of holding slots to be set to six in the whole world.
+        six
+        ### Causes the number of holding slots to be set to seven in the whole world.
+        seven
+    }
+
+    enum[alternate_start_culture_religion] = {
+        ### No randomisation, but can be checked from script.
+        historical
+        ### Randomised among the normal members of the type.
+        random
+        ### Randomised, including special cultures/religions and heresies.
+        full_random
+    }
+
+    enum[alternate_start_dejure_kingdoms_empires] = {
+        ### No change, but can be checked from script.
+        historical
+        ### All de jure titles of this tier and above (if any) are removed.
+        none
+        ### All de jure titles of this tier are replaced with random ones.
+        random
+    }
+
+    enum[alternate_start_technology] = {
+        ### No change, but can be checked from script.
+        historical
+        ### Randomised somehow, no docs.
+        random
+        ### Causes all provinces to have the same tech level (interpolated by year between the ideal years for 0 and 8 tech).
+        flat
+    }
+
+    complex_enum[artifact_slots] = {
+        path = "game/common/artifacts"
+        start_from_root = yes
+        name = {
+            slots = {
+                enum_name = scalar
+            }
+        }
+    }
+
+    enum[bloodline_inheritance_types] = {
+        all_descendants
+        matrilineal
+        patrilineal
+        no_inheritance
+    }
+
+    # TODO: Yes, this is super hacky
+    enum[troop_types_max_levy] = {
+        pikemen_max_levy
+        knights_max_levy
+        archers_max_levy
+        light_infantry_max_levy
+        heavy_infantry_max_levy
+        light_cavalry_max_levy
+        heavy_cavalry_max_levy
+        galleys_max_levy
+    }
+
+    enum[troop_types_min_levy] = {
+        pikemen_min_levy
+        knights_min_levy
+        archers_min_levy
+        light_infantry_min_levy
+        heavy_infantry_min_levy
+        light_cavalry_min_levy
+        heavy_cavalry_min_levy
+        galleys_min_levy
+    }
+
+    enum[troop_types_land_only_offensive] = {
+        pikemen_offensive
+        knights_offensive
+        archers_offensive
+        light_infantry_offensive
+        heavy_infantry_offensive
+        light_cavalry_offensive
+        heavy_cavalry_offensive
+    }
+
+    enum[troop_types_land_only_defensive] = {
+        pikemen_defensive
+        knights_defensive
+        archers_defensive
+        light_infantry_defensive
+        heavy_infantry_defensive
+        light_cavalry_defensive
+        heavy_cavalry_defensive
+    }
+
+    enum[troop_types_land_only_morale] = {
+        pikemen_morale
+        knights_morale
+        archers_morale
+        light_infantry_morale
+        heavy_infantry_morale
+        light_cavalry_morale
+        heavy_cavalry_morale
+    }
+
+    enum[combat_tactic_groups] = {
+        skirmish
+        advance
+        charge
+        harass
+        swarm
+        volley
+        defensive
+        stand_fast
+    }
+
+    enum[siege_sides] = {
+        attacker
+        defender
+    }
+
+    enum[council_voting_pattern_types] = {
+        for
+        against
+    }
+
+    enum[grammar_transforms] = {
+        french
+        spanish
+    }
+
+    enum[skin_tones] = {
+        0 # Light
+        1 # Tan
+        2 # Dark
+        3 # Black
+    }
+
+    enum[is_jobs] = {
+        is_chancellor
+        is_marshal
+        is_treasurer
+        is_spymaster
+        is_spiritual
+    }
+
+    enum[lift_fows] = {
+        lift_fow
+        lift_neighbor_fow
+    }
+
+    enum[mercenary_title_types] = {
+        mercenary
+        holy_order
+    }
+
+    enum[law_types] = {
+        council
+        obligations
+        realm
+    }
+
+    enum[objective_types_ambition] = {
+        ### The character.
+        character
+        ### The character's spouse.
+        spouse
+        ### The character's rivals.
+        rivals
+        ### The character's friends.
+        friends
+        ### The character's liege's titles.
+        liege_titles
+        ### The character's vassals' titles.
+        vassal_titles
+        ### All titles in the character's realm.
+        realm_titles
+        ### All characters in the character's realm.
+        realm_characters
+        ### All characters in the character's realm plus rivals and relatives of self, parents, children and spouse, and quest target.
+        realm_characters_plus
+        ### All independent rulers.
+        independent_rulers
+    }
+
+    enum[objective_types_faction] = {
+        ### The character's liege's titles.
+        liege_titles
+        ### The character's liege's titles that have a claimant; the claimant will be accessible through the new_character scope.
+        liege_titles_w_claimant
+        ### The character.
+        character
+    }
+
+    enum[objective_types_focus] = {
+        ### The character.
+        character
+    }
+
+    enum[objective_types_plot] = {
+        ### The character.
+        character
+        ### The character's spouse.
+        spouse
+        ### The character's rivals.
+        rivals
+        ### The character's friends.
+        friends
+        ### The character's liege's titles.
+        liege_titles
+        ### The character's vassals' titles.
+        vassal_titles
+        ### All titles in the character's realm.
+        realm_titles
+        ### All characters in the character's realm.
+        realm_characters
+        ### All characters in the character's realm plus rivals and relatives of self, parents, children and spouse, and quest target.
+        realm_characters_plus
+        ### All independent rulers.
+        independent_rulers
+        ### All county titles with trade posts.
+        rep_trade_posts
+    }
+
+    enum[objective_types_title] = {
+        liege_titles
+        vassal_titles
+        realm_titles
+        rep_trade_posts
+    }
+
+    enum[objective_types_character] = {
+        character
+        spouse
+        rivals
+        friends
+        realm_characters
+        realm_characters_plus
+        independent_rulers
+    }
+
+    enum[int_troop_types] = {
+        ### Light infantry
+        0
+        ### Heavy infantry
+        1
+        ### Pikemen
+        2
+        ### Light cavalry
+        3
+        ### Heavy cavalry
+        4
+        ### Archers
+        5
+        ### Special units
+        6
+    }
+
+    # TODO: split into scope-based categories; as it is it's just copied from the wiki
+    enum[variable_exports] = {
+        diplomacy
+        martial
+        stewardship
+        intrigue
+        learning
+        base_health
+        health
+        demesne_efficiency
+        decadence
+        dynasty_realm_power
+        fertility
+        infamy
+        mercenary_siphon_factor
+        monthly_income
+        plot_power
+        population_factor
+        relative_power_to_liege
+        religion_authority
+        revolt_risk
+        scaled_wealth
+        treasury
+        wealth
+        yearly_income
+        age
+        day_of_birth
+        month_of_birth
+        year_of_birth
+        ai_ambition
+        ai_greed
+        ai_honor
+        ai_rationality
+        ai_zeal
+        among_most_powerful_vassals
+        combat_rating
+        demesne_garrison_size
+        demesne_size
+        health_traits
+        imprisoned_days
+        lifestyle_traits
+        max_manpower
+        num_fitting_characters_for_title
+        num_of_baron_titles
+        num_of_buildings
+        num_of_children
+        num_of_claims
+        num_of_consorts
+        num_of_count_titles
+        num_of_count_titles_in_realm
+        num_of_duke_titles
+        num_of_dynasty_members
+        num_of_emperor_titles
+        num_of_empty_holdings
+        num_of_extra_landed_titles
+        num_of_feuds
+        num_of_friends
+        num_of_holy_sites
+        num_of_king_titles
+        num_of_lovers
+        num_of_max_settlements
+        num_of_plot_backers
+        num_of_prisoners
+        num_of_rivals
+        num_of_settlements
+        num_of_subrealm_castles
+        num_of_subrealm_cities
+        num_of_spouses
+        num_of_titles
+        num_of_trade_posts
+        num_of_traits
+        num_of_unique_dynasty_vassals
+        num_of_vassals
+        over_max_demesne_size
+        over_vassal_limit
+        personality_traits
+        piety
+        population
+        population_and_manpower
+        prestige
+        realm_diplomacy
+        realm_intrigue
+        realm_learning
+        realm_martial
+        realm_stewardship
+        realm_levies
+        realm_levies_plus_allies
+        max_realm_levies
+        realm_size
+        republic_total_num_of_trade_posts
+        ruled_years
+        score
+        unused_manpower
+        retinue_points_max
+        retinue_points_used
+        retinue_points_free
+        total_tax_value
+        holding_tax_value
+        dynastic_prestige
+        society_currency
+        day
+        month
+        year
+        holding_garrison
+        holding_garrison_percent
+        holding_raisable_levy
+        holding_raisable_levy_percent
+        holding_total_levy
+        holding_total_levy_percent
+    }
+
+    enum[create_character_effects] = {
+        create_character
+        create_random_diplomat
+        create_random_intriguer
+        create_random_priest
+        create_random_soldier
+        create_random_steward
+    }
+
+    enum[create_title_effects_temporary_adventurer] = {
+        ### Destroyed automatically when at peace. The holder and the courtiers cannot marry or accept most other diplo-actions.
+        temporary
+        ### Adventure titles work just as temporary titles but do not get destroyed automatically when the holder is in peace. Instead, they are destroyed whenever the holder gains another title or when the holder dies.
+        adventurer
+    }
+
+    enum[message_type_priorities] = {
+        ### ???
+        0
+        ### Popup.
+        1
+        ### High priority.
+        2
+        ### Low priority.
+        3
+        ### Log.
+        4
+        ### Disabled.
+        5
+    }
+
+    enum[receive_title_effects] = {
+        ### Also grants any vassal owning or below current title.
+        grant_title
+        ### No claim for the giver and no opinion bonus from the receiver.
+        grant_title_no_opinion
+        ### UNCONFIRMED Gives strong claim to character being usurped?
+        usurp_title
+        usurp_title_only
+        usurp_title_plus_barony_if_unlanded
+        usurp_title_plus_barony_if_unlanded_and_vassals
+        usurp_title_plus_barony_if_unlanded_and_vassals_no_adj
+    }
+
+    enum[tech_growth_modifiers] = {
+        tech_growth_modifier_military
+        tech_growth_modifier_economy
+        tech_growth_modifier_culture
+    }
+
+    enum[usurp_types] = {
+        claim
+        invasion
+        holy_war
+        revolt
+        host
+        duel
+        faction_demand
+    }
+
+    enum[war_ends] = {
+        invalid
+        whitepeace
+        success
+        reverse_demand
+    }
+
+    enum[investiture_types] = {
+        head
+        any
+    }
+}

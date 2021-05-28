@@ -1,0 +1,18 @@
+types = {
+    type[event_background] = {
+        path = "game/common/event_backgrounds"
+    }
+}
+
+event_background = {
+    ## cardinality = 1..inf
+    background = {
+        ## cardinality = 0..1
+        trigger = single_alias_right[trigger_clause]
+		# TODO: Filepath
+		reference = scalar
+		environment = <portrait_environment>
+		# TODO: Audio reference
+		ambience = scalar
+	}
+}

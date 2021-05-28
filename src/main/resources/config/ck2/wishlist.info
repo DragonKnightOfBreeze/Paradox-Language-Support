@@ -1,0 +1,10 @@
+- Autocomplete for matching nested types like options for game rules.
+- skip_root_key as OR or NOR (the former is needed for laws, the latter for alternate_start)
+- A property, uh, property, that counts as a replacement for a parameter in a top-level type. For example, religion_group property ai_convert_other_group can be explicitly replaced by a religion. In such cases it should probably inform you what the default (religion_group value) currently is. Low priority as it's just religions.
+- For property = int a "## frame_of_sprite = <sprite>" or something like that to make sure that the int is within [1..noOfFrames] for the sprite.
+- Hovering over graphics resources showing their contents. Probably extremely useful for any modding that involves graphics, which is a lot - at the very least, events would likely enjoy that.
+- If tooltips could show the frame (so hovering over "dongs = 3" where dongs has a `## frame_of_sprite = GFX_modifier_icons` would show https://ck2.paradoxwikis.com/images/7/77/Diplomacy_positive_modifier.png), that'd be just excellent.
+- When adding a new member of a type, automatically add the "required" fields (cardinality equal to some fixed number above 0) like with aliases.
+- For nested types in the localisation block - a variable for the parent type name (alternate starts need that if I'm doing options as types)
+- Using define values in comments (### Default is [DEFINE].), cardinality (cardinality = define1..define3) and value bounds (int[0..define]).
+- Setting descriptions for relative scopes directly instead of through ### docs so that they can be displayed in the scope table. For example, when using `## replace_scope = { this = character root = character from = character }`, add `## scope_desc = { this = "The target" root = "The target" from = "The plotter" }`

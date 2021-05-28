@@ -1,0 +1,143 @@
+types = {
+	type[resistance_compliance_modifier] = {
+		path = "game/common/resistance_compliance_modifiers"
+		subtype[compliance] = {
+			type = enum[compliance_modifier_types]
+		}
+		subtype[resistance] = {
+			type = enum[resistance_modifier_types]
+		}
+		subtype[core] = {
+			type = enum[resistance_compliance_core_modifier_types]
+		}
+		subtype[state] = {
+			type = enum[resistance_compliance_state_modifier_types]
+		}
+	}
+}
+
+resistance_compliance_modifier = {
+	type = enum[resistance_compliance_modifier_types]
+
+	### GFX entry & frame for law entry icon. both frame and gfx name can be ommited, in that case it will default to GFX_occupation_modifier_strip
+	icon = scalar # we should have something like <spriteType>:int
+
+	### Small icon will be used for progress bars (GFX_occupation_modifier_small_strip is default gfx)
+	small_icon = scalar # we should have something like <spriteType>:int
+
+	### Percentage threshold to enable.
+	threshold = int
+
+	### Margin to disable the modifier back. It will be disabled if current value < threshold - margin.
+	margin = int
+
+	## cardinality = 0..1
+	alert_level = enum[alert_level]
+
+	## cardinality = 0..1
+	alert_margin = int
+
+	### Will be added to state if modifier is enabled.
+	## cardinality = 0..1
+	## push_scope = state
+	state_modifier = {
+		## cardinality = ~1..inf
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	## replace_scope = { this = country root = country from = country }
+	subtype[core] = {
+		### If visible is false, the modifier will not show up anywhere.
+		## replace_scope = { this = country root = country from = country }
+		## cardinality = 0..1
+		visible = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		### If enabled is false, the modifier won't be enabled even if it passes threshold (and will be disabled if it was enabled before).
+		## replace_scope = { this = country root = country from = country }
+		## cardinality = 0..1
+		enabled = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		### The effect will be called when modifier is enabled.
+		## replace_scope = { this = country root = country from = country }
+		## cardinality = 0..1
+		on_enable = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		### The effect will be called when modifier is disabled.
+		## replace_scope = { this = country root = country from = country }
+		## cardinality = 0..1
+		on_disable = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+	}
+
+	## replace_scope = { this = state root = country from = country fromfrom = country }
+	subtype[state] = {
+		### If visible is false, the modifier will not show up anywhere.
+		## cardinality = 0..1
+		## replace_scope = { this = state root = country from = country fromfrom = country }
+		visible = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		### If enabled is false, the modifier won't be enabled even if it passes threshold (and will be disabled if it was enabled before).
+		## cardinality = 0..1
+		## replace_scope = { this = state root = country from = country fromfrom = country }
+		enabled = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		### The effect will be called when modifier is enabled.
+		## cardinality = 0..1
+		## replace_scope = { this = state root = country from = country fromfrom = country }
+		on_enable = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		### The effect will be called when modifier is disabled.
+		## cardinality = 0..1
+		## replace_scope = { this = state root = country from = country fromfrom = country }
+		on_disable = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+	}
+}
+
+enums = {
+	enum[resistance_compliance_modifier_types] = {
+		state_resistance_modifier
+		state_compliance_modifier
+		core_resistance_modifier
+		core_compliance_modifier
+	}
+	enum[compliance_modifier_types] = {
+		state_compliance_modifier
+		core_compliance_modifier
+	}
+	enum[resistance_modifier_types] = {
+		state_resistance_modifier
+		core_resistance_modifier
+	}
+	enum[resistance_compliance_core_modifier_types] = {
+		core_resistance_modifier
+		core_compliance_modifier
+	}
+
+	enum[resistance_compliance_state_modifier_types] = {
+		state_resistance_modifier
+		state_compliance_modifier
+	}
+}

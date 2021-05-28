@@ -1,0 +1,45 @@
+types = {
+    type[message] = {
+        path = "game/common/messages"
+
+        localisation = {
+            Name = "$"
+        }
+    }
+}
+
+my_message = {
+    ## cardinality = 0..1
+    ### Where to display the message; default: feed
+    display = enum[message_displays]
+    ## cardinality = 0..1
+    ### String to be used in the message; default: same as message key (e.g "my_message" in this example)
+    title = localisation
+    ## cardinality = 0..1
+    ### String that gives more info about what happened
+    desc = localisation
+    ## cardinality = 0..1
+    ### String to be used for tooltip of type(optional); default: no tooltip
+    tooltip = localisation
+    ## cardinality = 0..inf
+    ### Sound effect played when showing the message (optional); default: no sound
+    soundeffect = scalar
+    ## cardinality = 0..1
+    ### Icon textures found in gfx\interface\message_icons
+    icon = scalar
+    ## cardinality = 0..1
+    ### Affects the look of message items, neutral is default.
+	style = enum[message_styles]
+}
+
+enums = {
+    enum[message_displays] = {
+        feed
+        toast
+    }
+    enum[message_styles] = {
+        good
+        bad
+        neutral
+    }
+}

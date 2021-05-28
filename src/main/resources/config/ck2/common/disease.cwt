@@ -1,0 +1,161 @@
+types = {
+    type[disease] = {
+        path_strict = yes
+        path = "game/common/disease"
+
+        localisation = {
+            name = "$"
+            description = tooltip
+        }
+    }
+}
+
+disease = {
+    ## cardinality = 0..1
+    ### If yes, only enabled with the Reaper's Due DLC active. If no, disabled with the DLC active. If undefined, used both with and without the DLC. Two different versions can be defined for rip = yes/no.
+    rip = bool
+
+    # TODO: Figure out
+    ### UNKNOWN
+    contagiousness = float
+
+    # TODO: Figure out
+    ### UNKNOWN
+    outbreak_chance = float
+
+    ## replace_scope = { this = province root = province }
+    ### While the province has an outbreak of this disease, it has these modifiers applied.
+    effect = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+
+    ### Which frame from GFX_disease_icons to use. Vanilla uses 1-7.
+    icon = int
+
+    ### The disease's description. Vanilla convention is "<name>_INFO".
+    tooltip = localisation
+
+    ### Duration of an outbreak in months.
+    months = int
+
+    ### The associated epidemic trait for characters that get the disease.
+    trait = <trait>
+
+    # TODO: Figure out
+    ### UNKNOWN
+    always_get_message = bool
+
+    ### The disease's colour on the disease map mode.
+    alias_name[color] = alias_match_left[color]
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### UNKNOWN
+    major = bool
+
+    ## cardinality = 0..1
+    ### If no, the disease will not break out or do anything until activated via script. Defaults to "yes".
+    active = bool
+
+    ## cardinality = 1..inf
+    ### An outbreak definition.
+    timeperiod = {
+        ### The outbreak is not possible before this date.
+        start_date = date_field
+
+        ### The outbreak is not possible after this date.
+        end_date = date_field
+
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN
+        outbreak_chance = float
+
+        ## cardinality = 0..1
+        ## replace_scope = { this = no_scope root = no_scope }
+        ### Global conditions for the outbreak to be possible.
+        can_outbreak = single_alias_right[trigger_clause]
+
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN
+        months = int
+
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN
+        max_total_provinces = int
+
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN
+        spread_through_water = bool
+
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN. Ignored if 0.
+        min_nb_province = int
+
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN. Ignored if 0.
+        max_nb_province = int
+
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN
+        province_infection_duration = int
+
+        ### If yes, this kind of outbreak will only happen once, if at all.
+        one_only = bool
+
+        # TODO: Confirm
+        ## cardinality = 0..inf
+        ### A scenario of how the outbreak plays out, with starting provinces and excluded geographical regions. UNCONFIRMED: Sum of chance must not exceed 1.0
+        outbreak_scenario = {
+            chance = float[0.0..1.0]
+            start_provinces = {
+                # TODO: not at all sure this is going to work considering provice ids are defined in a different system
+                ## cardinality = 1..inf
+                enum[provinces]
+            }
+            excluded_regions = {
+                ## cardinality = 1..inf
+                <region>
+            }
+        }
+    }
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = province root = province }
+    ### Every year the province has an outbreak of this disease, it has these effects applied.
+    yearly_province_pulse = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    # TODO: Confirm
+    ## cardinality = 0..1
+    ### UNCONFIRMED Probably MTTH for a character to be infected while in a province with the disease and not secluded.
+    character_infection_chances = {
+        months = int
+    }
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### When a character is infected with this disease, they have this efect applied.
+    on_character_infection = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = province root = province }
+    ### When a province is infected with this disease, it has this efect applied.
+    on_province_infection = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    # TODO: Confirm. Probably the 3d model of the disease on the map.
+    ## cardinality = 0..1
+    ### UNKNOWN
+    disease_gfx = scalar
+}

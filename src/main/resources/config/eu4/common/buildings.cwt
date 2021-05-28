@@ -1,0 +1,119 @@
+
+types = {
+	type[building] = {
+		path = "game/common/buildings"
+
+		localisation = { #not sure what the rules are on whether _short and ledger_ etc are needed or generated
+			## required
+			name = "building_$"
+		}
+		
+		subtype[not_manufactory] = {
+			cost = int
+		}
+	}
+}
+
+
+building = {
+	subtype[not_manufactory] = {
+		cost = int
+		###Time in months to build
+		time = int
+	}
+	
+	## cardinality = 0..1
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+	## cardinality = 0..1
+	## replace_scope = { root = province this = province from = owner }
+	###An and trigger that needs to be fullfilled to build the building
+	build_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+
+	## cardinality = 0..1
+	## replace_scope = { root = province this = province from = owner }
+	###An and trigger that needs to be fullfilled to keep the building
+	keep_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { root = province this = province from = owner }
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## cardinality = 0..1
+	## replace_scope = { root = province this = province from = owner }
+	on_built = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { root = province this = province from = owner }
+	on_destroyed = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	
+	## cardinality = 0..1
+	## replace_scope = { root = province this = province from = owner }
+	on_obsolete = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	
+	## cardinality = 0..1
+	government_specific = yes
+	
+	## cardinality = 0..1
+	one_per_country = yes
+	
+	## cardinality = 0..1
+	allow_in_gold_provinces = no
+	
+	## cardinality = 0..1
+	influencing_fort = yes
+
+	## cardinality = 0..1
+	make_obsolete = <building>
+	
+	## cardinality = 0..1
+	###Means as a manufactory it will be shown according to the old way
+	show_separate = yes 
+	
+	subtype[!cost] = {
+		###List of trade goods that get a production bonus
+		manufactory = {
+			## cardinality = 0..inf
+			<trade_good>
+			## cardinality = 0..1
+			all
+		}
+		## cardinality = 0..1
+		###List of trade goods that get an extra production bonus
+		bonus_manufactory = {
+			## cardinality = 1..inf
+			<trade_good>
+		}
+		## cardinality = 0..1
+		bonus_modifier = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+	}
+
+	## cardinality = 0..1
+	###Show as a sprite on the map
+	onmap = bool
+	
+	## cardinality = 0..1
+	## replace_scope = { root = province this = province from = owner }
+	###Building AI is now mainly hard-coded. The AI will estimate how much it gains yearly from each building, convert the value to ducats, and take the building with biggest yearly return as a percentage of the build cost. If lower than 1%, the AI will not consider the yearly return worth it. It will also require higher yearly return if the economy in not in prime shape. Forts' value also get converted to a yearly return based on terrain and strategic position, as well as available budget for fort maintenance. AI can still be modded though; it will multiply the yearly return with the value of ai_will_do. If you don't want the AI to build a building at all, make ai_will_do become 0. AI will consider each building to be worth 0.01 ducats per year as a base, so making ai_will_do above cost will have them build it at some point. It will still check whether it can afford a building before doing so though, but may save up to it.
+	ai_will_do = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}

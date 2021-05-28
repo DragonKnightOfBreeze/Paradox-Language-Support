@@ -1,0 +1,66 @@
+types = {
+	type[ideology_group] = {
+		path = "game/common"
+		path_file = "ideologies.txt"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	## type_key_filter <> religious_schools
+	type[ideology] = {
+		path = "game/common"
+		path_file = "ideologies.txt"
+		skip_root_key = any
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+}	
+
+ideology_group = {
+	## cardinality = 1..inf
+	<ideology> = {
+		## cardinality = 0..1
+		uncivilized = no
+
+		color = {
+			## cardinality = 3..3
+			int[0..255]
+		}
+
+		## cardinality = 0..1
+		date = time_date
+	
+		add_political_reform = {
+			base = int
+			## cardinality = 0..inf
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	
+		remove_political_reform = {
+			base = int
+			## cardinality = 0..inf
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	
+	
+		add_social_reform = {
+			base = int
+			## cardinality = 0..inf
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	
+	
+		remove_social_reform = {
+			base = int
+			## cardinality = 0..inf
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+		
+		
+		
+	}
+}	
+

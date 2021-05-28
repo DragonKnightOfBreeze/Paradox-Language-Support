@@ -74,8 +74,26 @@
 
 ### 0.2
 
-* 更新IDEA版本到2021.1
-* 修复类加载错误
+* [X] 更新IDEA版本到2021.1
+* [X] 修复类加载错误
+
+### 0.3
+
+* [X] 初步支持cwt config语言
+* [X] 更新并统一文件图标
+* [X] 解析cwt config语言的optionComment和documentComment
+* [X] 修复格式化功能的BUG
+* [X] 初步实现`CwtConfigResolver`
+* [X] 实现`CwtConfigGroupsProvider`
+* [X] 更换包名
+* [X] 支持基于cwt配置文件识别脚本文件中的定义（definition），并在gutterIcon、documentation等地方中显示
+* [X] 解决BUG：origin和civic同时匹配了，可选的config的匹配逻辑存在BUG
+* [X] 解决BUG：config的name可能重复，这时只要匹配其中之一即可（要求是连续的）
+* [ ] 解决BUG：解析图标生成的html无法正常渲染图标，尝试替换成在线解析dds
+* [ ] 支持基于cwt配置文件进行脚本文件代码提示
+* [ ] 支持基于cwt配置文件进行脚本文件代码验证
+* [ ] 实现基于`cwtConfigGroupsCache`的更加具体的规则
+* [ ] 规则文件加载需要一定时间 - 可能需要特殊处理
 
 # TODO
 

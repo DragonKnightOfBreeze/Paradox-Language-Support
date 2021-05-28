@@ -1,0 +1,27 @@
+single_alias[region_dcpr_clause] = {
+    ## cardinality = 0..1
+    duchies = {
+        ## cardinality = 0..inf
+        <titles>
+    }
+
+    ## cardinality = 0..1
+    counties = {
+        ## cardinality = 0..inf
+        <titles>
+    }
+
+    ## cardinality = 0..1
+    provinces = {
+        ## cardinality = 0..inf
+        enum[provinces]
+    }
+
+    ## cardinality = 0..1
+    regions = {
+        ## cardinality = 0..inf
+        <geographical_regions>
+        ## cardinality = 0..inf
+        <islands>
+    }
+}

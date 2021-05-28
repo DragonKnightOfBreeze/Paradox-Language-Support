@@ -1,0 +1,58 @@
+types = {
+	type[bookmark] = {
+		path = "game/common/bookmarks"
+		skip_root_key = bookmarks
+	}
+}
+
+bookmark = {
+	name = localisation
+	desc = localisation
+	date = datetime_field
+	picture = scalar
+	default_country = enum[country_tags]
+
+	## cardinality = 0..1
+	default = bool
+
+	## cardinality = 7..inf
+	enum[country_tags] = {
+		## cardinality = 0..1
+		minor = yes
+
+		history = localisation
+		ideology = <ideology>
+
+		## cardinality = 0..1
+		available = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		ideas = {
+			## cardinality = ~1..inf
+			enum[idea_name]
+		}
+
+		## cardinality = 0..1
+		focuses = {
+			## cardinality = 0..3
+			<focus>
+
+			## cardinality = 0..3
+			<shared_focus>
+		}
+	}
+
+	## cardinality = ~0..1
+	"---" = {
+		history = localisation
+	}
+
+	effect = {
+		randomize_weather = 12345
+		randomize_weather = 22345
+	}
+
+}

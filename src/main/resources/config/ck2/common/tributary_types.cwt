@@ -1,0 +1,137 @@
+types = {
+    ## type_key_filter <> none
+    type[tributary_type] = {
+        path_strict = yes
+        path = "game/common/tributary_types"
+
+        localisation = {
+            name = tributary_name
+            plural_name = tributary_plural
+            suzerain = suzerain_name
+            tribute = tribute_name
+        }
+    }
+    ## type_key_filter = none
+    type[forbidden_tributary_type] = {
+        path_strict = yes
+        path = "game/common/tributary_types"
+    }
+}
+
+# Defaults info taken from wiki
+# TODO: Confirm if scope is character and not title
+# TODO: Also most of these are proably cardinality 0..1; should confirm
+## replace_scope = { this = character root = character from = character }
+tributary_type = {
+    ### Used for tributaries of that type.
+    tributary_name = localisation
+
+    ### Used for tributaries of that type, when referring to more than one.
+    tributary_plural = localisation
+
+    ### Used for suzerains of that tributary type.
+    suzerain_name = localisation
+
+    ### Used for the tribute name for "Paying $TRIBUTE$".
+    tribute_name = localisation
+
+    # TODO: What icon strip?
+    ### Which frame of the icon strip to use. Note that using an index already used for another relation type (E.G. alliances) will break the tooltip - this includes leaving it blank.
+    icon = int
+
+    ### If yes, the tributary relationship is broken when the suzerain dies.
+    breaks_at_suzerain_death = bool
+
+    ## cardinality = 0..1
+    ### If yes, the tributary relationship is broken when the tributary dies. Defaults to "no".
+    breaks_at_tributary_death = bool
+
+    ## cardinality = 0..1
+    ### If no, the tributary can't call the suzerain to war. Defaults to "yes".
+    suzerain_can_be_called = bool
+
+    ### If yes, the suzerain can't reject a defensive call to arms from the tributary without breaking the tributary relationship.
+    suzerain_must_defend = bool
+
+    ## cardinality = 0..1
+    ### If yes, the suzerain can call the tributary to war as an ally. Defaults to "yes".
+    tributary_can_be_summoned = bool
+
+    ## cardinality = 0..1
+    ### If yes, the tributary can't refuse a call to arms from the suzerain. Defaults to "yes".
+    tributary_must_defend = bool
+
+    ## cardinality = 0..1
+    ### If yes, tributaries of the same suzerain that have this tributary type will not be able to declare war on each other. Tributaries of different types always can infight. Defaults to "yes".
+    tributaries_can_infight = bool
+
+    ### If yes, the suzerain can join one tributary in their war against another of the same type.
+    suzerain_can_join_infighting = bool
+
+    ### If yes, when trying to break free, tributaries will be able to band together against their suzerain. They also will never help their suzerain in wars against another tributary of the same type.
+    tributaries_can_unite = bool
+
+    ### If yes, the tributary relationship ends when the tributary's titles change realms
+    breaks_on_realm_change = bool
+
+    ### The tributary will not be able to use any casus bellis not in the list against their suzerain.
+    cbs_against_suzerain = {
+        ## cardinality = 0..inf
+        <casus_belli>
+    }
+
+    ### How big of a percentage of their monthly income the tributary pays to their suzerain. Values are clamped between 0.0 (0%) and 1.0 (100%). Additional modifiers are only evaluated once, on establishing the tributary relationship. ROOT is the tributary, FROM is the suzerain.
+    income_tribute_percentage = {
+        value = float[0.0..1.0]
+
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    ### How big of a percentage of their reinforce rate the tributary pays to their suzerain (suzerain receives value scaled to their size). Values are clamped between 0.0 (0%) and 1.0 (100%). Additional modifiers are only evaluated once, on establishing the tributary relationship. ROOT is the tributary, FROM is the suzerain.
+    reinforce_tribute_percentage = {
+        value = float
+
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    ### How much prestige the suzerain receives monthly. ROOT is the suzerain, FROM is the tributary.
+    prestige_to_suzerain = {
+        value = float
+
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    ### How much prestige the tributary receives monthly. ROOT is the tributary, FROM is the suzerain.
+    prestige_to_tributary = {
+        value = float
+
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    ### How much piety the suzerain receives monthly. ROOT is the suzerain, FROM is the tributary.
+    piety_to_suzerain = {
+        value = float
+
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    ### How much piety the suzerain receives monthly. ROOT is the tributary, FROM is the suzerain.
+    piety_to_tributary = {
+        value = float
+
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    # TODO: Confirm the localisation thing, not sure actually
+    ## cardinality = 0..1
+    ### What modifiers to apply to the tributary. UNCONFIRMED Localised with tributary_name.
+    modifier = {
+        ## cardinality = 1..inf
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+}
+
+forbidden_tributary_type = {
+    ### It is not possible to define a tributary type as "none" as that's the token used by the game to denote a lack of a tributary relationship. Delete this.
+    you_cant_name_tributary_type_none = no
+}

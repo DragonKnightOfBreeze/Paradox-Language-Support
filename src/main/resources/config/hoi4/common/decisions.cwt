@@ -1,0 +1,524 @@
+types = {
+	type[decision_category] = {
+		path = "game/common/decisions/categories"
+	}
+	type[decision] = {
+		path = "game/common/decisions"
+		path_strict = yes
+		skip_root_key = any
+		subtype[state_mission] = {
+			state_target = yes
+			days_mission_timeout = scalar
+		}
+		## only_if_not = { state_mission }
+		subtype[mission] = {
+			days_mission_timeout = scalar
+		}
+		subtype[state_targeted] = {
+			state_target = yes
+		}
+		## only_if_not = { state_targeted }
+		subtype[targeted] = {
+			target_trigger = {
+
+			}
+		}
+		## only_if_not = { state_targeted }
+		subtype[targeted] = {
+			targets = {
+
+			}
+		}
+		## only_if_not = { state_targeted }
+		subtype[targeted] = {
+			target_array = scalar
+		}
+		subtype[custom_cost] = {
+			custom_cost_trigger = {
+
+			}
+		}
+		subtype[timed] = {
+			days_remove = scalar
+		}
+		subtype[timed] = {
+			days_mission_timeout = scalar
+		}
+		## only_if_not = { state_targeted }
+		subtype[country] = {
+		}
+	}
+}
+
+decision_category = {
+	## cardinality = 0..1
+	icon = scalar
+	## cardinality = 0..inf
+	## replace_scope = { this = country root = country }
+	icon = {
+		key = scalar
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+	## cardinality = 0..1
+	picture = scalar
+	## cardinality = 0..1
+	priority = int
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	priority = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	## cardinality = 0..1
+	visible_when_empty = bool
+
+	### Check if decisions in this category can be activated.
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	available = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	### Check if who can use decisions in this category.
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	allowed = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	### Can the player see decisions in this category.
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	visible = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	### Check whether to cancel missions in this category.
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	cancel_trigger = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..inf
+	custom_icon = {
+		tag = enum[country_tags]
+		value = scalar
+		desc = localisation
+		visible = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	## cardinality = 0..1
+	visibility_type = enum[targeted_decisions_state_map_modes]
+
+	## cardinality = 0..inf
+	on_map_area = {
+		name = localisation
+		zoom = int
+		
+		## cardinality = 0..1
+		state = <state>
+		
+		## cardinality = 0..1
+		targets = {
+			## cardinality = 0..inf
+			<state>
+		}
+
+		## cardinality = 0..inf
+		target_array = value[array]
+		## cardinality = 0..inf
+		target_array = variable_field
+		
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = state }
+		target_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country }
+		target_root_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	## cardinality = 0..1
+	scripted_gui = <scripted_gui>
+}
+
+decision = {
+	## cardinality = 0..1
+	icon = scalar
+	## cardinality = 0..inf
+	## replace_scope = { this = country root = country }
+	icon = {
+		key = scalar
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+	## cardinality = 0..1
+	priority = int
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	priority = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+	## cardinality = 0..1
+	name = localisation
+	## cardinality = 0..1
+	desc = localisation
+	## cardinality = 0..1
+	fire_only_once = bool
+
+	subtype[country] = {
+		### Check if this decision can be activated.
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		available = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		### Can the player see this decision.
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		visible = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		complete_effect = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		remove_effect = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		cancel_effect = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		ai_will_do = {
+			enum[base_factor] = variable_field
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+
+	## cardinality = 0..1
+	cancel_if_not_visible = bool
+
+	### Who can use this decision.
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	allowed = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	cost = int_variable_field
+	subtype[custom_cost] = {
+		## replace_scope = { this = country root = country }
+		custom_cost_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		custom_cost_text = localisation
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { this = state root = country }
+	highlight_states = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	highlight_state_targets = {
+		## cardinality = ~1..inf
+		state = <state>
+		## cardinality = ~1..inf
+		state = variable_field
+	}
+
+	## cardinality = 0..1
+	highlight_provinces = {
+		## cardinality = ~1..inf
+		enum[provinces]
+	}
+
+	## cardinality = 0..1
+	highlight_color_before_active = int
+	## cardinality = 0..1
+	highlight_color_while_active = int
+
+	subtype[timed] = {
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		cancel_trigger = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		remove_trigger = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		days_remove = variable_field
+
+		## cardinality = 0..inf
+		alias_name[targeted_modifier_rule] = alias_match_left[targeted_modifier_rule]
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		modifier = {
+			## cardinality = ~1..inf
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+	}
+
+	subtype[mission] = {
+		## replace_scope = { this = country root = country from = country }
+		activation = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		is_good = bool
+		days_mission_timeout = int_variable_field
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		timeout_effect = {
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		### Can select this mission like a regular decision.
+		## cardinality = 0..1
+		selectable_mission = bool
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		cancel_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	subtype[state_mission] = {
+		## replace_scope = { this = country root = country from = state }
+		activation = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		is_good = bool
+		days_mission_timeout = int_variable_field
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = state }
+		timeout_effect = {
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		### Can select this mission like a regular decision.
+		## cardinality = 0..1
+		selectable_mission = bool
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = state }
+		cancel_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	subtype[targeted] = {
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = country }
+		target_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		targets = {
+			## cardinality = 0..inf
+			scope[country]
+			## cardinality = 0..inf
+			enum[country_tags]
+			## cardinality = 0..inf
+			value[variable]
+			## cardinality = 0..inf
+			variable_field
+		}
+
+		## cardinality = 0..1
+		targets_dynamic = bool
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country }
+		target_root_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = state root = country from = country }
+		highlight_states = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..inf
+		alias_name[targeted_modifier_rule] = alias_match_left[targeted_modifier_rule]
+
+		## cardinality = 0..inf
+		target_array = value[array]
+		## cardinality = 0..inf
+		target_array = variable_field
+		## cardinality = 0..1
+		target_non_existing = bool
+	}
+
+	## cardinality = 0..inf
+	enum[war_with_on] = scope[country]
+
+	## cardinality = 0..inf
+	enum[war_with_on] = enum[country_tags]
+
+	## cardinality = 0..inf
+	enum[war_with_target_on] = bool
+
+	## cardinality = 0..1
+	days_re_enable = int
+
+	## cardinality = 0..1
+	fixed_random_seed = bool
+
+	## cardinality = 0..1
+	on_map_mode = enum[targeted_decisions_state_map_modes]
+
+	subtype[state_targeted] = {
+		### Can the player see this decision.
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = state }
+		visible = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		### Check if this decision can be activated.
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = state }
+		available = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country from = state }
+		cancel_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = state }
+		complete_effect = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = state }
+		remove_effect = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = state }
+		cancel_effect = {
+			## cardinality = ~1..inf
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = state }
+		target_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		state_target = yes
+
+		## cardinality = 0..1
+		targets = {
+			## cardinality = 0..inf
+			<state>
+			## cardinality = 0..inf
+			value[variable]
+			## cardinality = 0..inf
+			variable_field
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country }
+		target_root_trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..inf
+		alias_name[targeted_modifier_rule] = alias_match_left[targeted_modifier_rule]
+
+		## cardinality = 0..inf
+		target_array = value[array]
+		## cardinality = 0..inf
+		target_array = variable_field
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = state }
+		ai_will_do = {
+			enum[base_factor] = variable_field
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+}
+
+enums = {
+	enum[war_with_on] = {
+		war_with_on_remove
+		war_with_on_complete
+		war_with_on_timeout
+	}
+
+	enum[war_with_target_on] = {
+		war_with_target_on_remove
+		war_with_target_on_complete
+		war_with_target_on_timeout
+	}
+
+	enum[targeted_decisions_state_map_modes] = {
+		map_only
+		map_and_decisions_view
+	}
+}

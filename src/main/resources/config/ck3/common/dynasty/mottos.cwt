@@ -1,0 +1,51 @@
+types = {
+    type[motto] = {
+        path = "game/common/dynasty_house_mottos"
+        localisation = {
+            ## required
+            ## primary
+            Name = "motto_$"
+		}
+    }
+    type[motto_insert_group] = {
+        path = "game/common/dynasty_house_motto_inserts"
+    }
+    type[motto_insert] = {
+        path = "game/common/dynasty_house_motto_inserts"
+        skip_root_key = any
+        localisation = {
+            ## required
+            ## primary
+            Name = "motto_$"
+		}
+    }
+}
+
+motto = {
+    ## cardinality = 0..1
+    ## push_scope = character
+    ### Trigger to have this motto. Character scope (house founder). Always true if not set.
+    trigger = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    ## push_scope = character
+    ### Script value for the weight of having this motto. Character scope (house founder). 1000 if not set.
+    weight = int_value_field
+
+    ## cardinality = 0..inf
+    ### Any number of inserts can be defined. They will be inserted into the string as $1$, $2$, etc.
+    insert = <motto_insert_group>
+}
+
+motto_insert_group = {
+    ## cardinality = 1..inf
+    <motto_insert> = {
+        ## cardinality = 0..1
+        ## push_scope = character
+        ### Trigger to have this motto insert. Character scope (house founder). Always true if not set.
+        trigger = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        ## push_scope = character
+        ### Script value for the weight of having this motto insert. Character scope (house founder). 1000 if not set.
+        weight = int_value_field
+    }
+}

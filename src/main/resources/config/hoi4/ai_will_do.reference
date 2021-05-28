@@ -1,0 +1,28 @@
+ai_will_do = {
+	## cardinality = 0..1
+	base = variable_field
+	## cardinality = 0..inf
+	enum[add_factor] = float
+	## cardinality = 0..inf
+	modifier = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+		## cardinality = ~1..1
+		enum[add_factor] = float
+	}
+}
+ai_chance = {
+	## cardinality = 0..1
+	base = variable_field
+	## cardinality = 0..inf
+	enum[add_factor] = float
+	## cardinality = 0..inf
+	modifier = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+		## cardinality = ~1..1
+		enum[add_factor] = float
+	}
+}
+
+alias_name[modifier_rule] = alias_match_left[modifier_rule]

@@ -1,0 +1,66 @@
+
+types = {
+	type[default_map] = {
+		name_from_file = yes
+		type_per_file = yes
+		path = "game/map"
+		path_file = "default.map"
+	}
+}
+
+default_map = {
+	width = int
+	height = int
+	### There is an unknown minimum number required due to a paradox bug. If a custom map is crashing try a higher number.
+	max_provinces = int[2300..inf]
+	
+	sea_starts = {
+		## cardinality = 0..inf
+		<province_id>
+	}
+	only_used_for_random = {
+		## cardinality = 0..inf
+		<province_id>
+	}
+	lakes = {
+		## cardinality = 0..inf
+		<province_id>
+	}
+	force_coastal = {
+		## cardinality = 0..inf
+		<province_id>
+	}
+	
+	#todo: All these refer to a file in this directory. But hopefully no one will edit them as it will totally screw with CW Tools in many ways.
+	definitions = scalar
+	provinces = scalar
+	positions = scalar
+	terrain = scalar
+	rivers = scalar
+	terrain_definition = scalar
+	heightmap = scalar
+	tree_definition = scalar
+	continent = scalar
+	adjacencies = scalar
+	climate = scalar
+	region = scalar
+	superregion = scalar
+	area = scalar
+	provincegroup = scalar
+	ambient_object = scalar
+	seasons = scalar
+	trade_winds = scalar
+	
+	## cardinality = 0..inf
+	canal_definition = {
+		name = scalar #todo: match with where this is used
+		x = int
+		y = int
+	}
+	
+	tree = { 
+		## cardinality = 0..4
+		int[0..255]
+	}
+}
+

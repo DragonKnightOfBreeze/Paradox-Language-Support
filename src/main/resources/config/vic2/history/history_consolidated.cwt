@@ -1,0 +1,263 @@
+
+types = {
+    type[diplomacy_history] = {
+        path = "game/history/diplomacy"
+        name_from_file = yes
+        type_per_file = yes
+    }
+	type[country_history] = {
+		path = "game/history/countries"
+		name_from_file = yes
+		type_per_file = yes
+	}
+	## push_scope = province
+	type[pops_history] = {
+		path = "game/history/pops/<bookmarks>"
+		name_from_file = yes
+		type_per_file = yes
+	}
+	## push_scope = province
+	type[province_history] = {
+		path = "game/history/provinces/any"
+		name_from_file = yes
+		type_per_file = yes
+
+		subtype[owned] = {
+			owner = scalar
+		}
+	}
+
+	type[units_history] = {
+		path = "game/history/units" #TODO what about <bookmark> sub dirs?
+		name_from_file = yes
+		type_per_file = yes
+		name_field = "name"
+	}
+
+	type[war_history] = {
+		path = "game/history/wars"
+		name_from_file = yes
+		type_per_file = yes
+		name_field = "name"
+	}
+}
+
+diplomacy_history = {
+    ## cardinality = 0..inf
+    enum[other_diplo_history] = {
+        first = enum[country_tags]
+        second = enum[country_tags]
+        start_date = date_field
+        end_date = date_field
+    }
+}
+
+enums = {
+	enum[other_diplo_history] = {
+		guarantee
+		union
+		alliance
+	}
+}
+
+country_history = {
+    capital = <province_id>
+    primary_culture = <culture>
+    religion = <religion>
+    government = <government>
+    plurality = float[0..1.0]
+    nationalvalue = <nationalvalue>
+    literacy = float[0..1.0]
+    ruling_party = <party>
+    upper_house = {
+        # TODO one for each
+    	## cardinality = 0..inf
+        <ideology> = float
+    }
+    consciousness = float
+    nonstate_consciousness = float
+
+    # TODO concatentae strings
+    oob = <country_tags>"_oob.txt"
+
+    # TODO one fore each?
+   	## cardinality = 0..inf
+    <social_reforms> = <social_reform>
+
+   	## cardinality = 0..inf
+    <political_reforms> = <political_reform>
+
+   	## cardinality = 0..inf
+    <economic_reforms> = <economic_reform>
+
+   	## cardinality = 0..inf
+    <military_reforms> = <military_reform>
+
+   	## cardinality = 0..1
+    <bookmark> = {
+        # TODO hean and egg problem
+       	oob = <units_history>
+       	## cardinality = 0..1
+        literacy = float[0..1.0]
+       	## cardinality = 0..1
+        non_state_culture_literacy = float[0..1.0]
+
+        ## cardinality = 0..inf
+        <social_reforms> = <social_reform>
+
+        ## cardinality = 0..inf
+        <political_reforms> = <political_reform>
+
+        ## cardinality = 0..inf
+        <economic_reforms> = <economic_reform>
+
+        ## cardinality = 0..inf
+        <military_reforms> = <military_reform>
+
+    }
+}
+
+pops_history = {
+	## cardinality = 0..inf
+    <province_id> = {
+    	## cardinality = 0..inf
+        <pop_type> = {
+            culture = <culture>
+            religion = <religion>
+            size = int
+        }
+    }
+}
+
+province_history = {
+
+    trade_goods = <goods>
+    life_rating = int
+
+	subtype[owned] = {
+		owner = enum[country_tags]
+		controller = enum[country_tags]
+		## cardinality = 0..inf
+		add_core = enum[country_tags]
+
+		## cardinality = 0..1
+        colonial = int
+
+		## cardinality = 0..inf
+        railroad = int[0..6]
+
+		## cardinality = 0..inf
+        fort = int[0..6]
+
+		## cardinality = 0..inf
+        state_building = {
+            level = int[1..255]
+            building = <building>
+            upgrade = bool
+        }        
+	}
+
+	## cardinality = 0..inf # TODO not first in bookmark list
+	<bookmark> = {
+		owner = enum[country_tags]
+		controller = enum[country_tags]
+		## cardinality = 0..inf
+		add_core = enum[country_tags]
+
+		## cardinality = 0..inf
+        railroad = int[0..6]
+
+		## cardinality = 0..inf
+        fort = int[0..6]
+
+		## cardinality = 0..inf
+        state_building = {
+            level = int[1..255]
+            building = <building>
+            upgrade = bool
+        }        
+	}
+
+}
+
+units_history = {
+    # TODO cardianlity one uniqu key
+	## cardinality = 0..inf
+    enum[country_tags] = {
+        value = int
+        level = enum[influence_level]
+        influence_value = int
+    }
+
+	## cardinality = 0..inf
+    leader = {
+        name = scalar
+        date = date_field
+        type = <unit_type>
+        personality = <personality>
+        background = <background>
+        prestige = float
+    }
+
+	## cardinality = 0..inf
+    army = {
+        name = scalar
+        location = <province_id>
+        ## cardinality = 0..inf
+        regiment = {
+            name= scalar
+            type = <unit>
+            home = <province_id>
+        }
+    }
+
+	## cardinality = 0..inf
+    navy = {
+        name = scalar
+        location = <province_id>
+            ## cardinality = 0..inf
+            ship = {
+                name = scalar
+                type = <unit>
+            }
+        }
+    }
+}
+
+enums = {
+	enum[influence_level] = {
+		3 # cordial
+        4 # friendly
+        5 # sphere
+	}
+}
+
+war_history = {
+	name = scalar #todo: name
+
+	## cardinality = 2..inf
+	date_field = {
+		## cardinality = 0..inf
+		add_attacker = enum[country_tags]
+		## cardinality = 0..inf
+		add_defender = enum[country_tags]
+
+        war_goal = {
+            type = <wargoal_type>
+            casus_belli = <casus_belli>
+            ## cardinality = 0..1
+            province = <province_id>
+            ## cardinality = 0..1
+            actor = enum[country_tags]
+            ## cardinality = 0..1
+            receiver = enum[country_tags]
+        }
+
+		## cardinality = 0..inf
+		rem_attacker = enum[country_tags]
+		## cardinality = 0..inf
+		rem_defender = enum[country_tags]
+	}
+}
+
+

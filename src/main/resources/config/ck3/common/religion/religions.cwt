@@ -1,0 +1,418 @@
+types = {
+    type[religion] = {
+        path = "game/common/religion/religions"
+    }
+    type[faith] = {
+        path = "game/common/religion/religions"
+        skip_root_key = { any faiths }
+    }
+}
+
+#TODO: Actually match these with defined traits.
+single_alias[sins_and_virtues] = {
+    virtues = single_alias_right[trait_effects]
+    sins = single_alias_right[trait_effects]
+}
+
+single_alias[trait_effects] = {
+    ## cardinality = 0..inf
+    <trait> = value_field
+    ## cardinality = 0..inf
+    <trait> = { <character_modifier> = value_field
+                ## cardinality = 0..1
+                scale = value_field}
+    ## cardinality = 0..inf
+    <trait>
+}
+
+single_alias[scalar_list] = {
+    ## cardinality = 1..inf
+    scalar
+}
+
+single_alias[holy_order_names] = {
+    ## cardinality = 1..inf
+    { # This is a list
+        name = localisation
+        ## cardinality = 0..1
+        coat_of_arms = <coat_of_arms>
+    }
+}
+
+single_alias[rgb_color] = {
+    ## cardinality 3..3
+    int[0..255]
+}
+
+# Not sure about this one. Seen some mixed usages of this
+# some with hsv prefixing it, some with <1 for first number,
+# some with degrees, etc.
+single_alias[hsv_color] = {
+    ## cardinality 3..4
+    float
+}
+
+enums = {
+    complex_enum[male_names] = {
+        path = "game/common/religion/religions"
+        name = {
+            reserved_male_names = {
+                enum_name
+            }
+        }
+    }
+    complex_enum[female_names] = {
+        path = "game/common/religion/religions"
+        name = {
+            reserved_female_names = {
+                enum_name
+            }
+        }
+    }
+}
+
+#TODO: Script check to make sure gfx/ui stuff is present in either the family, religion, or faith.
+religion = {
+
+    ### What religion family the religion belongs to
+    family = <religion_family>
+    ## cardinality = 0..1
+    ### All faiths in this religion default to this 3D model (currently used for temple assets). Order of precedence is the lowest level scripted in: faith > religion > family.
+    graphical_faith = filepath
+    # Unknown what this currently references, if anything.
+    ### All faiths in this religion default to this set of piety icons. Order of precedence is the lowest level scripted in: faith > religion > family.
+    ## cardinality = 0..1
+    piety_icon_group = scalar
+    ### All faiths in this religion default to this doctrine background icon. Order of precedence is the lowest level scripted in: faith > religion > family.
+    ### Located in /gfx/interface/icons/faith_doctrines
+    doctrine_background_icon = filepath[gfx/interface/icons/faith_doctrines]
+    ## cardinality = 0..1
+    ### if yes, then faiths without the unreformed doctrine are considered reformed by the interface
+    pagan_roots = bool
+
+    ##cardinality = 0..inf
+    ### Doctrines defined in a religion will be applied to all faiths within it. This is only at game start; it is purely for script convenience, and would be equivalent to putting the doctrine in all the faiths. It can be overridden by putting a different doctrine in the group in the specific faith. Note that doctrines that allow more than one pick can *not* be defined on a religion level, as there's no obvious override system that would work then
+    doctrine = <doctrine>
+
+    faiths = {
+        ## cardinality = ~1..inf
+        <faith> = {
+            ### HSV color as a series of floats.
+            color = single_alias_right[hsv_color]
+            ### RGB color as a series of ints
+            color = single_alias_right[rgb_color]
+            ## cardinality = 0..1
+            icon = replace_me
+            ## cardinality = 0..1
+            graphical_faith = replace_me
+            ## cardinality = 0..1
+            piety_icon_group = replace_me
+            ## cardinality = 0..1
+            doctrine_background_icon = filepath/gfx/interface/icons/faith_doctrines]
+            religious_head = replace_me
+        
+            ## cardinality = 0..inf
+            holy_site = <holy_site>
+        
+            ## cardinality = 0..inf
+            doctrine = <doctrine>
+        
+            ## cardinality = 0..1
+            reserved_male_names = single_alias_right[scalar_list]
+            ## cardinality = 0..1
+            reserved_female_names = single_alias_right[scalar_list]
+        
+            localization = single_alias_right[religion_localization]
+        
+            ## cardinality = 0..1
+            holy_order_names = single_alias_right[holy_order_names]
+        }
+    }
+
+    traits = single_alias_right[sins_and_virtues]
+
+    ### Names listed here will be applied to all faiths that don't define reserved_male_names themselves.
+    reserved_male_names = single_alias_right[localisation_list]
+    ### Names listed here will be applied to all faiths that don't define reserved_female_names themselves.
+    reserved_female_names = single_alias_right[localisation_list]
+    ### When creating a custom faith, these will be the available icons. Path is  "gfx/interface/icons/religion/%s.dds", where %s is the name. Also needs a text icon
+    custom_faith_icons = single_alias_right[scalar_list]
+
+    localization = single_alias_right[religion_localization]
+
+    #TODO: Implement coat of arms and regiments
+    ## cardinality = ~1..1
+    ### Names and CoAs that can be used by holy orders of this religion. These are used if there are none available for the faith.
+	### If there are none left here, it uses "holy_order_default" as name and a randomly generated CoA instead.
+    holy_order_names = single_alias_right[holy_order_names]
+    ## cardinality = ~1..1
+    ### Men-At-Arms types mostly used for holy orders (see also: RELIGION_MAA_RATIO define)
+	### The culture of the headquarters of the holy order must have unlocked the required innovation. (It will use the last available type in the list.)
+    holy_order_maa = {
+        ## cardinality = 1..inf
+        <regiment_type>
+    }
+
+}
+
+# I think you can use any key/value pairs in this block, but it helps to have auto complete for common tags used by vanilla scripts. Building this list made me extremely thankful for vscode's regex find and replace.
+single_alias[religion_localization] = {
+    ## cardinality = 0..inf
+    scalar = localisation
+    #HighGod
+    ## cardinality = 0..1
+    HighGodName = localisation
+    ## cardinality = 0..1
+    HighGodNamePossessive =localisation
+    ## cardinality = 0..1
+    HighGodNameSheHe =localisation
+    ## cardinality = 0..1
+    HighGodHerselfHimself =localisation
+    ## cardinality = 0..1
+    HighGodHerHis =localisation
+    ## cardinality = 0..1
+    HighGodNameAlternate =localisation
+    ## cardinality = 0..1
+    HighGodNameAlternatePossessive =localisation
+
+    #Creator
+    ## cardinality = 0..1
+    CreatorName =localisation
+    ## cardinality = 0..1
+    CreatorNamePossessive =localisation
+    ## cardinality = 0..1
+    CreatorSheHe =localisation
+    ## cardinality = 0..1
+    CreatorHerHis =localisation
+    ## cardinality = 0..1
+    CreatorHerHim =localisation
+
+    #HealthGod
+    ## cardinality = 0..1
+    HealthGodName =localisation
+    ## cardinality = 0..1
+    HealthGodNamePossessive =localisation
+    ## cardinality = 0..1
+    HealthGodSheHe =localisation
+    ## cardinality = 0..1
+    HealthGodHerHis =localisation
+    ## cardinality = 0..1
+    HealthGodHerHim =localisation
+    
+    #FertilityGod
+    ## cardinality = 0..1
+    FertilityGodName =localisation
+    ## cardinality = 0..1
+    FertilityGodNamePossessive =localisation
+    ## cardinality = 0..1
+    FertilityGodSheHe =localisation
+    ## cardinality = 0..1
+    FertilityGodHerHis =localisation
+    ## cardinality = 0..1
+    FertilityGodHerHim =localisation
+
+    #WealthGod
+    ## cardinality = 0..1
+    WealthGodName =localisation
+    ## cardinality = 0..1
+    WealthGodNamePossessive =localisation
+    ## cardinality = 0..1
+    WealthGodSheHe =localisation
+    ## cardinality = 0..1
+    WealthGodHerHis =localisation
+    ## cardinality = 0..1
+    WealthGodHerHim =localisation
+
+    #HouseholdGod
+    ## cardinality = 0..1
+    HouseholdGodName =localisation
+    ## cardinality = 0..1
+    HouseholdGodNamePossessive =localisation
+    ## cardinality = 0..1
+    HouseholdGodSheHe =localisation
+    ## cardinality = 0..1
+    HouseholdGodHerHis =localisation
+    ## cardinality = 0..1
+    HouseholdGodHerHim =localisation
+
+    #FateGod
+    ## cardinality = 0..1
+    FateGodName =localisation
+    ## cardinality = 0..1
+    FateGodNamePossessive =localisation
+    ## cardinality = 0..1
+    FateGodSheHe =localisation
+    ## cardinality = 0..1
+    FateGodHerHis =localisation
+    ## cardinality = 0..1
+    FateGodHerHim =localisation
+
+    #KnowledgeGod
+    ## cardinality = 0..1
+    KnowledgeGodName =localisation
+    ## cardinality = 0..1
+    KnowledgeGodNamePossessive =localisation
+    ## cardinality = 0..1
+    KnowledgeGodSheHe =localisation
+    ## cardinality = 0..1
+    KnowledgeGodHerHis =localisation
+    ## cardinality = 0..1
+    KnowledgeGodHerHim =localisation
+
+    #WarGod
+    ## cardinality = 0..1
+    WarGodName =localisation
+    ## cardinality = 0..1
+    WarGodNamePossessive =localisation
+    ## cardinality = 0..1
+    WarGodSheHe =localisation
+    ## cardinality = 0..1
+    WarGodHerHis =localisation
+    ## cardinality = 0..1
+    WarGodHerHim =localisation
+
+    #TricksterGod
+    ## cardinality = 0..1
+    TricksterGodName =localisation
+    ## cardinality = 0..1
+    TricksterGodNamePossessive =localisation
+    ## cardinality = 0..1
+    TricksterGodSheHe =localisation
+    ## cardinality = 0..1
+    TricksterGodHerHis =localisation
+    ## cardinality = 0..1
+    TricksterGodHerHim =localisation
+
+    #NightGod
+    ## cardinality = 0..1
+    NightGodName =localisation
+    ## cardinality = 0..1
+    NightGodNamePossessive =localisation
+    ## cardinality = 0..1
+    NightGodSheHe =localisation
+    ## cardinality = 0..1
+    NightGodHerHis =localisation
+    ## cardinality = 0..1
+    NightGodHerHim =localisation
+
+    #WaterGod
+    ## cardinality = 0..1
+    WaterGodName =localisation
+    ## cardinality = 0..1
+    WaterGodNamePossessive =localisation
+    ## cardinality = 0..1
+    WaterGodSheHe =localisation
+    ## cardinality = 0..1
+    WaterGodHerHis =localisation
+    ## cardinality = 0..1
+    WaterGodHerHim =localisation
+
+    ## cardinality = 0..1
+    PantheonTerm =localisation
+    ## cardinality = 0..1
+    PantheonTermHasHave =localisation
+    ## cardinality = 0..1
+    GoodGodNames ={
+        ## cardinality = 1..inf
+        localisation
+    }
+    ## cardinality = 0..1
+    DevilName =localisation
+    ## cardinality = 0..1
+    DevilNamePossessive =localisation
+    ## cardinality = 0..1
+    DevilSheHe =localisation
+    ## cardinality = 0..1
+    DevilHerHis =localisation
+    ## cardinality = 0..1
+    DevilHerHis =localisation
+    ## cardinality = 0..1
+    DevilHerselfHimself =localisation
+    ## cardinality = 0..1
+    EvilGodNames ={
+        ## cardinality = 1..inf
+        localisation
+    }
+    ## cardinality = 0..1
+    HouseOfWorship =localisation
+    ## cardinality = 0..1
+    HouseOfWorshipPlural =localisation
+    ## cardinality = 0..1
+    ReligiousSymbol =localisation
+    ## cardinality = 0..1
+    ReligiousText =localisation
+    ## cardinality = 0..1
+    ReligiousHeadName =localisation
+    ## cardinality = 0..1
+    ReligiousHeadTitleName =localisation
+    ## cardinality = 0..1
+    DevoteeMale =localisation
+    ## cardinality = 0..1
+    DevoteeMalePlural =localisation
+    ## cardinality = 0..1
+    DevoteeFemale =localisation
+    ## cardinality = 0..1
+    DevoteeFemalePlural =localisation
+    ## cardinality = 0..1
+    DevoteeNeuter =localisation
+    ## cardinality = 0..1
+    DevoteeNeuterPlural =localisation
+    ## cardinality = 0..1
+    PriestMale =localisation
+    ## cardinality = 0..1
+    PriestMalePlural =localisation
+    ## cardinality = 0..1
+    PriestFemale =localisation
+    ## cardinality = 0..1
+    PriestFemalePlural =localisation
+    ## cardinality = 0..1
+    PriestNeuter =localisation
+    ## cardinality = 0..1
+    PriestNeuterPlural =localisation
+    ## cardinality = 0..1
+    AltPriestTermPlural =localisation
+    ## cardinality = 0..1
+    BishopMale =localisation
+    ## cardinality = 0..1
+    BishopMalePlural =localisation
+    ## cardinality = 0..1
+    BishopFemale =localisation
+    ## cardinality = 0..1
+    BishopFemalePlural =localisation
+    ## cardinality = 0..1
+    BishopNeuter =localisation
+    ## cardinality = 0..1
+    BishopNeuterPlural =localisation
+    ## cardinality = 0..1
+    DivineRealm =localisation
+    ## cardinality = 0..1
+    PositiveAfterLife =localisation
+    ## cardinality = 0..1
+    NegativeAfterLife =localisation
+    ## cardinality = 0..1
+    DeathDeityName =localisation
+    ## cardinality = 0..1
+    DeathDeityNamePossessive =localisation
+    ## cardinality = 0..1
+    DeathDeitySheHe =localisation
+    ## cardinality = 0..1
+    DeathDeityHerHis =localisation
+    ## cardinality = 0..1
+    WitchGodName =localisation
+    ## cardinality = 0..1
+    WitchGodHerHis =localisation
+    ## cardinality = 0..1
+    WitchGodSheHe =localisation
+    ## cardinality = 0..1
+    WitchGodHerHim =localisation
+    ## cardinality = 0..1
+    WitchGodMistressMaster =localisation
+    ## cardinality = 0..1
+    WitchGodMotherFather =localisation
+
+
+    ## cardinality = 0..1
+    GHWName =localisation
+    ## cardinality = 0..1
+    GHWNamePlural =localisation
+}

@@ -1,0 +1,109 @@
+
+types = {
+	type[game_age] = {
+		path = "game/common/ages"
+
+		localisation = {
+			## required
+			name = "$"
+			## required
+			short = "$_short"
+			## required
+			description = "$_desc"
+		}
+	}
+	type[game_age_ability] = {
+		path = "game/common/ages"
+
+		skip_root_key = { any abilities }
+
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+}
+
+
+game_age = {
+	start = int
+	
+	can_start = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## cardinality = 0..1
+	religious_conflicts = yes
+
+	## cardinality = 0..1
+	papacy = float[1..2]
+	
+
+	## cardinality = 0..1
+	absolutism = {
+		harsh_treatment = int
+		stability = int
+		decrease_autonomy_command = int
+		strengthen_government = int
+		
+		increase_autonomy_command = int
+		debase_currency = int
+		execute_rebel_acceptance_command = int
+		seat_in_parliament = int
+		war_exhaustion = int
+	}
+	
+	objectives = {
+		## cardinality = 4..9
+		## replace_scope = { root = country this = country }
+		localisation = {
+			## cardinality = 0..1
+			## replace_scope = { root = country this = country }
+			allow = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+	
+	
+	abilities = {
+		## cardinality = 1..inf
+		<game_age_ability> = {
+			## cardinality = 0..1
+			## replace_scope = { root = country this = country }
+			allow = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			## cardinality = 0..1
+			## replace_scope = { root = country this = country }
+			effect = {
+				alias_name[effect] = alias_match_left[effect]
+			}
+			## cardinality = 0..1
+			modifier = {
+				alias_name[modifier] = alias_match_left[modifier]
+			}
+			## cardinality = 0..1
+			rule = { #todo: is there a better way to do this?
+				## cardinality = 0..1
+				can_transfer_vassal_wargoal = bool
+				## cardinality = 0..1
+				can_chain_claim = bool
+				## cardinality = 0..1
+				can_colony_boost_development = bool
+				## cardinality = 0..1
+				attack_bonus_in_capital_terrain = bool
+				## cardinality = 0..1
+				force_march_free = bool
+				## cardinality = 0..1
+				ignore_coring_distance = bool
+			}
+			## replace_scope = { root = country this = country }
+			ai_will_do = {
+				factor = float
+				alias_name[modifier_rule] = alias_match_left[modifier_rule]
+			}
+		}
+	}
+}

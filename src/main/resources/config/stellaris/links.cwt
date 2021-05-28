@@ -1,0 +1,290 @@
+links = {
+	space_owner = {
+		inputscopes = { Ship Fleet System Planet Megastructure Starbase Country archaeological_site first_contact spy_network }
+		output_scope = Country
+	}
+	overlord = {
+		inputscopes = { Country }
+		output_scope = Country
+	}
+	defender = {
+		inputscopes = { War }
+		output_scope = Country
+	}
+	attacker = {
+		inputscopes = { War }
+		output_scope = Country
+	}
+	owner = {
+		inputscopes = {
+			Species Ship Pop Fleet Planet PopFaction Sector Leader Country Starbase System first_contact Megastructure Army
+			Deposit archaeological_site spy_network espionage_operation
+		}
+		output_scope = Country
+	}
+	controller = {
+		inputscopes = { Planet Starbase }
+		output_scope = Country
+	}
+	planet_owner = {
+		inputscopes = { Planet }
+		output_scope = Country
+	}
+	last_created_country = {
+		inputscopes = { allScopes }
+		output_scope = Country
+	}
+	last_refugee_country = {
+		inputscopes = { allScopes }
+		output_scope = Country
+	}
+	leader = {
+		inputscopes = { Ship Planet Country PopFaction Fleet Sector Army first_contact archaeological_site spy_network espionage_operation }
+		output_scope = Leader
+	}
+	last_created_leader = {
+		inputscopes = { allScopes }
+		output_scope = Leader
+	}
+	solar_system = {
+		inputscopes = { #matches celestial_coordinate scope_group
+			planet ship fleet system ambient_object megastructure starbase archaeological_site first_contact
+			deposit pop army country leader
+		}
+		output_scope = System
+	}
+	last_created_system = {
+		inputscopes = { allScopes }
+		output_scope = System
+	}
+	planet = {
+		inputscopes = { Pop Planet System Army Megastructure Deposit archaeological_site }
+		output_scope = Planet
+	}
+	capital_scope = {
+		inputscopes = { Country Sector }
+		output_scope = Planet
+	}
+	orbit = {
+		inputscopes = { Fleet Ship Megastructure Army Planet Starbase }
+		output_scope = Planet
+	}
+	home_planet = {
+		inputscopes = { Country Species Pop Leader }
+		output_scope = Planet
+	}
+	last_created_ship = {
+		inputscopes = { allScopes }
+		output_scope = Ship
+	}
+	mining_station = {
+		inputscopes = { Planet }
+		output_scope = Fleet
+	}
+	research_station = {
+		inputscopes = { Planet }
+		output_scope = Fleet
+	}
+	last_created_fleet = {
+		inputscopes = { allScopes }
+		output_scope = Fleet
+	}
+	fleet = {
+		inputscopes = { Ship Starbase Leader Army Fleet }
+		output_scope = Fleet
+	}
+	excavator_fleet = {
+		inputscopes = { archaeological_site }
+		output_scope = Fleet
+	}
+	pop = {
+		inputscopes = { Pop Army }
+		output_scope = Pop
+	}
+	unhappiest_pop = {
+		inputscopes = { Planet Country }
+		output_scope = Pop
+	}
+	last_created_pop = {
+		inputscopes = { allScopes }
+		output_scope = Pop
+	}
+	last_created_ambient_object = {
+		inputscopes = { allScopes }
+		output_scope = AmbientObject
+	}
+	last_created_army = {
+		inputscopes = { allScopes }
+		output_scope = Army
+	}
+	owner_species = {
+		inputscopes = { #matches owner
+			Species Ship Pop Fleet Planet PopFaction Sector Leader Country Starbase System first_contact Megastructure Army
+			Deposit archaeological_site spy_network espionage_operation
+		}
+		output_scope = Species
+	}
+	owner_main_species = {
+		inputscopes = { #matches owner
+			Species Ship Pop Fleet Planet PopFaction Sector Leader Country Starbase System first_contact Megastructure Army
+			Deposit archaeological_site spy_network espionage_operation
+		}
+		output_scope = Species
+	}
+	last_created_species = {
+		inputscopes = { allScopes }
+		output_scope = Species
+	}
+	built_species = {
+		inputscopes = { Country }
+		output_scope = Species
+	}
+	species = {
+		inputscopes = { Country Ship Leader Pop Army Species }
+		output_scope = Species
+	}
+	pop_faction = {
+		inputscopes = { Pop Leader PopFaction }
+		output_scope = PopFaction
+	}
+	last_created_pop_faction = {
+		inputscopes = { allScopes }
+		output_scope = PopFaction
+	}
+	default_pop_faction = {
+		inputscopes = { pop }
+		output_scope = PopFaction
+	}
+	sector = {
+		inputscopes = {
+			Planet System Leader Ship Fleet ambient_object Megastructure Starbase archaeological_site first_contact
+			system sector pop army deposit
+		}
+		output_scope = Sector
+	}
+	core_sector = {
+		inputscopes = { Country }
+		output_scope = Sector
+	}
+	ruler = {
+		inputscopes = { #matches owner
+			Species Ship Pop Fleet Planet PopFaction Sector Leader Country Starbase System first_contact Megastructure Army
+			Deposit archaeological_site spy_network espionage_operation
+		}
+		output_scope = Leader
+	}
+	heir = {
+		inputscopes = { #matches owner
+			Species Ship Pop Fleet Planet PopFaction Sector Leader Country Starbase System first_contact Megastructure Army
+			Deposit archaeological_site spy_network espionage_operation
+		}
+		output_scope = Leader
+	}
+	star = {
+		inputscopes = { Planet Ship Fleet System ambient_object Megastructure Starbase archaeological_site first_contact }
+		output_scope = Planet
+	}
+	last_created_design = {
+		inputscopes = { allScopes }
+		output_scope = Design
+	}
+	starbase = {
+		inputscopes = { System Planet Ship Fleet Starbase }
+		output_scope = Starbase
+	}
+	capital_star = {
+		inputscopes = { Country }
+		output_scope = Planet
+	}
+	no_scope = {
+		inputscopes = { allScopes }
+		output_scope = Any
+	}
+	megastructure = {
+		inputscopes = { allScopes }
+		output_scope = Megastructure
+	}
+	owner_main_species = {
+		inputscopes = { Species Ship Pop Fleet Planet PopFaction Sector Leader Country Starbase System }
+		output_scope = Species
+	}
+	system_star = {
+		inputscopes = { #matches celestial_coordinate scope_group
+			planet ship fleet system ambient_object megastructure starbase archaeological_site first_contact
+			deposit pop army country leader
+		}
+		output_scope = Planet
+	}
+	observation_outpost_owner = {
+		inputscopes = { planet }
+		output_scope = Country
+	}
+	branch_office_owner = {
+		inputscopes = { Planet }
+		output_scope = Country
+	}
+	archaeological_site = {
+		inputscopes = { planet ship fleet ambient_object megastructure starbase system archaeological_site }
+		output_scope = archaeological_site
+	}
+	alliance = {
+		inputscopes = { Country }
+		output_scope = federation
+	}
+	federation = {
+		inputscopes = { country }
+		output_scope = federation
+	}
+	federation_leader = {
+		inputscopes = { federation }
+		output_scope = country
+	}
+	associated_federation = {
+		inputscopes = { country }
+		output_scope = federation
+	}
+	last_added_deposit = {
+		inputscopes = { planet }
+		output_scope = deposit
+	}
+	envoy_location_country = {
+		inputscopes = { leader }
+		output_scope = country
+	}
+	sector_capital = {
+		inputscopes = { sector }
+		output_scope = planet
+	}
+	orbital_station = {
+		inputscopes = { planet }
+		output_scope = fleet
+	}
+	contact_country = {
+		inputscopes = { first_contact }
+		output_scope = country
+	}
+	reverse_first_contact = {
+		inputscopes = { first_contact }
+		output_scope = first_contact
+	}
+	spynetwork = {
+		inputscopes = { espionage_operation }
+		output_scope = spy_network
+	}
+	target = {
+		inputscopes = { espionage_operation spy_network }
+		output_scope = country
+	}
+	growing_species = {
+		inputscopes = { planet }
+		output_scope = species
+	}
+	assembling_species = {
+		inputscopes = { planet }
+		output_scope = species
+	}
+	declining_species = {
+		inputscopes = { planet }
+		output_scope = species
+	}
+}

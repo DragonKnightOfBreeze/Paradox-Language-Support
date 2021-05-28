@@ -1,0 +1,60 @@
+types = {
+    type[portrait_environment] = {
+        path = "gfx/portraits/environments"
+    }
+}
+
+enums = {
+    enum[light_types] = {
+        "spot_light"
+        "point_light"
+        "directional_light"
+    }
+}
+
+single_alias[look_at] = {
+    ## cardinality 3
+    float
+}
+
+single_alias[portrait_environment_light] = {
+    type = enum[light_types]
+    affected_by_shadow = bool
+    color = single_alias_right[hsv_color]
+    position = scalar
+    look_at = single_alias_right[look_at]
+    ## cardinality = 0..1
+    look_at_node = camera_torso_look_at
+    ## cardinality = 0..1
+    radius = int_value_field
+    ## cardinality = 0..1
+    falloff = int_value_field
+    ## cardinality = 0..1
+    outer_cone_angle = int_value_field
+    ## cardinality = 0..1
+    inner_cone_angle = int_value_field
+}
+
+portrait_environment = {
+    cubemap = scalar
+    cubemap_intensity = float
+
+    ## cardinality = 0..1
+    lights = {
+        0 = single_alias_right[portrait_environment_light]
+        1 = single_alias_right[portrait_environment_light]
+        2 = single_alias_right[portrait_environment_light]
+    }
+    ## cardinality = 0..1
+    lights = <portrait_environment>
+    ## cardinality = 0..1
+    shadow_camera = {
+		position = scalar
+		look_at = single_alias_right[look_at]
+		look_at_node = scalar
+		fov = int_value_field
+		camera_near_far = { int_value_field int_value_field }
+    }
+    ## cardinality = 0..1
+    shadow_camera = <portrait_environment>
+}

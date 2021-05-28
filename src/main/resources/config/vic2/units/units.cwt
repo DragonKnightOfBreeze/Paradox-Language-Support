@@ -1,0 +1,104 @@
+types = {
+	type[unit] = {
+		path = "game/common/units"
+		name_from_file = yes
+		type_per_file = yes
+		path_strict = yes
+
+		localisation = {
+			## required
+			name = "$"
+			## required
+			description = "$DESCR"
+		}
+
+		subtype[land] = {
+			type = land
+		}
+		subtype[naval] = {
+			type = naval
+		}
+	}
+}
+
+enums = {
+    enum[naval_unit_types] = {
+        support
+        cavalry
+        infantry
+        special
+    }
+    enum[land_unit_types] = {
+        transport
+        light_ship
+        big_ship
+    }
+}
+
+unit = {
+	icon = int
+
+    floating_flag = bool
+    priority = int
+    max_strength = int
+    default_organisation = int
+    maximum_speed = float
+    weighted_value = float
+
+    build_time = int
+    build_cost = {
+       	## cardinality = 0..1
+        <goods> = int
+    }
+    
+    supply_consumption = float
+    supply_cost = {
+       	## cardinality = 0..1
+        <goods> = int
+    }
+
+	subtype[land] = {
+        sprite = scalar
+        active = bool
+        unit_type = enum[land_unit_types]
+
+        reconnaissance = float
+        attack = float
+        defence = float
+        discipline = float
+        support = float
+        maneuver = float
+    }
+	subtype[naval] = {
+    	naval_icon = int
+
+        sprite = scalar
+        unit_type = enum[naval_unit_types]
+        capital = yes
+        active = no
+        move_sound = scalar
+        select_sound = scalar
+
+        colonial_points = int
+        
+        #Core Abilities
+        priority = 40
+        max_strength = 100
+        default_organisation = 30
+        maximum_speed = 9
+        weighted_value = 50.0
+        can_build_overseas = no
+
+        min_port_level = int
+        limit_per_port = int
+        supply_consumption_score = int
+        
+        
+        hull = float
+        gun_power = float
+        fire_range = float
+        evasion = float
+	}
+
+}
+

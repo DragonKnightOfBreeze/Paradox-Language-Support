@@ -1,0 +1,85 @@
+types = {
+	type[poptype] = {
+		name_from_file = yes
+		path = "game/poptypes"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+}
+
+poptype = {
+    sprite = int
+
+    color = {
+        ## cardinality = 3..3
+        int[0..255]
+    }
+
+    strata =  enum[strata]
+
+    ## cardinality = 0..1
+    state_capital_only = bool
+
+    rebel =
+    {
+        ## cardinality = 0..inf
+        <unit> = float
+    }
+
+    everyday_needs = {
+        ## cardinality = 0..inf
+        <goods> = float
+    }
+
+    life_needs = {
+        ## cardinality = 0..inf
+        <goods> = float
+    }
+
+
+    luxury_needs = {
+        ## cardinality = 0..inf
+        <goods> = float
+    }
+
+
+    country_migration_target =
+    {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+    }
+
+    migration_target =
+    {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+    }
+
+    promote_to =
+    {
+        ## cardinality = 0..inf
+        <poptype> = {
+            factor = float
+            alias_name[modifier_rule] = alias_match_left[modifier_rule]
+        }
+    }
+
+    ideologies = {
+        ## cardinality = 0..inf
+        <poptype> = {
+            factor = float
+            alias_name[modifier_rule] = alias_match_left[modifier_rule]
+        }
+    }
+
+    issues =
+    {
+        ## cardinality = 0..inf
+        <issue> = {
+            factor = float
+            alias_name[modifier_rule] = alias_match_left[modifier_rule]
+        }
+    }
+}

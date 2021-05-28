@@ -1,0 +1,118 @@
+types = {
+	type[rebel_type] = {
+		path = "game/common"
+		path_file = "rebel_types.txt"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			description = "$_desc"
+		}
+	}
+}
+
+enums = {
+	enum[rebel_areas] = {
+		nation
+		culture
+		nation_culture
+		nation_religion
+		religion
+		culture_group
+		all
+	}
+	enum[rebel_defection] = {
+		culture
+		culture_group
+		religion
+		ideology
+		any
+		none
+		pan_nationalist
+	}
+	enum[rebel_independence] = {
+		culture
+		culture_group
+		religion
+		colonial
+		any
+		none
+		pan_nationalist
+	}
+}
+
+rebel_type = {
+	icon = int
+	
+	area = enum[area]
+
+	## cardinality = 0..1
+	break_alliance_on_win = bool
+
+	government = {
+		## cardinality = 0..inf
+		<governments> = <governments>
+	}
+	
+	defection = enum[rebel_defection]
+	independence = enum[rebel_independence]
+	
+	## cardinality = 0..1
+	defect_delay = int
+	
+	ideology = <ideology>
+	
+	allow_all_cultures = bool
+	allow_all_religions = bool
+	allow_all_ideologies = bool
+	
+	resilient = bool
+	reinforcing = bool
+	general = bool
+	smart = bool
+	unit_transfer = bool
+	
+	occupation_mult = float
+	
+ 	##replace_scope = { this = country root = country }
+	will_rise = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	##replace_scope = { this = province root = province }
+	spawn_chance = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+ 
+ 	##replace_scope = { this = province root = province }
+ 	###This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+	
+ 	##replace_scope = { this = province root = province from = country }
+	## cardinality = 0..1
+ 	siege_won_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	##replace_scope = { this = province root = province from = country }
+	## cardinality = 0..1
+	siege_won_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	##replace_scope = { this = country root = country from = country }
+	demands_enforced_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	##replace_scope = { this = country root = country from = country }
+	###root = country negotiating, from = rebels
+	demands_enforced_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+}

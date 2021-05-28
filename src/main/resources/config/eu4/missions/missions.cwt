@@ -1,0 +1,94 @@
+
+types = {
+	type[mission_series] = {
+		path = "game/missions"
+	}
+	## type_key_filter <> { potential potential_on_load }
+	## graph_related_types = { }
+	type[mission] = {
+		path = "game/missions"
+		skip_root_key = any
+		localisation = {
+			## required
+			## replace_scope = { root = country this = country }
+			## primary
+			name = "$_title"
+			## required
+			## replace_scope = { root = country this = country }
+			desc = "$_desc"
+		}
+	}
+}
+
+mission_series = {
+	slot = int
+
+	## cardinality = 0..1
+	###if a mission without generic = yes wants this slot then it overrides this.
+	generic = bool
+
+	## cardinality = 0..1
+	###Can exist under the series itself or within individual missions.
+	ai = bool
+
+	## cardinality = 0..1
+	has_country_shield = bool
+
+	## cardinality = 0..1
+	potential_on_load = {
+		## cardinality = 0..inf
+		has_dlc = enum[DLCs]
+	}
+
+	## replace_scope = { this = country root = country }
+	###These are triggers for the entire series
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 1..inf
+	<mission> = {
+		icon = scalar #todo
+		## cardinality = 0..1
+		required_missions = {
+			## cardinality = 0..inf
+			<mission>
+		}
+		## replace_scope = { this = country root = country }
+		###What you need to complete the mission, displayed for mission tooltip
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## replace_scope = { this = country root = country }
+		###This is what you get after you finished your mission.
+		effect = {
+			alias_name[effect] = alias_match_left[effect]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = province root = country }
+		provinces_to_highlight = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		completed_by = date_field
+
+		## cardinality = 0..1
+		position = int
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country }
+		ai_weight = {
+			factor = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country }
+		ai_priority = {
+			factor = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+}

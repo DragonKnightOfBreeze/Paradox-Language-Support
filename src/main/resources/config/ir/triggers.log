@@ -1,0 +1,2477 @@
+Trigger Documentation:
+
+--------------------
+
+debug_log - yes - Outputs to the game log when this trigger is hit
+debug_log_details = yes - Outputs full trigger content when this trigger is hit
+
+--------------------
+
+is_general - Is the scope character a General?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+is_port - is the province a Port or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+has_triggered_character_modifier - does the character have a specific triggered modifier
+Supported Scopes: character
+
+--------------------
+
+has_variable_list - Checks whether the current scope has the specified variable list set
+has_variable_list = name
+Supported Scopes: none
+
+--------------------
+
+has_global_variable - Checks whether the current scope has the specified variable set
+has_variable = name
+Supported Scopes: none
+
+--------------------
+
+num_loyal_cohorts - does the character have the required number of loyal cohorts?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+prisoner - is the character imprisoned?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_owned_province - Iterate through all owned provinces in a country
+any_owned_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: province
+
+--------------------
+
+nand - a negated AND trigger
+Supported Scopes: none
+
+--------------------
+
+is_ship - subunit is Ship
+Traits: yes/no
+Supported Scopes: subunit
+
+--------------------
+
+has_culture_group - Does the character have this culture group?
+Supported Scopes: character
+
+--------------------
+
+number_of_traits - does the character have this many traits?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_same_gender - Is the character same gender as the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+religious_tech - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_clan_chief - Is the scope character a ClanChief?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_sea_and_river_zone - Iterate through all sea and river zones in the world
+any_sea_and_river_zone = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+Supported Targets: province
+
+--------------------
+
+has_military_Tradition - Does the country have a certain military Tradition
+Supported Scopes: country
+
+--------------------
+
+current_amount_of_holdings - does the province have the amount of holdings?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+is_ai - is the country an ai or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+imports_from - if a country imports from another country
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+num_of_civic_ideas - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+number_of_health_traits - does the character have required amount of personality traits?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+treasury - does the country have the required Treasury?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+any_country_state - Iterate through all states in a country
+any_country_state = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: state
+
+--------------------
+
+has_same_culture_group_as - Does the character have the same culture group as the target?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+is_mercenary - Is the scope character Mercenary?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_governor_state - Iterate through all states a governor is governor of
+any_governor_state = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: character
+Supported Targets: state
+
+--------------------
+
+in_command - Is the scope character a InCommand?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+has_state_modifier - check if a State has a specific modifier
+Supported Scopes: state
+
+--------------------
+
+has_breach - siege has breach
+Traits: yes/no
+Supported Scopes: siege
+
+--------------------
+
+unit_size_rank_percentage - The rank w.r.t. to number of subunits compared to other units of country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+mercantile_party_conviction - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+trade_goods - Checks if a province has a specific trade_goods
+Supported Scopes: province
+
+--------------------
+
+has_civil_war - countryis in civil war ?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+current_party_conviction - does the character have the required conviction for its party?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+num_other_religion - does the province have the required num_other_religion ?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+is_uninhabitable - is the province uninhabitable?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+num_of_freemen - Checks population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+zeal - does the character have the required zeal skill level?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_scorned - is the character Scorned or dead?
+Traits: yes/no
+Supported Scopes: family
+
+--------------------
+
+province_tax_income - does the province have the required tax income?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+is_coastal - is the province coastal or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+non_loyal_power_base - The non loyal power base of the country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_isolated - state is Isolated
+Traits: yes/no
+Supported Scopes: state
+
+--------------------
+
+calc_true_if - Returns true if the specified number of sub-triggers return true
+calc_true_if = { amount = 2 <trigger> <trigger> <trigger> }
+Supported Scopes: none
+
+--------------------
+
+is_clan_retinue - subunit is clan retinue
+Traits: yes/no
+Supported Scopes: subunit
+
+--------------------
+
+any_area_province - Iterate through all ownable provinces in an area
+any_area_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: area
+Supported Targets: province
+
+--------------------
+
+in_combat - unit is in combat
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+num_of_clan_retinues - Check number of clan retinues in a unit
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+political_influence - The amount of political influence of a country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+any_country - Iterate through all existing countries
+any_country = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+Supported Targets: country
+
+--------------------
+
+has_country_modifier - check if a country has a specific modifier
+Supported Scopes: country
+
+--------------------
+
+health - does the character have the required Health?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+any_friend - Iterate through all friends
+any_friend = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+has_same_culture_as - Does the character have the same culture as the target?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+has_commander - unit has a commander
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+region - Does the scoped city belong to a given named Region or the same Region as the target city
+Region = my_Region_name OR Region = from.capital_scope
+Supported Scopes: province
+
+--------------------
+
+war_with - if a country is a war with another country
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+is_parent_of - Is the character a parent of the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+switch - Switch on a trigger for the evaluation of another trigger with an optional fallback trigger.
+switch = {
+	trigger = simple_assign_trigger
+	case_1 = { <triggers> }
+	case_2 = { <triggers> }
+	case_n = { <triggers> }
+	fallback = { <triggers> }
+Supported Scopes: none
+
+--------------------
+
+is_admiral - Is the scope character a Admiral?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+civil_war_with - if a country in civil war with a another country
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+max_manpower - does the country have the required Max Manpower?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+number_of_military_traits - does the character have required amount of military traits?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+has_primary_heir - does the country have a primary heir or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+has_low_economic_policy - does a country have the low economic policy for x?
+Supported Scopes: country
+
+--------------------
+
+any_governorship_state - Iterate through all states in a governorship
+any_governorship_state = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: governorship
+Supported Targets: state
+
+--------------------
+
+can_hold_office - Can the character have this Office?
+Supported Scopes: character
+
+--------------------
+
+target_is_valid_character - Checks whether the specified scope target is a valid character
+Traits: character scope
+Supported Scopes: none
+Supported Targets: character
+
+--------------------
+
+is_target_alive - Is the target character alive?
+Traits: character scope
+Supported Scopes: none
+Supported Targets: character
+
+--------------------
+
+is_overlord - Is the country an overlord to any other country?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+is_movement_locked - unit is movement locked
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+has_nickname - Does the scope character have a nickname?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+is_at_same_location - Is the character currently in the same province as the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+any_province - Checks if any province meets the specified criteria
+any_province = { triggers }
+Supported Scopes: none
+
+--------------------
+
+is_capital - is the province a capital or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+can_get_friends - Can the scope character get Friends?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+unit_size - How many sub units does this unit have?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+has_province_modifier - check if a Province has a specific modifier
+Supported Scopes: province
+
+--------------------
+
+has_job - does the character have a valid Job?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_character - Iterate through all characters in a country
+any_character = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: character
+
+--------------------
+
+any_support_as_heir - Iterate through all supportasHeir
+any_support_as_heir = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+num_foreign_culture - does the province have the required num_foreign_culture ?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+any_area - Iterate through all existing areas
+any_area = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+Supported Targets: area
+
+--------------------
+
+has_province_rank - Checks if a province is of a specific rank
+Supported Scopes: province
+
+--------------------
+
+ai_wants_road - Does AI for a country want to build road in this province?
+Traits: country tag/country scope
+Supported Scopes: province
+Supported Targets: country
+
+--------------------
+
+has_same_religion_as - Does the character have the same religion as the target?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+is_core_of - is the province a core of target  or not?
+Traits: country tag/country scope
+Supported Scopes: province
+Supported Targets: country
+
+--------------------
+
+in_siege - unit is in Siege
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+has_character_modifier - does the character have a specific modifier
+Supported Scopes: character
+
+--------------------
+
+oratory_tech - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_tech_office - Is the scope character in a tech office?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+religious_unity - The religous unity of the country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_enemy_army - does the province has an enemy army of target?
+Traits: country tag/country scope
+Supported Scopes: province
+Supported Targets: country
+
+--------------------
+
+pop_religion - Is the pop this Religion?
+Traits: class CReligionDatabase key/religion scope
+Supported Scopes: pop
+Supported Targets: religion
+
+--------------------
+
+any_unit - Iterate through all units in a country
+any_unit = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: unit
+
+--------------------
+
+is_dominant_unit - check if a Unit has a specific modifier
+Supported Scopes: unit
+
+--------------------
+
+government - which government a country has
+Supported Scopes: country
+
+--------------------
+
+any_region - Iterate through all existing regions
+any_region = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+Supported Targets: region
+
+--------------------
+
+religious_party_conviction - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+any_in_local_list - Iterate through all items in local list. list = name or variable = name
+any_in_local_list = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+
+--------------------
+
+has_road_towards - Is there a road to the target province?
+Traits: province id/province scope
+Supported Scopes: province
+Supported Targets: province
+
+--------------------
+
+is_model_shown - Do the province has the model shown. Written as is_model_shown=name_of_model
+Supported Scopes: province
+
+--------------------
+
+state_level_loyalty - does the state have the required loyalty (from state level)?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: state
+
+--------------------
+
+months_to_war - number of months to planned war, or 0 if already at war
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+biggest_party - is this party the biggest
+Supported Scopes: country
+Supported Targets: party
+
+--------------------
+
+not - negates content of trigger
+Supported Scopes: none
+
+--------------------
+
+age - is the character old/young enough?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+has_monthly_income - does the country have the required Monthly Income?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+num_of_military_ideas - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_sibling_of - Is the character a sibling of the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+is_sea - is the province a sea province?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+province_income - does the province have the required income?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+country_population - The total population of a country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+num_of_citizen - Checks population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+has_religion - Does the character have this religion?
+Traits: class CReligionDatabase key/religion scope
+Supported Scopes: character
+Supported Targets: religion
+
+--------------------
+
+is_spouse_of - Is the character a spouse of the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+has_enemy_navy - does the province has an enemy navy of target?
+Traits: country tag/country scope
+Supported Scopes: province
+Supported Targets: country
+
+--------------------
+
+legitimacy - does the country have the required Legitimacy?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_subject_of - Is the country a subject to the specified country?
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+weighted_calc_true_if - Returns true if the sum of weights of fulfilled sub-triggers amount to the specified sum
+weighted_calc_true_if = { amount = 10 5 = { <trigger> } 15 = { <trigger> } 7 = { <trigger> } }
+Supported Scopes: none
+
+--------------------
+
+title_importance - checks the title importance a character has.
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_moving - unit is moving
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+any_in_list - Iterate through all items in list. list = name or variable = name
+any_in_list = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+
+--------------------
+
+any_neighbour_country - Iterate through all neighbour countries
+any_neighbour_country = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+civic_party_support - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+any_area_including_unownable_province - Iterate through all provinces in an area
+any_area_including_unownable_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: area
+Supported Targets: province
+
+--------------------
+
+variable_list_size - Checks the size of a variable list
+variable_list_size = { name = X target >= Y }
+Where X is the name of the variable
+Where Y is a script value or number
+Supported Scopes: none
+
+--------------------
+
+any_successor - Iterate through all successors in a country
+any_successor = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: character
+
+--------------------
+
+has_construction - has construction
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+has_war_exhaustion - does the country have the required War Exhaustion?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+province_id - does the province have this ID?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+has_winter - Checks if a province has any level of winter
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+religious_party_support - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_ambition - Does the character have this Ambition?
+Supported Scopes: character
+
+--------------------
+
+strength_percentage - How many percent strength does this unit have???
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+has_local_variable_list - Checks whether the current scope has the specified variable list set
+has_variable_list = name
+Supported Scopes: none
+
+--------------------
+
+num_of_families - does the country have this many families?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_republic - is the country at republic or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+has_any_office - does the characer have an office or not?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+terrain - Checks if a province is of a specific terrain type
+Supported Scopes: province
+
+--------------------
+
+has_mid_economic_policy - does a country have the mid economic policy for x?
+Supported Scopes: country
+
+--------------------
+
+safety - AI safety level in percent
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_owner - does the province have an owner or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+number_of_personality_traits - does the character have required amount of personality traits?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+state_commerce_income - does the state have the required commerce income?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: state
+
+--------------------
+
+num_of_controlled_cities - does the country have the required number of cities controlled?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_land - Does the scoped country own any provinces
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+province_manpower_income - does the province have the required Manpower Income?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+num_of_members - does the family have the required members?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: family
+
+--------------------
+
+civic_tech - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+can_pay_price - if a country can pay price X
+Supported Scopes: country
+
+--------------------
+
+religion - Does the country have this religion?
+Traits: class CReligionDatabase key/religion scope
+Supported Scopes: country
+Supported Targets: religion
+
+--------------------
+
+province_dominant_culture_group - Checks if the dominant culture in a province belongs to a certain group
+Supported Scopes: province
+
+--------------------
+
+is_co_ruler - Is the scope character a co-ruler?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+is_migration - unit is Migration
+Traits: yes/no
+Supported Scopes: subunit
+
+--------------------
+
+any_region_province - Iterate through all ownable provinces in a region
+any_region_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: region
+Supported Targets: province
+
+--------------------
+
+has_truce_with - if a country is at truce a another country
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+loyalty - does the character have the required Loyalty?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+cultural_unity - for AI: cultural unity
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+num_of_provinces - does the country have the required number of provinces?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_office - Does the character have this Office?
+Supported Scopes: character
+
+--------------------
+
+manpower_percentage - does the country have the required manpower percentage?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_primary_heir - Is the scope character a PrimaryHeir?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+prestige - does the family have the required Prestige?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: family
+
+--------------------
+
+highest_skill - Is the skill the highest skill of the character? True even when there are multiple skills with the same highest value.
+Supported Scopes: character
+
+--------------------
+
+wealth - does the character have the required gold?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+state_loyalty - does the province have the required state_loyalty?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+has_minor_river - does the province have a minor river or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+country_culture - Is the country this culture?
+Traits: culture db key/culture scope
+Supported Scopes: country
+Supported Targets: culture
+
+--------------------
+
+num_of_loyal_cohorts - Check number of cohorts with personal loyalty in a Uni
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+has_mother - does the character have a valid living mother?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+trade_good_surplus - is the state's trade good surplus greater or equal than the value? trade_good_surplus = { target = X [*value >/</>=/<= Y* or *value = { min max }*  }
+Supported Scopes: state
+
+--------------------
+
+unit_threat - How many percent morale does this unit have???
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+any_holdings - Iterate through all holdings of a character
+any_holdings = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: character
+Supported Targets: province
+
+--------------------
+
+population_cap - does the province have the required Population Capacity?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+num_of_migrants - Check number of migrant cohorts in a unit
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+gender_rules - Checks if the game has gender-equality rules
+Traits: yes/no
+Supported Scopes: none
+
+--------------------
+
+can_build_building - Can the province build a specific building?
+Supported Scopes: province
+
+--------------------
+
+in_color_list - Check if the scoped color is part of the given color list
+Supported Scopes: color
+
+--------------------
+
+any_neighbor_area - Iterate through all neighbouring areas of a Area
+any_neighbor_area = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: area
+Supported Targets: area
+
+--------------------
+
+all_false - true if all children are false (equivalent to NOR)
+Supported Scopes: none
+
+--------------------
+
+has_siege - is the province sieged or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+has_opinion - does the country have an opinion type towards another country?
+Supported Scopes: country
+Supported Targets: party
+
+--------------------
+
+dominant_province_culture - Checks if a culture is dominant in a province
+Traits: culture db key/culture scope
+Supported Scopes: province
+Supported Targets: culture
+
+--------------------
+
+is_friend - Is the target character alive?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+is_antagonist - is the country an antagonist or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+has_state_food - does the state have the required food?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: state
+
+--------------------
+
+debug_only - Checks if the game is in debug mode or not.
+Traits: yes/no
+Supported Scopes: none
+
+--------------------
+
+any_false - true if any child is false (equivalent to NAND)
+Supported Scopes: none
+
+--------------------
+
+has_co_ruler_government - Does the current government have co-rulers?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+control_range - Is province in control range of country
+Traits: country tag/country scope
+Supported Scopes: province
+Supported Targets: country
+
+--------------------
+
+any_family - Iterate through all families in a country
+any_family = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: family
+
+--------------------
+
+military_tech - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+pop_culture - Is the pop this culture?
+Traits: culture db key/culture scope
+Supported Scopes: pop
+Supported Targets: culture
+
+--------------------
+
+citizen_happiness - Checks hapiness for population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+nor - a negated OR trigger
+Supported Scopes: none
+
+--------------------
+
+is_party_leader_of - does the character lead the specific party?
+Supported Scopes: character
+
+--------------------
+
+healthy_economy_percentage - AI regression test: % of countries at peace with healthy economy
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+num_of_friends - number of Friends of character?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_alive - is the character alive or dead?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+military_experience - The amount of military experience of a country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+diplomatic_stance - Does this country have this diplomatic stance?
+Traits: class CDiplomaticStanceDatabase key
+Supported Scopes: country
+
+--------------------
+
+popularity - does the character have the required popularity?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+rank - gets country rank as integer, prefer using script values when comparing e.g. major_power etc.
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+trigger_else - Evaluates the triggers if the display_triggers of preceding 'trigger_if' or 'trigger_else_if' is not mettrigger_if = { limit = { <display_triggers> } <triggers> }
+ trigger_else = { <triggers> }
+Supported Scopes: none
+
+--------------------
+
+martial - does the character have the required martial skill level?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+province_unrest - does the province have the required province_unrest?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+max_holdings_owned - how many holdings canthe character have?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+always - Always the same value
+Traits: yes/no
+Supported Scopes: none
+
+--------------------
+
+is_importing_trade_good - Checks if the state of a province is importing a certain trade good.
+Supported Scopes: province
+
+--------------------
+
+has_culture - Does the character have this culture?
+Traits: culture db key/culture scope
+Supported Scopes: character
+Supported Targets: culture
+
+--------------------
+
+populist_party_support - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_global_variable_list - Checks whether the current scope has the specified variable list set
+has_variable_list = name
+Supported Scopes: none
+
+--------------------
+
+is_navy - unit is Navy
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+number_of_status_traits - does the character have required amount of personality traits?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_close_relative - Is the character a close relative (Child, Parent, Sibling/Half-sibling, Nephew/Niece, Aunt/Uncle, Grandparent or Grandchild) of the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+war - is the country at war or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+any_sibling - Iterate through all siblings
+any_sibling = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+power_base - does the character have the required powerbase?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+any_country_sub_unit - Iterate through all subunits in all units in a country
+any_country_sub_unit = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: subunit
+
+--------------------
+
+global_variable_list_size - Checks the size of a variable list
+variable_list_size = { name = X target >= Y }
+Where X is the name of the variable
+Where Y is a script value or number
+Supported Scopes: none
+
+--------------------
+
+num_holdings_owned - how many holdings does the character have?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+pop_type - Is the pop this PopType?
+Supported Scopes: pop
+
+--------------------
+
+free_building_slots - does the province have the amount of free building slots?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+subunit_strength_percentage - How many percent strength does this subunit have???
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: subunit
+
+--------------------
+
+is_ruler - Is the scope character a ruler?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+charisma - does the character have the required charisma skill level?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+experience_percentage - How many percent experience does this unit have???
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+any_in_global_list - Iterate through all items in global list. list = name or variable = name
+any_in_global_list = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+
+--------------------
+
+is_capital_state - is the state a capital or not?
+Traits: yes/no
+Supported Scopes: state
+
+--------------------
+
+percentage_characters_below_max_loyalty - percentage of characters below max loyalty
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+trigger_else_if - Evaluates the enclosed triggers if the display_triggers of the preceding `trigger_if` or `trigger_else_if` is not met and its own display_trigger of the limit is mettrigger_if = { limit = { <display_triggers> } <triggers> }
+trigger_else_if = { limit = { <display_triggers> } <triggers> }
+Supported Scopes: none
+
+--------------------
+
+exists - Checks whether the specified socope target exists (check for not being the null object)
+exists = from.owner.var:cool_var.mother
+Supported Scopes: none
+
+--------------------
+
+tribesmen_happiness - Checks hapiness for population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+is_cohort - unit is cohort
+Traits: yes/no
+Supported Scopes: subunit
+
+--------------------
+
+any_ownable_province - Iterate through all ownable provinces in the world
+any_ownable_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: none
+Supported Targets: province
+
+--------------------
+
+tyranny - does the country have the required Tyranny?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+heritage - Does this country have this heritage?
+Traits: class CHeritageDatabase key
+Supported Scopes: country
+
+--------------------
+
+corruption - does the character have the required Corruption?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+has_monthly_balance - does the country have the required Monthly Balance?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+stability - does the country have the required Stability?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+num_of_children - number of children of character?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+num_of_oratory_ideas - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_subject - Is the country a subject to any other country?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+max_amount_of_holdings - does the province have the max amount of holdings?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+num_of_supporters - checks amount of supporters as heir.
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+populist_party_conviction - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+idea - which Idea a country has
+Supported Scopes: country
+
+--------------------
+
+game_start_date - Compare the date of the bookmarked game launched.
+Traits: <, =, > valid date
+Supported Scopes: none
+
+--------------------
+
+threat_in_owned_land - size of enemy forces (1 = 1000 men) in country's lands
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+gender_equality - country has gender equality or not ?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+in_diplomatic_range - if a country is in diplomatic range with another country
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+has_dlc - Does the host have this DLC
+Supported Scopes: none
+
+--------------------
+
+trade_routes - The total number of trade routes in this state
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: state
+
+--------------------
+
+office_is_empty - Is this office empty for the country?
+Supported Scopes: country
+
+--------------------
+
+is_dynamic_tag - if a country is dynamically created
+Traits: yes/no
+Supported Scopes: none
+
+--------------------
+
+country_culture_group - Is the country this culture group?
+Supported Scopes: country
+
+--------------------
+
+num_of_cohorts - does the country have the required amount of cohorts?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+fertility - does the character have the required fertility?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+sub_unit_type - Checks if a sub_unit is of a specific type
+Supported Scopes: subunit
+
+--------------------
+
+num_of_cities - does the country have the required NumOfCities?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+num_of_ports - does the country have the required NumOfPorts?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+total_power_base - The total power base of the country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_tribal - is the country at tribal or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+is_subject_type - Is the country a subject of the specified type?
+Traits: class CSubjectTypeDatabase key
+Supported Scopes: country
+
+--------------------
+
+is_army - unit is Army
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+any_region_state - Iterate through all states in a region
+any_region_state = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: region
+Supported Targets: state
+
+--------------------
+
+num_of_unit_type - Does the country have this amount of (type = <type> value = <val>)?
+Supported Scopes: country
+
+--------------------
+
+is_exiled - unit is Exiled
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+is_governor - Is the scope character a Governor?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+is_successor - is the character a successor?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_allied_country - Iterate through all allied countries
+any_allied_country = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+is_target_in_variable_list - Checks if a target is in a variable list
+is_target_in_variable_list = { name = X target = Y }
+Where X is the name of the variable
+Where Y is an event target
+Supported Scopes: none
+
+--------------------
+
+is_iron_man - Checks if the game is in iron man mode.
+Traits: yes/no
+Supported Scopes: none
+
+--------------------
+
+civilization_value - does the province have the required CivilizationValue?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+has_variable - Checks whether the current scope has the specified variable set
+has_variable = name
+Supported Scopes: none
+
+--------------------
+
+is_inhabitable - is the province inhabitable or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+any_state_province - Iterate through all provinces in a state
+any_state_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: state
+Supported Targets: province
+
+--------------------
+
+has_high_economic_policy - does a country have the high economic policy for x?
+Supported Scopes: country
+
+--------------------
+
+current_date - Compare the current date.
+Traits: <, =, > valid date
+Supported Scopes: none
+
+--------------------
+
+has_law - which HasLaw a country has
+Supported Scopes: country
+
+--------------------
+
+assert_read - Conditionally cause an assert during read time
+assert_read = X, where X is yes or the string to be printed in the assert
+Supported Scopes: none
+
+--------------------
+
+pop_can_move - Can this pop be moved without breaking pop movement rules?
+Traits: yes/no
+Supported Scopes: pop
+
+--------------------
+
+any_region_area - Iterate through all areas in a region
+any_region_area = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: region
+Supported Targets: area
+
+--------------------
+
+and - all inside trigger must be true
+Supported Scopes: none
+
+--------------------
+
+any_living_character - Checks if any living character meets the specified criteria
+any_living_character = { triggers }
+Supported Scopes: none
+
+--------------------
+
+alliance_with - if a country is allied with a another country
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+has_military_bonus - Does the country have a certain military bonus
+Supported Scopes: country
+
+--------------------
+
+subunit_morale_percentage - How many percent morale does this subunit have???
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: subunit
+
+--------------------
+
+invention - if a country has an invention
+Supported Scopes: country
+
+--------------------
+
+is_at_location - Is the character currently in the target province?
+Traits: province id/province scope
+Supported Scopes: character
+Supported Targets: province
+
+--------------------
+
+num_of_religious_ideas - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_tech_office_of - Does the character have this trait?
+Supported Scopes: character
+
+--------------------
+
+naval_dominance - does AI dominate the almost seven seas? (discrete)
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_same_family - Does the character belong to the same family as the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+any_subject - Iterate through all subject countries
+any_subject = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+days_since_last_war - Check number of days since last war
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_party_leader - Is the scope character a PartyLeader?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+owns - does a country own a specific propvince
+Supported Scopes: country
+
+--------------------
+
+is_target_in_local_variable_list - Checks if a target is in a variable list
+is_target_in_variable_list = { name = X target = Y }
+Where X is the name of the variable
+Where Y is an event target
+Supported Scopes: none
+
+--------------------
+
+centralization - does the country have the required centralization?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_bastard - Is the scope character a bastard?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+morale_percentage - How many percent morale does this unit have???
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+total_holdings - does the country have the required number of holdings?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+has_trait - Does the character have this trait?
+Supported Scopes: character
+
+--------------------
+
+num_goods_produced - does the province have the required number of produced goods ?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+exports_to - if a country exports to another country
+Traits: country tag/country scope
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+any_army - Iterate through all armies in a country
+any_army = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: unit
+
+--------------------
+
+ship_category - Checks if a sub_unit is of a specific ship-category (light/medium/heavy)
+Supported Scopes: subunit
+
+--------------------
+
+fort_level - does the province have the required fort level?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+civic_party_conviction - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+has_subject_loyalty - does the country have the required Subject Loyalty?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+any_parent - Checks if any parent meets the specified criteria
+any_parent = { triggers }
+Supported Scopes: character
+
+--------------------
+
+is_adult - Is the scope character adult?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+is_adjacent_to_major_river - does the province have a minor river or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+has_coasts - If the country has any coastal cities
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+pop_hapiness - Checks hapiness for this pop
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: pop
+
+--------------------
+
+total_population - does the province have the required TotalPopulation?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+add_to_temporary_list - Saves a temporary target for use during the trigger execution
+Supported Scopes: none
+
+--------------------
+
+num_of_tribesmen - Checks population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+any_countries_at_war_with - Iterate through all countries at war with
+any_countries_at_war_with = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: country
+
+--------------------
+
+is_banished - is the character banished
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_navy - Iterate through all navies in a country
+any_navy = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: unit
+
+--------------------
+
+max_diplomatic_relations - The number of max diplomatic relations for a country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_tutorial_active - is the tutorial active?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+is_male - Is the scope character male?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+is_courtier - Is the scope character  Courtier (without title / job)?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+has_this_omen - Does this country have this active omen?
+Traits: class COmenDataBase key
+Supported Scopes: country
+
+--------------------
+
+opinion - is the country's opinion of the target greater or equal than the value? opinion = { target = X [*value >/</>=/<= Y* or *value = { min max }*  }
+Supported Scopes: country
+
+--------------------
+
+mercantile_party_support - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+prominence - does the character have the required Prominence?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_previous_ruler - Is the scope character a previous ruler?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_holding_owners - Iterate through all holding owners of a province
+any_holding_owners = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: province
+Supported Targets: character
+
+--------------------
+
+slaves_happiness - Checks hapiness for population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+owned_or_subject_owned - Is the province owned by the target country or one of its subjects?
+Traits: country tag/country scope
+Supported Scopes: province
+Supported Targets: country
+
+--------------------
+
+num_of_rivals - number of Rivals of character?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_same_party_as - Is the character same Party as the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+num_of_ships - does the country have the required amount of ships?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+military_party_conviction - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+party - Does the character belong to this party?
+Supported Scopes: character
+
+--------------------
+
+province_commerce_income - does the province have the required commerce income?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+is_state_capital - is the province a StateCapital or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+has_party - does the country have this party?
+Supported Scopes: country
+Supported Targets: party
+
+--------------------
+
+is_monarchy - is the country at monarchy or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+is_neighbor - Is this a neighbour of the target province?
+Traits: province id/province scope
+Supported Scopes: province
+Supported Targets: province
+
+--------------------
+
+any_rival - Iterate through all Rivals
+any_rival = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+party_support - Does the current country scope have the given support
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: party
+
+--------------------
+
+from_ruler_family - Is the scope character same family as ruler ?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+any_region_province_including_unownable - Iterate through all provinces in a region
+any_region_province_including_unownable = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: region
+Supported Targets: province
+
+--------------------
+
+is_child_of - Is the character a child of the target character?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+military_party_support - Checks
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_in_area - Does the scoped city belong to a given named area or the same area as the target city
+area = my_area_name OR area = from.capital_scope
+Supported Scopes: province
+
+--------------------
+
+any_family_member - Iterate through all members of a family
+any_family_member = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: family
+Supported Targets: character
+
+--------------------
+
+pop_culture_group - Is the pop this culture group?
+Supported Scopes: pop
+
+--------------------
+
+finesse - does the character have the required finesse skill level?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+is_female - Is the scope character female?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+possible_holdings - does the country have the required number of possible holdings?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+dominant_province_religion - Checks if a religion is dominant in a province
+Traits: class CReligionDatabase key/religion scope
+Supported Scopes: province
+Supported Targets: religion
+
+--------------------
+
+freemen_happiness - Checks hapiness for population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+days_since_last_victory - checks the days since last victory on the battlefield.
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+has_city_status - is the province a City or not?
+Traits: yes/no
+Supported Scopes: province
+
+--------------------
+
+has_holding_in - doess the character have a holding in the target province?
+Traits: province id/province scope
+Supported Scopes: character
+Supported Targets: province
+
+--------------------
+
+tag - if a country is a specific tag
+Supported Scopes: country
+
+--------------------
+
+any_area_state - Iterate through all states in an area
+any_area_state = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: area
+Supported Targets: state
+
+--------------------
+
+any_commander - Iterate through all commanders in a country
+any_commander = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: country
+Supported Targets: character
+
+--------------------
+
+local_variable_list_size - Checks the size of a variable list
+variable_list_size = { name = X target >= Y }
+Where X is the name of the variable
+Where Y is a script value or number
+Supported Scopes: none
+
+--------------------
+
+is_married - Is the scope character married?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+governor_policy - Checks if a province is in a state that has a specific governor_policy
+Supported Scopes: province
+
+--------------------
+
+has_any_omen - does the country have an active omen or not?
+Traits: yes/no
+Supported Scopes: country
+
+--------------------
+
+is_pregnant - is the character pregnant?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+owns_or_subject_owns - Is the target province owned by this country or one of its subjects?
+Traits: province id/province scope
+Supported Scopes: country
+Supported Targets: province
+
+--------------------
+
+has_building - Checks if a province has a specific building
+Supported Scopes: province
+
+--------------------
+
+manpower - does the country have the required Manpower?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+num_of_slaves - Checks population of a specified type
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: province
+
+--------------------
+
+is_unit_locked - Check if a Unit is locked
+Traits: yes/no
+Supported Scopes: unit
+
+--------------------
+
+num_active_relations - The number of active relations for a country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+any_child - Iterate through all children
+any_child = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+unit_size_rank - The rank w.r.t. to number of subunits compared to other units of country
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+assert_if - Conditionally cause an assert during run time
+assert_if = { limit = { X } text = Y }, where X is a trigger and Y is an optional string
+Supported Scopes: none
+
+--------------------
+
+or - at least one entry inside trigger must be true
+Supported Scopes: none
+
+--------------------
+
+trigger_if - Evaluates the triggers if the display_triggers of the limit are met
+trigger_if = { limit = { <display_triggers> } <triggers> }
+Supported Scopes: none
+
+--------------------
+
+is_pretender - is the character Pretender or dead?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+can_get_rivals - Can the scope character get rivals?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+custom_tooltip - Replaces the tooltips for the enclosed triggers with a custom text
+custom_tooltip = {
+	text = <text>
+	<trigger>
+}
+Supported Scopes: none
+
+--------------------
+
+distress_level - AI distress level (discrete)
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: country
+
+--------------------
+
+is_rival - Is the target character alive?
+Traits: character scope
+Supported Scopes: character
+Supported Targets: character
+
+--------------------
+
+is_color - Check if the scoped color is the same as another color. The right hand side can be either a hex, rgb, or hsv color,  or a named color, or another color scope.
+Supported Scopes: color
+
+--------------------
+
+any_pops_in_province - Iterate through all pops in a province
+any_pops_in_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: province
+Supported Targets: pop
+
+--------------------
+
+has_personal_loyalty - subunit is clan retinue
+Traits: yes/no
+Supported Scopes: subunit
+
+--------------------
+
+has_state_food_capacity - does the state have the required food capacity?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: state
+
+--------------------
+
+days_since_last_unit_victory - Check number of days since last victory
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: unit
+
+--------------------
+
+any_neighbor_province - Iterate through all neighbors of a province
+any_neighbor_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: province
+Supported Targets: province
+
+--------------------
+
+any_sub_unit - Iterate through all subunits in a unit
+any_sub_unit = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: unit
+Supported Targets: subunit
+
+--------------------
+
+any_unit_in_province - Iterate through all units in a province
+any_unit_in_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: province
+Supported Targets: unit
+
+--------------------
+
+is_target_in_global_variable_list - Checks if a target is in a variable list
+is_target_in_variable_list = { name = X target = Y }
+Where X is the name of the variable
+Where Y is an event target
+Supported Scopes: none
+
+--------------------
+
+save_temporary_scope_as - Saves a temporary target for use during the trigger execution
+Supported Scopes: none
+
+--------------------
+
+has_unit_modifier - check if a Unit has a specific modifier
+Supported Scopes: unit
+
+--------------------
+
+is_head_of_family - Is the scope character a head of a family?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+num_loyal_veterans - does the character have the required number of loyal Veterans?
+Traits: <, <=, =, !=, >, >=
+Supported Scopes: character
+
+--------------------
+
+has_father - does the character have a valid living father?
+Traits: yes/no
+Supported Scopes: character
+
+--------------------
+
+has_local_variable - Checks whether the current scope has the specified variable set
+has_variable = name
+Supported Scopes: none
+
+--------------------
+
+any_neighbor_region - Iterate through all neighbouring regions of a region
+any_neighbor_region = { <count=num/all> / <percent=fixed_point> <triggers> }
+Supported Scopes: region
+Supported Targets: region
+
+--------------------
+
+is_in_list - Checks if a target in in a list
+Supported Scopes: none

@@ -1,0 +1,20 @@
+types = {
+    type[holy_site] = {
+        path = "game/common/religion/holy_sites"
+    }
+}
+
+holy_site = {
+    ### County location of the holy site
+    county = scope[county]
+
+    ##cardinality = 0..inf
+    flag = flag
+
+    ### A modifier applied to all followers of the faith that holds this holy site.
+    ## replace_scope = { ROOT = character THIS = character }
+    ## cardinality = 0..1
+	character_modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+	}
+}

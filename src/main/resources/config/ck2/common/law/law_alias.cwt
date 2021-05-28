@@ -1,0 +1,71 @@
+
+single_alias[law_clause] = {
+    # TODO: Confirm scopes in this and the following.
+    ## cardinality = 0..1
+    ## replace_scope = { this = title root = title }
+    ### Conditions for the law to be enabled. ROOT seems to be title.
+    allow = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = title root = title }
+    ### Conditions for the law appear. ROOT seems to be title.
+    potential = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = title root = title }
+    ### Effects when the law is enacted. ROOT seems to be title.
+    effect = single_alias_right[effect_clause]
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = title root = title }
+    ### Conditions for the law to be able to be revoked. ROOT seems to be title.
+    revoke_allowed  = single_alias_right[trigger_clause]
+
+    subtype[!succession] = {
+        # TODO: Figure out.
+        ## cardinality = 0..1
+        ### UNKNOWN. Default no.
+        show_as_title = bool
+        group = <law_group>
+
+        ## cardinality = 0..1
+        ### If yes, this law will be selected by default on game start. Defaults to "no".
+        default = bool
+
+        ## replace_scope = { this = title root = title }
+        ## cardinality = 0..1
+        ### Effects when the law is enacted. Takes place before effect = {} and is only triggered when the law is passed in-game (not via history or event). ROOT seems to be title.
+        pass_effect = single_alias_right[effect_clause]
+
+
+        ### Chance for the AI to enact this law if able.
+        ai_will_do = single_alias_right[law_ai_chance]
+
+        ### Chance for the AI to revoke this law if able.
+        ai_will_revoke = single_alias_right[law_ai_chance]
+    }
+
+    ### Effects of the law.
+    alias_name[modifier] = alias_match_left[modifier]
+}
+
+single_alias[succession_law_clause] = {
+    ## cardinality = 0..inf
+    ## replace_scope = { this = title root = title }
+    alias_name[modifier] = alias_match_left[modifier]
+
+    # TODO: Confirm scopes in this and the following.
+    ## replace_scope = { this = title root = title }
+    ### Conditions for the law to be enabled. ROOT seems to be title.
+    allow = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = title root = title }
+    ### Conditions for the law appear. ROOT seems to be title.
+    potential = single_alias_right[trigger_clause]
+
+    ## replace_scope = { this = title root = title }
+    ### Effects when the law is enacted. ROOT seems to be title.
+    effect = single_alias_right[effect_clause]
+
+    ## replace_scope = { this = title root = title }
+    ### Conditions for the law to be able to be revoked. ROOT seems to be title.
+    revoke_allowed = single_alias_right[trigger_clause]
+}

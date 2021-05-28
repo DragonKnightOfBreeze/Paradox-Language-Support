@@ -1,0 +1,459 @@
+types = {
+	type[scripted_gui] = {
+		path = "game/common/scripted_guis"
+		skip_root_key = any
+		subtype[any_context] = {
+			dynamic_lists = {
+				scalar = {
+					change_scope = yes
+				}
+			}
+		}
+		## only_if_not = { any_context }
+		subtype[global_context] = {
+			context_type = global_context
+		}
+		## only_if_not = { any_context }
+		subtype[state_context] = {
+			context_type = selected_state_context
+		}
+		## only_if_not = { any_context }
+		subtype[country_context] = {
+			context_type = selected_country_context
+		}
+		## only_if_not = { any_context country_context state_context global_context }
+		subtype[player_context] = {
+		}
+	}
+}
+
+# Do not use save_event_target_as in scripted GUIs, it will break everything. Use variable system to store event targets instead
+scripted_gui = {
+	### Name of corresponding GUI container.
+	window_name = <containerWindowType>
+
+	## cardinality = 0..1
+	context_type = enum[context_type]
+
+	## cardinality = 0..1
+	parent_window_token = enum[parent_window_token]
+
+	## cardinality = 0..1
+	### Any GUI container name. Use only if parent_window_token doesn't have a corresponding token.
+	parent_window_name = <containerWindowType>
+	## cardinality = 0..1
+	### Any GUI container name. Use only if parent_window_token doesn't have a corresponding token.
+	parent_window_name = <containerWindowType>_instance
+	## cardinality = 0..1
+	### By default the scripted guis will update the gui with every gameplay change (every hourly tick. every time you click something that affects game etc). For large scripted guis this can become quite heavy. If you scripted gui is not updated regularly and you know when it will needs an update, you can use the dirty variable feature. dirty = var_name Once this is defined, the game will check if the value of variable named "var_name" is updated or not. It will only update the scripted gui if that value is changed. It will read the variable from the scope of the scripted gui (player scope or targeted scope etc). When you call an effect that will change the contents of a scripted gui, you can also call `add_to_variable = { var_name = 1 }` to change that dirty variable to retrigger and update on the interface
+	dirty = value_set[variable]
+
+	## cardinality = 0..1
+	properties = {
+		## cardinality = ~1..inf
+		scalar = {
+			## cardinality = 0..1
+			### Should return name of the texture in gfx file.
+			image = localisation_inline
+			## cardinality = 0..1
+			frame = variable_field
+			## cardinality = 0..1
+			x = variable_field
+			## cardinality = 0..1
+			y = variable_field
+		}
+	}
+
+	## cardinality = 0..1
+	dynamic_lists = {
+		## cardinality = ~1..inf
+		scalar = {
+			### The array that will be used for populating the grid.
+			array = variable_field
+			## cardinality = 0..1
+			### Since our array contains scope objects (countries) we can set change_scope to yes, which will chance current scope to array element while displaying the lists.
+			# This will mess up scopes, as CWTools cannot determine what sort of scope will be in an array.
+			change_scope = bool
+			### GUI container name of the entry.
+			entry_container = scalar
+			## cardinality = 0..1
+			### current index and value is also stored as temp variables and can be used in effects/triggers if wanted. You can rename them to another temp variables
+			index = scalar
+			## cardinality = 0..1
+			### current index and value is also stored as temp variables and can be used in effects/triggers if wanted. You can rename them to another temp variables
+			value = scalar
+
+			## cardinality = 0..1
+			### Ai_weights of lists are stored under its list entry.
+			ai_weights = {
+				## cardinality = ~1..inf
+				scalar = {
+					ai_will_do = {
+						## cardinality = 0..1
+						enum[base_factor] = variable_field
+						alias_name[modifier_rule] = alias_match_left[modifier_rule]
+					}
+				}
+			}
+		}
+	}
+
+	subtype[any_context] = {
+		## cardinality = 0..1
+		effects = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = any from = any }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[effect] = alias_match_left[effect]
+			}
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = any from = any }
+		visible = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		triggers = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = any from = any }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+		}
+
+		## cardinality = 0..inf
+		### Limits AI to selected scopes. When used multiple times, will use all matching scopes.
+		ai_test_scopes = enum[ai_test_scope_country]
+
+		## cardinality = 0..inf
+		### Limits AI to selected scopes. When used multiple times, will use all matching scopes.
+		ai_test_scopes = enum[ai_test_scope_state]
+
+		## cardinality = 0..1
+		### AI makes a final check on each target scope:ai_check_scope. If this trigger is false, AI will ignore that scope.
+		ai_check_scope = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	subtype[global_context] = {
+		## cardinality = 0..1
+		effects = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = no_scope }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[effect] = alias_match_left[effect]
+			}
+		}
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = no_scope }
+		visible = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		triggers = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = no_scope }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+		}
+
+		## cardinality = 0..inf
+		### Limits AI to selected scopes. When used multiple times, will use all matching scopes.
+		ai_test_scopes = enum[ai_test_scope_country]
+
+		## cardinality = 0..inf
+		### Limits AI to selected scopes. When used multiple times, will use all matching scopes.
+		ai_test_scopes = enum[ai_test_scope_state]
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = no_scope }
+		### AI makes a final check on each target scope:ai_check_scope. If this trigger is false, AI will ignore that scope.
+		ai_check_scope = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+
+	subtype[player_context] = {
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country }
+		visible = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		effects = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = country }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[effect] = alias_match_left[effect]
+			}
+		}
+
+		## cardinality = 0..1
+		triggers = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = country }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+		}
+	}
+
+	subtype[country_context] = {
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country }
+		visible = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		effects = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = country }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[effect] = alias_match_left[effect]
+			}
+		}
+
+		## cardinality = 0..1
+		triggers = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = country }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+		}
+
+		## cardinality = 0..inf
+		### Limits AI to selected scopes. When used multiple times, will use all matching scopes.
+		ai_test_scopes = enum[ai_test_scope_country]
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country }
+		### AI makes a final check on each target scope:ai_check_scope. If this trigger is false, AI will ignore that scope.
+		ai_check_scope = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	subtype[state_context] = {
+		## cardinality = 0..1
+		## replace_scope = { root = country this = state }
+		visible = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+
+		## cardinality = 0..1
+		effects = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = state }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[effect] = alias_match_left[effect]
+			}
+		}
+
+		## cardinality = 0..1
+		triggers = {
+			## cardinality = ~1..inf
+			## replace_scope = { root = country this = state }
+			scalar = {
+				## cardinality = ~1..inf
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+		}
+		## cardinality = 0..inf
+		### Limits AI to selected scopes. When used multiple times, will use all matching scopes.
+		ai_test_scopes = enum[ai_test_scope_state]
+
+		## cardinality = 0..1
+		## replace_scope = { root = country this = state }
+		### AI makes a final check on each target scope:ai_check_scope. If this trigger is false, AI will ignore that scope.
+		ai_check_scope = {
+			## cardinality = ~1..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	### Ai_enabled entry is the best optimization you can set. While initialization AI, it will check every scripted GUI for every country and will test ai_enabled with its country scope. If ai_enabled is false, AI will ignore that scripted GUI forever.
+	ai_enabled = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	### Called on every tick of the interval you specified and the scope is again country scope. If this is false, AI will ignore your GUI in that tick.
+	ai_check = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	### Number of hours between each AI check. Default: 24
+	ai_test_interval = int # not sure whether you can use variables here
+
+	## cardinality = 0..1
+	### Variance of number of hours between each AI check. Default: 0.2
+	ai_test_variance = float # not sure whether you can use variables here
+
+	## cardinality = 0..1
+	### By default, AI can click at most 1 button per instance of interval. On each check, it will create a list of things that it can click and it will click the one with highest score. If you want AI to be able to click multiple stuff on same tick you can use this.
+	ai_max_weight_taken_per_test = int
+
+	## cardinality = 0..1
+	### By default, every scripted GUI has its own AI. It will do prioritization process separately for each GUI. If you want AI to check different scripted GUIs at same interval and compare ai_will_do with each other as well, you can make on of them parent of each other. If you add this entry to a scripted GUI, this scripted GUI will be tested along with 'fuhrer_mana_powers' and it will share its effects with the other one while prioritizing stuff. For example both fuhrer_enemy_country_spells and fuhrer_self_state_spells defines fuhrer_spells as parent and AI evaluates them at the same time. This is done because AI for fuhrer_enemy_country_spells has an AI entry for meteor swarm that blocks everything else to save mana if there is a legit enemy. If you define a parent, you shouldn't define ai_test_interval, ai_test_variance and ai_max_weight_taken_per_test in child AIs since it will share parent's.
+	ai_test_parent = <scripted_gui>
+
+	## cardinality = 0..1
+	ai_weights = {
+		## cardinality = 0..1
+		weight = int
+		## cardinality = ~1..inf
+		scalar = {
+			subtype[player_context] = {
+				## replace_scope = { root = country this = country }
+				ai_will_do = {
+					## cardinality = 0..1
+					enum[base_factor] = variable_field
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				ignore_lower_weights = {
+					## cardinality = 0..1
+					enum[base_factor] = variable_field
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
+				}
+			}
+			subtype[country_context] = {
+				## replace_scope = { root = country this = country }
+				ai_will_do = {
+					## cardinality = 0..1
+					enum[base_factor] = variable_field
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				ignore_lower_weights = {
+					## cardinality = 0..1
+					enum[base_factor] = variable_field
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
+				}
+			}
+			subtype[state_context] = {
+				## replace_scope = { root = country this = state }
+				ai_will_do = {
+					## cardinality = 0..1
+					enum[base_factor] = variable_field
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = state }
+				ignore_lower_weights = {
+					## cardinality = 0..1
+					enum[base_factor] = variable_field
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
+				}
+			}
+		}
+	}
+}
+
+enums = {
+	enum[context_type] = {
+		global_context
+
+		player_context
+		decision_category
+
+		selected_state_context
+
+		selected_country_context
+	}
+
+	enum[parent_window_token] = {
+		top_bar #(attached to top bar that contains resources and stuff)
+
+		# 8 tabs that shows up when you click on buttons next to your country flag
+		decision_tab
+		technology_tab
+		trade_tab
+		construction_tab
+		production_tab
+		deployment_tab
+		logistics_tab
+		diplomacy_tab #(this one is a bit special, it only shows when no country is selected and country list is visible)
+
+		politics_tab #(window that pops up when you click on your flag)
+
+		# default research trees
+
+		tech_infantry_folder
+		tech_support_folder
+		tech_armor_folder
+		tech_artillery_folder
+		tech_land_doctrine_folder
+		tech_naval_folder
+		tech_naval_doctrine_folder
+		tech_air_techs_folder
+		tech_air_doctrine_folder
+		tech_electronics_folder
+		tech_industry_folder
+
+		# national focus tree
+		national_focus
+
+		selected_state_view #(window that shows up when you left click a state)
+		selected_country_view #(window that shows up when you right click a state (same as selecting a country in diplmacy tab) )
+		selected_country_view_info #(same as before but only visible if info tab is clicked)
+		selected_country_view_diplomacy #(same as before but only visible if info diplomacy is clicked)
+	}
+
+	enum[ai_test_scope_country] = {
+		test_self_country
+		test_enemy_countries
+		test_ally_countries
+		test_neighbouring_countries
+		test_neighbouring_ally_countries
+		test_neighbouring_enemy_countries
+		test_if_only_major
+	}
+
+	enum[ai_test_scope_state] = {
+		test_self_owned_states
+		test_enemy_owned_states
+		test_ally_owned_states
+		test_self_controlled_states
+		test_enemy_controlled_states
+		test_ally_controlled_states
+		test_neighbouring_states
+		test_neighbouring_enemy_states
+		test_neighbouring_ally_states
+		test_our_neighbouring_states #(AIs edge states)
+		test_our_neighbouring_states_against_allies #(AIs edge states to allies)
+		test_our_neighbouring_states_against_enemies #(AIs edge states to enemies)
+		test_contesded_states #(states that shares provinces between enemy countries)
+		test_if_only_coastal
+	}
+}

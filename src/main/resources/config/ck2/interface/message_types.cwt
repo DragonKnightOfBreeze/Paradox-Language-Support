@@ -1,0 +1,88 @@
+# I am not sure if that's settings or what actually
+
+types = {
+    ## type_key_filter = MESSAGE_INTEREST
+    type[message_interest] = {
+        path_strict = yes
+        path = "game/interface"
+        path_file = "messagetypes.txt"
+    }
+    ## type_key_filter <> MESSAGE_INTEREST
+    type[message_type] = {
+        path_strict = yes
+        path = "game/interface"
+        path_file = "messagetypes.txt"
+
+        subtype[show_in_settings] = {
+            ## cardinality = 0..1
+            show_in_settings = yes
+        }
+
+        localisation = {
+            ## optional
+            setup = "$_SETUP"
+            ## optional
+            log = "$_LOG"
+        }
+    }
+}
+
+message_interest = {
+    ### 0 = No interest, 1 = Player is the direct liege, 2 = Player is liege or above
+    vassals = int[0..2]
+
+    ### 0 = Only close family, 1 = Extended Family, 2 = Whole dynasty
+    dynasty = int[0..2]
+
+    ### 0 = No interest, 1 = Independent rulers of my religion, 2 = All independent rulers
+    independent_rulers = int[0..2]
+
+    ### 0 = No interest, 1 = The player's direct liege, 2 = All the player's lieges
+	liege = int[0..2]
+}
+
+message_type = {
+    ## cardinality = 0..1
+    ### The picture used for this message type.
+    picture = <sprite>
+
+    ## cardinality = 0..1
+    ### The sound used for this message type.
+    sound = <sound>
+
+    # TODO: Confirm
+    ## cardinality = 0..1
+    ### UNKNOWN. Defaults to "yes".
+    show_in_settings = bool
+
+    subtype[show_in_settings] = {
+        ### The priority this message has when it happens to the player.
+        priority = enum[message_type_priorities]
+
+        ## cardinality = 0..1
+        ### The priority this message has when it happens to members of the player's close family.
+        close_priority = enum[message_type_priorities]
+
+        ## cardinality = 0..1
+        ### The priority this message has when it happens to the characters marked as the player's special interests.
+        interest_priority = enum[message_type_priorities]
+
+        ### The message's category.
+        category = scalar
+    }
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### UNKNOWN. PROBABLY Defaults to "no".
+    message_log = yes
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### UNKNOWN. PROBABLY Defaults to "no".
+    letter_event = yes
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### UNKNOWN. PROBABLY Defaults to "no".
+    retain_priority = yes
+}

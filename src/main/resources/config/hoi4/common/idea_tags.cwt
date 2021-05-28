@@ -1,0 +1,40 @@
+types = {
+	type[idea_category] = {
+		path = "game/common/idea_tags"
+		skip_root_key = idea_categories
+		subtype[slot] = {
+			## cardinality = 1..inf
+			slot = scalar
+		}
+		## only_if_not = { slot }
+		subtype[no_slot] = {
+			
+		}
+	}
+}
+
+idea_category = {
+	### Whether the ideas are shown anywhere. Default: yes
+	## cardinality = 0..1
+	hidden = bool
+
+	subtype[no_slot] = {
+		## cardinality = 0..1
+		national_spirit = bool
+	}
+
+	## cardinality = 0..1
+	cost = int
+
+	## cardinality = 0..1
+	removal_cost = int
+
+	## cardinality = 0..1
+	# enum[ledgers] defined in ideas.cwt
+	ledger = enum[ledgers]
+
+	subtype[slot] = {
+		## cardinality = 1..inf
+		slot = value_set[idea_slot]
+	}
+}

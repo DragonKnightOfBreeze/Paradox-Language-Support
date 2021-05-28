@@ -1,0 +1,53 @@
+package icu.windea.pls.localisation.editor
+
+import com.intellij.lang.*
+import com.intellij.lang.cacheBuilder.*
+import com.intellij.lang.findUsages.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.localisation.psi.*
+
+class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
+	companion object{
+		private val _propertyName = message("paradox.localisation.name.property")
+		private val _localeName = message("paradox.localisation.name.locale")
+		private val _iconName = message("paradox.localisation.name.icon")
+		private val _sequentialNumberName = message("paradox.localisation.name.sequentialNumber")
+		private val _commandScopeName = message("paradox.localisation.name.commandScope")
+		private val _commandFieldName = message("paradox.localisation.name.commandField")
+		private val _colorfulTextName = message("paradox.localisation.name.colorfulText")
+	}
+	
+	override fun getDescriptiveName(element: PsiElement): String {
+		return if(element is PsiNamedElement) element.name.orEmpty() else ""
+	}
+
+	override fun getType(element: PsiElement): String {
+		return when(element) {
+			is ParadoxLocalisationProperty -> _propertyName
+			is ParadoxLocalisationLocale -> _localeName
+			is ParadoxLocalisationIcon ->_iconName
+			is ParadoxLocalisationSequentialNumber -> _colorfulTextName
+			is ParadoxLocalisationCommandScope -> _commandScopeName
+			is ParadoxLocalisationCommandField -> _commandFieldName
+			is ParadoxLocalisationColorfulText -> _sequentialNumberName
+			else -> ""
+		}
+	}
+
+	override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
+		return getDescriptiveName(element)
+	}
+
+	override fun getHelpId(psiElement: PsiElement): String {
+		return HelpID.FIND_OTHER_USAGES
+	}
+
+	override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
+		return psiElement is PsiNamedElement
+	}
+
+	override fun getWordsScanner(): WordsScanner {
+		return ParadoxLocalisationWordScanner()
+	}
+}

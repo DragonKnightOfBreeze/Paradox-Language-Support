@@ -1,0 +1,34 @@
+enums = {
+	complex_enum[graphical_cultures] = {
+		path = "game/common/graphicalculturetype.txt"
+		name = {
+			enum_name
+		}
+		start_from_root = yes
+	}
+
+	enum[leaders] = {
+		european
+		southamerican
+		russian
+		arab
+		asian
+		indian
+		nativeamerican
+		african
+		polar_bear
+	}
+
+	enum[building_type] = {
+		factory
+		fort
+		naval_base
+		infrastructure
+	}
+		
+	enum[strata] = {
+		poor
+		middle
+		rich
+	}
+}

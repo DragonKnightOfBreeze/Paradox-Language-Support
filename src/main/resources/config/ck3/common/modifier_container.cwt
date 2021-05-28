@@ -1,0 +1,12 @@
+types = {
+    type[modifier_container] = {
+        path = "game/common/modifiers"
+    }
+}
+
+modifier_container = {
+    alias_name[modifier] = alias_match_left[modifier]
+    #TODO icon
+    ## cardinality = 0..1
+    icon = scalar
+}

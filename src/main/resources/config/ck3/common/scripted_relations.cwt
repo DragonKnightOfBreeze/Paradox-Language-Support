@@ -1,0 +1,56 @@
+types = {
+    type[scripted_relation] = {
+        path = "game/common/scripted_relations"
+    }
+}
+
+scripted_relation = {
+    ## cardinality = 0..1
+    ### Opinion the owner of the relation has towards the target.
+    opinion = int
+    ## cardinality = 0..1
+    ### If the relation target is in the same court, this will be shown specially in the court list (e.g. "Harold's Ward"); default: no
+    special_guest = bool
+    ## cardinality = 0..1
+    ### They might get given titles if they're unlanded and their liege or above has this relation towards them.
+    title_grant_target = bool
+    ## cardinality = 0..1
+    ### If you for example use random_relation_friend other relations specifying friend as an alias will also be a valid relation.
+    relation_aliases = {
+        ## cardinality = 1..inf
+        <scripted_relation>
+    }
+    ## cardinality = 0..1
+    ### Relation which are impossible to have at the same time with this one, they will be removed automatically when this relation is applied.
+    opposites = {
+        ## cardinality = 1..inf
+        <scripted_relation>
+    }
+    ## cardinality = 0..1
+    ### Relation is not shown to the player.
+    hidden = bool
+    ## cardinality = 0..1
+    ### A multiplier against their fertility, used in place of the PRIMARY_SPOUSE_FERTILITY_MULTIPLIER etc defines.
+    fertility = float
+    ## cardinality = 0..1
+    ### The relation which the other character will get automatically when this relation is applied.
+    corresponding = <scripted_relation>
+    ## cardinality = 0..1
+    ### The secret type related to this relation.
+    secret = <secret_type>
+    ## cardinality = 0..1
+    ### A modifier applied to all characters with the relation. (This means that applying it two a two-sided relation will give both characters the modifier.)
+    modifier = single_alias_right[character_modifier]
+    ## cardinality = 0..16
+    ### Relations support up to 16 simple flags. They have to be defined as a numerical entry in the relation itself. Note that these are effectively simple bool checks, and cannot be timed.
+    int = value_set[relation_flag]
+    ## cardinality = 0..1
+    ### Will get a number of random skills when the relation is applied. "Random" based on owner id, target id and relation entry index so two people adding each other in the same relation will produce the same pattern of random skills.
+    random_skills = {
+        ### Number of random skill applied.
+        value = int
+        ## push_scope = character
+        ### Trigger to apply skills.
+        trigger = single_alias_right[trigger_clause]
+    }
+}

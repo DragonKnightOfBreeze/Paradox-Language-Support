@@ -1,17 +1,28 @@
 # Summary
 
-[中文文档](README.md) | [English Document](README_en.md)
+[中文文档](README.md) | [English Documentation](README_en.md)
+
+[中文参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) | [English Reference Documentation](https://windea.icu/Paradox-Language-Support/#/en/)
+
+[Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
 
 Support for Paradox Language.
 
-This plugin is under developing, so some complex functions may not be implemented yet.
-If you want more perfect language support, please consider using **VSCode** with **CWTools** plugin.
+This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
 
-Create the descriptor file **descriptor.mod** in the root directory of your Mod to provide language support.
+If you want more perfect language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
+
+Create the descriptor file `descriptor.mod` in the root directory of your Mod to provide language support.
+
+Create the mark file `.${gameType}` in the root directory of your Mod to specify game type. (e.g. `.stellaris`)  
+
+Supported game types: ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2.
+
+Supported paradox games: Crusader Kings II / Crusader Kings III / Europa Universalis IV / Hearts of Iron IV / Imperator: Rome / Stellaris / Victoria II.
+
 If you want to add game directory and third party mod as dependencies, just add them as libraries to the project module of your mod, like what Java and Kotlin does.
 
-Currently Only Support **Stellaris**.
-Currently the rule file to implement functions such as validate and provide code completion is not perfect yet.
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
 
 The [reference documents](https://dragonknightofbreeze.github.io/paradox-language-support) will be provided in the future.
 
@@ -21,5 +32,14 @@ Welcome to have a look at [this project](https://github.com/DragonKnightOfBreeze
 
 # Reference
 
-* More information: [plugin.xml](src/main/resources/META-INF/plugin.xml)
-* Change Log: [CHANGELOG.md](CHANGELOG.md) (Written in Simple Chinese)
+About this plugin
+
+* Plugin Information: [plugin.xml](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/src/main/resources/META-INF/plugin.xml)
+* Change Log: [CHANGELOG.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md) (Written in Simple Chinese)
+
+Related links
+
+* [cwtools](https://github.com/cwtools/cwtools)
+* [cwtools vscode](https://github.com/cwtools/cwtools-vscode)
+* [.cwt config file guidance](https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance)
+

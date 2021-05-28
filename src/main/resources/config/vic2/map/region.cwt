@@ -1,0 +1,14 @@
+types = {
+	type[state] = {
+		path = "game/map"
+		path_file = "region.txt"
+		localisation = {
+			type = "$"
+		}
+    }
+}
+
+state = {
+	## cardinality = 0..inf
+	<province_id>
+}

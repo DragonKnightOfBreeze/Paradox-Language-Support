@@ -1,0 +1,680 @@
+links = {
+    house_head = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = dynasty_house
+        output_scope = character
+    }
+    capital_vassal = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = landed_title
+    }
+    controlled_faith = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = faith
+    }
+    current_heir = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = character
+    }
+    de_facto_liege = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = landed_title
+    }
+    de_jure_liege = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = landed_title
+    }
+    holder = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = character
+    }
+    lessee = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = character
+    }
+    lessee_title = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = landed_title
+    }
+    previous_holder = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = character
+    }
+    title_capital_county = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = landed_title
+    }
+    title_province = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = landed_title
+        output_scope = province
+    }
+    culture_head = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = culture
+        output_scope = character
+    }
+    betrothed = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    capital_barony = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = landed_title
+    }
+    capital_county = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = landed_title
+    }
+    capital_province = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = province
+    }
+    commanding_army = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = army
+    }
+    concubinist = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    council_task = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = council_task
+    }
+    councillor = {
+        desc = " Scope to the councillor in a council task"
+        input_scopes = council_task
+        output_scope = character
+    }
+    councillor_task_target = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+    }
+    court_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    council_position = {
+        desc = " Unknown, add something in code registration"
+        from_data = yes
+        type = scope
+        prefix = cp:
+        data_source = <council_position>
+        input_scopes = character
+        output_scope = character
+    }
+    designated_heir = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    dynasty = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = dynasty
+    }
+    employer = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    father = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    ghw_beneficiary = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    host = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    house = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = dynasty_house
+    }
+    imprisoner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    joined_faction = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = faction
+    }
+    killer = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    knight_army = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = army
+    }
+    liege = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    liege_or_court_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    matchmaker = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    mother = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    player_heir = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    pregnancy_assumed_father = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    pregnancy_real_father = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    primary_heir = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    primary_partner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    primary_spouse = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    primary_title = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = landed_title
+    }
+    real_father = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    realm_priest = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    top_liege = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = character
+        output_scope = character
+    }
+    vassal_contract_obligation_level = {
+        desc = " The level of the provided contract type in the scoped objects current vassal contract"
+        input_scopes = character
+        output_scope = value
+    }
+    culture_group = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { character landed_title province culture }
+        output_scope = culture_group
+    }
+    great_holy_war = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faith
+        output_scope = great_holy_war
+    }
+    religious_head = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faith
+        output_scope = character
+    }
+    religious_head_title = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faith
+        output_scope = landed_title
+    }
+    secret_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = secret
+        output_scope = character
+    }
+    secret_target = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = secret
+        output_scope = character
+    }
+    province_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = province
+        output_scope = character
+    }
+    culture = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { character landed_title province }
+        output_scope = culture
+    }
+    holy_order_patron = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = holy_order
+        output_scope = character
+    }
+    leader = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = holy_order
+        output_scope = character
+    }
+    title = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = holy_order
+        output_scope = landed_title
+    }
+    army_commander = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = army
+        output_scope = character
+    }
+    army_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = army
+        output_scope = character
+    }
+    blue = {
+        desc = " The blue value of a color"
+        input_scopes = color
+        output_scope = value
+    }
+    brightness = {
+        desc = " The brightness value of a color"
+        input_scopes = color
+        output_scope = value
+    }
+    green = {
+        desc = " The green value of a color"
+        input_scopes = color
+        output_scope = value
+    }
+    hue = {
+        desc = " The hue value of a color"
+        input_scopes = color
+        output_scope = value
+    }
+    red = {
+        desc = " The red value of a color"
+        input_scopes = color
+        output_scope = value
+    }
+    saturation = {
+        desc = " The saturation value of a color"
+        input_scopes = color
+        output_scope = value
+    }
+    combat = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = combat_side
+        output_scope = combat
+    }
+    enemy_side = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = combat_side
+        output_scope = combat_side
+    }
+    side_commander = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = combat_side
+        output_scope = character
+    }
+    side_primary_participant = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = combat_side
+        output_scope = character
+    }
+    ghw_designated_winner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = great_holy_war
+        output_scope = character
+    }
+    ghw_target_character = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = great_holy_war
+        output_scope = character
+    }
+    ghw_target_title = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = great_holy_war
+        output_scope = landed_title
+    }
+    ghw_title_recipient = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = great_holy_war
+        output_scope = character
+    }
+    ghw_war = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = great_holy_war
+        output_scope = war
+    }
+    ghw_war_declarer = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = great_holy_war
+        output_scope = character
+    }
+    dynast = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = dynasty
+        output_scope = character
+    }
+    scheme_defender = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = scheme
+        output_scope = character
+    }
+    scheme_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = scheme
+        output_scope = character
+    }
+    scheme_target = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = scheme
+        output_scope = character
+    }
+    claimant = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { war casus_belli }
+        output_scope = character
+    }
+    primary_attacker = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { war casus_belli }
+        output_scope = character
+    }
+    primary_defender = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { war casus_belli }
+        output_scope = character
+    }
+    combat_attacker = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = combat
+        output_scope = combat_side
+    }
+    combat_defender = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = combat
+        output_scope = combat_side
+    }
+    combat_war = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = combat
+        output_scope = war
+    }
+    location = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { character combat army }
+        output_scope = province
+    }
+    faith = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { character landed_title province great_holy_war }
+        output_scope = faith
+    }
+    story_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = story_cycle
+        output_scope = character
+    }
+    faction_leader = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faction
+        output_scope = character
+    }
+    faction_target = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faction
+        output_scope = character
+    }
+    faction_war = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faction
+        output_scope = war
+    }
+    special_character = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faction
+        output_scope = character
+    }
+    special_title = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = faction
+        output_scope = landed_title
+    }
+    religion = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { character landed_title province faith great_holy_war }
+        output_scope = religion
+    }
+    casus_belli = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = war
+        output_scope = casus_belli
+    }
+    activity_owner = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = activity
+        output_scope = character
+    }
+    activity_province = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = activity
+        output_scope = province
+    }
+    war = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = casus_belli
+        output_scope = war
+    }
+    barony = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { landed_title province }
+        output_scope = landed_title
+    }
+    barony_controller = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { landed_title province }
+        output_scope = character
+    }
+    county = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { landed_title province }
+        output_scope = landed_title
+    }
+    county_controller = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { landed_title province }
+        output_scope = character
+    }
+    duchy = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { landed_title province }
+        output_scope = landed_title
+    }
+    empire = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { landed_title province }
+        output_scope = landed_title
+    }
+    kingdom = {
+        desc = " Unknown, add something in code registration"
+        input_scopes = { landed_title province }
+        output_scope = landed_title
+    }
+    array_define = {
+        desc = " Reference the value of a numeric value in an array define: array_define:Namespace|Name|Index. Index is 0-based."
+        from_data = yes
+        data_source = <array_define>
+        prefix = array_define:
+        output_scope = value
+    }
+    character = {
+        desc = " Unknown, add something in code registration"
+        from_data = yes
+        type = scope
+        data_source = <character>
+        prefix = character:
+        output_scope = character
+    }
+    compare_value = {
+        desc = " A comparison trigger that will return its value in the context it is used eg: root.gold"
+        output_scope = value
+    }
+    culture = {
+        desc = " Unknown, add something in code registration"
+        from_data = yes
+        type = scope
+        data_source = <culture>
+        prefix = culture:
+        output_scope = culture
+    }
+    culture_group = {
+        desc = " Unknown, add something in code registration"
+        from_data = yes
+        type = scope
+        data_source = <culture_group>
+        prefix = culture_group:
+        output_scope = culture_group
+    }
+    custom = {
+        desc = " Adds custom text between scope changes"
+    }
+    define = {
+        desc = " Reference the value of a numeric define: define:Namespace|Name"
+        from_data = yes
+        data_source = <define>
+        prefix = define:
+        output_scope = value
+    }
+    dummy_female = {
+        desc = " Unknown, add something in code registration"
+        output_scope = character
+    }
+    dummy_male = {
+        desc = " Unknown, add something in code registration"
+        output_scope = character
+    }
+    dynasty = {
+        desc = " Unknown, add something in code registration"
+        output_scope = dynasty
+    }
+    faith = {
+        desc = " Unknown, add something in code registration"
+        from_data = yes
+        type = scope
+        data_source = <faith>
+        prefix = faith:
+        output_scope = faith
+    }
+    flag = {
+        desc = " Flag literals eg: flag:the_boss"
+        from_data = yes
+        data_source = <flag>
+        prefix = flag:
+        output_scope = flag
+    }
+    global_var = {
+        desc = " Reference a previous set global variable via its name eg: global_var:important_thing"
+        from_data = yes
+        type = both
+        data_source = value[global_variable]
+        prefix = global_var:
+    }
+    house = {
+        desc = " Unknown, add something in code registration"
+        output_scope = dynasty_house
+    }
+    local_var = {
+        desc = " Reference a previous set local variable via its name eg: local_var:person_of_interest"
+        from_data = yes
+        type = both
+        data_source = value[local_variable]
+        prefix = local_var:
+    }
+    named_script_value = {
+        desc = " A script value that will calculate and returns its value in the context it is used"
+        output_scope = value
+    }
+    province = {
+        desc = " Directly scope to a specific province by its ID"
+        from_data = yes
+        data_source = <province>
+        prefix = province:
+        output_scope = province
+    }
+    religion = {
+        desc = " Unknown, add something in code registration"
+        from_data = yes
+        type = scope
+        data_source = <religion>
+        prefix = religion:
+        output_scope = religion
+    }
+    scope = {
+        desc = " Reference a previously saved scope via its name eg: scope:target"
+        from_data = yes
+        data_source = value[event_target]
+        prefix = scope:
+    }
+    title = {
+        desc = " Unknown, add something in code registration"
+        from_data = yes
+        type = scope
+        data_source = <landed_title>
+        prefix = title:
+        output_scope = landed_title
+    }
+    var = {
+        desc = " Reference a previous set variable via its name eg: var:mortal_enemy"
+        from_data = yes
+		type = both
+        prefix = var:
+        data_source = value[variable]
+    }
+}

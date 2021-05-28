@@ -1,0 +1,20 @@
+# Note that it is not guaranteed all of these work with clauses. Will need some TODO testing.
+# Also TODO: Elaborate on descriptions of some of those commands
+# Also also - these are some wonky specs (some give target to scope, some scope to target), so it will likely need splitting into two enums, but that's in the mopup phase. Weird, is what I'm sayin'.
+
+# TODO: Elaborate
+## scope = { character title }
+alias[effect:enum[receive_title_effects]] = scope[title]
+
+# TODO: Elaborate
+## scope = { character title }
+alias[effect:enum[receive_title_effects]] = scope[character]
+
+# TODO: Elaborate
+# TODO: check where usurp_types is from
+## scope = { character title }
+alias[effect:enum[receive_title_effects]] = {
+    target = scope[character]
+    target = scope[province]
+    type = enum[usurp_types] # Not sure what should be there; an enum?
+}

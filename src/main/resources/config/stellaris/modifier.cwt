@@ -1,0 +1,3 @@
+
+###Applies the value of the static modifier X float factor
+alias[modifier:<static_modifier>] = float

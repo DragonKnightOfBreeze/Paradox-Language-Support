@@ -1,0 +1,31 @@
+ship_size = {
+    ## cardinality = 0..1    
+    ### The base cost of this ship_size
+    cost = int
+
+    modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+
+    ## cardinality = 0..1    
+    acceleration = float
+
+    construction_type = scalar
+
+    ## cardinality = 0..1
+    default_behavior = <ship_behavior>
+
+    ## cardinality = 0..1
+    prerequisites = {
+        ## cardinality = 0..100
+        <technology>
+    }
+
+    ## cardinality = 0..1
+    upkeep_override = {
+        energy = int
+        minerals = int
+    }
+
+    class = enum[shipsize_class]    
+}

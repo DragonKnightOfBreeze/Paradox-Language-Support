@@ -1,0 +1,129 @@
+types = {
+    type[council_position] = {
+        path = "game/common/council_positions"
+    }
+}
+
+council_position = {
+    ## cardinality = 0..1
+    skill = enum[attributes]
+    
+    ## cardinality = 0..1
+    ### What name to use. Be aware that when a position is unfilled, name_of_the_position is used instead.
+    name = localisation
+    ## cardinality = 0..1
+    ## push_scope = character
+    ### What name to use. SCOPE is the character, event target 'councillor_liege' is the council owner. If no character is provided, we fall back to the key of the position rather than going through triggered loc.
+    name = single_alias_right[complex_desc]
+
+    ## cardinality = 0..1
+    ### What tooltip to display..
+    tooltip = localisation
+    ## cardinality = 0..1
+    ## push_scope = character
+    ### What tooltip to display. SCOPE is the character, event target 'councillor_liege' is the council owner.
+    tooltip = single_alias_right[complex_desc]
+
+    ## push_scope = character
+    ## cardinality = 0..1
+    ### Can be held in addition to regular council positions. E.G., the Spouse council position.
+    special_council_position = bool
+
+    ### Will automatically be filled, without the player being able to select who takes the position. Trigger scope: council owner character. Default: no. An empty trigger is treated as 'no'.
+    ## cardinality = 0..1
+    auto_fill = bool
+    ### Will automatically be filled, without the player being able to select who takes the position. Trigger scope: council owner character. Default: no. An empty trigger is treated as 'no'.
+    ## push_scope = character
+    ## cardinality = 0..1
+    auto_fill = single_alias_right[trigger_clause]
+
+    ### Position will be inherited by the primary heir if that character is valid to hold the position. Trigger scope: council owner character. Default: no. An empty trigger is treated as 'no'.
+    ## cardinality = 0..1
+    inherit = bool
+    ### Position will be inherited by the primary heir if that character is valid to hold the position. Trigger scope: council owner character. Default: no. An empty trigger is treated as 'no'.
+    ## push_scope = character
+    ## cardinality = 0..1
+    inherit = single_alias_right[trigger_clause]
+
+    ### The councillor can be fired. Trigger scope: council owner character. Default: yes. An empty trigger is treated as 'yes'.
+    ## cardinality = 0..1
+    can_fire = bool
+    ### The councillor can be fired. Trigger scope: council owner character. Default: yes. An empty trigger is treated as 'yes'.
+    ## push_scope = character
+    ## cardinality = 0..1
+    can_fire = single_alias_right[trigger_clause]
+
+    ### The councillor can be reassigned. Trigger scope: council owner character. Default: yes. An empty trigger is treated as 'yes'.
+    ## cardinality = 0..1
+    can_reassign = bool
+    ### The councillor can be reassigned. Trigger scope: council owner character. Default: yes. An empty trigger is treated as 'yes'.
+    ## push_scope = character
+    ## cardinality = 0..1
+    can_reassign = single_alias_right[trigger_clause]
+
+    ### The councillor can be assigned, but not reassigned/fired in their lifetime after the assignment. Trigger scope: council owner character. Default: no. An empty trigger is treated as 'no'.
+    ## cardinality = 0..1
+    can_change_once = bool
+    ### The councillor can be assigned, but not reassigned/fired in their lifetime after the assignment. Trigger scope: council owner character. Default: no. An empty trigger is treated as 'no'.
+    ## push_scope = character
+    ## cardinality = 0..1
+    can_change_once = single_alias_right[trigger_clause]
+
+    ## push_scope = character
+    ## cardinality = 0..1
+    ### Is this an available position for this council [SCOPE is the CHARACTER owner of the council]
+    valid_position = single_alias_right[trigger_clause]
+    ## push_scope = character
+    ## cardinality = 0..1
+    ### Is this a valid position for a character. [SCOPE is the character applying to the position]
+    valid_character = single_alias_right[trigger_clause]
+
+    ## push_scope = character
+    ## cardinality = 0..5
+    ### Modifier applied to the character in this position. Can take a "scale" parameter to scale by (a script value; see _script_values.info). Up to 5 of these can be defined if more than one scale is necessary.
+    modifier = single_alias_right[scaled_modifier]
+    ## push_scope = character
+    ## cardinality = 0..5
+    ### Modifier applied to the liege of the character in this position. Can take a "scale" parameter to scale by (a script value; see _script_values.info). Up to 5 of these can be defined if more than one scale is necessary.
+    council_owner_modifier = single_alias_right[scaled_modifier]
+
+    ## push_scope = character
+    ## cardinality = 0..1
+    ### Effect applied when a character gets this position. [SCOPE is the character applying to the position]
+    on_get_position = single_alias_right[effect_clause]
+    ## push_scope = character
+    ## cardinality = 0..1
+    ### Effect applied when a character lose the position. [SCOPE is the character in the position]
+    on_lose_position = single_alias_right[effect_clause]
+    ## push_scope = character
+    ## cardinality = 0..1
+    ### Effect applied when a character is fired from the position. [SCOPE is the character in the position]
+    on_fired_from_position = single_alias_right[effect_clause]
+
+    ## cardinality = 0..1
+    ### Whether the position should be filled by a character pool after the councillor dies. Defaults to no.
+    fill_from_pool = bool
+    ## cardinality = 0..1
+    ### The character pool which should be used to fill the position. Only used with fill_from_pool = yes.
+    pool_character_config = <pool_character_selector>
+
+    ## push_scope = character
+    ## cardinality = 0..1
+    ### The number of days after which the councillor can be changed. Defaults to 0.
+    councillor_cooldown_days = int_value_field
+    ## cardinality = 0..1
+    ### Max number of positions for this type. Default 1. Infinite 0 or negative.
+    max_amount = int
+    # That's a guess.
+    ## cardinality = 0..1
+    ### Whether the councillor's skill should effect the owner's scheme power. Defaults to no.
+    use_for_scheme_power = bool
+    # That's a guess.
+    ## cardinality = 0..1
+    ### Whether the councillor's skill should effect the owner's scheme resistance. Defaults to no.
+    use_for_scheme_resistance = bool
+
+    ## cardinality = 0..1
+    ### Which portrait animation should councillors of this type use in the council window
+	portrait_animation = <portrait_animation>
+}

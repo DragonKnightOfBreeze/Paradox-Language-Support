@@ -1,0 +1,46 @@
+
+# TODO: Docs, figure cardinality out
+## scope = title
+### Creates a dynamic title with specified parameters. Landless dynamic titles require a landed home province to both hold prisoners and to act as a fallback if the title gets destroyed. This command should be run from the home province scope, otherwise the whole court will end up stuck in province 0 when the holder dies.
+alias[effect:create_title] = {
+    tier = enum[title_tiers]
+    landless = bool
+    enum[create_title_effects_temporary_adventurer] = bool
+    rebel = bool
+    culture = <culture>
+    name = localisation
+    holder = scope[character]
+    base_title = scope[title]
+    custom_created = bool
+    copy_title_laws = bool
+    ruler = localisation
+    ruler_female = localisation
+    foa = localisation
+    nomad = bool
+    short_name = bool
+}
+
+## scope = title
+### Creates a dynamic mercenary title with specified parameters. Landless dynamic titles require a landed home province to both hold prisoners and to act as a fallback if the title gets destroyed. This command should be run from the home province scope, otherwise the whole court will end up stuck in province 0 when the holder dies.
+alias[effect:create_title] = {
+    tier = DUKE
+    mercenary = yes
+    landless = bool
+    enum[create_title_effects_temporary_adventurer] = bool
+    rebel = bool
+    culture = <culture>
+    name = localisation
+    holder = scope[character]
+    base_title = scope[title]
+    custom_created = bool
+    copy_title_laws = bool
+    ruler = localisation
+    ruler_female = localisation
+    foa = localisation
+    nomad = bool
+    short_name = bool
+    replace_captain_on_death = bool
+    ### Percentage of income given to creator for dynamic mercenary titles
+    siphons_income_to_creator = float
+    army_template = <mercenary_type>
+}

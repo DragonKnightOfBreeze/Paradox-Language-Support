@@ -1,0 +1,57 @@
+localisation_commands = {
+    GetName = any
+    GetNameDef = any
+    GetNameDefCap = any
+    GetAdjective = any
+    GetAdjectiveCap = any
+    GetLeader = any
+    GetRulingParty = any
+    GetRulingIdeology = any
+    GetRulingIdeologyNoun = any
+    GetPartySupport = any
+    GetLastElection = any
+    GetManpower = any
+    GetFactionName = any
+    GetFlag = any
+    GetNameWithFlag = any
+    GetCommunistParty = any
+    GetDemocraticParty = any
+    GetFascistParty = any
+    GetNeutralParty = any
+	GetDate = any
+    GetDateText = any
+    GetYear = any
+    GetHerselfHimself = any
+    GetHerHis = any
+    GetSheHe = any
+    GetSheHeCap = any
+    GetRank = any
+    GetManchuriaPuppet = any
+    GetID = any
+    GetTag = any
+    GetCapital = any
+
+    # TODO: Confirm
+    GetNameAdj = any
+    GetSurname = air
+    GetFullName = air
+    GetHerHim = air
+    GetSurname = air
+    GetAceType = air
+    GetWing = air
+    GetWingShort = air
+    GetCallsign = air
+    GetMissionRegion = air
+
+    GetOldAdjective = any
+    GetOldAdjectiveCap = any
+    GetOldNameDef = any
+    GetOldName = any
+    GetRulingPartyLong = any
+
+    GetMonth = any
+
+    # for tokens
+    GetTokenKey = any
+    GetTokenLocalizedKey = any
+}

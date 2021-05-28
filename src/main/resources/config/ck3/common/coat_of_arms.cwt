@@ -1,0 +1,33 @@
+# This file is very rough and not tested at all.
+# Created as a barebones implementation while working on religions.
+
+types = {
+    type[coat_of_arms] = {
+        # The double coat of arms is not a type
+        path = "game/common/coat_of_arms/coat_of_arms"
+    }
+}
+
+coat_of_arms = {
+    pattern = filepath
+    color1 = Color
+    ## cardinality = 0..1
+    color2 = Color
+    ## cardinality = 1..inf
+    colored_emblem = {
+        texture = filepath
+        color1 = Color
+        ## cardinality = 0..1
+        color2 = Color
+        instance = {
+            position = {
+                float
+                float
+            }
+            scale = {
+                float
+                float
+            }
+        }
+    }
+}

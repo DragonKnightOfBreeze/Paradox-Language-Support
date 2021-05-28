@@ -1,0 +1,46 @@
+types = {
+	type[dynasty] = {
+		path = "game/common/dynasties"
+        localisation = {
+            ## required
+            ## primary
+			Name = name
+		}
+	}
+	type[house] = {
+		path = "game/common/dynasty_houses"
+        localisation = {
+            ## required
+            ## primary
+			Name = name
+		}
+	}
+}
+
+dynasty = {
+    ## cardinality = 0..1
+    ### Prefix of the dynasty name.
+	prefix = localisation
+    ### Name of the dynasty.
+	name = localisation
+    ## cardinality = 0..1
+    ### Optional motto of the dynasty. Will get a random one if not set.
+	motto = localisation
+
+	# TODO: Are these actually useful?
+    ## cardinality = 0..1
+    ### Probably no longer used.
+	forced_coa_religiongroup = scalar
+    ### Which culture the dynasty belongs to. Might no longer used.
+	culture = <culture>
+}
+
+house = {
+    ## cardinality = 0..1
+    ### Prefix of the house name.
+	prefix = localisation
+    ### Name of the house.
+	name = localisation
+    ### Which dynasty the house belongs to.
+	dynasty = <dynasty>
+}

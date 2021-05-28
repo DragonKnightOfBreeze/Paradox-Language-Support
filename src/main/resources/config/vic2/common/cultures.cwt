@@ -1,0 +1,53 @@
+
+types = {
+	type[culture_group] = {
+		path = "game/common"
+		path_file = "cultures.txt"
+		localisation = {
+			name = "$"
+		}
+	}
+	## type_key_filter <> { male_names female_names dynasty_names }
+	type[culture] = {
+		path = "game/common"
+		path_file = "cultures.txt"
+		skip_root_key = any
+		localisation = {
+			name = "$"
+		}
+	}
+}
+
+
+culture_group = {
+	leader = enum[graphical_cultures]
+
+	## cardinality = 0..1
+	unit = enum[graphical_cultures]
+	
+    ## cardinality = 0..1
+    union = enum[country_tags]
+	
+	## cardinality = 1..inf
+	<culture> = {
+       color = {
+                ## cardinality = 3..3
+                int[0..255]
+        }
+        
+        ## cardinality = 0..1
+        first_names = {
+            ## cardinality = 1..inf
+            scalar
+        }
+        
+        ## cardinality = 0..1
+        last_names = {
+            ## cardinality = 1..inf
+            scalar
+        }
+
+        ## cardinality = 0..1
+        radicalism = float
+	}
+}

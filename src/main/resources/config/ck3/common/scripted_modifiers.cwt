@@ -1,0 +1,28 @@
+alias[weight:<scripted_modifier>] = yes
+
+types = {
+    type[scripted_modifier] = {
+        path = "game/common/scripted_modifiers"
+
+        subtype[ai_target_modifier] = {
+            ai_target_modifier = <scripted_modifier>
+        }
+    }
+}
+
+scripted_modifier = {
+    ## cardinality = 1..inf
+    alias_name[weight] = alias_match_left[weight]
+}
+
+alias[weight:<scripted_modifier>] = bool
+
+
+###The scripted trigger will draw the value of the right clause via $left_clause$.
+#Todo: Make sure this works
+alias[weight:<scripted_modifier>] = {
+	## cardinality = 1..inf
+	enum[scripted_effect_params] = scalar
+	## cardinality = 1..inf
+	enum[scripted_effect_params] = scope_field
+}

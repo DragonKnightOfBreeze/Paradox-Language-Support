@@ -1,0 +1,31 @@
+types = {
+    type[triggered_modifier] = {
+        path_strict = yes
+        path = "game/common/triggered_modifiers"
+
+        localisation = {
+            name = "$"
+            description = "desc_$"
+        }
+    }
+}
+
+# Info from, you guessed it, wiki
+## replace_scope = { this = character root = character }
+triggered_modifier = {
+    ### Same icons as event modifier icons. Frames of GFX_modifier_icons.
+    icon = enum[event_modifier_icons]
+
+    ### Conditions for the character to be eligible for checking the trigger.
+    potential = single_alias_right[trigger_clause]
+
+    ### Conditions for the character to receive the modifier.
+    trigger = single_alias_right[trigger_clause]
+
+    ## cardinality = 0..inf
+    alias_name[modifier] = alias_match_left[modifier]
+
+    ## cardinality = 0..1
+    ### If no, the modifier is completely inactive. What?
+    active = bool
+}

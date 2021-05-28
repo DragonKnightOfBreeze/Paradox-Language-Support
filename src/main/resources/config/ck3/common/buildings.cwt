@@ -1,0 +1,164 @@
+types = {
+    type[building] = {
+        path = "game/common/buildings"
+        subtype[duchy_capital] = {
+            type = duchy_capital
+        }
+        subtype[special] = {
+            type = special
+        }
+        subtype[regular] = {
+
+        }
+    }
+}
+
+# TODO add subtype for pdxmesh vs entity
+building = {
+    ## cardinality = 0..1
+    levy = int_value_field
+    ## cardinality = 0..1
+    garrison = int_value_field
+    ## cardinality = 0..1
+    construction_time = int_value_field
+
+    ## cardinality = 0..1
+    type = enum[building_type]
+
+    ## cardinality = 0..inf
+    asset = {
+        type = enum[asset_types]
+        ## cardinality = 0..1
+        name = <pdxmesh>
+        ## cardinality = 0..1
+        names = {
+            ## cardinality = 0..inf
+            <pdxmesh>
+        }
+        ## cardinality = 0..1
+        soundeffect = {
+            soundeffect = <soundeffect>
+            ## cardinality = 0..1
+            soundparameter = {
+                ## cardinality = 1..inf
+                scalar = int
+             }
+        }
+        ## cardinality = 0..1
+        graphical_cultures = {
+            ## cardinality = 1..inf
+            <graphical_culture>
+        }
+        ## cardinality = 0..1
+        religions = {
+            ## cardinality = 1..inf
+            <religion>
+        }
+        ## cardinality = 0..1
+        governments = {
+            ## cardinality = 1..inf
+            <government>
+        }
+        illustration = filepath
+        ## cardinality = 0..1
+        graphical_regions = {
+            ## cardinality = 1..inf
+            <geographical_region.graphical>
+        }
+    }
+
+    ## replace_scope = { ROOT = province THIS = province }
+    ## cardinality = 0..1
+    is_enabled = single_alias_right[trigger_clause]
+
+    ## replace_scope = { ROOT = province THIS = province }
+    ## cardinality = 0..1
+    can_construct_potential = single_alias_right[trigger_clause]
+    ## replace_scope = { ROOT = province THIS = province }
+    ## cardinality = 0..1
+	can_construct_showing_failures_only = single_alias_right[trigger_clause]
+    ## replace_scope = { ROOT = province THIS = province }
+    ## cardinality = 0..1
+	can_construct = single_alias_right[trigger_clause]
+
+    ### if set to yes, the building will show in the build menu even if disabled (will still use can_construct_potential). No by default
+    ## cardinality = 0..1
+    show_disabled = yes
+
+    ## cardinality = 0..1
+    cost_gold = int_value_field
+    ## cardinality = 0..1
+    cost_prestige = int_value_field
+
+    ## cardinality = 0..1
+    ### How much cost does the building cost
+    cost = {
+
+    }
+
+    ### The next building in chain unlocked by this building
+    ## cardinality = 0..1
+    next_building = <building>
+
+    ### A modifier applied to the owner of the holding
+    ## replace_scope = { ROOT = character THIS = character }
+    ## cardinality = 0..1
+	character_modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+	}
+
+    ### A modifier applied to the province
+    ## replace_scope = { ROOT = province THIS = province }
+    ## cardinality = 0..1
+	province_modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+	}
+
+    ### A modifier applied to the county
+    ## replace_scope = { ROOT = county THIS = county }
+    ## cardinality = 0..1
+	county_modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	### A modifier applied to every de jure county in the duchy (if the county has the same de facto liege as this building's county). Can only be used (and only works) for duchy capital buildings.
+    ## replace_scope = { ROOT = county THIS = county }
+    ## cardinality = 0..1
+    duchy_capital_county_modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+	}
+
+    ### A special modifier applied to every holding of specified type in the county
+    ## replace_scope = { ROOT = holding THIS = holding }
+    ## cardinality = 0..1
+	county_holding_modifier = {
+        holding = <holding>
+        alias_name[modifier] = alias_match_left[modifier]
+	}
+
+    ### Building flags
+    # TODO: more detailed flags
+    ## cardinality = 0..1
+	flag = value_set[flag]
+
+    ### How desirable is the building for the AI
+    ## cardinality = 0..1
+	ai_value = single_alias_right[chance_block]
+
+	### If this is set to yes, the building will be used for figuring out which background asset (walls/no walls etc) should be shown
+    ## cardinality = 0..1
+    is_graphical_background = no
+
+}
+
+enums = {
+    enum[asset_types] = {
+        pdxmesh
+        entity
+    }
+    enum[building_type] = {
+        regular
+        special
+        duchy_capital
+    }
+}

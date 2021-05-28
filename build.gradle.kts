@@ -5,8 +5,8 @@ plugins {
 	id("org.jetbrains.grammarkit") version "2021.1.2"
 }
 
-group = "com.windea"
-version = "0.2.1"
+group = "icu.windea"
+version = "0.3.0-preview-5"
 
 intellij {
 	version = "2021.1"
@@ -47,6 +47,6 @@ tasks {
 		kotlinOptions.jvmTarget = "1.8"
 	}
 	publishPlugin{
-		token("perm:ZHJhZ29ua25pZ2h0b2ZicmVlemU=.OTItMzc3MQ==.FWLHSOKRYti2oDwA7UfzQF3Iy1vaIM")
+		token(System.getenv("IDEA_TOKEN"))
 	}
 }

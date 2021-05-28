@@ -1,0 +1,42 @@
+types = {
+	type[incident] = {
+		path = "game/common/incidents"
+		localisation = {
+			## required
+			name = "$_title"
+			## required
+			desc = "$_desc"
+		}
+	}
+}
+
+
+
+incident = {
+	frame = int
+
+	variable_initial = int
+
+	## replace_scopes = { this = country root = country }
+	potential = {
+		###Fair use check
+		has_dlc = "Mandate of Heaven"
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## replace_scopes = { this = country root = country }
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## replace_scopes = { this = country root = country }
+	mean_time_to_happen = {
+		months = int
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	## replace_scopes = { this = country root = country }
+	immediate_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+}

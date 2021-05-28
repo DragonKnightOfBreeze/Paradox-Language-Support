@@ -1,0 +1,316 @@
+#Loc done
+
+types = {
+	type[trade_good] = {
+		path = "game/common/tradegoods"
+		
+		localisation = {
+			## required
+			name = "$"
+			## required
+			description = "$DESC"
+		}
+
+		subtype[latent] = {
+			is_latent = yes
+		}
+	}
+	type[trade_company] = {
+		path = "game/common/trade_companies"
+		
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[trade_company_investment] = {
+		path = "game/common/tradecompany_investments"
+		
+		localisation = {
+			## required
+			name = "$"
+			## required
+			description = "$_desc"
+		}
+	}
+	type[trade_node_name] = {
+		path = "game/common/tradenodes"
+		
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+	type[trade_node] = {
+		path = "game/common/tradenodes"
+		name_field = "location"
+	}
+	type[trading_policy] = {
+		path = "game/common/trading_policies"
+
+		localisation = {
+			## required
+			name = "$"
+			## required
+			description = "$_desc"
+		}
+	}
+	type[prices] = {
+		path = "game/common/prices"
+		name_from_file = yes
+		type_per_file = yes
+	}
+	type[trade_center] = {
+		path = "game/common/centers_of_trade"
+		
+		localisation = {
+			## required
+			name = "$"
+			## required
+			description = "$_desc"
+		}
+	}
+}
+
+
+trade_good = {
+	color = {
+		## cardinality = 3..3
+		float[0.0..1.0]
+	}
+	
+	## cardinality = 0..1
+	is_valuable = yes
+	
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## cardinality = 0..1
+	## replace_scope = { this = province root = province }
+	province = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## cardinality = 0..1
+	## replace_scope = { this = province root = province }
+	chance = {
+		factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+	
+	subtype[latent] = {
+		is_latent = yes
+		###"Kind of on average how many provinces we want to spawn with it."
+		rnw_latent_chance = int
+		
+		## replace_scope = { this = province root = province }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+}
+
+
+
+trade_company = {
+	color = {
+		## cardinality = 3..3
+		int[0..255
+	}
+	
+	provinces = {
+		## cardinality = 1..inf
+		<province_id>
+	}
+	
+	## cardinality = 1..inf
+	names = {
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		name = localisation
+	}
+}
+
+
+trade_company_investment = {
+
+	category = enum[trade_company_investment_types] #todo: verify how these are defined. Could conceivably be scalar
+
+	sprite = <sprite>
+	
+	## cardinality = 0..1
+	upgrades_to = <trade_company_investment>
+	
+	cost = float
+	
+	## cardinality = 0..1
+	## replace_scope = { this = province root = province }
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## cardinality = 0..1
+	owner_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	## cardinality = 0..1
+	company_province_area_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	## cardinality = 0..1
+	owner_company_region_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+	## cardinality = 0..1
+	company_region_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	## cardinality = 0..1
+	area_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+	ai_global_worth = { factor = float }
+	ai_area_worth = { factor = float }
+	ai_region_worth = { factor = float }
+}
+
+enums = {
+	enum[trade_company_investment_types] = {
+		company_garrison
+		harbor
+		local_venture
+		foreign_influence
+		governance
+	}
+}
+
+
+
+trade_node = {
+	location = <province_id>
+	## cardinality = 0..1
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+	## cardinality = 0..1
+	inland = yes
+	## cardinality = 0..inf
+	outgoing = {
+		name = <trade_node_name>
+		path = {
+			## cardinality = 1..inf
+			<province_id>
+		}
+		control = {
+			## cardinality = 1..inf
+			float
+		}
+	}
+	members = {
+		## cardinality = 1..inf
+		<province_id>
+	}
+
+	## cardinality = 0..1
+	ai_will_propagate_through_trade = yes
+	## cardinality = 0..1
+	end = yes
+}
+
+
+
+trading_policy = {
+	## cardinality = 0..1
+	###Only one country can select this in a certain node.
+	unique = yes
+
+	## replace_scope = { this = country root = country from = trade_node }
+	can_select = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country from = trade_node }
+	can_maintain = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## cardinality = 0..1
+	## replace_scope = { this = trade_node root = trade_node }
+	node_province_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	###Also applied versus countries with the node as their home node
+	countries_with_merchant_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+	## cardinality = 0..1
+	trade_power = {
+		###-1 = limitless
+		duration = int
+		power_modifier = float
+		key = localisation
+	}
+	
+	## cardinality = 0..1
+	center_of_reformation = bool
+
+	## cardinality = 0..1
+	show_alert = yes
+	
+	button_gfx = <sprite>
+}
+
+
+prices = {
+	## cardinality = 1..inf
+	<trade_good> = {
+		base_price = float
+		## cardinality = 0..1
+		goldtype = yes
+	}
+}
+
+
+trade_center = {
+	level = int
+	## cardinality = 0..1
+	cost = int
+	type = enum[trade_center_types]
+	## cardinality = 0..1
+	## replace_scope = { this = province root = province }
+    province_modifiers = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+	## cardinality = 0..1
+	## replace_scope = { this = province root = province }
+    state_modifiers = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+    global_modifiers = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+}
+
+enums = {
+	enum[trade_center_types] = {
+		coastal
+		inland
+	}
+}

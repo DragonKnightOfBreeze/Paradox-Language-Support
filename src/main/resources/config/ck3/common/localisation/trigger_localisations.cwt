@@ -1,0 +1,29 @@
+types = {
+    type[trigger_localisation] = {
+        path = "game/common/trigger_localization"
+    }
+}
+
+# TODO: If there are no <rule>_not version, then NOT_<localisation_key> is required too.
+trigger_localisation = {
+    ## cardinality = 0..1
+    ### Localisation without pronoun or with global pronoun. If global_not isn't defined, then NOT_<localisation_key> is required too.
+	global = localisation
+    ## cardinality = 0..1
+    ### Negative version of the localisation without pronoun or with global pronoun, used inside NOT statement.
+    global_not = localisation
+    
+    ## cardinality = 0..1
+    ### Localisation in first person. If first_not isn't defined, then NOT_<localisation_key> is required too.
+	first = localisation
+    ## cardinality = 0..1
+    ### Negative version of the localisation in first person, used inside NOT statement.
+    first_not = localisation
+    
+    ## cardinality = 0..1
+    ### Localisation in third person. If third_not isn't defined, then NOT_<localisation_key> is required too.
+	third = localisation
+    ## cardinality = 0..1
+    ### Negative version of the localisation in third person, used inside NOT statement.
+	third_not = localisation
+}

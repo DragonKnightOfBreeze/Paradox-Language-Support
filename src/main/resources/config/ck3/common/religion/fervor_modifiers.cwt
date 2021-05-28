@@ -1,0 +1,16 @@
+types = {
+    type[fervor_modifier] = {
+        path = "game/common/religion/fervor_modifiers"
+    }
+}
+
+# replace_scope goes here, but doesn't work yet
+## replace_scope = { this = faith }
+fervor_modifier = {
+    ###When this modifier should apply
+    alias_name[trigger] = alias_match_left[trigger]
+    ###script value # How much to change fervor by
+    value = int_value_field
+    ###Changes fervor by given amount
+    change_fervor = int_value_field # Script value. Is this correct?
+}

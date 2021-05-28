@@ -1,0 +1,205 @@
+### Conditional multiplicative modifier.
+alias[multiplicative_modifier:modifier] = {
+    ### The base weight/chance will be multiplied by this value if the conditions are met.
+    factor = float
+
+    ### Conditions for the multiplicative modifier to apply.
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Condiitonal additive modifier.
+alias[additive_modifier:additive_modifier] = {
+    ### This value will be added to the base weight/chance if the conditions are met.
+    value = int
+
+    ### Conditions for the additive modifier to apply.
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Condiitonal additive modifier with a localisation key.
+alias[additive_modifier_with_loc_key:additive_modifier] = {
+    ### This value will be added to the base weight/chance if the conditions are met.
+    value = int
+
+    ### This key will be shown in the tooltip when the modifier is applicable.
+    localisation_key = localisation
+
+    ### Conditions for the additive modifier to apply.
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Colour in RGB format, three 0.0-1.0 floats.
+alias[color:color] = {
+    ## cardinality = 3..3
+    float[0.0..1.0]
+}
+
+### Colour in RGB format, three 0-255 ints.
+alias[color:color] = {
+    ## cardinality = 3..3
+    int[0..255]
+}
+
+### Colour in RGB format, three 0.0-1.0 floats.
+alias[color2:color2] = {
+    ## cardinality = 3..3
+    float[0.0..1.0]
+}
+
+### Colour in RGB format, three 0-255 ints.
+alias[color2:color2] = {
+    ## cardinality = 3..3
+    int[0..255]
+}
+
+# TODO: possibly use a special system for that to ensure everything is in correct amounts?
+# Mostly taken from wiki.
+### Coat of arms explicit definition.
+alias[coa:coat_of_arms] = {
+    ### Which basic template to use. Use 0 for Plain (0), 1 for Per Fess, 2 for Per Pale, 3 for Per Cross, 4 for Triangle.
+    template = int
+
+    ## cardinality = 1..4
+    ### Definition of a layer. Make sure to use the right amount of layers. 1 for Plain, 2 for Per Fess or Per Pale, 4 for Per Cross, 3 for Triangle.
+    layer = {
+        ### The pattern texture file ID to use.
+        texture = int
+        ### The ID of the pattern tile in the file to use.
+        texture_internal = int
+        ## cardinality = 0..1
+        ### The emblem ID to draw on the layer.
+        emblem = int
+        ## cardinality = 1..inf
+        ### Determines which colours to use for drawing. Make sure to use the right amount for the texture.
+        color = int
+    }
+
+    ## cardinality = 0..1
+    ### Defines which kind of CoA is to be used.
+    religion = <religion>
+}
+
+### Coat of arms definition via a set of values.
+alias[coa:coat_of_arms] = {
+    ### Shorthand for: template [texture emblem texture_internal [colour](per colour)](per layer)
+    data = {
+        ## cardinality = 1..inf
+        int
+    }
+
+    ## cardinality = 0..1
+    ### Defines which kind of CoA is to be used.
+    religion = <religion>
+}
+
+### Coat of arms explicit definition.
+alias[pagan_coa:pagan_coa] = {
+    ### Which basic template to use. Use 0 for Plain (0), 1 for Per Fess, 2 for Per Pale, 3 for Per Cross, 4 for Triangle.
+    template = int
+
+    ## cardinality = 1..4
+    ### Definition of a layer. Make sure to use the right amount of layers. 1 for Plain, 2 for Per Fess or Per Pale, 4 for Per Cross, 3 for Triangle.
+    layer = {
+        ### The pattern texture file ID to use.
+        texture = int
+        ### The ID of the pattern tile in the file to use.
+        texture_internal = int
+        ## cardinality = 0..1
+        ### The emblem ID to draw on the layer.
+        emblem = int
+        ## cardinality = 1..inf
+        ### Determines which colours to use for drawing. Make sure to use the right amount for the texture.
+        color = int
+    }
+
+    ## cardinality = 0..1
+    ### Defines which kind of CoA is to be used.
+    religion = <religion>
+}
+
+### Coat of arms definition via a set of values.
+alias[pagan_coa:pagan_coa] = {
+    ### Shorthand for: template [texture emblem texture_internal [colour] - per colour] - per layer
+    data = {
+        ## cardinality = 1..inf
+        int
+    }
+
+    ## cardinality = 0..1
+    ### Defines which kind of CoA is to be used.
+    religion = <religion>
+}
+
+# Command modifiers
+
+alias[command_modifier:morale_offence] = float
+alias[command_modifier:morale_defence] = float
+alias[command_modifier:defence] = float
+alias[command_modifier:speed] = float
+alias[command_modifier:retreat] = float
+alias[command_modifier:damage] = float
+alias[command_modifier:siege] = float
+alias[command_modifier:random] = float
+alias[command_modifier:flank] = float
+alias[command_modifier:center] = float
+alias[command_modifier:cavalry] = float
+alias[command_modifier:religious_enemy] = float
+alias[command_modifier:enum[combat_phases]] = float
+alias[command_modifier:enum[troop_types_land_only]] = float
+alias[command_modifier:<special_troop_type>] = float
+alias[command_modifier:terrain] = float
+alias[command_modifier:narrow_flank] = float
+alias[command_modifier:winter_supply] = float
+alias[command_modifier:winter_combat] = float
+alias[command_modifier:actual_light_infantry] = float
+alias[command_modifier:actual_heavy_infantry] = float
+
+# Single aliases
+
+single_alias[trigger_clause] = {
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+single_alias[effect_clause] = {
+    alias_name[effect] = alias_match_left[effect]
+}
+
+# TODO: Check factors are multiplicative
+single_alias[decision_ai_will_do_clause] = {
+    factor = float
+
+    alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+}
+
+single_alias[any_trigger_clause] = {
+    ## cardinality = 0..1
+    count = int
+
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+single_alias[any_effect_clause] = {
+    ## cardinality = 0..1
+	limit = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    count = int
+
+    alias_name[effect] = alias_match_left[effect]
+}
+
+single_alias[any_plotter_trigger_clause] = {
+    ## cardinality = 0..1
+    target = scope[character]
+    ## cardinality = 0..1
+    count = int
+
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+single_alias[law_ai_chance] = {
+    ### Base chance. 1.0 is 100%.
+    factor = float
+
+    ## replace_scope = { this = title root = title }
+    alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+}

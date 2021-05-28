@@ -1,0 +1,24 @@
+types = {
+    type[religion_family] = {
+        path = "game/common/religion/religion_families"
+    }
+}
+
+religion_family = {
+    ## cardinality = 0..1
+    ### Localisation key of the religious family. If not set will use the object key as localization key
+    name = localisation
+
+    ## cardinality = 0..1
+    ### Specifies if the group is pagan or not (default value is yes)
+    is_pagan = bool
+
+    ### All religions in this family default to this 3D model (currently used for temple assets). Order of precedence is the lowest level scripted in: faith > religion > family.
+    graphical_faith = single_alias_right[complex_desc]
+    ### All religions in this family default to this set of piety icons. Order of precedence is the lowest level scripted in: faith > religion > family.
+    piety_icon_group = single_alias_right[complex_desc]
+    ### All religions in this family default to this doctrine background icon. Order of precedence is the lowest level scripted in: faith > religion > family.
+    doctrine_background_icon = single_alias_right[complex_desc]
+    ### INTERFACE ONLY: Use this doctrine when displaying hostility information for the whole religious family (if not scripted, then show no information)
+    hostility_doctrine = <doctrine>
+}

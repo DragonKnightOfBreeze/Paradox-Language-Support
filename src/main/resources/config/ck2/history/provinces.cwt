@@ -1,0 +1,55 @@
+# TODO: ensure "The files need to be named <ProvinceId> - <ProvinceName>.txt, where province name must be spelled identically to the name in definition.csv."
+types = {
+    type[province_history] = {
+        path_strict = yes
+        path = "game/history/provinces"
+        type_per_file = yes
+    }
+}
+
+province_history = {
+    ### The corresponding county title.
+    title = <title.county>
+
+    ### How many settlements max can ever be in the province.
+    max_settlements = int[1..7]
+
+    # TODO: Somehow ensure the baronies belong to the county? By now I'm starting to think the whole title thing might just need a specially coded tree structure to handle them
+    ## cardinality = 1..7
+    ### The barony will start with the given holding type.
+    <title.barony> = enum[holding_types_barony_only]
+
+    ### The province will start with the given culture.
+    culture = <culture>
+
+    ### The province will start with the given religion.
+    religion = <religion>
+
+    ## cardinality = 0..1
+    ### Sets the terrain type of the province. Default is probably plains.
+    terrain = enum[terrain]
+
+    ## cardinality = 0..inf
+    ### Makes changes in the province on given dates.
+    date_field = {
+        ## cardinality = 0..1
+        ### Changes the culture of the province.
+        culture = <culture>
+
+        ## cardinality = 0..1
+        ### Changes the religion of the province.
+        religion = <religion>
+
+        ## cardinality = 0..inf
+        ### Builds a holding of the given type in the province.
+        <title.barony> = enum[holding_types_barony_only]
+
+        ## cardinality = 0..inf
+        ### Adds the given building in the specified barony's holding.
+        <title.barony> = <building>
+
+        ## cardinality = 0..1
+        ### Adds a trade post belonging to the given title in the province.
+        trade_post = <title>
+    }
+}

@@ -1,0 +1,59 @@
+types = {
+	type[operation_phase] = {
+		path = "game/common/operation_phases"
+	}
+}
+
+# Every phase needs a <unique id>, which is phase_test in this case
+operation_phase = {
+	### Every phase needs a name to be displayed
+	name = localisation
+	
+	### Every phase needs a description to show what it is about
+	desc = localisation
+	
+	### Every phase needs an icon for display purposes
+	icon = <spriteType>
+	picture = <spriteType>
+
+	### Outcome text that is used to build the final outcome string
+	## cardinality = 0..1
+	outcome = localisation
+	
+	### map icon, will use regular icon if none specified
+	## cardinality = 0..1
+	map_icon = <spriteType>
+	
+	### Outcome text that is used to build the final outcome string - This happens if a risk_extra has happened ( something bad ) to at least one of the operatives. We usually only specify outcome_extra for exfiltration phases, technically all phases use outcome_extra, but if none is defined for it ( as in our use case it would not make sense ) then it will default fallback to outcome. Some modders might have a different use case for this, so support is there and it uses outocme_extra for all phases of an operation that had something risky happen. Can be used to build a different storyline from an operation where everthing went smooth.
+	## cardinality = 0..1
+	outcome_extra = localisation
+
+	## cardinality = 0..1
+	risk_extra = localisation
+
+	### requirements is a trigger that will be visible in the UI and determines the set of requirements necessary to start an operation. They are used for phase selection. If this trigger is not successful ( checked on a weekly basis ) then the phase is invalid. PreSeeded operations will be ReSeeded with new phases if one of theirs becomes invalid
+	## cardinality = 0..1
+	## replace_scope = { THIS = country ROOT = country FROM = country }
+	requirements = {
+		## cardinality = ~1..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	### Default: no - will refund all equipment cost for this operation phase at the end of the operation [ operation costs have their own specifier in the operation database ]
+	## cardinality = 0..1
+	return_on_complete = bool
+
+	### Equipment cost that is scalable by the multiplier defined in the operation. Note: Exceptionally supports `civilian_factories` as an equipment type. It works like the agency creation cost, where it allocates a number of factories over time
+	## cardinality = 0..1
+	equipment = {
+		## cardinality = 0..inf
+		<equipment> = int
+		## cardinality = 0..inf
+		civilian_factories = int
+		## cardinality = 0..inf
+		civilian_factories = {
+			amount = int
+			days = int
+		}
+	}
+}

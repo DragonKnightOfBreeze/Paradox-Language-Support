@@ -1,0 +1,166 @@
+
+types = {
+#	type[country_tag] = {
+#		path = "game/common/country_tags"
+#	}
+	#Note: I do name from file because so far as I know this is not referred to elsewhere and this lets me check whether you have used a valid country tag
+	type[country_color_file] = {
+		name_from_file = yes
+		type_per_file = yes
+		path = "game/common/country_colors"
+	}
+	type[country_file] = {
+		name_from_file = yes
+		type_per_file = yes
+		path = "game/common/countries"
+	}
+	type[custom_country_colors] = {
+		name_from_file = yes
+		type_per_file = yes
+		path = "game/common/countries"
+		path_file = "00_custom_country_colors.txt"
+	}
+}
+
+
+enums = {
+	complex_enum[country_tags] = {
+		path = "game/common/country_tags"
+		name = {
+			enum_name = scalar
+		}
+		start_from_root = yes
+	}
+}
+
+#country_tag = scalar #todo: filepath but "countries/Aachen.txt" (where "Aachen" is a <country_file>)
+
+
+country_color_file = {
+	## cardinality = 0..inf
+	enum[country_tags] = {
+	    color1 = {
+			## cardinality = 3..3
+			int[0..255]
+		}
+	    color2 = {
+			## cardinality = 3..3
+			int[0..255]
+		}
+	    color3 = {
+			## cardinality = 3..3
+			int[0..255]
+		}
+	}
+}
+
+
+country_file = {
+	graphical_culture = enum[graphical_cultures]
+	
+	## cardinality = 0..1
+	preferred_religion = <religion>
+
+	## cardinality = 0..1
+	historical_score = int
+	
+	## cardinality = 0..1
+	random_nation_chance = int[0..100]
+	
+	## cardinality = 0..1
+	colonial_parent = enum[country_tags]
+	
+	## cardinality = 0..1
+	###Jan Mayen tag: Excludes them from random countries, makes sure they only can be spawned once
+	right_to_bear_arms = yes
+	
+	## cardinality = 0..1
+	historical_council = enum[council_positions]
+
+	## cardinality = 0..1
+	special_unit_culture = south_east_asian_special
+
+	## cardinality = 0..1
+	###Synthetics tag: Excludes them from random countries, makes sure they only can be spawned once
+	all_your_core_are_belong_to_us = yes
+
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+	
+	## cardinality = 0..1
+	revolutionary_colors = {
+		## cardinality = 3..3
+		int[0..16]
+	}
+
+	#usually needed but the "specials" survive without
+	## severity = warning
+	historical_idea_groups = {
+		## cardinality = 8..8
+		<idea_group.selectable>
+	}
+	#usually needed but the "specials" survive without
+	## severity = warning
+	historical_units = {
+		## cardinality = 1..inf
+		<unit_type>
+	}
+	monarch_names = {
+		#todo: names (with "#7" for VII)
+		## cardinality = 1..inf
+		scalar = int
+	}
+	leader_names = {
+		## cardinality = 1..inf
+		localisation_synced #value_set[leader_name]
+	}
+	#Only "rebels" lack this
+	## severity = warning
+	ship_names = {
+		#todo: names
+		## cardinality = 1..inf
+		scalar
+	}
+	## cardinality = 0..1
+	army_names = {
+		#todo: names
+		## cardinality = 1..inf
+		scalar
+	}
+	## cardinality = 0..1
+	fleet_names = {
+		#todo: names
+		## cardinality = 1..inf
+		scalar
+	}
+
+}
+
+
+custom_country_colors = {
+	num_symbols = int
+	## cardinality = 1..inf
+	color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+	## cardinality = 1..inf
+	flag_color = {
+		## cardinality = 3..3
+		int[0..255]
+	}
+	## cardinality = 1..inf
+	textures = {
+		texture = {
+			file = scalar #todo: sortof filepath - "gfx\\custom_flags\\pattern.tga"
+			size = {
+				x = int
+				y = int
+			}
+			noOfFrames = int
+			color = int
+		}
+	}
+}

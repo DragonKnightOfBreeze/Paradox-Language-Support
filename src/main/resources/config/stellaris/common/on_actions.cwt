@@ -1,0 +1,23 @@
+
+#Stripped-down version, as scripted on_actions are now a thing.
+
+types = {
+    type[on_action] = {
+        path = "game/common/on_actions"
+	}
+}
+
+on_action = {
+	## cardinality = 0..1
+	events = {
+		## cardinality = 0..inf
+		<event>
+	}
+	## cardinality = 0..1
+	random_events = {
+		## cardinality = 0..inf
+		int = 0
+		## cardinality = 0..inf
+		int = <event>
+	}
+}

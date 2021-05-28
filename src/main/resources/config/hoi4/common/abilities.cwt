@@ -1,0 +1,55 @@
+types = {
+	type[ability] = {
+		path = "game/common/abilities"
+		skip_root_key = ability
+	}
+}
+
+## replace_scope = { this = unit_leader root = unit_leader from = country }
+ability = {
+	name = localisation
+	desc = localisation
+	## cardinality = 0..1
+	## severity = warning
+	icon = <spriteType>
+
+	## cardinality = 0..1
+	sound_effect = scalar
+
+	type = enum[ability_unit_leader_types]
+
+	allowed = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	cost = float
+	duration = int
+	## cardinality = 0..1
+	cooldown = int
+
+	## cardinality = 0..1
+	unit_modifiers = {
+		alias_name[modifier] = alias_match_left[modifier]
+		alias_name[unit_stat] = alias_match_left[unit_stat]
+	}
+	## cardinality = 0..1
+	one_time_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	cancelable = bool
+
+	## cardinality = 0..1
+	ai_will_do = {
+		## cardinality = 0..1
+		enum[base_factor] = float
+		## cardinality = ~1..inf
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+enums = {
+	enum[ability_unit_leader_types] = {
+		army_leader
+	}
+}

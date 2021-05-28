@@ -1,0 +1,53 @@
+#Loc done
+
+types = {
+	type[unit_type] = {
+		path = "game/common/units"
+		name_from_file = yes
+		type_per_file = yes
+		path_strict = yes
+
+		localisation = {
+			## required
+			name = "$"
+			## required
+			description = "$DESCR"
+		}
+
+		subtype[land] = {
+			type = enum[land_unit_types]
+		}
+		subtype[naval] = {
+			type = enum[naval_unit_types]
+		}
+	}
+}
+
+unit_type = {
+	type = enum[unit_types]
+
+	subtype[land] = {
+		unit_type = <technology_group>
+		maneuver = int
+		offensive_morale = int
+		defensive_morale = int
+		offensive_fire = int
+		defensive_fire = int
+		offensive_shock = int
+		defensive_shock = int
+	}
+	subtype[naval] = {
+		hull_size = int
+		base_cannons = int
+		sail_speed = int
+		sprite_level = int
+		## cardinality = 0..1
+		trade_power = float
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+}

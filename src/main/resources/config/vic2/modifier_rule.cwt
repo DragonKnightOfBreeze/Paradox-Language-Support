@@ -1,0 +1,4 @@
+alias[modifier_rule:modifier] = {
+	factor = float
+	alias_name[trigger] = alias_match_left[trigger]
+}

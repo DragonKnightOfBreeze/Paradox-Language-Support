@@ -1,0 +1,40 @@
+
+types = {
+	type[scripted_trigger] = {
+		path = "game/common/scripted_triggers"
+	}
+	type[scripted_effect] = {
+		path = "game/common/scripted_effects"
+	}
+	type[scripted_loc] = {
+		name_field = "name"
+		path = "game/common/scripted_loc"
+	}
+}
+
+scripted_trigger = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+scripted_effect = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+scripted_loc = {
+	name = scalar
+	## cardinality = 0..inf
+	text = {
+		## cardinality = 0..1
+		trigger = { alias_name[trigger] = alias_match_left[trigger] }
+		## cardinality = 0..1
+		localization_key = localisation_inline
+		## cardinality = 0..1
+		random_list = {
+			## cardinality = 1..inf
+			int = {
+				alias_name[modifier_rule] = alias_match_left[modifier_rule]
+				localization_key = localisation_inline
+			}
+		}
+	}
+}

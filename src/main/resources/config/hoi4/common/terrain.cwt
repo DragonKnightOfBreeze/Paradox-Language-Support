@@ -1,0 +1,102 @@
+types = {
+	type[terrain] = {
+		path = "game/common/terrain"
+		skip_root_key = categories
+		subtype[unknown] = {
+			## cardinality = 0..0
+			movement_cost = float
+		}
+		subtype[water] = {
+			is_water = yes
+		}
+		subtype[naval_terrain] = {
+			naval_terrain = yes
+		}
+		subtype[land] = {
+			## cardinality = 0..1
+			is_water = no
+		}
+	}
+	type[graphical_terrain] = {
+		path = "game/common/terrain"
+		skip_root_key = terrain
+	}
+	type[acclimatization] = {
+		path = "game/common"
+		path_file = "acclimatation.txt"
+	}
+}
+
+terrain = {
+	color = {
+		## cardinality = 3..3
+		int
+
+	}
+
+	subtype[!unknown] = {
+		movement_cost = float
+		sound_type = scalar
+	}
+
+	subtype[water] = {
+		## cardinality = 0..1
+		naval_terrain = yes
+		is_water = yes
+
+		## cardinality = 0..inf
+		<unit.ship_unit> = {
+			## cardinality = 0..1
+			units = {
+				alias_name[unit_stat] = alias_match_left[unit_stat]
+			}
+			alias_name[naval_stat] = alias_match_left[naval_stat]
+		}
+		alias_name[naval_stat] = alias_match_left[unit_stat]
+	}
+
+	subtype[naval_terrain] = {
+		naval_terrain = yes
+		is_water = yes
+
+		## cardinality = 0..inf
+		<unit.ship_unit> = {
+			## cardinality = 0..1
+			units = {
+				alias_name[unit_stat] = alias_match_left[unit_stat]
+			}
+			alias_name[naval_stat] = alias_match_left[naval_stat]
+		}
+		alias_name[naval_stat] = alias_match_left[unit_stat]
+	}
+
+	subtype[land] = {
+		## cardinality = 0..inf
+		enum[terrain_modifiers] = float
+		ai_terrain_importance_factor = float
+		match_value = float
+		## cardinality = 0..1
+		units = {
+			alias_name[unit_stat] = alias_match_left[unit_stat]
+		}
+	}
+}
+
+graphical_terrain = {
+	type = <terrain>
+	color = { int }
+	texture = int
+	## cardinality = 0..1
+	spawn_city = yes
+	## cardinality = 0..1
+	perm_snow = yes
+}
+
+enums = {
+	enum[terrain_modifiers] = {
+		combat_width
+		attrition
+		enemy_army_bonus_air_superiority_factor
+		sickness_chance
+	}
+}
