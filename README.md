@@ -24,8 +24,6 @@ Paradox语言支持。
 
 这个插件与[CWTools](https://github.com/cwtools/cwtools-vscode)共享规则文件（`*.cwt`），但是相关功能尚未完全实现。
 
-[参考文档](https://dragonknightofbreeze.github.io/paradox-language-support)将会在未来提供。
-
 如果遇到BUG或问题，欢迎在项目的[Github Issue页面](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)提出。
 
 欢迎查看[本项目](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)和[我的其他项目](https://github.com/DragonKnightOfBreeze?tab=repositories)。

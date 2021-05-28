@@ -9,6 +9,18 @@
 
   <description><![CDATA[
     <p>
+      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README.md">中文文档</a> | <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README_en.md">English Documentation</a>
+    </p>
+    <p>
+      <a href="https://windea.icu/Paradox-Language-Support/#/zh/">中文参考文档</a> | <a href="https://windea.icu/Paradox-Language-Support/#/en/">English Reference Documentation</a>
+    </p>
+    <p>
+      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">Github</a>
+    </p>
+    
+    <hr/>
+    
+    <p>
       Support for Paradox Language.
     </p>
     <p>
@@ -36,16 +48,13 @@
       This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
     </p>
     <p>
-      The <a href="https://dragonknightofbreeze.github.io/paradox-language-support">reference documents</a> will be provided in the future.  
-    </p>
-    <p>
       If you have found any bugs or problems, feel free to report them in project's <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue Page</a>.
     </p>
     <p>
       Welcome to have a look at <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">this project</a> and <a href="https://github.com/DragonKnightOfBreeze?tab=repositories">my other projects</a>.
     </p>
 
-    <br>
+    <hr/>
 
     <p>
       Paradox语言支持。
@@ -71,9 +80,6 @@
     </p>
     <p>
       这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
-    </p>
-    <p>
-      <a href="https://dragonknightofbreeze.github.io/paradox-language-support">参考文档</a>将会在未来提供。
     </p>
     <p>
       如果遇到BUG或问题，欢迎在项目的<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue页面</a>提出。

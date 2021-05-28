@@ -24,8 +24,6 @@ If you want to add game directory and third party mod as dependencies, just add 
 
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
 
-The [reference documents](https://dragonknightofbreeze.github.io/paradox-language-support) will be provided in the future.
-
 If you have found any bugs or problems, feel free to report them in project's [Github Issue Page](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues).
 
 Welcome to have a look at [this project](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) and [my other projects](https://github.com/DragonKnightOfBreeze?tab=repositories).
