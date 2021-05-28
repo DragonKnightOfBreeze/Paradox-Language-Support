@@ -133,6 +133,7 @@
       <option name="HTML_ATTRIBUTE_WRAP" value="0" />
       <option name="HTML_TEXT_WRAP" value="0" />
       <option name="HTML_ELEMENTS_TO_INSERT_NEW_LINE_BEFORE" value="p,form,h1,h2,h3,body" />
+      <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="html,thead,tbody,tfoot" />
       <option name="HTML_INLINE_ELEMENTS" value="a,abbr,acronym,b,basefont,bdo,big,br,cite,cite,code,dfn,em,font,i,img,input,kbd,label,q,s,samp,select,small,span,strike,strong,sub,sup,textarea,tt,u,var,ElText,ElButton,ElIcon,ElBadge,el-text,el-button,el-icon,el-link,el-badge,ElLink" />
       <option name="HTML_DONT_ADD_BREAKS_IF_INLINE_CONTENT" value="title,h1,h2,h3,h4,h5,h6,p,el-button,el-icon,el-link,ElButton,ElIcon,ElLink" />
       <option name="HTML_ENFORCE_QUOTES" value="true" />

@@ -51,15 +51,14 @@ div#app:empty::before {
   font-style: normal;
   font-weight: bold;
 }
-html,
-body {
+html, body {
   height: 100%;
 }
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   color: #34495e;
-  font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Source Sans Pro', Arial, sans-serif;
   font-size: 15px;
   letter-spacing: 0;
   margin: 0;
@@ -104,8 +103,7 @@ li input[type='checkbox'] {
   margin: 0 1rem;
   padding: 5px 0;
 }
-.app-nav ul,
-.app-nav li {
+.app-nav ul, .app-nav li {
   display: inline-block;
   list-style: none;
   margin: 0;
@@ -293,8 +291,7 @@ main.hidden {
   width: 16px;
   height: 2px;
 }
-body.sticky .sidebar,
-body.sticky .sidebar-toggle {
+body.sticky .sidebar, body.sticky .sidebar-toggle {
   position: fixed;
 }
 .content {
@@ -370,7 +367,7 @@ body.sticky .sidebar-toggle {
   border-radius: 100%;
   color: #fff;
   content: '!';
-  font-family: 'Dosis', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Source Sans Pro', Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
   left: -12px;
@@ -405,17 +402,12 @@ body.close .content {
   left: 0;
 }
 @media print {
-  .github-corner,
-  .sidebar-toggle,
-  .sidebar,
-  .app-nav {
+  .github-corner, .sidebar-toggle, .sidebar, .app-nav {
     display: none;
   }
 }
 @media screen and (max-width: 768px) {
-  .github-corner,
-  .sidebar-toggle,
-  .sidebar {
+  .github-corner, .sidebar-toggle, .sidebar {
     position: fixed;
   }
 
@@ -471,8 +463,7 @@ body.close .content {
     transform: translateX(300px);
   }
 
-  body.close .app-nav,
-  body.close .github-corner {
+  body.close .app-nav, body.close .github-corner {
     display: none;
   }
 
@@ -630,24 +621,14 @@ section.cover blockquote > p > a:hover {
 .sidebar li.active a {
   color: #333;
 }
-.markdown-section h1,
-.markdown-section h2,
-.markdown-section h3,
-.markdown-section h4,
-.markdown-section strong {
-  color: #333;
-  font-weight: 400;
-}
-.markdown-section strong {
+.markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4, .markdown-section strong {
   color: #333;
   font-weight: 600;
 }
 .markdown-section a {
   color: var(--theme-color);
 }
-.markdown-section p,
-.markdown-section ul,
-.markdown-section ol {
+.markdown-section p, .markdown-section ul, .markdown-section ol {
   line-height: 1.6rem;
   margin: 0 0 1em 0;
   word-spacing: 0.05rem;
@@ -695,14 +676,10 @@ section.cover blockquote > p > a:hover {
 .markdown-section h6 * {
   font-size: 1.1rem !important;
 }
-.markdown-section figure,
-.markdown-section p,
-.markdown-section ul,
-.markdown-section ol {
+.markdown-section figure, .markdown-section p, .markdown-section ul, .markdown-section ol {
   margin: 1.2em 0;
 }
-.markdown-section ul,
-.markdown-section ol {
+.markdown-section ul, .markdown-section ol {
   padding-left: 1.5rem;
 }
 .markdown-section li {
@@ -744,10 +721,7 @@ section.cover blockquote > p > a:hover {
   position: relative;
 }
 /* code highlight */
-.token.cdata,
-.token.comment,
-.token.doctype,
-.token.prolog {
+.token.cdata, .token.comment, .token.doctype, .token.prolog {
   color: #93a1a1 /* base1 */;
 }
 .token.punctuation {
@@ -756,43 +730,26 @@ section.cover blockquote > p > a:hover {
 .namespace {
   opacity: 0.7;
 }
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
-.token.deleted {
+.token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol, .token.deleted {
   color: #268bd2 /* blue */;
 }
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.url,
-.token.inserted {
+.token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.url, .token.inserted {
   color: #2aa198 /* cyan */;
 }
 .token.entity {
   color: #657b83 /* base00 */;
   background: #eee8d5 /* base2 */;
 }
-.token.atrule,
-.token.attr-value,
-.token.keyword {
+.token.atrule, .token.attr-value, .token.keyword {
   color: #a11 /* green */;
 }
 .token.function {
   color: #b58900 /* yellow */;
 }
-.token.regex,
-.token.important,
-.token.variable {
+.token.regex, .token.important, .token.variable {
   color: #cb4b16 /* orange */;
 }
-.token.important,
-.token.bold {
+.token.important, .token.bold {
   font-weight: bold;
 }
 .token.italic {
@@ -805,7 +762,7 @@ section.cover blockquote > p > a:hover {
   background-color: #f8f8f8;
   border-radius: 2px;
   display: block;
-  font-family: Consolas sans-serif;
+  font-family: Consolas monospace;
   line-height: 1.25rem;
   max-width: inherit;
   overflow: inherit;
@@ -813,8 +770,7 @@ section.cover blockquote > p > a:hover {
   position: relative;
   white-space: inherit;
 }
-.markdown-section code::after,
-.markdown-section code::before {
+.markdown-section code::after, .markdown-section code::before {
   letter-spacing: 0.05rem;
 }
 code .token {
@@ -825,15 +781,114 @@ code .token {
   left: auto;
 }
 
+/*表格标题居中显示且强制不换行*/
 thead tr td {
-  /*表格标题居中显示*/
   text-align: center;
-  /*表格标题强制不换行*/
   word-break: keep-all;
   white-space: nowrap;
 }
-.markdown-section img {
-  /*markdown图片居中对齐*/
-  text-align: center;
-  margin: 0 auto;
+pre > code {
+  padding: 1em 0 1em 0 !important;
+  margin: 0 0 !important;
+}
+.app-name {
+  font-weight: bold !important;
+}
+.app-nav {
+  position: fixed !important;
+  width: 100% !important;
+  height: 80px !important;
+  margin: 0 0 0 0 !important;
+  top: 0;
+  z-index: 100 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, .07) !important;
+  transition: transform .25s ease-out !important;
+  background-color: #fff !important;
+  display: block !important;
+}
+.web .app-nav {
+  padding: 10px 80px 10px 30px !important;
+}
+.mobile .app-nav {
+  padding: 10px 80px 10px 30px !important;
+}
+.navicon {
+  height: 60px !important;
+  padding: 5px 0 !important;
+  margin: 0 0 !important;
+  float: left;
+}
+.navicon > img {
+  height: 50px !important;
+}
+.app-nav > ul {
+  height: 60px !important;
+}
+.app-nav > ul > li {
+  padding-top: 20px !important;
+}
+.github-corner {
+  z-index: 200 !important;
+}
+.content {
+  margin-top: 80px !important;
+  padding-top: 0 !important;
+}
+.sidebar {
+  margin-top: 80px !important;
+  padding-top: 0 !important;
+}
+.search input {
+  border-radius: 5px;
+}
+
+/*减小侧边栏目录的高度*/
+.app-sub-sidebar > li {
+  /*font-size: 12px !important;*/
+  line-height: 24px !important;
+  margin: 2px 0 !important;
+}
+.app-sub-sidebar > li > a {
+  /*font-size: 12px !important;*/
+  line-height: 24px !important;
+}
+
+/*复制代码按钮调小*/
+.docsify-copy-code-button {
+  padding: 0.4em 0.6em !important;
+}
+
+/*调整alert格式*/
+.alert.callout.info {
+  border-left-color: #17a2b8 !important
+}
+.alert.callout.info .title {
+  color: #17a2b8
+}
+.alert.flat.info {
+  color: #02587f;
+  background-color: #cdeefd;
+  border-color: #b4e6fc
+}
+.alert.flat.info .title {
+  color: #01354d
+}
+.alert.callout.important {
+  border-left-color: #17a2b8 !important
+}
+.alert.callout.important .title {
+  color: #17a2b8
+}
+.alert.flat.important {
+  color: #02587f;
+  background-color: #cdeefd;
+  border-color: #b4e6fc
+}
+.alert.flat.important .title {
+  color: #01354d
+}
+
+/*增大tooltip的宽度*/
+.tooltip {
+  width: 40em;
 }
