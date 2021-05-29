@@ -2,6 +2,7 @@ common/advisortypes
 common/ages
 common/ai_attitudes
 common/ai_personalities
+common/ancestor_personalities
 common/bookmarks
 common/buildings
 common/cb_types
@@ -23,6 +24,7 @@ common/dynasty_colors
 common/estates
 common/event_modifiers
 common/factions
+common/federation_advancements
 common/fervor
 common/fetishist_cults
 common/governments
@@ -65,6 +67,7 @@ common/scripted_functions
 common/scripted_triggers
 common/state_edicts
 common/static_modifiers
+common/subject_type_upgrades
 common/subject_types
 common/technologies
 common/timed_modifiers

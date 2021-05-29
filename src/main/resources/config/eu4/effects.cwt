@@ -327,7 +327,7 @@ alias[effect:change_government] = <government.normal>
 
 ## scope = country
 ###Changes the government of the current scope. Governments are found in /Europa Universalis IV/common/governments/*.txt. In rebel_types, REB will make it pick the preferred rebel government.
-alias[effect:change_government] = REB
+alias[effect:change_government] = enum[reb_nativesponsor]
 
 ## scope = country
 ###Changes the government rank of the current scope. Default range is 1 to 3.
@@ -1555,7 +1555,6 @@ alias[effect:add_estate_influence_modifier] = {
 	## cardinality = 0..1
 	short = yes
 }
-
 ## scope = country
 ###Adds loyalty for the defined estate used by the current scope. Estates are found in /Europa Universalis IV/common/estates/*.txt
 alias[effect:add_estate_loyalty] = {
@@ -1564,8 +1563,10 @@ alias[effect:add_estate_loyalty] = {
 	## cardinality = 0..1
 	short = yes
 }
+## scope = country
+###Adds loyalty for the defined estate used by the current scope. Estates are found in /Europa Universalis IV/common/estates/*.txt
 alias[effect:add_estate_loyalty] = {
-	estate = all
+	estate = enum[estate_all]
 	loyalty = int
 	## cardinality = 0..1
 	short = yes
@@ -1831,6 +1832,10 @@ alias[effect:define_ruler] = {
 	religion = <province_id>
 	## cardinality = 0..1
 	rebel = yes
+	## cardinality = 0..1
+	regency = {
+		estate = <estate>
+	}
 }
 
 ## scope = country
@@ -3060,7 +3065,7 @@ alias[effect:dip_power_cost] = int
 alias[effect:mil_power_cost] = int
 
 ## scope = country
-alias[effect:change_government_reform_progress] = int[-100..100]
+alias[effect:change_government_reform_progress] = int[-450..100]
 
 #Removed as of 1.28.3
 # ## scope = country
@@ -3233,6 +3238,9 @@ alias[effect:finish_council] = yes
 ## scope = mercenary_company
 ###Mercenary leader becomes regular general
 alias[effect:convert_leader_to_general] = yes
+## scope = mercenary_company
+###Mercenary leader becomes regular general
+alias[effect:convert_leader_to_general] = THIS
 
 ## scope = country
 ###Switches to the given government type.  No effect if Dharma is active.
@@ -3262,3 +3270,122 @@ alias[effect:spawn_large_scaled_rebels] = {
 	## cardinality = 0..1
 	no_defined_leader = yes
 }
+
+#1.31
+
+## scope = country
+###adds the specified ancestor personality
+alias[effect:add_ruler_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+## scope = country
+###adds the specified ancestor personality
+alias[effect:add_heir_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+## scope = country
+###adds the specified ancestor personality
+alias[effect:add_queen_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+## scope = country
+###adds the specified ancestor personality
+alias[effect:remove_ruler_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+## scope = country
+###adds the specified ancestor personality
+alias[effect:remove_heir_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+## scope = country
+###adds the specified ancestor personality
+alias[effect:remove_queen_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+## scope = country
+###removes the specified ancestor personality
+alias[effect:remove_ruler_personality] = {
+	ancestor_$enum[ancestor_key]$_personality
+}
+## scope = country
+###removes the specified ancestor personality
+alias[effect:remove_queen_personality] = {
+	ancestor_$enum[ancestor_key]$_personality
+}
+## scope = country
+###removes the specified ancestor personality
+alias[effect:remove_heir_personality] = {
+	ancestor_$enum[ancestor_key]$_personality
+}
+## scope = province
+###adds the specified ancestor personality
+alias[effect:add_great_project_tier] = {
+	type = <great_project>
+	tier = int
+}
+## scope = province
+###Settles a tribal province belonging to the owner of the ROOT province scope
+alias[effect:settle_province] = enum[country_tags]
+## scope = province
+###Settles a tribal province belonging to the owner of the ROOT province scope
+alias[effect:settle_province] = scope[country]
+
+## scope = country
+###Changes the government rank of the current scope. Default range is 1 to 3.
+alias[effect:set_government_rank_force] = int[1..3]
+
+## scope = country
+###Disband Federation.
+alias[effect:disband_federation] = yes
+## scope = country
+###Disband Federation.
+alias[effect:disband_federation] = THIS
+
+## scope = country
+###Set federation leader
+alias[effect:set_federation_leader] = THIS
+
+## scope = country
+###Allow federation offensive wars
+alias[effect:allow_federation_offensive_wars] = yes
+
+
+## scope = country
+###Form Federation Nation
+alias[effect:form_federation_nation] = {
+	post_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+}
+
+## scope = country
+###Changes the institutions of the current scope.  
+alias[effect:embrace_institutions_of] = native_sponsor_scope
+
+## scope = country
+###change subject type
+alias[effect:change_subject_type] = {
+	subject_type = <subject_type>
+}
+
+## scope = province
+###Change tribal land  
+alias[effect:change_tribal_land] = ROOT
+
+## scope = country
+###Changes estate regent to ruler.  
+alias[effect:change_estate_regent_to_ruler] = bool
+
+## scope = country
+###set estate led regency privilege.  
+alias[effect:set_estate_led_regency_privilege] = random
+
+## scope = country
+###extend regency.  
+alias[effect:extend_regency] = int
+
+## scope = country
+###appoint next guru.
+alias[effect:appoint_next_guru] = yes
+

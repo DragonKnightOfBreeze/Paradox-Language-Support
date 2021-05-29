@@ -43,6 +43,10 @@ unit_type = {
 		sprite_level = int
 		## cardinality = 0..1
 		trade_power = float
+		## cardinality = 0..1
+		blockade = int
+		## cardinality = 0..1
+		sailors = int
 	}
 
 	## cardinality = 0..1

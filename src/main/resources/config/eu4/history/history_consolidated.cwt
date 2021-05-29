@@ -407,6 +407,8 @@ country_history = {
 		date_field = {
 			## cardinality = 0..1
 			monarch = {
+				# set to warning instead of error as regency does not require a name
+				## severity = warning
 				name = localisation_synced #value_set[ruler_name]
 				## cardinality = 0..1
 				dynasty = localisation_synced #value_set[dynasty_name]

@@ -289,6 +289,11 @@ alias[trigger:calc_true_if] = {
 	desc = localisation
 	alias_name[trigger] = alias_match_left[trigger]
 	amount = int
+	## cardinality = 0..1
+	## push_scope = province
+	all_owned_province_cumulative = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
 }
 
 ## scope = country
@@ -399,7 +404,7 @@ alias[trigger:colonial_region] = scope[province]
 
 ## scope = country
 ###
-alias[trigger:colony] = int
+alias[trigger:num_of_colonies] = int
 
 ## scope = { province country }
 ###Returns true if the scoped country has a claim on a colony owned by the target country, or if the scoped colony province is claimed by the target country.
@@ -841,6 +846,13 @@ alias[trigger:estate_influence] = {
 }
 
 ## scope = country
+###Returns true if the estate X in the country has at least Y influence.
+alias[trigger:estate_influence] = {
+	estate = all
+	influence = int[0..100]
+}
+
+## scope = country
 ###Returns true if the estate X in the country has at least Y loyalty.
 alias[trigger:estate_loyalty] = {
 	estate = <estate>
@@ -940,6 +952,10 @@ alias[trigger:government] = <government.normal>
 ## scope = country
 ###Returns true if the country has government type X. Includes "dictatorship", which checks whether the country has a government reform with the label "is_dictatorship = yes"
 alias[trigger:government] = dictatorship
+
+## scope = country
+###Returns true if the country has government type X. Includes "dictatorship", which checks whether the country has a government reform with the label "is_dictatorship = yes"
+alias[trigger:government] = has_harem
 
 ## scope = country
 ###Returns true if the country has a government rank of X or higher.
@@ -1133,6 +1149,10 @@ alias[trigger:has_construction] = enum[construction_types]
 
 ## scope = province
 ###Returns true if there is the specified construction in progress in the province.
+alias[trigger:has_construction] = enum[greatproject_canals]
+
+## scope = province
+###Returns true if there is the specified construction in progress in the province.
 alias[trigger:has_construction] = <building>
 
 ## scope = country
@@ -1299,6 +1319,7 @@ alias[trigger:has_guaranteed] = enum[country_tags]
 
 ## scope = any
 ###Returns true if the specified global flag is set.
+## severity = warning
 alias[trigger:has_global_flag] = value[global_flag]
 
 ## scope = country
@@ -4636,7 +4657,7 @@ alias[trigger:provincial_institution_progress] = {
 alias[trigger:is_monarchists_in_power] = bool
 
 ## scope = country
-alias[trigger:has_reform_level] = int
+alias[trigger:reform_level] = int
 
 ## scope = province
 alias[trigger:trade_company_region] = <trade_company>
@@ -4717,6 +4738,143 @@ alias[trigger:highest_supply_limit_in_area] = bool
 
 ## scope = country
 alias[trigger:is_revolutionary] = bool
+
+#1.31
+
+## scope = country
+###Checks if the country has or is building a flagship
+alias[trigger:has_or_building_flagship] = bool
+
+## scope = country
+###Checks who the current sikh guru is
+alias[trigger:current_guru_is] = enum[sikh_guru]
+
+## scope = country
+###Checks number of unassigned explorers
+alias[trigger:num_of_free_explorers] = int
+
+## scope = province
+###Checks if province has a great project
+alias[trigger:has_great_project] = {
+	type = enum[great_project]
+	## cardinality = 0..1
+	tier = int[0..100]
+}
+
+## scope = province
+###Checks if province has a great project
+alias[trigger:has_great_project] = {
+	type = <great_project>
+	## cardinality = 0..1
+	tier = int[0..100]
+}
+
+## scope = country
+###Checks number of times a country has used transfer development
+alias[trigger:num_of_times_used_transfer_development] = int
+
+## scope = country
+###Checks number of times a country used pillage capital
+alias[trigger:num_of_times_used_pillage_capital] = int
+
+## scope = country
+###Checks if country has pillaged the capital of a tag
+alias[trigger:has_pillaged_capital_against] = scope[country]
+
+## scope = country
+###Checks if country has pillaged the capital of a tag
+alias[trigger:has_pillaged_capital_against] = enum[country_tags]
+
+## scope = country
+###Checks if country is in an extended regency
+alias[trigger:is_in_extended_regency] = bool
+
+## scope = country
+###Checks if country has and estate led regency
+alias[trigger:has_estate_led_regency] = {
+	estate = <estate>
+	## cardinality = 0..1
+	duration = int
+}
+## scope = country
+###Checks if country has and estate led regency
+alias[trigger:has_estate_led_regency] = {
+	estate = enum[estate_any]
+	## cardinality = 0..1
+	duration = int
+}
+
+## scope = country
+###Checks estate led regency influence
+alias[trigger:estate_led_regency_influence] = int
+
+## scope = country
+###Checks estate led regency loyalty
+alias[trigger:estate_led_regency_loyalty] = int
+
+## scope = country
+###Checks if subject of type with overlord
+alias[trigger:is_subject_of_type_with_overlord] = {
+	who = enum[country_tags]
+	type = <subject_type>
+}
+## scope = country
+###Returns true if the country is a subject of subject type of the specified overlord
+alias[trigger:is_subject_of_type_with_overlord] = {
+	who = scope[country]
+	type = <subject_type>
+}
+
+## scope = country
+###Returns true if the country's ruler has the specified ancestor personality.
+alias[trigger:ruler_has_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+
+## scope = country
+###Returns true if the country's heir has the specified ancestor personality.
+alias[trigger:heir_has_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+
+## scope = country
+###Returns true if the country's queen has the specified ancestor personality.
+alias[trigger:queen_has_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+
+## scope = country
+###Returns true if the country's queen has the specified ancestor personality.
+alias[trigger:consort_has_personality_ancestor] = {
+	key = enum[ancestor_key]
+}
+
+## scope = country
+###Number of federation advancements
+alias[trigger:num_federation_advancements] = int
+
+## scope = country
+###Checks if the country is a native tribe
+alias[trigger:is_native_tribe] = bool
+
+## scope = country
+###Checks if the country is a migratory tribe
+alias[trigger:is_migratory_tribe] = bool
+
+## scope = province
+###Checks if the country is a migratory tribe
+alias[trigger:tribal_land_of] = scope[country]
+## scope = province
+###Checks if the country is a migratory tribe
+alias[trigger:tribal_land_of] = enum[country_tags]
+
+## scope = country
+###Returns true if the tribal development of the tribe is at least X.
+alias[trigger:tribal_development] = int
+
+## scope = country
+###Checks if the country is a federation nation
+alias[trigger:is_federation_nation] = bool
 
 #more stuff
 
@@ -4814,3 +4972,15 @@ alias[trigger:current_income_balance] = float
 
 ## scope = country
 alias[trigger:cossacks_percentage] = float
+
+## scope = country
+### Returns true if the country has a subject of type
+alias[trigger:has_subject_of_type] = <subject_type>
+
+## scope = country
+### Returns true if governing capacity percentage is at least X
+alias[trigger:governing_capacity_percentage] = float
+
+## scope = province
+### Returns true if development discounting tribal is at least X
+alias[trigger:development_discounting_tribal] = int

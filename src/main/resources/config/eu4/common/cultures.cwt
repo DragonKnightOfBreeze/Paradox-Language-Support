@@ -22,6 +22,9 @@ culture_group = {
 	graphical_culture = enum[graphical_cultures]
 	
 	## cardinality = 0..1
+	second_graphical_culture = enum[graphical_cultures]
+	
+	## cardinality = 0..1
 	male_names = {
 		## cardinality = 1..inf
 		scalar
@@ -43,6 +46,8 @@ culture_group = {
 	<culture> = {
 		## cardinality = 0..1
 		graphical_culture = enum[graphical_cultures]
+		## cardinality = 0..1
+		second_graphical_culture = enum[graphical_cultures]
 		
 		## cardinality = 0..1
 		primary = enum[country_tags]

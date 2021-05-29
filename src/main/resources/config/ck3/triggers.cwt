@@ -8,7 +8,7 @@ alias[trigger:has_perk] = <lifestyle_perk>
 alias[trigger:has_same_focus_as] = scope[character]
 
 ### AI boldness
-alias[trigger:ai_boldness] == replace_me_comparison
+alias[trigger:ai_boldness] = replace_me_comparison
 
 ### Check if the chance of the scope landed title to join the faction against the scripted value title_join_faction_chance = {     faction = faction_target #An ongoing faction     value <|<=|>=|> 0 }
 alias[trigger:title_join_faction_chance] = replace_me
@@ -17,7 +17,7 @@ alias[trigger:title_join_faction_chance] = replace_me
 alias[trigger:is_spouse_of_even_if_dead] = scope[character]
 
 ### How many soldiers does this side have still fighting?
-alias[trigger:side_soldiers] == replace_me_comparison
+alias[trigger:side_soldiers] = replace_me_comparison
 
 ### does the scope character have the specified casus bellis on the taget character? Invalid target returns false automatically. has_cb_on = { target = X casus_belli/cb = Y }
 alias[trigger:has_cb_on] = replace_me
@@ -26,7 +26,7 @@ alias[trigger:has_cb_on] = replace_me
 alias[trigger:is_de_facto_liege_or_above_target] = scope[landed_title]
 
 ### What is the faith's fervor?
-alias[trigger:fervor] == replace_me_comparison
+alias[trigger:fervor] = replace_me_comparison
 
 ### what place in line of succession does the character hold?
 alias[trigger:place_in_line_of_succession] = replace_me
@@ -50,10 +50,10 @@ alias[trigger:is_foreign_court_or_pool_guest] = bool
 alias[trigger:important_action_is_valid_but_invisible] = replace_me
 
 ### does the character have this many lifestyle traits?
-alias[trigger:number_of_lifestyle_traits] == replace_me_comparison
+alias[trigger:number_of_lifestyle_traits] = replace_me_comparison
 
 ### What tier is the scoped title? barony = 1, empire = 5. Use the script values please, not raw numbers
-alias[trigger:tier] == replace_me_comparison
+alias[trigger:tier] = replace_me_comparison
 
 ### Does the given faith have the given doctrine parameter? Can only check for bool parameters. has_doctrine_parameter = parameter_key
 alias[trigger:has_doctrine_parameter] = replace_me
@@ -74,16 +74,16 @@ alias[trigger:is_player_selected] = bool
 alias[trigger:has_any_scripted_relation] = scope[character]
 
 ### Is the scoped character's top liege's realm this big (# of counties)?
-alias[trigger:realm_size] == replace_me_comparison
+alias[trigger:realm_size] = replace_me_comparison
 
 ### does the character have the required health?
-alias[trigger:health] == replace_me_comparison
+alias[trigger:health] = replace_me_comparison
 
 ### is the title de jure liege or above the target title?
 alias[trigger:is_de_jure_liege_or_above_target] = scope[landed_title]
 
 ### does the character have the specified dread baseline value?
-alias[trigger:scriptedtests_dread_base] == replace_me_comparison
+alias[trigger:scriptedtests_dread_base] = replace_me_comparison
 
 ### Is the marriage with the spouse patrilinear?
 alias[trigger:patrilinear_marriage] = bool
@@ -101,16 +101,16 @@ alias[trigger:switch] = replace_me
 alias[trigger:is_parent_of] = scope[character]
 
 ### Average opinion of all the characters of the faction scope target
-alias[trigger:average_faction_opinion] == replace_me_comparison
+alias[trigger:average_faction_opinion] = replace_me_comparison
 
 ### Is the unborn a known bastard?
 alias[trigger:is_unborn_known_bastard] = bool
 
 ### Scheme resistance
-alias[trigger:scheme_resistance] == replace_me_comparison
+alias[trigger:scheme_resistance] = replace_me_comparison
 
 ### does the dynasty have the required prestige?
-alias[trigger:dynasty_prestige] == replace_me_comparison
+alias[trigger:dynasty_prestige] = replace_me_comparison
 
 ### is the target character participating in the scope activity?
 alias[trigger:is_target_participating] = scope[character]
@@ -122,19 +122,19 @@ alias[trigger:is_performing_council_task] = replace_me
 alias[trigger:join_scheme_chance] = replace_me
 
 ### Is the scoped character's monthly progress on their assigned council task this big?
-alias[trigger:council_task_monthly_progress] == replace_me_comparison
+alias[trigger:council_task_monthly_progress] = replace_me_comparison
 
 ### can the character join activities?
 alias[trigger:can_join_activities] = bool
 
 ### The number of exposed agents in a scheme
-alias[trigger:scheme_number_of_exposed_agents] == replace_me_comparison
+alias[trigger:scheme_number_of_exposed_agents] = replace_me_comparison
 
 ### Current power of the faction
-alias[trigger:faction_power] == replace_me_comparison
+alias[trigger:faction_power] = replace_me_comparison
 
 ### Is the scoped character's monthly balance this big?
-alias[trigger:monthly_character_balance] == replace_me_comparison
+alias[trigger:monthly_character_balance] = replace_me_comparison
 
 ### Is the character a guest from the pool, visiting the target character's court? In contrast to is_foreign_court_guest_of the character has no liege
 alias[trigger:is_pool_guest_of] = scope[character]
@@ -152,37 +152,37 @@ alias[trigger:is_concubine] = bool
 alias[trigger:is_holy_site] = bool
 
 ### number of days the character has been imprisoned for (0 if not imprisoned)
-alias[trigger:days_in_prison] == replace_me_comparison
+alias[trigger:days_in_prison] = replace_me_comparison
 
 ### checks whether the scope character is the owner of any currently active story
 alias[trigger:owns_a_story] = bool
 
 ### Check how many knights the scoped character can potentially have
-alias[trigger:max_number_of_knights] == replace_me_comparison
+alias[trigger:max_number_of_knights] = replace_me_comparison
 
 ### Does the character own a story of this type?
 alias[trigger:owns_story_of_type] = replace_me
 
 ### Scheme power
-alias[trigger:scheme_power] == replace_me_comparison
+alias[trigger:scheme_power] = replace_me_comparison
 
 ### Is the character a guest from another a court, visiting the target character's court? In contrast to is_pool_guest_of the character has a liege
 alias[trigger:is_foreign_court_guest_of] = scope[character]
 
 ### How many holy sites does the faith control? holy_sites_controlled > 1
-alias[trigger:holy_sites_controlled] == replace_me_comparison
+alias[trigger:holy_sites_controlled] = replace_me_comparison
 
 ### Checks if a target is in a variable list is_target_in_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
 alias[trigger:is_target_in_global_variable_list] = replace_me
 
 ### Is the scoped character's domain limit this big?
-alias[trigger:domain_limit] == replace_me_comparison
+alias[trigger:domain_limit] = replace_me_comparison
 
 ### Can the scope faction press demands?
 alias[trigger:faction_can_press_demands] = bool
 
 ### How much gold is in the great holy war's war chest?
-alias[trigger:war_chest_gold] == replace_me_comparison
+alias[trigger:war_chest_gold] = replace_me_comparison
 
 ### Is the character a sibling of the target character?
 alias[trigger:is_sibling_of] = scope[character]
@@ -199,7 +199,7 @@ alias[trigger:scriptedtests_can_marry_character] = scope[character]
 ### is the character's opinion of the target greater or equal than the value? opinion = { target = X [*value >/</>=/<= Y* or *value = { min max }*  }
 alias[trigger:opinion] = {
     target = scope[character]
-    value == int_value_field
+    value = int_value_field
 }
 
 ### Is title in the scope a capital barony?
@@ -218,7 +218,7 @@ alias[trigger:is_coastal] = bool
 alias[trigger:is_forbidden_from_scheme] = replace_me
 
 ### Check how many knights the scoped character has at the moment
-alias[trigger:number_of_knights] == replace_me_comparison
+alias[trigger:number_of_knights] = replace_me_comparison
 
 ### Does the character have the non-interference reason towards the target?
 alias[trigger:has_non_interference] = scope[character]
@@ -227,7 +227,7 @@ alias[trigger:has_non_interference] = scope[character]
 alias[trigger:number_of_opposing_personality_traits] = replace_me
 
 ### How many perks in the lifestyle does this dynasty have?
-alias[trigger:kin_legacy_track_perks] == replace_me_comparison
+alias[trigger:kin_legacy_track_perks] = replace_me_comparison
 
 ### does the character have a hook on the target that isn't on cooldown, has_usable_hook = <character>
 alias[trigger:has_usable_hook] = replace_me_character
@@ -278,7 +278,7 @@ alias[trigger:is_in_target_activity] = replace_me
 alias[trigger:is_spent_by] = scope[character]
 
 ### Compare the current computer date.
-alias[trigger:current_computer_date] == replace_me_date
+alias[trigger:current_computer_date] = replace_me_date
 
 ### Is the character a guest from the pool? In contrast to is_foreign_court_guest the character has no liege
 alias[trigger:is_pool_guest] = bool
@@ -296,37 +296,37 @@ alias[trigger:is_landed] = bool
 alias[trigger:is_in_prison_type] = replace_me
 
 ### does the character have the required stress level?
-alias[trigger:stress_level] == replace_me_comparison
+alias[trigger:stress_level] = replace_me_comparison
 
 ### Does the character have any focus set?
 alias[trigger:has_any_focus] = bool
 
 ### AI greed
-alias[trigger:ai_greed] == replace_me_comparison
+alias[trigger:ai_greed] = replace_me_comparison
 
 ### Is the scope title a member of a faction?
 alias[trigger:title_is_a_faction_member] = bool
 
 ### How many holdings the holy order has under lease
-alias[trigger:num_leased_titles] == replace_me_comparison
+alias[trigger:num_leased_titles] = replace_me_comparison
 
 ### Does the character have a specified number of powerful vassals?
-alias[trigger:number_of_powerful_vassals] == replace_me_comparison
+alias[trigger:number_of_powerful_vassals] = replace_me_comparison
 
 ### Is the scoped scheme a hostile scheme? is_hostile = bool
 alias[trigger:is_hostile] = bool
 
 ### Scheme success chance
-alias[trigger:scheme_success_chance] == replace_me_comparison
+alias[trigger:scheme_success_chance] = replace_me_comparison
 
 ### How many perks from this lifestyle does the character have?
-alias[trigger:stewardship_lifestyle_perks] == replace_me_comparison
+alias[trigger:stewardship_lifestyle_perks] = replace_me_comparison
 
 ### Does the scoped character have a law with the given flag?
 alias[trigger:has_realm_law_flag] = replace_me
 
 ### AI honor
-alias[trigger:ai_honor] == replace_me_comparison
+alias[trigger:ai_honor] = replace_me_comparison
 
 ### Checks the size of a variable list variable_list_size = { name = X target >= Y } Where X is the name of the variable Where Y is a script value or number
 alias[trigger:variable_list_size] = replace_me
@@ -344,7 +344,7 @@ alias[trigger:can_be_exposed_by] = scope[character]
 alias[trigger:is_away_from_court] = bool
 
 ### Is the scoped character's yearly expenses this big?
-alias[trigger:yearly_character_expenses] == replace_me_comparison
+alias[trigger:yearly_character_expenses] = replace_me_comparison
 
 ### does the character and the target have a number of opposing traits? number_of_opposing_traits = { target = X value >/</>=/<= Y }
 alias[trigger:number_of_opposing_traits] = replace_me
@@ -365,7 +365,7 @@ alias[trigger:has_strong_usable_hook] = replace_me_character
 alias[trigger:has_truce] = scope[character]
 
 ### Is the scoped character's sub-realm this big (# of counties)?
-alias[trigger:sub_realm_size] == replace_me_comparison
+alias[trigger:sub_realm_size] = replace_me_comparison
 
 ### Does the character have this trait?  Can also specify a trait group, in which case the trigger will return true if the scope character has any trait from that trait group.
 alias[trigger:has_trait] = <trait>
@@ -379,7 +379,7 @@ alias[trigger:has_non_aggression_pact] = scope[character]
 alias[trigger:is_alive] = bool
 
 ### does the character have the required stress?
-alias[trigger:stress] == replace_me_comparison
+alias[trigger:stress] = replace_me_comparison
 
 ### Can the scoped title be leased out?
 alias[trigger:can_be_leased_out] = bool
@@ -393,7 +393,7 @@ alias[trigger:trigger_else] = {
 }
 
 ### Does the character have this many perk points across all lifestyles combined?
-alias[trigger:perk_points] == replace_me_comparison
+alias[trigger:perk_points] = replace_me_comparison
 
 ### does the character have a hook on the target of the given type?, has_hook_of_type = { target = X type = Y }
 alias[trigger:has_hook_of_type] = replace_me
@@ -411,13 +411,13 @@ alias[trigger:has_targeting_faction] = bool
 alias[trigger:is_tutorial_lesson_completed] = replace_me
 
 ### How many perk points available does the character have?
-alias[trigger:intrigue_lifestyle_perk_points] == replace_me_comparison
+alias[trigger:intrigue_lifestyle_perk_points] = replace_me_comparison
 
 ### Is the character a nibling (niece/nephew) of the target character?
 alias[trigger:is_nibling_of] = scope[character]
 
 ### what is the ransom cost of the character?
-alias[trigger:ransom_cost] == replace_me_comparison
+alias[trigger:ransom_cost] = replace_me_comparison
 
 ### Has the target character nominated a successor for the scoped title
 alias[trigger:has_character_nominiated] = scope[character]
@@ -447,13 +447,13 @@ alias[trigger:trigger_else_if] = {
 
 
 ### Does the character have this many perk points assigned across all lifestyles combined?
-alias[trigger:perk_points_assigned] == replace_me_comparison
+alias[trigger:perk_points_assigned] = replace_me_comparison
 
 ### Does the scoped character have the given realm law?
 alias[trigger:has_realm_law] = replace_me
 
 ### Scheme power minus scheme resistance difference
-alias[trigger:scheme_power_resistance_difference] == replace_me_comparison
+alias[trigger:scheme_power_resistance_difference] = replace_me_comparison
 
 ### Get random applicable innovation from another culture
 alias[trigger:can_get_innovation_from] = replace_me
@@ -468,7 +468,7 @@ alias[trigger:is_forced_into_scheme] = replace_me
 alias[trigger:is_attracted_to_men] = bool
 
 ### does the character have the required gold?
-alias[trigger:gold] == replace_me_comparison
+alias[trigger:gold] = replace_me_comparison
 
 ### Compares the scoped faith's hostility level towards two other faiths. faith_hostility_level_comparison { faith1 > faith2 }
 alias[trigger:faith_hostility_level_comparison] = replace_me
@@ -480,7 +480,7 @@ alias[trigger:has_special_title] = bool
 alias[trigger:is_foreign_court_or_pool_guest_of] = scope[character]
 
 ### How many perks in the lifestyle does this dynasty have?
-alias[trigger:warfare_legacy_track_perks] == replace_me_comparison
+alias[trigger:warfare_legacy_track_perks] = replace_me_comparison
 
 ### Does the character have the divorce reason towards the target?
 alias[trigger:has_divorce_reason] = scope[character]
@@ -501,7 +501,7 @@ alias[trigger:has_dread_level_towards] = replace_me
 alias[trigger:matrilinear_marriage] = bool
 
 ### does the character have the required fertility?
-alias[trigger:fertility] == replace_me_comparison
+alias[trigger:fertility] = replace_me_comparison
 
 ### is the target character in the scope war as an attacker?
 alias[trigger:is_attacker] = scope[character]
@@ -525,10 +525,10 @@ alias[trigger:has_allowed_gender_for_clergy] = scope[character]
 alias[trigger:is_in_civil_war] = bool
 
 ### does the character have the required piety?
-alias[trigger:piety] == replace_me_comparison
+alias[trigger:piety] = replace_me_comparison
 
 ### Is the scoped character's monthly income this big?
-alias[trigger:monthly_character_income] == replace_me_comparison
+alias[trigger:monthly_character_income] = replace_me_comparison
 
 ### Is the character in the pool? (not a ruler, courtier or guest at any court)
 alias[trigger:is_pool_character] = bool
@@ -537,22 +537,22 @@ alias[trigger:is_pool_character] = bool
 alias[trigger:has_variable] = value[variable]
 
 ### Does the scoped character have this number of virtous traits? num_virtous_traits > 5 ORnum_virtous_traits = { value > 5 faith = scope:faith }, to base it on what a specific faith considers virtuous
-alias[trigger:num_sinful_traits] == replace_me_comparison
+alias[trigger:num_sinful_traits] = replace_me_comparison
 
 ### Compare the current computer day.
-alias[trigger:current_computer_date_day] == replace_me_comparison
+alias[trigger:current_computer_date_day] = replace_me_comparison
 
 ### does the character have a weak hook on the target. A strong hook will *not* count, has_weak_hook = <character>
 alias[trigger:has_weak_hook] = replace_me_character
 
 ### How many perk points available does the character have?
-alias[trigger:intrigue_lifestyle_xp] == replace_me_comparison
+alias[trigger:intrigue_lifestyle_xp] = replace_me_comparison
 
 ### can the scope target be attacking the defender based on their liege-vassal relations?
 alias[trigger:can_attack_in_hierarchy] = scope[character]
 
 ### How many days is it until the given GHW launches its war?
-alias[trigger:days_until_ghw_launch] == replace_me_comparison
+alias[trigger:days_until_ghw_launch] = replace_me_comparison
 
 ### Does the character have this lifestyle?
 alias[trigger:has_lifestyle] = <lifestyle>
@@ -561,7 +561,7 @@ alias[trigger:has_lifestyle] = <lifestyle>
 alias[trigger:is_at_location] = scope[province]
 
 ### Does the scoped character have this number of virtous traits? num_virtous_traits > 5 ORnum_virtous_traits = { value > 5 faith = scope:faith }, to base it on what a specific faith considers virtuous
-alias[trigger:num_virtuous_traits] == replace_me_comparison
+alias[trigger:num_virtuous_traits] = replace_me_comparison
 
 ### is the target character's opinion of the scope character greater or equal than the value? opinion = { target = X value >/</>=/<= Y }
 alias[trigger:reverse_opinion] = {
@@ -576,16 +576,16 @@ alias[trigger:has_imprisonment_reason] = scope[character]
 alias[trigger:government_disallows] = replace_me
 
 ### Is there this much space left in the character's domain limit? Negative values also work for checking characters that are above their limit
-alias[trigger:domain_limit_available] == replace_me_comparison
+alias[trigger:domain_limit_available] = replace_me_comparison
 
 ### How many perk points available does the character have?
-alias[trigger:diplomacy_lifestyle_xp] == replace_me_comparison
+alias[trigger:diplomacy_lifestyle_xp] = replace_me_comparison
 
 ### Check where the target character is in the scoped character's player heir list. player_heir_position = { target = scope:actor position = 0 }
-alias[trigger:player_heir_position] == replace_me_comparison
+alias[trigger:player_heir_position] = replace_me_comparison
 
 ### Does the character have this many perk points assigned to this tree? perks_in_tree = { tree = tree_key value > 5 }
-alias[trigger:perks_in_tree] == replace_me_comparison
+alias[trigger:perks_in_tree] = replace_me_comparison
 
 ### Does the character have the banish reason towards the target?
 alias[trigger:has_banish_reason] = scope[character]
@@ -594,13 +594,13 @@ alias[trigger:has_banish_reason] = scope[character]
 alias[trigger:can_add_hook] = replace_me
 
 ### how much development progress is the county gaining each month?
-alias[trigger:development_rate] == replace_me_comparison
+alias[trigger:development_rate] = replace_me_comparison
 
 ### Is the scope character adult?
 alias[trigger:is_adult] = bool
 
 ### AI energy
-alias[trigger:ai_energy] == replace_me_comparison
+alias[trigger:ai_energy] = replace_me_comparison
 
 ### is this secret criminal for the target participant? is_criminal_for = <character>
 alias[trigger:is_criminal_for] = replace_me_character
@@ -621,7 +621,7 @@ alias[trigger:is_courtier] = bool
 alias[trigger:is_male] = bool
 
 ### The number of days since scheme was started
-alias[trigger:scheme_duration_days] == replace_me_comparison
+alias[trigger:scheme_duration_days] = replace_me_comparison
 
 ### Checks if the character would get an alliance with the target character through such a marriage.
 alias[trigger:yields_alliance] = replace_me
@@ -636,7 +636,7 @@ alias[trigger:has_special_character] = bool
 alias[trigger:is_at_war_with] = scope[character]
 
 ### How many perks in the lifestyle does this dynasty have?
-alias[trigger:glory_legacy_track_perks] == replace_me_comparison
+alias[trigger:glory_legacy_track_perks] = replace_me_comparison
 
 ### Does the character have this culture group? has_culture_group = culture_group:east_slavic_group
 alias[trigger:has_culture_group] = scope[culture_group]
@@ -684,7 +684,7 @@ alias[trigger:has_county_modifier] = replace_me
 alias[trigger:is_in_an_activity] = bool
 
 ### does the character have the specified piety income?
-alias[trigger:scriptedtests_piety_income] == replace_me_comparison
+alias[trigger:scriptedtests_piety_income] = replace_me_comparison
 
 ### is the scope war using the specified CB? using_cb = religious_war
 alias[trigger:using_cb] = replace_me
@@ -708,10 +708,10 @@ alias[trigger:sex_opposite_of] = scope[character]
 alias[trigger:can_execute_decision] = replace_me
 
 ### How strong is the scoped faith? *Expensive*, if you're gonna use the value repeatedly, save it to a scope first! This is scaled by a factor of 1000, so '1' means 1000 men. This is due to the cap of ~2 million, which would be too low in many cases
-alias[trigger:estimated_faith_strength] == replace_me_comparison
+alias[trigger:estimated_faith_strength] = replace_me_comparison
 
 ### Is the scoped character's domain this big in comparison to their limit?
-alias[trigger:domain_limit_percentage] == replace_me_comparison
+alias[trigger:domain_limit_percentage] = replace_me_comparison
 
 ### does the character hold the title?
 alias[trigger:has_title] = scope[landed_title]_scope
@@ -734,13 +734,13 @@ alias[trigger:trigger_if] = {
 alias[trigger:has_owned_scheme] = bool
 
 ### Scheme secrecy
-alias[trigger:scheme_secrecy] == replace_me_comparison
+alias[trigger:scheme_secrecy] = replace_me_comparison
 
 ### Checks if a target is in a variable list is_target_in_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
 alias[trigger:is_target_in_variable_list] = replace_me
 
 ### does the county title have the required progress towards the next level of development? E.G., if level 1 is 100, level 2 is 300 (these are set in defines), and current total is 150, this would return 50
-alias[trigger:development_towards_level_increase] == replace_me_comparison
+alias[trigger:development_towards_level_increase] = replace_me_comparison
 
 ### Is the scope landed title contested in any war?
 alias[trigger:is_contested] = bool
@@ -752,28 +752,28 @@ alias[trigger:has_revoke_title_reason] = scope[character]
 alias[trigger:is_in_the_same_court_as_or_guest] = scope[character]
 
 ### Check the number of characters in the pool the scoped province is a part of
-alias[trigger:number_of_characters_in_pool] == replace_me_comparison
+alias[trigger:number_of_characters_in_pool] = replace_me_comparison
 
 ### How many perks from this lifestyle does the character have?
-alias[trigger:diplomacy_lifestyle_perks] == replace_me_comparison
+alias[trigger:diplomacy_lifestyle_perks] = replace_me_comparison
 
 ### is the character a claimant to any landed titles?
 alias[trigger:is_claimant] = bool
 
 ### does the character have the required stewardship skill level?
-alias[trigger:stewardship] == replace_me_comparison
+alias[trigger:stewardship] = replace_me_comparison
 
 ### Saves a temporary target for use during the trigger execution
 alias[trigger:save_temporary_scope_as] = value_set[temporary_scope]
 
 ### does the character have the required intrigue skill level?
-alias[trigger:intrigue] == replace_me_comparison
+alias[trigger:intrigue] = replace_me_comparison
 
 ### Is the scoped character a knight
 alias[trigger:is_knight] = bool
 
 ### How far away is the province/barony/county from the target? Measured in map pixels. Squared for performance reasons (square root is expensive). squared_distance = { target = some province/barony/county value > 10000 }
-alias[trigger:squared_distance] == replace_me_comparison
+alias[trigger:squared_distance] = replace_me_comparison
 
 ### does the character have a valid living father?
 alias[trigger:has_father] = bool
@@ -791,19 +791,19 @@ alias[trigger:is_in_list] = value[list]
 alias[trigger:is_widget_open] = replace_me
 
 ### Number of days the character has been in peace (0 if in peace)
-alias[trigger:days_of_continuous_war] == replace_me_comparison
+alias[trigger:days_of_continuous_war] = replace_me_comparison
 
 ### Is the scoped character's yearly balance this big?
-alias[trigger:yearly_character_balance] == replace_me_comparison
+alias[trigger:yearly_character_balance] = replace_me_comparison
 
 ### is this secret shunned for the target participant? is_shunned_for = <character>
 alias[trigger:is_shunned_for] = replace_me_character
 
 ### How many perk points available does the character have?
-alias[trigger:stewardship_lifestyle_perk_points] == replace_me_comparison
+alias[trigger:stewardship_lifestyle_perk_points] = replace_me_comparison
 
 ### How many perks in the lifestyle does this dynasty have?
-alias[trigger:erudition_legacy_track_perks] == replace_me_comparison
+alias[trigger:erudition_legacy_track_perks] = replace_me_comparison
 
 ### a negated AND trigger
 alias[trigger:nand] = replace_me
@@ -812,10 +812,10 @@ alias[trigger:nand] = replace_me
 alias[trigger:has_title_law] = replace_me
 
 ### does the character have this many traits?
-alias[trigger:number_of_traits] == replace_me_comparison
+alias[trigger:number_of_traits] = replace_me_comparison
 
 ### what size is this army's max size?
-alias[trigger:army_max_size] == replace_me_comparison
+alias[trigger:army_max_size] = replace_me_comparison
 
 ### Is the character obedient towards the target?
 alias[trigger:is_obedient] = scope[character]
@@ -848,7 +848,7 @@ alias[trigger:has_pending_interaction_of_type] = replace_me
 alias[trigger:is_war_overview_tab_open] = replace_me
 
 ### Monthly scheme progress in % (i.e. 50 equals 50%)
-alias[trigger:scheme_monthly_progress] == replace_me_comparison
+alias[trigger:scheme_monthly_progress] = replace_me_comparison
 
 ### Does the character have the same culture group as the target?
 alias[trigger:has_same_culture_group_as] = scope[character]
@@ -883,14 +883,14 @@ alias[trigger:has_same_culture_as] = scope[character]
 ### does the character and the target have a number of traits in common? number_of_traits_in_common = { target = X value >/</>=/<= Y }
 alias[trigger:number_of_traits_in_common] = {
     target = scope[character]
-    value == int_value_field
+    value = int_value_field
 }
 
 ### does the county title have the required county countrol?
-alias[trigger:county_control] == replace_me_comparison
+alias[trigger:county_control] = replace_me_comparison
 
 ### How many perks from this lifestyle does the character have?
-alias[trigger:intrigue_lifestyle_perks] == replace_me_comparison
+alias[trigger:intrigue_lifestyle_perks] = replace_me_comparison
 
 ### Would the target character have been able to have children at the time of the scoped character's birth? Only age is taken into account
 alias[trigger:can_be_child_of] = scope[character]
@@ -902,7 +902,7 @@ alias[trigger:is_unborn_child_of_concubine] = bool
 alias[trigger:ai_diplomacy_stance] = replace_me
 
 ### How many perk points available does the character have?
-alias[trigger:learning_lifestyle_perk_points] == replace_me_comparison
+alias[trigger:learning_lifestyle_perk_points] = replace_me_comparison
 
 ### Is the character interaction specified valid (shown and usable) for the target character? is_character_interaction_valid = {     recipient = character     interaction = interaction_name }
 alias[trigger:is_character_interaction_valid] = replace_me
@@ -911,16 +911,16 @@ alias[trigger:is_character_interaction_valid] = replace_me
 alias[trigger:is_war_leader] = scope[character]
 
 ### does the character have the required martial skill level?
-alias[trigger:martial] == replace_me_comparison
+alias[trigger:martial] = replace_me_comparison
 
 ### Can the scope owner have more spouses?
 alias[trigger:allowed_more_spouses] = bool
 
 ### What is number of tooltips open rigth now?  - An interface trigger, can only be used in specific places
-alias[trigger:current_tooltip_depth] == replace_me_comparison
+alias[trigger:current_tooltip_depth] = replace_me_comparison
 
 ### AI vengefulness
-alias[trigger:ai_vengefulness] == replace_me_comparison
+alias[trigger:ai_vengefulness] = replace_me_comparison
 
 ### checks whether the scope character is the owner of any currently active activity
 alias[trigger:owns_an_activity] = bool
@@ -950,31 +950,31 @@ alias[trigger:is_combat_side_pursuing] = bool
 alias[trigger:has_house_modifier_duration_remaining] = replace_me
 
 ### does the character have the required tyranny?
-alias[trigger:tyranny] == replace_me_comparison
+alias[trigger:tyranny] = replace_me_comparison
 
 ### can the title create the faction of the specified type against the specified character? can_title_create_faction = { type = X target = Y }
 alias[trigger:can_title_create_faction] = replace_me
 
 ### does the county title have the required county development level?
-alias[trigger:development_level] == replace_me_comparison
+alias[trigger:development_level] = replace_me_comparison
 
 ### Average opinion of the character that are NOT powerful vassals of the faction scope target
-alias[trigger:average_faction_opinion_not_powerful_vassal] == replace_me_comparison
+alias[trigger:average_faction_opinion_not_powerful_vassal] = replace_me_comparison
 
 ### has the target character been called to the scope war already?
 alias[trigger:was_called] = scope[character]
 
 ### Is the scoped character's domain this big?
-alias[trigger:domain_size] == replace_me_comparison
+alias[trigger:domain_size] = replace_me_comparison
 
 ### does the character have the specified tax income?
-alias[trigger:scriptedtests_gold_income] == replace_me_comparison
+alias[trigger:scriptedtests_gold_income] = replace_me_comparison
 
 ### Does the character have disabled non-agression pacts with the target?
 alias[trigger:has_disable_non_aggression_pacts] = scope[character]
 
 ### Compare the current computer month.
-alias[trigger:current_computer_date_month] == replace_me_comparison
+alias[trigger:current_computer_date_month] = replace_me_comparison
 
 ### Does the scoped character have a given modifier has_character_modifier = name
 alias[trigger:has_character_modifier] = <modifier_container>
@@ -992,7 +992,7 @@ alias[trigger:has_election_vote_of] = replace_me
 alias[trigger:activity_has_been_activated] = bool
 
 ### compares the number of days the war is going on for
-alias[trigger:war_days] == replace_me_comparison
+alias[trigger:war_days] = replace_me_comparison
 
 ### Is the scoped landed title de jure drifts toward another title?<drifting_title> = { de_jure_drifting_towards = <drift_target_title> }
 alias[trigger:de_jure_drifting_towards] = scope[landed_title]_scope
@@ -1004,13 +1004,13 @@ alias[trigger:has_maa_of_type] = replace_me
 alias[trigger:is_participant_in_war] = replace_me
 
 ### Attraction value for the scoped character
-alias[trigger:attraction] == replace_me_comparison
+alias[trigger:attraction] = replace_me_comparison
 
 ### Is the scoped title leased out?
 alias[trigger:is_leased_out] = bool
 
 ### How many perk points available does the character have?
-alias[trigger:martial_lifestyle_perk_points] == replace_me_comparison
+alias[trigger:martial_lifestyle_perk_points] = replace_me_comparison
 
 ### does the target have the specified opinion modifier on the character? (optional *value <|<=|=|>=|> X* or *value = { MIN MAX }* inclusive)
 alias[trigger:reverse_has_opinion_modifier] = {
@@ -1025,7 +1025,7 @@ alias[trigger:is_target_in_local_variable_list] = replace_me
 alias[trigger:not] = replace_me
 
 ### is the character old/young enough?
-alias[trigger:age] == replace_me_comparison
+alias[trigger:age] = replace_me_comparison
 
 ### Does the character have this faith? has_faith = faith:baltic_pagan
 alias[trigger:has_faith] = replace_me_faith
@@ -1040,7 +1040,7 @@ alias[trigger:completely_controls_region] = replace_me
 alias[trigger:allowed_more_concubines] = bool
 
 ### How many perk points available does the character have?
-alias[trigger:learning_lifestyle_xp] == replace_me_comparison
+alias[trigger:learning_lifestyle_xp] = replace_me_comparison
 
 ### is the specified front end character selected (also can be used with "= yes" and "= no")?  - An interface trigger, can only be used in specific places
 alias[trigger:is_frontend_character_selected] = replace_me
@@ -1055,10 +1055,10 @@ alias[trigger:in_activity_with] = scope[character]
 alias[trigger:in_diplomatic_range] = scope[character]
 
 ### what size is this army?
-alias[trigger:army_size] == replace_me_comparison
+alias[trigger:army_size] = replace_me_comparison
 
 ### How many perks in the lifestyle does this dynasty have?
-alias[trigger:law_legacy_track_perks] == replace_me_comparison
+alias[trigger:law_legacy_track_perks] = replace_me_comparison
 
 ### Is the scoped character overriding the winner in the GHW they're pledged to (will put their beneficiary on the throne if they're top participant)?
 alias[trigger:is_overriding_designated_winner] = bool
@@ -1076,16 +1076,16 @@ alias[trigger:has_character_flag] = value[character_flag]
 alias[trigger:has_province_modifier_duration_remaining] = replace_me
 
 ### Compare the number of good genetic traits <charater> = { num_of_good_genetic_traits >= 2 }
-alias[trigger:num_of_good_genetic_traits] == replace_me_comparison
+alias[trigger:num_of_good_genetic_traits] = replace_me_comparison
 
 ### does the scope character have a trait with a certain flag? 	has_trait_with_flag = can_not_marry
 alias[trigger:has_trait_with_flag] = replace_me
 
 ### Does the character had a focus for that time?
-alias[trigger:has_had_focus_for_days] == replace_me_comparison
+alias[trigger:has_had_focus_for_days] = replace_me_comparison
 
 ### compares the defender war score
-alias[trigger:defender_war_score] == replace_me_comparison
+alias[trigger:defender_war_score] = replace_me_comparison
 
 ### Does the given faith have the given doctrine?? has_doctrine = doctrine_key
 alias[trigger:has_doctrine] = replace_me
@@ -1094,13 +1094,13 @@ alias[trigger:has_doctrine] = replace_me
 alias[trigger:is_allied_in_war] = scope[character]
 
 ### Scheme power/resistance ratio, the ratio is set to +/-10000 if resistance is zero and power is positive/negative (0 if both power and resistance are 0)  The ratio is "power divided by resistance"
-alias[trigger:scheme_power_resistance_ratio] == replace_me_comparison
+alias[trigger:scheme_power_resistance_ratio] = replace_me_comparison
 
 ### is the scope character leading one of the sides in the target war?
 alias[trigger:is_leader_in_war] = replace_me
 
 ### does the character have this many personality traits?
-alias[trigger:number_of_personality_traits] == replace_me_comparison
+alias[trigger:number_of_personality_traits] = replace_me_comparison
 
 ### Is the character in the pool the target province is a part of
 alias[trigger:is_in_pool_at] = scope[province]
@@ -1112,7 +1112,7 @@ alias[trigger:in_activity_type] = replace_me
 alias[trigger:has_title_law_flag] = replace_me
 
 ### How many perks in the lifestyle does this dynasty have?
-alias[trigger:blood_legacy_track_perks] == replace_me_comparison
+alias[trigger:blood_legacy_track_perks] = replace_me_comparison
 
 ### Checks whether the current scope has the specified variable list set has_variable_list = name
 alias[trigger:has_variable_list] = replace_me
@@ -1124,7 +1124,7 @@ alias[trigger:has_pledged_defender] = replace_me_character
 alias[trigger:is_extended_family_of] = scope[character]
 
 ### does the character have the required prestige?
-alias[trigger:prestige] == replace_me_comparison
+alias[trigger:prestige] = replace_me_comparison
 
 ### Is the skill the highest skill of the character? True even when there are multiple skills with the same highest value.
 alias[trigger:highest_skill] = replace_me
@@ -1139,19 +1139,19 @@ alias[trigger:is_primary_heir_of] = scope[character]
 alias[trigger:has_mother] = bool
 
 ### Compare the current value.
-alias[trigger:compare_value] == replace_me_comparison
+alias[trigger:compare_value] = replace_me_comparison
 
 ### does the scope character have any casus bellis on the taget character that should be displayed? (Allowed to fail valid_to_start_display_regardless)
 alias[trigger:has_any_display_cb_on] = scope[character]
 
 ### Current number of faction members in faction
-alias[trigger:number_of_faction_members_in_council] == replace_me_comparison
+alias[trigger:number_of_faction_members_in_council] = replace_me_comparison
 
 ### Is the target character pledged as an attacker in the given Great Holy War?
 alias[trigger:has_pledged_attacker] = replace_me_character
 
 ### Scheme progress (0 - 10 (defined))
-alias[trigger:scheme_progress] == replace_me_comparison
+alias[trigger:scheme_progress] = replace_me_comparison
 
 ### Does the scope character have an opposite relationship of the relation value with the target character? target = , relation =
 alias[trigger:has_opposite_relation] = replace_me
@@ -1163,16 +1163,16 @@ alias[trigger:is_employer_of] = scope[character]
 alias[trigger:is_shunned_or_criminal_for] = replace_me_character
 
 ### Check the income of the scoped province monthly_income > 10
-alias[trigger:monthly_income] == replace_me_comparison
+alias[trigger:monthly_income] = replace_me_comparison
 
 ### Saves a numerical or bool value as an arbitrarily-named temporary target to be referenced later in the same effect save_temporary_scope_value_as = { name = <string> value = x }
 alias[trigger:save_temporary_scope_value_as] = replace_me
 
 ### what is the highest held landed title tier of the character?
-alias[trigger:highest_held_title_tier] == replace_me_comparison
+alias[trigger:highest_held_title_tier] = replace_me_comparison
 
 ### How many perk points available does the character have?
-alias[trigger:diplomacy_lifestyle_perk_points] == replace_me_comparison
+alias[trigger:diplomacy_lifestyle_perk_points] = replace_me_comparison
 
 ### is the target character participating in the scope war as an attacker or defender?
 alias[trigger:is_participant] = scope[character]
@@ -1214,19 +1214,19 @@ alias[trigger:has_disabled_building] = bool
 alias[trigger:has_revokable_lease] = bool
 
 ### Does the character have this much focus progress
-alias[trigger:focus_progress] == replace_me_comparison
+alias[trigger:focus_progress] = replace_me_comparison
 
 ### checks if the government of the character allows something
 alias[trigger:government_allows] = replace_me
 
 ### Is the scoped character's max military strength this big?
-alias[trigger:max_military_strength] == replace_me_comparison
+alias[trigger:max_military_strength] = replace_me_comparison
 
 ### Compare the current ingame date.
-alias[trigger:current_date] == replace_me_date
+alias[trigger:current_date] = replace_me_date
 
 ### How many perks from this lifestyle does the character have?
-alias[trigger:martial_lifestyle_perks] == replace_me_comparison
+alias[trigger:martial_lifestyle_perks] = replace_me_comparison
 
 ### Always the same value
 alias[trigger:always] = bool
@@ -1256,7 +1256,7 @@ alias[trigger:is_allied_to] = scope[character]
 alias[trigger:is_lowborn] = bool
 
 ### task_current_value = scope:county.active_de_jure_drift_progress
-alias[trigger:active_de_jure_drift_progress] == replace_me_comparison
+alias[trigger:active_de_jure_drift_progress] = replace_me_comparison
 
 ### Is the county a holy site of the given faith? is_holy_site_of = some faith
 alias[trigger:is_holy_site_of] = replace_me
@@ -1265,7 +1265,7 @@ alias[trigger:is_holy_site_of] = replace_me
 alias[trigger:has_icon] = replace_me
 
 ### Compare the number of bad genetic traits <charater> = { num_of_bad_genetic_traits = 0 }
-alias[trigger:num_of_bad_genetic_traits] == replace_me_comparison
+alias[trigger:num_of_bad_genetic_traits] = replace_me_comparison
 
 ### is the character imprisoned?
 alias[trigger:is_imprisoned] = bool
@@ -1274,7 +1274,7 @@ alias[trigger:is_imprisoned] = bool
 alias[trigger:is_bad_nickname] = replace_me
 
 ### How many perk points available does the character have?
-alias[trigger:martial_lifestyle_xp] == replace_me_comparison
+alias[trigger:martial_lifestyle_xp] = replace_me_comparison
 
 ### does the character and the target have a number of commander traits in common? number_of_personality_traits_in_common = { target = X value >/</>=/<= Y }
 alias[trigger:number_of_commander_traits_in_common] = replace_me
@@ -1286,7 +1286,7 @@ alias[trigger:is_close_family_of] = scope[character]
 alias[trigger:release_only] = bool
 
 ### does the dynasty have the required prestige level?
-alias[trigger:dynasty_prestige_level] == replace_me_comparison
+alias[trigger:dynasty_prestige_level] = replace_me_comparison
 
 ### Is the character interaction specified shown for the target character? is_character_interaction_shown = {     recipient = character     interaction = interaction_name }
 alias[trigger:is_character_interaction_shown] = replace_me
@@ -1304,7 +1304,7 @@ alias[trigger:assert_read] = replace_me
 alias[trigger:is_valid_as_agent_in_scheme] = replace_me
 
 ### Is the scoped character's monthly expenses this big?
-alias[trigger:monthly_character_expenses] == replace_me_comparison
+alias[trigger:monthly_character_expenses] = replace_me_comparison
 
 ### What is the difference in highest title tiers between the scoped character and the target character (-5 to 5) For example, this is true: scope:a_baron = {     tier_difference = {         target = scope:a_king         value = -3     } }  Checks the difference in highest_held_title_tier between two characters. The formatting is: scope:actor = { tier_difference = { target = scope:recipient value = 1 } }
 alias[trigger:tier_difference] = replace_me
@@ -1313,19 +1313,19 @@ alias[trigger:tier_difference] = replace_me
 alias[trigger:has_any_secrets] = bool
 
 ### compares the attacker war score
-alias[trigger:attacker_war_score] == replace_me_comparison
+alias[trigger:attacker_war_score] = replace_me_comparison
 
 ### Does the character have this nickname?
 alias[trigger:has_nickname] = replace_me
 
 ### Average opinion of the character that are powerful vassals of the faction scope target
-alias[trigger:average_faction_opinion_powerful_vassal] == replace_me_comparison
+alias[trigger:average_faction_opinion_powerful_vassal] = replace_me_comparison
 
 ### Is the character a grandparent of the target character?
 alias[trigger:is_grandparent_of] = scope[character]
 
 ### does the character have the required prestige level?
-alias[trigger:prestige_level] == replace_me_comparison
+alias[trigger:prestige_level] = replace_me_comparison
 
 ### is the character a commanding an army?
 alias[trigger:is_commanding_army] = bool
@@ -1343,10 +1343,10 @@ alias[trigger:can_have_children] = bool
 alias[trigger:secret_type] = <secret_type>
 
 ### Compare the current computer year.
-alias[trigger:current_computer_date_year] == replace_me_comparison
+alias[trigger:current_computer_date_year] = replace_me_comparison
 
 ### How many perk points available does the character have?
-alias[trigger:stewardship_lifestyle_xp] == replace_me_comparison
+alias[trigger:stewardship_lifestyle_xp] = replace_me_comparison
 
 ### all inside trigger must be true
 alias[trigger:and] = replace_me
@@ -1355,7 +1355,7 @@ alias[trigger:and] = replace_me
 alias[trigger:add_to_temporary_list] = replace_me
 
 ### does the character have this many commander traits?
-alias[trigger:number_of_commander_traits] == replace_me_comparison
+alias[trigger:number_of_commander_traits] = replace_me_comparison
 
 ### Is the scoped character a councillor for the specified character?
 alias[trigger:is_councillor_of] = scope[character]
@@ -1367,10 +1367,10 @@ alias[trigger:scheme_is_character_agent] = scope[character]
 alias[trigger:is_at_war] = bool
 
 ### does the character have the required piety level?
-alias[trigger:piety_level] == replace_me_comparison
+alias[trigger:piety_level] = replace_me_comparison
 
 ### What is the max (if all levies were fully reinforced) military strength of the pledged defenders in the given Great Holy War?
-alias[trigger:ghw_defenders_strength] == replace_me_comparison
+alias[trigger:ghw_defenders_strength] = replace_me_comparison
 
 ### Is the scope character the player heir of the target character?
 alias[trigger:is_player_heir_of] = scope[character]
@@ -1385,7 +1385,7 @@ alias[trigger:has_construction_with_flag] = replace_me
 alias[trigger:controls_holy_site_with_flag] = replace_me
 
 ### Compares the fort level of a province
-alias[trigger:fort_level] == replace_me_comparison
+alias[trigger:fort_level] = replace_me_comparison
 
 ### Is the scheme currently affected by the specified modifier? has_scheme_modifier = X
 alias[trigger:scheme_skill] = replace_me
@@ -1400,10 +1400,10 @@ alias[trigger:has_trait_rank] = {
 }
 
 ### Is the scoped character's yearly income this big?
-alias[trigger:yearly_character_income] == replace_me_comparison
+alias[trigger:yearly_character_income] = replace_me_comparison
 
 ### How many days are left in the mercenary contract. 0 if not hired.
-alias[trigger:mercenary_company_expiration_days] == replace_me_comparison
+alias[trigger:mercenary_company_expiration_days] = replace_me_comparison
 
 ### Does the scoped province have a given modifier has_province_modifier = name
 alias[trigger:has_province_modifier] = replace_me
@@ -1412,7 +1412,7 @@ alias[trigger:has_province_modifier] = replace_me
 alias[trigger:has_building_or_higher] = <building>
 
 ### How much piety is in the great holy war's war chest?
-alias[trigger:war_chest_piety] == replace_me_comparison
+alias[trigger:war_chest_piety] = replace_me_comparison
 
 ### Has the scope character a bad nickname?
 alias[trigger:has_bad_nickname] = bool
@@ -1439,7 +1439,7 @@ alias[trigger:can_title_join_faction] = replace_me
 alias[trigger:is_local_player] = bool
 
 ### Compare the date of the bookmarked game launched.
-alias[trigger:game_start_date] == replace_me_date
+alias[trigger:game_start_date] = replace_me_date
 
 ### Is the story in scope of this type?
 alias[trigger:story_type] = replace_me
@@ -1451,7 +1451,7 @@ alias[trigger:has_holding_type] = replace_me
 alias[trigger:is_councillor] = bool
 
 ### AI rationality
-alias[trigger:ai_rationality] == replace_me_comparison
+alias[trigger:ai_rationality] = replace_me_comparison
 
 ### is the specified in-game view open?  - An interface trigger, can only be used in specific places
 alias[trigger:is_game_view_open] = replace_me
@@ -1469,28 +1469,28 @@ alias[trigger:important_action_is_visible] = replace_me
 alias[trigger:vassal_contract_obligation_level_can_be_increased] = bool
 
 ### does the character have the required diplomacy skill level?
-alias[trigger:diplomacy] == replace_me_comparison
+alias[trigger:diplomacy] = replace_me_comparison
 
 ### What is the faith's hostility level towards the target faith? faith_hostility_level { target = scope:some_faith value > 1 }
-alias[trigger:faith_hostility_level] == replace_me_comparison
+alias[trigger:faith_hostility_level] = replace_me_comparison
 
 ### does the character have the required learning skill level?
-alias[trigger:learning] == replace_me_comparison
+alias[trigger:learning] = replace_me_comparison
 
 ### AI compassion
-alias[trigger:ai_compassion] == replace_me_comparison
+alias[trigger:ai_compassion] = replace_me_comparison
 
 ### Compares the county's opinion of its holder
-alias[trigger:county_holder_opinion] == replace_me_comparison
+alias[trigger:county_holder_opinion] = replace_me_comparison
 
 ### Number of days the character has been in peace (0 if in war)
-alias[trigger:days_of_continuous_peace] == replace_me_comparison
+alias[trigger:days_of_continuous_peace] = replace_me_comparison
 
 ### Conditionally cause an assert during run time assert_if = { limit = { X } text = Y }, where X is a trigger and Y is an optional string
 alias[trigger:assert_if] = replace_me
 
 ### How strong is this side (based on soldiers still fighting)? Scaled down by a factor of 1000 so it doesn't get too large to do math on
-alias[trigger:side_strength] == replace_me_comparison
+alias[trigger:side_strength] = replace_me_comparison
 
 ### Is the character a child of the target character?
 alias[trigger:is_child_of] = scope[character]
@@ -1505,7 +1505,7 @@ alias[trigger:geographical_region] = replace_me
 alias[trigger:is_a_faction_leader] = bool
 
 ### compares the county's opinion of the current count
-alias[trigger:county_opinion] == replace_me_comparison
+alias[trigger:county_opinion] = replace_me_comparison
 
 ### Is the character a grandchild of the target character?
 alias[trigger:is_grandchild_of] = scope[character]
@@ -1517,22 +1517,22 @@ alias[trigger:has_execute_reason] = scope[character]
 alias[trigger:has_dynasty_modifier] = replace_me
 
 ### how much county control is the county gaining each month?
-alias[trigger:county_control_rate] == replace_me_comparison
+alias[trigger:county_control_rate] = replace_me_comparison
 
 ### is the target title de facto liege or above?
 alias[trigger:target_is_de_facto_liege_or_above] = scope[landed_title]
 
 ### Check the number of votes the scoped character has in the target title number_of_election_votes = { title = scope:actor.primary_title value = 0 }
-alias[trigger:number_of_election_votes] == replace_me_comparison
+alias[trigger:number_of_election_votes] = replace_me_comparison
 
 ### Is the scoped character a special councillor?
 alias[trigger:is_special_councillor] = bool
 
 ### How much prestige is in the great holy war's war chest?
-alias[trigger:war_chest_prestige] == replace_me_comparison
+alias[trigger:war_chest_prestige] = replace_me_comparison
 
 ### the number of activity participants (including the owner)
-alias[trigger:number_of_participants] == replace_me_comparison
+alias[trigger:number_of_participants] = replace_me_comparison
 
 ### Check if the scope war is a civil war or not
 alias[trigger:is_civil_war] = bool
@@ -1547,7 +1547,7 @@ alias[trigger:has_local_variable_list] = replace_me
 alias[trigger:can_join_faction] = replace_me
 
 ### What is the max (if all levies were fully reinforced) military strength of the pledged attackers in the given Great Holy War?
-alias[trigger:ghw_attackers_strength] == replace_me_comparison
+alias[trigger:ghw_attackers_strength] = replace_me_comparison
 
 ### Checks how much a character has contributed to the scoped war war_contribution = { target = some character value > 5 }
 alias[trigger:war_contribution] = replace_me
@@ -1556,10 +1556,10 @@ alias[trigger:war_contribution] = replace_me
 alias[trigger:is_married] = bool
 
 ### The number of agents in a scheme
-alias[trigger:scheme_number_of_agents] == replace_me_comparison
+alias[trigger:scheme_number_of_agents] = replace_me_comparison
 
 ### How many perks in the lifestyle does this dynasty have?
-alias[trigger:guile_legacy_track_perks] == replace_me_comparison
+alias[trigger:guile_legacy_track_perks] = replace_me_comparison
 
 ### Check if the chance to create a faction against a target of the scope character is is true against the scripted value create_faction_type_chance = {     type = faction_type #An ongoing faction     target = target_character     value <|<=|>=|> 0 }
 alias[trigger:create_faction_type_chance] = replace_me
@@ -1588,11 +1588,11 @@ alias[trigger:is_uncle_or_aunt_of] = scope[character]
 ### does the character and the target have a number of personality traits in common? number_of_personality_traits_in_common = { target = X value >/</>=/<= Y }
 alias[trigger:number_of_personality_traits_in_common] = {
     target = scope[character]
-    value == int_value_field
+    value = int_value_field
 }
 
 ### does the character have the required dread?
-alias[trigger:dread] == replace_me_comparison
+alias[trigger:dread] = replace_me_comparison
 
 ### whether the combat side was the attacker or not
 alias[trigger:is_combat_side_attacker] = bool
@@ -1601,10 +1601,10 @@ alias[trigger:is_combat_side_attacker] = bool
 alias[trigger:is_theocratic_lessee] = bool
 
 ### AI zeal
-alias[trigger:ai_zeal] == replace_me_comparison
+alias[trigger:ai_zeal] = replace_me_comparison
 
 ### does the character have the required prowess skill level?
-alias[trigger:prowess] == replace_me_comparison
+alias[trigger:prowess] = replace_me_comparison
 
 ### Is the target character an exposed agent in the scope scheme?
 alias[trigger:is_scheme_agent_exposed] = scope[character]
@@ -1616,7 +1616,7 @@ alias[trigger:has_religion] = scope[religion]
 alias[trigger:has_free_building_slot] = bool
 
 ### Current discontent of the faction
-alias[trigger:faction_discontent] == replace_me_comparison
+alias[trigger:faction_discontent] = replace_me_comparison
 
 ### is the target character in the scope war as a defender?
 alias[trigger:is_defender] = scope[character]
@@ -1631,10 +1631,10 @@ alias[trigger:is_attracted_to_women] = bool
 alias[trigger:is_in_family] = replace_me
 
 ### What's the multiplier to the control gain rate? E.G., if there's just a +20% modifier, this would return 1.2
-alias[trigger:county_control_rate_modifier] == replace_me_comparison
+alias[trigger:county_control_rate_modifier] = replace_me_comparison
 
 ### What's the multiplier to the development progress?
-alias[trigger:development_rate_modifier] == replace_me_comparison
+alias[trigger:development_rate_modifier] = replace_me_comparison
 
 ### is the county coastal?
 alias[trigger:is_coastal_county] = replace_me_bool
@@ -1664,10 +1664,10 @@ alias[trigger:has_all_innovations] = replace_me
 alias[trigger:has_graphical_culture] = value[graphical_culture]
 
 ### AI sociability
-alias[trigger:ai_sociability] == replace_me_comparison
+alias[trigger:ai_sociability] = replace_me_comparison
 
 ### Base weight of the scoped character base_weight > 10
-alias[trigger:base_weight] == replace_me_comparison
+alias[trigger:base_weight] = replace_me_comparison
 
 ### Is the scoped character a realm neighbor of the target? Meaning they're independent or has the same liege, and border your realm.
 alias[trigger:character_is_land_realm_neighbor] = replace_me_character_target
@@ -1676,19 +1676,19 @@ alias[trigger:character_is_land_realm_neighbor] = replace_me_character_target
 alias[trigger:character_is_realm_neighbor] = replace_me_character_target
 
 ### Current weight of the scoped character current_weight > 10
-alias[trigger:current_weight] == replace_me_comparison
+alias[trigger:current_weight] = replace_me_comparison
 
 ### Current weight of the scoped character as a value for portraits scaled between 0.0 and 1.0 current_weight_for_portrait > 0.1
-alias[trigger:current_weight_for_portrait] == replace_me_comparison
+alias[trigger:current_weight_for_portrait] = replace_me_comparison
 
 ### Does the scoped character have the given death reason? death_reason = death_natural_causes
 alias[trigger:death_reason] = replace_me
 
 ### does the character have the required diplomacy skill level difference against target? diplomacy = { target = character value <= script_value abs = yes/no(optional, default no) }
-alias[trigger:diplomacy_diff] == replace_me_comparison
+alias[trigger:diplomacy_diff] = replace_me_comparison
 
 ### Diplomacy skill scaled between 0.0 and 1.0 for portraits
-alias[trigger:diplomacy_for_portrait] == replace_me_comparison
+alias[trigger:diplomacy_for_portrait] = replace_me_comparison
 
 ### Does the AI liege in a vassal contract desire changing an obligation level
 alias[trigger:does_ai_liege_in_vassal_contract_desire_obligation_change] = replace_me_bool
@@ -1697,7 +1697,7 @@ alias[trigger:does_ai_liege_in_vassal_contract_desire_obligation_change] = repla
 alias[trigger:does_ai_vassal_in_vassal_contract_desire_obligation_change] = replace_me_bool
 
 ### is the character old/young enough? If immortal, this uses the age they became immortal at
-alias[trigger:effective_age] == replace_me_comparison
+alias[trigger:effective_age] = replace_me_comparison
 
 ### does the scope character have a dejure claim against the target?
 alias[trigger:has_de_jure_claim_on] = replace_me_character_target
@@ -1715,10 +1715,10 @@ alias[trigger:has_inactive_trait] = replace_me
 alias[trigger:has_raid_immunity_against] = replace_me_character
 
 ### does the character have the required intrigue skill level difference against target? intrigue = { target = character value <= script_value abs = yes/no(optional, default no) }
-alias[trigger:intrigue_diff] == replace_me_comparison
+alias[trigger:intrigue_diff] = replace_me_comparison
 
 ### Intrigue skill scaled between 0.0 and 1.0 for portraits
-alias[trigger:intrigue_for_portrait] == replace_me_comparison
+alias[trigger:intrigue_for_portrait] = replace_me_comparison
 
 ### is the character at home?
 alias[trigger:is_at_home] = replace_me_bool
@@ -1760,91 +1760,91 @@ alias[trigger:is_vassal_or_below_of] = replace_me_character_target
 alias[trigger:is_visibly_fertile] = replace_me_bool
 
 ### does the character have the required learning skill level difference against target? learning = { target = character value <= script_value abs = yes/no(optional, default no) }
-alias[trigger:learning_diff] == replace_me_comparison
+alias[trigger:learning_diff] = replace_me_comparison
 
 ### Learning skill scaled between 0.0 and 1.0 for portraits
-alias[trigger:learning_for_portrait] == replace_me_comparison
+alias[trigger:learning_for_portrait] = replace_me_comparison
 
 ### How many perks from this lifestyle does the character have?
-alias[trigger:learning_lifestyle_perks] == replace_me_comparison
+alias[trigger:learning_lifestyle_perks] = replace_me_comparison
 
 ### does the character have the required gold? (AI category long term)
-alias[trigger:long_term_gold] == replace_me_comparison
+alias[trigger:long_term_gold] = replace_me_comparison
 
 ### does the character have the required martial skill level difference against target? martial = { target = character value <= script_value abs = yes/no(optional, default no) }
-alias[trigger:martial_diff] == replace_me_comparison
+alias[trigger:martial_diff] = replace_me_comparison
 
 ### Martial skill scaled between 0.0 and 1.0 for portraits
-alias[trigger:martial_for_portrait] == replace_me_comparison
+alias[trigger:martial_for_portrait] = replace_me_comparison
 
 ### Is this character's betrothal matrilinear? False if there's no betrothal.
 alias[trigger:matrilinear_betrothal] = replace_me_bool
 
 ### Does the scope character have value amount of max soldiers of MaA of the base type?
-alias[trigger:max_number_maa_soldiers_of_base_type] == replace_me_comparison
+alias[trigger:max_number_maa_soldiers_of_base_type] = replace_me_comparison
 
 ### Does the scope character have value amount of max soldiers of MaA of the type?
-alias[trigger:max_number_maa_soldiers_of_type] == replace_me_comparison
+alias[trigger:max_number_maa_soldiers_of_type] = replace_me_comparison
 
 ### The maximum number of concubines a character can have max_number_of_concubines > 2
-alias[trigger:max_number_of_concubines] == replace_me_comparison
+alias[trigger:max_number_of_concubines] = replace_me_comparison
 
 ### The amount of missing unique ancestors from the characters real father and mother Traverses the family tree for NDefines::NChildbirth::INBREEDING_ANCESTOR_GENERATIONS amount of generations. By default this means that we're traversing 62 ancestors and report the amount of duplicates we find. calc_missing_unique_ancestors > 10
-alias[trigger:missing_unique_ancestors] == replace_me_comparison
+alias[trigger:missing_unique_ancestors] = replace_me_comparison
 
 ### Does the scope character have value amount of MaA of the base type?
-alias[trigger:number_maa_regiments_of_base_type] == replace_me_comparison
+alias[trigger:number_maa_regiments_of_base_type] = replace_me_comparison
 
 ### Does the scope character have value amount of MaA of the type?
-alias[trigger:number_maa_regiments_of_type] == replace_me_comparison
+alias[trigger:number_maa_regiments_of_type] = replace_me_comparison
 
 ### Does the scope character have value amount of soldiers of MaA of the base type?
-alias[trigger:number_maa_soldiers_of_base_type] == replace_me_comparison
+alias[trigger:number_maa_soldiers_of_base_type] = replace_me_comparison
 
 ### Does the scope character have value amount of soldiers of MaA of the type?
-alias[trigger:number_maa_soldiers_of_type] == replace_me_comparison
+alias[trigger:number_maa_soldiers_of_type] = replace_me_comparison
 
 ### The number of concubines the scoped character has number_of_concubines > 2
-alias[trigger:number_of_concubines] == replace_me_comparison
+alias[trigger:number_of_concubines] = replace_me_comparison
 
 ### The number of fertile concubines the scoped character should have to not get penalties number_of_desired_concubines > 2
-alias[trigger:number_of_desired_concubines] == replace_me_comparison
+alias[trigger:number_of_desired_concubines] = replace_me_comparison
 
 ### The number of visibly fertile concubines the scoped character has number_of_fertile_concubines > 2
-alias[trigger:number_of_fertile_concubines] == replace_me_comparison
+alias[trigger:number_of_fertile_concubines] = replace_me_comparison
 
 ### The number of men at arms the scoped character has
-alias[trigger:number_of_maa_regiments] == replace_me_comparison
+alias[trigger:number_of_maa_regiments] = replace_me_comparison
 
 ### Is this character's betrothal patrilinear? False if there's no betrothal.
 alias[trigger:patrilinear_betrothal] = replace_me_bool
 
 ### does the character have the required prowess skill level difference against target? prowess = { target = character value <= script_value abs = yes/no(optional, default no) }
-alias[trigger:prowess_diff] == replace_me_comparison
+alias[trigger:prowess_diff] = replace_me_comparison
 
 ### Prowess skill scaled between 0.0 and 1.0 for portraits
-alias[trigger:prowess_for_portrait] == replace_me_comparison
+alias[trigger:prowess_for_portrait] = replace_me_comparison
 
 ### Is the character's realm within this distance of the title? Distance is in pixels, squared for performance reasons. realm_to_title_distance_squared = { title = some_title value > 10000 }
-alias[trigger:realm_to_title_distance_squared] == replace_me_comparison
+alias[trigger:realm_to_title_distance_squared] = replace_me_comparison
 
 ### does the character have the required gold? (AI category short term)
-alias[trigger:short_term_gold] == replace_me_comparison
+alias[trigger:short_term_gold] = replace_me_comparison
 
 ### is the character the local player? An interface trigger, can only be used in specific places
 alias[trigger:should_show_disturbing_portrait_modifiers] = replace_me_bool
 
 ### does the character have the required stewardship skill level difference against target? stewardship = { target = character value <= script_value abs = yes/no(optional, default no) }
-alias[trigger:stewardship_diff] == replace_me_comparison
+alias[trigger:stewardship_diff] = replace_me_comparison
 
 ### Stewardship skill scaled between 0.0 and 1.0 for portraits
-alias[trigger:stewardship_for_portrait] == replace_me_comparison
+alias[trigger:stewardship_for_portrait] = replace_me_comparison
 
 ### is the target character the the same character or above (in the vassal hierarchy) the scope character?
 alias[trigger:target_is_same_character_or_above] = replace_me_character_target
 
 ### Target weight of the scoped character target_weight > 10
-alias[trigger:target_weight] == replace_me_comparison
+alias[trigger:target_weight] = replace_me_comparison
 
 ### Do any of the current active obligations in the scoped character's vassal contract have the given flag
 alias[trigger:vassal_contract_has_flag] = replace_me
@@ -1856,19 +1856,19 @@ alias[trigger:vassal_contract_has_modifiable_obligations] = replace_me_bool
 alias[trigger:vassal_contract_is_blocked_from_modification] = replace_me_bool
 
 ### Is the scoped character's number of vassals (excluding barons) this high?
-alias[trigger:vassal_count] == replace_me_comparison
+alias[trigger:vassal_count] = replace_me_comparison
 
 ### Is the scoped character's vassal limit this big?
-alias[trigger:vassal_limit] == replace_me_comparison
+alias[trigger:vassal_limit] = replace_me_comparison
 
 ### Is there this much space left in the character's vassal limit? Negative values also work for checking characters that are above their limit
-alias[trigger:vassal_limit_available] == replace_me_comparison
+alias[trigger:vassal_limit_available] = replace_me_comparison
 
 ### Is the scoped character's vassal count this big in comparison to their limit?
-alias[trigger:vassal_limit_percentage] == replace_me_comparison
+alias[trigger:vassal_limit_percentage] = replace_me_comparison
 
 ### Current power threshold of the faction
-alias[trigger:faction_power_threshold] == replace_me_comparison
+alias[trigger:faction_power_threshold] = replace_me_comparison
 
 ### Check if the scoped war's CB has is_white_peace_possible = yes
 alias[trigger:is_white_peace_possible] = replace_me_bool
@@ -1880,25 +1880,25 @@ alias[trigger:has_dominant_ruling_gender] = replace_me_character_target
 alias[trigger:has_graphical_faith] = replace_me
 
 ### Returns how many characters follow the given faith num_character_followers > 0
-alias[trigger:num_character_followers] == replace_me_comparison
+alias[trigger:num_character_followers] = replace_me_comparison
 
 ### Returns how many counties follow the given faith num_county_followers > 0
-alias[trigger:num_county_followers] == replace_me_comparison
+alias[trigger:num_county_followers] = replace_me_comparison
 
 ### Does the local player have knowledge about the secret? An interface trigger, can only be used in specific places
 alias[trigger:local_player_knows_this_secret] = replace_me_bool
 
 ### How much gold is available to loot for raiding armies? available_loot >= 7
-alias[trigger:available_loot] == replace_me_comparison
+alias[trigger:available_loot] = replace_me_comparison
 
 ### How many building slots exist (including occupied ones)? building_slots > 3
-alias[trigger:building_slots] == replace_me_comparison
+alias[trigger:building_slots] = replace_me_comparison
 
 ### How many levels of normal buildings are there? Duchy and such buildings do not count. Building under construction does not count. The capital building does count combined_building_level > 10
-alias[trigger:combined_building_level] == replace_me_comparison
+alias[trigger:combined_building_level] = replace_me_comparison
 
 ### How many free building slots exist? A building in construction is considered to be taking a slot free_building_slots > 3
-alias[trigger:free_building_slots] == replace_me_comparison
+alias[trigger:free_building_slots] = replace_me_comparison
 
 ### Does the province (holding) have a special buidling?
 alias[trigger:has_special_building] = replace_me_bool
@@ -1907,7 +1907,7 @@ alias[trigger:has_special_building] = replace_me_bool
 alias[trigger:has_special_building_slot] = replace_me_bool
 
 ### How many normal buildings are there? Duchy and such buildings do not count. Building under construction does count num_buildings > 3
-alias[trigger:num_buildings] == replace_me_comparison
+alias[trigger:num_buildings] = replace_me_comparison
 
 ### Is the scoped army in combat?
 alias[trigger:is_army_in_combat] = replace_me_bool
@@ -1925,19 +1925,19 @@ alias[trigger:is_army_in_siege_relevant_for] = replace_me_character
 alias[trigger:is_raid_army] = replace_me_bool
 
 ### How much raid loot is the army carrying?
-alias[trigger:raid_loot] == replace_me_comparison
+alias[trigger:raid_loot] = replace_me_comparison
 
 ### The amount of garrison in a county or province from buildings levies > 100
-alias[trigger:building_garrison] == replace_me_comparison
+alias[trigger:building_garrison] = replace_me_comparison
 
 ### The amount of levies in a county or province from buildings levies > 100
-alias[trigger:building_levies] == replace_me_comparison
+alias[trigger:building_levies] = replace_me_comparison
 
 ### Can the specified tutorial lesson be started? can_start_tutorial_lesson = reactive_advice_succession An interface trigger, can only be used in specific places
 alias[trigger:can_start_tutorial_lesson] = replace_me
 
 ### Compare the current ingame month (1..12)
-alias[trigger:current_month] == replace_me_comparison
+alias[trigger:current_month] = replace_me_comparison
 
 ### Does the host have this DLC
 alias[trigger:has_dlc] = replace_me
@@ -1970,7 +1970,7 @@ alias[trigger:is_tutorial_lesson_chain_completed] = replace_me
 alias[trigger:is_tutorial_lesson_step_completed] = replace_me
 
 ### Checks the size of a list list_size = { name = X value >= Y } Where X is the name of the list Where Y is a script value
-alias[trigger:list_size] == replace_me_comparison
+alias[trigger:list_size] = replace_me_comparison
 
 ### An interface trigger, can only be used in specific places
 alias[trigger:monarchs_journey_unlock] = replace_me
@@ -1979,13 +1979,13 @@ alias[trigger:monarchs_journey_unlock] = replace_me
 alias[trigger:time_of_year] = replace_me
 
 ### How many years it has been since the start of the game years_from_game_start > 5
-alias[trigger:years_from_game_start] == replace_me_comparison
+alias[trigger:years_from_game_start] = replace_me_comparison
 
 ### How long has the character been pregnant? Counts from impregnation, not reveal
-alias[trigger:pregnancy_days] == replace_me_comparison
+alias[trigger:pregnancy_days] = replace_me_comparison
 
 ### Number of days since the war score has been at max (+100 or -100). Returns -1 if the war score is not +100 or -100
-alias[trigger:days_since_max_war_score] == replace_me_comparison
+alias[trigger:days_since_max_war_score] = replace_me_comparison
 
 ### Check if has a relation flag in a particular relation with the target character.
 alias[effect:has_relation_flag] = single_alias_right[relation_flag_clause]
@@ -1996,28 +1996,28 @@ alias[trigger:has_relation_<scripted_relation>] = scope[character]
 ### Checks for a secret scripted relationship with a target character.
 alias[trigger:has_relation_<scripted_relation>] = scope[character]
 ### Compares the number of scripted relations a character has of the type.
-alias[trigger:num_of_relation_<scripted_relation>] == replace_me_comparison
+alias[trigger:num_of_relation_<scripted_relation>] = replace_me_comparison
 
 ### Is this title a head of faith title
 alias[trigger:is_head_of_faith] = replace_me_subject_type
 
 ### does the character have the required gold? (AI category reserved)
-alias[trigger:ai_reserved_gold] == replace_me_comparison
+alias[trigger:ai_reserved_gold] = replace_me_comparison
 
 ### does the character have the required gold? (AI category war chest)
-alias[trigger:ai_war_chest] == replace_me_comparison
+alias[trigger:ai_war_chest] = replace_me_comparison
 
 ### Can the scoped character declare war on the defender with the specified casus bellis on the defender character for the target titles with an optional claimant. can_declare_war = { defender = X casus_belli = Y target_titles = { Z } claimant = A }
 alias[trigger:can_declare_war] = replace_me
 
 ### Is the scoped character's debt level this value? -1 if not meeting any debt level threshold. 0 for the first one, and so on. Note that this might not match exactly with the modifier in effect as it calculates what the modifier will be now, and the character's actual modifier can lag behind
-alias[trigger:debt_level] == replace_me_comparison
+alias[trigger:debt_level] = replace_me_comparison
 
 ### Is the scoped character's domain this big? Does not count titles currently in the grace period
-alias[trigger:domain_size_excluding_grace_period] == replace_me_comparison
+alias[trigger:domain_size_excluding_grace_period] = replace_me_comparison
 
 ### Compare the current ingame day [1, 31]
-alias[trigger:current_day] == replace_me_comparison
+alias[trigger:current_day] = replace_me_comparison
 
 ### Compare the current ingame year
-alias[trigger:current_year] == replace_me_comparison
+alias[trigger:current_year] = replace_me_comparison

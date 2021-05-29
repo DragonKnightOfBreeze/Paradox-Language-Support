@@ -1,8 +1,8 @@
 values = {
 	value[variable] = {
-		# ========================
+		# ============
 		# GLOBAL DYNAMIC VARIABLES
-		# ========================
+		# ============
 
 		### Get date value that can be comparable to other date values.
 		date
@@ -19,9 +19,9 @@ values = {
 		### (Trigger) Check the global threat value. 0-1 value.
 		threat
 
-		# =========================
+		# =============
 		# COUNTRY DYNAMIC VARIABLES
-		# =========================
+		# =============
 
 		### Weight for an AI attitude attitude_allied against country. Example: GER.ai_attitude_allied_weight@ENG.
 		ai_attitude_allied_weight@scope[country]
@@ -496,9 +496,9 @@ values = {
 		target_conscription_amount
 
 
-		# =======================
+		# ============
 		# STATE DYNAMIC VARIABLES
-		# =======================
+		# ============
 
 		controller
 		owner
@@ -559,9 +559,9 @@ values = {
 		state_strategic_value
 
 
-		# =============================
+		# ===============
 		# UNIT LEADER DYNAMIC VARIABLES
-		# =============================
+		# ===============
 
 		### Attack level of the leader.
 		army_attack_level
@@ -768,20 +768,20 @@ values = {
 		### (Trigger) Compare leader skill levels.
 		skill
 
-		# ========================
+		# ============
 		# DATABASE DYNAMIC VARIABLES
-		# ========================
+		# ============
 		mtth:<mtth>
 
-		# ========================
+		# ============
 		# RANDOM DYNAMIC VARIABLES
-		# ========================
+		# ============
 		random
 		ai_random
 
-		# ========================
+		# ============
 		# EFFECT/TRIGGER DEFAULT VARIABLES
-		# ========================
+		# ============
 
 		### Default name of value temp variable used in loop effects and triggers.
 		v
@@ -790,9 +790,9 @@ values = {
 		### Default name of break temp variable used in loop effects and triggers.
 		break
 
-		# ========================
+		# ============
 		# ARRAY VARIABLES
-		# ========================
+		# ============
 
 		# Global arrays
 		### Array of all countries (including non existing)

@@ -17,4 +17,9 @@ scripted_function = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
 	}
+	## cardinality = 0..1
+	effect = {
+		## cardinality = 0..inf
+		alias_name[effect] = alias_match_left[effect]
+	}
 }

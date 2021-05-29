@@ -431,3 +431,63 @@ alias[modifier:is_imperial_modifier] = bool
 ## scope = country
 ### Modifies the speed at which troops disembark off ships into provinces
 alias[modifier:movement_speed_onto_off_boat_modifier] = float
+
+## scope = country
+### Monthly heir claim increase
+alias[modifier:monthly_heir_claim_increase] = float
+
+## scope = country
+### Country great project upgrade cost
+alias[modifier:great_project_upgrade_cost] = float
+
+## scope = province
+### Province great project upgrade cost
+alias[modifier:local_great_project_upgrade_cost] = float
+
+## scope = country
+### monthly reform progress
+alias[modifier:monthly_reform_progress_modifier] = float
+
+## scope = country
+### tribal development growth
+alias[modifier:tribal_development_growth] = float
+
+## scope = country
+### native migration cost
+alias[modifier:migration_cost] = float
+
+## scope = country
+### tribal land cost
+alias[modifier:add_tribal_land_cost] = float
+
+## scope = country
+### Monthly federation flavor growth
+alias[modifier:monthly_federation_favor_growth] = float
+
+## scope = country
+### Settle cost
+alias[modifier:settle_cost] = float
+
+## scope = province
+### Block slave raid
+alias[modifier:block_slave_raid] = yes
+
+## scope = country
+### Monthly reform progress building
+alias[modifier:monthly_reform_progress_building] = float
+
+## scope = country
+### Monthly reform progress
+alias[modifier:monthly_reform_progress] = float
+
+## scope = province
+### Allowed number of manufactories
+alias[modifier:allowed_num_of_manufactories] = int
+
+## scope = province
+### Local governing cost increase
+alias[modifier:local_governing_cost_increase] = int
+
+## scope = country
+### State governing cost increase
+alias[modifier:state_governing_cost_increase] = int

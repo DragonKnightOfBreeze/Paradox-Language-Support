@@ -18,6 +18,11 @@ types = {
 
 
 parliament_bribe = {
+	## cardinality = 0..1
+	name = estate_bribe
+	## cardinality = 0..1
+	estate = <estate>
+	
 	## replace_scope = { root = country this = country from = province }
 	trigger = {
 		alias_name[trigger] = alias_match_left[trigger]

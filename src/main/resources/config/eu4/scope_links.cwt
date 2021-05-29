@@ -467,6 +467,17 @@ alias[effect:every_country] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## scope = { country province }
+## push_scope = country
+###Scopes to all countries in the world including inactive. Avoid this if you can use something more specific.
+alias[effect:every_country_including_inactive] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
 
 ## scope = country
 ## push_scope = country
@@ -1631,5 +1642,48 @@ alias[trigger:enemy_unit] = {
 ## push_scope = country
 ###Any country active in trade node.
 alias[trigger:any_country_active_in_node] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+## scope = { country }
+###Scopes to every federation member
+alias[effect:every_federation_member] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = province
+## scope = { province country }
+###Scopes to every tribal land province
+alias[effect:every_tribal_land_province] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = { country province }
+## push_scope = province
+###Scopes to any tribal land province
+alias[trigger:any_tribal_land] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country }
+## push_scope = country
+###Scopes to all federation members
+alias[trigger:all_federation_members] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country }
+## push_scope = country
+###Scopes to any federation members
+alias[trigger:any_federation_members] = {
 	alias_name[trigger] = alias_match_left[trigger]
 }

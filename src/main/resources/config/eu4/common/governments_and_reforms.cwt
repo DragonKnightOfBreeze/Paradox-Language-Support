@@ -136,6 +136,10 @@ government_reform = {
 			## cardinality = 0..inf
 			<trade_good>
 		}
+		free_concentrate_development = bool
+		raze_province = bool
+		force_conversion_gives_global_holy_war_released_modifier = bool
+		allow_draft_transport_ships = bool
 	}
 
 	
@@ -243,6 +247,18 @@ government_reform = {
 		revolutionary = bool
 		## cardinality = 0..1
 		revolutionary_client_state = bool
+		
+		## cardinality = 0..1
+		free_concentrate_development = bool
+		## cardinality = 0..1
+		raze_province = bool
+		## cardinality = 0..1
+		force_conversion_gives_global_holy_war_released_modifier = bool
+		## cardinality = 0..1
+		allow_draft_transport_ships = bool
+		## cardinality = 0..1
+		replacement_on_independence_war = indep_daimyo
+		
 		## replace_scope = { root = country this = country }
 		## cardinality = 0..1
 		nation_designer_trigger = {
@@ -303,6 +319,8 @@ government_reform = {
 					has_dlc = enum[DLCs]
 				}
 			}
+			## cardinality = 0..1
+			allow_migration = bool
 			## cardinality = 0..1
 			can_use_trade_post = bool
 			## cardinality = 0..1
@@ -386,6 +404,36 @@ government_reform = {
 			allow_banners = bool
 			## cardinality = 0..1
 			election_on_death = bool
+			
+			## cardinality = 0..1
+			custom_attributes = {
+				## cardinality = 0..1
+				enables_plutocratic_idea_group = bool
+				## cardinality = 0..1
+				enables_aristocratic_idea_group = bool
+				## cardinality = 0..1
+				lottery_election = bool
+				## cardinality = 0..1
+				election_on_death = bool
+				## cardinality = 0..1
+				is_merchant_republic = bool
+				## cardinality = 0..1
+				locked_government_type = bool
+				## cardinality = 0..1
+				maratha_general_interaction = bool
+				## cardinality = 0..1
+				better_purbias_interaction = bool
+				## cardinality = 0..1
+				enables_nepotism = bool
+				## cardinality = 0..1
+				force_admiral_leader = bool
+				## cardinality = 0..1
+				admirals_become_rulers = bool
+				## cardinality = 0..1
+				gives_war_against_the_world_tooltip_dummy = yes
+				## cardinality = 0..inf
+				value_set[custom_attribute] = bool
+			}
 		}
 		
 		## cardinality = 0..1

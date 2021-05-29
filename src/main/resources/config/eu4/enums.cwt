@@ -78,6 +78,7 @@ enums = {
 		"Women in History"
 		"Golden Century"
 		"Emperor"
+		"Leviathan"
 	}
 	enum[DLCNUM] = {
 		dlc001
@@ -179,6 +180,10 @@ enums = {
 		dlc103
 		dlc104
 		dlc105
+		dlc106
+		dlc107
+		dlc108
+		dlc109
 	}
 	enum[key_name] = {
 		key
@@ -298,5 +303,67 @@ enums = {
 		harsh
 		neutral
 		concilatory
+	}
+	enum[sikh_guru] = {
+		guru_nanak
+		guru_angad
+		guru_amar_das
+		guru_ram_das
+		guru_arjan
+		guru_hargobind
+		guru_har_rai
+		guru_har_krishan
+		guru_tegh_bahadur
+		guru_gobind_singh
+		guru_granth_sahib
+	}
+	enum[guru_teachings] = {
+		share_and_consume
+		work_honestly
+		recite_his_name
+		gurmukhi_script_teaching
+		temple_langar
+		wrestling_akhara
+		dasvandh_collection
+		anand_karaj
+		sanghat_equality
+		legitimize_inheritance
+		scripture_hymns
+		masand_system
+		adi_granth
+		the_abode_of_god
+		martyrdom
+		throne_of_the_timeless_one
+		protection_of_the_poor
+		miri_and_piri
+		impartial_manjis
+		the_fragrance_of_a_flower
+		one_guru
+		treat_the_sick
+		illiterate_recites_saloks
+		young_humility
+		the_word_of_sikh
+		all_kings_must_pass
+		resist_persecution
+		pluralism
+		dharam_yudh
+		the_khalsa_sikh
+		eternally_living_guru
+		divine_justice
+		the_unchanging_writing
+	}
+	enum[great_project] = {
+		any
+		monument
+	}
+	enum[estate_all] = {
+		all
+	}
+	enum[estate_any] = {
+		any
+	}
+	enum[reb_nativesponsor] = {
+		REB
+		native_sponsor_scope
 	}
 }

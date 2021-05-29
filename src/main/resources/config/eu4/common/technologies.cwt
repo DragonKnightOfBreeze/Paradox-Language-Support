@@ -121,4 +121,9 @@ technology = {
 	
 	## cardinality = 0..inf
 	enable = <unit_type>
+	
+	## cardinality = 0..inf
+	naval_engagement_width = int
+	## cardinality = 0..inf
+	may_build_flagships = yes
 }

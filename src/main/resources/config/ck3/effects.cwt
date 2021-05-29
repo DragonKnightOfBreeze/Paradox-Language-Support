@@ -698,7 +698,7 @@ alias[effect:start_war] = {
     enum[cb] = <casus_belli_type>
     target = scope[character]
     ## cardinality = 0..1
-    claiman = scope[character]
+    claimant = scope[character]
     ## cardinality = 0..inf
     target_title = scope[landed_title]
 }

@@ -89,6 +89,7 @@
 * [X] 支持基于cwt配置文件识别脚本文件中的定义（definition），并在gutterIcon、documentation等地方中显示
 * [X] 解决BUG：origin和civic同时匹配了，可选的config的匹配逻辑存在BUG
 * [X] 解决BUG：config的name可能重复，这时只要匹配其中之一即可（要求是连续的）
+* [X] 更新克隆脚本，增强本地化文件语法兼容性，更新规则文件
 * [ ] 解决BUG：解析图标生成的html无法正常渲染图标，尝试替换成在线解析dds
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证

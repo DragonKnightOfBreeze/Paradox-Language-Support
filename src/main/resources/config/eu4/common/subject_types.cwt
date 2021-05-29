@@ -13,6 +13,9 @@ types = {
 			is_ours = "$_is_our"
 		}
 	}
+	type[subject_upgrades] = {
+		path = "game/common/subject_type_upgrades"
+	}
 }
 
 subject_type = {
@@ -136,7 +139,17 @@ subject_type = {
 	can_union_break = bool
 	## cardinality = 0..1
 	overlord_can_fabricate_for = bool
-
+	## cardinality = 0..1
+	does_overlord_size_count_for_warscore_cost = bool
+	## cardinality = 0..1
+	is_colony_subtype = bool
+	## cardinality = 0..1
+	is_march = bool
+	## cardinality = 0..1
+	forms_trade_companies = bool
+	## cardinality = 0..1
+	can_concentrate_development = bool
+	
 	## cardinality = 0..1
 	can_send_tribute = bool
 	
@@ -172,12 +185,26 @@ subject_type = {
 	###Percent of subject FL to use as base for modifiers
 	forcelimit_to_overlord = float
 	## cardinality = 0..1
+	naval_forcelimit_bonus = float
+	## cardinality = 0..1
+	naval_forcelimit_to_overlord = float
+	## cardinality = 0..1
+	manpower_bonus = float
+	## cardinality = 0..1
+	manpower_to_overlord = float
+	## cardinality = 0..1
+	sailors_bonus = float
+	## cardinality = 0..1
+	sailors_to_overlord = float
+	## cardinality = 0..1
 	###How much the AI subject should spend etc. on army and forts. 0 should make them spend nothing. Very high values will probably not make a big difference since there will be sanity checks.
 	military_focus = float
-
 	## cardinality = 0..1
 	###relative_power_class decides how Subjects are grouped together when considering relative strenghth towards overlord: If it is 0 they won't consider relative power and if it is 1 they will only consider their own power (and those supporting their independence) compared to their Overlord's. Otherwise they will sum up the power of every Subject of the same relative_power_class as themselves, and all countries who support either themselves or one of their allies in the same relative_power_class.
 	relative_power_class = int[0..2]
+	## cardinality = 0..1
+	should_quit_wars_on_activation = bool
+
 	## cardinality = 0..1
 	###diplomacy_view_class decides how subjects are grouped together in diplomacy view and in foreign province view: 0 means it won't be listed, 1 means it will be listed together only with the same subject type. Other values means it will be listed together with all subjects of the same diplomacy_view_class
 	diplomacy_view_class = int[0..2]
@@ -332,6 +359,13 @@ subject_type = {
 	## cardinality = 0..1
 	allow_settlement_growth = bool
 	## cardinality = 0..1
+	change_colonial_type = bool
+	## cardinality = 0..1
+	change_colonial_type = bool
+	## cardinality = 0..1
+	upgrade_subject_type = bool
+	
+	## cardinality = 0..1
 	sword_hunt = bool
 	## cardinality = 0..1
 	sankin_kotai = bool
@@ -389,3 +423,29 @@ subject_type = {
 	subject_opinion_modifier = <opinion_modifier>
 }
 
+subject_upgrades = {
+	## replace_scope = { root = country this = country }
+	can_upgrade_trigger = {
+		## cardinality = 0..inf
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	cost = int
+	## replace_scope = { root = country this = country }
+	effect = {
+		## cardinality = 0..inf
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## replace_scope = { root = country this = country }
+	## cardinality = 0..1
+	modifier_overlord = {
+		## cardinality = 0..inf
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## replace_scope = { root = country this = country }
+	## cardinality = 0..1
+	modifier_subject = {
+		## cardinality = 0..inf
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+}

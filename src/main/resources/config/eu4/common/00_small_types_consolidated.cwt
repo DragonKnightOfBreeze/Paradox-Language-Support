@@ -1,22 +1,5 @@
 
 types = {
-	type[great_project] = {
-		path = "game/common/great_projects"
-		localisation = {
-			## required
-			name = "$"
-			## required
-			great_project_title = "great_project_$"
-			## required
-			construct = "construct_$_title"
-			## required
-			construct_desc = "construct_$_desc"
-			## required
-			cancel = "cancel_$_title"
-			## required
-			cancel_desc = "cancel_$_desc"
-		}
-	}
 	type[faction] = {
 		path = "game/common/factions"
 		localisation = {
@@ -168,6 +151,7 @@ types = {
 
 achievement = {
 	id = int
+	localization = scalar
 	## cardinality = 0..1
 	## replace_scope = { root = country this = country }
 	visible = {
@@ -187,19 +171,6 @@ achievement = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 }
-
-
-great_project = {
-	ambient_object = <ambient_object>
-	province = <province_id>
-	is_canal = yes
-	time = int
-
-	modifier = {
-		alias_name[modifier] = alias_match_left[modifier]
-	}
-}
-
 
 faction = {
 	monarch_power = enum[power_categories]
@@ -469,4 +440,3 @@ province_names = {
 		scalar #todo: name
 	}
 }
-

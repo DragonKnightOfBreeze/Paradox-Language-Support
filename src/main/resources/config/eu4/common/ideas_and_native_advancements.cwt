@@ -78,7 +78,7 @@ idea_group = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 	
-	## cardinality = 7..7
+	## cardinality = 0..7
 	<idea> = {
 		alias_name[modifier] = alias_match_left[modifier]
 
@@ -95,7 +95,6 @@ idea_group = {
 		free = yes
 	}
 }
-
 
 #todo: not sure if these are referred to anywhere. Maybe they count as ideas.
 native_advancement_group = {

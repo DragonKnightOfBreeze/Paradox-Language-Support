@@ -57,6 +57,10 @@ types = {
 
 estate = {
 	icon = int
+	
+	## cardinality = 0..1
+	other_religion_group_only = yes
+	
 	color = {
 		## cardinality = 3..3
 		int[0..255]

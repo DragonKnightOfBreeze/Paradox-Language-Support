@@ -3,6 +3,14 @@ links = {
         input_scopes = { province }
         output_scope = country
     }
+	tribal_owner = {
+        input_scopes = { province }
+        output_scope = country
+    }
+	native_sponsor_scope = {
+        input_scopes = { country }
+        output_scope = country
+    }
     controller = {
         input_scopes = { province }
         output_scope = country

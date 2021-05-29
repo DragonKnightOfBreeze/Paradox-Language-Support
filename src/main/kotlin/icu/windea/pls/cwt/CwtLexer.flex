@@ -40,15 +40,16 @@ BLANK=[ \t\n\x0B\f\r]+
 SPACE=[ \t\x08\f]+
 
 COMMENT=(#)|(#[^#\r\n][^\r\n]*)
+RELAX_COMMENT=#[^\r\n]*
 //OPTION_COMMENT=##[^\r\n]*
 //DOCUMENTATION_COMMENT=###[^\r\n]*
 
-PROPERTY_KEY_TOKEN=([^#={}\s][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
-OPTION_KEY_TOKEN=([^#={}\s][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
+PROPERTY_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
+OPTION_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
-STRING_TOKEN=([^#={}\s\"][^={}\s\"]*)|(\"([^\"\\\r\n]|\\.)*\")
+STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 DOCUMENTATION_TOKEN=([^\r\n]*)
 
 IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({SPACE})?=
@@ -139,7 +140,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   "{" {return LEFT_BRACE;}
   "}" {return RIGHT_BRACE;}
 
-  {COMMENT} {return COMMENT; }
+  {RELAX_COMMENT} {return COMMENT; }
   
   {IS_OPTION_KEY} {yypushback(yylength()); yybegin(WAITING_OPTION_KEY);}
   
@@ -156,6 +157,8 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   "{" {yybegin(WAITING_OPTION); return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); return RIGHT_BRACE;}
   
+  {RELAX_COMMENT} {return COMMENT; }
+  
   {OPTION_KEY_TOKEN} {yybegin(WATIING_OPTION_SEPARATOR); return OPTION_KEY_TOKEN;}
 }
 
@@ -167,8 +170,8 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   "}" {yybegin(WAITING_OPTION); return RIGHT_BRACE;}
   "=" {yybegin(WAITING_OPTION_VALUE); return EQUAL_SIGN;}
   "<>" {yybegin(WAITING_OPTION_VALUE); return NOT_EQUAL_SIGN;}
-    
-  {COMMENT} {return COMMENT;}
+  
+  {RELAX_COMMENT} {return COMMENT; }
 }
 
 <WAITING_OPTION_VALUE>{
@@ -181,7 +184,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   "###" { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
   "##" {  yybegin(WAITING_OPTION); return OPTION_START; }
  
-  {COMMENT} {return COMMENT; }
+  {RELAX_COMMENT} {return COMMENT; }
       
   {BOOLEAN_TOKEN} { yybegin(WAITING_OPTION_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_OPTION_END); return INT_TOKEN; }
@@ -195,8 +198,8 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   
   "{" {yybegin(WAITING_OPTION); return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); return RIGHT_BRACE;}
-  
-  {COMMENT} {return COMMENT;}
+ 
+  {RELAX_COMMENT} {return COMMENT; }
 }
 
 <WAITING_OPTION_VALUE_END>{
@@ -205,13 +208,15 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   
   "{" {yybegin(WAITING_OPTION); return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); return RIGHT_BRACE;}
-    
-  {COMMENT} {return COMMENT;}
+ 
+  {RELAX_COMMENT} {return COMMENT; }
 }
 
 <WAITING_DOCUMENTATION>{
   {EOL} {yybegin(YYINITIAL); return WHITE_SPACE;}
   {SPACE} { return WHITE_SPACE;}
+  
+  {RELAX_COMMENT} {return COMMENT; }
     
   {DOCUMENTATION_TOKEN} { yybegin(YYINITIAL); return DOCUMENTATION_TOKEN;}
 }

@@ -101,7 +101,8 @@ imperial_reform = {
 	## cardinality = 0..1
 	###Special AI check for a reform that may cause a war
 	war = yes
-	
+	## cardinality = 0..1
+	discounted_from_foreign_overlord_check = bool
 	## cardinality = 0..1
 	member = {
 		alias_name[modifier] = alias_match_left[modifier]

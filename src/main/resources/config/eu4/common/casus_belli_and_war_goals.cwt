@@ -63,6 +63,9 @@ enums = {
 		po_dismantle_revolution
 		po_join_empire
 		po_spread_revolution
+		po_subjugate_vassal
+		po_subjugate_tributary_state
+		po_force_out_colonizers
 	}
 	enum[wargoal_types] = {
 		take_colony
@@ -163,6 +166,8 @@ wargoal_type = {
 	## cardinality = 0..1
 	###Multiplied with the cost of the peace options in the peace treaty.
 	peace_cost_factor = float
+	## cardinality = 0..1
+	peace_cost_factor_non_allowed_treaty = float
 
 	## cardinality = 0..1				  
 	peace_options = {
@@ -188,6 +193,14 @@ wargoal_type = {
 	allowed_provinces = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
+	
+	## cardinality = 0..1
+	## replace_scope = { root = country this = province from = country }
+	###If 'po_demand_provinces' is on, badboy_factor applies to these provinces.
+	allowed_tribal_provinces = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+		
 	## cardinality = 0..1
 	allowed_provinces_are_eligible = yes
 	
@@ -207,6 +220,8 @@ wargoal_type = {
 		## cardinality = 0..1
 		###Multiplied with the cost of the peace options in the peace treaty.
 		peace_cost_factor = float
+		## cardinality = 0..1
+		peace_cost_factor_non_allowed_treaty = float
 
 		## cardinality = 0..1
 		## replace_scope = { root = country this = province from = country }
@@ -214,6 +229,13 @@ wargoal_type = {
 		allowed_provinces = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
+		## cardinality = 0..1
+		## replace_scope = { root = country this = province from = country }
+		###If 'po_demand_provinces' is on, badboy_factor applies to these provinces.
+		allowed_tribal_provinces = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+				
 		## cardinality = 0..1
 		allowed_provinces_are_eligible = yes
 		
@@ -255,6 +277,12 @@ wargoal_type = {
 		## replace_scope = { root = country this = province from = country }
 		###If 'po_demand_provinces' is on, badboy_factor applies to these provinces.
 		allowed_provinces = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..1
+		## replace_scope = { root = country this = province from = country }
+		###If 'po_demand_provinces' is on, badboy_factor applies to these provinces.
+		allowed_tribal_provinces = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
 		## cardinality = 0..1

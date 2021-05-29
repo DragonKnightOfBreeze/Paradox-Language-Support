@@ -5,8 +5,6 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import static icu.windea.pls.cwt.psi.CwtTypes.*;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-
-import com.intellij.lang.parser.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
@@ -38,21 +36,21 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(CwtTypes.BLOCK, CwtTypes.BOOLEAN, CwtTypes.FLOAT, CwtTypes.INT,
-      CwtTypes.NUMBER, CwtTypes.ROOT_BLOCK, CwtTypes.STRING, CwtTypes.VALUE),
+    create_token_set_(BLOCK, BOOLEAN, FLOAT, INT,
+      NUMBER, ROOT_BLOCK, STRING, VALUE),
   };
 
   /* ********************************************************** */
   // "{" block_item * "}"
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.LEFT_BRACE)) return false;
+    if (!nextTokenIs(b, LEFT_BRACE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CwtTypes.BLOCK, null);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.LEFT_BRACE);
+    Marker m = enter_section_(b, l, _NONE_, BLOCK, null);
+    r = consumeToken(b, LEFT_BRACE);
     p = r; // pin = 1
     r = r && report_error_(b, block_1(b, l + 1));
-    r = p && GeneratedParserUtilBase.consumeToken(b, CwtTypes.RIGHT_BRACE) && r;
+    r = p && consumeToken(b, RIGHT_BRACE) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -84,11 +82,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // BOOLEAN_TOKEN
   public static boolean boolean_$(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "boolean_$")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.BOOLEAN_TOKEN)) return false;
+    if (!nextTokenIs(b, BOOLEAN_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.BOOLEAN_TOKEN);
-    exit_section_(b, m, CwtTypes.BOOLEAN, r);
+    r = consumeToken(b, BOOLEAN_TOKEN);
+    exit_section_(b, m, BOOLEAN, r);
     return r;
   }
 
@@ -99,7 +97,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     boolean r;
     r = documentation_comment(b, l + 1);
     if (!r) r = option_comment(b, l + 1);
-    if (!r) r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.COMMENT);
+    if (!r) r = consumeToken(b, COMMENT);
     return r;
   }
 
@@ -107,10 +105,10 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // "###" documentation_text ?
   public static boolean documentation_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "documentation_comment")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.DOCUMENTATION_START)) return false;
+    if (!nextTokenIs(b, DOCUMENTATION_START)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CwtTypes.DOCUMENTATION_COMMENT, null);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.DOCUMENTATION_START);
+    Marker m = enter_section_(b, l, _NONE_, DOCUMENTATION_COMMENT, null);
+    r = consumeToken(b, DOCUMENTATION_START);
     p = r; // pin = 1
     r = r && documentation_comment_1(b, l + 1);
     exit_section_(b, l, m, r, p, null);
@@ -128,11 +126,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // DOCUMENTATION_TOKEN
   public static boolean documentation_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "documentation_text")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.DOCUMENTATION_TOKEN)) return false;
+    if (!nextTokenIs(b, DOCUMENTATION_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.DOCUMENTATION_TOKEN);
-    exit_section_(b, m, CwtTypes.DOCUMENTATION_TEXT, r);
+    r = consumeToken(b, DOCUMENTATION_TOKEN);
+    exit_section_(b, m, DOCUMENTATION_TEXT, r);
     return r;
   }
 
@@ -140,11 +138,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // FLOAT_TOKEN
   public static boolean float_$(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "float_$")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.FLOAT_TOKEN)) return false;
+    if (!nextTokenIs(b, FLOAT_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.FLOAT_TOKEN);
-    exit_section_(b, m, CwtTypes.FLOAT, r);
+    r = consumeToken(b, FLOAT_TOKEN);
+    exit_section_(b, m, FLOAT, r);
     return r;
   }
 
@@ -152,11 +150,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // INT_TOKEN
   public static boolean int_$(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "int_$")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.INT_TOKEN)) return false;
+    if (!nextTokenIs(b, INT_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.INT_TOKEN);
-    exit_section_(b, m, CwtTypes.INT, r);
+    r = consumeToken(b, INT_TOKEN);
+    exit_section_(b, m, INT, r);
     return r;
   }
 
@@ -164,9 +162,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // int | float
   public static boolean number(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "number")) return false;
-    if (!nextTokenIs(b, "<number>", CwtTypes.FLOAT_TOKEN, CwtTypes.INT_TOKEN)) return false;
+    if (!nextTokenIs(b, "<number>", FLOAT_TOKEN, INT_TOKEN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, CwtTypes.NUMBER, "<number>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, NUMBER, "<number>");
     r = int_$(b, l + 1);
     if (!r) r = float_$(b, l + 1);
     exit_section_(b, l, m, r, false, null);
@@ -177,9 +175,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // option_key option_separator value
   public static boolean option(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.OPTION_KEY_TOKEN)) return false;
+    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CwtTypes.OPTION, null);
+    Marker m = enter_section_(b, l, _NONE_, OPTION, null);
     r = option_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, option_separator(b, l + 1));
@@ -192,10 +190,10 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // "##" option_comment_item
   public static boolean option_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.OPTION_START)) return false;
+    if (!nextTokenIs(b, OPTION_START)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CwtTypes.OPTION_COMMENT, null);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.OPTION_START);
+    Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, null);
+    r = consumeToken(b, OPTION_START);
     p = r; // pin = 1
     r = r && option_comment_item(b, l + 1);
     exit_section_(b, l, m, r, p, null);
@@ -216,11 +214,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // OPTION_KEY_TOKEN
   public static boolean option_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_key")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.OPTION_KEY_TOKEN)) return false;
+    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.OPTION_KEY_TOKEN);
-    exit_section_(b, m, CwtTypes.OPTION_KEY, r);
+    r = consumeToken(b, OPTION_KEY_TOKEN);
+    exit_section_(b, m, OPTION_KEY, r);
     return r;
   }
 
@@ -228,11 +226,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // "=" | "<>"
   public static boolean option_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_separator")) return false;
-    if (!nextTokenIs(b, "<option separator>", CwtTypes.EQUAL_SIGN, CwtTypes.NOT_EQUAL_SIGN)) return false;
+    if (!nextTokenIs(b, "<option separator>", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CwtTypes.OPTION_SEPARATOR, "<option separator>");
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.EQUAL_SIGN);
-    if (!r) r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.NOT_EQUAL_SIGN);
+    Marker m = enter_section_(b, l, _NONE_, OPTION_SEPARATOR, "<option separator>");
+    r = consumeToken(b, EQUAL_SIGN);
+    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -241,9 +239,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // property_key property_separator value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.PROPERTY_KEY_TOKEN)) return false;
+    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CwtTypes.PROPERTY, null);
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
     r = property_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, property_separator(b, l + 1));
@@ -256,11 +254,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // PROPERTY_KEY_TOKEN
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.PROPERTY_KEY_TOKEN)) return false;
+    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.PROPERTY_KEY_TOKEN);
-    exit_section_(b, m, CwtTypes.PROPERTY_KEY, r);
+    r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    exit_section_(b, m, PROPERTY_KEY, r);
     return r;
   }
 
@@ -268,11 +266,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // "="
   public static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.EQUAL_SIGN)) return false;
+    if (!nextTokenIs(b, EQUAL_SIGN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.EQUAL_SIGN);
-    exit_section_(b, m, CwtTypes.PROPERTY_SEPARATOR, r);
+    r = consumeToken(b, EQUAL_SIGN);
+    exit_section_(b, m, PROPERTY_SEPARATOR, r);
     return r;
   }
 
@@ -286,7 +284,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // root_block_item *
   public static boolean root_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block")) return false;
-    Marker m = enter_section_(b, l, _COLLAPSE_, CwtTypes.ROOT_BLOCK, "<root block>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, ROOT_BLOCK, "<root block>");
     while (true) {
       int c = current_position_(b);
       if (!root_block_item(b, l + 1)) break;
@@ -311,11 +309,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // STRING_TOKEN
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
-    if (!GeneratedParserUtilBase.nextTokenIs(b, CwtTypes.STRING_TOKEN)) return false;
+    if (!nextTokenIs(b, STRING_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = GeneratedParserUtilBase.consumeToken(b, CwtTypes.STRING_TOKEN);
-    exit_section_(b, m, CwtTypes.STRING, r);
+    r = consumeToken(b, STRING_TOKEN);
+    exit_section_(b, m, STRING, r);
     return r;
   }
 
@@ -324,7 +322,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, CwtTypes.VALUE, "<value>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, VALUE, "<value>");
     r = boolean_$(b, l + 1);
     if (!r) r = number(b, l + 1);
     if (!r) r = string(b, l + 1);

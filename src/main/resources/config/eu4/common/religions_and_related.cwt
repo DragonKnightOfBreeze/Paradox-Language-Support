@@ -703,9 +703,48 @@ religion_group = {
 			}
 		}
 
+		## cardinality = 0..1
+		ancestors = yes
+		
 		heretic = {
 			## cardinality = 1..inf
 			localisation
+		}
+		
+		## cardinality = 0..1
+		gurus = {
+			## cardinality = 0..inf
+			enum[sikh_guru] = {
+				trigger = {
+					alias_name[trigger] = alias_match_left[trigger]
+				}
+				chance = {
+					factor = int
+					## cardinality = 0..inf
+					modifier = {
+						factor = float
+						## cardinality = 0..inf
+						alias_name[trigger] = alias_match_left[trigger]
+					}
+				}
+				modifier = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+				teachings = {
+					## cardinality = 0..inf
+					enum[guru_teachings] = {
+						## cardinality = 0..1
+						type = ADM
+						## cardinality = 0..1
+						type = DIP
+						## cardinality = 0..1
+						type = MIL
+						cost = int
+						## cardinality = 0..inf
+						alias_name[modifier] = alias_match_left[modifier]
+					}
+				}	
+			}
 		}
 	}
 }

@@ -103,7 +103,7 @@ terrain = {
 	
 	## cardinality = 0..1
 	terrain_override = {
-		## cardinality = 1..inf
+		## cardinality = 0..inf
 		<province_id>
 	}
 }
