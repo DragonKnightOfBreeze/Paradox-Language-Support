@@ -215,7 +215,7 @@ main.hidden {
   z-index: 20;
 }
 .sidebar > h1 {
-  margin: 0 auto 1rem;
+  margin: 1rem auto 1rem;
   font-size: 1.25rem;
   font-weight: 300;
   text-align: center;
@@ -229,7 +229,7 @@ main.hidden {
   position: static;
 }
 .sidebar .sidebar-nav {
-  line-height: 2em;
+  line-height: 2rem;
   padding-bottom: 40px;
 }
 .sidebar li.collapse .app-sub-sidebar {
@@ -243,8 +243,7 @@ main.hidden {
   font-weight: 700;
   margin: 0;
 }
-.sidebar ul,
-.sidebar ul li {
+.sidebar ul, .sidebar ul li {
   list-style: none;
 }
 .sidebar ul li a {
@@ -392,14 +391,14 @@ body.sticky .sidebar, body.sticky .sidebar-toggle {
 .markdown-section ul.task-list > li {
   list-style-type: none;
 }
-body.close .sidebar {
-  transform: translateX(-300px);
+body.content-close .sidebar {
+  transform: translateX(-20rem)
 }
-body.close .sidebar-toggle {
-  width: auto;
+body.content-close .sidebar-toggle {
+  width: auto
 }
-body.close .content {
-  left: 0;
+body.content-close .content {
+  left: 0
 }
 @media print {
   .github-corner, .sidebar-toggle, .sidebar, .app-nav {
@@ -448,22 +447,22 @@ body.close .content {
     padding: 30px 30px 10px 10px;
   }
 
-  body.close .sidebar {
-    transform: translateX(300px);
+  body.content-close .sidebar {
+    transform: translateX(20rem);
   }
 
-  body.close .sidebar-toggle {
+  body.content-close .sidebar-toggle {
     background-color: rgba(255, 255, 255, 0.8);
     transition: 1s background-color;
     width: 284px;
     padding: 10px;
   }
 
-  body.close .content {
-    transform: translateX(300px);
+  body.content-close .content {
+    transform: translateX(20rem);
   }
 
-  body.close .app-nav, body.close .github-corner {
+  body.content-close .app-nav, body.content-close .github-corner {
     display: none;
   }
 
