@@ -1,5 +1,0 @@
-single_alias[council_power_percentages] = {
-    who = scope[character]
-    factor = float
-    alias_name[trigger] = alias_match_left[trigger]
-}

@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package icu.windea.pls
 
 import com.intellij.openapi.components.*
@@ -359,99 +361,190 @@ fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory() :Boolean{
 }
 
 //Find Extensions
-
+/**
+ * 根据名字在当前文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
+ */
 fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable? {
-	//在所在文件中递归查找（不一定定义在顶层）
 	if(file !is ParadoxScriptFile) return null
 	return file.descendantsOfType<ParadoxScriptVariable>().find { it.name == name }
 }
 
+/**
+ * 根据名字在当前文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
+ */
 fun findScriptVariablesInFile(name: String, file: PsiFile): List<ParadoxScriptVariable> {
-	//在所在文件中递归查找（不一定定义在顶层），仅查找第一个
 	if(file !is ParadoxScriptFile) return emptyList()
 	return file.descendantsOfType<ParadoxScriptVariable>().filter { it.name == name }.toList()
 }
 
+/**
+ * 在当前文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
+ */
 fun findScriptVariablesInFile(file: PsiFile): List<ParadoxScriptVariable> {
 	//在所在文件中递归查找（不一定定义在顶层）
 	if(file !is ParadoxScriptFile) return emptyList()
 	return file.descendantsOfType<ParadoxScriptVariable>().toList()
 }
 
-fun findScriptVariable(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptVariable? {
+/**
+ * 基于脚本变量名字索引，根据名字查找脚本变量（scriptedVariable）。
+ */
+fun findScriptVariable(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): ParadoxScriptVariable? {
 	return ParadoxScriptVariableNameIndex.getOne(name, project, scope, !getSettings().preferOverridden)
 }
 
-fun findScriptVariables(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptVariable> {
+/**
+ * 基于脚本变量名字索引，根据名字查找所有的脚本变量（scriptedVariable）。
+ */
+fun findScriptVariables(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptVariable> {
 	return ParadoxScriptVariableNameIndex.getAll(name, project, scope)
 }
 
-fun findScriptVariables(project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptVariable> {
+/**
+ * 基于脚本变量名字索引，查找所有的脚本变量（scriptedVariable）。
+ */
+fun findScriptVariables(
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptVariable> {
 	return ParadoxScriptVariableNameIndex.getAll(project, scope)
 }
 
 /**
  * 基于定义名字索引，根据名字、类型表达式查找脚本文件的定义（definition）。
  */
-fun findDefinition(name: String, typeExpression: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
+fun findDefinition(
+	name: String,
+	typeExpression: String? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): ParadoxScriptProperty? {
 	return ParadoxDefinitionNameIndex.getOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
 }
 
 /**
  * 基于定义名字索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
  */
-fun findDefinitions(name: String, typeExpression: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+fun findDefinitions(
+	name: String,
+	typeExpression: String? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
 	return ParadoxDefinitionNameIndex.getAll(name, typeExpression, project, scope)
 }
 
 /**
  * 基于定义名字索引，根据类型表达式查找所有的脚本文件的定义（definition）。
  */
-fun findDefinitions(typeExpression: String? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+fun findDefinitions(
+	typeExpression: String? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
 	return ParadoxDefinitionNameIndex.getAll(typeExpression, project, scope)
 }
 
 /**
  * 基于类型索引，根据类型（不是类型表达式）查找脚本文件的定义（definition）。
  */
-fun findDefinitionsByType(type: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+fun findDefinitionsByType(
+	type: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
 	return ParadoxDefinitionTypeIndex.getAll(type, project, scope)
 }
 
 /**
  * 基于脚本本地化名字索引，根据名字查找脚本文件的脚本本地化（scriptLocalisation，scripted_loc）。
  */
-fun findScriptLocalisation(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): ParadoxScriptProperty? {
+fun findScriptLocalisation(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): ParadoxScriptProperty? {
 	return ParadoxScriptLocalisationNameIndex.getOne(name, project, scope, !getSettings().preferOverridden)
 }
 
 /**
  * 基于脚本本地化名字索引，根据名字查找所有的脚本文件的脚本本地化（scriptLocalisation，scripted_loc）。
  */
-fun findScriptLocalisations(name: String, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+fun findScriptLocalisations(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
 	return ParadoxScriptLocalisationNameIndex.getAll(name, project, scope)
 }
 
 /**
  * 基于脚本本地化名字索引，查找所有的脚本文件的脚本本地化（scriptLocalisation，scripted_loc）。
  */
-fun findScriptLocalisations(project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project)): List<ParadoxScriptProperty> {
+fun findScriptLocalisations(
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
 	return ParadoxScriptLocalisationNameIndex.getAll(project, scope)
 }
 
-
-fun findLocalisation(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = false): ParadoxLocalisationProperty? {
+/**
+ * 基于本地化名字索引，根据名字、语言区域查找本地化（localisation）。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun findLocalisation(
+	name: String,
+	locale: ParadoxLocale?,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false
+): ParadoxLocalisationProperty? {
 	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !getSettings().preferOverridden)
 }
 
-fun findLocalisations(name: String, locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = true): List<ParadoxLocalisationProperty> {
+/**
+ * 基于本地化名字索引，根据名字、语言区域查找所有的本地化（localisation）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun findLocalisations(
+	name: String,
+	locale: ParadoxLocale? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = true
+): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, hasDefault)
 }
 
-fun findLocalisations(locale: ParadoxLocale? = null, project: Project, scope: GlobalSearchScope = GlobalSearchScope.allScope(project), hasDefault: Boolean = false): List<ParadoxLocalisationProperty> {
+/**
+ * 基于本地化名字索引，根据语言区域查找所有的本地化（localisation）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun findLocalisations(
+	locale: ParadoxLocale? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false
+): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.getAll(locale, project, scope, hasDefault)
 }
 
+/**
+ * 基于本地化名字索引，根据一组名字、语言区域查找所有的本地化（localisation）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ * * 如果[keepOrder]为`true`，则根据这组名字排序查询结果。
+ */
 fun findLocalisations(
 	names: Iterable<String>,
 	locale: ParadoxLocale? = null,
@@ -524,32 +617,26 @@ inline fun ParadoxLocalisationProperty.renderText(): String {
 	return ParadoxLocalisationTextRenderer.render(this)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.renderTextTo(buffer: StringBuilder) {
 	ParadoxLocalisationTextRenderer.renderTo(this, buffer)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.extractText(): String {
 	return ParadoxLocalisationTextExtractor.extract(this)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
 	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun CwtFile.resolveConfig(): CwtConfig {
 	return CwtConfigResolver.resolve(this)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxScriptFile.resolveData(): List<Any> {
 	return ParadoxScriptDataResolver.resolve(this)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationFile.resolveData(): Map<String, String> {
 	return ParadoxLocalisationDataResolver.resolve(this)
 }

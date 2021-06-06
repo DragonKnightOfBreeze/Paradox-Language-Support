@@ -41,10 +41,16 @@ sourceSets {
 
 tasks {
 	compileKotlin {
-		kotlinOptions.jvmTarget = "1.8"
+		kotlinOptions{
+			jvmTarget = "11"
+			freeCompilerArgs = listOf("-Xjvm-default=all")
+		}
 	}
 	compileTestKotlin {
-		kotlinOptions.jvmTarget = "1.8"
+		kotlinOptions{
+			jvmTarget = "11"
+			freeCompilerArgs = listOf("-Xjvm-default=all")
+		}
 	}
 	publishPlugin{
 		token(System.getenv("IDEA_TOKEN"))

@@ -19,14 +19,14 @@ class ParadoxLocalisationPropertyPsiReference(
 		val name = element.propertyReferenceId?.text?: return null
 		val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 		val project = element.project
-		return findLocalisation(name, locale, project)
+		return findLocalisation(name, locale, project,hasDefault = true)
 	}
 
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val name = element.propertyReferenceId?.text?: return ResolveResult.EMPTY_ARRAY
 		val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 		val project = element.project
-		return findLocalisations(name, locale, project).mapToArray {
+		return findLocalisations(name, locale, project,hasDefault = true).mapToArray {
 			PsiElementResolveResult(it)
 		}
 	}

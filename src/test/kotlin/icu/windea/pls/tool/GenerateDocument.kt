@@ -41,17 +41,12 @@ private fun getDocumentText(documentName: String, type: String, project: Project
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
 		val definition = it.paradoxDefinitionInfo
 		val id = definition?.name
-		val name = definition?.localisation?.find { (k, _) ->
-			ConditionalExpression(k).value == "name" 
-		}
-		val description = definition?.localisation?.find { (k, _) ->
-			ConditionalExpression(k).value == "description"
-		}?.let { v -> 
-			findLocalisation(v, null, project)?.extractText()
-		}
-		val effect = definition?.localisation?.find { (k, _) -> ConditionalExpression(k).value == "effect" }?.let { v ->
-			findLocalisation(v, null, project)?.extractText()
-		}
+		val name = definition?.localisation?.find { loc -> loc.name.toLowerCase() == "name" }
+			?.let { l-> findLocalisation(l.keyName, inferParadoxLocale(),project) }?.extractText()
+		val description = definition?.localisation?.find { loc -> loc.name.toLowerCase() == "description" }
+			?.let { l-> findLocalisation(l.keyName, inferParadoxLocale(),project) }?.extractText()
+		val effect = definition?.localisation?.find { loc -> loc.name.toLowerCase() == "effect" }
+			?.let { l-> findLocalisation(l.keyName, inferParadoxLocale(),project) }?.extractText()
 		buildString {
 			append("#### $name{#$id}")
 			if(!description.isNullOrBlank()) append("\n\n$description")

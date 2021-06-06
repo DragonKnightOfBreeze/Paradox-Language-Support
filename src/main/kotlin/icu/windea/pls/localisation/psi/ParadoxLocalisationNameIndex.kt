@@ -19,7 +19,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		
 		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxLocalisationProperty::class.java)
 		return if(preferFirst){
-			elements.firstOrNull { element->locale == null || locale == element.paradoxLocale } ?: if(hasDefault) elements.firstOrNull() else null 
+			elements.firstOrNull { element-> locale == null || locale == element.paradoxLocale } ?: if(hasDefault) elements.firstOrNull() else null 
 		} else{
 			elements.lastOrNull { element -> locale == null || locale == element.paradoxLocale }?: if(hasDefault) elements.lastOrNull() else null
 		}

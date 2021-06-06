@@ -1,7 +1,6 @@
 package icu.windea.pls.config
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
@@ -35,19 +34,25 @@ class CwtConfigGroupProvider(
 	@Synchronized
 	private fun initConfigGroups(){
 		logger.info("Init config groups...")
-		val project = ProjectManager.getInstance().defaultProject
 		val configUrl = "/config".toUrl(locationClass)
+		//FIXME 这里不该发生异常，但是有时就会这样
 		val configFile = VfsUtil.findFileByURL(configUrl) ?: error("Cwt config path '$configUrl' is not exist.")
-		for(file in configFile.children) {
+		val children = configFile.children
+		for(file in children) {
 			when {
 				//如果是目录则将其名字作为规则组的名字
 				file.isDirectory -> {
 					val groupName = file.name
-					val group = ConcurrentHashMap<String, CwtConfig>()
-					val groupPath = file.path
-					logger.info("Init config group '$groupName'...")
-					addConfigGroup(group, file, groupPath, project)
-					this.groups[groupName] = group
+					//defaultProject不需要解析具体的config group
+					if(project == getDefaultProject()){
+						this.groups[groupName] = emptyMap()
+					}else {
+						val group = ConcurrentHashMap<String, CwtConfig>()
+						val groupPath = file.path
+						logger.info("Init config group '$groupName'...")
+						addConfigGroup(group, file, groupPath, project)
+						this.groups[groupName] = group
+					}
 				}
 				//解析顶层文件declarations.yml
 				file.name == "declarations.yml" -> {

@@ -221,11 +221,13 @@ fun String.toBooleanYesNo() = this == "yes"
 
 fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
 
+fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
+
 fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())
 
-fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
+fun Path.tryCreateDirectory() = runCatching{ Files.createDirectories(this) }
 
 inline fun <reified T> T.toSingletonArray() = arrayOf(this)
 

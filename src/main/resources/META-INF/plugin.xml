@@ -226,6 +226,9 @@
     <annotator
         language="Paradox Script"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
+    <codeInsight.inlayProvider
+        language="Paradox Script"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptDefinitionHintsProvider"/>
     <lang.psiStructureViewFactory
         language="Paradox Script"
         implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>

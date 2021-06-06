@@ -18,8 +18,7 @@ class ParadoxScriptStringPropertyPsiReference(
 		val name = element.text.unquote()
 		val project = element.project
 		//查找的顺序：脚本属性，推断语言区域的本地化属性，所有语言区域的本地化属性
-		return findDefinition(name, null, project)
-		       ?: findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+		return findDefinition(name, null, project) ?: findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {

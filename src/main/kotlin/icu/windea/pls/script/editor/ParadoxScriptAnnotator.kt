@@ -196,7 +196,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				.create()
 			return
 		}
-		val localisation = findLocalisation(name, null, project, hasDefault = true)
+		val localisation = findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 		if(localisation != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
