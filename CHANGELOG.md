@@ -90,7 +90,8 @@
 * [X] 解决BUG：origin和civic同时匹配了，可选的config的匹配逻辑存在BUG
 * [X] 解决BUG：config的name可能重复，这时只要匹配其中之一即可（要求是连续的）
 * [X] 更新克隆脚本，增强本地化文件语法兼容性，更新规则文件
-* [ ] 实现paradoxScript的InlayHintsProvider，目前为定义提供来自本地文件的名字（如：对于特质`agenda_defensive_focus`，名字是`保卫边境`）
+* [X] 实现paradoxScript的InlayHintsProvider，目前为定义提供来自本地文件的名字（如：对于特质`agenda_defensive_focus`，名字是`保卫边境`）
+* [X] 实现`DdsToPngConverter`，基于放在jar包中的小工具`dds2png.zip`，可以将dds文件转化成png文件（Windows平台，插件中暂未使用）
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证
 * [ ] 解决BUG：解析图标生成的html无法正常渲染图标，尝试替换成在线解析dds

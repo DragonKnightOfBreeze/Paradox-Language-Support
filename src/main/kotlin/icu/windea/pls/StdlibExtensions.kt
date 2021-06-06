@@ -150,17 +150,23 @@ infix fun String.matchesPath(other: String): Boolean {
 /**
  * 判断当前子路径列表是否宽松匹配另一个子路径列表（长度必须相等，当前子路径列表中的子路径可以是"any"，表示匹配任意子路径，忽略大小写）。
  */
-infix fun List<String>.relaxMatchesPath(other:List<String>):Boolean{
+infix fun List<String>.relaxMatchesPath(other: List<String>): Boolean {
 	val size = size
 	val otherSize = other.size
 	if(size != otherSize) return false
-	for(index in 0 until size){
+	for(index in 0 until size) {
 		val path = this[index].toLowerCase()
 		if(path == "any") continue
 		val otherPath = other[index].toLowerCase()
 		if(path != otherPath) return false
 	}
 	return true
+}
+
+fun Path.tryCreateDirectory(): Any? {
+	return try {
+		Files.createDirectories(this)
+	} catch(ignored: Exception) { }
 }
 
 //Is Extensions
@@ -227,8 +233,6 @@ fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())
 
-fun Path.tryCreateDirectory() = runCatching{ Files.createDirectories(this) }
-
 inline fun <reified T> T.toSingletonArray() = arrayOf(this)
 
 inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
@@ -236,6 +240,29 @@ inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
 fun <T> T.toSingletonList() = Collections.singletonList(this)
 
 fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
+
+//System Extensions
+
+/**
+ * 执行命令。
+ */
+fun exec(command: Array<String>, workDirectory: File? = null): Process {
+	return Runtime.getRuntime().exec(command, null, workDirectory)
+}
+
+/**
+ * 执行命令并阻塞进程到执行结束。
+ */
+fun execBlocking(command: Array<String>, workDirectory: File? = null): Process {
+	return Runtime.getRuntime().exec(command, null, workDirectory).apply { waitFor() }
+}
+
+/**
+ * 执行命令并阻塞进程到执行结束。
+ */
+fun execBlocking(command: Array<String>, timeout: Long, timeUnit: TimeUnit, workDirectory: File? = null): Process {
+	return Runtime.getRuntime().exec(command, null, workDirectory).apply { waitFor(timeout, timeUnit) }
+}
 
 //Specific Collections
 
@@ -309,7 +336,7 @@ class RangeExpression private constructor(expression: String) : AbstractExpressi
 		}
 	}
 	
-	operator fun contains(value:Int):Boolean{ 
+	operator fun contains(value: Int): Boolean {
 		return value >= min && (max == null || value <= max)
 	}
 	
