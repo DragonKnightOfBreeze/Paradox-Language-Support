@@ -87,8 +87,7 @@
       这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
     </p>
     <p>
-      如果遇到索引相关的IDE报错，请尝试重新构建索引。
-      （点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）
+      如果遇到索引相关的IDE报错，请尝试重新构建索引。 （点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）
     </p>
     <p>
       如果遇到BUG或问题，欢迎在项目的<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue页面</a>提出。
