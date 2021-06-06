@@ -161,7 +161,7 @@ private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
 		if(rootType != null) {
 			val path = getPath(subpaths)
 			val gameType = getGameType(currentFile) ?: ParadoxGameType.defaultValue()
-			return ParadoxFileInfo(fileName, path,rootPath, fileType, rootType, gameType)
+			return ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 		}
 		subpaths.add(0, currentFile.name)
 		currentFile = currentFile.parent
@@ -343,21 +343,21 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 /**
  * 判断当前localisation所在的根目录是否是"localisation"或"localisation_synced"
  */
-fun ParadoxLocalisationProperty.isInValidRootDirectory():Boolean{
-	return this.paradoxFileInfo?.path?.root.let{ it != null && it == "localisation" || it == "localisation_synced" }
+fun ParadoxLocalisationProperty.isInValidRootDirectory(): Boolean {
+	return this.paradoxFileInfo?.path?.root.let { it != null && it == "localisation" || it == "localisation_synced" }
 }
 
 /**
  * 判断当前localisation所在的根目录是否是"localisation"
  */
-fun ParadoxLocalisationProperty.isInLocalisationRootDirectory() :Boolean{
+fun ParadoxLocalisationProperty.isInLocalisationRootDirectory(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation"
 }
 
 /**
  * 判断当前localisation所在的根目录是否是"localisation_synced"
  */
-fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory() :Boolean{
+fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
 }
 
@@ -505,7 +505,7 @@ fun findIcon(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptProperty? {
-	return ParadoxIconNameIndex.getOne(name, project, scope,!getSettings().preferOverridden)
+	return ParadoxIconNameIndex.getOne(name, project, scope, !getSettings().preferOverridden)
 }
 
 /**
@@ -641,8 +641,8 @@ inline fun message(@PropertyKey(resourceBundle = bundleName) key: String, vararg
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun String.resolveIconUrl(project: Project,defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolve(this, project,defaultToUnknown)
+inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
+	return ParadoxIconUrlResolver.resolve(this, project, defaultToUnknown)
 }
 
 @Suppress("NOTHING_TO_INLINE")

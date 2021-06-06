@@ -31,12 +31,14 @@ class ParadoxLocalisationPropertyPsiReference(
 		}
 	}
 
-	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
 		val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 		val project = element.project
 		return findLocalisations(locale, project).mapToArray {
-			LookupElementBuilder.create(it).withIcon(localisationIcon).withTypeText(it.containingFile.name)
+			val name = element.name
+			val icon = localisationIcon
+			val filePath = it.containingFile.virtualFile.path
+			LookupElementBuilder.create(it,name).withIcon(icon).withTailText(filePath,true)
 		}
 	}
 }

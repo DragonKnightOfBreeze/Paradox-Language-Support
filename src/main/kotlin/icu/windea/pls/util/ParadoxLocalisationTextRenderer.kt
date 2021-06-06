@@ -62,11 +62,13 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, buffer: StringBuilder) {
-		val name = element.name
-		val iconUrl = name.resolveIconUrl(element.project)
-		if(iconUrl.isNotEmpty()) {
-			buffer.appendIconTag(iconUrl)
-		}
+		//TODO 渲染图标总是会报错，即使本地或远程存在对应的图片，暂时不清楚原因，注释掉
+		
+		//val name = element.name
+		//val iconUrl = name.resolveIconUrl(element.project)
+		//if(iconUrl.isNotEmpty()) {
+		//	buffer.appendIconTag(iconUrl)
+		//}
 	}
 	
 	private fun renderSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, buffer: StringBuilder) {

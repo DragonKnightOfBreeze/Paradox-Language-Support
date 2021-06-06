@@ -36,9 +36,9 @@ object ParadoxIconNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() 
 		if(DumbService.isDumb(project)) return emptyList()
 		
 		val result = mutableListOf<ParadoxScriptProperty>()
-		val keys = ParadoxScriptLocalisationNameIndex.getAllKeys(project)
+		val keys = getAllKeys(project)
 		for(key in keys) {
-			for(element in ParadoxScriptLocalisationNameIndex.get(key, project, scope)) {
+			for(element in get(key, project, scope)) {
 				result.add(element)
 			}
 		}
@@ -50,10 +50,10 @@ object ParadoxIconNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() 
 		if(DumbService.isDumb(project)) return emptyList()
 		
 		val result = mutableListOf<ParadoxScriptProperty>()
-		val keys = ParadoxDefinitionNameIndex.getAllKeys(project)
+		val keys = getAllKeys(project)
 		for(key in keys) {
 			if(predicate(key)) {
-				for(element in ParadoxDefinitionNameIndex.get(key, project, scope)) {
+				for(element in get(key, project, scope)) {
 					result.add(element)
 				}
 			}

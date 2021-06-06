@@ -33,13 +33,15 @@ class ParadoxScriptVariablePsiReference(
 			.mapToArray { PsiElementResolveResult(it) }
 	}
 	
-	//注意要传入elementName而非element
 	override fun getVariants(): Array<out Any> {
 		val project = element.project
 		val file = element.containingFile
 		//同时需要同时查找当前文件中的和全局的
 		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapToArray {
-			LookupElementBuilder.create(it).withIcon(scriptVariableIcon).withTypeText(it.containingFile.name)
+			val name = it.name
+			val icon = scriptVariableIcon
+			val filePath = it.containingFile.virtualFile.path
+			LookupElementBuilder.create(it,name).withIcon(icon).withTailText(filePath,true)
 		}
 	}
 }
