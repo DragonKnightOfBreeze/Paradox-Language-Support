@@ -28,8 +28,6 @@ object ParadoxIconUrlResolver {
 	//private const val paradoxwikisUrl = "https://paradox.paradoxwikis.com"
 	//private const val huijiwikiUrl = "https://qunxing.huijiwiki.com"
 	
-	private const val unknownIconUrl = "https://windea.icu/Paradox-Language-Support/assets/img/unknown.png"
-	
 	fun resolve(name: String, project: Project, defaultToUnknown: Boolean = true): String {
 		if(name.isEmpty()) return getDefaultUrl(defaultToUnknown)
 		return try {
@@ -49,14 +47,14 @@ object ParadoxIconUrlResolver {
 	}
 	
 	private fun getDefaultUrl(defaultToUnknown: Boolean): String {
-		return if(defaultToUnknown) unknownIconUrl else ""
+		return if(defaultToUnknown) DdsToPngConverter.getUnknownPngPath() else ""
 	}
 	
 	private fun doResolve(name: String, project: Project): String? {
 		val iconDefinition = findIcon(name, project) ?: return null
 		val fileInfo = iconDefinition.paradoxFileInfo ?: return null
 		val rootPath = fileInfo.rootPath //rootPath
-		val ddsRelPath = iconDefinition.findProperty("textureFile")?.value ?: return null //paradoxPath
+		val ddsRelPath = iconDefinition.findProperty("texturefile")?.value ?: return null //paradoxPath
 		val ddsAbsPath = rootPath.resolve(ddsRelPath).toString()
 		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
 	}

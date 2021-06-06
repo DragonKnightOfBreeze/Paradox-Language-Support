@@ -609,12 +609,18 @@ private fun resolveScriptLink(link: String, context: PsiElement): ParadoxScriptP
 
 //Build String Extensions
 
+fun StringBuilder.appendIf(condition:Boolean,text:String):StringBuilder{
+	if(condition) append(text)
+	return this
+}
+
 fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
 	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
 }
 
-fun StringBuilder.appendIconTag(url: String, size: Int = iconSize): StringBuilder {
-	return append("<img src=\"").append(url).append("\" width=\"").append(size).append("\" height=\"").append(size).append("\"/>")
+fun StringBuilder.appendIconTag(url: String, size: Int = iconSize,local:Boolean=true): StringBuilder {
+	return append("<img src=\"").appendIf(local,"file:/").append(url)
+		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\" hspace=\"1\"/>")
 }
 
 fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {

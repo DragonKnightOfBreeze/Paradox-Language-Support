@@ -26,8 +26,8 @@ class ParadoxLocalisationCommandFieldPsiReference(
 			val name = it.name //与definition.name是相同的，直接使用
 			//val name = it.paradoxDefinitionInfo?.name!!
 			val icon = scriptLocalisationIcon
-			val filePath = it.containingFile.virtualFile.path
-			LookupElementBuilder.create(it, name).withIcon(icon).withTailText(filePath,true)
+			val fileName = it.containingFile.name
+			LookupElementBuilder.create(it,name).withIcon(icon).withTypeText(fileName,true)
 		}
 	}
 }

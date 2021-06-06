@@ -168,6 +168,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation icon) <b>").append(name).append("</b>")
 			}
+			//TODO 渲染图标总是会报错，即使本地或远程存在对应的图片，暂时不清楚原因
 			//图标
 			val iconUrl = name.resolveIconUrl(project)
 			if(iconUrl.isNotEmpty()) {

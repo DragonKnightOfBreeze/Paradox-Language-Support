@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
@@ -67,10 +68,9 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxScriptProperty): String {
-		return element.stub?.name ?: element.propertyKey.text.unquote()
+		return element.stub?.name ?: element.propertyKey.text.unquote().toLowerCase() //不区分大小写
 	}
 	
-	//TODO 检查是否是项目中的definition，这样才允许重命名
 	@JvmStatic
 	fun setName(element: ParadoxScriptProperty, name: String): PsiElement {
 		element.propertyKey.replace(createPropertyKey(element.project, name))
@@ -79,7 +79,10 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun checkRename(element: ParadoxScriptProperty) {
-		
+		//检查是否是项目中的definition，这样才允许重命名
+		if(element.paradoxDefinitionInfo == null){
+			throw IncorrectOperationException(message("cannotBeRenamed"))
+		}
 	}
 	
 	@JvmStatic
@@ -114,13 +117,13 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun findProperty(element: ParadoxScriptProperty, propertyName: String): ParadoxScriptProperty? {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return null
-		return block.propertyList.find { it.name == propertyName }
+		return block.propertyList.find { it.name == propertyName.toLowerCase() }
 	}
 	
 	@JvmStatic
 	fun findProperties(element: ParadoxScriptProperty, propertyName: String): List<ParadoxScriptProperty> {
 		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
-		return block.propertyList.filter { it.name == propertyName }
+		return block.propertyList.filter { it.name == propertyName.toLowerCase() }
 	}
 	
 	@JvmStatic
