@@ -163,6 +163,14 @@ infix fun List<String>.relaxMatchesPath(other: List<String>): Boolean {
 	return true
 }
 
+fun Path.exists():Boolean{
+	return Files.exists(this)
+}
+
+fun Path.notExists():Boolean{
+	return Files.notExists(this)
+}
+
 fun Path.tryCreateDirectory(): Any? {
 	return try {
 		Files.createDirectories(this)
@@ -244,24 +252,28 @@ fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyLi
 //System Extensions
 
 /**
- * 执行命令。
+ * 执行命令。（基于操作系统）
  */
-fun exec(command: Array<String>, workDirectory: File? = null): Process {
-	return Runtime.getRuntime().exec(command, null, workDirectory)
+fun exec(command: String, workDirectory: File? = null): Process {
+	return Runtime.getRuntime().exec(optimizeCommand(command), null, workDirectory)
 }
 
 /**
- * 执行命令并阻塞进程到执行结束。
+ * 执行命令并阻塞进程到执行结束。（基于操作系统）
  */
-fun execBlocking(command: Array<String>, workDirectory: File? = null): Process {
-	return Runtime.getRuntime().exec(command, null, workDirectory).apply { waitFor() }
+fun execBlocking(command: String, workDirectory: File? = null): Process {
+	return Runtime.getRuntime().exec(optimizeCommand(command), null, workDirectory).apply { waitFor() }
 }
 
 /**
- * 执行命令并阻塞进程到执行结束。
+ * 执行命令并阻塞进程到执行结束。（基于操作系统）
  */
-fun execBlocking(command: Array<String>, timeout: Long, timeUnit: TimeUnit, workDirectory: File? = null): Process {
-	return Runtime.getRuntime().exec(command, null, workDirectory).apply { waitFor(timeout, timeUnit) }
+fun execBlocking(command: String, timeout: Long, timeUnit: TimeUnit, workDirectory: File? = null): Process {
+	return Runtime.getRuntime().exec(optimizeCommand(command), null, workDirectory).apply { waitFor(timeout, timeUnit) }
+}
+
+private fun optimizeCommand(command: String): Array<String> {
+	return  arrayOf("cmd", "/c", command)
 }
 
 //Specific Collections

@@ -168,8 +168,8 @@ class CwtConfigGroupCache(
 				when(key) {
 					"type_key_filter" -> {
 						val reversed = option.separator == CwtConfigSeparator.NOT_EQUAL
-						val optionValues = option.values ?: continue
-						val list = optionValues.mapNotNull { it.stringValue }
+						//值可能是string也可能是stringArray
+						val list = option.stringValue?.toSingletonList() ?: option.values?.mapNotNull { it.stringValue } ?: emptyList()
 						resolved.type_key_filter = ReversibleList(list, reversed)
 					}
 					"push_scope" -> resolved.push_scope = option.stringValue ?: continue
@@ -273,9 +273,9 @@ class CwtConfigGroupCache(
 		val typeKeyFilterConfig = subtypeConfig.type_key_filter
 		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
 			val filterResult = if(typeKeyFilterConfig.reverse) {
-				typeKeyFilterConfig.any { elementName in it }
-			} else {
 				typeKeyFilterConfig.all { elementName !in it }
+			} else {
+				typeKeyFilterConfig.any { elementName in it }
 			}
 			if(!filterResult) return false
 		}
@@ -310,6 +310,9 @@ class CwtConfigGroupCache(
 		//如果name_field = <any>，则返回对应名字的property的value
 		val nameFieldConfig = typeConfig.name_field
 		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig)?.value.orEmpty()
+		//如果有一个子属性的propertyKey为name，那么取这个子属性的值，这是为了兼容cwt规则文件尚未考虑到的一些需要名字的情况
+		val nameProperty = element.findProperty("name")
+		if(nameProperty != null) return nameProperty.value.orEmpty()
 		//否则直接返回elementName
 		return elementName
 	}

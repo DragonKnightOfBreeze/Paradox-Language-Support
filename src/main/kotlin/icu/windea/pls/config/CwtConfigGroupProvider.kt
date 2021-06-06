@@ -35,8 +35,9 @@ class CwtConfigGroupProvider(
 	private fun initConfigGroups(){
 		logger.info("Init config groups...")
 		val configUrl = "/config".toUrl(locationClass)
-		//FIXME 这里不该发生异常，但是有时就会这样
-		val configFile = VfsUtil.findFileByURL(configUrl) ?: error("Cwt config path '$configUrl' is not exist.")
+		//这里有可能找不到，这时不要报错，之后还会执行到这里
+		//val configFile = VfsUtil.findFileByURL(configUrl) ?: error("Cwt config path '$configUrl' is not exist.")
+		val configFile = VfsUtil.findFileByURL(configUrl) ?: return
 		val children = configFile.children
 		for(file in children) {
 			when {

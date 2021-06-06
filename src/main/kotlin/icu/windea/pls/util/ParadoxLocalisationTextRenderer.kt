@@ -1,5 +1,6 @@
 package icu.windea.pls.util
 
+import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
@@ -62,7 +63,7 @@ object ParadoxLocalisationTextRenderer {
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, buffer: StringBuilder) {
 		val name = element.name
-		val iconUrl = name.resolveIconUrl()
+		val iconUrl = name.resolveIconUrl(element.project)
 		if(iconUrl.isNotEmpty()) {
 			buffer.appendIconTag(iconUrl)
 		}

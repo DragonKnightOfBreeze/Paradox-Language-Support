@@ -34,9 +34,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, StubBa
   String getValue();
 
   @Nullable
-  String getUnquotedValue();
-
-  @Nullable
   String getTruncatedValue();
 
   int getDepth();

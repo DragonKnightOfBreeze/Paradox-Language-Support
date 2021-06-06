@@ -25,12 +25,13 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			if(rootType != null) {
 				val path = getPath(subpaths)
 				val gameType = getGameType(currentFile)?:ParadoxGameType.defaultValue()
+				val rootPath = currentFile.toNioPath()
 				//只解析特定根目录下的文件
 				return when {
 					//脚本文件，根据正则指定需要排除的文件
 					fileType == ParadoxFileType.Script && !fileName.matches(ignoredScriptFileNameRegex) -> {
 						runCatching {
-							val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
+							val fileInfo = ParadoxFileInfo(fileName, path,rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey,fileInfo)
 						}
 						ParadoxScriptFileType
@@ -38,7 +39,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 					//本地化文件
 					fileType == ParadoxFileType.Localisation-> {
 						runCatching {
-							val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
+							val fileInfo = ParadoxFileInfo(fileName, path, rootPath,fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
 						}
 						ParadoxLocalisationFileType

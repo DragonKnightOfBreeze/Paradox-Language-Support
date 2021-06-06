@@ -89,12 +89,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptProperty): String? {
-		return element.propertyValue?.text?.unquote()
-	}
-	
-	@JvmStatic
-	fun getUnquotedValue(element: ParadoxScriptProperty): String? {
-		return element.propertyValue?.value?.text
+		return element.propertyValue?.value?.value
 	}
 	
 	@JvmStatic

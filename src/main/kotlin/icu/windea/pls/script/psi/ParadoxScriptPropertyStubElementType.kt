@@ -1,6 +1,5 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
@@ -28,7 +27,10 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		//这里使用scriptProperty.paradoxDefinitionInfo.name而非scriptProperty.name
 		val definition = psi.paradoxDefinitionInfo
-		return ParadoxScriptPropertyStubImpl(parentStub, definition?.name ?: "@", definition?.type ?: "")
+		val name = definition?.name ?: "@"
+		val type = definition?.type ?: "@"
+		val subtypes = definition?.subtypes?: emptyList()
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type,subtypes)
 	}
 	
 	//override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
@@ -40,17 +42,38 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
 		dataStream.writeName(stub.type)
+		dataStream.writeName(stub.subtypes.joinToString(","))
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-		return ParadoxScriptPropertyStubImpl(parentStub, dataStream.readNameString()!!, dataStream.readNameString()!!)
+		val name = dataStream.readNameString()!!
+		val type = dataStream.readNameString()!!
+		val subtypes = dataStream.readNameString()!!.let { if(it.isEmpty()) emptyList() else it.split(',') }
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type,subtypes)
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
-		//索引definition的名称和类型，如果是scripted_loc，也要索引scriptLocalisation的名称
-		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
-		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
-		if(stub.type == "scripted_loc") sink.occurrence(ParadoxScriptLocalisationNameIndex.key, stub.name)
+		val name = stub.name
+		val type = stub.type
+		val subtypes = stub.subtypes
+		//索引definition的名称和类型
+		sink.occurrence(ParadoxDefinitionNameIndex.key, name)
+		sink.occurrence(ParadoxDefinitionTypeIndex.key, type)
+		when {
+			//索引scripted_loc的名字
+			type == "scripted_loc" -> {
+				sink.occurrence(ParadoxScriptLocalisationNameIndex.key, name)
+			}
+			//索引icon的名字
+			type == "sprite" && subtypes.contains("normal") -> {
+				val iconName = when{
+					name.startsWith("GFX_text_") -> name.substring(9)
+					name.startsWith("GFX_") -> name.substring(4)
+					else -> return
+				}
+				sink.occurrence(ParadoxIconNameIndex.key, iconName)
+			}
+		}
 	}
 	
 	//override fun shouldCreateStub(node: ASTNode): Boolean {

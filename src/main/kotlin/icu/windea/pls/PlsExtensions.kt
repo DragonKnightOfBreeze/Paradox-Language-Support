@@ -157,10 +157,11 @@ private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
 	var currentFile = file.parent
 	while(currentFile != null) {
 		val rootType = getRootType(currentFile)
+		val rootPath = currentFile.virtualFile.toNioPath()
 		if(rootType != null) {
 			val path = getPath(subpaths)
 			val gameType = getGameType(currentFile) ?: ParadoxGameType.defaultValue()
-			return ParadoxFileInfo(fileName, path, fileType, rootType, gameType)
+			return ParadoxFileInfo(fileName, path,rootPath, fileType, rootType, gameType)
 		}
 		subpaths.add(0, currentFile.name)
 		currentFile = currentFile.parent
@@ -497,6 +498,38 @@ fun findScriptLocalisations(
 }
 
 /**
+ * 基于图标名字索引，根据名字查找图标（icon，对应类型为sprite.normal的definition，definition.name带有前缀GFX_或GFX_text）。
+ */
+fun findIcon(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): ParadoxScriptProperty? {
+	return ParadoxIconNameIndex.getOne(name, project, scope,!getSettings().preferOverridden)
+}
+
+/**
+ * 基于图标名字索引，根据名字查找所有的图标（icon，对应类型为sprite.normal的definition，definition.name带有前缀GFX_或GFX_text）。
+ */
+fun findIcons(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
+	return ParadoxIconNameIndex.getAll(name, project, scope)
+}
+
+/**
+ * 基于图标名字索引，查找所有的图标（icon，对应类型为sprite.normal的definition，definition.name带有前缀GFX_或GFX_text）。
+ */
+fun findIcons(
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
+	return ParadoxIconNameIndex.getAll(project, scope)
+}
+
+/**
  * 基于本地化名字索引，根据名字、语言区域查找本地化（localisation）。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
  */
@@ -608,8 +641,8 @@ inline fun message(@PropertyKey(resourceBundle = bundleName) key: String, vararg
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun String.resolveIconUrl(defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolve(this, defaultToUnknown)
+inline fun String.resolveIconUrl(project: Project,defaultToUnknown: Boolean = true): String {
+	return ParadoxIconUrlResolver.resolve(this, project,defaultToUnknown)
 }
 
 @Suppress("NOTHING_TO_INLINE")

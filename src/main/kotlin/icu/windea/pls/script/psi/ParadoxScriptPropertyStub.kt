@@ -5,5 +5,6 @@ import com.intellij.psi.stubs.*
 interface ParadoxScriptPropertyStub: StubElement<ParadoxScriptProperty> {
 	val name:String
 	val type:String
+	val subtypes:List<String>
 }
 

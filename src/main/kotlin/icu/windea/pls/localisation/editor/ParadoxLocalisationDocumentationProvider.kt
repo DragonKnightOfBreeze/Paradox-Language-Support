@@ -119,6 +119,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getLocalisationDoc(element: ParadoxLocalisationProperty): String {
 		val name = element.name
+		val project = element.project
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
@@ -162,12 +163,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun getIconDoc(element: ParadoxLocalisationIcon): String {
 		val name = element.name
+		val project = element.project
 		return buildString {
 			definition {
 				append("(localisation icon) <b>").append(name).append("</b>")
 			}
 			//图标
-			val iconUrl = name.resolveIconUrl()
+			val iconUrl = name.resolveIconUrl(project)
 			if(iconUrl.isNotEmpty()) {
 				content {
 					appendIconTag(iconUrl)

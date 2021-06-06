@@ -37,3 +37,4 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 		return result
 	}
 }
+

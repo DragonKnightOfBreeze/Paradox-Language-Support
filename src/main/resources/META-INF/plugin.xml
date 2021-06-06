@@ -48,6 +48,9 @@
       This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
     </p>
     <p>
+      If you have met IDE exceptions about indices, please try to rebuild indices. (Click <code>File -> Invalidate Caches... -> Invalidate and Restart</code>)
+    </p>
+    <p>
       If you have found any bugs or problems, feel free to report them in project's <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue Page</a>.
     </p>
     <p>
@@ -66,7 +69,9 @@
       如果需要更加完善的语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
     </p>
     <p>
-      在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>，即可提供语言支持。<br>
+      在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>，即可提供语言支持。
+    </p>
+    <p>
       在你的模组根文件夹下创建标记文件<code>.${gameType}</code>，即可指定游戏类型。（如<code>.stellaris</code>）
     </p>
     <p>
@@ -80,6 +85,10 @@
     </p>
     <p>
       这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
+    </p>
+    <p>
+      如果遇到索引相关的IDE报错，请尝试重新构建索引。
+      （点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）
     </p>
     <p>
       如果遇到BUG或问题，欢迎在项目的<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue页面</a>提出。
@@ -186,10 +195,11 @@
     <stubElementTypeHolder
         class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes"
         externalIdPrefix="paradoxScript."/>
+    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
-    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxIconNameIndex"/>
     
     <spellchecker.support
         language="Paradox Script"
