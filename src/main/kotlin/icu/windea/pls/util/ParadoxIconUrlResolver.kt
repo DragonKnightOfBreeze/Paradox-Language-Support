@@ -1,6 +1,12 @@
 package icu.windea.pls.util
 
+import com.intellij.openapi.fileChooser.ex.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vcs.VirtualFileFilter
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.search.*
+import com.intellij.workspaceModel.storage.impl.indices.*
+import com.intellij.workspaceModel.storage.url.*
 import icu.windea.pls.*
 import org.slf4j.*
 import java.nio.file.*
@@ -35,7 +41,7 @@ object ParadoxIconUrlResolver {
 			var url = cache[name]
 			//如果缓存中没有或者对应的本地png文件不存在，需要重新获取
 			if(url == null || url.isEmpty() || Files.notExists(Path.of(url))) {
-				url = doResolve(name, project)
+				url = doResolve(name, project) ?: doResolveByFileName(name,project)
 				cache.put(name, url.orEmpty())
 			}
 			//如果还是没有得到则返回默认的url
@@ -51,6 +57,7 @@ object ParadoxIconUrlResolver {
 		return if(defaultToUnknown) DdsToPngConverter.getUnknownPngPath() else ""
 	}
 	
+	//基于gfx文件中的spriteType的定义进行解析
 	private fun doResolve(name: String, project: Project): String? {
 		val iconDefinition = findIcon(name, project) ?: return null
 		val fileInfo = iconDefinition.paradoxFileInfo ?: return null
@@ -58,6 +65,18 @@ object ParadoxIconUrlResolver {
 		val ddsRelPath = iconDefinition.findProperty("textureFile",true)?.value ?: return null //paradoxPath
 		val ddsAbsPath = rootPath.resolve(ddsRelPath).toString()
 		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
+	}
+	
+	//直接基于dds的文件名进行解析
+	private fun doResolveByFileName(name:String,project: Project):String?{
+		val ddsFileName = "$name.dds"
+		val ddsFiles = FilenameIndex.getFilesByName(project,ddsFileName, GlobalSearchScope.allScope(project))
+		val ddsFile = ddsFiles.firstOrNull() ?: return null
+		val fileInfo = ddsFile.paradoxFileInfo?: return null
+		val rootPath = fileInfo.rootPath
+		val ddsRelPath = fileInfo.path.path
+		val ddsAbsPath = rootPath.resolve(ddsRelPath).toString()
+		return DdsToPngConverter.convert(ddsAbsPath,ddsRelPath)
 	}
 	
 	//fun resolve(name: String,defaultToUnknown:Boolean=true): String {

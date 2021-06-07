@@ -67,11 +67,7 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 			}
 			//索引icon的名字
 			(stub.type == "sprite" || stub.type == "spriteType") && stub.typeKey == "spriteType" -> {
-				val iconName = when {
-					stub.name.startsWith("GFX_text_") -> stub.name.substring(9)
-					stub.name.startsWith("GFX_") -> stub.name.substring(4)
-					else -> return
-				}
+				val iconName = resolveIconName(stub.name)
 				sink.occurrence(ParadoxIconNameIndex.key, iconName)
 			}
 		}

@@ -136,7 +136,11 @@ val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.originalF
 val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.containingFile)
 
 internal fun canGetFileInfo(file: PsiFile): Boolean {
-	return file is ParadoxScriptFile || file is ParadoxLocalisationFile
+	paradoxScriptFile, paradoxLocalisationFile, ddsFile
+	if(file is ParadoxScriptFile || file is ParadoxLocalisationFile) return true
+	val extension = file.name.substringAfterLast('.').toLowerCase()
+	if(extension == "dds") return true
+	return false
 }
 
 private fun getFileInfo(file: PsiFile): ParadoxFileInfo? {
@@ -359,6 +363,14 @@ fun ParadoxLocalisationProperty.isInLocalisationRootDirectory(): Boolean {
  */
 fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
+}
+
+fun resolveIconName(name:String):String{
+	return when {
+		name.startsWith("GFX_text_") -> name.substring(9)
+		name.startsWith("GFX_") -> name.substring(4)
+		else -> name
+	}
 }
 
 //PsiElement Find Extensions

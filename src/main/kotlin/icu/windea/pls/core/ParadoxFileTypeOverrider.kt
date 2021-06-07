@@ -44,7 +44,14 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						}
 						ParadoxLocalisationFileType
 					}
-					else -> null
+					//其他文件（dds）
+					else -> {
+						runCatching {
+							val fileInfo = ParadoxFileInfo(fileName, path, rootPath,fileType, rootType, gameType)
+							file.putUserData(paradoxFileInfoKey, fileInfo)
+						}
+						null
+					}
 				}
 			}
 			subpaths.add(0, currentFile.name)
@@ -62,10 +69,11 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	
 	private fun getFileType(file: VirtualFile): ParadoxFileType? {
 		if(file is StubVirtualFile || !file.isValid || file.isDirectory) return null
-		val fileExtension = file.extension
+		val fileExtension = file.extension?.toLowerCase() ?: return null
 		return when {
 			fileExtension in scriptFileExtensions -> ParadoxFileType.Script
 			fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
+			fileExtension == "dds" -> ParadoxFileType.Dds 
 			else -> null
 		}
 	}
