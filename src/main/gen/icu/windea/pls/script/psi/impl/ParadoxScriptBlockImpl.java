@@ -83,16 +83,4 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
     return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
-  @Override
-  @Nullable
-  public ParadoxScriptProperty findProperty(@NotNull String propertyName) {
-    return ParadoxScriptPsiImplUtil.findProperty(this, propertyName);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptValue findValue(@NotNull String value) {
-    return ParadoxScriptPsiImplUtil.findValue(this, value);
-  }
-
 }

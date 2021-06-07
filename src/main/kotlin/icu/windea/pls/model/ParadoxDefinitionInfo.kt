@@ -6,6 +6,7 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 data class ParadoxDefinitionInfo(
 	val name: String,
+	val typeKey: String,
 	val type: String,
 	val subtypes: List<String> = emptyList(),
 	val subtypesConfig: List<CwtSubtypeConfig> = emptyList(),

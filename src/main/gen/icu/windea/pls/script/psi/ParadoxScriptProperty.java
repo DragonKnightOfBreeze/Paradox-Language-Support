@@ -38,16 +38,4 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, StubBa
 
   int getDepth();
 
-  @Nullable
-  ParadoxScriptProperty findProperty(@NotNull String propertyName);
-
-  @NotNull
-  List<ParadoxScriptProperty> findProperties(@NotNull String propertyName);
-
-  @Nullable
-  ParadoxScriptValue findValue(@NotNull String value);
-
-  @NotNull
-  List<ParadoxScriptValue> findValues(@NotNull String value);
-
 }

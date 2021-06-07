@@ -76,7 +76,7 @@ val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 
-//Paradox PsiElement Extensions
+//PsiElement Extensions
 
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
@@ -361,6 +361,36 @@ fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
 }
 
+//PsiElement Find Extensions
+
+fun ParadoxScriptProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
+	val block = propertyValue?.value as? ParadoxScriptBlock ?: return null
+	return block.propertyList.find { it.name.equals(propertyName, ignoreCase) }
+}
+
+fun ParadoxScriptProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
+	val block = propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
+	return block.propertyList.filter { it.name.equals(propertyName, ignoreCase) }
+}
+
+fun ParadoxScriptProperty.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
+	val block = propertyValue?.value as? ParadoxScriptBlock ?: return null
+	return block.valueList.find { it.value.equals(value, ignoreCase) }
+}
+
+fun ParadoxScriptProperty.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
+	val block = propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
+	return block.valueList.filter { it.value.equals(value, ignoreCase) }
+}
+
+fun ParadoxScriptBlock.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
+	return propertyList.find { it.name.equals(propertyName, ignoreCase) }
+}
+
+fun ParadoxScriptBlock.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
+	return valueList.find { it.value.equals(value, ignoreCase) }
+}
+
 //Find Extensions
 /**
  * 根据名字在当前文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
@@ -609,7 +639,7 @@ private fun resolveScriptLink(link: String, context: PsiElement): ParadoxScriptP
 
 //Build String Extensions
 
-fun StringBuilder.appendIf(condition:Boolean,text:String):StringBuilder{
+fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 	if(condition) append(text)
 	return this
 }
@@ -618,8 +648,8 @@ fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
 	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
 }
 
-fun StringBuilder.appendIconTag(url: String, size: Int = iconSize,local:Boolean=true): StringBuilder {
-	return append("<img src=\"").appendIf(local,"file:/").append(url)
+fun StringBuilder.appendIconTag(url: String, size: Int = iconSize, local: Boolean = true): StringBuilder {
+	return append("<img src=\"").appendIf(local, "file:/").append(url)
 		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\" hspace=\"1\"/>")
 }
 

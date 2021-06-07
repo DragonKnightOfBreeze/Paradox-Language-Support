@@ -92,28 +92,4 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
     return ParadoxScriptPsiImplUtil.getDepth(this);
   }
 
-  @Override
-  @Nullable
-  public ParadoxScriptProperty findProperty(@NotNull String propertyName) {
-    return ParadoxScriptPsiImplUtil.findProperty(this, propertyName);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptProperty> findProperties(@NotNull String propertyName) {
-    return ParadoxScriptPsiImplUtil.findProperties(this, propertyName);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptValue findValue(@NotNull String value) {
-    return ParadoxScriptPsiImplUtil.findValue(this, value);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptValue> findValues(@NotNull String value) {
-    return ParadoxScriptPsiImplUtil.findValues(this, value);
-  }
-
 }

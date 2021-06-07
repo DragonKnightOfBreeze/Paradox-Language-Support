@@ -34,10 +34,4 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeEleme
   @NotNull
   List<PsiElement> getComponents();
 
-  @Nullable
-  ParadoxScriptProperty findProperty(@NotNull String propertyName);
-
-  @Nullable
-  ParadoxScriptValue findValue(@NotNull String value);
-
 }

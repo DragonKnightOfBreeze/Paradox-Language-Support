@@ -155,7 +155,7 @@ private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProp
 					stringValue == "scalar" -> {
 						if(propValue !is ParadoxScriptString) return false
 					}
-					//弄成存在任意locale的都可以
+					//TODO 区分localisation和localisation_synced
 					//字符串"localisation"表示匹配任意localisation的key
 					stringValue == "localisation" -> {
 						if(propValue !is ParadoxScriptString) return false

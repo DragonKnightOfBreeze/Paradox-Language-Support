@@ -73,10 +73,7 @@ property ::= property_key property_separator property_value {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements="icu.windea.pls.script.psi.ParadoxScriptNamedElement"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[
-    getName setName checkRename getNameIdentifier getIcon getValue getTruncatedValue getDepth
-    findProperty findProperties findValue findValues
-  ]
+  methods=[getName setName checkRename getNameIdentifier getIcon getValue getTruncatedValue getDepth]
 }
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID
 private property_separator ::= "=" | "<" | ">" | "<=" | ">=" | "<>"
@@ -127,6 +124,6 @@ block ::= "{" block_item * "}" {
   pin(".*")=1
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents findProperty findValue]
+  methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents]
 }
 private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value

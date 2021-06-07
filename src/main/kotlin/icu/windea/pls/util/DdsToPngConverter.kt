@@ -37,7 +37,7 @@ object DdsToPngConverter{
 			ensureDirsAndFilesExist()
 			return doConvert(ddsAbsPath,ddsRelPath)	
 		}catch(e:Exception){
-			logger.error("Convert dds image to png image failed.",e)
+			logger.warn("Convert dds image to png image failed.",e)
 			return null
 		}
 	}

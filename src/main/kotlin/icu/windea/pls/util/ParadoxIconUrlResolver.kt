@@ -17,13 +17,14 @@ import java.util.concurrent.*
 object ParadoxIconUrlResolver {
 	private val logger = LoggerFactory.getLogger(ParadoxIconUrlResolver::class.java)
 	
-	private const val delay: Long = 300
+	private val cache = ConcurrentHashMap<String, String?>()
+	
+	//private const val delay: Long = 300
 	//private val timeout = Duration.ofMinutes(3)
 	
 	//private val httpClient = HttpClient.newBuilder().connectTimeout(timeout).build()
 	//private val bodyHandler = BodyHandlers.ofLines()
 	//private val executor = Executors.newCachedThreadPool()
-	private val cache = ConcurrentHashMap<String, String?>()
 	
 	//private const val paradoxwikisUrl = "https://paradox.paradoxwikis.com"
 	//private const val huijiwikiUrl = "https://qunxing.huijiwiki.com"
@@ -40,7 +41,7 @@ object ParadoxIconUrlResolver {
 			//如果还是没有得到则返回默认的url
 			if(url == null || url.isEmpty()) getDefaultUrl(defaultToUnknown) else url
 		} catch(e: Exception) {
-			logger.error("Resolve paradox icon failed.", e)
+			logger.warn("Resolve paradox icon failed.", e)
 			//如果出现异常，那么返回默认图标
 			getDefaultUrl(defaultToUnknown)
 		}
@@ -54,7 +55,7 @@ object ParadoxIconUrlResolver {
 		val iconDefinition = findIcon(name, project) ?: return null
 		val fileInfo = iconDefinition.paradoxFileInfo ?: return null
 		val rootPath = fileInfo.rootPath //rootPath
-		val ddsRelPath = iconDefinition.findProperty("texturefile")?.value ?: return null //paradoxPath
+		val ddsRelPath = iconDefinition.findProperty("textureFile",true)?.value ?: return null //paradoxPath
 		val ddsAbsPath = rootPath.resolve(ddsRelPath).toString()
 		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
 	}

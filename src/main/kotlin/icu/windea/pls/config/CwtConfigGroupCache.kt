@@ -291,6 +291,7 @@ class CwtConfigGroupCache(
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, elementName)
+		val typeKey = elementName
 		val type = typeConfig.name
 		val subtypesConfig = getSubtypesConfig(typeConfig, element, elementName)
 		val subtypes = subtypesConfig.map { it.name }
@@ -300,7 +301,8 @@ class CwtConfigGroupCache(
 		val unique = typeConfig.unique
 		val severity = typeConfig.severity
 		val pushScopes = subtypesConfig.map { it.push_scope }
-		return ParadoxDefinitionInfo(name, type, subtypes, subtypesConfig, localisation, localisationConfig, graphRelatedTypes, unique, severity, pushScopes)
+		return ParadoxDefinitionInfo(name,typeKey, type, subtypes, subtypesConfig, localisation, localisationConfig, 
+			graphRelatedTypes, unique, severity, pushScopes)
 	}
 	
 	private fun getName(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): String {
@@ -309,9 +311,9 @@ class CwtConfigGroupCache(
 		if(nameFromFileConfig) return element.containingFile.name.substringBeforeLast('.')
 		//如果name_field = <any>，则返回对应名字的property的value
 		val nameFieldConfig = typeConfig.name_field
-		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig)?.value.orEmpty()
+		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig,true)?.value.orEmpty()
 		//如果有一个子属性的propertyKey为name，那么取这个子属性的值，这是为了兼容cwt规则文件尚未考虑到的一些需要名字的情况
-		val nameProperty = element.findProperty("name")
+		val nameProperty = element.findProperty("name",true)
 		if(nameProperty != null) return nameProperty.value.orEmpty()
 		//否则直接返回elementName
 		return elementName

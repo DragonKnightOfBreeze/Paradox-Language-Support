@@ -87,7 +87,7 @@ class CwtConfigGroupProvider(
 		return try {
 			file.toPsiFile<CwtFile>(project)?.resolveConfig()
 		} catch(e: Exception) {
-			logger.error(e.message,e)
+			logger.warn(e.message,e)
 			null
 		}
 	}
@@ -103,7 +103,7 @@ class CwtConfigGroupProvider(
 		return try {
 			yaml.load(file.inputStream)
 		}catch(e:Exception){
-			logger.error(e.message,e)
+			logger.warn(e.message,e)
 			null
 		}
 	}

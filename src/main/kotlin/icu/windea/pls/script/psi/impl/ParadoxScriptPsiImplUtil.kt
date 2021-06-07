@@ -68,7 +68,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxScriptProperty): String {
-		return element.stub?.name ?: element.propertyKey.text.unquote().toLowerCase() //不区分大小写
+		return element.stub?.name ?: element.propertyKey.text.unquote()
 	}
 	
 	@JvmStatic
@@ -112,30 +112,6 @@ object ParadoxScriptPsiImplUtil {
 			if(current is ParadoxScriptRootBlock) break
 		}
 		return depth
-	}
-	
-	@JvmStatic
-	fun findProperty(element: ParadoxScriptProperty, propertyName: String): ParadoxScriptProperty? {
-		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return null
-		return block.propertyList.find { it.name == propertyName.toLowerCase() }
-	}
-	
-	@JvmStatic
-	fun findProperties(element: ParadoxScriptProperty, propertyName: String): List<ParadoxScriptProperty> {
-		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
-		return block.propertyList.filter { it.name == propertyName.toLowerCase() }
-	}
-	
-	@JvmStatic
-	fun findValue(element: ParadoxScriptProperty, value: String): ParadoxScriptValue? {
-		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return null
-		return block.valueList.find { it.value == value }
-	}
-	
-	@JvmStatic
-	fun findValues(element: ParadoxScriptProperty, value: String): List<ParadoxScriptValue> {
-		val block = element.propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
-		return block.valueList.filter { it.value == value }
 	}
 	//endregion
 	
@@ -337,16 +313,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
 		//如果存在元素为property，则认为所有合法的元素都是property
 		return if(element.isObject) element.propertyList else element.valueList
-	}
-	
-	@JvmStatic
-	fun findProperty(element: ParadoxScriptBlock, propertyName: String): ParadoxScriptProperty? {
-		return element.propertyList.find { it.name == propertyName }
-	}
-	
-	@JvmStatic
-	fun findValue(element: ParadoxScriptBlock, value: String): ParadoxScriptValue? {
-		return element.valueList.find { it.value == value }
 	}
 	//endregion
 }
