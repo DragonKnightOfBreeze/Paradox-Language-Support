@@ -2,8 +2,6 @@
 package icu.windea.pls.localisation.psi.impl;
 
 import java.util.List;
-
-import icu.windea.pls.localisation.psi.*;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -11,15 +9,17 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 import icu.windea.pls.localisation.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationIconPsiReference;
 import javax.swing.Icon;
 
-public class ParadoxLocalisationIconImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationIcon {
+public class ParadoxLocalisationIconImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationIcon {
 
   public ParadoxLocalisationIconImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
     visitor.visitIcon(this);
   }
@@ -58,17 +58,6 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationNamedElement
   @NotNull
   public PsiElement setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public void checkRename() {
-    ParadoxLocalisationPsiImplUtil.checkRename(this);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override

@@ -65,11 +65,6 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
   }
 
   @Override
-  public void checkRename() {
-    CwtPsiImplUtil.checkRename(this);
-  }
-
-  @Override
   @NotNull
   public String getOptionName() {
     return CwtPsiImplUtil.getOptionName(this);

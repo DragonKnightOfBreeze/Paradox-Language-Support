@@ -22,8 +22,6 @@ public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, StubBa
   @NotNull
   PsiElement setName(@NotNull String name);
 
-  void checkRename();
-
   @NotNull
   PsiElement getNameIdentifier();
 

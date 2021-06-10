@@ -39,8 +39,8 @@ object ParadoxIconUrlResolver {
 	}
 	
 	fun resolveBySprite(sprite: ParadoxScriptProperty, defaultToUnknown: Boolean = true): String {
-		val spriteName = sprite.name
-		if(spriteName.isEmpty()) return getDefaultUrl(defaultToUnknown)
+		val spriteName = sprite.paradoxDefinitionInfo?.name
+		if(spriteName.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 		return try {
 			var url = spriteNameUrlCache[spriteName]
 			//如果缓存中没有或者对应的本地png文件不存在，需要重新获取

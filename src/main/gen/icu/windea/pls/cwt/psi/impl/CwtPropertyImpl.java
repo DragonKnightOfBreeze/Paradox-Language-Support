@@ -65,11 +65,6 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
   }
 
   @Override
-  public void checkRename() {
-    CwtPsiImplUtil.checkRename(this);
-  }
-
-  @Override
   @NotNull
   public String getPropertyName() {
     return CwtPsiImplUtil.getPropertyName(this);

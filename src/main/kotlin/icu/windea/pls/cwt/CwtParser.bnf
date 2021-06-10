@@ -54,14 +54,14 @@ property ::= property_key property_separator value {
   pin(".*")=1
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName checkRename getPropertyName getPropertyValue getPropertyTruncatedValue]
+  methods=[getIcon getName setName getPropertyName getPropertyValue getPropertyTruncatedValue]
 }
 
 option ::= option_key option_separator value{
   pin(".*")=1
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName checkRename getOptionName getOptionValue getOptionTruncatedValue]
+  methods=[getIcon getName setName getOptionName getOptionValue getOptionTruncatedValue]
 }
 
 property_key ::= PROPERTY_KEY_TOKEN{

@@ -3,6 +3,7 @@ package icu.windea.pls.script.reference
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
@@ -11,6 +12,16 @@ class ParadoxScriptVariablePsiReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxScriptVariableReference>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
+		//重命名关联的variable
+		val resolved = resolve()
+		when {
+			resolved != null && !resolved.isWritable -> {
+				throw IncorrectOperationException(message("cannotBeRenamed"))
+			}
+			resolved is ParadoxScriptVariable -> {
+				resolved.name = newElementName
+			}
+		}
 		return element.setName(newElementName)
 	}
 	
@@ -20,7 +31,7 @@ class ParadoxScriptVariablePsiReference(
 		val project = element.project
 		val file = element.containingFile
 		return findScriptVariableInFile(name, file)
-		       ?: findScriptVariable(name, project)
+			?: findScriptVariable(name, project)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
@@ -28,7 +39,7 @@ class ParadoxScriptVariablePsiReference(
 		val name = element.variableReferenceId.text
 		val project = element.project
 		val file = element.containingFile
-		return findScriptVariablesInFile(name,file)
+		return findScriptVariablesInFile(name, file)
 			.ifEmpty { findScriptVariables(name, project) }
 			.mapToArray { PsiElementResolveResult(it) }
 	}
@@ -41,7 +52,7 @@ class ParadoxScriptVariablePsiReference(
 			val name = it.name
 			val icon = scriptVariableIcon
 			val fileName = it.containingFile.name
-			LookupElementBuilder.create(it,name).withIcon(icon).withTypeText(fileName,true)
+			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(fileName, true)
 		}
 	}
 }

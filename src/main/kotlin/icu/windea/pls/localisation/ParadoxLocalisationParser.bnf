@@ -62,7 +62,7 @@ locale ::= LOCALE_ID ":" {
   pin(".*")=1
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getIcon]
+  methods=[getName setName getNameIdentifier getIcon]
 }
 
 property ::= property_key ":" [NUMBER] property_value {
@@ -71,7 +71,7 @@ property ::= property_key ":" [NUMBER] property_value {
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub"
-  methods=[getName setName checkRename getNameIdentifier getIcon getValue]
+  methods=[getName setName getNameIdentifier getIcon getValue]
 }
 property_key ::= PROPERTY_KEY_ID
 property_value ::= LEFT_QUOTE rich_text * RIGHT_QUOTE{
@@ -99,9 +99,7 @@ private property_reference_param ::= PROPERTY_REFERENCE_PARAMETER
 icon ::= ICON_START icon_name [PARAMETER_SEPARATOR [icon_param]] ICON_END {
   pin(".*")=1
   extends=rich_text
-  mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
-  implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getTextOffset getReference getIcon]
+  methods=[getName setName getTextOffset getReference getIcon]
 }
 private icon_name ::= command | property_reference | ICON_ID
 private icon_param ::= ICON_PARAMETER | property_reference
@@ -111,7 +109,7 @@ sequential_number ::= SEQUENTIAL_NUMBER_START SEQUENTIAL_NUMBER_ID SEQUENTIAL_NU
   extends=rich_text
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getTextOffset getIcon]
+  methods=[getName setName getNameIdentifier getTextOffset getIcon]
 }
 
 command ::= COMMAND_START command_expression? COMMAND_END{
@@ -130,13 +128,13 @@ command_scope ::= COMMAND_SCOPE_ID{
   extends=command_identifier
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getReference getIcon getPrevIdentifier getNextIdentifier]
+  methods=[getName setName getNameIdentifier getReference getIcon getPrevIdentifier getNextIdentifier]
 }
 command_field ::= property_reference | COMMAND_FIELD_ID{
   extends=command_identifier
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getReference getIcon getPrevIdentifier getNextIdentifier]
+  methods=[getName setName getNameIdentifier getReference getIcon getPrevIdentifier getNextIdentifier]
 }
 
 colorful_text ::= COLORFUL_TEXT_START COLOR_ID rich_text* [COLORFUL_TEXT_END]{
@@ -144,5 +142,5 @@ colorful_text ::= COLORFUL_TEXT_START COLOR_ID rich_text* [COLORFUL_TEXT_END]{
   extends=rich_text
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName checkRename getNameIdentifier getTextOffset]
+  methods=[getName setName getNameIdentifier getTextOffset]
 }

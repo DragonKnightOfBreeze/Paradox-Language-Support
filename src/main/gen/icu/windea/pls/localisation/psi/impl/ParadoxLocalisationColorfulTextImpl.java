@@ -2,8 +2,6 @@
 package icu.windea.pls.localisation.psi.impl;
 
 import java.util.List;
-
-import icu.windea.pls.localisation.psi.*;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -50,11 +48,6 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationName
   @NotNull
   public PsiElement setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public void checkRename() {
-    ParadoxLocalisationPsiImplUtil.checkRename(this);
   }
 
   @Override

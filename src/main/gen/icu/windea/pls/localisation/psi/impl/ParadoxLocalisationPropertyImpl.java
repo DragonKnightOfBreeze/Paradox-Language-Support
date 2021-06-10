@@ -1,7 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
-import icu.windea.pls.localisation.psi.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -10,12 +10,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub;
 import icu.windea.pls.localisation.psi.*;
-
+import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElementImpl<ParadoxLocalisationPropertyStub> implements
-	ParadoxLocalisationProperty {
+public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElementImpl<ParadoxLocalisationPropertyStub> implements ParadoxLocalisationProperty {
 
   public ParadoxLocalisationPropertyImpl(@NotNull ParadoxLocalisationPropertyStub stub, @Nullable IStubElementType<?, ?> nodeType) {
     super(stub, nodeType);
@@ -63,11 +62,6 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   @NotNull
   public PsiElement setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public void checkRename() {
-    ParadoxLocalisationPsiImplUtil.checkRename(this);
   }
 
   @Override

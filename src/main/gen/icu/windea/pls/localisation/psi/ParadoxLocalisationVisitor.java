@@ -37,7 +37,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
-    // visitNamedElement(o);
   }
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {

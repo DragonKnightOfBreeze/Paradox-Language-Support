@@ -40,11 +40,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: ParadoxScriptVariable) {
-		
-	}
-	
-	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptVariable): PsiElement {
 		return element.variableName.variableNameId
 	}
@@ -75,14 +70,6 @@ object ParadoxScriptPsiImplUtil {
 	fun setName(element: ParadoxScriptProperty, name: String): PsiElement {
 		element.propertyKey.replace(createPropertyKey(element.project, name))
 		return element
-	}
-	
-	@JvmStatic
-	fun checkRename(element: ParadoxScriptProperty) {
-		//检查是否是项目中的definition，这样才允许重命名
-		if(element.paradoxDefinitionInfo == null){
-			throw IncorrectOperationException(message("cannotBeRenamed"))
-		}
 	}
 	
 	@JvmStatic
@@ -184,7 +171,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setValue(element: ParadoxScriptString, name: String): PsiElement {
-		element.replace(createValue(element.project, name.quoteAsStringLike()))
+		element.replace(createValue(element.project, name.quote()))
 		return element
 	}
 	

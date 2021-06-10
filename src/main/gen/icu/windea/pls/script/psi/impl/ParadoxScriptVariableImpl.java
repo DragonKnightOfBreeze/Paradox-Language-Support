@@ -59,11 +59,6 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  public void checkRename() {
-    ParadoxScriptPsiImplUtil.checkRename(this);
-  }
-
-  @Override
   @NotNull
   public PsiElement getNameIdentifier() {
     return ParadoxScriptPsiImplUtil.getNameIdentifier(this);

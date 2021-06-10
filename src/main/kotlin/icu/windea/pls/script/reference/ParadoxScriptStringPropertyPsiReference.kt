@@ -10,8 +10,8 @@ class ParadoxScriptStringPropertyPsiReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxScriptString>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		return element.setValue(newElementName)
 		//TODO 重命名关联的definitionLocalisation
+		return element.setValue(newElementName)
 	}
 	
 	override fun resolve(): PsiElement? {

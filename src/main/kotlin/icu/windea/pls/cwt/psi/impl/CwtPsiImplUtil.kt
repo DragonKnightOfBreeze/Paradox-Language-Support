@@ -26,11 +26,6 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun checkRename(element: CwtProperty){
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
 	fun getPropertyName(element: CwtProperty):String{
 		return element.propertyKey.name
 	}
@@ -59,11 +54,6 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: CwtOption,name:String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
-	fun checkRename(element: CwtOption){
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	

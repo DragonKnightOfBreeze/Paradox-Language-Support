@@ -151,7 +151,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val iconUrl = element.resolveIconUrl(element.project, false)
 				if(iconUrl.isNotEmpty()) {
 					sections {
-						section("Icon", iconUrl)
+						val iconTag = buildString { appendIconTag(iconUrl).append(" ") }
+						section("Icon", iconTag)
 					}
 				}
 			}

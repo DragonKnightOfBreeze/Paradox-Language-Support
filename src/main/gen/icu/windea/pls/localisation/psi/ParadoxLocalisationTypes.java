@@ -5,7 +5,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import icu.windea.pls.localisation.psi.impl.*;
-import icu.windea.pls.localisation.psi.impl.*;
 
 public interface ParadoxLocalisationTypes {
 

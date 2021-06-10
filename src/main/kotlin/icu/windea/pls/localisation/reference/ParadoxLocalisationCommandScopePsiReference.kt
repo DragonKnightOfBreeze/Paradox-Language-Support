@@ -9,7 +9,7 @@ class ParadoxLocalisationCommandScopePsiReference(
 	rangeInElement: TextRange
 ): PsiReferenceBase<ParadoxLocalisationCommandScope>(element,rangeInElement){
 	override fun handleElementRename(newElementName: String): PsiElement {
-		return element
+		return element.setName(newElementName)
 	}
 	
 	override fun resolve(): PsiElement? {
