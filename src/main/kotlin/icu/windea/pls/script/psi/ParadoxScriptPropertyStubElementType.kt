@@ -60,17 +60,6 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		//索引definition的名称和类型
 		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
 		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
-		when {
-			//索引scripted_loc的名字
-			stub.type == "scripted_loc" -> {
-				sink.occurrence(ParadoxScriptLocalisationNameIndex.key, stub.name)
-			}
-			//索引icon的名字
-			(stub.type == "sprite" || stub.type == "spriteType") && stub.typeKey == "spriteType" -> {
-				val iconName = resolveIconName(stub.name)
-				sink.occurrence(ParadoxIconNameIndex.key, iconName)
-			}
-		}
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {

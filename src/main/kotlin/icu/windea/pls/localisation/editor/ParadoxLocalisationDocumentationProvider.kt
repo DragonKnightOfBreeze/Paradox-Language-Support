@@ -125,7 +125,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
 				append("(localisation) <b>").append(name).append("</b>")
 			}
-			//之前的单行注释文本
+			//单行注释文本
 			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
@@ -152,6 +152,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation locale) <b>").append(name).append("</b>")
 			}
+			//描述
 			val paradoxLocale = element.paradoxLocale
 			if(paradoxLocale != null) {
 				content {
@@ -168,14 +169,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation icon) <b>").append(name).append("</b>")
 			}
-			//TODO 渲染图标总是会报错，即使本地或远程存在对应的图片，暂时不清楚原因
-			//图标
-			val iconUrl = name.resolveIconUrl(project)
-			if(iconUrl.isNotEmpty()) {
-				content {
-					appendIconTag(iconUrl)
-				}
-			}
 		}
 	}
 	
@@ -185,6 +178,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation sequential number) <b>").append(name).append("</b>")
 			}
+			//描述
 			val paradoxSequentialNumber = element.paradoxSequentialNumber
 			if(paradoxSequentialNumber != null) {
 				content {
@@ -200,7 +194,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation command scope) <b>").append(name).append("</b>")
 			}
-			////来自规则文件
+			//描述
 			//val paradoxCommandScope = element.paradoxCommandScope
 			//if(paradoxCommandScope != null) {
 			//	content {
@@ -216,6 +210,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation command field) <b>").append(name).append("</b>")
 			}
+			//描述
 			//val paradoxCommandField = element.paradoxCommandField
 			//if(paradoxCommandField != null) {
 			//	content {
@@ -231,12 +226,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			definition {
 				append("(localisation color) <b>").append(name).append("</b>")
 			}
+			//描述
 			val paradoxColor = element.paradoxColor
 			if(paradoxColor != null) {
 				val description = paradoxColor.description
 				val colorText = paradoxColor.colorText
 				content {
-					append(description).append(" (").append(colorText).append(")") //注明颜色
+					append(description).append(" - ").append(colorText) //注明颜色
 				}
 			}
 		}

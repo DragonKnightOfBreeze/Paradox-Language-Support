@@ -30,11 +30,11 @@ class ParadoxLocalisationPropertyPsiReference(
 			PsiElementResolveResult(it)
 		}
 	}
-
+	
 	override fun getVariants(): Array<out Any> {
 		val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 		val project = element.project
-		return findLocalisations(locale, project).mapToArray {
+		return findLocalisations(locale, project,hasDefault = true).mapToArray {
 			val name = element.name
 			val icon = localisationIcon
 			val fileName = it.containingFile.name

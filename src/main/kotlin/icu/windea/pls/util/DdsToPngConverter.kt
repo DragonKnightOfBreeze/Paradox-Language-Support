@@ -52,14 +52,14 @@ object DdsToPngConverter{
 		if(unknownPngPath.notExists()){
 			Files.copy(rawUnknownPngUrl.openStream(), unknownPngPath) //将jar包中的unknown.png复制到~/dds2png/tmp下
 			if(dds2PngExePath.notExists()){
-				throw IllegalStateException("File '$unknownPngPath' is not exist after trying to extract '$unknownPngName' to tmp dir.")
+				logger.warn("File '$unknownPngPath' is not exist after trying to extract '$unknownPngName' to tmp dir.")
 			}
 		}
 		if(dds2PngExePath.notExists()) {
 			Files.copy(rawDds2PngZipUrl.openStream(), dds2PngZipPath) //将jar包中的zip复制到用户目录
 			ZipUtil.extract(dds2PngZipPath, dds2PngDirPath, null, true) //将zip解压到~/dds2png
 			if(dds2PngExePath.notExists()){
-				throw IllegalStateException("File '$dds2PngExePath' is not exist after trying to extract '$dds2PngZipName' to user home.")
+				logger.warn("File '$dds2PngExePath' is not exist after trying to extract '$dds2PngZipName' to user home.")
 			}
 		}
 	}
@@ -74,6 +74,12 @@ object DdsToPngConverter{
 	}
 	
 	fun getUnknownPngPath():String{
+		if(unknownPngPath.notExists()){
+			Files.copy(rawUnknownPngUrl.openStream(), unknownPngPath) //将jar包中的unknown.png复制到~/dds2png/tmp下
+			if(dds2PngExePath.notExists()){
+				logger.warn("File '$unknownPngPath' is not exist after trying to extract '$unknownPngName' to tmp dir.")
+			}
+		}
 		return unknownPngPath.toString()
 	}
 }

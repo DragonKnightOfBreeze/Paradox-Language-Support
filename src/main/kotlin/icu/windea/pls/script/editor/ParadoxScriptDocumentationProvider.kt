@@ -2,9 +2,7 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -13,7 +11,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableInfo(element)
-			is ParadoxScriptProperty -> getPropertyInfo(element,originalElement)
+			is ParadoxScriptProperty -> getPropertyInfo(element)
 			else -> null
 		}
 	}
@@ -29,16 +27,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getPropertyInfo(element: ParadoxScriptProperty,originalElement: PsiElement?): String {
+	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
 		val definition = element.paradoxDefinitionInfo
 		if(definition != null) {
-			if(originalElement != null) {
-				when(originalElement.elementType) {
-					COMMAND_FIELD_ID -> return getScriptLocalisationDoc(originalElement)
-					ICON_ID -> return getIconDoc(originalElement)
-				}
-			}
-			return getDefinition(element, definition)
+			return getDefinitionInfo(element, definition)
 		}
 		return buildString {
 			val name = element.name
@@ -50,16 +42,17 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+		val localisation = definitionInfo.localisation
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				val name = definitionInfo.name.ifEmpty { anonymousString }
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
-				val localisation = definitionInfo.localisation
-				if(localisation.isNotEmpty()) {
-					appendBr().appendBr()
+			}
+			if(localisation.isNotEmpty()) {
+				definition {
 					var isFirst = true
 					for((n, kn) in localisation) {
 						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
@@ -71,29 +64,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getScriptLocalisationInfo(element: PsiElement): String {
-		return buildString {
-			val name = element.text.unquote()
-			definition {
-				append("(localisation command field) <b>").append(name.escapeXml()).append("</b>")
-			}
-		}
-	}
-	
-	private fun getIconInfo(element: PsiElement): String {
-		return buildString {
-			val name = element.text.unquote()
-			definition {
-				append("(localisation icon) <b>").append(name.escapeXml()).append("</b>")
-			}
-		}
-	}
-	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getVariableDoc(element)
-			is ParadoxScriptProperty -> getPropertyDoc(element,originalElement)
+			is ParadoxScriptProperty -> getPropertyDoc(element)
 			else -> null
 		}
 	}
@@ -106,7 +81,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				append("(script variable) <b>").append(name).append("</b>")
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
-			//之前的单行注释文本
+			//单行注释文本
 			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
@@ -118,15 +93,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getPropertyDoc(element: ParadoxScriptProperty,originalElement: PsiElement?): String {
+	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
 		val definition = element.paradoxDefinitionInfo
 		if(definition != null) {
-			if(originalElement != null) {
-				when(originalElement.elementType) {
-					COMMAND_FIELD_ID -> return getScriptLocalisationDoc(originalElement)
-					ICON_ID -> return getIconDoc(originalElement)
-				}
-			}
 			return getDefinitionDoc(element, definition)
 		}
 		return buildString {
@@ -136,7 +105,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				append("(script property) <b>").append(name.escapeXml()).append("</b>")
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
-			//之前的单行注释文本
+			//单行注释文本
 			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
@@ -149,24 +118,26 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+		val type = definitionInfo.type
+		val localisation = definitionInfo.localisation
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				val name = definitionInfo.name.ifEmpty { anonymousString }
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
-				val localisation = definitionInfo.localisation
-				if(localisation.isNotEmpty()) {
-					appendBr().appendBr()
+			}
+			if(localisation.isNotEmpty()) {
+				definition {
 					var isFirst = true
-					for((n,kn) in localisation) {
+					for((n, kn) in localisation) {
 						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
 						if(isFirst) isFirst = false else appendBr()
 						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
 				}
 			}
-			//之前的单行注释文本
+			//单行注释文本
 			if(getSettings().renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
@@ -175,9 +146,17 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
+			//sprite图标
+			if(type == "sprite" || type == "spriteType") {
+				val iconUrl = element.resolveIconUrl(element.project, false)
+				if(iconUrl.isNotEmpty()) {
+					sections {
+						section("Icon", iconUrl)
+					}
+				}
+			}
 			//本地化文本
 			if(getSettings().renderDefinitionText) {
-				val localisation = definitionInfo.localisation
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((n, kn) in localisation) {
@@ -197,24 +176,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 						}
 					}
 				}
-			}
-		}
-	}
-	
-	private fun getScriptLocalisationDoc(element: PsiElement): String {
-		return buildString {
-			val name = element.text.unquote()
-			definition {
-				append("(localisation command field) <b>").append(name.escapeXml()).append("</b>")
-			}
-		}
-	}
-	
-	private fun getIconDoc(element: PsiElement): String {
-		return buildString {
-			val name = element.text.unquote()
-			definition {
-				append("(localisation icon) <b>").append(name.escapeXml()).append("</b>")
 			}
 		}
 	}

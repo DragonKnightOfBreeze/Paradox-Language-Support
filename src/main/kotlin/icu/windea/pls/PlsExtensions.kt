@@ -136,7 +136,7 @@ val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.originalF
 val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.containingFile)
 
 internal fun canGetFileInfo(file: PsiFile): Boolean {
-	paradoxScriptFile, paradoxLocalisationFile, ddsFile
+	//paradoxScriptFile, paradoxLocalisationFile, ddsFile
 	if(file is ParadoxScriptFile || file is ParadoxLocalisationFile) return true
 	val extension = file.name.substringAfterLast('.').toLowerCase()
 	if(extension == "dds") return true
@@ -365,14 +365,6 @@ fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
 }
 
-fun resolveIconName(name:String):String{
-	return when {
-		name.startsWith("GFX_text_") -> name.substring(9)
-		name.startsWith("GFX_") -> name.substring(4)
-		else -> name
-	}
-}
-
 //PsiElement Find Extensions
 
 fun ParadoxScriptProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
@@ -497,7 +489,31 @@ fun findDefinitions(
 }
 
 /**
- * 基于类型索引，根据类型（不是类型表达式）查找脚本文件的定义（definition）。
+ * 基于类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ */
+fun findDefinitionByType(
+	name:String,
+	type: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+):ParadoxScriptProperty? {
+	return ParadoxDefinitionTypeIndex.getOne(name,type, project, scope, !getSettings().preferOverridden)
+}
+
+/**
+ * 基于类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ */
+fun findDefinitionsByType(
+	name:String,
+	type: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
+	return ParadoxDefinitionTypeIndex.getAll(name,type, project, scope)
+}
+
+/**
+ * 基于类型索引，根据类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitionsByType(
 	type: String,
@@ -505,70 +521,6 @@ fun findDefinitionsByType(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
 	return ParadoxDefinitionTypeIndex.getAll(type, project, scope)
-}
-
-/**
- * 基于脚本本地化名字索引，根据名字查找脚本文件的脚本本地化（scriptLocalisation，scripted_loc）。
- */
-fun findScriptLocalisation(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): ParadoxScriptProperty? {
-	return ParadoxScriptLocalisationNameIndex.getOne(name, project, scope, !getSettings().preferOverridden)
-}
-
-/**
- * 基于脚本本地化名字索引，根据名字查找所有的脚本文件的脚本本地化（scriptLocalisation，scripted_loc）。
- */
-fun findScriptLocalisations(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
-	return ParadoxScriptLocalisationNameIndex.getAll(name, project, scope)
-}
-
-/**
- * 基于脚本本地化名字索引，查找所有的脚本文件的脚本本地化（scriptLocalisation，scripted_loc）。
- */
-fun findScriptLocalisations(
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
-	return ParadoxScriptLocalisationNameIndex.getAll(project, scope)
-}
-
-/**
- * 基于图标名字索引，根据名字查找图标（icon，对应类型为sprite.normal的definition，definition.name带有前缀GFX_或GFX_text）。
- */
-fun findIcon(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): ParadoxScriptProperty? {
-	return ParadoxIconNameIndex.getOne(name, project, scope, !getSettings().preferOverridden)
-}
-
-/**
- * 基于图标名字索引，根据名字查找所有的图标（icon，对应类型为sprite.normal的definition，definition.name带有前缀GFX_或GFX_text）。
- */
-fun findIcons(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
-	return ParadoxIconNameIndex.getAll(name, project, scope)
-}
-
-/**
- * 基于图标名字索引，查找所有的图标（icon，对应类型为sprite.normal的definition，definition.name带有前缀GFX_或GFX_text）。
- */
-fun findIcons(
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
-	return ParadoxIconNameIndex.getAll(project, scope)
 }
 
 /**
@@ -683,17 +635,26 @@ fun StringBuilder.appendBr(): StringBuilder {
 
 //Inline Extensions
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun message(@PropertyKey(resourceBundle = bundleName) key: String, vararg params: Any): String {
 	return PlsBundle.getMessage(key, *params)
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolve(this, project, defaultToUnknown)
+	return ParadoxIconUrlResolver.resolveByName(this, project, defaultToUnknown)
 }
 
-@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxScriptProperty.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
+	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)
+}
+
+inline fun VirtualFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
+	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
+}
+
+inline fun PsiFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
+	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
+}
+
 inline fun ParadoxLocalisationProperty.renderText(): String {
 	return ParadoxLocalisationTextRenderer.render(this)
 }

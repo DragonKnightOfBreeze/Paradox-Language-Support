@@ -11,6 +11,10 @@ import javax.swing.*
 @Suppress("UNCHECKED_CAST")
 fun <T> Array<out T?>.cast() = this as Array<T>
 
+fun <T> Collection<T>.asList(): List<T> {
+	return if(this is List) this else this.toList()
+}
+
 inline fun <T, reified R> List<T>.mapToArray(block: (T) -> R): Array<R> {
 	return Array(size) { block(this[it]) }
 }
@@ -37,6 +41,10 @@ fun CharSequence.removeSurrounding(prefix: CharSequence, suffix: CharSequence): 
 
 fun String.removeSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	return removePrefix(prefix).removeSuffix(suffix)
+}
+
+fun String.resolveByRemovePrefix(prefix: CharSequence): String? {
+	return if(startsWith(prefix)) substring(prefix.length) else null
 }
 
 fun String.resolveByRemoveSurrounding(prefix: CharSequence, suffix: CharSequence): String? {

@@ -1,6 +1,5 @@
 package icu.windea.pls.util
 
-import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
@@ -62,7 +61,6 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, buffer: StringBuilder) {
-		//TODO 渲染图标总是会报错，即使本地或远程存在对应的图片，暂时不清楚原因
 		val name = element.name
 		val iconUrl = name.resolveIconUrl(element.project)
 		if(iconUrl.isNotEmpty()) {

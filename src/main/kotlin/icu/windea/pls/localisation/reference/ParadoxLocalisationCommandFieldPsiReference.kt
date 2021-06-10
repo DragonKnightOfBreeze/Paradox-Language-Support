@@ -15,19 +15,19 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		val name = element.commandFieldId?.text?: return null
+		val name = element.commandFieldId?.text ?: return null
 		val project = element.project
-		return findScriptLocalisation(name, project)
+		return findDefinitionByType(name, "scripted_loc", project)
 	}
 	
 	override fun getVariants(): Array<out Any> {
 		val project = element.project
-		return findScriptLocalisations(project).mapToArray {
+		return findDefinitionsByType("scripted_loc", project).mapToArray {
 			val name = it.name //与definition.name是相同的，直接使用
 			//val name = it.paradoxDefinitionInfo?.name!!
 			val icon = scriptLocalisationIcon
 			val fileName = it.containingFile.name
-			LookupElementBuilder.create(it,name).withIcon(icon).withTypeText(fileName,true)
+			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(fileName, true)
 		}
 	}
 }
