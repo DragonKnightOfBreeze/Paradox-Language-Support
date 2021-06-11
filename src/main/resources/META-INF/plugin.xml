@@ -9,24 +9,24 @@
 
   <description><![CDATA[
     <p>
-      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README.md">中文文档</a> | <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README_en.md">English Documentation</a>
+      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README.md">中文文档</a> |
+      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README_en.md">English Documentation</a>
     </p>
     <p>
-      <a href="https://windea.icu/Paradox-Language-Support/#/zh/">中文参考文档</a> | <a href="https://windea.icu/Paradox-Language-Support/#/en/">English Reference Documentation</a>
+      <a href="https://windea.icu/Paradox-Language-Support/#/zh/">中文参考文档</a> |
+      <a href="https://windea.icu/Paradox-Language-Support/#/en/">English Reference Documentation</a>
     </p>
     <p>
       <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">Github</a>
     </p>
-    
-    <hr/>
+
+    <br>
     
     <p>
       Support for Paradox Language.
     </p>
     <p>
       This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
-    </p>
-    <p>
       If you want more perfect language support, please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
     </p>
     <p>
@@ -48,24 +48,16 @@
       This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
     </p>
     <p>
-      If you have met IDE exceptions about indices, please try to rebuild indices. (Click <code>File -> Invalidate Caches... -> Invalidate and Restart</code>)
+      If you have met some IDE problems about indices, please try to rebuild indices. (Click <code>File -> Invalidate Caches... -> Invalidate and Restart</code>)
     </p>
-    <p>
-      If you have found any bugs or problems, feel free to report them in project's <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue Page</a>.
-    </p>
-    <p>
-      Welcome to have a look at <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">this project</a> and <a href="https://github.com/DragonKnightOfBreeze?tab=repositories">my other projects</a>.
-    </p>
-
-    <hr/>
+    
+    <br>
 
     <p>
       Paradox语言支持。
     </p>
     <p>
       这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
-    </p>
-    <p>
       如果需要更加完善的语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
     </p>
     <p>
@@ -87,22 +79,16 @@
       这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
     </p>
     <p>
-      如果遇到索引相关的IDE报错，请尝试重新构建索引。 （点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）
-    </p>
-    <p>
-      如果遇到BUG或问题，欢迎在项目的<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues">Github Issue页面</a>提出。
-    </p>
-    <p>
-      欢迎查看<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">本项目</a>和<a href="https://github.com/DragonKnightOfBreeze?tab=repositories">我的其他项目</a>。
+      如果遇到某些有关索引的IDE问题，请尝试重新构建索引。 （点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）
     </p>
     ]]></description>
 
   <change-notes><![CDATA[
     <p>
-      Please see the <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md">CHANGELOG</a> written by Simple Chinese.
+      Please see <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md">CHANGELOG</a> written by Simple Chinese.
     </p>
 
-    <br>
+    <<br>
 
     <p>
       请查看<a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md">CHANGELOG</a>。
@@ -113,8 +99,6 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!--region Core-->
-    <renameHandler implementation="icu.windea.pls.core.refactoring.PsiCheckRenameHandler"/>
-    
     <!--suppress PluginXmlValidity -->
     <projectService serviceImplementation="icu.windea.pls.config.CwtConfigGroupProvider" preload="true" order="first"/>
    <!--suppress PluginXmlValidity -->
@@ -139,7 +123,7 @@
     <!--region Cwt Language-->
     <fileType
       language="Cwt Config"
-      name="Cwt Config File" fieldName="INSTANCE"
+      name="Cwt Config" fieldName="INSTANCE"
       implementationClass="icu.windea.pls.cwt.CwtFileType"
       extensions="cwt"/>
     <lang.parserDefinition
@@ -182,7 +166,7 @@
     <!--region Paradox Script Language-->
     <fileType
         language="Paradox Script"
-        name="Paradox Script File" fieldName="INSTANCE"
+        name="Paradox Script" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.script.ParadoxScriptFileType"/>
     <lang.fileViewProviderFactory
         language="Paradox Script"
@@ -293,7 +277,7 @@
     <!--region Paradox Localisation Language-->
     <fileType
         language="Paradox Localisation"
-        name="Paradox Localisation File" fieldName="INSTANCE"
+        name="Paradox Localisation" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.localisation.ParadoxLocalisationFileType"/>
     <lang.fileViewProviderFactory
         language="Paradox Localisation"

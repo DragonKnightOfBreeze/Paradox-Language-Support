@@ -5,35 +5,25 @@ import com.intellij.openapi.util.*
 //Core Constants
 
 const val bundleName = "messages.PlsBundle"
-
 val locationClass = PlsBundle::class.java
 
-//Names & Descriptions & Sample Text
+//String Constants
 
 const val cwtName = "Cwt Config"
-const val cwtNamePc = "CwtConfig"
-const val cwtNameSsc = "CWT"
-const val cwtLanguageName = "$cwtName Language"
-const val cwtFileTypeName = "$cwtName File"
-const val cwtFileTypeDescription = "$cwtName Language"
+const val cwtDescription = "Cwt config"
+const val cwtId = "CWT"
 const val cwtExtension = "cwt"
 val cwtDemoText = "/demoText/Cwt.txt".toUrl(locationClass).readText()
 
 const val paradoxLocalisationName = "Paradox Localisation"
-const val paradoxLocalisationNamePc = "ParadoxLocalisation"
-const val paradoxLocalisationNameSsc = "PARADOX_LOCALISATION"
-const val paradoxLocalisationLanguageName = "$paradoxLocalisationName Language"
-const val paradoxLocalisationFileTypeName = "$paradoxLocalisationName File"
-const val paradoxLocalisationFileTypeDescription = "$paradoxLocalisationName Language"
+const val paradoxLocalisationDescription = "Paradox localisation"
+const val paradoxLocalisationId = "PARADOX_LOCALISATION"
 const val paradoxLocalisationExtension = "yml"
 val paradoxLocalisationDemoText = "/demoText/ParadoxLocalisation.txt".toUrl(locationClass).readText()
 
 const val paradoxScriptName = "Paradox Script"
-const val paradoxScriptNamePc = "ParadoxScript"
-const val paradoxScriptNameSsc = "PARADOX_SCRIPT"
-const val paradoxScriptLanguageName = "$paradoxScriptName Language"
-const val paradoxScriptFileTypeName = "$paradoxScriptName File"
-const val paradoxScriptFileTypeDescription = "$paradoxScriptName Language"
+const val paradoxScriptDescription = "Paradox script"
+const val paradoxScriptId = "PARADOX_SCRIPT"
 const val paradoxScriptExtension = "txt"
 val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toUrl(locationClass).readText()
 
@@ -43,7 +33,6 @@ const val commentFolder = "#..."
 const val blockFolder = "{...}"
 const val emptyBlockString = "{}"
 const val anonymousString = "<anonymous>"
-
 val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 val booleanValues = arrayOf("yes", "no")
 val localisationFileExtensions = arrayOf("yml")
@@ -51,19 +40,6 @@ val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","s
 const val descriptorFileName = "descriptor.mod"
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
 const val truncateLimit = 20
-
-//Pattern Prefixes
-
-const val primitivePrefix="$"
-const val primitivePrefixLength = primitivePrefix.length
-const val aliasPrefix="alias:"
-const val aliasPrefixLength=aliasPrefix.length
-const val typePrefix="type:"
-const val typePrefixLength = typePrefix.length
-const val enumPrefix="enum:"
-const val enumPrefixLength=enumPrefix.length
-const val eventTargetPrefix = "event_target:"
-const val eventTargetPrefixLength = eventTargetPrefix.length
 
 //Icons
 
@@ -108,3 +84,16 @@ val definitionLocalisationGutterIcon = definitionLocalisationIcon.resize(12)
 val localisationGutterIcon = localisationIcon.resize(12)
 val stringScriptPropertyGutterIcon =stringScriptPropertyIcon.resize(12)
 val stringLocalisationPropertyGutterIcon = stringLocalisationPropertyIcon.resize(12)
+
+//Pattern Prefixes
+
+const val primitivePrefix="$"
+const val primitivePrefixLength = primitivePrefix.length
+const val aliasPrefix="alias:"
+const val aliasPrefixLength=aliasPrefix.length
+const val typePrefix="type:"
+const val typePrefixLength = typePrefix.length
+const val enumPrefix="enum:"
+const val enumPrefixLength=enumPrefix.length
+const val eventTargetPrefix = "event_target:"
+const val eventTargetPrefixLength = eventTargetPrefix.length

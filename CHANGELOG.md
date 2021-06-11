@@ -101,6 +101,7 @@
   * [X] 首先查找是否有对应的定义`spriteType = { ... }`，且`name`属性带有前缀`GFX_text_`
   * [X] 然后直接查找是否有对应名字的dds文件，且位于文件夹`gfx/interface/icons`下
   * [ ] 也有可能是生成的，即有对应的定义X，声明使用定义Y的图标，那么本地化图标`...X...`会使用本地化图标`...Y...`
+* [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证
 * [ ] 实现基于`cwtConfigGroupsCache`的更加具体的规则

@@ -4,9 +4,9 @@ import com.intellij.openapi.fileTypes.*
 import icu.windea.pls.*
 
 object ParadoxScriptFileType : LanguageFileType(ParadoxScriptLanguage) {
-	override fun getName() = paradoxScriptFileTypeName
+	override fun getName() = paradoxScriptName
 
-	override fun getDescription() = paradoxScriptFileTypeDescription
+	override fun getDescription() = paradoxScriptDescription
 
 	override fun getDefaultExtension() = paradoxScriptExtension
 

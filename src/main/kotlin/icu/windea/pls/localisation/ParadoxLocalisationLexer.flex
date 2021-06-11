@@ -6,8 +6,6 @@ import com.intellij.psi.tree.IElementType;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 
-//Stellaris官方本地化文件中本身就存在语法解析错误，需要保证存在错误的情况下仍然会解析后续的本地化文本，草
-
 %%
 
 %public
@@ -71,7 +69,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
   }
 %}
 
-//不要使用\R：可能不合法
+//Stellaris官方本地化文件中本身就存在语法解析错误，需要保证存在错误的情况下仍然会解析后续的本地化文本，草
 
 EOL=\s*\R\s*
 WHITE_SPACE=[ \u00a0\t]+
@@ -184,7 +182,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
 <WAITING_ICON>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
-  {WHITE_SPACE} { yybegin(WAITING_COLORFUL_TEXT); return WHITE_SPACE; }
+  {WHITE_SPACE} { yybegin(nextStateForText()); return WHITE_SPACE; }
   \" { isColorfulText=false; yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" { yybegin(nextStateForText()); return ICON_END;}
   "$" { propertyReferenceLocation=2; yybegin(WAITING_PROPERTY_REFERENCE); return PROPERTY_REFERENCE_START;}
@@ -274,6 +272,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
   {WHITE_SPACE} { return WHITE_SPACE; } //继续解析
   {END_OF_LINE_COMMENT} {  return END_OF_LINE_COMMENT; }
+  \" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
 }
 
 <WAITING_CHECK_ICON_START>{

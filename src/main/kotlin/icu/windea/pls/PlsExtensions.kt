@@ -613,8 +613,8 @@ fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
 }
 
 fun StringBuilder.appendIconTag(url: String, size: Int = iconSize, local: Boolean = true): StringBuilder {
-	return append("<img src=\"").appendIf(local, "file:/").append(url)
-		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\" hspace=\"1\"/>")
+	return append("<span> <img src=\"").appendIf(local, "file:/").append(url)
+		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\"/> </span>")
 }
 
 fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
@@ -643,7 +643,7 @@ inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = t
 	return ParadoxIconUrlResolver.resolveByName(this, project, defaultToUnknown)
 }
 
-inline fun ParadoxScriptProperty.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
+inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)
 }
 

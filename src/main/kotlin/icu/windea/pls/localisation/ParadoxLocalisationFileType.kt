@@ -4,9 +4,9 @@ import com.intellij.openapi.fileTypes.*
 import icu.windea.pls.*
 
 object ParadoxLocalisationFileType : LanguageFileType(ParadoxLocalisationLanguage) {
-	override fun getName() = paradoxLocalisationFileTypeName
+	override fun getName() = paradoxLocalisationName
 
-	override fun getDescription() = paradoxLocalisationFileTypeDescription
+	override fun getDescription() = paradoxLocalisationDescription
 
 	override fun getDefaultExtension() = paradoxLocalisationExtension
 

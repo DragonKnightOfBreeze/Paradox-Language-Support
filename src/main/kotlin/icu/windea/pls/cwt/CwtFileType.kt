@@ -5,9 +5,9 @@ import icu.windea.pls.*
 import javax.swing.*
 
 object CwtFileType: LanguageFileType(CwtLanguage){
-	override fun getName() = cwtFileTypeName
+	override fun getName() = cwtName
 	
-	override fun getDescription() = cwtFileTypeDescription
+	override fun getDescription() = cwtDescription
 	
 	override fun getDefaultExtension() = cwtExtension
 	

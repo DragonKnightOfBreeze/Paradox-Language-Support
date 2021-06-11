@@ -148,10 +148,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			//sprite图标
 			if(type == "sprite" || type == "spriteType") {
-				val iconUrl = element.resolveIconUrl(element.project, false)
+				val iconUrl = element.resolveIconUrl(false)
 				if(iconUrl.isNotEmpty()) {
 					sections {
-						val iconTag = buildString { appendIconTag(iconUrl).append(" ") }
+						val iconTag = buildString { appendIconTag(iconUrl) }
 						section("Icon", iconTag)
 					}
 				}
