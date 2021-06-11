@@ -19,7 +19,7 @@ Introduction:
 * Supported game types: ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2.
 * Supported paradox games: Crusader Kings II / Crusader Kings III / Europa Universalis IV / Hearts of Iron IV / Imperator: Rome / Stellaris / Victoria II.
 
-FAQ:
+Tip:
 
 * If you want to add game directory and third party mod as dependencies, just add them as libraries to the project module of your mod, like what Java and Kotlin does.
 * If you have met some IDE problems about indices, please try to rebuild indices. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
