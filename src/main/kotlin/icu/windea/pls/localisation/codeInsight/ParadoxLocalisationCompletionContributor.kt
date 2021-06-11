@@ -9,12 +9,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 
-@Suppress("HasPlatformType")
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	companion object{
-		private const val dummyIdentifier = "windea"
-		private const val dummyIdentifierLength = dummyIdentifier.length
-		
 		private val localePattern = psiElement(LOCALE_ID)
 		private val sequentialNumberPattern = psiElement(SEQUENTIAL_NUMBER_ID)
 		private val colorIdPattern = psiElement(COLOR_ID)

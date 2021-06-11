@@ -29,6 +29,8 @@ val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toUrl(locationClass).r
 
 //Misc Constants
 
+const val dummyIdentifier = "windea"
+const val dummyIdentifierLength = dummyIdentifier.length
 const val commentFolder = "#..."
 const val blockFolder = "{...}"
 const val emptyBlockString = "{}"

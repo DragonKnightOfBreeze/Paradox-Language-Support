@@ -28,7 +28,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
 %state WAITING_CODE
 
 %{
-  int depth = 0;
+  private int depth = 0;
 
   public int nextState(){
 	  return depth <= 0 ? YYINITIAL : WAITING_PROPERTY_KEY;

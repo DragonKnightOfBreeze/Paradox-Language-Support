@@ -40,11 +40,11 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 %state WAITING_CHECK_RIGHT_QUOTE
 
 %{
-  int depth = 0;
-  int commandLocation = 0;
-  int propertyReferenceLocation = 0;
-  boolean inIconName = false;
-  boolean isColorfulText = false;
+  private int depth = 0;
+  private int commandLocation = 0;
+  private int propertyReferenceLocation = 0;
+  private boolean inIconName = false;
+  private boolean isColorfulText = false;
 
   public int nextStateForText(){
     return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;

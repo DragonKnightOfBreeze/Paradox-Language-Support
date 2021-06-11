@@ -142,6 +142,10 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//), DefinitionPropertyNameCompletionProvider())
 	}
 	
+	override fun beforeCompletion(context: CompletionInitializationContext) {
+		context.dummyIdentifier = dummyIdentifier
+	}
+	
 	override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
 		super.fillCompletionVariants(parameters, result)
 	}

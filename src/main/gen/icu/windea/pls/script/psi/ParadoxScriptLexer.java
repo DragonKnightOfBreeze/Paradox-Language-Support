@@ -349,7 +349,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-  int depth = 0;
+  private int depth = 0;
 
   public int nextState(){
 	  return depth <= 0 ? YYINITIAL : WAITING_PROPERTY_KEY;
@@ -601,7 +601,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.STRING_TOKEN;
+            { yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;
             } 
             // fall through
           case 35: break;
@@ -616,22 +616,22 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 37: break;
           case 4: 
-            { return ParadoxScriptTypes.COMMENT;
+            { return COMMENT;
             } 
             // fall through
           case 38: break;
           case 5: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.INT_TOKEN;
+            { yybegin(WAITING_PROPERTY_EOL); return INT_TOKEN;
             } 
             // fall through
           case 39: break;
           case 6: 
-            { depth++;  yybegin(nextState()); return ParadoxScriptTypes.LEFT_BRACE;
+            { depth++;  yybegin(nextState()); return LEFT_BRACE;
             } 
             // fall through
           case 40: break;
           case 7: 
-            { depth--;  yybegin(nextState()); return ParadoxScriptTypes.RIGHT_BRACE;
+            { depth--;  yybegin(nextState()); return RIGHT_BRACE;
             } 
             // fall through
           case 41: break;
@@ -641,42 +641,42 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 42: break;
           case 9: 
-            { return ParadoxScriptTypes.END_OF_LINE_COMMENT;
+            { return END_OF_LINE_COMMENT;
             } 
             // fall through
           case 43: break;
           case 10: 
-            { yybegin(WAITING_VARIABLE_VALUE); return ParadoxScriptTypes.EQUAL_SIGN;
+            { yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;
             } 
             // fall through
           case 44: break;
           case 11: 
-            { yybegin(WAITING_VARIABLE_EOL); return ParadoxScriptTypes.STRING_TOKEN;
+            { yybegin(WAITING_VARIABLE_EOL); return STRING_TOKEN;
             } 
             // fall through
           case 45: break;
           case 12: 
-            { yybegin(WAITING_VARIABLE_EOL); return ParadoxScriptTypes.INT_TOKEN;
+            { yybegin(WAITING_VARIABLE_EOL); return INT_TOKEN;
             } 
             // fall through
           case 46: break;
           case 13: 
-            { yybegin(WATIING_PROPERTY_SEPARATOR); return ParadoxScriptTypes.PROPERTY_KEY_ID;
+            { yybegin(WATIING_PROPERTY_SEPARATOR); return PROPERTY_KEY_ID;
             } 
             // fall through
           case 47: break;
           case 14: 
-            { yybegin(WAITING_PROPERTY_VALUE); return ParadoxScriptTypes.EQUAL_SIGN;
+            { yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;
             } 
             // fall through
           case 48: break;
           case 15: 
-            { yybegin(WAITING_PROPERTY_VALUE); return ParadoxScriptTypes.GT_SIGN;
+            { yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;
             } 
             // fall through
           case 49: break;
           case 16: 
-            { yybegin(WAITING_PROPERTY_VALUE); return ParadoxScriptTypes.LT_SIGN;
+            { yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;
             } 
             // fall through
           case 50: break;
@@ -686,12 +686,12 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 51: break;
           case 18: 
-            { return ParadoxScriptTypes.CODE_TEXT_TOKEN;
+            { return CODE_TEXT_TOKEN;
             } 
             // fall through
           case 52: break;
           case 19: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.CODE_END;
+            { yybegin(WAITING_PROPERTY_EOL); return CODE_END;
             } 
             // fall through
           case 53: break;
@@ -701,72 +701,72 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 54: break;
           case 21: 
-            { yybegin(WAITING_VARIABLE_EQUAL_SIGN); return ParadoxScriptTypes.VARIABLE_NAME_ID;
+            { yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID;
             } 
             // fall through
           case 55: break;
           case 22: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.QUOTED_STRING_TOKEN;
+            { yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;
             } 
             // fall through
           case 56: break;
           case 23: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.BOOLEAN_TOKEN;
+            { yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN;
             } 
             // fall through
           case 57: break;
           case 24: 
-            { yybegin(WAITING_VARIABLE_EOL); return ParadoxScriptTypes.QUOTED_STRING_TOKEN;
+            { yybegin(WAITING_VARIABLE_EOL); return QUOTED_STRING_TOKEN;
             } 
             // fall through
           case 58: break;
           case 25: 
-            { yybegin(WAITING_VARIABLE_EOL); return ParadoxScriptTypes.BOOLEAN_TOKEN;
+            { yybegin(WAITING_VARIABLE_EOL); return BOOLEAN_TOKEN;
             } 
             // fall through
           case 59: break;
           case 26: 
-            { yybegin(WAITING_PROPERTY_VALUE); return ParadoxScriptTypes.GE_SIGN;
+            { yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;
             } 
             // fall through
           case 60: break;
           case 27: 
-            { yybegin(WAITING_PROPERTY_VALUE); return ParadoxScriptTypes.LE_SIGN;
+            { yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;
             } 
             // fall through
           case 61: break;
           case 28: 
-            { yybegin(WAITING_PROPERTY_VALUE); return ParadoxScriptTypes.NOT_EQUAL_SIGN;
+            { yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;
             } 
             // fall through
           case 62: break;
           case 29: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.VARIABLE_REFERENCE_ID;
+            { yybegin(WAITING_PROPERTY_EOL); return VARIABLE_REFERENCE_ID;
             } 
             // fall through
           case 63: break;
           case 30: 
-            { yybegin(WAITING_CODE); return ParadoxScriptTypes.CODE_START;
+            { yybegin(WAITING_CODE); return CODE_START;
             } 
             // fall through
           case 64: break;
           case 31: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.FLOAT_TOKEN;
+            { yybegin(WAITING_PROPERTY_EOL); return FLOAT_TOKEN;
             } 
             // fall through
           case 65: break;
           case 32: 
-            { yybegin(WAITING_VARIABLE_EOL); return ParadoxScriptTypes.FLOAT_TOKEN;
+            { yybegin(WAITING_VARIABLE_EOL); return FLOAT_TOKEN;
             } 
             // fall through
           case 66: break;
           case 33: 
-            { yybegin(WATIING_PROPERTY_SEPARATOR); return ParadoxScriptTypes.QUOTED_PROPERTY_KEY_ID;
+            { yybegin(WATIING_PROPERTY_SEPARATOR); return QUOTED_PROPERTY_KEY_ID;
             } 
             // fall through
           case 67: break;
           case 34: 
-            { yybegin(WAITING_PROPERTY_EOL); return ParadoxScriptTypes.COLOR_TOKEN;
+            { yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;
             } 
             // fall through
           case 68: break;
