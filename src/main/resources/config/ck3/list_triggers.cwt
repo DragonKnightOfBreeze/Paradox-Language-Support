@@ -1770,4 +1770,4 @@ alias[trigger:any_dynasty_member] = {
     count = all
     alias_name[trigger] = alias_match_left[trigger]
 }
-
+

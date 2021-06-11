@@ -3,13 +3,9 @@ package icu.windea.pls.script.codeInsight
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
 import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 
 @Suppress("UNCHECKED_CAST")

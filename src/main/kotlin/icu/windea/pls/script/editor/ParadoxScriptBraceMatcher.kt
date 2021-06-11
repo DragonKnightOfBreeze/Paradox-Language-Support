@@ -3,7 +3,6 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 
 class ParadoxScriptBraceMatcher : PairedBraceMatcher {

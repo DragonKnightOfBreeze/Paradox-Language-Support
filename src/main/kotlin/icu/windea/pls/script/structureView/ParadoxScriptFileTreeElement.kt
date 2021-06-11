@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptFileTreeElement(
 	private val element: ParadoxScriptFile
 ) : PsiTreeElementBase<ParadoxScriptFile>(element) {
-	override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> {
+	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val rootBlock = element.rootBlock ?: return mutableListOf()
 		return PsiTreeUtil.getChildrenOfAnyType(
 			rootBlock,

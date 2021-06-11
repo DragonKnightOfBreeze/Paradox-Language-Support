@@ -3,7 +3,6 @@ package icu.windea.pls.script.highlighter
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
-import icu.windea.pls.message
 import icu.windea.pls.script.*
 
 class ParadoxScriptColorSettingsPage : ColorSettingsPage {

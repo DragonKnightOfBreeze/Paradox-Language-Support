@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
 import com.intellij.xml.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.reference.ParadoxDefinitionPathReference
+import icu.windea.pls.localisation.reference.*
 import icu.windea.pls.script.psi.*
 
 //用于兼容markdown锚点

@@ -4,7 +4,6 @@ import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createColorfulText

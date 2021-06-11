@@ -3,7 +3,6 @@ package icu.windea.pls.cwt.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtTypes.*
 
 class CwtBraceMatcher:PairedBraceMatcher {

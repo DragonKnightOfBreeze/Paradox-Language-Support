@@ -8,8 +8,8 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 
 class ChangeColorIntention : IntentionAction {
 	companion object {

@@ -1,7 +1,7 @@
 package icu.windea.pls.core.settings
 
 import com.intellij.openapi.options.*
-import icu.windea.pls.message
+import icu.windea.pls.*
 import javax.swing.*
 
 class ParadoxSettingsConfigurable: SearchableConfigurable {

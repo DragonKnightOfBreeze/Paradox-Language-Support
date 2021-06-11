@@ -1,13 +1,11 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
-import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
-import icu.windea.pls.script.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
 	companion object {

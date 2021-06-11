@@ -8,8 +8,8 @@ import icu.windea.pls.cwt.psi.*
 class CwtFileTreeElement(
 	private val element: CwtFile
 ) : PsiTreeElementBase<CwtFile>(element) {
-	override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> {
-		val rootBlock = element.rootBlock ?: return mutableListOf()
+	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val rootBlock = element.rootBlock ?: return emptyList()
 		return PsiTreeUtil.getChildrenOfAnyType(
 			rootBlock,
 			CwtProperty::class.java,

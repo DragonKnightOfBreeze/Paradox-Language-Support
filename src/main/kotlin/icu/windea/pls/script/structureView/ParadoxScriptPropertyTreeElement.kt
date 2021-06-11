@@ -7,17 +7,17 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptPropertyTreeElement(
 	private val element: ParadoxScriptProperty
 ) : PsiTreeElementBase<ParadoxScriptProperty>(element) {
-	override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> {
-		val value = element.propertyValue?.value?:return mutableListOf()
-		return when{
-			value !is ParadoxScriptBlock -> mutableListOf()
-			value.isArray -> value.valueList.mapTo(mutableListOf()){ParadoxScriptValueTreeElement(it)}
-			value.isObject -> value.propertyList.mapTo(mutableListOf()){ParadoxScriptPropertyTreeElement(it)}
-			else -> mutableListOf()
+	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val value = element.propertyValue?.value ?: return emptyList()
+		return when {
+			value !is ParadoxScriptBlock -> emptyList()
+			value.isArray -> value.valueList.map { ParadoxScriptValueTreeElement(it) }
+			value.isObject -> value.propertyList.map { ParadoxScriptPropertyTreeElement(it) }
+			else -> emptyList()
 		}
 	}
-
-	override fun getPresentableText(): String? {
+	
+	override fun getPresentableText(): String {
 		return element.name
 	}
 }

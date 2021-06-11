@@ -4,7 +4,6 @@ package icu.windea.pls.script.formatter
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
-import icu.windea.pls.message
 import icu.windea.pls.script.*
 import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings.*
 

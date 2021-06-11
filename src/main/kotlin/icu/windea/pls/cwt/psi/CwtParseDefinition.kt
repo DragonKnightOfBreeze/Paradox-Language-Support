@@ -5,7 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.CwtTypes.*
 
 class CwtParseDefinition:ParserDefinition {

@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.message
 import java.nio.charset.*
 
 class InvalidFileEncodingInspection : LocalInspectionTool() {

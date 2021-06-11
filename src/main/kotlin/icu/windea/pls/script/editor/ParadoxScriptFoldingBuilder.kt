@@ -4,7 +4,6 @@ import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
-import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 

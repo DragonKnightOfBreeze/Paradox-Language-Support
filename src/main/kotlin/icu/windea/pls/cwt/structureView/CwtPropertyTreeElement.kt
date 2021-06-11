@@ -2,21 +2,18 @@ package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.lang.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtPropertyTreeElement(
 	private val element: CwtProperty
 ) : PsiTreeElementBase<CwtProperty>(element) {
-	override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> {
-		val value = element.value ?: return mutableListOf()
+	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val value = element.value ?: return emptyList()
 		return when {
-			value !is CwtBlock -> mutableListOf()
-			value.isArray -> value.valueList.mapTo(mutableListOf()) { CwtValueTreeElement(it) }
-			value.isObject -> value.propertyList.mapTo(mutableListOf()) { CwtPropertyTreeElement(it) }
-			else -> mutableListOf()
+			value !is CwtBlock -> emptyList()
+			value.isArray -> value.valueList.map { CwtValueTreeElement(it) }
+			value.isObject -> value.propertyList.map { CwtPropertyTreeElement(it) }
+			else -> emptyList()
 		}
 	}
 	

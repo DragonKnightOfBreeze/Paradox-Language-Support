@@ -5,9 +5,8 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.highlighter.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 

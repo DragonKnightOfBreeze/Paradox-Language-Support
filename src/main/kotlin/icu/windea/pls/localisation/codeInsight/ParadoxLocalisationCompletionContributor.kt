@@ -7,7 +7,6 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 
 @Suppress("HasPlatformType")

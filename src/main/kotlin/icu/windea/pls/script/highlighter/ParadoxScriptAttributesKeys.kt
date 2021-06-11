@@ -1,10 +1,9 @@
 package icu.windea.pls.script.highlighter
 
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
-import icu.windea.pls.message
+import icu.windea.pls.*
 
 object ParadoxScriptAttributesKeys {
 	private val _separatorName = message("paradox.script.externalName.separator")

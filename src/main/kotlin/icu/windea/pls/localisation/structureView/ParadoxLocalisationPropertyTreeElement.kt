@@ -7,8 +7,8 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationPropertyTreeElement(
 	private val element: ParadoxLocalisationProperty
 ) : PsiTreeElementBase<ParadoxLocalisationProperty>(element) {
-	override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> {
-		return mutableListOf()
+	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		return emptyList()
 	}
 
 	override fun getPresentableText(): String {

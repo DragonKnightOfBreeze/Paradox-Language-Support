@@ -3,7 +3,6 @@ package icu.windea.pls.localisation.highlighter
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
-import icu.windea.pls.message
 import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {

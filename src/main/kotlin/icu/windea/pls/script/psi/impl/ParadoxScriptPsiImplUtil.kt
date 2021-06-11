@@ -2,9 +2,7 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createValue
@@ -13,12 +11,10 @@ import icu.windea.pls.script.reference.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 import javax.swing.*
-import kotlin.collections.List
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.component3
 import kotlin.collections.component4
-import kotlin.math.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {

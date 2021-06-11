@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.reference
 
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*

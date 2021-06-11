@@ -9,13 +9,8 @@ import com.intellij.psi.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
-import kotlin.collections.List
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.filter
-import kotlin.collections.groupBy
-import kotlin.collections.iterator
-import kotlin.collections.mapNotNull
 
 class DuplicatePropertyKeysInspection : LocalInspectionTool() {
 	companion object{
