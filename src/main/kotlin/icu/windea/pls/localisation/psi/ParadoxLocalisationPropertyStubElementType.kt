@@ -43,7 +43,7 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 	
 	companion object{
 		fun intern(table: CharTable,node: LighterASTNode?):String{
-		return table.intern((node as LighterASTTokenNode).text).toString()
+			return table.intern((node as LighterASTTokenNode).text).toString()
 		}
 	}
 }

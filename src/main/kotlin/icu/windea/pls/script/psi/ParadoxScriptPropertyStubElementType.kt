@@ -35,6 +35,12 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		return ParadoxScriptPropertyStubImpl(parentStub, name, typeKey, type, subtypes)
 	}
 	
+	override fun shouldCreateStub(node: ASTNode): Boolean {
+		//仅当是definition时才会创建索引
+		val element = node.psi as? ParadoxScriptProperty ?: return false
+		return element.paradoxDefinitionInfo != null
+	}
+	
 	//override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 	//	val keyNode = LightTreeUtil.firstChildOfType(tree, node, ParadoxScriptTypes.PROPERTY_KEY_ID)
 	//	val key = intern(tree.charTable, keyNode)
@@ -60,12 +66,6 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		//索引definition的名称和类型
 		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
 		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
-	}
-	
-	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//仅当是definition时才会创建索引
-		val element = node.psi as? ParadoxScriptProperty ?: return false
-		return element.paradoxDefinitionInfo != null
 	}
 	
 	//companion object {

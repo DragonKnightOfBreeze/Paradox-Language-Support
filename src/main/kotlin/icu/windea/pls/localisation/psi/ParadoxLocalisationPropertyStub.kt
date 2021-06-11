@@ -5,6 +5,6 @@ import icu.windea.pls.model.*
 
 interface ParadoxLocalisationPropertyStub: StubElement<ParadoxLocalisationProperty> {
 	val key:String
-	val paradoxLocale:ParadoxLocale? //TODO 目没有必要真正实现
+	val paradoxLocale:ParadoxLocale? //TODO 目前没有必要实现
 }
 
