@@ -85,7 +85,7 @@ class ParadoxLocalisationIconPsiReference(
 					val name = it.name.substringBeforeLast('.')
 					val icon = localisationIconIcon
 					//val typeText = it.paradoxFileInfo?.path.toStringOrEmpty()
-					val typeText = it.containingFile.name
+					val typeText = it.name
 					LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 				}
 				else -> throw Error()
