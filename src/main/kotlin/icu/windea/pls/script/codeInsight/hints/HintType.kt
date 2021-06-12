@@ -8,22 +8,45 @@ import icu.windea.pls.script.psi.*
 
 @Suppress("UnstableApiUsage")
 enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
+	DEFINITION_NAME_TYPE_HINT(
+		message("paradox.script.hints.definition.definitionNameType"),
+		true
+	) {
+		override fun provideHints(elem: PsiElement): List<InlayInfo> {
+			return (elem as? ParadoxScriptProperty)?.let { element ->
+				element.paradoxDefinitionInfo?.let { definitionInfo ->
+					val text = buildString {
+						val name = definitionInfo.name.ifEmpty { anonymousString }
+						val typeText = definitionInfo.typeText
+						append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
+					}
+					val offset = elem.propertyKey.endOffset
+					val inlayInfo = InlayInfo(text, offset)
+					listOf(inlayInfo)
+				}
+			} ?: emptyList()
+		}
+		
+		override fun isApplicable(elem: PsiElement): Boolean {
+			return elem is ParadoxScriptProperty && elem.paradoxDefinitionInfo != null
+		}
+	},
+	
 	/**
 	 * 定义的本地化的名字的提示。在cwt配置文件中对应的`localisation`的key为`name`（不区分大小写）的本地化文本。
 	 */
 	DEFINITION_LOCALIZED_NAME_HINT(
-		message("paradox.script.hints.settings.definition.definitionLocalizedName"),
+		message("paradox.script.hints.definition.definitionLocalizedName"),
 		true
 	) {
 		override fun provideHints(elem: PsiElement): List<InlayInfo> {
-			val project = elem.project
 			return (elem as? ParadoxScriptProperty)?.let { element ->
 				element.paradoxDefinitionInfo?.let { definitionInfo ->
 					definitionInfo.localisation.find { it.name.toLowerCase() == "name" }?.keyName?.let { keyName ->
-						findLocalisation(keyName, inferParadoxLocale(), project, hasDefault = true)?.let { locProp ->
+						findLocalisation(keyName, inferParadoxLocale(), elem.project, hasDefault = true)?.let { locProp ->
 							val text = locProp.extractText()
 							val offset = elem.propertyKey.endOffset
-							val inlayInfo = InlayInfo(text, offset, false, true, true)
+							val inlayInfo = InlayInfo(text, offset)
 							listOf(inlayInfo)
 						}
 					}

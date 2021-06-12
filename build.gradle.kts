@@ -1,6 +1,6 @@
 plugins {
 	java
-	kotlin("jvm") version "1.4.30"
+	kotlin("jvm") version "1.5.0"
 	id("org.jetbrains.intellij") version "0.7.2"
 	id("org.jetbrains.grammarkit") version "2021.1.2"
 }
@@ -43,13 +43,13 @@ tasks {
 	compileKotlin {
 		kotlinOptions{
 			jvmTarget = "11"
-			freeCompilerArgs = listOf("-Xjvm-default=all")
+			//freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
 	compileTestKotlin {
 		kotlinOptions{
 			jvmTarget = "11"
-			freeCompilerArgs = listOf("-Xjvm-default=all")
+			//freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
 	publishPlugin{
