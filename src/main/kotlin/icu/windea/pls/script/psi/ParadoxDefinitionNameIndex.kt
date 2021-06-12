@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
+import org.apache.tools.ant.taskdefs.*
 
 object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definition.name.index")
@@ -16,7 +17,8 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
-		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
+		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxScriptProperty::class.java)
+		if(elements.isEmpty()) return null
 		return if(preferFirst) elements.firstOrNull { element -> matchesTypeExpression(element, typeExpression) }
 		else elements.lastOrNull { element -> matchesTypeExpression (element, typeExpression) }
 	}
@@ -25,8 +27,9 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
+		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxScriptProperty::class.java)
+		if(elements.isEmpty()) return emptyList()
 		val result = mutableListOf<ParadoxScriptProperty>()
-		val elements = StubIndex.getElements(this.key, name, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
 			if(matchesTypeExpression(element, typeExpression)) result.add(element)
 		}
@@ -37,10 +40,12 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
-		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
+		if(keys.isEmpty()) return emptyList()
+		val result = mutableListOf<ParadoxScriptProperty>()
 		for(key in keys) {
-			for(element in get(key, project, scope)) {
+			val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxScriptProperty::class.java)
+			for(element in elements) {
 				if(matchesTypeExpression(element, typeExpression)) result.add(element)
 			}
 		}
@@ -51,11 +56,13 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
-		val result = mutableListOf<ParadoxScriptProperty>()
 		val keys = getAllKeys(project)
+		if(keys.isEmpty()) return emptyList()
+		val result = mutableListOf<ParadoxScriptProperty>()
 		for(key in keys) {
 			if(predicate(key)) {
-				for(element in get(key, project, scope)) {
+				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxScriptProperty::class.java)
+				for(element in elements) {
 					if(matchesTypeExpression(element, typeExpression)) result.add(element)
 				}
 			}

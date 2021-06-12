@@ -16,29 +16,31 @@ class ParadoxLocalisationPropertyPsiReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		val name = element.propertyReferenceId?.text?: return null
+		val name = element.name
 		val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 		val project = element.project
-		return findLocalisation(name, locale, project,hasDefault = true)
+		return findLocalisation(name, locale, project, hasDefault = true)
 	}
-
+	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-		val name = element.propertyReferenceId?.text?: return ResolveResult.EMPTY_ARRAY
+		val name = element.name
 		val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 		val project = element.project
-		return findLocalisations(name, locale, project,hasDefault = true).mapToArray {
+		return findLocalisations(name, locale, project, hasDefault = true).mapToArray {
 			PsiElementResolveResult(it)
 		}
 	}
 	
 	override fun getVariants(): Array<out Any> {
-		val locale = (element.containingFile as? ParadoxLocalisationFile)?.locale?.paradoxLocale
 		val project = element.project
-		return findLocalisations(locale, project,hasDefault = true).mapToArray {
-			val name = element.name
+		//为了避免这里得到的结果太多，采用关键字查找，这里要去掉作为后缀的dummyIdentifier，并且捕捉异常防止意外
+		val keyword = runCatching { element.name.dropLast(dummyIdentifierLength) }.getOrElse { return emptyArray() }
+		return findLocalisationsByKeyword(keyword, project).mapToArray {
+			val name = it.name
 			val icon = localisationIcon
-			val fileName = it.containingFile.name
-			LookupElementBuilder.create(it,name).withIcon(icon).withTypeText(fileName,true)
+			//val typeText = it.paradoxFileInfo?.path.toStringOrEmpty()
+			val typeText = it.containingFile.name
+			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 		}
 	}
 }

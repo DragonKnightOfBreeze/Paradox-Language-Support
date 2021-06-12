@@ -16,7 +16,8 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
-		val elements = StubIndex.getElements(this.key, type, project, scope, ParadoxScriptProperty::class.java)
+		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
+		if(elements.isEmpty()) return null
 		return if(preferFirst) elements.firstOrNull { element -> matchesName(element, name) }
 		else elements.lastOrNull { element -> matchesName(element, name) }
 	}
@@ -25,8 +26,9 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
+		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
+		if(elements.isEmpty()) return emptyList()
 		val result = mutableListOf<ParadoxScriptProperty>()
-		val elements = StubIndex.getElements(this.key, type, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
 			if(matchesName(element, name)) result.add(element)
 		}
@@ -37,8 +39,9 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
+		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
+		if(elements.isEmpty()) return emptyList()
 		val result = mutableListOf<ParadoxScriptProperty>()
-		val elements = StubIndex.getElements(this.key, type, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
 			result.add(element)
 		}
@@ -49,8 +52,9 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
+		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
+		if(elements.isEmpty()) return emptyList()
 		val result = mutableListOf<ParadoxScriptProperty>()
-		val elements = StubIndex.getElements(this.getKey(), type, project, scope, ParadoxScriptProperty::class.java)
 		for(element in elements) {
 			val name = element.paradoxDefinitionInfo?.name
 			if(name != null && predicate(name)) result.add(element)

@@ -9,7 +9,7 @@ val locationClass = PlsBundle::class.java
 
 //String Constants
 
-const val cwtName = "Cwt Config"
+const val cwtName = "Cwt"
 const val cwtDescription = "Cwt config"
 const val cwtId = "CWT"
 const val cwtExtension = "cwt"

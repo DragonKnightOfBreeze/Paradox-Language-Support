@@ -51,8 +51,9 @@ class ParadoxScriptVariablePsiReference(
 		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapToArray {
 			val name = it.name
 			val icon = scriptVariableIcon
-			val fileName = it.containingFile.name
-			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(fileName, true)
+			//val typeText = it.paradoxFileInfo?.path.toStringOrEmpty()
+			val typeText = it.containingFile.name
+			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 		}
 	}
 }

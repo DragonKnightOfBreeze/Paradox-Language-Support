@@ -41,11 +41,11 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		return element.paradoxDefinitionInfo != null
 	}
 	
-	//override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-	//	val keyNode = LightTreeUtil.firstChildOfType(tree, node, ParadoxScriptTypes.PROPERTY_KEY_ID)
-	//	val key = intern(tree.charTable, keyNode)
-	//	return ParadoxScriptPropertyStubImpl(parentStub, key)
-	//}
+	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
+		//索引definition的名称和类型
+		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
+		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
+	}
 	
 	override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
@@ -61,16 +61,4 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		val subtypes = dataStream.readNameString()!!.let { if(it.isEmpty()) emptyList() else it.split(',') }
 		return ParadoxScriptPropertyStubImpl(parentStub, name, typeKey, type, subtypes)
 	}
-	
-	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
-		//索引definition的名称和类型
-		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
-		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
-	}
-	
-	//companion object {
-	//	fun intern(table: CharTable, node: LighterASTNode?): String {
-	//		return table.intern((node as LighterASTTokenNode).text).toString()
-	//	}
-	//}
 }

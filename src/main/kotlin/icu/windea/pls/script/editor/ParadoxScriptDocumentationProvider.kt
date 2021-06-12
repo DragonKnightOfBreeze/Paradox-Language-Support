@@ -126,13 +126,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val name = definitionInfo.name.ifEmpty { anonymousString }
 				val typeText = definitionInfo.typeText
 				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
-			}
-			if(localisation.isNotEmpty()) {
-				definition {
-					var isFirst = true
+				
+				if(localisation.isNotEmpty()) {
 					for((n, kn) in localisation) {
 						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
-						if(isFirst) isFirst = false else appendBr()
+						appendBr()
 						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
 				}
@@ -151,7 +149,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val iconUrl = element.resolveIconUrl(false)
 				if(iconUrl.isNotEmpty()) {
 					sections {
-						val iconTag = buildString { appendIconTag(iconUrl) }
+						val iconTag = buildString { appendIconTag(iconUrl).append("&nbsp;") } //让图标垂直居中显示
 						section("Icon", iconTag)
 					}
 				}

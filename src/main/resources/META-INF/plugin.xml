@@ -106,39 +106,39 @@
 
     <!--region Cwt Language-->
     <fileType
-      language="Cwt Config"
-      name="Cwt Config" fieldName="INSTANCE"
+      language="CWT"
+      name="Cwt" fieldName="INSTANCE"
       implementationClass="icu.windea.pls.cwt.CwtFileType"
       extensions="cwt"/>
     <lang.parserDefinition
-      language="Cwt Config"
+      language="CWT"
       implementationClass="icu.windea.pls.cwt.psi.CwtParseDefinition"/>
 
     <spellchecker.support
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.CwtSpellchecker"/>
     <lang.syntaxHighlighterFactory
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.highlighter.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage
         implementation="icu.windea.pls.cwt.highlighter.CwtColorSettingsPage"/>
     <lang.braceMatcher
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
     <lang.foldingBuilder
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtFoldingBuilder"/>
     <lang.quoteHandler
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtQuoteHandler"/>
     <lang.commenter
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
     <lang.psiStructureViewFactory
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
     <lang.formatter
-        language="Cwt Config"
+        language="CWT"
         implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <codeStyleSettingsProvider
         implementation="icu.windea.pls.cwt.formatter.CwtCodeStyleSettingsProvider"/>
@@ -146,17 +146,16 @@
         implementation="icu.windea.pls.cwt.formatter.CwtLanguageCodeStyleSettingsProvider"/>
     <!--endregion-->
     
-    
     <!--region Paradox Script Language-->
     <fileType
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         name="Paradox Script" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.script.ParadoxScriptFileType"/>
     <lang.fileViewProviderFactory
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.psi.ParadoxScriptFileViewProviderFactory"/>
     <lang.parserDefinition
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
     
     <stubElementTypeHolder
@@ -167,74 +166,74 @@
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
     
     <spellchecker.support
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.ParadoxScriptSpellchecker"/>
     <lang.syntaxHighlighterFactory
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.highlighter.ParadoxScriptSyntaxHighlighterFactory"/>
     <colorSettingsPage
         implementation="icu.windea.pls.script.highlighter.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
     <lang.foldingBuilder
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFoldingBuilder"/>
     <lang.commenter
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
     <breadcrumbsInfoProvider
         implementation="icu.windea.pls.script.editor.ParadoxScriptBreadCrumbsProvider"/>
     <colorProvider
         implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
     <lang.quoteHandler
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptQuoteHandler"/>
     <lang.documentationProvider
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptDocumentationProvider"/>
     <elementDescriptionProvider
         implementation="icu.windea.pls.script.editor.ParadoxScriptDescriptionProvider"/>
     <lang.findUsagesProvider
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <annotator
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
     <codeInsight.inlayProvider
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptDefinitionHintsProvider"/>
     <lang.psiStructureViewFactory
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <lang.formatter
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider
         implementation="icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.script.formatter.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
     <lang.refactoringSupport
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>
     <renameInputValidator
         implementation="icu.windea.pls.script.refactoring.ParadoxScriptVariableRenameInputValidator"/>
     <renameInputValidator
         implementation="icu.windea.pls.script.refactoring.ParadoxScriptPropertyRenameInputValidator"/>
     <refactoring.inlineHandler
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
     <completion.contributor
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptCompletionContributor"/>
     <codeInsight.typeInfo 
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
     <codeInsight.lineMarkerProvider
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionLocalisationLineMarkerProvider"/>
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.reference.ParadoxPathReferenceProvider"/>
@@ -243,14 +242,14 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 
     <localInspection
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         shortName="ParadoxScriptDuplicateVariableDefinitions" bundle="messages.PlsBundle"
         groupKey="paradox.script.inspection"
         key="paradox.script.inspection.duplicateVariableDefinitions"
         enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.script.inspections.DuplicateVariableDefinitionsInspection"/>
     <localInspection
-        language="Paradox Script"
+        language="PARADOX_SCRIPT"
         shortName="ParadoxScriptInvalidFileEncoding" bundle="messages.PlsBundle"
         groupKey="paradox.script.inspection"
         key="paradox.script.inspection.invalidFileEncoding"
@@ -260,14 +259,14 @@
 
     <!--region Paradox Localisation Language-->
     <fileType
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         name="Paradox Localisation" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.localisation.ParadoxLocalisationFileType"/>
     <lang.fileViewProviderFactory
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationFileViewProviderFactory"/>
     <lang.parserDefinition
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParserDefinition"/>
     
     <stubElementTypeHolder 
@@ -276,18 +275,18 @@
     <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationNameIndex"/>
     
     <spellchecker.support
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.ParadoxLocalisationSpellchecker"/>
     <lang.syntaxHighlighterFactory
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.highlighter.ParadoxLocalisationSyntaxHighlighterFactory"/>
     <colorSettingsPage
         implementation="icu.windea.pls.localisation.highlighter.ParadoxLocalisationColorSettingsPage"/>
     <lang.braceMatcher
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBraceMatcher"/>
     <lang.commenter
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
     <liveTemplateContext
         implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationTemplateContext"/>
@@ -295,39 +294,39 @@
     <breadcrumbsInfoProvider
         implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationBreadCrumbsProvider"/>
     <lang.quoteHandler
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationQuoteHandler"/>
     <lang.documentationProvider
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationDocumentationProvider"/>
     <elementDescriptionProvider
         implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationDescriptionProvider"/>
     <lang.findUsagesProvider
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
     <annotator
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationAnnotator"/>
     <lang.psiStructureViewFactory
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
     <lang.formatter
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
     <codeStyleSettingsProvider
         implementation="icu.windea.pls.localisation.formatter.ParadoxLocalisationCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.localisation.formatter.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>
     <lang.refactoringSupport
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.refactoring.ParadoxLocalisationRefactoringSupportProvider"/>
     <renameInputValidator
         implementation="icu.windea.pls.localisation.refactoring.ParadoxLocalisationPropertyRenameInputValidator"/>
     <completion.contributor
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationCompletionContributor"/>
     <codeInsight.lineMarkerProvider
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationLineMarkerProvider"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
@@ -359,13 +358,13 @@
     </intentionAction>
     
     <localInspection
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         shortName="ParadoxLocalisationDuplicatePropertyKeys"
         groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.duplicatePropertyKeys"
         enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertyKeysInspection"/>
     <localInspection
-        language="Paradox Localisation"
+        language="PARADOX_LOCALISATION"
         shortName="ParadoxLocalisationInvalidFileEncoding"
         groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.invalidFileEncoding"
         enabledByDefault="true" level="WARNING"

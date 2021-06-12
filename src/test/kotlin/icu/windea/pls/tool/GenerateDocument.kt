@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import java.io.*
+import java.util.*
 
 //用于生成markdown文档
 
@@ -41,11 +42,11 @@ private fun getDocumentText(documentName: String, type: String, project: Project
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
 		val definition = it.paradoxDefinitionInfo
 		val id = definition?.name
-		val name = definition?.localisation?.find { loc -> loc.name.toLowerCase() == "name" }
+		val name = definition?.localisation?.find { loc -> loc.name.lowercase() == "name" }
 			?.let { l-> findLocalisation(l.keyName, inferParadoxLocale(),project) }?.extractText()
-		val description = definition?.localisation?.find { loc -> loc.name.toLowerCase() == "description" }
+		val description = definition?.localisation?.find { loc -> loc.name.lowercase() == "description" }
 			?.let { l-> findLocalisation(l.keyName, inferParadoxLocale(),project) }?.extractText()
-		val effect = definition?.localisation?.find { loc -> loc.name.toLowerCase() == "effect" }
+		val effect = definition?.localisation?.find { loc -> loc.name.lowercase() == "effect" }
 			?.let { l-> findLocalisation(l.keyName, inferParadoxLocale(),project) }?.extractText()
 		buildString {
 			append("#### $name{#$id}")

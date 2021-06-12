@@ -3,8 +3,9 @@ package icu.windea.pls.localisation.psi
 import com.intellij.lang.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.stubs.*
-import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 import icu.windea.pls.localisation.psi.impl.*
 
 class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>(
@@ -24,9 +25,14 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 	}
 	
 	override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-		val keyNode = LightTreeUtil.firstChildOfType(tree, node, ParadoxLocalisationTypes.PROPERTY_KEY_ID)
-		val key = intern(tree.charTable, keyNode)
+		val keyNode = LightTreeUtil.firstChildOfType(tree, node, PROPERTY_KEY)!!
+		val kenTokenNode = LightTreeUtil.firstChildOfType(tree, keyNode, PROPERTY_KEY_ID) as LighterASTTokenNode
+		val key = intern(tree.charTable, kenTokenNode)
 		return ParadoxLocalisationPropertyStubImpl(parentStub, key)
+	}
+	
+	override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
+		sink.occurrence(ParadoxLocalisationNameIndex.key, stub.key)
 	}
 	
 	override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
@@ -35,15 +41,5 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
 		return ParadoxLocalisationPropertyStubImpl(parentStub, dataStream.readNameString()!!)
-	}
-	
-	override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
-		sink.occurrence(ParadoxLocalisationNameIndex.key,stub.key)
-	}
-	
-	companion object{
-		fun intern(table: CharTable,node: LighterASTNode?):String{
-			return table.intern((node as LighterASTTokenNode).text).toString()
-		}
 	}
 }

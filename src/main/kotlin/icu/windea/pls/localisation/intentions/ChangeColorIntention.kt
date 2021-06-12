@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.intentions
 
 import com.intellij.codeInsight.intention.*
-import com.intellij.openapi.command.WriteCommandAction.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
@@ -52,7 +52,7 @@ class ChangeColorIntention : IntentionAction {
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
 		override fun onChosen(selectedValue: ParadoxColor, finalChoice: Boolean): PopupStep<*>? {
-			runWriteCommandAction(value.project) { value.name = selectedValue.name }
+			runWriteAction { value.name = selectedValue.name }
 			return PopupStep.FINAL_CHOICE
 		}
 	}

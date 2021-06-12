@@ -50,7 +50,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 		{ mouseEvent, _ ->
 			val keyNames = definitionInfo.localisationKeyNames
 			val project = element.project
-			val elements = findLocalisations(keyNames, null, project, hasDefault = true, keepOrder = true).toTypedArray()
+			val elements = findLocalisationsByNames(keyNames, null, project, hasDefault = true, keepOrder = true).toTypedArray()
 			when(elements.size) {
 				0 -> { }
 				1 -> OpenSourceUtil.navigate(true, elements.first())

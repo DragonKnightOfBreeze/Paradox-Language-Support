@@ -69,21 +69,21 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	
 	private fun getFileType(file: VirtualFile): ParadoxFileType? {
 		if(file is StubVirtualFile || !file.isValid || file.isDirectory) return null
-		val fileExtension = file.extension?.toLowerCase() ?: return null
+		val fileExtension = file.extension?.lowercase() ?: return null
 		return when {
 			fileExtension in scriptFileExtensions -> ParadoxFileType.Script
 			fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
-			fileExtension == "dds" -> ParadoxFileType.Dds 
+			fileExtension == "dds" -> ParadoxFileType.Dds
 			else -> null
 		}
 	}
 	
 	private fun getRootType(file: VirtualFile): ParadoxRootType? {
 		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
-		val fileName = file.name.toLowerCase()
+		val fileName = file.name.lowercase()
 		for(child in file.children) {
-			val childName = child.name.toLowerCase()
-			val childExpression = childName.substringAfterLast('.',"")
+			val childName = child.name.lowercase()
+			val childExpression = childName.substringAfterLast('.', "")
 			when {
 				//TODO 可能并不是这样命名，需要检查
 				//childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib

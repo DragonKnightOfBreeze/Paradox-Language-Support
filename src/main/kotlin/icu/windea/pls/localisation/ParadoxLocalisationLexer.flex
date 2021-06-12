@@ -253,6 +253,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "§" { isColorfulText=true; yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {depth--; yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {COLOR_ID} {yybegin(WAITING_COLORFUL_TEXT); return COLOR_ID;}
+  [^] { yypushback(yylength()); yybegin(WAITING_COLORFUL_TEXT); } //提高兼容性
 }
 <WAITING_COLORFUL_TEXT>{
   {EOL} { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }

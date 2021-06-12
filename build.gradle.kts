@@ -43,13 +43,13 @@ tasks {
 	compileKotlin {
 		kotlinOptions{
 			jvmTarget = "11"
-			//freeCompilerArgs = listOf("-Xjvm-default=all")
+			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
 	compileTestKotlin {
 		kotlinOptions{
 			jvmTarget = "11"
-			//freeCompilerArgs = listOf("-Xjvm-default=all")
+			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
 	publishPlugin{

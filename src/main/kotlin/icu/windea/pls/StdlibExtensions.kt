@@ -163,9 +163,9 @@ infix fun List<String>.relaxMatchesPath(other: List<String>): Boolean {
 	val otherSize = other.size
 	if(size != otherSize) return false
 	for(index in 0 until size) {
-		val path = this[index].toLowerCase()
+		val path = this[index].lowercase()
 		if(path == "any") continue
-		val otherPath = other[index].toLowerCase()
+		val otherPath = other[index].lowercase()
 		if(path != otherPath) return false
 	}
 	return true
@@ -234,6 +234,8 @@ fun String.isTypeOf(type: String): Boolean {
 }
 
 //To Extensions
+
+fun Any?.toStringOrEmpty() = this?.toString()?:""
 
 fun Boolean.toInt() = if(this) 1 else 0
 

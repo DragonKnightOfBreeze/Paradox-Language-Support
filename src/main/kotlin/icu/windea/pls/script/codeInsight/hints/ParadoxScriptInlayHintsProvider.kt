@@ -5,6 +5,8 @@ import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.ui.layout.*
+import javax.swing.*
 
 
 @Suppress("UnstableApiUsage")
@@ -12,13 +14,18 @@ abstract class ParadoxScriptInlayHintsProvider<T:Any> : InlayHintsProvider<T> {
 	override val key: SettingsKey<T> = SettingsKey(this::class.simpleName!!)
 	override val previewText: String? = null
 	
+	override fun createConfigurable(settings: T): ImmediateConfigurable {
+		return object : ImmediateConfigurable {
+			override fun createComponent(listener: ChangeListener): JComponent = panel {}
+		}
+	}
+	
 	override fun getCollectorFor(file: PsiFile, editor: Editor, settings: T, sink: InlayHintsSink): InlayHintsCollector? {
 		return object : FactoryInlayHintsCollector(editor) {
 			override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
 				val resolved = HintType.resolve(element) ?: return true
-				if (!isElementSupported(resolved, settings)) return true
 				
-				val presentations = resolved.provideHints(element).mapNotNull { info -> convert(info, editor.project) }
+				val presentations = resolved.provideHints(element).map { info -> convert(info, editor.project) }
 				if (presentations.isNotEmpty()) {
 					handlePresentations(presentations, editor, sink)
 				} else {
@@ -47,8 +54,6 @@ abstract class ParadoxScriptInlayHintsProvider<T:Any> : InlayHintsProvider<T> {
 			}
 		}
 	}
-	
-	abstract fun isElementSupported(resolved: HintType?, settings: T): Boolean
 	
 	protected open fun handlePresentations(presentations: List<PresentationAndSettings>, editor: Editor, sink: InlayHintsSink) {
 		presentations.forEach { p ->

@@ -9,47 +9,30 @@ import icu.windea.pls.script.psi.*
 @Suppress("UnstableApiUsage")
 enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 	DEFINITION_NAME_TYPE_HINT(
-		message("paradox.script.hints.definition.definitionNameType"),
+		message("paradox.script.hints.types.definition"),
 		true
 	) {
 		override fun provideHints(elem: PsiElement): List<InlayInfo> {
 			return (elem as? ParadoxScriptProperty)?.let { element ->
 				element.paradoxDefinitionInfo?.let { definitionInfo ->
-					val text = buildString {
+					val result = mutableListOf<InlayInfo>()
+					//提示定义的名字类型信息
+					val text1 = buildString {
 						val name = definitionInfo.name.ifEmpty { anonymousString }
 						val typeText = definitionInfo.typeText
-						append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
+						append(name).append(": ").append(typeText)
 					}
-					val offset = elem.propertyKey.endOffset
-					val inlayInfo = InlayInfo(text, offset)
-					listOf(inlayInfo)
-				}
-			} ?: emptyList()
-		}
-		
-		override fun isApplicable(elem: PsiElement): Boolean {
-			return elem is ParadoxScriptProperty && elem.paradoxDefinitionInfo != null
-		}
-	},
-	
-	/**
-	 * 定义的本地化的名字的提示。在cwt配置文件中对应的`localisation`的key为`name`（不区分大小写）的本地化文本。
-	 */
-	DEFINITION_LOCALIZED_NAME_HINT(
-		message("paradox.script.hints.definition.definitionLocalizedName"),
-		true
-	) {
-		override fun provideHints(elem: PsiElement): List<InlayInfo> {
-			return (elem as? ParadoxScriptProperty)?.let { element ->
-				element.paradoxDefinitionInfo?.let { definitionInfo ->
-					definitionInfo.localisation.find { it.name.toLowerCase() == "name" }?.keyName?.let { keyName ->
+					val offset1 = elem.propertyKey.endOffset
+					result.add(InlayInfo(text1, offset1))
+					//提示定义的名字和类型	
+					definitionInfo.localisation.find { it.name.lowercase() == "name" }?.keyName?.let { keyName ->
 						findLocalisation(keyName, inferParadoxLocale(), elem.project, hasDefault = true)?.let { locProp ->
-							val text = locProp.extractText()
-							val offset = elem.propertyKey.endOffset
-							val inlayInfo = InlayInfo(text, offset)
-							listOf(inlayInfo)
+							val text2 = locProp.extractText()
+							val offset2 = elem.propertyKey.endOffset
+							result.add(InlayInfo(text2, offset2))
 						}
 					}
+					result
 				}
 			} ?: emptyList()
 		}
@@ -75,6 +58,7 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 	
 	abstract fun isApplicable(elem: PsiElement): Boolean
 	abstract fun provideHints(elem: PsiElement): List<InlayInfo>
+	
 	val option = Option("SHOW_${this.name}", { this.showDesc }, defaultEnabled)
 	val enabled get() = option.get()
 }

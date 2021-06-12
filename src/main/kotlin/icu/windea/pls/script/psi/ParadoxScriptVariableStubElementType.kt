@@ -30,11 +30,10 @@ class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVaria
 		return "common/scripted_variables".matchesPath(parentPath)
 	}
 	
-	//override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptVariableStub {
-	//	val keyNode = LightTreeUtil.firstChildOfType(tree, node, ParadoxScriptTypes.VARIABLE_NAME_ID)
-	//	val key = intern(tree.charTable, keyNode)
-	//	return ParadoxScriptVariableStubImpl(parentStub, key)
-	//}
+	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {
+		//索引scripted_variable的名称
+		sink.occurrence(ParadoxScriptVariableNameIndex.key, stub.key)
+	}
 	
 	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.key)
@@ -43,15 +42,4 @@ class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVaria
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptVariableStub {
 		return ParadoxScriptVariableStubImpl(parentStub, dataStream.readNameString()!!)
 	}
-	
-	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {
-		//索引scripted_variable的名称
-		sink.occurrence(ParadoxScriptVariableNameIndex.key, stub.key)
-	}
-	
-	//companion object{
-	//	fun intern(table: CharTable,node: LighterASTNode?):String{
-	//		return table.intern((node as LighterASTTokenNode).text).toString()
-	//	}
-	//}
 }

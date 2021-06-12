@@ -15,6 +15,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
+import com.intellij.util.*
 
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
 
@@ -189,4 +190,8 @@ fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
 	val range = node.textRange
 	val limit = if(range.endOffset < document.textLength) document.getLineNumber(range.endOffset) else document.lineCount - 1
 	return document.getLineNumber(range.startOffset) < limit
+}
+
+fun intern(table: CharTable,node: LighterASTTokenNode):String{
+	return table.intern(node.text).toString()
 }

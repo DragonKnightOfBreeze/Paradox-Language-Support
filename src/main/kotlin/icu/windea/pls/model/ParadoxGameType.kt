@@ -28,11 +28,11 @@ enum class ParadoxGameType(
 		val exeFileNames = values.map { it.exeFileName }
 		
 		fun resolve(key:String): ParadoxGameType? {
-			return map[key.toLowerCase()] 
+			return map[key.lowercase()] 
 		}
 		
-		fun isValidKey(key:String):Boolean{
-			return key.toLowerCase() in map
+		fun isValidKey(key:String):Boolean {
+			return key.lowercase() in map
 		}
 		
 		fun defaultValue(): ParadoxGameType{

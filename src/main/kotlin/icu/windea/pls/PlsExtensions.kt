@@ -138,7 +138,7 @@ val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.contai
 internal fun canGetFileInfo(file: PsiFile): Boolean {
 	//paradoxScriptFile, paradoxLocalisationFile, ddsFile
 	if(file is ParadoxScriptFile || file is ParadoxLocalisationFile) return true
-	val extension = file.name.substringAfterLast('.').toLowerCase()
+	val extension = file.name.substringAfterLast('.').lowercase()
 	if(extension == "dds") return true
 	return false
 }
@@ -178,7 +178,7 @@ private fun getPath(subpaths: List<String>): ParadoxPath {
 }
 
 private fun getFileType(file: PsiFile): ParadoxFileType? {
-	val fileName = file.name.toLowerCase()
+	val fileName = file.name.lowercase()
 	val fileExtension = fileName.substringAfterLast('.')
 	return when {
 		fileExtension in scriptFileExtensions -> ParadoxFileType.Script
@@ -189,9 +189,9 @@ private fun getFileType(file: PsiFile): ParadoxFileType? {
 
 private fun getRootType(file: PsiDirectory): ParadoxRootType? {
 	if(!file.isDirectory) return null
-	val fileName = file.name.toLowerCase()
+	val fileName = file.name.lowercase()
 	for(child in file.files) {
-		val childName = child.name.toLowerCase()
+		val childName = child.name.lowercase()
 		val childExpression = childName.substringAfterLast('.', "")
 		when {
 			//TODO 可能并不是这样命名，需要检查
@@ -454,6 +454,17 @@ fun findScriptVariables(
 }
 
 /**
+ * 基于脚本变量名字索引，过滤所有的脚本变量（scriptedVariable）。
+ */
+fun filterScriptVariables(
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	predicate: (String) -> Boolean
+): List<ParadoxScriptVariable> {
+	return ParadoxScriptVariableNameIndex.filter(project, scope, predicate)
+}
+
+/**
  * 基于定义名字索引，根据名字、类型表达式查找脚本文件的定义（definition）。
  */
 fun findDefinition(
@@ -489,31 +500,43 @@ fun findDefinitions(
 }
 
 /**
- * 基于类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ * 基于定义名字索引，根据类型表达式查找并根据名字过滤所有的脚本文件的定义（definition）。
  */
-fun findDefinitionByType(
-	name:String,
-	type: String,
+fun filterDefinitions(
+	typeExpression: String? = null,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-):ParadoxScriptProperty? {
-	return ParadoxDefinitionTypeIndex.getOne(name,type, project, scope, !getSettings().preferOverridden)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	predicate: (String) -> Boolean
+): List<ParadoxScriptProperty> {
+	return ParadoxDefinitionNameIndex.filter(typeExpression, project, scope, predicate)
 }
 
 /**
- * 基于类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ * 基于定义类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ */
+fun findDefinitionByType(
+	name: String,
+	type: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): ParadoxScriptProperty? {
+	return ParadoxDefinitionTypeIndex.getOne(name, type, project, scope, !getSettings().preferOverridden)
+}
+
+/**
+ * 基于定义类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitionsByType(
-	name:String,
+	name: String,
 	type: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.getAll(name,type, project, scope)
+	return ParadoxDefinitionTypeIndex.getAll(name, type, project, scope)
 }
 
 /**
- * 基于类型索引，根据类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ * 基于定义类型索引，根据类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitionsByType(
 	type: String,
@@ -521,6 +544,18 @@ fun findDefinitionsByType(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
 	return ParadoxDefinitionTypeIndex.getAll(type, project, scope)
+}
+
+/**
+ * 基于定义蕾西索引，根据类型（不是类型表达式）查找并根据名字过滤所有的脚本文件的定义（definition）。
+ */
+fun filterDefinitionsByType(
+	type: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	predicate: (String) -> Boolean
+): List<ParadoxScriptProperty> {
+	return ParadoxDefinitionTypeIndex.filter(type, project, scope, predicate)
 }
 
 /**
@@ -567,12 +602,27 @@ fun findLocalisations(
 }
 
 /**
+ * 基于本地化名字索引，根据语言区域查找且根据名字过滤所有的本地化（localisation）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun filterLocalisations(
+	locale: ParadoxLocale? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false,
+	predicate: (String) -> Boolean
+): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.filter(locale, project, scope, hasDefault, predicate)
+}
+
+/**
  * 基于本地化名字索引，根据一组名字、语言区域查找所有的本地化（localisation）。
  * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
  * * 如果[keepOrder]为`true`，则根据这组名字排序查询结果。
  */
-fun findLocalisations(
+fun findLocalisationsByNames(
 	names: Iterable<String>,
 	locale: ParadoxLocale? = null,
 	project: Project,
@@ -580,7 +630,20 @@ fun findLocalisations(
 	hasDefault: Boolean = false,
 	keepOrder: Boolean = false
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(names, locale, project, scope, hasDefault, keepOrder)
+	return ParadoxLocalisationNameIndex.findByNames(names, locale, project, scope, hasDefault, keepOrder)
+}
+
+/**
+ * 基于本地化名字索引，根据关键字查找所有的本地化（localisation）。
+ * * 如果名字包含关键字（不忽略大小写），则放入结果。
+ * * 返回的结果有数量限制。
+ */
+fun findLocalisationsByKeyword(
+	keyword: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope)
 }
 
 //Link Extensions
@@ -613,8 +676,8 @@ fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
 }
 
 fun StringBuilder.appendIconTag(url: String, size: Int = iconSize, local: Boolean = true): StringBuilder {
-	return append("<span> <img src=\"").appendIf(local, "file:/").append(url)
-		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\"/> </span>")
+	return append("<img src=\"").appendIf(local, "file:/").append(url)
+		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\" hspace=\"1\"/>")
 }
 
 fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
