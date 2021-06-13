@@ -44,7 +44,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 				val localisation = definitionInfo.localisation
 				var isFirst = true
 				for((n, kn) in localisation) {
-					if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
+					if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
 					if(isFirst) isFirst = false else appendBr()
 					append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 				}

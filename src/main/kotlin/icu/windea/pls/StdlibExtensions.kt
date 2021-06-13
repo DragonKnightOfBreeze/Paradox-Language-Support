@@ -288,9 +288,13 @@ private fun optimizeCommand(command: String): Array<String> {
 
 //Specific Collections
 
-data class ReversibleList<T>(val list: List<T>, val reverse: Boolean = false) : List<T> by list
+data class ReversibleList<T>(val list: List<T>, val reverse: Boolean) : List<T> by list
+
+fun <T> List<T>.toReversibleList(reverse:Boolean) = ReversibleList(this,reverse)
 
 data class ReversibleMap<K, V>(val map: Map<K, V>, val reverse: Boolean = false) : Map<K, V> by map
+
+fun <K,V> Map<K,V>.toReversibleMap(reverse: Boolean) = ReversibleMap(this,reverse)
 
 //Specific Expressions
 

@@ -50,7 +50,8 @@ BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
-DOCUMENTATION_TOKEN=([^\r\n]*)
+OPTION_VALUE_STRING_TOKEN=([^\s])|([^\s][^\r\n]*[^\s]) //option.value可以无需双引号直接包含空格，但开始和末尾不会是空格
+DOCUMENTATION_TOKEN=[^\r\n]*
 
 IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({SPACE})?=
 IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
@@ -189,7 +190,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   {BOOLEAN_TOKEN} { yybegin(WAITING_OPTION_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_OPTION_END); return INT_TOKEN; }
   {FLOAT_TOKEN} { yybegin(WAITING_OPTION_END); return FLOAT_TOKEN; }
-  {STRING_TOKEN} {yybegin(WAITING_OPTION_END); return STRING_TOKEN;}
+  {OPTION_VALUE_STRING_TOKEN} {yybegin(WAITING_OPTION_END); return STRING_TOKEN;} //option.value可以无需双引号直接包含空格
 }
 
 <WAITING_OPTION_END>{

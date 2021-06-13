@@ -33,6 +33,7 @@ class CwtConfigGroupProvider(
 	
 	@Synchronized
 	private fun initConfigGroups(){
+		//TODO 尝试并发解析以提高IDE启动速度
 		logger.info("Init config groups...")
 		val configUrl = "/config".toUrl(locationClass)
 		//这里有可能找不到，这时不要报错，之后还会执行到这里

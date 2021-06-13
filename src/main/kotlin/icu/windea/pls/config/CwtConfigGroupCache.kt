@@ -99,8 +99,8 @@ class CwtConfigGroupCache(
 					"severity" -> resolved.severity = prop.stringValue ?: continue
 					"skip_root_key" -> {
 						//值可能是string也可能是stringArray
-						val list = prop.stringValue?.toSingletonList() ?: prop.values?.mapNotNull { it.stringValue }?: emptyList()
-						if(list.isNotEmpty()) resolved.skip_root_key.add(list)
+						val list = prop.stringValue?.toSingletonList() ?: prop.values?.map { it.value }
+						if(list != null) resolved.skip_root_key.add(list)
 					}
 					"localisation" -> {
 						val propProps = prop.properties
@@ -143,12 +143,12 @@ class CwtConfigGroupCache(
 					"type_key_filter" -> {
 						val reversed = option.separator == CwtConfigSeparator.NOT_EQUAL
 						//值可能是string也可能是stringArray
-						val list = option.stringValue?.toSingletonList() ?: option.values?.mapNotNull { it.stringValue } ?: emptyList()
-						resolved.type_key_filter = ReversibleList(list, reversed)
+						val list = option.stringValue?.toSingletonList() ?: option.values?.map { it.value }
+						resolved.type_key_filter = list?.toReversibleList(reversed)
 					}
 					"graph_related_types" -> {
 						val optionValues = option.values ?: continue
-						val list = optionValues.mapNotNull { it.stringValue }
+						val list = optionValues.map { it.value }
 						resolved.graph_related_types = list
 					}
 				}
@@ -169,13 +169,14 @@ class CwtConfigGroupCache(
 					"type_key_filter" -> {
 						val reversed = option.separator == CwtConfigSeparator.NOT_EQUAL
 						//值可能是string也可能是stringArray
-						val list = option.stringValue?.toSingletonList() ?: option.values?.mapNotNull { it.stringValue } ?: emptyList()
-						resolved.type_key_filter = ReversibleList(list, reversed)
+						val list = option.stringValue?.toSingletonList() ?: option.values?.map { it.value }
+						resolved.type_key_filter = list?.toReversibleList(reversed)
 					}
 					"push_scope" -> resolved.push_scope = option.stringValue ?: continue
 					"starts_with" -> resolved.starts_with = option.stringValue ?: continue
 					"display_name" -> resolved.display_name = option.stringValue ?: continue
 					"abbreviation" -> resolved.abbreviation = option.stringValue ?: continue
+					"only_if_not" -> resolved.only_if_not = option.values?.map { it.value }
 				}
 			}
 		}
@@ -203,7 +204,7 @@ class CwtConfigGroupCache(
 	
 	private fun resolveEnumConfig(config: CwtConfigProperty): List<String>? {
 		val enumConfigValues = config.values ?: return null
-		return enumConfigValues.mapNotNull { it.stringValue }
+		return enumConfigValues.map { it.value }
 	}
 	
 	/**
@@ -222,6 +223,10 @@ class CwtConfigGroupCache(
 	 * 判断
 	 */
 	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
+		//判断value是否是block
+		val valueIsBlock = element.propertyValue?.value is ParadoxScriptBlock
+		if(!valueIsBlock) return false
+		
 		//判断path是否匹配
 		val pathConfig = typeConfig.path ?: return false
 		val pathStrictConfig = typeConfig.path_strict
@@ -245,7 +250,7 @@ class CwtConfigGroupCache(
 		val skipRootKeyConfig = typeConfig.skip_root_key //String? | "any"
 		if(skipRootKeyConfig.isEmpty()) {
 			if(propertyPath.length != 1) return false
-		}else{
+		} else {
 			var skipResult = false
 			for(keys in skipRootKeyConfig) {
 				if(keys.relaxMatchesPath(propertyPath.parentSubpaths)) {
@@ -259,23 +264,30 @@ class CwtConfigGroupCache(
 		val typeKeyFilterConfig = typeConfig.type_key_filter
 		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
 			val filterResult = if(typeKeyFilterConfig.reverse) {
-				typeKeyFilterConfig.all { elementName !in it }
+				elementName !in typeKeyFilterConfig
 			} else {
-				typeKeyFilterConfig.any { elementName in it }
+				elementName in typeKeyFilterConfig
 			}
 			if(!filterResult) return false
 		}
 		return true
 	}
 	
-	private fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxScriptProperty, elementName: String): Boolean {
+	private fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxScriptProperty, elementName: String, result: MutableList<CwtSubtypeConfig>): Boolean {
+		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
+		val onlyIfNotConfig = subtypeConfig.only_if_not
+		if(onlyIfNotConfig != null && onlyIfNotConfig.isNotEmpty()) {
+			val matchesAny = result.any { it.name in onlyIfNotConfig }
+			if(matchesAny) return false
+		}
+		
 		//如果type_key_filter存在，则过滤key
 		val typeKeyFilterConfig = subtypeConfig.type_key_filter
 		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
 			val filterResult = if(typeKeyFilterConfig.reverse) {
-				typeKeyFilterConfig.all { elementName !in it }
+				elementName !in typeKeyFilterConfig
 			} else {
-				typeKeyFilterConfig.any { elementName in it }
+				elementName in typeKeyFilterConfig
 			}
 			if(!filterResult) return false
 		}
@@ -286,7 +298,7 @@ class CwtConfigGroupCache(
 		}
 		//根据config对property进行内容匹配
 		val elementConfig = subtypeConfig.config
-		return matchContent(element, elementConfig,this)
+		return matchContent(element, elementConfig, this)
 	}
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
@@ -296,13 +308,15 @@ class CwtConfigGroupCache(
 		val subtypesConfig = getSubtypesConfig(typeConfig, element, elementName)
 		val subtypes = subtypesConfig.map { it.name }
 		val localisationConfig = getLocalisationConfig(typeConfig, subtypes)
-		val localisation = getLocalisation(localisationConfig, name)
-		val graphRelatedTypes = typeConfig.graph_related_types ?: emptyList()
+		val localisation = getLocalisation(localisationConfig, element, name)
+		val graphRelatedTypes = typeConfig.graph_related_types.orEmpty()
 		val unique = typeConfig.unique
 		val severity = typeConfig.severity
 		val pushScopes = subtypesConfig.map { it.push_scope }
-		return ParadoxDefinitionInfo(name,typeKey, type, subtypes, subtypesConfig, localisation, localisationConfig, 
-			graphRelatedTypes, unique, severity, pushScopes)
+		return ParadoxDefinitionInfo(
+			name, typeKey, type, subtypes, subtypesConfig, localisation, localisationConfig,
+			graphRelatedTypes, unique, severity, pushScopes
+		)
 	}
 	
 	private fun getName(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): String {
@@ -311,9 +325,9 @@ class CwtConfigGroupCache(
 		if(nameFromFileConfig) return element.containingFile.name.substringBeforeLast('.')
 		//如果name_field = <any>，则返回对应名字的property的value
 		val nameFieldConfig = typeConfig.name_field
-		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig,true)?.value.orEmpty()
+		if(nameFieldConfig != null) return element.findProperty(nameFieldConfig, true)?.value.orEmpty()
 		//如果有一个子属性的propertyKey为name，那么取这个子属性的值，这是为了兼容cwt规则文件尚未考虑到的一些需要名字的情况
-		val nameProperty = element.findProperty("name",true)
+		val nameProperty = element.findProperty("name", true)
 		if(nameProperty != null) return nameProperty.value.orEmpty()
 		//否则直接返回elementName
 		return elementName
@@ -323,7 +337,7 @@ class CwtConfigGroupCache(
 		val subtypesConfig = typeConfig.subtypes
 		val result = mutableListOf<CwtSubtypeConfig>()
 		for(subtypeConfig in subtypesConfig.values) {
-			if(matchesSubtype(subtypeConfig, element, elementName)) result.add(subtypeConfig)
+			if(matchesSubtype(subtypeConfig, element, elementName, result)) result.add(subtypeConfig)
 		}
 		return result
 	}
@@ -341,13 +355,18 @@ class CwtConfigGroupCache(
 		return result
 	}
 	
-	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, name: String): MutableList<ParadoxDefinitionLocalisationInfo> {
+	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, element: ParadoxScriptProperty, name: String): MutableList<ParadoxDefinitionLocalisationInfo> {
 		val result = mutableListOf<ParadoxDefinitionLocalisationInfo>()
 		for(config in localisationConfig) {
-			//如果definition的name是匿名的（没有），那么对应的keyName全部设为匿名的
-			val keyName = when(name) {
-				anonymousString -> anonymousString
-				else -> buildString { for(c in config.expression) if(c == '$') append(name) else append(c) }
+			//如果name为空，则keyName也为空 
+			//如果expression包含"$"，则keyName为将expression中的"$"替换为name后得到的字符串
+			//否则，keyName为expression对应的definition的同名子属性（不区分大小写）的值对应的字符串
+			val expression = config.expression
+			val keyName = when {
+				name.isEmpty() -> ""
+				expression.contains('$') -> buildString { for(c in expression) if(c == '$') append(name) else append(c) }
+				else -> element.findProperty(expression, ignoreCase = true)?.propertyValue?.value
+					.castOrNull<ParadoxScriptString>()?.stringValue ?: ""
 			}
 			val info = ParadoxDefinitionLocalisationInfo(config.name, keyName, config.required, config.primary)
 			result.add(info)

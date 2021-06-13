@@ -21,7 +21,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				append("(script variable) <b>").append(name.escapeXml()).append("</b>")
+				append("(script variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 		}
@@ -36,7 +36,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				append("(script property) <b>").append(name.escapeXml()).append("</b>")
+				append("(script property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 		}
@@ -47,15 +47,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val name = definitionInfo.name.ifEmpty { anonymousString }
+				val name = definitionInfo.name
 				val typeText = definitionInfo.typeText
-				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
+				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
 			}
 			if(localisation.isNotEmpty()) {
 				definition {
 					var isFirst = true
 					for((n, kn) in localisation) {
-						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
+						if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
 						if(isFirst) isFirst = false else appendBr()
 						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
@@ -78,7 +78,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				append("(script variable) <b>").append(name).append("</b>")
+				append("(script variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//单行注释文本
@@ -102,7 +102,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				append("(script property) <b>").append(name.escapeXml()).append("</b>")
+				append("(script property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 			//单行注释文本
@@ -123,13 +123,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-				val name = definitionInfo.name.ifEmpty { anonymousString }
+				val name = definitionInfo.name
 				val typeText = definitionInfo.typeText
-				append("(definition) <b>").append(name.escapeXml()).append("</b>: ").append(typeText)
+				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
 				
 				if(localisation.isNotEmpty()) {
 					for((n, kn) in localisation) {
-						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
+						if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
 						appendBr()
 						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
 					}
@@ -159,13 +159,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((n, kn) in localisation) {
-						if(kn.isEmpty()) continue //不显示keyName为空（匿名）的definitionLocalisation
+						if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
 						val e = findLocalisation(kn, element.paradoxLocale, element.project, hasDefault = true)
 						val richText = e?.renderText() ?: continue
-						//TODO sectionName暂时使用cwt规则文件中types.type[...].localisation的key，尽管不能保证规范性
-						//val sectionName = n.toCapitalizedWords()
-						val sectionName = n
-						richTexts.add(sectionName to richText)
+						richTexts.add(n to richText)
 					}
 					if(richTexts.isNotEmpty()) {
 						sections {

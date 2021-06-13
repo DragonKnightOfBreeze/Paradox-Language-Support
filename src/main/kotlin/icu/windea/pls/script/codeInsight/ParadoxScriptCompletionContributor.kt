@@ -62,7 +62,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 	//		//一般来说key不能重复
 	//		val existPropertyNames by lazy { 
 	//			(position.parentOfType<ParadoxScriptProperty>()?.propertyValue?.value as? ParadoxScriptBlock)
-	//				?.propertyList?.mapTo(mutableSetOf()) { it.name } ?: emptyList() 
+	//				?.propertyList?.mapTo(mutableSetOf()) { it.name }.orEmpty() 
 	//		}
 	//		val gameType = parameters.originalFile.paradoxFileInfo?.gameType?:return
 	//		val ruleGroup = rule.ruleGroups[gameType.key]?:return

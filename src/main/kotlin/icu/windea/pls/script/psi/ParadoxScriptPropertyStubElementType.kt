@@ -31,7 +31,7 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		val name = definitionInfo?.name ?: ""
 		val typeKey = definitionInfo?.typeKey ?: ""
 		val type = definitionInfo?.type ?: ""
-		val subtypes = definitionInfo?.subtypes ?: emptyList()
+		val subtypes = definitionInfo?.subtypes.orEmpty()
 		return ParadoxScriptPropertyStubImpl(parentStub, name, typeKey, type, subtypes)
 	}
 	

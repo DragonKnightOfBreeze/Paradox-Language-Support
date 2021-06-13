@@ -11,7 +11,7 @@ class CwtFile(
 	
 	val rootBlock get() = findChildByClass(CwtRootBlock::class.java)
 	
-	val properties get() =  rootBlock?.propertyList?: emptyList()
+	val properties get() =  rootBlock?.propertyList.orEmpty()
 	
-	val values get() = rootBlock?.valueList?:emptyList()
+	val values get() = rootBlock?.valueList.orEmpty()
 }

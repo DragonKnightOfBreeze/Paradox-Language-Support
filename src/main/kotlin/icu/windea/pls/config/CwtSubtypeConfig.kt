@@ -3,11 +3,12 @@ package icu.windea.pls.config
 import icu.windea.pls.*
 
 /**
- * @property type_key_filter (option) stringList
+ * @property type_key_filter (option) string | string[]
  * @property push_scope (option) scope
  * @property starts_with (option) string
  * @property display_name (option) string
  * @property abbreviation (option) string
+ * @property only_if_not (option) string[]
  */
 data class CwtSubtypeConfig(
 	val name:String,
@@ -16,6 +17,7 @@ data class CwtSubtypeConfig(
 	var push_scope:String? = null,
 	var starts_with: String? = null,
 	var display_name:String? = null,
-	var abbreviation: String? = null
+	var abbreviation: String? = null,
+	var only_if_not: List<String>? = null
 )
 

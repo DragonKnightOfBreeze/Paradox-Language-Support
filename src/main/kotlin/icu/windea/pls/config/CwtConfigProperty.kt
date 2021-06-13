@@ -4,6 +4,7 @@ import icu.windea.pls.*
 
 data class CwtConfigProperty(
 	val key: String,
+	val value:String,
 	var booleanValue:Boolean? = null,
 	var intValue:Int? = null,
 	var floatValue:Float? = null,

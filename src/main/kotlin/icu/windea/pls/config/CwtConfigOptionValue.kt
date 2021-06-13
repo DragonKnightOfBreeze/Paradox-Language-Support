@@ -1,6 +1,7 @@
 package icu.windea.pls.config
 
 data class CwtConfigOptionValue(
+	val value:String,
 	var booleanValue:Boolean? = null,
 	var intValue:Int? = null,
 	var floatValue:Float? = null,

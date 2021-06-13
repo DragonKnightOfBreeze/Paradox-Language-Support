@@ -89,7 +89,7 @@ public interface CwtTypes {
       else if (type == STRING) {
         return new CwtStringImpl(node);
       }
-      throw new AssertionError("Unknown element category: " + type);
+      throw new AssertionError("Unknown element type: " + type);
     }
   }
 }

@@ -65,7 +65,7 @@ private fun String.resolveEnumExpression(): String {
  * 根据cwtConfigProperty配置对scriptProperty进行匹配。
  */
 fun matchContent(element: ParadoxScriptProperty, elementConfig: CwtConfigProperty, config: CwtConfigGroupCache): Boolean {
-	val propertiesConfig = elementConfig.properties ?: emptyList() //不应该为null，转为emptyList
+	val propertiesConfig = elementConfig.properties.orEmpty() //不应该为null，转为emptyList
 	if(propertiesConfig.isEmpty()) return true //config为空表示匹配
 	val properties = (element.propertyValue?.value as? ParadoxScriptBlock)?.propertyList ?: return true //脚本未写完
 	return doMatchContent(properties, propertiesConfig, config)
@@ -98,7 +98,7 @@ private fun doMatchContent(properties: List<ParadoxScriptProperty>, propertiesCo
 			tempResult = doMatchConfig(prop, propConfig, config)
 		}
 	}
-	return true
+	return tempResult
 }
 
 private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProperty, config: CwtConfigGroupCache): Boolean {
@@ -116,7 +116,7 @@ private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProp
 			propConfig.properties != null && propConfig.values != null -> {
 				if(propValue !is ParadoxScriptBlock) return false
 				//如果这里的propsConfig是空的，那么就跳过继续匹配
-				val propsConfig = propConfig.properties ?: emptyList() //不应该为null，转为emptyList
+				val propsConfig = propConfig.properties.orEmpty() //不应该为null，转为emptyList
 				if(propsConfig.isEmpty()) return true
 				val props = (prop.propertyValue?.value as? ParadoxScriptBlock)?.propertyList ?: return true //脚本未写完
 				//继续递归匹配

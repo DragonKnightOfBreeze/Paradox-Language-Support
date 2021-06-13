@@ -53,7 +53,8 @@ fun getDocTextFromPreviousComment(element: PsiElement): String {
 		val text = prevElement.text
 		if(prevElement !is PsiWhiteSpace) {
 			if(!isPreviousComment(prevElement)) break
-			lines.add(0, text.trimStart('#').trim().escapeXml())
+			val documentText = text.trimStart('#').trim().escapeXml()
+			lines.add(0, documentText)
 		} else {
 			if(text.containsBlankLine()) break
 		}
@@ -755,6 +756,7 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 }
 
 fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
+	if(target.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
 	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
 }
 

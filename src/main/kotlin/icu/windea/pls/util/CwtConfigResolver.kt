@@ -29,8 +29,8 @@ object CwtConfigResolver {
 	
 	private fun resolveProperty(property: CwtProperty): CwtConfigProperty? {
 		val key = property.propertyName
-		val propValue = property.value?:return null
-		val resolved = CwtConfigProperty(key)
+		val propValue = property.value ?: return null
+		val resolved = CwtConfigProperty(key, property.propertyValue)
 		
 		when {
 			propValue is CwtBoolean -> resolved.booleanValue = propValue.booleanValue
@@ -53,7 +53,7 @@ object CwtConfigResolver {
 			}
 		}
 		
-		var current:PsiElement = property
+		var current: PsiElement = property
 		val documentationElements = LinkedList<CwtDocumentationText>()
 		val optionElements = LinkedList<CwtOption>()
 		val optionValueElements = LinkedList<CwtValue>()
@@ -67,11 +67,11 @@ object CwtConfigResolver {
 				}
 				current is CwtOptionComment -> {
 					val option = current.option
-					if(option != null){
+					if(option != null) {
 						optionElements.addFirst(option)
-					} else{
+					} else {
 						val optionValue = current.value
-						if(optionValue != null){
+						if(optionValue != null) {
 							optionValueElements.addFirst(optionValue)
 						}
 					}
@@ -87,7 +87,7 @@ object CwtConfigResolver {
 	}
 	
 	private fun resolveValue(value: CwtValue): CwtConfigValue {
-		val resolved = CwtConfigValue()
+		val resolved = CwtConfigValue(value.value)
 		
 		when {
 			value is CwtBoolean -> resolved.booleanValue = value.booleanValue
@@ -110,7 +110,7 @@ object CwtConfigResolver {
 			}
 		}
 		
-		var current:PsiElement = value
+		var current: PsiElement = value
 		val documentationElements = LinkedList<CwtDocumentationText>()
 		val optionElements = LinkedList<CwtOption>()
 		val optionValueElements = LinkedList<CwtValue>()
@@ -124,11 +124,11 @@ object CwtConfigResolver {
 				}
 				current is CwtOptionComment -> {
 					val option = current.option
-					if(option != null){
+					if(option != null) {
 						optionElements.addFirst(option)
-					} else{
+					} else {
 						val optionValue = current.value
-						if(optionValue != null){
+						if(optionValue != null) {
 							optionValueElements.addFirst(optionValue)
 						}
 					}
@@ -145,13 +145,12 @@ object CwtConfigResolver {
 	
 	private fun resolveOption(option: CwtOption): CwtConfigOption? {
 		val key = option.optionName
-		val separator =  CwtConfigSeparator.resolve(option.optionSeparator?.text?:return null)
-		val optionValue = option.value?:return null
-		val resolved = CwtConfigOption(key,separator)
-		
+		val separator = CwtConfigSeparator.resolve(option.optionSeparator?.text) ?: return null
+		val optionValue = option.value ?: return null
+		val resolved = CwtConfigOption(key, separator, optionValue.value)
 		when {
 			optionValue is CwtBoolean -> resolved.booleanValue = optionValue.booleanValue
-			optionValue is CwtInt -> resolved.intValue= optionValue.intValue
+			optionValue is CwtInt -> resolved.intValue = optionValue.intValue
 			optionValue is CwtFloat -> resolved.floatValue = optionValue.floatValue
 			optionValue is CwtString -> resolved.stringValue = optionValue.stringValue
 			optionValue is CwtBlock -> when {
@@ -174,13 +173,20 @@ object CwtConfigResolver {
 	}
 	
 	private fun resolveOptionValue(option: CwtValue): CwtConfigOptionValue {
-		val resolved = CwtConfigOptionValue()
-		
+		val resolved = CwtConfigOptionValue(option.value)
 		when {
-			option is CwtBoolean -> resolved.booleanValue = option.booleanValue
-			option is CwtInt -> resolved.intValue = option.intValue
-			option is CwtFloat -> resolved.floatValue= option.floatValue
-			option is CwtString -> resolved.stringValue = option.stringValue
+			option is CwtBoolean -> {
+				resolved.booleanValue = option.booleanValue
+			}
+			option is CwtInt -> {
+				resolved.intValue = option.intValue
+			}
+			option is CwtFloat -> {
+				resolved.floatValue = option.floatValue
+			}
+			option is CwtString -> {
+				resolved.stringValue = option.stringValue
+			}
 			option is CwtBlock -> {
 				when {
 					option.isEmpty -> {
@@ -207,17 +213,17 @@ object CwtConfigResolver {
 		return documentationElements.joinToString("\n") { it.text.orEmpty() }.trim()
 	}
 	
-	private fun getOptions(optionElements:List<CwtOption>):List<CwtConfigOption>?{
+	private fun getOptions(optionElements: List<CwtOption>): List<CwtConfigOption>? {
 		if(optionElements.isEmpty()) return null
 		val options = mutableListOf<CwtConfigOption>()
 		for(optionElement in optionElements) {
-			val resolved = resolveOption(optionElement)?:continue
+			val resolved = resolveOption(optionElement) ?: continue
 			options.add(resolved)
 		}
 		return options
 	}
 	
-	private fun getOptionValues(optionValueElements:List<CwtValue>):List<CwtConfigOptionValue>?{
+	private fun getOptionValues(optionValueElements: List<CwtValue>): List<CwtConfigOptionValue>? {
 		if(optionValueElements.isEmpty()) return null
 		val optionValues = mutableListOf<CwtConfigOptionValue>()
 		for(optionValueElement in optionValueElements) {

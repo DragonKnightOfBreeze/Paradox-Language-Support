@@ -24,8 +24,11 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 					}
 					val offset1 = elem.propertyKey.endOffset
 					result.add(InlayInfo(text1, offset1))
-					//提示定义的名字和类型	
-					definitionInfo.localisation.find { it.name.lowercase() == "name" }?.keyName?.let { keyName ->
+					//提示定义的本地化名字（对应的localisation.name为name或title）
+					definitionInfo.localisation.find { 
+						val name = it.name.lowercase()
+						name == "name" || name == "title"
+					}?.keyName?.let { keyName ->
 						findLocalisation(keyName, inferParadoxLocale(), elem.project, hasDefault = true)?.let { locProp ->
 							val text2 = locProp.extractText()
 							val offset2 = elem.propertyKey.endOffset
@@ -34,7 +37,7 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 					}
 					result
 				}
-			} ?: emptyList()
+			}.orEmpty()
 		}
 		
 		override fun isApplicable(elem: PsiElement): Boolean {

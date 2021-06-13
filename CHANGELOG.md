@@ -104,6 +104,10 @@
 * [X] 提示脚本文件的定义的名称类型信息+本地化名字
 * [X] 根据localisation的name进行代码补全时，预先根据关键字过滤结果，防止因为结果太多导致无法正确进行提示
 * [X] 区分localisation和localisation_synced
+* [X] 兼容cwt规则`only_if_not`
+* [X] cwt文件：`option.value`可以无需双引号直接包含空格（主要对于规则`display_name`）
+* [X] 优化cwt配置规则`type[...].localisation`的`name`的解析逻辑（可以为`$` `"$_desc"`也可以为`title` `name`）
+* [X] 提示定义的本地化名字（对应的localisation.name为name或title）
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证

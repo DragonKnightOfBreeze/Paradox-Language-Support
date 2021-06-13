@@ -11,9 +11,9 @@ class ParadoxScriptFile(
 
 	val rootBlock get() = findChildByClass(ParadoxScriptRootBlock::class.java)
 	
-	val variables get() = rootBlock?.variableList?:emptyList()
+	val variables get() = rootBlock?.variableList.orEmpty()
 	
-	val properties get() =  rootBlock?.propertyList?:emptyList()
+	val properties get() =  rootBlock?.propertyList.orEmpty()
 
-	val values get() = rootBlock?.valueList?:emptyList()
+	val values get() = rootBlock?.valueList.orEmpty()
 }

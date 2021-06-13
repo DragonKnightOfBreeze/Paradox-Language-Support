@@ -9,6 +9,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 
+@Suppress("DialogTitleCapitalization")
 class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 	companion object{
 		private val noExpressionFoundMessage = message("noExpressionFound")
