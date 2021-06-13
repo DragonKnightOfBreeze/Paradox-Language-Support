@@ -25,7 +25,7 @@ abstract class ParadoxLibraryType(
 	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind, ParadoxGameType.Vic2)
 	
 	private val libraryIcon = gameType.icon
-	private val createActionName = "Paradox/${gameType.text}"
+	private val createActionName = "Paradox/${gameType}"
 	private val namePrefix = "$createActionName: "
 	
 	companion object {

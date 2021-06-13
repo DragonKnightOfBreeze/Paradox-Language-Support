@@ -155,22 +155,21 @@ private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProp
 					stringValue == "scalar" -> {
 						if(propValue !is ParadoxScriptString) return false
 					}
-					//TODO 区分localisation和localisation_synced
 					//字符串"localisation"表示匹配任意localisation的key
 					stringValue == "localisation" -> {
 						if(propValue !is ParadoxScriptString) return false
 						val key = propValue.stringValue.ifEmpty { return false }
 						//任意locale都可以
 						val resolved = findLocalisation(key, null, config.project) ?: return false
-						if(!resolved.isInLocalisationRootDirectory()) return false
+						if(!resolved.isLocalisation()) return false
 					}
 					//字符串"localisation_synced"表示匹配任意localisation_synced的key
 					stringValue == "localisation_synced" -> {
 						if(propValue !is ParadoxScriptString) return false
 						val key = propValue.stringValue.ifEmpty { return false }
 						//任意locale都可以
-						val resolved = findLocalisation(key, null, config.project) ?: return false
-						if(!resolved.isInLocalisationSyncedRootDirectory()) return false
+						val resolved = findSyncedLocalisation(key, null, config.project) ?: return false
+						if(!resolved.isLocalisationSynced()) return false
 					}
 					//字符串格式是"enum[...]"的情况，表示匹配对应的枚举
 					stringValue.isEnumExpression() -> {

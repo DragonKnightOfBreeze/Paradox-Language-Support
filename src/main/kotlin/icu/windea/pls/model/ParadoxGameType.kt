@@ -4,10 +4,10 @@ import icu.windea.pls.*
 import javax.swing.*
 
 enum class ParadoxGameType(
-	val key: String,
-	val text: String,
+	override val key: String,
+	override val text: String,
 	val icon: Icon
-) {
+):Enumerable {
 	Ck2("ck2","Crusader Kings II", ck2Icon),
 	Ck3("ck3","Crusader Kings III", ck3Icon),
 	Eu4("eu4","Europa Universalis IV", eu4Icon),

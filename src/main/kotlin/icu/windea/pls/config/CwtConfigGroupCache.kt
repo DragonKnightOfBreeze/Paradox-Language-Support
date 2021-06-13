@@ -341,15 +341,15 @@ class CwtConfigGroupCache(
 		return result
 	}
 	
-	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, name: String): MutableList<ParadoxLocalisationInfo> {
-		val result = mutableListOf<ParadoxLocalisationInfo>()
+	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, name: String): MutableList<ParadoxDefinitionLocalisationInfo> {
+		val result = mutableListOf<ParadoxDefinitionLocalisationInfo>()
 		for(config in localisationConfig) {
 			//如果definition的name是匿名的（没有），那么对应的keyName全部设为匿名的
 			val keyName = when(name) {
 				anonymousString -> anonymousString
 				else -> buildString { for(c in config.expression) if(c == '$') append(name) else append(c) }
 			}
-			val info = ParadoxLocalisationInfo(config.name, keyName, config.required, config.primary)
+			val info = ParadoxDefinitionLocalisationInfo(config.name, keyName, config.required, config.primary)
 			result.add(info)
 		}
 		return result

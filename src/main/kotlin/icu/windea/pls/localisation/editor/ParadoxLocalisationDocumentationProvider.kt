@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
@@ -20,21 +21,24 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun getPropertyInfo(element: ParadoxLocalisationProperty): String {
-		return getLocalisationInfo(element)
-		//return buildString {
-		//	definition {
-		//		element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
-		//		append("(localisation property) <b>").append(element.name).append("</b>")
-		//	}
-		//}
-	}
-	
-	private fun getLocalisationInfo(element: ParadoxLocalisationProperty): String {
+		val localisationInfo = element.paradoxLocalisationInfo
+		if(localisationInfo != null) {
+			return getLocalisationInfo(element, localisationInfo)
+		}
 		return buildString {
-			val name = element.name
 			definition {
 				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
-				append("(localisation) <b>").append(name).append("</b>")
+				append("(localisation property) <b>").append(element.name).append("</b>")
+			}
+		}
+	}
+	
+	private fun getLocalisationInfo(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo): String {
+		val (name,category) = localisationInfo
+		return buildString {
+			definition {
+				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
+				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 		}
 	}
@@ -107,22 +111,24 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun getPropertyDoc(element: ParadoxLocalisationProperty): String {
-		return getLocalisationDoc(element)
-		//val name = element.name
-		//return buildString {
-		//	definition {
-		//		element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
-		//		append("(localisation property) <b>").append(name).append("</b>")
-		//	}
-		//}
-	}
-	
-	private fun getLocalisationDoc(element: ParadoxLocalisationProperty): String {
-		val name = element.name
+		val localisationInfo = element.paradoxLocalisationInfo
+		if(localisationInfo != null) {
+			return getLocalisationDoc(element, localisationInfo)
+		}
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
-				append("(localisation) <b>").append(name).append("</b>")
+				append("(localisation property) <b>").append(element.name).append("</b>")
+			}
+		}
+	}
+	
+	private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo): String {
+		val (name,category) = localisationInfo
+		return buildString {
+			definition {
+				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
+				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 			//单行注释文本
 			if(getSettings().renderLineCommentText) {

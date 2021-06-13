@@ -6,12 +6,12 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 
-object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
+object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
+	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 100 * 1024 //50000+
+	override fun getCacheSize() = 2 * 1024 
 	
 	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean): ParadoxLocalisationProperty? {
 		//如果索引未完成
@@ -116,41 +116,6 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		return result
 	}
 	
-	fun findByNames(names: Iterable<String>, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, keepOrder: Boolean): List<ParadoxLocalisationProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxLocalisationProperty>()
-		var index = 0
-		for(key in keys) {
-			if(key in names) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-				var nextIndex = index
-				for(element in elements) {
-					val elementLocale = element.paradoxLocale
-					if(locale == null) {
-						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-						if(elementLocale == inferParadoxLocale()) {
-							result.add(index++, element)
-							nextIndex++
-						} else {
-							result.add(element)
-							nextIndex++
-						}
-					} else if(locale == elementLocale || hasDefault) {
-						result.add(element)
-						nextIndex++
-					}
-				}
-				index = nextIndex
-			}
-		}
-		if(keepOrder) result.sortBy { names.indexOf(it.name) }
-		return result
-	}
-	
 	fun findByKeyword(keyword: String, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
@@ -167,6 +132,3 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		return result
 	}
 }
-
-
-

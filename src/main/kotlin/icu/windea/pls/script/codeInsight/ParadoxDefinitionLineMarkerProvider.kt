@@ -22,7 +22,7 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 	
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
-			//必须是scriptProperty，且对应一个definition
+			//必须是scriptProperty，且必须是definition
 			is ParadoxScriptProperty -> {
 				val definition = element.paradoxDefinitionInfo ?: return null
 				LineMarker(element, definition)
@@ -31,7 +31,10 @@ class ParadoxDefinitionLineMarkerProvider : LineMarkerProviderDescriptor() {
 		}
 	}
 	
-	class LineMarker(element: ParadoxScriptProperty,definitionInfo: ParadoxDefinitionInfo) : LineMarkerInfo<PsiElement>(
+	class LineMarker(
+		element: ParadoxScriptProperty,
+		definitionInfo: ParadoxDefinitionInfo
+	) : LineMarkerInfo<PsiElement>(
 		element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
 		element.textRange,
 		definitionGutterIcon,

@@ -28,9 +28,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
-		val definition = element.paradoxDefinitionInfo
-		if(definition != null) {
-			return getDefinitionInfo(element, definition)
+		val definitionInfo = element.paradoxDefinitionInfo
+		if(definitionInfo != null) {
+			return getDefinitionInfo(element, definitionInfo)
 		}
 		return buildString {
 			val name = element.name
@@ -94,9 +94,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
-		val definition = element.paradoxDefinitionInfo
-		if(definition != null) {
-			return getDefinitionDoc(element, definition)
+		val definitionInfo = element.paradoxDefinitionInfo
+		if(definitionInfo != null) {
+			return getDefinitionDoc(element, definitionInfo)
 		}
 		return buildString {
 			val name = element.name

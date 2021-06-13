@@ -8,6 +8,7 @@ import com.intellij.ui.awt.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 
 class ParadoxLocalisationLineMarkerProvider : LineMarkerProviderDescriptor() {
 	companion object {
@@ -21,31 +22,37 @@ class ParadoxLocalisationLineMarkerProvider : LineMarkerProviderDescriptor() {
 	
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
-			//必须是localisationProperty
+			//必须是localisationProperty，且必须是localisation或localisation_synced
 			is ParadoxLocalisationProperty -> {
-				//所在的根目录必须是"localisation"或"localisation_snyced"
-				if(!element.isInValidRootDirectory()) return null
-				LineMarker(element)
+				val localisationInfo = element.paradoxLocalisationInfo?: return null
+				LineMarker(element,localisationInfo)
 			}
 			else -> null
 		}
 	}
 	
-	class LineMarker(element: ParadoxLocalisationProperty) : LineMarkerInfo<PsiElement>(
+	class LineMarker(
+		element: ParadoxLocalisationProperty, 
+		localisationInfo: ParadoxLocalisationInfo
+	) : LineMarkerInfo<PsiElement>(
 		element.propertyKey.propertyKeyId,
 		element.textRange,
 		localisationGutterIcon,
 		{
 			buildString {
-				append("(localisation) <b>").append(it.text.unquote()).append("</b>")
+				val (name, category) = localisationInfo
+				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 		},
 		{ mouseEvent, _ ->
-			val name = element.name
+			val (name, category) = localisationInfo
 			val project = element.project
-			val elements = findLocalisations(name, null, project,hasDefault=true).toTypedArray()
+			val elements = when(category){
+				ParadoxLocalisationCategory.Localisation -> findLocalisations(name, null, project,hasDefault=true)
+				ParadoxLocalisationCategory.SyncedLocalisation -> findSyncedLocalisations(name, null, project,hasDefault=true)
+			}.toTypedArray()
 			when(elements.size) {
-				0 -> { }
+				0 -> {}
 				1 -> OpenSourceUtil.navigate(true, elements.first())
 				else -> NavigationUtil.getPsiElementPopup(elements, _title).show(RelativePoint(mouseEvent))
 			}

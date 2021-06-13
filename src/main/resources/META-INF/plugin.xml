@@ -63,7 +63,7 @@
     <p>提示：</p>
     <li>
       <ul>如果需要添加游戏目录以及第三方模组作为依赖，如同Java和Kotlin一样，将它们作为库添加到你的模组对应的项目模块即可。</ul>
-      <ul>如果遇到某些有关索引的IDE问题，请尝试重新构建索引。 （点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）</ul>
+      <ul>如果遇到某些有关索引的IDE问题，请尝试重新构建索引。（点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）</ul>
     </li>
     ]]></description>
 
@@ -236,7 +236,7 @@
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionLocalisationLineMarkerProvider"/>
     <anchorReferenceProvider
-        implementation="icu.windea.pls.core.reference.ParadoxPathReferenceProvider"/>
+        implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
     
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
@@ -273,6 +273,7 @@
         class="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes"
         externalIdPrefix="paradoxLocalisation."/>
     <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxSyncedLocalisationNameIndex"/>
     
     <spellchecker.support
         language="PARADOX_LOCALISATION"

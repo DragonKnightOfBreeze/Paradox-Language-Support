@@ -187,7 +187,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val name = element.value
 		val project = element.project
 		
-		//注明所有对应名称的脚本属性，或者本地化属性（如果存在）
+		//高亮表示引用的字符串
+		//注明所有脚本文件中的字符串对应的definition，或者localisation，或者localisation_synced（如果存在）
 		val definition = findDefinition(name, null, project)
 		if(definition != null) {
 			holder.newSilentAnnotation(INFORMATION)
@@ -197,6 +198,13 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 		val localisation = findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 		if(localisation != null) {
+			holder.newSilentAnnotation(INFORMATION)
+				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
+				.create()
+			return
+		}
+		val syncedLocalisation = findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+		if(syncedLocalisation != null) {
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
 				.create()

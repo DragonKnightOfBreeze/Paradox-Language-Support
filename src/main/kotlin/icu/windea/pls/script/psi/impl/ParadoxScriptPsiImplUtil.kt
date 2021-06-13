@@ -26,7 +26,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxScriptVariable): String {
-		return element.stub?.key ?: element.variableName.text.orEmpty()
+		return element.stub?.name ?: element.variableName.text.orEmpty()
 	}
 	
 	@JvmStatic
@@ -178,7 +178,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxScriptString): ParadoxScriptStringPropertyPsiReference {
-		return ParadoxScriptStringPropertyPsiReference(element, TextRange(0, element.textLength))
+		val rangeInElement = TextRange(0, element.textLength) //不管有没有用双引号括起，都算在内
+		return ParadoxScriptStringPropertyPsiReference(element, rangeInElement)
 	}
 	//endregion
 	

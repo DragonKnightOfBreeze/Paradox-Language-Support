@@ -29,7 +29,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 				//只解析特定根目录下的文件
 				return when {
 					//脚本文件，根据正则指定需要排除的文件
-					fileType == ParadoxFileType.Script && !fileName.matches(ignoredScriptFileNameRegex) -> {
+					fileType == ParadoxFileType.ParadoxScript && !fileName.matches(ignoredScriptFileNameRegex) -> {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path,rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey,fileInfo)
@@ -37,7 +37,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						ParadoxScriptFileType
 					}
 					//本地化文件
-					fileType == ParadoxFileType.Localisation-> {
+					fileType == ParadoxFileType.ParadoxLocalisation-> {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path, rootPath,fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
@@ -71,8 +71,8 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		if(file is StubVirtualFile || !file.isValid || file.isDirectory) return null
 		val fileExtension = file.extension?.lowercase() ?: return null
 		return when {
-			fileExtension in scriptFileExtensions -> ParadoxFileType.Script
-			fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
+			fileExtension in scriptFileExtensions -> ParadoxFileType.ParadoxScript
+			fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
 			fileExtension == "dds" -> ParadoxFileType.Dds
 			else -> null
 		}

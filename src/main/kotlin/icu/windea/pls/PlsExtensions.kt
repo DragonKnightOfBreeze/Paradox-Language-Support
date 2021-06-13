@@ -72,9 +72,9 @@ fun isPreviousComment(element: PsiElement): Boolean {
 //Keys
 
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
-val paradoxDefinitionInfoKey = Key<ParadoxDefinitionInfo>("paradoxDefinitionInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
+val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
 
 //PsiElement Extensions
 
@@ -128,7 +128,6 @@ private fun getLocale(element: PsiElement): ParadoxLocale? {
 	}
 }
 
-
 val VirtualFile.paradoxFileInfo: ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 
 val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.originalFile) //使用原始文件
@@ -181,8 +180,8 @@ private fun getFileType(file: PsiFile): ParadoxFileType? {
 	val fileName = file.name.lowercase()
 	val fileExtension = fileName.substringAfterLast('.')
 	return when {
-		fileExtension in scriptFileExtensions -> ParadoxFileType.Script
-		fileExtension in localisationFileExtensions -> ParadoxFileType.Localisation
+		fileExtension in scriptFileExtensions -> ParadoxFileType.ParadoxScript
+		fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
 		else -> null
 	}
 }
@@ -283,6 +282,10 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 	}
 }
 
+fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
+	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
+}
+
 fun PsiElement.resolvePath(): ParadoxPath? {
 	val subpaths = mutableListOf<String>()
 	var current = this
@@ -339,29 +342,38 @@ fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDef
 	return null
 }
 
+val ParadoxLocalisationProperty.paradoxLocalisationInfo:ParadoxLocalisationInfo? get() = inferLocalisationInfo(this)
 
-fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
-	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
+private fun inferLocalisationInfo(element:ParadoxLocalisationProperty):ParadoxLocalisationInfo?{
+	return CachedValuesManager.getCachedValue(element, cachedParadoxLocalisationInfoKey) {
+		CachedValueProvider.Result.create(resolveLocalisationInfo(element), element)
+	}
+}
+
+private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty):ParadoxLocalisationInfo?{
+	val name = element.name
+	val type = ParadoxLocalisationCategory.resolve(element)?:return null
+	return ParadoxLocalisationInfo(name,type)
 }
 
 /**
  * 判断当前localisation所在的根目录是否是"localisation"或"localisation_synced"
  */
-fun ParadoxLocalisationProperty.isInValidRootDirectory(): Boolean {
+fun ParadoxLocalisationProperty.isInValidDirectory(): Boolean {
 	return this.paradoxFileInfo?.path?.root.let { it != null && it == "localisation" || it == "localisation_synced" }
 }
 
 /**
  * 判断当前localisation所在的根目录是否是"localisation"
  */
-fun ParadoxLocalisationProperty.isInLocalisationRootDirectory(): Boolean {
+fun ParadoxLocalisationProperty.isLocalisation(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation"
 }
 
 /**
  * 判断当前localisation所在的根目录是否是"localisation_synced"
  */
-fun ParadoxLocalisationProperty.isInLocalisationSyncedRootDirectory(): Boolean {
+fun ParadoxLocalisationProperty.isLocalisationSynced(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
 }
 
@@ -617,6 +629,19 @@ fun filterLocalisations(
 }
 
 /**
+ * 基于本地化名字索引，根据关键字查找所有的本地化（localisation）。
+ * * 如果名字包含关键字（不忽略大小写），则放入结果。
+ * * 返回的结果有数量限制。
+ */
+fun findLocalisationsByKeyword(
+	keyword: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope)
+}
+
+/**
  * 基于本地化名字索引，根据一组名字、语言区域查找所有的本地化（localisation）。
  * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
@@ -634,34 +659,92 @@ fun findLocalisationsByNames(
 }
 
 /**
- * 基于本地化名字索引，根据关键字查找所有的本地化（localisation）。
+ * 基于同步本地化名字索引，根据名字、语言区域查找同步本地化（localisation_synced）。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun findSyncedLocalisation(
+	name: String,
+	locale: ParadoxLocale?,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false
+): ParadoxLocalisationProperty? {
+	return ParadoxSyncedLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !getSettings().preferOverridden)
+}
+
+/**
+ * 基于同步本地化名字索引，根据名字、语言区域查找所有的同步本地化（localisation_synced）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun findSyncedLocalisations(
+	name: String,
+	locale: ParadoxLocale? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = true
+): List<ParadoxLocalisationProperty> {
+	return ParadoxSyncedLocalisationNameIndex.getAll(name, locale, project, scope, hasDefault)
+}
+
+/**
+ * 基于同步本地化名字索引，根据语言区域查找所有的同步本地化（localisation_synced）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun findSyncedLocalisations(
+	locale: ParadoxLocale? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false
+): List<ParadoxLocalisationProperty> {
+	return ParadoxSyncedLocalisationNameIndex.getAll(locale, project, scope, hasDefault)
+}
+
+/**
+ * 基于同步本地化名字索引，根据语言区域查找且根据名字过滤所有的同步本地化（localisation_synced）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun filterSyncedLocalisations(
+	locale: ParadoxLocale? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false,
+	predicate: (String) -> Boolean
+): List<ParadoxLocalisationProperty> {
+	return ParadoxSyncedLocalisationNameIndex.filter(locale, project, scope, hasDefault, predicate)
+}
+
+/**
+ * 基于同步本地化名字索引，根据关键字查找所有的同步本地化（localisation_synced）。
  * * 如果名字包含关键字（不忽略大小写），则放入结果。
  * * 返回的结果有数量限制。
  */
-fun findLocalisationsByKeyword(
+fun findSyncedLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope)
+	return ParadoxSyncedLocalisationNameIndex.findByKeyword(keyword, project, scope)
 }
 
 //Link Extensions
 
 fun resolveLink(link: String, context: PsiElement): PsiElement? {
 	return when {
-		link.startsWith("#") -> resolveLocalisationLink(link, context)
 		link.startsWith("$") -> resolveScriptLink(link, context)
+		link.startsWith("#") -> resolveLocalisationLink(link, context)
 		else -> null
 	}
 }
 
-private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-	return findLocalisation(link.drop(1), context.paradoxLocale, context.project, hasDefault = true)
-}
-
 private fun resolveScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
 	return findDefinition(link.drop(1), null, context.project)
+}
+
+private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
+	return findLocalisation(link.drop(1), context.paradoxLocale, context.project, hasDefault = true)
 }
 
 //Build String Extensions

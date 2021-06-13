@@ -434,3 +434,8 @@ class TypeExpression(expression: String) : AbstractExpression(expression) {
 	
 	operator fun component2(): List<String> = subtypes
 }
+
+interface Enumerable{
+	val key:String
+	val text:String
+}

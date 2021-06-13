@@ -16,6 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createP
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createSequentialNumber
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 import icu.windea.pls.localisation.reference.*
+import icu.windea.pls.model.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -56,7 +57,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationProperty): String {
-		return element.stub?.key ?: element.propertyKey.text
+		return element.stub?.name ?: element.propertyKey.text
 	}
 	
 	@JvmStatic
@@ -94,9 +95,10 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPropertyPsiReference? {
+	fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPsiReference? {
 		val propertyReferenceId = element.propertyReferenceId ?: return null
-		return ParadoxLocalisationPropertyPsiReference(element, propertyReferenceId.textRangeInParent)
+		val rangeInElement = propertyReferenceId.textRangeInParent
+		return ParadoxLocalisationPsiReference(element, rangeInElement)
 	}
 	//endregion
 	
@@ -125,7 +127,8 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationIcon): ParadoxLocalisationIconPsiReference? {
 		val iconId = element.iconId ?: return null
-		return ParadoxLocalisationIconPsiReference(element, iconId.textRangeInParent)
+		val rangeInElement = iconId.textRangeInParent
+		return ParadoxLocalisationIconPsiReference(element, rangeInElement)
 	}
 	//endregion
 	
@@ -229,7 +232,8 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
 		val commandScopeId = element.commandScopeId
-		return ParadoxLocalisationCommandScopePsiReference(element, commandScopeId.textRangeInParent)
+		val rangeInElement = commandScopeId.textRangeInParent
+		return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement)
 	}
 	//endregion
 	
@@ -258,7 +262,8 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
 		val commandFieldId = element.commandFieldId ?: return null
-		return ParadoxLocalisationCommandFieldPsiReference(element, commandFieldId.textRangeInParent)
+		val rangeInElement = commandFieldId.textRangeInParent
+		return ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
 	}
 	//endregion
 }

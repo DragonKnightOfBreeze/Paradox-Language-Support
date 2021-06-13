@@ -27,11 +27,11 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		//这里使用scriptProperty.paradoxDefinitionInfo.name而非scriptProperty.name
-		val definition = psi.paradoxDefinitionInfo
-		val name = definition?.name ?: ""
-		val typeKey = definition?.typeKey ?: ""
-		val type = definition?.type ?: ""
-		val subtypes = definition?.subtypes ?: emptyList()
+		val definitionInfo = psi.paradoxDefinitionInfo
+		val name = definitionInfo?.name ?: ""
+		val typeKey = definitionInfo?.typeKey ?: ""
+		val type = definitionInfo?.type ?: ""
+		val subtypes = definitionInfo?.subtypes ?: emptyList()
 		return ParadoxScriptPropertyStubImpl(parentStub, name, typeKey, type, subtypes)
 	}
 	
@@ -42,7 +42,7 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
-		//索引definition的名称和类型
+		//索引definition的name和type
 		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
 		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
 	}
@@ -55,10 +55,10 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-		val name = dataStream.readNameString()!!
-		val typeKey = dataStream.readNameString()!!
-		val type = dataStream.readNameString()!!
-		val subtypes = dataStream.readNameString()!!.let { if(it.isEmpty()) emptyList() else it.split(',') }
+		val name = dataStream.readNameString().orEmpty()
+		val typeKey = dataStream.readNameString().orEmpty()
+		val type = dataStream.readNameString().orEmpty()
+		val subtypes = dataStream.readNameString().orEmpty().let { if(it.isEmpty()) emptyList() else it.split(',') }
 		return ParadoxScriptPropertyStubImpl(parentStub, name, typeKey, type, subtypes)
 	}
 }

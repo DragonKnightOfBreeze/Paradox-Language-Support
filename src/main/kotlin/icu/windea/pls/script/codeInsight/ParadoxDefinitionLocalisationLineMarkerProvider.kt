@@ -22,17 +22,20 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 	
 	override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
 		return when(element) {
-			//必须是scriptProperty，且对应一个definition
+			//必须是scriptProperty，且必须是definition，且definition的localisation不能为空
 			is ParadoxScriptProperty -> {
 				val definition = element.paradoxDefinitionInfo ?: return null
-				if(definition.localisation.isEmpty()) return null //没有localisation时不加上gutterIcon
+				if(definition.localisation.isEmpty()) return null
 				LineMarker(element, definition)
 			}
 			else -> null
 		}
 	}
 	
-	class LineMarker(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) : LineMarkerInfo<PsiElement>(
+	class LineMarker(
+		element: ParadoxScriptProperty,
+		definitionInfo: ParadoxDefinitionInfo
+	) : LineMarkerInfo<PsiElement>(
 		element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
 		element.textRange,
 		definitionLocalisationGutterIcon,
@@ -52,7 +55,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : LineMarkerProviderDescri
 			val project = element.project
 			val elements = findLocalisationsByNames(keyNames, null, project, hasDefault = true, keepOrder = true).toTypedArray()
 			when(elements.size) {
-				0 -> { }
+				0 -> {}
 				1 -> OpenSourceUtil.navigate(true, elements.first())
 				else -> NavigationUtil.getPsiElementPopup(elements, _title).show(RelativePoint(mouseEvent))
 			}

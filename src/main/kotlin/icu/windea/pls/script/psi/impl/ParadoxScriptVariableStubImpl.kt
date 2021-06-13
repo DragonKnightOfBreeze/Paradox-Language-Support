@@ -5,10 +5,10 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptVariableStubImpl(
 	parent: StubElement<*>,
-	override val key: String
+	override val name: String
 ) : StubBase<ParadoxScriptVariable>(parent, ParadoxScriptStubElementTypes.VARIABLE), ParadoxScriptVariableStub{
 	override fun toString(): String {
-		return "ParadoxScriptVariableStub: (key=$key)"
+		return "ParadoxScriptVariableStub: (key= $name)"
 	}
 }
 

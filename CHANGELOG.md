@@ -103,6 +103,7 @@
   * [ ] 也有可能是生成的，即有对应的定义X，声明使用定义Y的图标，那么本地化图标`...X...`会使用本地化图标`...Y...`
 * [X] 提示脚本文件的定义的名称类型信息+本地化名字
 * [X] 根据localisation的name进行代码补全时，预先根据关键字过滤结果，防止因为结果太多导致无法正确进行提示
+* [X] 区分localisation和localisation_synced
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证

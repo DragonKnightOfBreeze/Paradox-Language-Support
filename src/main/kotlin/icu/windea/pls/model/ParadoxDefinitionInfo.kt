@@ -3,14 +3,13 @@ package icu.windea.pls.model
 import icu.windea.pls.config.*
 import java.util.*
 
-@Suppress("UNCHECKED_CAST")
 data class ParadoxDefinitionInfo(
 	val name: String,
 	val typeKey: String,
 	val type: String,
 	val subtypes: List<String> = emptyList(),
 	val subtypesConfig: List<CwtSubtypeConfig> = emptyList(),
-	val localisation: List<ParadoxLocalisationInfo> = emptyList(),
+	val localisation: List<ParadoxDefinitionLocalisationInfo> = emptyList(),
 	val localisationConfig: List<CwtTypeLocalisationConfig> = emptyList(),
 	val graphRelatedTypes: List<String> = emptyList(),
 	val unique: Boolean = false,
@@ -31,7 +30,7 @@ data class ParadoxDefinitionInfo(
 	}
 	
 	override fun toString(): String {
-		return "$name: $typeText"
+		return "(definition) $name: $typeText"
 	}
 	
 	/**
