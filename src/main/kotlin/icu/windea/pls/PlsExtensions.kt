@@ -343,18 +343,18 @@ fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDef
 	return null
 }
 
-val ParadoxLocalisationProperty.paradoxLocalisationInfo:ParadoxLocalisationInfo? get() = inferLocalisationInfo(this)
+val ParadoxLocalisationProperty.paradoxLocalisationInfo: ParadoxLocalisationInfo? get() = inferLocalisationInfo(this)
 
-private fun inferLocalisationInfo(element:ParadoxLocalisationProperty):ParadoxLocalisationInfo?{
+private fun inferLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxLocalisationInfoKey) {
 		CachedValueProvider.Result.create(resolveLocalisationInfo(element), element)
 	}
 }
 
-private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty):ParadoxLocalisationInfo?{
+private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
 	val name = element.name
-	val type = ParadoxLocalisationCategory.resolve(element)?:return null
-	return ParadoxLocalisationInfo(name,type)
+	val type = ParadoxLocalisationCategory.resolve(element) ?: return null
+	return ParadoxLocalisationInfo(name, type)
 }
 
 /**
@@ -760,7 +760,11 @@ fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
 	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
 }
 
-fun StringBuilder.appendIconTag(url: String, size: Int = iconSize, local: Boolean = true): StringBuilder {
+fun StringBuilder.appendIconTag(url: String, local: Boolean = true): StringBuilder {
+	return append("<img src=\"").appendIf(local, "file:/").append(url).append("\" hspace=\"1\"/>")
+}
+
+fun StringBuilder.appendIconTag(url: String, size: Int, local: Boolean = true): StringBuilder {
 	return append("<img src=\"").appendIf(local, "file:/").append(url)
 		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\" hspace=\"1\"/>")
 }

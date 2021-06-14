@@ -355,23 +355,45 @@ class CwtConfigGroupCache(
 		return result
 	}
 	
-	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, element: ParadoxScriptProperty, name: String): MutableList<ParadoxDefinitionLocalisationInfo> {
+	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, element: ParadoxScriptProperty, name: String): List<ParadoxDefinitionLocalisationInfo> {
 		val result = mutableListOf<ParadoxDefinitionLocalisationInfo>()
+		//从已有的cwt规则
 		for(config in localisationConfig) {
 			//如果name为空，则keyName也为空 
 			//如果expression包含"$"，则keyName为将expression中的"$"替换为name后得到的字符串
 			//否则，keyName为expression对应的definition的同名子属性（不区分大小写）的值对应的字符串
 			val expression = config.expression
-			val keyName = when {
-				name.isEmpty() -> ""
-				expression.contains('$') -> buildString { for(c in expression) if(c == '$') append(name) else append(c) }
-				else -> element.findProperty(expression, ignoreCase = true)?.propertyValue?.value
-					.castOrNull<ParadoxScriptString>()?.stringValue ?: ""
-			}
+			val keyName = resolveKeyName(name, expression, element)
 			val info = ParadoxDefinitionLocalisationInfo(config.name, keyName, config.required, config.primary)
 			result.add(info)
 		}
+		//从推断的cwt规则
+		val names = localisationConfig.map { it.name.lowercase() }
+		for(inferredName in definitionLocalisationNamesToInfer) {
+			val inferredKeyName = inferKeyName(inferredName,names,element)
+			if(inferredKeyName != null){
+				val info = ParadoxDefinitionLocalisationInfo(inferredName, inferredKeyName)
+				result.add(info)
+			}
+		}
 		return result
+	}
+	
+	private fun resolveKeyName(name: String, expression: String, element: ParadoxScriptProperty): String {
+		return when {
+			name.isEmpty() -> ""
+			expression.contains('$') -> buildString { for(c in expression) if(c == '$') append(name) else append(c) }
+			else -> element.findProperty(expression, ignoreCase = true)?.propertyValue?.value
+				.castOrNull<ParadoxScriptString>()?.stringValue ?: ""
+		}
+	}
+	
+	private fun inferKeyName(name:String,names:List<String>,element: ParadoxScriptProperty):String?{
+		if(name !in names){
+			return element.findProperty(name, ignoreCase = true)?.propertyValue?.value
+				.castOrNull<ParadoxScriptString>()?.stringValue
+		}
+		return null
 	}
 }
 

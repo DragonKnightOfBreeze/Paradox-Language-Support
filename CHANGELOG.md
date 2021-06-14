@@ -109,6 +109,7 @@
 * [X] 优化cwt配置规则`type[...].localisation`的`name`的解析逻辑（可以为`$` `"$_desc"`也可以为`title` `name`）
 * [X] 提示定义的本地化名字（对应的localisation.name为name或title）
 * [X] 修复cwt规则文件解析问题（有时无法解析optionComment中的`<>`）
+* [X] 即使cwt规则文件中没写也为definition补充某些definitionLocalisation，从已有的推断（如果有的话）（name title desc effect） 
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证

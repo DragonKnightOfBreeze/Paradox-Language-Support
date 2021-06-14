@@ -45,8 +45,11 @@ val booleanValues = arrayOf("yes", "no")
 val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
 const val descriptorFileName = "descriptor.mod"
-val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
 const val truncateLimit = 20
+
+//TODO 可以设置
+val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
+val definitionLocalisationNamesToInfer = arrayOf("name","title","desc","effect") 
 
 //Icons
 
