@@ -263,14 +263,15 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "="
+  // "=" | "<>"
   public static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
-    if (!nextTokenIs(b, EQUAL_SIGN)) return false;
+    if (!nextTokenIs(b, "<property separator>", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY_SEPARATOR, "<property separator>");
     r = consumeToken(b, EQUAL_SIGN);
-    exit_section_(b, m, PROPERTY_SEPARATOR, r);
+    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

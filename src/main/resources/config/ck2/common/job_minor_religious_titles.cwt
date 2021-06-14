@@ -1,0 +1,203 @@
+
+types = {
+    type[minor_title] = {
+        path = "game/common/job_titles"
+        path = "game/common/minor_titles"
+        path = "game/common/religious_titles"
+
+        subtype[religious] = {
+            religion = <religion>
+        }
+        subtype[job] = {
+            enum[is_jobs] = yes
+        }
+        subtype[offmap] = {
+            ## cardinality = 0..0
+            religion = <religion>
+            ## cardinality = 0..0
+            enum[is_jobs] = yes
+            is_offmap_holder = yes
+        }
+
+        localisation = {
+            name = "$"
+            ## optional
+            description = "$_desc"
+            # Job titles can have optional names based on the character being male/female and the liege's religion/culture
+            # Don't know if minor titles in general can as well
+            # Optionals format: <name>[_female][_<religion>|_<religion_group>|_<culture>] (culture_group probably possible too)
+            # Where <x> is replaced by the appropriate value and [x] is optional
+        }
+    }
+}
+
+# TODO: Figure out the differences and similarities
+# Note that it's not clear which of these are exclusive to job titles and which to minor titles and also religious titles. Will need more testing.
+## replace_scope = { this = character root = character }
+minor_title = {
+    ## cardinality = 0..1
+    ### If yes, characters with this minor title are voters in the liege's council. Defaults to "no".
+    is_voter = bool
+
+    # TODO: Figure out
+    # viceroy = bool? Is in docs, confusingly named "This is the Viceroy title for de jure Kingdoms"; isn't used in vanilla
+
+    ## cardinality = 0..1
+    ### A character with this title receives this much gold per month as salary.
+    monthly_salary = float
+
+    ## cardinality = 0..1
+    ### A character with this title receives this much piety per month.
+    monthly_piety = float
+
+    ## cardinality = 0..1
+    ### A character with this title receives this much prestige per month.
+    monthly_prestige = float
+
+    ## cardinality = 0..1
+    ### Changes the title holder's opinion of the title granter by this value.
+    opinion_effect = int
+
+    ## cardinality = 0..1
+    ### Titles with higher dignity take priority over titles with lower dignity.
+    dignity = float
+
+    subtype[!offmap] = {
+        ## replace_scope = { this = character root = character from = character }
+        ### Effects applied when the character receives the title. ROOT is the title holder, FROM is the title granter.
+        gain_effect = {
+            alias_name[effect] = alias_match_left[effect]
+        }
+
+        ## replace_scope = { this = character root = character from = character }
+        ### Effects applied when the character loses the title. ROOT is the title holder, FROM is the title granter.
+        lose_effect = {
+            alias_name[effect] = alias_match_left[effect]
+        }
+    }
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ### Effects applied when the character loses the title by stepping down themselves. ROOT is the title holder, FROM is the title granter.
+    retire_effect = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character from = character }
+    ### Effects applied when the character loses the title by dying. ROOT is the title holder, FROM is the title granter.
+    death_effect = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    subtype[!job] = {
+        ## cardinality = 0..1
+        ### If yes, a notification will be shown if the player doesn't have all the slots of this title filled. Defaults to "no".
+        is_high_prio = bool
+
+        ## cardinality = 0..1
+        ### If yes, this title cannot be held together with another is_unique title. Defaults to "no".
+        is_unique = bool
+
+        ## cardinality = 0..1
+        ### Which attribute the eligible characters are sorted by when picking a holder.
+        attribute = enum[attributes]
+
+        ## cardinality = 0..1
+        ### If yes, appends the name of the country after the title. Defaults to "no".
+        realm_in_name = bool
+
+        ## cardinality = 0..1
+        ### If yes, the minor title will be shown in the holder's title. Defaults to "no".
+        show_as_title = bool
+
+        ## cardinality = 0..1
+        ### If yes, title name as if the other gender version of the spouse's ruler title. Defaults to "no".
+        spouse_context = bool
+
+        # TODO: Figure out
+        ## cardinality = 0..1
+        ### UNKNOWN. Possibly redundant with revoke_trigger. Defaults to "no".
+        revoke_allowed = bool
+
+        ### How many characters in a court can hold this title.
+        grant_limit = int
+
+        ## cardinality = 0..1
+        ### Conditions for a character to be eligible for the title. ROOT is the title holder, FROM is the title granter. Possibly the same as allow = {}.
+        allowed_to_hold = single_alias_right[trigger_clause]
+
+        ## cardinality = 0..1
+        ### Conditions for the title to show up on the liege's minor titles list to grant. ROOT is the liege.
+        allowed_to_grant = single_alias_right[trigger_clause]
+
+        ## cardinality = 0..1
+        ### Conditions for allowing the revokation of the title. ROOT is the title holder, FROM is the title granter.
+        revoke_trigger = single_alias_right[trigger_clause]
+
+        # TODO: Confirm
+        # regent = bool # Vaguely documented, but unused in vanilla even for regent titles
+
+        ## cardinality = 0..1
+        ### If yes, shows a message to a character that receives the title. Defaults to "no".
+        message = bool
+
+        ## cardinality = 0..1
+        ### If yes, this is a special title that determines the heir of a Patrician. Defaults to "no".
+        patrician_heir = bool
+
+        ## cardinality = 0..1
+        ### If yes, holder of the title counts as born-in-the-purple for Byzantine Empire succession.. Defaults to "no".
+        counts_as_purple_born = bool
+    }
+
+    subtype[offmap] = {
+        ### If yes, this minor title is used for an offmap power's holder. Defaults to "no".
+        is_offmap_holder = bool
+
+        ### Which offmap power this title belongs to.
+        offmap_power = <offmap>
+    }
+
+    subtype[religious] = {
+        ### Which religion this is a religious title of.
+        religion = <religion>
+
+        # TODO: Test a bit about cardinality and usage
+        ### UNKNOWN
+        can_elect_head = bool
+
+        # TODO: Check if it's the same as allowed_to_hold
+        ## replace_scope = { this = character root = character }
+        ### Conditions for a character to be eligible for this position. ROOT is the title holder. Possibly the same as allow = {}.
+        allow = single_alias_right[trigger_clause]
+    }
+
+    subtype[job] = {
+        ### Which job this job title counts as.
+        enum[is_jobs] = yes
+
+        ### Which attribute of the character with the job is added to the liege's for governance purposes.
+        attribute = enum[attributes]
+
+        # TODO: Check if it's the same as allowed_to_hold
+        ## replace_scope = { this = character root = character }
+        ### Conditions for a character to be eligible for this position. ROOT is the title holder. Possibly the same as allow = {}.
+        allow = single_alias_right[trigger_clause]
+
+        ### Conditions for allowing dismissing the character from this job. ROOT is the title holder, FROM is the title granter.
+        dismiss_trigger = single_alias_right[trigger_clause]
+
+        ## cardinality = 0..inf
+        ### Actions the job can perform.
+        action = <job_action>
+
+        ## cardinality = 0..1
+        ### If lift_fow = yes, the character will lift the fow in the province they are using a job action in. If lift_neighbor_fow = yes, they'll also lift the fow from adjacent provinces. Defaults to "no".
+        enum[lift_fows] = bool
+    }
+
+    ## cardinality = 0..inf
+    ### Modifiers applied to the title holder.
+    alias_name[modifier] = alias_match_left[modifier]
+}

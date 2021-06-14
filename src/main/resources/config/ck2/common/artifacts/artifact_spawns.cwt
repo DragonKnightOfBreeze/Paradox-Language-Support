@@ -1,0 +1,48 @@
+types = {
+    type[artifact_spawn] = {
+        path = "game/common/artifact_spawns"
+        path_strict = yes
+    }
+}
+
+artifact_spawn = {
+    ## cardinality = 0..1
+    ### How many artifacts are handed out? Default is 4 294 967 295
+    max_amount = int
+
+    ### What date the artifact should claim to have been created. 1.1.1 or before results in "Unknown date". Could be in the future.
+    spawn_date = date_field
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = no_scope root = no_scope }
+    ### 0-100 chance for the artifact to spawn on start, with modifiers. Default is always spawn.
+    spawn_chance = {
+        value = int[0..100]
+
+        ##cardinality = 0..inf
+        alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+        
+        ##cardinality = 0..inf
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    ## cardinality = 0..1
+    ## replace_scope = { this = character root = character }
+    ### Weights the characters' chances to receive the spawned artifact. Default is each character has the same chance.
+    weight = {
+        value = int
+
+        ## cardinality = 0..inf
+        alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+        
+        ## cardinality = 0..inf
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+    
+    ### Weighted list of artifacts from which to pick one to spawn.
+    artifacts = {
+        <artifact> = {
+            value = int
+        }
+    }
+}

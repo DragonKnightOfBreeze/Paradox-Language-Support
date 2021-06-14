@@ -1,0 +1,78 @@
+types = {
+    type[succession_voting] = {
+        path_strict = yes
+        path = "game/common/succession_voting"
+
+        localisation = {
+            ## required
+            name = "$"
+        }
+    }
+
+    type[succession_voting_stance] = {
+        path_strict = yes
+        path = "game/common/succession_voting"
+        skip_root_key = { any elector_stances }
+
+        localisation = {
+            ## required
+            name = "$"
+            ## required
+            description = "$_desc"
+        }
+    }
+}
+
+## replace_scope = { this = character root = character from = character fromfrom = title fromfromfrom = character }
+### The voter will vote for the top score candidate calculated from this script. ROOT is the voter, FROM is the candidate, FROMFROM is the title being nominated for, FROMFROMFROM is the title owner's candidate.
+succession_voting = {
+    ### Conditions for a character to be eligible for voting.
+    elector_selection = {
+        ## cardinality = 0..1
+        ### If set, only these much potential electors with the highest scores will be picked as electors.
+        max_amount = int
+
+        ### Base score. If resulting score is 0 or above, or the character is the title's owner, the character becomes an elector.
+        days = int
+
+        # TODO: See if multiplicative modifier works.
+        ## cardinality = 0..inf
+        alias_name[additive_modifier] = alias_match_left[additive_modifier]
+    }
+
+    ### Voting strength of a given elector.
+    elector_vote_strength = {
+        ### Base strength.
+        days = int
+
+        ## cardinality = 0..inf
+        alias_name[additive_modifier_with_loc_key] = alias_match_left[additive_modifier_with_loc_key]
+    }
+
+    ## cardinality = 0..1
+    ### Possible stances for an elector to take. The stance with the highest resulting score will be picked.
+    elector_stances = {
+        ## cardinality = 1..inf
+        <succession_voting_stance> = {
+            ### Base score.
+            days = int
+            ### What icon to show for the stance. Frames of GFX_elder_stances - looks to be hardcoded.
+            icon = int
+
+            ## cardinality = 0..inf
+            alias_name[additive_modifier_with_loc_key] = alias_match_left[additive_modifier_with_loc_key]
+        }
+    }
+
+    ### Conditions for a character to be eligible as a candidate.
+    candidate_trigger = single_alias_right[trigger_clause]
+
+    ### Scoring for an elector picking a candidate. The candidate with the highest resulting score will be picked.
+    candidate_vote_score = {
+        ### Base score.
+        days = int
+
+        ## cardinality = 0..inf
+        alias_name[additive_modifier_with_loc_key] = alias_match_left[additive_modifier_with_loc_key]
+    }
+}

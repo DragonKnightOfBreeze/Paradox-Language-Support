@@ -1,0 +1,481 @@
+# TODO: See if I can apply crusading as a subtype down to religion from religion_group
+types = {
+    ## type_key_filter = secret_religion_visibility_trigger
+    type[secret_religion_visibility_trigger] = {
+        path_strict = yes
+        path = "game/common/religions"
+    }
+    ## type_key_filter <> secret_religion_visibility_trigger
+    type[religion_group] = {
+        path_strict = yes
+        path = "game/common/religions"
+
+        localisation = {
+            name = "$"
+        }
+    }
+    ## type_key_filter <> { interface_skin color male_names female_names }
+    type[religion] = {
+        path_strict = yes
+        path = "game/common/religions"
+        skip_root_key = any
+
+        # TODO: make it work without a ton of aliases/copypasta; or at least make it work without copypasta
+        #subtype[has_crusade_details] = {
+        #    crusade_name = scalar
+        #}
+        #subtype[heresy] = {
+        #    parent = scalar
+        #}
+        #subtype[uses_caste_system] = {
+        #    castes = yes
+        #}
+        subtype[has_secret_cult] = {
+            ## cardinality = 0..1
+            dynamic_cult = yes
+        }
+
+        localisation = {
+            name = "$"
+            desc = "$_DESC"
+        }
+    }
+}
+
+## replace_scope = { this = character root = character from = character }
+### This trigger defines who can see a character's secret religion. The character with the secret religion is FROM, while the viewer is ROOT.
+secret_religion_visibility_trigger = single_alias_right[trigger_clause]
+
+religion_group = {
+    # TODO: Find out default (see jewish_group)
+    ## cardinality = 0..1
+    ### If no, the religion group will generate random COAs even above barony level.
+    has_coa_on_barony_only = bool
+
+    ### Used to display the CoA frames on the map.
+    graphical_culture = <graphical_culture>
+
+    ## cardinality = 0..1
+    ### If defined, the religion group can have crusades and uses this casus belli for them.
+    crusade_cb = <casus_belli>
+
+    ### If no, the religion group is unplayable.
+    playable = bool
+
+    ## cardinality = 0..1
+    ### If yes, Hordes will lose their super-aggressiveness upon conversion to this religion group. Defaults to "no".
+    ai_peaceful = bool
+
+    ## cardinality = 0..1
+    ### If yes, holy orders will agree to fight others and interfaith marriage will be blocked within the group. Defaults to "no".
+    hostile_within_group = bool
+
+    ### How hard the AI will try to convert characters of other religions in the same group. 0 is never, 1 is if ai_zeal is high, 2 is always.
+    ai_convert_same_group = int[0..2]
+
+    ### How hard the AI will try to convert characters of other religions in other groups. 0 is never, 1 is if ai_zeal is high, 2 is always.
+    ai_convert_other_group = int[0..2]
+
+    # TODO: Figure out
+    ## cardinality = 0..1
+    ### Whether the AI will try to fabricate claims.
+    ai_fabricate_claims = bool
+
+    ### The religion group's colour on the coalitions per religion group mapmode.
+    alias_name[color] = alias_match_left[color]
+
+    ## cardinality = 0..1
+    ### If yes, then when a republic and searching for a texture for the interface it will look for <texture_name>_republic and use that version of the texture instead of the normal one. Defaults to "no".
+    merge_republic_interface = bool
+
+    ## cardinality = 0..1
+    ### The interface skins the religion group tries to use. It'll go down the list and use the first one available.
+    interface_skin = {
+        ## cardinality = 1..inf
+        scalar # interface skin
+    }
+
+    # TODO: Figure out how that works
+    ## cardinality = 0..1
+    ### Names only given to males of this religion group.
+    male_names = {
+        ## cardinality = 0..inf
+        scalar
+    }
+
+    # TODO: Figure out how that works
+    ## cardinality = 0..1
+    ### Names only given to females of this religion group.
+    female_names = {
+        ## cardinality = 0..inf
+        scalar
+    }
+
+    ## cardinality = 1..inf
+    <religion> = {
+        ## cardinality = 0..1
+        ### If no, the religion will generate random COAs even above barony level; overrides the religion group value.
+        has_coa_on_barony_only = bool
+
+        ### Used to display the CoA frames on the map.
+        graphical_culture = <graphical_culture>
+
+        ## cardinality = 0..1
+        ### The interface skins the religion tries to use. It'll go down the list and use the first one available. If it can't find any, goes through religious group's.
+        interface_skin = {
+            ## cardinality = 1..inf
+            scalar # interface skin
+        }
+
+        # TODO: Confirm
+        ## cardinality = 0..1
+        ### UNCONFIRMED For the purposes of event pictures, count as this religion.
+        secondary_event_pictures = <religion>
+
+        ## cardinality = 0..1
+        ## replace_scope = { this = no_scope root = no_scope }
+        ### Conditions for the religion to appear when generating a random world.
+        alternate_start = single_alias_right[trigger_clause]
+
+        ## cardinality = 0..1
+        ### How hard the AI will try to convert characters of other religions in the same group; overrides religious group value if set. 0 is never, 1 is if ai_zeal is high, 2 is always.
+        ai_convert_same_group = int[0..2]
+
+        ## cardinality = 0..1
+        ### How hard the AI will try to convert characters of other religions in other groups; overrides religious group value if set. 0 is never, 1 is if ai_zeal is high, 2 is always.
+        ai_convert_other_group = int[0..2]
+
+        ## cardinality = 0..1
+        ### Which frame out of GFX_religion_icon_strip(_small, _big) to use for this religion.
+        icon = int
+
+        ## cardinality = 0..1
+        ### Heresies use this value of the parent religion instead of icon.
+        heresy_icon = int
+
+        #subtype[has_crusade_details] = {
+            ## cardinality = 0..1
+            ### The name for this religion's crusade, if any. Required if crusade_cb is defined for this religion or its group.
+            crusade_name = localisation
+
+            ## cardinality = 0..1
+            ### If defined, the religion can have crusades and uses this casus belli for them. Otherwise uses the religion group's casus belli, if any.
+            crusade_cb = <casus_belli>
+
+            ## cardinality = 0..1
+            ### If yes, the religion will use Holy Fury's crusade mechanics. Defaults to "no".
+            use_new_crusade = bool
+        #}
+
+        #subtype[!heresy] = {
+            ## cardinality = 0..1
+            ### The name of this religion's holy scriptures. Not required for heresies (parent = <religion>).
+            scripture_name = localisation
+
+            ## cardinality = 0..1
+            ### The title of this religion's priests. Not required for heresies (parent = <religion>).
+            priest_title = localisation
+
+            ## cardinality = 0..1
+            ### The name of this religion's high god. Not required for heresies (parent = <religion>).
+            high_god_name = localisation
+
+            ## cardinality = 0..1
+            ### The name of this religion's piety resource. Maybe not required for heresies (parent = <religion>).
+            piety_name = localisation
+
+            ## cardinality = 0..1
+            ### The name of this religion's gods/alternative names for the one god. Not required for heresies (parent = <religion>).
+            god_names = {
+                ## cardinality = 1..inf
+                localisation
+            }
+
+            ## cardinality = 0..1
+            ### The name of this religion's evil gods/alternative names for the devil. Not required for heresies (parent = <religion>).
+            evil_god_names = {
+                ## cardinality = 1..inf
+                localisation
+            }
+        #}
+
+        ### The religion group's colour on the religion mapmode.
+        alias_name[color] = alias_match_left[color]
+
+        ## cardinality = 0..1
+        ### If set, this religion is considered a heresy of the parent religion.
+        parent = <religion>
+
+        ## cardinality = 0..inf
+        ### Which religions this religion is allowed to intermarry with.
+        intermarry = <religion>
+
+        ## cardinality = 0..inf
+        ### Which religion groups this religion is allowed to intermarry with.
+        intermarry = <religion_group>
+
+        ## cardinality = 0..1
+        ### If no, this religion cannot be selected in the ruler designer. Defaults to "yes".
+        allow_in_ruler_designer = bool
+
+        # Most of the info on this and the following is taken from the wiki
+        # TODO: maybe write a better tooltip once I know portrait modding better
+        ## cardinality = 0..1
+        ### Index of frames to use for the religious head clothes & headgear.
+        religious_clothing_head = int
+
+        # TODO: maybe write a better tooltip once I know portrait modding better
+        ## cardinality = 0..1
+        ### Index of frames to use for priest clothes & headgear.
+        religious_clothing_priest = int
+
+        # TODO: Confirm if only works for christians rn
+        ## cardinality = 0..1
+        ### If yes, makes it possible to appoint bishops. Is modified by Investiture law. Only works for christian group, cannot be combined with autocephaly. Defaults to "no".
+        investiture = bool
+
+        # TODO: Elaborate
+        ## cardinality = 0..1
+        ### If yes, antipope mechanics are enabled. Defaults to "no".
+        can_have_antipopes = bool
+
+        ## cardinality = 0..1
+        ### If yes, the religious head can excommunicate members of this religion. Defaults to "no".
+        can_excommunicate = bool
+
+        ## cardinality = 0..1
+        ### If yes, the religious head can grant divorces to members of this religion. Defaults to "no".
+        can_grant_divorce = bool
+
+        ## cardinality = 0..1
+        ### If set, the religious head can grant the specified casus belli to members of this religion.
+        can_grant_invasion_cb = <casus_belli>
+
+        # TODO: Wiki says it's not working, confirm
+        ## cardinality = 0..1
+        ### If yes, the religious head can grant members of this religion claims on titles held by other members. Defaults to "no".
+        can_grant_claim = bool
+
+        ## cardinality = 0..1
+        ### If yes, the religious head can call crusades. Defaults to "no".
+        can_call_crusade = bool
+
+        ## cardinality = 0..1
+        ### If yes, members of this religion can use the order to take vows action on other characters of this religion. Defaults to "no".
+        can_retire_to_monastery = bool
+
+        ## cardinality = 0..1
+        ### If no, priests of this religion are excluded from succession. Defaults to "yes".
+        priests_can_inherit = bool # default yes?
+
+        ## cardinality = 0..1
+        ### If yes, members of this religion are likely to join in defence of their religious head when attacked by a different religion.. Defaults to "no".
+        rel_head_defense = bool
+
+        ## cardinality = 0..1
+        ### If yes, females of this religion are allowed to hold temples. Defaults to "no".
+        female_temple_holders = bool
+
+        # TODO: Confirm if it's this and not "vassals will be okay with female ruler of this religion"
+        ## cardinality = 0..1
+        ### If yes, vassals of this religion will not get the normal negative opinion modifiers towards female rulers or rulers with female heirs. Defaults to "no".
+        feminist = bool
+
+        # TODO: Elaborate
+        ## cardinality = 0..1
+        ### If yes, enables autochepaly mechanics. Defaults to "no".
+        autocephaly = bool
+
+        # TODO: Elaborate
+        ## cardinality = 0..1
+        ### If yes, enables pentarchy mechanics. Implies autocephaly = yes. Defaults to "no".
+        pentarchy = bool
+
+        # TODO: Elaborate
+        ## cardinality = 0..1
+        ### If yes, enables divine marriage mechanics. Defaults to "no".
+        divine_blood = bool
+
+        ## cardinality = 0..1
+        ### If yes, parent-child marriages are allowed. Defaults to "no".
+        pc_marriage = bool
+
+        ## cardinality = 0..1
+        ### If yes, brother-sister marriages are allowed. Defaults to "no".
+        bs_marriage = bool
+
+        ## cardinality = 0..1
+        ### If no, uncle-niece and aunt-nephew marriages are disallowed. Defaults to "yes".
+        psc_marriage = bool
+
+        ## cardinality = 0..1
+        ### If yes, priests can get married. Defaults to "no".
+        priests_can_marry = bool
+
+        ## cardinality = 0..1
+        ### Determines the max amount of concubines/consorts members of the religion can have.
+        max_consorts = int
+
+        ## cardinality = 0..1
+        ### Determines the max amount of wives members of the religion can have, as well as the number of potential wives generated in the court.
+        max_wives = int
+
+        ## cardinality = 0..1
+        ### If no, matrilineal marriages are forbidden for members of this religion. Defaults to "yes".
+        matrilineal_marriages = bool
+
+        # TODO: Wiki is a bit confusing, confirm actual effect
+        ## cardinality = 0..1
+        ### UNCONFIRMED If yes, having landed kin as vassals gives a prestige bonus. Defaults to "no".
+        landed_kin_prestige_bonus = bool
+
+        # TODO: Figure out
+        ## cardinality = 0..1
+        ### UNCONFIRMED If yes, attacking members of the same religion gives a piety penalty. Defaults to "no".
+        attacking_same_religion_piety_loss = bool
+
+        # TODO: Elaborate
+        ## cardinality = 0..1
+        ### If yes and the government has uses_decadence, enables decadence mechanics. Defaults to "no".
+        uses_decadence = bool
+
+        # TODO: Figure out/elaborate
+        ## cardinality = 0..1
+        ### If yes, enables jizya tax mechanics. Defaults to "no".
+        uses_jizya_tax = bool
+
+        # TODO: Confirm
+        ## cardinality = 0..1
+        ### If yes, armies will take a large hit to supply limit in hostile provinces of this religion. Defaults to "no".
+        defensive_attrition = bool
+
+        # TODO: Confirm
+        ## cardinality = 0..1
+        ### If yes, armies of rulers of this religion will not have the penalty inflicted by defensive_attrition. Defaults to "no".
+        ignores_defensive_attrition = bool
+
+        ## cardinality = 0..1
+        ### If yes, vassals of this religion will disapprove and form factions if their liege increases tribal organization. Defaults to "no".
+        dislike_tribal_organization = bool
+
+        # TODO: Confirm
+        ## cardinality = 0..1
+        ### UNCONFIRMED If no, there won't be a dynamic secret religious society generated for this religion. Defaults to "yes".
+        dynamic_cult = bool
+
+        # TODO: Confirm
+        ## cardinality = 0..1
+        ### UNCONFIRMED If no, this religion can't be a secret religion. Defaults to "yes".
+        secret_religion = bool
+
+        ## cardinality = 0..1
+        ### If yes, the AI won't refrain from joining a crusade simply because it borders a heathen/heretic realm. Defaults to "no".
+        join_crusade_if_bordering_hostile = bool
+
+        ## cardinality = 0..1
+        ### If yes, armies of rulers of this religion can raid. Defaults to "no".
+        allow_looting = bool
+
+        ## cardinality = 0..1
+        ### If yes, fleets of rulers of this religion can move through major rivers. Defaults to "no".
+        allow_rivermovement = bool
+
+        ## cardinality = 0..1
+        ### If yes, rulers of this culture will prefer looting coastal provinces. Defaults to "no".
+        seafarer = bool
+
+        ## cardinality = 0..1
+        ### If yes, members of this religion can use the prepare invasion diplomatic action. Defaults to "no".
+        allow_viking_invasion = bool
+
+        # TODO: confirm if not vice versa
+        ## cardinality = 0..1
+        ### If no, vassals of this religion won't mind if their levies are raised for too long. Defaults to "yes".
+        raised_vassal_opinion_loss = bool
+
+        ## cardinality = 0..1
+        ### Opinion penalty multiplier to short reign years. Overrides define SHORT_REIGN_OPINION_MULT for this religion.
+        short_reign_opinion_year_mult = float
+
+        ## cardinality = 0..1
+        ### AI aggression factor.
+        aggression = float
+
+        ## cardinality = 0..1
+        ### If yes, rulers of this religion will lose prestige if at peace for too long. Defaults to "no".
+        peace_prestige_loss = bool
+
+        ## cardinality = 0..1
+        ### Overrides define CONTESTED_TITLE_OCCUPIED_WARSCORE_BONUS_INDEP for this religion.
+        independence_war_score_bonus = int #
+
+        ## cardinality = 0..1
+        ### If set, can be reformed into this religion. Note that the reformed religion needs to precede the unreformed religion in the file.
+        reformed = <religion>
+
+        ## cardinality = 0..1
+        ### If no, members of this religion will not be able to use the demand religious conversion diplomatic action. Defaults to "yes".
+        can_demand_religious_conversion = bool
+
+        ## cardinality = 0..1
+        ### Checked via is_hard_to_convert character/province trigger. Defaults to "no".
+        hard_to_convert = bool
+
+        ## cardinality = 0..1
+        ### If yes, women can take male consorts. Defaults to "no".
+        women_can_take_consorts = bool
+
+        # TODO: figure out
+        ## cardinality = 0..1
+        ### UNKNOWN
+        expel_modifier = <event_modifier>
+
+        # TODO: confirm that RoI part
+        ## cardinality = 0..1
+        ### If yes, members of this religion will be less aggressive. Only works on Jain religion if player does not own Rajas of India. Defaults to "no".
+        pacifist = bool
+
+        # TODO: Elaborate
+        ## cardinality = 0..1
+        ### If yes, uses a caste system. Defaults to "no".
+        castes = bool
+
+        #subtype[uses_caste_system] = {
+            # TODO: Elaborate
+            ## cardinality = 0..1
+            ### If yes, the religion uses caste opinion modifiers. Defaults to "no". Only applicable is castes = yes.
+            caste_opinions = bool
+        #}
+
+        ## cardinality = 0..1
+        ### If yes, rulers of this religion can designate their heir. Defaults to "no".
+        has_heir_designation = bool
+
+        ## cardinality = 0..1
+        ### If yes, rulers of this religion gain monthly piety while at peace. Defaults to "no".
+        peace_piety_gain = float
+
+        ## cardinality = 0..1
+        ## replace_scope = { this = character root = character }
+        ### Character modifiers applied to all characters of this religion.
+        character_modifier = {
+            alias_name[modifier] = alias_match_left[modifier]
+        }
+
+        ## cardinality = 0..1
+        ## scope = { this = unit root = unit }
+        ### A modifier applied to all realms and subrealms ruled by characters of this religion.
+        unit_modifier = {
+            alias_name[modifier] = alias_match_left[modifier]
+            key = localisation
+        }
+
+        ## cardinality = 0..1
+        ## scope = { this = unit root = unit }
+        ### A modifier applied to all realms and subrealms ruled by characters of this religion; only applied inside the realm/subrealm.
+        unit_home_modifier = {
+            alias_name[modifier] = alias_match_left[modifier]
+            key = localisation
+        }
+    }
+}

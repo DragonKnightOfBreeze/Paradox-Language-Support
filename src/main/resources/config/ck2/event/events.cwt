@@ -1,0 +1,332 @@
+types = {
+	type[event] = {
+		name_field = "id"
+
+		path = "game/events"
+
+		## type_key_filter = character_event
+		## push_scope = character
+		subtype[character] = {
+        }
+
+		## type_key_filter = long_character_event
+		## push_scope = character
+		subtype[long_character] = {
+        }
+
+		## type_key_filter = letter_event
+		## push_scope = character
+		subtype[letter] = {
+        }
+
+		## type_key_filter = narrative_event
+		## push_scope = character
+		subtype[narrative] = {
+		}
+		## type_key_filter = province_event
+		## push_scope = province
+		subtype[province] = {
+        }
+
+		## type_key_filter = diploresponse_event
+		## push_scope = character
+		subtype[diploresponse] = {
+		}
+		## type_key_filter = unit_event
+		## push_scope = unit
+		subtype[unit] = {
+        }
+
+		## type_key_filter = society_quest_event
+		## push_scope = character
+		subtype[society_quest] = {
+        }
+
+		subtype[mean_time_to_happen] = {
+			mean_time_to_happen = {
+			}
+		}
+		subtype[hidden] = {
+			hide_window = yes
+		}
+		subtype[triggered] = {
+			is_triggered_only = yes
+		}
+	}
+}
+
+event = {
+    id = scalar
+
+    subtype[!hidden] = {
+        desc = localisation
+        ## cardinality = 1..inf
+        desc = {
+            trigger = single_alias_right[trigger_clause]
+            text = localisation
+            ## cardinality = 0..1
+            picture = <sprite>
+        }
+        picture = <sprite>
+        ## cardinality = 1..inf
+        picture = {
+            trigger = single_alias_right[trigger_clause]
+            picture = <sprite>
+        }
+    }
+
+    subtype[narrative] = {
+        title = localisation
+    }
+    subtype[!narrative] = {
+        ## cardinality = 0..1
+        title = localisation
+    }
+
+    ## cardinality = 0..1
+    border = <sprite>
+    ## cardinality = 0..1
+    major = bool
+    ## cardinality = 0..1
+    ### Always uses compliments in letter events, regardless of opinion.
+    is_friendly = bool
+    ## cardinality = 0..1
+    ### Always uses insults in letter events, regardless of opinion.
+    is_hostile = bool
+    ## cardinality = 0..1
+    ### If yes, event cannot fire by itself and needs to be called from another event, decision or on_action. Note: trigger = { } block will still be evaluated to test if the event should apply or not.
+    is_triggered_only = bool
+    ## cardinality = 0..1
+    ### If allow, the event can fire both for on-map rulers as well as offmap rulers. If only, the event will not fire for on-map rulers and will fire only for offmap rulers. If this flag is omitted, the event will never fire for offmap rulers.
+    # TODO:
+    offmap = scalar
+    ## cardinality = 0..1
+    ### Used for some vanilla tutorial events. These are referenced in NLearningScenario section of defines.
+    triggered_from_code = bool
+    ## cardinality = 0..1
+    ### Does not show FROM's portrait on the event, even when it is normally visible.
+    hide_from = bool
+    ## cardinality = 0..1
+    ### Makes the event invisible. Event options will still be evaluated while hidden.
+    hide_window = bool
+    ## cardinality = 0..1
+    ### Usually used in combination with major = yes
+    show_root = bool
+    ## cardinality = 0..1
+    ### Overrides default behavior of showing character of FROM scope in the top-right corner.
+    show_from_from = bool
+    ## cardinality = 0..1
+    ### Overrides default behavior of showing character of FROM scope in the top-right corner.
+    show_from_from_from = bool
+    ## cardinality = 0..1
+    ### Plays the given sound.
+    #TODO:
+    sound = scalar
+    ## cardinality = 0..1
+    ### Adds a notification message. Note: not very nice for province_event, as it will show an empty character portrait in the notification.
+    notification = bool
+
+    alias_name[pre_trigger] = alias_match_left[pre_trigger]
+
+    ## cardinality = 0..1
+	trigger = single_alias_right[trigger_clause]
+
+	## cardinality = 0..1
+	immediate = {
+		alias_name[effect] = alias_match_left[effect]
+    }
+
+	## cardinality = 0..1
+    fail_trigger_effect = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+
+    # TODO: Fix this to 1..inf and have a subtype where when hide_window = yes....
+    ## cardinality = 0..inf
+	option = {
+		subtype[hidden] = {
+			## cardinality = 0..1
+			name = localisation
+		}
+		subtype[!hidden] = {
+			## severity = warning
+            name = localisation
+            ## cardinality = 1..inf
+            name = {
+                trigger = single_alias_right[trigger_clause]
+                text = localisation
+            }
+
+		}
+
+		## cardinality = 0..1
+		trigger = single_alias_right[trigger_clause]
+
+		## cardinality = 0..1
+		alias_name[effect] = alias_match_left[effect]
+
+		## cardinality = 0..1
+		ai_chance = {
+			factor = float[0..10000]
+			alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+        }
+
+        ## cardinality = 0..1
+        tooltip = {
+            alias_name[effect] = alias_match_left[effect]
+        }
+
+        ## cardinality = 0..1
+        tooltip_info = <trait>
+
+        ## cardinality = 0..1
+        tooltip_info = enum[attributes]
+
+        ## cardinality = 0..1
+        tooltip_info = bool
+	}
+
+
+	## cardinality = 0..1
+	after = {
+		alias_name[effect] = alias_match_left[effect]
+    }
+
+    subtype[!triggered] = {
+		mean_time_to_happen = {
+			enum[duration] = int
+			alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+		}
+	}
+	subtype[triggered] = {
+		## cardinality = 0..1
+		weight_multiplier = {
+            enum[duration] = int
+            
+            alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+		}
+	}
+
+}
+
+
+### In script, "playable" does not actually mean that the player can play the character. What it means is: count-tier or above, or a patrician, and is not a landless rebel. Using this pre-trigger completely eliminates evaluation of the event for anyone who does not meet the criteria, meaning that the event is checked for the ~1000 playable characters in the game, rather than all ~20k
+# scope = character
+alias[pre_trigger:only_playable] = bool
+
+### Restricts to characters that are backing or leading a plot. Takes precedence over everything except only_playable, as the number of characters involved in plots is generally lower than the number of rulers.
+# scope = character
+alias[pre_trigger:is_part_of_plot] = bool
+
+### Excludes untitled characters. This is a lesser version of only_playable, as it includes barons, rebels, etc. (i.e. anyone holding a title).
+# scope = character
+alias[pre_trigger:only_rulers] = bool
+
+### Restricts the event for members of the religion/religion_group. It is mutually exclusive with the other filtering pre-triggers, i.e only_playable and only_rulers both take precedence, so in some cases it might actually be better to just use religion_group = SOME_RARE_GROUP and leave out only_rulers = yes.
+# scope = character
+alias[pre_trigger:religion] = <religion>
+
+###
+# scope = character
+alias[pre_trigger:religion_group] = <religion_group>
+
+### Minimum age of the character (for this event).
+# scope = character
+alias[pre_trigger:min_age] = int
+
+### Maximum age of the character (for this event).
+# scope = character
+alias[pre_trigger:max_age] = int
+
+### Excludes vassals and tributaries. Implies only_playable.
+# scope = character
+alias[pre_trigger:only_independent] = bool
+
+###
+# scope = character
+alias[pre_trigger:only_men] = bool
+
+###
+# scope = character
+alias[pre_trigger:only_women] = bool
+
+###
+# scope = character
+alias[pre_trigger:only_capable] = bool
+
+### If yes, only picks characters without any incapacitating = yes traits, i.e. the incapable  trait.
+# scope = character
+alias[pre_trigger:capable_only] = bool
+
+### Will never ever get evaluated if DLC is enabled/disabled by the player (or in the case of multiplayer, the host). Can be applied more than once per event, to filter based on many DLCs.
+alias[pre_trigger:lacks_dlc] = enum[dlcs]
+
+###
+alias[pre_trigger:has_dlc] = enum[dlcs]
+
+### Checks whether the character has/doesn't have friends.
+# scope = character
+alias[pre_trigger:friends] = bool
+
+### Checks whether the character has/doesn't have rivals.
+# scope = character
+alias[pre_trigger:rivals] = bool
+
+### If no, can't be applied to imprisoned characters.
+# scope = character
+alias[pre_trigger:prisoner] = bool
+
+### If yes, will only fire for ai characters. If no, will only fire for the player(s). Implies only_playable = yes.
+# scope = character
+alias[pre_trigger:ai] = bool
+
+### Example: in_command = no will make the event only trigger for people not commanding troops (since patch 3.0). Warning: not tested, seems to be buggy right now
+# scope = character
+alias[pre_trigger:in_command] = bool
+
+### Checks if a character is the head of a Merchant Republic patrician family. Implies only_playable.
+# scope = character
+alias[pre_trigger:is_patrician] = bool
+
+### If yes, will only affect female characters. Warning: now it raises an error in error.log, use only_men/only_women instead of it.
+# scope = character
+alias[pre_trigger:is_female] = bool
+
+###
+# scope = character
+alias[pre_trigger:is_married] = bool
+
+### 	[?]
+# scope = character
+alias[pre_trigger:is_sick] = bool
+
+### Warning: more than 1 has_character_flag pre-trigger raises an error in error.log
+# scope = character
+alias[pre_trigger:has_character_flag] = value[character_flag]
+
+### Checks whether the global flag has been set. Warning: more than 1 has_global_flag pre-trigger raises an error in error.log
+alias[pre_trigger:has_global_flag] = value[global_flag]
+
+### Checks whether the character is/isn't at war.
+# scope = character
+alias[pre_trigger:war] = bool
+
+###
+# scope = character
+alias[pre_trigger:culture] = <culture>
+
+###
+# scope = character
+alias[pre_trigger:culture_group] = <culture_group>
+
+### Checks whether the character belongs/doesn't belong to a society.
+# scope = character
+alias[pre_trigger:is_in_society] = bool
+
+### Yes will restrict the event to people that have a quest with an actual target. No will restrict the event to people that have a quest without a target or don't have a quest.
+# scope = character
+alias[pre_trigger:has_quest_target] = bool
+
+###
+# scope = character
+alias[pre_trigger:has_job_title] = bool

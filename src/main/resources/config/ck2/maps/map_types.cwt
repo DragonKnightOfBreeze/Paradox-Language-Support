@@ -1,0 +1,117 @@
+types = {
+    type[province_id] = {
+        path = "game/map"
+        path_file = "positions.txt"
+        localisation = {
+			## optional
+            name = "PROV$"
+        }
+    }
+
+    type[colourmap] = {
+        name_from_file = yes
+        type_per_file = yes
+        path = "game/map"
+        path_file = "colormap.txt"
+    } 
+
+    ## type_key_filter = { mild_winter normal_winter severe_winter }
+    type[climates] = {
+        path = "game/map"
+        path_file = "climate.txt"
+    }
+
+    type[continents] = {
+        path = "game/map"
+        path_file = "continent.txt"
+    }
+
+    type[region] = {
+        path = "game/map"
+        path_file = "geographical_region.txt"
+    }
+
+    type[islands] = {
+        path = "game/map"
+        path_file = "island_regions.txt"
+    }
+
+    type[season] = {
+        path = "game/map"
+        path_file = "seasons.txt"
+    }
+
+	type[terrains] = {
+		skip_root_key = categories
+		path = "game/map"
+        path_file = "terrain.txt"
+        subtype[type] = {
+            color = {
+                ## cardinality = 3..3
+                int[0..255]
+            }
+        }
+        subtype[terrain_types] = {
+            type = <terrains>
+        }
+    }
+
+	type[terrain_types] = {
+		path = "game/map"
+        path_file = "terrain.txt"
+    }
+}
+
+province_id = {
+    position = {
+        ## cardinality = 14..14
+        float
+    }
+    rotation = {
+        ## cardinality = 7..7
+        float
+    }
+    height = {
+        ## cardinality = 7..7
+        float
+    }
+}
+
+colourmap = {
+    name = scalar
+    multiplier = int
+}
+
+continents = {
+    ## cardinality = 0..inf
+    enum[provinces]
+}
+
+region = single_alias_right[region_dcpr_clause]
+islands = single_alias_right[region_dcpr_clause]
+
+season = {
+    start_date=date
+    end_date=date
+}
+
+terrains = {
+	## cardinality = 0..1
+	is_water = yes
+	## cardinality = 0..1
+	inland_sea = yes
+	
+	## cardinality = 0..1
+	color = {
+		## cardinality = 3..3
+        int[0..255]
+    }
+
+    subtype[type] = {
+        type = <terrains>
+        color = {
+            int
+        }
+        priority = int
+    }
+}

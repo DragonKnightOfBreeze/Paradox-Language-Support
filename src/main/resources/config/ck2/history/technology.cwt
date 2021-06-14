@@ -1,0 +1,31 @@
+# No names so it's basically validation only.
+types = {
+    type[technology_history] = {
+        path_strict = yes
+        path = "game/history/technology"
+    }
+}
+
+# TODO: Maybe docs about how each date's specific value is extrapolated from the nearest dates?
+technology_history = {
+    ### Duchies covered by this technology history block
+    titles = {
+        ## cardinality = 1..inf
+        <title.duchy>
+    }
+
+    ## cardinality = 1..inf
+    ### Years at which to implement changes. Note that the first year must match the first playable date!
+    int = {
+        ### Basic level of tech for the military category.
+        military = float
+        ### Basic level of tech for the economy category.
+        economy = float
+        ### Basic level of tech for the culture category.
+        culture = float
+
+        ## cardinality = 0..inf
+        ### Specific level of tech for a specific technology, different from the base for the category.
+        <technology> = float
+    }
+}

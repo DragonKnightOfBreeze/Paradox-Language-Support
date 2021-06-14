@@ -1,0 +1,91 @@
+types = {
+    # TODO: third party
+    type[decision] = {
+        path = "game/decisions"
+        skip_root_key = decisions
+        skip_root_key = plot_decisions
+        skip_root_key = society_decisions
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+            extra_description = "$_desc_extra"
+        }
+    }
+
+    type[targeted_decisions] = {
+        path = "game/decisions"
+        skip_root_key = targeted_decisions
+
+        localisation = {
+            name = "$"
+            description = "$_named"
+        }
+    }
+
+    type[settlement_decision] = {
+        path = "game/decisions"
+        skip_root_key = settlement_decisions
+        skip_root_key = trade_post_decisions
+        skip_root_key = fort_decisions
+        skip_root_key = hospital_decisions
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+        }
+    }
+
+    type[title_decision] = {
+        path = "game/decisions"
+        skip_root_key = title_decisions
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+        }
+    }
+
+    type[offmap_decision] = {
+        path = "game/decisions"
+        skip_root_key = offmap_decisions
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+        }
+    }
+
+
+    # DEPRICATED
+    type[vassal_decision] = {
+        path = "game/decisions"
+        skip_root_key = vassal_decisions
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+        }
+    }
+
+    type[dynasty_decision] = {
+        path = "game/decisions"
+        skip_root_key = dynasty_decisions
+
+        localisation = {
+            name = "$"
+            description = "$_desc"
+        }
+    }
+}
+
+# TODO: Docs
+decision = single_alias_right[general_decisions]
+# TODO: Docs
+targeted_decisions = single_alias_right[filtered_decisions]
+# TODO: Docs
+settlement_decision = single_alias_right[filtered_decisions_settlements]
+# TODO: Docs
+title_decision = single_alias_right[filtered_decisions_titles]
+# TODO: Docs
+offmap_decision = single_alias_right[general_offmap_decisions]

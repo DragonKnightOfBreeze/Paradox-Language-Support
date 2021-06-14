@@ -1,0 +1,108 @@
+# Stuff in game/common
+
+types = {
+    # Maybe sometime in the future to help catch bugs in vanilla? :)
+    # type[achievement]
+
+    type[hint] = {
+        path_strict = yes
+        path = "game/common"
+        path_file = "hints.txt"
+    }
+
+    # Couldn't figure that one out, it's arcane
+    # type[region_color]
+
+    # Static modifiers will need to be done via a different file because each in vanilla is unique, must exist and has its specific scopes.
+
+    type[technology_group] = {
+        path_strict = yes
+        path = "game/common"
+        path_file = "technology.txt"
+
+        localisation = {
+            name = "$"
+        }
+    }
+
+    type[technology] = {
+        path_strict = yes
+        path = "game/common"
+        path_file = "technology.txt"
+        skip_root_key = any
+
+        localisation = {
+            name = "$"
+            description = "$_DESC"
+        }
+    }
+
+    type[static_modifier] = {
+        path_strict = yes
+        path = "game/common"
+        path_file = "static_modifiers.txt"
+
+        localisation = {
+            ## optional
+            name = "$"
+            ## optional
+            description = "desc_$"
+        }
+    }
+}
+
+# TODO: Figure out what most of these things mean
+hint = {
+    window = <gui_window>
+
+    anchor = bool
+
+    ## cardinality = 0..1
+    ### If yes, cannot be disabled, and is not hidden if another hint is shown
+    sticky = bool
+
+    title = localisation
+
+    ## cardinality = 1..inf
+    text = localisation
+
+    ## cardinality = 0..inf
+    ### Note that this is attached to the text = localisation just before it.
+    list_box_text = localisation
+
+    ## cardinality = 0..1
+    next_hint = <hint>
+}
+
+# TODO: Figure out scope
+# Because I have zero idea what scope is used.
+technology_group = {
+    ## cardinality = 1..inf
+    <technology> = {
+        ### Modifiers are multiplied by [current level]/[max level].
+        modifier = {
+            alias_name[modifier] = alias_match_left[modifier]
+        }
+
+        # TODO: Confirm
+        ## cardinality = 1..8
+        ### Specific decisions and buildings unlocked at a given technology level. PROBABLY Matters only for the UI.
+        enum[technology_levels] = {
+            ## cardinality = 0..inf
+            add_building = <building>
+            ## cardinality = 0..inf
+            add_decision = <decision>
+        }
+    }
+}
+
+# Scopes vary by modifier, no way am I going to categorise them. TODO: categorise them.
+## replace_scope = { this = any root = any }
+static_modifier = {
+    ## cardinality = 0..1
+    ### The icon to use for the event modifier. Frames of GFX_modifier_icons.
+    icon = enum[event_modifier_icons]
+
+    ## cardinality = 0..inf
+    alias_name[modifier] = alias_match_left[modifier]
+}

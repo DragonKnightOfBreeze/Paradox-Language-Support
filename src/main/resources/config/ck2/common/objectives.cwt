@@ -1,0 +1,502 @@
+
+types = {
+    type[objective] = {
+        path_strict = yes
+        path = "game/common/objectives"
+
+        ## starts_with = obj_
+        subtype[ambition] = {
+
+        }
+
+        ## starts_with = faction_
+        subtype[faction] = {
+
+        }
+
+        ## starts_with = faction_
+        subtype[faction_character] = {
+            type = character
+        }
+
+        ## starts_with = faction_
+        subtype[faction_liege_titles] = {
+            type = liege_titles
+        }
+
+        ## starts_with = faction_
+        subtype[faction_liege_titles_w_claimant] = {
+            type = liege_titles_w_claimant
+        }
+
+        ## starts_with = focus_
+        subtype[focus] = {
+
+        }
+
+        ## starts_with = plot_
+        subtype[plot] = {
+
+        }
+
+        subtype[targets_character] = {
+            type = enum[objective_types_character]
+        }
+
+        subtype[targets_title] = {
+            type = enum[objective_types_title]
+        }
+
+        localisation = {
+            ## required
+            name = "$_title"
+
+            ## required
+            description = "$_desc"
+
+            # TODO: figure out tooltip rules
+            ## optional
+            tooltip = "tooltip_$"
+
+            ## optional
+            success_tooltip = "tooltip_$_success"
+
+            subtype[focus] = {
+                ## required
+                modifier = modifier_name
+            }
+        }
+    }
+}
+
+# Default scope for focus modifiers.
+## replace_scope = { this = character root = character }
+objective = {
+    subtype[ambition] = {
+        ### Determines the initial target pool of the ambition, further narrowed down in the allow section, if necessary.
+        type = enum[objective_types_ambition]
+    }
+    subtype[faction] = {
+        ### Determines the initial target pool of the faction, further narrowed down in the allow section, if necessary.
+        type = enum[objective_types_faction]
+    }
+    subtype[focus] = {
+        ### Determines the initial target pool of the focus, further narrowed down in the allow section, if necessary.
+        type = enum[objective_types_focus]
+    }
+    subtype[plot] = {
+        ### Determines the initial target pool of the plot, further narrowed down in the allow section, if necessary.
+        type = enum[objective_types_plot]
+    }
+
+    # Various stuff
+    subtype[ambition] = {
+        # TODO: Confirm.
+        ## cardinality = 0..1
+        ### If yes, this'll help the AI prioritise. Defaults to "no".
+        is_job_ambition = bool
+
+        # TODO: Figure out
+        ## cardinality = 0..1
+        ### UNKNOWN. Defaults to "no".
+        expectation_of_liege = bool
+
+        ## cardinality = 0..1
+        ### If yes, AI characters with this ambition will actually focus on taking the kingdom. Defaults to "no".
+        ai_capital_kingdom_focus = bool
+
+        ## cardinality = 0..1
+        ### If no, the ambition cannot be cancelled. Defaults to "yes".
+        can_cancel = bool
+    }
+
+    subtype[faction] = {
+        ### At this level of faction power we give player an alert. Set to 0 for no alerts.
+        warning_level = float
+
+        ## cardinality = 0..1
+        ### If yes, characters can only lead or be in one faction of this type. Defaults to "no".
+        exclusive = bool
+
+        ## cardinality = 0..1
+        ### If yes, members consider the "real" pope to be the rightful religious head. Defaults to "no".
+        rel_head_loyalist = bool
+
+        ## cardinality = 0..1
+        ### If yes, the faction will not automatically continue under a new leader. Defaults to "no".
+        cancel_on_leader_death = bool
+
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character fromfrom = character }
+            ### AI membership weight. ROOT is the prospective member, FROM is the faction leader, FROMFROM is the target character.
+            membership = {
+                factor = int
+
+                ## cardinality = 0..inf
+                alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+            }
+        }
+
+        subtype[targets_title] = {
+            ## replace_scope = { this = character root = character from = character fromfrom = title }
+            ### AI membership weight. ROOT is the prospective member, FROM is the faction leader, FROMFROM is the target title.
+            membership = {
+                factor = int
+
+                ## cardinality = 0..inf
+                alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+            }
+        }
+    }
+
+    subtype[focus] = {
+        # Maybe not just focus, but I think vanilla only has this for focii. TODO: Figure out.
+        ## cardinality = 0..inf
+        ### Modifiers applied while the focus is active.
+        alias_name[modifier] = alias_match_left[modifier]
+
+        ### Dunno what that does. TODO: figure out.
+        modifier_name = localisation
+
+        ## cardinality = 0..1
+        ### Traits that can be gained via this focus.
+        potential_traits = {
+            ## cardinality = 1..inf
+            <trait>
+        }
+
+        ## cardinality = 0..1
+        ### Traits that positively influence the focus.
+        good_traits = {
+            ## cardinality = 1..inf
+            <trait>
+        }
+
+        ## cardinality = 0..1
+        ### Traits that negatively influence the focus.
+        bad_traits = {
+            ## cardinality = 1..inf
+            <trait>
+        }
+    }
+
+    # TODO: figure out
+    # Supporter pools for plots
+
+    subtype[plot] = {
+        ## cardinality = 0..1
+        ### If yes, ???. Defaults to "no".
+        intrigue_plot = bool
+
+        ## cardinality = 0..1
+        ## replace_scope = { this = character root = character from = character fromfrom = character }
+        ### When trigger fulfilled, anyone within the society can be invited. ROOT is the plotter. FROM is the target. FROMFROM is the society
+        society_plot = single_alias_right[trigger_clause]
+
+        subtype[targets_character] = {
+            ## cardinality = 0..1
+            ### If yes, ???. Defaults to "no".
+            murder_plot = bool
+        }
+
+        subtype[targets_title] = {
+            ## cardinality = 0..1
+            ### If yes, ???. Defaults to "no".
+            vassal_rank_plot = bool
+
+            ## cardinality = 0..1
+            ### If yes, ???. Defaults to "no".
+            vassal_intrigue_plot = bool
+
+            ## cardinality = 0..1
+            ### If yes, ???. Defaults to "no".
+            military_plot = bool
+        }
+    }
+
+    ## replace_scope = { this = character root = character }
+    ### Conditions for a character to have access to the objective. ROOT is the character.
+    potential = single_alias_right[trigger_clause]
+
+    # target_potential
+
+    subtype[plot] = {
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for a character to be eligible as a target for the plot. ROOT is the target, FROM is the plotter.
+            target_potential = single_alias_right[trigger_clause]
+        }
+
+        subtype[targets_title] = {
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for a title to be eligible as a target for the plot. ROOT is the target, FROM is the plotter.
+            target_potential = single_alias_right[trigger_clause]
+        }
+    }
+
+    # allow, player_allow, allow_join
+    # TODO: Lots of docs to confirm and elaborate in this section
+
+    # TODO: see if this makes the ambition grayed out or just invisible? I don't think I've ever seen a grayed out ambition in the list
+    subtype[ambition] = {
+        ## replace_scope = { this = character root = character }
+        ### Conditions for an ambition to be shown but be ineligible for selection. Probably. UNCONFIRMED. ROOT is the character.
+        allow = single_alias_right[trigger_clause]
+    }
+
+    subtype[faction] = {
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for a faction to be shown but not allowed to be joined. ROOT is the target, FROM is the faction member.
+            allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for a faction to be shown but not allowed to be joined. For players or something. ROOT is the target, FROM is the faction member.
+            player_allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for being allowed to join a faction. ROOT is the target, FROM is the joiner.
+            allow_join = single_alias_right[trigger_clause]
+        }
+
+        subtype[targets_title] = {
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for a faction to be shown but not allowed to be joined. ROOT is the target, FROM is the faction member.
+            allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for a faction to be shown but not allowed to be joined. For players or something. ROOT is the target, FROM is the faction member.
+            player_allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for being allowed to join a faction. ROOT is the target, FROM is the joiner.
+            allow_join = single_alias_right[trigger_clause]
+        }
+    }
+
+    subtype[focus] = {
+        ## replace_scope = { this = character root = character }
+        ### Conditions for a focus to be shown but be ineligible for selection. ROOT is the character.
+        allow = single_alias_right[trigger_clause]
+    }
+
+    subtype[plot] = {
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for a plot to be shown but not allowed to be joined. ROOT is the target, FROM is the plotter.
+            allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for a plot to be shown but not allowed to be joined. For players or something. ROOT is the target, FROM is the plotter.
+            player_allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = character root = character from = character fromfrom = character }
+            ### Conditions for being allowed to join a plot. ROOT is the target, FROM is the joiner, FROMFROM is the plotter.
+            allow_join = single_alias_right[trigger_clause]
+        }
+
+        subtype[targets_title] = {
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for a plot to be shown but not allowed to be joined. ROOT is the target, FROM is the plotter.
+            allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for a plot to be shown but not allowed to be joined. For players or something. ROOT is the target, FROM is the plotter.
+            player_allow = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = title root = title from = character fromfrom = character }
+            ### Conditions for being allowed to join a plot. ROOT is the target, FROM is the joiner, FROMFROM is the plotter.
+            allow_join = single_alias_right[trigger_clause]
+        }
+    }
+
+    # creation_effect, abort_effect, effect
+
+    subtype[ambition] = {
+        ## replace_scope = { this = character root = character }
+        ### Effects to execute when the ambition is started. ROOT is the character.
+        creation_effect = {
+            ## cardinality = 0..inf
+            alias_name[effect] = alias_match_left[effect]
+        }
+
+        ## replace_scope = { this = character root = character }
+        ### Effects to execute when the ambition is cancelled. ROOT is the character.
+        abort_effect = {
+            ## cardinality = 0..inf
+            alias_name[effect] = alias_match_left[effect]
+        }
+
+        ## replace_scope = { this = character root = character }
+        ### Effects to execute when the ambition succeeds. ROOT is the character.
+        effect = {
+            ## cardinality = 0..inf
+            alias_name[effect] = alias_match_left[effect]
+        }
+    }
+
+    subtype[faction] = {
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character }
+            ### Effects to execute when the faction is dispersed. ROOT is the target, FROM is the faction member.
+            abort_effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+
+            ## replace_scope = { this = character root = character from = character }
+            ### Effects to execute when the faction succeeds. ROOT is the target, FROM is the faction member.
+            effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+        }
+        subtype[targets_title] = {
+            ## replace_scope = { this = title root = title from = character }
+            ### Effects to execute when the faction is dispersed. ROOT is the target, FROM is the faction member.
+            abort_effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+
+            ## replace_scope = { this = title root = title from = character }
+            ### Effects to execute when the faction succeeds. ROOT is the target, FROM is the faction member.
+            effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+        }
+    }
+
+    subtype[focus] = {
+        ## replace_scope = { this = character root = character }
+        ### Effects to execute when the focus is selected. ROOT is the character.
+        creation_effect = {
+            ## cardinality = 0..inf
+            alias_name[effect] = alias_match_left[effect]
+        }
+
+        ## replace_scope = { this = character root = character }
+        ### Effects to execute when the focus is cancelled. ROOT is the character.
+        abort_effect = {
+            ## cardinality = 0..inf
+            alias_name[effect] = alias_match_left[effect]
+        }
+    }
+
+    subtype[plot] = {
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character }
+            ### Effects to execute when the plot is started. ROOT is the target, FROM is the plotter.
+            creation_effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+
+            ## replace_scope = { this = character root = character from = character }
+            ### Effects to execute when the plot is cancelled. ROOT is the target, FROM is the plotter.
+            abort_effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+
+            ## replace_scope = { this = character root = character from = character }
+            ### Effects to execute when the plot succeeds. ROOT is the target, FROM is the plotter.
+            effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+        }
+        subtype[targets_title] = {
+            ## replace_scope = { this = title root = title from = character }
+            ### Effects to execute when plot is started. ROOT is the target, FROM is the plotter.
+            creation_effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+
+            ## replace_scope = { this = title root = title from = character }
+            ### Effects to execute when the plot is cancelled. ROOT is the target, FROM is the plotter.
+            abort_effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+
+            ## replace_scope = { this = title root = title from = character }
+            ### Effects to execute when the plot succeeds. ROOT is the target, FROM is the plotter.
+            effect = {
+                ## cardinality = 0..inf
+                alias_name[effect] = alias_match_left[effect]
+            }
+        }
+    }
+
+    # success, abort
+
+    subtype[ambition] = {
+        ## replace_scope = { this = character root = character }
+        ### Conditions for the ambition to count as being successfully completed. ROOT is the character.
+        success = single_alias_right[trigger_clause]
+
+        ## replace_scope = { this = character root = character }
+        ### Conditions for the ambition to automatically abort. ROOT is the character.
+        abort = single_alias_right[trigger_clause]
+    }
+
+    subtype[faction] = {
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for the faction to count as being successful. ROOT is the target, FROM is the faction member.
+            success = single_alias_right[trigger_clause]
+        }
+        subtype[targets_title] = {
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for the plot to count as being successful. ROOT is the target, FROM is the faction member.
+            success = single_alias_right[trigger_clause]
+        }
+
+        ### Not used, use potential/allow instead.
+        abort = single_alias_right[trigger_clause]
+    }
+
+    subtype[focus] = {
+        ## replace_scope = { this = character root = character }
+        ### Conditions for the focus to count as being successfully completed. ROOT is the character. Usually always = no for focii.
+        success = single_alias_right[trigger_clause]
+
+        ## replace_scope = { this = character root = character }
+        ### Conditions for the focus to automatically abort. ROOT is the character.
+        abort = single_alias_right[trigger_clause]
+    }
+
+    subtype[plot] = {
+        subtype[targets_character] = {
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for the plot to count as being successfully completed. ROOT is the target, FROM is the plotter.
+            success = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = character root = character from = character }
+            ### Conditions for the plot to automatically abort. ROOT is the target, FROM is the plotter.
+            abort = single_alias_right[trigger_clause]
+        }
+        subtype[targets_title] = {
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for the plot to count as being successfully completed. ROOT is the target, FROM is the plotter.
+            success = single_alias_right[trigger_clause]
+
+            ## replace_scope = { this = title root = title from = character }
+            ### Conditions for the plot to automatically abort. ROOT is the target, FROM is the plotter.
+            abort = single_alias_right[trigger_clause]
+        }
+    }
+
+    # TODO: See if additive modifier works.
+    ## cardinality = 0..1
+    ### Weight for AI's selection of the objective. If below OBJECTIVE_DISCARD_WEIGHT_THRESHOLD, the objective will not be eligible for selection at all.
+    chance = {
+        factor = int
+
+        ## cardinality = 0..1
+        alias_name[multiplicative_modifier] = alias_match_left[multiplicative_modifier]
+    }
+}

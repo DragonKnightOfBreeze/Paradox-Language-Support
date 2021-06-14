@@ -1,0 +1,14 @@
+types = {
+    type[sound] = {
+        path_strict = yes
+        path_file = "sound.sfx"
+		path = "game/interface"
+    }
+}
+
+# TODO: Docs, cardinality and stuff
+sound = {
+    file = filepath[sound/]
+    volume = int
+    on_demand = bool
+}

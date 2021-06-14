@@ -53,8 +53,8 @@ STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 OPTION_VALUE_STRING_TOKEN=([^\s])|([^\s][^\r\n]*[^\s]) //option.value可以无需双引号直接包含空格，但开始和末尾不会是空格
 DOCUMENTATION_TOKEN=[^\r\n]*
 
-IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({SPACE})?=
-IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
+IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({SPACE})?((=)|(<>))
+IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?((=)|(<>))
 
 %%
 <YYINITIAL> {
@@ -92,6 +92,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?=
   "{" {yybegin(YYINITIAL); return LEFT_BRACE;}
   "}" {yybegin(YYINITIAL); return RIGHT_BRACE;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
+  "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
     
   {COMMENT} {return COMMENT;}
 }
