@@ -237,7 +237,7 @@
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionLocalisationLineMarkerProvider"/>
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
-    
+   
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 

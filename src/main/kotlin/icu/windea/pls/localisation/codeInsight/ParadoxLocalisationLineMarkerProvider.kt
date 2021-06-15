@@ -49,7 +49,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			.setTooltipText(tooltip)
 			.setPopupTitle(_title)
 			.setTargets(targets)
-			.setAlignment(GutterIconRenderer.Alignment.LEFT)
+			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { _name }
 			.createLineMarkerInfo(targetElement)
 	}
@@ -91,7 +91,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	//			else -> NavigationUtil.getPsiElementPopup(elements, _title).show(RelativePoint(mouseEvent))
 	//		}
 	//	},
-	//	GutterIconRenderer.Alignment.LEFT,
+	//	GutterIconRenderer.Alignment.RIGHT,
 	//	{ _name }
 	//)
 }

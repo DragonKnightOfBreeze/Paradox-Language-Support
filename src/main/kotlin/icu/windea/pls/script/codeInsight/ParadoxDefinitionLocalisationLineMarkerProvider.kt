@@ -50,7 +50,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerPro
 			.setTooltipText(tooltip)
 			.setPopupTitle(_title)
 			.setTargets(targets)
-			.setAlignment(GutterIconRenderer.Alignment.LEFT)
+			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { _name }
 			.createLineMarkerInfo(targetElement)
 	}
