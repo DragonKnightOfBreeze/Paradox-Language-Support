@@ -45,43 +45,4 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			.setNamer { _name }
 			.createLineMarkerInfo(targetElement)
 	}
-	
-	//override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
-	//	return when(element) {
-	//		//必须是scriptProperty，且必须是definition
-	//		is ParadoxScriptProperty -> {
-	//			val definition = element.paradoxDefinitionInfo ?: return null
-	//			LineMarker(element, definition)
-	//		}
-	//		else -> null
-	//	}
-	//}
-	//
-	//
-	//class LineMarker(
-	//	element: ParadoxScriptProperty,
-	//	definitionInfo: ParadoxDefinitionInfo
-	//) : RelatedItemLineMarkerInfo<PsiElement>(
-	//	element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
-	//	element.textRange,
-	//	definitionGutterIcon,
-	//	{
-	//		buildString {
-	//			val name = definitionInfo.name
-	//			val typeText = definitionInfo.typeText
-	//			append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
-	//		}
-	//	},
-	//	{ mouseEvent, _ ->
-	//		val project = element.project
-	//		val elements = findDefinitions(definitionInfo.name,definitionInfo.type,project).toTypedArray()
-	//		when(elements.size) {
-	//			0 -> {}
-	//			1 -> OpenSourceUtil.navigate(true, elements.first())
-	//			else -> NavigationUtil.getPsiElementPopup(elements, _title).show(RelativePoint(mouseEvent))
-	//		}
-	//	},
-	//	GutterIconRenderer.Alignment.RIGHT,
-	//	{ _name }
-	//)
 }

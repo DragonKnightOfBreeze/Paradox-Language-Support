@@ -54,49 +54,4 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerPro
 			.setNamer { _name }
 			.createLineMarkerInfo(targetElement)
 	}
-	
-	//override fun getLineMarkerInfo(element: PsiElement): LineMarker? {
-	//	return when(element) {
-	//		//必须是scriptProperty，且必须是definition，且definition的localisation不能为空
-	//		is ParadoxScriptProperty -> {
-	//			val definition = element.paradoxDefinitionInfo ?: return null
-	//			if(definition.localisation.isEmpty()) return null
-	//			LineMarker(element, definition)
-	//		}
-	//		else -> null
-	//	}
-	//}
-	//
-	//class LineMarker(
-	//	element: ParadoxScriptProperty,
-	//	definitionInfo: ParadoxDefinitionInfo
-	//) : LineMarkerInfo<PsiElement>(
-	//	element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! },
-	//	element.textRange,
-	//	definitionLocalisationGutterIcon,
-	//	{
-	//		buildString {
-	//			val localisation = definitionInfo.localisation
-	//			var isFirst = true
-	//			for((n, kn) in localisation) {
-	//				if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
-	//				if(isFirst) isFirst = false else appendBr()
-	//				append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
-	//			}
-	//		}
-	//	},
-	//	{ mouseEvent, _ ->
-	//		val keyNames = definitionInfo.localisationKeyNames
-	//		val project = element.project
-	//		val elements = findLocalisationsByNames(keyNames, null, project, hasDefault = true, keepOrder = true).toTypedArray()
-	//		when(elements.size) {
-	//			0 -> {
-	//			}
-	//			1 -> OpenSourceUtil.navigate(true, elements.first())
-	//			else -> NavigationUtil.getPsiElementPopup(elements, _title).show(RelativePoint(mouseEvent))
-	//		}
-	//	},
-	//	GutterIconRenderer.Alignment.RIGHT,
-	//	{ _name }
-	//)
 }

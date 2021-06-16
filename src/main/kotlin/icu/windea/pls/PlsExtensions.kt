@@ -119,9 +119,9 @@ val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
 //		return config.commandFieldMap[name]
 //	}
 
-val PsiElement.paradoxLocale: ParadoxLocale? get() = getLocale(this)
+val PsiElement.paradoxLocale: ParadoxLocale? get() = doGetLocale(this)
 
-private fun getLocale(element: PsiElement): ParadoxLocale? {
+private fun doGetLocale(element: PsiElement): ParadoxLocale? {
 	return when(val file = element.containingFile) {
 		is ParadoxScriptFile -> inferParadoxLocale()
 		is ParadoxLocalisationFile -> file.locale?.paradoxLocale
@@ -131,9 +131,9 @@ private fun getLocale(element: PsiElement): ParadoxLocale? {
 
 val VirtualFile.paradoxFileInfo: ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 
-val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.originalFile) //使用原始文件
+val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = doGetFileInfo(this.originalFile) //使用原始文件
 
-val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = getFileInfo(this.containingFile)
+val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = doGetFileInfo(this.containingFile)
 
 internal fun canGetFileInfo(file: PsiFile): Boolean {
 	//paradoxScriptFile, paradoxLocalisationFile, ddsFile
@@ -143,7 +143,7 @@ internal fun canGetFileInfo(file: PsiFile): Boolean {
 	return false
 }
 
-private fun getFileInfo(file: PsiFile): ParadoxFileInfo? {
+private fun doGetFileInfo(file: PsiFile): ParadoxFileInfo? {
 	if(!canGetFileInfo(file)) return null
 	//尝试基于fileViewProvider得到fileInfo
 	val quickFileInfo = file.getUserData(paradoxFileInfoKey)
@@ -218,11 +218,12 @@ private fun getGameType(file: PsiDirectory): ParadoxGameType? {
 	return null
 }
 
-val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = inferDefinitionInfo(this)
+val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
-private fun inferDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
+private fun doGetDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
-		CachedValueProvider.Result.create(resolveDefinitionInfo(element), element)
+		val value = resolveDefinitionInfo(element)
+		CachedValueProvider.Result.create(value, element)
 	}
 }
 
@@ -235,7 +236,7 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val elementName = element.name
 	val project = element.project
 	val configGroup = getConfig(project)[gameType] //这里需要指定project
-	return configGroup.inferDefinitionInfo(element, elementName, path, propertyPath)
+	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath)
 }
 
 fun ParadoxScriptValue.getType(): String? {
@@ -343,11 +344,12 @@ fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDef
 	return null
 }
 
-val ParadoxLocalisationProperty.paradoxLocalisationInfo: ParadoxLocalisationInfo? get() = inferLocalisationInfo(this)
+val ParadoxLocalisationProperty.paradoxLocalisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)
 
-private fun inferLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxLocalisationInfoKey) {
-		CachedValueProvider.Result.create(resolveLocalisationInfo(element), element)
+		val value = resolveLocalisationInfo(element)
+		CachedValueProvider.Result.create(value, element)
 	}
 }
 

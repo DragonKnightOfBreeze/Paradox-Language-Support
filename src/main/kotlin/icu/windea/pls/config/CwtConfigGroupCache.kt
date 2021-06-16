@@ -210,7 +210,7 @@ class CwtConfigGroupCache(
 	/**
 	 * 根据指定的scriptProperty，匹配类型规则，得到对应的definitionInfo。
 	 */
-	fun inferDefinitionInfo(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): ParadoxDefinitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
 				return toDefinitionInfo(typeConfig, element, elementName)
