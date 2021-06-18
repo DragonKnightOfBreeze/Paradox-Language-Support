@@ -5,7 +5,6 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
-import java.util.concurrent.*
 
 class CwtConfigGroupCache(
 	val group: Map<String, CwtConfig>,
@@ -20,58 +19,176 @@ class CwtConfigGroupCache(
 	//? -> type[?] = { ... }
 	val types: Map<String, CwtTypeConfig>
 	
-	//? -> [a, b, 1, 2, yes]
+	//? -> { a b 1 2 yes ... }
 	//枚举值也有可能是int、number、bool类型，这里统一用字符串表示
 	val enums: Map<String, List<String>>
+	
+	//? -> ? = { ... }
+	val links: Map<String, CwtLinkConfig>
+	
+	//? -> ? = { country planet ... }
+	val localisationCommands: Map<String, List<String>>
+	
+	//? -> ? = { ... }
+	val localisationLinks: Map<String, CwtLinkConfig>
+	
+	//? -> ? = { ... }
+	val modifierCategories: Map<String, CwtModifyCategoryConfig>
+	
+	//? -> ? = { ... }
+	val scopes: Map<String, CwtScopeConfig>
+	
+	//? -> ? = { country planet ... }
+	val scopeGroups: Map<String, List<String>>
 	
 	//? -> alias[?] = ...
 	//? -> alias[?] = { ... }
 	val aliases: Map<String, CwtConfigProperty>
 	
+	//? -> ? = { ... subtype[...] = { ... } ... }
+	val definitions: Map<String, CwtDefinitionConfig>
+	
 	init {
 		logger.info("Resolve config group '$name'...")
 		
-		types = ConcurrentHashMap()
-		enums = ConcurrentHashMap()
-		aliases = ConcurrentHashMap()
+		types = mutableMapOf()
+		enums = mutableMapOf()
+		links = mutableMapOf()
+		localisationCommands = mutableMapOf()
+		localisationLinks = mutableMapOf()
+		modifierCategories = mutableMapOf()
+		scopes = mutableMapOf()
+		scopeGroups = mutableMapOf()
+		aliases = mutableMapOf()
+		definitions = mutableMapOf()
 		
-		for((_, config) in group) {
-			for(prop in config.properties) {
-				val key = prop.key
+		for((_, rootProperty) in group) {
+			for(property in rootProperty.properties) {
+				val key = property.key
 				when(key) {
 					//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
 					"types" -> {
-						val typeProperties = prop.properties
-						if(typeProperties != null && typeProperties.isNotEmpty()) {
-							for(typeProperty in typeProperties) {
-								val typeName = resolveTypeName(typeProperty.key)
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val typeName = resolveTypeName(prop.key)
 								if(typeName != null && typeName.isNotEmpty()) {
-									types[typeName] = resolveTypeConfig(typeProperty, typeName) ?: continue
+									val typeConfig = resolveTypeConfig(prop, typeName)
+									if(typeConfig != null) {
+										types[typeName] = typeConfig
+									}
 								}
 							}
 						}
-						continue
 					}
 					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums中
 					"enums" -> {
-						val enumProperties = prop.properties
-						if(enumProperties != null && enumProperties.isNotEmpty()) {
-							for(enumProperty in enumProperties) {
-								val enumName = resolveEnumName(enumProperty.key)
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val enumName = resolveEnumName(prop.key)
 								if(enumName != null && enumName.isNotEmpty()) {
-									enums[enumName] = resolveEnumConfig(enumProperty) ?: continue
+									val enumConfig = resolveEnumConfig(prop)
+									if(enumConfig != null) {
+										enums[enumName] = enumConfig
+									}
 								}
 							}
 						}
-						continue
 					}
-				}
-				//判断配置文件中的顶级的key是否匹配"alias[?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
-				val aliasName = resolveAliasName(key)
-				if(aliasName != null) {
-					if(aliasName.isEmpty()) continue //忽略aliasName为空字符串的情况
-					val aliasProperty = prop
-					aliases[aliasName] = aliasProperty
+					//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
+					"links" -> {
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val linkName = key
+								val linkConfig = resolveLinkConfig(prop)
+								if(linkConfig != null) {
+									links[linkName] = linkConfig
+								}
+							}
+						}
+					}
+					//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
+					"localisation_commands" -> {
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val commandName = key
+								val commandConfig = resolveLocalisationCommandConfig(prop)
+								if(commandConfig != null) {
+									localisationCommands[commandName] = commandConfig
+								}
+							}
+						}
+					}
+					//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
+					"localisation_links" -> {
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val linkName = key
+								val linkConfig = resolveLinkConfig(prop)
+								if(linkConfig != null) {
+									localisationLinks[linkName] = linkConfig
+								}
+							}
+						}
+					}
+					//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
+					"modifier_categories" -> {
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val categoryName = key
+								val categoryConfig = resolveModifierCategoryConfig(prop)
+								if(categoryConfig != null) {
+									modifierCategories[categoryName] = categoryConfig
+								}
+							}
+						}
+					}
+					//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
+					"scopes" -> {
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val scopeName = key
+								val scopeConfig = resolveScopeConfig(prop)
+								if(scopeConfig != null) {
+									scopes[scopeName] = scopeConfig
+								}
+							}
+						}
+					}
+					//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
+					"scope_groups" -> {
+						val props = property.properties
+						if(props != null && props.isNotEmpty()) {
+							for(prop in props) {
+								val scopeGroupName = key
+								val scopeGroupConfig = resolveScopeGroupConfig(prop)
+								if(scopeGroupConfig != null) {
+									scopeGroups[scopeGroupName] = scopeGroupConfig
+								}
+							}
+						}
+					}
+					else -> {
+						//判断配置文件中的顶级的key是否匹配"alias[?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
+						val aliasName = resolveAliasName(key)
+						if(aliasName != null && aliasName.isNotEmpty()) {
+							aliases[aliasName] = property
+							continue
+						}
+						
+						//其他情况，放到definition中
+						val definitionName = key
+						val definitionConfig = resolveDefinitionConfig(property,definitionName)
+						if(definitionConfig != null) {
+							definitions[definitionName] = definitionConfig
+						}
+					}
 				}
 			}
 		}
@@ -99,7 +216,7 @@ class CwtConfigGroupCache(
 					"severity" -> resolved.severity = prop.stringValue ?: continue
 					"skip_root_key" -> {
 						//值可能是string也可能是stringArray
-						val list = prop.stringValue?.toSingletonList() ?: prop.values?.map { it.value }
+						val list = prop.stringValueOrValues
 						if(list != null) resolved.skip_root_key.add(list)
 					}
 					"localisation" -> {
@@ -143,7 +260,7 @@ class CwtConfigGroupCache(
 					"type_key_filter" -> {
 						val reversed = option.separator == CwtConfigSeparator.NOT_EQUAL
 						//值可能是string也可能是stringArray
-						val list = option.stringValue?.toSingletonList() ?: option.values?.map { it.value }
+						val list = option.stringValueOrValues
 						resolved.type_key_filter = list?.toReversibleList(reversed)
 					}
 					"graph_related_types" -> {
@@ -169,14 +286,14 @@ class CwtConfigGroupCache(
 					"type_key_filter" -> {
 						val reversed = option.separator == CwtConfigSeparator.NOT_EQUAL
 						//值可能是string也可能是stringArray
-						val list = option.stringValue?.toSingletonList() ?: option.values?.map { it.value }
+						val list = option.stringValueOrValues
 						resolved.type_key_filter = list?.toReversibleList(reversed)
 					}
-					"push_scope" -> resolved.push_scope = option.stringValue ?: continue
-					"starts_with" -> resolved.starts_with = option.stringValue ?: continue
-					"display_name" -> resolved.display_name = option.stringValue ?: continue
-					"abbreviation" -> resolved.abbreviation = option.stringValue ?: continue
-					"only_if_not" -> resolved.only_if_not = option.values?.map { it.value }
+					"push_scope" -> resolved.push_scope = option.stringValue
+					"starts_with" -> resolved.starts_with = option.stringValue
+					"display_name" -> resolved.display_name = option.stringValue
+					"abbreviation" -> resolved.abbreviation = option.stringValue
+					"only_if_not" -> resolved.only_if_not = option.stringValues
 				}
 			}
 		}
@@ -203,8 +320,75 @@ class CwtConfigGroupCache(
 	}
 	
 	private fun resolveEnumConfig(config: CwtConfigProperty): List<String>? {
-		val enumConfigValues = config.values ?: return null
-		return enumConfigValues.map { it.value }
+		return config.values?.map { it.value }
+	}
+	
+	private fun resolveLinkConfig(config: CwtConfigProperty): CwtLinkConfig? {
+		var inputscopes: List<String>? = null
+		var output_scope: String? = null
+		val props = config.properties
+		if(props == null || props.isEmpty()) return null
+		for(prop in props) {
+			when(prop.key) {
+				"inputscopes" -> inputscopes = prop.stringValues
+				"output_scope" -> output_scope = prop.value
+			}
+		}
+		if(inputscopes == null || output_scope == null) return null
+		return CwtLinkConfig(inputscopes, output_scope)
+	}
+	
+	private fun resolveLocalisationCommandConfig(config: CwtConfigProperty): List<String>? {
+		return config.stringValueOrValues
+	}
+	
+	private fun resolveModifierCategoryConfig(config: CwtConfigProperty): CwtModifyCategoryConfig? {
+		var internal_id: Int? = null
+		var supported_scopes: List<String>? = null
+		val props = config.properties
+		if(props == null || props.isEmpty()) return null
+		for(prop in props) {
+			when(prop.key) {
+				"internal_id" -> internal_id = prop.intValue
+				"output_scope" -> supported_scopes = prop.stringValues
+			}
+		}
+		if(internal_id == null || supported_scopes == null) return null
+		return CwtModifyCategoryConfig(internal_id, supported_scopes)
+	}
+	
+	private fun resolveScopeGroupConfig(config: CwtConfigProperty): List<String>? {
+		return config.stringValueOrValues
+	}
+	
+	private fun resolveScopeConfig(config: CwtConfigProperty): CwtScopeConfig? {
+		var aliases: List<String>? = null
+		val props = config.properties
+		if(props == null || props.isEmpty()) return null
+		for(prop in props) {
+			if(prop.key == "aliases") aliases = prop.stringValues
+		}
+		if(aliases == null) return null
+		return CwtScopeConfig(aliases)
+	}
+	
+	private fun resolveDefinitionConfig(config: CwtConfigProperty, name: String): CwtDefinitionConfig? {
+		val props = config.properties
+		val propertiesConfig = mutableListOf<CwtConfigProperty>()
+		val subtypePropertiesConfig = mutableMapOf<String, List<CwtConfigProperty>>()
+		if(props == null) return null //不要排除props是空的情况
+		for(prop in props){
+			val subtypeName = resolveSubtypeName(prop.key)
+			if(subtypeName != null){
+				val properties = prop.properties
+				if(properties != null) {
+					subtypePropertiesConfig[subtypeName] = properties
+				}
+			}else{
+				propertiesConfig += prop
+			}
+		}
+		return CwtDefinitionConfig(name,propertiesConfig, subtypePropertiesConfig)
 	}
 	
 	/**
@@ -370,8 +554,8 @@ class CwtConfigGroupCache(
 		//从推断的cwt规则
 		val names = localisationConfig.map { it.name.lowercase() }
 		for(inferredName in definitionLocalisationNamesToInfer) {
-			val inferredKeyName = inferKeyName(inferredName,names,element)
-			if(inferredKeyName != null){
+			val inferredKeyName = inferKeyName(inferredName, names, element)
+			if(inferredKeyName != null) {
 				val info = ParadoxDefinitionLocalisationInfo(inferredName, inferredKeyName)
 				result.add(info)
 			}
@@ -388,8 +572,8 @@ class CwtConfigGroupCache(
 		}
 	}
 	
-	private fun inferKeyName(name:String,names:List<String>,element: ParadoxScriptProperty):String?{
-		if(name !in names){
+	private fun inferKeyName(name: String, names: List<String>, element: ParadoxScriptProperty): String? {
+		if(name !in names) {
 			return element.findProperty(name, ignoreCase = true)?.propertyValue?.value
 				.castOrNull<ParadoxScriptString>()?.stringValue
 		}

@@ -32,7 +32,7 @@ fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean =
 }
 
 fun CharSequence.surroundsWith(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): Boolean {
-	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
+	return endsWith(suffix, ignoreCase) && startsWith(prefix, ignoreCase) //先匹配后缀，这样可能会提高性能
 }
 
 fun CharSequence.removeSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {

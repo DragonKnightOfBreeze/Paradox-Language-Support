@@ -66,6 +66,12 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
   @Override
   @NotNull
+  public PsiElement getNameIdentifier() {
+    return CwtPsiImplUtil.getNameIdentifier(this);
+  }
+
+  @Override
+  @NotNull
   public String getOptionName() {
     return CwtPsiImplUtil.getOptionName(this);
   }

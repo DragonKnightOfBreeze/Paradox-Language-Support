@@ -111,10 +111,10 @@
 * [X] 修复cwt规则文件解析问题（有时无法解析optionComment中的`<>`）
 * [X] 即使cwt规则文件中没写也为definition补充某些definitionLocalisation，从已有的推断（如果有的话）（name title desc effect） 
 * [X] 实现LineMarkerProviderDescriptor改为实现RelatedItemLineMarkerProvider，从而实现`Go to related symbols`
+* [X] 基于cwt规则文件进一步解析cwt规则，尽管其中一部分暂未使用
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证
-* [ ] 实现基于`cwtConfigGroupsCache`的更加具体的规则
 * [ ] cwt规则文件加载需要一定时间 - 可能需要特殊处理
 * [ ] cwt规则文件并不完整，除了未来可能的PR之外，需要提供方法基于这个插件进行补充
 

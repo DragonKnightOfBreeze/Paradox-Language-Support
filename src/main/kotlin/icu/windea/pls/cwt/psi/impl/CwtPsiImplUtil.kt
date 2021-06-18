@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -23,6 +24,11 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun setName(element: CwtProperty,name:String): PsiElement {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: CwtProperty): PsiElement {
+		return element.propertyKey
 	}
 	
 	@JvmStatic
@@ -55,6 +61,11 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun setName(element: CwtOption,name:String): PsiElement {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: CwtOption): PsiElement {
+		return element.optionKey
 	}
 	
 	@JvmStatic

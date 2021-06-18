@@ -26,11 +26,11 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getSettings() = ParadoxSettingsState.getInstance()
 
-fun getConfig(): CwtConfigGroupsCache {
-	return ServiceManager.getService(getDefaultProject(), CwtConfigGroupProvider::class.java).configGroupsCache
+fun getConfig(): CwtConfigCache {
+	return ServiceManager.getService(getDefaultProject(), CwtConfigProvider::class.java).configGroupsCache
 }
 
-fun getConfig(project: Project) = ServiceManager.getService(project, CwtConfigGroupProvider::class.java).configGroupsCache
+fun getConfig(project: Project) = ServiceManager.getService(project, CwtConfigProvider::class.java).configGroupsCache
 
 fun inferParadoxLocale() = when(System.getProperty("user.language")) {
 	"zh" -> getConfig().localeMap.getValue("l_simp_chinese")
@@ -773,14 +773,6 @@ fun StringBuilder.appendIconTag(url: String, size: Int, local: Boolean = true): 
 
 fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
 	return append("[").append(fileInfo.path).append("]")
-}
-
-fun StringBuilder.appendType(type: ParadoxType, subtypes: List<ParadoxType>): StringBuilder {
-	append(type.name)
-	if(subtypes.isNotEmpty()) {
-		subtypes.joinTo(this, ", ", ", ") { subtype -> subtype.name }
-	}
-	return this
 }
 
 fun StringBuilder.appendBr(): StringBuilder {

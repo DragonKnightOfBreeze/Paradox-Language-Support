@@ -179,7 +179,6 @@ private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProp
 						val enumValues = config.enums[enumExpression] ?: return false
 						if(enumValue !in enumValues) return false
 					}
-					//TODO 不能保证，需要验证
 					//字符串格式是"<type.subtype>"的情况，表示匹配对应类型的definition
 					stringValue.isTypeExpression() -> {
 						if(propValue !is ParadoxScriptString) return false

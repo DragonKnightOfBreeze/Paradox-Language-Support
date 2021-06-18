@@ -9,25 +9,25 @@ import org.slf4j.*
 import org.yaml.snakeyaml.*
 import java.util.concurrent.*
 
-class CwtConfigGroupProvider(
+class CwtConfigProvider(
 	private val project: Project
 ){
 	companion object{
-		private val logger = LoggerFactory.getLogger(CwtConfigGroupProvider::class.java)
+		private val logger = LoggerFactory.getLogger(CwtConfigProvider::class.java)
 		private val yaml = Yaml()
 	}
 	
 	private val groups: MutableMap<String, Map<String, CwtConfig>>
 	private val declarations:MutableMap<String,List<Map<String,Any?>>>
 	
-	internal val configGroupsCache: CwtConfigGroupsCache
+	internal val configGroupsCache: CwtConfigCache
 	
 	init {
 		groups = ConcurrentHashMap<String, Map<String, CwtConfig>>()
 		declarations = ConcurrentHashMap<String,List<Map<String,Any?>>>()
-		configGroupsCache = ReadAction.compute<CwtConfigGroupsCache,Exception> {
+		configGroupsCache = ReadAction.compute<CwtConfigCache,Exception> {
 			initConfigGroups()
-			CwtConfigGroupsCache(groups,declarations,project)
+			CwtConfigCache(groups,declarations,project)
 		}
 	}
 	

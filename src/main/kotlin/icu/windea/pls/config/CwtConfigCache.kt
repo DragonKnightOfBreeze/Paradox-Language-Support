@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 import org.slf4j.*
 
-class CwtConfigGroupsCache(
+class CwtConfigCache(
 	val groups: Map<String, Map<String, CwtConfig>>,
 	val declarations:Map<String,List<Map<String,Any?>>>,
 	val project:Project
