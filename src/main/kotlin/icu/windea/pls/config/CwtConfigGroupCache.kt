@@ -7,27 +7,28 @@ import icu.windea.pls.script.psi.*
 import org.slf4j.*
 
 class CwtConfigGroupCache(
-	val group: Map<String, CwtConfig>,
+	val group: Map<String, CwtConfigFile>,
 	val gameType: ParadoxGameType,
-	val name: String,
 	val project: Project
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
 	}
 	
+	val resolvedConfigs: Map<String, Map<String, CwtConfig>>
+	
 	//? -> type[?] = { ... }
 	val types: Map<String, CwtTypeConfig>
 	
 	//? -> { a b 1 2 yes ... }
 	//枚举值也有可能是int、number、bool类型，这里统一用字符串表示
-	val enums: Map<String, List<String>>
+	val enums: Map<String, CwtEnumConfig>
 	
 	//? -> ? = { ... }
 	val links: Map<String, CwtLinkConfig>
 	
 	//? -> ? = { country planet ... }
-	val localisationCommands: Map<String, List<String>>
+	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
 	
 	//? -> ? = { ... }
 	val localisationLinks: Map<String, CwtLinkConfig>
@@ -39,17 +40,20 @@ class CwtConfigGroupCache(
 	val scopes: Map<String, CwtScopeConfig>
 	
 	//? -> ? = { country planet ... }
-	val scopeGroups: Map<String, List<String>>
+	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	
 	//? -> alias[?] = ...
 	//? -> alias[?] = { ... }
-	val aliases: Map<String, CwtConfigProperty>
+	val aliases: Map<String, CwtAliasConfig>
 	
 	//? -> ? = { ... subtype[...] = { ... } ... }
 	val definitions: Map<String, CwtDefinitionConfig>
 	
+	operator fun get(key: String) = resolvedConfigs.getValue(key)
+	fun getValue(key: String) = resolvedConfigs.getValue(key)
+	
 	init {
-		logger.info("Resolve config group '$name'...")
+		logger.info("Resolve config group '$gameType'...")
 		
 		types = mutableMapOf()
 		enums = mutableMapOf()
@@ -61,6 +65,18 @@ class CwtConfigGroupCache(
 		scopeGroups = mutableMapOf()
 		aliases = mutableMapOf()
 		definitions = mutableMapOf()
+		
+		resolvedConfigs = mutableMapOf()
+		resolvedConfigs["types"] = types
+		resolvedConfigs["enums"] = enums
+		resolvedConfigs["links"] = links
+		resolvedConfigs["localisationCommands"] = localisationCommands
+		resolvedConfigs["localisationLinks"] = localisationLinks
+		resolvedConfigs["modifierCategories"] = modifierCategories
+		resolvedConfigs["scopes"] = scopes
+		resolvedConfigs["scopeGroups"] = scopeGroups
+		resolvedConfigs["aliases"] = aliases
+		resolvedConfigs["definitions"] = definitions
 		
 		for((_, rootProperty) in group) {
 			for(property in rootProperty.properties) {
@@ -88,7 +104,7 @@ class CwtConfigGroupCache(
 							for(prop in props) {
 								val enumName = resolveEnumName(prop.key)
 								if(enumName != null && enumName.isNotEmpty()) {
-									val enumConfig = resolveEnumConfig(prop)
+									val enumConfig = resolveEnumConfig(prop, enumName)
 									if(enumConfig != null) {
 										enums[enumName] = enumConfig
 									}
@@ -102,7 +118,7 @@ class CwtConfigGroupCache(
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
 								val linkName = prop.key
-								val linkConfig = resolveLinkConfig(prop)
+								val linkConfig = resolveLinkConfig(prop, linkName)
 								if(linkConfig != null) {
 									links[linkName] = linkConfig
 								}
@@ -115,7 +131,7 @@ class CwtConfigGroupCache(
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
 								val commandName = prop.key
-								val commandConfig = resolveLocalisationCommandConfig(prop)
+								val commandConfig = resolveLocalisationCommandConfig(prop, commandName)
 								if(commandConfig != null) {
 									localisationCommands[commandName] = commandConfig
 								}
@@ -128,7 +144,7 @@ class CwtConfigGroupCache(
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
 								val linkName = prop.key
-								val linkConfig = resolveLocalisationLinkConfig(prop)
+								val linkConfig = resolveLocalisationLinkConfig(prop, linkName)
 								if(linkConfig != null) {
 									localisationLinks[linkName] = linkConfig
 								}
@@ -141,7 +157,7 @@ class CwtConfigGroupCache(
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
 								val categoryName = prop.key
-								val categoryConfig = resolveModifierCategoryConfig(prop)
+								val categoryConfig = resolveModifierCategoryConfig(prop, categoryName)
 								if(categoryConfig != null) {
 									modifierCategories[categoryName] = categoryConfig
 								}
@@ -154,7 +170,7 @@ class CwtConfigGroupCache(
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
 								val scopeName = prop.key
-								val scopeConfig = resolveScopeConfig(prop)
+								val scopeConfig = resolveScopeConfig(prop, scopeName)
 								if(scopeConfig != null) {
 									scopes[scopeName] = scopeConfig
 								}
@@ -167,7 +183,7 @@ class CwtConfigGroupCache(
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
 								val scopeGroupName = prop.key
-								val scopeGroupConfig = resolveScopeGroupConfig(prop)
+								val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName)
 								if(scopeGroupConfig != null) {
 									scopeGroups[scopeGroupName] = scopeGroupConfig
 								}
@@ -178,7 +194,10 @@ class CwtConfigGroupCache(
 						//判断配置文件中的顶级的key是否匹配"alias[?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
 						val aliasName = resolveAliasName(key)
 						if(aliasName != null && aliasName.isNotEmpty()) {
-							aliases[aliasName] = property
+							val aliasConfig = resolveAliasConfig(property, aliasName)
+							if(aliasConfig != null) {
+								aliases[aliasName] = aliasConfig
+							}
 							continue
 						}
 						
@@ -193,10 +212,10 @@ class CwtConfigGroupCache(
 			}
 		}
 		
-		logger.info("Resolve config group '$name' finished.")
+		logger.info("Resolve config group '$gameType' finished.")
 	}
 	
-	private fun resolveTypeConfig(config: CwtConfigProperty, name: String): CwtTypeConfig? {
+	private fun resolveTypeConfig(configProperty: CwtConfigProperty, name: String): CwtTypeConfig? {
 		var path: String? = null
 		var pathStrict = false
 		var pathFile: String? = null
@@ -213,61 +232,63 @@ class CwtConfigGroupCache(
 		var startsWith: String? = null
 		var graphRelatedTypes: List<String>? = null
 		
-		val props = config.properties?:return null
-		for(prop in props) {
-			val key = prop.key
-			when(key) {
-				//这里path需要移除前缀"game/"，这个插件会忽略它
-				"path" -> path = prop.stringValue?.removePrefix("game/") ?: continue
-				"path_strict" -> pathStrict = prop.booleanValue ?: continue
-				"path_file" -> pathFile = prop.stringValue ?: continue
-				"path_extension" -> pathExtension = prop.stringValue ?: continue
-				"name_field" -> nameField = prop.stringValue ?: continue
-				"name_from_file" -> nameFromFile = prop.booleanValue ?: continue
-				"type_per_file" -> typePerFile = prop.booleanValue ?: continue
-				"unique" -> unique = prop.booleanValue ?: continue
-				"severity" -> severity = prop.stringValue ?: continue
-				"skip_root_key" -> {
-					//值可能是string也可能是stringArray
-					val list = prop.stringValueOrValues
-					if(list != null) skipRootKey.add(list)
-				}
-				"localisation" -> {
-					val propProps = prop.properties
-					if(propProps != null) {
-						for(p in propProps) {
-							val k = p.key
-							val subtypeName = resolveSubtypeName(k)
-							if(subtypeName != null) {
-								val pps = p.properties ?: continue
-								val localisationConfigs = mutableListOf<CwtTypeLocalisationConfig>()
-								for(pp in pps) {
-									val kk = pp.key
-									val localisationConfig = resolveTypeLocalisationConfig(pp, kk) ?: continue
+		val props = configProperty.properties
+		if(props != null && props.isNotEmpty()) {
+			for(prop in props) {
+				val key = prop.key
+				when(key) {
+					//这里path需要移除前缀"game/"，这个插件会忽略它
+					"path" -> path = prop.stringValue?.removePrefix("game/") ?: continue
+					"path_strict" -> pathStrict = prop.booleanValue ?: continue
+					"path_file" -> pathFile = prop.stringValue ?: continue
+					"path_extension" -> pathExtension = prop.stringValue ?: continue
+					"name_field" -> nameField = prop.stringValue ?: continue
+					"name_from_file" -> nameFromFile = prop.booleanValue ?: continue
+					"type_per_file" -> typePerFile = prop.booleanValue ?: continue
+					"unique" -> unique = prop.booleanValue ?: continue
+					"severity" -> severity = prop.stringValue ?: continue
+					"skip_root_key" -> {
+						//值可能是string也可能是stringArray
+						val list = prop.stringValueOrValues
+						if(list != null) skipRootKey.add(list)
+					}
+					"localisation" -> {
+						val propProps = prop.properties
+						if(propProps != null) {
+							for(p in propProps) {
+								val k = p.key
+								val subtypeName = resolveSubtypeName(k)
+								if(subtypeName != null) {
+									val pps = p.properties ?: continue
+									val localisationConfigs = mutableListOf<CwtTypeLocalisationConfig>()
+									for(pp in pps) {
+										val kk = pp.key
+										val localisationConfig = resolveTypeLocalisationConfig(pp, kk) ?: continue
+										localisationConfigs.add(localisationConfig)
+									}
+									localisation.put(subtypeName, localisationConfigs)
+								} else {
+									val localisationConfigs = localisation.getOrPut("") { mutableListOf() }
+									val localisationConfig = resolveTypeLocalisationConfig(p, k) ?: continue
 									localisationConfigs.add(localisationConfig)
 								}
-								localisation.put(subtypeName, localisationConfigs)
-							} else {
-								val localisationConfigs = localisation.getOrPut("") { mutableListOf() }
-								val localisationConfig = resolveTypeLocalisationConfig(p, k) ?: continue
-								localisationConfigs.add(localisationConfig)
 							}
 						}
 					}
 				}
-			}
-			
-			val subtypeName = resolveSubtypeName(key)
-			if(subtypeName != null) {
-				val subtypeConfig = resolveSubtypeConfig(prop, subtypeName)
-				if(subtypeConfig != null) {
-					subtypes[subtypeName] = subtypeConfig
+				
+				val subtypeName = resolveSubtypeName(key)
+				if(subtypeName != null) {
+					val subtypeConfig = resolveSubtypeConfig(prop, subtypeName)
+					if(subtypeConfig != null) {
+						subtypes[subtypeName] = subtypeConfig
+					}
 				}
 			}
 		}
 		
-		val options = config.options
-		if(options != null) {
+		val options = configProperty.options
+		if(options != null && options.isNotEmpty()) {
 			for(option in options) {
 				val key = option.key
 				when(key) {
@@ -288,126 +309,138 @@ class CwtConfigGroupCache(
 		}
 		
 		return CwtTypeConfig(
-			name, path, pathStrict, pathFile, pathExtension, nameField, nameFromFile, typePerFile, unique, severity, 
-			skipRootKey, localisation, subtypes, typeKeyFilter, startsWith, graphRelatedTypes
+			name, path, pathStrict, pathFile, pathExtension, nameField, nameFromFile, typePerFile, unique, severity,
+			skipRootKey, localisation, subtypes, typeKeyFilter, startsWith, graphRelatedTypes, configProperty.pointer
 		)
 	}
 	
-	private fun resolveSubtypeConfig(config: CwtConfigProperty, name: String): CwtSubtypeConfig? {
-		var typeKeyFilter:ReversibleList<String>? = null
-		var pushScope:String? = null
-		var startsWith:String? = null
-		var displayName:String? = null
+	private fun resolveSubtypeConfig(configProperty: CwtConfigProperty, name: String): CwtSubtypeConfig? {
+		var typeKeyFilter: ReversibleList<String>? = null
+		var pushScope: String? = null
+		var startsWith: String? = null
+		var displayName: String? = null
 		var abbreviation: String? = null
 		var onlyIfNot: List<String>? = null
-		val options = config.options?:return null
-		for(option in options) {
-			val key = option.key
-			when(key) {
-				"type_key_filter" -> {
-					val reversed = option.separatorType == SeparatorType.NOT_EQUAL
-					//值可能是string也可能是stringArray
-					val list = option.stringValueOrValues
-					typeKeyFilter = list?.toReversibleList(reversed)
+		val options = configProperty.options
+		if(options != null && options.isNotEmpty()) {
+			for(option in options) {
+				val key = option.key
+				when(key) {
+					"type_key_filter" -> {
+						val reversed = option.separatorType == SeparatorType.NOT_EQUAL
+						//值可能是string也可能是stringArray
+						val list = option.stringValueOrValues
+						typeKeyFilter = list?.toReversibleList(reversed)
+					}
+					"push_scope" -> pushScope = option.stringValue
+					"starts_with" -> startsWith = option.stringValue
+					"display_name" -> displayName = option.stringValue
+					"abbreviation" -> abbreviation = option.stringValue
+					"only_if_not" -> onlyIfNot = option.stringValues
 				}
-				"push_scope" -> pushScope = option.stringValue
-				"starts_with" -> startsWith = option.stringValue
-				"display_name" -> displayName = option.stringValue
-				"abbreviation" -> abbreviation = option.stringValue
-				"only_if_not" -> onlyIfNot = option.stringValues
 			}
 		}
-		return CwtSubtypeConfig(name, config,typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot)
+		return CwtSubtypeConfig(
+			name, configProperty,
+			typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot, configProperty.pointer
+		)
 	}
 	
-	private fun resolveTypeLocalisationConfig(config: CwtConfigProperty, name: String): CwtTypeLocalisationConfig? {
-		val expression = config.stringValue ?: return null
+	private fun resolveTypeLocalisationConfig(configProperty: CwtConfigProperty, name: String): CwtTypeLocalisationConfig? {
+		val expression = configProperty.stringValue ?: return null
 		var required = false
 		var primary = false
-		val optionValues = config.optionValues?:return null
-		for(optionValue in optionValues) {
-			val value = optionValue.stringValue ?: continue
-			when(value) {
-				"required" -> required = true
-				"primary" -> primary = true
+		val optionValues = configProperty.optionValues
+		if(optionValues != null && optionValues.isNotEmpty()) {
+			for(optionValue in optionValues) {
+				val value = optionValue.stringValue ?: continue
+				when(value) {
+					"required" -> required = true
+					"primary" -> primary = true
+				}
 			}
 		}
-		return CwtTypeLocalisationConfig(name, expression, required, primary)
+		return CwtTypeLocalisationConfig(name, expression, required, primary, configProperty.pointer)
 	}
 	
-	private fun resolveEnumConfig(config: CwtConfigProperty): List<String>? {
-		return config.values?.map { it.value }
+	private fun resolveEnumConfig(configProperty: CwtConfigProperty, name: String): CwtEnumConfig? {
+		val values = configProperty.stringValues ?: return null
+		return CwtEnumConfig(name, values, configProperty.pointer)
 	}
 	
-	private fun resolveLinkConfig(config: CwtConfigProperty): CwtLinkConfig? {
+	private fun resolveLinkConfig(configProperty: CwtConfigProperty, name: String): CwtLinkConfig? {
 		var inputscopes: List<String>? = null
-		var output_scope: String? = null
-		val props = config.properties
-		if(props == null || props.isEmpty()) return null
+		var outputscope: String? = null
+		val props = configProperty.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
 				"inputscopes" -> inputscopes = prop.stringValues
-				"output_scope" -> output_scope = prop.value
+				"output_scope" -> outputscope = prop.value
 			}
 		}
-		if(inputscopes == null || output_scope == null) return null
-		return CwtLinkConfig(inputscopes, output_scope)
+		if(inputscopes == null || outputscope == null) return null
+		return CwtLinkConfig(name, inputscopes, outputscope, configProperty.pointer)
 	}
 	
-	private fun resolveLocalisationCommandConfig(config: CwtConfigProperty): List<String>? {
-		return config.stringValueOrValues
+	private fun resolveLocalisationCommandConfig(configProperty: CwtConfigProperty, name: String): CwtLocalisationCommandConfig? {
+		val values = configProperty.stringValueOrValues ?: return null
+		return CwtLocalisationCommandConfig(name, values, configProperty.pointer)
 	}
 	
-	private fun resolveLocalisationLinkConfig(config: CwtConfigProperty): CwtLinkConfig? {
-		var inputscopes: List<String>? = null
-		var output_scope: String? = null
-		val props = config.properties
+	private fun resolveLocalisationLinkConfig(configProperty: CwtConfigProperty, name: String): CwtLinkConfig? {
+		var inputScopes: List<String>? = null
+		var outputScope: String? = null
+		val props = configProperty.properties ?: return null
+		for(prop in props) {
+			when(prop.key) {
+				"input_scopes" -> inputScopes = prop.stringValues
+				"output_scope" -> outputScope = prop.value
+			}
+		}
+		if(inputScopes == null || outputScope == null) return null
+		return CwtLinkConfig(name, inputScopes, outputScope, configProperty.pointer)
+	}
+	
+	private fun resolveModifierCategoryConfig(configProperty: CwtConfigProperty, name: String): CwtModifyCategoryConfig? {
+		var internalId: Int? = null
+		var supportedScopes: List<String>? = null
+		val props = configProperty.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
 			when(prop.key) {
-				"input_scopes" -> inputscopes = prop.stringValues
-				"output_scope" -> output_scope = prop.value
+				"internal_id" -> internalId = prop.intValue
+				"supported_scopes" -> supportedScopes = prop.stringValues
 			}
 		}
-		if(inputscopes == null || output_scope == null) return null
-		return CwtLinkConfig(inputscopes, output_scope)
+		if(internalId == null || supportedScopes == null) return null
+		return CwtModifyCategoryConfig(name, internalId, supportedScopes, configProperty.pointer)
 	}
 	
-	private fun resolveModifierCategoryConfig(config: CwtConfigProperty): CwtModifyCategoryConfig? {
-		var internal_id: Int? = null
-		var supported_scopes: List<String>? = null
-		val props = config.properties
-		if(props == null || props.isEmpty()) return null
-		for(prop in props) {
-			when(prop.key) {
-				"internal_id" -> internal_id = prop.intValue
-				"supported_scopes" -> supported_scopes = prop.stringValues
-			}
-		}
-		if(internal_id == null || supported_scopes == null) return null
-		return CwtModifyCategoryConfig(internal_id, supported_scopes)
-	}
-	
-	private fun resolveScopeGroupConfig(config: CwtConfigProperty): List<String>? {
-		return config.stringValueOrValues
-	}
-	
-	private fun resolveScopeConfig(config: CwtConfigProperty): CwtScopeConfig? {
+	private fun resolveScopeConfig(configProperty: CwtConfigProperty, name: String): CwtScopeConfig? {
 		var aliases: List<String>? = null
-		val props = config.properties
+		val props = configProperty.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
 			if(prop.key == "aliases") aliases = prop.stringValues
 		}
 		if(aliases == null) return null
-		return CwtScopeConfig(aliases)
+		return CwtScopeConfig(name, aliases, configProperty.pointer)
 	}
 	
-	private fun resolveDefinitionConfig(config: CwtConfigProperty, name: String): CwtDefinitionConfig? {
-		val props = config.properties
+	private fun resolveScopeGroupConfig(configProperty: CwtConfigProperty, name: String): CwtScopeGroupConfig? {
+		val values = configProperty.stringValueOrValues ?: return null
+		return CwtScopeGroupConfig(name, values, configProperty.pointer)
+	}
+	
+	
+	private fun resolveAliasConfig(configProperty: CwtConfigProperty, name: String): CwtAliasConfig? {
+		return CwtAliasConfig(name, configProperty, configProperty.pointer)
+	}
+	
+	private fun resolveDefinitionConfig(configProperty: CwtConfigProperty, name: String): CwtDefinitionConfig? {
+		val props = configProperty.properties ?: return null
 		val propertiesConfig = mutableMapOf<String, CwtConfigProperty>()
 		val subtypePropertiesConfig = mutableMapOf<String, MutableMap<String, CwtConfigProperty>>()
-		if(props == null) return null //不要排除props是空的情况
 		for(prop in props) {
 			val properties = prop.properties
 			if(properties != null) {
@@ -422,16 +455,16 @@ class CwtConfigGroupCache(
 				}
 			}
 		}
-		return CwtDefinitionConfig(name, propertiesConfig, subtypePropertiesConfig)
+		return CwtDefinitionConfig(name, propertiesConfig, subtypePropertiesConfig, configProperty.pointer)
 	}
 	
 	/**
 	 * 根据指定的scriptProperty，匹配类型规则，得到对应的definitionInfo。
 	 */
-	fun resolveDefinitionInfo(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): ParadoxDefinitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxScriptProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
-				return toDefinitionInfo(typeConfig, element, elementName)
+				return toDefinitionInfo(typeConfig, element, elementName, fileInfo)
 			}
 		}
 		return null
@@ -519,7 +552,7 @@ class CwtConfigGroupCache(
 		return matchContent(element, elementConfig, this)
 	}
 	
-	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String): ParadoxDefinitionInfo {
+	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxScriptProperty, elementName: String, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, elementName)
 		val typeKey = elementName
 		val type = typeConfig.name
@@ -532,8 +565,8 @@ class CwtConfigGroupCache(
 		val severity = typeConfig.severity
 		val pushScopes = subtypesConfig.map { it.pushScope }
 		return ParadoxDefinitionInfo(
-			name, typeKey, type, subtypes, subtypesConfig, localisation, localisationConfig,
-			graphRelatedTypes, unique, severity, pushScopes
+			name, typeKey, type, typeConfig, subtypes, subtypesConfig, localisation, localisationConfig,
+			graphRelatedTypes, unique, severity, pushScopes, fileInfo
 		)
 	}
 	

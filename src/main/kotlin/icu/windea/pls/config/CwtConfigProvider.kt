@@ -17,13 +17,13 @@ class CwtConfigProvider(
 		private val yaml = Yaml()
 	}
 	
-	private val groups: MutableMap<String, Map<String, CwtConfig>>
+	private val groups: MutableMap<String, Map<String, CwtConfigFile>>
 	private val declarations:MutableMap<String,List<Map<String,Any?>>>
 	
 	internal val configGroupsCache: CwtConfigCache
 	
 	init {
-		groups = ConcurrentHashMap<String, Map<String, CwtConfig>>()
+		groups = ConcurrentHashMap<String, Map<String, CwtConfigFile>>()
 		declarations = ConcurrentHashMap<String,List<Map<String,Any?>>>()
 		configGroupsCache = ReadAction.compute<CwtConfigCache,Exception> {
 			initConfigGroups()
@@ -49,7 +49,7 @@ class CwtConfigProvider(
 					if(project == getDefaultProject()){
 						this.groups[groupName] = emptyMap()
 					}else {
-						val group = ConcurrentHashMap<String, CwtConfig>()
+						val group = ConcurrentHashMap<String, CwtConfigFile>()
 						val groupPath = file.path
 						logger.info("Init config group '$groupName'...")
 						addConfigGroup(group, file, groupPath, project)
@@ -66,7 +66,7 @@ class CwtConfigProvider(
 		logger.info("Init config groups finished.")
 	}
 	
-	private fun addConfigGroup(group:MutableMap<String, CwtConfig>,parentFile: VirtualFile,groupPath:String,project: Project){
+	private fun addConfigGroup(group:MutableMap<String, CwtConfigFile>,parentFile: VirtualFile,groupPath:String,project: Project){
 		for(file in parentFile.children) {
 			//忽略扩展名不匹配的文件
 			when{
@@ -84,7 +84,7 @@ class CwtConfigProvider(
 		}
 	}
 	
-	private fun resolveConfig(file:VirtualFile,project: Project): CwtConfig? {
+	private fun resolveConfig(file:VirtualFile,project: Project): CwtConfigFile? {
 		return try {
 			file.toPsiFile<CwtFile>(project)?.resolveConfig()
 		} catch(e: Exception) {

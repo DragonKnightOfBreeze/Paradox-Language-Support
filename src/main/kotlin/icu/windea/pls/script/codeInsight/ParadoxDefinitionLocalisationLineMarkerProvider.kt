@@ -39,7 +39,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerPro
 			for((n, kn) in localisation) {
 				if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
 				if(isFirst) isFirst = false else appendBr()
-				append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
+				append("(definition localisation) ").append(n).append(" = ").append(kn)
 			}
 		}
 		val keyNames = definitionInfo.localisationKeyNames

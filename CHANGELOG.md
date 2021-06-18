@@ -113,6 +113,7 @@
 * [X] 实现LineMarkerProviderDescriptor改为实现RelatedItemLineMarkerProvider，从而实现`Go to related symbols`
 * [X] 基于cwt规则文件进一步解析cwt规则，尽管其中一部分暂未使用
 * [X] 完善代码风格设置
+* [X] 可以通过定义的文档中的链接跳转到定义的类型和子类型所在的cwt文件
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证

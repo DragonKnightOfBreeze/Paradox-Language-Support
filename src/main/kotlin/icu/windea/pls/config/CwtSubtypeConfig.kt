@@ -1,6 +1,8 @@
 package icu.windea.pls.config
 
+import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 
 /**
  * @property typeKeyFilter (option) type_key_filter: string | string[]
@@ -18,6 +20,7 @@ data class CwtSubtypeConfig(
 	val startsWith: String? = null,
 	val displayName: String? = null,
 	val abbreviation: String? = null,
-	val onlyIfNot: List<String>? = null
-)
+	val onlyIfNot: List<String>? = null,
+	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
+):CwtConfig
 

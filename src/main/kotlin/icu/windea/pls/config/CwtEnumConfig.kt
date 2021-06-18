@@ -3,11 +3,9 @@ package icu.windea.pls.config
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property aliases aliases: string[]
- */
-data class CwtScopeConfig(
+data class CwtEnumConfig(
 	val name:String,
-	val aliases:List<String>,
+	val values:List<String>,
 	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
 ):CwtConfig
+

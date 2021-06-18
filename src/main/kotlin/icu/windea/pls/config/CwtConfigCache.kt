@@ -7,7 +7,7 @@ import icu.windea.pls.model.*
 import org.slf4j.*
 
 class CwtConfigCache(
-	val groups: Map<String, Map<String, CwtConfig>>,
+	val groups: Map<String, Map<String, CwtConfigFile>>,
 	val declarations: Map<String, List<Map<String, Any?>>>,
 	val project: Project
 ) {
@@ -15,7 +15,7 @@ class CwtConfigCache(
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
 	}
 	
-	private val groupCaches: Map<ParadoxGameType, CwtConfigGroupCache>
+	val resolvedGroups: Map<String, CwtConfigGroupCache>
 	
 	val locales: Array<ParadoxLocale>
 	val localeMap: Map<String, ParadoxLocale>
@@ -24,15 +24,19 @@ class CwtConfigCache(
 	val colors: Array<ParadoxColor>
 	val colorMap: Map<String, ParadoxColor>
 	
-	val ck2 get() = get(ParadoxGameType.Ck2)
-	val ck3 get() = get(ParadoxGameType.Ck3)
-	val eu4 get() = get(ParadoxGameType.Eu4)
-	val hoi4 get() = get(ParadoxGameType.Hoi4)
-	val ir get() = get(ParadoxGameType.Ir)
-	val stellaris get() = get(ParadoxGameType.Stellaris)
-	val vic2 get() = get(ParadoxGameType.Vic2)
+	val ck2 get() = getValue(ParadoxGameType.Ck2)
+	val ck3 get() = getValue(ParadoxGameType.Ck3)
+	val eu4 get() = getValue(ParadoxGameType.Eu4)
+	val hoi4 get() = getValue(ParadoxGameType.Hoi4)
+	val ir get() = getValue(ParadoxGameType.Ir)
+	val stellaris get() = getValue(ParadoxGameType.Stellaris)
+	val vic2 get() = getValue(ParadoxGameType.Vic2)
 	
-	operator fun get(gameType: ParadoxGameType) = groupCaches.getValue(gameType)
+	operator fun get(key: String) = resolvedGroups.get(key)
+	fun getValue(key: String) = resolvedGroups.getValue(key)
+	
+	operator fun get(key: ParadoxGameType) = resolvedGroups.get(key.key)
+	fun getValue(key: ParadoxGameType) = resolvedGroups.getValue(key.key)
 	
 	init {
 		logger.info("Resolve declarations...")
@@ -63,11 +67,11 @@ class CwtConfigCache(
 		
 		logger.info("Resolve config groups...")
 		
-		groupCaches = ConcurrentHashMap()
+		resolvedGroups = ConcurrentHashMap()
 		for((groupName, group) in groups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				groupCaches[gameType] = CwtConfigGroupCache(group, gameType, groupName, project)
+				resolvedGroups[groupName] = CwtConfigGroupCache(group, gameType, project)
 			}
 		}
 		

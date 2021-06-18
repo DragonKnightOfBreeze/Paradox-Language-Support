@@ -1,6 +1,9 @@
 package icu.windea.pls.config
 
+import com.intellij.psi.*
+import com.intellij.structuralsearch.plugin.util.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
 data class CwtConfigProperty(
@@ -15,7 +18,8 @@ data class CwtConfigProperty(
 	val documentation: String? = null,
 	val options: List<CwtConfigOption>? = null,
 	val optionValues: List<CwtConfigOptionValue>? = null,
-	val separatorType: SeparatorType = SeparatorType.EQUAL
+	val separatorType: SeparatorType = SeparatorType.EQUAL,
+	val pointer: SmartPsiElementPointer<CwtProperty>? = null
 ) {
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }

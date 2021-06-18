@@ -27,17 +27,17 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(localisation property) <b>").append(element.name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getLocalisationInfo(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo): String {
-		val (name,category) = localisationInfo
+		val (name, category) = localisationInfo
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 		}
@@ -117,17 +117,17 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(localisation property) <b>").append(element.name).append("</b>")
 			}
 		}
 	}
 	
 	private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo): String {
-		val (name,category) = localisationInfo
+		val (name, category) = localisationInfo
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let{ fileInfo -> appendFileInfo(fileInfo).appendBr()}
+				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 			//单行注释文本
@@ -244,6 +244,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
 		if(link == null || context == null) return null
-		return resolveLink(link,context)
+		return resolveLink(link, context)
 	}
 }

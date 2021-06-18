@@ -48,16 +48,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				val name = definitionInfo.name
-				val typeText = definitionInfo.typeText
-				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
-			}
-			if(localisation.isNotEmpty()) {
-				definition {
-					var isFirst = true
+				val typeLinkText = definitionInfo.typeLinkText
+				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
+				
+				if(localisation.isNotEmpty()) {
 					for((n, kn) in localisation) {
 						if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
-						if(isFirst) isFirst = false else appendBr()
-						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
+						appendBr()
+						append("(definition localisation) ").append(n).append(" = ").appendLocalisationLink(kn)
 					}
 				}
 			}
@@ -124,14 +122,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				val name = definitionInfo.name
-				val typeText = definitionInfo.typeText
-				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
+				val typeLinkText = definitionInfo.typeLinkText
+				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
 				
 				if(localisation.isNotEmpty()) {
 					for((n, kn) in localisation) {
 						if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
 						appendBr()
-						append("(definition localisation) ").append(n).append(" = <b>").appendPsiLink("#", kn).append("</b>")
+						append("(definition localisation) ").append(n).append(" = ").appendLocalisationLink(kn)
 					}
 				}
 			}

@@ -2,6 +2,7 @@
 
 package icu.windea.pls
 
+import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -235,8 +236,8 @@ private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefini
 	val gameType = fileInfo.gameType
 	val elementName = element.name
 	val project = element.project
-	val configGroup = getConfig(project)[gameType] //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath)
+	val configGroup = getConfig(project).getValue(gameType) //这里需要指定project
+	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath,fileInfo)
 }
 
 fun ParadoxScriptValue.getType(): String? {
@@ -734,20 +735,51 @@ fun findSyncedLocalisationsByKeyword(
 
 //Link Extensions
 
+
 fun resolveLink(link: String, context: PsiElement): PsiElement? {
 	return when {
-		link.startsWith("$") -> resolveScriptLink(link, context)
-		link.startsWith("#") -> resolveLocalisationLink(link, context)
+		link.startsWith('@') -> resolveCwtLink(link, context)
+		link.startsWith('$') -> resolveScriptLink(link, context)
+		link.startsWith('#') -> resolveLocalisationLink(link, context)
 		else -> null
 	}
 }
 
-private fun resolveScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
-	return findDefinition(link.drop(1), null, context.project)
+//@stellaris.types.building
+private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
+	return runCatching {
+		val project = context.project
+		val tokens = link.drop(1).split('.')
+		val gameType = tokens[0]
+		val configType = tokens[1]
+		val name = tokens[2]
+		val extraName = tokens.getOrNull(3) //可能是subtypeName
+		//如果configType是types且extraName存在，需要特殊处理，从而兼容subtype
+		if(configType == "types" && extraName != null){
+			getConfig(project).getValue(gameType).types.getValue(name).subtypes.getValue(extraName).pointer?.element
+		}else{
+			getConfig(project).getValue(gameType).getValue(configType).getValue(name).pointer?.element
+		}
+	}.getOrNull()
 }
 
+//$ethos.ethic_authoritarian, $job.head_researcher
+private fun resolveScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
+	return runCatching {
+		val project = context.project
+		val tokens = link.drop(1).split('.')
+		val type = tokens[0]
+		val name = tokens[1]
+		findDefinitionByType(name, type, project)
+	}.getOrNull()
+}
+
+//#NAME, #KEY
 private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
-	return findLocalisation(link.drop(1), context.paradoxLocale, context.project, hasDefault = true)
+	return runCatching {
+		val token = link.drop(1)
+		return findLocalisation(token, context.paradoxLocale, context.project, hasDefault = true)
+	}.getOrNull()
 }
 
 //Build String Extensions
@@ -757,9 +789,19 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 	return this
 }
 
-fun StringBuilder.appendPsiLink(prefix: String, target: String): StringBuilder {
-	if(target.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
-	return append("<a href=\"psi_element://").append(prefix).append(target).append("\">").append(target).append("</a>")
+fun StringBuilder.appendPsiLink(refText:String, label:String, plainLink:Boolean=false):StringBuilder{
+	DocumentationManagerUtil.createHyperlink(this,refText,label,plainLink)
+	return this
+}
+
+fun StringBuilder.appendScriptLink(name:String,type:String):StringBuilder{
+	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
+	return appendPsiLink("$$type.$name",name)
+}
+
+fun StringBuilder.appendLocalisationLink(name:String):StringBuilder{
+	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
+	return appendPsiLink("#$name",name)
 }
 
 fun StringBuilder.appendIconTag(url: String, local: Boolean = true): StringBuilder {
@@ -817,8 +859,8 @@ inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
 	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
 }
 
-inline fun CwtFile.resolveConfig(): CwtConfig {
-	return CwtConfigResolver.resolve(this)
+inline fun CwtFile.resolveConfig(): CwtConfigFile {
+	return CwtConfigDataResolver.resolve(this)
 }
 
 inline fun ParadoxScriptFile.resolveData(): List<Any> {

@@ -1,28 +1,29 @@
 package icu.windea.pls.util
 
 import com.intellij.psi.*
+import com.intellij.refactoring.suggested.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.CwtConfig.Companion.EmptyCwtConfig
+import icu.windea.pls.config.CwtConfigFile.Companion.EmptyCwtConfig
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 
 /**
  * Cwt配置文件的数据解析器。
  *
- * 返回值类型：[CwtConfig]
+ * 返回值类型：[CwtConfigFile]
  */
-object CwtConfigResolver {
-	fun resolve(file: PsiFile): CwtConfig {
+object CwtConfigDataResolver {
+	fun resolve(file: PsiFile): CwtConfigFile {
 		if(file !is CwtFile) throw IllegalArgumentException("Invalid file type (expect: 'CwtFile')")
 		val rootBlock = file.rootBlock ?: return EmptyCwtConfig
 		return resolveRootBlock(rootBlock)
 	}
 	
-	fun resolveRootBlock(rootBlock: CwtRootBlock): CwtConfig {
+	fun resolveRootBlock(rootBlock: CwtRootBlock): CwtConfigFile {
 		return when {
 			rootBlock.isEmpty -> EmptyCwtConfig
-			rootBlock.isArray -> CwtConfig(rootBlock.valueList.mapNotNull { resolveValue(it) }, emptyList())
-			rootBlock.isObject -> CwtConfig(emptyList(), rootBlock.propertyList.mapNotNull { resolveProperty(it) })
+			rootBlock.isArray -> CwtConfigFile(rootBlock.valueList.mapNotNull { resolveValue(it) }, emptyList())
+			rootBlock.isObject -> CwtConfigFile(emptyList(), rootBlock.propertyList.mapNotNull { resolveProperty(it) })
 			else -> EmptyCwtConfig
 		}
 	}
@@ -40,6 +41,7 @@ object CwtConfigResolver {
 		val options: List<CwtConfigOption>?
 		val optionValues: List<CwtConfigOptionValue>?
 		val separatorType = property.separatorType
+		val pointer = property.createSmartPointer()
 		when {
 			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
 			propValue is CwtInt -> intValue = propValue.intValue
@@ -92,7 +94,7 @@ object CwtConfigResolver {
 		optionValues = getOptionValues(optionValueElements)
 		return CwtConfigProperty(
 			key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
-			documentation, options, optionValues, separatorType
+			documentation, options, optionValues, separatorType, pointer
 		)
 	}
 	

@@ -36,11 +36,14 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		}
 		val project = element.project
 		val targets = findDefinitions(definitionInfo.name, definitionInfo.type, project)
+		//val definitionTargets = findDefinitions(definitionInfo.name, definitionInfo.type, project)
+		//val typeTargets = definitionInfo.typesPointer.map { it.element }
 		val targetElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
 		return NavigationGutterIconBuilder.create(icon)
 			.setTooltipText(tooltip)
 			.setPopupTitle(_title)
 			.setTargets(targets)
+			//.setTargets(definitionTargets + typeTargets)
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { _name }
 			.createLineMarkerInfo(targetElement)

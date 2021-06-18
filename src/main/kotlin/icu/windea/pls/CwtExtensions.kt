@@ -176,7 +176,7 @@ private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProp
 						if(propValue !is ParadoxScriptString) return false
 						val enumExpression = stringValue.resolveEnumExpression() //应该保证是合法的，这里不进行额外判断
 						val enumValue = propValue.stringValue.ifEmpty { return false }
-						val enumValues = config.enums[enumExpression] ?: return false
+						val enumValues = config.enums[enumExpression]?.values ?: return false
 						if(enumValue !in enumValues) return false
 					}
 					//字符串格式是"<type.subtype>"的情况，表示匹配对应类型的definition

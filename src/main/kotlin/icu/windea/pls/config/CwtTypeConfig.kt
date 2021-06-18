@@ -1,6 +1,8 @@
 package icu.windea.pls.config
 
+import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 
 /**
  * @property path (property) path: string/path
@@ -22,22 +24,21 @@ import icu.windea.pls.*
  */
 data class CwtTypeConfig(
 	val name: String,
-	var path: String? = null,
-	var pathStrict: Boolean = false,
-	var pathFile: String? = null,
-	var pathExtension: String? = null,
-	var nameField: String? = null,
-	var nameFromFile: Boolean = false,
-	var typePerFile: Boolean = false,
-	var unique: Boolean = false,
-	var severity: String? = null,
-	
+	val path: String? = null,
+	val pathStrict: Boolean = false,
+	val pathFile: String? = null,
+	val pathExtension: String? = null,
+	val nameField: String? = null,
+	val nameFromFile: Boolean = false,
+	val typePerFile: Boolean = false,
+	val unique: Boolean = false,
+	val severity: String? = null,
 	val skipRootKey: MutableList<List<String>> = mutableListOf(),
 	val localisation: MutableMap<String, MutableList<CwtTypeLocalisationConfig>> = mutableMapOf(),
 	val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf(),
-	
-	var typeKeyFilter: ReversibleList<String>? = null,
-	var startsWith: String? = null,
-	var graphRelatedTypes: List<String>? = null
-)
+	val typeKeyFilter: ReversibleList<String>? = null,
+	val startsWith: String? = null,
+	val graphRelatedTypes: List<String>? = null,
+	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
+):CwtConfig
 
