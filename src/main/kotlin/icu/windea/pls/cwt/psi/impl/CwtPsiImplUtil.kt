@@ -2,6 +2,7 @@ package icu.windea.pls.cwt.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -231,6 +232,20 @@ object CwtPsiImplUtil {
 	fun getComponents(element: CwtBlock): List<PsiElement> {
 		//如果存在元素为property，则认为所有合法的元素都是property
 		return if(element.isObject) element.propertyList else element.valueList
+	}
+	//endregion
+	
+	//region CwtDocumentationComment
+	@JvmStatic
+	fun getTokenType(element:CwtDocumentationComment): IElementType{
+		return CwtTypes.DOCUMENTATION_COMMENT
+	}
+	//endregion
+	
+	//region CwtOptionComment
+	@JvmStatic
+	fun getTokenType(element:CwtOptionComment): IElementType{
+		return CwtTypes.OPTION_COMMENT
 	}
 	//endregion
 }

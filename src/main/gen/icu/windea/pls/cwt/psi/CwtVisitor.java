@@ -4,6 +4,7 @@ package icu.windea.pls.cwt.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiListLikeElement;
 
 public class CwtVisitor extends PsiElementVisitor {
@@ -18,7 +19,7 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitDocumentationComment(@NotNull CwtDocumentationComment o) {
-    visitPsiElement(o);
+    visitPsiComment(o);
   }
 
   public void visitDocumentationText(@NotNull CwtDocumentationText o) {
@@ -42,7 +43,7 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitOptionComment(@NotNull CwtOptionComment o) {
-    visitPsiElement(o);
+    visitPsiComment(o);
   }
 
   public void visitOptionKey(@NotNull CwtOptionKey o) {
@@ -67,6 +68,10 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitValue(@NotNull CwtValue o) {
     visitPsiElement(o);
+  }
+
+  public void visitPsiComment(@NotNull PsiComment o) {
+    visitElement(o);
   }
 
   public void visitNamedElement(@NotNull CwtNamedElement o) {

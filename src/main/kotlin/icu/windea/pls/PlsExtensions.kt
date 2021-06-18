@@ -16,7 +16,6 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 import icu.windea.pls.util.*
 import org.jetbrains.annotations.*
 import kotlin.Pair
@@ -68,7 +67,7 @@ fun getDocTextFromPreviousComment(element: PsiElement): String {
 /**判断指定的注释是否可认为是之前的注释。*/
 fun isPreviousComment(element: PsiElement): Boolean {
 	val elementType = element.elementType
-	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == COMMENT
+	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == ParadoxScriptTypes.COMMENT
 }
 
 //Keys

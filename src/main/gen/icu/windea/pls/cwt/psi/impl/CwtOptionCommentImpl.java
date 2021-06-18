@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.psi.tree.IElementType;
 
 public class CwtOptionCommentImpl extends ASTWrapperPsiElement implements CwtOptionComment {
 
@@ -37,6 +38,12 @@ public class CwtOptionCommentImpl extends ASTWrapperPsiElement implements CwtOpt
   @Nullable
   public CwtValue getValue() {
     return findChildByClass(CwtValue.class);
+  }
+
+  @Override
+  @NotNull
+  public IElementType getTokenType() {
+    return CwtPsiImplUtil.getTokenType(this);
   }
 
 }

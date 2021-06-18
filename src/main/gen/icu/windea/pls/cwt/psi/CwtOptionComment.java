@@ -4,13 +4,18 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiComment;
+import com.intellij.psi.tree.IElementType;
 
-public interface CwtOptionComment extends PsiElement {
+public interface CwtOptionComment extends PsiComment {
 
   @Nullable
   CwtOption getOption();
 
   @Nullable
   CwtValue getValue();
+
+  @NotNull
+  IElementType getTokenType();
 
 }

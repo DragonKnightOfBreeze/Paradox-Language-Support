@@ -28,7 +28,7 @@ object CwtConfigDataResolver {
 		}
 	}
 	
-	private fun resolveProperty(property: CwtProperty): CwtConfigProperty? {
+	fun resolveProperty(property: CwtProperty): CwtConfigProperty? {
 		val key = property.propertyName
 		val propValue = property.value ?: return null
 		var booleanValue: Boolean? = null
@@ -70,7 +70,6 @@ object CwtConfigDataResolver {
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
-				current is PsiWhiteSpace || current is PsiComment -> continue
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
 					if(documentationText != null) documentationElements.addFirst(documentationText)
@@ -86,6 +85,7 @@ object CwtConfigDataResolver {
 						}
 					}
 				}
+				current is PsiWhiteSpace || current is PsiComment -> continue
 				else -> break
 			}
 		}
@@ -98,7 +98,7 @@ object CwtConfigDataResolver {
 		)
 	}
 	
-	private fun resolveValue(value: CwtValue): CwtConfigValue {
+	fun resolveValue(value: CwtValue): CwtConfigValue {
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
@@ -137,7 +137,6 @@ object CwtConfigDataResolver {
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
-				current is PsiWhiteSpace || current is PsiComment -> continue
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
 					if(documentationText != null) documentationElements.addFirst(documentationText)
@@ -153,6 +152,7 @@ object CwtConfigDataResolver {
 						}
 					}
 				}
+				current is PsiWhiteSpace || current is PsiComment -> continue
 				else -> break
 			}
 		}
@@ -166,7 +166,7 @@ object CwtConfigDataResolver {
 		)
 	}
 	
-	private fun resolveOption(option: CwtOption): CwtConfigOption? {
+	fun resolveOption(option: CwtOption): CwtConfigOption? {
 		val key = option.optionName
 		val optionValue = option.value ?: return null
 		var booleanValue: Boolean? = null
@@ -199,7 +199,7 @@ object CwtConfigDataResolver {
 		return CwtConfigOption(key, optionValue.value, booleanValue, intValue, floatValue, stringValue, values, options, separatorType)
 	}
 	
-	private fun resolveOptionValue(option: CwtValue): CwtConfigOptionValue {
+	fun resolveOptionValue(option: CwtValue): CwtConfigOptionValue {
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null

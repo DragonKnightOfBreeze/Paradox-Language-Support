@@ -45,11 +45,15 @@ private comment ::= documentation_comment | option_comment | COMMENT
 
 documentation_comment ::= "###" documentation_text ?{
   pin(".*")=1
+  implements=["com.intellij.psi.PsiComment"]
+  methods=[getTokenType]
 }
 documentation_text ::= DOCUMENTATION_TOKEN
 
 option_comment ::= "##" option_comment_item{
   pin(".*")=1
+  implements=["com.intellij.psi.PsiComment"]
+  methods=[getTokenType]
 }
 private option_comment_item ::= option | value
 
