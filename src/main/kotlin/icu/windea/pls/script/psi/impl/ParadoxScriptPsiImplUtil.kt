@@ -257,24 +257,24 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun isEmpty(element: ParadoxScriptBlock): Boolean {
-		element.forEachChild {
-			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return false
+		for(child in element.children) {
+			if(child is ParadoxScriptProperty || child is ParadoxScriptValue) return false
 		}
 		return true
 	}
 	
 	@JvmStatic
 	fun isNotEmpty(element: ParadoxScriptBlock): Boolean {
-		element.forEachChild {
-			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return true
+		for(child in element.children) {
+			if(child is ParadoxScriptProperty || child is ParadoxScriptValue) return true
 		}
 		return true
 	}
 	
 	@JvmStatic
 	fun isObject(element: ParadoxScriptBlock): Boolean {
-		element.forEachChild {
-			when(it) {
+		for(child in element.children) {
+			when(child) {
 				is ParadoxScriptProperty -> return true
 				is ParadoxScriptValue -> return false
 			}
@@ -284,8 +284,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun isArray(element: ParadoxScriptBlock): Boolean {
-		element.forEachChild {
-			when(it) {
+		for(child in element.children) {
+			when(child) {
 				is ParadoxScriptProperty -> return false
 				is ParadoxScriptValue -> return true
 			}

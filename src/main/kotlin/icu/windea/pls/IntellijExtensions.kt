@@ -19,14 +19,6 @@ import com.intellij.util.*
 
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
 
-inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
-	var child = this.firstChild
-	while(child != null) {
-		block(child)
-		child = child.nextSibling
-	}
-}
-
 inline fun <reified T : PsiElement> PsiElement.indexOfChild(element: T): Int {
 	var child = firstChild
 	var index = 0

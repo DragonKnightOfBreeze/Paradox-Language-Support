@@ -39,6 +39,7 @@ object CwtConfigResolver {
 		val documentation: String?
 		val options: List<CwtConfigOption>?
 		val optionValues: List<CwtConfigOptionValue>?
+		val separatorType = property.separatorType
 		when {
 			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
 			propValue is CwtInt -> intValue = propValue.intValue
@@ -91,7 +92,7 @@ object CwtConfigResolver {
 		optionValues = getOptionValues(optionValueElements)
 		return CwtConfigProperty(
 			key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
-			documentation, options, optionValues
+			documentation, options, optionValues, separatorType
 		)
 	}
 	
@@ -165,7 +166,6 @@ object CwtConfigResolver {
 	
 	private fun resolveOption(option: CwtOption): CwtConfigOption? {
 		val key = option.optionName
-		val separator = CwtConfigSeparator.resolve(option.optionSeparator?.text) ?: return null
 		val optionValue = option.value ?: return null
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
@@ -173,6 +173,7 @@ object CwtConfigResolver {
 		var stringValue: String? = null
 		var values: List<CwtConfigOptionValue>? = null
 		var options: List<CwtConfigOption>? = null
+		val separatorType = option.separatorType
 		when {
 			optionValue is CwtBoolean -> booleanValue = optionValue.booleanValue
 			optionValue is CwtInt -> intValue = optionValue.intValue
@@ -193,7 +194,7 @@ object CwtConfigResolver {
 				}
 			}
 		}
-		return CwtConfigOption(key, separator, optionValue.value, booleanValue, intValue, floatValue, stringValue, values, options)
+		return CwtConfigOption(key, optionValue.value, booleanValue, intValue, floatValue, stringValue, values, options, separatorType)
 	}
 	
 	private fun resolveOptionValue(option: CwtValue): CwtConfigOptionValue {

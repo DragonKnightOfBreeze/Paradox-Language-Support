@@ -35,7 +35,7 @@ class ParadoxScriptBlock(
 				.between(LEFT_BRACE, RIGHT_BRACE).spaces(0) //花括号之间总是不需要空格
 				.after(LEFT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //左花括号之后如果非换行按情况可能需要空格
 				.before(RIGHT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //右花括号之前如果非换行按情况可能需要空格
-				.around(EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号之间按情况可能需要空格
+				.around(EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号周围按情况可能需要空格
 		}
 	}
 

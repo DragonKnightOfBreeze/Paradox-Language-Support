@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.cwt.psi.CwtTypes.*;
 import icu.windea.pls.cwt.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.model.SeparatorType;
 import javax.swing.Icon;
 
 public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
@@ -32,12 +29,6 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
   @NotNull
   public CwtOptionKey getOptionKey() {
     return findNotNullChildByClass(CwtOptionKey.class);
-  }
-
-  @Override
-  @Nullable
-  public CwtOptionSeparator getOptionSeparator() {
-    return findChildByClass(CwtOptionSeparator.class);
   }
 
   @Override
@@ -86,6 +77,12 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
   @NotNull
   public String getOptionTruncatedValue() {
     return CwtPsiImplUtil.getOptionTruncatedValue(this);
+  }
+
+  @Override
+  @NotNull
+  public SeparatorType getSeparatorType() {
+    return CwtPsiImplUtil.getSeparatorType(this);
   }
 
 }

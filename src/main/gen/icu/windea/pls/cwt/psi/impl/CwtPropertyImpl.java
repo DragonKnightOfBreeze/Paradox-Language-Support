@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.cwt.psi.CwtTypes.*;
 import icu.windea.pls.cwt.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.model.SeparatorType;
 import javax.swing.Icon;
 
 public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty {
@@ -32,12 +29,6 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
   @NotNull
   public CwtPropertyKey getPropertyKey() {
     return findNotNullChildByClass(CwtPropertyKey.class);
-  }
-
-  @Override
-  @Nullable
-  public CwtPropertySeparator getPropertySeparator() {
-    return findChildByClass(CwtPropertySeparator.class);
   }
 
   @Override
@@ -86,6 +77,12 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
   @NotNull
   public String getPropertyTruncatedValue() {
     return CwtPsiImplUtil.getPropertyTruncatedValue(this);
+  }
+
+  @Override
+  @NotNull
+  public SeparatorType getSeparatorType() {
+    return CwtPsiImplUtil.getSeparatorType(this);
   }
 
 }

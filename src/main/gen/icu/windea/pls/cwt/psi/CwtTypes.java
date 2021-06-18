@@ -18,10 +18,8 @@ public interface CwtTypes {
   IElementType OPTION = new CwtElementType("OPTION");
   IElementType OPTION_COMMENT = new CwtElementType("OPTION_COMMENT");
   IElementType OPTION_KEY = new CwtElementType("OPTION_KEY");
-  IElementType OPTION_SEPARATOR = new CwtElementType("OPTION_SEPARATOR");
   IElementType PROPERTY = new CwtElementType("PROPERTY");
   IElementType PROPERTY_KEY = new CwtElementType("PROPERTY_KEY");
-  IElementType PROPERTY_SEPARATOR = new CwtElementType("PROPERTY_SEPARATOR");
   IElementType ROOT_BLOCK = new CwtElementType("ROOT_BLOCK");
   IElementType STRING = new CwtElementType("STRING");
   IElementType VALUE = new CwtElementType("VALUE");
@@ -71,17 +69,11 @@ public interface CwtTypes {
       else if (type == OPTION_KEY) {
         return new CwtOptionKeyImpl(node);
       }
-      else if (type == OPTION_SEPARATOR) {
-        return new CwtOptionSeparatorImpl(node);
-      }
       else if (type == PROPERTY) {
         return new CwtPropertyImpl(node);
       }
       else if (type == PROPERTY_KEY) {
         return new CwtPropertyKeyImpl(node);
-      }
-      else if (type == PROPERTY_SEPARATOR) {
-        return new CwtPropertySeparatorImpl(node);
       }
       else if (type == ROOT_BLOCK) {
         return new CwtRootBlockImpl(node);

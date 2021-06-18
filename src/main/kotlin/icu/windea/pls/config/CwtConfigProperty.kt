@@ -1,6 +1,7 @@
 package icu.windea.pls.config
 
 import icu.windea.pls.*
+import icu.windea.pls.model.*
 
 data class CwtConfigProperty(
 	val key: String,
@@ -13,7 +14,8 @@ data class CwtConfigProperty(
 	val properties: List<CwtConfigProperty>? = null,
 	val documentation: String? = null,
 	val options: List<CwtConfigOption>? = null,
-	val optionValues: List<CwtConfigOptionValue>? = null
+	val optionValues: List<CwtConfigOptionValue>? = null,
+	val separatorType: SeparatorType = SeparatorType.EQUAL
 ) {
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
