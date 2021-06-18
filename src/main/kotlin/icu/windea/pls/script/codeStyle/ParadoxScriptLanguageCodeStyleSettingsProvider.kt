@@ -1,21 +1,12 @@
-package icu.windea.pls.script.formatter
+package icu.windea.pls.script.codeStyle
 
 
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings.*
-
-//代码风格：
-//INDENT_SETTINGS
-//* INDENT_SIZE
-//* CONTINUATION_INDENT_SIZE
-//* KEEP_INDENTS_ON_EMPTY_LINES
-//* USE_TAB_CHARACTER
-//SPACING_SETTINGS
-//* SPACE_WITHIN_BRACES
-//* SPACE_AROUND_SEPARATOR
+import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings.*
 
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 	companion object{
@@ -37,16 +28,18 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 		indentOptions.CONTINUATION_INDENT_SIZE = 4
 		indentOptions.KEEP_INDENTS_ON_EMPTY_LINES = true
 		indentOptions.USE_TAB_CHARACTER = true
+		commonSettings.LINE_COMMENT_AT_FIRST_COLUMN = false
+		commonSettings.LINE_COMMENT_ADD_SPACE = false
 	}
 
 	override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
 		when(settingsType) {
 			SettingsType.INDENT_SETTINGS -> {
 				consumer.showStandardOptions(
-					CodeStyleSettingsCustomizable.IndentOption.INDENT_SIZE.name,
-					CodeStyleSettingsCustomizable.IndentOption.CONTINUATION_INDENT_SIZE.name,
-					CodeStyleSettingsCustomizable.IndentOption.KEEP_INDENTS_ON_EMPTY_LINES.name,
-					CodeStyleSettingsCustomizable.IndentOption.USE_TAB_CHARACTER.name
+					IndentOption.INDENT_SIZE.name,
+					IndentOption.CONTINUATION_INDENT_SIZE.name,
+					IndentOption.KEEP_INDENTS_ON_EMPTY_LINES.name,
+					IndentOption.USE_TAB_CHARACTER.name
 				)
 			}
 			SettingsType.SPACING_SETTINGS -> {
@@ -63,7 +56,12 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
 				)
 			}
-			else -> {}
+			SettingsType.COMMENTER_SETTINGS -> {
+				consumer.showStandardOptions(
+					CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
+					CommenterOption.LINE_COMMENT_ADD_SPACE.name
+				)
+			}
 		}
 	}
 	

@@ -3,21 +3,21 @@ package icu.windea.pls.config
 import icu.windea.pls.*
 
 /**
- * @property type_key_filter (option) string | string[]
- * @property push_scope (option) scope
- * @property starts_with (option) string
- * @property display_name (option) string
- * @property abbreviation (option) string
- * @property only_if_not (option) string[]
+ * @property typeKeyFilter (option) type_key_filter: string | string[]
+ * @property pushScope (option) push_scope: scope
+ * @property startsWith (option) starts_with: string
+ * @property displayName (option) display_name: string
+ * @property abbreviation (option) abbreviation: string
+ * @property onlyIfNot (option) only_if_not: string[]
  */
 data class CwtSubtypeConfig(
-	val name:String,
+	val name: String,
 	val config: CwtConfigProperty,
-	var type_key_filter: ReversibleList<String>? = null,
-	var push_scope:String? = null,
-	var starts_with: String? = null,
-	var display_name:String? = null,
-	var abbreviation: String? = null,
-	var only_if_not: List<String>? = null
+	val typeKeyFilter: ReversibleList<String>? = null,
+	val pushScope: String? = null,
+	val startsWith: String? = null,
+	val displayName: String? = null,
+	val abbreviation: String? = null,
+	val onlyIfNot: List<String>? = null
 )
 

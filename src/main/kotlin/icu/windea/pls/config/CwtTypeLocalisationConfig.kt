@@ -1,13 +1,13 @@
 package icu.windea.pls.config
 
 /**
- * @property required (option) value
- * @property primary (option) value
+ * @property required (option) required
+ * @property primary (option) primary
  */
 data class CwtTypeLocalisationConfig(
 	val name: String,
 	val expression: String,
-	var required: Boolean = false,
-	var primary: Boolean = false
+	val required: Boolean = false,
+	val primary: Boolean = false
 )
 

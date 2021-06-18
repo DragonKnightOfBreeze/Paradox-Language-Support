@@ -1,11 +1,11 @@
 package icu.windea.pls.config
 
 /**
- * @property inputscopes string[]
- * @property output_scope string
+ * @property inputScopes input_scopes | inputscopes: string[]
+ * @property outputScope output_scope: string
  */
 data class CwtLinkConfig(
-	val inputscopes:List<String>,
-	val output_scope:String
+	val inputScopes:List<String>,
+	val outputScope:String
 )
 

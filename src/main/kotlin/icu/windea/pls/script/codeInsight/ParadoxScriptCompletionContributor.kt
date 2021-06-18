@@ -25,7 +25,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		}
 	}
 	
-	//class DefinitionPropertyNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+	class DefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
 	//	//DONE 提示propertyName
 	//	//TODO 提示propertyValue
 	//	//TODO 兼容多种情况&数值类型的propertyValue & 优化规则文件格式
@@ -36,7 +36,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 	//	//4. value可能是：类型表达式、情况列表、子属性（映射）
 	//	//5. 忽略正在填写的propertyName
 	//	
-	//	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 	//		val position = parameters.position
 	//		//block中的string也可能是propertyName
 	//		if(position.elementType == STRING_TOKEN && position.parent?.parent !is ParadoxScriptBlock) return
@@ -71,7 +71,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 	//		//解析keyPatterns，进行提示
 	//		val lookupElements = resolveExpressions(keyPatternExpressions, project, existPropertyNames, ruleGroup)
 	//		result.addAllElements(lookupElements)
-	//	}
+		}
 	//	
 	//	private fun resolveExpressions(expressions: List<ConditionalExpression>, project: Project, 
 	//		existPropertyNames: Collection<String>, ruleGroup: ParadoxRuleGroup
@@ -130,16 +130,15 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 	//		}
 	//		return lookupElements
 	//	}
-	//}
+	}
 	
 	init {
 		//当用户正在输入一个string时提示
 		extend(CompletionType.BASIC, psiElement(STRING_TOKEN), BooleanCompletionProvider())
-		//extend(null, or(
-		//	psiElement(PROPERTY_KEY_ID),
-		//	psiElement(QUOTED_PROPERTY_KEY_ID),
-		//	psiElement(STRING_TOKEN)
-		//), DefinitionPropertyNameCompletionProvider())
+		//当用户正在输入一个propertyKey或string时提示
+		extend(null, or(
+			psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID), psiElement(STRING_TOKEN)
+		), DefinitionCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

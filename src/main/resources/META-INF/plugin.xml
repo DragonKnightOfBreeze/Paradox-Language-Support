@@ -141,9 +141,9 @@
         language="CWT"
         implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <codeStyleSettingsProvider
-        implementation="icu.windea.pls.cwt.formatter.CwtCodeStyleSettingsProvider"/>
+        implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
-        implementation="icu.windea.pls.cwt.formatter.CwtLanguageCodeStyleSettingsProvider"/>
+        implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
     <!--endregion-->
     
     <!--region Paradox Script Language-->
@@ -210,9 +210,9 @@
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider
-        implementation="icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettingsProvider"/>
+        implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
-        implementation="icu.windea.pls.script.formatter.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
+        implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
     <lang.refactoringSupport
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>
@@ -315,9 +315,9 @@
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
     <codeStyleSettingsProvider
-        implementation="icu.windea.pls.localisation.formatter.ParadoxLocalisationCodeStyleSettingsProvider"/>
+        implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
-        implementation="icu.windea.pls.localisation.formatter.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>
+        implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>
     <lang.refactoringSupport
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.refactoring.ParadoxLocalisationRefactoringSupportProvider"/>

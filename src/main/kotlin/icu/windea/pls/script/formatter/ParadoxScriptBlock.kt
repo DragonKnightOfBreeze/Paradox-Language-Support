@@ -9,6 +9,7 @@ import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 
 class ParadoxScriptBlock(

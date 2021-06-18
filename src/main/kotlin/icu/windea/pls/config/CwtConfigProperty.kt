@@ -5,20 +5,18 @@ import icu.windea.pls.*
 data class CwtConfigProperty(
 	val key: String,
 	val value: String,
-	var booleanValue: Boolean? = null,
-	var intValue: Int? = null,
-	var floatValue: Float? = null,
-	var stringValue: String? = null,
-	var values: List<CwtConfigValue>? = null,
-	var properties: List<CwtConfigProperty>? = null,
-	var documentation: String? = null,
-	var options: List<CwtConfigOption>? = null,
-	var optionValues: List<CwtConfigOptionValue>? = null
+	val booleanValue: Boolean? = null,
+	val intValue: Int? = null,
+	val floatValue: Float? = null,
+	val stringValue: String? = null,
+	val values: List<CwtConfigValue>? = null,
+	val properties: List<CwtConfigProperty>? = null,
+	val documentation: String? = null,
+	val options: List<CwtConfigOption>? = null,
+	val optionValues: List<CwtConfigOptionValue>? = null
 ) {
-	val stringValues get() = values?.mapNotNull { it.stringValue }
-	val stringValueOrValues get() = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
-	
-	//下面的属性需要懒加载
-	val cardinality by lazy { options?.find { it.key == "cardinality" }?.stringValue?.let { s -> RangeExpression.resolve(s) } }
+	val stringValues = values?.mapNotNull { it.stringValue }
+	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
+	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> RangeExpression.resolve(s) }
 }
 

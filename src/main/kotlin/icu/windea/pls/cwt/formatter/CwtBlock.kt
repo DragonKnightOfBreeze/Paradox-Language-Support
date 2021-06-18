@@ -9,6 +9,7 @@ import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.CwtTypes.*
 
 class CwtBlock(	

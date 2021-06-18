@@ -30,25 +30,32 @@ object CwtConfigResolver {
 	private fun resolveProperty(property: CwtProperty): CwtConfigProperty? {
 		val key = property.propertyName
 		val propValue = property.value ?: return null
-		val resolved = CwtConfigProperty(key, property.propertyValue)
-		
+		var booleanValue: Boolean? = null
+		var intValue: Int? = null
+		var floatValue: Float? = null
+		var stringValue: String? = null
+		var values: List<CwtConfigValue>? = null
+		var properties: List<CwtConfigProperty>? = null
+		val documentation: String?
+		val options: List<CwtConfigOption>?
+		val optionValues: List<CwtConfigOptionValue>?
 		when {
-			propValue is CwtBoolean -> resolved.booleanValue = propValue.booleanValue
-			propValue is CwtInt -> resolved.intValue = propValue.intValue
-			propValue is CwtFloat -> resolved.floatValue = propValue.floatValue
-			propValue is CwtString -> resolved.stringValue = propValue.stringValue
+			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
+			propValue is CwtInt -> intValue = propValue.intValue
+			propValue is CwtFloat -> floatValue = propValue.floatValue
+			propValue is CwtString -> stringValue = propValue.stringValue
 			propValue is CwtBlock -> when {
 				propValue.isEmpty -> {
-					resolved.values = emptyList()
-					resolved.properties = emptyList()
+					values = emptyList()
+					properties = emptyList()
 				}
 				propValue.isArray -> {
-					resolved.values = propValue.valueList.map { resolveValue(it) }
-					resolved.properties = emptyList()
+					values = propValue.valueList.map { resolveValue(it) }
+					properties = emptyList()
 				}
 				propValue.isObject -> {
-					resolved.values = emptyList()
-					resolved.properties = propValue.propertyList.mapNotNull { resolveProperty(it) }
+					values = emptyList()
+					properties = propValue.propertyList.mapNotNull { resolveProperty(it) }
 				}
 			}
 		}
@@ -79,33 +86,43 @@ object CwtConfigResolver {
 				else -> break
 			}
 		}
-		resolved.documentation = getDocumentation(documentationElements)
-		resolved.options = getOptions(optionElements)
-		resolved.optionValues = getOptionValues(optionValueElements)
-		
-		return resolved
+		documentation = getDocumentation(documentationElements)
+		options = getOptions(optionElements)
+		optionValues = getOptionValues(optionValueElements)
+		return CwtConfigProperty(
+			key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
+			documentation, options, optionValues
+		)
 	}
 	
 	private fun resolveValue(value: CwtValue): CwtConfigValue {
-		val resolved = CwtConfigValue(value.value)
+		var booleanValue: Boolean? = null
+		var intValue: Int? = null
+		var floatValue: Float? = null
+		var stringValue: String? = null
+		var values: List<CwtConfigValue>? = null
+		var properties: List<CwtConfigProperty>? = null
+		val documentation: String?
+		val options: List<CwtConfigOption>?
+		val optionValues: List<CwtConfigOptionValue>?
 		
 		when {
-			value is CwtBoolean -> resolved.booleanValue = value.booleanValue
-			value is CwtInt -> resolved.intValue = value.intValue
-			value is CwtFloat -> resolved.floatValue = value.floatValue
-			value is CwtString -> resolved.stringValue = value.stringValue
+			value is CwtBoolean -> booleanValue = value.booleanValue
+			value is CwtInt -> intValue = value.intValue
+			value is CwtFloat -> floatValue = value.floatValue
+			value is CwtString -> stringValue = value.stringValue
 			value is CwtBlock -> when {
 				value.isEmpty -> {
-					resolved.values = emptyList()
-					resolved.properties = emptyList()
+					values = emptyList()
+					properties = emptyList()
 				}
 				value.isArray -> {
-					resolved.values = value.valueList.map { resolveValue(it) }
-					resolved.properties = emptyList()
+					values = value.valueList.map { resolveValue(it) }
+					properties = emptyList()
 				}
 				value.isObject -> {
-					resolved.values = emptyList()
-					resolved.properties = value.propertyList.mapNotNull { resolveProperty(it) }
+					values = emptyList()
+					properties = value.propertyList.mapNotNull { resolveProperty(it) }
 				}
 			}
 		}
@@ -136,76 +153,87 @@ object CwtConfigResolver {
 				else -> break
 			}
 		}
-		resolved.documentation = getDocumentation(documentationElements)
-		resolved.options = getOptions(optionElements)
-		resolved.optionValues = getOptionValues(optionValueElements)
+		documentation = getDocumentation(documentationElements)
+		options = getOptions(optionElements)
+		optionValues = getOptionValues(optionValueElements)
 		
-		return resolved
+		return CwtConfigValue(
+			value.value, booleanValue, intValue, floatValue, stringValue, values, properties,
+			documentation, options, optionValues
+		)
 	}
 	
 	private fun resolveOption(option: CwtOption): CwtConfigOption? {
 		val key = option.optionName
 		val separator = CwtConfigSeparator.resolve(option.optionSeparator?.text) ?: return null
 		val optionValue = option.value ?: return null
-		val resolved = CwtConfigOption(key, separator, optionValue.value)
+		var booleanValue: Boolean? = null
+		var intValue: Int? = null
+		var floatValue: Float? = null
+		var stringValue: String? = null
+		var values: List<CwtConfigOptionValue>? = null
+		var options: List<CwtConfigOption>? = null
 		when {
-			optionValue is CwtBoolean -> resolved.booleanValue = optionValue.booleanValue
-			optionValue is CwtInt -> resolved.intValue = optionValue.intValue
-			optionValue is CwtFloat -> resolved.floatValue = optionValue.floatValue
-			optionValue is CwtString -> resolved.stringValue = optionValue.stringValue
+			optionValue is CwtBoolean -> booleanValue = optionValue.booleanValue
+			optionValue is CwtInt -> intValue = optionValue.intValue
+			optionValue is CwtFloat -> floatValue = optionValue.floatValue
+			optionValue is CwtString -> stringValue = optionValue.stringValue
 			optionValue is CwtBlock -> when {
 				optionValue.isEmpty -> {
-					resolved.values = emptyList()
-					resolved.options = emptyList()
+					values = emptyList()
+					options = emptyList()
 				}
 				optionValue.isArray -> {
-					resolved.values = optionValue.valueList.map { resolveOptionValue(it) }
-					resolved.options = emptyList()
+					values = optionValue.valueList.map { resolveOptionValue(it) }
+					options = emptyList()
 				}
 				optionValue.isObject -> {
-					resolved.values = emptyList()
-					resolved.options = optionValue.optionList.mapNotNull { resolveOption(it) }
+					values = emptyList()
+					options = optionValue.optionList.mapNotNull { resolveOption(it) }
 				}
 			}
 		}
-		
-		return resolved
+		return CwtConfigOption(key, separator, optionValue.value, booleanValue, intValue, floatValue, stringValue, values, options)
 	}
 	
 	private fun resolveOptionValue(option: CwtValue): CwtConfigOptionValue {
-		val resolved = CwtConfigOptionValue(option.value)
+		var booleanValue: Boolean? = null
+		var intValue: Int? = null
+		var floatValue: Float? = null
+		var stringValue: String? = null
+		var values: List<CwtConfigOptionValue>? = null
+		var options: List<CwtConfigOption>? = null
 		when {
 			option is CwtBoolean -> {
-				resolved.booleanValue = option.booleanValue
+				booleanValue = option.booleanValue
 			}
 			option is CwtInt -> {
-				resolved.intValue = option.intValue
+				intValue = option.intValue
 			}
 			option is CwtFloat -> {
-				resolved.floatValue = option.floatValue
+				floatValue = option.floatValue
 			}
 			option is CwtString -> {
-				resolved.stringValue = option.stringValue
+				stringValue = option.stringValue
 			}
 			option is CwtBlock -> {
 				when {
 					option.isEmpty -> {
-						resolved.values = emptyList()
-						resolved.options = emptyList()
+						values = emptyList()
+						options = emptyList()
 					}
 					option.isArray -> {
-						resolved.values = option.valueList.map { resolveOptionValue(it) }
-						resolved.options = emptyList()
+						values = option.valueList.map { resolveOptionValue(it) }
+						options = emptyList()
 					}
 					option.isObject -> {
-						resolved.values = emptyList()
-						resolved.options = option.optionList.mapNotNull { resolveOption(it) }
+						values = emptyList()
+						options = option.optionList.mapNotNull { resolveOption(it) }
 					}
 				}
 			}
 		}
-		
-		return resolved
+		return CwtConfigOptionValue(option.value, booleanValue, intValue, floatValue, stringValue, values, options)
 	}
 	
 	private fun getDocumentation(documentationElements: List<CwtDocumentationText>): String? {

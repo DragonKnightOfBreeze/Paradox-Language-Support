@@ -1,11 +1,11 @@
-package icu.windea.pls.cwt.formatter
+package icu.windea.pls.cwt.codeStyle
 
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 
-class CwtLanguageCodeStyleSettingsProvider:LanguageCodeStyleSettingsProvider() {
+class CwtLanguageCodeStyleSettingsProvider: LanguageCodeStyleSettingsProvider() {
 	companion object{
 		private val _spaceWithinBracesTitle = message("cwt.codeStyle.spaceWithinBraces")
 		private val _spaceAroundSeparatorTitle = message("cwt.codeStyle.spaceAroundSeparator")
@@ -25,6 +25,8 @@ class CwtLanguageCodeStyleSettingsProvider:LanguageCodeStyleSettingsProvider() {
 		indentOptions.CONTINUATION_INDENT_SIZE = 4
 		indentOptions.KEEP_INDENTS_ON_EMPTY_LINES = true
 		indentOptions.USE_TAB_CHARACTER = true
+		commonSettings.LINE_COMMENT_AT_FIRST_COLUMN = false
+		commonSettings.LINE_COMMENT_ADD_SPACE = false
 	}
 	
 	override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
@@ -51,7 +53,12 @@ class CwtLanguageCodeStyleSettingsProvider:LanguageCodeStyleSettingsProvider() {
 					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
 				)
 			}
-			else -> {}
+			SettingsType.COMMENTER_SETTINGS -> {
+				consumer.showStandardOptions(
+					CodeStyleSettingsCustomizable.CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
+					CodeStyleSettingsCustomizable.CommenterOption.LINE_COMMENT_ADD_SPACE.name
+				)
+			}
 		}
 	}
 	

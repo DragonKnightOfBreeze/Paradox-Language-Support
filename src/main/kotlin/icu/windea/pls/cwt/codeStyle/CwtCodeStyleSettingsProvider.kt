@@ -1,9 +1,8 @@
-package icu.windea.pls.cwt.formatter
+package icu.windea.pls.cwt.codeStyle
 
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.*
 
 class CwtCodeStyleSettingsProvider: CodeStyleSettingsProvider(){
 	override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
@@ -13,13 +12,7 @@ class CwtCodeStyleSettingsProvider: CodeStyleSettingsProvider(){
 	override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
 		return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
 			override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
-				return object : TabbedLanguageCodeStylePanel(CwtLanguage, currentSettings, settings) {
-					override fun initTabs(settings: CodeStyleSettings?) {
-						addIndentOptionsTab(settings)
-						addSpacesTab(settings)
-						//addWrappingAndBracesTab(settings)
-					}
-				}
+				return CwtCodeStylePanel(currentSettings, settings) 
 			}
 		}
 	}

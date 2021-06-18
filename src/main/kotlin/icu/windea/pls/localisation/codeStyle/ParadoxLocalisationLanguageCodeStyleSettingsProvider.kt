@@ -1,17 +1,9 @@
-package icu.windea.pls.localisation.formatter
+package icu.windea.pls.localisation.codeStyle
 
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
-
-//代码风格：
-//INDENT_SETTINGS
-//* INDENT_SIZE
-//* KEEP_INDENTS_ON_EMPTY_LINES
-//WRAPPING_AND_BRACES_SETTINGS
-//* ALIGN_PROPERTY_VALUES
 
 class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 	override fun getLanguage() = ParadoxLocalisationLanguage
@@ -26,17 +18,24 @@ class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSe
 	override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
 		indentOptions.INDENT_SIZE = 1
 		indentOptions.KEEP_INDENTS_ON_EMPTY_LINES = true
+		commonSettings.LINE_COMMENT_AT_FIRST_COLUMN = false
+		commonSettings.LINE_COMMENT_ADD_SPACE = false
 	}
 
 	override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
 		when(settingsType) {
 			SettingsType.INDENT_SETTINGS -> {
 				consumer.showStandardOptions(
-					IndentOption.INDENT_SIZE.name,
-					IndentOption.KEEP_INDENTS_ON_EMPTY_LINES.name
+					CodeStyleSettingsCustomizable.IndentOption.INDENT_SIZE.name,
+					CodeStyleSettingsCustomizable.IndentOption.KEEP_INDENTS_ON_EMPTY_LINES.name
 				)
 			}
-			else -> {}
+			SettingsType.COMMENTER_SETTINGS -> {
+				consumer.showStandardOptions(
+					CodeStyleSettingsCustomizable.CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
+					CodeStyleSettingsCustomizable.CommenterOption.LINE_COMMENT_ADD_SPACE.name
+				)
+			}
 		}
 	}
 	

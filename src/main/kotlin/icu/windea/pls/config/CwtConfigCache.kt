@@ -8,21 +8,21 @@ import org.slf4j.*
 
 class CwtConfigCache(
 	val groups: Map<String, Map<String, CwtConfig>>,
-	val declarations:Map<String,List<Map<String,Any?>>>,
-	val project:Project
-){
-	companion object{
+	val declarations: Map<String, List<Map<String, Any?>>>,
+	val project: Project
+) {
+	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
 	}
 	
-	private val groupCaches:Map<ParadoxGameType,CwtConfigGroupCache>
+	private val groupCaches: Map<ParadoxGameType, CwtConfigGroupCache>
 	
-	val locales:Array<ParadoxLocale>
-	val localeMap:Map<String,ParadoxLocale>
-	val sequentialNumbers:Array<ParadoxSequentialNumber>
-	val sequentialNumberMap:Map<String,ParadoxSequentialNumber>
-	val colors :Array<ParadoxColor>
-	val colorMap :Map<String,ParadoxColor>
+	val locales: Array<ParadoxLocale>
+	val localeMap: Map<String, ParadoxLocale>
+	val sequentialNumbers: Array<ParadoxSequentialNumber>
+	val sequentialNumberMap: Map<String, ParadoxSequentialNumber>
+	val colors: Array<ParadoxColor>
+	val colorMap: Map<String, ParadoxColor>
 	
 	val ck2 get() = get(ParadoxGameType.Ck2)
 	val ck3 get() = get(ParadoxGameType.Ck3)
@@ -40,22 +40,22 @@ class CwtConfigCache(
 		locales = declarations.getValue("locale").mapToArray {
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
-			ParadoxLocale(name,description)
+			ParadoxLocale(name, description)
 		}
 		localeMap = locales.associateBy { it.name }
-		sequentialNumbers = declarations.getValue("sequentialNumber").mapToArray { 
+		sequentialNumbers = declarations.getValue("sequentialNumber").mapToArray {
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
 			val placeholderText = it.getValue("placeholderText") as String
-			ParadoxSequentialNumber(name,description,placeholderText)
+			ParadoxSequentialNumber(name, description, placeholderText)
 		}
 		sequentialNumberMap = sequentialNumbers.associateBy { it.name }
-		colors = declarations.getValue("color").mapToArray { 
+		colors = declarations.getValue("color").mapToArray {
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
 			val colorRgb = it.getValue("colorRgb") as Int
 			val colorText = it.getValue("colorText") as String
-			ParadoxColor(name,description, colorRgb, colorText)
+			ParadoxColor(name, description, colorRgb, colorText)
 		}
 		colorMap = colors.associateBy { it.name }
 		
@@ -64,9 +64,11 @@ class CwtConfigCache(
 		logger.info("Resolve config groups...")
 		
 		groupCaches = ConcurrentHashMap()
-		for((groupName,group) in groups) {
-			val gameType = ParadoxGameType.resolve(groupName)?:continue
-			groupCaches[gameType] = CwtConfigGroupCache(group,gameType,groupName,project)
+		for((groupName, group) in groups) {
+			val gameType = ParadoxGameType.resolve(groupName)
+			if(gameType != null) {
+				groupCaches[gameType] = CwtConfigGroupCache(group, gameType, groupName, project)
+			}
 		}
 		
 		logger.info("Resolve config groups finished.")
