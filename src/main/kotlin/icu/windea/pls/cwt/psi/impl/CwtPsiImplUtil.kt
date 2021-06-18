@@ -50,7 +50,8 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getSeparatorType(element:CwtProperty): SeparatorType {
-		for(child in element.children) {
+		//这里不能遍历element.children
+		element.forEachChild { child->
 			when(child.elementType){
 				CwtTypes.EQUAL_SIGN -> return SeparatorType.EQUAL
 				CwtTypes.NOT_EQUAL_SIGN -> return SeparatorType.NOT_EQUAL
@@ -98,7 +99,8 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getSeparatorType(element:CwtOption): SeparatorType {
-		for(child in element.children) {
+		//这里不能遍历element.children
+		element.forEachChild { child->
 			when(child.elementType){
 				CwtTypes.EQUAL_SIGN -> return SeparatorType.EQUAL
 				CwtTypes.NOT_EQUAL_SIGN -> return SeparatorType.NOT_EQUAL

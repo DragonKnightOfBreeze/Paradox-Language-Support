@@ -6,48 +6,67 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 
-class CwtDocumentationProvider:AbstractDocumentationProvider() {
+class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
-		return when(element){
+		return when(element) {
 			is CwtProperty -> getPropertyInfo(element)
+			is CwtOption -> getOptionInfo(element)
 			else -> null
 		}
 	}
 	
-	private fun getPropertyInfo(element: CwtProperty): String? {
+	private fun getPropertyInfo(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
 			definition {
-				append("(property) <b>").append(name.escapeXmlOrAnonymous()).append("</b> = {...}")
+				append("(property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			}
+		}
+	}
+	
+	private fun getOptionInfo(element: CwtOption): String {
+		return buildString {
+			val name = element.name
+			definition {
+				append("(option) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 		}
 	}
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
-		return when(element){
+		return when(element) {
 			is CwtProperty -> getPropertyDoc(element)
+			is CwtOption -> getOptionDoc(element)
 			else -> null
 		}
 	}
 	
-	private fun getPropertyDoc(element: CwtProperty): String? {
+	private fun getPropertyDoc(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
 			definition {
-				append("(property) <b>").append(name.escapeXmlOrAnonymous()).append("</b> = {...}")
+				append("(property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 			//文档注释，以###开始
 			val documentation = getDocumentation(element)
-			if(documentation != null){
-				content { 
+			if(documentation != null) {
+				content {
 					append(documentation)
 				}
 			}
-			
 		}
 	}
 	
-	private fun getDocumentation(element: PsiElement):String?{
+	private fun getOptionDoc(element: CwtOption): String {
+		return buildString {
+			val name = element.name
+			definition {
+				append("(option) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			}
+		}
+	}
+	
+	private fun getDocumentation(element: PsiElement): String? {
 		var current: PsiElement = element
 		val documentationElements = LinkedList<CwtDocumentationText>()
 		while(true) {
