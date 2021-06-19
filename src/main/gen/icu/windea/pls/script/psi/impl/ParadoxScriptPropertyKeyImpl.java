@@ -39,4 +39,9 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
     return findChildByType(QUOTED_PROPERTY_KEY_ID);
   }
 
+  @Override
+  public boolean isQuoted() {
+    return ParadoxScriptPsiImplUtil.isQuoted(this);
+  }
+
 }

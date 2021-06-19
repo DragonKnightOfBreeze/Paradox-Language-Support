@@ -3,6 +3,7 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -133,7 +134,7 @@ val VirtualFile.paradoxFileInfo: ParadoxFileInfo? get() = this.getUserData(parad
 
 val PsiFile.paradoxFileInfo: ParadoxFileInfo? get() = doGetFileInfo(this.originalFile) //使用原始文件
 
-val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = doGetFileInfo(this.containingFile)
+val PsiElement.paradoxFileInfo: ParadoxFileInfo? get() = doGetFileInfo(this.containingFile.originalFile) //使用原始文件
 
 internal fun canGetFileInfo(file: PsiFile): Boolean {
 	//paradoxScriptFile, paradoxLocalisationFile, ddsFile
@@ -227,6 +228,7 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 	}
 }
 
+//这个方法有可能导致ProcessCanceledException，因为调用element.name导致！
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	//NOTE cwt文件中定义的definition的minDepth是4（跳过3个rootKey）
 	val propertyPath = element.resolvePropertyPath(4) ?: return null
@@ -242,31 +244,30 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 val ParadoxDefinitionProperty.paradoxDefinitionPropertyInfo: ParadoxDefinitionPropertyInfo? get() = doGetDefinitionPropertyInfo(this)
 
 private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
+	val definition = element.findParentDefinition() ?: return null
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionPropertyInfoKey) {
 		val value = resolveDefinitionPropertyInfo(element)
-		CachedValueProvider.Result.create(value)
+		CachedValueProvider.Result.create(value, element, definition)
 	}
 }
 
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
+	//注意这里要获得的definitionProperty可能是scriptFile也可能是scriptProperty
 	val subPaths = mutableListOf<String>()
 	var current: PsiElement = element
-	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
-		when {
-			current is ParadoxScriptProperty -> {
-				val definitionInfo = current.paradoxDefinitionInfo
-				if(definitionInfo != null) {
-					val name = current.name
-					val existPropertyNames = current.propertyValue?.value?.castOrNull<ParadoxScriptBlock>()
-						?.propertyList?.map { it.name }.orEmpty()
-					val path = ParadoxPath(subPaths)
-					return ParadoxDefinitionPropertyInfo(name, path, existPropertyNames, definitionInfo)
-				}
-				subPaths.add(0, current.name)
+	do {
+		if(current is ParadoxDefinitionProperty) {
+			val definitionInfo = current.paradoxDefinitionInfo
+			val name = current.name ?: return null
+			if(definitionInfo != null) {
+				val existPropertyNames = current.properties.map { it.name }
+				val path = ParadoxPath(subPaths)
+				return ParadoxDefinitionPropertyInfo(name, path, existPropertyNames, definitionInfo)
 			}
+			subPaths.add(0, name)
 		}
 		current = current.parent ?: break
-	}
+	} while(current !is PsiFile)
 	return null
 }
 
@@ -429,8 +430,35 @@ fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): L
 	return valueList.filter { it.value.equals(value, ignoreCase) }
 }
 
-fun ParadoxScriptBlock.findParentDefinitionProperty():ParadoxDefinitionProperty?{
-	return  runCatching { if(this is ParadoxScriptRootBlock) this.parent else this.parent.parent }.getOrNull()?.castOrNull() 
+/**
+ * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
+ */
+fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxScriptRootBlock) {
+			return current.parent as ParadoxDefinitionProperty
+		} else if(current is ParadoxScriptBlock) {
+			return current.parent.parent as ParadoxDefinitionProperty
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
+}
+
+/**
+ * 得到上一级definition，可能为自身，可能为null。
+ */
+fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxDefinitionProperty) {
+			val definitionInfo = current.paradoxDefinitionInfo
+			if(definitionInfo != null) return current
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
 }
 //Find Extensions
 /**

@@ -57,7 +57,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationProperty): String {
-		return element.stub?.name ?: element.propertyKey.text
+		//注意：element.stub可能会导致ProcessCanceledException
+		return runCatching { element.stub?.name }.getOrNull() ?: element.propertyKey.text
 	}
 	
 	@JvmStatic
@@ -140,7 +141,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationSequentialNumber): String {
-		return element.sequentialNumberId?.text?.toUpperCase().orEmpty()
+		return element.sequentialNumberId?.text?.uppercase().orEmpty()
 	}
 	
 	@JvmStatic
@@ -163,7 +164,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationColorfulText
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationColorfulText): String {
-		return element.colorId?.text?.toUpperCase().orEmpty()
+		return element.colorId?.text?.uppercase().orEmpty()
 	}
 	
 	@JvmStatic

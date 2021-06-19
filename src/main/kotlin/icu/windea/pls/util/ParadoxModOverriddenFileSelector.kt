@@ -35,7 +35,7 @@ object ParadoxModOverriddenFileSelector {
 				val shortName = modScriptFile.nameWithoutExtension
 				//如果找到了有冲突的文件，则添加到缓存中
 				//排除readme和changelog和credits
-				if(shortName.toUpperCase() !in ignoredFileShortNames) {
+				if(shortName.uppercase() !in ignoredFileShortNames) {
 					val key = modScriptFile.path
 					val gameScriptFile = gameScriptFileMap[key]
 					//排除不存在的情况

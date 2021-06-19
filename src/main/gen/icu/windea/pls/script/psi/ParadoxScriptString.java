@@ -27,4 +27,6 @@ public interface ParadoxScriptString extends ParadoxScriptStringValue, PsiLitera
   @NotNull
   String getStringValue();
 
+  boolean isQuoted();
+
 }

@@ -5,10 +5,15 @@ import groovy.lang.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
+import java.text.*
 import java.util.*
 import java.util.concurrent.*
 import javax.swing.*
 import kotlin.sequences.Sequence
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun pass() {
+}
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Array<out T?>.cast() = this as Array<T>
@@ -90,7 +95,7 @@ fun String.unquote() = if(length >= 2 && startsWith('"') && endsWith('"')) subst
 fun String.truncate(limit: Int) = if(this.length <= limit) this else this.take(limit) + "..."
 
 fun String.toCapitalizedWord(): String {
-	return if(isEmpty()) this else this[0].toUpperCase() + this.substring(1)
+	return if(isEmpty()) this else this[0].uppercase() + this.substring(1)
 }
 
 fun String.toCapitalizedWords(): String {
@@ -100,13 +105,13 @@ fun String.toCapitalizedWords(): String {
 			when {
 				isWordStart -> {
 					isWordStart = false
-					append(c.toUpperCase())
+					append(c.uppercase())
 				}
 				c == '_' || c == '-' || c == '.' -> {
 					isWordStart = true
 					append(' ')
 				}
-				else -> append(c.toLowerCase())
+				else -> append(c.lowercase())
 			}
 		}
 	}
@@ -189,9 +194,6 @@ fun Path.tryCreateDirectory(): Any? {
 }
 
 //Is Extensions
-
-private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
-
 fun String.isBoolean() = this == "yes" || this == "no"
 
 fun String.isInt(): Boolean {
@@ -227,8 +229,38 @@ fun String.isFloat(): Boolean {
 	return true
 }
 
+fun String.isPercentageField(): Boolean {
+	val chars = toCharArray()
+	for(i in indices){
+		val c = chars[i]
+		if(i == lastIndex){
+			if(c != '%') return false 
+		}else{
+			if(!c.isDigit()) return false
+		}
+	}
+	return true
+}
+
+private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
+
 fun String.isColor(): Boolean {
 	return this.matches(isColorRegex)
+}
+
+private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") }
+
+fun String.isDateField():Boolean{
+	return try{
+		threadLocalDateFormat.get().parse(this)
+		true
+	}catch(e:Exception){
+		false
+	}
+}
+
+fun String.isVariableField():Boolean{
+	return this.startsWith('@') //NOTE 简单判断
 }
 
 fun String.isTypeOf(type: String): Boolean {
@@ -249,6 +281,10 @@ fun String.toBooleanYesNo() = this == "yes"
 fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
 
 fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
+
+fun String.toIntRange() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
+
+fun String.toFloatRange() = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
 
 fun URL.toFile() = File(this.toURI())
 

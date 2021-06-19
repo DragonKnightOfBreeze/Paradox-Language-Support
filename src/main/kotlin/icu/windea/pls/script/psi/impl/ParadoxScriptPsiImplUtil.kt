@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
@@ -26,7 +27,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxScriptVariable): String {
-		return element.stub?.name ?: element.variableName.text.orEmpty()
+		//注意：element.stub可能会导致ProcessCanceledException
+		return runCatching { element.stub?.name }.getOrNull() ?: element.variableName.text.orEmpty()
 	}
 	
 	@JvmStatic
@@ -59,7 +61,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxScriptProperty): String {
-		return element.stub?.name ?: element.propertyKey.text.unquote()
+		//注意：element.stub可能会导致ProcessCanceledException
+		return runCatching { element.stub?.name }.getOrNull() ?: element.propertyKey.text.unquote()
 	}
 	
 	@JvmStatic
@@ -98,8 +101,15 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getBlock(element:ParadoxScriptProperty):ParadoxScriptBlock?{
+	fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
 		return element.propertyValue?.value?.castOrNull()
+	}
+	//endregion
+	
+	//region ParadoxScriptPropertyKey
+	@JvmStatic
+	fun isQuoted(element: ParadoxScriptPropertyKey):Boolean{
+		return element.firstChild?.elementType == ParadoxScriptTypes.QUOTED_PROPERTY_KEY_ID
 	}
 	//endregion
 	
@@ -138,7 +148,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getTruncatedValue(element: ParadoxScriptValue):String{
+	fun getTruncatedValue(element: ParadoxScriptValue): String {
 		return element.value
 	}
 	//endregion
@@ -153,14 +163,14 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptInt
 	@JvmStatic
 	fun getIntValue(element: ParadoxScriptInt): Int {
-		return element.value.toIntOrNull()?:0
+		return element.value.toIntOrNull() ?: 0
 	}
 	//endregion
 	
 	//region ParadoxScriptFloat
 	@JvmStatic
 	fun getFloatValue(element: ParadoxScriptFloat): Float {
-		return element.value.toFloatOrNull()?:0f
+		return element.value.toFloatOrNull() ?: 0f
 	}
 	//endregion
 	
@@ -185,6 +195,11 @@ object ParadoxScriptPsiImplUtil {
 	fun getReference(element: ParadoxScriptString): ParadoxScriptStringPropertyPsiReference {
 		val rangeInElement = TextRange(0, element.textLength) //不管有没有用双引号括起，都算在内
 		return ParadoxScriptStringPropertyPsiReference(element, rangeInElement)
+	}
+	
+	@JvmStatic
+	fun isQuoted(element: ParadoxScriptString):Boolean{
+		return element.firstChild?.elementType == ParadoxScriptTypes.QUOTED_STRING_TOKEN
 	}
 	//endregion
 	

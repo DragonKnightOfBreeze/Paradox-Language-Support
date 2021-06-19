@@ -64,4 +64,9 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implem
     return ParadoxScriptPsiImplUtil.getStringValue(this);
   }
 
+  @Override
+  public boolean isQuoted() {
+    return ParadoxScriptPsiImplUtil.isQuoted(this);
+  }
+
 }

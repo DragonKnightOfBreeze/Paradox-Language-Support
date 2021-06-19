@@ -13,6 +13,23 @@ class CwtConfigGroupCache(
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
+		
+		private fun resolveTypeName(expression: String): String? {
+			return expression.resolveByRemoveSurrounding("type[", "]")
+		}
+		
+		private fun resolveSubtypeName(expression: String): String? {
+			return expression.resolveByRemoveSurrounding("subtype[", "]")
+		}
+		
+		private fun resolveEnumName(expression: String): String? {
+			return expression.resolveByRemoveSurrounding("enum[", "]")
+		}
+		
+		private fun resolveAliasName(expression: String): String? {
+			return expression.resolveByRemoveSurrounding("alias[", "]")
+		}
+		
 	}
 	
 	val resolvedConfigs: Map<String, Map<String, CwtConfig>>
@@ -185,7 +202,7 @@ class CwtConfigGroupCache(
 						
 						//其他情况，放到definition中
 						val definitionName = key
-						val definitionConfig = resolveDefinitionConfig(property, definitionName)?:continue
+						val definitionConfig = resolveDefinitionConfig(property, definitionName) ?: continue
 						definitions[definitionName] = definitionConfig
 					}
 				}
@@ -418,20 +435,18 @@ class CwtConfigGroupCache(
 	
 	private fun resolveDefinitionConfig(configProperty: CwtConfigProperty, name: String): CwtDefinitionConfig? {
 		val props = configProperty.properties ?: return null
-		val propertiesConfig = mutableMapOf<String, CwtConfigProperty>()
-		val subtypePropertiesConfig = mutableMapOf<String, MutableMap<String, CwtConfigProperty>>()
+		val propertiesConfig = mutableListOf<CwtConfigProperty>()
+		val subtypePropertiesConfig = mutableMapOf<String, MutableList<CwtConfigProperty>>()
 		for(prop in props) {
-			val properties = prop.properties
-			if(properties != null) {
-				//这里需要进行合并
-				val map = properties.associateBy { it.key }
-				val subtypeName = resolveSubtypeName(prop.key)
-				if(subtypeName != null) {
-					val subtypeMap = subtypePropertiesConfig.getOrPut(name) { mutableMapOf() }
-					subtypeMap.putAll(map)
-				} else {
-					propertiesConfig.putAll(map)
+			//这里需要进行合并
+			val subtypeName = resolveSubtypeName(prop.key)
+			if(subtypeName != null) {
+				val propProps = prop.properties
+				if(propProps != null) {
+					propertiesConfig.addAll(propProps)
 				}
+			} else {
+				propertiesConfig.add(prop)
 			}
 		}
 		return CwtDefinitionConfig(name, propertiesConfig, subtypePropertiesConfig, configProperty.pointer)
@@ -535,7 +550,7 @@ class CwtConfigGroupCache(
 		val typeKey = elementName
 		val type = typeConfig.name
 		val subtypesConfig = getSubtypesConfig(typeConfig, element, elementName)
-		val subtypes = subtypesConfig.map { it.name }
+		val subtypes = getSubtypes(subtypesConfig)
 		val localisationConfig = getLocalisationConfig(typeConfig, subtypes)
 		val localisation = getLocalisation(localisationConfig, element, name)
 		val graphRelatedTypes = typeConfig.graphRelatedTypes.orEmpty()

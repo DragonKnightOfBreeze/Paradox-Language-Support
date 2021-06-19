@@ -7,17 +7,17 @@ import icu.windea.pls.cwt.psi.*
 
 data class CwtDefinitionConfig(
 	val name: String,
-	val propertiesConfig: Map<String, CwtConfigProperty>,
-	val subtypePropertiesConfig: Map<String, Map<String, CwtConfigProperty>>,
+	val propertiesConfig: List<CwtConfigProperty>,
+	val subtypePropertiesConfig: Map<String,List<CwtConfigProperty>>,
 	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
 ) : CwtConfig{
-	fun mergeConfig(subtypes:List<String>):Map<String,CwtConfigProperty>{
-		val config = mutableMapOf<String,CwtConfigProperty>()
-		config.putAll(propertiesConfig)
+	fun mergeConfig(subtypes:List<String>):List<CwtConfigProperty>{
+		val result = mutableListOf<CwtConfigProperty>()
+		result.addAll(propertiesConfig)
 		for((k,v) in subtypePropertiesConfig) {
-			if(k in subtypes) config.putAll(v)
+			if(k in subtypes) result.addAll(v)
 		}
-		return config
+		return result
 	}
 }
 
