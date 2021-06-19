@@ -7,6 +7,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
 data class CwtConfigProperty(
+	val pointer: SmartPsiElementPointer<CwtProperty>,
 	val key: String,
 	val value: String,
 	val booleanValue: Boolean? = null,
@@ -19,7 +20,6 @@ data class CwtConfigProperty(
 	val options: List<CwtConfigOption>? = null,
 	val optionValues: List<CwtConfigOptionValue>? = null,
 	val separatorType: SeparatorType = SeparatorType.EQUAL,
-	val pointer: SmartPsiElementPointer<CwtProperty>? = null
 ) {
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }

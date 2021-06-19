@@ -9,7 +9,7 @@ class ParadoxScriptFileTreeElement(
 	private val element: ParadoxScriptFile
 ) : PsiTreeElementBase<ParadoxScriptFile>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
-		val rootBlock = element.rootBlock ?: return mutableListOf()
+		val rootBlock = element.block ?: return mutableListOf()
 		return PsiTreeUtil.getChildrenOfAnyType(
 			rootBlock,
 			ParadoxScriptVariable::class.java,

@@ -8,7 +8,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();
@@ -35,5 +35,8 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, StubBa
   String getTruncatedValue();
 
   int getDepth();
+
+  @Nullable
+  ParadoxScriptBlock getBlock();
 
 }

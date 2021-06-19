@@ -1,12 +1,14 @@
 package icu.windea.pls
 
 import com.intellij.util.*
+import groovy.lang.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
 import java.util.*
 import java.util.concurrent.*
 import javax.swing.*
+import kotlin.sequences.Sequence
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Array<out T?>.cast() = this as Array<T>
@@ -171,18 +173,19 @@ infix fun List<String>.relaxMatchesPath(other: List<String>): Boolean {
 	return true
 }
 
-fun Path.exists():Boolean{
+fun Path.exists(): Boolean {
 	return Files.exists(this)
 }
 
-fun Path.notExists():Boolean{
+fun Path.notExists(): Boolean {
 	return Files.notExists(this)
 }
 
 fun Path.tryCreateDirectory(): Any? {
 	return try {
 		Files.createDirectories(this)
-	} catch(ignored: Exception) { }
+	} catch(ignored: Exception) {
+	}
 }
 
 //Is Extensions
@@ -235,7 +238,7 @@ fun String.isTypeOf(type: String): Boolean {
 
 //To Extensions
 
-fun Any?.toStringOrEmpty() = this?.toString()?:""
+fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 
 fun Boolean.toInt() = if(this) 1 else 0
 
@@ -283,18 +286,18 @@ fun execBlocking(command: String, timeout: Long, timeUnit: TimeUnit, workDirecto
 }
 
 private fun optimizeCommand(command: String): Array<String> {
-	return  arrayOf("cmd", "/c", command)
+	return arrayOf("cmd", "/c", command)
 }
 
 //Specific Collections
 
 data class ReversibleList<T>(val list: List<T>, val reverse: Boolean) : List<T> by list
 
-fun <T> List<T>.toReversibleList(reverse:Boolean) = ReversibleList(this,reverse)
+fun <T> List<T>.toReversibleList(reverse: Boolean) = ReversibleList(this, reverse)
 
 data class ReversibleMap<K, V>(val map: Map<K, V>, val reverse: Boolean = false) : Map<K, V> by map
 
-fun <K,V> Map<K,V>.toReversibleMap(reverse: Boolean) = ReversibleMap(this,reverse)
+fun <K, V> Map<K, V>.toReversibleMap(reverse: Boolean) = ReversibleMap(this, reverse)
 
 //Specific Expressions
 
@@ -439,7 +442,17 @@ class TypeExpression(expression: String) : AbstractExpression(expression) {
 	operator fun component2(): List<String> = subtypes
 }
 
-interface Enumerable{
-	val key:String
-	val text:String
+interface Enumerable {
+	val key: String
+	val text: String
 }
+
+//Tuple Extensions
+
+typealias Tuple2<A, B> = Pair<A, B>
+
+typealias Tuple3<A, B, C> = Triple<A, B, C>
+
+fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
+
+fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)

@@ -17,13 +17,13 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	override fun getOverriddenFileType(file: VirtualFile): FileType? {
 		val fileType = getFileType(file) ?: return null
 		val fileName = file.name
-		val subpaths = mutableListOf(fileName)
+		val subPaths = mutableListOf(fileName)
 		var currentFile: VirtualFile? = file.parent
 		while(currentFile != null) {
 			//只有能够确定根目录类型的文件才会被解析
 			val rootType = getRootType(currentFile)
 			if(rootType != null) {
-				val path = getPath(subpaths)
+				val path = getPath(subPaths)
 				val gameType = getGameType(currentFile)?:ParadoxGameType.defaultValue()
 				val rootPath = currentFile.toNioPath()
 				//只解析特定根目录下的文件
@@ -54,7 +54,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 					}
 				}
 			}
-			subpaths.add(0, currentFile.name)
+			subPaths.add(0, currentFile.name)
 			currentFile = currentFile.parent
 		}
 		runCatching {
@@ -63,8 +63,8 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		return null
 	}
 	
-	private fun getPath(subpaths: List<String>): ParadoxPath {
-		return ParadoxPath(subpaths)
+	private fun getPath(subPaths: List<String>): ParadoxPath {
+		return ParadoxPath(subPaths)
 	}
 	
 	private fun getFileType(file: VirtualFile): ParadoxFileType? {

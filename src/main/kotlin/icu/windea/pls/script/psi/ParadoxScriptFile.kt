@@ -6,14 +6,9 @@ import icu.windea.pls.script.*
 
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxScriptLanguage) {
+) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxDefinitionProperty {
 	override fun getFileType() = ParadoxScriptFileType
-
-	val rootBlock get() = findChildByClass(ParadoxScriptRootBlock::class.java)
 	
-	val variables get() = rootBlock?.variableList.orEmpty()
-	
-	val properties get() =  rootBlock?.propertyList.orEmpty()
-
-	val values get() = rootBlock?.valueList.orEmpty()
+	override val block get() = findChildByClass(ParadoxScriptRootBlock::class.java)
 }
+

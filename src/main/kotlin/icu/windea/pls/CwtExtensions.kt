@@ -64,10 +64,10 @@ private fun String.resolveEnumExpression(): String {
 /**
  * 根据cwtConfigProperty配置对scriptProperty进行匹配。
  */
-fun matchContent(element: ParadoxScriptProperty, elementConfig: CwtConfigProperty, config: CwtConfigGroupCache): Boolean {
+fun matchContent(element: ParadoxDefinitionProperty, elementConfig: CwtConfigProperty, config: CwtConfigGroupCache): Boolean {
 	val propertiesConfig = elementConfig.properties.orEmpty() //不应该为null，转为emptyList
 	if(propertiesConfig.isEmpty()) return true //config为空表示匹配
-	val properties = (element.propertyValue?.value as? ParadoxScriptBlock)?.propertyList ?: return true //脚本未写完
+	val properties = element.properties
 	return doMatchContent(properties, propertiesConfig, config)
 }
 
@@ -123,7 +123,8 @@ private fun doMatchConfig(prop: ParadoxScriptProperty, propConfig: CwtConfigProp
 				if(!doMatchContent(props, propsConfig, config)) return false
 			}
 			propConfig.stringValue != null -> {
-				val stringValue = propConfig.stringValue ?: return false //不应该为null
+				val stringValue = propConfig.stringValue
+				if(stringValue.isEmpty()) return false //不应该为空 
 				when {
 					//字符串"any"表示匹配任意内容
 					stringValue == "any" -> return true

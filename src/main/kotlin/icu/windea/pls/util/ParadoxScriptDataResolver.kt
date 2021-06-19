@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxScriptDataResolver {
 	fun resolve(file: PsiFile):List<Any>{
 		if(file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxScriptFile')")
-		val rootBlock = file.rootBlock?:return emptyList()
+		val rootBlock = file.block?:return emptyList()
 		return resolveBlock(rootBlock)
 	}
 	

@@ -18,7 +18,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import org.jetbrains.annotations.*
-import kotlin.Pair
 
 //Misc Extensions
 
@@ -75,6 +74,7 @@ fun isPreviousComment(element: PsiElement): Boolean {
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
+val cachedParadoxDefinitionPropertyInfoKey = Key<CachedValue<ParadoxDefinitionPropertyInfo>>("cachedParadoxDefinitionPropertyInfo")
 val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
 
 //PsiElement Extensions
@@ -157,24 +157,24 @@ private fun doGetFileInfo(file: PsiFile): ParadoxFileInfo? {
 private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
 	val fileType = getFileType(file) ?: return null
 	val fileName = file.name
-	val subpaths = mutableListOf(fileName)
+	val subPaths = mutableListOf(fileName)
 	var currentFile = file.parent
 	while(currentFile != null) {
 		val rootType = getRootType(currentFile)
 		val rootPath = currentFile.virtualFile.toNioPath()
 		if(rootType != null) {
-			val path = getPath(subpaths)
+			val path = getPath(subPaths)
 			val gameType = getGameType(currentFile) ?: ParadoxGameType.defaultValue()
 			return ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 		}
-		subpaths.add(0, currentFile.name)
+		subPaths.add(0, currentFile.name)
 		currentFile = currentFile.parent
 	}
 	return null
 }
 
-private fun getPath(subpaths: List<String>): ParadoxPath {
-	return ParadoxPath(subpaths)
+private fun getPath(subPaths: List<String>): ParadoxPath {
+	return ParadoxPath(subPaths)
 }
 
 private fun getFileType(file: PsiFile): ParadoxFileType? {
@@ -218,25 +218,56 @@ private fun getGameType(file: PsiDirectory): ParadoxGameType? {
 	return null
 }
 
-val ParadoxScriptProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
+val ParadoxDefinitionProperty.paradoxDefinitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
-private fun doGetDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
+private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
 		val value = resolveDefinitionInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
 }
 
-private fun resolveDefinitionInfo(element: ParadoxScriptProperty): ParadoxDefinitionInfo? {
+private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	//NOTE cwt文件中定义的definition的minDepth是4（跳过3个rootKey）
 	val propertyPath = element.resolvePropertyPath(4) ?: return null
 	val fileInfo = element.paradoxFileInfo ?: return null
 	val path = fileInfo.path
 	val gameType = fileInfo.gameType
-	val elementName = element.name
+	val elementName = element.name ?: return null
 	val project = element.project
 	val configGroup = getConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath,fileInfo)
+	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath, fileInfo)
+}
+
+val ParadoxDefinitionProperty.paradoxDefinitionPropertyInfo: ParadoxDefinitionPropertyInfo? get() = doGetDefinitionPropertyInfo(this)
+
+private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
+	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionPropertyInfoKey) {
+		val value = resolveDefinitionPropertyInfo(element)
+		CachedValueProvider.Result.create(value)
+	}
+}
+
+private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
+	val subPaths = mutableListOf<String>()
+	var current: PsiElement = element
+	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
+		when {
+			current is ParadoxScriptProperty -> {
+				val definitionInfo = current.paradoxDefinitionInfo
+				if(definitionInfo != null) {
+					val name = current.name
+					val existPropertyNames = current.propertyValue?.value?.castOrNull<ParadoxScriptBlock>()
+						?.propertyList?.map { it.name }.orEmpty()
+					val path = ParadoxPath(subPaths)
+					return ParadoxDefinitionPropertyInfo(name, path, existPropertyNames, definitionInfo)
+				}
+				subPaths.add(0, current.name)
+			}
+		}
+		current = current.parent ?: break
+	}
+	return null
 }
 
 fun ParadoxScriptValue.getType(): String? {
@@ -289,34 +320,34 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 }
 
 fun PsiElement.resolvePath(): ParadoxPath? {
-	val subpaths = mutableListOf<String>()
+	val subPaths = mutableListOf<String>()
 	var current = this
-	while(current !is PsiFile) {
+	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
 		when {
 			current is ParadoxScriptProperty -> {
-				subpaths.add(0, current.name)
+				subPaths.add(0, current.name)
 			}
 			current is ParadoxScriptValue -> {
 				val parent = current.parent ?: break
 				if(parent is ParadoxScriptBlock) {
-					subpaths.add(0, parent.indexOfChild(current).toString())
+					subPaths.add(0, parent.indexOfChild(current).toString())
 				}
 				current = parent
 			}
 		}
 		current = current.parent ?: break
 	}
-	return if(subpaths.isEmpty()) null else ParadoxPath(subpaths)
+	return if(subPaths.isEmpty()) null else ParadoxPath(subPaths)
 }
 
 fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPath? {
-	val subpaths = mutableListOf<String>()
+	val subPaths = mutableListOf<String>()
 	var current = this
 	var depth = 0
 	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
 		when {
 			current is ParadoxScriptProperty -> {
-				subpaths.add(0, current.name)
+				subPaths.add(0, current.name)
 				depth++
 			}
 			//忽略scriptValue
@@ -325,23 +356,7 @@ fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPath? {
 		if(maxDepth != -1 && maxDepth < depth) return null
 		current = current.parent ?: break
 	}
-	return if(subpaths.isEmpty()) null else ParadoxPath(subpaths)
-}
-
-fun PsiElement.resolveDefinitionInfoAndDefinitionPropertyPath(): Pair<ParadoxDefinitionInfo, ParadoxPath>? {
-	val subpaths = mutableListOf<String>()
-	var current = this
-	while(current !is PsiFile) {
-		when {
-			current is ParadoxScriptProperty -> {
-				val definitionInfo = current.paradoxDefinitionInfo
-				if(definitionInfo != null) return definitionInfo to ParadoxPath(subpaths)
-				subpaths.add(0, current.name)
-			}
-		}
-		current = current.parent ?: break
-	}
-	return null
+	return ParadoxPath(subPaths)
 }
 
 val ParadoxLocalisationProperty.paradoxLocalisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)
@@ -382,34 +397,41 @@ fun ParadoxLocalisationProperty.isLocalisationSynced(): Boolean {
 
 //PsiElement Find Extensions
 
-fun ParadoxScriptProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
-	val block = propertyValue?.value as? ParadoxScriptBlock ?: return null
-	return block.propertyList.find { it.name.equals(propertyName, ignoreCase) }
+fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
+	return properties.find { it.name.equals(propertyName, ignoreCase) }
 }
 
-fun ParadoxScriptProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
-	val block = propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
-	return block.propertyList.filter { it.name.equals(propertyName, ignoreCase) }
+fun ParadoxDefinitionProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
+	return properties.filter { it.name.equals(propertyName, ignoreCase) }
 }
 
-fun ParadoxScriptProperty.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
-	val block = propertyValue?.value as? ParadoxScriptBlock ?: return null
-	return block.valueList.find { it.value.equals(value, ignoreCase) }
+fun ParadoxDefinitionProperty.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
+	return values.find { it.value.equals(value, ignoreCase) }
 }
 
-fun ParadoxScriptProperty.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
-	val block = propertyValue?.value as? ParadoxScriptBlock ?: return emptyList()
-	return block.valueList.filter { it.value.equals(value, ignoreCase) }
+fun ParadoxDefinitionProperty.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
+	return values.filter { it.value.equals(value, ignoreCase) }
 }
 
 fun ParadoxScriptBlock.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
 	return propertyList.find { it.name.equals(propertyName, ignoreCase) }
 }
 
+fun ParadoxScriptBlock.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
+	return propertyList.filter { it.name.equals(propertyName, ignoreCase) }
+}
+
 fun ParadoxScriptBlock.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
 	return valueList.find { it.value.equals(value, ignoreCase) }
 }
 
+fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
+	return valueList.filter { it.value.equals(value, ignoreCase) }
+}
+
+fun ParadoxScriptBlock.findParentDefinitionProperty():ParadoxDefinitionProperty?{
+	return  runCatching { if(this is ParadoxScriptRootBlock) this.parent else this.parent.parent }.getOrNull()?.castOrNull() 
+}
 //Find Extensions
 /**
  * 根据名字在当前文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
@@ -754,9 +776,9 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 		val name = tokens[2]
 		val extraName = tokens.getOrNull(3) //可能是subtypeName
 		//如果configType是types且extraName存在，需要特殊处理，从而兼容subtype
-		if(configType == "types" && extraName != null){
+		if(configType == "types" && extraName != null) {
 			getConfig(project).getValue(gameType).types.getValue(name).subtypes.getValue(extraName).pointer?.element
-		}else{
+		} else {
 			getConfig(project).getValue(gameType).getValue(configType).getValue(name).pointer?.element
 		}
 	}.getOrNull()
@@ -788,19 +810,19 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 	return this
 }
 
-fun StringBuilder.appendPsiLink(refText:String, label:String, plainLink:Boolean=false):StringBuilder{
-	DocumentationManagerUtil.createHyperlink(this,refText,label,plainLink)
+fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = false): StringBuilder {
+	DocumentationManagerUtil.createHyperlink(this, refText, label, plainLink)
 	return this
 }
 
-fun StringBuilder.appendScriptLink(name:String,type:String):StringBuilder{
+fun StringBuilder.appendScriptLink(name: String, type: String): StringBuilder {
 	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
-	return appendPsiLink("$$type.$name",name)
+	return appendPsiLink("$$type.$name", name)
 }
 
-fun StringBuilder.appendLocalisationLink(name:String):StringBuilder{
+fun StringBuilder.appendLocalisationLink(name: String): StringBuilder {
 	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
-	return appendPsiLink("#$name",name)
+	return appendPsiLink("#$name", name)
 }
 
 fun StringBuilder.appendIconTag(url: String, local: Boolean = true): StringBuilder {

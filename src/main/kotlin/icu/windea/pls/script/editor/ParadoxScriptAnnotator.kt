@@ -50,7 +50,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	//private fun annotateDefinitionProperties(existProperties:List<ParadoxScriptProperty>,
 	//	keyPatternExpressions: List<ConditionalExpression>,project: Project, definitionInfo: ParadoxDefinitionInfo, 
-	//	ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subpaths:List<String> = emptyList()){
+	//	ruleGroup: ParadoxRuleGroup, holder: AnnotationHolder,subPaths:List<String> = emptyList()){
 	//	
 	//	//用于保存要求的pattern
 	//	val requiredData = keyPatternExpressions.filter { it.required }.mapTo(mutableSetOf()) { it.value }
@@ -63,7 +63,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	//		
 	//		val existPropertyName = existProperty.name
 	//		val typeText = definitionInfo.typeText
-	//		val childSubpaths = subpaths + existPropertyName
+	//		val childsubPaths = subPaths + existPropertyName
 	//		
 	//		val state = resolveExpressions(keyPatternExpressions, project, existPropertyName, ruleGroup,requiredData,multipleData)
 	//		
@@ -102,7 +102,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	//			}
 	//			//递归检查
 	//			//TODO 重构
-	//			annotateDefinitionProperties(childExistProperties, childKeyPatternExpressions, project, definitionInfo, ruleGroup, holder,childSubpaths )
+	//			annotateDefinitionProperties(childExistProperties, childKeyPatternExpressions, project, definitionInfo, ruleGroup, holder,childsubPaths )
 	//		}
 	//	}
 	//}

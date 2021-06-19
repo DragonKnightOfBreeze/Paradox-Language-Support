@@ -1,16 +1,26 @@
 package icu.windea.pls.model
 
 data class ParadoxPath(
-	val subpaths:List<String>
-){
-	val path = subpaths.joinToString("/")
-	val fileName = subpaths.lastOrNull().orEmpty()
+	val subPaths:List<String>
+):Iterable<String>{
+	val path = subPaths.joinToString("/")
+	val fileName = subPaths.lastOrNull().orEmpty()
 	val fileExtension = fileName.substringAfterLast('.')
-	val parentSubpaths = subpaths.dropLast(1)
-	val parent = parentSubpaths.joinToString("/")
-	val root = parentSubpaths.firstOrNull().orEmpty()
-	val length = subpaths.size
-	val parentLength = parentSubpaths.size
+	val parentsubPaths = subPaths.dropLast(1)
+	val parent = parentsubPaths.joinToString("/")
+	val root = parentsubPaths.firstOrNull().orEmpty()
+	val length = subPaths.size
+	val parentLength = parentsubPaths.size
+	
+	val size = subPaths.size
+	
+	fun isEmpty() :Boolean{
+		return size == 0
+	}
+	
+	override fun iterator(): Iterator<String> {
+		return subPaths.iterator()
+	}
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxPath && path == other.path

@@ -96,6 +96,11 @@ object ParadoxScriptPsiImplUtil {
 		}
 		return depth
 	}
+	
+	@JvmStatic
+	fun getBlock(element:ParadoxScriptProperty):ParadoxScriptBlock?{
+		return element.propertyValue?.value?.castOrNull()
+	}
 	//endregion
 	
 	//region ParadoxScriptVariableReference

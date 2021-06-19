@@ -41,6 +41,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
     visitNamedElement(o);
+    // visitParadoxDefinitionProperty(o);
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {

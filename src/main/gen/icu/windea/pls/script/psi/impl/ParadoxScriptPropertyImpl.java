@@ -87,4 +87,10 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
     return ParadoxScriptPsiImplUtil.getDepth(this);
   }
 
+  @Override
+  @Nullable
+  public ParadoxScriptBlock getBlock() {
+    return ParadoxScriptPsiImplUtil.getBlock(this);
+  }
+
 }

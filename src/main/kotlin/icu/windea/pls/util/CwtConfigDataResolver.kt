@@ -29,6 +29,7 @@ object CwtConfigDataResolver {
 	}
 	
 	fun resolveProperty(property: CwtProperty): CwtConfigProperty? {
+		val pointer = property.createSmartPointer()
 		val key = property.propertyName
 		val propValue = property.value ?: return null
 		var booleanValue: Boolean? = null
@@ -41,7 +42,6 @@ object CwtConfigDataResolver {
 		val options: List<CwtConfigOption>?
 		val optionValues: List<CwtConfigOptionValue>?
 		val separatorType = property.separatorType
-		val pointer = property.createSmartPointer()
 		when {
 			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
 			propValue is CwtInt -> intValue = propValue.intValue
@@ -93,8 +93,8 @@ object CwtConfigDataResolver {
 		options = getOptions(optionElements)
 		optionValues = getOptionValues(optionValueElements)
 		return CwtConfigProperty(
-			key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
-			documentation, options, optionValues, separatorType, pointer
+			pointer,key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
+			documentation, options, optionValues, separatorType 
 		)
 	}
 	

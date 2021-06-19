@@ -8,7 +8,7 @@ data class ParadoxDefinitionInfo(
 	val name: String,
 	val typeKey: String,
 	val type: String,
-	val typeConfig:CwtTypeConfig,
+	val typeConfig: CwtTypeConfig,
 	val subtypes: List<String>,
 	val subtypesConfig: List<CwtSubtypeConfig>,
 	val localisation: List<ParadoxDefinitionLocalisationInfo>,
@@ -43,10 +43,6 @@ data class ParadoxDefinitionInfo(
 	
 	override fun hashCode(): Int {
 		return Objects.hash(name, types)
-	}
-	
-	override fun toString(): String {
-		return "(definition) $name: $typeText"
 	}
 	
 	/**
