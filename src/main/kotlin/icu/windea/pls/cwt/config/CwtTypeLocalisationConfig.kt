@@ -13,5 +13,5 @@ data class CwtTypeLocalisationConfig(
 	val expression: String,
 	val required: Boolean = false,
 	val primary: Boolean = false,
-): icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
+): CwtConfig<CwtProperty>
 

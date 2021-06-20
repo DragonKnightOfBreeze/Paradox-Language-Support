@@ -12,10 +12,10 @@ class CwtConfigGroups(
 	val project: Project
 ) {
 	companion object {
-		private val logger = LoggerFactory.getLogger(icu.windea.pls.cwt.config.CwtConfigGroup::class.java)
+		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
 	}
 	
-	val groups: Map<String, icu.windea.pls.cwt.config.CwtConfigGroup>
+	val groups: Map<String, CwtConfigGroup>
 	
 	val locales: Array<ParadoxLocale>
 	val localeMap: Map<String, ParadoxLocale>
@@ -71,7 +71,7 @@ class CwtConfigGroups(
 		for((groupName, group) in groupMap) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				groups[groupName] = icu.windea.pls.cwt.config.CwtConfigGroup(group, gameType, project)
+				groups[groupName] = CwtConfigGroup(group, gameType, project)
 			}
 		}
 		

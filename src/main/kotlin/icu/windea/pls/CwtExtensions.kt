@@ -173,14 +173,14 @@ fun String.resolveValueExpression(): CwtValueExpression {
 /**
  * 根据cwtConfigProperty配置对scriptProperty进行匹配。
  */
-fun matchProperty(element: ParadoxDefinitionProperty, elementConfig: CwtPropertyConfig, configGroup: icu.windea.pls.cwt.config.CwtConfigGroup): Boolean {
+fun matchProperty(element: ParadoxDefinitionProperty, elementConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 	val propertiesConfig = elementConfig.properties.orEmpty() //不应该为null，转为emptyList
 	if(propertiesConfig.isEmpty()) return true //config为空表示匹配
 	val properties = element.properties
 	return doMatchProperties(properties, propertiesConfig, configGroup)
 }
 
-private fun doMatchProperties(properties: List<ParadoxScriptProperty>, propertiesConfig: List<CwtPropertyConfig>, configGroup: icu.windea.pls.cwt.config.CwtConfigGroup): Boolean {
+private fun doMatchProperties(properties: List<ParadoxScriptProperty>, propertiesConfig: List<CwtPropertyConfig>, configGroup: CwtConfigGroup): Boolean {
 	//注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
 	//注意：这里只兼容连续的相同key的propConfig，重复的情况下只有其中一个匹配即可
 	//递归对内容进行匹配
@@ -212,7 +212,7 @@ private fun doMatchProperties(properties: List<ParadoxScriptProperty>, propertie
 	return tempResult
 }
 
-private fun doMatchProperty(property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: icu.windea.pls.cwt.config.CwtConfigGroup): Boolean {
+private fun doMatchProperty(property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 	val propValue = property.propertyValue?.value
 	if(propValue == null) {
 		//对于propertyValue同样这样判断（可能脚本没有写完）
@@ -243,7 +243,7 @@ private fun doMatchProperty(property: ParadoxScriptProperty, propertyConfig: Cwt
 }
 
 
-fun matchKey(expression: String, key: ParadoxScriptPropertyKey, configGroup: icu.windea.pls.cwt.config.CwtConfigGroup): Boolean {
+fun matchKey(expression: String, key: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): Boolean {
 	val (expressionType, expressionValue) = expression.resolveKeyExpression()
 	return when(expressionType) {
 		CwtKeyExpressionType.Any -> true
@@ -308,7 +308,7 @@ fun matchKey(expression: String, key: ParadoxScriptPropertyKey, configGroup: icu
 	}
 }
 
-fun matchValue(expression: String, value: ParadoxScriptValue, configGroup: icu.windea.pls.cwt.config.CwtConfigGroup): Boolean {
+fun matchValue(expression: String, value: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
 	val (expressionType, expressionValue) = expression.resolveValueExpression()
 	return when(expressionType) {
 		CwtValueExpressionType.Any -> true
@@ -435,7 +435,9 @@ fun addKeyCompletions(key: PsiElement, property: ParadoxDefinitionProperty, resu
 	val subtypes = definitionInfo.subtypes
 	val gameType = definitionInfo.fileInfo.gameType
 	val configGroup = getConfig(project).getValue(gameType)
-	val propertiesConfig = configGroup.definitions.getValue(type).mergeConfig(subtypes)
+	
+	//propertiesConfig需要经过合并且确保名字唯一
+	val propertiesConfig = configGroup.definitions.getValue(type).mergeAndDistinctConfig(subtypes)
 	
 	//如果path是空的，表示需要补全definition的顶级属性		
 	if(path.isEmpty()) {
@@ -559,7 +561,9 @@ fun completeKey(expression: String, key: PsiElement, propertyConfig: CwtProperty
 			completeIfNeed(name, propertyConfig, definitionPropertyInfo) {
 				val element = propertyConfig.pointer.element ?: return
 				val icon = scriptPropertyIcon //使用特定图标
+				val typeText = propertyConfig.pointer.containingFile?.name
 				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					.withTypeText(typeText, true)
 					.withInsertHandler(separatorInsertHandler).withPriority(propertyPriority)
 				result.addElement(lookupElement)
 			}
@@ -567,8 +571,137 @@ fun completeKey(expression: String, key: PsiElement, propertyConfig: CwtProperty
 	}
 }
 
-fun completeValue(expression: String, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: icu.windea.pls.cwt.config.CwtConfigGroup, result: MutableList<LookupElement>) {
-	
+fun completeValue(expression: String, value: PsiElement, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	val (expressionType, expressionValue) = expression.resolveValueExpression()
+	when(expressionType) {
+		CwtValueExpressionType.Any -> pass()
+		CwtValueExpressionType.Bool -> pass()
+		CwtValueExpressionType.Int -> pass()
+		CwtValueExpressionType.IntExpression -> pass()
+		CwtValueExpressionType.Float -> pass()
+		CwtValueExpressionType.FloatExpression -> pass()
+		CwtValueExpressionType.Scalar -> pass()
+		CwtValueExpressionType.PercentageField -> pass()
+		CwtValueExpressionType.ColorField -> pass()
+		CwtValueExpressionType.Localisation -> {
+			//NOTE 总是提示，不好统计数量
+			val keyword = value.keyword
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			for(localisation in localisations) {
+				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
+				val icon = localisationIcon //使用特定图标
+				val typeText = localisation.containingFile.name
+				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
+					.withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler)
+				result.addElement(lookupElement)
+			}
+		}
+		CwtValueExpressionType.SyncedLocalisation -> {
+			//NOTE 总是提示，不好统计数量
+			val keyword = value.keyword
+			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			for(syncedLocalisation in syncedLocalisations) {
+				val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
+				val icon = localisationIcon //使用特定图标
+				val typeText = syncedLocalisation.containingFile.name
+				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
+					.withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler)
+				result.addElement(lookupElement)
+			}
+		}
+		CwtValueExpressionType.InlineLocalisation -> {
+			if(value.isQuoted()) return
+			//NOTE 总是提示，不好统计数量
+			val keyword = value.keyword
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			for(localisation in localisations) {
+				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
+				val icon = localisationIcon //使用特定图标
+				val typeText = localisation.containingFile.name
+				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
+					.withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler)
+				result.addElement(lookupElement)
+			}
+		}
+		CwtValueExpressionType.FilePath -> pass() //TODO
+		CwtValueExpressionType.FilePathExpression -> pass() //TODO
+		CwtValueExpressionType.IconExpression -> pass() //TODO
+		CwtValueExpressionType.DateField -> pass()
+		CwtValueExpressionType.TypeExpression -> {
+			//NOTE 总是提示，不好统计数量
+			val typeExpression = expressionValue ?: return
+			val definitions = findDefinitions(typeExpression, configGroup.project)
+			for(definition in definitions) {
+				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
+				val name = definitionName
+				val icon = definitionIcon //使用特定图标
+				val typeText = definition.containingFile.name
+				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
+					.withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler)
+				result.addElement(lookupElement)
+			}
+		}
+		CwtValueExpressionType.TypeExpressionString -> {
+			//NOTE 总是提示，不好统计数量
+			val typeExpression = expressionValue ?: return
+			val prefix = expression.substringBefore('<')
+			val suffix = expression.substringAfterLast('>')
+			val definitions = findDefinitions(typeExpression, configGroup.project)
+			for(definition in definitions) {
+				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
+				val name = prefix + definitionName + suffix
+				val tailText = "from definition $definitionName" //注明从哪个definition生成
+				val icon = definitionIcon //使用特定图标
+				val typeText = definition.containingFile.name
+				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
+					.withTailText(tailText, true).withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler)
+				result.addElement(lookupElement)
+			}
+		}
+		CwtValueExpressionType.EnumExpression -> {
+			//NOTE 总是提示，不好统计数量
+			val enumExpression = expressionValue ?: return
+			val enumConfig = configGroup.enums[enumExpression] ?: return
+			val enumValues = enumConfig.values
+			for(enumValue in enumValues) {
+				val name = enumValue
+				val icon = enumIcon //使用特定图标
+				val typeText = enumConfig.pointer.containingFile?.name
+				val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+					.withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler)
+				result.addElement(lookupElement)
+			}
+		}
+		CwtValueExpressionType.ScopeExpression -> pass() //TODO
+		CwtValueExpressionType.ScopeField -> pass() //TODO
+		CwtValueExpressionType.VariableField -> pass() //TODO
+		CwtValueExpressionType.VariableFieldExpression -> pass() //TODO
+		CwtValueExpressionType.IntVariableField -> pass() //TODO
+		CwtValueExpressionType.IntVariableFieldExpression -> pass() //TODO
+		CwtValueExpressionType.ValueField -> pass() //TODO
+		CwtValueExpressionType.ValueFieldExpression -> pass() //TODO
+		CwtValueExpressionType.IntValueField -> pass() //TODO
+		CwtValueExpressionType.IntValueFieldExpression -> pass() //TODO
+		CwtValueExpressionType.AliasMatchLeftExpression -> pass() //TODO
+		CwtValueExpressionType.Constant -> {
+			val name = expressionValue ?: return
+			completeIfNeed(name, valueConfig, definitionPropertyInfo) {
+				val element = valueConfig.pointer.element ?: return
+				val icon = scriptPropertyIcon //使用特定图标
+				val typeText = valueConfig.pointer.containingFile?.name
+				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					.withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler).withPriority(propertyPriority)
+				result.addElement(lookupElement)
+			}
+		}
+	}
 }
 
 inline fun completeIfNeed(name: String, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
@@ -583,6 +716,24 @@ inline fun completeIfNeed(name: String, propertyConfig: CwtPropertyConfig, defin
 inline fun completeIfNeed(names: List<String>, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
 	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未指定最大数量则不忽略，至少对于alias是这样的）
 	val count = propertyConfig.cardinality?.max
+	val currentCount = names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }
+	if(count != null && count > currentCount) {
+		action()
+	}
+}
+
+inline fun completeIfNeed(name: String, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未指定最大数量则不忽略，至少对于alias是这样的）
+	val count = valueConfig.cardinality?.max
+	val currentCount = definitionPropertyInfo.propertiesCardinality[name] ?: 0
+	if(count != null && count > currentCount) {
+		action()
+	}
+}
+
+inline fun completeIfNeed(names: List<String>, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未指定最大数量则不忽略，至少对于alias是这样的）
+	val count = valueConfig.cardinality?.max
 	val currentCount = names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }
 	if(count != null && count > currentCount) {
 		action()

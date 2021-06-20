@@ -7,5 +7,5 @@ data class CwtEnumConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name:String,
 	val values:List<String>
-): icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
+): CwtConfig<CwtProperty>
 

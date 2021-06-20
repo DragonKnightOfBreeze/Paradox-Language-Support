@@ -12,5 +12,5 @@ data class CwtLinkConfig(
 	val name:String,
 	val inputScopes:List<String>,
 	val outputScope:String,
-): icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
+): CwtConfig<CwtProperty>
 

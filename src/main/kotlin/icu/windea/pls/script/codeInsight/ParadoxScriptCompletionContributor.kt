@@ -42,6 +42,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			val mayBePropertyKey = parent1 is ParadoxScriptPropertyKey || parent3 is ParadoxScriptPropertyValue
 			val mayBePropertyValue = parent2 is ParadoxScriptPropertyValue
 			val mayBeValue = parent1 is ParadoxScriptValue
+			
 			ProgressManager.checkCanceled()
 			
 			//如果可能是propertyKey，则要提示可能的propertyKey

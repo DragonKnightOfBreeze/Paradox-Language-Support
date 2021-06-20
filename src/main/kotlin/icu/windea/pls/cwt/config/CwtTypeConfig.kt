@@ -40,5 +40,5 @@ data class CwtTypeConfig(
 	val typeKeyFilter: ReversibleList<String>? = null,
 	val startsWith: String? = null,
 	val graphRelatedTypes: List<String>? = null,
-) : icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
+) : CwtConfig<CwtProperty>
 

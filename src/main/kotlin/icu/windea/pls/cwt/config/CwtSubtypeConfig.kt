@@ -22,5 +22,5 @@ data class CwtSubtypeConfig(
 	val displayName: String? = null,
 	val abbreviation: String? = null,
 	val onlyIfNot: List<String>? = null
-): icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
+): CwtConfig<CwtProperty>
 

@@ -12,4 +12,4 @@ data class CwtOptionValueConfig(
 	val stringValue:String? = null,
 	val values:List<CwtOptionValueConfig>? = null,
 	val options: List<CwtOptionConfig>? = null
-): icu.windea.pls.cwt.config.CwtConfig<CwtValue>
+): CwtConfig<CwtValue>

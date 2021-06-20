@@ -12,4 +12,4 @@ data class CwtModifyCategoryConfig(
 	val name:String,
 	val internalId: Int,
 	val supportedScopes:List<String>
-): icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
+): CwtConfig<CwtProperty>

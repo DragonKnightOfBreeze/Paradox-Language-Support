@@ -16,7 +16,7 @@ data class CwtOptionConfig(
 	val values: List<CwtOptionValueConfig>? = null,
 	val options: List<CwtOptionConfig>? = null,
 	val separatorType: SeparatorType = SeparatorType.EQUAL
-) : icu.windea.pls.cwt.config.CwtConfig<CwtOption> {
+) : CwtConfig<CwtOption> {
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
 }
