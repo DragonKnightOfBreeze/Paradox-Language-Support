@@ -15,7 +15,10 @@ data class CwtDefinitionConfig(
 		val result = mutableListOf<CwtPropertyConfig>()
 		result.addAll(propertiesConfig)
 		for((k, v) in subtypePropertiesConfig) {
-			if(k in subtypes) result.addAll(v)
+			//这里的k可以是!typeName, !typeName
+			if(matchesSubtype(k, subtypes)) {
+				result.addAll(v)
+			}
 		}
 		return result
 	}
@@ -27,7 +30,7 @@ data class CwtDefinitionConfig(
 			if(keys.add(c.key)) result.add(c)
 		}
 		for((k, v) in subtypePropertiesConfig) {
-			if(k in subtypes) {
+			if(matchesSubtype(k, subtypes)) {
 				for(c in v) {
 					if(keys.add(c.key)) result.add(c)
 				}
@@ -36,6 +39,10 @@ data class CwtDefinitionConfig(
 		return result
 		//为了优化性能,不使用方法distinctBy
 		//return mergeConfig(subtypes).distinctBy { it.key }
+	}
+	
+	private fun matchesSubtype(k: String, subtypes: List<String>): Boolean {
+		return if(k.startsWith('!')) k.drop(1) !in subtypes else k in subtypes
 	}
 }
 

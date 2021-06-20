@@ -15,9 +15,9 @@ import java.util.*
 object CwtConfigResolver {
 	fun resolve(file: PsiFile): CwtFileConfig {
 		if(file !is CwtFile) throw IllegalArgumentException("Invalid file type (expect: 'CwtFile')")
-		val rootBlock = file.block ?: return EmptyCwtConfig
+		val rootBlock = file.block ?: return CwtFileConfig.empty
 		return when {
-			rootBlock.isEmpty -> EmptyCwtConfig
+			rootBlock.isEmpty -> CwtFileConfig.empty
 			rootBlock.isArray -> {
 				val values = rootBlock.valueList.mapNotNull { resolveValue(it) }
 				CwtFileConfig(emptyPointer(), values, emptyList())
@@ -26,7 +26,7 @@ object CwtConfigResolver {
 				val properties = rootBlock.propertyList.mapNotNull { resolveProperty(it) }
 				CwtFileConfig(emptyPointer(), emptyList(), properties)
 			}
-			else -> EmptyCwtConfig
+			else -> CwtFileConfig.empty
 		}
 	}
 	

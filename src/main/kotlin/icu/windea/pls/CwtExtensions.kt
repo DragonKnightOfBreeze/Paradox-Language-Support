@@ -13,7 +13,26 @@ import icu.windea.pls.script.psi.*
 
 //Constants
 
-val EmptyCwtConfig = CwtFileConfig(emptyPointer(), emptyList(), emptyList())
+private val separatorChars = charArrayOf('=','<','>','!')
+
+private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
+	//如果后面没有分隔符，则要加上等号，并且根据代码格式设置来判断是否加上等号周围的空格
+	val editor = context.editor
+	val document = editor.document
+	val chars = document.charsSequence
+	val charsLength = chars.length
+	val oldOffset = editor.selectionModel.selectionEnd
+	var offset = oldOffset
+	while(offset < charsLength && chars[offset].isWhitespace()){
+		offset ++
+	}
+	if(offset < charsLength && chars[offset] !in separatorChars) {
+		val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
+		val spaceAroundSeparator = customSettings.SPACE_AROUND_SEPARATOR
+		val separator = if(spaceAroundSeparator) " = " else "="
+		EditorModificationUtil.insertStringAtCaret(editor, separator)
+	}
+}
 
 //Resolve Extensions
 
@@ -418,13 +437,6 @@ fun matchValue(expression: String, value: ParadoxScriptValue, configGroup: CwtCo
 }
 
 //Add Completions Extensions
-
-private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
-	val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
-	val spaceAroundSeparator = customSettings.SPACE_AROUND_SEPARATOR
-	val separator = if(spaceAroundSeparator) " = " else "="
-	EditorModificationUtil.insertStringAtCaret(context.editor, separator)
-}
 
 fun addKeyCompletions(key: PsiElement, property: ParadoxDefinitionProperty, result: CompletionResultSet) {
 	val project = property.project

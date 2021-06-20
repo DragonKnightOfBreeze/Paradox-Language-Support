@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.codeInsight.lookup.*
@@ -18,9 +17,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.codeStyle.*
-import icu.windea.pls.script.psi.*
 
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
 
