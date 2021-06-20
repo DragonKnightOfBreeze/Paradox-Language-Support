@@ -3,8 +3,7 @@ package icu.windea.pls.util
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.CwtFileConfig.Companion.EmptyCwtConfig
+import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 

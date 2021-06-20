@@ -21,10 +21,11 @@ fun <T> Collection<T>.asList(): List<T> {
 	return if(this is List) this else this.toList()
 }
 
-fun <T,E> List<T>.groupAndCountBy(selector: (T) -> E):Map<E,Int>{
-	val result = mutableMapOf<E,Int>()
+fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E): Map<E, Int> {
+	val result = mutableMapOf<E, Int>()
 	for(e in this) {
-		
+		val k = selector(e)
+		result.compute(k) { _, v -> if(v == null) 1 else v + 1 }
 	}
 	return result
 }
@@ -238,19 +239,19 @@ fun String.isFloat(): Boolean {
 	return true
 }
 
-fun String.isString():Boolean{
+fun String.isString(): Boolean {
 	//以引号包围，或者不是布尔值、整数以及小数
-	if(surroundsWith('"','"')) return true
+	if(surroundsWith('"', '"')) return true
 	return !isBooleanYesNo() && !isInt() && !isFloat()
 }
 
 fun String.isPercentageField(): Boolean {
 	val chars = toCharArray()
-	for(i in indices){
+	for(i in indices) {
 		val char = chars[i]
-		if(i == lastIndex){
-			if(char != '%') return false 
-		}else{
+		if(i == lastIndex) {
+			if(char != '%') return false
+		} else {
 			if(!char.isDigit()) return false
 		}
 	}
@@ -259,28 +260,28 @@ fun String.isPercentageField(): Boolean {
 
 private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
 
-fun String.isColor(): Boolean {
+fun String.isColorField(): Boolean {
 	return this.matches(isColorRegex)
 }
 
 private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") }
 
-fun String.isDateField():Boolean{
-	return try{
+fun String.isDateField(): Boolean {
+	return try {
 		threadLocalDateFormat.get().parse(this)
 		true
-	}catch(e:Exception){
+	} catch(e: Exception) {
 		false
 	}
 }
 
-fun String.isVariableField():Boolean{
+fun String.isVariableField(): Boolean {
 	return this.startsWith('@') //NOTE 简单判断
 }
 
 fun String.isTypeOf(type: String): Boolean {
 	return (type == "boolean" && isBooleanYesNo()) || (type == "int" && isInt()) || (type == "float" && isFloat())
-		|| (type == "color" && isColor()) || type == "string"
+		|| (type == "color" && isColorField()) || type == "string"
 }
 
 //To Extensions

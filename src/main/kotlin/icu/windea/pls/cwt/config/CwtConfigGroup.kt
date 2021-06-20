@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.cwt.config
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
@@ -8,12 +8,12 @@ import icu.windea.pls.script.psi.*
 import org.slf4j.*
 
 class CwtConfigGroup(
-	val group: Map<String, CwtFileConfig>,
+	val group: Map<String, icu.windea.pls.cwt.config.CwtFileConfig>,
 	val gameType: ParadoxGameType,
 	val project: Project
 ) {
 	companion object {
-		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
+		private val logger = LoggerFactory.getLogger(icu.windea.pls.cwt.config.CwtConfigGroup::class.java)
 		
 		private fun resolveTypeName(expression: String): String? {
 			return expression.resolveByRemoveSurrounding("type[", "]")
@@ -33,45 +33,45 @@ class CwtConfigGroup(
 		
 	}
 	
-	val resolvedConfigs: Map<String, Map<String, CwtConfig<CwtProperty>>>
+	val resolvedConfigs: Map<String, Map<String, icu.windea.pls.cwt.config.CwtConfig<CwtProperty>>>
 	
 	//? -> type[?] = { ... }
-	val types: Map<String, CwtTypeConfig>
+	val types: Map<String, icu.windea.pls.cwt.config.CwtTypeConfig>
 	
 	//? -> { a b 1 2 yes ... }
 	//枚举值也有可能是int、number、bool类型，这里统一用字符串表示
-	val enums: Map<String, CwtEnumConfig>
+	val enums: Map<String, icu.windea.pls.cwt.config.CwtEnumConfig>
 	
 	//? -> ? = { ... }
-	val links: Map<String, CwtLinkConfig>
+	val links: Map<String, icu.windea.pls.cwt.config.CwtLinkConfig>
 	
 	//? -> ? = { country planet ... }
-	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
+	val localisationCommands: Map<String, icu.windea.pls.cwt.config.CwtLocalisationCommandConfig>
 	
 	//? -> ? = { ... }
-	val localisationLinks: Map<String, CwtLinkConfig>
+	val localisationLinks: Map<String, icu.windea.pls.cwt.config.CwtLinkConfig>
 	
 	//? -> ? = { ... }
-	val modifierCategories: Map<String, CwtModifyCategoryConfig>
+	val modifierCategories: Map<String, icu.windea.pls.cwt.config.CwtModifyCategoryConfig>
 	
 	//? -> ? = { ... }
-	val scopes: Map<String, CwtScopeConfig>
+	val scopes: Map<String, icu.windea.pls.cwt.config.CwtScopeConfig>
 	
 	//? -> ? = { country planet ... }
-	val scopeGroups: Map<String, CwtScopeGroupConfig>
+	val scopeGroups: Map<String, icu.windea.pls.cwt.config.CwtScopeGroupConfig>
 	
 	//? -> alias[?] = ...
 	//? -> alias[?] = { ... }
-	val aliases: Map<String, CwtAliasConfig>
+	val aliases: Map<String, icu.windea.pls.cwt.config.CwtAliasConfig>
 	
 	//? -> ? = { ... subtype[...] = { ... } ... }
-	val definitions: Map<String, CwtDefinitionConfig>
+	val definitions: Map<String, icu.windea.pls.cwt.config.CwtDefinitionConfig>
 	
 	operator fun get(key: String) = resolvedConfigs.getValue(key)
 	fun getValue(key: String) = resolvedConfigs.getValue(key)
 	
 	init {
-		logger.info("Resolve config group '$gameType'...")
+		icu.windea.pls.cwt.config.CwtConfigGroup.Companion.logger.info("Resolve config group '$gameType'...")
 		
 		types = mutableMapOf()
 		enums = mutableMapOf()
@@ -105,7 +105,7 @@ class CwtConfigGroup(
 						val props = property.properties
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
-								val typeName = resolveTypeName(prop.key)
+								val typeName = icu.windea.pls.cwt.config.CwtConfigGroup.Companion.resolveTypeName(prop.key)
 								if(typeName != null && typeName.isNotEmpty()) {
 									val typeConfig = resolveTypeConfig(prop, typeName)
 									types[typeName] = typeConfig
@@ -118,7 +118,7 @@ class CwtConfigGroup(
 						val props = property.properties
 						if(props != null && props.isNotEmpty()) {
 							for(prop in props) {
-								val enumName = resolveEnumName(prop.key)
+								val enumName = icu.windea.pls.cwt.config.CwtConfigGroup.Companion.resolveEnumName(prop.key)
 								if(enumName != null && enumName.isNotEmpty()) {
 									val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
 									enums[enumName] = enumConfig
@@ -194,7 +194,7 @@ class CwtConfigGroup(
 					}
 					else -> {
 						//判断配置文件中的顶级的key是否匹配"alias[?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
-						val aliasName = resolveAliasName(key)
+						val aliasName = icu.windea.pls.cwt.config.CwtConfigGroup.Companion.resolveAliasName(key)
 						if(aliasName != null && aliasName.isNotEmpty()) {
 							val aliasConfig = resolveAliasConfig(property, aliasName)
 							aliases[aliasName] = aliasConfig
@@ -210,10 +210,10 @@ class CwtConfigGroup(
 			}
 		}
 		
-		logger.info("Resolve config group '$gameType' finished.")
+		icu.windea.pls.cwt.config.CwtConfigGroup.Companion.logger.info("Resolve config group '$gameType' finished.")
 	}
 	
-	private fun resolveTypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeConfig {
+	private fun resolveTypeConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtTypeConfig {
 		var path: String? = null
 		var pathStrict = false
 		var pathFile: String? = null
@@ -224,8 +224,8 @@ class CwtConfigGroup(
 		var unique = false
 		var severity: String? = null
 		val skipRootKey: MutableList<List<String>> = mutableListOf()
-		val localisation: MutableMap<String, MutableList<CwtTypeLocalisationConfig>> = mutableMapOf()
-		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
+		val localisation: MutableMap<String, MutableList<icu.windea.pls.cwt.config.CwtTypeLocalisationConfig>> = mutableMapOf()
+		val subtypes: MutableMap<String, icu.windea.pls.cwt.config.CwtSubtypeConfig> = mutableMapOf()
 		var typeKeyFilter: ReversibleList<String>? = null
 		var startsWith: String? = null
 		var graphRelatedTypes: List<String>? = null
@@ -255,10 +255,10 @@ class CwtConfigGroup(
 						if(propProps != null) {
 							for(p in propProps) {
 								val k = p.key
-								val subtypeName = resolveSubtypeName(k)
+								val subtypeName = icu.windea.pls.cwt.config.CwtConfigGroup.Companion.resolveSubtypeName(k)
 								if(subtypeName != null) {
 									val pps = p.properties ?: continue
-									val localisationConfigs = mutableListOf<CwtTypeLocalisationConfig>()
+									val localisationConfigs = mutableListOf<icu.windea.pls.cwt.config.CwtTypeLocalisationConfig>()
 									for(pp in pps) {
 										val kk = pp.key
 										val localisationConfig = resolveTypeLocalisationConfig(pp, kk) ?: continue
@@ -275,7 +275,7 @@ class CwtConfigGroup(
 					}
 				}
 				
-				val subtypeName = resolveSubtypeName(key)
+				val subtypeName = icu.windea.pls.cwt.config.CwtConfigGroup.Companion.resolveSubtypeName(key)
 				if(subtypeName != null) {
 					val subtypeConfig = resolveSubtypeConfig(prop, subtypeName)
 					subtypes[subtypeName] = subtypeConfig
@@ -304,14 +304,14 @@ class CwtConfigGroup(
 			}
 		}
 		
-		return CwtTypeConfig(
+		return icu.windea.pls.cwt.config.CwtTypeConfig(
 			propertyConfig.pointer, name, path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
 			localisation, subtypes, typeKeyFilter, startsWith, graphRelatedTypes
 		)
 	}
 	
-	private fun resolveSubtypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSubtypeConfig {
+	private fun resolveSubtypeConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtSubtypeConfig {
 		var typeKeyFilter: ReversibleList<String>? = null
 		var pushScope: String? = null
 		var startsWith: String? = null
@@ -338,13 +338,13 @@ class CwtConfigGroup(
 				}
 			}
 		}
-		return CwtSubtypeConfig(
+		return icu.windea.pls.cwt.config.CwtSubtypeConfig(
 			propertyConfig.pointer, name, propertyConfig,
 			typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot
 		)
 	}
 	
-	private fun resolveTypeLocalisationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeLocalisationConfig? {
+	private fun resolveTypeLocalisationConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtTypeLocalisationConfig? {
 		val expression = propertyConfig.stringValue ?: return null
 		var required = false
 		var primary = false
@@ -358,15 +358,15 @@ class CwtConfigGroup(
 				}
 			}
 		}
-		return CwtTypeLocalisationConfig(propertyConfig.pointer, name, expression, required, primary)
+		return icu.windea.pls.cwt.config.CwtTypeLocalisationConfig(propertyConfig.pointer, name, expression, required, primary)
 	}
 	
-	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
+	private fun resolveEnumConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtEnumConfig? {
 		val values = propertyConfig.stringValues ?: return null
-		return CwtEnumConfig(propertyConfig.pointer, name, values)
+		return icu.windea.pls.cwt.config.CwtEnumConfig(propertyConfig.pointer, name, values)
 	}
 	
-	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
+	private fun resolveLinkConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtLinkConfig? {
 		var inputScopes: List<String>? = null
 		var outputScope: String? = null
 		val props = propertyConfig.properties ?: return null
@@ -377,15 +377,15 @@ class CwtConfigGroup(
 			}
 		}
 		if(inputScopes == null || outputScope == null) return null
-		return CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
+		return icu.windea.pls.cwt.config.CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
 	}
 	
-	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
+	private fun resolveLocalisationCommandConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtLocalisationCommandConfig? {
 		val values = propertyConfig.stringValueOrValues ?: return null
-		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
+		return icu.windea.pls.cwt.config.CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
 	}
 	
-	private fun resolveLocalisationLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
+	private fun resolveLocalisationLinkConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtLinkConfig? {
 		var inputScopes: List<String>? = null
 		var outputScope: String? = null
 		val props = propertyConfig.properties ?: return null
@@ -396,10 +396,10 @@ class CwtConfigGroup(
 			}
 		}
 		if(inputScopes == null || outputScope == null) return null
-		return CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
+		return icu.windea.pls.cwt.config.CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
 	}
 	
-	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifyCategoryConfig? {
+	private fun resolveModifierCategoryConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtModifyCategoryConfig? {
 		var internalId: Int? = null
 		var supportedScopes: List<String>? = null
 		val props = propertyConfig.properties
@@ -411,10 +411,10 @@ class CwtConfigGroup(
 			}
 		}
 		if(internalId == null || supportedScopes == null) return null
-		return CwtModifyCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
+		return icu.windea.pls.cwt.config.CwtModifyCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
 	}
 	
-	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
+	private fun resolveScopeConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtScopeConfig? {
 		var aliases: List<String>? = null
 		val props = propertyConfig.properties
 		if(props == null || props.isEmpty()) return null
@@ -422,26 +422,26 @@ class CwtConfigGroup(
 			if(prop.key == "aliases") aliases = prop.stringValues
 		}
 		if(aliases == null) return null
-		return CwtScopeConfig(propertyConfig.pointer, name, aliases)
+		return icu.windea.pls.cwt.config.CwtScopeConfig(propertyConfig.pointer, name, aliases)
 	}
 	
-	private fun resolveScopeGroupConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeGroupConfig? {
+	private fun resolveScopeGroupConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtScopeGroupConfig? {
 		val values = propertyConfig.stringValueOrValues ?: return null
-		return CwtScopeGroupConfig(propertyConfig.pointer, name, values)
+		return icu.windea.pls.cwt.config.CwtScopeGroupConfig(propertyConfig.pointer, name, values)
 	}
 	
 	
-	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtAliasConfig {
-		return CwtAliasConfig(propertyConfig.pointer, name, propertyConfig)
+	private fun resolveAliasConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtAliasConfig {
+		return icu.windea.pls.cwt.config.CwtAliasConfig(propertyConfig.pointer, name, propertyConfig)
 	}
 	
-	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
+	private fun resolveDefinitionConfig(propertyConfig: icu.windea.pls.cwt.config.CwtPropertyConfig, name: String): icu.windea.pls.cwt.config.CwtDefinitionConfig? {
 		val props = propertyConfig.properties ?: return null
-		val propertiesConfig = mutableListOf<CwtPropertyConfig>()
-		val subtypePropertiesConfig = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
+		val propertiesConfig = mutableListOf<icu.windea.pls.cwt.config.CwtPropertyConfig>()
+		val subtypePropertiesConfig = mutableMapOf<String, MutableList<icu.windea.pls.cwt.config.CwtPropertyConfig>>()
 		for(prop in props) {
 			//这里需要进行合并
-			val subtypeName = resolveSubtypeName(prop.key)
+			val subtypeName = icu.windea.pls.cwt.config.CwtConfigGroup.Companion.resolveSubtypeName(prop.key)
 			if(subtypeName != null) {
 				val propProps = prop.properties
 				if(propProps != null) {
@@ -451,7 +451,7 @@ class CwtConfigGroup(
 				propertiesConfig.add(prop)
 			}
 		}
-		return CwtDefinitionConfig(propertyConfig.pointer, name, propertiesConfig, subtypePropertiesConfig)
+		return icu.windea.pls.cwt.config.CwtDefinitionConfig(propertyConfig.pointer, name, propertiesConfig, subtypePropertiesConfig)
 	}
 	
 	/**
@@ -469,7 +469,7 @@ class CwtConfigGroup(
 	/**
 	 * 判断
 	 */
-	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
+	private fun matchesType(typeConfig: icu.windea.pls.cwt.config.CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
 		//判断value是否是block
 		if(element.block == null) return false
 		
@@ -519,7 +519,7 @@ class CwtConfigGroup(
 		return true
 	}
 	
-	private fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxDefinitionProperty, elementName: String, result: MutableList<CwtSubtypeConfig>): Boolean {
+	private fun matchesSubtype(subtypeConfig: icu.windea.pls.cwt.config.CwtSubtypeConfig, element: ParadoxDefinitionProperty, elementName: String, result: MutableList<icu.windea.pls.cwt.config.CwtSubtypeConfig>): Boolean {
 		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
 		val onlyIfNotConfig = subtypeConfig.onlyIfNot
 		if(onlyIfNotConfig != null && onlyIfNotConfig.isNotEmpty()) {
@@ -547,7 +547,7 @@ class CwtConfigGroup(
 		return matchProperty(element, elementConfig, this)
 	}
 	
-	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo {
+	private fun toDefinitionInfo(typeConfig: icu.windea.pls.cwt.config.CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, elementName)
 		val typeKey = elementName
 		val type = typeConfig.name
@@ -565,7 +565,7 @@ class CwtConfigGroup(
 		)
 	}
 	
-	private fun getName(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): String {
+	private fun getName(typeConfig: icu.windea.pls.cwt.config.CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): String {
 		//如果name_from_file = yes，则返回文件名（不包含扩展）
 		val nameFromFileConfig = typeConfig.nameFromFile
 		if(nameFromFileConfig) return element.containingFile.name.substringBeforeLast('.')
@@ -579,29 +579,29 @@ class CwtConfigGroup(
 		return elementName
 	}
 	
-	private fun getSubtypesConfig(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): List<CwtSubtypeConfig> {
+	private fun getSubtypesConfig(typeConfig: icu.windea.pls.cwt.config.CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): List<icu.windea.pls.cwt.config.CwtSubtypeConfig> {
 		val subtypesConfig = typeConfig.subtypes
-		val result = mutableListOf<CwtSubtypeConfig>()
+		val result = mutableListOf<icu.windea.pls.cwt.config.CwtSubtypeConfig>()
 		for(subtypeConfig in subtypesConfig.values) {
 			if(matchesSubtype(subtypeConfig, element, elementName, result)) result.add(subtypeConfig)
 		}
 		return result
 	}
 	
-	private fun getSubtypes(subtypesConfig: List<CwtSubtypeConfig>): List<String> {
+	private fun getSubtypes(subtypesConfig: List<icu.windea.pls.cwt.config.CwtSubtypeConfig>): List<String> {
 		return subtypesConfig.map { it.name }
 	}
 	
-	private fun getLocalisationConfig(typeConfig: CwtTypeConfig, subtypes: List<String>): List<CwtTypeLocalisationConfig> {
+	private fun getLocalisationConfig(typeConfig: icu.windea.pls.cwt.config.CwtTypeConfig, subtypes: List<String>): List<icu.windea.pls.cwt.config.CwtTypeLocalisationConfig> {
 		val localisationConfig = typeConfig.localisation
-		val result = mutableListOf<CwtTypeLocalisationConfig>()
+		val result = mutableListOf<icu.windea.pls.cwt.config.CwtTypeLocalisationConfig>()
 		for((subtypeNameOrEmpty, config) in localisationConfig) {
 			if(subtypeNameOrEmpty.isEmpty() || subtypeNameOrEmpty in subtypes) result.addAll(config)
 		}
 		return result
 	}
 	
-	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, element: ParadoxDefinitionProperty, name: String): List<ParadoxDefinitionLocalisationInfo> {
+	private fun getLocalisation(localisationConfig: List<icu.windea.pls.cwt.config.CwtTypeLocalisationConfig>, element: ParadoxDefinitionProperty, name: String): List<ParadoxDefinitionLocalisationInfo> {
 		val result = mutableListOf<ParadoxDefinitionLocalisationInfo>()
 		//从已有的cwt规则
 		for(config in localisationConfig) {

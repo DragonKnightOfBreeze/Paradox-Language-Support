@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -22,5 +22,5 @@ data class CwtSubtypeConfig(
 	val displayName: String? = null,
 	val abbreviation: String? = null,
 	val onlyIfNot: List<String>? = null
-):CwtConfig<CwtProperty>
+): icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
 

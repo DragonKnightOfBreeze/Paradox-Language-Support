@@ -1,10 +1,11 @@
-package icu.windea.pls.config
+package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
 
-data class CwtLocalisationCommandConfig(
+data class CwtEnumConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name:String,
 	val values:List<String>
-):CwtConfig<CwtProperty>
+): icu.windea.pls.cwt.config.CwtConfig<CwtProperty>
+

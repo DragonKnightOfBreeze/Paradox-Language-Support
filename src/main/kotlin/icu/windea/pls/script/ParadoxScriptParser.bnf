@@ -81,7 +81,7 @@ property ::= property_key property_separator property_value {
   methods=[getName setName getNameIdentifier getIcon getValue getTruncatedValue getDepth getBlock]
 }
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
-  methods=[getValue isQuoted]
+  methods=[getValue]
 }
 private property_separator ::= "=" | "<" | ">" | "<=" | ">=" | "<>"
 property_value ::= value
@@ -115,7 +115,7 @@ string_value ::= color | code | string{
 string ::= STRING_TOKEN | QUOTED_STRING_TOKEN {
   extends=string_value
   implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue setValue getReference getStringValue isQuoted]
+  methods=[getValue setValue getReference getStringValue]
 }
 color ::= COLOR_TOKEN {
   extends=string_value

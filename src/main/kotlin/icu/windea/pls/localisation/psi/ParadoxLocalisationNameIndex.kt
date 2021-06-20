@@ -13,7 +13,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	
 	override fun getCacheSize() = 100 * 1024 //50000+
 	
-	fun exists(name:String,locale: ParadoxLocale?,project: Project,scope: GlobalSearchScope):Boolean{
+	fun exists(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return false
 		if(locale == null) return name in getAllKeys(project)
@@ -159,18 +159,33 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		return result
 	}
 	
-	fun findByKeyword(keyword: String, project: Project, scope: GlobalSearchScope): List<ParadoxLocalisationProperty> {
+	fun findByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
 		val keys = getAllKeys(project)
 		if(keys.isEmpty()) return emptyList()
-		val matchedKeys = keys.filter { it.contains(keyword, ignoreCase = true) }
+		val matchedKeys = if(keyword.isEmpty()) keys else keys.filter { it.contains(keyword, ignoreCase = true) }
 		val result = mutableListOf<ParadoxLocalisationProperty>()
-		for(key in matchedKeys) {
-			val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-			val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
-			if(firstElement != null) result.add(firstElement)
+		if(maxSize <= 0) {
+			for(key in matchedKeys) {
+				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
+				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
+				if(firstElement != null) {
+					result.add(firstElement)
+				}
+			}
+		} else {
+			var size = 0
+			for(key in matchedKeys) {
+				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
+				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
+				if(firstElement != null) {
+					result.add(firstElement)
+					size++
+					if(size == maxSize) return result
+				}
+			}
 		}
 		return result
 	}

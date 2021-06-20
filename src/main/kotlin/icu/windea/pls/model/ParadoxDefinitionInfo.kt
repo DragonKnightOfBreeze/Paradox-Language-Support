@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.*
-import icu.windea.pls.config.*
+import icu.windea.pls.cwt.config.*
 import java.util.*
 
 data class ParadoxDefinitionInfo(

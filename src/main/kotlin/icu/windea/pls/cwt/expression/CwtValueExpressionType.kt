@@ -1,8 +1,6 @@
-package icu.windea.pls.config
+package icu.windea.pls.cwt.expression
 
-//https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance
-
-enum class CwtExpressionType{
+enum class CwtValueExpressionType: CwtExpressionType {
 	Any,
 	Bool,
 	Int,
@@ -11,7 +9,7 @@ enum class CwtExpressionType{
 	FloatExpression,
 	Scalar,
 	PercentageField,
-	Color,
+	ColorField,
 	Localisation,
 	SyncedLocalisation,
 	InlineLocalisation,
@@ -32,8 +30,6 @@ enum class CwtExpressionType{
 	ValueFieldExpression,
 	IntValueField,
 	IntValueFieldExpression,
-	AliasNameExpression,
 	AliasMatchLeftExpression,
-	Constant;
+	Constant
 }
-

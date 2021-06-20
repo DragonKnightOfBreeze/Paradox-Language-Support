@@ -119,11 +119,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getValue(element:ParadoxScriptPropertyKey):String{
 		return element.text.unquote()
 	}
-	
-	@JvmStatic
-	fun isQuoted(element: ParadoxScriptPropertyKey):Boolean{
-		return element.firstChild?.elementType == ParadoxScriptTypes.QUOTED_PROPERTY_KEY_ID
-	}
 	//endregion
 	
 	//region ParadoxScriptVariableReference
@@ -208,11 +203,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getReference(element: ParadoxScriptString): ParadoxScriptStringPropertyPsiReference {
 		val rangeInElement = TextRange(0, element.textLength) //不管有没有用双引号括起，都算在内
 		return ParadoxScriptStringPropertyPsiReference(element, rangeInElement)
-	}
-	
-	@JvmStatic
-	fun isQuoted(element: ParadoxScriptString):Boolean{
-		return element.firstChild?.elementType == ParadoxScriptTypes.QUOTED_STRING_TOKEN
 	}
 	//endregion
 	

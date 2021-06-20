@@ -10,8 +10,8 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -395,6 +395,10 @@ fun ParadoxLocalisationProperty.isLocalisationSynced(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
 }
 
+fun PsiElement.isQuoted():Boolean{
+	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
+}
+
 //PsiElement Find Extensions
 
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
@@ -459,7 +463,9 @@ fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
 	} while(current !is PsiFile)
 	return null
 }
+
 //Find Extensions
+
 /**
  * 根据名字在当前文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
  */
@@ -712,9 +718,10 @@ fun filterLocalisations(
 fun findLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	maxSize:Int = -1
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope)
+	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope,maxSize)
 }
 
 /**
@@ -812,9 +819,10 @@ fun filterSyncedLocalisations(
 fun findSyncedLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	maxSize:Int = -1
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findByKeyword(keyword, project, scope)
+	return ParadoxSyncedLocalisationNameIndex.findByKeyword(keyword, project, scope,maxSize)
 }
 
 //Link Extensions

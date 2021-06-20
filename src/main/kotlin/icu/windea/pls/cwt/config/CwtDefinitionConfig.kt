@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
@@ -10,7 +10,7 @@ data class CwtDefinitionConfig(
 	val name: String,
 	val propertiesConfig: List<CwtPropertyConfig>,
 	val subtypePropertiesConfig: Map<String, List<CwtPropertyConfig>>
-) : CwtConfig<CwtProperty> {
+) : icu.windea.pls.cwt.config.CwtConfig<CwtProperty> {
 	fun mergeConfig(subtypes: List<String>): List<CwtPropertyConfig> {
 		val result = mutableListOf<CwtPropertyConfig>()
 		result.addAll(propertiesConfig)

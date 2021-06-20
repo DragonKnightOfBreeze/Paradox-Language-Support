@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
@@ -15,4 +15,4 @@ data class CwtValueConfig(
 	val documentation: String? = null,
 	val options: List<CwtOptionConfig>? = null,
 	val optionValues: List<CwtOptionValueConfig>? = null
-):CwtConfig<CwtValue>
+): icu.windea.pls.cwt.config.CwtConfig<CwtValue>

@@ -27,6 +27,11 @@ const val paradoxScriptId = "PARADOX_SCRIPT"
 const val paradoxScriptExtension = "txt"
 val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toUrl(locationClass).readText()
 
+//Priority
+
+const val keywordPriority = 80.0
+const val propertyPriority = 40.0
+
 //Misc Constants
 
 const val dummyIdentifier = "windea"
@@ -46,6 +51,7 @@ val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
 const val descriptorFileName = "descriptor.mod"
 const val truncateLimit = 30
+const val maxCompleteSize = 20
 
 //TODO 可以设置
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
@@ -85,25 +91,8 @@ val localisationCommandFieldIcon = IconLoader.getIcon("/icons/paradoxLocalisatio
 val definitionIcon = IconLoader.getIcon("/icons/paradoxDefinition.svg",locationClass)
 val definitionLocalisationIcon = IconLoader.getIcon("/icons/paradoxDefinitionLocalisation.svg",locationClass)
 val localisationIcon = IconLoader.getIcon("/icons/paradoxLocalisation.svg",locationClass)
-val stringScriptPropertyIcon =IconLoader.getIcon("/icons/paradoxStringScriptProperty.svg",locationClass)
-val stringLocalisationPropertyIcon = IconLoader.getIcon("/icons/paradoxStringLocalisationProperty.svg",locationClass)
-val scriptLocalisationIcon = IconLoader.getIcon("/icons/paradoxScriptLocalisation.svg",locationClass)
+val enumIcon = IconLoader.getIcon("/icons/paradoxEnum.svg",locationClass)
 
 val definitionGutterIcon = definitionIcon.resize(12)
 val definitionLocalisationGutterIcon = definitionLocalisationIcon.resize(12)
 val localisationGutterIcon = localisationIcon.resize(12)
-val stringScriptPropertyGutterIcon =stringScriptPropertyIcon.resize(12)
-val stringLocalisationPropertyGutterIcon = stringLocalisationPropertyIcon.resize(12)
-
-//Pattern Prefixes
-
-const val primitivePrefix="$"
-const val primitivePrefixLength = primitivePrefix.length
-const val aliasPrefix="alias:"
-const val aliasPrefixLength=aliasPrefix.length
-const val typePrefix="type:"
-const val typePrefixLength = typePrefix.length
-const val enumPrefix="enum:"
-const val enumPrefixLength=enumPrefix.length
-const val eventTargetPrefix = "event_target:"
-const val eventTargetPrefixLength = eventTargetPrefix.length

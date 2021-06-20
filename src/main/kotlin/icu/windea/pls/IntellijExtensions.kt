@@ -1,5 +1,6 @@
 package icu.windea.pls
 
+import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.codeInsight.lookup.*
@@ -17,6 +18,9 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
+import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.codeStyle.*
+import icu.windea.pls.script.psi.*
 
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
 
@@ -41,7 +45,16 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(element: T): Int {
 	return -1
 }
 
-val PsiElement.virtualFile: VirtualFile? get() = PsiUtilCore.getVirtualFile(this)
+val PsiElement.virtualFile: VirtualFile?
+	get() {
+		return PsiUtilCore.getVirtualFile(this)
+	}
+
+val PsiElement.firstLeafOrSelf: PsiElement
+	get() {
+		val firstChild = firstChild
+		return firstChild?.firstLeafOrSelf ?: this
+	}
 
 /**得到当前AST节点的除了空白节点之外的所有子节点。*/
 fun ASTNode.nodes(): List<ASTNode> {
@@ -120,34 +133,34 @@ fun selectElement(editor: Editor, element: PsiElement?) {
  *
  * 如果当前的[VirtualFile]是一个压缩文件，则进行特殊处理，否则返回自身。
  */
-fun VirtualFile.optimized():VirtualFile{
+fun VirtualFile.optimized(): VirtualFile {
 	val extension = this.extension
-	return when{
-		extension == "jar" || extension == "zip" -> JarFileSystem.getInstance().getRootByLocal(this)?:this
+	return when {
+		extension == "jar" || extension == "zip" -> JarFileSystem.getInstance().getRootByLocal(this) ?: this
 		else -> this
 	}
 }
 
-inline fun StringBuilder.definition(block:StringBuilder.()->Unit){
+inline fun StringBuilder.definition(block: StringBuilder.() -> Unit) {
 	append(DocumentationMarkup.DEFINITION_START)
 	block(this)
 	append(DocumentationMarkup.DEFINITION_END)
 }
 
-inline fun StringBuilder.content(block:StringBuilder.()->Unit){
+inline fun StringBuilder.content(block: StringBuilder.() -> Unit) {
 	append(DocumentationMarkup.CONTENT_START)
 	block(this)
 	append(DocumentationMarkup.CONTENT_END)
 }
 
-inline fun StringBuilder.sections(block:StringBuilder.()->Unit){
+inline fun StringBuilder.sections(block: StringBuilder.() -> Unit) {
 	append(DocumentationMarkup.SECTIONS_START)
 	block(this)
 	append(DocumentationMarkup.SECTIONS_END)
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun StringBuilder.section(title:CharSequence,value:CharSequence){
+inline fun StringBuilder.section(title: CharSequence, value: CharSequence) {
 	append(DocumentationMarkup.SECTION_HEADER_START)
 	append(title).append(" ")
 	append(DocumentationMarkup.SECTION_SEPARATOR).append("<p>")
@@ -155,7 +168,7 @@ inline fun StringBuilder.section(title:CharSequence,value:CharSequence){
 	append(DocumentationMarkup.SECTION_END)
 }
 
-inline fun StringBuilder.grayed(block:StringBuilder.()->Unit){
+inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit) {
 	append(DocumentationMarkup.GRAYED_START)
 	block(this)
 	append(DocumentationMarkup.GRAYED_END)
@@ -163,10 +176,10 @@ inline fun StringBuilder.grayed(block:StringBuilder.()->Unit){
 
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 
-fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) anonymousEscapedString else StringUtil.escapeXmlEntities(this) 
+fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) anonymousEscapedString else StringUtil.escapeXmlEntities(this)
 
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
-fun DataContext.findElement():PsiElement?{
+fun DataContext.findElement(): PsiElement? {
 	var element = this.getData(CommonDataKeys.PSI_ELEMENT)
 	if(element == null) {
 		val editor = this.getData(CommonDataKeys.EDITOR)
@@ -191,16 +204,16 @@ fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
 	return document.getLineNumber(range.startOffset) < limit
 }
 
-fun intern(table: CharTable,node: LighterASTTokenNode):String{
+fun intern(table: CharTable, node: LighterASTTokenNode): String {
 	return table.intern(node.text).toString()
 }
 
-object EmptyPointer:SmartPsiElementPointer<PsiElement>{
+object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 	override fun getElement() = null
 	
 	override fun getContainingFile() = null
 	
-	override fun getProject()= getDefaultProject()
+	override fun getProject() = getDefaultProject()
 	
 	override fun getVirtualFile() = null
 	
@@ -209,6 +222,11 @@ object EmptyPointer:SmartPsiElementPointer<PsiElement>{
 	override fun getPsiRange() = null
 }
 
-fun <T:PsiElement> emptyPointer():SmartPsiElementPointer<T> = EmptyPointer.cast()
+fun <T : PsiElement> emptyPointer(): SmartPsiElementPointer<T> = EmptyPointer.cast()
 
 val PsiElement.icon get() = getIcon(Iconable.ICON_FLAG_VISIBILITY)
+
+val PsiElement.keyword
+	get() = text.removeSurrounding("\"", "\"").let { s ->
+		runCatching { s.dropLast(dummyIdentifierLength) }.getOrElse { s }
+	}

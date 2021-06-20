@@ -45,11 +45,11 @@ class ParadoxLocalisationPsiReference(
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
 		//为了避免这里得到的结果太多，采用关键字查找，这里要去掉作为后缀的dummyIdentifier，并且捕捉异常防止意外
-		val keyword = runCatching { element.name.dropLast(dummyIdentifierLength) }.getOrElse { return emptyArray() }
+		val keyword = element.keyword
 		val project = element.project
 		return when(category) {
-			Localisation -> findLocalisationsByKeyword(keyword, project)
-			SyncedLocalisation -> findSyncedLocalisationsByKeyword(keyword, project)
+			Localisation -> findLocalisationsByKeyword(keyword, project, maxSize = maxCompleteSize)
+			SyncedLocalisation -> findSyncedLocalisationsByKeyword(keyword, project, maxSize = maxCompleteSize)
 		}.mapToArray {
 			val name = it.name
 			val icon = it.icon

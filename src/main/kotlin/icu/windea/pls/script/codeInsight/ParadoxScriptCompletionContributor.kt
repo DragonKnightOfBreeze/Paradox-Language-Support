@@ -1,14 +1,11 @@
 package icu.windea.pls.script.codeInsight
 
-import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 
@@ -26,19 +23,13 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		//private val propertyValuePattern = or(psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN))
 		
 		private val booleanLookupElements = booleanValues.map { value ->
-			LookupElementBuilder.create(value).bold().withPriority(80.0)
-		}
-		private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
-			val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
-			val spaceAroundSeparator = customSettings.SPACE_AROUND_SEPARATOR
-			val separator = if(spaceAroundSeparator) " = " else "="
-			EditorModificationUtil.insertStringAtCaret(context.editor, separator)
+			LookupElementBuilder.create(value).bold().withPriority(keywordPriority)
 		}
 	}
 	
 	class BooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-			result.addAllElements(booleanLookupElements)
+			result.addAllElements(booleanLookupElements) //总是提示
 		}
 	}
 	
@@ -51,16 +42,17 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			val mayBePropertyKey = parent1 is ParadoxScriptPropertyKey || parent3 is ParadoxScriptPropertyValue
 			val mayBePropertyValue = parent2 is ParadoxScriptPropertyValue
 			val mayBeValue = parent1 is ParadoxScriptValue
-			
 			ProgressManager.checkCanceled()
 			
 			//如果可能是propertyKey，则要提示可能的propertyKey
 			if(mayBePropertyKey) {
+				//得到key元素（不一定是scriptPropertyKey）
+				val key = parent1	
 				//得到上一级block
 				val block = (if(parent1 is ParadoxScriptPropertyKey) parent3 else parent2) as ParadoxScriptBlock
 				//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
 				val definitionProperty = block.findParentDefinitionProperty() ?: return
-				addKeyCompletions(definitionProperty)
+				addKeyCompletions(key,definitionProperty,result)
 			}
 		}
 	}
