@@ -50,8 +50,7 @@ class ParadoxScriptVariablePsiReference(
 		//同时需要同时查找当前文件中的和全局的
 		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapToArray {
 			val name = it.name
-			val icon = scriptVariableIcon
-			//val typeText = it.paradoxFileInfo?.path.toStringOrEmpty()
+			val icon = it.icon
 			val typeText = it.containingFile.name
 			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 		}

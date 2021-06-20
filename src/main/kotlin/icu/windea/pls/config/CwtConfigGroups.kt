@@ -6,16 +6,16 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 import org.slf4j.*
 
-class CwtConfigCache(
-	val groups: Map<String, Map<String, CwtConfigFile>>,
+class CwtConfigGroups(
+	val groupMap: Map<String, Map<String, CwtFileConfig>>,
 	val declarations: Map<String, List<Map<String, Any?>>>,
 	val project: Project
 ) {
 	companion object {
-		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
+		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
 	}
 	
-	val resolvedGroups: Map<String, CwtConfigGroupCache>
+	val groups: Map<String, CwtConfigGroup>
 	
 	val locales: Array<ParadoxLocale>
 	val localeMap: Map<String, ParadoxLocale>
@@ -32,11 +32,11 @@ class CwtConfigCache(
 	val stellaris get() = getValue(ParadoxGameType.Stellaris)
 	val vic2 get() = getValue(ParadoxGameType.Vic2)
 	
-	operator fun get(key: String) = resolvedGroups.get(key)
-	fun getValue(key: String) = resolvedGroups.getValue(key)
+	operator fun get(key: String) = groups.get(key)
+	fun getValue(key: String) = groups.getValue(key)
 	
-	operator fun get(key: ParadoxGameType) = resolvedGroups.get(key.key)
-	fun getValue(key: ParadoxGameType) = resolvedGroups.getValue(key.key)
+	operator fun get(key: ParadoxGameType) = groups.get(key.key)
+	fun getValue(key: ParadoxGameType) = groups.getValue(key.key)
 	
 	init {
 		logger.info("Resolve declarations...")
@@ -67,11 +67,11 @@ class CwtConfigCache(
 		
 		logger.info("Resolve config groups...")
 		
-		resolvedGroups = ConcurrentHashMap()
-		for((groupName, group) in groups) {
+		groups = ConcurrentHashMap()
+		for((groupName, group) in groupMap) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				resolvedGroups[groupName] = CwtConfigGroupCache(group, gameType, project)
+				groups[groupName] = CwtConfigGroup(group, gameType, project)
 			}
 		}
 		

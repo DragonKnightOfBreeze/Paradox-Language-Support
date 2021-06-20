@@ -1,7 +1,6 @@
 package icu.windea.pls
 
 import com.intellij.util.*
-import groovy.lang.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
@@ -20,6 +19,14 @@ fun <T> Array<out T?>.cast() = this as Array<T>
 
 fun <T> Collection<T>.asList(): List<T> {
 	return if(this is List) this else this.toList()
+}
+
+fun <T,E> List<T>.groupAndCountBy(selector: (T) -> E):Map<E,Int>{
+	val result = mutableMapOf<E,Int>()
+	for(e in this) {
+		
+	}
+	return result
 }
 
 inline fun <T, reified R> List<T>.mapToArray(block: (T) -> R): Array<R> {
@@ -194,11 +201,12 @@ fun Path.tryCreateDirectory(): Any? {
 }
 
 //Is Extensions
-fun String.isBoolean() = this == "yes" || this == "no"
+fun String.isBooleanYesNo() = this == "yes" || this == "no"
 
 fun String.isInt(): Boolean {
 	var isFirstChar = true
-	for(char in this.toCharArray()) {
+	val chars = toCharArray()
+	for(char in chars) {
 		if(char.isDigit()) continue
 		if(isFirstChar) {
 			isFirstChar = false
@@ -212,7 +220,8 @@ fun String.isInt(): Boolean {
 fun String.isFloat(): Boolean {
 	var isFirstChar = true
 	var missingDot = true
-	for(char in this.toCharArray()) {
+	val chars = toCharArray()
+	for(char in chars) {
 		if(char.isDigit()) continue
 		if(isFirstChar) {
 			isFirstChar = false
@@ -229,14 +238,20 @@ fun String.isFloat(): Boolean {
 	return true
 }
 
+fun String.isString():Boolean{
+	//以引号包围，或者不是布尔值、整数以及小数
+	if(surroundsWith('"','"')) return true
+	return !isBooleanYesNo() && !isInt() && !isFloat()
+}
+
 fun String.isPercentageField(): Boolean {
 	val chars = toCharArray()
 	for(i in indices){
-		val c = chars[i]
+		val char = chars[i]
 		if(i == lastIndex){
-			if(c != '%') return false 
+			if(char != '%') return false 
 		}else{
-			if(!c.isDigit()) return false
+			if(!char.isDigit()) return false
 		}
 	}
 	return true
@@ -264,7 +279,7 @@ fun String.isVariableField():Boolean{
 }
 
 fun String.isTypeOf(type: String): Boolean {
-	return (type == "boolean" && isBoolean()) || (type == "int" && isInt()) || (type == "float" && isFloat())
+	return (type == "boolean" && isBooleanYesNo()) || (type == "int" && isInt()) || (type == "float" && isFloat())
 		|| (type == "color" && isColor()) || type == "string"
 }
 

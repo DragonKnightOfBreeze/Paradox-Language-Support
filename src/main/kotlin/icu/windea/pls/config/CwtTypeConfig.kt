@@ -23,6 +23,7 @@ import icu.windea.pls.cwt.psi.*
  * @property graphRelatedTypes (option) graph_related_types: graphRelatedType[]
  */
 data class CwtTypeConfig(
+	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
 	val path: String? = null,
 	val pathStrict: Boolean = false,
@@ -39,6 +40,5 @@ data class CwtTypeConfig(
 	val typeKeyFilter: ReversibleList<String>? = null,
 	val startsWith: String? = null,
 	val graphRelatedTypes: List<String>? = null,
-	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
-):CwtConfig
+) : CwtConfig<CwtProperty>
 

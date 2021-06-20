@@ -64,7 +64,7 @@ option ::= option_key option_separator value{
   methods=[getIcon getName setName getNameIdentifier getOptionName getOptionValue getOptionTruncatedValue getSeparatorType]
 }
 option_key ::= OPTION_KEY_TOKEN{
-  methods=[getName]
+  methods=[getValue]
 }
 private option_separator ::= "=" | "<>"
 
@@ -75,7 +75,7 @@ property ::= property_key property_separator value {
   methods=[getIcon getName setName getNameIdentifier getPropertyName getPropertyValue getPropertyTruncatedValue getSeparatorType]
 }
 property_key ::= PROPERTY_KEY_TOKEN{
-  methods=[getName]
+  methods=[getValue]
 }
 private property_separator ::= "=" | "<>"
 

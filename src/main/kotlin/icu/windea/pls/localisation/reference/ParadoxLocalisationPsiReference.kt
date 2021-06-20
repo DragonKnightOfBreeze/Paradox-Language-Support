@@ -52,8 +52,7 @@ class ParadoxLocalisationPsiReference(
 			SyncedLocalisation -> findSyncedLocalisationsByKeyword(keyword, project)
 		}.mapToArray {
 			val name = it.name
-			val icon = localisationIcon
-			//val typeText = it.paradoxFileInfo?.path.toStringOrEmpty()
+			val icon = it.icon
 			val typeText = it.containingFile.name
 			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 		}

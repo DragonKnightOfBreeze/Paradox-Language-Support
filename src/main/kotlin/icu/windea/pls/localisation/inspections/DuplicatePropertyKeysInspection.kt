@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
@@ -73,16 +74,16 @@ class DuplicatePropertyKeysInspection : LocalInspectionTool() {
 			values: List<ParadoxLocalisationProperty>,
 			private val key: String,
 			private val editor: Editor
-		) : BaseListPopupStep<PsiElement>(_header(key), values) {
-			override fun getIconFor(aValue: PsiElement) = localisationPropertyIcon
+		) : BaseListPopupStep<ParadoxLocalisationProperty>(_header(key), values) {
+			override fun getIconFor(value: ParadoxLocalisationProperty) = value.icon
 			
-			override fun getTextFor(value: PsiElement) = _text(key,editor.document.getLineNumber(value.textOffset))
+			override fun getTextFor(value: ParadoxLocalisationProperty) = _text(key,editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex() = 0
 			
 			override fun isSpeedSearchEnabled() = true
 			
-			override fun onChosen(selectedValue: PsiElement, finalChoice: Boolean): PopupStep<*>? {
+			override fun onChosen(selectedValue: ParadoxLocalisationProperty, finalChoice: Boolean): PopupStep<*>? {
 				navigateToElement(editor, selectedValue)
 				return FINAL_CHOICE
 			}

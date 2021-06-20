@@ -11,6 +11,6 @@ public interface CwtPropertyKey extends PsiElement {
   PsiElement getPropertyKeyToken();
 
   @NotNull
-  String getName();
+  String getValue();
 
 }

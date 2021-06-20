@@ -60,7 +60,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 				val block = (if(parent1 is ParadoxScriptPropertyKey) parent3 else parent2) as ParadoxScriptBlock
 				//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
 				val definitionProperty = block.findParentDefinitionProperty() ?: return
-				addPropertyNameCompletions(definitionProperty)
+				addKeyCompletions(definitionProperty)
 			}
 		}
 	}

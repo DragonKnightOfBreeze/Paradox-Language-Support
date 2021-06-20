@@ -1,10 +1,13 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.*
+
 class ParadoxLocale(
 	val name: String,
 	val description: String
 ) {
 	val popupText = "$name - $description"
+	val icon get() = localisationLocaleIcon
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxLocale && name == other.name

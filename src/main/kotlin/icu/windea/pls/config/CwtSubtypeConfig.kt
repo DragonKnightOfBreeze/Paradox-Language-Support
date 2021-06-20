@@ -13,14 +13,14 @@ import icu.windea.pls.cwt.psi.*
  * @property onlyIfNot (option) only_if_not: string[]
  */
 data class CwtSubtypeConfig(
+	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
-	val config: CwtConfigProperty,
+	val config: CwtPropertyConfig,
 	val typeKeyFilter: ReversibleList<String>? = null,
 	val pushScope: String? = null,
 	val startsWith: String? = null,
 	val displayName: String? = null,
 	val abbreviation: String? = null,
-	val onlyIfNot: List<String>? = null,
-	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
-):CwtConfig
+	val onlyIfNot: List<String>? = null
+):CwtConfig<CwtProperty>
 

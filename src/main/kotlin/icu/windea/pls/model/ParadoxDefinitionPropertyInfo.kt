@@ -4,8 +4,8 @@ import java.util.*
 
 data class ParadoxDefinitionPropertyInfo(
 	val name:String,
-	val path: ParadoxPath, //可能为空，这时对应的scriptProperty与definitionInfo对应的scriptProperty相同
-	val existPropertyNames:List<String>,
+	val path: ParadoxPath, //可能为空，这时对应的definitionProperty也就是definition
+	val propertiesCardinality:Map<String,Int>, //统计相同名字的属性出现的数量
 	val definitionInfo: ParadoxDefinitionInfo
 ){
 	override fun equals(other: Any?): Boolean {

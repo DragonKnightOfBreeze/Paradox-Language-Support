@@ -40,6 +40,12 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
+  @NotNull
+  public String getValue() {
+    return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
   public boolean isQuoted() {
     return ParadoxScriptPsiImplUtil.isQuoted(this);
   }

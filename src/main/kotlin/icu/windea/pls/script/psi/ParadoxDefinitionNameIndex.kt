@@ -13,6 +13,14 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	override fun getCacheSize() = 4 * 1024
 	
+	fun exists(name:String,typeExpression: String?,project: Project,scope: GlobalSearchScope):Boolean{
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return false
+		if(typeExpression == null) return name in getAllKeys(project)
+		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxScriptProperty::class.java)
+		return elements.any { element -> matchesTypeExpression(element, typeExpression) }
+	}
+	
 	fun getOne(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptProperty? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null

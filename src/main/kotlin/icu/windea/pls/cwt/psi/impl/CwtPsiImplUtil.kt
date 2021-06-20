@@ -12,55 +12,6 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object CwtPsiImplUtil {
-	//region CwtProperty
-	@JvmStatic
-	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-		return cwtPropertyIcon
-	}
-	
-	@JvmStatic
-	fun getName(element: CwtProperty):String{
-		return element.propertyName
-	}
-	
-	@JvmStatic
-	fun setName(element: CwtProperty,name:String): PsiElement {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: CwtProperty): PsiElement {
-		return element.propertyKey
-	}
-	
-	@JvmStatic
-	fun getPropertyName(element: CwtProperty):String{
-		return element.propertyKey.name
-	}
-	
-	@JvmStatic
-	fun getPropertyValue(element: CwtProperty):String{
-		return element.value?.value.orEmpty()
-	}
-	
-	@JvmStatic
-	fun getPropertyTruncatedValue(element: CwtProperty):String{
-		return element.value?.truncatedValue.orEmpty()
-	}
-	
-	@JvmStatic
-	fun getSeparatorType(element:CwtProperty): SeparatorType {
-		//这里不能遍历element.children
-		element.forEachChild { child->
-			when(child.elementType){
-				CwtTypes.EQUAL_SIGN -> return SeparatorType.EQUAL
-				CwtTypes.NOT_EQUAL_SIGN -> return SeparatorType.NOT_EQUAL
-			}
-		}
-		return SeparatorType.EQUAL
-	}
-	//endregion
-	
 	//region CwtOption
 	@JvmStatic
 	fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
@@ -84,7 +35,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getOptionName(element: CwtOption):String{
-		return element.optionKey.name
+		return element.optionKey.value
 	}
 	
 	@JvmStatic
@@ -110,17 +61,66 @@ object CwtPsiImplUtil {
 	}
 	//endregion
 	
-	//region CwtPropertyKey
+	//region CwtOptionKey
 	@JvmStatic
-	fun getName(element: CwtPropertyKey):String{
-		return element.propertyKeyToken.text.unquote()
+	fun getValue(element: CwtOptionKey):String{
+		return element.optionKeyToken.text.unquote()
 	}
 	//endregion
 	
-	//region CwtOptionKey
+	//region CwtProperty
 	@JvmStatic
-	fun getName(element: CwtOptionKey):String{
-		return element.optionKeyToken.text.unquote()
+	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
+		return cwtPropertyIcon
+	}
+	
+	@JvmStatic
+	fun getName(element: CwtProperty):String{
+		return element.propertyName
+	}
+	
+	@JvmStatic
+	fun setName(element: CwtProperty,name:String): PsiElement {
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: CwtProperty): PsiElement {
+		return element.propertyKey
+	}
+	
+	@JvmStatic
+	fun getPropertyName(element: CwtProperty):String{
+		return element.propertyKey.value
+	}
+	
+	@JvmStatic
+	fun getPropertyValue(element: CwtProperty):String{
+		return element.value?.value.orEmpty()
+	}
+	
+	@JvmStatic
+	fun getPropertyTruncatedValue(element: CwtProperty):String{
+		return element.value?.truncatedValue.orEmpty()
+	}
+	
+	@JvmStatic
+	fun getSeparatorType(element:CwtProperty): SeparatorType {
+		//这里不能遍历element.children
+		element.forEachChild { child->
+			when(child.elementType){
+				CwtTypes.EQUAL_SIGN -> return SeparatorType.EQUAL
+				CwtTypes.NOT_EQUAL_SIGN -> return SeparatorType.NOT_EQUAL
+			}
+		}
+		return SeparatorType.EQUAL
+	}
+	//endregion
+	
+	//region CwtPropertyKey
+	@JvmStatic
+	fun getValue(element: CwtPropertyKey):String{
+		return element.propertyKeyToken.text.unquote()
 	}
 	//endregion
 	

@@ -53,9 +53,17 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
+	//region ParadoxScriptVariableName
+	@JvmStatic
+	fun getValue(element:ParadoxScriptVariableName):String{
+		return element.text
+	}
+	//endregion
+	
 	//region ParadoxScriptProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
+		if(element.paradoxDefinitionInfo != null) return definitionIcon
 		return scriptPropertyIcon
 	}
 	
@@ -107,6 +115,11 @@ object ParadoxScriptPsiImplUtil {
 	//endregion
 	
 	//region ParadoxScriptPropertyKey
+	@JvmStatic
+	fun getValue(element:ParadoxScriptPropertyKey):String{
+		return element.text.unquote()
+	}
+	
 	@JvmStatic
 	fun isQuoted(element: ParadoxScriptPropertyKey):Boolean{
 		return element.firstChild?.elementType == ParadoxScriptTypes.QUOTED_PROPERTY_KEY_ID

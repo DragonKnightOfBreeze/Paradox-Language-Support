@@ -2,33 +2,36 @@ package icu.windea.pls.util
 
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.CwtConfigFile.Companion.EmptyCwtConfig
+import icu.windea.pls.config.CwtFileConfig.Companion.EmptyCwtConfig
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 
 /**
- * Cwt配置文件的数据解析器。
+ * Cwt配置文件的解析器。
  *
- * 返回值类型：[CwtConfigFile]
+ * 返回值类型：[CwtFileConfig]
  */
-object CwtConfigDataResolver {
-	fun resolve(file: PsiFile): CwtConfigFile {
+object CwtConfigResolver {
+	fun resolve(file: PsiFile): CwtFileConfig {
 		if(file !is CwtFile) throw IllegalArgumentException("Invalid file type (expect: 'CwtFile')")
-		val rootBlock = file.rootBlock ?: return EmptyCwtConfig
-		return resolveRootBlock(rootBlock)
-	}
-	
-	fun resolveRootBlock(rootBlock: CwtRootBlock): CwtConfigFile {
+		val rootBlock = file.block ?: return EmptyCwtConfig
 		return when {
 			rootBlock.isEmpty -> EmptyCwtConfig
-			rootBlock.isArray -> CwtConfigFile(rootBlock.valueList.mapNotNull { resolveValue(it) }, emptyList())
-			rootBlock.isObject -> CwtConfigFile(emptyList(), rootBlock.propertyList.mapNotNull { resolveProperty(it) })
+			rootBlock.isArray -> {
+				val values = rootBlock.valueList.mapNotNull { resolveValue(it) }
+				CwtFileConfig(emptyPointer(), values, emptyList())
+			}
+			rootBlock.isObject -> {
+				val properties = rootBlock.propertyList.mapNotNull { resolveProperty(it) }
+				CwtFileConfig(emptyPointer(), emptyList(), properties)
+			}
 			else -> EmptyCwtConfig
 		}
 	}
 	
-	fun resolveProperty(property: CwtProperty): CwtConfigProperty? {
+	fun resolveProperty(property: CwtProperty): CwtPropertyConfig? {
 		val pointer = property.createSmartPointer()
 		val key = property.propertyName
 		val propValue = property.value ?: return null
@@ -36,11 +39,11 @@ object CwtConfigDataResolver {
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtConfigValue>? = null
-		var properties: List<CwtConfigProperty>? = null
+		var values: List<CwtValueConfig>? = null
+		var properties: List<CwtPropertyConfig>? = null
 		val documentation: String?
-		val options: List<CwtConfigOption>?
-		val optionValues: List<CwtConfigOptionValue>?
+		val options: List<CwtOptionConfig>?
+		val optionValues: List<CwtOptionValueConfig>?
 		val separatorType = property.separatorType
 		when {
 			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
@@ -92,22 +95,22 @@ object CwtConfigDataResolver {
 		documentation = getDocumentation(documentationElements)
 		options = getOptions(optionElements)
 		optionValues = getOptionValues(optionValueElements)
-		return CwtConfigProperty(
-			pointer,key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
-			documentation, options, optionValues, separatorType 
+		return CwtPropertyConfig(
+			pointer, key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
+			documentation, options, optionValues, separatorType
 		)
 	}
 	
-	fun resolveValue(value: CwtValue): CwtConfigValue {
+	fun resolveValue(value: CwtValue): CwtValueConfig {
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtConfigValue>? = null
-		var properties: List<CwtConfigProperty>? = null
+		var values: List<CwtValueConfig>? = null
+		var properties: List<CwtPropertyConfig>? = null
 		val documentation: String?
-		val options: List<CwtConfigOption>?
-		val optionValues: List<CwtConfigOptionValue>?
+		val options: List<CwtOptionConfig>?
+		val optionValues: List<CwtOptionValueConfig>?
 		
 		when {
 			value is CwtBoolean -> booleanValue = value.booleanValue
@@ -160,21 +163,21 @@ object CwtConfigDataResolver {
 		options = getOptions(optionElements)
 		optionValues = getOptionValues(optionValueElements)
 		
-		return CwtConfigValue(
-			value.value, booleanValue, intValue, floatValue, stringValue, values, properties,
-			documentation, options, optionValues
+		return CwtValueConfig(
+			value.createSmartPointer(), value.value, booleanValue, intValue, floatValue, stringValue,
+			values, properties, documentation, options, optionValues
 		)
 	}
 	
-	fun resolveOption(option: CwtOption): CwtConfigOption? {
+	fun resolveOption(option: CwtOption): CwtOptionConfig? {
 		val key = option.optionName
 		val optionValue = option.value ?: return null
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtConfigOptionValue>? = null
-		var options: List<CwtConfigOption>? = null
+		var values: List<CwtOptionValueConfig>? = null
+		var options: List<CwtOptionConfig>? = null
 		val separatorType = option.separatorType
 		when {
 			optionValue is CwtBoolean -> booleanValue = optionValue.booleanValue
@@ -196,16 +199,19 @@ object CwtConfigDataResolver {
 				}
 			}
 		}
-		return CwtConfigOption(key, optionValue.value, booleanValue, intValue, floatValue, stringValue, values, options, separatorType)
+		return CwtOptionConfig(
+			emptyPointer(),key, optionValue.value, 
+			booleanValue, intValue, floatValue, stringValue, values, options, separatorType
+		)
 	}
 	
-	fun resolveOptionValue(option: CwtValue): CwtConfigOptionValue {
+	fun resolveOptionValue(option: CwtValue): CwtOptionValueConfig {
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtConfigOptionValue>? = null
-		var options: List<CwtConfigOption>? = null
+		var values: List<CwtOptionValueConfig>? = null
+		var options: List<CwtOptionConfig>? = null
 		when {
 			option is CwtBoolean -> {
 				booleanValue = option.booleanValue
@@ -236,7 +242,10 @@ object CwtConfigDataResolver {
 				}
 			}
 		}
-		return CwtConfigOptionValue(option.value, booleanValue, intValue, floatValue, stringValue, values, options)
+		return CwtOptionValueConfig(
+			emptyPointer(),option.value,
+			booleanValue, intValue, floatValue, stringValue, values, options
+		)
 	}
 	
 	private fun getDocumentation(documentationElements: List<CwtDocumentationText>): String? {
@@ -244,9 +253,9 @@ object CwtConfigDataResolver {
 		return documentationElements.joinToString("\n") { it.text.orEmpty() }.trim()
 	}
 	
-	private fun getOptions(optionElements: List<CwtOption>): List<CwtConfigOption>? {
+	private fun getOptions(optionElements: List<CwtOption>): List<CwtOptionConfig>? {
 		if(optionElements.isEmpty()) return null
-		val options = mutableListOf<CwtConfigOption>()
+		val options = mutableListOf<CwtOptionConfig>()
 		for(optionElement in optionElements) {
 			val resolved = resolveOption(optionElement) ?: continue
 			options.add(resolved)
@@ -254,9 +263,9 @@ object CwtConfigDataResolver {
 		return options
 	}
 	
-	private fun getOptionValues(optionValueElements: List<CwtValue>): List<CwtConfigOptionValue>? {
+	private fun getOptionValues(optionValueElements: List<CwtValue>): List<CwtOptionValueConfig>? {
 		if(optionValueElements.isEmpty()) return null
-		val optionValues = mutableListOf<CwtConfigOptionValue>()
+		val optionValues = mutableListOf<CwtOptionValueConfig>()
 		for(optionValueElement in optionValueElements) {
 			val resolved = resolveOptionValue(optionValueElement)
 			optionValues.add(resolved)

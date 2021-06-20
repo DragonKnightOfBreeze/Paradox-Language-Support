@@ -52,6 +52,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationProperty, @IconFlags flags: Int): Icon {
+		if(element.paradoxLocalisationInfo != null) return localisationPropertyIcon
 		return localisationPropertyIcon
 	}
 	

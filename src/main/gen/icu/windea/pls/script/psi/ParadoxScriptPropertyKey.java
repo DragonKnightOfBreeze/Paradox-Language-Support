@@ -13,6 +13,9 @@ public interface ParadoxScriptPropertyKey extends PsiElement {
   @Nullable
   PsiElement getQuotedPropertyKeyId();
 
+  @NotNull
+  String getValue();
+
   boolean isQuoted();
 
 }

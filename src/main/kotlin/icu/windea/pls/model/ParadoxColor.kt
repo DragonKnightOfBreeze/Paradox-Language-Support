@@ -12,7 +12,6 @@ class ParadoxColor(
 	val popupText = "$name - $description"
 	val color: Color = Color(colorRgb)
 	val icon = ColorIcon(16, color)
-	val gutterIcon = ColorIcon(12, color)
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxColor && name == other.name

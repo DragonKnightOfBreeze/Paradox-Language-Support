@@ -13,6 +13,14 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	
 	override fun getCacheSize() = 100 * 1024 //50000+
 	
+	fun exists(name:String,locale: ParadoxLocale?,project: Project,scope: GlobalSearchScope):Boolean{
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return false
+		if(locale == null) return name in getAllKeys(project)
+		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxLocalisationProperty::class.java)
+		return elements.any { element -> locale == element.paradoxLocale }
+	}
+	
 	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean): ParadoxLocalisationProperty? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null

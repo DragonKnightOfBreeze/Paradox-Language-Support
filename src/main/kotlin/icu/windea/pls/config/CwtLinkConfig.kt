@@ -8,9 +8,9 @@ import icu.windea.pls.cwt.psi.*
  * @property outputScope output_scope: string
  */
 data class CwtLinkConfig(
+	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name:String,
 	val inputScopes:List<String>,
 	val outputScope:String,
-	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
-):CwtConfig
+):CwtConfig<CwtProperty>
 

@@ -43,9 +43,9 @@ class ChangeSequentialNumberIntention : IntentionAction {
 		private val value: ParadoxLocalisationSequentialNumber,
 		values: Array<ParadoxSequentialNumber>
 	) : BaseListPopupStep<ParadoxSequentialNumber>(_title, *values) {
-		override fun getTextFor(value: ParadoxSequentialNumber) = value.popupText
+		override fun getIconFor(value: ParadoxSequentialNumber) = value.icon
 		
-		override fun getIconFor(value: ParadoxSequentialNumber) = localisationSequentialNumberIcon
+		override fun getTextFor(value: ParadoxSequentialNumber) = value.popupText
 		
 		override fun getDefaultOptionIndex() = 0
 		

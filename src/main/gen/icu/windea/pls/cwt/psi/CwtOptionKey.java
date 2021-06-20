@@ -11,6 +11,6 @@ public interface CwtOptionKey extends PsiElement {
   PsiElement getOptionKeyToken();
 
   @NotNull
-  String getName();
+  String getValue();
 
 }

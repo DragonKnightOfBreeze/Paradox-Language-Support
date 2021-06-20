@@ -8,10 +8,10 @@ import icu.windea.pls.cwt.psi.*
  * @property primary (option) primary
  */
 data class CwtTypeLocalisationConfig(
+	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
 	val expression: String,
 	val required: Boolean = false,
 	val primary: Boolean = false,
-	override val pointer: SmartPsiElementPointer<CwtProperty>? = null
-):CwtConfig
+):CwtConfig<CwtProperty>
 

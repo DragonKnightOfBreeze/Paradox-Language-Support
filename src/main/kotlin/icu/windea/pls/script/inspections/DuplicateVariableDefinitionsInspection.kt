@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
@@ -77,7 +78,7 @@ class DuplicateVariableDefinitionsInspection :LocalInspectionTool(){
 			private val key: String,
 			private val editor: Editor
 		) : BaseListPopupStep<ParadoxScriptVariable>(_header(key), values) {
-			override fun getIconFor(aValue: ParadoxScriptVariable) = scriptVariableIcon
+			override fun getIconFor(value: ParadoxScriptVariable) = value.icon
 
 			override fun getTextFor(value: ParadoxScriptVariable) = _text(key, editor.document.getLineNumber(value.textOffset))
 

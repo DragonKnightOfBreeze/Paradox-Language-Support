@@ -9,6 +9,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -193,3 +194,21 @@ fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
 fun intern(table: CharTable,node: LighterASTTokenNode):String{
 	return table.intern(node.text).toString()
 }
+
+object EmptyPointer:SmartPsiElementPointer<PsiElement>{
+	override fun getElement() = null
+	
+	override fun getContainingFile() = null
+	
+	override fun getProject()= getDefaultProject()
+	
+	override fun getVirtualFile() = null
+	
+	override fun getRange() = null
+	
+	override fun getPsiRange() = null
+}
+
+fun <T:PsiElement> emptyPointer():SmartPsiElementPointer<T> = EmptyPointer.cast()
+
+val PsiElement.icon get() = getIcon(Iconable.ICON_FLAG_VISIBILITY)

@@ -10,4 +10,7 @@ public interface ParadoxScriptVariableName extends PsiElement {
   @NotNull
   PsiElement getVariableNameId();
 
+  @NotNull
+  String getValue();
+
 }

@@ -35,8 +35,8 @@ public class CwtOptionKeyImpl extends ASTWrapperPsiElement implements CwtOptionK
 
   @Override
   @NotNull
-  public String getName() {
-    return CwtPsiImplUtil.getName(this);
+  public String getValue() {
+    return CwtPsiImplUtil.getValue(this);
   }
 
 }

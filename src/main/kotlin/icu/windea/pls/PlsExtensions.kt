@@ -3,7 +3,6 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -26,11 +25,11 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getSettings() = ParadoxSettingsState.getInstance()
 
-fun getConfig(): CwtConfigCache {
-	return ServiceManager.getService(getDefaultProject(), CwtConfigProvider::class.java).configGroupsCache
+fun getConfig(): CwtConfigGroups {
+	return ServiceManager.getService(getDefaultProject(), CwtConfigProvider::class.java).configGroups
 }
 
-fun getConfig(project: Project) = ServiceManager.getService(project, CwtConfigProvider::class.java).configGroupsCache
+fun getConfig(project: Project) = ServiceManager.getService(project, CwtConfigProvider::class.java).configGroups
 
 fun inferParadoxLocale() = when(System.getProperty("user.language")) {
 	"zh" -> getConfig().localeMap.getValue("l_simp_chinese")
@@ -260,9 +259,9 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 			val definitionInfo = current.paradoxDefinitionInfo
 			val name = current.name ?: return null
 			if(definitionInfo != null) {
-				val existPropertyNames = current.properties.map { it.name }
+				val propertiesCardinality = current.properties.groupAndCountBy { it.name }
 				val path = ParadoxPath(subPaths)
-				return ParadoxDefinitionPropertyInfo(name, path, existPropertyNames, definitionInfo)
+				return ParadoxDefinitionPropertyInfo(name, path, propertiesCardinality, definitionInfo)
 			}
 			subPaths.add(0, name)
 		}
@@ -530,6 +529,18 @@ fun filterScriptVariables(
 }
 
 /**
+ * 基于定义名字索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
+ */
+fun hasDefinition(
+	name: String,
+	typeExpression: String? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): Boolean {
+	return ParadoxDefinitionNameIndex.exists(name, typeExpression, project, scope)
+}
+
+/**
  * 基于定义名字索引，根据名字、类型表达式查找脚本文件的定义（definition）。
  */
 fun findDefinition(
@@ -624,6 +635,18 @@ fun filterDefinitionsByType(
 }
 
 /**
+ * 基于本地化名字索引，根据名字、语言区域判断是否存在本地化（localisation）。
+ */
+fun hasLocalisation(
+	name: String,
+	locale: ParadoxLocale?,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+):Boolean{
+	return ParadoxLocalisationNameIndex.exists(name, locale, project, scope)
+}
+
+/**
  * 基于本地化名字索引，根据名字、语言区域查找本地化（localisation）。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
  */
@@ -709,6 +732,18 @@ fun findLocalisationsByNames(
 	keepOrder: Boolean = false
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.findByNames(names, locale, project, scope, hasDefault, keepOrder)
+}
+
+/**
+ * 基于本地化名字索引，根据名字、语言区域判断是否存在同步本地化（localisation_synced）。
+ */
+fun hasSyncedLocalisation(
+	name: String,
+	locale: ParadoxLocale?,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+):Boolean{
+	return ParadoxSyncedLocalisationNameIndex.exists(name, locale, project, scope)
 }
 
 /**
@@ -805,9 +840,9 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 		val extraName = tokens.getOrNull(3) //可能是subtypeName
 		//如果configType是types且extraName存在，需要特殊处理，从而兼容subtype
 		if(configType == "types" && extraName != null) {
-			getConfig(project).getValue(gameType).types.getValue(name).subtypes.getValue(extraName).pointer?.element
+			getConfig(project).getValue(gameType).types.getValue(name).subtypes.getValue(extraName).pointer.element
 		} else {
-			getConfig(project).getValue(gameType).getValue(configType).getValue(name).pointer?.element
+			getConfig(project).getValue(gameType).getValue(configType).getValue(name).pointer.element
 		}
 	}.getOrNull()
 }
@@ -908,8 +943,8 @@ inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
 	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
 }
 
-inline fun CwtFile.resolveConfig(): CwtConfigFile {
-	return CwtConfigDataResolver.resolve(this)
+inline fun CwtFile.resolveConfig(): CwtFileConfig {
+	return CwtConfigResolver.resolve(this)
 }
 
 inline fun ParadoxScriptFile.resolveData(): List<Any> {

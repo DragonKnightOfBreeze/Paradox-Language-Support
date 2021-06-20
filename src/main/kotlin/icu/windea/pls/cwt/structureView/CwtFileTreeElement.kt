@@ -9,7 +9,7 @@ class CwtFileTreeElement(
 	private val element: CwtFile
 ) : PsiTreeElementBase<CwtFile>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
-		val rootBlock = element.rootBlock ?: return emptyList()
+		val rootBlock = element.block ?: return emptyList()
 		return PsiTreeUtil.getChildrenOfAnyType(
 			rootBlock,
 			CwtProperty::class.java,

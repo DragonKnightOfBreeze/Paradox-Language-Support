@@ -2,17 +2,18 @@ package icu.windea.pls.config
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 
-class CwtConfigGroupCache(
-	val group: Map<String, CwtConfigFile>,
+class CwtConfigGroup(
+	val group: Map<String, CwtFileConfig>,
 	val gameType: ParadoxGameType,
 	val project: Project
 ) {
 	companion object {
-		private val logger = LoggerFactory.getLogger(CwtConfigGroupCache::class.java)
+		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
 		
 		private fun resolveTypeName(expression: String): String? {
 			return expression.resolveByRemoveSurrounding("type[", "]")
@@ -32,7 +33,7 @@ class CwtConfigGroupCache(
 		
 	}
 	
-	val resolvedConfigs: Map<String, Map<String, CwtConfig>>
+	val resolvedConfigs: Map<String, Map<String, CwtConfig<CwtProperty>>>
 	
 	//? -> type[?] = { ... }
 	val types: Map<String, CwtTypeConfig>
@@ -212,7 +213,7 @@ class CwtConfigGroupCache(
 		logger.info("Resolve config group '$gameType' finished.")
 	}
 	
-	private fun resolveTypeConfig(configProperty: CwtConfigProperty, name: String): CwtTypeConfig {
+	private fun resolveTypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeConfig {
 		var path: String? = null
 		var pathStrict = false
 		var pathFile: String? = null
@@ -229,7 +230,7 @@ class CwtConfigGroupCache(
 		var startsWith: String? = null
 		var graphRelatedTypes: List<String>? = null
 		
-		val props = configProperty.properties
+		val props = propertyConfig.properties
 		if(props != null && props.isNotEmpty()) {
 			for(prop in props) {
 				val key = prop.key
@@ -282,7 +283,7 @@ class CwtConfigGroupCache(
 			}
 		}
 		
-		val options = configProperty.options
+		val options = propertyConfig.options
 		if(options != null && options.isNotEmpty()) {
 			for(option in options) {
 				val key = option.key
@@ -304,12 +305,13 @@ class CwtConfigGroupCache(
 		}
 		
 		return CwtTypeConfig(
-			name, path, pathStrict, pathFile, pathExtension, nameField, nameFromFile, typePerFile, unique, severity,
-			skipRootKey, localisation, subtypes, typeKeyFilter, startsWith, graphRelatedTypes, configProperty.pointer
+			propertyConfig.pointer, name, path, pathStrict, pathFile, pathExtension,
+			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
+			localisation, subtypes, typeKeyFilter, startsWith, graphRelatedTypes
 		)
 	}
 	
-	private fun resolveSubtypeConfig(configProperty: CwtConfigProperty, name: String): CwtSubtypeConfig {
+	private fun resolveSubtypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSubtypeConfig {
 		var typeKeyFilter: ReversibleList<String>? = null
 		var pushScope: String? = null
 		var startsWith: String? = null
@@ -317,7 +319,7 @@ class CwtConfigGroupCache(
 		var abbreviation: String? = null
 		var onlyIfNot: List<String>? = null
 		
-		val options = configProperty.options
+		val options = propertyConfig.options
 		if(options != null && options.isNotEmpty()) {
 			for(option in options) {
 				val key = option.key
@@ -337,16 +339,16 @@ class CwtConfigGroupCache(
 			}
 		}
 		return CwtSubtypeConfig(
-			name, configProperty,
-			typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot, configProperty.pointer
+			propertyConfig.pointer, name, propertyConfig,
+			typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot
 		)
 	}
 	
-	private fun resolveTypeLocalisationConfig(configProperty: CwtConfigProperty, name: String): CwtTypeLocalisationConfig? {
-		val expression = configProperty.stringValue ?: return null
+	private fun resolveTypeLocalisationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeLocalisationConfig? {
+		val expression = propertyConfig.stringValue ?: return null
 		var required = false
 		var primary = false
-		val optionValues = configProperty.optionValues
+		val optionValues = propertyConfig.optionValues
 		if(optionValues != null && optionValues.isNotEmpty()) {
 			for(optionValue in optionValues) {
 				val value = optionValue.stringValue ?: continue
@@ -356,18 +358,18 @@ class CwtConfigGroupCache(
 				}
 			}
 		}
-		return CwtTypeLocalisationConfig(name, expression, required, primary, configProperty.pointer)
+		return CwtTypeLocalisationConfig(propertyConfig.pointer, name, expression, required, primary)
 	}
 	
-	private fun resolveEnumConfig(configProperty: CwtConfigProperty, name: String): CwtEnumConfig? {
-		val values = configProperty.stringValues ?: return null
-		return CwtEnumConfig(name, values, configProperty.pointer)
+	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
+		val values = propertyConfig.stringValues ?: return null
+		return CwtEnumConfig(propertyConfig.pointer, name, values)
 	}
 	
-	private fun resolveLinkConfig(configProperty: CwtConfigProperty, name: String): CwtLinkConfig? {
+	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
 		var inputScopes: List<String>? = null
 		var outputScope: String? = null
-		val props = configProperty.properties ?: return null
+		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
 				"inputscopes" -> inputScopes = prop.stringValues
@@ -375,18 +377,18 @@ class CwtConfigGroupCache(
 			}
 		}
 		if(inputScopes == null || outputScope == null) return null
-		return CwtLinkConfig(name, inputScopes, outputScope, configProperty.pointer)
+		return CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
 	}
 	
-	private fun resolveLocalisationCommandConfig(configProperty: CwtConfigProperty, name: String): CwtLocalisationCommandConfig? {
-		val values = configProperty.stringValueOrValues ?: return null
-		return CwtLocalisationCommandConfig(name, values, configProperty.pointer)
+	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
+		val values = propertyConfig.stringValueOrValues ?: return null
+		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
 	}
 	
-	private fun resolveLocalisationLinkConfig(configProperty: CwtConfigProperty, name: String): CwtLinkConfig? {
+	private fun resolveLocalisationLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
 		var inputScopes: List<String>? = null
 		var outputScope: String? = null
-		val props = configProperty.properties ?: return null
+		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
 				"input_scopes" -> inputScopes = prop.stringValues
@@ -394,13 +396,13 @@ class CwtConfigGroupCache(
 			}
 		}
 		if(inputScopes == null || outputScope == null) return null
-		return CwtLinkConfig(name, inputScopes, outputScope, configProperty.pointer)
+		return CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
 	}
 	
-	private fun resolveModifierCategoryConfig(configProperty: CwtConfigProperty, name: String): CwtModifyCategoryConfig? {
+	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifyCategoryConfig? {
 		var internalId: Int? = null
 		var supportedScopes: List<String>? = null
-		val props = configProperty.properties
+		val props = propertyConfig.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
 			when(prop.key) {
@@ -409,34 +411,34 @@ class CwtConfigGroupCache(
 			}
 		}
 		if(internalId == null || supportedScopes == null) return null
-		return CwtModifyCategoryConfig(name, internalId, supportedScopes, configProperty.pointer)
+		return CwtModifyCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
 	}
 	
-	private fun resolveScopeConfig(configProperty: CwtConfigProperty, name: String): CwtScopeConfig? {
+	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
 		var aliases: List<String>? = null
-		val props = configProperty.properties
+		val props = propertyConfig.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
 			if(prop.key == "aliases") aliases = prop.stringValues
 		}
 		if(aliases == null) return null
-		return CwtScopeConfig(name, aliases, configProperty.pointer)
+		return CwtScopeConfig(propertyConfig.pointer, name, aliases)
 	}
 	
-	private fun resolveScopeGroupConfig(configProperty: CwtConfigProperty, name: String): CwtScopeGroupConfig? {
-		val values = configProperty.stringValueOrValues ?: return null
-		return CwtScopeGroupConfig(name, values, configProperty.pointer)
+	private fun resolveScopeGroupConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeGroupConfig? {
+		val values = propertyConfig.stringValueOrValues ?: return null
+		return CwtScopeGroupConfig(propertyConfig.pointer, name, values)
 	}
 	
 	
-	private fun resolveAliasConfig(configProperty: CwtConfigProperty, name: String): CwtAliasConfig {
-		return CwtAliasConfig(name, configProperty, configProperty.pointer)
+	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtAliasConfig {
+		return CwtAliasConfig(propertyConfig.pointer, name, propertyConfig)
 	}
 	
-	private fun resolveDefinitionConfig(configProperty: CwtConfigProperty, name: String): CwtDefinitionConfig? {
-		val props = configProperty.properties ?: return null
-		val propertiesConfig = mutableListOf<CwtConfigProperty>()
-		val subtypePropertiesConfig = mutableMapOf<String, MutableList<CwtConfigProperty>>()
+	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
+		val props = propertyConfig.properties ?: return null
+		val propertiesConfig = mutableListOf<CwtPropertyConfig>()
+		val subtypePropertiesConfig = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
 		for(prop in props) {
 			//这里需要进行合并
 			val subtypeName = resolveSubtypeName(prop.key)
@@ -449,7 +451,7 @@ class CwtConfigGroupCache(
 				propertiesConfig.add(prop)
 			}
 		}
-		return CwtDefinitionConfig(name, propertiesConfig, subtypePropertiesConfig, configProperty.pointer)
+		return CwtDefinitionConfig(propertyConfig.pointer, name, propertiesConfig, subtypePropertiesConfig)
 	}
 	
 	/**
@@ -542,7 +544,7 @@ class CwtConfigGroupCache(
 		}
 		//根据config对property进行内容匹配
 		val elementConfig = subtypeConfig.config
-		return matchContent(element, elementConfig, this)
+		return matchProperty(element, elementConfig, this)
 	}
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo {
