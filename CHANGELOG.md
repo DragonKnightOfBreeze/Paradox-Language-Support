@@ -115,6 +115,9 @@
 * [X] 完善代码风格设置
 * [X] 可以通过定义的文档中的链接跳转到定义的类型和子类型所在的cwt文件
 * [X] 为cwtProperty提供文档注释（以`###`开头的）
+* [X] 支持提示definition的顶级的property（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
+* [ ] 支持提示definition的所有级别的property（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
+* [ ] 支持提示definition的顶级的propertyValue（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证
