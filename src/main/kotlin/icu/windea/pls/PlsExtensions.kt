@@ -438,26 +438,13 @@ fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): L
 /**
  * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
  */
-fun PsiElement.findParentDefinitionProperty(skipThis: Boolean = false): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
 	var current: PsiElement = this
-	var doSkipThis = skipThis
 	do {
 		if(current is ParadoxScriptRootBlock) {
-			val result = current.parent ?: break
-			if(doSkipThis) {
-				doSkipThis = false
-				current = result
-				continue
-			}
-			return result as ParadoxDefinitionProperty
+			return (current.parent ?: break) as ParadoxDefinitionProperty
 		} else if(current is ParadoxScriptBlock) {
-			val result = current.parent.parent ?: break
-			if(doSkipThis){
-				doSkipThis = false
-				current = result
-				continue
-			}
-			return result as ParadoxDefinitionProperty
+			return (current.parent.parent ?: break) as ParadoxDefinitionProperty
 		}
 		current = current.parent ?: break
 	} while(current !is PsiFile)
@@ -467,16 +454,10 @@ fun PsiElement.findParentDefinitionProperty(skipThis: Boolean = false): ParadoxD
 /**
  * 得到上一级definition，可能为自身，可能为null。
  */
-fun PsiElement.findParentDefinition(skipThis: Boolean = false): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
 	var current: PsiElement = this
-	var doSkipThis = skipThis
 	do {
 		if(current is ParadoxDefinitionProperty) {
-			if(doSkipThis){
-				doSkipThis = false
-				current = current.parent?:break
-				continue
-			}
 			val definitionInfo = current.paradoxDefinitionInfo
 			if(definitionInfo != null) return current
 		}

@@ -50,7 +50,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					//得到key或value元素
 					val keyOrValue = parent1
 					//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-					val definitionProperty = keyOrValue.findParentDefinitionProperty(true) ?: return
+					val definitionProperty = keyOrValue.findParentDefinitionProperty() ?: return
 					addKeyCompletions(keyOrValue,definitionProperty,result)
 					addValueCompletions(keyOrValue,definitionProperty,result)
 				}
@@ -58,14 +58,14 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					//得到key元素
 					val key = parent1
 					//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-					val definitionProperty = key.findParentDefinitionProperty(true) ?: return
+					val definitionProperty = key.findParentDefinitionProperty() ?: return
 					addKeyCompletions(key,definitionProperty,result)
 				}
 				mayBeValue -> {
 					//得到key元素
 					val value = parent1
 					//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-					val definitionProperty = value.findParentDefinitionProperty(true) ?: return
+					val definitionProperty = value.findParentDefinitionProperty() ?: return
 					addValueCompletions(value,definitionProperty,result)
 				}
 			}
