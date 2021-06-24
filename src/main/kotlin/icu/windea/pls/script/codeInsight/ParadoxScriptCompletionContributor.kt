@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.patterns.PlatformPatterns.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
@@ -39,21 +40,34 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			val parent1 = position.parent ?: return //propertyKey | value
 			val parent2 = parent1.parent ?: return //property | propertyValue | block
 			val parent3 = parent2.parent ?: return //block | propertyValue
-			val mayBePropertyKey = parent1 is ParadoxScriptPropertyKey || parent3 is ParadoxScriptPropertyValue
-			val mayBePropertyValue = parent2 is ParadoxScriptPropertyValue
+			val mayBeKey = parent1 is ParadoxScriptPropertyKey || parent3 is ParadoxScriptPropertyValue
 			val mayBeValue = parent1 is ParadoxScriptValue
 			
 			ProgressManager.checkCanceled()
 			
-			//如果可能是propertyKey，则要提示可能的propertyKey
-			if(mayBePropertyKey) {
-				//得到key元素（不一定是scriptPropertyKey）
-				val key = parent1	
-				//得到上一级block
-				val block = (if(parent1 is ParadoxScriptPropertyKey) parent3 else parent2) as ParadoxScriptBlock
-				//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-				val definitionProperty = block.findParentDefinitionProperty() ?: return
-				addKeyCompletions(key,definitionProperty,result)
+			when {
+				mayBeKey && mayBeValue -> {
+					//得到key或value元素
+					val keyOrValue = parent1
+					//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
+					val definitionProperty = keyOrValue.findParentDefinitionProperty(true) ?: return
+					addKeyCompletions(keyOrValue,definitionProperty,result)
+					addValueCompletions(keyOrValue,definitionProperty,result)
+				}
+				mayBeKey -> {
+					//得到key元素
+					val key = parent1
+					//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
+					val definitionProperty = key.findParentDefinitionProperty(true) ?: return
+					addKeyCompletions(key,definitionProperty,result)
+				}
+				mayBeValue -> {
+					//得到key元素
+					val value = parent1
+					//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
+					val definitionProperty = value.findParentDefinitionProperty(true) ?: return
+					addValueCompletions(value,definitionProperty,result)
+				}
 			}
 		}
 	}

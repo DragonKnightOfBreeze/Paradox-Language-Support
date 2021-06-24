@@ -118,7 +118,8 @@
 * [X] 支持提示definition的顶级的property（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
 * [ ] 支持提示definition的所有级别的property（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
 * [ ] 支持提示definition的顶级的propertyValue（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
-* [ ] 代码提示大小写兼容性解决
+* [ ] 代码提示大小写兼容性解决（判断属性是否已存在以及存在数量时忽略大小写）
+* [ ] 
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示
 * [ ] 支持基于cwt配置文件进行脚本文件代码验证

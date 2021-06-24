@@ -253,15 +253,15 @@ private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): Par
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	//注意这里要获得的definitionProperty可能是scriptFile也可能是scriptProperty
 	val subPaths = mutableListOf<String>()
-	val subPathInfos  = mutableListOf<ParadoxPropertyPathInfo>()
+	val subPathInfos = mutableListOf<ParadoxPropertyPathInfo>()
 	var current: PsiElement = element
 	do {
 		if(current is ParadoxDefinitionProperty) {
 			val definitionInfo = current.paradoxDefinitionInfo
 			val name = current.name ?: return null
 			if(definitionInfo != null) {
-				val propertiesCardinality = current.properties.groupAndCountBy { it.name }
-				val path = ParadoxPropertyPath(subPaths,subPathInfos)
+				val propertiesCardinality = current.properties.groupAndCountBy { it.name.lowercase() } //这里名字要忽略大小写
+				val path = ParadoxPropertyPath(subPaths, subPathInfos)
 				return ParadoxDefinitionPropertyInfo(name, path, propertiesCardinality, definitionInfo)
 			}
 			subPaths.add(0, name)
@@ -358,7 +358,7 @@ fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPropertyPath? {
 		if(maxDepth != -1 && maxDepth < depth) return null
 		current = current.parent ?: break
 	}
-	return ParadoxPropertyPath(subPaths,subPathInfos)
+	return ParadoxPropertyPath(subPaths, subPathInfos)
 }
 
 val ParadoxLocalisationProperty.paradoxLocalisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)
@@ -397,7 +397,7 @@ fun ParadoxLocalisationProperty.isLocalisationSynced(): Boolean {
 	return this.paradoxFileInfo?.path?.root == "localisation_synced"
 }
 
-fun PsiElement.isQuoted():Boolean{
+fun PsiElement.isQuoted(): Boolean {
 	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
 }
 
@@ -438,13 +438,26 @@ fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): L
 /**
  * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
  */
-fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinitionProperty(skipThis: Boolean = false): ParadoxDefinitionProperty? {
 	var current: PsiElement = this
+	var doSkipThis = skipThis
 	do {
 		if(current is ParadoxScriptRootBlock) {
-			return current.parent as ParadoxDefinitionProperty
+			val result = current.parent ?: break
+			if(doSkipThis) {
+				doSkipThis = false
+				current = result
+				continue
+			}
+			return result as ParadoxDefinitionProperty
 		} else if(current is ParadoxScriptBlock) {
-			return current.parent.parent as ParadoxDefinitionProperty
+			val result = current.parent.parent ?: break
+			if(doSkipThis){
+				doSkipThis = false
+				current = result
+				continue
+			}
+			return result as ParadoxDefinitionProperty
 		}
 		current = current.parent ?: break
 	} while(current !is PsiFile)
@@ -454,10 +467,16 @@ fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
 /**
  * 得到上一级definition，可能为自身，可能为null。
  */
-fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinition(skipThis: Boolean = false): ParadoxDefinitionProperty? {
 	var current: PsiElement = this
+	var doSkipThis = skipThis
 	do {
 		if(current is ParadoxDefinitionProperty) {
+			if(doSkipThis){
+				doSkipThis = false
+				current = current.parent?:break
+				continue
+			}
 			val definitionInfo = current.paradoxDefinitionInfo
 			if(definitionInfo != null) return current
 		}
@@ -650,7 +669,7 @@ fun hasLocalisation(
 	locale: ParadoxLocale?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-):Boolean{
+): Boolean {
 	return ParadoxLocalisationNameIndex.exists(name, locale, project, scope)
 }
 
@@ -721,9 +740,9 @@ fun findLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	maxSize:Int = -1
+	maxSize: Int = -1
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope,maxSize)
+	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope, maxSize)
 }
 
 /**
@@ -751,7 +770,7 @@ fun hasSyncedLocalisation(
 	locale: ParadoxLocale?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-):Boolean{
+): Boolean {
 	return ParadoxSyncedLocalisationNameIndex.exists(name, locale, project, scope)
 }
 
@@ -822,9 +841,9 @@ fun findSyncedLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	maxSize:Int = -1
+	maxSize: Int = -1
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findByKeyword(keyword, project, scope,maxSize)
+	return ParadoxSyncedLocalisationNameIndex.findByKeyword(keyword, project, scope, maxSize)
 }
 
 //Link Extensions

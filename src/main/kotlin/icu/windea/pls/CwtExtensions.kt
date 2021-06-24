@@ -524,7 +524,6 @@ private fun matchValue(expression: String, valueElement: ParadoxScriptValue, con
 //Add Completions Extensions
 
 fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet) {
-	//key: propertyKey | value
 	val project = propertyElement.project
 	val definitionPropertyInfo = propertyElement.paradoxDefinitionPropertyInfo ?: return
 	val path = definitionPropertyInfo.path
@@ -547,7 +546,7 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	}
 }
 
-fun addValueCompletions(keyElement:PsiElement,propertyElement:ParadoxScriptValue,result:CompletionResultSet){
+fun addValueCompletions(keyElement:PsiElement,propertyElement:ParadoxDefinitionProperty,result:CompletionResultSet){
 	
 }
 
@@ -677,6 +676,8 @@ private fun completeKey(expression: String, keyElement: PsiElement, propertyConf
 		}
 	}
 }
+
+//TODO 对于localisation或definition等类型的key不好获取已有属性存在数量，考虑换一种方式
 
 private fun completeValue(expression: String, valueElement: PsiElement, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
 	val (expressionType, expressionValue) = expression.resolveValueExpression()
@@ -812,33 +813,33 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 }
 
 inline fun completeIfNeed(name: String, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
 	val count = propertyConfig.cardinality?.max
-	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name] ?: 0) {
+	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(names: List<String>, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
 	val count = propertyConfig.cardinality?.max
-	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }) {
+	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0 }) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(name: String, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
 	val count = valueConfig.cardinality?.max
-	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name] ?: 0) {
+	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(names: List<String>, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
 	val count = valueConfig.cardinality?.max
-	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }) {
+	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0 }) {
 		action()
 	}
 }
