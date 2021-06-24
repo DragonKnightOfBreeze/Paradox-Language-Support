@@ -8,12 +8,12 @@ import icu.windea.pls.cwt.psi.*
 data class CwtDefinitionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
-	val propertiesConfig: List<CwtPropertyConfig>,
+	val propertyConfigs: List<CwtPropertyConfig>,
 	val subtypePropertiesConfig: Map<String, List<CwtPropertyConfig>>
 ) : CwtConfig<CwtProperty> {
 	fun mergeConfig(subtypes: List<String>): List<CwtPropertyConfig> {
 		val result = mutableListOf<CwtPropertyConfig>()
-		result.addAll(propertiesConfig)
+		result.addAll(propertyConfigs)
 		for((k, v) in subtypePropertiesConfig) {
 			//这里的k可以是!typeName, !typeName
 			if(matchesSubtype(k, subtypes)) {
@@ -26,7 +26,7 @@ data class CwtDefinitionConfig(
 	fun mergeAndDistinctConfig(subtypes: List<String>): List<CwtPropertyConfig> {
 		val keys = hashSetOf<String>()
 		val result = mutableListOf<CwtPropertyConfig>()
-		for(c in propertiesConfig) {
+		for(c in propertyConfigs) {
 			if(keys.add(c.key)) result.add(c)
 		}
 		for((k, v) in subtypePropertiesConfig) {

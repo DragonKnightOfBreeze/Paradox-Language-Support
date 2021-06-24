@@ -229,7 +229,7 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 
 //这个方法有可能导致ProcessCanceledException，因为调用element.name导致！
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	//NOTE cwt文件中定义的definition的minDepth是4（跳过3个rootKey）
+	//NOTE cwt文件中定义的definition的properyPath的minDepth是4（跳过3个rootKey）
 	val propertyPath = element.resolvePropertyPath(4) ?: return null
 	val fileInfo = element.paradoxFileInfo ?: return null
 	val path = fileInfo.path
@@ -253,6 +253,7 @@ private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): Par
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	//注意这里要获得的definitionProperty可能是scriptFile也可能是scriptProperty
 	val subPaths = mutableListOf<String>()
+	val subPathInfos  = mutableListOf<ParadoxPropertyPathInfo>()
 	var current: PsiElement = element
 	do {
 		if(current is ParadoxDefinitionProperty) {
@@ -260,7 +261,7 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 			val name = current.name ?: return null
 			if(definitionInfo != null) {
 				val propertiesCardinality = current.properties.groupAndCountBy { it.name }
-				val path = ParadoxPath(subPaths)
+				val path = ParadoxPropertyPath(subPaths,subPathInfos)
 				return ParadoxDefinitionPropertyInfo(name, path, propertiesCardinality, definitionInfo)
 			}
 			subPaths.add(0, name)
@@ -340,8 +341,9 @@ fun PsiElement.resolvePath(): ParadoxPath? {
 	return if(subPaths.isEmpty()) null else ParadoxPath(subPaths)
 }
 
-fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPath? {
+fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPropertyPath? {
 	val subPaths = mutableListOf<String>()
+	val subPathInfos = emptyList<ParadoxPropertyPathInfo>() //TODO 目前不需要获取
 	var current = this
 	var depth = 0
 	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
@@ -356,7 +358,7 @@ fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPath? {
 		if(maxDepth != -1 && maxDepth < depth) return null
 		current = current.parent ?: break
 	}
-	return ParadoxPath(subPaths)
+	return ParadoxPropertyPath(subPaths,subPathInfos)
 }
 
 val ParadoxLocalisationProperty.paradoxLocalisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)

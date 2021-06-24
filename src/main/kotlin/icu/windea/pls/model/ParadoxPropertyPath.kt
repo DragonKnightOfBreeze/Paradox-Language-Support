@@ -1,15 +1,14 @@
 package icu.windea.pls.model
 
-class ParadoxPath(
-	val subPaths:List<String>
+class ParadoxPropertyPath(
+	val subPaths:List<String>,
+	val subPathInfos:List<ParadoxPropertyPathInfo>
 ):Iterable<String>{
 	val length = subPaths.size
 	val parentSubPaths = subPaths.dropLast(1)
 	val path = subPaths.joinToString("/")
 	val parent = parentSubPaths.joinToString("/")
-	val root = parentSubPaths.firstOrNull().orEmpty()
-	val fileName = subPaths.lastOrNull().orEmpty()
-	val fileExtension = fileName.substringAfterLast('.')
+	val originalPath = subPathInfos.joinToString(""){ if(it.quoted) "\"${it.value}\"" else it.value }
 	
 	fun isEmpty() :Boolean{
 		return length == 0
@@ -20,14 +19,14 @@ class ParadoxPath(
 	}
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxPath && path == other.path
+		return this === other || other is ParadoxPropertyPath && originalPath == other.originalPath
 	}
 	
 	override fun hashCode(): Int {
-		return path.hashCode()
+		return originalPath.hashCode()
 	}
 	
 	override fun toString(): String {
-		return path
+		return originalPath
 	}
 }

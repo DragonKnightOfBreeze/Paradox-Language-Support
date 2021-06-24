@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 
 //Constants
 
-private val separatorChars = charArrayOf('=','<','>','!')
+private val separatorChars = charArrayOf('=', '<', '>', '!')
 
 private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
 	//如果后面没有分隔符，则要加上等号，并且根据代码格式设置来判断是否加上等号周围的空格
@@ -23,8 +23,8 @@ private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ -
 	val charsLength = chars.length
 	val oldOffset = editor.selectionModel.selectionEnd
 	var offset = oldOffset
-	while(offset < charsLength && chars[offset].isWhitespace()){
-		offset ++
+	while(offset < charsLength && chars[offset].isWhitespace()) {
+		offset++
 	}
 	if(offset < charsLength && chars[offset] !in separatorChars) {
 		val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
@@ -189,69 +189,91 @@ fun String.resolveValueExpression(): CwtValueExpression {
 
 //Match Extensions
 
-/**
- * 根据cwtConfigProperty配置对scriptProperty进行匹配。
- */
-fun matchProperty(element: ParadoxDefinitionProperty, elementConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
-	val propertiesConfig = elementConfig.properties.orEmpty() //不应该为null，转为emptyList
-	if(propertiesConfig.isEmpty()) return true //config为空表示匹配
-	val properties = element.properties
-	return doMatchProperties(properties, propertiesConfig, configGroup)
-}
-
-private fun doMatchProperties(properties: List<ParadoxScriptProperty>, propertiesConfig: List<CwtPropertyConfig>, configGroup: CwtConfigGroup): Boolean {
-	//注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
-	//注意：这里只兼容连续的相同key的propConfig，重复的情况下只有其中一个匹配即可
-	//递归对内容进行匹配
-	var tempConfigKey = ""
-	var tempResult = true
-	for(propertyConfig in propertiesConfig) {
-		//如果上一个配置名字相同但不匹配，这一次继续匹配，不中断，如果匹配的话那么无论如何都直接跳过，不再匹配
-		if(tempConfigKey.isNotEmpty()) {
-			if(!tempResult) {
-				if(tempConfigKey != propertyConfig.key) return false
-			} else {
-				continue
-			}
+fun matchDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
+	when {
+		propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {
+			val propConfigs = propertyConfig.properties.orEmpty() //不应该为null，转为emptyList
+			val props = propertyElement.properties
+			if(!matchProperties(props, propConfigs, configGroup)) return false //继续匹配
 		}
-		val prop = properties.find {
-			//propertyConfig.key可以是一个表达式
-			matchKey(propertyConfig.key, it.propertyKey, configGroup)
-		}
-		if(prop == null) {
-			//如果对应的prop不存在但propConfig是可选的，那么跳过，否则说明不匹配
-			//如果对应的propConfig有多个，这些都应该是可选的，这里不验证
-			return propertyConfig.cardinality?.min == 0
-		} else {
-			//这里的propConfig可能有多个匹配的！
-			tempConfigKey = propertyConfig.key
-			tempResult = doMatchProperty(prop, propertyConfig, configGroup)
+		propertyConfig.values != null && propertyConfig.values.isNotEmpty() -> {
+			val valueConfigs = propertyConfig.values.orEmpty() //不应该为null，转为emptyList
+			val values = propertyElement.values
+			if(!matchValues(values, valueConfigs, configGroup)) return false //继续匹配
 		}
 	}
-	return tempResult
+	return true
 }
 
-private fun doMatchProperty(property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
-	val propValue = property.propertyValue?.value
+private fun matchProperties(propertyElements: List<ParadoxScriptProperty>, propertyConfigs: List<CwtPropertyConfig>, configGroup: CwtConfigGroup): Boolean {
+	//properties为空的情况系认为匹配
+	if(propertyElements.isEmpty()) return true
+	
+	//要求其中所有的value的值在最终都会小于等于0
+	val minMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.cardinality?.min ?: 1 }) //默认为1
+	
+	//注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
+	for(property in propertyElements) {
+		val propertyKey = property.propertyKey
+		val propConfigs = propertyConfigs.filter { propConfig -> matchKey(propConfig.key, propertyKey, configGroup) }
+		//如果没有匹配的规则则忽略
+		if(propConfigs.isNotEmpty()) {
+			val matched = propConfigs.any { propConfig ->
+				val matched = matchProperty(property, propConfig, configGroup)
+				if(matched) minMap.compute(propConfig.key) { _, v -> if(v == null) 1 else v - 1 }
+				matched
+			}
+			if(!matched) return false
+		}
+	}
+	
+	return minMap.values.any { it <= 0 }
+}
+
+private fun matchValues(valueElements: List<ParadoxScriptValue>, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup): Boolean {
+	//values为空的情况下认为匹配 
+	if(valueElements.isEmpty()) return true
+	
+	//要求其中所有的value的值在最终都会小于等于0
+	val minMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.cardinality?.min ?: 1 }) //默认为1
+	
+	for(value in valueElements) {
+		//如果没有匹配的规则则认为不匹配
+		val matched = valueConfigs.any { valueConfig ->
+			val matched = matchValue(valueConfig.value, value, configGroup)
+			if(matched) minMap.compute(valueConfig.value) { _, v -> if(v == null) 1 else v - 1 }
+			matched
+		}
+		if(!matched) return false
+	}
+	
+	return minMap.values.any { it <= 0 }
+}
+
+fun matchProperty(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
+	val propValue = propertyElement.propertyValue?.value
 	if(propValue == null) {
 		//对于propertyValue同样这样判断（可能脚本没有写完）
 		return propertyConfig.cardinality?.min == 0
 	} else {
 		when {
-			//布尔值要完全匹配
+			//匹配布尔值
 			propertyConfig.booleanValue != null -> {
 				if(propValue !is ParadoxScriptBoolean || propValue.booleanValue != propertyConfig.booleanValue) return false
 			}
-			//块（数组/对象）需要匹配
-			propertyConfig.properties != null && propertyConfig.values != null -> {
-				if(propValue !is ParadoxScriptBlock) return false
-				//如果这里的propsConfig是空的，那么就跳过继续匹配
-				val propsConfig = propertyConfig.properties.orEmpty() //不应该为null，转为emptyList
-				if(propsConfig.isEmpty()) return true
-				val props = (property.propertyValue?.value as? ParadoxScriptBlock)?.propertyList ?: return true //脚本未写完
-				//继续递归匹配
-				if(!doMatchProperties(props, propsConfig, configGroup)) return false
+			//匹配属性列表
+			propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {
+				val propConfigs = propertyConfig.properties.orEmpty() //不应该为null，转为emptyList
+				val props = propertyElement.properties
+				if(!matchProperties(props, propConfigs, configGroup)) return false //继续匹配
 			}
+			//匹配值列表
+			propertyConfig.values != null && propertyConfig.values.isNotEmpty() -> {
+				val valueConfigs = propertyConfig.values.orEmpty() //不应该为null，转为emptyList
+				val values = propertyElement.values
+				if(!matchValues(values, valueConfigs, configGroup)) return false //继续匹配
+			}
+			//匹配值
 			propertyConfig.stringValue != null -> {
 				//propertyConfig.stringValue可以是一个表达式
 				return matchValue(propertyConfig.stringValue, propValue, configGroup)
@@ -261,59 +283,64 @@ private fun doMatchProperty(property: ParadoxScriptProperty, propertyConfig: Cwt
 	return true
 }
 
-
-fun matchKey(expression: String, key: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): Boolean {
+private fun matchKey(expression: String, keyElement: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): Boolean {
+	//这里的key=keyElement.value, quoted=keyElement.isQuoted()使用懒加载
 	val (expressionType, expressionValue) = expression.resolveKeyExpression()
 	return when(expressionType) {
 		CwtKeyExpressionType.Any -> true
 		CwtKeyExpressionType.Bool -> {
-			val value = key.value
-			value.isBooleanYesNo()
+			val key = keyElement.value
+			key.isBooleanYesNo()
 		}
 		CwtKeyExpressionType.Int -> {
-			key.value.isInt()
+			val key = keyElement.value
+			key.isInt()
 		}
 		CwtKeyExpressionType.IntExpression -> {
-			val value = key.value
-			value.isInt() && expressionValue?.toIntRange().let { it == null || value.toInt() in it }
+			val key = keyElement.value
+			key.isInt() && expressionValue?.toIntRange().let { it == null || key.toInt() in it }
 		}
 		CwtKeyExpressionType.Float -> {
-			key.value.isFloat()
+			val key = keyElement.value
+			key.isFloat()
 		}
 		CwtKeyExpressionType.FloatExpression -> {
-			val value = key.value
-			value.isFloat() && expressionValue?.toFloatRange().let { it == null || value.toFloat() in it }
+			val key = keyElement.value
+			key.isFloat() && expressionValue?.toFloatRange().let { it == null || key.toFloat() in it }
 		}
 		CwtKeyExpressionType.Scalar -> {
-			key.value.isString()
+			val key = keyElement.value
+			key.isString()
 		}
 		CwtKeyExpressionType.Localisation -> {
-			hasLocalisation(key.value, null, configGroup.project)
+			val key = keyElement.value
+			hasLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpressionType.SyncedLocalisation -> {
-			hasSyncedLocalisation(key.value, null, configGroup.project)
+			val key = keyElement.value
+			hasSyncedLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpressionType.InlineLocalisation -> {
-			if(key.isQuoted()) true else hasLocalisation(key.value, null, configGroup.project)
+			val quoted = keyElement.isQuoted()
+			if(quoted) return true
+			val key = keyElement.value
+			hasLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpressionType.TypeExpression -> {
-			run {
-				val typeExpression = expressionValue ?: return@run false
-				hasDefinition(key.value, typeExpression, configGroup.project)
-			}
+			val typeExpression = expressionValue ?: return false
+			val name = keyElement.value
+			hasDefinition(name, typeExpression, configGroup.project)
 		}
 		CwtKeyExpressionType.TypeExpressionString -> {
-			run {
-				val typeExpression = expressionValue ?: return@run false
-				hasDefinition(key.value, typeExpression, configGroup.project)
-			}
+			val typeExpression = expressionValue ?: return false
+			val key = keyElement.value
+			hasDefinition(key, typeExpression, configGroup.project)
 		}
 		CwtKeyExpressionType.EnumExpression -> {
-			run {
-				val enumExpression = expressionValue ?: return@run false
-				val enumValues = configGroup.enums[enumExpression]?.values ?: return@run false
-				key.value in enumValues
-			}
+			val enumExpression = expressionValue ?: return false
+			val enumValues = configGroup.enums[enumExpression]?.values ?: return false
+			val key = keyElement.value
+			key in enumValues
 		}
 		CwtKeyExpressionType.ScopeExpression -> {
 			true //TODO
@@ -322,48 +349,106 @@ fun matchKey(expression: String, key: ParadoxScriptPropertyKey, configGroup: Cwt
 			true //TODO
 		}
 		CwtKeyExpressionType.Constant -> {
-			key.value == expressionValue
+			val key = keyElement.value
+			key == expressionValue
 		}
 	}
 }
 
-fun matchValue(expression: String, value: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
+private fun matchKey(expression: String, key: String, quoted:Boolean,configGroup: CwtConfigGroup): Boolean {
+	val (expressionType, expressionValue) = expression.resolveKeyExpression()
+	return when(expressionType) {
+		CwtKeyExpressionType.Any -> true
+		CwtKeyExpressionType.Bool -> {
+			key.isBooleanYesNo()
+		}
+		CwtKeyExpressionType.Int -> {
+			key.isInt()
+		}
+		CwtKeyExpressionType.IntExpression -> {
+			key.isInt() && expressionValue?.toIntRange().let { it == null || key.toInt() in it }
+		}
+		CwtKeyExpressionType.Float -> {
+			key.isFloat()
+		}
+		CwtKeyExpressionType.FloatExpression -> {
+			key.isFloat() && expressionValue?.toFloatRange().let { it == null || key.toFloat() in it }
+		}
+		CwtKeyExpressionType.Scalar -> {
+			key.isString()
+		}
+		CwtKeyExpressionType.Localisation -> {
+			hasLocalisation(key, null, configGroup.project)
+		}
+		CwtKeyExpressionType.SyncedLocalisation -> {
+			hasSyncedLocalisation(key, null, configGroup.project)
+		}
+		CwtKeyExpressionType.InlineLocalisation -> {
+			if(quoted) return true 
+			hasLocalisation(key, null, configGroup.project)
+		}
+		CwtKeyExpressionType.TypeExpression -> {
+			val typeExpression = expressionValue ?: return false
+			hasDefinition(key, typeExpression, configGroup.project)
+		}
+		CwtKeyExpressionType.TypeExpressionString -> {
+			val typeExpression = expressionValue ?: return false
+			hasDefinition(key, typeExpression, configGroup.project)
+		}
+		CwtKeyExpressionType.EnumExpression -> {
+			val enumExpression = expressionValue ?: return false
+			val enumValues = configGroup.enums[enumExpression]?.values ?: return false
+			key in enumValues
+		}
+		CwtKeyExpressionType.ScopeExpression -> {
+			true //TODO
+		}
+		CwtKeyExpressionType.AliasNameExpression -> {
+			true //TODO
+		}
+		CwtKeyExpressionType.Constant -> {
+			key == expressionValue
+		}
+	}
+}
+
+private fun matchValue(expression: String, valueElement: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
 	val (expressionType, expressionValue) = expression.resolveValueExpression()
 	return when(expressionType) {
 		CwtValueExpressionType.Any -> true
 		CwtValueExpressionType.Bool -> {
-			value is ParadoxScriptBoolean
+			valueElement is ParadoxScriptBoolean
 		}
 		CwtValueExpressionType.Int -> {
-			value is ParadoxScriptInt
+			valueElement is ParadoxScriptInt
 		}
 		CwtValueExpressionType.IntExpression -> {
-			value is ParadoxScriptInt && expressionValue?.toIntRange().let { it == null || value.intValue in it }
+			valueElement is ParadoxScriptInt && expressionValue?.toIntRange().let { it == null || valueElement.intValue in it }
 		}
 		CwtValueExpressionType.Float -> {
-			value is ParadoxScriptFloat
+			valueElement is ParadoxScriptFloat
 		}
 		CwtValueExpressionType.FloatExpression -> {
-			value is ParadoxScriptFloat && expressionValue?.toFloatRange().let { it == null || value.floatValue in it }
+			valueElement is ParadoxScriptFloat && expressionValue?.toFloatRange().let { it == null || valueElement.floatValue in it }
 		}
 		CwtValueExpressionType.Scalar -> {
-			value is ParadoxScriptString
+			valueElement is ParadoxScriptString
 		}
 		CwtValueExpressionType.PercentageField -> {
-			value is ParadoxScriptString && value.stringValue.isPercentageField()
+			valueElement is ParadoxScriptString && valueElement.stringValue.isPercentageField()
 		}
 		CwtValueExpressionType.ColorField -> {
-			value is ParadoxScriptString && value.stringValue.isColorField()
+			valueElement is ParadoxScriptString && valueElement.stringValue.isColorField()
 		}
 		CwtValueExpressionType.Localisation -> {
-			value is ParadoxScriptString && hasLocalisation(value.stringValue, null, configGroup.project)
+			valueElement is ParadoxScriptString && hasLocalisation(valueElement.stringValue, null, configGroup.project)
 		}
 		CwtValueExpressionType.SyncedLocalisation -> {
-			value is ParadoxScriptString && hasSyncedLocalisation(value.stringValue, null, configGroup.project)
+			valueElement is ParadoxScriptString && hasSyncedLocalisation(valueElement.stringValue, null, configGroup.project)
 		}
 		CwtValueExpressionType.InlineLocalisation -> {
-			value is ParadoxScriptString && run {
-				if(value.isQuoted()) true else hasLocalisation(value.stringValue, null, configGroup.project)
+			valueElement is ParadoxScriptString && run {
+				if(valueElement.isQuoted()) true else hasLocalisation(valueElement.stringValue, null, configGroup.project)
 			}
 		}
 		CwtValueExpressionType.FilePath -> {
@@ -376,25 +461,25 @@ fun matchValue(expression: String, value: ParadoxScriptValue, configGroup: CwtCo
 			true //TODO
 		}
 		CwtValueExpressionType.DateField -> {
-			value is ParadoxScriptString && value.stringValue.isDateField()
+			valueElement is ParadoxScriptString && valueElement.stringValue.isDateField()
 		}
 		CwtValueExpressionType.TypeExpression -> {
-			value is ParadoxScriptString && run {
+			valueElement is ParadoxScriptString && run {
 				val typeExpression = expressionValue ?: return@run false
-				hasDefinition(value.stringValue, typeExpression, configGroup.project)
+				hasDefinition(valueElement.stringValue, typeExpression, configGroup.project)
 			}
 		}
 		CwtValueExpressionType.TypeExpressionString -> {
-			value is ParadoxScriptString && run {
+			valueElement is ParadoxScriptString && run {
 				val typeExpression = expressionValue ?: return@run false
-				hasDefinition(value.stringValue, typeExpression, configGroup.project)
+				hasDefinition(valueElement.stringValue, typeExpression, configGroup.project)
 			}
 		}
 		CwtValueExpressionType.EnumExpression -> {
-			value is ParadoxScriptString && run {
+			valueElement is ParadoxScriptString && run {
 				val enumExpression = expressionValue ?: return@run false
 				val enumValues = configGroup.enums[enumExpression]?.values ?: return@run false
-				value.stringValue in enumValues
+				valueElement.stringValue in enumValues
 			}
 		}
 		CwtValueExpressionType.ScopeExpression -> {
@@ -404,16 +489,16 @@ fun matchValue(expression: String, value: ParadoxScriptValue, configGroup: CwtCo
 			true //TODO
 		}
 		CwtValueExpressionType.VariableField -> {
-			value is ParadoxScriptString && value.stringValue.isVariableField() //TODO
+			valueElement is ParadoxScriptString && valueElement.stringValue.isVariableField() //TODO
 		}
 		CwtValueExpressionType.VariableFieldExpression -> {
-			value is ParadoxScriptString && value.stringValue.isVariableField() //TODO
+			valueElement is ParadoxScriptString && valueElement.stringValue.isVariableField() //TODO
 		}
 		CwtValueExpressionType.IntVariableField -> {
-			value is ParadoxScriptString && value.stringValue.isVariableField() //TODO
+			valueElement is ParadoxScriptString && valueElement.stringValue.isVariableField() //TODO
 		}
 		CwtValueExpressionType.IntVariableFieldExpression -> {
-			value is ParadoxScriptString && value.stringValue.isVariableField() //TODO
+			valueElement is ParadoxScriptString && valueElement.stringValue.isVariableField() //TODO
 		}
 		CwtValueExpressionType.ValueField -> {
 			true //TODO
@@ -431,16 +516,17 @@ fun matchValue(expression: String, value: ParadoxScriptValue, configGroup: CwtCo
 			true //TODO
 		}
 		CwtValueExpressionType.Constant -> {
-			value is ParadoxScriptString && value.stringValue == expressionValue
+			valueElement is ParadoxScriptString && valueElement.stringValue == expressionValue
 		}
 	}
 }
 
 //Add Completions Extensions
 
-fun addKeyCompletions(key: PsiElement, property: ParadoxDefinitionProperty, result: CompletionResultSet) {
-	val project = property.project
-	val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo ?: return
+fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet) {
+	//key: propertyKey | value
+	val project = propertyElement.project
+	val definitionPropertyInfo = propertyElement.paradoxDefinitionPropertyInfo ?: return
 	val path = definitionPropertyInfo.path
 	val definitionInfo = definitionPropertyInfo.definitionInfo
 	val type = definitionInfo.type
@@ -448,24 +534,33 @@ fun addKeyCompletions(key: PsiElement, property: ParadoxDefinitionProperty, resu
 	val gameType = definitionInfo.fileInfo.gameType
 	val configGroup = getConfig(project).getValue(gameType)
 	
-	//propertiesConfig需要经过合并且确保名字唯一
-	val propertiesConfig = configGroup.definitions.getValue(type).mergeAndDistinctConfig(subtypes)
+	//rootPropertiesConfig需要经过合并且确保名字唯一
+	val rootPropertiesConfig = configGroup.definitions.getValue(type).mergeAndDistinctConfig(subtypes)
 	
-	//如果path是空的，表示需要补全definition的顶级属性		
-	if(path.isEmpty()) {
-		doAddRootKeyCompletions(key, propertiesConfig, definitionPropertyInfo, configGroup, result)
+	//如果path是空的，表示需要补全definition的顶级属性
+	val propertyConfigs = getSubPropertiesConfig(rootPropertiesConfig,path,configGroup)
+	if(propertyConfigs.isNotEmpty()) {
+		for(propertyConfig in propertyConfigs) {
+			//propertyConfig.key可以是一个表达式
+			completeKey(propertyConfig.key, keyElement, propertyConfig, definitionPropertyInfo, configGroup, result)
+		}
 	}
 }
 
-private fun doAddRootKeyCompletions(key: PsiElement, propertiesConfig: List<CwtPropertyConfig>, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
-	for(propertyConfig in propertiesConfig) {
-		//propertyConfig.key可以是一个表达式
-		completeKey(propertyConfig.key, key, propertyConfig, definitionPropertyInfo, configGroup, result)
-	}
+fun addValueCompletions(keyElement:PsiElement,propertyElement:ParadoxScriptValue,result:CompletionResultSet){
+	
 }
 
+private fun getSubPropertiesConfig(propertyConfigs: List<CwtPropertyConfig>, path: ParadoxPropertyPath, configGroup: CwtConfigGroup):List<CwtPropertyConfig>{
+	if(path.isEmpty()) return propertyConfigs
+	var result = propertyConfigs
+	for((key,quoted) in path.subPathInfos) {
+		result = result.find { matchKey(it.key,key,quoted,configGroup) }?.properties ?:return emptyList()
+	}
+	return result
+}
 
-fun completeKey(expression: String, key: PsiElement, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+private fun completeKey(expression: String, keyElement: PsiElement, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
 	val (expressionType, expressionValue) = expression.resolveKeyExpression()
 	when(expressionType) {
 		CwtKeyExpressionType.Any -> pass()
@@ -477,7 +572,7 @@ fun completeKey(expression: String, key: PsiElement, propertyConfig: CwtProperty
 		CwtKeyExpressionType.Scalar -> pass()
 		CwtKeyExpressionType.Localisation -> {
 			//NOTE 总是提示，不好统计数量
-			val keyword = key.keyword
+			val keyword = keyElement.keyword
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -491,7 +586,7 @@ fun completeKey(expression: String, key: PsiElement, propertyConfig: CwtProperty
 		}
 		CwtKeyExpressionType.SyncedLocalisation -> {
 			//NOTE 总是提示，不好统计数量
-			val keyword = key.keyword
+			val keyword = keyElement.keyword
 			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -504,9 +599,9 @@ fun completeKey(expression: String, key: PsiElement, propertyConfig: CwtProperty
 			}
 		}
 		CwtKeyExpressionType.InlineLocalisation -> {
-			if(key.isQuoted()) return
+			if(keyElement.isQuoted()) return
 			//NOTE 总是提示，不好统计数量
-			val keyword = key.keyword
+			val keyword = keyElement.keyword
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -583,7 +678,7 @@ fun completeKey(expression: String, key: PsiElement, propertyConfig: CwtProperty
 	}
 }
 
-fun completeValue(expression: String, value: PsiElement, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+private fun completeValue(expression: String, valueElement: PsiElement, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
 	val (expressionType, expressionValue) = expression.resolveValueExpression()
 	when(expressionType) {
 		CwtValueExpressionType.Any -> pass()
@@ -597,7 +692,7 @@ fun completeValue(expression: String, value: PsiElement, valueConfig: CwtValueCo
 		CwtValueExpressionType.ColorField -> pass()
 		CwtValueExpressionType.Localisation -> {
 			//NOTE 总是提示，不好统计数量
-			val keyword = value.keyword
+			val keyword = valueElement.keyword
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -611,7 +706,7 @@ fun completeValue(expression: String, value: PsiElement, valueConfig: CwtValueCo
 		}
 		CwtValueExpressionType.SyncedLocalisation -> {
 			//NOTE 总是提示，不好统计数量
-			val keyword = value.keyword
+			val keyword = valueElement.keyword
 			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -624,9 +719,9 @@ fun completeValue(expression: String, value: PsiElement, valueConfig: CwtValueCo
 			}
 		}
 		CwtValueExpressionType.InlineLocalisation -> {
-			if(value.isQuoted()) return
+			if(valueElement.isQuoted()) return
 			//NOTE 总是提示，不好统计数量
-			val keyword = value.keyword
+			val keyword = valueElement.keyword
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -717,37 +812,33 @@ fun completeValue(expression: String, value: PsiElement, valueConfig: CwtValueCo
 }
 
 inline fun completeIfNeed(name: String, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未指定最大数量则不忽略，至少对于alias是这样的）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
 	val count = propertyConfig.cardinality?.max
-	val currentCount = definitionPropertyInfo.propertiesCardinality[name] ?: 0
-	if(count != null && count > currentCount) {
+	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name] ?: 0) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(names: List<String>, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未指定最大数量则不忽略，至少对于alias是这样的）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
 	val count = propertyConfig.cardinality?.max
-	val currentCount = names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }
-	if(count != null && count > currentCount) {
+	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(name: String, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未指定最大数量则不忽略，至少对于alias是这样的）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
 	val count = valueConfig.cardinality?.max
-	val currentCount = definitionPropertyInfo.propertiesCardinality[name] ?: 0
-	if(count != null && count > currentCount) {
+	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name] ?: 0) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(names: List<String>, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未指定最大数量则不忽略，至少对于alias是这样的）
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略）
 	val count = valueConfig.cardinality?.max
-	val currentCount = names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }
-	if(count != null && count > currentCount) {
+	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name] ?: 0 }) {
 		action()
 	}
 }

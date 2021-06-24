@@ -437,7 +437,7 @@ class CwtConfigGroup(
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
 		val props = propertyConfig.properties ?: return null
-		val propertiesConfig = mutableListOf<CwtPropertyConfig>()
+		val propertyConfigs = mutableListOf<CwtPropertyConfig>()
 		val subtypePropertiesConfig = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
 		for(prop in props) {
 			//这里需要进行合并
@@ -445,19 +445,19 @@ class CwtConfigGroup(
 			if(subtypeName != null) {
 				val propProps = prop.properties
 				if(propProps != null) {
-					propertiesConfig.addAll(propProps)
+					propertyConfigs.addAll(propProps)
 				}
 			} else {
-				propertiesConfig.add(prop)
+				propertyConfigs.add(prop)
 			}
 		}
-		return CwtDefinitionConfig(propertyConfig.pointer, name, propertiesConfig, subtypePropertiesConfig)
+		return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfigs, subtypePropertiesConfig)
 	}
 	
 	/**
 	 * 根据指定的scriptProperty，匹配类型规则，得到对应的definitionInfo。
 	 */
-	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
 				return toDefinitionInfo(typeConfig, element, elementName, fileInfo)
@@ -469,7 +469,7 @@ class CwtConfigGroup(
 	/**
 	 * 判断
 	 */
-	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPath): Boolean {
+	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): Boolean {
 		//判断value是否是block
 		if(element.block == null) return false
 		
@@ -499,7 +499,7 @@ class CwtConfigGroup(
 		} else {
 			var skipResult = false
 			for(keys in skipRootKeyConfig) {
-				if(keys.relaxMatchesPath(propertyPath.parentsubPaths)) {
+				if(keys.relaxMatchesPath(propertyPath.parentSubPaths)) {
 					skipResult = true
 					break
 				}
@@ -544,7 +544,7 @@ class CwtConfigGroup(
 		}
 		//根据config对property进行内容匹配
 		val elementConfig = subtypeConfig.config
-		return matchProperty(element, elementConfig, this)
+		return matchDefinitionProperty(element, elementConfig, this)
 	}
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo {

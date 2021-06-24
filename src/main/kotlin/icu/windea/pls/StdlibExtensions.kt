@@ -125,6 +125,13 @@ fun String.toCapitalizedWords(): String {
 	}
 }
 
+/**
+ * 判断指定的关键词是否匹配当前字符串。（关键词中的每个字符是否按顺序被当前字符串包含）。
+ */
+fun String.fuzzyMatches(keyword:String,ignoreCase: Boolean = false):Boolean{
+	TODO()
+}
+
 fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList<Int> {
 	val indices = mutableListOf<Int>()
 	var lastIndex = indexOf(char, 0, ignoreCase)

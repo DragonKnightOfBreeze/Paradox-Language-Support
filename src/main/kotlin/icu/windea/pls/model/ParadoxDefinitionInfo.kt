@@ -31,8 +31,8 @@ data class ParadoxDefinitionInfo(
 		}
 	}
 	val typePointer = typeConfig.pointer
-	val subtypesPointer = subtypesConfig.mapNotNull { it.pointer }
-	val typesPointer = if(typePointer == null) subtypesPointer else mutableListOf(typePointer).apply { addAll(subtypesPointer) }
+	val subtypesPointer = subtypesConfig.map { it.pointer }
+	val typesPointer = mutableListOf(typePointer).apply { addAll(subtypesPointer) }
 	
 	val localisationNames = localisation.map { it.name }
 	val localisationKeyNames = localisation.map { it.keyName }
