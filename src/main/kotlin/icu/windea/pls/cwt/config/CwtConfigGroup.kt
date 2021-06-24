@@ -472,7 +472,14 @@ class CwtConfigGroup(
 	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): Boolean {
 		//判断value是否是block
 		if(element.block == null) return false
-		
+		//判断element是否需要是scriptFile还是scriptProperty
+		//TODO nameFromFile和typePerFile有什么区别？
+		val nameFromFile = typeConfig.nameFromFile || typeConfig.typePerFile
+		if(nameFromFile){
+			if(element !is ParadoxScriptFile) return false
+		}else{
+			if(element !is ParadoxScriptProperty) return false
+		}
 		//判断path是否匹配
 		val pathConfig = typeConfig.path ?: return false
 		val pathStrictConfig = typeConfig.pathStrict
@@ -495,7 +502,7 @@ class CwtConfigGroup(
 		//skip_root_key可以为列表（多级），可以重复（其中之一匹配即可）
 		val skipRootKeyConfig = typeConfig.skipRootKey //String? | "any"
 		if(skipRootKeyConfig.isEmpty()) {
-			if(propertyPath.length != 1) return false
+			if(propertyPath.length > 1) return false
 		} else {
 			var skipResult = false
 			for(keys in skipRootKeyConfig) {
@@ -526,7 +533,6 @@ class CwtConfigGroup(
 			val matchesAny = result.any { it.name in onlyIfNotConfig }
 			if(matchesAny) return false
 		}
-		
 		//如果type_key_filter存在，则过滤key
 		val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
 		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
