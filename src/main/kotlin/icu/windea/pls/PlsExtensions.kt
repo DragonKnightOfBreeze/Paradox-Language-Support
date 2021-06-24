@@ -18,6 +18,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import org.jetbrains.annotations.*
+import java.util.*
 
 //Misc Extensions
 
@@ -46,14 +47,14 @@ fun inferParadoxLocale() = when(System.getProperty("user.language")) {
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
 fun getDocTextFromPreviousComment(element: PsiElement): String {
 	//我们认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释，但这并非文档注释的全部
-	val lines = mutableListOf<String>()
+	val lines = LinkedList<String>()
 	var prevElement = element.prevSibling ?: element.parent?.prevSibling
 	while(prevElement != null) {
 		val text = prevElement.text
 		if(prevElement !is PsiWhiteSpace) {
 			if(!isPreviousComment(prevElement)) break
 			val documentText = text.trimStart('#').trim().escapeXml()
-			lines.add(0, documentText)
+			lines.addFirst(documentText)
 		} else {
 			if(text.containsBlankLine()) break
 		}
@@ -157,7 +158,8 @@ private fun doGetFileInfo(file: PsiFile): ParadoxFileInfo? {
 private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
 	val fileType = getFileType(file) ?: return null
 	val fileName = file.name
-	val subPaths = mutableListOf(fileName)
+	val subPaths = LinkedList<String>()
+	subPaths.addFirst(fileName)
 	var currentFile = file.parent
 	while(currentFile != null) {
 		val rootType = getRootType(currentFile)
@@ -167,7 +169,7 @@ private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
 			val gameType = getGameType(currentFile) ?: ParadoxGameType.defaultValue()
 			return ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 		}
-		subPaths.add(0, currentFile.name)
+		subPaths.addFirst(currentFile.name)
 		currentFile = currentFile.parent
 	}
 	return null
@@ -252,8 +254,8 @@ private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): Par
 
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	//注意这里要获得的definitionProperty可能是scriptFile也可能是scriptProperty
-	val subPaths = mutableListOf<String>()
-	val subPathInfos = mutableListOf<ParadoxPropertyPathInfo>()
+	val subPaths = LinkedList<String>()
+	val subPathInfos = LinkedList<ParadoxPropertyPathInfo>()
 	var current: PsiElement = element
 	do {
 		if(current is ParadoxDefinitionProperty) {
@@ -264,7 +266,8 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 				val path = ParadoxPropertyPath(subPaths, subPathInfos)
 				return ParadoxDefinitionPropertyInfo(name, path, propertiesCardinality, definitionInfo)
 			}
-			subPaths.add(0, name)
+			subPaths.addFirst(name)
+			subPathInfos.addFirst(ParadoxPropertyPathInfo(name,current.isQuoted()))
 		}
 		current = current.parent ?: break
 	} while(current !is PsiFile)
@@ -321,17 +324,17 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 }
 
 fun PsiElement.resolvePath(): ParadoxPath? {
-	val subPaths = mutableListOf<String>()
+	val subPaths = LinkedList<String>()
 	var current = this
 	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
 		when {
 			current is ParadoxScriptProperty -> {
-				subPaths.add(0, current.name)
+				subPaths.addFirst(current.name)
 			}
 			current is ParadoxScriptValue -> {
 				val parent = current.parent ?: break
 				if(parent is ParadoxScriptBlock) {
-					subPaths.add(0, parent.indexOfChild(current).toString())
+					subPaths.addFirst(parent.indexOfChild(current).toString())
 				}
 				current = parent
 			}
@@ -342,14 +345,14 @@ fun PsiElement.resolvePath(): ParadoxPath? {
 }
 
 fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPropertyPath? {
-	val subPaths = mutableListOf<String>()
+	val subPaths = LinkedList<String>()
 	val subPathInfos = emptyList<ParadoxPropertyPathInfo>() //TODO 目前不需要获取
 	var current = this
 	var depth = 0
 	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
 		when {
 			current is ParadoxScriptProperty -> {
-				subPaths.add(0, current.name)
+				subPaths.addFirst(current.name)
 				depth++
 			}
 			//忽略scriptValue

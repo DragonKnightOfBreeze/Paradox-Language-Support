@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
+import java.util.*
 
 @Suppress("UnstableApiUsage")
 class ParadoxFileTypeOverrider : FileTypeOverrider {
@@ -17,7 +18,8 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	override fun getOverriddenFileType(file: VirtualFile): FileType? {
 		val fileType = getFileType(file) ?: return null
 		val fileName = file.name
-		val subPaths = mutableListOf(fileName)
+		val subPaths = LinkedList<String>()
+		subPaths.addFirst(fileName)
 		var currentFile: VirtualFile? = file.parent
 		while(currentFile != null) {
 			//只有能够确定根目录类型的文件才会被解析
@@ -54,7 +56,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 					}
 				}
 			}
-			subPaths.add(0, currentFile.name)
+			subPaths.addFirst(currentFile.name)
 			currentFile = currentFile.parent
 		}
 		runCatching {

@@ -813,32 +813,36 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 }
 
 inline fun completeIfNeed(name: String, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
-	val count = propertyConfig.cardinality?.max
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未声明时也忽略），注意这里名字要忽略大小写
+	val cardinality = propertyConfig.cardinality?:return
+	val count = cardinality.max
 	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(names: List<String>, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
-	val count = propertyConfig.cardinality?.max
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未声明时也忽略），注意这里名字要忽略大小写
+	val cardinality = propertyConfig.cardinality?:return
+	val count = cardinality.max
 	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0 }) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(name: String, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
-	val count = valueConfig.cardinality?.max
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未声明时也忽略），注意这里名字要忽略大小写
+	val cardinality = valueConfig.cardinality?:return
+	val count = cardinality.max
 	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0) {
 		action()
 	}
 }
 
 inline fun completeIfNeed(names: List<String>, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未执行也忽略），注意这里名字要忽略大小写
-	val count = valueConfig.cardinality?.max
+	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未声明时也忽略），注意这里名字要忽略大小写
+	val cardinality = valueConfig.cardinality?:return
+	val count = cardinality.max
 	if(count == null || count > names.sumOf { name -> definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0 }) {
 		action()
 	}

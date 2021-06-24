@@ -54,13 +54,15 @@ class RangeExpression private constructor(expression: String) : AbstractExpressi
 			expression.first() == '~' -> {
 				val firstDotIndex = expression.indexOf('.')
 				min = expression.substring(1, firstDotIndex).toIntOrNull() ?: 0
-				max = expression.substring(firstDotIndex + 2).toIntOrNull() ?: 0
+				max = expression.substring(firstDotIndex + 2)
+					.let{ if(it.equals("inf",true)) null else it.toIntOrNull() ?: 0}
 				limitMax = true
 			}
 			else -> {
 				val firstDotIndex = expression.indexOf('.')
 				min = expression.substring(0, firstDotIndex).toIntOrNull() ?: 0
-				max = expression.substring(firstDotIndex + 2).toIntOrNull() ?: 0
+				max = expression.substring(firstDotIndex + 2)
+					.let{ if(it.equals("inf",true)) null else it.toIntOrNull() ?: 0}
 				limitMax = false
 			}
 		}
