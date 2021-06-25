@@ -2,47 +2,33 @@ package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.cwt.psi.*
+import java.util.WeakHashMap
 
 //TODO 这里排序可能出现问题
 
 data class CwtDefinitionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
-	val propertyConfigs: List<CwtPropertyConfig>,
-	val subtypePropertiesConfig: Map<String, List<CwtPropertyConfig>>
+	val config: List<Pair<String?,CwtPropertyConfig>>, //(subtypeExpression, propConfig)
 ) : CwtConfig<CwtProperty> {
+	//使用WeakHashMap - 减少内存占用
+	private val mergeConfigCache = WeakHashMap<String,List<CwtPropertyConfig>>()
+
 	fun mergeConfig(subtypes: List<String>): List<CwtPropertyConfig> {
-		val result = mutableListOf<CwtPropertyConfig>()
-		result.addAll(propertyConfigs)
-		for((k, v) in subtypePropertiesConfig) {
-			//这里的k可以是!typeName, !typeName
-			if(matchesSubtype(k, subtypes)) {
-				result.addAll(v)
-			}
-		}
-		return result
-	}
-	
-	fun mergeAndDistinctConfig(subtypes: List<String>): List<CwtPropertyConfig> {
-		val keys = hashSetOf<String>()
-		val result = mutableListOf<CwtPropertyConfig>()
-		for(c in propertyConfigs) {
-			if(keys.add(c.key)) result.add(c)
-		}
-		for((k, v) in subtypePropertiesConfig) {
-			if(matchesSubtype(k, subtypes)) {
-				for(c in v) {
-					if(keys.add(c.key)) result.add(c)
+		val cacheKey = subtypes.joinToString(",")
+		return mergeConfigCache.getOrPut(cacheKey){
+			val result = mutableListOf<CwtPropertyConfig>()
+			for((subtypeExpression, propConfig) in config) {
+				if(subtypeExpression == null || matchesSubtype(subtypeExpression,subtypes)) {
+					result.add(propConfig)
 				}
 			}
+			result
 		}
-		return result
-		//为了优化性能,不使用方法distinctBy
-		//return mergeConfig(subtypes).distinctBy { it.key }
 	}
 	
-	private fun matchesSubtype(k: String, subtypes: List<String>): Boolean {
-		return if(k.startsWith('!')) k.drop(1) !in subtypes else k in subtypes
+	private fun matchesSubtype(subtypeExpression: String, subtypes: List<String>): Boolean {
+		return if(subtypeExpression.startsWith('!')) subtypeExpression.drop(1) !in subtypes else subtypeExpression in subtypes
 	}
 }
 

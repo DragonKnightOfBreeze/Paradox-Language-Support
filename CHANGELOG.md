@@ -117,8 +117,10 @@
 * [X] 为cwtProperty提供文档注释（以`###`开头的）
 * [X] 支持提示definition的顶级的key（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
 * [X] 支持提示definition的所有级别的key（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
-* [ ] 支持提示definition的value（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
-* [ ] 代码提示大小写兼容性解决（判断属性是否已存在以及存在数量时忽略大小写）
+* [X] 支持提示definition的value（尚未支持所有的cwt数据类型，即`int`,`scalar`之类）
+* [X] 代码提示大小写兼容性解决（判断属性是否已存在以及存在数量时忽略大小写）
+* [ ] 支持提示block中的value
+* [ ] 兼容引号括起的key和value，同样提示并妥善处理引号
 * [ ] 避免得到缓存数据的过程中抛出ProcessCanceledException
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] 支持基于cwt配置文件进行脚本文件代码提示

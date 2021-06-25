@@ -205,7 +205,7 @@ fun matchDefinitionProperty(propertyElement: ParadoxDefinitionProperty, property
 	return true
 }
 
-private fun matchProperties(propertyElements: List<ParadoxScriptProperty>, propertyConfigs: List<CwtPropertyConfig>, configGroup: CwtConfigGroup): Boolean {
+fun matchProperties(propertyElements: List<ParadoxScriptProperty>, propertyConfigs: List<CwtPropertyConfig>, configGroup: CwtConfigGroup): Boolean {
 	//properties为空的情况系认为匹配
 	if(propertyElements.isEmpty()) return true
 	
@@ -230,7 +230,7 @@ private fun matchProperties(propertyElements: List<ParadoxScriptProperty>, prope
 	return minMap.values.any { it <= 0 }
 }
 
-private fun matchValues(valueElements: List<ParadoxScriptValue>, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup): Boolean {
+fun matchValues(valueElements: List<ParadoxScriptValue>, valueConfigs: List<CwtValueConfig>, configGroup: CwtConfigGroup): Boolean {
 	//values为空的情况下认为匹配 
 	if(valueElements.isEmpty()) return true
 	
@@ -283,7 +283,7 @@ fun matchProperty(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPro
 	return true
 }
 
-private fun matchKey(expression: String, keyElement: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): Boolean {
+fun matchKey(expression: String, keyElement: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): Boolean {
 	//这里的key=keyElement.value, quoted=keyElement.isQuoted()使用懒加载
 	val (expressionType, expressionValue) = expression.resolveKeyExpression()
 	return when(expressionType) {
@@ -355,7 +355,7 @@ private fun matchKey(expression: String, keyElement: ParadoxScriptPropertyKey, c
 	}
 }
 
-private fun matchKey(expression: String, key: String, quoted:Boolean,configGroup: CwtConfigGroup): Boolean {
+fun matchKey(expression: String, key: String, quoted:Boolean,configGroup: CwtConfigGroup): Boolean {
 	val (expressionType, expressionValue) = expression.resolveKeyExpression()
 	return when(expressionType) {
 		CwtKeyExpressionType.Any -> true
@@ -412,7 +412,7 @@ private fun matchKey(expression: String, key: String, quoted:Boolean,configGroup
 	}
 }
 
-private fun matchValue(expression: String, valueElement: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
+fun matchValue(expression: String, valueElement: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
 	val (expressionType, expressionValue) = expression.resolveValueExpression()
 	return when(expressionType) {
 		CwtValueExpressionType.Any -> true
@@ -528,16 +528,12 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	val definitionPropertyInfo = propertyElement.paradoxDefinitionPropertyInfo ?: return
 	val path = definitionPropertyInfo.path
 	val definitionInfo = definitionPropertyInfo.definitionInfo
-	val type = definitionInfo.type
-	val subtypes = definitionInfo.subtypes
-	val gameType = definitionInfo.fileInfo.gameType
+	val gameType = definitionInfo.gameType
 	val configGroup = getConfig(project).getValue(gameType)
 	
-	//rootPropertiesConfig需要经过合并且确保名字唯一
-	val rootPropertiesConfig = configGroup.definitions.getValue(type).mergeAndDistinctConfig(subtypes)
+	//propertiesConfig需要经过合并与解析，且确保名字唯一，这里的路径是父路径，跳过正在补充的property
+	val propertyConfigs = definitionInfo.resolveSubDefinitionConfig(path,configGroup)
 	
-	//如果path是空的，表示需要补全definition的顶级属性
-	val propertyConfigs = getSubPropertiesConfig(rootPropertiesConfig,path,configGroup)
 	if(propertyConfigs.isNotEmpty()) {
 		for(propertyConfig in propertyConfigs) {
 			//propertyConfig.key可以是一个表达式
@@ -546,17 +542,25 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	}
 }
 
-fun addValueCompletions(keyElement:PsiElement,propertyElement:ParadoxDefinitionProperty,result:CompletionResultSet){
+fun addValueCompletions(valueElement:PsiElement,propertyElement:ParadoxDefinitionProperty,result:CompletionResultSet){
+	val project = propertyElement.project
+	val definitionPropertyInfo = propertyElement.paradoxDefinitionPropertyInfo ?: return
+	val path = definitionPropertyInfo.path
+	val definitionInfo = definitionPropertyInfo.definitionInfo
+	val gameType = definitionInfo.gameType
+	val configGroup = getConfig(project).getValue(gameType)
 	
-}
-
-private fun getSubPropertiesConfig(propertyConfigs: List<CwtPropertyConfig>, path: ParadoxPropertyPath, configGroup: CwtConfigGroup):List<CwtPropertyConfig>{
-	if(path.isEmpty()) return propertyConfigs
-	var result = propertyConfigs
-	for((key,quoted) in path.subPathInfos) {
-		result = result.find { matchKey(it.key,key,quoted,configGroup) }?.properties ?:return emptyList()
+	//propertiesConfig需要经过合并与解析，这里的路径是相对路径，不跳过正在补充的property
+	val propertyConfigs = definitionInfo.resolveDefinitionConfig(path,configGroup)
+	
+	if(propertyConfigs.isNotEmpty()) {
+		for(propertyConfig in propertyConfigs) {
+			//propertyConfig.value可以是一个表达式 
+			completeValue(propertyConfig.value, valueElement, propertyConfig, configGroup, result)
+			
+			//TODO propertyConfig.value也可以是block
+		}
 	}
-	return result
 }
 
 private fun completeKey(expression: String, keyElement: PsiElement, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
@@ -670,16 +674,15 @@ private fun completeKey(expression: String, keyElement: PsiElement, propertyConf
 				val typeText = propertyConfig.pointer.containingFile?.name
 				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler).withPriority(propertyPriority)
+					.withInsertHandler(separatorInsertHandler)
+					.withPriority(propertyPriority)
 				result.addElement(lookupElement)
 			}
 		}
 	}
 }
 
-//TODO 对于localisation或definition等类型的key不好获取已有属性存在数量，考虑换一种方式
-
-private fun completeValue(expression: String, valueElement: PsiElement, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+private fun completeValue(expression: String, valueElement: PsiElement, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup, result: CompletionResultSet) {
 	val (expressionType, expressionValue) = expression.resolveValueExpression()
 	when(expressionType) {
 		CwtValueExpressionType.Any -> pass()
@@ -701,7 +704,6 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
 				result.addElement(lookupElement)
 			}
 		}
@@ -715,7 +717,6 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 				val typeText = syncedLocalisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
 				result.addElement(lookupElement)
 			}
 		}
@@ -730,7 +731,6 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
 				result.addElement(lookupElement)
 			}
 		}
@@ -749,7 +749,6 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
 				result.addElement(lookupElement)
 			}
 		}
@@ -766,8 +765,8 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 				val icon = definitionIcon //使用特定图标
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
-					.withTailText(tailText, true).withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withTailText(tailText, true)
+					.withTypeText(typeText, true)
 				result.addElement(lookupElement)
 			}
 		}
@@ -782,7 +781,6 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 				val typeText = enumConfig.pointer.containingFile?.name
 				val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
 				result.addElement(lookupElement)
 			}
 		}
@@ -799,31 +797,22 @@ private fun completeValue(expression: String, valueElement: PsiElement, valueCon
 		CwtValueExpressionType.AliasMatchLeftExpression -> pass() //TODO
 		CwtValueExpressionType.Constant -> {
 			val name = expressionValue ?: return
-			completeIfNeed(name, valueConfig, definitionPropertyInfo) {
-				val element = valueConfig.pointer.element ?: return
-				val icon = scriptPropertyIcon //使用特定图标
-				val typeText = valueConfig.pointer.containingFile?.name
-				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler).withPriority(propertyPriority)
-				result.addElement(lookupElement)
-			}
+			val element = propertyConfig.pointer.element ?: return
+			val icon = scriptPropertyIcon //使用特定图标
+			val typeText = propertyConfig.pointer.containingFile?.name
+			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+				.withTypeText(typeText, true)
+				.withInsertHandler(separatorInsertHandler).withPriority(propertyPriority)
+			result.addElement(lookupElement)
 		}
 	}
 }
 
+//TODO 对于localisation或definition等类型的key不好获取已有属性存在数量，考虑换一种方式
+
 inline fun completeIfNeed(name: String, propertyConfig: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
 	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未声明最大数量设为1），注意这里名字要忽略大小写
 	val cardinality = propertyConfig.cardinality
-	val count = if(cardinality != null) cardinality.max else 1
-	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0) {
-		action()
-	}
-}
-
-inline fun completeIfNeed(name: String, valueConfig: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo, action: () -> Unit) {
-	//如果指定名字的已有属性数量大于等于要补全的属性的最大数量，则忽略补全（未声明最大数量设为1），注意这里名字要忽略大小写
-	val cardinality = valueConfig.cardinality
 	val count = if(cardinality != null) cardinality.max else 1
 	if(count == null || count > definitionPropertyInfo.propertiesCardinality[name.lowercase()] ?: 0) {
 		action()

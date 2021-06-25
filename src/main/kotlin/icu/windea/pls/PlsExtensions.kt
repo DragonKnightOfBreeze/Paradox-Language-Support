@@ -239,7 +239,7 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	val elementName = element.name ?: return null
 	val project = element.project
 	val configGroup = getConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath, fileInfo)
+	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath)
 }
 
 val ParadoxDefinitionProperty.paradoxDefinitionPropertyInfo: ParadoxDefinitionPropertyInfo? get() = doGetDefinitionPropertyInfo(this)
@@ -442,6 +442,20 @@ fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): L
  * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
  */
 fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxDefinitionProperty) {
+			return current
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
+}
+
+/**
+ * 得到上一级definitionProperty，跳过正在填写的，可能为自身，可能为null，可能也是definition。
+ */
+fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty? {
 	var current: PsiElement = this
 	do {
 		if(current is ParadoxScriptRootBlock) {
@@ -701,21 +715,6 @@ fun findLocalisations(
 }
 
 /**
- * 基于本地化名字索引，根据语言区域查找且根据名字过滤所有的本地化（localisation）。
- * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
- */
-fun filterLocalisations(
-	locale: ParadoxLocale? = null,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	predicate: (String) -> Boolean
-): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.filter(locale, project, scope, hasDefault, predicate)
-}
-
-/**
  * 基于本地化名字索引，根据关键字查找所有的本地化（localisation）。
  * * 如果名字包含关键字（不忽略大小写），则放入结果。
  * * 返回的结果有数量限制。
@@ -726,7 +725,7 @@ fun findLocalisationsByKeyword(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	maxSize: Int = -1
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findByKeyword(keyword, project, scope, maxSize)
+	return ParadoxLocalisationNameIndex.getAllByKeyword(keyword, project, scope, maxSize)
 }
 
 /**
@@ -743,7 +742,22 @@ fun findLocalisationsByNames(
 	hasDefault: Boolean = false,
 	keepOrder: Boolean = false
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findByNames(names, locale, project, scope, hasDefault, keepOrder)
+	return ParadoxLocalisationNameIndex.getAllByNames(names, locale, project, scope, hasDefault, keepOrder)
+}
+
+/**
+ * 基于本地化名字索引，根据语言区域查找且根据名字过滤所有的本地化（localisation）。
+ * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ */
+fun filterLocalisations(
+	locale: ParadoxLocale? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false,
+	predicate: (String) -> Boolean
+): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.filter(locale, project, scope, hasDefault, predicate)
 }
 
 /**
@@ -802,6 +816,20 @@ fun findSyncedLocalisations(
 }
 
 /**
+ * 基于同步本地化名字索引，根据关键字查找所有的同步本地化（localisation_synced）。
+ * * 如果名字包含关键字（不忽略大小写），则放入结果。
+ * * 返回的结果有数量限制。
+ */
+fun findSyncedLocalisationsByKeyword(
+	keyword: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	maxSize: Int = -1
+): List<ParadoxLocalisationProperty> {
+	return ParadoxSyncedLocalisationNameIndex.getAllByKeyword(keyword, project, scope, maxSize)
+}
+
+/**
  * 基于同步本地化名字索引，根据语言区域查找且根据名字过滤所有的同步本地化（localisation_synced）。
  * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
@@ -814,20 +842,6 @@ fun filterSyncedLocalisations(
 	predicate: (String) -> Boolean
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxSyncedLocalisationNameIndex.filter(locale, project, scope, hasDefault, predicate)
-}
-
-/**
- * 基于同步本地化名字索引，根据关键字查找所有的同步本地化（localisation_synced）。
- * * 如果名字包含关键字（不忽略大小写），则放入结果。
- * * 返回的结果有数量限制。
- */
-fun findSyncedLocalisationsByKeyword(
-	keyword: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	maxSize: Int = -1
-): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findByKeyword(keyword, project, scope, maxSize)
 }
 
 //Link Extensions

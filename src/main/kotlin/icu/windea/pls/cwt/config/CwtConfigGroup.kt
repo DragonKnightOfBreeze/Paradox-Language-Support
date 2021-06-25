@@ -223,12 +223,12 @@ class CwtConfigGroup(
 		var typePerFile = false
 		var unique = false
 		var severity: String? = null
-		val skipRootKey: MutableList<List<String>> = mutableListOf()
-		val localisation: MutableMap<String, MutableList<CwtTypeLocalisationConfig>> = mutableMapOf()
-		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
+		var skipRootKey: MutableList<List<String>>? = null
 		var typeKeyFilter: ReversibleList<String>? = null
 		var startsWith: String? = null
 		var graphRelatedTypes: List<String>? = null
+		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
+		val localisation: MutableList<Pair<String?, CwtTypeLocalisationConfig>> = mutableListOf()
 		
 		val props = propertyConfig.properties
 		if(props != null && props.isNotEmpty()) {
@@ -248,7 +248,9 @@ class CwtConfigGroup(
 					"skip_root_key" -> {
 						//值可能是string也可能是stringArray
 						val list = prop.stringValueOrValues
-						if(list != null) skipRootKey.add(list)
+						if(list != null) {	
+							if(skipRootKey == null) skipRootKey = mutableListOf() else skipRootKey.add(list)
+						}
 					}
 					"localisation" -> {
 						val propProps = prop.properties
@@ -258,17 +260,14 @@ class CwtConfigGroup(
 								val subtypeName = resolveSubtypeName(k)
 								if(subtypeName != null) {
 									val pps = p.properties ?: continue
-									val localisationConfigs = mutableListOf<CwtTypeLocalisationConfig>()
 									for(pp in pps) {
 										val kk = pp.key
 										val localisationConfig = resolveTypeLocalisationConfig(pp, kk) ?: continue
-										localisationConfigs.add(localisationConfig)
+										localisation.add(subtypeName to localisationConfig)
 									}
-									localisation.put(subtypeName, localisationConfigs)
 								} else {
-									val localisationConfigs = localisation.getOrPut("") { mutableListOf() }
 									val localisationConfig = resolveTypeLocalisationConfig(p, k) ?: continue
-									localisationConfigs.add(localisationConfig)
+									localisation.add(null to localisationConfig)
 								}
 							}
 						}
@@ -307,7 +306,7 @@ class CwtConfigGroup(
 		return CwtTypeConfig(
 			propertyConfig.pointer, name, path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
-			localisation, subtypes, typeKeyFilter, startsWith, graphRelatedTypes
+			typeKeyFilter, startsWith, graphRelatedTypes, subtypes, localisation
 		)
 	}
 	
@@ -437,30 +436,31 @@ class CwtConfigGroup(
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
 		val props = propertyConfig.properties ?: return null
-		val propertyConfigs = mutableListOf<CwtPropertyConfig>()
-		val subtypePropertiesConfig = mutableMapOf<String, MutableList<CwtPropertyConfig>>()
+		val propertyConfigs = mutableListOf<Pair<String?,CwtPropertyConfig>>()
 		for(prop in props) {
 			//这里需要进行合并
 			val subtypeName = resolveSubtypeName(prop.key)
 			if(subtypeName != null) {
 				val propProps = prop.properties
 				if(propProps != null) {
-					propertyConfigs.addAll(propProps)
+					for(propProp in propProps){
+						propertyConfigs.add(subtypeName to propProp)
+					}
 				}
 			} else {
-				propertyConfigs.add(prop)
+				propertyConfigs.add(null to prop)
 			}
 		}
-		return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfigs, subtypePropertiesConfig)
+		return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfigs)
 	}
 	
 	/**
 	 * 根据指定的scriptProperty，匹配类型规则，得到对应的definitionInfo。
 	 */
-	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
-				return toDefinitionInfo(typeConfig, element, elementName, fileInfo)
+				return toDefinitionInfo(typeConfig, element, elementName)
 			}
 		}
 		return null
@@ -501,7 +501,7 @@ class CwtConfigGroup(
 		//如果skip_root_key = <any>，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过
 		//skip_root_key可以为列表（多级），可以重复（其中之一匹配即可）
 		val skipRootKeyConfig = typeConfig.skipRootKey //String? | "any"
-		if(skipRootKeyConfig.isEmpty()) {
+		if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
 			if(propertyPath.length > 1) return false
 		} else {
 			var skipResult = false
@@ -553,7 +553,7 @@ class CwtConfigGroup(
 		return matchDefinitionProperty(element, elementConfig, this)
 	}
 	
-	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo {
+	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, elementName)
 		val typeKey = elementName
 		val type = typeConfig.name
@@ -561,13 +561,14 @@ class CwtConfigGroup(
 		val subtypes = getSubtypes(subtypesConfig)
 		val localisationConfig = getLocalisationConfig(typeConfig, subtypes)
 		val localisation = getLocalisation(localisationConfig, element, name)
+		val definitionConfig = getDefinitionConfig(type, subtypes)
 		val graphRelatedTypes = typeConfig.graphRelatedTypes.orEmpty()
 		val unique = typeConfig.unique
 		val severity = typeConfig.severity
 		val pushScopes = subtypesConfig.map { it.pushScope }
 		return ParadoxDefinitionInfo(
-			name, typeKey, type, typeConfig, subtypes, subtypesConfig, localisation, localisationConfig,
-			graphRelatedTypes, unique, severity, pushScopes, fileInfo
+			name, type, typeConfig, subtypes, subtypesConfig, localisation, localisationConfig,definitionConfig,
+			typeKey, graphRelatedTypes, unique, severity, pushScopes, gameType
 		)
 	}
 	
@@ -599,12 +600,7 @@ class CwtConfigGroup(
 	}
 	
 	private fun getLocalisationConfig(typeConfig: CwtTypeConfig, subtypes: List<String>): List<CwtTypeLocalisationConfig> {
-		val localisationConfig = typeConfig.localisation
-		val result = mutableListOf<CwtTypeLocalisationConfig>()
-		for((subtypeNameOrEmpty, config) in localisationConfig) {
-			if(subtypeNameOrEmpty.isEmpty() || subtypeNameOrEmpty in subtypes) result.addAll(config)
-		}
-		return result
+		return typeConfig.mergeLocalisation(subtypes)
 	}
 	
 	private fun getLocalisation(localisationConfig: List<CwtTypeLocalisationConfig>, element: ParadoxDefinitionProperty, name: String): List<ParadoxDefinitionLocalisationInfo> {
@@ -629,6 +625,10 @@ class CwtConfigGroup(
 			}
 		}
 		return result
+	}
+	
+	private fun getDefinitionConfig(type: String, subtypes: List<String>): List<CwtPropertyConfig> {
+		return definitions.getValue(type).mergeConfig(subtypes)
 	}
 	
 	private fun resolveKeyName(name: String, expression: String, element: ParadoxDefinitionProperty): String {

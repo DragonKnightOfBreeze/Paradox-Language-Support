@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.config
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
+import java.util.*
 
 /**
  * @property path (property) path: string/path
@@ -16,11 +17,11 @@ import icu.windea.pls.cwt.psi.*
  * @property unique (property) unique: boolean
  * @property severity (property) severity: string:severity
  * @property skipRootKey (property*) skip_root_key: string | string[]
- * @property subtypes (property*) subtype[?]: subtypeInfo
- * @property localisation (property*) localisation: localisationInfo
  * @property typeKeyFilter (option) type_key_filter: string | string[]
  * @property startsWith (option) starts_with: string
  * @property graphRelatedTypes (option) graph_related_types: graphRelatedType[]
+ * @property subtypes (property*) subtype[?]: subtypeInfo
+ * @property localisation (property*) localisation: localisationInfo
  */
 data class CwtTypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -34,11 +35,31 @@ data class CwtTypeConfig(
 	val typePerFile: Boolean = false,
 	val unique: Boolean = false,
 	val severity: String? = null,
-	val skipRootKey: MutableList<List<String>> = mutableListOf(),
-	val localisation: MutableMap<String, MutableList<CwtTypeLocalisationConfig>> = mutableMapOf(),
-	val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf(),
+	val skipRootKey: List<List<String>>? = null,
 	val typeKeyFilter: ReversibleList<String>? = null,
 	val startsWith: String? = null,
 	val graphRelatedTypes: List<String>? = null,
-) : CwtConfig<CwtProperty>
+	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
+	val localisation: List<Pair<String?, CwtTypeLocalisationConfig>> = emptyList() //(subtypeExpression, typeLocConfig)
+) : CwtConfig<CwtProperty>{
+	//使用WeakHashMap - 减少内存占用
+	private val mergeLocalisationCache = WeakHashMap<String,List<CwtTypeLocalisationConfig>>()
+	
+	fun mergeLocalisation(subtypes: List<String>): List<CwtTypeLocalisationConfig> {
+		val cacheKey = subtypes.joinToString(",")
+		return mergeLocalisationCache.getOrPut(cacheKey){
+			val result = mutableListOf<CwtTypeLocalisationConfig>()
+			for((subtypeExpression, localisationConfig) in localisation) {
+				if(subtypeExpression == null || matchesSubtype(subtypeExpression,subtypes)) {
+					result.add(localisationConfig)
+				}
+			}
+			result
+		}
+	}
+	
+	private fun matchesSubtype(subtypeExpression: String, subtypes: List<String>): Boolean {
+		return if(subtypeExpression.startsWith('!')) subtypeExpression.drop(1) !in subtypes else subtypeExpression in subtypes
+	}
+}
 

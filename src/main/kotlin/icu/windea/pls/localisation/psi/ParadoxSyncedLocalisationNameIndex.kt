@@ -90,6 +90,41 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 		return result
 	}
 	
+	fun getAllByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxLocalisationProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
+		val keys = getAllKeys(project)
+		if(keys.isEmpty()) return emptyList()
+		val matchedKeys = if(keyword.isEmpty()) keys else keys.filter { matchesKeyword(it, keyword) }
+		val result = mutableListOf<ParadoxLocalisationProperty>()
+		if(maxSize <= 0) {
+			for(key in matchedKeys) {
+				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
+				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
+				if(firstElement != null) {
+					result.add(firstElement)
+				}
+			}
+		} else {
+			var size = 0
+			for(key in matchedKeys) {
+				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
+				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
+				if(firstElement != null) {
+					result.add(firstElement)
+					size++
+					if(size == maxSize) return result
+				}
+			}
+		}
+		return result
+	}
+	
+	private fun matchesKeyword(name:String,keyword: String):Boolean{
+		return name.contains(keyword,true)
+	}
+	
 	inline fun filter(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, predicate: (String) -> Boolean): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
@@ -119,37 +154,6 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 					}
 				}
 				index = nextIndex
-			}
-		}
-		return result
-	}
-	
-	fun findByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxLocalisationProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val matchedKeys = if(keyword.isEmpty()) keys else keys.filter { it.contains(keyword, ignoreCase = true) }
-		val result = mutableListOf<ParadoxLocalisationProperty>()
-		if(maxSize <= 0) {
-			for(key in matchedKeys) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
-				if(firstElement != null) {
-					result.add(firstElement)
-				}
-			}
-		} else {
-			var size = 0
-			for(key in matchedKeys) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
-				if(firstElement != null) {
-					result.add(firstElement)
-					size++
-					if(size == maxSize) return result
-				}
 			}
 		}
 		return result
