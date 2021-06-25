@@ -30,10 +30,13 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 				val e = element.reference.resolve()?: return "(unknown)"
 				when{
 					e is ParadoxScriptProperty -> {
-						val definition = e.paradoxDefinitionInfo ?: return "string"
-						getDefinitionHint(definition) 
+						val definitionInfo = e.paradoxDefinitionInfo ?: return "script property"
+						getDefinitionHint(definitionInfo) 
 					}
-					e is ParadoxLocalisationProperty -> "localisation"
+					e is ParadoxLocalisationProperty -> {
+						val localisationInfo = e.paradoxLocalisationInfo ?: return "localisation property"
+						getLocalisationHint(localisationInfo)
+					}
 					else -> "string"
 				}
 			}
@@ -52,6 +55,10 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 	
 	private fun getDefinitionHint(definitionInfo:ParadoxDefinitionInfo):String{
 		return definitionInfo.typeText
+	}
+	
+	private fun getLocalisationHint(localisationInfo: ParadoxLocalisationInfo):String{
+		return localisationInfo.category.text
 	}
 	
 	override fun getErrorHint(): String {

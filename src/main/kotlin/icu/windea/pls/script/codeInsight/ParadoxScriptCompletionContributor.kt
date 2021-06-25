@@ -13,14 +13,10 @@ import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	companion object {
 		private val stringPattern = psiElement(STRING_TOKEN)
-		
-		//不对引号括起的propertyKey或string进行提示
-		private val definitionPattern = or(psiElement(PROPERTY_KEY_ID), psiElement(STRING_TOKEN))
-		//private val propertyNamePattern = and(
-		//	psiElement().withParent(ParadoxScriptBlock::class.java),
-		//	or(psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID), psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN))
-		//)
-		//private val propertyValuePattern = or(psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN))
+		private val definitionPattern = or(
+			psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID),
+			psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN)
+		)
 		
 		private val booleanLookupElements = booleanValues.map { value ->
 			LookupElementBuilder.create(value).bold().withPriority(keywordPriority)
@@ -37,10 +33,10 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 			val position = parameters.position
 			val parent1 = position.parent
-			val parent2 = parent1?.parent
-			val parent3 = parent2?.parent
-			val mayBeKey = parent2 is ParadoxScriptBlock || parent3 is ParadoxScriptBlock
-			val mayBeValue = parent1 is ParadoxScriptValue
+			val parent2 = parent1.parent
+			val mayBeKey = parent1 is ParadoxScriptPropertyKey || parent2 is ParadoxScriptBlock
+			val mayBeValue = parent2 is ParadoxScriptPropertyValue
+			val mayBeValueInBlock = parent2 is ParadoxScriptBlock
 			
 			ProgressManager.checkCanceled()
 			
@@ -60,6 +56,9 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
 					//进行提示
 					addValueCompletions(valueElement, definitionProperty, result)
+				}
+				mayBeValueInBlock -> {
+					
 				}
 			}
 		}

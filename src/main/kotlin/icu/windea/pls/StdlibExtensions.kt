@@ -90,13 +90,9 @@ fun String.containsBlankLine(): Boolean {
 
 fun String.quote() = if(startsWith('"') && endsWith('"')) this else "\"$this\""
 
-fun String.quoteIfNecessary() = if(containsBlank()) quote() else this
+fun String.quoteIf(quoted:Boolean) = if(quoted) "\"$this\"" else this //不判断之前是否已经用引号括起，依据quoted 
 
-private val wildcardBooleanValues = arrayOf("true", "false", "yes", "no")
-
-fun String.quoteAsStringLike() = if(this in wildcardBooleanValues || isFloat() || containsBlank()) quote() else this
-
-fun String.onlyQuoteIfNecessary() = this.unquote().quoteIfNecessary()
+fun String.quoteIfNecessary() = if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
 
 fun String.unquote() = if(length >= 2 && startsWith('"') && endsWith('"')) substring(1, length - 1) else this
 

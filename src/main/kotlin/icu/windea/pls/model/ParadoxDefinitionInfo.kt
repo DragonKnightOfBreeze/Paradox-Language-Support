@@ -73,7 +73,7 @@ data class ParadoxDefinitionInfo(
 					var isTop = true
 					for((key, quoted) in path.subPathInfos) {
 						if(isTop) isTop = false else result = result.flatMap { it.properties?: emptyList() }
-						result = result.filter { matchKey(it.key, key, quoted, configGroup) }
+						result = result.filter { matchesKey(it.key, key, quoted, configGroup) }
 					}
 					result
 				}
@@ -94,7 +94,7 @@ data class ParadoxDefinitionInfo(
 				else -> {
 					var result = definitionConfig
 					for((key, quoted) in path.subPathInfos) {
-						result = result.filter { matchKey(it.key, key, quoted, configGroup) }
+						result = result.filter { matchesKey(it.key, key, quoted, configGroup) }
 							.flatMap { it.properties ?: emptyList() }
 					}
 					result.distinctBy { it.key }

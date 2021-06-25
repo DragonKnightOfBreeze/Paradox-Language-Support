@@ -379,27 +379,6 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 	return ParadoxLocalisationInfo(name, type)
 }
 
-/**
- * 判断当前localisation所在的根目录是否是"localisation"或"localisation_synced"
- */
-fun ParadoxLocalisationProperty.isInValidDirectory(): Boolean {
-	return this.paradoxFileInfo?.path?.root.let { it != null && it == "localisation" || it == "localisation_synced" }
-}
-
-/**
- * 判断当前localisation所在的根目录是否是"localisation"
- */
-fun ParadoxLocalisationProperty.isLocalisation(): Boolean {
-	return this.paradoxFileInfo?.path?.root == "localisation"
-}
-
-/**
- * 判断当前localisation所在的根目录是否是"localisation_synced"
- */
-fun ParadoxLocalisationProperty.isLocalisationSynced(): Boolean {
-	return this.paradoxFileInfo?.path?.root == "localisation_synced"
-}
-
 fun PsiElement.isQuoted(): Boolean {
 	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
 }
