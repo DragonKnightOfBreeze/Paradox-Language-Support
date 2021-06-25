@@ -122,10 +122,10 @@
 * [X] ~~避免得到缓存数据的过程中抛出ProcessCanceledException~~
 * [X] 兼容引号括起的key和value，同样提示并妥善处理引号
 * [ ] 支持提示block中的value
+* [ ] 基于cwt规则文件的key和value的代码提示的支持（更新中）
+* [ ] 基于cwt规则文件的key和value的引用的支持
+* [ ] 基于cwt规则文件的key和value的验证的支持
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
-* [ ] 支持基于cwt配置文件进行脚本文件代码提示
-* [ ] 支持基于cwt配置文件进行脚本文件代码验证
-* [ ] cwt规则文件加载需要一定时间 - 可能需要特殊处理
 * [ ] cwt规则文件并不完整，除了未来可能的PR之外，需要提供方法基于这个插件进行补充
 
 # BUG
