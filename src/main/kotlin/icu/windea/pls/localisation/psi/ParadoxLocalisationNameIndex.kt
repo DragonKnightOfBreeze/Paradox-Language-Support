@@ -159,40 +159,6 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	private fun matchesKeyword(name:String,keyword: String):Boolean{
 		return name.contains(keyword,true)
 	}
-	
-	inline fun filter(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, predicate: (String) -> Boolean): List<ParadoxLocalisationProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxLocalisationProperty>()
-		var index = 0
-		for(key in keys) {
-			if(predicate(key)) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-				var nextIndex = index
-				for(element in elements) {
-					val elementLocale = element.paradoxLocale
-					if(locale == null) {
-						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-						if(elementLocale == inferParadoxLocale()) {
-							result.add(index++, element)
-							nextIndex++
-						} else {
-							result.add(element)
-							nextIndex++
-						}
-					} else if(locale == elementLocale || hasDefault) {
-						result.add(element)
-						nextIndex++
-					}
-				}
-				index = nextIndex
-			}
-		}
-		return result
-	}
 }
 
 

@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
-import org.apache.tools.ant.taskdefs.*
 
 object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definition.name.index")
@@ -13,12 +12,14 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	override fun getCacheSize() = 4 * 1024
 	
-	fun exists(name:String,typeExpression: String?,project: Project,scope: GlobalSearchScope):Boolean{
+	fun exists(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return false
+		
 		if(typeExpression == null) return name in getAllKeys(project)
+		val (type,subtype) = resolveTypeExpression(typeExpression)
 		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxScriptProperty::class.java)
-		return elements.any { element -> matchesTypeExpression(element, typeExpression) }
+		return elements.any { element -> matches(element, type,subtype) }
 	}
 	
 	fun getOne(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptProperty? {
@@ -27,8 +28,10 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		
 		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxScriptProperty::class.java)
 		if(elements.isEmpty()) return null
-		return if(preferFirst) elements.firstOrNull { element -> matchesTypeExpression(element, typeExpression) }
-		else elements.lastOrNull { element -> matchesTypeExpression (element, typeExpression) }
+		if(typeExpression == null) return if(preferFirst) elements.first() else elements.last()
+		val (type,subtype) = resolveTypeExpression(typeExpression)
+		return if(preferFirst) elements.firstOrNull { element -> matches(element, type,subtype) }
+		else elements.lastOrNull { element -> matches(element, type,subtype) }
 	}
 	
 	fun getAll(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
@@ -37,11 +40,9 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		
 		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxScriptProperty::class.java)
 		if(elements.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxScriptProperty>()
-		for(element in elements) {
-			if(matchesTypeExpression(element, typeExpression)) result.add(element)
-		}
-		return result
+		if(typeExpression == null) return elements.toList()
+		val (type,subtype) = resolveTypeExpression(typeExpression)
+		return elements.filter { element -> matches(element,type,subtype) }
 	}
 	
 	fun getAll(typeExpression: String?, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
@@ -50,36 +51,22 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 		
 		val keys = getAllKeys(project)
 		if(keys.isEmpty()) return emptyList()
+		if(typeExpression == null) return keys.flatMap { key ->
+			StubIndex.getElements(getKey(), key, project, scope, ParadoxScriptProperty::class.java)
+		}
+		val (type,subtype) = resolveTypeExpression(typeExpression)
 		val result = mutableListOf<ParadoxScriptProperty>()
 		for(key in keys) {
 			val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxScriptProperty::class.java)
 			for(element in elements) {
-				if(matchesTypeExpression(element, typeExpression)) result.add(element)
+				if(matches(element, type,subtype)) result.add(element)
 			}
 		}
 		return result
 	}
 	
-	inline fun filter(typeExpression: String?, project: Project, scope: GlobalSearchScope, predicate: (String) -> Boolean): List<ParadoxScriptProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxScriptProperty>()
-		for(key in keys) {
-			if(predicate(key)) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxScriptProperty::class.java)
-				for(element in elements) {
-					if(matchesTypeExpression(element, typeExpression)) result.add(element)
-				}
-			}
-		}
-		return result
-	}
-	
-	@PublishedApi
-	internal fun matchesTypeExpression(element: ParadoxScriptProperty, type: String?): Boolean {
-		return type == null || element.paradoxDefinitionInfo?.matchesTypeExpression(type) == true
+	private fun matches(element: ParadoxScriptProperty, type: String, subtype: String?): Boolean {
+		val definitionInfo = element.paradoxDefinitionInfo ?: return false
+		return type == definitionInfo.type && (subtype == null || subtype in definitionInfo.subtypes)
 	}
 }

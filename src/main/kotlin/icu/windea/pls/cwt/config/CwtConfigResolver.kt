@@ -40,8 +40,6 @@ object CwtConfigResolver {
 		val options: List<CwtOptionConfig>?
 		val optionValues: List<CwtOptionValueConfig>?
 		val separatorType = property.separatorType
-		val keyExpression = CwtKeyExpression.resolve(key)
-		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		when {
 			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
 			propValue is CwtInt -> intValue = propValue.intValue
@@ -92,6 +90,8 @@ object CwtConfigResolver {
 		documentation = getDocumentation(documentationElements)
 		options = getOptions(optionElements,file)
 		optionValues = getOptionValues(optionValueElements,file)
+		val keyExpression = CwtKeyExpression.resolve(key)
+		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		return CwtPropertyConfig(
 			pointer, key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
 			documentation, options, optionValues, separatorType,keyExpression, valueExpression
@@ -109,7 +109,6 @@ object CwtConfigResolver {
 		val documentation: String?
 		val options: List<CwtOptionConfig>?
 		val optionValues: List<CwtOptionValueConfig>?
-		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		
 		when {
 			value is CwtBoolean -> booleanValue = value.booleanValue
@@ -161,7 +160,7 @@ object CwtConfigResolver {
 		documentation = getDocumentation(documentationElements)
 		options = getOptions(optionElements,file)
 		optionValues = getOptionValues(optionValueElements,file)
-		
+		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		return CwtValueConfig(
 			pointer, value.value, booleanValue, intValue, floatValue, stringValue,
 			values, properties, documentation, options, optionValues,valueExpression

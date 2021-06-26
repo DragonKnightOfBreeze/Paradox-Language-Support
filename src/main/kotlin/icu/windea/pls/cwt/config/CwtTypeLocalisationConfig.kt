@@ -20,7 +20,7 @@ data class CwtTypeLocalisationConfig(
 		return mergeConfigsCache.getOrPut(cacheKey){
 			val result = mutableListOf<CwtTypeLocalisationInfoConfig>()
 			for((subtypeExpression, typeLocalisationInfoConfig) in configs) {
-				if(subtypeExpression == null || matchesSubtype(subtypeExpression, subtypes)) {
+				if(subtypeExpression == null || matchesSubtypeExpression(subtypeExpression, subtypes)) {
 					result.add(typeLocalisationInfoConfig)
 				}
 			}

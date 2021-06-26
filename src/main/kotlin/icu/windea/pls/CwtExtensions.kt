@@ -34,15 +34,7 @@ private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ -
 }
 
 //Match Extensions
-
-fun matchesSubtype(subtypeExpression: String, subtypes: List<String>): Boolean {
-	return when {
-		subtypeExpression.startsWith('!') -> subtypeExpression.drop(1) !in subtypes
-		else -> subtypeExpression in subtypes
-	}
-}
-
-fun matchDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
+fun matchesDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 	when {
 		propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {
 			val propConfigs = propertyConfig.properties.orEmpty() //不应该为null，转为emptyList
@@ -137,6 +129,7 @@ fun matchesProperty(propertyElement: ParadoxScriptProperty, propertyConfig: CwtP
 
 fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): Boolean {
 	//这里的key=keyElement.value, quoted=keyElement.isQuoted()使用懒加载
+	if(expression.isEmpty()) return false
 	return when(expression.type) {
 		CwtKeyExpression.Type.Any -> true
 		CwtKeyExpression.Type.Bool -> {
@@ -180,12 +173,12 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return false
 			val name = keyElement.value
-			hasDefinition(name, typeExpression, configGroup.project)
+			hasDefinitionByType(name, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return false
 			val key = keyElement.value
-			hasDefinition(key, typeExpression, configGroup.project)
+			hasDefinitionByType(key, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return false
@@ -207,6 +200,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 }
 
 fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, configGroup: CwtConfigGroup): Boolean {
+	if(expression.isEmpty()) return false
 	return when(expression.type) {
 		CwtKeyExpression.Type.Any -> true
 		CwtKeyExpression.Type.Bool -> {
@@ -239,11 +233,11 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return false
-			hasDefinition(key, typeExpression, configGroup.project)
+			hasDefinitionByType(key, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return false
-			hasDefinition(key, typeExpression, configGroup.project)
+			hasDefinitionByType(key, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return false
@@ -263,6 +257,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 }
 
 fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
+	if(expression.isEmpty()) return false
 	return when(expression.type) {
 		CwtValueExpression.Type.Any -> true
 		CwtValueExpression.Type.Bool -> {
@@ -323,13 +318,13 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 		CwtValueExpression.Type.TypeExpression -> {
 			valueElement is ParadoxScriptString && run {
 				val typeExpression = expression.value ?: return@run false
-				hasDefinition(valueElement.stringValue, typeExpression, configGroup.project)
+				hasDefinitionByType(valueElement.stringValue, typeExpression, configGroup.project)
 			}
 		}
 		CwtValueExpression.Type.TypeExpressionString -> {
 			valueElement is ParadoxScriptString && run {
 				val typeExpression = expression.value ?: return@run false
-				hasDefinition(valueElement.stringValue, typeExpression, configGroup.project)
+				hasDefinitionByType(valueElement.stringValue, typeExpression, configGroup.project)
 			}
 		}
 		CwtValueExpression.Type.EnumExpression -> {
@@ -449,6 +444,7 @@ private fun shouldComplete(config: CwtValueConfig, occurrence: Map<CwtValueExpre
 }
 
 private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, pointer: SmartPsiElementPointer<*>, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	if(expression.isEmpty()) return
 	when(expression.type) {
 		CwtKeyExpression.Type.Any -> pass()
 		CwtKeyExpression.Type.Bool -> pass()
@@ -496,7 +492,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitions(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
@@ -511,7 +507,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
 			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return
-			val definitions = findDefinitions(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
@@ -555,6 +551,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 }
 
 private fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boolean, pointer: SmartPsiElementPointer<*>, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	if(expression.isEmpty()) return
 	when(expression.type) {
 		CwtValueExpression.Type.Any -> pass()
 		CwtValueExpression.Type.Bool -> pass()
@@ -605,7 +602,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		CwtValueExpression.Type.DateField -> pass()
 		CwtValueExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitions(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
@@ -619,7 +616,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		CwtValueExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
 			val (prefix, suffix) = expression.extraValue?.castOrNull<Pair<String, String>>() ?: return
-			val definitions = findDefinitions(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
@@ -663,7 +660,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 			val typeText = pointer.containingFile?.name
 			val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
 				.withTypeText(typeText, true)
-				.withInsertHandler(separatorInsertHandler).withPriority(propertyPriority)
+				.withPriority(propertyPriority)
 			result.addElement(lookupElement)
 		}
 	}

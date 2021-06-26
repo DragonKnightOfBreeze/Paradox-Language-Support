@@ -123,9 +123,10 @@
 * [X] 兼容引号括起的key和value，同样提示并妥善处理引号
 * [X] 支持提示block中的value
 * [X] 仅当有必要进行提示时提示
-* [ ] 基于cwt规则文件的key和value的代码提示的支持（更新中）
+* [X] 基于cwt规则文件的key和value的代码提示的支持（更新中）
 * [ ] 基于cwt规则文件的key和value的引用的支持
 * [ ] 基于cwt规则文件的key和value的验证的支持
+* [ ] 支持cwt规则文件中的aliases，提供代码提示、引用、验证的支持
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] cwt规则文件并不完整，除了未来可能的PR之外，需要提供方法基于这个插件进行补充
 

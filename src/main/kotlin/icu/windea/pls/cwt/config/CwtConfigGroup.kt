@@ -249,7 +249,8 @@ class CwtConfigGroup(
 						//值可能是string也可能是stringArray
 						val list = prop.stringValueOrValues
 						if(list != null) {
-							if(skipRootKey == null) skipRootKey = mutableListOf() else skipRootKey.add(list)
+							if(skipRootKey == null) skipRootKey = mutableListOf()
+							skipRootKey.add(list)
 						}
 					}
 					"localisation" -> {
@@ -529,6 +530,7 @@ class CwtConfigGroup(
 		return true
 	}
 	
+	
 	private fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxDefinitionProperty, elementName: String, result: MutableList<CwtSubtypeConfig>): Boolean {
 		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
 		val onlyIfNotConfig = subtypeConfig.onlyIfNot
@@ -553,7 +555,7 @@ class CwtConfigGroup(
 		}
 		//根据config对property进行内容匹配
 		val elementConfig = subtypeConfig.config
-		return matchDefinitionProperty(element, elementConfig, this)
+		return matchesDefinitionProperty(element, elementConfig, this)
 	}
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): ParadoxDefinitionInfo {

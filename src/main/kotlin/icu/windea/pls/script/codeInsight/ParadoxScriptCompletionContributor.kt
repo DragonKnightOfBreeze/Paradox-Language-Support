@@ -40,31 +40,29 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			
 			ProgressManager.checkCanceled()
 			
-			when {
-				mayBeKey -> {
-					//得到key元素
-					val keyElement = parent1
-					//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-					val definitionProperty = keyElement.findParentDefinitionPropertySkipThis() ?: return
-					//进行提示
-					addKeyCompletions(keyElement, definitionProperty, result)
-				}
-				mayBeValue -> {
-					//得到value元素
-					val valueElement = parent1
-					//得到上一级definitionProperty
-					val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
-					//进行提示
-					addValueCompletions(valueElement, definitionProperty, result)
-				}
-				mayBeValueInBlock -> {
-					//得到value元素
-					val valueElement = parent1
-					//得到上一级definitionProperty
-					val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
-					//进行提示
-					addValueCompletionsInBlock(valueElement, definitionProperty, result)
-				}
+			if(mayBeKey) {
+				//得到key元素
+				val keyElement = parent1
+				//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
+				val definitionProperty = keyElement.findParentDefinitionPropertySkipThis() ?: return
+				//进行提示
+				addKeyCompletions(keyElement, definitionProperty, result)
+			}
+			if(mayBeValue) {
+				//得到value元素
+				val valueElement = parent1
+				//得到上一级definitionProperty
+				val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
+				//进行提示
+				addValueCompletions(valueElement, definitionProperty, result)
+			}
+			if(mayBeValueInBlock) {
+				//得到value元素
+				val valueElement = parent1
+				//得到上一级definitionProperty
+				val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
+				//进行提示
+				addValueCompletionsInBlock(valueElement, definitionProperty, result)
 			}
 		}
 	}

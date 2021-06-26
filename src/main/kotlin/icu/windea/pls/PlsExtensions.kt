@@ -19,6 +19,7 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import org.jetbrains.annotations.*
 import java.util.*
+import kotlin.Pair
 
 //Misc Extensions
 
@@ -68,6 +69,20 @@ fun getDocTextFromPreviousComment(element: PsiElement): String {
 fun isPreviousComment(element: PsiElement): Boolean {
 	val elementType = element.elementType
 	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == ParadoxScriptTypes.COMMENT
+}
+
+fun matchesSubtypeExpression(subtypeExpression: String, subtypes: List<String>): Boolean {
+	return when {
+		subtypeExpression.startsWith('!') -> subtypeExpression.drop(1) !in subtypes
+		else -> subtypeExpression in subtypes
+	}
+}
+
+fun resolveTypeExpression(typeExpression: String): Pair<String, String?> {
+	val dotIndex = typeExpression.indexOf('.')
+	val type = if(dotIndex == -1) typeExpression else typeExpression.substring(0, dotIndex)
+	val subtype = if(dotIndex == -1) null else typeExpression.substring(dotIndex + 1)
+	return type to subtype
 }
 
 //Keys
@@ -535,22 +550,11 @@ fun findScriptVariables(
 }
 
 /**
- * 基于脚本变量名字索引，过滤所有的脚本变量（scriptedVariable）。
- */
-fun filterScriptVariables(
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	predicate: (String) -> Boolean
-): List<ParadoxScriptVariable> {
-	return ParadoxScriptVariableNameIndex.filter(project, scope, predicate)
-}
-
-/**
  * 基于定义名字索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
  */
 fun hasDefinition(
 	name: String,
-	typeExpression: String? = null,
+	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): Boolean {
@@ -562,7 +566,7 @@ fun hasDefinition(
  */
 fun findDefinition(
 	name: String,
-	typeExpression: String? = null,
+	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptProperty? {
@@ -574,7 +578,7 @@ fun findDefinition(
  */
 fun findDefinitions(
 	name: String,
-	typeExpression: String? = null,
+	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
@@ -585,7 +589,7 @@ fun findDefinitions(
  * 基于定义名字索引，根据类型表达式查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitions(
-	typeExpression: String? = null,
+	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
@@ -593,62 +597,50 @@ fun findDefinitions(
 }
 
 /**
- * 基于定义名字索引，根据类型表达式查找并根据名字过滤所有的脚本文件的定义（definition）。
+ * 基于定义类型索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
  */
-fun filterDefinitions(
-	typeExpression: String? = null,
+fun hasDefinitionByType(
+	name: String,
+	typeExpression: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	predicate: (String) -> Boolean
-): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionNameIndex.filter(typeExpression, project, scope, predicate)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): Boolean {
+	return ParadoxDefinitionTypeIndex.exists(name, typeExpression, project, scope)
 }
 
 /**
- * 基于定义类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ * 基于定义类型索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitionByType(
 	name: String,
-	type: String,
+	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptProperty? {
-	return ParadoxDefinitionTypeIndex.getOne(name, type, project, scope, !getSettings().preferOverridden)
+	return ParadoxDefinitionTypeIndex.getOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
 }
 
 /**
- * 基于定义类型索引，根据名字和类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ * 基于定义类型索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitionsByType(
 	name: String,
-	type: String,
+	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.getAll(name, type, project, scope)
+	return ParadoxDefinitionTypeIndex.getAll(name, typeExpression, project, scope)
 }
 
 /**
- * 基于定义类型索引，根据类型（不是类型表达式）查找所有的脚本文件的定义（definition）。
+ * 基于定义类型索引，根据类型表达式查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitionsByType(
-	type: String,
+	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.getAll(type, project, scope)
-}
-
-/**
- * 基于定义蕾西索引，根据类型（不是类型表达式）查找并根据名字过滤所有的脚本文件的定义（definition）。
- */
-fun filterDefinitionsByType(
-	type: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	predicate: (String) -> Boolean
-): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.filter(type, project, scope, predicate)
+	return ParadoxDefinitionTypeIndex.getAll(typeExpression, project, scope)
 }
 
 /**
@@ -738,21 +730,6 @@ fun findLocalisationsByNames(
 }
 
 /**
- * 基于本地化名字索引，根据语言区域查找且根据名字过滤所有的本地化（localisation）。
- * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
- */
-fun filterLocalisations(
-	locale: ParadoxLocale? = null,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	predicate: (String) -> Boolean
-): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.filter(locale, project, scope, hasDefault, predicate)
-}
-
-/**
  * 基于本地化名字索引，根据名字、语言区域判断是否存在同步本地化（localisation_synced）。
  */
 fun hasSyncedLocalisation(
@@ -819,21 +796,6 @@ fun findSyncedLocalisationsByKeyword(
 	maxSize: Int = -1
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxSyncedLocalisationNameIndex.getAllByKeyword(keyword, project, scope, maxSize)
-}
-
-/**
- * 基于同步本地化名字索引，根据语言区域查找且根据名字过滤所有的同步本地化（localisation_synced）。
- * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
- */
-fun filterSyncedLocalisations(
-	locale: ParadoxLocale? = null,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	predicate: (String) -> Boolean
-): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.filter(locale, project, scope, hasDefault, predicate)
 }
 
 //Link Extensions

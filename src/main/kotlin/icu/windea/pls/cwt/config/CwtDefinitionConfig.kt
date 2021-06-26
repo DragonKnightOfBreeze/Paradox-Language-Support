@@ -25,7 +25,7 @@ data class CwtDefinitionConfig(
 		return mergeConfigsCache.getOrPut(cacheKey){
 			val result = mutableListOf<CwtPropertyConfig>()
 			for((subtypeExpression, propConfig) in configs) {
-				if(subtypeExpression == null || matchesSubtype(subtypeExpression,subtypes)) {
+				if(subtypeExpression == null || matchesSubtypeExpression(subtypeExpression,subtypes)) {
 					result.add(propConfig)
 				}
 			}
@@ -80,7 +80,7 @@ data class CwtDefinitionConfig(
 				path.isEmpty() -> emptyList()
 				else -> resolvePropertyConfigs(subtypes,path, configGroup).flatMap { it.values?:emptyList() }
 			}
-		}.distinctBy{it.value}
+		}.distinctBy{it.value} 
 	}
 }
 

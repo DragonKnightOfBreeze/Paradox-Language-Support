@@ -206,6 +206,11 @@ fun Path.tryCreateDirectory(): Any? {
 	}
 }
 
+val nullPair = null to null
+
+@Suppress("UNCHECKED_CAST") 
+fun <A,B> emptyPair() = nullPair as Pair<A,B>
+
 //Is Extensions
 fun String.isBooleanYesNo() = this == "yes" || this == "no"
 

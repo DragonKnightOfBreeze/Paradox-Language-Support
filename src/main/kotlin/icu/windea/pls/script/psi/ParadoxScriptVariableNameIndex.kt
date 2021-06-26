@@ -47,22 +47,5 @@ object ParadoxScriptVariableNameIndex : StringStubIndexExtension<ParadoxScriptVa
 		}
 		return result
 	}
-	
-	inline fun filter(project: Project, scope: GlobalSearchScope, predicate: (String) -> Boolean): List<ParadoxScriptVariable> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxScriptVariable>()
-		for(key in keys) {
-			if(predicate(key)) {
-				for(element in get(key, project, scope)) {
-					result.add(element)
-				}
-			}
-		}
-		return result
-	}
 }
 

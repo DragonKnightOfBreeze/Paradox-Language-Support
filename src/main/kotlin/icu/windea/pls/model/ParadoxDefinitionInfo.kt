@@ -47,16 +47,6 @@ data class ParadoxDefinitionInfo(
 	}
 	
 	/**
-	 * 判断是否匹配指定的类型表达式（`type.subtype`）。
-	 */
-	fun matchesTypeExpression(typeExpression: String): Boolean {
-		val dotIndex = typeExpression.indexOf('.')
-		val type = if(dotIndex == -1) typeExpression else typeExpression.substring(0, dotIndex)
-		val subtype = if(dotIndex == -1) null else typeExpression.substring(dotIndex + 1)
-		return type == this.type && (subtype == null || subtype in subtypes)
-	}
-	
-	/**
 	 * 根据路径解析对应的属性配置列表。
 	 */
 	fun resolvePropertyConfigs(path: ParadoxPropertyPath,configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
