@@ -23,7 +23,7 @@ import java.util.*
  * @property subtypes (property*) subtype[?]: subtypeInfo
  * @property localisation (property*) localisation: localisationInfo
  */
-data class CwtTypeConfig(
+data class  CwtTypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
 	val path: String? = null,
@@ -34,32 +34,12 @@ data class CwtTypeConfig(
 	val nameFromFile: Boolean = false,
 	val typePerFile: Boolean = false,
 	val unique: Boolean = false,
-	val severity: String? = null,
+	val severity: String? = null,    
 	val skipRootKey: List<List<String>>? = null,
 	val typeKeyFilter: ReversibleList<String>? = null,
 	val startsWith: String? = null,
 	val graphRelatedTypes: List<String>? = null,
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
-	val localisation: List<Pair<String?, CwtTypeLocalisationConfig>> = emptyList() //(subtypeExpression, typeLocConfig)
-) : CwtConfig<CwtProperty>{
-	//使用WeakHashMap - 减少内存占用
-	private val mergeLocalisationCache = WeakHashMap<String,List<CwtTypeLocalisationConfig>>()
-	
-	fun mergeLocalisation(subtypes: List<String>): List<CwtTypeLocalisationConfig> {
-		val cacheKey = subtypes.joinToString(",")
-		return mergeLocalisationCache.getOrPut(cacheKey){
-			val result = mutableListOf<CwtTypeLocalisationConfig>()
-			for((subtypeExpression, localisationConfig) in localisation) {
-				if(subtypeExpression == null || matchesSubtype(subtypeExpression,subtypes)) {
-					result.add(localisationConfig)
-				}
-			}
-			result
-		}
-	}
-	
-	private fun matchesSubtype(subtypeExpression: String, subtypes: List<String>): Boolean {
-		return if(subtypeExpression.startsWith('!')) subtypeExpression.drop(1) !in subtypes else subtypeExpression in subtypes
-	}
-}
+	val localisation: CwtTypeLocalisationConfig? = null
+) : CwtConfig<CwtProperty>
 

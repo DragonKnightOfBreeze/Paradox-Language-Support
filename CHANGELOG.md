@@ -121,7 +121,8 @@
 * [X] 代码提示大小写兼容性解决（判断属性是否已存在以及存在数量时忽略大小写）
 * [X] ~~避免得到缓存数据的过程中抛出ProcessCanceledException~~
 * [X] 兼容引号括起的key和value，同样提示并妥善处理引号
-* [ ] 支持提示block中的value
+* [X] 支持提示block中的value
+* [X] 仅当有必要进行提示时提示
 * [ ] 基于cwt规则文件的key和value的代码提示的支持（更新中）
 * [ ] 基于cwt规则文件的key和value的引用的支持
 * [ ] 基于cwt规则文件的key和value的验证的支持

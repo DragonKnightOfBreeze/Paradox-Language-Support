@@ -35,6 +35,13 @@ private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ -
 
 //Match Extensions
 
+fun matchesSubtype(subtypeExpression: String, subtypes: List<String>): Boolean {
+	return when {
+		subtypeExpression.startsWith('!') -> subtypeExpression.drop(1) !in subtypes
+		else -> subtypeExpression in subtypes
+	}
+}
+
 fun matchDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 	when {
 		propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {

@@ -13,8 +13,4 @@ data class ParadoxLocalisationInfo(
 	override fun hashCode(): Int {
 		return Objects.hash(name, category)
 	}
-	
-	override fun toString(): String {
-		return "(${category.key}) $name"
-	}
 }

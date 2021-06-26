@@ -1,17 +1,30 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
+import java.util.*
 
-/**
- * @property required (option) required
- * @property primary (option) primary
- */
 data class CwtTypeLocalisationConfig(
-	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	val name: String,
-	val expression: String,
-	val required: Boolean = false,
-	val primary: Boolean = false,
-): CwtConfig<CwtProperty>
-
+	override val pointer: SmartPsiElementPointer<out CwtProperty>,
+	val configs: List<Pair<String?, CwtTypeLocalisationInfoConfig>> //(subtypeExpression, typeLocalisationInfoConfig)
+): CwtConfig<CwtProperty> {
+	//使用WeakHashMap - 减少内存占用
+	private val mergeConfigsCache = WeakHashMap<String, List<CwtTypeLocalisationInfoConfig>>()
+	
+	/**
+	 * 根据子类型列表合并配置。
+	 */
+	fun mergeConfigs(subtypes: List<String>): List<CwtTypeLocalisationInfoConfig> {
+		val cacheKey = subtypes.joinToString(",")
+		return mergeConfigsCache.getOrPut(cacheKey){
+			val result = mutableListOf<CwtTypeLocalisationInfoConfig>()
+			for((subtypeExpression, typeLocalisationInfoConfig) in configs) {
+				if(subtypeExpression == null || matchesSubtype(subtypeExpression, subtypes)) {
+					result.add(typeLocalisationInfoConfig)
+				}
+			}
+			result
+		}
+	}
+}
