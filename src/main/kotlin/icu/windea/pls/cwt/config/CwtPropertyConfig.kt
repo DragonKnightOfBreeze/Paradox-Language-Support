@@ -2,6 +2,7 @@ package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
@@ -18,10 +19,12 @@ data class CwtPropertyConfig(
 	val documentation: String? = null,
 	val options: List<CwtOptionConfig>? = null,
 	val optionValues: List<CwtOptionValueConfig>? = null,
-	val separatorType: SeparatorType = SeparatorType.EQUAL
+	val separatorType: SeparatorType = SeparatorType.EQUAL,
+	val keyExpression:CwtKeyExpression,
+	val valueExpression: CwtValueExpression
 ) {
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
-	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> RangeExpression.resolve(s) }
+	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 }
 

@@ -226,3 +226,11 @@ val PsiElement.keyword
 	get() = text.removeSurrounding("\"", "\"").let { s ->
 		runCatching { s.dropLast(dummyIdentifierLength) }.getOrElse { s }
 	}
+
+fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
+	return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
+}
+
+fun <E : PsiElement> E.createPointer(file: PsiFile): SmartPsiElementPointer<E> {
+	return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
+}

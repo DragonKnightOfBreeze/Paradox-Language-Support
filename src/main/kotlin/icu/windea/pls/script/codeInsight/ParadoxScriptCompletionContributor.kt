@@ -50,7 +50,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					addKeyCompletions(keyElement, definitionProperty, result)
 				}
 				mayBeValue -> {
-					//得到key元素
+					//得到value元素
 					val valueElement = parent1
 					//得到上一级definitionProperty
 					val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
@@ -58,7 +58,12 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					addValueCompletions(valueElement, definitionProperty, result)
 				}
 				mayBeValueInBlock -> {
-					
+					//得到value元素
+					val valueElement = parent1
+					//得到上一级definitionProperty
+					val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
+					//进行提示
+					addValueCompletionsInBlock(valueElement, definitionProperty, result)
 				}
 			}
 		}

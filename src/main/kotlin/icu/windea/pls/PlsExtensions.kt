@@ -262,12 +262,25 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 			val definitionInfo = current.paradoxDefinitionInfo
 			val name = current.name ?: return null
 			if(definitionInfo != null) {
-				val propertiesCardinality = current.properties.groupAndCountBy { it.name.lowercase() } //这里名字要忽略大小写
 				val path = ParadoxPropertyPath(subPaths, subPathInfos)
-				return ParadoxDefinitionPropertyInfo(name, path, propertiesCardinality, definitionInfo)
+				val gameType = definitionInfo.gameType
+				val configGroup = getConfig(element.project).getValue(gameType)
+				val propertyConfigs = definitionInfo.resolvePropertyConfigs(path, configGroup)
+				val childPropertyConfigs = definitionInfo.resolveChildPropertyConfigs(path, configGroup)
+				val childValueConfigs = definitionInfo.resolveChildValuesConfigs(path, configGroup)
+				val childPropertyOccurrence = current.properties.groupAndCountBy { prop ->
+					childPropertyConfigs.find { matchesKey(it.keyExpression, prop.propertyKey, configGroup) }?.keyExpression
+				}
+				val childValueOccurrence = current.values.groupAndCountBy { value ->
+					childValueConfigs.find { matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
+				}
+				return ParadoxDefinitionPropertyInfo(
+					name, path, propertyConfigs, childPropertyConfigs, childValueConfigs,
+					childPropertyOccurrence, childValueOccurrence, gameType
+				)
 			}
 			subPaths.addFirst(name)
-			subPathInfos.addFirst(ParadoxPropertyPathInfo(name,current.isQuoted()))
+			subPathInfos.addFirst(ParadoxPropertyPathInfo(name, current.isQuoted()))
 		}
 		current = current.parent ?: break
 	} while(current !is PsiFile)

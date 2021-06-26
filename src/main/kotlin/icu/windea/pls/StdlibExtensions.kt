@@ -8,7 +8,6 @@ import java.text.*
 import java.util.*
 import java.util.concurrent.*
 import javax.swing.*
-import kotlin.sequences.Sequence
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun pass() {
@@ -21,11 +20,14 @@ fun <T> Collection<T>.asList(): List<T> {
 	return if(this is List) this else this.toList()
 }
 
-fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E): Map<E, Int> {
+fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
+	if(this.isEmpty()) return emptyMap()
 	val result = mutableMapOf<E, Int>()
 	for(e in this) {
 		val k = selector(e)
-		result.compute(k) { _, v -> if(v == null) 1 else v + 1 }
+		if(k != null) {
+			result.compute(k) { _, v -> if(v == null) 1 else v + 1 }
+		}
 	}
 	return result
 }
@@ -90,7 +92,7 @@ fun String.containsBlankLine(): Boolean {
 
 fun String.quote() = if(startsWith('"') && endsWith('"')) this else "\"$this\""
 
-fun String.quoteIf(quoted:Boolean) = if(quoted) "\"$this\"" else this //不判断之前是否已经用引号括起，依据quoted 
+fun String.quoteIf(quoted: Boolean) = if(quoted) "\"$this\"" else this //不判断之前是否已经用引号括起，依据quoted 
 
 fun String.quoteIfNecessary() = if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
 
@@ -124,7 +126,7 @@ fun String.toCapitalizedWords(): String {
 /**
  * 判断指定的关键词是否匹配当前字符串。（关键词中的每个字符是否按顺序被当前字符串包含）。
  */
-fun String.fuzzyMatches(keyword:String,ignoreCase: Boolean = false):Boolean{
+fun String.fuzzyMatches(keyword: String, ignoreCase: Boolean = false): Boolean {
 	TODO()
 }
 
@@ -301,9 +303,9 @@ fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no")
 
 fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
 
-fun String.toIntRange() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
+fun String.toIntRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 
-fun String.toFloatRange() = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
+fun String.toFloatRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
 
 fun URL.toFile() = File(this.toURI())
 
@@ -368,3 +370,7 @@ typealias Tuple3<A, B, C> = Triple<A, B, C>
 fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
 
 fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
+
+//Range Exntensions
+
+typealias FloatRange = ClosedRange<Float>

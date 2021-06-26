@@ -5,6 +5,8 @@ import icu.windea.pls.*
 import org.slf4j.*
 import java.nio.file.*
 
+//TODO 兼容linux系统
+
 /**
  * DDS格式文件转PNG格式文件的转换器。
  */
@@ -41,6 +43,7 @@ object DdsToPngConverter{
 			return null
 		}
 	}
+	
 	
 	/**
 	 * * 检查目录`~/dds2png`和`~/dds2png/tmp`是否存在，如果不存在则创建。
