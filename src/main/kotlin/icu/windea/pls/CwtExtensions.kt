@@ -4,6 +4,7 @@ import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.expression.*
@@ -514,7 +515,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
-			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return
+			val (prefix, suffix) = expression.extraValue.castOrNull<Tuple2<String, String>>() ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword,typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
@@ -626,7 +627,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		}
 		CwtValueExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
-			val (prefix, suffix) = expression.extraValue?.castOrNull<Pair<String, String>>() ?: return
+			val (prefix, suffix) = expression.extraValue?.castOrNull<Tuple2<String, String>>() ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword,typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue

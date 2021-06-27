@@ -6,6 +6,7 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import javax.swing.*
@@ -139,21 +140,6 @@ object CwtPsiImplUtil {
 	fun getTruncatedValue(element: CwtValue):String{
 		return element.value
 	}
-	
-	@JvmStatic
-	fun getName(element: CwtValue):String{
-		return element.value
-	}
-	
-	@JvmStatic
-	fun setName(element: CwtValue,name:String): CwtValue {
-		throw IncorrectOperationException(message("cannotBeRenamed"))
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: CwtValue): PsiElement {
-		return element
-	}
 	//endregion
 	
 	//region CwtBoolean
@@ -191,6 +177,21 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getStringValue(element: CwtString): String {
 		return element.value
+	}
+	
+	@JvmStatic
+	fun getName(element: CwtString):String{
+		return element.value
+	}
+	
+	@JvmStatic
+	fun setName(element: CwtString,name:String): CwtString {
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: CwtString): PsiElement {
+		return element
 	}
 	//endregion
 	

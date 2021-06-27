@@ -50,7 +50,7 @@ BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
-OPTION_VALUE_STRING_TOKEN=([^\s])|([^\s][^\r\n]*[^\s]) //option.value可以无需双引号直接包含空格，但开始和末尾不会是空格
+OPTION_VALUE_STRING_TOKEN=([^\s])|([^\s{}][^\r\n]*[^\s{}]) //option.value可以无需双引号直接包含空格，但开始和末尾不会是空格
 DOCUMENTATION_TOKEN=[^\r\n]*
 
 IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({SPACE})?((=)|(<>))

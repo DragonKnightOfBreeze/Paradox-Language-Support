@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface CwtValue extends CwtNamedElement {
+public interface CwtValue extends PsiElement {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -17,14 +17,5 @@ public interface CwtValue extends CwtNamedElement {
 
   @NotNull
   String getTruncatedValue();
-
-  @NotNull
-  String getName();
-
-  @NotNull
-  CwtValue setName(@NotNull String name);
-
-  @NotNull
-  PsiElement getNameIdentifier();
 
 }

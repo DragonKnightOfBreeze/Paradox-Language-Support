@@ -40,4 +40,12 @@ public interface CwtProperty extends CwtNamedElement {
   @NotNull
   SeparatorType getSeparatorType();
 
+  //WARNING: getConfigType(...) is skipped
+  //matching getConfigType(CwtProperty, ...)
+  //methods are not found in CwtPsiImplUtil
+
+  //WARNING: setConfigType(...) is skipped
+  //matching setConfigType(CwtProperty, ...)
+  //methods are not found in CwtPsiImplUtil
+
 }

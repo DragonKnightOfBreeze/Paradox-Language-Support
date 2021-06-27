@@ -64,10 +64,11 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull CwtString o) {
     visitValue(o);
+    // visitNamedElement(o);
   }
 
   public void visitValue(@NotNull CwtValue o) {
-    visitNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitPsiComment(@NotNull PsiComment o) {

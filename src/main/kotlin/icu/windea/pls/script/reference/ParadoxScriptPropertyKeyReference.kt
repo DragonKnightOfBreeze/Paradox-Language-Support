@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.expression.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPropertyKeyReference(
@@ -27,6 +28,14 @@ class ParadoxScriptPropertyKeyReference(
 		val expression = element.expression?:return null
 		val project = element.project
 		return when(expression.type){
+			CwtKeyExpression.Type.Localisation -> {
+				val name = element.value
+				findLocalisation(name, inferParadoxLocale(),project,hasDefault = true)
+			}
+			CwtKeyExpression.Type.SyncedLocalisation -> {
+				val name = element.value
+				findSyncedLocalisation(name, inferParadoxLocale(),project,hasDefault = true)
+			}
 			CwtKeyExpression.Type.TypeExpression -> {
 				val name = element.value
 				val typeExpression = expression.value?:return null
@@ -38,13 +47,12 @@ class ParadoxScriptPropertyKeyReference(
 				val typeExpression = expression.value?: return null
 				findDefinitionByType(name,typeExpression,project)
 			}
-			CwtKeyExpression.Type.Localisation -> {
+			CwtKeyExpression.Type.EnumExpression -> {
+				val enumName = expression.value?:return null
 				val name = element.value
-				findLocalisation(name, inferParadoxLocale(),project,hasDefault = true)
-			}
-			CwtKeyExpression.Type.SyncedLocalisation -> {
-				val name = element.value
-				findSyncedLocalisation(name, inferParadoxLocale(),project,hasDefault = true)
+				val gameType = element.paradoxFileInfo?.gameType?:return null
+				val enumValueConfig = getConfig(element.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find{ it.value == name }
+				enumValueConfig?.pointer?.element?.castOrNull<CwtString>()
 			}
 			else -> null //TODO
 		}
@@ -55,6 +63,14 @@ class ParadoxScriptPropertyKeyReference(
 		val expression = element.expression?:return emptyArray()
 		val project = element.project
 		return when(expression.type){
+			CwtKeyExpression.Type.Localisation -> {
+				val name = element.value
+				findLocalisations(name, inferParadoxLocale(),project,hasDefault = true)
+			}
+			CwtKeyExpression.Type.SyncedLocalisation -> {
+				val name = element.value
+				findSyncedLocalisations(name, inferParadoxLocale(),project,hasDefault = true)
+			}
 			CwtKeyExpression.Type.TypeExpression -> {
 				val name = element.value
 				val typeExpression = expression.value?:return emptyArray()
@@ -66,13 +82,12 @@ class ParadoxScriptPropertyKeyReference(
 				val typeExpression = expression.value?: return emptyArray()
 				findDefinitionsByType(name,typeExpression,project)
 			}
-			CwtKeyExpression.Type.Localisation -> {
+			CwtKeyExpression.Type.EnumExpression -> {
+				val enumName = expression.value?:return emptyArray()
 				val name = element.value
-				findLocalisations(name, inferParadoxLocale(),project,hasDefault = true)
-			}
-			CwtKeyExpression.Type.SyncedLocalisation -> {
-				val name = element.value
-				findSyncedLocalisations(name, inferParadoxLocale(),project,hasDefault = true)
+				val gameType = element.paradoxFileInfo?.gameType?:return emptyArray()
+				val enumValueConfig = getConfig(element.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find{ it.value == name }
+				enumValueConfig?.pointer?.element?.castOrNull<CwtString>()?.toSingletonList() ?: return emptyArray()
 			}
 			else -> return emptyArray() //TODO
 		}.mapToArray { PsiElementResolveResult(it) }

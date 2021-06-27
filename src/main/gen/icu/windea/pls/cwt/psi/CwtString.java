@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface CwtString extends CwtValue {
+public interface CwtString extends CwtValue, CwtNamedElement {
 
   @NotNull
   PsiElement getStringToken();
@@ -18,5 +18,14 @@ public interface CwtString extends CwtValue {
 
   @NotNull
   String getStringValue();
+
+  @NotNull
+  String getName();
+
+  @NotNull
+  CwtString setName(@NotNull String name);
+
+  @NotNull
+  PsiElement getNameIdentifier();
 
 }

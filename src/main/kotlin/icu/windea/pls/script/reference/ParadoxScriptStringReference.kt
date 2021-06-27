@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.expression.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import kotlin.text.removeSurrounding
 
@@ -30,6 +31,14 @@ class ParadoxScriptStringReference(
 		val expression = element.expression?:return fallbackResolve()
 		val project = element.project
 		return when(expression.type){
+			CwtValueExpression.Type.Localisation -> {
+				val name = element.value
+				findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+			}
+			CwtValueExpression.Type.SyncedLocalisation -> {
+				val name = element.value
+				findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+			}
 			CwtValueExpression.Type.TypeExpression -> {
 				val name = element.value
 				val typeExpression = expression.value?:return null
@@ -41,13 +50,12 @@ class ParadoxScriptStringReference(
 				val typeExpression = expression.value?: return null
 				findDefinitionByType(name, typeExpression, project)
 			}
-			CwtValueExpression.Type.Localisation -> {
+			CwtValueExpression.Type.EnumExpression -> {
+				val enumName = expression.value?:return null
 				val name = element.value
-				findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
-			}
-			CwtValueExpression.Type.SyncedLocalisation -> {
-				val name = element.value
-				findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+				val gameType = element.paradoxFileInfo?.gameType?:return null
+				val enumValueConfig = getConfig(element.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find{ it.value == name }
+				enumValueConfig?.pointer?.element.castOrNull<CwtString>()
 			}
 			CwtValueExpression.Type.AliasMatchLeftExpression -> fallbackResolve() //TODO
 			else -> null //TODO
@@ -69,6 +77,14 @@ class ParadoxScriptStringReference(
 		val expression = element.expression?:return fallbackMultiResolve(incompleteCode)
 		val project = element.project
 		return when(expression.type){
+			CwtValueExpression.Type.Localisation -> {
+				val name = element.value
+				findLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
+			}
+			CwtValueExpression.Type.SyncedLocalisation -> {
+				val name = element.value
+				findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
+			}
 			CwtValueExpression.Type.TypeExpression -> {
 				val name = element.value
 				val typeExpression = expression.value?:return emptyArray()
@@ -80,13 +96,12 @@ class ParadoxScriptStringReference(
 				val typeExpression = expression.value?: return emptyArray()
 				findDefinitionsByType(name, typeExpression, project)
 			}
-			CwtValueExpression.Type.Localisation -> {
+			CwtValueExpression.Type.EnumExpression -> {
+				val enumName = expression.value?:return emptyArray()
 				val name = element.value
-				findLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
-			}
-			CwtValueExpression.Type.SyncedLocalisation -> {
-				val name = element.value
-				findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
+				val gameType = element.paradoxFileInfo?.gameType?:return emptyArray()
+				val enumValueConfig = getConfig(element.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find{ it.value == name }
+				enumValueConfig?.pointer?.element.castOrNull<CwtString>()?.toSingletonList() ?: return emptyArray()
 			}
 			CwtValueExpression.Type.AliasMatchLeftExpression -> return fallbackMultiResolve(incompleteCode) //TODO
 			else -> return emptyArray() //TODO

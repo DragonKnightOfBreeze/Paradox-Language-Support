@@ -10,13 +10,12 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtTypes.*;
 import icu.windea.pls.cwt.psi.*;
 
-public class CwtStringImpl extends CwtValueImpl implements CwtString {
+public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
 
   public CwtStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull CwtVisitor visitor) {
     visitor.visitString(this);
   }
@@ -49,6 +48,24 @@ public class CwtStringImpl extends CwtValueImpl implements CwtString {
   @NotNull
   public String getStringValue() {
     return CwtPsiImplUtil.getStringValue(this);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return CwtPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public CwtString setName(@NotNull String name) {
+    return CwtPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getNameIdentifier() {
+    return CwtPsiImplUtil.getNameIdentifier(this);
   }
 
 }

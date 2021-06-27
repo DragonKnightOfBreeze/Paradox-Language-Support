@@ -10,7 +10,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is CwtProperty -> getPropertyInfo(element)
-			is CwtValue -> getValueInfo(element)
+			is CwtString -> getStringInfo(element)
 			else -> null
 		}
 	}
@@ -18,17 +18,19 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
+			val configTypeText = element.cwtConfigType?.text ?: "property"
 			definition {
-				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 		}
 	}
 	
-	private fun getValueInfo(element: CwtValue): String {
+	private fun getStringInfo(element: CwtString): String {
 		return buildString {
 			val name = element.name
+			val configTypeText = element.cwtConfigType?.text ?: "value"
 			definition {
-				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 		}
 	}
@@ -36,7 +38,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is CwtProperty -> getPropertyDoc(element)
-			is CwtValue -> getValueDoc(element)
+			is CwtString -> getStringDoc(element)
 			else -> null
 		}
 	}
@@ -44,8 +46,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
+			val configTypeText = element.cwtConfigType?.text ?: "property"
 			definition {
-				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 			//文档注释，以###开始
 			val documentation = getDocumentation(element)
@@ -57,11 +60,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getValueDoc(element: CwtValue): String {
+	private fun getStringDoc(element: CwtString): String {
 		return buildString {
 			val name = element.name
+			val configTypeText = element.cwtConfigType?.text ?: "value"
 			definition {
-				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 			//文档注释，以###开始
 			val documentation = getDocumentation(element)

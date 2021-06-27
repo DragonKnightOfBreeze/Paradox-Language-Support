@@ -88,6 +88,7 @@ fun resolveTypeExpression(typeExpression: String): Pair<String, String?> {
 
 //Keys
 
+val cwtConfigTypeKey = Key<CwtConfigType>("cwtConfigType")
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
@@ -95,6 +96,18 @@ val cachedParadoxDefinitionPropertyInfoKey = Key<CachedValue<ParadoxDefinitionPr
 val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
 
 //PsiElement Extensions
+
+val CwtProperty.cwtConfigType:CwtConfigType? get() = doGetCwtConfigType(this)
+
+private fun doGetCwtConfigType(element:CwtProperty):CwtConfigType?{
+	return null //TODO
+}
+
+val CwtValue.cwtConfigType:CwtConfigType? get() = doGetCwtConfigType(this)
+
+private fun doGetCwtConfigType(element:CwtValue):CwtConfigType?{
+	return null //TODO
+}
 
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
