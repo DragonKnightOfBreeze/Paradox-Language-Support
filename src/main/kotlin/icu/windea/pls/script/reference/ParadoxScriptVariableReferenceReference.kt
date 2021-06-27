@@ -7,27 +7,25 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptVariablePsiReference(
+class ParadoxScriptVariableReferenceReference(
 	element: ParadoxScriptVariableReference,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxScriptVariableReference>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名关联的variable
+		//尝试重命名关联的variable
 		val resolved = resolve()
 		when {
-			resolved != null && !resolved.isWritable -> {
-				throw IncorrectOperationException(message("cannotBeRenamed"))
-			}
-			resolved is ParadoxScriptVariable -> {
-				resolved.name = newElementName
-			}
+			resolved == null -> pass()
+			!resolved.isWritable -> throw IncorrectOperationException(message("cannotBeRenamed"))
+			else -> resolved.name = newElementName
 		}
+		//重命名variableReference
 		return element.setName(newElementName)
 	}
 	
 	override fun resolve(): ParadoxScriptVariable? {
 		//首先尝试从当前文件中查找引用，然后从全局范围中查找引用
-		val name = element.variableReferenceId.text
+		val name = element.name
 		val project = element.project
 		val file = element.containingFile
 		return findScriptVariableInFile(name, file)
@@ -36,7 +34,7 @@ class ParadoxScriptVariablePsiReference(
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		//首先尝试从当前文件中查找引用，然后从全局范围中查找引用
-		val name = element.variableReferenceId.text
+		val name = element.name
 		val project = element.project
 		val file = element.containingFile
 		return findScriptVariablesInFile(name, file)
@@ -45,9 +43,9 @@ class ParadoxScriptVariablePsiReference(
 	}
 	
 	override fun getVariants(): Array<out Any> {
+		//同时需要同时查找当前文件中的和全局的
 		val project = element.project
 		val file = element.containingFile
-		//同时需要同时查找当前文件中的和全局的
 		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapToArray {
 			val name = it.name
 			val icon = it.icon

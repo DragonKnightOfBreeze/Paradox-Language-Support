@@ -21,7 +21,6 @@ fun <T> Collection<T>.asList(): List<T> {
 }
 
 fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
-	if(this.isEmpty()) return emptyMap()
 	val result = mutableMapOf<E, Int>()
 	for(e in this) {
 		val k = selector(e)

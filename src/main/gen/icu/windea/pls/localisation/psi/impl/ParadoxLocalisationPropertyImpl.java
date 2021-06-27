@@ -60,7 +60,7 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public ParadoxLocalisationProperty setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 

@@ -16,7 +16,7 @@ public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisation
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxLocalisationSequentialNumber setName(@NotNull String name);
 
   @Nullable
   PsiElement getNameIdentifier();

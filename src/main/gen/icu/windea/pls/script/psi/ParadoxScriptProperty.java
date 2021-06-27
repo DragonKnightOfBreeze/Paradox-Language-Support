@@ -20,7 +20,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxScriptProperty setName(@NotNull String name);
 
   @Nullable
   PsiElement getNameIdentifier();

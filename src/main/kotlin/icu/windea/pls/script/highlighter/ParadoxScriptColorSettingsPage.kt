@@ -20,6 +20,11 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 		private val _validEscapeName = message("paradox.script.displayName.validEscape")
 		private val _invalidEscapeName = message("paradox.script.displayName.invalidEscape")
 		private val _badCharacterName = message("paradox.script.displayName.badCharacter")
+		private val _definitionName = message("paradox.script.displayName.definition")
+		private val _definitionReferenceName = message("paradox.script.displayName.definitionReference")
+		private val _localisationReferenceName = message("paradox.script.displayName.localisationReference")
+		private val _syncedLocalisationReferenceName = message("paradox.script.displayName.syncedLocalisationReference")
+		private val _enumName = message("paradox.script.displayName.enumReference")
 		
 		private val attributesDescriptors = arrayOf(
 			AttributesDescriptor(_separatorName, ParadoxScriptAttributesKeys.SEPARATOR_KEY),
@@ -34,7 +39,12 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(_commentName, ParadoxScriptAttributesKeys.COMMENT_KEY),
 			AttributesDescriptor(_validEscapeName, ParadoxScriptAttributesKeys.VALID_ESCAPE_KEY),
 			AttributesDescriptor(_invalidEscapeName, ParadoxScriptAttributesKeys.INVALID_ESCAPE_KEY),
-			AttributesDescriptor(_badCharacterName, ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY)
+			AttributesDescriptor(_badCharacterName, ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY),
+			AttributesDescriptor(_definitionName, ParadoxScriptAttributesKeys.DEFINITION_KEY),
+			AttributesDescriptor(_definitionReferenceName, ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY),
+			AttributesDescriptor(_localisationReferenceName, ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY),
+			AttributesDescriptor(_syncedLocalisationReferenceName, ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY),
+			AttributesDescriptor(_enumName, ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY)
 		)
 	}
 

@@ -20,7 +20,7 @@ public interface ParadoxLocalisationCommandField extends ParadoxLocalisationComm
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxLocalisationCommandField setName(@NotNull String name);
 
   @Nullable
   PsiElement getNameIdentifier();

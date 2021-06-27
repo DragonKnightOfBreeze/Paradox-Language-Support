@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.highlighter.*
 
 object ParadoxScriptAttributesKeys {
 	private val _separatorName = message("paradox.script.externalName.separator")
@@ -20,6 +21,10 @@ object ParadoxScriptAttributesKeys {
 	private val _invalidEscapeName = message("paradox.script.externalName.invalidEscape")
 	private val _badCharacterName = message("paradox.script.externalName.badCharacter")
 	private val _definitionName = message("paradox.script.externalName.definition")
+	private val _definitionReferenceName = message("paradox.script.externalName.definitionReference")
+	private val _localisationReferenceName = message("paradox.script.externalName.localisationReference")
+	private val _syncedLocalisationReferenceName = message("paradox.script.externalName.syncedLocalisationReference")
+	private val _enumReferenceName = message("paradox.script.externalName.enumReference")
 	
 	@JvmField val SEPARATOR_KEY = createTextAttributesKey(_separatorName, OPERATION_SIGN)
 	@JvmField val BRACES_KEY = createTextAttributesKey(_bracesName, BRACES)
@@ -35,4 +40,8 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(_invalidEscapeName, INVALID_STRING_ESCAPE)
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(_badCharacterName, BAD_CHARACTER)
 	@JvmField val DEFINITION_KEY = createTextAttributesKey(_definitionName, PROPERTY_KEY_KEY)
+	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey(_definitionReferenceName, PROPERTY_KEY_KEY)
+	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(_localisationReferenceName, ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
+	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(_syncedLocalisationReferenceName, ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
+	@JvmField val ENUM_REFERENCE_KEY = createTextAttributesKey(_enumReferenceName, STATIC_FIELD)
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.localisation.reference.ParadoxLocalisationIconPsiReference;
+import icu.windea.pls.localisation.reference.ParadoxLocalisationIconReference;
 import javax.swing.Icon;
 
 public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
@@ -23,12 +23,12 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxLocalisationIcon setName(@NotNull String name);
 
   int getTextOffset();
 
   @Nullable
-  ParadoxLocalisationIconPsiReference getReference();
+  ParadoxLocalisationIconReference getReference();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

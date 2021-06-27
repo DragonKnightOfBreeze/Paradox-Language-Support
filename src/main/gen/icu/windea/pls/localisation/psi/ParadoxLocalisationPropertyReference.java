@@ -4,7 +4,7 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.localisation.reference.ParadoxLocalisationPsiReference;
+import icu.windea.pls.localisation.reference.ParadoxLocalisationPropertyReferenceReference;
 
 public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisationRichText {
 
@@ -21,11 +21,11 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxLocalisationPropertyReference setName(@NotNull String name);
 
   int getTextOffset();
 
   @Nullable
-  ParadoxLocalisationPsiReference getReference();
+  ParadoxLocalisationPropertyReferenceReference getReference();
 
 }

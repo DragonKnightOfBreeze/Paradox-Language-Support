@@ -49,7 +49,7 @@ public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationName
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public ParadoxLocalisationCommandField setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 

@@ -46,7 +46,7 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationName
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public ParadoxLocalisationColorfulText setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 

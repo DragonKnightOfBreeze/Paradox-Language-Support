@@ -4,7 +4,7 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.script.reference.ParadoxScriptVariablePsiReference;
+import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
 
 public interface ParadoxScriptVariableReference extends ParadoxScriptValue {
 
@@ -15,10 +15,10 @@ public interface ParadoxScriptVariableReference extends ParadoxScriptValue {
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxScriptVariableReference setName(@NotNull String name);
 
   @NotNull
-  ParadoxScriptVariablePsiReference getReference();
+  ParadoxScriptVariableReferenceReference getReference();
 
   @Nullable
   ParadoxScriptValue getReferenceValue();

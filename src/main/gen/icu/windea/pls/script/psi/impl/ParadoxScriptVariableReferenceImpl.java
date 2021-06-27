@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.script.reference.ParadoxScriptVariablePsiReference;
+import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
 
 public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl implements ParadoxScriptVariableReference {
 
@@ -42,13 +42,13 @@ public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl i
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public ParadoxScriptVariableReference setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 
   @Override
   @NotNull
-  public ParadoxScriptVariablePsiReference getReference() {
+  public ParadoxScriptVariableReferenceReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

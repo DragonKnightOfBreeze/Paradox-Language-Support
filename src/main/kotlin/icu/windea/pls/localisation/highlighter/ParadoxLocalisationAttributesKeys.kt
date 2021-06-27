@@ -25,6 +25,7 @@ object ParadoxLocalisationAttributesKeys {
 	private val _invalidEscapeName = message("paradox.localisation.externalName.invalidEscape")
 	private val _badCharacterName = message("paradox.localisation.externalName.badCharacter")
 	private val _localisationName = message("paradox.localisation.externalName.localisation")
+	private val _syncedLocalisationName = message("paradox.localisation.externalName.syncedLocalisation")
 	
 	@JvmField val SEPARATOR_KEY = createTextAttributesKey(_separatorName, OPERATION_SIGN)
 	@JvmField val NUMBER_KEY = createTextAttributesKey(_numberName, NUMBER)
@@ -44,6 +45,7 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(_invalidEscapeName, INVALID_STRING_ESCAPE)
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(_badCharacterName, BAD_CHARACTER)
 	@JvmField val LOCALISATION_KEY = createTextAttributesKey(_localisationName, PROPERTY_KEY_KEY)
+	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey(_syncedLocalisationName, PROPERTY_KEY_KEY)
 
 	val COLOR_KEYS by lazy {
 		getConfig().colorMap.mapValues { (_,color)->

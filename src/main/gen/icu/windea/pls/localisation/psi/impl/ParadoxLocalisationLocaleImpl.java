@@ -42,7 +42,7 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedEleme
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public ParadoxLocalisationLocale setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 

@@ -332,7 +332,7 @@
     <codeInsight.lineMarkerProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationLineMarkerProvider"/>
-
+    
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
 

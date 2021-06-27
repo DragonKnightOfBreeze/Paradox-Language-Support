@@ -42,7 +42,7 @@ public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisation
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public ParadoxLocalisationSequentialNumber setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 

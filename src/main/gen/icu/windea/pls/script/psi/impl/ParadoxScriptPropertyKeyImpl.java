@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
+import icu.windea.pls.script.reference.ParadoxScriptPropertyKeyReference;
 
 public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implements ParadoxScriptPropertyKey {
 
@@ -43,6 +44,18 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxScriptPropertyKey setValue(@NotNull String value) {
+    return ParadoxScriptPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxScriptPropertyKeyReference getReference() {
+    return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
 }

@@ -2,6 +2,8 @@ package icu.windea.pls.model
 
 import icu.windea.pls.*
 import icu.windea.pls.cwt.config.*
+import icu.windea.pls.cwt.expression.*
+import icu.windea.pls.script.psi.*
 import java.util.*
 
 data class ParadoxDefinitionInfo(
@@ -65,5 +67,30 @@ data class ParadoxDefinitionInfo(
 	 */
 	fun resolveChildValuesConfigs(path: ParadoxPropertyPath, configGroup: CwtConfigGroup): List<CwtValueConfig> {
 		return definitionConfig?.resolveChildValuesConfigs(subtypes, path, configGroup)?: emptyList()
+	}
+	
+	fun resolvePropertyConfig(propertyConfigs:List<CwtPropertyConfig>,element:ParadoxDefinitionProperty, configGroup: CwtConfigGroup):CwtPropertyConfig?{
+		if(element !is ParadoxScriptProperty) return null
+		val propertyValue = element.propertyValue ?: return null
+		if(propertyConfigs.isEmpty()) return null
+		return propertyConfigs.find { 
+			matchesValue(it.valueExpression,propertyValue.value,configGroup)
+		}
+	}
+	
+	fun resolveChildPropertyOccurrence(childPropertyConfigs:List<CwtPropertyConfig>,element: ParadoxDefinitionProperty,configGroup: CwtConfigGroup): Map<CwtKeyExpression, Int> {
+		val properties = element.properties
+		if(properties.isEmpty()) return emptyMap()
+		return properties.groupAndCountBy { prop ->
+			childPropertyConfigs.find { matchesKey(it.keyExpression, prop.propertyKey, configGroup) }?.keyExpression
+		}
+	}
+	
+	fun resolveChildValueOccurrence(childValueConfigs:List<CwtValueConfig>,element: ParadoxDefinitionProperty,configGroup: CwtConfigGroup):Map<CwtValueExpression,Int> {
+		val values = element.values
+		if(values.isEmpty()) return emptyMap()
+		return values.groupAndCountBy { value ->
+			childValueConfigs.find { matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
+		}
 	}
 }

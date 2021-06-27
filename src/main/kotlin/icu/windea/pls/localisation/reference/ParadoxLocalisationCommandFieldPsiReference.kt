@@ -11,16 +11,19 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
+		//TODO
 		return element.setName(newElementName)
 	}
 	
 	override fun resolve(): PsiElement? {
-		val name = element.commandFieldId?.text ?: return null
+		//查找类型为scripted_loc的definition
+		val name = element.name
 		val project = element.project
 		return findDefinitionByType(name, "scripted_loc", project)
 	}
 	
 	override fun getVariants(): Array<out Any> {
+		//查找类型为scripted_loc的definition
 		val project = element.project
 		return findDefinitionsByType("scripted_loc", project).mapToArray {
 			val name = it.name //与definition.name是相同的，直接使用

@@ -23,7 +23,7 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxLocalisationProperty setName(@NotNull String name);
 
   @NotNull
   PsiElement getNameIdentifier();

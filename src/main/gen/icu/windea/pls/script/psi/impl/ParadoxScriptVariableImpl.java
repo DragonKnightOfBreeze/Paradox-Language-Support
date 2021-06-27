@@ -54,7 +54,7 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public ParadoxScriptVariable setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 

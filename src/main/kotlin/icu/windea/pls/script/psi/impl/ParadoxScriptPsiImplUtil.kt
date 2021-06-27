@@ -2,7 +2,6 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
@@ -32,7 +31,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptVariable, name: String): PsiElement {
+	fun setName(element: ParadoxScriptVariable, name: String): ParadoxScriptVariable {
 		element.variableName.replace(createVariableName(element.project, name))
 		return element
 	}
@@ -58,6 +57,12 @@ object ParadoxScriptPsiImplUtil {
 	fun getValue(element:ParadoxScriptVariableName):String{
 		return element.text
 	}
+	
+	@JvmStatic
+	fun setValue(element: ParadoxScriptVariableName, value: String): ParadoxScriptVariableName {
+		element.replace(createVariableName(element.project, value))
+		return element
+	}
 	//endregion
 	
 	//region ParadoxScriptProperty
@@ -74,7 +79,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptProperty, name: String): PsiElement {
+	fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
 		element.propertyKey.replace(createPropertyKey(element.project, name))
 		return element
 	}
@@ -119,6 +124,18 @@ object ParadoxScriptPsiImplUtil {
 	fun getValue(element:ParadoxScriptPropertyKey):String{
 		return element.text.unquote()
 	}
+	
+	@JvmStatic
+	fun setValue(element: ParadoxScriptPropertyKey,value:String):ParadoxScriptPropertyKey{
+		element.replace(createPropertyKey(element.project, value))
+		return element
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxScriptPropertyKey): ParadoxScriptPropertyKeyReference {
+		val rangeInElement = TextRange(0, element.textLength) //包括可能的括起字符串的双引号
+		return ParadoxScriptPropertyKeyReference(element, rangeInElement)
+	}
 	//endregion
 	
 	//region ParadoxScriptVariableReference
@@ -128,14 +145,15 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptVariableReference, name: String): PsiElement {
+	fun setName(element: ParadoxScriptVariableReference, name: String): ParadoxScriptVariableReference {
 		element.replace(createValue(element.project, name))
 		return element
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptVariablePsiReference {
-		return ParadoxScriptVariablePsiReference(element, TextRange(0, element.textLength))
+	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptVariableReferenceReference {
+		val rangeInElement = element.variableReferenceId.textRangeInParent
+		return ParadoxScriptVariableReferenceReference(element,rangeInElement)
 	}
 	
 	@JvmStatic
@@ -189,7 +207,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setValue(element: ParadoxScriptString, name: String): PsiElement {
+	fun setValue(element: ParadoxScriptString, name: String): ParadoxScriptString {
 		element.replace(createValue(element.project, name.quote()))
 		return element
 	}
@@ -200,9 +218,9 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptString): ParadoxScriptStringPropertyPsiReference {
-		val rangeInElement = TextRange(0, element.textLength) //不管有没有用双引号括起，都算在内
-		return ParadoxScriptStringPropertyPsiReference(element, rangeInElement)
+	fun getReference(element: ParadoxScriptString): ParadoxScriptStringReference {
+		val rangeInElement = TextRange(0, element.textLength) //包括可能的括起字符串的双引号
+		return ParadoxScriptStringReference(element, rangeInElement)
 	}
 	//endregion
 	
@@ -260,11 +278,11 @@ object ParadoxScriptPsiImplUtil {
 	
 	private fun ColorHsl.toColor() = Color(ColorConversions.convertHSLtoRGB(this))
 	
-	private fun Color.toColorHsl() = ColorConversions.convertRGBtoHSL(this.rgb)
+	//private fun Color.toColorHsl() = ColorConversions.convertRGBtoHSL(this.rgb)
 	
 	private fun ColorHsv.toColor() = Color(ColorConversions.convertHSVtoRGB(this))
 	
-	private fun Color.toColorHsv() = ColorConversions.convertRGBtoHSV(this.rgb)
+	//private fun Color.toColorHsv() = ColorConversions.convertRGBtoHSV(this.rgb)
 	//endregion
 	
 	//region ParadoxScriptBlock

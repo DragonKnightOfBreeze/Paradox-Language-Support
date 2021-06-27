@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
-class ParadoxLocalisationPsiReference(
+class ParadoxLocalisationPropertyReferenceReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), PsiPolyVariantReference {
@@ -38,13 +38,15 @@ class ParadoxLocalisationPsiReference(
 		return when(category) {
 			Localisation -> findLocalisations(name, locale, project, hasDefault = true)
 			SyncedLocalisation -> findSyncedLocalisations(name, locale, project, hasDefault = true)
-		}.mapToArray { PsiElementResolveResult(it) }
+		}.mapToArray { 
+			PsiElementResolveResult(it)
+		}
 	}
 	
 	override fun getVariants(): Array<out Any> {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
-		//为了避免这里得到的结果太多，采用关键字查找，这里要去掉作为后缀的dummyIdentifier，并且捕捉异常防止意外
+		//为了避免这里得到的结果太多，采用关键字查找
 		val keyword = element.keyword
 		val project = element.project
 		return when(category) {

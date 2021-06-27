@@ -13,4 +13,7 @@ public interface ParadoxScriptVariableName extends PsiElement {
   @NotNull
   String getValue();
 
+  @NotNull
+  ParadoxScriptVariableName setValue(@NotNull String value);
+
 }

@@ -20,7 +20,7 @@ public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, StubBa
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxScriptVariable setName(@NotNull String name);
 
   @NotNull
   PsiElement getNameIdentifier();

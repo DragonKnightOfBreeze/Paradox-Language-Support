@@ -12,6 +12,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.config.*
+import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -283,14 +284,11 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 				val propertyConfigs = definitionInfo.resolvePropertyConfigs(path, configGroup)
 				val childPropertyConfigs = definitionInfo.resolveChildPropertyConfigs(path, configGroup)
 				val childValueConfigs = definitionInfo.resolveChildValuesConfigs(path, configGroup)
-				val childPropertyOccurrence = current.properties.groupAndCountBy { prop ->
-					childPropertyConfigs.find { matchesKey(it.keyExpression, prop.propertyKey, configGroup) }?.keyExpression
-				}
-				val childValueOccurrence = current.values.groupAndCountBy { value ->
-					childValueConfigs.find { matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
-				}
+				val propertyConfig = definitionInfo.resolvePropertyConfig(propertyConfigs,current,configGroup)
+				val childPropertyOccurrence = definitionInfo.resolveChildPropertyOccurrence(childPropertyConfigs, element, configGroup)
+				val childValueOccurrence = definitionInfo.resolveChildValueOccurrence(childValueConfigs, element, configGroup)
 				return ParadoxDefinitionPropertyInfo(
-					name, path, propertyConfigs, childPropertyConfigs, childValueConfigs,
+					name, path, propertyConfigs, childPropertyConfigs, childValueConfigs,propertyConfig,
 					childPropertyOccurrence, childValueOccurrence, gameType
 				)
 			}
@@ -300,6 +298,45 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 		current = current.parent ?: break
 	} while(current !is PsiFile)
 	return null
+}
+
+val ParadoxScriptPropertyKey.expression:CwtKeyExpression? get() = doGetExpression(this)
+
+private fun doGetExpression(element:ParadoxScriptPropertyKey):CwtKeyExpression?{
+	//NOTE 暂时不使用缓存，因为很容易就会过时
+	val property = element.parent.castOrNull<ParadoxScriptProperty>()?:return null
+	val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo?:return null
+	val propertyConfig = definitionPropertyInfo.propertyConfig?:return null
+	return propertyConfig.keyExpression
+}
+
+val ParadoxScriptValue.expression:CwtValueExpression? get() = doGetExpression(this)
+
+private fun doGetExpression(element:ParadoxScriptValue):CwtValueExpression?{
+	//NOTE 暂时不使用缓存，因为很容易就会过时
+	val parent = element.parent
+	when(parent) {
+		//如果value是property的value
+		is ParadoxScriptPropertyValue -> {
+			val property = parent.parent as? ParadoxScriptProperty ?: return null
+			val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo?:return null
+			val propertyConfig = definitionPropertyInfo.propertyConfig?:return null
+			return propertyConfig.valueExpression
+		}
+		//如果value是block中的value
+		is ParadoxScriptBlock -> {
+			val property = parent.parent?.parent as? ParadoxScriptProperty ?: return null
+			val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo?:return null
+			val childValueConfigs = definitionPropertyInfo.childValueConfigs
+			if(childValueConfigs.isEmpty()) return null
+			val gameType = definitionPropertyInfo.gameType
+			val configGroup = getConfig(element.project).getValue(gameType)
+			return childValueConfigs.find{
+				matchesValue(it.valueExpression,element,configGroup)
+			}?.valueExpression
+		}
+		else -> return null
+	}
 }
 
 fun ParadoxScriptValue.getType(): String? {

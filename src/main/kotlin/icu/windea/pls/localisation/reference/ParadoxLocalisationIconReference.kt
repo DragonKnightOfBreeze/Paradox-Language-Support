@@ -9,10 +9,11 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxLocalisationIconPsiReference(
+class ParadoxLocalisationIconReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement) {
+	//这里iconName不仅可以是name有前缀"GFX_text_"的sprite，也可以直接对应"gfx/interface/icons"文件夹下相同名字的dds文件
 	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//TODO scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
@@ -33,15 +34,11 @@ class ParadoxLocalisationIconPsiReference(
 		//		resolved.name = "$newElementName.dds"
 		//	}
 		//}
-		//return element.setName(newElementName)
-		
-		return element
+		return element.setName(newElementName)
 	}
 	
-	//这里iconName不仅可以是name有前缀"GFX_text_"的spriteType，也可以直接对应"gfx/interface/icons"文件夹下相同名字的dds文件
-	
-	//根据spriteType和dds文件进行解析
 	override fun resolve(): PsiElement? {
+		//根据spriteName和ddsFileName进行解析
 		val name = element.name
 		element.resolveScope
 		//尝试解析为spriteType
@@ -50,7 +47,6 @@ class ParadoxLocalisationIconPsiReference(
 		val sprite = findDefinitionByType(spriteName, "sprite", project)
 			?: findDefinitionByType(spriteName, "spriteType", project)
 		if(sprite != null) return sprite
-		
 		//如果不能解析为spriteType，则尝试解析为相同名字的dds文件
 		val ddsFiles = FilenameIndex.getFilesByName(project, "$name.dds", GlobalSearchScope.allScope(project))
 		val ddsIcon = ddsFiles.firstOrNull {
@@ -62,8 +58,8 @@ class ParadoxLocalisationIconPsiReference(
 		return null
 	}
 	
-	//根据spriteType和dds文件进行提示
 	override fun getVariants(): Array<out Any> {
+		//根据spriteName和ddsFileName进行提示
 		val project = element.project
 		val sprites = findDefinitionsByType("sprite", project)
 			.ifEmpty { findDefinitionsByType("spriteType", project) }

@@ -24,6 +24,8 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 		private val _validEscapeName = message("paradox.localisation.displayName.validEscape")
 		private val _invalidEscapeName = message("paradox.localisation.displayName.invalidEscape")
 		private val _badCharacterName = message("paradox.localisation.displayName.badCharacter")
+		private val _localisationName = message("paradox.localisation.displayName.localisation")
+		private val _syncedLocalisationName = message("paradox.localisation.displayName.syncedLocalisation")
 		
 		private val attributesDescriptors = arrayOf(
 			AttributesDescriptor(_separatorName, ParadoxLocalisationAttributesKeys.SEPARATOR_KEY),
@@ -42,7 +44,9 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(_colorName, ParadoxLocalisationAttributesKeys.COLOR_KEY),
 			AttributesDescriptor(_validEscapeName, ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY),
 			AttributesDescriptor(_invalidEscapeName, ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY),
-			AttributesDescriptor(_badCharacterName, ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)
+			AttributesDescriptor(_badCharacterName, ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY),
+			AttributesDescriptor(_localisationName, ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
+			AttributesDescriptor(_syncedLocalisationName, ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
 		)
 	}
 

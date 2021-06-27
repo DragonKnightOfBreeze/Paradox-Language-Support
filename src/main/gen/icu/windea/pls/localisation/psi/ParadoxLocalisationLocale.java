@@ -16,7 +16,7 @@ public interface ParadoxLocalisationLocale extends ParadoxLocalisationNamedEleme
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  ParadoxLocalisationLocale setName(@NotNull String name);
 
   @NotNull
   PsiElement getNameIdentifier();
