@@ -125,6 +125,7 @@
 * [X] 仅当有必要进行提示时提示
 * [X] 基于cwt规则文件的key和value的代码提示的支持
 * [X] 基于cwt规则文件的key和value的引用的支持（提供查找使用，定位定义，颜色高亮等功能）
+* [X] 支持cwt规则文件中的enum的引用（提供查找是引用，定位定义，颜色高亮等功能）
 * [ ] 基于cwt规则文件的key和value的验证的支持
 * [ ] 支持cwt规则文件中的aliases，提供代码提示、引用、验证的支持
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题

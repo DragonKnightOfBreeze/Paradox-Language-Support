@@ -62,6 +62,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 					CommenterOption.LINE_COMMENT_ADD_SPACE.name
 				)
 			}
+			else -> pass()
 		}
 	}
 	
