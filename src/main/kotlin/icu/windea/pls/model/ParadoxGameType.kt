@@ -25,7 +25,7 @@ enum class ParadoxGameType(
 	companion object{
 		val values = values() 
 		val map = values.associateBy { it.key }
-		val exeFileNames = values.map { it.exeFileName }
+		//val exeFileNames = values.map { it.exeFileName }
 		
 		fun resolve(key:String): ParadoxGameType? {
 			return map[key.lowercase()] 
@@ -36,7 +36,7 @@ enum class ParadoxGameType(
 		}
 		
 		fun defaultValue(): ParadoxGameType{
-			return getSettings().defaultGameType
+			return defaultGameType
 		}
 	}
 }

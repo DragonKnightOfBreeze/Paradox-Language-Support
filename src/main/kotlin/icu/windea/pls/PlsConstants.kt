@@ -51,11 +51,19 @@ val localisationFileExtensions = arrayOf("yml")
 val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc","settings")
 const val descriptorFileName = "descriptor.mod"
 const val truncateLimit = 30
-const val maxCompleteSize = 20
 
 //TODO 可以设置
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
 val definitionLocalisationNamesToInfer = arrayOf("title","desc","effect") //不包括name，可能不是localisation 
+
+//Settings
+
+val defaultGameType get() = getSettings().defaultGameType
+val preferOverridden get() = getSettings().preferOverridden
+val maxCompleteSize get() = getSettings().maxCompleteSize
+val renderLineCommentText get() = getSettings().renderLineCommentText
+val renderDefinitionText get() = getSettings().renderDefinitionText
+val renderLocalisationText get() = getSettings().renderLocalisationText
 
 //Icons
 

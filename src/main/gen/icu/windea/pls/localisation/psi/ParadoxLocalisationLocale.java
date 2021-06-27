@@ -13,6 +13,9 @@ public interface ParadoxLocalisationLocale extends ParadoxLocalisationNamedEleme
   PsiElement getLocaleId();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -20,8 +23,5 @@ public interface ParadoxLocalisationLocale extends ParadoxLocalisationNamedEleme
 
   @NotNull
   PsiElement getNameIdentifier();
-
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
 
 }

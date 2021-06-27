@@ -79,7 +79,9 @@ property_key ::= PROPERTY_KEY_TOKEN{
 private property_separator ::= "=" | "<>"
 
 value ::= boolean | number | string | block{
-  methods=[getIcon getValue getTruncatedValue]
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  implements="icu.windea.pls.cwt.psi.CwtNamedElement"
+  methods=[getIcon getValue getTruncatedValue getName setName getNameIdentifier]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value

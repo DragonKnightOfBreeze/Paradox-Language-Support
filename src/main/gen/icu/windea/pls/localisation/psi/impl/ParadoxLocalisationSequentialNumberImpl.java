@@ -36,6 +36,12 @@ public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisation
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
@@ -55,12 +61,6 @@ public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisation
   @Override
   public int getTextOffset() {
     return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
 }

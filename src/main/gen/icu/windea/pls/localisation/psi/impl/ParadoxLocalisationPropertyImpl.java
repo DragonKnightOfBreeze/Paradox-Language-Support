@@ -11,6 +11,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.model.ParadoxLocalisationCategory;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -54,6 +55,12 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
@@ -71,9 +78,9 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  @Nullable
+  public ParadoxLocalisationCategory getCategory() {
+    return ParadoxLocalisationPsiImplUtil.getCategory(this);
   }
 
   @Override

@@ -61,17 +61,35 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
 		//颜色高亮
-		val expression = element.expression ?: return
+		//val expression = element.expression ?: return
+		//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
+		val expression = element.expression ?: return fallbackAnnotateString(element, holder)
 		val attributesKey = when(expression.type) {
 			CwtValueExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtValueExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
 			CwtValueExpression.Type.EnumExpression -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
+			CwtValueExpression.Type.AliasMatchLeftExpression -> return fallbackAnnotateString(element,holder)
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)
 			.textAttributes(attributesKey)
 			.create()
 	}
+	
+	private fun fallbackAnnotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
+		val name = element.value
+		val project = element.project
+		val attributesKey = when {
+			hasDefinition(name, null, project) -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			hasLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+			hasSyncedLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
+			else -> null
+		} ?: return
+		holder.newSilentAnnotation(INFORMATION)
+			.textAttributes(attributesKey)
+			.create()
+	}
+	
 }

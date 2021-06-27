@@ -431,7 +431,11 @@ private fun shouldComplete(config: CwtPropertyConfig, occurrence: Map<CwtKeyExpr
 	val expression = config.keyExpression
 	val actualCount = occurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
-	val maxCount = config.cardinality?.max ?: if(expression.type == CwtKeyExpression.Type.Constant) 1 else null
+	val cardinality = config.cardinality
+	val maxCount = when {
+		cardinality == null -> if(expression.type == CwtKeyExpression.Type.Constant) 1 else null
+		else -> cardinality.max
+	}
 	return maxCount == null || actualCount < maxCount
 }
 
@@ -439,7 +443,11 @@ private fun shouldComplete(config: CwtValueConfig, occurrence: Map<CwtValueExpre
 	val expression = config.valueExpression
 	val actualCount = occurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
-	val maxCount = config.cardinality?.max ?: if(expression.type == CwtValueExpression.Type.Constant) 1 else null
+	val cardinality = config.cardinality
+	val maxCount = when {
+		cardinality == null -> if(expression.type == CwtValueExpression.Type.Constant) 1 else null
+		else -> cardinality.max
+	}
 	return maxCount == null || actualCount < maxCount
 }
 
@@ -454,7 +462,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		CwtKeyExpression.Type.FloatExpression -> pass()
 		CwtKeyExpression.Type.Scalar -> pass()
 		CwtKeyExpression.Type.Localisation -> {
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
 			for(localisation in localisations) {
 				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
@@ -466,7 +474,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 			}
 		}
 		CwtKeyExpression.Type.SyncedLocalisation -> {
-			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project)
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
@@ -479,7 +487,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		}
 		CwtKeyExpression.Type.InlineLocalisation -> {
 			if(quoted) return
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
@@ -492,7 +500,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword,typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
@@ -507,7 +515,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
 			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return
-			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword,typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
@@ -523,12 +531,14 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		CwtKeyExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return
 			val enumConfig = configGroup.enums[enumExpression] ?: return
-			val enumValues = enumConfig.values
-			for(enumValue in enumValues) {
-				val name = enumValue.quoteIf(quoted)
+			val enumValueConfigs = enumConfig.valueConfigs
+			for(enumValueConfig in enumValueConfigs) {
+				if(quoted && enumValueConfig.stringValue == null) continue
+				val element = enumValueConfig.pointer.element?:return
+				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
 				val typeText = enumConfig.pointer.containingFile?.name
-				val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 					.withTypeText(typeText, true)
 					.withInsertHandler(separatorInsertHandler)
 				result.addElement(lookupElement)
@@ -537,11 +547,12 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 		CwtKeyExpression.Type.ScopeExpression -> pass() //TODO
 		CwtKeyExpression.Type.AliasNameExpression -> pass() //TODO
 		CwtKeyExpression.Type.Constant -> {
+			val element = pointer.element?:return
 			val n = expression.value ?: return
 			val name = n.quoteIf(quoted)
 			val icon = scriptPropertyIcon //使用特定图标
 			val typeText = pointer.containingFile?.name
-			val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 				.withTypeText(typeText, true)
 				.withInsertHandler(separatorInsertHandler)
 				.withPriority(propertyPriority)
@@ -563,7 +574,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		CwtValueExpression.Type.PercentageField -> pass()
 		CwtValueExpression.Type.ColorField -> pass()
 		CwtValueExpression.Type.Localisation -> {
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
 			for(localisation in localisations) {
 				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
@@ -574,7 +585,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 			}
 		}
 		CwtValueExpression.Type.SyncedLocalisation -> {
-			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project)
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
@@ -586,7 +597,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		}
 		CwtValueExpression.Type.InlineLocalisation -> {
 			if(quoted) return
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project, maxSize = maxCompleteSize)
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
@@ -602,7 +613,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		CwtValueExpression.Type.DateField -> pass()
 		CwtValueExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword,typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
@@ -616,7 +627,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		CwtValueExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
 			val (prefix, suffix) = expression.extraValue?.castOrNull<Pair<String, String>>() ?: return
-			val definitions = findDefinitionsByType(typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword,typeExpression, configGroup.project)
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
@@ -632,12 +643,14 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		CwtValueExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return
 			val enumConfig = configGroup.enums[enumExpression] ?: return
-			val enumValues = enumConfig.values
-			for(enumValue in enumValues) {
-				val name = enumValue.quoteIf(quoted)
+			val enumValueConfigs = enumConfig.valueConfigs
+			for(enumValueConfig in enumValueConfigs) {
+				if(quoted && enumValueConfig.stringValue == null) continue
+				val element = enumValueConfig.pointer.element?:return
+				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
 				val typeText = enumConfig.pointer.containingFile?.name
-				val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 					.withTypeText(typeText, true)
 				result.addElement(lookupElement)
 			}
@@ -654,11 +667,12 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 		CwtValueExpression.Type.IntValueFieldExpression -> pass() //TODO
 		CwtValueExpression.Type.AliasMatchLeftExpression -> pass() //TODO
 		CwtValueExpression.Type.Constant -> {
+			val element  = pointer.element?:return
 			val n = expression.value ?: return
 			val name = n.quoteIf(quoted)
 			val icon = scriptValueIcon //使用特定图标
 			val typeText = pointer.containingFile?.name
-			val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 				.withTypeText(typeText, true)
 				.withPriority(propertyPriority)
 			result.addElement(lookupElement)

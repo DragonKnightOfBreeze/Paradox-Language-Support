@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.model.ParadoxLocalisationCategory;
 import javax.swing.Icon;
 
 public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationPropertyStub> {
@@ -20,6 +21,9 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   PsiElement getNumber();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -28,8 +32,8 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   @NotNull
   PsiElement getNameIdentifier();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @Nullable
+  ParadoxLocalisationCategory getCategory();
 
   @Nullable
   String getValue();

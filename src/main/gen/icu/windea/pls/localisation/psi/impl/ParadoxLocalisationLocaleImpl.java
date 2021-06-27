@@ -36,6 +36,12 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedEleme
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
@@ -50,12 +56,6 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedEleme
   @NotNull
   public PsiElement getNameIdentifier() {
     return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
 }

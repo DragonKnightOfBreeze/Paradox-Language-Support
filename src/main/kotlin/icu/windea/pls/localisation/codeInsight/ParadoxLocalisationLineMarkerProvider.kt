@@ -26,19 +26,18 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//如果是localisation或localisation_synced，则添加对应的gutterIcon
 		if(element is ParadoxLocalisationProperty) {
-			val localisationInfo = element.paradoxLocalisationInfo ?: return
-			val lineMarkerInfo = createMarker(localisationInfo, element)
+			val name = element.name
+			val category = element.category ?: return
+			val lineMarkerInfo = createMarker(element, name, category)
 			result.add(lineMarkerInfo)
 		}
 	}
 	
-	private fun createMarker(localisationInfo: ParadoxLocalisationInfo, element: ParadoxLocalisationProperty): RelatedItemLineMarkerInfo<PsiElement> {
+	private fun createMarker(element: ParadoxLocalisationProperty, name: String, category: ParadoxLocalisationCategory): RelatedItemLineMarkerInfo<PsiElement> {
 		val icon = localisationGutterIcon
 		val tooltip = buildString {
-			val (name, category) = localisationInfo
 			append("(${category.key}) <b>").append(name).append("</b>")
 		}
-		val (name, category) = localisationInfo
 		val project = element.project
 		val targets = when(category) {
 			Localisation -> findLocalisations(name, null, project, hasDefault = true)

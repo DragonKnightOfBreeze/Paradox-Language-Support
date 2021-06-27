@@ -21,9 +21,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun getPropertyInfo(element: ParadoxLocalisationProperty): String {
-		val localisationInfo = element.paradoxLocalisationInfo
-		if(localisationInfo != null) {
-			return getLocalisationInfo(element, localisationInfo)
+		val name = element.name
+		val category = element.category
+		if(category != null) {
+			return getLocalisationInfo(element, name,category)
 		}
 		return buildString {
 			definition {
@@ -33,8 +34,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getLocalisationInfo(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo): String {
-		val (name, category) = localisationInfo
+	private fun getLocalisationInfo(element: ParadoxLocalisationProperty, name:String,category: ParadoxLocalisationCategory): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
@@ -111,9 +111,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun getPropertyDoc(element: ParadoxLocalisationProperty): String {
-		val localisationInfo = element.paradoxLocalisationInfo
-		if(localisationInfo != null) {
-			return getLocalisationDoc(element, localisationInfo)
+		val name = element.name
+		val category = element.category
+		if(category != null) {
+			return getLocalisationDoc(element, name,category)
 		}
 		return buildString {
 			definition {
@@ -123,15 +124,14 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo): String {
-		val (name, category) = localisationInfo
+	private fun getLocalisationDoc(element: ParadoxLocalisationProperty, name:String,category: ParadoxLocalisationCategory): String {
 		return buildString {
 			definition {
 				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 			//单行注释文本
-			if(getSettings().renderLineCommentText) {
+			if(renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -140,7 +140,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				}
 			}
 			//本地化文本
-			if(getSettings().renderLocalisationText) {
+			if(renderLocalisationText) {
 				val richText = element.renderText()
 				if(richText.isNotEmpty()) {
 					sections {

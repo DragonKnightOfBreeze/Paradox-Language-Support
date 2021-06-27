@@ -6,11 +6,12 @@ import icu.windea.pls.model.*
 
 @State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])
 data class ParadoxSettingsState(
+	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris,
 	@JvmField var preferOverridden: Boolean = false,
+	@JvmField var maxCompleteSize:Int = 50,
 	@JvmField var renderLineCommentText: Boolean = false,
 	@JvmField var renderDefinitionText: Boolean = true,
-	@JvmField var renderLocalisationText: Boolean = true,
-	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris
+	@JvmField var renderLocalisationText: Boolean = true
 ) : PersistentStateComponent<ParadoxSettingsState> {
 	override fun getState() = this
 

@@ -23,7 +23,7 @@ public interface CwtProperty extends CwtNamedElement {
   String getName();
 
   @NotNull
-  PsiElement setName(@NotNull String name);
+  CwtProperty setName(@NotNull String name);
 
   @NotNull
   PsiElement getNameIdentifier();

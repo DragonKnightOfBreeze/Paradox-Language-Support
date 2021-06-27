@@ -365,8 +365,9 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
-		val values = propertyConfig.stringValues ?: return null
-		return CwtEnumConfig(propertyConfig.pointer, name, values)
+		val values = propertyConfig.values?.map { it.value } ?: return null
+		val valueConfigs = propertyConfig.values
+		return CwtEnumConfig(propertyConfig.pointer, name, values,valueConfigs)
 	}
 	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
@@ -635,7 +636,7 @@ class CwtConfigGroup(
 	}
 	
 	private fun getDefinition(type: String, subtypes: List<String>): List<CwtPropertyConfig> {
-		return definitions.get(type)?.mergeConfigs(subtypes)?: emptyList()
+		return definitions.get(type)?.mergeConfigs(subtypes) ?: emptyList()
 	}
 	
 	private fun getDefinitionConfig(type: String): CwtDefinitionConfig? {

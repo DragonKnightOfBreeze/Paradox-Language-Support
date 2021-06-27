@@ -80,7 +80,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
 			//单行注释文本
-			if(getSettings().renderLineCommentText) {
+			if(renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -104,7 +104,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 			//单行注释文本
-			if(getSettings().renderLineCommentText) {
+			if(renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -134,7 +134,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//单行注释文本
-			if(getSettings().renderLineCommentText) {
+			if(renderLineCommentText) {
 				val docText = getDocTextFromPreviousComment(element)
 				if(docText.isNotEmpty()) {
 					content {
@@ -153,7 +153,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//本地化文本
-			if(getSettings().renderDefinitionText) {
+			if(renderDefinitionText) {
 				if(localisation.isNotEmpty()) {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((n, kn) in localisation) {

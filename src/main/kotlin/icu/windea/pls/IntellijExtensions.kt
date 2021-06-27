@@ -7,50 +7,19 @@ import com.intellij.lang.*
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
 
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
-
-inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
-	var child = this.firstChild
-	while(child != null) {
-		block(child)
-		child = child.nextSibling
-	}
-}
-
-inline fun <reified T : PsiElement> PsiElement.indexOfChild(element: T): Int {
-	var child = firstChild
-	var index = 0
-	while(child != null) {
-		when(child) {
-			element -> return index
-			is T -> index++
-			else -> child = child.nextSibling
-		}
-	}
-	return -1
-}
-
-val PsiElement.virtualFile: VirtualFile?
-	get() {
-		return PsiUtilCore.getVirtualFile(this)
-	}
-
-val PsiElement.firstLeafOrSelf: PsiElement
-	get() {
-		val firstChild = firstChild
-		return firstChild?.firstLeafOrSelf ?: this
-	}
 
 /**得到当前AST节点的除了空白节点之外的所有子节点。*/
 fun ASTNode.nodes(): List<ASTNode> {
@@ -63,49 +32,49 @@ fun ASTNode.nodes(): List<ASTNode> {
 	return result
 }
 
-/**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
-fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
-	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
-}
+///**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
+//fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
+//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
+//}
 
-/**查找当前项目中指定语言文件类型和作用域的PsiFile。*/
-inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
-	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project)).mapNotNull {
-		PsiManager.getInstance(project).findFile(it)
-	}.filterIsInstance<T>()
-}
+///**查找当前项目中指定语言文件类型和作用域的PsiFile。*/
+//inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
+//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project)).mapNotNull {
+//		PsiManager.getInstance(project).findFile(it)
+//	}.filterIsInstance<T>()
+//}
 
-/**递归得到当前VirtualFile的所有作为子节点的VirtualFile。*/
-fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
-	for(child in this.children) {
-		if(child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
-	}
-	return destination
-}
+///**递归得到当前VirtualFile的所有作为子节点的VirtualFile。*/
+//fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
+//	for(child in this.children) {
+//		if(child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
+//	}
+//	return destination
+//}
 
 /**将VirtualFile转化为指定类型的PsiFile。*/
 inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
 	return PsiManager.getInstance(project).findFile(this) as? T
 }
 
-/**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
-fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement? {
-	var node = element.node
-	val expectedType = node.elementType
-	var lastSeen = node
-	while(node != null) {
-		val elementType = node.elementType
-		when {
-			elementType == expectedType -> lastSeen = node
-			elementType == TokenType.WHITE_SPACE -> {
-				if(stopOnBlankLine && node.text.containsBlankLine()) break
-			}
-			else -> break
-		}
-		node = if(findAfter) node.treeNext else node.treePrev
-	}
-	return lastSeen.psi
-}
+///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
+//fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement? {
+//	var node = element.node
+//	val expectedType = node.elementType
+//	var lastSeen = node
+//	while(node != null) {
+//		val elementType = node.elementType
+//		when {
+//			elementType == expectedType -> lastSeen = node
+//			elementType == TokenType.WHITE_SPACE -> {
+//				if(stopOnBlankLine && node.text.containsBlankLine()) break
+//			}
+//			else -> break
+//		}
+//		node = if(findAfter) node.treeNext else node.treePrev
+//	}
+//	return lastSeen.psi
+//}
 
 fun LookupElement.withPriority(priority: Double): LookupElement {
 	return PrioritizedLookupElement.withPriority(this, priority)
@@ -200,9 +169,43 @@ fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
 	return document.getLineNumber(range.startOffset) < limit
 }
 
-fun intern(table: CharTable, node: LighterASTTokenNode): String {
-	return table.intern(node.text).toString()
+//fun intern(table: CharTable, node: LighterASTTokenNode): String {
+//	return table.intern(node.text).toString()
+//}
+
+//Psi Element Extensions
+
+inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
+	var child = this.firstChild
+	while(child != null) {
+		block(child)
+		child = child.nextSibling
+	}
 }
+
+inline fun <reified T : PsiElement> PsiElement.indexOfChild(element: T): Int {
+	var child = firstChild
+	var index = 0
+	while(child != null) {
+		when(child) {
+			element -> return index
+			is T -> index++
+			else -> child = child.nextSibling
+		}
+	}
+	return -1
+}
+
+val PsiElement.virtualFile: VirtualFile?
+	get() {
+		return PsiUtilCore.getVirtualFile(this)
+	}
+
+val PsiElement.firstLeafOrSelf: PsiElement
+	get() {
+		val firstChild = firstChild
+		return firstChild?.firstLeafOrSelf ?: this
+	}
 
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 	override fun getElement() = null
@@ -233,4 +236,232 @@ fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
 
 fun <E : PsiElement> E.createPointer(file: PsiFile): SmartPsiElementPointer<E> {
 	return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
+}
+
+//Index Extensions
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.existsElement(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope
+): Boolean {
+	var result = false
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) {
+		result = true
+		return@processElements false
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.existsElement(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope,
+	crossinline predicate: (T) -> Boolean
+): Boolean {
+	var result = false
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+		if(predicate(element)) {
+			result = true
+			return@processElements false
+		}
+		true
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope
+): T? {
+	var result: T? = null
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+		result = element
+		false
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope,
+	hasDefault: Boolean = false,
+	crossinline predicate: (T) -> Boolean
+): T? {
+	var result: T? = null
+	var defaultResult: T? = null
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+		if(hasDefault) defaultResult = element
+		if(predicate(element)) {
+			result = element
+			return@processElements false
+		}
+		true
+	}
+	return result?:defaultResult
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findLastElement(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope
+): T? {
+	var result: T? = null
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+		result = element
+		true
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findLastElement(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope,
+	hasDefault: Boolean = false,
+	crossinline predicate: (T) -> Boolean
+): T? {
+	var result: T? = null
+	var defaultResult: T? = null
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+		if(hasDefault) defaultResult = element
+		if(predicate(element)) {
+			result = element
+		}
+		true
+	}
+	return result?: defaultResult
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElements(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope,
+	cancelable: Boolean = true,
+	maxSize: Int = 0,
+	crossinline predicate: (T) -> Boolean = {true}
+): List<T> {
+	val result: SmartList<T> = SmartList()
+	var size = 0
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+		if(cancelable) ProgressManager.checkCanceled()
+		if(predicate(element)) {
+			result += element
+			if(maxSize > 0) {
+				size++
+				if(size == maxSize) return@processElements false
+			}
+		}
+		true
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElements(
+	key: String,
+	project: Project,
+	scope: GlobalSearchScope,
+	cancelable: Boolean = true,
+	crossinline action: (T, MutableList<T>) -> Boolean
+): List<T> {
+	val result: SmartList<T> = SmartList()
+	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+		if(cancelable) ProgressManager.checkCanceled()
+		action(element,result)
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsByKeys(
+	project: Project,
+	scope: GlobalSearchScope,
+	cancelable: Boolean = true,
+	maxSize: Int = 0,
+	crossinline keyPredicate: (String) -> Boolean = {true},
+	crossinline predicate: (T) -> Boolean = {true}
+): List<T> {
+	val result: SmartList<T> = SmartList()
+	var size = 0
+	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
+		if(cancelable) ProgressManager.checkCanceled()
+		if(keyPredicate(key)) {
+			StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+				if(cancelable) ProgressManager.checkCanceled()
+				if(predicate(element)) {
+					result += element
+				}
+				if(maxSize > 0) {
+					size++
+					if(size == maxSize) return@processElements false
+				}
+				true
+			}
+		}
+		if(maxSize > 0) {
+			if(size == maxSize) return@processAllKeys false
+		}
+		true
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElementsByKeys(
+	project: Project,
+	scope: GlobalSearchScope,
+	cancelable: Boolean = true,
+	crossinline keyPredicate: (String) -> Boolean = {true},
+	crossinline action: (T,MutableList<T>) -> Boolean
+): List<T> {
+	val result: SmartList<T> = SmartList()
+	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
+		if(cancelable) ProgressManager.checkCanceled()
+		if(keyPredicate(key)) {
+			StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+				if(cancelable) ProgressManager.checkCanceled()
+				action(element,result)
+			}
+		}
+		true
+	}
+	return result
+}
+
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElementByKeys(
+	project: Project,
+	scope: GlobalSearchScope,
+	cancelable: Boolean = true,
+	hasDefault: Boolean = false,
+	maxSize:Int = 0,
+	crossinline keyPredicate: (String) -> Boolean = { true },
+	crossinline predicate: (T) -> Boolean = {true}
+): List<T> {
+	val result: SmartList<T> = SmartList()
+	var size = 0
+	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
+		if(cancelable) ProgressManager.checkCanceled()
+		if(keyPredicate(key)) {
+			var value: T? = null
+			var defaultValue: T? = null
+			StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
+				if(hasDefault) defaultValue = element
+				if(predicate(element)) {
+					value = element
+					return@processElements false
+				}
+				true
+			}
+			val finalValue = value ?: defaultValue
+			if(finalValue != null) {
+				result.add(finalValue)
+				if(maxSize > 0) {
+					size++
+					if(size == maxSize) return@processAllKeys false
+				}
+			}
+		}
+		true
+	}
+	return result
 }

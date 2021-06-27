@@ -8,12 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtValue {
+public abstract class CwtValueImpl extends CwtNamedElementImpl implements CwtValue {
 
   public CwtValueImpl(@NotNull ASTNode node) {
     super(node);
@@ -45,6 +44,24 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
   @NotNull
   public String getTruncatedValue() {
     return CwtPsiImplUtil.getTruncatedValue(this);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return CwtPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public CwtValue setName(@NotNull String name) {
+    return CwtPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getNameIdentifier() {
+    return CwtPsiImplUtil.getNameIdentifier(this);
   }
 
 }

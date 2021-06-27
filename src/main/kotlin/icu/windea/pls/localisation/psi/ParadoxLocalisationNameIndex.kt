@@ -16,35 +16,43 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	fun exists(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return false
-		if(locale == null) return name in getAllKeys(project)
-		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxLocalisationProperty::class.java)
-		return elements.any { element -> locale == element.paradoxLocale }
-	}
-	
-	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean): ParadoxLocalisationProperty? {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return null
 		
-		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxLocalisationProperty::class.java)
-		return if(preferFirst) {
-			elements.firstOrNull { element -> locale == null || locale == element.paradoxLocale } ?: if(hasDefault) elements.firstOrNull() else null
+		if(locale == null) {
+			return existsElement(name, project, scope)
 		} else {
-			elements.lastOrNull { element -> locale == null || locale == element.paradoxLocale } ?: if(hasDefault) elements.lastOrNull() else null
+			return existsElement(name, project, scope) { element -> locale == element.paradoxLocale }
 		}
 	}
 	
-	fun getAll(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
+	fun findOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean): ParadoxLocalisationProperty? {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return null
+		
+		if(locale == null) {
+			if(preferFirst) {
+				return findFirstElement(name, project, scope)
+			} else {
+				return findLastElement(name, project, scope)
+			}
+		} else {
+			if(preferFirst) {
+				return findFirstElement(name, project, scope, hasDefault) { element -> locale == element.paradoxLocale }
+			} else {
+				return findLastElement(name, project, scope, hasDefault) { element -> locale == element.paradoxLocale }
+			}
+		}
+	}
+	
+	fun findAll(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
-		val result = mutableListOf<ParadoxLocalisationProperty>()
 		var index = 0
-		val elements = StubIndex.getElements(getKey(), name, project, scope, ParadoxLocalisationProperty::class.java)
-		for(element in elements) {
+		return processAllElements(name, project, scope) { element, result ->
 			val elementLocale = element.paradoxLocale
 			if(locale == null) {
 				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-				if(elementLocale == inferParadoxLocale()) {
+				if(inferParadoxLocale() == elementLocale) {
 					result.add(index++, element)
 				} else {
 					result.add(element)
@@ -54,43 +62,60 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 					result.add(element)
 				}
 			}
+			true
 		}
-		return result
 	}
 	
-	fun getAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
+	//fun findAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
+	//	//如果索引未完成
+	//	if(DumbService.isDumb(project)) return emptyList()
+	//	
+	//	val keys = getAllKeys(project)
+	//	if(keys.isEmpty()) return emptyList()
+	//	val result = mutableListOf<ParadoxLocalisationProperty>()
+	//	var index = 0
+	//	for(key in keys) {
+	//		val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
+	//		var nextIndex = index
+	//		for(element in elements) {
+	//			val elementLocale = element.paradoxLocale
+	//			if(locale == null) {
+	//				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
+	//				if(elementLocale == inferParadoxLocale()) {
+	//					result.add(index++, element)
+	//					nextIndex++
+	//				} else {
+	//					result.add(element)
+	//					nextIndex++
+	//				}
+	//			} else if(locale == elementLocale || hasDefault) {
+	//				result.add(element)
+	//				nextIndex++
+	//			}
+	//		}
+	//		index = nextIndex
+	//	}
+	//	return result
+	//}
+	
+	fun findAllByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxLocalisationProperty>()
-		var index = 0
-		for(key in keys) {
-			val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-			var nextIndex = index
-			for(element in elements) {
-				val elementLocale = element.paradoxLocale
-				if(locale == null) {
-					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-					if(elementLocale == inferParadoxLocale()) {
-						result.add(index++, element)
-						nextIndex++
-					} else {
-						result.add(element)
-						nextIndex++
-					}
-				} else if(locale == elementLocale || hasDefault) {
-					result.add(element)
-					nextIndex++
-				}
+		//需要保证返回结果的名字的唯一性
+		if(keyword.isEmpty()) {
+			return findFirstElementByKeys(project, scope, maxSize = maxSize, hasDefault = true) { element ->
+				element.paradoxLocale == inferParadoxLocale()
 			}
-			index = nextIndex
+		} else {
+			return findFirstElementByKeys(project, scope, maxSize = maxSize, hasDefault = true,
+				keyPredicate = { key -> matches(key, keyword) }) { element ->
+				element.paradoxLocale == inferParadoxLocale()
+			}
 		}
-		return result
 	}
 	
-	fun getAllByNames(names: Iterable<String>, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, keepOrder: Boolean): List<ParadoxLocalisationProperty> {
+	fun findAllByNames(names: Iterable<String>, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, keepOrder: Boolean): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
@@ -101,6 +126,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		for(key in keys) {
 			if(key in names) {
 				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
+				if(elements.isEmpty()) continue
 				var nextIndex = index
 				for(element in elements) {
 					val elementLocale = element.paradoxLocale
@@ -125,39 +151,8 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		return result
 	}
 	
-	fun getAllByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxLocalisationProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val matchedKeys = if(keyword.isEmpty()) keys else keys.filter { matchesKeyword(it,keyword) }
-		val result = mutableListOf<ParadoxLocalisationProperty>()
-		if(maxSize <= 0) {
-			for(key in matchedKeys) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
-				if(firstElement != null) {
-					result.add(firstElement)
-				}
-			}
-		} else {
-			var size = 0
-			for(key in matchedKeys) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-				val firstElement = elements.find { it.paradoxLocale == inferParadoxLocale() } ?: elements.firstOrNull()
-				if(firstElement != null) {
-					result.add(firstElement)
-					size++
-					if(size == maxSize) return result
-				}
-			}
-		}
-		return result
-	}
-	
-	private fun matchesKeyword(name:String,keyword: String):Boolean{
-		return name.contains(keyword,true)
+	private fun matches(key: String, keyword: String): Boolean {
+		return key.fuzzyMatches(keyword)
 	}
 }
 

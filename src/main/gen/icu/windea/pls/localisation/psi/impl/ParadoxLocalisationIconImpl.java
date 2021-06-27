@@ -50,6 +50,12 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationRichTextImpl
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
@@ -69,12 +75,6 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationRichTextImpl
   @Nullable
   public ParadoxLocalisationIconReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
 }

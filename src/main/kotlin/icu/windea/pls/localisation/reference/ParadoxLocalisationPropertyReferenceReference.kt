@@ -50,8 +50,8 @@ class ParadoxLocalisationPropertyReferenceReference(
 		val keyword = element.keyword
 		val project = element.project
 		return when(category) {
-			Localisation -> findLocalisationsByKeyword(keyword, project, maxSize = maxCompleteSize)
-			SyncedLocalisation -> findSyncedLocalisationsByKeyword(keyword, project, maxSize = maxCompleteSize)
+			Localisation -> findLocalisationsByKeyword(keyword, project)
+			SyncedLocalisation -> findSyncedLocalisationsByKeyword(keyword, project)
 		}.mapToArray {
 			val name = it.name
 			val icon = it.icon

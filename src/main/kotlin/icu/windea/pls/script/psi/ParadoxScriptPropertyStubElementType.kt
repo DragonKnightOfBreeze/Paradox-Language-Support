@@ -29,10 +29,8 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		//这里使用scriptProperty.paradoxDefinitionInfo.name而非scriptProperty.name
 		val definitionInfo = psi.paradoxDefinitionInfo
 		val name = definitionInfo?.name ?: ""
-		val typeKey = definitionInfo?.typeKey ?: ""
 		val type = definitionInfo?.type ?: ""
-		val subtypes = definitionInfo?.subtypes.orEmpty()
-		return ParadoxScriptPropertyStubImpl(parentStub, name, typeKey, type, subtypes)
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -49,16 +47,12 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	
 	override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
-		dataStream.writeName(stub.typeKey)
 		dataStream.writeName(stub.type)
-		dataStream.writeName(stub.subtypes.joinToString(","))
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		val name = dataStream.readNameString().orEmpty()
-		val typeKey = dataStream.readNameString().orEmpty()
 		val type = dataStream.readNameString().orEmpty()
-		val subtypes = dataStream.readNameString().orEmpty().let { if(it.isEmpty()) emptyList() else it.split(',') }
-		return ParadoxScriptPropertyStubImpl(parentStub, name, typeKey, type, subtypes)
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type)
 	}
 }

@@ -13,6 +13,9 @@ public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisation
   PsiElement getSequentialNumberId();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -22,8 +25,5 @@ public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisation
   PsiElement getNameIdentifier();
 
   int getTextOffset();
-
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
 
 }

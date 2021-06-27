@@ -21,7 +21,7 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 	
 	override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
 		val localisationInfo = psi.paradoxLocalisationInfo
-		val name = psi.name //psi.name == localisationInfo.name
+		val name = localisationInfo?.name ?: ""
 		val category = localisationInfo?.category ?: ParadoxLocalisationCategory.Localisation
 		return ParadoxLocalisationPropertyStubImpl(parentStub, name,category)
 	}
@@ -39,7 +39,6 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 			ParadoxLocalisationCategory.Localisation -> sink.occurrence(ParadoxLocalisationNameIndex.key,stub.name)
 			ParadoxLocalisationCategory.SyncedLocalisation -> sink.occurrence(ParadoxSyncedLocalisationNameIndex.key,stub.name)
 		}
-		sink.occurrence(ParadoxLocalisationNameIndex.key, stub.name)
 	}
 	
 	override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {

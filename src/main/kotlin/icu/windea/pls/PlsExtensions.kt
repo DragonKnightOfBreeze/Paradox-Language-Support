@@ -247,7 +247,7 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 
 //这个方法有可能导致ProcessCanceledException，因为调用element.name导致！
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	//NOTE cwt文件中定义的definition的properyPath的minDepth是4（跳过3个rootKey）
+	//NOTE cwt文件中定义的definition的propertyPath的minDepth是4（跳过3个rootKey）
 	val propertyPath = element.resolvePropertyPath(4) ?: return null
 	val fileInfo = element.paradoxFileInfo ?: return null
 	val path = fileInfo.path
@@ -261,79 +261,62 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 val ParadoxDefinitionProperty.paradoxDefinitionPropertyInfo: ParadoxDefinitionPropertyInfo? get() = doGetDefinitionPropertyInfo(this)
 
 private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
-	val definition = element.findParentDefinition() ?: return null
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionPropertyInfoKey) {
 		val value = resolveDefinitionPropertyInfo(element)
-		CachedValueProvider.Result.create(value, element, definition)
+		CachedValueProvider.Result.create(value, element)
 	}
 }
 
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	//注意这里要获得的definitionProperty可能是scriptFile也可能是scriptProperty
-	val subPaths = LinkedList<String>()
-	val subPathInfos = LinkedList<ParadoxPropertyPathInfo>()
-	var current: PsiElement = element
-	do {
-		if(current is ParadoxDefinitionProperty) {
-			val definitionInfo = current.paradoxDefinitionInfo
-			val name = current.name ?: return null
-			if(definitionInfo != null) {
-				val path = ParadoxPropertyPath(subPaths, subPathInfos)
-				val gameType = definitionInfo.gameType
-				val configGroup = getConfig(element.project).getValue(gameType)
-				val propertyConfigs = definitionInfo.resolvePropertyConfigs(path, configGroup)
-				val childPropertyConfigs = definitionInfo.resolveChildPropertyConfigs(path, configGroup)
-				val childValueConfigs = definitionInfo.resolveChildValuesConfigs(path, configGroup)
-				val propertyConfig = definitionInfo.resolvePropertyConfig(propertyConfigs,current,configGroup)
-				val childPropertyOccurrence = definitionInfo.resolveChildPropertyOccurrence(childPropertyConfigs, element, configGroup)
-				val childValueOccurrence = definitionInfo.resolveChildValueOccurrence(childValueConfigs, element, configGroup)
-				return ParadoxDefinitionPropertyInfo(
-					name, path, propertyConfigs, childPropertyConfigs, childValueConfigs,propertyConfig,
-					childPropertyOccurrence, childValueOccurrence, gameType
-				)
-			}
-			subPaths.addFirst(name)
-			subPathInfos.addFirst(ParadoxPropertyPathInfo(name, current.isQuoted()))
-		}
-		current = current.parent ?: break
-	} while(current !is PsiFile)
-	return null
+	val (_,definitionInfo,path) = element.findParentDefinitionAndExtraInfo()?:return null
+	val pointer = element.createPointer()
+	val name = element.name?:return null
+	val gameType = definitionInfo.gameType
+	val configGroup = getConfig(element.project).getValue(gameType)
+	val propertyConfigs = definitionInfo.resolvePropertyConfigs(path, configGroup)
+	val childPropertyConfigs = definitionInfo.resolveChildPropertyConfigs(path, configGroup)
+	val childValueConfigs = definitionInfo.resolveChildValuesConfigs(path, configGroup)
+	val childPropertyOccurrence = definitionInfo.resolveChildPropertyOccurrence(childPropertyConfigs, element, configGroup)
+	val childValueOccurrence = definitionInfo.resolveChildValueOccurrence(childValueConfigs, element, configGroup)
+	return ParadoxDefinitionPropertyInfo(
+		name,path, propertyConfigs, childPropertyConfigs, childValueConfigs, 
+		childPropertyOccurrence, childValueOccurrence, gameType,pointer
+	)
 }
 
-val ParadoxScriptPropertyKey.expression:CwtKeyExpression? get() = doGetExpression(this)
+val ParadoxScriptPropertyKey.expression: CwtKeyExpression? get() = doGetExpression(this)
 
-private fun doGetExpression(element:ParadoxScriptPropertyKey):CwtKeyExpression?{
+private fun doGetExpression(element: ParadoxScriptPropertyKey): CwtKeyExpression? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
-	val property = element.parent.castOrNull<ParadoxScriptProperty>()?:return null
-	val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo?:return null
-	val propertyConfig = definitionPropertyInfo.propertyConfig?:return null
-	return propertyConfig.keyExpression
+	val property = element.parent.castOrNull<ParadoxScriptProperty>() ?: return null
+	val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo ?: return null
+	return definitionPropertyInfo.keyExpression
 }
 
-val ParadoxScriptValue.expression:CwtValueExpression? get() = doGetExpression(this)
+val ParadoxScriptValue.expression: CwtValueExpression? get() = doGetExpression(this)
 
-private fun doGetExpression(element:ParadoxScriptValue):CwtValueExpression?{
+private fun doGetExpression(element: ParadoxScriptValue): CwtValueExpression? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
 	val parent = element.parent
 	when(parent) {
 		//如果value是property的value
 		is ParadoxScriptPropertyValue -> {
 			val property = parent.parent as? ParadoxScriptProperty ?: return null
-			val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo?:return null
-			val propertyConfig = definitionPropertyInfo.propertyConfig?:return null
-			return propertyConfig.valueExpression
+			val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo ?: return null
+			return definitionPropertyInfo.valueExpression
 		}
 		//如果value是block中的value
 		is ParadoxScriptBlock -> {
 			val property = parent.parent?.parent as? ParadoxScriptProperty ?: return null
-			val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo?:return null
-			val childValueConfigs = definitionPropertyInfo.childValueConfigs
-			if(childValueConfigs.isEmpty()) return null
+			val definitionPropertyInfo = property.paradoxDefinitionPropertyInfo ?: return null
+			val valueExpressions = definitionPropertyInfo.valueExpressions
+			if(valueExpressions.isEmpty()) return null
 			val gameType = definitionPropertyInfo.gameType
 			val configGroup = getConfig(element.project).getValue(gameType)
-			return childValueConfigs.find{
-				matchesValue(it.valueExpression,element,configGroup)
-			}?.valueExpression
+			return valueExpressions.find {
+				matchesValue(it, element, configGroup)
+			}
 		}
 		else -> return null
 	}
@@ -515,12 +498,20 @@ fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty
 /**
  * 得到上一级definition，可能为自身，可能为null。
  */
-fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionProperty,ParadoxDefinitionInfo,ParadoxPropertyPath>? {
 	var current: PsiElement = this
+	val subPaths = LinkedList<String>()
+	val subPathInfos = LinkedList<ParadoxPropertyPathInfo>()
 	do {
 		if(current is ParadoxDefinitionProperty) {
+			val name = current.name?:return null
 			val definitionInfo = current.paradoxDefinitionInfo
-			if(definitionInfo != null) return current
+			if(definitionInfo != null) {
+				val path = ParadoxPropertyPath(subPaths, subPathInfos)
+				return tupleOf(current,definitionInfo,path)
+			}
+			subPaths.addFirst(name)
+			subPathInfos.addFirst(ParadoxPropertyPathInfo(name, current.isQuoted()))
 		}
 		current = current.parent ?: break
 	} while(current !is PsiFile)
@@ -555,6 +546,17 @@ fun findScriptVariablesInFile(file: PsiFile): List<ParadoxScriptVariable> {
 }
 
 /**
+ * 基于脚本变量名字索引，根据名字查判断是否存在脚本变量（scriptedVariable）。
+ */
+fun existsScriptVariable(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): Boolean {
+	return ParadoxScriptVariableNameIndex.exists(name, project, scope)
+}
+
+/**
  * 基于脚本变量名字索引，根据名字查找脚本变量（scriptedVariable）。
  */
 fun findScriptVariable(
@@ -562,7 +564,7 @@ fun findScriptVariable(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptVariable? {
-	return ParadoxScriptVariableNameIndex.getOne(name, project, scope, !getSettings().preferOverridden)
+	return ParadoxScriptVariableNameIndex.findOne(name, project, scope, !preferOverridden)
 }
 
 /**
@@ -573,7 +575,7 @@ fun findScriptVariables(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptVariable> {
-	return ParadoxScriptVariableNameIndex.getAll(name, project, scope)
+	return ParadoxScriptVariableNameIndex.findAll(name, project, scope)
 }
 
 /**
@@ -583,7 +585,7 @@ fun findScriptVariables(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptVariable> {
-	return ParadoxScriptVariableNameIndex.getAll(project, scope)
+	return ParadoxScriptVariableNameIndex.findAll(project, scope)
 }
 
 /**
@@ -607,7 +609,7 @@ fun findDefinition(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptProperty? {
-	return ParadoxDefinitionNameIndex.getOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
+	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, !preferOverridden)
 }
 
 /**
@@ -619,7 +621,7 @@ fun findDefinitions(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionNameIndex.getAll(name, typeExpression, project, scope)
+	return ParadoxDefinitionNameIndex.findAll(name, typeExpression, project, scope)
 }
 
 /**
@@ -630,7 +632,7 @@ fun findDefinitions(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionNameIndex.getAll(typeExpression, project, scope)
+	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope)
 }
 
 /**
@@ -654,7 +656,7 @@ fun findDefinitionByType(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptProperty? {
-	return ParadoxDefinitionTypeIndex.getOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
+	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, !preferOverridden)
 }
 
 /**
@@ -666,7 +668,7 @@ fun findDefinitionsByType(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.getAll(name, typeExpression, project, scope)
+	return ParadoxDefinitionTypeIndex.findAll(name, typeExpression, project, scope)
 }
 
 /**
@@ -677,7 +679,19 @@ fun findDefinitionsByType(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.getAll(typeExpression, project, scope)
+	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope)
+}
+
+/**
+ * 基于定义类型索引，根据关键字和类型表达式查找所有的脚本文件的定义（definition）。
+ */
+fun findDefinitionsByKeywordByType(
+	keyword:String,
+	typeExpression: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): List<ParadoxScriptProperty> {
+	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword,typeExpression, project, scope,maxCompleteSize)
 }
 
 /**
@@ -703,7 +717,7 @@ fun findLocalisation(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !getSettings().preferOverridden)
+	return ParadoxLocalisationNameIndex.findOne(name, locale, project, scope, hasDefault, !preferOverridden)
 }
 
 /**
@@ -718,22 +732,22 @@ fun findLocalisations(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = true
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(name, locale, project, scope, hasDefault)
+	return ParadoxLocalisationNameIndex.findAll(name, locale, project, scope, hasDefault)
 }
 
-/**
- * 基于本地化名字索引，根据语言区域查找所有的本地化（localisation）。
- * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
- */
-fun findLocalisations(
-	locale: ParadoxLocale? = null,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false
-): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAll(locale, project, scope, hasDefault)
-}
+///**
+// * 基于本地化名字索引，根据语言区域查找所有的本地化（localisation）。
+// * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+// * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+// */
+//fun findLocalisations(
+//	locale: ParadoxLocale? = null,
+//	project: Project,
+//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+//	hasDefault: Boolean = false
+//): List<ParadoxLocalisationProperty> {
+//	return ParadoxLocalisationNameIndex.findAll(locale, project, scope, hasDefault)
+//}
 
 /**
  * 基于本地化名字索引，根据关键字查找所有的本地化（localisation）。
@@ -743,10 +757,9 @@ fun findLocalisations(
 fun findLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	maxSize: Int = -1
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAllByKeyword(keyword, project, scope, maxSize)
+	return ParadoxLocalisationNameIndex.findAllByKeyword(keyword, project, scope, maxCompleteSize)
 }
 
 /**
@@ -763,7 +776,7 @@ fun findLocalisationsByNames(
 	hasDefault: Boolean = false,
 	keepOrder: Boolean = false
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.getAllByNames(names, locale, project, scope, hasDefault, keepOrder)
+	return ParadoxLocalisationNameIndex.findAllByNames(names, locale, project, scope, hasDefault, keepOrder)
 }
 
 /**
@@ -789,7 +802,7 @@ fun findSyncedLocalisation(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxSyncedLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !getSettings().preferOverridden)
+	return ParadoxSyncedLocalisationNameIndex.getOne(name, locale, project, scope, hasDefault, !preferOverridden)
 }
 
 /**
@@ -804,22 +817,22 @@ fun findSyncedLocalisations(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = true
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.getAll(name, locale, project, scope, hasDefault)
+	return ParadoxSyncedLocalisationNameIndex.findAll(name, locale, project, scope, hasDefault)
 }
 
-/**
- * 基于同步本地化名字索引，根据语言区域查找所有的同步本地化（localisation_synced）。
- * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
- */
-fun findSyncedLocalisations(
-	locale: ParadoxLocale? = null,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false
-): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.getAll(locale, project, scope, hasDefault)
-}
+///**
+// * 基于同步本地化名字索引，根据语言区域查找所有的同步本地化（localisation_synced）。
+// * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+// * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+// */
+//fun findSyncedLocalisations(
+//	locale: ParadoxLocale? = null,
+//	project: Project,
+//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+//	hasDefault: Boolean = false
+//): List<ParadoxLocalisationProperty> {
+//	return ParadoxSyncedLocalisationNameIndex.findAll(locale, project, scope, hasDefault)
+//}
 
 /**
  * 基于同步本地化名字索引，根据关键字查找所有的同步本地化（localisation_synced）。
@@ -829,10 +842,9 @@ fun findSyncedLocalisations(
 fun findSyncedLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	maxSize: Int = -1
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.getAllByKeyword(keyword, project, scope, maxSize)
+	return ParadoxSyncedLocalisationNameIndex.findAllByKeyword(keyword, project, scope, maxCompleteSize)
 }
 
 //Link Extensions

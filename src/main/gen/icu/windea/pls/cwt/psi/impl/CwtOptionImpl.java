@@ -55,7 +55,7 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String name) {
+  public CwtOption setName(@NotNull String name) {
     return CwtPsiImplUtil.setName(this, name);
   }
 

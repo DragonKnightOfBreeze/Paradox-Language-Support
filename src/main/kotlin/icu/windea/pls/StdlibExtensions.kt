@@ -123,10 +123,11 @@ fun String.toCapitalizedWords(): String {
 }
 
 /**
- * 判断指定的关键词是否匹配当前字符串。（关键词中的每个字符是否按顺序被当前字符串包含）。
+ * 判断指定的关键词是否匹配当前字符串。（关键词中的每个字符是否按顺序被当前字符串包含，不区分大小写）。
  */
-fun String.fuzzyMatches(keyword: String, ignoreCase: Boolean = false): Boolean {
-	TODO()
+fun String.fuzzyMatches(keyword: String): Boolean {
+	return contains(keyword,true)
+	//TODO
 }
 
 fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList<Int> {
@@ -210,8 +211,17 @@ val nullPair = null to null
 @Suppress("UNCHECKED_CAST") 
 fun <A,B> emptyPair() = nullPair as Pair<A,B>
 
+fun <T> Collection<T>.toListOrThis(): List<T> {
+	return when(this) {
+		is List -> this
+		else -> this.toList()
+	}
+}
+
 //Is Extensions
-fun String.isBooleanYesNo() = this == "yes" || this == "no"
+fun String.isBooleanYesNo(): Boolean {
+	return this == "yes" || this == "no"
+}
 
 fun String.isInt(): Boolean {
 	var isFirstChar = true
@@ -375,6 +385,6 @@ fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
 
 fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
 
-//Range Exntensions
+//Range Extensions
 
 typealias FloatRange = ClosedRange<Float>

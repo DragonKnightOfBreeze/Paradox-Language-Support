@@ -37,6 +37,12 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationName
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
@@ -57,12 +63,6 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationName
   @NotNull
   public ParadoxLocalisationCommandScopePsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

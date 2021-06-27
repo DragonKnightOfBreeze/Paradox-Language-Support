@@ -24,7 +24,7 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: CwtOption,name:String): PsiElement {
+	fun setName(element: CwtOption,name:String): CwtOption {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
@@ -80,7 +80,7 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: CwtProperty,name:String): PsiElement {
+	fun setName(element: CwtProperty,name:String): CwtProperty {
 		throw IncorrectOperationException(message("cannotBeRenamed"))
 	}
 	
@@ -138,6 +138,21 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getTruncatedValue(element: CwtValue):String{
 		return element.value
+	}
+	
+	@JvmStatic
+	fun getName(element: CwtValue):String{
+		return element.value
+	}
+	
+	@JvmStatic
+	fun setName(element: CwtValue,name:String): CwtValue {
+		throw IncorrectOperationException(message("cannotBeRenamed"))
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: CwtValue): PsiElement {
+		return element
 	}
 	//endregion
 	

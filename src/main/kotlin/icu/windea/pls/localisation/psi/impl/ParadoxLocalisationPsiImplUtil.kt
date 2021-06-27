@@ -16,6 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createP
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createSequentialNumber
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 import icu.windea.pls.localisation.reference.*
+import icu.windea.pls.model.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -70,6 +71,12 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxLocalisationProperty): PsiElement {
 		return element.propertyKey.propertyKeyId
+	}
+	
+	@JvmStatic
+	fun getCategory(element:ParadoxLocalisationProperty):ParadoxLocalisationCategory?{
+		//注意：element.stub可能会导致ProcessCanceledException
+		return runCatching{ element.stub?.category }.getOrNull()?:element.paradoxLocalisationInfo?.category
 	}
 	
 	@JvmStatic

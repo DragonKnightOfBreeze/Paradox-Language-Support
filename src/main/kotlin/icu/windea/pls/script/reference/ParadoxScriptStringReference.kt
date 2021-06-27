@@ -25,7 +25,9 @@ class ParadoxScriptStringReference(
 	
 	override fun resolve(): PsiNamedElement? {
 		//根据对应的expression进行解析
-		val expression = element.expression?:return null
+		//val expression = element.expression?:return null
+		//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
+		val expression = element.expression?:return fallbackResolve()
 		val project = element.project
 		return when(expression.type){
 			CwtValueExpression.Type.TypeExpression -> {
@@ -47,13 +49,24 @@ class ParadoxScriptStringReference(
 				val name = element.value
 				findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 			}
+			CwtValueExpression.Type.AliasMatchLeftExpression -> fallbackResolve() //TODO
 			else -> null //TODO
 		}
 	}
 	
+	private fun fallbackResolve():PsiNamedElement?{
+		val name = element.value
+		val project = element.project
+		return findDefinition(name,null,project)
+			?: findLocalisation(name, inferParadoxLocale(),project, hasDefault = true)
+			?: findSyncedLocalisation(name, inferParadoxLocale(),project,hasDefault = true)
+	}
+	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		//根据对应的expression进行解析
-		val expression = element.expression?:return emptyArray()
+		//val expression = element.expression?:return emptyArray()
+		//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
+		val expression = element.expression?:return fallbackMultiResolve(incompleteCode)
 		val project = element.project
 		return when(expression.type){
 			CwtValueExpression.Type.TypeExpression -> {
@@ -75,8 +88,18 @@ class ParadoxScriptStringReference(
 				val name = element.value
 				findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
 			}
+			CwtValueExpression.Type.AliasMatchLeftExpression -> return fallbackMultiResolve(incompleteCode) //TODO
 			else -> return emptyArray() //TODO
 		}.mapToArray { PsiElementResolveResult(it) }
+	}
+	
+	private fun fallbackMultiResolve(incompleteCode: Boolean):Array<ResolveResult>{
+		val name = element.value
+		val project = element.project
+		return findDefinitions(name,null,project)
+			.ifEmpty{ findLocalisations(name, inferParadoxLocale(),project, hasDefault = true)}
+			.ifEmpty{ findSyncedLocalisations(name, inferParadoxLocale(),project,hasDefault = true)}
+			.mapToArray { PsiElementResolveResult(it) }
 	}
 	
 	//代码提示功能由ParadoxScriptCompletionContributor统一实现

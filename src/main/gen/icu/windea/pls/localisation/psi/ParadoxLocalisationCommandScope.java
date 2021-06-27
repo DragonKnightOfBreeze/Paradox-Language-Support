@@ -14,6 +14,9 @@ public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationComm
   PsiElement getCommandScopeId();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -24,9 +27,6 @@ public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationComm
 
   @NotNull
   ParadoxLocalisationCommandScopePsiReference getReference();
-
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
 
   @Nullable
   ParadoxLocalisationCommandIdentifier getPrevIdentifier();

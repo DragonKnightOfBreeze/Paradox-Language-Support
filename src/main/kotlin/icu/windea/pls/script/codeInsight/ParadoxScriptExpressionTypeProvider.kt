@@ -34,8 +34,8 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 						getDefinitionHint(definitionInfo) 
 					}
 					e is ParadoxLocalisationProperty -> {
-						val localisationInfo = e.paradoxLocalisationInfo ?: return "localisation property"
-						getLocalisationHint(localisationInfo)
+						val category = e.category ?: return "localisation property"
+						getLocalisationHint(category)
 					}
 					else -> "string"
 				}
@@ -57,8 +57,8 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return definitionInfo.typeText
 	}
 	
-	private fun getLocalisationHint(localisationInfo: ParadoxLocalisationInfo):String{
-		return localisationInfo.category.text
+	private fun getLocalisationHint(category: ParadoxLocalisationCategory):String{
+		return category.text
 	}
 	
 	override fun getErrorHint(): String {

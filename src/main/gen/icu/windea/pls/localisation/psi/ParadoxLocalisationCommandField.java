@@ -17,6 +17,9 @@ public interface ParadoxLocalisationCommandField extends ParadoxLocalisationComm
   PsiElement getCommandFieldId();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -27,9 +30,6 @@ public interface ParadoxLocalisationCommandField extends ParadoxLocalisationComm
 
   @Nullable
   ParadoxLocalisationCommandFieldPsiReference getReference();
-
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
 
   @Nullable
   ParadoxLocalisationCommandIdentifier getPrevIdentifier();

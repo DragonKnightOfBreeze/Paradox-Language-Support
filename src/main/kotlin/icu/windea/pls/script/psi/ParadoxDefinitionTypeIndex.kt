@@ -10,61 +10,86 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 4 * 1024
+	override fun getCacheSize() = 8 * 1024
 	
-	fun exists(name:String,typeExpression: String,project: Project,scope: GlobalSearchScope):Boolean{
+	fun exists(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return false
 		
-		val (type,subtype) = resolveTypeExpression(typeExpression)
-		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
-		if(elements.isEmpty()) return false
-		return elements.any { element -> matches(element, name,subtype) }
+		val (type, subtype) = resolveTypeExpression(typeExpression)
+		return existsElement(type, project, scope) { element -> matches(element, name, subtype) }
 	}
 	
-	fun getOne(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptProperty? {
+	fun findOne(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptProperty? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
-		val (type,subtype) = resolveTypeExpression(typeExpression)
-		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
-		if(elements.isEmpty()) return null
-		return if(preferFirst) elements.firstOrNull { element -> matches(element, name,subtype) }
-		else elements.lastOrNull { element -> matches(element, name,subtype) }
-	}
-	
-	fun getAll(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
+		val (type, subtype) = resolveTypeExpression(typeExpression)
 		
-		val (type,subtype) = resolveTypeExpression(typeExpression)
-		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
-		if(elements.isEmpty()) return emptyList()
-		return elements.filter { element -> matches(element,name,subtype) }
-	}
-	
-	fun getAll(typeExpression: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val (type,subtype) = resolveTypeExpression(typeExpression)
-		val elements = StubIndex.getElements(getKey(), type, project, scope, ParadoxScriptProperty::class.java)
-		if(elements.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxScriptProperty>()
-		for(element in elements) {
-			if(matches(element,subtype)) result.add(element)
+		if(preferFirst) {
+			return findFirstElement(type, project, scope) { element -> matches(element, name, subtype) }
+		} else {
+			return findLastElement(type, project, scope) { element -> matches(element, name, subtype) }
 		}
-		return result
 	}
 	
-	private fun matches(element: ParadoxScriptProperty, name: String,subtype:String?): Boolean {
-		val definitionInfo = element.paradoxDefinitionInfo ?:return false
-		return definitionInfo.name == name && (subtype == null || subtype in definitionInfo.subtypes)
+	fun findAll(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
+		val (type, subtype) = resolveTypeExpression(typeExpression)
+		return findAllElements(type, project, scope) { element -> matches(element, name, subtype) }
 	}
 	
-	private fun matches(element: ParadoxScriptProperty,subtype:String?): Boolean {
-		val definitionInfo = element.paradoxDefinitionInfo ?:return false
-		return subtype == null || subtype in definitionInfo.subtypes
+	fun findAll(typeExpression: String, project: Project, scope: GlobalSearchScope): List<ParadoxScriptProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
+		val (type, subtype) = resolveTypeExpression(typeExpression)
+		return findAllElements(type, project, scope) { element -> matches(element, subtype) }
+	}
+	
+	fun findAllByKeyword(keyword: String, typeExpression: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxScriptProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
+		//需要保证返回结果的名字的唯一性
+		val (type, subtype) = resolveTypeExpression(typeExpression)
+		val names = mutableSetOf<String>()
+		return findAllElements(type, project, scope, maxSize = maxSize) { element -> matchesAndDistinct(element, keyword, subtype, names) }
+	}
+	
+	private fun matches(element: ParadoxScriptProperty, name: String, subtype: String?): Boolean {
+		if(subtype == null) {
+			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			return definitionInfo.name == name
+		} else {
+			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			return definitionInfo.name == name && subtype in definitionInfo.subtypes
+		}
+	}
+	
+	private fun matches(element: ParadoxScriptProperty, subtype: String?): Boolean {
+		if(subtype == null) {
+			return true
+		} else {
+			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			return subtype in definitionInfo.subtypes
+		}
+	}
+	
+	private fun matchesAndDistinct(element: ParadoxScriptProperty, keyword: String, subtype: String?, names: MutableSet<String>): Boolean {
+		if(subtype == null) {
+			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val name = definitionInfo.name
+			if(!names.add(name)) return false
+			return name.fuzzyMatches(keyword)
+		} else {
+			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val name = definitionInfo.name
+			if(!names.add(name)) return false
+			return name.fuzzyMatches(keyword) && subtype in definitionInfo.subtypes
+		}
 	}
 }
 

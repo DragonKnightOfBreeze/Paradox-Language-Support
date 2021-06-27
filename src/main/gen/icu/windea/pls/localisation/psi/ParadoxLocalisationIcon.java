@@ -20,6 +20,9 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
   PsiElement getIconParameter();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -29,8 +32,5 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
 
   @Nullable
   ParadoxLocalisationIconReference getReference();
-
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
 
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.model
 
+import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.expression.*
@@ -67,15 +68,6 @@ data class ParadoxDefinitionInfo(
 	 */
 	fun resolveChildValuesConfigs(path: ParadoxPropertyPath, configGroup: CwtConfigGroup): List<CwtValueConfig> {
 		return definitionConfig?.resolveChildValuesConfigs(subtypes, path, configGroup)?: emptyList()
-	}
-	
-	fun resolvePropertyConfig(propertyConfigs:List<CwtPropertyConfig>,element:ParadoxDefinitionProperty, configGroup: CwtConfigGroup):CwtPropertyConfig?{
-		if(element !is ParadoxScriptProperty) return null
-		val propertyValue = element.propertyValue ?: return null
-		if(propertyConfigs.isEmpty()) return null
-		return propertyConfigs.find { 
-			matchesValue(it.valueExpression,propertyValue.value,configGroup)
-		}
 	}
 	
 	fun resolveChildPropertyOccurrence(childPropertyConfigs:List<CwtPropertyConfig>,element: ParadoxDefinitionProperty,configGroup: CwtConfigGroup): Map<CwtKeyExpression, Int> {
