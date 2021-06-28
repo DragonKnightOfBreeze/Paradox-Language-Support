@@ -35,36 +35,25 @@ class CwtConfigGroup(
 	
 	val resolvedConfigs: Map<String, Map<String, CwtConfig<CwtProperty>>>
 	
-	//? -> type[?] = { ... }
 	val types: Map<String, CwtTypeConfig>
 	
-	//? -> { a b 1 2 yes ... }
 	//枚举值也有可能是int、number、bool类型，这里统一用字符串表示
 	val enums: Map<String, CwtEnumConfig>
 	
-	//? -> ? = { ... }
 	val links: Map<String, CwtLinkConfig>
 	
-	//? -> ? = { country planet ... }
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
 	
-	//? -> ? = { ... }
 	val localisationLinks: Map<String, CwtLinkConfig>
 	
-	//? -> ? = { ... }
 	val modifierCategories: Map<String, CwtModifyCategoryConfig>
 	
-	//? -> ? = { ... }
 	val scopes: Map<String, CwtScopeConfig>
 	
-	//? -> ? = { country planet ... }
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	
-	//? -> alias[?] = ...
-	//? -> alias[?] = { ... }
 	val aliases: Map<String, CwtAliasConfig>
 	
-	//? -> ? = { ... subtype[...] = { ... } ... }
 	val definitions: Map<String, CwtDefinitionConfig>
 	
 	operator fun get(key: String) = resolvedConfigs.getValue(key)

@@ -18,9 +18,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text ?: "property"
+			val configTypeText = element.cwtConfigType?.text
 			definition {
-				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 		}
 	}
@@ -28,9 +29,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getStringInfo(element: CwtString): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text ?: "value"
+			val configTypeText = element.cwtConfigType?.text
 			definition {
-				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 		}
 	}
@@ -46,9 +48,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text ?: "property"
+			val configTypeText = element.cwtConfigType?.text
 			definition {
-				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 			//文档注释，以###开始
 			val documentation = getDocumentation(element)
@@ -63,9 +66,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getStringDoc(element: CwtString): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text ?: "value"
+			val configTypeText = element.cwtConfigType?.text
 			definition {
-				append("(").append(configTypeText).append(") <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 			//文档注释，以###开始
 			val documentation = getDocumentation(element)
