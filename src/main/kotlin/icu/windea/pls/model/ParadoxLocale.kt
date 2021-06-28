@@ -6,6 +6,7 @@ class ParadoxLocale(
 	val name: String,
 	val description: String
 ) {
+	val tailText = " $description"
 	val popupText = "$name - $description"
 	val icon get() = localisationLocaleIcon
 	

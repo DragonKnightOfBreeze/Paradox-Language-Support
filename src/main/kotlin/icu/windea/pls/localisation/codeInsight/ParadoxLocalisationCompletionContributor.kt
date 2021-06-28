@@ -18,13 +18,13 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		//private val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
 		
 		private val localeElements = getConfig().locales.map {
-			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.description,true)
+			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.tailText,true)
 		}
 		private val sequentialNumberElements = getConfig().sequentialNumbers.map {
-			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.description,true)
+			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.tailText,true)
 		}
 		private val colorElements = getConfig().colors.map{
-			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.description,true)
+			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.tailText,true)
 		}
 		//private val primaryCommandScopeElements = config.primaryCommandScopes.map {
 		//	LookupElementBuilder.create(it.name).withTypeText(it.description).withIcon(localisationCommandScopeIcon)

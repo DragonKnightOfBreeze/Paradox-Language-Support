@@ -100,13 +100,24 @@ val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>
 val CwtProperty.cwtConfigType:CwtConfigType? get() = doGetCwtConfigType(this)
 
 private fun doGetCwtConfigType(element:CwtProperty):CwtConfigType?{
-	return null //TODO
+	val name = element.name
+	return when {
+		name.surroundsWith("type[","]") -> CwtConfigType.Type
+		name.surroundsWith("subtype[","]") -> CwtConfigType.Subtype
+		name.surroundsWith("enum[","]") -> CwtConfigType.Enum
+		else -> return null //TODO
+	} 
 }
 
 val CwtValue.cwtConfigType:CwtConfigType? get() = doGetCwtConfigType(this)
 
 private fun doGetCwtConfigType(element:CwtValue):CwtConfigType?{
-	return null //TODO
+	val parentProperty = element.parent?.parent.castOrNull<CwtProperty>()?:return null
+	val parentName = parentProperty.name
+	return when{
+		parentName.surroundsWith("enum[","]") -> CwtConfigType.EnumValue
+		else -> return null //TODO
+	}
 }
 
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?

@@ -12,6 +12,6 @@ class ParadoxScriptWordScanner: DefaultWordsScanner(
 	TokenSet.create(QUOTED_STRING_TOKEN, STRING_TOKEN)
 ){
 	init {
-		setMayHaveFileRefsInLiterals(true)
+		setMayHaveFileRefsInLiterals(false)
 	}
 }

@@ -134,6 +134,11 @@
     <lang.documentationProvider
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtDocumentationProvider"/>
+    <elementDescriptionProvider
+        implementation="icu.windea.pls.cwt.editor.CwtDescriptionProvider"/>
+    <lang.findUsagesProvider
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <lang.commenter
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>

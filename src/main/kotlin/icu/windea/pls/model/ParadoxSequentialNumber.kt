@@ -7,6 +7,7 @@ class ParadoxSequentialNumber(
 	val description: String,
 	val placeholderText: String
 ) {
+	val tailText = " $description"
 	val popupText = "$name - $description"
 	val icon get() = localisationSequentialNumberIcon
 	

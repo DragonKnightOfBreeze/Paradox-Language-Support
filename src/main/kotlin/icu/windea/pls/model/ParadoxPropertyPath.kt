@@ -8,7 +8,7 @@ class ParadoxPropertyPath(
 	val parentSubPaths = subPaths.dropLast(1)
 	val path = subPaths.joinToString("/")
 	val parent = parentSubPaths.joinToString("/")
-	val originalPath = subPathInfos.joinToString(""){ if(it.quoted) "\"${it.value}\"" else it.value }
+	val originalPath = subPathInfos.joinToString("/"){ if(it.quoted) "\"${it.value}\"" else it.value }
 	
 	fun isEmpty() :Boolean{
 		return length == 0

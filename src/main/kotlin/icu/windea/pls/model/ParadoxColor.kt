@@ -9,6 +9,7 @@ class ParadoxColor(
 	val colorRgb: Int,
 	val colorText: String
 ) {
+	val tailText = " $description"
 	val popupText = "$name - $description"
 	val color: Color = Color(colorRgb)
 	val icon = ColorIcon(16, color)
