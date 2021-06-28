@@ -103,7 +103,9 @@ private property_reference_param ::= PROPERTY_REFERENCE_PARAMETER
 icon ::= ICON_START icon_name [PARAMETER_SEPARATOR [icon_param]] ICON_END {
   pin(".*")=1
   extends=rich_text
-  methods=[getIcon getName setName getTextOffset getReference]
+  mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
+  implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getReference]
 }
 private icon_name ::= command | property_reference | ICON_ID
 private icon_param ::= ICON_PARAMETER | property_reference

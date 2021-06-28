@@ -466,7 +466,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 			for(localisation in localisations) {
 				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -480,7 +480,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = syncedLocalisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -495,7 +495,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -511,7 +511,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -527,7 +527,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
-				val tailText = " from definition $definitionName, by rule $expression"
+				val tailText = "by $expression"
 				val icon = definitionIcon //使用特定图标
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
@@ -546,7 +546,7 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 				val element = enumValueConfig.pointer.element?:return
 				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = enumConfig.pointer.containingFile?.name
 				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -562,10 +562,8 @@ private fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: B
 			val n = expression.value ?: return
 			val name = n.quoteIf(quoted)
 			val icon = scriptPropertyIcon //使用特定图标
-			val tailText = " by rule $expression"
 			val typeText = pointer.containingFile?.name
 			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
-				.withTailText(tailText, true)
 				.withTypeText(typeText, true)
 				.withInsertHandler(separatorInsertHandler)
 				.withPriority(propertyPriority)
@@ -591,7 +589,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 			for(localisation in localisations) {
 				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -604,7 +602,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = syncedLocalisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -618,7 +616,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -637,7 +635,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -652,7 +650,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
-				val tailText = " from definition $definitionName, by rule $expression"
+				val tailText = "by $expression"
 				val icon = definitionIcon //使用特定图标
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
@@ -670,7 +668,7 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 				val element = enumValueConfig.pointer.element?:return
 				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
-				val tailText = " by rule $expression"
+				val tailText = "by $expression"
 				val typeText = enumConfig.pointer.containingFile?.name
 				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -694,10 +692,8 @@ private fun completeValue(expression: CwtValueExpression, keyword: String, quote
 			val n = expression.value ?: return
 			val name = n.quoteIf(quoted)
 			val icon = scriptValueIcon //使用特定图标
-			val tailText = " by rule $expression"
 			val typeText = pointer.containingFile?.name
 			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
-				.withTailText(tailText,true)
 				.withTypeText(typeText, true)
 				.withPriority(propertyPriority)
 			result.addElement(lookupElement)

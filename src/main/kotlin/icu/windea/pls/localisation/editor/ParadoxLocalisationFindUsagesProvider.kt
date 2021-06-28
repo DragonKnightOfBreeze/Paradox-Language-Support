@@ -44,7 +44,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
 	}
 
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return element is PsiNamedElement
+		return element is ParadoxLocalisationNamedElement
 	}
 
 	override fun getWordsScanner(): WordsScanner {

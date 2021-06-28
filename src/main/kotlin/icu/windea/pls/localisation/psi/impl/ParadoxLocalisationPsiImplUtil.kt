@@ -127,6 +127,11 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getNameIdentifier(element: ParadoxLocalisationIcon): PsiElement? {
+		return element.iconId
+	}
+	
+	@JvmStatic
 	fun getTextOffset(element: ParadoxLocalisationIcon): Int {
 		return element.startOffset + 1
 	}
