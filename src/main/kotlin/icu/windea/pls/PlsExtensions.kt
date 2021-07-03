@@ -890,13 +890,14 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 		val tokens = link.drop(1).split('.')
 		val gameType = tokens[0]
 		val configType = tokens[1]
-		val name = tokens[2]
-		val extraName = tokens.getOrNull(3) //可能是subtypeName
-		//如果configType是types且extraName存在，需要特殊处理，从而兼容subtype
-		if(configType == "types" && extraName != null) {
-			getConfig(project).getValue(gameType).types.getValue(name).subtypes.getValue(extraName).pointer.element
-		} else {
-			getConfig(project).getValue(gameType).getValue(configType).getValue(name).pointer.element
+		when(configType) {
+			"types" -> {
+				val name = tokens.getOrNull(2)
+				val subtypeName = tokens.getOrNull(3)
+				if(name == null || subtypeName == null) return null
+				getConfig(project).getValue(gameType).types.getValue(name).subtypes.getValue(subtypeName).pointer.element
+			}
+			else -> null
 		}
 	}.getOrNull()
 }

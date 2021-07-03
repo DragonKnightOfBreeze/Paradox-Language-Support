@@ -127,7 +127,8 @@
 * [X] 基于cwt规则文件的key和value的引用的支持（提供查找使用，定位定义，颜色高亮等功能）
 * [X] 支持cwt规则文件中的enum的引用（提供查找是引用，定位定义，颜色高亮等功能）
 * [ ] 基于cwt规则文件的key和value的验证的支持
-* [ ] 支持cwt规则文件中的aliases，提供代码提示、引用、验证的支持
+* [X] 进行匹配时支持aliasName和aliasMatchLeft
+* [X] 进行代码提示时aliasName
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] cwt规则文件并不完整，除了未来可能的PR之外，需要提供方法基于这个插件进行补充
 

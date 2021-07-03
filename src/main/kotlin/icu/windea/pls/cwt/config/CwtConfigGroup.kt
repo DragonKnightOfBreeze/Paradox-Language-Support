@@ -2,7 +2,6 @@ package icu.windea.pls.cwt.config
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
@@ -27,13 +26,14 @@ class CwtConfigGroup(
 			return expression.resolveByRemoveSurrounding("enum[", "]")
 		}
 		
-		private fun resolveAliasName(expression: String): String? {
-			return expression.resolveByRemoveSurrounding("alias[", "]")
+		private fun resolveAliasName(expression: String): Pair<String, String>? {
+			return expression.resolveByRemoveSurrounding("alias[", "]")?.let{ 
+				val index = it.indexOf(':')
+				it.substring(0,index) to it.substring(index+1)
+			}
 		}
 		
 	}
-	
-	val resolvedConfigs: Map<String, Map<String, CwtConfig<CwtProperty>>>
 	
 	val types: Map<String, CwtTypeConfig>
 	
@@ -52,12 +52,10 @@ class CwtConfigGroup(
 	
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	
-	val aliases: Map<String, CwtAliasConfig>
+	//alias[?:?] = ? alias[?:?] = ?
+	val aliases: Map<String,Map<String,List<CwtAliasConfig>>>
 	
 	val definitions: Map<String, CwtDefinitionConfig>
-	
-	operator fun get(key: String) = resolvedConfigs.getValue(key)
-	fun getValue(key: String) = resolvedConfigs.getValue(key)
 	
 	init {
 		logger.info("Resolve config group '$gameType'...")
@@ -70,20 +68,8 @@ class CwtConfigGroup(
 		modifierCategories = mutableMapOf()
 		scopes = mutableMapOf()
 		scopeGroups = mutableMapOf()
-		aliases = mutableMapOf()
+		aliases = mutableMapOf<String,MutableMap<String,MutableList<CwtAliasConfig>>>()
 		definitions = mutableMapOf()
-		
-		resolvedConfigs = mutableMapOf()
-		resolvedConfigs["types"] = types
-		resolvedConfigs["enums"] = enums
-		resolvedConfigs["links"] = links
-		resolvedConfigs["localisationCommands"] = localisationCommands
-		resolvedConfigs["localisationLinks"] = localisationLinks
-		resolvedConfigs["modifierCategories"] = modifierCategories
-		resolvedConfigs["scopes"] = scopes
-		resolvedConfigs["scopeGroups"] = scopeGroups
-		resolvedConfigs["aliases"] = aliases
-		resolvedConfigs["definitions"] = definitions
 		
 		for((_, rootProperty) in group) {
 			for(property in rootProperty.properties) {
@@ -91,103 +77,89 @@ class CwtConfigGroup(
 				when(key) {
 					//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
 					"types" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val typeName = resolveTypeName(prop.key)
-								if(typeName != null && typeName.isNotEmpty()) {
-									val typeConfig = resolveTypeConfig(prop, typeName)
-									types[typeName] = typeConfig
-								}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val typeName = resolveTypeName(prop.key)
+							if(typeName != null && typeName.isNotEmpty()) {
+								val typeConfig = resolveTypeConfig(prop, typeName)
+								types[typeName] = typeConfig
 							}
 						}
 					}
 					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums中
 					"enums" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val enumName = resolveEnumName(prop.key)
-								if(enumName != null && enumName.isNotEmpty()) {
-									val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
-									enums[enumName] = enumConfig
-								}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val enumName = resolveEnumName(prop.key)
+							if(enumName != null && enumName.isNotEmpty()) {
+								val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
+								enums[enumName] = enumConfig
 							}
 						}
 					}
 					//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
 					"links" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val linkName = prop.key
-								val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
-								links[linkName] = linkConfig
-							}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val linkName = prop.key
+							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
+							links[linkName] = linkConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
 					"localisation_commands" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val commandName = prop.key
-								val commandConfig = resolveLocalisationCommandConfig(prop, commandName) ?: continue
-								localisationCommands[commandName] = commandConfig
-							}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val commandName = prop.key
+							val commandConfig = resolveLocalisationCommandConfig(prop, commandName) ?: continue
+							localisationCommands[commandName] = commandConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
 					"localisation_links" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val linkName = prop.key
-								val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
-								localisationLinks[linkName] = linkConfig
-							}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val linkName = prop.key
+							val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
+							localisationLinks[linkName] = linkConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
 					"modifier_categories" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val categoryName = prop.key
-								val categoryConfig = resolveModifierCategoryConfig(prop, categoryName) ?: continue
-								modifierCategories[categoryName] = categoryConfig
-							}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val categoryName = prop.key
+							val categoryConfig = resolveModifierCategoryConfig(prop, categoryName) ?: continue
+							modifierCategories[categoryName] = categoryConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
 					"scopes" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val scopeName = prop.key
-								val scopeConfig = resolveScopeConfig(prop, scopeName) ?: continue
-								scopes[scopeName] = scopeConfig
-							}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val scopeName = prop.key
+							val scopeConfig = resolveScopeConfig(prop, scopeName) ?: continue
+							scopes[scopeName] = scopeConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
 					"scope_groups" -> {
-						val props = property.properties
-						if(props != null && props.isNotEmpty()) {
-							for(prop in props) {
-								val scopeGroupName = prop.key
-								val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
-								scopeGroups[scopeGroupName] = scopeGroupConfig
-							}
+						val props = property.properties?:continue
+						for(prop in props) {
+							val scopeGroupName = prop.key
+							val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
+							scopeGroups[scopeGroupName] = scopeGroupConfig
 						}
 					}
 					else -> {
-						//判断配置文件中的顶级的key是否匹配"alias[?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
-						val aliasName = resolveAliasName(key)
-						if(aliasName != null && aliasName.isNotEmpty()) {
-							val aliasConfig = resolveAliasConfig(property, aliasName)
-							aliases[aliasName] = aliasConfig
-							continue
+						//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
+						val aliasNamePair = resolveAliasName(key)
+						if(aliasNamePair != null) {
+							val (aliasName,aliasSubName) = aliasNamePair
+							val aliasConfig = resolveAliasConfig(property, aliasName,aliasSubName)
+							val map = aliases.getOrPut(aliasName) { mutableMapOf() }
+							val list = map.getOrPut(aliasSubName){ mutableListOf() }
+							list.add(aliasConfig)
 						}
 						
 						//其他情况，放到definition中
@@ -424,8 +396,8 @@ class CwtConfigGroup(
 	}
 	
 	
-	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtAliasConfig {
-		return CwtAliasConfig(propertyConfig.pointer, name, propertyConfig)
+	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String,subName:String): CwtAliasConfig {
+		return CwtAliasConfig(propertyConfig.pointer, name, subName, propertyConfig)
 	}
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
