@@ -122,12 +122,20 @@ fun String.toCapitalizedWords(): String {
 	}
 }
 
+private val keywordDelimiters = charArrayOf('.','_','-')
+
 /**
  * 判断指定的关键词是否匹配当前字符串。（关键词中的每个字符是否按顺序被当前字符串包含，不区分大小写）。
  */
-fun String.fuzzyMatches(keyword: String): Boolean {
-	return contains(keyword,true)
-	//TODO
+fun String.matchesKeyword(keyword: String,ignoreCase:Boolean = false): Boolean {
+	//return contains(keyword)
+	var index = -1
+	for(c in keyword) {
+		index = indexOf(c,index+1,ignoreCase)
+		if(index == -1) return false
+		else if(this[index-1] !in keywordDelimiters) return false
+	}
+	return true
 }
 
 fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList<Int> {

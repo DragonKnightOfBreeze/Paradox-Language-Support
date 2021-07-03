@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.expression.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 
@@ -204,8 +205,9 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 		}
 		CwtKeyExpression.Type.AliasNameExpression -> {
 			val aliasName = expression.value ?: return false
-			val alias = configGroup.aliases[aliasName] ?: return false
-			aliasName in alias.keys
+			val aliasKeys = configGroup.aliases[aliasName]?.keys ?: return false
+			val key = keyElement.value
+			key in aliasKeys
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val key = keyElement.value
@@ -264,8 +266,8 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 		}
 		CwtKeyExpression.Type.AliasNameExpression -> {
 			val aliasName = expression.value ?: return false
-			val alias = configGroup.aliases[aliasName] ?: return false
-			aliasName in alias.keys
+			val aliasKeys = configGroup.aliases[aliasName]?.keys ?: return false
+			key in aliasKeys
 		}
 		CwtKeyExpression.Type.Constant -> {
 			key == expression.value
@@ -412,10 +414,9 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	val configGroup = getConfig(project).getValue(gameType)
 	val childPropertyConfigs = definitionPropertyInfo.childPropertyConfigs
 	if(childPropertyConfigs.isEmpty()) return
-	val childPropertyOccurrence = definitionPropertyInfo.childPropertyOccurrence
 	
 	for(propConfig in childPropertyConfigs) {
-		if(shouldComplete(propConfig, childPropertyOccurrence)) {
+		if(shouldComplete(propConfig, definitionPropertyInfo)) {
 			completeKey(propConfig.keyExpression, keyword, quoted, propConfig.pointer, configGroup, result)
 		}
 	}
@@ -446,18 +447,17 @@ fun addValueCompletionsInBlock(valueElement: PsiElement, propertyElement: Parado
 	val configGroup = getConfig(project).getValue(gameType)
 	val childValueConfigs = definitionPropertyInfo.childValueConfigs
 	if(childValueConfigs.isEmpty()) return
-	val childValueOccurrence = definitionPropertyInfo.childValueOccurrence
 	
 	for(valueConfig in childValueConfigs) {
-		if(shouldComplete(valueConfig, childValueOccurrence)) {
+		if(shouldComplete(valueConfig, definitionPropertyInfo)) {
 			completeValue(valueConfig.valueExpression, keyword, quoted, valueConfig.pointer, configGroup, result)
 		}
 	}
 }
 
-private fun shouldComplete(config: CwtPropertyConfig, occurrence: Map<CwtKeyExpression, Int>): Boolean {
+private fun shouldComplete(config: CwtPropertyConfig, definitionPropertyInfo:ParadoxDefinitionPropertyInfo): Boolean {
 	val expression = config.keyExpression
-	val actualCount = occurrence[expression] ?: 0
+	val actualCount = definitionPropertyInfo.childPropertyOccurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 	val cardinality = config.cardinality
 	val maxCount = when {
@@ -467,9 +467,9 @@ private fun shouldComplete(config: CwtPropertyConfig, occurrence: Map<CwtKeyExpr
 	return maxCount == null || actualCount < maxCount
 }
 
-private fun shouldComplete(config: CwtValueConfig, occurrence: Map<CwtValueExpression, Int>): Boolean {
+private fun shouldComplete(config: CwtValueConfig,definitionPropertyInfo:ParadoxDefinitionPropertyInfo): Boolean {
 	val expression = config.valueExpression
-	val actualCount = occurrence[expression] ?: 0
+	val actualCount =definitionPropertyInfo.childValueOccurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 	val cardinality = config.cardinality
 	val maxCount = when {
@@ -494,7 +494,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			for(localisation in localisations) {
 				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -508,7 +508,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = syncedLocalisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -523,7 +523,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -539,7 +539,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -555,7 +555,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val icon = definitionIcon //使用特定图标
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
@@ -574,7 +574,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val element = enumValueConfig.pointer.element?:return
 				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = enumConfig.pointer.containingFile?.name?: anonymousString
 				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -587,24 +587,16 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		CwtKeyExpression.Type.AliasNameExpression ->{
 			val aliasName = expression.value?:return 
 			val alias = configGroup.aliases[aliasName]?:return
-			for((aliasSubName, aliasConfigs) in alias) {
-				val aliasConfig = aliasConfigs.firstOrNull()?:continue
-				val element = aliasConfig.pointer.element?:continue
-				val name = aliasSubName
-				val icon = aliasIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
-				val typeText = aliasConfig.pointer.containingFile?.name?: anonymousString
-				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
-					.withTailText(tailText,true)
-					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
-				result.addElement(lookupElement)
+			for(aliasConfigs in alias.values) {
+				for(aliasConfig in aliasConfigs) {
+					completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.pointer, configGroup, result)
+				}
 			}
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val n = expression.value ?: return
 			val name = n.quoteIf(quoted)
-			val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+			val tailText = " in ${pointer.containingFile?.name?: anonymousString}"
 			val icon = scriptPropertyIcon //使用特定图标
 			val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
 				.withTailText(tailText,true)
@@ -632,7 +624,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(localisation in localisations) {
 				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -645,7 +637,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(syncedLocalisation in syncedLocalisations) {
 				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = syncedLocalisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -659,7 +651,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -678,7 +670,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = definitionName.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -693,7 +685,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
 				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val icon = definitionIcon //使用特定图标
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
@@ -711,7 +703,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val element = enumValueConfig.pointer.element?:return
 				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
-				val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
 				val typeText = enumConfig.pointer.containingFile?.name?: anonymousString
 				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 					.withTailText(tailText,true)
@@ -732,7 +724,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.AliasMatchLeftExpression -> pass() //TODO
 		CwtValueExpression.Type.Constant -> {
 			val n = expression.value ?: return
-			val tailText = "by $expression in ${pointer.containingFile?.name?: anonymousString}"
+			val tailText = " in ${pointer.containingFile?.name?: anonymousString}"
 			val name = n.quoteIf(quoted)
 			val icon = scriptValueIcon //使用特定图标
 			val lookupElement = LookupElementBuilder.create(name).withIcon(icon)

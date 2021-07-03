@@ -117,6 +117,6 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 	}
 	
 	private fun matches(key: String, keyword: String): Boolean {
-		return key.fuzzyMatches(keyword)
+		return key.matchesKeyword(keyword,true)
 	}
 }

@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtAliasConfig(
@@ -8,5 +9,7 @@ data class CwtAliasConfig(
 	val name: String,
 	val subName:String,
 	val config: CwtPropertyConfig
-) : CwtConfig<CwtProperty>
+) : CwtConfig<CwtProperty>{
+	val expression = CwtKeyExpression.resolve(subName)
+}
 
