@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
-class ParadoxLocalisationCommandFieldPsiReference(
+class ParadoxLocalisationCommandFieldReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement) {
@@ -23,11 +23,13 @@ class ParadoxLocalisationCommandFieldPsiReference(
 	}
 	
 	override fun getVariants(): Array<out Any> {
-		//查找类型为scripted_loc的definition
+		//为了避免这里得到的结果太多，采用关键字查找
+		val keyword = element.keyword
 		val project = element.project
-		return findDefinitionsByType("scripted_loc", project).mapToArray {
-			val name = it.name //与definition.name是相同的，直接使用
-			val icon = it.icon
+		//查找类型为scripted_loc的definition
+		return findDefinitionsByKeywordByType(keyword,"scripted_loc", project).mapToArray {
+			val name = it.paradoxDefinitionInfo?.name.orEmpty() //不应该为空
+			val icon = localisationCommandFieldIcon
 			val typeText = it.containingFile.name
 			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 		}

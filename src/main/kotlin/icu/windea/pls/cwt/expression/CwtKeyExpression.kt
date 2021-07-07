@@ -67,6 +67,10 @@ class CwtKeyExpression(
 					val extraValue = expression.substringBefore('<') to expression.substringAfterLast('>')
 					CwtKeyExpression(expression, Type.TypeExpressionString, value,extraValue)
 				}
+				expression.surroundsWith("value[", "]") -> {
+					val value = expression.substring(6, expression.length - 1)
+					CwtKeyExpression(expression, Type.ValueExpression, value)
+				}
 				expression.surroundsWith("enum[", "]") -> {
 					val value = expression.substring(5, expression.length - 1)
 					CwtKeyExpression(expression, Type.EnumExpression, value)
@@ -100,6 +104,7 @@ class CwtKeyExpression(
 		InlineLocalisation,
 		TypeExpression,
 		TypeExpressionString,
+		ValueExpression,
 		EnumExpression,
 		ScopeExpression,
 		AliasNameExpression,

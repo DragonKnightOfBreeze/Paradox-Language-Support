@@ -81,6 +81,10 @@ class CwtValueExpression(
 					val extraValue = expression.substringBefore('<') to expression.substringAfterLast('>')
 					CwtValueExpression(expression, Type.TypeExpressionString, value,extraValue)
 				}
+				expression.surroundsWith("value[", "]") -> {
+					val value = expression.substring(6, expression.length - 1)
+					CwtValueExpression(expression, Type.ValueExpression, value)
+				}
 				expression.surroundsWith("enum[", "]") -> {
 					val value = expression.substring(5, expression.length - 1)
 					CwtValueExpression(expression, Type.EnumExpression, value)
@@ -151,6 +155,7 @@ class CwtValueExpression(
 		DateField,
 		TypeExpression,
 		TypeExpressionString,
+		ValueExpression,
 		EnumExpression,
 		ScopeExpression,
 		ScopeField,

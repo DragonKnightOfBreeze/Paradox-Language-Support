@@ -4,7 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.localisation.psi.*
 
-class ParadoxLocalisationCommandScopePsiReference(
+class ParadoxLocalisationCommandScopeReference(
 	element: ParadoxLocalisationCommandScope,
 	rangeInElement: TextRange
 ): PsiReferenceBase<ParadoxLocalisationCommandScope>(element,rangeInElement){

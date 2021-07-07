@@ -1,5 +1,6 @@
 package icu.windea.pls
 
+import com.intellij.openapi.util.text.*
 import com.intellij.util.*
 import java.io.*
 import java.net.*
@@ -125,17 +126,19 @@ fun String.toCapitalizedWords(): String {
 private val keywordDelimiters = charArrayOf('.','_','-')
 
 /**
- * 判断指定的关键词是否匹配当前字符串。（关键词中的每个字符是否按顺序被当前字符串包含，不区分大小写）。
+ * 判断指定的关键词是否匹配当前字符串。
  */
 fun String.matchesKeyword(keyword: String,ignoreCase:Boolean = false): Boolean {
-	//return contains(keyword)
 	var index = -1
+	var lastIndex = -2
 	for(c in keyword) {
 		index = indexOf(c,index+1,ignoreCase)
+		println(index)
 		when {
 			index == -1 -> return false
-			index != 0 && this[index-1] !in keywordDelimiters -> return false
+			c !in keywordDelimiters && index != 0 && lastIndex != index-1 && this[index-1] !in keywordDelimiters -> return false
 		}
+		lastIndex = index
 	}
 	return true
 }

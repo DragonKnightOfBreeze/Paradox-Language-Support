@@ -195,6 +195,12 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 			val key = keyElement.value
 			hasDefinitionByType(key, typeExpression, configGroup.project)
 		}
+		CwtKeyExpression.Type.ValueExpression -> {
+			val valueExpression = expression.value ?: return false
+			val valueValues = configGroup.values[valueExpression]?.values ?: return false
+			val key = keyElement.value
+			key in valueValues
+		}
 		CwtKeyExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return false
 			val enumValues = configGroup.enums[enumExpression]?.values ?: return false
@@ -256,6 +262,11 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return false
 			hasDefinitionByType(key, typeExpression, configGroup.project)
+		}
+		CwtKeyExpression.Type.ValueExpression -> {
+			val valueExpression = expression.value ?: return false
+			val valueValues = configGroup.values[valueExpression]?.values ?: return false
+			key in valueValues
 		}
 		CwtKeyExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return false
@@ -345,6 +356,13 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			valueElement is ParadoxScriptString && run {
 				val typeExpression = expression.value ?: return@run false
 				hasDefinitionByType(valueElement.stringValue, typeExpression, configGroup.project)
+			}
+		}
+		CwtValueExpression.Type.ValueExpression -> {
+			valueElement is ParadoxScriptString && run {
+				val valueExpression = expression.value ?: return@run false
+				val valueValues = configGroup.values[valueExpression]?.values ?: return@run false
+				valueElement.stringValue in valueValues
 			}
 		}
 		CwtValueExpression.Type.EnumExpression -> {
@@ -566,6 +584,24 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				result.addElement(lookupElement)
 			}
 		}
+		CwtKeyExpression.Type.ValueExpression -> {
+			val valueExpression = expression.value ?: return
+			val valueConfig = configGroup.values[valueExpression] ?: return
+			val valueValueConfigs = valueConfig.valueConfigs
+			for(valueValueConfig in valueValueConfigs) {
+				if(quoted && valueValueConfig.stringValue == null) continue
+				val element = valueValueConfig.pointer.element?:return
+				val name = valueValueConfig.value.quoteIf(quoted)
+				val icon = valueIcon //使用特定图标
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val typeText = valueConfig.pointer.containingFile?.name?: anonymousString
+				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
+					.withTailText(tailText,true)
+					.withTypeText(typeText, true)
+					.withInsertHandler(separatorInsertHandler)
+				result.addElement(lookupElement)
+			}
+		}
 		CwtKeyExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return
 			val enumConfig = configGroup.enums[enumExpression] ?: return
@@ -695,6 +731,23 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				result.addElement(lookupElement)
 			}
 		}
+		CwtValueExpression.Type.ValueExpression -> {
+			val valueExpression = expression.value ?: return
+			val valueConfig = configGroup.values[valueExpression] ?: return
+			val valueValueConfigs = valueConfig.valueConfigs
+			for(valueValueConfig in valueValueConfigs) {
+				if(quoted && valueValueConfig.stringValue == null) continue
+				val element = valueValueConfig.pointer.element?:return
+				val name = valueValueConfig.value.quoteIf(quoted)
+				val icon = valueIcon //使用特定图标
+				val tailText = " by $expression in ${pointer.containingFile?.name?: anonymousString}"
+				val typeText = valueConfig.pointer.containingFile?.name?: anonymousString
+				val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
+					.withTailText(tailText,true)
+					.withTypeText(typeText, true)
+				result.addElement(lookupElement)
+			}
+		}
 		CwtValueExpression.Type.EnumExpression -> {
 			val enumExpression = expression.value ?: return
 			val enumConfig = configGroup.enums[enumExpression] ?: return
@@ -737,12 +790,14 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 }
 
 fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,configGroup:CwtConfigGroup,result:CompletionResultSet){
+	val keyword = commandField.keyword
 	val localisationCommands = configGroup.localisationCommands
 	if(localisationCommands.isEmpty()) return
 	for(localisationCommand in localisationCommands) {
 		val config = localisationCommand.value
-		val element = config.pointer.element?:return
 		val name = config.name
+		if(!name.matchesKeyword(keyword)) return
+		val element = config.pointer.element?:return
 		//val scopes = localisationCommand
 		val icon = localisationCommandFieldIcon
 		val typeText = config.pointer.containingFile?.name?: anonymousString

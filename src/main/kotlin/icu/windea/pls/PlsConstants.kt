@@ -99,6 +99,7 @@ val localisationCommandFieldIcon = IconLoader.getIcon("/icons/paradoxLocalisatio
 val definitionIcon = IconLoader.getIcon("/icons/paradoxDefinition.svg",locationClass)
 val definitionLocalisationIcon = IconLoader.getIcon("/icons/paradoxDefinitionLocalisation.svg",locationClass)
 val localisationIcon = IconLoader.getIcon("/icons/paradoxLocalisation.svg",locationClass)
+val valueIcon = IconLoader.getIcon("/icons/paradoxValue.svg",locationClass)
 val enumIcon = IconLoader.getIcon("/icons/paradoxEnum.svg",locationClass)
 val aliasIcon = IconLoader.getIcon("/icons/paradoxAlias.svg",locationClass) //目前用不到，因为名字是表达式
 

@@ -241,9 +241,9 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopePsiReference {
+	fun getReference(element: ParadoxLocalisationCommandScope): ParadoxLocalisationCommandScopeReference {
 		val rangeInElement = element.commandScopeId.textRangeInParent
-		return ParadoxLocalisationCommandScopePsiReference(element, rangeInElement)
+		return ParadoxLocalisationCommandScopeReference(element, rangeInElement)
 	}
 	//endregion
 	
@@ -270,9 +270,9 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldPsiReference? {
+	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldReference? {
 		val rangeInElement = element.commandFieldId?.textRangeInParent?:return null
-		return ParadoxLocalisationCommandFieldPsiReference(element, rangeInElement)
+		return ParadoxLocalisationCommandFieldReference(element, rangeInElement)
 	}
 	//endregion
 }

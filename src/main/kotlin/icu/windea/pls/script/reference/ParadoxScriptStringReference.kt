@@ -50,6 +50,13 @@ class ParadoxScriptStringReference(
 				val typeExpression = expression.value?: return null
 				findDefinitionByType(name, typeExpression, project)
 			}
+			CwtValueExpression.Type.ValueExpression -> {
+				val valueName = expression.value?:return null
+				val name = element.value
+				val gameType = element.paradoxFileInfo?.gameType?:return null
+				val valueValueConfig = getConfig(element.project).getValue(gameType).values.get(valueName)?.valueConfigs?.find{ it.value == name }
+				valueValueConfig?.pointer?.element?.castOrNull<CwtString>()
+			}
 			CwtValueExpression.Type.EnumExpression -> {
 				val enumName = expression.value?:return null
 				val name = element.value
@@ -95,6 +102,13 @@ class ParadoxScriptStringReference(
 				val name = element.value.removeSurrounding(prefix,suffix)
 				val typeExpression = expression.value?: return emptyArray()
 				findDefinitionsByType(name, typeExpression, project)
+			}
+			CwtValueExpression.Type.ValueExpression -> {
+				val valueName = expression.value?:return emptyArray()
+				val name = element.value
+				val gameType = element.paradoxFileInfo?.gameType?:return emptyArray()
+				val valueValueConfig = getConfig(element.project).getValue(gameType).values.get(valueName)?.valueConfigs?.find{ it.value == name }
+				valueValueConfig?.pointer?.element.castOrNull<CwtString>()?.toSingletonList() ?: return emptyArray()
 			}
 			CwtValueExpression.Type.EnumExpression -> {
 				val enumName = expression.value?:return emptyArray()
