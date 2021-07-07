@@ -49,7 +49,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	class CommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 			val position = parameters.position //COMMAND_FIELD_ID
-			val commandField = position.parent
+			val commandField = position.parent as? ParadoxLocalisationCommandField ?: return
 			val project = position.project
 			val gameType = parameters.originalFile.paradoxFileInfo?.gameType?:return
 			val configGroup = getConfig(project).get(gameType)?:return
