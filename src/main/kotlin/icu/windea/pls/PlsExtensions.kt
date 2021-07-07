@@ -884,8 +884,13 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 			"types" -> {
 				val name = tokens.getOrNull(2)
 				val subtypeName = tokens.getOrNull(3)
-				if(name == null || subtypeName == null) return null
-				getConfig(project).getValue(gameType).types.getValue(name).subtypes.getValue(subtypeName).pointer.element
+				return when{
+					name == null -> null
+					subtypeName == null -> getConfig(project).getValue(gameType).types.getValue(name)
+						.pointer.element
+					else -> getConfig(project).getValue(gameType).types.getValue(name)
+						.subtypes.getValue(subtypeName).pointer.element
+				}
 			}
 			else -> null
 		}
