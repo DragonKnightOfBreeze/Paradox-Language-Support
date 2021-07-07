@@ -8,6 +8,7 @@ import icu.windea.pls.cwt.psi.*
 import org.slf4j.*
 import org.yaml.snakeyaml.*
 import java.util.concurrent.*
+import kotlin.system.*
 
 class CwtConfigProvider(
 	private val project: Project
@@ -17,23 +18,24 @@ class CwtConfigProvider(
 		private val yaml = Yaml()
 	}
 	
-	private val groupMap: MutableMap<String, Map<String, CwtFileConfig>>
+	private val fileConfigGroups: MutableMap<String, Map<String, CwtFileConfig>>
 	private val declarationMap: MutableMap<String, List<Map<String, Any?>>>
 	
 	internal val configGroups: CwtConfigGroups
 	
 	init {
-		groupMap = ConcurrentHashMap<String, Map<String, CwtFileConfig>>()
+		fileConfigGroups = ConcurrentHashMap<String, Map<String, CwtFileConfig>>()
 		declarationMap = ConcurrentHashMap<String, List<Map<String, Any?>>>()
 		configGroups = ReadAction.compute<CwtConfigGroups, Exception> {
 			initConfigGroups()
-			CwtConfigGroups(groupMap, declarationMap, project)
+			CwtConfigGroups(fileConfigGroups, declarationMap, project)
 		}
 	}
 	
 	@Synchronized
 	private fun initConfigGroups() {
 		//TODO 尝试并发解析以提高IDE启动速度
+		val startTime = System.currentTimeMillis()
 		logger.info("Init config groups...")
 		val configUrl = "/config".toUrl(locationClass)
 		//这里有可能找不到，这时不要报错，之后还会执行到这里
@@ -45,16 +47,7 @@ class CwtConfigProvider(
 				//如果是目录则将其名字作为规则组的名字
 				file.isDirectory -> {
 					val groupName = file.name
-					//defaultProject不需要解析具体的config group
-					if(project == getDefaultProject()) {
-						this.groupMap[groupName] = emptyMap()
-					} else {
-						val group = ConcurrentHashMap<String, CwtFileConfig>()
-						val groupPath = file.path
-						logger.info("Init config group '$groupName'...")
-						addConfigGroup(group, file, groupPath, project)
-						this.groupMap[groupName] = group
-					}
+					initConfigGroup(groupName,file)
 				}
 				//解析顶层文件declarations.yml
 				file.name == "declarations.yml" -> {
@@ -63,7 +56,17 @@ class CwtConfigProvider(
 				//忽略其他顶层的文件
 			}
 		}
-		logger.info("Init config groups finished.")
+		val endTime = System.currentTimeMillis()
+		logger.info("Init config groups finished. (${endTime - startTime} ms)")
+	}
+	
+	private fun initConfigGroup(groupName:String,file: VirtualFile) {
+		logger.info("Init config group '$groupName'...")
+		val group = ConcurrentHashMap<String, CwtFileConfig>()
+		val groupPath = file.path
+		addConfigGroup(group, file, groupPath, project)
+		this.fileConfigGroups[groupName] = group
+		logger.info("Init config group '$groupName' finished.")
 	}
 	
 	private fun addConfigGroup(group: MutableMap<String, CwtFileConfig>, parentFile: VirtualFile, groupPath: String, project: Project) {

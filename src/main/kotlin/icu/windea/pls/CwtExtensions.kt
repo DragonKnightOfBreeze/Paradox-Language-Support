@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.expression.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
@@ -732,5 +733,21 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				.withPriority(propertyPriority)
 			result.addElement(lookupElement)
 		}
+	}
+}
+
+fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,configGroup:CwtConfigGroup,result:CompletionResultSet){
+	val localisationCommands = configGroup.localisationCommands
+	if(localisationCommands.isEmpty()) return
+	for(localisationCommand in localisationCommands) {
+		val config = localisationCommand.value
+		val element = config.pointer.element?:return
+		val name = config.name
+		//val scopes = localisationCommand
+		val icon = localisationCommandFieldIcon
+		val typeText = config.pointer.containingFile?.name?: anonymousString
+		val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
+			.withTypeText(typeText, true)
+		result.addElement(lookupElement)
 	}
 }

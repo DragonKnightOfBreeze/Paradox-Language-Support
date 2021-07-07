@@ -26,22 +26,30 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			val rootType = getRootType(currentFile)
 			if(rootType != null) {
 				val path = getPath(subPaths)
-				val gameType = getGameType(currentFile)?:ParadoxGameType.defaultValue()
+				val gameType = getGameType(currentFile) ?: ParadoxGameType.defaultValue()
+				
+				//如果存在对应的folders配置，则path要与之匹配
+				val folders = getConfig().get(gameType)?.folders
+				if(folders != null && folders.isNotEmpty()) {
+					val matched = folders.any { it.matchesPath(path.parent) }
+					if(!matched) return null
+				}
+				
 				val rootPath = currentFile.toNioPath()
 				//只解析特定根目录下的文件
 				return when {
 					//脚本文件，根据正则指定需要排除的文件
 					fileType == ParadoxFileType.ParadoxScript && !fileName.matches(ignoredScriptFileNameRegex) -> {
 						runCatching {
-							val fileInfo = ParadoxFileInfo(fileName, path,rootPath, fileType, rootType, gameType)
-							file.putUserData(paradoxFileInfoKey,fileInfo)
+							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
+							file.putUserData(paradoxFileInfoKey, fileInfo)
 						}
 						ParadoxScriptFileType
 					}
 					//本地化文件
-					fileType == ParadoxFileType.ParadoxLocalisation-> {
+					fileType == ParadoxFileType.ParadoxLocalisation -> {
 						runCatching {
-							val fileInfo = ParadoxFileInfo(fileName, path, rootPath,fileType, rootType, gameType)
+							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
 						}
 						ParadoxLocalisationFileType
@@ -49,7 +57,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 					//其他文件（dds）
 					else -> {
 						runCatching {
-							val fileInfo = ParadoxFileInfo(fileName, path, rootPath,fileType, rootType, gameType)
+							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
 						}
 						null
@@ -99,11 +107,11 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		return null
 	}
 	
-	private fun getGameType(file:VirtualFile): ParadoxGameType? {
+	private fun getGameType(file: VirtualFile): ParadoxGameType? {
 		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
 		for(child in file.children) {
 			val childName = child.name
-			if(childName.startsWith('.')){
+			if(childName.startsWith('.')) {
 				val gameType = ParadoxGameType.resolve(childName.drop(1))
 				if(gameType != null) return gameType
 			}

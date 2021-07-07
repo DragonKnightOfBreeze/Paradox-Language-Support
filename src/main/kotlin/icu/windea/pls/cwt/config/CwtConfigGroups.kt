@@ -7,7 +7,7 @@ import icu.windea.pls.model.*
 import org.slf4j.*
 
 class CwtConfigGroups(
-	val groupMap: Map<String, Map<String, CwtFileConfig>>,
+	val fileConfigGroups: Map<String, Map<String, CwtFileConfig>>,
 	val declarations: Map<String, List<Map<String, Any?>>>,
 	val project: Project
 ) {
@@ -68,7 +68,7 @@ class CwtConfigGroups(
 		logger.info("Resolve config groups...")
 		
 		groups = ConcurrentHashMap()
-		for((groupName, group) in groupMap) {
+		for((groupName, group) in fileConfigGroups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
 				groups[groupName] = CwtConfigGroup(group, gameType, project)

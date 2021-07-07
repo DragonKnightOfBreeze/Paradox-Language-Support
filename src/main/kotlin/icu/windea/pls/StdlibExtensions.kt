@@ -132,8 +132,10 @@ fun String.matchesKeyword(keyword: String,ignoreCase:Boolean = false): Boolean {
 	var index = -1
 	for(c in keyword) {
 		index = indexOf(c,index+1,ignoreCase)
-		if(index == -1) return false
-		else if(this[index-1] !in keywordDelimiters) return false
+		when {
+			index == -1 -> return false
+			index != 0 && this[index-1] !in keywordDelimiters -> return false
+		}
 	}
 	return true
 }

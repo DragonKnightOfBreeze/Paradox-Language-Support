@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.*
 import org.slf4j.*
 
 class CwtConfigGroup(
-	val group: Map<String, CwtFileConfig>,
+	val fileConfigs: Map<String, CwtFileConfig>,
 	val gameType: ParadoxGameType,
 	val project: Project
 ) {
@@ -20,6 +20,10 @@ class CwtConfigGroup(
 		
 		private fun resolveSubtypeName(expression: String): String? {
 			return expression.resolveByRemoveSurrounding("subtype[", "]")
+		}
+		
+		private fun resolveValueName(expression: String): String? {
+			return expression.resolveByRemoveSurrounding("value[", "]")
 		}
 		
 		private fun resolveEnumName(expression: String): String? {
@@ -35,7 +39,13 @@ class CwtConfigGroup(
 		
 	}
 	
+	//需要扫描的文件夹的相对路径列表，可能为空
+	val folders: List<String>
+	
 	val types: Map<String, CwtTypeConfig>
+	
+	//可能为空
+	val values: Map<String,CwtEnumConfig>
 	
 	//枚举值也有可能是int、number、bool类型，这里统一用字符串表示
 	val enums: Map<String, CwtEnumConfig>
@@ -60,7 +70,9 @@ class CwtConfigGroup(
 	init {
 		logger.info("Resolve config group '$gameType'...")
 		
+		folders = mutableListOf()
 		types = mutableMapOf()
+		values = mutableMapOf()
 		enums = mutableMapOf()
 		links = mutableMapOf()
 		localisationCommands = mutableMapOf()
@@ -71,8 +83,15 @@ class CwtConfigGroup(
 		aliases = mutableMapOf<String,MutableMap<String,MutableList<CwtAliasConfig>>>()
 		definitions = mutableMapOf()
 		
-		for((_, rootProperty) in group) {
-			for(property in rootProperty.properties) {
+		for((fileName, fileConfig) in fileConfigs) {
+			//如果存在folders.cwt，则将其中的相对路径列表添加到folders中
+			if(fileName == "folders.cwt") {
+				val list = fileConfig.values.map { it.value }
+				folders.addAll(list)
+			}
+			
+			//处理fileConfig的properties
+			for(property in fileConfig.properties) {
 				val key = property.key
 				when(key) {
 					//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
@@ -83,6 +102,17 @@ class CwtConfigGroup(
 							if(typeName != null && typeName.isNotEmpty()) {
 								val typeConfig = resolveTypeConfig(prop, typeName)
 								types[typeName] = typeConfig
+							}
+						}
+					}
+					//找到配置文件中的顶级的key为"values"的属性，然后解析它的子属性，添加到values中
+					"values" -> {
+						val props = property.properties?:continue
+						for(prop in props) {
+							val valueName = resolveValueName(prop.key)
+							if(valueName != null && valueName.isNotEmpty()) {
+								val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
+								values[valueName] = valueConfig
 							}
 						}
 					}

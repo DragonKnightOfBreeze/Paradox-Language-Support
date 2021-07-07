@@ -129,6 +129,10 @@
 * [X] 进行匹配时支持aliasName和aliasMatchLeft
 * [X] 进行代码提示时支持aliasName
 * [X] 进行代码提示时支持aliasName 兼容aliasSubName为为expression的情况 仅提示必要的
+* [X] 应用cwt配置文件`folders.cwt`
+* [X] 进行代码提示时支持valueName
+* [X] 提示localisationCommand（commandField）
+* [ ] 提示localisationCommand（commandField），限制scope
 * [ ] 进行代码提示时支持aliasName 限制scope
 * [ ] 进行匹配时支持aliasName 限制scope
 * [ ] 基于cwt规则文件的key和value的验证的支持

@@ -104,7 +104,9 @@ private fun doGetCwtConfigType(element:CwtProperty):CwtConfigType?{
 	return when {
 		name.surroundsWith("type[","]") -> CwtConfigType.Type
 		name.surroundsWith("subtype[","]") -> CwtConfigType.Subtype
+		name.surroundsWith("value[","]") -> CwtConfigType.Value
 		name.surroundsWith("enum[","]") -> CwtConfigType.Enum
+		name.surroundsWith("alias[","]") -> CwtConfigType.Alias
 		else -> return null //TODO
 	} 
 }
@@ -115,50 +117,21 @@ private fun doGetCwtConfigType(element:CwtValue):CwtConfigType?{
 	val parentProperty = element.parent?.parent.castOrNull<CwtProperty>()?:return null
 	val parentName = parentProperty.name
 	return when{
+		parentName.surroundsWith("value[","]") -> CwtConfigType.ValueValue
 		parentName.surroundsWith("enum[","]") -> CwtConfigType.EnumValue
 		else -> return null //TODO
 	}
 }
 
-val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
-	get() {
-		val name = this.name
-		return getConfig().localeMap[name]
-	}
+fun PsiElement.isQuoted(): Boolean {
+	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
+}
 
-val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
-	get() {
-		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
-		if(colorId != null && colorId.isUpperCase()) {
-			return getConfig().colorMap[colorId.toString()]
-		}
-		return null
-	}
+val PsiElement.paradoxGameType: ParadoxGameType? get() = doGetGameType(this)
 
-val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequentialNumber?
-	get() {
-		val name = this.name
-		return getConfig().sequentialNumberMap[name]
-	}
-
-val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
-	get() {
-		val name = this.name
-		return getConfig().colorMap[name]
-	}
-
-//val ParadoxLocalisationCommandScope.paradoxCommandScope: ParadoxCommandScope?
-//	get() {
-//		val name = this.name.toCapitalizedWord() //忽略大小写，首字母大写
-//		if(name.startsWith(eventTargetPrefix)) return null
-//		return config.commandScopeMap[name]
-//	}
-//
-//val ParadoxLocalisationCommandField.paradoxCommandField: ParadoxCommandField?
-//	get() {
-//		val name = this.name
-//		return config.commandFieldMap[name]
-//	}
+private fun doGetGameType(element:PsiElement):ParadoxGameType?{
+	return element.containingFile.paradoxFileInfo?.gameType
+}
 
 val PsiElement.paradoxLocale: ParadoxLocale? get() = doGetLocale(this)
 
@@ -451,9 +424,26 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 	return ParadoxLocalisationInfo(name, type)
 }
 
-fun PsiElement.isQuoted(): Boolean {
-	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
-}
+
+val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
+	get() {
+		return getConfig().localeMap[name]
+	}
+
+val ParadoxLocalisationPropertyReference.paradoxColor: ParadoxColor?
+	get() {
+		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
+		if(colorId != null && colorId.isUpperCase()) {
+			return getConfig().colorMap[colorId.toString()]
+		}
+		return null
+	}
+
+val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequentialNumber?
+	get() = getConfig().sequentialNumberMap[name]
+
+val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
+	get() = getConfig().colorMap[name]
 
 //PsiElement Find Extensions
 
