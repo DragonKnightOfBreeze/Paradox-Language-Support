@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
 data class CwtPropertyConfig(
-	val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val key: String,
 	val value: String,
 	val booleanValue: Boolean? = null,
@@ -20,11 +20,20 @@ data class CwtPropertyConfig(
 	val options: List<CwtOptionConfig>? = null,
 	val optionValues: List<CwtOptionValueConfig>? = null,
 	val separatorType: SeparatorType = SeparatorType.EQUAL,
-	val keyExpression:CwtKeyExpression,
+	val keyExpression: CwtKeyExpression,
 	val valueExpression: CwtValueExpression
-) {
+) : CwtConfig<CwtProperty> {
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
 	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
+	
+	//懒加载
+	val valueConfig by lazy {
+		val valuePointer = pointer.containingFile?.let { f -> pointer.element?.value?.createPointer(f) } ?: return@lazy null
+		CwtValueConfig(
+			valuePointer, value, booleanValue, intValue, floatValue, stringValue,
+			values, properties, documentation, options, optionValues, valueExpression
+		)
+	}
 }
 

@@ -133,6 +133,8 @@
 * [X] 进行代码提示时支持valueName
 * [X] 提示localisationCommand（commandField）
 * [ ] 提示localisationCommand（commandField），限制scope
+* [X] definitionProperty对应的规则如果是const（即相同名字的规则），则将规则对应的cwtKey/cwtValue作为它的引用
+* [ ] 图标更改
 * [ ] 进行代码提示时，alias拥有特定的注释和图标
 * [ ] 进行代码提示时支持aliasName 限制scope
 * [ ] 进行匹配时支持aliasName 限制scope

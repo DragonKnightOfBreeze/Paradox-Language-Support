@@ -634,10 +634,11 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val n = expression.value ?: return
+			val element = pointer.element?:return
 			val name = n.quoteIf(quoted)
 			val tailText = " in ${pointer.containingFile?.name ?: anonymousString}"
 			val icon = scriptPropertyIcon //使用特定图标
-			val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withInsertHandler(separatorInsertHandler)
 				.withPriority(propertyPriority)
@@ -780,10 +781,11 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.AliasMatchLeftExpression -> pass() //TODO
 		CwtValueExpression.Type.Constant -> {
 			val n = expression.value ?: return
-			val tailText = " in ${pointer.containingFile?.name ?: anonymousString}"
+			val element = pointer.element?:return
 			val name = n.quoteIf(quoted)
+			val tailText = " in ${pointer.containingFile?.name ?: anonymousString}"
 			val icon = scriptValueIcon //使用特定图标
-			val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withPriority(propertyPriority)
 			result.addElement(lookupElement)
@@ -812,7 +814,8 @@ fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField, c
 //Resolve Extensions
 
 fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
-	val expression = keyElement.expression ?: return null
+	val propertyConfig = keyElement.propertyConfig ?: return null
+	val expression = propertyConfig.keyExpression
 	val project = keyElement.project
 	return when(expression.type) {
 		CwtKeyExpression.Type.Localisation -> {
@@ -845,15 +848,21 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 			val enumName = expression.value ?: return null
 			val name = keyElement.value
 			val gameType = keyElement.paradoxFileInfo?.gameType ?: return null
-			val enumValueConfig = getConfig(keyElement.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find { it.value == name }
-			enumValueConfig?.pointer?.element?.castOrNull<CwtString>()
+			val enumValueConfig = getConfig(keyElement.project).getValue(gameType).enums
+				.get(enumName)?.valueConfigs?.find { it.value == name }?:return null
+			enumValueConfig.pointer.element.castOrNull<CwtString>()
+		}
+		CwtKeyExpression.Type.AliasNameExpression -> null //TODO
+		CwtKeyExpression.Type.Constant -> {
+			propertyConfig.pointer.element
 		}
 		else -> null //TODO
 	}
 }
 
 fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement> {
-	val expression = keyElement.expression ?: return emptyList()
+	val propertyConfig = keyElement.propertyConfig ?: return emptyList()
+	val expression = propertyConfig.keyExpression
 	val project = keyElement.project
 	return when(expression.type) {
 		CwtKeyExpression.Type.Localisation -> {
@@ -886,8 +895,12 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 			val enumName = expression.value ?: return emptyList()
 			val name = keyElement.value
 			val gameType = keyElement.paradoxFileInfo?.gameType ?: return emptyList()
-			val enumValueConfig = getConfig(keyElement.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find { it.value == name }
-			enumValueConfig?.pointer?.element?.castOrNull<CwtString>()?.toSingletonList() ?: return emptyList()
+			val enumValueConfig = getConfig(keyElement.project).getValue(gameType).enums
+				.get(enumName)?.valueConfigs?.find { it.value == name }?:return emptyList()
+			enumValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
+		}
+		CwtKeyExpression.Type.Constant -> {
+			propertyConfig.pointer.element.toSingletonListOrEmpty()
 		}
 		else -> return emptyList() //TODO
 	}
@@ -897,7 +910,9 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 	//根据对应的expression进行解析
 	//val expression = element.expression?:return null
 	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-	val expression = valueElement.expression ?: return fallbackResolveValue(valueElement)
+	val valueConfig = valueElement.valueConfig?: return fallbackResolveValue(valueElement)
+	val expression = valueConfig.valueExpression 
+	val pointer = valueConfig.pointer
 	val project = valueElement.project
 	return when(expression.type) {
 		CwtValueExpression.Type.Localisation -> {
@@ -930,10 +945,14 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			val enumName = expression.value ?: return null
 			val name = valueElement.value
 			val gameType = valueElement.paradoxFileInfo?.gameType ?: return null
-			val enumValueConfig = getConfig(valueElement.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find { it.value == name }
-			enumValueConfig?.pointer?.element.castOrNull<CwtString>()
+			val enumValueConfig = getConfig(valueElement.project).getValue(gameType).enums
+				.get(enumName)?.valueConfigs?.find { it.value == name }?:return null
+			enumValueConfig.pointer.element.castOrNull<CwtString>()
 		}
 		CwtValueExpression.Type.AliasMatchLeftExpression -> fallbackResolveValue(valueElement) //TODO
+		CwtValueExpression.Type.Constant -> {
+			valueConfig.pointer.element.castOrNull<CwtString>()
+		}
 		else -> null //TODO
 	}
 }
@@ -950,7 +969,9 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 	//根据对应的expression进行解析
 	//val expression = element.expression?:return emptyArray()
 	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-	val expression = valueElement.expression ?: return fallbackMultiResolveValue(valueElement)
+	val valueConfig = valueElement.valueConfig?: return fallbackMultiResolveValue(valueElement)
+	val expression = valueConfig.valueExpression
+	val pointer = valueConfig.pointer
 	val project = valueElement.project
 	return when(expression.type) {
 		CwtValueExpression.Type.Localisation -> {
@@ -983,10 +1004,14 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 			val enumName = expression.value ?: return emptyList()
 			val name = valueElement.value
 			val gameType = valueElement.paradoxFileInfo?.gameType ?: return emptyList()
-			val enumValueConfig = getConfig(valueElement.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find { it.value == name }
-			enumValueConfig?.pointer?.element.castOrNull<CwtString>()?.toSingletonList() ?: return emptyList()
+			val enumValueConfig = getConfig(valueElement.project).getValue(gameType).enums
+				.get(enumName)?.valueConfigs?.find { it.value == name }?:return emptyList()
+			enumValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
 		}
 		CwtValueExpression.Type.AliasMatchLeftExpression -> return fallbackMultiResolveValue(valueElement) //TODO
+		CwtValueExpression.Type.Constant -> {
+			valueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
+		}
 		else -> return emptyList() //TODO
 	}
 }
