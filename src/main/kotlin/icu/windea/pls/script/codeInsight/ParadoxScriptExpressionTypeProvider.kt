@@ -15,6 +15,8 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		private val noExpressionFoundMessage = message("noExpressionFound")
 	}
 	
+	//(definition type)
+	//boolean | int | float | string | color | code
 	override fun getInformationHint(element: PsiElement): String {
 		return when{
 			element is ParadoxScriptVariable -> getVariableHint(element)
@@ -26,20 +28,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 				val e = element.reference.resolve()?: return "(unknown)"
 				getVariableHint(e) 
 			}
-			element is ParadoxScriptString -> {
-				val e = element.reference.resolve()?: return "(unknown)"
-				when{
-					e is ParadoxScriptProperty -> {
-						val definitionInfo = e.paradoxDefinitionInfo ?: return "script property"
-						getDefinitionHint(definitionInfo) 
-					}
-					e is ParadoxLocalisationProperty -> {
-						val category = e.category ?: return "localisation property"
-						getLocalisationHint(category)
-					}
-					else -> "string"
-				}
-			}
+			//TODO 进一步解析scriptString的具体类型（enum, alias等）
 			element is ParadoxScriptValue -> element.getType() ?: "(unknown)"
 			else -> "(unknown)"
 		}
@@ -57,14 +46,12 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return definitionInfo.typeText
 	}
 	
-	private fun getLocalisationHint(category: ParadoxLocalisationCategory):String{
-		return category.text
-	}
-	
 	override fun getErrorHint(): String {
 		return noExpressionFoundMessage
 	}
 	
+	//scriptValue | scriptProperty
+	//scriptString | scriptBoolean | scriptInt | scriptFloat | scriptColor | scriptCode | scriptBlock
 	override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {
 		val element = when(elementAt.elementType){
 			VARIABLE_NAME_ID -> elementAt.parent?.parent as? ParadoxScriptVariable

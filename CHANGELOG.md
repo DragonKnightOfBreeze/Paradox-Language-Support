@@ -132,9 +132,11 @@
 * [X] 应用cwt配置文件`folders.cwt`
 * [X] 进行代码提示时支持valueName
 * [X] 提示localisationCommand（commandField）
-* [ ] 提示localisationCommand（commandField），限制scope
 * [X] definitionProperty对应的规则如果是const（即相同名字的规则），则将规则对应的cwtKey/cwtValue作为它的引用
+* [X] 修改脚本文件的类型提示逻辑
 * [ ] 图标更改
+* [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
+* [ ] 提示localisationCommand（commandField），限制scope
 * [ ] 进行代码提示时，alias拥有特定的注释和图标
 * [ ] 进行代码提示时支持aliasName 限制scope
 * [ ] 进行匹配时支持aliasName 限制scope

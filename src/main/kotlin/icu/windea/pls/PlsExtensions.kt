@@ -328,17 +328,11 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 
 fun ParadoxScriptValue.getType(): String? {
 	return when(this) {
-		is ParadoxScriptBlock -> when {
-			this.isEmpty -> "array | object"
-			this.isArray -> "array"
-			this.isObject -> "object"
-			else -> null
-		}
+		is ParadoxScriptBlock -> "block"
 		is ParadoxScriptString -> "string"
 		is ParadoxScriptBoolean -> "boolean"
 		is ParadoxScriptInt -> "int"
 		is ParadoxScriptFloat -> "float"
-		is ParadoxScriptNumber -> "number"
 		is ParadoxScriptColor -> "color"
 		is ParadoxScriptCode -> "code"
 		else -> null
@@ -347,14 +341,11 @@ fun ParadoxScriptValue.getType(): String? {
 
 fun ParadoxScriptValue.checkType(type: String): Boolean {
 	return when(type) {
-		"block", "array | object" -> this is ParadoxScriptBlock
-		"array" -> this is ParadoxScriptBlock && isArray
-		"object" -> this is ParadoxScriptBlock && isObject
+		"block" -> this is ParadoxScriptBlock
 		"string" -> this is ParadoxScriptString
 		"boolean" -> this is ParadoxScriptBoolean
 		"int" -> this is ParadoxScriptInt
 		"float" -> this is ParadoxScriptFloat
-		"number" -> this is ParadoxScriptNumber
 		"color" -> this is ParadoxScriptColor
 		"code" -> this is ParadoxScriptCode
 		else -> false
