@@ -133,6 +133,7 @@
 * [X] 进行代码提示时支持valueName
 * [X] 提示localisationCommand（commandField）
 * [ ] 提示localisationCommand（commandField），限制scope
+* [ ] 进行代码提示时，alias拥有特定的注释和图标
 * [ ] 进行代码提示时支持aliasName 限制scope
 * [ ] 进行匹配时支持aliasName 限制scope
 * [ ] 基于cwt规则文件的key和value的验证的支持

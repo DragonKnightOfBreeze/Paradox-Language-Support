@@ -24,87 +24,11 @@ class ParadoxScriptPropertyKeyReference(
 	}
 	
 	override fun resolve(): PsiNamedElement? {
-		//根据对应的expression进行解析
-		val expression = element.expression?:return null
-		val project = element.project
-		return when(expression.type){
-			CwtKeyExpression.Type.Localisation -> {
-				val name = element.value
-				findLocalisation(name, inferParadoxLocale(),project,hasDefault = true)
-			}
-			CwtKeyExpression.Type.SyncedLocalisation -> {
-				val name = element.value
-				findSyncedLocalisation(name, inferParadoxLocale(),project,hasDefault = true)
-			}
-			CwtKeyExpression.Type.TypeExpression -> {
-				val name = element.value
-				val typeExpression = expression.value?:return null
-				findDefinitionByType(name,typeExpression,project)
-			}
-			CwtKeyExpression.Type.TypeExpressionString -> {
-				val (prefix,suffix) = expression.extraValue.castOrNull<Pair<String,String>>()?:return null
-				val name = element.value.removeSurrounding(prefix,suffix)
-				val typeExpression = expression.value?: return null
-				findDefinitionByType(name,typeExpression,project)
-			}
-			CwtKeyExpression.Type.ValueExpression -> {
-				val valueName = expression.value?:return null
-				val name = element.value
-				val gameType = element.paradoxFileInfo?.gameType?:return null
-				val valueValueConfig = getConfig(element.project).getValue(gameType).values.get(valueName)?.valueConfigs?.find{ it.value == name }
-				valueValueConfig?.pointer?.element?.castOrNull<CwtString>()
-			}
-			CwtKeyExpression.Type.EnumExpression -> {
-				val enumName = expression.value?:return null
-				val name = element.value
-				val gameType = element.paradoxFileInfo?.gameType?:return null
-				val enumValueConfig = getConfig(element.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find{ it.value == name }
-				enumValueConfig?.pointer?.element?.castOrNull<CwtString>()
-			}
-			else -> null //TODO
-		}
+		return resolveKey(element) //根据对应的expression进行解析
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		//根据对应的expression进行解析
-		val expression = element.expression?:return emptyArray()
-		val project = element.project
-		return when(expression.type){
-			CwtKeyExpression.Type.Localisation -> {
-				val name = element.value
-				findLocalisations(name, inferParadoxLocale(),project,hasDefault = true)
-			}
-			CwtKeyExpression.Type.SyncedLocalisation -> {
-				val name = element.value
-				findSyncedLocalisations(name, inferParadoxLocale(),project,hasDefault = true)
-			}
-			CwtKeyExpression.Type.TypeExpression -> {
-				val name = element.value
-				val typeExpression = expression.value?:return emptyArray()
-				findDefinitionsByType(name,typeExpression,project)
-			}
-			CwtKeyExpression.Type.TypeExpressionString -> {
-				val (prefix,suffix) = expression.extraValue.castOrNull<Pair<String,String>>()?:return emptyArray()
-				val name = element.value.removeSurrounding(prefix,suffix)
-				val typeExpression = expression.value?: return emptyArray()
-				findDefinitionsByType(name,typeExpression,project)
-			}
-			CwtKeyExpression.Type.ValueExpression -> {
-				val valueName = expression.value?:return emptyArray()
-				val name = element.value
-				val gameType = element.paradoxFileInfo?.gameType?:return emptyArray()
-				val valueValueConfig = getConfig(element.project).getValue(gameType).values.get(valueName)?.valueConfigs?.find{ it.value == name }
-				valueValueConfig?.pointer?.element?.castOrNull<CwtString>()?.toSingletonList() ?: return emptyArray()
-			}
-			CwtKeyExpression.Type.EnumExpression -> {
-				val enumName = expression.value?:return emptyArray()
-				val name = element.value
-				val gameType = element.paradoxFileInfo?.gameType?:return emptyArray()
-				val enumValueConfig = getConfig(element.project).getValue(gameType).enums.get(enumName)?.valueConfigs?.find{ it.value == name }
-				enumValueConfig?.pointer?.element?.castOrNull<CwtString>()?.toSingletonList() ?: return emptyArray()
-			}
-			else -> return emptyArray() //TODO
-		}.mapToArray { PsiElementResolveResult(it) }
+		return multiResolveKey(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
 	}
 	
 	//代码提示功能由ParadoxScriptCompletionContributor统一实现

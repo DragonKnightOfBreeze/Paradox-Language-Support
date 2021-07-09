@@ -424,7 +424,6 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 	return ParadoxLocalisationInfo(name, type)
 }
 
-
 val ParadoxLocalisationLocale.paradoxLocale: ParadoxLocale?
 	get() {
 		return getConfig().localeMap[name]
@@ -863,7 +862,6 @@ fun findSyncedLocalisationsByKeyword(
 
 //Link Extensions
 
-
 fun resolveLink(link: String, context: PsiElement): PsiElement? {
 	return when {
 		link.startsWith('@') -> resolveCwtLink(link, context)
@@ -873,7 +871,7 @@ fun resolveLink(link: String, context: PsiElement): PsiElement? {
 	}
 }
 
-//@stellaris.types.building
+//@stellaris.types.building, @stellaris.types.civic_or_origin.civic
 private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 	return runCatching {
 		val project = context.project
