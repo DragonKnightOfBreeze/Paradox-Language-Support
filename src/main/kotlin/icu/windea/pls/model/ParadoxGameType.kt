@@ -8,15 +8,16 @@ enum class ParadoxGameType(
 	override val text: String,
 	val icon: Icon
 ):Enumerable {
-	Ck2("ck2","Crusader Kings II", ck2Icon),
-	Ck3("ck3","Crusader Kings III", ck3Icon),
-	Eu4("eu4","Europa Universalis IV", eu4Icon),
-	Hoi4("hoi4","Hearts of Iron IV", hoi4Icon),
-	Ir("ir","Imperator: Rome", irIcon),
-	Stellaris("stellaris", "Stellaris", stellarisIcon),
-	Vic2("vic2","Victoria II", vic2Icon);
+	//NOTE 暂时使用统一的库的图标
+	Ck2("ck2","Crusader Kings II", libraryIcon),
+	Ck3("ck3","Crusader Kings III", libraryIcon),
+	Eu4("eu4","Europa Universalis IV", libraryIcon),
+	Hoi4("hoi4","Hearts of Iron IV", libraryIcon),
+	Ir("ir","Imperator: Rome", libraryIcon),
+	Stellaris("stellaris", "Stellaris", libraryIcon),
+	Vic2("vic2","Victoria II", libraryIcon);
 	
-	val exeFileName = "$key.exe"
+	//val exeFileName = "$key.exe"
 	
 	override fun toString(): String {
 		return text

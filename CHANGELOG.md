@@ -63,14 +63,14 @@
 * [X] 脚本文件支持根据规则文件提示propertyName，处理不能重复的情况（未测试，规则文件未完成）
 * [X] 脚本文件支持根据规则文件提示propertyName，初步实现（已测试，规则文件未完成）
 * [X] 脚本文件支持根据规则文件验证propertyName（未测试，规则文件未完成）
-* [ ] 为规则文件`types.yml`添加规则`name_prefix`和`name_suffix`（已完成`common`目录）
-* [ ] 为规则文件`types.yml`添加规则`icon`
-* [ ] 解析规则文件`types.yml`的规则`type_from_file`
-* [ ] 解析规则文件`types.yml`的规则`type_per_file`
-* [ ] 编写规则文件`enums.yml`
-* [ ] 修复图标能加载但不能正常渲染的bug（IDE新版本底层代码错误？）
-* [ ] 初步实现功能：添加模块（基于游戏类型）
-* [ ] 让`scriptRootBlock`直接或间接继承自`scriptProperty`
+* [ ] ~~为规则文件`types.yml`添加规则`name_prefix`和`name_suffix`（已完成`common`目录）~~
+* [ ] ~~为规则文件`types.yml`添加规则`icon`~~
+* [ ] ~~解析规则文件`types.yml`的规则`type_from_file`~~
+* [ ] ~~解析规则文件`types.yml`的规则`type_per_file`~~
+* [ ] ~~编写规则文件`enums.yml`~~
+* [ ] ~~修复图标能加载但不能正常渲染的bug（IDE新版本底层代码错误？）~~
+* [ ] ~~初步实现功能：添加模块（基于游戏类型）~~
+* [ ] ~~让`scriptRootBlock`直接或间接继承自`scriptProperty`~~
 
 ### 0.2
 
@@ -134,7 +134,7 @@
 * [X] 提示localisationCommand（commandField）
 * [X] definitionProperty对应的规则如果是const（即相同名字的规则），则将规则对应的cwtKey/cwtValue作为它的引用
 * [X] 修改脚本文件的类型提示逻辑
-* [ ] 图标更改
+* [X] 图标更改
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 提示localisationCommand（commandField），限制scope
 * [ ] 进行代码提示时，alias拥有特定的注释和图标

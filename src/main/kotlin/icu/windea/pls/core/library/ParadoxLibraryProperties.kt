@@ -2,8 +2,6 @@ package icu.windea.pls.core.library
 
 import com.intellij.openapi.roots.libraries.*
 
-//TODO 不知道是否应该保留，反正就这样吧
-
 class ParadoxLibraryProperties: LibraryProperties<ParadoxLibraryProperties>(){
 	companion object{
 		val instance = ParadoxLibraryProperties()
@@ -18,10 +16,10 @@ class ParadoxLibraryProperties: LibraryProperties<ParadoxLibraryProperties>(){
 	}
 	
 	override fun equals(other: Any?): Boolean {
-		return true
+		return other is ParadoxLibraryProperties
 	}
 	
 	override fun hashCode(): Int {
-		return 1
+		return 0
 	}
 }

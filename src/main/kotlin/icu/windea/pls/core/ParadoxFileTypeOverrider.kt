@@ -95,13 +95,13 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			val childName = child.name.lowercase()
 			val childExpression = childName.substringAfterLast('.', "")
 			when {
-				//TODO 可能并不是这样命名，需要检查
-				//childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib
-				childExpression == "exe" -> return ParadoxRootType.Stdlib
 				childName == descriptorFileName -> return ParadoxRootType.Mod
 				fileName == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
 				fileName == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
 				fileName == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
+				//TODO 可能并不是这样命名，需要检查
+				//childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib
+				childExpression == "exe" -> return ParadoxRootType.Stdlib
 			}
 		}
 		return null
