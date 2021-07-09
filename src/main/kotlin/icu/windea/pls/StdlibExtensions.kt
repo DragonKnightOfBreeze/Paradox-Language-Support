@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.openapi.util.text.*
 import com.intellij.util.*
 import java.io.*
 import java.net.*

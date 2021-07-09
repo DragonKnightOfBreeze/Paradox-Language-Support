@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*

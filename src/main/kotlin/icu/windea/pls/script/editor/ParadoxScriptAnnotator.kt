@@ -45,7 +45,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
 		//颜色高亮
-		val expression = element.expression ?: return
+		val expression = element.propertyConfig?.keyExpression ?: return
 		val attributesKey = when(expression.type) {
 			CwtKeyExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtKeyExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
@@ -61,9 +61,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
 		//颜色高亮
-		//val expression = element.expression ?: return
 		//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-		val expression = element.expression ?: return fallbackAnnotateString(element, holder)
+		//val expression = element.valueConfig?.valueExpression ?: return 
+		val expression = element.valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
 		val attributesKey = when(expression.type) {
 			CwtValueExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY

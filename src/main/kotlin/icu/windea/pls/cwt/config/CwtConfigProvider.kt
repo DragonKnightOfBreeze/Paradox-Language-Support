@@ -8,7 +8,6 @@ import icu.windea.pls.cwt.psi.*
 import org.slf4j.*
 import org.yaml.snakeyaml.*
 import java.util.concurrent.*
-import kotlin.system.*
 
 class CwtConfigProvider(
 	private val project: Project

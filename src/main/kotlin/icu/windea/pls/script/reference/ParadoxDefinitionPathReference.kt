@@ -3,7 +3,6 @@ package icu.windea.pls.script.reference
 import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
 import com.intellij.psi.search.*
 import com.intellij.xml.util.*
 import icu.windea.pls.*

@@ -4,7 +4,6 @@ import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.script.codeStyle.*
 
 class CwtLanguageCodeStyleSettingsProvider: LanguageCodeStyleSettingsProvider() {
 	companion object{

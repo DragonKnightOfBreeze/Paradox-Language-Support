@@ -6,7 +6,6 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import javax.swing.*

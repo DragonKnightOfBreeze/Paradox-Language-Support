@@ -4,10 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.expression.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
-import kotlin.text.removeSurrounding
 
 class ParadoxScriptStringReference(
 	element: ParadoxScriptString,

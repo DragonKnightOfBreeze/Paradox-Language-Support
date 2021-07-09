@@ -1,7 +1,6 @@
 package icu.windea.pls.util
 
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
 /**

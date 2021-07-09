@@ -12,7 +12,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.config.*
-import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
