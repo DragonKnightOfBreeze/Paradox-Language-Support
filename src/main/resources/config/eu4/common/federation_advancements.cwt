@@ -36,7 +36,7 @@ federation_advancements = {
 	}
 	
 	## cardinality = 0..1
-	## replace_scope = { root = country this = country }
+	## ## replace_scope = { root = country this = country }
 	effect = {
 		## cardinality = 0..1
 		custom_tooltip = scalar

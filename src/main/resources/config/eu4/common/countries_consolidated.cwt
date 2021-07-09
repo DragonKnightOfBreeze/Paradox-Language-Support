@@ -59,6 +59,9 @@ country_file = {
 	graphical_culture = enum[graphical_cultures]
 	
 	## cardinality = 0..1
+	cannot_form_from_collapse_nation = yes
+	
+	## cardinality = 0..1
 	preferred_religion = <religion>
 
 	## cardinality = 0..1

@@ -73,6 +73,12 @@ types = {
 		## abbreviation = EOE
 		subtype[espionage_operation] = {
 		}
+		## type_key_filter = leader_event
+		## push_scope = leader
+		## display_name = Leader event
+		## abbreviation = LE
+		subtype[leader] = {
+		}
 		## type_key_filter = event
 		subtype[scopeless] = {
 		}

@@ -403,7 +403,11 @@ alias[trigger:colonial_region] = <colonial_region>
 alias[trigger:colonial_region] = scope[province]
 
 ## scope = country
-###
+### 1.31.5 counts number of colony subjects
+alias[trigger:colony] = int
+
+## scope = country
+### 1.31.5 counts number of colony provinces
 alias[trigger:num_of_colonies] = int
 
 ## scope = { province country }
@@ -541,6 +545,14 @@ alias[trigger:country_or_vassal_holds] = scope[country]
 ## scope = province
 ###Returns true if the province is part of the specified country or its subjects.
 alias[trigger:country_or_vassal_holds] = enum[country_tags]
+
+## scope = province
+###Returns true if the province is part of the specified country or its subjects.
+alias[trigger:country_or_subject_holds] = scope[country]
+
+## scope = province
+###Returns true if the province is part of the specified country or its subjects.
+alias[trigger:country_or_subject_holds] = enum[country_tags]
 
 ## scope = province
 ###Returns true if the province culture is X, or the same as the specified scope.
@@ -1016,6 +1028,7 @@ alias[trigger:had_heir_flag] = {
 ## scope = province
 ###Returns true if the province flag X was last set for the province at least Y days ago.
 alias[trigger:had_province_flag] = {
+	## severity = warning
 	flag = value[province_flag]
 	days = int
 }
@@ -1130,6 +1143,10 @@ alias[trigger:has_colonist] = bool
 ## scope = country
 ###Returns true if country has a three star general.
 alias[trigger:has_commanding_three_star] = bool
+
+## scope = country
+###Returns true if country has a general with name.
+alias[trigger:general_with_name] = scalar
 
 ## scope = country
 ###Returns true if the country has a consort.
@@ -1520,6 +1537,7 @@ alias[trigger:has_privateers] = bool
 alias[trigger:has_promote_investments] = <trade_company>
 
 ## scope = province
+## severity = warning
 ###Returns true if the province has the province flag X.
 alias[trigger:has_province_flag] = value[province_flag]
 
@@ -1530,6 +1548,10 @@ alias[trigger:has_province_modifier] = <event_modifier>
 ## scope = province
 ###Returns true if province has the province modifier X.
 alias[trigger:has_province_modifier] = <static_modifier>
+
+## scope = province
+###Returns true if province has the province modifier X.
+alias[trigger:has_active_triggered_province_modifier] = <province_triggered_modifier>
 
 ## scope = province
 ###Returns true if the province is controlled by (the specified) rebel faction. =REB is used in Vanilla but apparently doesn't work as of 1.25
@@ -3301,7 +3323,7 @@ alias[trigger:personal_union] = int
 ## scope = province
 ###Returns true if the specified country has at least X units of the specified type in the province. (type and who are not needed, if not included will default to all.)
 alias[trigger:num_of_units_in_province] = {
-	amount = int
+	amount = float
 	## cardinality = 0..1
 	who = scope[country]
 	## cardinality = 0..1
@@ -4161,7 +4183,7 @@ alias[trigger:unit_type] = <technology_group>
 
 ## scope = { province country }
 ###Returns true if the unrest in the province is at least X.
-alias[trigger:unrest] = float[0.0..100.0]
+alias[trigger:unrest] = float[-100.0..100.0]
 
 ## scope = country
 ###Returns true if the country uses authority mechanics.
@@ -4403,6 +4425,7 @@ alias[trigger:invasion_nation] = bool
 alias[trigger:current_bribe] = <parliament_bribe>
 
 ## scope = country
+## severity = warning
 alias[trigger:exiled_same_dynasty_as_current] = value[saved_name]
 
 ## scope = country
@@ -4984,3 +5007,7 @@ alias[trigger:governing_capacity_percentage] = float
 ## scope = province
 ### Returns true if development discounting tribal is at least X
 alias[trigger:development_discounting_tribal] = int
+
+## scope = country
+### Returns true country has a reform on level X
+alias[trigger:has_reform_on_level] = int

@@ -7,16 +7,6 @@ types = {
 	type[dlc_info] = {
 		path = "game/dlc_metadata/dlc_info"
 		skip_root_key = dlcs
-		localisation = {
-			## required
-			instant = "DLC_$_TOOLTIP_INSTANT"
-			## required
-			delayed = "DLC_$_TOOLTIP_DELAYED"
-			## required
-			landing_text = "LANDING_$_TEXT"
-			## required
-			landing_flavor_text = "LANDING_$_FLAVOR_TEXT"
-		}
 	}
 	type[dlc_recommendation] = {
 		path = "game/dlc_metadata/dlc_recommendations"
@@ -29,6 +19,8 @@ dlc_info = {
 	name = localisation_synced
 	id = int
 	category = <dlc_categories>
+	## cardinality = 0..1
+	subscription_promo = scalar
 	## cardinality = 0..1
 	recommendations = {
 		## cardinality = 1..5

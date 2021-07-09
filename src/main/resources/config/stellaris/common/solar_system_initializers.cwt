@@ -60,12 +60,12 @@ solar_system_initializer = {
 	outer_radius_offset = int
 	subtype[!fallen_empire_initializer] = {
 		## cardinality = 0..inf
-		## replace_scope = { this = planet root = any prev = system }
+		## replace_scope = { this = planet root = any = prev = system }
 		alias_name[planet_initializer] = alias_match_left[planet_initializer]
 	}
 	subtype[fallen_empire_initializer] = {
 		## cardinality = 0..inf
-		## replace_scope = { this = planet root = country prev = system }
+		## replace_scope = { this = planet root = country = prev = system }
 		alias_name[planet_initializer] = alias_match_left[planet_initializer]
 	}
 

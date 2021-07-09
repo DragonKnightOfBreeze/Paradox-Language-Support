@@ -1703,11 +1703,14 @@ alias[effect:kill_ruler] = yes
 
 ## scope = country
 ###Converts a female ruler into a general.
+alias[effect:convert_female_ruler_to_general] = yes
+## scope = country
+###Converts a female ruler into a general.
 alias[effect:convert_female_ruler_to_general] = int
 
 ## scope = country
 ###Converts a male ruler into a general.
-alias[effect:convert_ruler_to_general] = int
+alias[effect:convert_ruler_to_general] = yes
 
 ## scope = country
 ###Adds an event modifier to the current scope as a ruler modifier. Ruler modifiers are cleared when the ruler dies.
@@ -1836,6 +1839,8 @@ alias[effect:define_ruler] = {
 	regency = {
 		estate = <estate>
 	}
+	## cardinality = 0..1
+	force_republican_names = yes
 }
 
 ## scope = country
@@ -2638,13 +2643,16 @@ alias[effect:spawn_rebels] = {
 	friend = enum[country_tags]
 	## cardinality = 0..1
 	estate = <estate>
-
+	## cardinality = 0..1
+    should_take_capital = yes
+	
 	## cardinality = 0..1
 	leader_dynasty = localisation_synced
 	## cardinality = 0..1
 	as_if_faction = yes
 	## cardinality = 0..1
 	use_monarch_as_leader = yes
+	
 }
 
 ## scope = province
@@ -3389,3 +3397,6 @@ alias[effect:extend_regency] = int
 ###appoint next guru.
 alias[effect:appoint_next_guru] = yes
 
+## scope = province
+###set permanent province flag
+alias[effect:set_permanent_province_flag] = scalar

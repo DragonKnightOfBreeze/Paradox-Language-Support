@@ -779,7 +779,7 @@ alias[effect:set_population_controls] = {
 }
 
 ###Set colonization control for scoped species/pop/leader
-set_colonization_controls = {
+alias[effect:set_colonization_controls] = {
 	## cardinality = 0..1
 	country = scope_group[target_country]
 	type = bool

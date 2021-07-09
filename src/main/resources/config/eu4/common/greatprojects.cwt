@@ -101,7 +101,7 @@ great_project = {
 		country_modifiers = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
-		## replace_scope = { root = country this = country }
+		## replace_scope = { root = province this = province }
 		on_upgraded = {
 			alias_name[effect] = alias_match_left[effect]
 		}
@@ -125,7 +125,7 @@ great_project = {
 		country_modifiers = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
-		## replace_scope = { root = country this = country }
+		## replace_scope = { root = province this = province }
 		on_upgraded = {
 			alias_name[effect] = alias_match_left[effect]
 		}
@@ -149,7 +149,7 @@ great_project = {
 		country_modifiers = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
-		## replace_scope = { root = country this = country }
+		## replace_scope = { root = province this = province }
 		on_upgraded = {
 			alias_name[effect] = alias_match_left[effect]
 		}
@@ -173,7 +173,7 @@ great_project = {
 		country_modifiers = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
-		## replace_scope = { root = country this = country }
+		## replace_scope = { root = province this = province }
 		on_upgraded = {
 			alias_name[effect] = alias_match_left[effect]
 		}

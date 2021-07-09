@@ -14,6 +14,7 @@ scripted_loc = {
 		## cardinality = 0..1
 		weight = {
 			weight = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 		}
 		## cardinality = 0..1
 		trigger = { alias_name[trigger] = alias_match_left[trigger] }

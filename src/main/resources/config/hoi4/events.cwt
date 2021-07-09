@@ -87,6 +87,9 @@ event = {
 	is_triggered_only = no
 
 	## cardinality = 0..1
+	timeout_days = int
+
+	## cardinality = 0..1
 	trigger = {
 		## cardinality = ~1..inf
 		alias_name[trigger] = alias_match_left[trigger]

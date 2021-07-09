@@ -156,6 +156,9 @@ country_type = {
 		pirate = bool
 		## cardinality = 0..1
 		space_creatures = bool
+		## cardinality = 0..1
+		###Determines whether their planets are surveyable by others (should be "yes" for e.g. primitives)
+		intel_effects_surveyed = bool
 	}
 
 	ai = {

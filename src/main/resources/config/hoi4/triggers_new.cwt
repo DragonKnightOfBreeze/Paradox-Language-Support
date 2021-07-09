@@ -373,6 +373,7 @@ alias[trigger:all_guaranteed_country] = {
 ## scopes = { COUNTRY }
 alias[trigger:num_finished_operations] = {
 	operation = <operation>
+	operation = value_set[token]
 	target = scope[country]
 	value = int
 

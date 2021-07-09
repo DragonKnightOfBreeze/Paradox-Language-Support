@@ -495,6 +495,8 @@ alias[trigger:ethos] = float[0.0..1.0]
 
 ###Checks the leader's gender
 alias[trigger:gender] = enum[genders]
+###Checks whether the leader is idle
+alias[trigger:is_idle] = bool
 
 ###Checks if the country is a primitive, pre-FTL civilization
 alias[trigger:is_primitive] = bool
@@ -1441,6 +1443,8 @@ alias[trigger:has_commercial_pact] = scope_group[target_country]
 alias[trigger:resource_stockpile_compare] = {
 	resource = <resource>
 	value = float
+	## cardinality = 0..1
+	mult = value[variable]
 }
 
 ###Checks specific resource income value for the country scope
@@ -2220,4 +2224,3 @@ alias[trigger:check_galaxy_setup_value] = {
 
 ###Checks if the scoped fleet can move.
 alias[trigger:is_mobile] = bool
-

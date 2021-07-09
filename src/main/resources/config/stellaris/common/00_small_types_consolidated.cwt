@@ -471,9 +471,15 @@ economic_plan = {
 			## cardinality = 1..inf
 			<resource> = int
 		}
+		## cardinality = 0..1
+		pops = int
+		## cardinality = 0..1
+		empire_size = float
 	}
 
+	## cardinality = 0..1
 	pops = int
+	## cardinality = 0..1
 	empire_size = float
 
 	## replace_scope = { this = country root = country }

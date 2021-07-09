@@ -287,4 +287,12 @@ links = {
 		inputscopes = { planet }
 		output_scope = species
 	}
+	galactic_emperor = {
+		inputscopes = { allscopes }
+		output_scope = country
+	}
+	galactic_custodian = {
+		inputscopes = { allscopes }
+		output_scope = country
+	}
 }

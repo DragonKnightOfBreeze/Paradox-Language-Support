@@ -166,7 +166,8 @@ province_history = {
 		unrest = int[0..100]
 		## cardinality = 0..1
 		seat_in_parliament = yes
-
+		## cardinality = 0..1
+		tribal_owner = enum[country_tags]
 		## cardinality = 0..1
 		latent_trade_goods = {
 			<trade_good.latent>
@@ -249,7 +250,9 @@ province_history = {
 			native_ferocity = float[0..10]
 			## cardinality = 0..1
 			native_hostileness = float[0..10]
-
+			
+			## cardinality = 0..1
+			tribal_owner = enum[country_tags]
 			## cardinality = 0..1
 			extra_cost = int
 			## cardinality = 0..1
@@ -396,12 +399,22 @@ country_history = {
 		elector = yes
 		## cardinality = 0..1
 		historical_council = enum[council_positions]
+		## cardinality = 0..1
+		federation = { 
+			name = scalar
+			members = { 
+				## cardinality = 1..inf
+				enum[country_tags]
+			}
+		}
+		## cardinality = 0..1
 
 		alias_name[effect] = alias_match_left[effect]
 
 		subtype[sunni] = {
 			religious_school = <religious_school>
 		}
+		
 
 		## cardinality = 0..inf
 		date_field = {

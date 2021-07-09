@@ -74,6 +74,7 @@ espionage_asset = {
 }
 
 espionage_operation = {
+	## cardinality = 0..1
 	target = enum[espionage_operation_targets]
     categories = {
 		## cardinality = 1..inf
@@ -103,6 +104,7 @@ espionage_operation = {
     allow = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
+	## cardinality = 0..1
     abort = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}

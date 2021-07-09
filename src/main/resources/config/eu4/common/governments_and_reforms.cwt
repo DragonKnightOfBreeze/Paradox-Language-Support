@@ -320,6 +320,8 @@ government_reform = {
 				}
 			}
 			## cardinality = 0..1
+			allow_draft_transport_ships = bool
+			## cardinality = 0..1
 			allow_migration = bool
 			## cardinality = 0..1
 			can_use_trade_post = bool
@@ -828,3 +830,4 @@ government_name = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 }
+

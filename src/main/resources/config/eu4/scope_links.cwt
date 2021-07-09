@@ -412,7 +412,7 @@ alias[effect:most_province_trade_power] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
-## scope = trade_node
+## scope = { trade_node province }
 ## push_scope = country
 ###The country with the most trade power in the node.
 alias[effect:strongest_trade_power] = {
@@ -1474,7 +1474,7 @@ alias[trigger:any_privateering_country] = {
 }
 
 ## push_scope = country
-## scope = trade_node
+## scope = { trade_node province }
 ###Scopes to one country that owns a province in the current trade node.
 alias[trigger:any_trade_node_member_country] = {
 	alias_name[trigger] = alias_match_left[trigger]

@@ -97,6 +97,9 @@ types = {
         subtype[on_generate_wargoal] = { }
         ## type_key_filter = on_military_access
         ###
+        subtype[on_guarantee] = { }
+        ## type_key_filter = on_guarantee
+        ###
         subtype[on_military_access] = { }
         ## type_key_filter = on_offer_military_access
         ###
@@ -672,6 +675,20 @@ on_action = {
     }
     ## replace_scope = { THIS = country ROOT = country FROM = country }
     subtype[on_generate_wargoal] = {
+        ## cardinality = 0..1
+        random_events = {
+            ## cardinality = 0..inf
+            int = 0
+            ## cardinality = 0..inf
+            int = <event.country_event>
+        }
+        ## cardinality = 0..1
+        effect = {
+            alias_name[effect] = alias_match_left[effect]
+        }
+    }
+    ## replace_scope = { THIS = country ROOT = country FROM = country }
+    subtype[on_guarantee] = {
         ## cardinality = 0..1
         random_events = {
             ## cardinality = 0..inf

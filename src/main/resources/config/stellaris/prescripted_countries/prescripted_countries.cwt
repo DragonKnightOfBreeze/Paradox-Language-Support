@@ -68,6 +68,9 @@ prescripted_country = {
 	government = <government>
 
 	## cardinality = 0..1
+	advisor_voice_type = <advisor_voice>
+
+	## cardinality = 0..1
 	origin = <civic_or_origin.origin>
 
 	## cardinality = 1..3
@@ -128,7 +131,7 @@ prescripted_country = {
 		heir_title = localisation_synced
 		## cardinality = 0..1
 		heir_title_female = localisation_synced
-		
+
 		## cardinality = 0..1
 		leader_class = enum[leader_classes]
 		## cardinality = 0..inf

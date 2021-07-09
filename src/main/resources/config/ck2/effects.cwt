@@ -687,7 +687,7 @@ alias[effect:death] = {
 alias[effect:decadence] = int
 
 ## scope = character
-### Also see,ï¿½approve_law.
+### Also see, approve_law.
 alias[effect:decline_law] = TODO
 
 ## scope = character
@@ -988,7 +988,7 @@ alias[effect:population] = int
 alias[effect:remove_character_modifier] = <event_modifier>
 
 ## scope = character
-### Removes a number of instances of a,ï¿½character modifier,ï¿½(usually a stackable one).
+### Removes a number of instances of a, character modifier, (usually a stackable one).
 alias[effect:remove_character_modifiers] = {
     modifier = <event_modifier>
     amount = int

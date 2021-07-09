@@ -191,6 +191,11 @@ civic_or_origin = {
 	playable = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
+	## cardinality = 0..1
+	### AND trigger, no scope; use this to prevent the civic from being selectable by the AI. Possibly only works with DLC checks.
+	ai_playable = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
 
 	## cardinality = 0..1
 	### requirements list, supports country_type, ethics, authority and civics. See ../readme_requirements.txt
@@ -236,6 +241,17 @@ civic_or_origin = {
 		alias_name[modifier] = alias_match_left[modifier]
 	}
 
+	## cardinality = 0..1
+	starting_colony = <planet_class>
+	## cardinality = 0..1
+	swap_type = {
+		name = localisation
+		description = localisation
+		trigger = {
+			local_human_species_class = <species_class>
+		}
+	}
+	
 	subtype[origin] = {
 		is_origin = yes
 		picture = <sprite>
@@ -261,8 +277,6 @@ civic_or_origin = {
 		## cardinality = 0..1
 		###Such a descriptive tag, this.
 		non_colonizable_planet_class_neighbor = yes
-		## cardinality = 0..1
-		starting_colony = <planet_class>
 
 		## cardinality = 0..1
 		### default: none; if present, will enable secondary species customization in empire designer and will create secondary species & pops at galaxy generation time (see empire_init_create_capital_secondary_pops)
@@ -307,18 +321,6 @@ civic_or_origin = {
 			traits = {
 				## cardinality = 1..5
 				trait = <trait>
-			}
-		}
-		
-		## cardinality = 0..1
-		starting_colony = <planet_class>
-		
-		## cardinality = 0..1
-		swap_type = {
-			name = localisation
-			description = localisation
-			trigger = {
-				local_human_species_class = <species_class>
 			}
 		}
 	}

@@ -205,6 +205,10 @@ religion_group = {
 			## cardinality = 3..3
 			float[0.0..1.0]
 		}
+		
+		## cardinality = 0..1
+		allow_female_defenders_of_the_faith = yes
+				
 		## cardinality = 0..1
 		## replace_scope = { root = country this = country }
 		country = {

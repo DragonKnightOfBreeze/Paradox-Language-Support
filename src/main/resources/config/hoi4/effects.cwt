@@ -250,32 +250,32 @@ alias[effect:country_event] = {
 
 	### The number of hours to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	hours = int
+	hours = variable_field
 
 	### The number of days to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	days = int
+	days = variable_field
 
 	### The number of months to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	months = int
+	months = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours.
 	## cardinality = 0..1
-	random_hours = int
+	random_hours = variable_field
 
 	### A random amount of days to be added to the delay before firing, from 0 up to but one hour less than random_days.
 	## cardinality = 0..1
-	random_days = int
+	random_days = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours. Equivalent to random_hours. Preserverd for backwards compatibility.
 	## cardinality = 0..1
-	random = int
+	random = variable_field
 
 	### Specify a set of child effects to execute as part of this effect, with a percentage chance of randomly happening or not (as a group, not individually).
 	## cardinality = 0..1
 	random = {
-		chance = int
+		chance = variable_field
 		alias_name[effect] = alias_match_left[effect]
 	}
 
@@ -296,32 +296,32 @@ alias[effect:state_event] = {
 
 	### The number of hours to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	hours = int
+	hours = variable_field
 
 	### The number of days to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	days = int
+	days = variable_field
 
 	### The number of months to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	months = int
+	months = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours.
 	## cardinality = 0..1
-	random_hours = int
+	random_hours = variable_field
 
 	### A random amount of days to be added to the delay before firing, from 0 up to but one hour less than random_days.
 	## cardinality = 0..1
-	random_days = int
+	random_days = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours. Equivalent to random_hours. Preserverd for backwards compatibility.
 	## cardinality = 0..1
-	random = int
+	random = variable_field
 
 	### Specify a set of child effects to execute as part of this effect, with a percentage chance of randomly happening or not (as a group, not individually).
 	## cardinality = 0..1
 	random = {
-		chance = int
+		chance = variable_field
 		alias_name[effect] = alias_match_left[effect]
 	}
 
@@ -944,32 +944,32 @@ alias[effect:news_event] = {
 
 	### The number of hours to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	hours = int
+	hours = variable_field
 
 	### The number of days to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	days = int
+	days = variable_field
 
 	### The number of months to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	months = int
+	months = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours.
 	## cardinality = 0..1
-	random_hours = int
+	random_hours = variable_field
 
 	### A random amount of days to be added to the delay before firing, from 0 up to but one hour less than random_days.
 	## cardinality = 0..1
-	random_days = int
+	random_days = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours. Equivalent to random_hours. Preserverd for backwards compatibility.
 	## cardinality = 0..1
-	random = int
+	random = variable_field
 
 	### Specify a set of child effects to execute as part of this effect, with a percentage chance of randomly happening or not (as a group, not individually).
 	## cardinality = 0..1
 	random = {
-		chance = int
+		chance = variable_field
 		alias_name[effect] = alias_match_left[effect]
 	}
 
@@ -2478,32 +2478,32 @@ alias[effect:unit_leader_event] = {
 
 	### The number of hours to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	hours = int
+	hours = variable_field
 
 	### The number of days to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	days = int
+	days = variable_field
 
 	### The number of months to wait before firing the event. Note: hours, days, and months can all be used and will simply be added together.
 	## cardinality = 0..1
-	months = int
+	months = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours.
 	## cardinality = 0..1
-	random_hours = int
+	random_hours = variable_field
 
 	### A random amount of days to be added to the delay before firing, from 0 up to but one hour less than random_days.
 	## cardinality = 0..1
-	random_days = int
+	random_days = variable_field
 
 	### A random amount of hours to be added to the delay before firing, from 0 up to but not including random_hours. Equivalent to random_hours. Preserverd for backwards compatibility.
 	## cardinality = 0..1
-	random = int
+	random = variable_field
 
 	### Specify a set of child effects to execute as part of this effect, with a percentage chance of randomly happening or not (as a group, not individually).
 	## cardinality = 0..1
 	random = {
-		chance = int
+		chance = variable_field
 		alias_name[effect] = alias_match_left[effect]
 	}
 

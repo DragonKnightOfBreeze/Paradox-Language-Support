@@ -54,8 +54,7 @@ new_diplomatic_action = {
 	}
 
 	## cardinality = 0..inf
-	subtype[actions] = {
-		category = influence
+	subtype[actions] = category = influence
 
 		###Can the other side decline?
 		require_acceptance = bool

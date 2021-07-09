@@ -304,6 +304,13 @@ shared_focus = {
 	## cardinality = 0..1
 	cancelable = yes
 
+	## cardinality = 0..1
+	bypass_if_unavailable = yes
+	## error_if_only_match = This is the default value and can be ommitted
+	## severity = info
+	## cardinality = 0..1
+	bypass_if_unavailable = no
+
 	## cardinality = 0..inf
 	will_lead_to_war_with = scope[country]
 
