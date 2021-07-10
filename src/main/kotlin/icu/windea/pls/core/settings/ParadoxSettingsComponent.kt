@@ -53,7 +53,7 @@ class ParadoxSettingsComponent {
 				label(_maxCompleteSize).applyToComponent {
 					toolTipText = _maxCompleteSizeTooltip
 				}
-				intTextField(getSettings()::maxCompleteSize, range=0..1000).applyToComponent {
+				intTextField(getSettings()::maxCompleteSize, range=1..1000).applyToComponent {
 					maxCompleteSizeTextField = this
 				}
 			}
