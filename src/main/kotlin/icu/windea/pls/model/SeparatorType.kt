@@ -5,9 +5,9 @@ import icu.windea.pls.*
 enum class SeparatorType(
 	override val key: String,
 	override val text: String
-):Enumerable {
-	EQUAL("=","Equal"),
-	NOT_EQUAL("<>","Not Equal");
+) : Enumerable {
+	EQUAL("=", "Equal"),
+	NOT_EQUAL("<>", "Not Equal");
 	
 	override fun toString(): String {
 		return text
@@ -16,7 +16,7 @@ enum class SeparatorType(
 	companion object {
 		fun resolve(key: String): SeparatorType? {
 			return when(key) {
-				"=" -> EQUAL
+				"=", "==" -> EQUAL
 				"<>", "!=" -> NOT_EQUAL
 				else -> null
 			}
