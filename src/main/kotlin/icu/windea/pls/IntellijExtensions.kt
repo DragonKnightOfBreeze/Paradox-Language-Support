@@ -19,6 +19,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
 
+//region Misc Extensions
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
 
 /**得到当前AST节点的除了空白节点之外的所有子节点。*/
@@ -106,6 +107,38 @@ fun VirtualFile.optimized(): VirtualFile {
 	}
 }
 
+//com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
+fun DataContext.findElement(): PsiElement? {
+	var element = this.getData(CommonDataKeys.PSI_ELEMENT)
+	if(element == null) {
+		val editor = this.getData(CommonDataKeys.EDITOR)
+		val file = this.getData(CommonDataKeys.PSI_FILE)
+		if(editor != null && file != null) {
+			element = getElementAtCaret(editor, file)
+		}
+		val languages = this.getData(LangDataKeys.CONTEXT_LANGUAGES)
+		if(element == null || element is SyntheticElement || languages == null) {
+			return null
+		}
+	}
+	return element
+}
+
+/**
+ * 判断指定的节点是否在文档中跨多行。
+ */
+fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
+	val range = node.textRange
+	val limit = if(range.endOffset < document.textLength) document.getLineNumber(range.endOffset) else document.lineCount - 1
+	return document.getLineNumber(range.startOffset) < limit
+}
+
+//fun intern(table: CharTable, node: LighterASTTokenNode): String {
+//	return table.intern(node.text).toString()
+//}
+//endregion
+
+//region Documentation Extensions
 inline fun StringBuilder.definition(block: StringBuilder.() -> Unit) {
 	append(DocumentationMarkup.DEFINITION_START)
 	block(this)
@@ -142,45 +175,50 @@ inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit) {
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 
 fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) anonymousEscapedString else StringUtil.escapeXmlEntities(this)
+//endregion
 
-//com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
-fun DataContext.findElement(): PsiElement? {
-	var element = this.getData(CommonDataKeys.PSI_ELEMENT)
-	if(element == null) {
-		val editor = this.getData(CommonDataKeys.EDITOR)
-		val file = this.getData(CommonDataKeys.PSI_FILE)
-		if(editor != null && file != null) {
-			element = getElementAtCaret(editor, file)
-		}
-		val languages = this.getData(LangDataKeys.CONTEXT_LANGUAGES)
-		if(element == null || element is SyntheticElement || languages == null) {
-			return null
-		}
-	}
-	return element
-}
-
-/**
- * 判断指定的节点是否在文档中跨多行。
- */
-fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
-	val range = node.textRange
-	val limit = if(range.endOffset < document.textLength) document.getLineNumber(range.endOffset) else document.lineCount - 1
-	return document.getLineNumber(range.startOffset) < limit
-}
-
-//fun intern(table: CharTable, node: LighterASTTokenNode): String {
-//	return table.intern(node.text).toString()
-//}
-
-//Psi Element Extensions
-
+//region PsiElement Extensions
 inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
+	//不会忽略某些特定类型的子元素
 	var child = this.firstChild
 	while(child != null) {
 		block(child)
 		child = child.nextSibling
 	}
+}
+
+inline fun <T : PsiElement, R> PsiElement.mapChildOfType(type: Class<out T>, transform: (T) -> R): List<R> {
+	//为了优化性能，使用SmartList，并且不保存中间结果
+	//参考：com.intellij.psi.util.PsiTreeUtil.getChildrenOfTypeAsList
+	
+	var result: MutableList<R>? = null
+	var child: PsiElement? = this.firstChild
+	while(child != null) {
+		if(type.isInstance(child)) {
+			if(result == null) result = SmartList()
+			val r = transform(type.cast(child))
+			result.add(r)
+		}
+		child = child.nextSibling
+	}
+	return result ?: emptyList()
+}
+
+inline fun <T : PsiElement, R> PsiElement.mapChildOfTypeNotNull(type: Class<out T>, transform: (T) -> R?): List<R> {
+	//为了优化性能，使用SmartList，并且不保存中间结果
+	//参考：com.intellij.psi.util.PsiTreeUtil.getChildrenOfTypeAsList
+	
+	var result: MutableList<R>? = null
+	var child: PsiElement? = this.firstChild
+	while(child != null) {
+		if(type.isInstance(child)) {
+			if(result == null) result = SmartList()
+			val r = transform(type.cast(child))
+			if(r != null) result.add(r)
+		}
+		child = child.nextSibling
+	}
+	return result ?: emptyList()
 }
 
 inline fun <reified T : PsiElement> PsiElement.indexOfChild(element: T): Int {
@@ -207,6 +245,14 @@ val PsiElement.firstLeafOrSelf: PsiElement
 		return firstChild?.firstLeafOrSelf ?: this
 	}
 
+val PsiElement.icon
+	get() = getIcon(Iconable.ICON_FLAG_VISIBILITY)
+
+val PsiElement.keyword
+	get() = text.removeSurrounding("\"", "\"").let { s ->
+		runCatching { s.dropLast(dummyIdentifierLength) }.getOrElse { s }
+	}
+
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 	override fun getElement() = null
 	
@@ -223,13 +269,6 @@ object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 
 fun <T : PsiElement> emptyPointer(): SmartPsiElementPointer<T> = EmptyPointer.cast()
 
-val PsiElement.icon get() = getIcon(Iconable.ICON_FLAG_VISIBILITY)
-
-val PsiElement.keyword
-	get() = text.removeSurrounding("\"", "\"").let { s ->
-		runCatching { s.dropLast(dummyIdentifierLength) }.getOrElse { s }
-	}
-
 fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
 	return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
 }
@@ -237,9 +276,9 @@ fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
 fun <E : PsiElement> E.createPointer(file: PsiFile): SmartPsiElementPointer<E> {
 	return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
 }
+//endregion
 
-//Index Extensions
-
+//region Index Extensions
 inline fun <reified T : PsiElement> StringStubIndexExtension<T>.existsElement(
 	key: String,
 	project: Project,
@@ -300,7 +339,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 		}
 		true
 	}
-	return result?:defaultResult
+	return result ?: defaultResult
 }
 
 inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findLastElement(
@@ -332,7 +371,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findLastElement(
 		}
 		true
 	}
-	return result?: defaultResult
+	return result ?: defaultResult
 }
 
 inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElements(
@@ -341,7 +380,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElements(
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
 	maxSize: Int = 0,
-	crossinline predicate: (T) -> Boolean = {true}
+	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
 	val result: SmartList<T> = SmartList()
 	var size = 0
@@ -369,7 +408,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	val result: SmartList<T> = SmartList()
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 		if(cancelable) ProgressManager.checkCanceled()
-		action(element,result)
+		action(element, result)
 	}
 	return result
 }
@@ -379,8 +418,8 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsB
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
 	maxSize: Int = 0,
-	crossinline keyPredicate: (String) -> Boolean = {true},
-	crossinline predicate: (T) -> Boolean = {true}
+	crossinline keyPredicate: (String) -> Boolean = { true },
+	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
 	val result: SmartList<T> = SmartList()
 	var size = 0
@@ -411,8 +450,8 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	project: Project,
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
-	crossinline keyPredicate: (String) -> Boolean = {true},
-	crossinline action: (T,MutableList<T>) -> Boolean
+	crossinline keyPredicate: (String) -> Boolean = { true },
+	crossinline action: (T, MutableList<T>) -> Boolean
 ): List<T> {
 	val result: SmartList<T> = SmartList()
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
@@ -420,7 +459,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 		if(keyPredicate(key)) {
 			StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 				if(cancelable) ProgressManager.checkCanceled()
-				action(element,result)
+				action(element, result)
 			}
 		}
 		true
@@ -433,9 +472,9 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
 	hasDefault: Boolean = false,
-	maxSize:Int = 0,
+	maxSize: Int = 0,
 	crossinline keyPredicate: (String) -> Boolean = { true },
-	crossinline predicate: (T) -> Boolean = {true}
+	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
 	val result: SmartList<T> = SmartList()
 	var size = 0
@@ -465,3 +504,4 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 	}
 	return result
 }
+//endregion

@@ -7,7 +7,6 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import org.slf4j.*
 import org.yaml.snakeyaml.*
-import kotlin.system.*
 
 class CwtConfigProvider(
 	val project: Project
@@ -28,7 +27,7 @@ class CwtConfigProvider(
 	//优化后的执行时间：ms（读取ms，解析ms） 
 	@Synchronized
 	private fun initConfigGroups(): CwtConfigGroups {
-		logger.info("Init config groups...")
+		logger.info("Resolve config files...")
 		val startTime = System.currentTimeMillis()
 		val configUrl = "/config".toUrl(locationClass)
 		//这里有可能找不到，这时不要报错，之后还会执行到这里
@@ -52,10 +51,12 @@ class CwtConfigProvider(
 				}
 			}
 		}
-		val readTime = System.currentTimeMillis() - startTime
+		val resolveTime = System.currentTimeMillis() - startTime
+		logger.info("Resolve config files finished. ($resolveTime ms)")
+		logger.info("Init config groups...")
 		val configGroups = CwtConfigGroups(project, declarationMap, cwtFileConfigGroups, logFileGroups, csvFileGroups)
-		val time = System.currentTimeMillis() - startTime
-		logger.info("Init config groups finished. ($time ms)") 
+		val initTime = System.currentTimeMillis() - startTime - resolveTime 
+		logger.info("Init config groups finished. ($initTime ms)") 
 		return configGroups
 	}
 	
@@ -105,7 +106,7 @@ class CwtConfigProvider(
 			//measureTimeMillis {
 			//	result = file.toPsiFile<CwtFile>(project)?.resolveConfig()
 			//}.also { 
-			//	println("${file.name}: $it") 
+			//	logger.info("Resolve file '${file.name}' finished. ($it ms)")
 			//}
 			//result
 		} catch(e: Exception) {
@@ -116,20 +117,20 @@ class CwtConfigProvider(
 	
 	private fun initDeclarations(file: VirtualFile) {
 		logger.info("Init declarations...")
-		val declarations = resolveYamlConfig(file)
+		val declarations = resolveYamlFile(file)
 		if(declarations != null) declarationMap.putAll(declarations)
 		logger.info("Init declarations finished.")
 	}
 	
 	//执行时间：134ms
-	private fun resolveYamlConfig(file: VirtualFile): Map<String, List<Map<String, Any?>>>? {
+	private fun resolveYamlFile(file: VirtualFile): Map<String, List<Map<String, Any?>>>? {
 		return try {
 			yaml.load(file.inputStream)
 			//val result: Map<String, List<Map<String, Any?>>>?
 			//measureTimeMillis {
 			//	result = yaml.load(file.inputStream)
 			//}.also { 
-			//	println("${file.name}: $it")
+			//	logger.info("Resolve file '${file.name}' finished. ($it ms)")
 			//}
 			//result
 		} catch(e: Exception) {

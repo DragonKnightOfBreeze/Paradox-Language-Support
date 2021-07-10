@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
@@ -21,8 +19,16 @@ import org.jetbrains.annotations.*
 import java.util.*
 import kotlin.Pair
 
-//Misc Extensions
+//region Constants
+val cwtConfigTypeKey = Key<CwtConfigType>("cwtConfigType")
+val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
+val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
+val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
+val cachedParadoxDefinitionPropertyInfoKey = Key<CachedValue<ParadoxDefinitionPropertyInfo>>("cachedParadoxDefinitionPropertyInfo")
+val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
+//endregion
 
+//region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getSettings() = ParadoxSettingsState.getInstance()
@@ -84,40 +90,31 @@ fun resolveTypeExpression(typeExpression: String): Pair<String, String?> {
 	val subtype = if(dotIndex == -1) null else typeExpression.substring(dotIndex + 1)
 	return type to subtype
 }
+//endregion
 
-//Keys
+//region PsiElement Extensions
+val CwtProperty.cwtConfigType: CwtConfigType? get() = doGetCwtConfigType(this)
 
-val cwtConfigTypeKey = Key<CwtConfigType>("cwtConfigType")
-val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
-val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
-val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
-val cachedParadoxDefinitionPropertyInfoKey = Key<CachedValue<ParadoxDefinitionPropertyInfo>>("cachedParadoxDefinitionPropertyInfo")
-val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
-
-//PsiElement Extensions
-
-val CwtProperty.cwtConfigType:CwtConfigType? get() = doGetCwtConfigType(this)
-
-private fun doGetCwtConfigType(element:CwtProperty):CwtConfigType?{
+private fun doGetCwtConfigType(element: CwtProperty): CwtConfigType? {
 	val name = element.name
 	return when {
-		name.surroundsWith("type[","]") -> CwtConfigType.Type
-		name.surroundsWith("subtype[","]") -> CwtConfigType.Subtype
-		name.surroundsWith("value[","]") -> CwtConfigType.Value
-		name.surroundsWith("enum[","]") -> CwtConfigType.Enum
-		name.surroundsWith("alias[","]") -> CwtConfigType.Alias
+		name.surroundsWith("type[", "]") -> CwtConfigType.Type
+		name.surroundsWith("subtype[", "]") -> CwtConfigType.Subtype
+		name.surroundsWith("value[", "]") -> CwtConfigType.Value
+		name.surroundsWith("enum[", "]") -> CwtConfigType.Enum
+		name.surroundsWith("alias[", "]") -> CwtConfigType.Alias
 		else -> return null //TODO
-	} 
+	}
 }
 
-val CwtValue.cwtConfigType:CwtConfigType? get() = doGetCwtConfigType(this)
+val CwtValue.cwtConfigType: CwtConfigType? get() = doGetCwtConfigType(this)
 
-private fun doGetCwtConfigType(element:CwtValue):CwtConfigType?{
-	val parentProperty = element.parent?.parent.castOrNull<CwtProperty>()?:return null
+private fun doGetCwtConfigType(element: CwtValue): CwtConfigType? {
+	val parentProperty = element.parent?.parent.castOrNull<CwtProperty>() ?: return null
 	val parentName = parentProperty.name
-	return when{
-		parentName.surroundsWith("value[","]") -> CwtConfigType.ValueValue
-		parentName.surroundsWith("enum[","]") -> CwtConfigType.EnumValue
+	return when {
+		parentName.surroundsWith("value[", "]") -> CwtConfigType.ValueValue
+		parentName.surroundsWith("enum[", "]") -> CwtConfigType.EnumValue
 		else -> return null //TODO
 	}
 }
@@ -128,7 +125,7 @@ fun PsiElement.isQuoted(): Boolean {
 
 val PsiElement.paradoxGameType: ParadoxGameType? get() = doGetGameType(this)
 
-private fun doGetGameType(element:PsiElement):ParadoxGameType?{
+private fun doGetGameType(element: PsiElement): ParadoxGameType? {
 	return element.containingFile.paradoxFileInfo?.gameType
 }
 
@@ -265,7 +262,7 @@ private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): Par
 
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	//注意这里要获得的definitionProperty可能是scriptFile也可能是scriptProperty
-	val (_,definitionInfo,path) = element.findParentDefinitionAndExtraInfo()?:return null
+	val (_, definitionInfo, path) = element.findParentDefinitionAndExtraInfo() ?: return null
 	val pointer = element.createPointer()
 	val gameType = definitionInfo.gameType
 	val configGroup = getConfig(element.project).getValue(gameType)
@@ -275,8 +272,8 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 	val childPropertyOccurrence = definitionInfo.resolveChildPropertyOccurrence(childPropertyConfigs, element, configGroup)
 	val childValueOccurrence = definitionInfo.resolveChildValueOccurrence(childValueConfigs, element, configGroup)
 	return ParadoxDefinitionPropertyInfo(
-		path, propertyConfigs, childPropertyConfigs, childValueConfigs, 
-		childPropertyOccurrence, childValueOccurrence, gameType,pointer
+		path, propertyConfigs, childPropertyConfigs, childValueConfigs,
+		childPropertyOccurrence, childValueOccurrence, gameType, pointer
 	)
 }
 
@@ -441,8 +438,6 @@ val ParadoxLocalisationSequentialNumber.paradoxSequentialNumber: ParadoxSequenti
 val ParadoxLocalisationColorfulText.paradoxColor: ParadoxColor?
 	get() = getConfig().colorMap[name]
 
-//PsiElement Find Extensions
-
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
 	return properties.find { it.name.equals(propertyName, ignoreCase) }
 }
@@ -508,17 +503,17 @@ fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty
 /**
  * 得到上一级definition，可能为自身，可能为null。
  */
-fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionProperty,ParadoxDefinitionInfo,ParadoxPropertyPath>? {
+fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionProperty, ParadoxDefinitionInfo, ParadoxPropertyPath>? {
 	var current: PsiElement = this
 	val subPaths = LinkedList<String>()
 	val subPathInfos = LinkedList<ParadoxPropertyPathInfo>()
 	do {
 		if(current is ParadoxDefinitionProperty) {
-			val name = current.name?:return null
+			val name = current.name ?: return null
 			val definitionInfo = current.paradoxDefinitionInfo
 			if(definitionInfo != null) {
 				val path = ParadoxPropertyPath(subPaths, subPathInfos)
-				return tupleOf(current,definitionInfo,path)
+				return tupleOf(current, definitionInfo, path)
 			}
 			subPaths.addFirst(name)
 			subPathInfos.addFirst(ParadoxPropertyPathInfo(name, current.isQuoted()))
@@ -527,9 +522,9 @@ fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionPrope
 	} while(current !is PsiFile)
 	return null
 }
+//endregion
 
-//Find Extensions
-
+//region Find Extensions
 /**
  * 根据名字在当前文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
  */
@@ -696,12 +691,12 @@ fun findDefinitionsByType(
  * 基于定义类型索引，根据关键字和类型表达式查找所有的脚本文件的定义（definition）。
  */
 fun findDefinitionsByKeywordByType(
-	keyword:String,
+	keyword: String,
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword,typeExpression, project, scope,maxCompleteSize)
+	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword, typeExpression, project, scope, maxCompleteSize)
 }
 
 /**
@@ -856,9 +851,9 @@ fun findSyncedLocalisationsByKeyword(
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxSyncedLocalisationNameIndex.findAllByKeyword(keyword, project, scope, maxCompleteSize)
 }
+//endregion
 
-//Link Extensions
-
+//region Link Extensions
 fun resolveLink(link: String, context: PsiElement): PsiElement? {
 	return when {
 		link.startsWith('@') -> resolveCwtLink(link, context)
@@ -879,7 +874,7 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 			"types" -> {
 				val name = tokens.getOrNull(2)
 				val subtypeName = tokens.getOrNull(3)
-				return when{
+				return when {
 					name == null -> null
 					subtypeName == null -> getConfig(project).getValue(gameType).types.getValue(name)
 						.pointer.element
@@ -910,9 +905,9 @@ private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxL
 		return findLocalisation(token, context.paradoxLocale, context.project, hasDefault = true)
 	}.getOrNull()
 }
+//endregion
 
-//Build String Extensions
-
+//region Documentation Extensions
 fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 	if(condition) append(text)
 	return this
@@ -949,53 +944,66 @@ fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
 fun StringBuilder.appendBr(): StringBuilder {
 	return append("<br>")
 }
+//endregion
 
-//Inline Extensions
-
+//region Inline Extensions
+@Suppress("NOTHING_TO_INLINE")
 inline fun message(@PropertyKey(resourceBundle = bundleName) key: String, vararg params: Any): String {
 	return PlsBundle.getMessage(key, *params)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolveByName(this, project, defaultToUnknown)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun VirtualFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun PsiFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.renderText(): String {
 	return ParadoxLocalisationTextRenderer.render(this)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.renderTextTo(buffer: StringBuilder) {
 	ParadoxLocalisationTextRenderer.renderTo(this, buffer)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.extractText(): String {
 	return ParadoxLocalisationTextExtractor.extract(this)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
 	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun CwtFile.resolveConfig(): CwtFileConfig {
 	return CwtConfigResolver.resolve(this)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxScriptFile.resolveData(): List<Any> {
 	return ParadoxScriptDataResolver.resolve(this)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationFile.resolveData(): Map<String, String> {
 	return ParadoxLocalisationDataResolver.resolve(this)
 }
+//endregion

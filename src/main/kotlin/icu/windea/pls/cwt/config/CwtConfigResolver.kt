@@ -8,7 +8,6 @@ import icu.windea.pls.cwt.psi.*
 import java.util.*
 
 //根据文件大小不同，解析耗时可能长达数秒
-//TODO 进一步优化解析时间
 
 /**
  * Cwt配置文件的解析器。
@@ -19,11 +18,11 @@ object CwtConfigResolver {
 		return when {
 			rootBlock.isEmpty -> CwtFileConfig.empty
 			rootBlock.isArray -> {
-				val values = rootBlock.valueList.mapNotNullTo(SmartList()) { resolveValue(it, file) }
+				val values = rootBlock.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
 				CwtFileConfig(emptyPointer(), values, emptyList())
 			}
 			rootBlock.isObject -> {
-				val properties = rootBlock.propertyList.mapNotNullTo(SmartList()) { resolveProperty(it, file) }
+				val properties = rootBlock.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
 				CwtFileConfig(emptyPointer(), emptyList(), properties)
 			}
 			else -> CwtFileConfig.empty
@@ -40,9 +39,9 @@ object CwtConfigResolver {
 		var stringValue: String? = null
 		var values: List<CwtValueConfig>? = null
 		var properties: List<CwtPropertyConfig>? = null
-		val documentation: String?
-		val options: List<CwtOptionConfig>?
-		val optionValues: List<CwtOptionValueConfig>?
+		var documentationLines:LinkedList<String>? = null
+		var options: LinkedList<CwtOptionConfig>? = null
+		var optionValues :LinkedList<CwtOptionValueConfig>? = null
 		val separatorType = property.separatorType
 		when {
 			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
@@ -55,35 +54,46 @@ object CwtConfigResolver {
 					properties = emptyList()
 				}
 				propValue.isArray -> {
-					values = propValue.valueList.mapTo(SmartList()) { resolveValue(it, file) }
+					values = propValue.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
 					properties = emptyList()
 				}
 				propValue.isObject -> {
 					values = emptyList()
-					properties = propValue.propertyList.mapNotNullTo(SmartList()) { resolveProperty(it, file) }
+					properties = propValue.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
 				}
 			}
 		}
 		
 		var current: PsiElement = property
-		val documentationElements = LinkedList<CwtDocumentationText>()
-		val optionElements = LinkedList<CwtOption>()
-		val optionValueElements = LinkedList<CwtValue>()
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
-					if(documentationText != null) documentationElements.addFirst(documentationText)
+					if(documentationText != null) {
+						if(documentationLines == null){
+							documentationLines = LinkedList()
+						}else{
+							documentationLines.addFirst(documentationText.text)
+						}
+					}
 				}
 				current is CwtOptionComment -> {
 					val option = current.option
 					if(option != null) {
-						optionElements.addFirst(option)
+						if(options == null){
+							options = LinkedList()
+						} else{
+							options.addFirst(resolveOption(option, file)?:continue)
+						}
 					} else {
 						val optionValue = current.value
 						if(optionValue != null) {
-							optionValueElements.addFirst(optionValue)
+							if(optionValues == null){
+								optionValues = LinkedList()
+							}else {
+								optionValues.addFirst(resolveOptionValue(optionValue,file))
+							}
 						}
 					}
 				}
@@ -91,9 +101,8 @@ object CwtConfigResolver {
 				else -> break
 			}
 		}
-		documentation = getDocumentation(documentationElements)
-		options = getOptions(optionElements, file)
-		optionValues = getOptionValues(optionValueElements, file)
+		
+		val documentation = documentationLines?.joinToString("\n")
 		val keyExpression = CwtKeyExpression.resolve(key)
 		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		return CwtPropertyConfig(
@@ -110,9 +119,9 @@ object CwtConfigResolver {
 		var stringValue: String? = null
 		var values: List<CwtValueConfig>? = null
 		var properties: List<CwtPropertyConfig>? = null
-		val documentation: String?
-		val options: List<CwtOptionConfig>?
-		val optionValues: List<CwtOptionValueConfig>?
+		var documentationLines:LinkedList<String>? = null
+		var options: LinkedList<CwtOptionConfig>? = null
+		var optionValues :LinkedList<CwtOptionValueConfig>? = null
 		
 		when {
 			value is CwtBoolean -> booleanValue = value.booleanValue
@@ -125,35 +134,46 @@ object CwtConfigResolver {
 					properties = emptyList()
 				}
 				value.isArray -> {
-					values = value.valueList.mapTo(SmartList()) { resolveValue(it, file) }
+					values = value.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
 					properties = emptyList()
 				}
 				value.isObject -> {
 					values = emptyList()
-					properties = value.propertyList.mapNotNullTo(SmartList()) { resolveProperty(it, file) }
+					properties = value.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
 				}
 			}
 		}
 		
 		var current: PsiElement = value
-		val documentationElements = LinkedList<CwtDocumentationText>()
-		val optionElements = LinkedList<CwtOption>()
-		val optionValueElements = LinkedList<CwtValue>()
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
-					if(documentationText != null) documentationElements.addFirst(documentationText)
+					if(documentationText != null) {
+						if(documentationLines == null){
+							documentationLines = LinkedList()
+						}else{
+							documentationLines.addFirst(documentationText.text)
+						}
+					}
 				}
 				current is CwtOptionComment -> {
 					val option = current.option
 					if(option != null) {
-						optionElements.addFirst(option)
+						if(options == null){
+							options = LinkedList()
+						} else{
+							options.addFirst(resolveOption(option, file)?:continue)
+						}
 					} else {
 						val optionValue = current.value
 						if(optionValue != null) {
-							optionValueElements.addFirst(optionValue)
+							if(optionValues == null){
+								optionValues = LinkedList()
+							}else {
+								optionValues.addFirst(resolveOptionValue(optionValue,file))
+							}
 						}
 					}
 				}
@@ -161,9 +181,8 @@ object CwtConfigResolver {
 				else -> break
 			}
 		}
-		documentation = getDocumentation(documentationElements)
-		options = getOptions(optionElements, file)
-		optionValues = getOptionValues(optionValueElements, file)
+		val documentation = documentationLines?.joinToString("\n")
+		
 		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		return CwtValueConfig(
 			pointer, value.value, booleanValue, intValue, floatValue, stringValue,
@@ -192,12 +211,12 @@ object CwtConfigResolver {
 					options = emptyList()
 				}
 				optionValue.isArray -> {
-					values = optionValue.valueList.mapTo(SmartList()) { resolveOptionValue(it, file) }
+					values = optionValue.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
 					options = emptyList()
 				}
 				optionValue.isObject -> {
 					values = emptyList()
-					options = optionValue.optionList.mapNotNullTo(SmartList()) { resolveOption(it, file) }
+					options = optionValue.mapChildOfTypeNotNull(CwtOption::class.java) { resolveOption(it, file) }
 				}
 			}
 		}
@@ -234,12 +253,12 @@ object CwtConfigResolver {
 						options = emptyList()
 					}
 					option.isArray -> {
-						values = option.valueList.mapTo(SmartList()) { resolveOptionValue(it, file) }
+						values = option.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
 						options = emptyList()
 					}
 					option.isObject -> {
 						values = emptyList()
-						options = option.optionList.mapNotNullTo(SmartList()) { resolveOption(it, file) }
+						options = option.mapChildOfTypeNotNull(CwtOption::class.java)  { resolveOption(it, file) }
 					}
 				}
 			}
@@ -248,20 +267,5 @@ object CwtConfigResolver {
 			emptyPointer(), option.value,
 			booleanValue, intValue, floatValue, stringValue, values, options
 		)
-	}
-	
-	private fun getDocumentation(documentationElements: List<CwtDocumentationText>): String? {
-		if(documentationElements.isEmpty()) return null
-		return documentationElements.joinToString("\n") { it.text.orEmpty() }.trim()
-	}
-	
-	private fun getOptions(optionElements: List<CwtOption>, file: CwtFile): List<CwtOptionConfig>? {
-		if(optionElements.isEmpty()) return null
-		return optionElements.mapNotNullTo(SmartList()) { resolveOption(it, file) }
-	}
-	
-	private fun getOptionValues(optionValueElements: List<CwtValue>, file: CwtFile): List<CwtOptionValueConfig>? {
-		if(optionValueElements.isEmpty()) return null
-		return optionValueElements.mapTo(SmartList()) { resolveOptionValue(it, file) }
 	}
 }

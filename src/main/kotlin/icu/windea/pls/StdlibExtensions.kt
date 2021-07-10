@@ -10,6 +10,7 @@ import java.util.*
 import java.util.concurrent.*
 import javax.swing.*
 
+//Misc Extensions
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun pass() {
@@ -239,7 +240,6 @@ fun <T> Collection<T>.toListOrThis(): List<T> {
 	}
 }
 
-//Is Extensions
 fun String.isBooleanYesNo(): Boolean {
 	return this == "yes" || this == "no"
 }
@@ -323,8 +323,6 @@ fun String.isTypeOf(type: String): Boolean {
 	return (type == "boolean" && isBooleanYesNo()) || (type == "int" && isInt()) || (type == "float" && isFloat())
 		|| (type == "color" && isColorField()) || type == "string"
 }
-
-//To Extensions
 
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 

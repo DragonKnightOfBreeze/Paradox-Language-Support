@@ -14,8 +14,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 
-//Constants
-
+//region Constants
 private val separatorChars = charArrayOf('=', '<', '>', '!')
 
 private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
@@ -36,15 +35,16 @@ private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ -
 		EditorModificationUtil.insertStringAtCaret(editor, separator)
 	}
 }
+//endregion
 
-//Misc Extensions
-
+//region Misc Extensions
 fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 	return propertyConfig.keyExpression.type == CwtKeyExpression.Type.AliasNameExpression &&
 		propertyConfig.valueExpression.type == CwtValueExpression.Type.AliasMatchLeftExpression
 }
+//endregion
 
-//Match Extensions
+//region Match Extensions
 fun matchesDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 	when {
 		//匹配属性列表
@@ -435,9 +435,9 @@ fun matchesAlias(propertyConfig: CwtPropertyConfig, propertyElement: ParadoxScri
 		matchesProperty(propertyElement, config.config, configGroup)
 	}
 }
+//endregion
 
-//Complete Extensions
-
+//region Complete Extensions
 fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet) {
 	val keyword = keyElement.keyword
 	val quoted = keyElement.isQuoted()
@@ -857,9 +857,9 @@ fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField, c
 		result.addElement(lookupElement)
 	}
 }
+//endregion
 
-//Resolve Extensions
-
+//region Resolve Extensions
 fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 	val propertyConfig = keyElement.propertyConfig ?: return null
 	val expression = propertyConfig.keyExpression
@@ -1097,3 +1097,4 @@ private fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<Ps
 		.ifEmpty { findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) }
 		.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) }
 }
+//endregion
