@@ -1,7 +1,6 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
@@ -55,10 +54,8 @@ object CwtConfigResolver {
 				}
 				propValue.isArray -> {
 					values = propValue.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
-					properties = emptyList()
 				}
 				propValue.isObject -> {
-					values = emptyList()
 					properties = propValue.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
 				}
 			}
@@ -71,29 +68,22 @@ object CwtConfigResolver {
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
 					if(documentationText != null) {
-						if(documentationLines == null){
-							documentationLines = LinkedList()
-						}else{
-							documentationLines.addFirst(documentationText.text)
-						}
+						if(documentationLines == null) documentationLines = LinkedList()
+						documentationLines.addFirst(documentationText.text)
 					}
 				}
 				current is CwtOptionComment -> {
 					val option = current.option
 					if(option != null) {
-						if(options == null){
-							options = LinkedList()
-						} else{
-							options.addFirst(resolveOption(option, file)?:continue)
-						}
+						if(options == null) options = LinkedList()
+						val resolvedOption = resolveOption(option, file)
+						if(resolvedOption != null) options.addFirst(resolvedOption)
 					} else {
 						val optionValue = current.value
 						if(optionValue != null) {
-							if(optionValues == null){
-								optionValues = LinkedList()
-							}else {
-								optionValues.addFirst(resolveOptionValue(optionValue,file))
-							}
+							if(optionValues == null) optionValues = LinkedList()
+							val resolvedOptionValue = resolveOptionValue(optionValue, file)
+							optionValues.addFirst(resolvedOptionValue)
 						}
 					}
 				}
@@ -135,10 +125,8 @@ object CwtConfigResolver {
 				}
 				value.isArray -> {
 					values = value.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
-					properties = emptyList()
 				}
 				value.isObject -> {
-					values = emptyList()
 					properties = value.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
 				}
 			}
@@ -151,11 +139,8 @@ object CwtConfigResolver {
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
 					if(documentationText != null) {
-						if(documentationLines == null){
-							documentationLines = LinkedList()
-						}else{
-							documentationLines.addFirst(documentationText.text)
-						}
+						if(documentationLines == null) documentationLines = LinkedList()
+						documentationLines.addFirst(documentationText.text)
 					}
 				}
 				current is CwtOptionComment -> {
@@ -164,16 +149,15 @@ object CwtConfigResolver {
 						if(options == null){
 							options = LinkedList()
 						} else{
-							options.addFirst(resolveOption(option, file)?:continue)
+							val resolvedOption = resolveOption(option, file)
+							if(resolvedOption != null) options.addFirst(resolvedOption)
 						}
 					} else {
 						val optionValue = current.value
 						if(optionValue != null) {
-							if(optionValues == null){
-								optionValues = LinkedList()
-							}else {
-								optionValues.addFirst(resolveOptionValue(optionValue,file))
-							}
+							if(optionValues == null) optionValues = LinkedList()
+							val resolvedOptionValue = resolveOptionValue(optionValue, file)
+							optionValues.addFirst(resolvedOptionValue)
 						}
 					}
 				}
@@ -212,10 +196,8 @@ object CwtConfigResolver {
 				}
 				optionValue.isArray -> {
 					values = optionValue.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
-					options = emptyList()
 				}
 				optionValue.isObject -> {
-					values = emptyList()
 					options = optionValue.mapChildOfTypeNotNull(CwtOption::class.java) { resolveOption(it, file) }
 				}
 			}
@@ -254,10 +236,8 @@ object CwtConfigResolver {
 					}
 					option.isArray -> {
 						values = option.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
-						options = emptyList()
 					}
 					option.isObject -> {
-						values = emptyList()
 						options = option.mapChildOfTypeNotNull(CwtOption::class.java)  { resolveOption(it, file) }
 					}
 				}
