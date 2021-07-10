@@ -83,12 +83,12 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 			val definitionInfo = element.paradoxDefinitionInfo ?: return false
 			val name = definitionInfo.name
 			if(!names.add(name)) return false
-			return name.matchesKeyword(keyword,true)
+			return name.matchesKeyword(keyword)
 		} else {
 			val definitionInfo = element.paradoxDefinitionInfo ?: return false
 			val name = definitionInfo.name
 			if(!names.add(name)) return false
-			return name.matchesKeyword(keyword,true) && subtype in definitionInfo.subtypes
+			return name.matchesKeyword(keyword) && subtype in definitionInfo.subtypes
 		}
 	}
 }

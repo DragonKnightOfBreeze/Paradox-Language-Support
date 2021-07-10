@@ -135,9 +135,10 @@
 * [X] definitionProperty对应的规则如果是const（即相同名字的规则），则将规则对应的cwtKey/cwtValue作为它的引用
 * [X] 修改脚本文件的类型提示逻辑
 * [X] 图标更改
-* [X] cwt规则文件中兼容`key == value`的格式，等价于`key = value`
-* [ ] 解析`config/stellaris/setup.log`中的`modifierDefinitions` *
-* [ ] 允许在克隆过来的cwt配置文件（在`config/{gameType}`中）的基础上，提供额外的cwt配置文件（在`config/{gmeType}-ext`中）
+* [X] cwt规则文件中兼容`key == value`的格式，等价于`key = value` *
+* [X] ~~解析`config/stellaris/setup.log`中的`modifierDefinitions`~~
+* [X] 允许在克隆过来的cwt配置文件（在`config/{gameType}`中）的基础上，提供额外的cwt配置文件（在`config/{gmeType}-ext`中） *
+* [ ] 解析`modifiers.log`中的modifierDefinitions，并进行匹配和提示
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 提示localisationCommand（commandField），限制scope
 * [ ] 进行代码提示时，alias拥有特定的注释和图标

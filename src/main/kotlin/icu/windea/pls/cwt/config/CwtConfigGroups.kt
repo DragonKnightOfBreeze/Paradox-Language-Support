@@ -1,11 +1,13 @@
 package icu.windea.pls.cwt.config
 
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import org.slf4j.*
 
 class CwtConfigGroups(
+	val project: Project,
 	declarations: Map<String, List<Map<String, Any?>>>,
 	cwtFileConfigGroups: Map<String, Map<String, CwtFileConfig>>,
 	logFileGroups: Map<String, Map<String, VirtualFile>>,
@@ -73,7 +75,7 @@ class CwtConfigGroups(
 			if(gameType != null) {
 				val logFiles = logFileGroups.getValue(groupName)
 				val csvFiles = csvFileGroups.getValue(groupName)
-				groups[groupName] = CwtConfigGroup(gameType, cwtFileConfigs,logFiles,csvFiles)
+				groups[groupName] = CwtConfigGroup(gameType,project, cwtFileConfigs,logFiles,csvFiles)
 			}
 		}
 		

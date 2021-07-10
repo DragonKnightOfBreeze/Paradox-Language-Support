@@ -216,7 +216,13 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 			val aliasName = expression.value ?: return false
 			val aliasKeys = configGroup.aliases[aliasName]?.keys ?: return false
 			val key = keyElement.value
-			key in aliasKeys
+			key in aliasKeys || run{
+				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
+				if(aliasName == "modifier") {
+					val modifierDefinitionTags = configGroup.modifierDefinitions.keys
+					key in modifierDefinitionTags
+				} else false
+			}
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val key = keyElement.value
@@ -281,7 +287,13 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 		CwtKeyExpression.Type.AliasNameExpression -> {
 			val aliasName = expression.value ?: return false
 			val aliasKeys = configGroup.aliases[aliasName]?.keys ?: return false
-			key in aliasKeys
+			key in aliasKeys || run{
+				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
+				if(aliasName == "modifier") {
+					val modifierDefinitionTags = configGroup.modifierDefinitions.keys
+					key in modifierDefinitionTags
+				} else false
+			}
 		}
 		CwtKeyExpression.Type.Constant -> {
 			key == expression.value
@@ -501,6 +513,7 @@ private fun shouldComplete(config: CwtValueConfig, definitionPropertyInfo: Parad
 }
 
 fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, pointer: SmartPsiElementPointer<*>, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	//NOTE 需要尽可能地预先过滤结果
 	if(expression.isEmpty()) return
 	when(expression.type) {
 		CwtKeyExpression.Type.Any -> pass()
@@ -511,9 +524,10 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		CwtKeyExpression.Type.FloatExpression -> pass()
 		CwtKeyExpression.Type.Scalar -> pass()
 		CwtKeyExpression.Type.Localisation -> {
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			for(localisation in localisations) {
-				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
+				val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
+				val name = n.quoteIf(quoted)
 				val icon = localisationIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = localisation.containingFile.name
@@ -525,9 +539,10 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			}
 		}
 		CwtKeyExpression.Type.SyncedLocalisation -> {
-			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project)
+			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			for(syncedLocalisation in syncedLocalisations) {
-				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
+				val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
+				val name = n.quoteIf(quoted)
 				val icon = localisationIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = syncedLocalisation.containingFile.name
@@ -540,7 +555,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		}
 		CwtKeyExpression.Type.InlineLocalisation -> {
 			if(quoted) return
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val icon = localisationIcon //使用特定图标
@@ -555,10 +570,10 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
-				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
-				val name = definitionName.quoteIf(quoted)
+				val n = definition.paradoxDefinitionInfo?.name ?: continue
+				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = definition.containingFile.name
@@ -572,12 +587,13 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
 			val (prefix, suffix) = expression.extraValue.castOrNull<Tuple2<String, String>>() ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
-				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
-				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
+				val n = "$prefix$definitionName$suffix"
+				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
+				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText, true)
@@ -592,8 +608,10 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val valueValueConfigs = valueConfig.valueConfigs
 			for(valueValueConfig in valueValueConfigs) {
 				if(quoted && valueValueConfig.stringValue == null) continue
+				val n = valueValueConfig.value
+				if(!n.matchesKeyword(keyword)) continue //预先过滤结果
+				val name = n.quoteIf(quoted)
 				val element = valueValueConfig.pointer.element ?: return
-				val name = valueValueConfig.value.quoteIf(quoted)
 				val icon = valueIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = valueConfig.pointer.containingFile?.name ?: anonymousString
@@ -610,8 +628,10 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val enumValueConfigs = enumConfig.valueConfigs
 			for(enumValueConfig in enumValueConfigs) {
 				if(quoted && enumValueConfig.stringValue == null) continue
+				val n = enumValueConfig.value
+				if(!n.matchesKeyword(keyword)) continue //预先过滤结果
+				val name = n.quoteIf(quoted)
 				val element = enumValueConfig.pointer.element ?: return
-				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = enumConfig.pointer.containingFile?.name ?: anonymousString
@@ -628,16 +648,34 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val alias = configGroup.aliases[aliasName] ?: return
 			for(aliasConfigs in alias.values) {
 				for(aliasConfig in aliasConfigs) {
+					//aliasSubName是一个表达式
 					completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.pointer, configGroup, result)
 				}
 			}
+			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+			if(aliasName == "modifier"){
+				val modifierDefinitions = configGroup.modifierDefinitions
+				for(modifierDefinition in modifierDefinitions.values){
+					val n = modifierDefinition.tag
+					if(!n.matchesKeyword(keyword)) return //预先过滤结果
+					val name = n.quoteIf(quoted)
+					val icon = propertyIcon //使用特定图标
+					val tailText = "from modifier definitions"
+					val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+						.withTailText(tailText, true)
+						.withInsertHandler(separatorInsertHandler)
+						.withPriority(hardCodedConfigPriority)
+					result.addElement(lookupElement)
+				}
+			}
 		}
-		CwtKeyExpression.Type.Constant -> {
+		CwtKeyExpression.Type.Constant -> { 
 			val n = expression.value ?: return
-			val element = pointer.element?:return
+			if(!n.matchesKeyword(keyword)) return //预先过滤结果
 			val name = n.quoteIf(quoted)
+			val element = pointer.element?:return
+			val icon = propertyIcon //使用特定图标
 			val tailText = " in ${pointer.containingFile?.name ?: anonymousString}"
-			val icon = scriptPropertyIcon //使用特定图标
 			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withInsertHandler(separatorInsertHandler)
@@ -648,6 +686,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 }
 
 fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boolean, pointer: SmartPsiElementPointer<*>, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	//NOTE 需要尽可能地预先过滤结果
 	if(expression.isEmpty()) return
 	when(expression.type) {
 		CwtValueExpression.Type.Any -> pass()
@@ -660,9 +699,10 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.PercentageField -> pass()
 		CwtValueExpression.Type.ColorField -> pass()
 		CwtValueExpression.Type.Localisation -> {
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
+			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			for(localisation in localisations) {
-				val name = localisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
+				val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
+				val name = n.quoteIf(quoted)
 				val icon = localisationIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = localisation.containingFile.name
@@ -675,7 +715,8 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.SyncedLocalisation -> {
 			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project)
 			for(syncedLocalisation in syncedLocalisations) {
-				val name = syncedLocalisation.name.quoteIf(quoted) //=localisation.paradoxLocalisationInfo?.name
+				val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
+				val name = n.quoteIf(quoted)
 				val icon = localisationIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = syncedLocalisation.containingFile.name
@@ -705,10 +746,10 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.DateField -> pass()
 		CwtValueExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
-				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
-				val name = definitionName.quoteIf(quoted)
+				val n = definition.paradoxDefinitionInfo?.name ?: continue
+				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = definition.containingFile.name
@@ -721,12 +762,13 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
 			val (prefix, suffix) = expression.extraValue?.castOrNull<Tuple2<String, String>>() ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project)
+			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
 				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
-				val name = "$prefix$definitionName$suffix".quoteIf(quoted)
-				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
+				val n = "$prefix$definitionName$suffix"
+				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
+				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = definition.containingFile.name
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText, true)
@@ -740,8 +782,10 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val valueValueConfigs = valueConfig.valueConfigs
 			for(valueValueConfig in valueValueConfigs) {
 				if(quoted && valueValueConfig.stringValue == null) continue
+				val n = valueValueConfig.value
+				if(!n.matchesKeyword(keyword)) return //预先过滤结果
+				val name = n.quoteIf(quoted)
 				val element = valueValueConfig.pointer.element ?: return
-				val name = valueValueConfig.value.quoteIf(quoted)
 				val icon = valueIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = valueConfig.pointer.containingFile?.name ?: anonymousString
@@ -757,8 +801,10 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val enumValueConfigs = enumConfig.valueConfigs
 			for(enumValueConfig in enumValueConfigs) {
 				if(quoted && enumValueConfig.stringValue == null) continue
+				val n = enumValueConfig.value
+				if(!n.matchesKeyword(keyword)) return //预先过滤结果
+				val name = n.quoteIf(quoted)
 				val element = enumValueConfig.pointer.element ?: return
-				val name = enumValueConfig.value.quoteIf(quoted)
 				val icon = enumIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
 				val typeText = enumConfig.pointer.containingFile?.name ?: anonymousString
@@ -781,10 +827,11 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.AliasMatchLeftExpression -> pass() //TODO
 		CwtValueExpression.Type.Constant -> {
 			val n = expression.value ?: return
-			val element = pointer.element?:return
+			if(!n.matchesKeyword(keyword)) return //预先过滤结果
 			val name = n.quoteIf(quoted)
+			val element = pointer.element?:return
+			val icon = valueIcon //使用特定图标
 			val tailText = " in ${pointer.containingFile?.name ?: anonymousString}"
-			val icon = scriptValueIcon //使用特定图标
 			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withPriority(propertyPriority)
@@ -864,6 +911,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 				matchesProperty(propertyElement,it.config,configGroup)
 			}?:return null
 			aliasConfig.pointer.element
+			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
 		}
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element
@@ -923,6 +971,7 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 				matchesProperty(propertyElement,it.config,configGroup)
 			}?:return emptyList()
 			aliasConfig.pointer.element.toSingletonListOrEmpty()
+			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
 		}
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element.toSingletonListOrEmpty()

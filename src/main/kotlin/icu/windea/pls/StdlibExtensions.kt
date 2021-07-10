@@ -122,24 +122,31 @@ fun String.toCapitalizedWords(): String {
 	}
 }
 
-private val keywordDelimiters = charArrayOf('.','_','-')
+private val keywordDelimiters = charArrayOf('.','_')
 
 /**
  * 判断指定的关键词是否匹配当前字符串。
  */
-fun String.matchesKeyword(keyword: String,ignoreCase:Boolean = false): Boolean {
-	var index = -1
-	var lastIndex = -2
-	for(c in keyword) {
-		index = indexOf(c,index+1,ignoreCase)
-		println(index)
-		when {
-			index == -1 -> return false
-			c !in keywordDelimiters && index != 0 && lastIndex != index-1 && this[index-1] !in keywordDelimiters -> return false
-		}
-		lastIndex = index
-	}
-	return true
+fun String.matchesKeyword(keyword: String): Boolean {
+	//IDEA低层如何匹配关键词：
+	//com.intellij.codeInsight.completion.PrefixMatcher.prefixMatches(java.lang.String)
+	//这里如何匹配关键词：包含，忽略大小写
+	return keyword.isEmpty() || contains(keyword,true)
+	
+	////这里如何匹配关键词：部分包含，被跳过的子字符串必须以'.','_'结尾，忽略大小写
+	//if(keyword.isEmpty()) return true
+	//var index = -1
+	//var lastIndex = -2
+	//for(c in keyword) {
+	//	index = indexOf(c,index+1,ignoreCase)
+	//	when {
+	//		index == -1 -> return false
+	//		c !in keywordDelimiters && index != 0 && lastIndex != index-1 
+	//		    && this[index-1] !in keywordDelimiters -> return false
+	//	}
+	//	lastIndex = index
+	//}
+	//return true
 }
 
 fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList<Int> {

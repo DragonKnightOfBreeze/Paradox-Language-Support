@@ -1,5 +1,6 @@
 package icu.windea.pls.cwt.config
 
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
@@ -8,6 +9,7 @@ import org.slf4j.*
 
 class CwtConfigGroup(
 	val gameType: ParadoxGameType,
+	val project: Project,
 	cwtFileConfigs: Map<String, CwtFileConfig>,
 	logFiles: Map<String, VirtualFile>,
 	csvFiles: Map<String, VirtualFile>
@@ -71,9 +73,9 @@ class CwtConfigGroup(
 		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
 		definitions = mutableMapOf()
 		
-		for((fileName, fileConfig) in cwtFileConfigs) {
-			//如果存在folders.cwt，则将其中的相对路径列表添加到folders中
-			if(fileName == "folders.cwt") {
+		for((filePath, fileConfig) in cwtFileConfigs) {
+			//如果存在folders.cwt，则将其中的相对路径列表添加到folders中 
+			if(filePath == "folders.cwt") {
 				resolveFoldersCwt(fileConfig,folders)
 			}
 			
@@ -189,17 +191,20 @@ class CwtConfigGroup(
 		}
 		
 		modifierDefinitions = mutableMapOf()
-		
-		for((fileName,file) in logFiles){
-			//如果游戏类型为stellaris且文件名为setup.log，则解析其中的modifierDefinition
-			if(gameType == ParadoxGameType.Stellaris && fileName == "setup.log"){
-				resolveStellarisSetupLog(file,modifierDefinitions)
+		for((filePath,file) in logFiles){
+			//解析modifiers.log中的modifierDefinitions
+			if(filePath == "modifiers.log" || filePath == "script-docs/modifiers.log"){
+				resolveModifiersLog(file,modifierDefinitions)
 			}
+			//如果游戏类型为stellaris且文件名为setup.log，则解析其中的modifierDefinition
+			//if(gameType == ParadoxGameType.Stellaris && filePath == "setup.log"){
+			//	resolveStellarisSetupLog(file,modifierDefinitions)
+			//}
 			//TODO
 		}
 		
 		//TODO
-		//for((fileName,file) in logFiles){
+		//for((filePath,file) in logFiles){
 		//	
 		//}
 		
@@ -458,50 +463,69 @@ class CwtConfigGroup(
 	//endregion
 	
 	//region 解析log文件
-	private fun getTextByCppFileName(line:String,cppFileName:String):String?{ 
-		try{
-			val colonIndex = line.indexOf(':',11)
-			if(colonIndex == -1) return null
-			val actualCppFileName = line.substring(11,colonIndex)
-			if(actualCppFileName != cppFileName) return null
-			val secondColonIndex = line.indexOf(':',colonIndex+1)
-			if(secondColonIndex == -1) return null
-			return line.substring(secondColonIndex + 2)
-		}catch(e:Exception){
-			return null
+	fun resolveModifiersLog(file: VirtualFile, modifierDefinitions: MutableMap<String, CwtModifierDefinitionConfig>){
+		//解析modifiers.log中的modifierDefinitions
+		//示例：
+		//Printing Modifier Definitions:
+		//Tag: diplomacy, Categories: character
+		file.inputStream.bufferedReader().forEachLine { line -> 
+			val colonIndex = line.indexOf(':')
+			if(colonIndex == -1) return@forEachLine
+			val commaIndex = line.indexOf(',',colonIndex+2)
+			if(commaIndex == -1) return@forEachLine
+			val colonIndex2 = line.indexOf(':',commaIndex+2)
+			if(colonIndex2 == -1) return@forEachLine
+			val tag = line.substring(colonIndex+2,commaIndex)
+			val categories = line.substring(colonIndex2+2)
+			val config = CwtModifierDefinitionConfig(tag,categories)
+			modifierDefinitions.put(tag,config)
 		}
 	}
 	
+	//private fun getTextByCppFileName(line:String,cppFileName:String):String?{ 
+	//	try{
+	//		val colonIndex = line.indexOf(':',11)
+	//		if(colonIndex == -1) return null
+	//		val actualCppFileName = line.substring(11,colonIndex)
+	//		if(actualCppFileName != cppFileName) return null
+	//		val secondColonIndex = line.indexOf(':',colonIndex+1)
+	//		if(secondColonIndex == -1) return null
+	//		return line.substring(secondColonIndex + 2)
+	//	}catch(e:Exception){
+	//		return null
+	//	}
+	//}
+	
 	//DEPRECATED 从setup.log中提取modifiers.log，仅保留关键信息
-	private fun resolveStellarisSetupLog(file: VirtualFile, modifierDefinitions: MutableMap<String, CwtModifierDefinitionConfig>){
-		//解析modifierDefinition
-		//示例：
-		//[17:28:08][modifier.cpp:885]: Printing Modifier Definitions
-		//[17:28:08][modifier.cpp:889]: [0] Tag: blank_modifier, Categories: 2
-		var modifierDefinitionStart = false
-		var modifierDefinitionEnd = false
-		
-		file.inputStream.bufferedReader().forEachLine { line ->
-			if(!modifierDefinitionStart && line.endsWith("Printing Modifier Definitions")){
-				modifierDefinitionStart = true
-			}
-			if(modifierDefinitionStart && !modifierDefinitionEnd){
-				val text = getTextByCppFileName(line,"modifier.cpp")
-				if(text != null){
-					val wsIndex = text.indexOf(' ')
-					val colonIndex = text.indexOf(':',wsIndex+1)
-					val commaIndex = text.indexOf(',',colonIndex+2)
-					val colonIndex2 = text.indexOf(':',commaIndex+2)
-					val tag = text.substring(colonIndex+2,commaIndex)
-					val categories = text.substring(colonIndex2+2)
-					val config = CwtModifierDefinitionConfig(tag,categories)
-					modifierDefinitions.put(tag,config)
-				}else{
-					modifierDefinitionEnd = true 
-				}
-			}
-		}
-	}
+	//private fun resolveStellarisSetupLog(file: VirtualFile, modifierDefinitions: MutableMap<String, CwtModifierDefinitionConfig>){
+	//	//解析modifierDefinition
+	//	//示例：
+	//	//[17:28:08][modifier.cpp:885]: Printing Modifier Definitions
+	//	//[17:28:08][modifier.cpp:889]: [0] Tag: blank_modifier, Categories: 2
+	//	var modifierDefinitionStart = false
+	//	var modifierDefinitionEnd = false
+	//	
+	//	file.inputStream.bufferedReader().forEachLine { line ->
+	//		if(modifierDefinitionStart && !modifierDefinitionEnd){
+	//			val text = getTextByCppFileName(line,"modifier.cpp")
+	//			if(text != null){
+	//				val wsIndex = text.indexOf(' ')
+	//				val colonIndex = text.indexOf(':',wsIndex+1)
+	//				val commaIndex = text.indexOf(',',colonIndex+2)
+	//				val colonIndex2 = text.indexOf(':',commaIndex+2)
+	//				val tag = text.substring(colonIndex+2,commaIndex)
+	//				val categories = text.substring(colonIndex2+2)
+	//				val config = CwtModifierDefinitionConfig(tag,categories)
+	//				modifierDefinitions.put(tag,config)
+	//			}else{
+	//				modifierDefinitionEnd = true 
+	//			}
+	//		}
+	//		if(!modifierDefinitionStart && line.endsWith("Printing Modifier Definitions")){
+	//			modifierDefinitionStart = true
+	//		}
+	//	}
+	//}
 	//endregion
 	
 	//region 解析得到definitionInfo

@@ -2,6 +2,8 @@ package icu.windea.pls.cwt.config
 
 import java.io.*
 
+//解析`modifiers.log`中的modifierDefinitions
+
 //示例：
 //...
 //[17:28:08][modifier.cpp:885]: Printing Modifier Definitions
@@ -12,7 +14,7 @@ import java.io.*
 //Tag: diplomacy, Categories: character
 
 fun main() {
-	extractModifiersLog("resources/config/stellaris/setup.log", "resources/config/stellaris-ext/modifiers.log")
+	extractModifiersLog("src/main/resources/config/stellaris/setup.log", "src/main/resources/config/stellaris-ext/modifiers.log")
 }
 
 fun extractModifiersLog(fromPath: String, toPath: String) {
@@ -22,10 +24,7 @@ fun extractModifiersLog(fromPath: String, toPath: String) {
 	
 	var modifierDefinitionStart = false
 	var modifierDefinitionEnd = false
-	fromFile.forEachLine { line -> 
-		if(!modifierDefinitionStart && line.endsWith("Printing Modifier Definitions")){
-			modifierDefinitionStart = true
-		}
+	fromFile.forEachLine { line ->
 		if(modifierDefinitionStart && !modifierDefinitionEnd){
 			val text = getTextByCppFileName(line,"modifier.cpp")
 			if(text != null){
@@ -35,6 +34,9 @@ fun extractModifiersLog(fromPath: String, toPath: String) {
 			}else{
 				modifierDefinitionEnd = true
 			}
+		}
+		if(!modifierDefinitionStart && line.endsWith("Printing Modifier Definitions")){
+			modifierDefinitionStart = true
 		}
 	}
 	

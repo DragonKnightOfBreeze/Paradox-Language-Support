@@ -10,7 +10,7 @@ import org.yaml.snakeyaml.*
 import java.util.concurrent.*
 
 class CwtConfigProvider(
-	private val project: Project
+	val project: Project
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigProvider::class.java)
@@ -31,7 +31,7 @@ class CwtConfigProvider(
 		csvFileGroups = ConcurrentHashMap()
 		configGroups = ReadAction.compute<CwtConfigGroups, Exception> {
 			initConfigGroups()
-			CwtConfigGroups(declarationMap, cwtFileConfigGroups, logFileGroups, csvFileGroups)
+			CwtConfigGroups(project,declarationMap, cwtFileConfigGroups, logFileGroups, csvFileGroups)
 		}
 	}
 	
