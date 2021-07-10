@@ -251,11 +251,11 @@
 
     <localInspection
         language="PARADOX_SCRIPT"
-        shortName="ParadoxScriptDuplicateVariableDefinitions" bundle="messages.PlsBundle"
+        shortName="ParadoxScriptDuplicateVariables" bundle="messages.PlsBundle"
         groupKey="paradox.script.inspection"
-        key="paradox.script.inspection.duplicateVariableDefinitions"
+        key="paradox.script.inspection.duplicateVariables"
         enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.script.inspections.DuplicateVariableDefinitionsInspection"/>
+        implementationClass="icu.windea.pls.script.inspections.DuplicateVariablesInspection"/>
     <localInspection
         language="PARADOX_SCRIPT"
         shortName="ParadoxScriptInvalidFileEncoding" bundle="messages.PlsBundle"
@@ -368,10 +368,10 @@
     
     <localInspection
         language="PARADOX_LOCALISATION"
-        shortName="ParadoxLocalisationDuplicatePropertyKeys"
-        groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.duplicatePropertyKeys"
+        shortName="ParadoxLocalisationDuplicateProperties"
+        groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.duplicateProperties"
         enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertyKeysInspection"/>
+        implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertiesInspection"/>
     <localInspection
         language="PARADOX_LOCALISATION"
         shortName="ParadoxLocalisationInvalidFileEncoding"

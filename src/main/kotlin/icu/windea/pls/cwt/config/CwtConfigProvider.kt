@@ -30,6 +30,7 @@ class CwtConfigProvider(
 		logger.info("Resolve config files...")
 		val startTime = System.currentTimeMillis()
 		val configUrl = "/config".toUrl(locationClass)
+		//通过这种方式得到的virtualFile可以在jar压缩包中，可以直接得到它的子节点
 		//这里有可能找不到，这时不要报错，之后还会执行到这里
 		val configFile = VfsUtil.findFileByURL(configUrl)
 		if(configFile != null) {

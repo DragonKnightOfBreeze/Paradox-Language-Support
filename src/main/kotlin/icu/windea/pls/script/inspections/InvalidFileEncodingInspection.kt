@@ -15,9 +15,8 @@ class InvalidFileEncodingInspection: LocalInspectionTool(){
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
 		val virtualFile = file.virtualFile?:return null
 		val charset = virtualFile.charset
-		val hasBom = virtualFile.bom != null
-		val parent = virtualFile.parent?:return null
-		val isNameList = parent.name == "name_lists"
+		val hasBom = virtualFile.bom.let{ it != null && it contentEquals utf8Bom  }
+		val isNameList = virtualFile.paradoxFileInfo?.path?.root == "name_lists"
 		val isValid = charset == Charsets.UTF_8 && (if(isNameList) hasBom else !hasBom)
 		if(!isValid){
 			val holder = ProblemsHolder(manager,file,isOnTheFly)
@@ -45,7 +44,6 @@ class InvalidFileEncodingInspection: LocalInspectionTool(){
 			val virtualFile = file.virtualFile
 			virtualFile.charset = Charsets.UTF_8
 			if(isNameList) virtualFile.bom = utf8Bom else virtualFile.bom = null
-			file.clearCaches()
 		}
 	}
 }

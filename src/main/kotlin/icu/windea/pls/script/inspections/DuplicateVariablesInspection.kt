@@ -13,9 +13,9 @@ import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
-class DuplicateVariableDefinitionsInspection :LocalInspectionTool(){
+class DuplicateVariablesInspection :LocalInspectionTool(){
 	companion object{
-		private fun _description(name:String) = message("paradox.script.inspection.duplicateVariableDefinitions.description", name)
+		private fun _description(name:String) = message("paradox.script.inspection.duplicateVariables.description", name)
 	}
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

@@ -141,9 +141,10 @@
 * [X] 解析`modifiers.log`中的modifierDefinitions，并进行匹配和提示
 * [X] 如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
 * [X] 优化插件设置相关代码
+* [X] 重载文件类型时自动处理bom（改为正确的bom，不改变编码）
+* [ ] 进行代码提示时，alias拥有特定的注释和图标（仅限aliasSubName为constant）
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 提示localisationCommand（commandField），限制scope
-* [ ] 进行代码提示时，alias拥有特定的注释和图标
 * [ ] 进行代码提示时支持aliasName 限制scope
 * [ ] 进行匹配时支持aliasName 限制scope
 * [ ] 基于cwt规则文件的key和value的验证的支持

@@ -12,9 +12,9 @@ import icu.windea.pls.localisation.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
-class DuplicatePropertyKeysInspection : LocalInspectionTool() {
+class DuplicatePropertiesInspection : LocalInspectionTool() {
 	companion object{
-		private fun _description(key: String) = message("paradox.localisation.inspection.duplicatePropertyKeys.description", key)
+		private fun _description(key: String) = message("paradox.localisation.inspection.duplicateProperties.description", key)
 	}
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

@@ -44,6 +44,12 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
 						}
+						//自动处理bom（改为正确的bom，不改变编码）
+						runCatching {
+							val hasBom = file.bom.let{ it != null && it contentEquals utf8Bom  }  
+							val isNameList = path.root == "name_lists"
+							if(!hasBom && isNameList) file.bom = utf8Bom else if(hasBom && !isNameList) file.bom = null
+						}
 						ParadoxScriptFileType
 					}
 					//本地化文件
@@ -52,9 +58,14 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
 						}
+						//自动处理bom（改为正确的bom，不改变编码）
+						runCatching {
+							val hasBom = file.bom.let{ it != null && it contentEquals utf8Bom  }
+							if(!hasBom) file.bom = utf8Bom
+						}
 						ParadoxLocalisationFileType
 					}
-					//其他文件（dds）
+					//其他文件（如dds）
 					else -> {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
