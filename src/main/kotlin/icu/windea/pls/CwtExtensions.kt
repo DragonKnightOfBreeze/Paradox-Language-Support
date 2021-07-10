@@ -490,6 +490,8 @@ fun addValueCompletionsInBlock(valueElement: PsiElement, propertyElement: Parado
 
 private fun shouldComplete(config: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo): Boolean {
 	val expression = config.keyExpression
+	//NOTE 如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
+	if(expression.type == CwtKeyExpression.Type.AliasNameExpression) return true
 	val actualCount = definitionPropertyInfo.childPropertyOccurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 	val cardinality = config.cardinality
