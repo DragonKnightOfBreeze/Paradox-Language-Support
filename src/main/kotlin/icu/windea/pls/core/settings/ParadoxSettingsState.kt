@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
 data class ParadoxSettingsState(
 	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris,
 	@JvmField var preferOverridden: Boolean = false,
-	@JvmField var maxCompleteSize:Int = 50,
+	@JvmField var maxCompleteSize:Int = 100,
 	@JvmField var renderLineCommentText: Boolean = false,
 	@JvmField var renderDefinitionText: Boolean = true,
 	@JvmField var renderLocalisationText: Boolean = true

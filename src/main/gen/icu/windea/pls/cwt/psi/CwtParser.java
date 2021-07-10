@@ -223,13 +223,14 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "=" | "<>"
+  // "=" | "==" | "<>" | "!="
   static boolean option_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_separator")) return false;
-    if (!nextTokenIs(b, "", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
     boolean r;
     r = consumeToken(b, EQUAL_SIGN);
+    if (!r) r = consumeToken(b, EQUAL_SIGN_2);
     if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
+    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN_2);
     return r;
   }
 
@@ -261,13 +262,14 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "=" | "<>"
+  // "=" | "==" | "<>" | "!="
   static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
-    if (!nextTokenIs(b, "", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
     boolean r;
     r = consumeToken(b, EQUAL_SIGN);
+    if (!r) r = consumeToken(b, EQUAL_SIGN_2);
     if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
+    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN_2);
     return r;
   }
 

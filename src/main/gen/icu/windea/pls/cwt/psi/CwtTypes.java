@@ -29,10 +29,12 @@ public interface CwtTypes {
   IElementType DOCUMENTATION_START = new CwtTokenType("###");
   IElementType DOCUMENTATION_TOKEN = new CwtTokenType("DOCUMENTATION_TOKEN");
   IElementType EQUAL_SIGN = new CwtTokenType("=");
+  IElementType EQUAL_SIGN_2 = new CwtTokenType("==");
   IElementType FLOAT_TOKEN = new CwtTokenType("FLOAT_TOKEN");
   IElementType INT_TOKEN = new CwtTokenType("INT_TOKEN");
   IElementType LEFT_BRACE = new CwtTokenType("{");
   IElementType NOT_EQUAL_SIGN = new CwtTokenType("<>");
+  IElementType NOT_EQUAL_SIGN_2 = new CwtTokenType("!=");
   IElementType OPTION_KEY_TOKEN = new CwtTokenType("OPTION_KEY_TOKEN");
   IElementType OPTION_START = new CwtTokenType("##");
   IElementType PROPERTY_KEY_TOKEN = new CwtTokenType("PROPERTY_KEY_TOKEN");

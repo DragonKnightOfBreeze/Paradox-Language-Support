@@ -60,8 +60,8 @@ STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 TOP_STRING_TOKEN=([^\s])|([^={}\s][^={}\r\n]*[^={}\s]) //顶级的optionValue可以包含空格
 DOCUMENTATION_TOKEN=[^\r\n]+
 
-IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({SPACE})?((=)|(<>))
-IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?((=)|(<>))
+IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({SPACE})?((=)|(\!=)|(<>))
+IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?((=)|(\!=)|(<>))
 
 %%
 <YYINITIAL> {
@@ -98,8 +98,8 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?((=)|(<>))
   
   "{" {yybegin(YYINITIAL); return LEFT_BRACE;}
   "}" {yybegin(YYINITIAL); return RIGHT_BRACE;}
-  "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
-  "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
+  "="|"==" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
+  "<>"|"!=" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
     
   {COMMENT} {return COMMENT;}
 }
@@ -187,8 +187,8 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({SPACE})?((=)|(<>))
   
   "{" {yybegin(WAITING_OPTION); optionDepth++; return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); optionDepth--; return RIGHT_BRACE;}
-  "=" {yybegin(WAITING_OPTION_VALUE); return EQUAL_SIGN;}
-  "<>" {yybegin(WAITING_OPTION_VALUE); return NOT_EQUAL_SIGN;}
+  "="|"==" {yybegin(WAITING_OPTION_VALUE); return EQUAL_SIGN;}
+  "<>"|"!=" {yybegin(WAITING_OPTION_VALUE); return NOT_EQUAL_SIGN;}
   
   {RELAX_COMMENT} {return COMMENT; }
 }

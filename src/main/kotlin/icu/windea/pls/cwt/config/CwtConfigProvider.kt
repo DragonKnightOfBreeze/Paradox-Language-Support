@@ -17,17 +17,21 @@ class CwtConfigProvider(
 		private val yaml = Yaml()
 	}
 	
-	private val fileConfigGroups: MutableMap<String, Map<String, CwtFileConfig>>
 	private val declarationMap: MutableMap<String, List<Map<String, Any?>>>
+	private val cwtFileConfigGroups: MutableMap<String, MutableMap<String, CwtFileConfig>>
+	private val logFileGroups: MutableMap<String, MutableMap<String, VirtualFile>>
+	private val csvFileGroups: MutableMap<String, MutableMap<String, VirtualFile>>
 	
-	internal val configGroups: CwtConfigGroups
+	val configGroups: CwtConfigGroups
 	
 	init {
-		fileConfigGroups = ConcurrentHashMap<String, Map<String, CwtFileConfig>>()
-		declarationMap = ConcurrentHashMap<String, List<Map<String, Any?>>>()
+		declarationMap = ConcurrentHashMap()
+		cwtFileConfigGroups = ConcurrentHashMap()
+		logFileGroups = ConcurrentHashMap()
+		csvFileGroups = ConcurrentHashMap()
 		configGroups = ReadAction.compute<CwtConfigGroups, Exception> {
 			initConfigGroups()
-			CwtConfigGroups(fileConfigGroups, declarationMap, project)
+			CwtConfigGroups(declarationMap, cwtFileConfigGroups, logFileGroups, csvFileGroups)
 		}
 	}
 	
@@ -45,8 +49,8 @@ class CwtConfigProvider(
 			when {
 				//如果是目录则将其名字作为规则组的名字
 				file.isDirectory -> {
-					val groupName = file.name
-					initConfigGroup(groupName,file)
+					val groupName = file.name.removeSuffix("-ext") //如果有后缀"-ext"，表示这是额外提供的配置
+					initConfigGroup(groupName, file)
 				}
 				//解析顶层文件declarations.yml
 				file.name == "declarations.yml" -> {
@@ -59,28 +63,42 @@ class CwtConfigProvider(
 		logger.info("Init config groups finished. (${endTime - startTime} ms)")
 	}
 	
-	private fun initConfigGroup(groupName:String,file: VirtualFile) {
+	private fun initConfigGroup(groupName: String, groupFile: VirtualFile) {
 		logger.info("Init config group '$groupName'...")
-		val group = ConcurrentHashMap<String, CwtFileConfig>()
-		val groupPath = file.path
-		addConfigGroup(group, file, groupPath, project)
-		this.fileConfigGroups[groupName] = group
+		addConfigGroup(groupName, groupFile, project)
 		logger.info("Init config group '$groupName' finished.")
 	}
 	
-	private fun addConfigGroup(group: MutableMap<String, CwtFileConfig>, parentFile: VirtualFile, groupPath: String, project: Project) {
+	private fun addConfigGroup(groupName: String, parentFile: VirtualFile, project: Project) {
+		//可以额外补充配置，即配置组可能不止初始化一次
+		val cwtFileConfigGroup = cwtFileConfigGroups.getOrPut(groupName) { mutableMapOf() }
+		val logFileGroup = logFileGroups.getOrPut(groupName) { mutableMapOf() }
+		val csvFileGroup = csvFileGroups.getOrPut(groupName) { mutableMapOf() }
+		
+		val groupPath = parentFile.path
+		val configNamePrefix = "$groupPath/"
 		for(file in parentFile.children) {
-			//忽略扩展名不匹配的文件
-			when {
-				file.isDirectory -> addConfigGroup(group, file, groupPath, project)
-				file.extension == "cwt" -> {
-					val configName = file.path.removePrefix(groupPath)
+			if(file.isDirectory) {
+				addConfigGroup(groupName, file, project)
+				return
+			}
+			when(file.extension) {
+				"cwt" -> {
+					val configName = file.path.removePrefix(configNamePrefix)
 					val config = resolveConfig(file, project)
 					if(config != null) {
-						group[configName] = config
+						cwtFileConfigGroup[configName] = config
 					} else {
 						logger.warn("Cannot resolve config file '$configName', skip it.")
 					}
+				}
+				"log" -> {
+					val configName = file.path.removePrefix(configNamePrefix)
+					logFileGroup[configName] = file
+				}
+				"csv" -> {
+					val configName = file.path.removePrefix(configNamePrefix)
+					csvFileGroup[configName] = file
 				}
 			}
 		}
@@ -98,7 +116,7 @@ class CwtConfigProvider(
 	private fun initDeclarations(file: VirtualFile) {
 		logger.info("Init declarations...")
 		val declarations = resolveYamlConfig(file)
-		if(declarations != null) this.declarationMap.putAll(declarations)
+		if(declarations != null) declarationMap.putAll(declarations)
 		logger.info("Init declarations finished.")
 	}
 	

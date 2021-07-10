@@ -1,15 +1,16 @@
 package icu.windea.pls.cwt.config
 
-import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 
 class CwtConfigGroup(
-	val fileConfigs: Map<String, CwtFileConfig>,
 	val gameType: ParadoxGameType,
-	val project: Project
+	cwtFileConfigs: Map<String, CwtFileConfig>,
+	logFiles: Map<String, VirtualFile>,
+	csvFiles: Map<String, VirtualFile>
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
@@ -31,41 +32,28 @@ class CwtConfigGroup(
 		}
 		
 		private fun resolveAliasName(expression: String): Pair<String, String>? {
-			return expression.resolveByRemoveSurrounding("alias[", "]")?.let{ 
+			return expression.resolveByRemoveSurrounding("alias[", "]")?.let {
 				val index = it.indexOf(':')
-				it.substring(0,index) to it.substring(index+1)
+				it.substring(0, index) to it.substring(index + 1)
 			}
 		}
 		
 	}
 	
-	//需要扫描的文件夹的相对路径列表，可能为空
-	val folders: List<String>
-	
+	val folders: List<String> //需要扫描的文件夹的相对路径列表，可能为空
 	val types: Map<String, CwtTypeConfig>
-	
-	//可能为空
-	val values: Map<String,CwtEnumConfig>
-	
-	//枚举值也有可能是int、number、bool类型，这里统一用字符串表示
-	val enums: Map<String, CwtEnumConfig>
-	
+	val values: Map<String, CwtEnumConfig> //可能为空
+	val enums: Map<String, CwtEnumConfig> //枚举值也有可能是int、number、bool类型，这里统一用字符串表示
 	val links: Map<String, CwtLinkConfig>
-	
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
-	
 	val localisationLinks: Map<String, CwtLinkConfig>
-	
 	val modifierCategories: Map<String, CwtModifyCategoryConfig>
-	
 	val scopes: Map<String, CwtScopeConfig>
-	
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
-	
-	//alias[?:?] = ? alias[?:?] = ?
-	val aliases: Map<String,Map<String,List<CwtAliasConfig>>>
-	
+	val aliases: Map<String, Map<String, List<CwtAliasConfig>>> //alias[?:?] = ? alias[?:?] = ?
 	val definitions: Map<String, CwtDefinitionConfig>
+	
+	val modifierDefinitions:Map<String,CwtModifierDefinitionConfig>
 	
 	init {
 		logger.info("Resolve config group '$gameType'...")
@@ -80,14 +68,13 @@ class CwtConfigGroup(
 		modifierCategories = mutableMapOf()
 		scopes = mutableMapOf()
 		scopeGroups = mutableMapOf()
-		aliases = mutableMapOf<String,MutableMap<String,MutableList<CwtAliasConfig>>>()
+		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
 		definitions = mutableMapOf()
 		
-		for((fileName, fileConfig) in fileConfigs) {
+		for((fileName, fileConfig) in cwtFileConfigs) {
 			//如果存在folders.cwt，则将其中的相对路径列表添加到folders中
 			if(fileName == "folders.cwt") {
-				val list = fileConfig.values.map { it.value }
-				folders.addAll(list)
+				resolveFoldersCwt(fileConfig,folders)
 			}
 			
 			//处理fileConfig的properties
@@ -96,7 +83,7 @@ class CwtConfigGroup(
 				when(key) {
 					//找到配置文件中的顶级的key为"types"的属性，然后解析它的子属性，添加到types中
 					"types" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val typeName = resolveTypeName(prop.key)
 							if(typeName != null && typeName.isNotEmpty()) {
@@ -107,7 +94,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"values"的属性，然后解析它的子属性，添加到values中
 					"values" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val valueName = resolveValueName(prop.key)
 							if(valueName != null && valueName.isNotEmpty()) {
@@ -118,7 +105,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums中
 					"enums" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val enumName = resolveEnumName(prop.key)
 							if(enumName != null && enumName.isNotEmpty()) {
@@ -129,7 +116,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
 					"links" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val linkName = prop.key
 							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
@@ -138,7 +125,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
 					"localisation_commands" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val commandName = prop.key
 							val commandConfig = resolveLocalisationCommandConfig(prop, commandName) ?: continue
@@ -147,7 +134,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
 					"localisation_links" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val linkName = prop.key
 							val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
@@ -156,7 +143,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
 					"modifier_categories" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val categoryName = prop.key
 							val categoryConfig = resolveModifierCategoryConfig(prop, categoryName) ?: continue
@@ -165,7 +152,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
 					"scopes" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val scopeName = prop.key
 							val scopeConfig = resolveScopeConfig(prop, scopeName) ?: continue
@@ -174,7 +161,7 @@ class CwtConfigGroup(
 					}
 					//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
 					"scope_groups" -> {
-						val props = property.properties?:continue
+						val props = property.properties ?: continue
 						for(prop in props) {
 							val scopeGroupName = prop.key
 							val scopeGroupConfig = resolveScopeGroupConfig(prop, scopeGroupName) ?: continue
@@ -185,10 +172,10 @@ class CwtConfigGroup(
 						//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
 						val aliasNamePair = resolveAliasName(key)
 						if(aliasNamePair != null) {
-							val (aliasName,aliasSubName) = aliasNamePair
-							val aliasConfig = resolveAliasConfig(property, aliasName,aliasSubName)
+							val (aliasName, aliasSubName) = aliasNamePair
+							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
 							val map = aliases.getOrPut(aliasName) { mutableMapOf() }
-							val list = map.getOrPut(aliasSubName){ mutableListOf() }
+							val list = map.getOrPut(aliasSubName) { mutableListOf() }
 							list.add(aliasConfig)
 						}
 						
@@ -201,7 +188,27 @@ class CwtConfigGroup(
 			}
 		}
 		
+		modifierDefinitions = mutableMapOf()
+		
+		for((fileName,file) in logFiles){
+			//如果游戏类型为stellaris且文件名为setup.log，则解析其中的modifierDefinition
+			if(gameType == ParadoxGameType.Stellaris && fileName == "setup.log"){
+				resolveStellarisSetupLog(file,modifierDefinitions)
+			}
+			//TODO
+		}
+		
+		//TODO
+		//for((fileName,file) in logFiles){
+		//	
+		//}
+		
 		logger.info("Resolve config group '$gameType' finished.")
+	}
+	
+	//region 解析cwt配置文件
+	private fun resolveFoldersCwt(fileConfig: CwtFileConfig,folders:MutableList<String>){
+		fileConfig.values.mapTo(folders) { it.value }
 	}
 	
 	private fun resolveTypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeConfig {
@@ -358,7 +365,7 @@ class CwtConfigGroup(
 	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
 		val values = propertyConfig.values?.map { it.value } ?: return null
 		val valueConfigs = propertyConfig.values
-		return CwtEnumConfig(propertyConfig.pointer, name, values,valueConfigs)
+		return CwtEnumConfig(propertyConfig.pointer, name, values, valueConfigs)
 	}
 	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
@@ -425,8 +432,7 @@ class CwtConfigGroup(
 		return CwtScopeGroupConfig(propertyConfig.pointer, name, values)
 	}
 	
-	
-	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String,subName:String): CwtAliasConfig {
+	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
 		return CwtAliasConfig(propertyConfig.pointer, name, subName, propertyConfig)
 	}
 	
@@ -449,10 +455,56 @@ class CwtConfigGroup(
 		}
 		return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfigs)
 	}
+	//endregion
 	
-	/**
-	 * 根据指定的scriptProperty，匹配类型规则，得到对应的definitionInfo。
-	 */
+	//region 解析log文件
+	private fun getTextByCppFileName(line:String,cppFileName:String):String?{ 
+		try{
+			val colonIndex = line.indexOf(':',11)
+			if(colonIndex == -1) return null
+			val actualCppFileName = line.substring(11,colonIndex)
+			if(actualCppFileName != cppFileName) return null
+			val secondColonIndex = line.indexOf(':',colonIndex+1)
+			if(secondColonIndex == -1) return null
+			return line.substring(secondColonIndex + 2)
+		}catch(e:Exception){
+			return null
+		}
+	}
+	
+	//DEPRECATED 从setup.log中提取modifiers.log，仅保留关键信息
+	private fun resolveStellarisSetupLog(file: VirtualFile, modifierDefinitions: MutableMap<String, CwtModifierDefinitionConfig>){
+		//解析modifierDefinition
+		//示例：
+		//[17:28:08][modifier.cpp:885]: Printing Modifier Definitions
+		//[17:28:08][modifier.cpp:889]: [0] Tag: blank_modifier, Categories: 2
+		var modifierDefinitionStart = false
+		var modifierDefinitionEnd = false
+		
+		file.inputStream.bufferedReader().forEachLine { line ->
+			if(!modifierDefinitionStart && line.endsWith("Printing Modifier Definitions")){
+				modifierDefinitionStart = true
+			}
+			if(modifierDefinitionStart && !modifierDefinitionEnd){
+				val text = getTextByCppFileName(line,"modifier.cpp")
+				if(text != null){
+					val wsIndex = text.indexOf(' ')
+					val colonIndex = text.indexOf(':',wsIndex+1)
+					val commaIndex = text.indexOf(',',colonIndex+2)
+					val colonIndex2 = text.indexOf(':',commaIndex+2)
+					val tag = text.substring(colonIndex+2,commaIndex)
+					val categories = text.substring(colonIndex2+2)
+					val config = CwtModifierDefinitionConfig(tag,categories)
+					modifierDefinitions.put(tag,config)
+				}else{
+					modifierDefinitionEnd = true 
+				}
+			} 
+		}
+	}
+	//endregion
+	
+	//region 解析得到definitionInfo
 	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
@@ -462,9 +514,6 @@ class CwtConfigGroup(
 		return null
 	}
 	
-	/**
-	 * 判断
-	 */
 	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): Boolean {
 		//判断value是否是block
 		if(element.block == null) return false
@@ -521,7 +570,6 @@ class CwtConfigGroup(
 		}
 		return true
 	}
-	
 	
 	private fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxDefinitionProperty, elementName: String, result: MutableList<CwtSubtypeConfig>): Boolean {
 		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
@@ -650,5 +698,6 @@ class CwtConfigGroup(
 		}
 		return null
 	}
+	//endregion
 }
 

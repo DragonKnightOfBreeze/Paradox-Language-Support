@@ -12,7 +12,9 @@
 
 	tokens=[
 	  EQUAL_SIGN="="
+	  EQUAL_SIGN_2="=="
 	  NOT_EQUAL_SIGN="<>"
+	  NOT_EQUAL_SIGN_2="!="
 	  LEFT_BRACE="{"
 	  RIGHT_BRACE="}"
 	  EOL="regexp:\R"
@@ -65,7 +67,7 @@ option ::= option_key option_separator value{
 option_key ::= OPTION_KEY_TOKEN{
   methods=[getValue]
 }
-private option_separator ::= "=" | "<>"
+private option_separator ::= "=" | "==" | "<>" | "!="
 
 property ::= property_key property_separator value {
   pin(".*")=1
@@ -76,7 +78,7 @@ property ::= property_key property_separator value {
 property_key ::= PROPERTY_KEY_TOKEN{
   methods=[getValue]
 }
-private property_separator ::= "=" | "<>"
+private property_separator ::= "=" | "==" | "<>" | "!="
 
 value ::= boolean | number | string | block{
   methods=[getIcon getValue getTruncatedValue]

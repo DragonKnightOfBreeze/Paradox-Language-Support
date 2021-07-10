@@ -1,15 +1,15 @@
 package icu.windea.pls.cwt.config
 
-import com.intellij.openapi.project.*
-import com.jetbrains.rd.util.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import org.slf4j.*
 
 class CwtConfigGroups(
-	val fileConfigGroups: Map<String, Map<String, CwtFileConfig>>,
-	val declarations: Map<String, List<Map<String, Any?>>>,
-	val project: Project
+	declarations: Map<String, List<Map<String, Any?>>>,
+	cwtFileConfigGroups: Map<String, Map<String, CwtFileConfig>>,
+	logFileGroups: Map<String, Map<String, VirtualFile>>,
+	csvFileGroups: Map<String, Map<String, VirtualFile>>
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
@@ -67,11 +67,13 @@ class CwtConfigGroups(
 		
 		logger.info("Resolve config groups...")
 		
-		groups = ConcurrentHashMap()
-		for((groupName, group) in fileConfigGroups) {
+		groups = mutableMapOf()
+		for((groupName, cwtFileConfigs) in cwtFileConfigGroups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				groups[groupName] = CwtConfigGroup(group, gameType, project)
+				val logFiles = logFileGroups.getValue(groupName)
+				val csvFiles = csvFileGroups.getValue(groupName)
+				groups[groupName] = CwtConfigGroup(gameType, cwtFileConfigs,logFiles,csvFiles)
 			}
 		}
 		

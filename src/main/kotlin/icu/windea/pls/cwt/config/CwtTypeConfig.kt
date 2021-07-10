@@ -41,4 +41,3 @@ data class  CwtTypeConfig(
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
 	val localisation: CwtTypeLocalisationConfig? = null
 ) : CwtConfig<CwtProperty>
-
