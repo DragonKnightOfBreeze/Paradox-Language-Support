@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "0.3.4"
+version = "0.3.5"
 
 intellij {
 	version = "2021.1"

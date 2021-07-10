@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.config
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
@@ -139,7 +140,7 @@ class CwtConfigGroup(
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val linkName = prop.key
-							val linkConfig = resolveLocalisationLinkConfig(prop, linkName) ?: continue
+							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
 							localisationLinks[linkName] = linkConfig
 						}
 					}
@@ -374,36 +375,32 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
+		var desc: String? = null
+		var fromData: Boolean = false
+		var type:String? = null
+		var dataSource: CwtValueExpression? = null
+		var prefix:String? = null
 		var inputScopes: List<String>? = null
 		var outputScope: String? = null
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
-				"inputscopes" -> inputScopes = prop.stringValues
-				"output_scope" -> outputScope = prop.value
-			}
-		}
-		if(inputScopes == null || outputScope == null) return null
-		return CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
-	}
-	
-	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
-		val values = propertyConfig.stringValueOrValues ?: return null
-		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
-	}
-	
-	private fun resolveLocalisationLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
-		var inputScopes: List<String>? = null
-		var outputScope: String? = null
-		val props = propertyConfig.properties ?: return null
-		for(prop in props) {
-			when(prop.key) {
+				"desc" -> desc = prop.value
+				"from_data" -> fromData = prop.booleanValue?:false
+				"type" -> type = prop.value
+				"data_source" -> dataSource = prop.valueExpression
+				"prefix" -> prefix = prop.value
 				"input_scopes" -> inputScopes = prop.stringValues
 				"output_scope" -> outputScope = prop.value
 			}
 		}
 		if(inputScopes == null || outputScope == null) return null
-		return CwtLinkConfig(propertyConfig.pointer, name, inputScopes, outputScope)
+		return CwtLinkConfig(propertyConfig.pointer, name,desc,fromData,type,dataSource,prefix, inputScopes, outputScope)
+	}
+	
+	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
+		val values = propertyConfig.stringValueOrValues ?: return null
+		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
 	}
 	
 	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifyCategoryConfig? {

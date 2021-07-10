@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import org.slf4j.*
 import org.yaml.snakeyaml.*
-import java.util.concurrent.*
+import kotlin.system.*
 
 class CwtConfigProvider(
 	val project: Project
@@ -17,74 +17,68 @@ class CwtConfigProvider(
 		private val yaml = Yaml()
 	}
 	
-	private val declarationMap: MutableMap<String, List<Map<String, Any?>>>
-	private val cwtFileConfigGroups: MutableMap<String, MutableMap<String, CwtFileConfig>>
-	private val logFileGroups: MutableMap<String, MutableMap<String, VirtualFile>>
-	private val csvFileGroups: MutableMap<String, MutableMap<String, VirtualFile>>
+	private val declarationMap: MutableMap<String, List<Map<String, Any?>>> = mutableMapOf()
+	private val cwtFileConfigGroups: MutableMap<String, MutableMap<String, CwtFileConfig>> = mutableMapOf()
+	private val logFileGroups: MutableMap<String, MutableMap<String, VirtualFile>> = mutableMapOf()
+	private val csvFileGroups: MutableMap<String, MutableMap<String, VirtualFile>> = mutableMapOf()
 	
-	val configGroups: CwtConfigGroups
+	val configGroups: CwtConfigGroups = ReadAction.compute<CwtConfigGroups,Exception> {  initConfigGroups() }
 	
-	init {
-		declarationMap = ConcurrentHashMap()
-		cwtFileConfigGroups = ConcurrentHashMap()
-		logFileGroups = ConcurrentHashMap()
-		csvFileGroups = ConcurrentHashMap()
-		configGroups = ReadAction.compute<CwtConfigGroups, Exception> {
-			initConfigGroups()
-			CwtConfigGroups(project,declarationMap, cwtFileConfigGroups, logFileGroups, csvFileGroups)
-		}
-	}
-	
+	//执行时间：15724ms（读取15446ms，解析278ms）
+	//优化后的执行时间：ms（读取ms，解析ms） 
 	@Synchronized
-	private fun initConfigGroups() {
-		//TODO 尝试并发解析以提高IDE启动速度
-		val startTime = System.currentTimeMillis()
+	private fun initConfigGroups(): CwtConfigGroups {
 		logger.info("Init config groups...")
+		val startTime = System.currentTimeMillis()
 		val configUrl = "/config".toUrl(locationClass)
 		//这里有可能找不到，这时不要报错，之后还会执行到这里
-		//val configFile = VfsUtil.findFileByURL(configUrl) ?: error("Cwt config path '$configUrl' is not exist.")
-		val configFile = VfsUtil.findFileByURL(configUrl) ?: return
-		val children = configFile.children
-		for(file in children) {
-			when {
-				//如果是目录则将其名字作为规则组的名字
-				file.isDirectory -> {
-					val groupName = file.name.removeSuffix("-ext") //如果有后缀"-ext"，表示这是额外提供的配置
-					initConfigGroup(groupName, file)
+		val configFile = VfsUtil.findFileByURL(configUrl)
+		if(configFile != null) {
+			//NOTE 并发迭代
+			val children = configFile.children
+			for(file in children) {
+				val fileName = file.name
+				when {
+					//如果是目录则将其d名字作为规则组的名字
+					file.isDirectory -> {
+						val groupName = fileName.removeSuffix("-ext") //如果有后缀"-ext"，表示这是额外提供的配置
+						initConfigGroup(groupName, file)
+					}
+					//解析顶层文件declarations.yml
+					fileName == "declarations.yml" -> {
+						initDeclarations(file)
+					}
+					//忽略其他顶层的文件
 				}
-				//解析顶层文件declarations.yml
-				file.name == "declarations.yml" -> {
-					initDeclarations(file)
-				}
-				//忽略其他顶层的文件
 			}
 		}
-		val endTime = System.currentTimeMillis()
-		logger.info("Init config groups finished. (${endTime - startTime} ms)")
+		val readTime = System.currentTimeMillis() - startTime
+		val configGroups = CwtConfigGroups(project, declarationMap, cwtFileConfigGroups, logFileGroups, csvFileGroups)
+		val time = System.currentTimeMillis() - startTime
+		logger.info("Init config groups finished. ($time ms)") 
+		return configGroups
 	}
 	
 	private fun initConfigGroup(groupName: String, groupFile: VirtualFile) {
 		logger.info("Init config group '$groupName'...")
-		addConfigGroup(groupName, groupFile, project)
+		addConfigGroup(groupName, groupFile, "${groupFile.path}/", project)
 		logger.info("Init config group '$groupName' finished.")
 	}
 	
-	private fun addConfigGroup(groupName: String, parentFile: VirtualFile, project: Project) {
+	private fun addConfigGroup(groupName: String, groupFile: VirtualFile, pathPrefix: String, project: Project) {
 		//可以额外补充配置，即配置组可能不止初始化一次
 		val cwtFileConfigGroup = cwtFileConfigGroups.getOrPut(groupName) { mutableMapOf() }
 		val logFileGroup = logFileGroups.getOrPut(groupName) { mutableMapOf() }
 		val csvFileGroup = csvFileGroups.getOrPut(groupName) { mutableMapOf() }
 		
-		val groupPath = parentFile.path
-		val configNamePrefix = "$groupPath/"
-		for(file in parentFile.children) {
+		for(file in groupFile.children) {
 			if(file.isDirectory) {
-				addConfigGroup(groupName, file, project)
-				return
+				addConfigGroup(groupName, file, pathPrefix, project)
+				continue
 			}
 			when(file.extension) {
 				"cwt" -> {
-					val configName = file.path.removePrefix(configNamePrefix)
+					val configName = file.path.removePrefix(pathPrefix)
 					val config = resolveConfig(file, project)
 					if(config != null) {
 						cwtFileConfigGroup[configName] = config
@@ -93,11 +87,11 @@ class CwtConfigProvider(
 					}
 				}
 				"log" -> {
-					val configName = file.path.removePrefix(configNamePrefix)
+					val configName = file.path.removePrefix(pathPrefix)
 					logFileGroup[configName] = file
 				}
 				"csv" -> {
-					val configName = file.path.removePrefix(configNamePrefix)
+					val configName = file.path.removePrefix(pathPrefix)
 					csvFileGroup[configName] = file
 				}
 			}
@@ -107,6 +101,13 @@ class CwtConfigProvider(
 	private fun resolveConfig(file: VirtualFile, project: Project): CwtFileConfig? {
 		return try {
 			file.toPsiFile<CwtFile>(project)?.resolveConfig()
+			//val result: CwtFileConfig?
+			//measureTimeMillis {
+			//	result = file.toPsiFile<CwtFile>(project)?.resolveConfig()
+			//}.also { 
+			//	println("${file.name}: $it") 
+			//}
+			//result
 		} catch(e: Exception) {
 			logger.warn(e.message, e)
 			null
@@ -120,9 +121,17 @@ class CwtConfigProvider(
 		logger.info("Init declarations finished.")
 	}
 	
+	//执行时间：134ms
 	private fun resolveYamlConfig(file: VirtualFile): Map<String, List<Map<String, Any?>>>? {
 		return try {
 			yaml.load(file.inputStream)
+			//val result: Map<String, List<Map<String, Any?>>>?
+			//measureTimeMillis {
+			//	result = yaml.load(file.inputStream)
+			//}.also { 
+			//	println("${file.name}: $it")
+			//}
+			//result
 		} catch(e: Exception) {
 			logger.warn(e.message, e)
 			null

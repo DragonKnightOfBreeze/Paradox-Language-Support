@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import org.slf4j.*
+import java.util.concurrent.*
 
 class CwtConfigGroups(
 	val project: Project,
@@ -42,7 +43,6 @@ class CwtConfigGroups(
 	
 	init {
 		logger.info("Resolve declarations...")
-		
 		locales = declarations.getValue("locale").mapToArray {
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
@@ -64,21 +64,18 @@ class CwtConfigGroups(
 			ParadoxColor(name, description, colorRgb, colorText)
 		}
 		colorMap = colors.associateBy { it.name }
-		
 		logger.info("Resolve declarations finished.")
 		
 		logger.info("Resolve config groups...")
-		
 		groups = mutableMapOf()
 		for((groupName, cwtFileConfigs) in cwtFileConfigGroups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
 				val logFiles = logFileGroups.getValue(groupName)
 				val csvFiles = csvFileGroups.getValue(groupName)
-				groups[groupName] = CwtConfigGroup(gameType,project, cwtFileConfigs,logFiles,csvFiles)
+				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs, logFiles, csvFiles)
 			}
 		}
-		
 		logger.info("Resolve config groups finished.")
 	}
 }

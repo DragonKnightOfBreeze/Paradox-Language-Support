@@ -1,7 +1,12 @@
 package icu.windea.pls
 
+import java.util.concurrent.*
+
 const val bundleName = "messages.PlsBundle"
 val locationClass = PlsBundle::class.java
+
+//val parallelExecutor = Executors.newCachedThreadPool()
+const val parallelTimeout = 60L
 
 const val cwtName = "Cwt"
 const val cwtDescription = "Cwt config"
