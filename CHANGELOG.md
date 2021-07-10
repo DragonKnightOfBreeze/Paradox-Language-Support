@@ -140,6 +140,7 @@
 * [X] 允许在克隆过来的cwt配置文件（在`config/{gameType}`中）的基础上，提供额外的cwt配置文件（在`config/{gmeType}-ext`中） *
 * [X] 解析`modifiers.log`中的modifierDefinitions，并进行匹配和提示
 * [X] 如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
+* [X] 优化插件设置相关代码
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 提示localisationCommand（commandField），限制scope
 * [ ] 进行代码提示时，alias拥有特定的注释和图标

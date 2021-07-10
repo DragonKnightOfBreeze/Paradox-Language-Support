@@ -13,7 +13,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.annotations.*
 
 //region Constants
 private val separatorChars = charArrayOf('=', '<', '>', '!')
@@ -217,7 +216,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 			val aliasName = expression.value ?: return false
 			val alias = configGroup.aliases[aliasName] ?: return false
 			val key = keyElement.value
-			alias.containsKey(key) || run{
+			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
 				if(aliasName == "modifier") matchesModifierDefinition(configGroup, key) else false
 			}
@@ -285,7 +284,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 		CwtKeyExpression.Type.AliasNameExpression -> {
 			val aliasName = expression.value ?: return false
 			val alias = configGroup.aliases[aliasName] ?: return false
-			alias.containsKey(key) || run{
+			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
 				if(aliasName == "modifier") matchesModifierDefinition(configGroup, key) else false
 			}
@@ -431,7 +430,7 @@ private fun matchesAlias(propertyConfig: CwtPropertyConfig, propertyElement: Par
 	}
 }
 
-private fun matchesModifierDefinition(configGroup: CwtConfigGroup, key:String): Boolean {
+private fun matchesModifierDefinition(configGroup: CwtConfigGroup, key: String): Boolean {
 	val modifierDefinitions = configGroup.modifierDefinitions
 	return modifierDefinitions.containsKey(key) //期望比key in list更快
 }
@@ -650,23 +649,23 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val alias = configGroup.aliases[aliasName] ?: return
 			for(aliasConfigs in alias.values) {
 				//aliasConfigs的名字是相同的 
-				val aliasConfig = aliasConfigs.firstOrNull()?:continue
+				val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 				//aliasSubName是一个表达式
 				completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.pointer, configGroup, result)
 			}
 			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
-			if(aliasName == "modifier"){
+			if(aliasName == "modifier") {
 				completeModifierDefinition(configGroup, keyword, quoted, result)
 			}
 		}
-		CwtKeyExpression.Type.Constant -> { 
+		CwtKeyExpression.Type.Constant -> {
 			val n = expression.value ?: return
 			if(!n.matchesKeyword(keyword)) return //预先过滤结果
 			val name = n.quoteIf(quoted)
-			val element = pointer.element?:return
+			val element = pointer.element ?: return
 			val icon = propertyIcon //使用特定图标
 			val tailText = " in ${pointer.containingFile?.name ?: anonymousString}"
-			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
+			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withInsertHandler(separatorInsertHandler)
 				.withPriority(propertyPriority)
@@ -819,10 +818,10 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val n = expression.value ?: return
 			if(!n.matchesKeyword(keyword)) return //预先过滤结果
 			val name = n.quoteIf(quoted)
-			val element = pointer.element?:return
+			val element = pointer.element ?: return
 			val icon = valueIcon //使用特定图标
 			val tailText = " in ${pointer.containingFile?.name ?: anonymousString}"
-			val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
+			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withPriority(propertyPriority)
 			result.addElement(lookupElement)
@@ -839,14 +838,14 @@ private fun completeModifierDefinition(configGroup: CwtConfigGroup, keyword: Str
 		if(!n.matchesKeyword(keyword)) continue //预先过滤结果
 		val name = n.quoteIf(quoted)
 		val icon = propertyIcon //使用特定图标
-		val tailText = "from modifier definitions"
+		val tailText = " from modifier_definitions"
 		val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
 			.withTailText(tailText, true)
 			.withInsertHandler(separatorInsertHandler)
 			.withPriority(hardCodedConfigPriority)
 		result.addElement(lookupElement)
 		size++
-		if(size == maxCompleteSize ) return //限制补全项的数量
+		if(size == maxCompleteSize) return //限制补全项的数量
 	}
 }
 
@@ -867,7 +866,7 @@ fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField, c
 			.withTypeText(typeText, true)
 		result.addElement(lookupElement)
 		size++
-		if(size == maxCompleteSize ) return //限制补全项的数量
+		if(size == maxCompleteSize) return //限制补全项的数量
 	}
 }
 //endregion
@@ -910,19 +909,19 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 			val name = keyElement.value
 			val gameType = keyElement.paradoxFileInfo?.gameType ?: return null
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
-			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name }?:return null
+			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return null
 			enumValueConfig.pointer.element.castOrNull<CwtString>()
 		}
 		CwtKeyExpression.Type.AliasNameExpression -> {
-			val aliasName = expression.value?:return null
+			val aliasName = expression.value ?: return null
 			val aliasSubName = keyElement.value
 			val gameType = keyElement.paradoxFileInfo?.gameType ?: return null
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			//TODO 正确性需要验证
-			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find { 
-				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>()?: return@find false
-				matchesProperty(propertyElement,it.config,configGroup)
-			}?:return null
+			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
+				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>() ?: return@find false
+				matchesProperty(propertyElement, it.config, configGroup)
+			} ?: return null
 			aliasConfig.pointer.element
 			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
 		}
@@ -970,19 +969,19 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 			val name = keyElement.value
 			val gameType = keyElement.paradoxFileInfo?.gameType ?: return emptyList()
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
-			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name }?:return emptyList()
+			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return emptyList()
 			enumValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
 		}
 		CwtKeyExpression.Type.AliasNameExpression -> {
-			val aliasName = expression.value?:return emptyList()
+			val aliasName = expression.value ?: return emptyList()
 			val aliasSubName = keyElement.value
 			val gameType = keyElement.paradoxFileInfo?.gameType ?: return emptyList()
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			//TODO 正确性需要验证
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
-				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>()?: return@find false
-				matchesProperty(propertyElement,it.config,configGroup)
-			}?:return emptyList()
+				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>() ?: return@find false
+				matchesProperty(propertyElement, it.config, configGroup)
+			} ?: return emptyList()
 			aliasConfig.pointer.element.toSingletonListOrEmpty()
 			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
 		}
@@ -997,8 +996,8 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 	//根据对应的expression进行解析
 	//val expression = element.expression?:return null
 	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-	val valueConfig = valueElement.valueConfig?: return fallbackResolveValue(valueElement)
-	val expression = valueConfig.valueExpression 
+	val valueConfig = valueElement.valueConfig ?: return fallbackResolveValue(valueElement)
+	val expression = valueConfig.valueExpression
 	val project = valueElement.project
 	return when(expression.type) {
 		CwtValueExpression.Type.Localisation -> {
@@ -1033,7 +1032,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			val name = valueElement.value
 			val gameType = valueElement.paradoxFileInfo?.gameType ?: return null
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
-			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name }?:return null
+			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return null
 			enumValueConfig.pointer.element.castOrNull<CwtString>()
 		}
 		CwtValueExpression.Type.AliasMatchLeftExpression -> fallbackResolveValue(valueElement) //TODO
@@ -1056,7 +1055,7 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 	//根据对应的expression进行解析
 	//val expression = element.expression?:return emptyArray()
 	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-	val valueConfig = valueElement.valueConfig?: return fallbackMultiResolveValue(valueElement)
+	val valueConfig = valueElement.valueConfig ?: return fallbackMultiResolveValue(valueElement)
 	val expression = valueConfig.valueExpression
 	val project = valueElement.project
 	return when(expression.type) {
@@ -1092,7 +1091,7 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 			val name = valueElement.value
 			val gameType = valueElement.paradoxFileInfo?.gameType ?: return emptyList()
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
-			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name }?:return emptyList()
+			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return emptyList()
 			enumValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
 		}
 		CwtValueExpression.Type.AliasMatchLeftExpression -> return fallbackMultiResolveValue(valueElement) //TODO
