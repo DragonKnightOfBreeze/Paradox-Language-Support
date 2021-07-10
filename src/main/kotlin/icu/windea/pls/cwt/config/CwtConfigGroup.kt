@@ -499,7 +499,7 @@ class CwtConfigGroup(
 				}else{
 					modifierDefinitionEnd = true 
 				}
-			} 
+			}
 		}
 	}
 	//endregion
