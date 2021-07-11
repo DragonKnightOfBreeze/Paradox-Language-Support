@@ -40,6 +40,7 @@ fun extractModifiersLog(fromPath: String, toPath: String) {
 		}
 	}
 	
+	toFile.writeText("# Generated cwt file")
 	toFile.writeText(lines.joinToString("\n"))
 }
 

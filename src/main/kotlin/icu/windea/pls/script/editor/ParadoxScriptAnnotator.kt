@@ -21,11 +21,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
-		val definitionInfo = element.paradoxDefinitionInfo
+		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) annotateDefinition(element, holder, definitionInfo)
 	}
 	
-	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
+	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder, definitionInfo: definitionInfo) {
 		//颜色高亮
 		holder.newSilentAnnotation(INFORMATION)
 			.range(element.propertyKey)

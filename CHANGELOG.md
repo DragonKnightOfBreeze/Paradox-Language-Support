@@ -129,7 +129,6 @@
 * [X] 进行匹配时支持aliasName和aliasMatchLeft
 * [X] 进行代码提示时支持aliasName
 * [X] 进行代码提示时支持aliasName 兼容aliasSubName为为expression的情况 仅提示必要的
-* [X] 应用cwt配置文件`folders.cwt`
 * [X] 进行代码提示时支持valueName
 * [X] 提示localisationCommand（commandField）
 * [X] definitionProperty对应的规则如果是const（即相同名字的规则），则将规则对应的cwtKey/cwtValue作为它的引用
@@ -143,19 +142,30 @@
 * [X] 优化插件设置相关代码
 * [X] 重载文件类型时自动处理bom（改为正确的bom，不改变编码）
 * [X] 支持规则类型alias_keys_field（匹配alias的aliasSubName，和alias_name应该没有区别）
-* [ ] 支持规则类型value_set
+* [ ] 编写脚本从`modifiers.log`生成`modifiers.cwt`（已经编写了从`setup.log`生成`modifiers.log`的脚本）
+* [ ] modifiers从cwt规则文件中的`modifiers = { $name = $scope }`中解析，而非从`modifiers.log`
+* [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
+* [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型single_alias
-* [ ] 支持规则类型complex_enum
-* [ ] 进行代码提示时，alias拥有特定的注释和图标（仅限aliasSubName为constant）
+* [ ] 支持规则类型complex_enum 
+* [X] 应用cwt配置文件`folders.cwt`
+* [ ] 应用cwt配置文件`scopes.cwt`
+* [ ] 应用cwt配置文件`links.cwt`
+* [ ] 应用cwt配置文件`modifiers.cwt/modifier_categories.cwt`
+* [ ] 应用cwt配置文件`values.cwt`
+* [ ] 应用cwt配置文件`localisation.cwt`
+* [ ] 进行代码提示时，alias拥有特定的注释~~和图标~~（仅限aliasSubName为constant）
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
-* [ ] 提示localisationCommand（commandField），限制scope
-* [ ] 进行代码提示时支持aliasName 限制scope
-* [ ] 进行匹配时支持aliasName 限制scope
-* [ ] 基于cwt规则文件的key和value的验证的支持
+* [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
-* [ ] cwt规则文件并不完整，除了未来可能的PR之外，需要提供方法基于这个插件进行补充
 
-# BUG
+# 遗留问题
 
-* [ ] 工具`dds2png`不可靠，转化出来的png图片不能保证是正确的（看起来只有`gfx\interface\icons\text_icons`中的可能会发生这种情况）
+* 暂时不解析scope并进行匹配（通过cwt规则文件）
+* 暂时不验证脚本文件的结构是否正确（通过cwt规则文件）
+* 暂时不验证本地化文件中的代码（`[...]`）是否正确（通过cwt规则文件）
+
+# 遗留BUG
+
 * [X] ~~渲染图标总是会报错，即使本地或远程存在对应的图片，暂时不清楚原因~~（使用本地渲染后不再出现）
+* [ ] 工具`dds2png`不可靠，转化出来的png图片不能保证是正确的（看起来只有`gfx\interface\icons\text_icons`中的可能会发生这种情况）

@@ -12,7 +12,7 @@ The following config shows an example of a partial definition for Stellaris's sh
 
 ```
 ship_size = {
-    ## cardinality = 0..1    
+    ## cardinality = 0..1
     ### The base cost of this ship_size
     cost = int
 
@@ -20,7 +20,7 @@ ship_size = {
         alias_name[modifier] = alias_match_left[modifier]
     }
 
-    ## cardinality = 0..1    
+    ## cardinality = 0..1
     acceleration = float
 
     construction_type = scalar
@@ -40,7 +40,7 @@ ship_size = {
         minerals = int
     }
 
-    class = enum[shipsize_class]    
+    class = enum[shipsize_class]
 }
 ```
 
@@ -203,21 +203,21 @@ ship_size = {
         }
         subtype[ship] = {
             "bow" = {
-                locator = scalar 
+                locator = scalar
             }
             "mid" = {
-                locator = scalar 
+                locator = scalar
             }
             "stern" = {
-                locator = scalar 
+                locator = scalar
             }
         }
         subtype[platform] = {
             "west" = {
-                locator = scalar 
+                locator = scalar
             }
             "east" = {
-                locator = scalar 
+                locator = scalar
             }
         }
     }
@@ -228,7 +228,7 @@ ship_size = {
     subtype[ship] = {
         combat_disengage_chance = float
     }
-    
+
 }
 ```
 
@@ -268,7 +268,9 @@ type[ship_size] = {
 If the above type definition is combined with the rule `for_ship = <ship_size>`, `for_ship = my_ship` would require the following localisation to be defined:
 
 ```
-my_shipmy_ship_descmy_ship_required
+my_ship
+my_ship_desc
+my_ship_required
 ```
 
 If `my_ship_mk_2` has subtype `advanced`, it would require:
@@ -286,19 +288,37 @@ my_ship_mk_2_advanced
 Aliases allow the grouping of rules for reuse across many rules. The obvious example for this is effects. A simple event rule definition like the following allows any number of `effect` alias rules inside the immediate clause.
 
 ```
-event = {    ## cardinality = 0..1    immediate = {        alias_name[effect] = alias_match_left[effect]    }}
+event = {
+    ## cardinality = 0..1
+    immediate = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+}
 ```
 
 And an alias could be defined like:
 
 ```
-alias[effect:create_starbase] = {    ## cardinality = 1..1    owner = scalar    ## cardinality = 1..1    size = scalar    ## cardinality = 0..100    module = scalar    ## cardinality = 0..100    building = scalar    ## cardinality = 0..1    alias_name[effect] = alias_match_left[effect]}
+alias[effect:create_starbase] = {
+    ## cardinality = 1..1
+    owner = scalar
+    ## cardinality = 1..1
+    size = scalar
+    ## cardinality = 0..100
+    module = scalar
+    ## cardinality = 0..100
+    building = scalar
+    ## cardinality = 0..1
+    alias_name[effect] = alias_match_left[effect]
+}
 ```
 
 or even just
 
 ```
-alias[effect:THIS] = { alias_name[effect] = alias_match_left[effect] }
+alias[effect:THIS] = {
+    alias_name[effect] = alias_match_left[effect]
+}
 ```
 
 
@@ -307,9 +327,9 @@ alias[effect:THIS] = { alias_name[effect] = alias_match_left[effect] }
 A single-alias allows re-use of a section of rules in multiple places. Defined in this way:
 
 ```
-single_alias[any_trigger_clause] = {   
-  ## cardinality = 0..1    
-  count = int    
+single_alias[any_trigger_clause] = {
+  ## cardinality = 0..1
+  count = int
   alias_name[trigger] = alias_match_left[trigger]
 }
 ```
@@ -325,9 +345,9 @@ Which becomes the equivalent of:
 
 ```
 ## push_scope = country
-any_country = {    
-  ## cardinality = 0..1    
-  count = int    
+any_country = {
+  ## cardinality = 0..1
+  count = int
   alias_name[trigger] = alias_match_left[trigger]
 }
 ```
@@ -344,7 +364,6 @@ There are a number of options that can be applied to rules by placing them in a 
 - `## severity = information`: the following rule has any errors changed to this severity (error/warning/information/hint)
 - `## scope = country`: the following rule is only valid when the current scope matches that given. Alternatively `## scope = { country planet }` for multiple valid scopes.
 
-
 ### Comments
 
 Like pdxscript files, the `#` character is used to comment out lines. In `.cwt` files:
@@ -352,7 +371,6 @@ Like pdxscript files, the `#` character is used to comment out lines. In `.cwt` 
 - `#` is used for comments: `# This text will be completely ignored`
 - `##` is used for options `## cardinality = 0..1`
 - `###` is used for documentation `### This text will be displayed in the completion info`
-
 
 ### Special files
 
@@ -367,7 +385,10 @@ In CK3, Imperator and Stellaris the game generated "script docs" are used where 
 This file contains a block called `scopes` which contains entries such as:
 
 ```
-"Landed title" = {		aliases = { landed_title "landed title" }		data_type_name = "Title"    }
+"Landed title" = {		
+    aliases = { landed_title "landed title" }		
+    data_type_name = "Title"
+}
 ```
 
 Where the LHS key is the display text of the scope, aliases are how they are referenced in rules and script, data_type_name is the link to localisation scopes, and `is_subscope_of = { province }` is used for scopes like EU4's trade node which can be used as another scope in one direction.
@@ -377,7 +398,15 @@ Where the LHS key is the display text of the scope, aliases are how they are ref
 This file contains a block called `links` which represents 1:1 links used in the `x.y` chains, and contains entries such as:
 
 ```
-faith = {        desc = " Unknown, add something in code registration"        from_data = yes        type = scope        data_source = <faith>        prefix = faith:        input_scopes = { landed_title province }        output_scope = faith    }
+faith = {
+    desc = " Unknown, add something in code registration"
+    from_data = yes
+    type = scope
+    data_source = <faith>
+    prefix = faith:
+    input_scopes = { landed_title province }
+    output_scope = faith
+}
 ```
 
 Where the LHS is the link keyword when `from_data` is false,

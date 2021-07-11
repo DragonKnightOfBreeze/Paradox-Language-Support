@@ -12,7 +12,7 @@ class ParadoxSequentialNumberInfo(
 	val icon get() = localisationSequentialNumberIcon
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxSequentialNumber && name == other.name
+		return this === other || other is ParadoxSequentialNumberInfo && name == other.name
 	}
 	
 	override fun hashCode(): Int {

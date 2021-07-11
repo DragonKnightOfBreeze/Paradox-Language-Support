@@ -26,8 +26,8 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	}
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-		//这里使用scriptProperty.paradoxDefinitionInfo.name而非scriptProperty.name
-		val definitionInfo = psi.paradoxDefinitionInfo
+		//这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
+		val definitionInfo = psi.definitionInfo
 		val name = definitionInfo?.name ?: ""
 		val type = definitionInfo?.type ?: ""
 		return ParadoxScriptPropertyStubImpl(parentStub, name, type)
@@ -36,7 +36,7 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		//仅当是definition时才会创建索引
 		val element = node.psi as? ParadoxScriptProperty ?: return false
-		return element.paradoxDefinitionInfo != null
+		return element.definitionInfo != null
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {

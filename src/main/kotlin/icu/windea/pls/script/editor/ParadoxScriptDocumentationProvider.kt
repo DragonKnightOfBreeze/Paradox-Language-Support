@@ -20,7 +20,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(script variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
@@ -28,25 +28,25 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
-		val definitionInfo = element.paradoxDefinitionInfo
+		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) {
 			return getDefinitionInfo(element, definitionInfo)
 		}
 		return buildString {
 			val name = element.name
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(script property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
 		}
 	}
 	
-	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: definitionInfo): String {
 		val localisation = definitionInfo.localisation
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				val name = definitionInfo.name
 				val typeLinkText = definitionInfo.typeLinkText
 				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
@@ -75,7 +75,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(script variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 			}
@@ -92,14 +92,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
-		val definitionInfo = element.paradoxDefinitionInfo
+		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) {
 			return getDefinitionDoc(element, definitionInfo)
 		}
 		return buildString {
 			val name = element.name
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(script property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 			}
@@ -115,12 +115,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
+	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: definitionInfo): String {
 		val type = definitionInfo.type
 		val localisation = definitionInfo.localisation
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				val name = definitionInfo.name
 				val typeLinkText = definitionInfo.typeLinkText
 				append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
@@ -158,7 +158,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					val richTexts = mutableListOf<Pair<String, String>>()
 					for((n, kn) in localisation) {
 						if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
-						val e = findLocalisation(kn, element.paradoxLocale, element.project, hasDefault = true)
+						val e = findLocalisation(kn, element.localeInfo, element.project, hasDefault = true)
 						val richText = e?.renderText() ?: continue
 						richTexts.add(n to richText)
 					}

@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import org.slf4j.*
-import java.util.concurrent.*
 
 class CwtConfigGroups(
 	val project: Project,
@@ -20,12 +19,12 @@ class CwtConfigGroups(
 	
 	val groups: Map<String, CwtConfigGroup>
 	
-	val locales: Array<ParadoxLocale>
-	val localeMap: Map<String, ParadoxLocale>
-	val sequentialNumbers: Array<ParadoxSequentialNumber>
-	val sequentialNumberMap: Map<String, ParadoxSequentialNumber>
-	val colors: Array<ParadoxColor>
-	val colorMap: Map<String, ParadoxColor>
+	val locales: Array<ParadoxLocaleInfo>
+	val localeMap: Map<String, ParadoxLocaleInfo>
+	val sequentialNumbers: Array<ParadoxSequentialNumberInfo>
+	val sequentialNumberMap: Map<String, ParadoxSequentialNumberInfo>
+	val colors: Array<ParadoxColorInfo>
+	val colorMap: Map<String, ParadoxColorInfo>
 	
 	val ck2 get() = getValue(ParadoxGameType.Ck2)
 	val ck3 get() = getValue(ParadoxGameType.Ck3)
@@ -46,14 +45,14 @@ class CwtConfigGroups(
 		locales = declarations.getValue("locale").mapToArray {
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
-			ParadoxLocale(name, description)
+			ParadoxLocaleInfo(name, description)
 		}
 		localeMap = locales.associateBy { it.name }
 		sequentialNumbers = declarations.getValue("sequentialNumber").mapToArray {
 			val name = it.getValue("name") as String
 			val description = it.getValue("description") as String
 			val placeholderText = it.getValue("placeholderText") as String
-			ParadoxSequentialNumber(name, description, placeholderText)
+			ParadoxSequentialNumberInfo(name, description, placeholderText)
 		}
 		sequentialNumberMap = sequentialNumbers.associateBy { it.name }
 		colors = declarations.getValue("color").mapToArray {
@@ -61,7 +60,7 @@ class CwtConfigGroups(
 			val description = it.getValue("description") as String
 			val colorRgb = it.getValue("colorRgb") as Int
 			val colorText = it.getValue("colorText") as String
-			ParadoxColor(name, description, colorRgb, colorText)
+			ParadoxColorInfo(name, description, colorRgb, colorText)
 		}
 		colorMap = colors.associateBy { it.name }
 		logger.info("Resolve declarations finished.")

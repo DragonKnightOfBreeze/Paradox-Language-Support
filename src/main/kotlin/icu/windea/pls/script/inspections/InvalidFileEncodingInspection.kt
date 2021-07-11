@@ -16,7 +16,7 @@ class InvalidFileEncodingInspection: LocalInspectionTool(){
 		val virtualFile = file.virtualFile?:return null
 		val charset = virtualFile.charset
 		val hasBom = virtualFile.bom.let{ it != null && it contentEquals utf8Bom  }
-		val isNameList = virtualFile.paradoxFileInfo?.path?.root == "name_lists"
+		val isNameList = virtualFile.fileInfo?.path?.root == "name_lists"
 		val isValid = charset == Charsets.UTF_8 && (if(isNameList) hasBom else !hasBom)
 		if(!isValid){
 			val holder = ProblemsHolder(manager,file,isOnTheFly)

@@ -73,7 +73,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateSequentialNumber(element: ParadoxLocalisationSequentialNumber, holder: AnnotationHolder) {
 		//颜色高亮
-		val sequentialNumber = element.paradoxSequentialNumber
+		val sequentialNumber = element.sequentialNumberInfo
 		if(sequentialNumber == null) {
 			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedSequentialNumber", element.name))
 				.create()
@@ -82,8 +82,8 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
 		//注明不支持的情况 & 颜色高亮
-		val paradoxColor = element.colorInfo
-		if(paradoxColor == null) {
+		val colorInfo = element.colorInfo
+		if(colorInfo == null) {
 			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedColor", element.name))
 				.create()
 		} else {

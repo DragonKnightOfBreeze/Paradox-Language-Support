@@ -467,7 +467,7 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	val keyword = keyElement.keyword
 	val quoted = keyElement.isQuoted()
 	val project = propertyElement.project
-	val definitionPropertyInfo = propertyElement.paradoxDefinitionPropertyInfo ?: return
+	val definitionPropertyInfo = propertyElement.definitionPropertyInfo ?: return
 	val gameType = definitionPropertyInfo.gameType
 	val configGroup = getConfig(project).getValue(gameType)
 	val childPropertyConfigs = definitionPropertyInfo.childPropertyConfigs
@@ -485,7 +485,7 @@ fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefini
 	val keyword = valueElement.keyword
 	val quoted = valueElement.isQuoted()
 	val project = propertyElement.project
-	val definitionPropertyInfo = propertyElement.paradoxDefinitionPropertyInfo ?: return
+	val definitionPropertyInfo = propertyElement.definitionPropertyInfo ?: return
 	val gameType = definitionPropertyInfo.gameType
 	val configGroup = getConfig(project).getValue(gameType)
 	val propertyConfigs = definitionPropertyInfo.propertyConfigs
@@ -500,7 +500,7 @@ fun addValueCompletionsInBlock(valueElement: PsiElement, propertyElement: Parado
 	val keyword = valueElement.keyword
 	val quoted = valueElement.isQuoted()
 	val project = propertyElement.project
-	val definitionPropertyInfo = propertyElement.paradoxDefinitionPropertyInfo ?: return
+	val definitionPropertyInfo = propertyElement.definitionPropertyInfo ?: return
 	val gameType = definitionPropertyInfo.gameType
 	val configGroup = getConfig(project).getValue(gameType)
 	val childValueConfigs = definitionPropertyInfo.childValueConfigs
@@ -592,7 +592,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val typeExpression = expression.value ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
-				val n = definition.paradoxDefinitionInfo?.name ?: continue
+				val n = definition.definitionInfo?.name ?: continue
 				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
@@ -609,7 +609,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val (prefix, suffix) = expression.extraValue.castOrNull<Tuple2<String, String>>() ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
-				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
+				val definitionName = definition.definitionInfo?.name ?: continue
 				val n = "$prefix$definitionName$suffix"
 				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
@@ -764,7 +764,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val typeExpression = expression.value ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
-				val n = definition.paradoxDefinitionInfo?.name ?: continue
+				val n = definition.definitionInfo?.name ?: continue
 				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
 				val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
@@ -780,7 +780,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val (prefix, suffix) = expression.extraValue?.castOrNull<Tuple2<String, String>>() ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
-				val definitionName = definition.paradoxDefinitionInfo?.name ?: continue
+				val definitionName = definition.definitionInfo?.name ?: continue
 				val n = "$prefix$definitionName$suffix"
 				val name = n.quoteIf(quoted)
 				val icon = definitionIcon //使用特定图标
