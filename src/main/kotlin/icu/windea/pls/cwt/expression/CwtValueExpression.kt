@@ -89,9 +89,17 @@ class CwtValueExpression(
 					val value = expression.substring(6, expression.length - 1)
 					CwtValueExpression(expression, Type.Value, value)
 				}
+				expression.surroundsWith("value_set[", "]") -> {
+					val value = expression.substring(10, expression.length - 1)
+					CwtValueExpression(expression, Type.ValueSet, value)
+				}
 				expression.surroundsWith("enum[", "]") -> {
 					val value = expression.substring(5, expression.length - 1)
 					CwtValueExpression(expression, Type.Enum, value)
+				}
+				expression.surroundsWith("complex_enum[", "]") -> {
+					val value = expression.substring(13, expression.length - 1)
+					CwtValueExpression(expression, Type.ComplexEnum, value)
 				}
 				expression.surroundsWith("scope[", "]") -> {
 					val value = expression.substring(6, expression.length - 1)
@@ -127,6 +135,10 @@ class CwtValueExpression(
 						else -> null
 					}
 					CwtValueExpression(expression, Type.IntValueField,value)
+				}
+				expression.surroundsWith("single_alias_right[", "]") -> {
+					val value = expression.substring(19, expression.length - 1)
+					CwtValueExpression(expression, Type.SingleAliasRight, value)
 				}
 				expression.surroundsWith("alias_keys_field[", "]") -> {
 					val value = expression.substring(17, expression.length - 1)
@@ -164,13 +176,16 @@ class CwtValueExpression(
 		TypeExpression,
 		TypeExpressionString,
 		Value,
+		ValueSet,
 		Enum,
+		ComplexEnum,
 		Scope,
 		ScopeField,
 		VariableField,
 		IntVariableField,
 		ValueField,
 		IntValueField,
+		SingleAliasRight,
 		AliasKeysField,
 		AliasMatchLeft,
 		Constant

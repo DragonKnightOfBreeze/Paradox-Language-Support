@@ -145,6 +145,7 @@
 * [X] 编写脚本从`modifiers.log`生成`modifiers.cwt`（已经编写了从`setup.log`生成`modifiers.log`的脚本）
 * [X] modifiers从cwt规则文件中的`modifiers = { $name = $scope }`中解析，而非从`modifiers.log`
 * [X] 匹配、提示和解析modifier
+* [ ] 匹配、提示和解析modifier并匹配scope
 * [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型single_alias

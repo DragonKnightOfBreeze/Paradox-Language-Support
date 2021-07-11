@@ -67,13 +67,21 @@ class CwtKeyExpression(
 					val extraValue = expression.substringBefore('<') to expression.substringAfterLast('>')
 					CwtKeyExpression(expression, Type.TypeExpressionString, value,extraValue)
 				}
+				expression.surroundsWith("enum[", "]") -> {
+					val value = expression.substring(5, expression.length - 1)
+					CwtKeyExpression(expression, Type.Enum, value)
+				}
+				expression.surroundsWith("complex_enum[", "]") -> {
+					val value = expression.substring(13, expression.length - 1)
+					CwtKeyExpression(expression, Type.ComplexEnum, value)
+				}
 				expression.surroundsWith("value[", "]") -> {
 					val value = expression.substring(6, expression.length - 1)
 					CwtKeyExpression(expression, Type.Value, value)
 				}
-				expression.surroundsWith("enum[", "]") -> {
-					val value = expression.substring(5, expression.length - 1)
-					CwtKeyExpression(expression, Type.Enum, value)
+				expression.surroundsWith("value_set[", "]") -> {
+					val value = expression.substring(10, expression.length - 1)
+					CwtKeyExpression(expression, Type.ValueSet, value)
 				}
 				expression.surroundsWith("scope[", "]") -> {
 					val value = expression.substring(6, expression.length - 1)
@@ -81,6 +89,10 @@ class CwtKeyExpression(
 				}
 				expression == "scope_field" -> {
 					CwtKeyExpression(expression, Type.ScopeField)
+				}
+				expression.surroundsWith("single_alias_right[", "]") -> {
+					val value = expression.substring(19, expression.length - 1)
+					CwtKeyExpression(expression, Type.SingleAliasRight, value)
 				}
 				expression.surroundsWith("alias_keys_field[", "]") -> {
 					val value = expression.substring(17, expression.length - 1)
@@ -111,10 +123,13 @@ class CwtKeyExpression(
 		InlineLocalisation,
 		TypeExpression,
 		TypeExpressionString,
-		Value,
 		Enum,
+		ComplexEnum,
+		Value,
+		ValueSet,
 		Scope,
 		ScopeField,
+		SingleAliasRight,
 		AliasKeysField,
 		AliasName,
 		Constant
