@@ -16,13 +16,13 @@ object CwtConfigResolver {
 		val rootBlock = file.block ?: return CwtFileConfig.empty
 		return when {
 			rootBlock.isEmpty -> CwtFileConfig.empty
-			rootBlock.isArray -> {
-				val values = rootBlock.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
-				CwtFileConfig(emptyPointer(), values, emptyList())
-			}
 			rootBlock.isObject -> {
 				val properties = rootBlock.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
 				CwtFileConfig(emptyPointer(), emptyList(), properties)
+			}
+			rootBlock.isArray -> {
+				val values = rootBlock.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
+				CwtFileConfig(emptyPointer(), values, emptyList())
 			}
 			else -> CwtFileConfig.empty
 		}
@@ -52,11 +52,11 @@ object CwtConfigResolver {
 					values = emptyList()
 					properties = emptyList()
 				}
-				propValue.isArray -> {
-					values = propValue.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
-				}
 				propValue.isObject -> {
 					properties = propValue.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
+				}
+				propValue.isArray -> {
+					values = propValue.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
 				}
 			}
 		}
@@ -95,13 +95,16 @@ object CwtConfigResolver {
 		val documentation = documentationLines?.joinToString("\n")
 		val keyExpression = CwtKeyExpression.resolve(key)
 		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
-		return CwtPropertyConfig(
-			pointer, key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values, properties,
+		val config = CwtPropertyConfig(
+			pointer, key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values , properties,
 			documentation, options, optionValues, separatorType, keyExpression, valueExpression
 		)
+		values?.forEach { it.parent = config }
+		properties?.forEach { it.parent = config }
+		return config
 	}
 	
-	fun resolveValue(value: CwtValue, file: CwtFile): CwtValueConfig {
+	fun resolveValue(value: CwtValue, file: CwtFile,parent:CwtPropertyConfig? = null): CwtValueConfig {
 		val pointer = value.createPointer(file)
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
@@ -123,11 +126,11 @@ object CwtConfigResolver {
 					values = emptyList()
 					properties = emptyList()
 				}
-				value.isArray -> {
-					values = value.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
-				}
 				value.isObject -> {
 					properties = value.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
+				}
+				value.isArray -> {
+					values = value.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
 				}
 			}
 		}
@@ -194,11 +197,11 @@ object CwtConfigResolver {
 					values = emptyList()
 					options = emptyList()
 				}
-				optionValue.isArray -> {
-					values = optionValue.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
-				}
 				optionValue.isObject -> {
 					options = optionValue.mapChildOfTypeNotNull(CwtOption::class.java) { resolveOption(it, file) }
+				}
+				optionValue.isArray -> {
+					values = optionValue.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
 				}
 			}
 		}
@@ -234,11 +237,11 @@ object CwtConfigResolver {
 						values = emptyList()
 						options = emptyList()
 					}
-					option.isArray -> {
-						values = option.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
-					}
 					option.isObject -> {
 						options = option.mapChildOfTypeNotNull(CwtOption::class.java)  { resolveOption(it, file) }
+					}
+					option.isArray -> {
+						values = option.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
 					}
 				}
 			}

@@ -16,23 +16,25 @@ data class CwtPropertyConfig(
 	val stringValue: String? = null,
 	val values: List<CwtValueConfig>? = null,
 	val properties: List<CwtPropertyConfig>? = null,
-	val documentation: String? = null,
-	val options: List<CwtOptionConfig>? = null,
-	val optionValues: List<CwtOptionValueConfig>? = null,
+	override val documentation: String? = null,
+	override val options: List<CwtOptionConfig>? = null,
+	override val optionValues: List<CwtOptionValueConfig>? = null,
 	val separatorType: SeparatorType = SeparatorType.EQUAL,
 	val keyExpression: CwtKeyExpression,
-	val valueExpression: CwtValueExpression
-) : CwtConfig<CwtProperty> {
+	val valueExpression: CwtValueExpression,
+	override var parent: CwtPropertyConfig? = null
+) : CwtKvConfig<CwtProperty>() {
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
-	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 	
 	//懒加载
-	val valueConfig by lazy {
-		val valuePointer = pointer.containingFile?.let { f -> pointer.element?.value?.createPointer(f) } ?: return@lazy null
-		CwtValueConfig(
+	val valueConfig by lazy { doGetValueConfig() }
+	
+	private fun doGetValueConfig(): CwtValueConfig? {
+		val valuePointer = pointer.containingFile?.let { f -> pointer.element?.value?.createPointer(f) } ?: return null
+		return CwtValueConfig(
 			valuePointer, value, booleanValue, intValue, floatValue, stringValue,
-			values, properties, documentation, options, optionValues, valueExpression
+			values, properties, documentation, options, optionValues, valueExpression, parent
 		)
 	}
 }

@@ -51,6 +51,7 @@ class CwtConfigGroup(
 	val modifierCategoryIdMap:Map<String, CwtModifierCategoryConfig>
 	val modifiers:Map<String,CwtModifierConfig>
 	val scopes: Map<String, CwtScopeConfig>
+	val scopeAliasMap: Map<String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	val aliases: Map<String, Map<String, List<CwtAliasConfig>>> //同名的alias可以有多个 
 	val definitions: Map<String, CwtDefinitionConfig>
@@ -69,6 +70,7 @@ class CwtConfigGroup(
 		modifierCategoryIdMap = mutableMapOf()
 		modifiers = mutableMapOf()
 		scopes = mutableMapOf()
+		scopeAliasMap = mutableMapOf()
 		scopeGroups = mutableMapOf()
 		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
 		definitions = mutableMapOf()
@@ -169,6 +171,9 @@ class CwtConfigGroup(
 							val scopeName = prop.key
 							val scopeConfig = resolveScopeConfig(prop, scopeName) ?: continue
 							scopes[scopeName] = scopeConfig
+							for(alias in scopeConfig.aliases) {
+								scopeAliasMap[alias] = scopeConfig
+							}
 						}
 					}
 					//找到配置文件中的顶级的key为"scope_groups"的属性，然后解析它的子属性，添加到scopeGroups中
@@ -462,7 +467,7 @@ class CwtConfigGroup(
 			//categories可能是modifierCategory的name，也可能是modifierCategory的internalId
 			val categories = modifier.categories
 			val categoryConfig = modifierCategories[categories]?:modifierCategoryIdMap[categories]
-			modifier._categoryConfig = categoryConfig
+			modifier.categoryConfig = categoryConfig
 		}
 	}
 	//endregion

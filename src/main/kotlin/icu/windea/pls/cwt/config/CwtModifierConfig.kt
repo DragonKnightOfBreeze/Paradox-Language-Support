@@ -8,6 +8,5 @@ data class CwtModifierConfig(
 	val name:String,
 	val categories:String
 ): CwtConfig<CwtProperty>{
-	internal var _categoryConfig:CwtModifierCategoryConfig? = null
-	val categoryConfig get() = _categoryConfig
+	var categoryConfig:CwtModifierCategoryConfig? = null
 }

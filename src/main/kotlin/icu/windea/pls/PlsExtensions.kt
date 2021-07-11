@@ -106,7 +106,7 @@ private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 		name.surroundsWith("value[", "]") -> CwtConfigType.Value
 		name.surroundsWith("enum[", "]") -> CwtConfigType.Enum
 		name.surroundsWith("alias[", "]") -> CwtConfigType.Alias
-		else -> return null //TODO
+		else -> null //TODO
 	}
 }
 
@@ -237,9 +237,9 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 	}
 }
 
-//这个方法有可能导致ProcessCanceledException，因为调用element.name导致！
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	//NOTE cwt文件中定义的definition的propertyPath的minDepth是4（跳过3个rootKey）
+	//NOTE 这个方法有可能导致ProcessCanceledException，因为调用element.name导致！
 	val propertyPath = element.resolvePropertyPath(4) ?: return null
 	val fileInfo = element.fileInfo ?: return null
 	val path = fileInfo.path
@@ -260,8 +260,11 @@ private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): Par
 }
 
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
-	//注意这里要获得的definitionProperty可能是scriptFile也可能是scriptProperty
+	//NOTE 注意这里获得的definitionInfo可能会过时！因为对应的type和subtypes可能基于其他的definitionProperty
+	//NOTE 这里的definitionProperty可能是scriptFile也可能是scriptProperty
 	val (_, definitionInfo, path) = element.findParentDefinitionAndExtraInfo() ?: return null
+	//推断scope：匹配的subtypeConfig上的第一个存在的名为push_scope的option的值，可能为null
+	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
 	val pointer = element.createPointer()
 	val gameType = definitionInfo.gameType
 	val configGroup = getConfig(element.project).getValue(gameType)
@@ -271,7 +274,7 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 	val childPropertyOccurrence = definitionInfo.resolveChildPropertyOccurrence(childPropertyConfigs, element, configGroup)
 	val childValueOccurrence = definitionInfo.resolveChildValueOccurrence(childValueConfigs, element, configGroup)
 	return ParadoxDefinitionPropertyInfo(
-		path, propertyConfigs, childPropertyConfigs, childValueConfigs,
+		path, scope,propertyConfigs, childPropertyConfigs, childValueConfigs,
 		childPropertyOccurrence, childValueOccurrence, gameType, pointer
 	)
 }

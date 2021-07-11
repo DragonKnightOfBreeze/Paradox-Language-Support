@@ -13,12 +13,12 @@ data class CwtValueConfig(
 	val stringValue: String? = null,
 	val values: List<CwtValueConfig>? = null,
 	val properties: List<CwtPropertyConfig>? = null,
-	val documentation: String? = null,
-	val options: List<CwtOptionConfig>? = null,
-	val optionValues: List<CwtOptionValueConfig>? = null,
-	val valueExpression: CwtValueExpression
-): CwtConfig<CwtValue>{
+	override val documentation: String? = null,
+	override val options: List<CwtOptionConfig>? = null,
+	override val optionValues: List<CwtOptionValueConfig>? = null,
+	val valueExpression: CwtValueExpression,
+	override var parent: CwtPropertyConfig? = null
+): CwtKvConfig<CwtValue>(){
 	//val stringValues = values?.mapNotNull { it.stringValue }
 	//val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
-	val cardinality = options?.find { it.key == "cardinality" }?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 }

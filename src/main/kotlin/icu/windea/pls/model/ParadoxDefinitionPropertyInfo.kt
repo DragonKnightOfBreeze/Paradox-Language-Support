@@ -9,6 +9,7 @@ import java.util.*
 
 data class ParadoxDefinitionPropertyInfo(
 	val path: ParadoxPropertyPath,
+	val scope:String? = null,
 	val propertyConfigs:List<CwtPropertyConfig>, //基于keyExpression，valueExpression可能不同
 	val childPropertyConfigs:List<CwtPropertyConfig>, //基于上一级keyExpression，keyExpression一定唯一
 	val childValueConfigs:List<CwtValueConfig>, //基于上一级keyExpression，valueExpression一定唯一
