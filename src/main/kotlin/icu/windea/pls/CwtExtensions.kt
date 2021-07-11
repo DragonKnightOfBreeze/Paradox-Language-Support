@@ -956,7 +956,7 @@ private fun completeModifier(keyword: String, quoted: Boolean, config: CwtKvConf
 	for(modifierConfig in modifiers.values) {
 		//NOTE modifier的scope需要匹配（推断得到的scope为null时，总是提示）
 		val categoryConfig = modifierConfig.categoryConfig ?: continue
-		if(scope != null && categoryConfig.supportedScopes.any { matchesScopeAlias(scope,it,configGroup) }) continue
+		if(scope == null || !categoryConfig.supportedScopes.any { matchesScopeAlias(scope,it,configGroup) }) continue
 		val n = modifierConfig.name
 		if(!n.matchesKeyword(keyword)) continue //预先过滤结果
 		val name = n.quoteIf(quoted)

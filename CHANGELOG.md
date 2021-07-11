@@ -145,7 +145,9 @@
 * [X] 编写脚本从`modifiers.log`生成`modifiers.cwt`（已经编写了从`setup.log`生成`modifiers.log`的脚本）
 * [X] modifiers从cwt规则文件中的`modifiers = { $name = $scope }`中解析，而非从`modifiers.log`
 * [X] 匹配、提示和解析modifier
-* [ ] 提示modifier时匹配scope
+* [X] 提示modifier时匹配scope
+* [ ] 编写代码准备从alias/definitionProperty/subtype推断scope和scopeMap
+* [ ] 为definitionProperty提供特殊的文档注释（expression & scopeMap）
 * [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型single_alias
@@ -153,7 +155,7 @@
 * [X] 应用cwt配置文件`folders.cwt`
 * [ ] 应用cwt配置文件`scopes.cwt`
 * [ ] 应用cwt配置文件`links.cwt`
-* [ ] 应用cwt配置文件`modifiers.cwt/modifier_categories.cwt`
+* [X] 应用cwt配置文件`modifiers.cwt/modifier_categories.cwt`
 * [ ] 应用cwt配置文件`values.cwt`
 * [ ] 应用cwt配置文件`localisation.cwt`
 * [ ] 进行代码提示时，alias拥有特定的注释~~和图标~~（仅限aliasSubName为constant）
