@@ -606,7 +606,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
-			val (prefix, suffix) = expression.extraValue.castOrNull<Tuple2<String, String>>() ?: return
+			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
 				val definitionName = definition.definitionInfo?.name ?: continue
@@ -777,7 +777,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		}
 		CwtValueExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
-			val (prefix, suffix) = expression.extraValue?.castOrNull<Tuple2<String, String>>() ?: return
+			val (prefix, suffix) = expression.extraValue?.castOrNull<Pair<String, String>>() ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			for(definition in definitions) {
 				val definitionName = definition.definitionInfo?.name ?: continue
@@ -930,7 +930,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 			findDefinitionByType(name, typeExpression, project)
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
-			val (prefix, suffix) = expression.extraValue.castOrNull<Tuple2<String, String>>() ?: return null
+			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return null
 			val name = keyElement.value.removeSurrounding(prefix, suffix)
 			val typeExpression = expression.value ?: return null
 			findDefinitionByType(name, typeExpression, project)

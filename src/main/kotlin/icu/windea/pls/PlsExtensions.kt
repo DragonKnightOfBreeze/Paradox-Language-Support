@@ -17,7 +17,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import org.jetbrains.annotations.*
 import java.util.*
-import kotlin.Pair
 
 //region Constants
 val cwtConfigTypeKey = Key<CwtConfigType>("cwtConfigType")

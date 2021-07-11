@@ -23,7 +23,7 @@ object ParadoxModOverriddenFileSelector {
 		println("Prepare vanilla files...")
 		val gameScriptFiles = gameFile.walk().filter { it.isFile && it.extension == "txt" }.map { it.relativeTo(gameFile) }
 		val gameScriptFileMap = gameScriptFiles.associateBy { it.path }
-		val savedScriptFileMap = ConcurrentHashMap<File, CopyOnWriteArrayList<Pair<File, File>>>()
+		val savedScriptFileMap = mutableMapOf<File, MutableList<Pair<File, File>>>()
 		
 		println("Prepare mod names...")
 		val modNameMap = modDirs.associateWith { it.getModName() }

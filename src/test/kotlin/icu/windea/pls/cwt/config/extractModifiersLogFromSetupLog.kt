@@ -10,11 +10,13 @@ import java.io.*
 //[17:28:08][modifier.cpp:889]: [0] Tag: blank_modifier, Categories: 2
 
 //示例：
-//Printing Modifier Definitions:
 //Tag: diplomacy, Categories: character
 
 fun main() {
-	extractModifiersLog("src/main/resources/config/stellaris/setup.log", "src/main/resources/config/stellaris-ext/modifiers.log")
+	extractModifiersLog(
+		"src/main/resources/config/stellaris/setup.log", 
+		"src/main/resources/config/stellaris-ext/modifiers.log"
+	)
 }
 
 fun extractModifiersLog(fromPath: String, toPath: String) {
@@ -40,7 +42,6 @@ fun extractModifiersLog(fromPath: String, toPath: String) {
 		}
 	}
 	
-	toFile.writeText("# Generated cwt file")
 	toFile.writeText(lines.joinToString("\n"))
 }
 

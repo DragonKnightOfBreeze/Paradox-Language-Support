@@ -9,7 +9,7 @@ import java.util.*
 data class CwtDefinitionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
-	val configs: List<Pair<String?,CwtPropertyConfig>> //(subtypeExpression, propConfig)
+	val configs: List<Pair<String?, CwtPropertyConfig>> //(subtypeExpression, propConfig)
 ) : CwtConfig<CwtProperty> {
 	//使用WeakHashMap - 减少内存占用
 	private val mergeConfigsCache = WeakHashMap<String,List<CwtPropertyConfig>>()
