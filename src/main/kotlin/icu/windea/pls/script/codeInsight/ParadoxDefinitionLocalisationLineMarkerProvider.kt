@@ -29,7 +29,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerPro
 		}
 	}
 	
-	private fun createMarker(definitionInfo: definitionInfo, element: ParadoxScriptProperty): RelatedItemLineMarkerInfo<PsiElement> {
+	private fun createMarker(definitionInfo: ParadoxDefinitionInfo, element: ParadoxScriptProperty): RelatedItemLineMarkerInfo<PsiElement> {
 		val icon = definitionLocalisationGutterIcon
 		val tooltip = buildString {
 			val localisation = definitionInfo.localisation

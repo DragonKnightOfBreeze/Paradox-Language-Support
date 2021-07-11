@@ -468,7 +468,7 @@ class CwtConfigGroup(
 	//endregion
 	
 	//region 解析得到definitionInfo
-	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): definitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
 				return toDefinitionInfo(typeConfig, element, elementName)
@@ -561,7 +561,7 @@ class CwtConfigGroup(
 		return matchesDefinitionProperty(element, elementConfig, this)
 	}
 	
-	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): definitionInfo {
+	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, elementName)
 		val typeKey = elementName
 		val type = typeConfig.name
@@ -574,10 +574,9 @@ class CwtConfigGroup(
 		val graphRelatedTypes = typeConfig.graphRelatedTypes.orEmpty()
 		val unique = typeConfig.unique
 		val severity = typeConfig.severity
-		val pushScopes = subtypeConfigs.map { it.pushScope }
-		return definitionInfo(
+		return ParadoxDefinitionInfo(
 			name, type, typeConfig, subtypes, subtypeConfigs, localisation, localisationConfig,
-			definition, definitionConfig, typeKey, graphRelatedTypes, unique, severity, pushScopes, gameType
+			definition, definitionConfig, typeKey, graphRelatedTypes, unique, severity, gameType
 		)
 	}
 	

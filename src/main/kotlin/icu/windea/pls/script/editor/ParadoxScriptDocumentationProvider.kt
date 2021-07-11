@@ -42,7 +42,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: definitionInfo): String {
+	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		val localisation = definitionInfo.localisation
 		return buildString {
 			definition {
@@ -115,7 +115,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: definitionInfo): String {
+	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		val type = definitionInfo.type
 		val localisation = definitionInfo.localisation
 		return buildString {

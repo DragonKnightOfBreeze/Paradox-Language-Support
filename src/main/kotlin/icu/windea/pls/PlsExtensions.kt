@@ -22,7 +22,7 @@ import kotlin.Pair
 //region Constants
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
-val cachedParadoxDefinitionInfoKey = Key<CachedValue<definitionInfo>>("cachedParadoxDefinitionInfo")
+val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 val cachedParadoxDefinitionPropertyInfoKey = Key<CachedValue<ParadoxDefinitionPropertyInfo>>("cachedParadoxDefinitionPropertyInfo")
 val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
 //endregion
@@ -228,9 +228,9 @@ private fun getGameType(file: PsiDirectory): ParadoxGameType? {
 	return null
 }
 
-val ParadoxDefinitionProperty.definitionInfo: definitionInfo? get() = doGetDefinitionInfo(this)
+val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
-private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): definitionInfo? {
+private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
 		val value = resolveDefinitionInfo(element)
 		CachedValueProvider.Result.create(value, element)
@@ -238,7 +238,7 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): definitionI
 }
 
 //这个方法有可能导致ProcessCanceledException，因为调用element.name导致！
-private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): definitionInfo? {
+private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	//NOTE cwt文件中定义的definition的propertyPath的minDepth是4（跳过3个rootKey）
 	val propertyPath = element.resolvePropertyPath(4) ?: return null
 	val fileInfo = element.fileInfo ?: return null
@@ -502,7 +502,7 @@ fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty
 /**
  * 得到上一级definition，可能为自身，可能为null。
  */
-fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionProperty, definitionInfo, ParadoxPropertyPath>? {
+fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionProperty, ParadoxDefinitionInfo, ParadoxPropertyPath>? {
 	var current: PsiElement = this
 	val subPaths = LinkedList<String>()
 	val subPathInfos = LinkedList<ParadoxPropertyPathInfo>()

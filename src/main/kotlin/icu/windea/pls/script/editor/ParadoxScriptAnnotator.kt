@@ -25,7 +25,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(definitionInfo != null) annotateDefinition(element, holder, definitionInfo)
 	}
 	
-	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder, definitionInfo: definitionInfo) {
+	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
 		//颜色高亮
 		holder.newSilentAnnotation(INFORMATION)
 			.range(element.propertyKey)

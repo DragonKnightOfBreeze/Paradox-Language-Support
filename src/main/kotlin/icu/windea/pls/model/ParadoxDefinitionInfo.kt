@@ -6,7 +6,7 @@ import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
-data class definitionInfo(
+data class ParadoxDefinitionInfo(
 	val name: String,
 	val type: String,
 	val typeConfig: CwtTypeConfig,
@@ -20,7 +20,6 @@ data class definitionInfo(
 	val graphRelatedTypes: List<String>,
 	val unique: Boolean,
 	val severity: String?,
-	val pushScopes: List<String?>,
 	val gameType: ParadoxGameType
 ) {
 	val types = mutableListOf(type).apply { addAll(subtypes) }
@@ -41,7 +40,7 @@ data class definitionInfo(
 	val localisationKeyNames = localisation.map { it.keyName }
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is definitionInfo && name == other.name && types == other.types
+		return this === other || other is ParadoxDefinitionInfo && name == other.name && types == other.types
 	}
 	
 	override fun hashCode(): Int {

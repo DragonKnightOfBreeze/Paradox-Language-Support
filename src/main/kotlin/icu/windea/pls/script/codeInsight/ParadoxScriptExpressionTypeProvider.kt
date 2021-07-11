@@ -41,7 +41,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return element.propertyValue?.value?.getType()?:"(unknown)"
 	}
 	
-	private fun getDefinitionHint(definitionInfo:definitionInfo):String{
+	private fun getDefinitionHint(definitionInfo:ParadoxDefinitionInfo):String{
 		return definitionInfo.typeText
 	}
 	

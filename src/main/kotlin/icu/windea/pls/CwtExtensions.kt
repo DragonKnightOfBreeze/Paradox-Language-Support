@@ -45,6 +45,7 @@ fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 
 fun inferScope(propertyConfig: CwtPropertyConfig):Map<String,String>{
 	//向上查找作为父节点的property的名为scope/replace_scope/replace_scopes/push_scope的option
+	//subtype的类型定义上可能有名为push_scope的option
 	TODO()
 }
 //endregion
@@ -226,7 +227,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 			val key = keyElement.value
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(key, configGroup) else false
 			}
 		}
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
@@ -236,7 +237,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 			val key = keyElement.value
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(key, configGroup) else false
 			}
 		}
 		CwtKeyExpression.Type.Constant -> {
@@ -307,7 +308,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			val alias = configGroup.aliases[aliasName] ?: return false
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(key, configGroup) else false
 			}
 		}
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
@@ -316,7 +317,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			val alias = configGroup.aliases[aliasName] ?: return false
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(key, configGroup) else false
 			}
 		}
 		CwtKeyExpression.Type.Constant -> {
@@ -435,7 +436,7 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			val key = valueElement.value
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(key, configGroup) else false
 			}
 		}
 		//NOTE 不在这里处理
@@ -461,7 +462,7 @@ private fun matchesAlias(propertyConfig: CwtPropertyConfig, propertyElement: Par
 	}
 }
 
-private fun matchesModifiers(configGroup: CwtConfigGroup, key: String): Boolean {
+private fun matchesModifiers(key: String, configGroup: CwtConfigGroup): Boolean {
 	val modifiers = configGroup.modifiers
 	return modifiers.containsKey(key)
 }
