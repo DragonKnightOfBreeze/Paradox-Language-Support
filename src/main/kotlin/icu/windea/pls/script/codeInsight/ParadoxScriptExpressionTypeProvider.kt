@@ -49,8 +49,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return noExpressionFoundMessage
 	}
 	
-	//scriptValue | scriptProperty
-	//scriptString | scriptBoolean | scriptInt | scriptFloat | scriptColor | scriptCode | scriptBlock
+	//scriptProperty | scriptValue 
 	override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {
 		val element = when(elementAt.elementType){
 			VARIABLE_NAME_ID -> elementAt.parent?.parent as? ParadoxScriptVariable

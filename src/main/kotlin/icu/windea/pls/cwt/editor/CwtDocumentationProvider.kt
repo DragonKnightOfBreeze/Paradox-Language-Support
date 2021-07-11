@@ -21,6 +21,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configTypeText = element.configType?.text
 			definition {
 				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				else append ("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 		}
@@ -51,6 +52,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configTypeText = element.configType?.text
 			definition {
 				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				else append ("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			}
 			//文档注释，以###开始
@@ -83,20 +85,22 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getDocumentation(element: PsiElement): String? {
 		var current: PsiElement = element
-		val documentationElements = LinkedList<CwtDocumentationText>()
+		var documentationLines: LinkedList<String>? = null
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
-					if(documentationText != null) documentationElements.addFirst(documentationText)
+					if(documentationText != null) {
+						if(documentationLines == null) documentationLines = LinkedList()
+						documentationLines.addFirst(documentationText.text)
+					}
 				}
 				current is PsiWhiteSpace || current is PsiComment -> continue
 				else -> break
 			}
 		}
-		if(documentationElements.isEmpty()) return null
-		return documentationElements.joinToString("\n") { it.text.orEmpty() }.trim()
+		return documentationLines?.joinToString("\n")
 	}
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
