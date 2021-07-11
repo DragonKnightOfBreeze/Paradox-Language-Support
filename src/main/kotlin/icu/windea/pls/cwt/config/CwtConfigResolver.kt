@@ -104,7 +104,7 @@ object CwtConfigResolver {
 		return config
 	}
 	
-	fun resolveValue(value: CwtValue, file: CwtFile,parent:CwtPropertyConfig? = null): CwtValueConfig {
+	fun resolveValue(value: CwtValue, file: CwtFile): CwtValueConfig {
 		val pointer = value.createPointer(file)
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null

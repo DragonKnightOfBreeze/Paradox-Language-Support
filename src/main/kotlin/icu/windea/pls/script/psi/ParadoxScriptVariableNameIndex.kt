@@ -12,12 +12,12 @@ object ParadoxScriptVariableNameIndex : StringStubIndexExtension<ParadoxScriptVa
 	
 	override fun getCacheSize() = 1024
 	
-	fun exists(name: String, project: Project, scope: GlobalSearchScope): Boolean {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return false
-		
-		return existsElement(name, project, scope)
-	}
+	//fun exists(name: String, project: Project, scope: GlobalSearchScope): Boolean {
+	//	//如果索引未完成
+	//	if(DumbService.isDumb(project)) return false
+	//	
+	//	return existsElement(name, project, scope)
+	//}
 	
 	fun findOne(name: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptVariable? {
 		//如果索引未完成

@@ -103,10 +103,12 @@ private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 	return when {
 		name.surroundsWith("type[", "]") -> CwtConfigType.Type
 		name.surroundsWith("subtype[", "]") -> CwtConfigType.Subtype
-		name.surroundsWith("value[", "]") -> CwtConfigType.Value
 		name.surroundsWith("enum[", "]") -> CwtConfigType.Enum
+		name.surroundsWith("complex_enum[", "]") -> CwtConfigType.ComplexEnum
+		name.surroundsWith("value[", "]") -> CwtConfigType.Value
+		name.surroundsWith("single_alias[", "]") -> CwtConfigType.SingleAlias
 		name.surroundsWith("alias[", "]") -> CwtConfigType.Alias
-		else -> null //TODO
+		else -> null 
 	}
 }
 
@@ -116,9 +118,16 @@ private fun doGetConfigType(element: CwtValue): CwtConfigType? {
 	val parentProperty = element.parent?.parent.castOrNull<CwtProperty>() ?: return null
 	val parentName = parentProperty.name
 	return when {
-		parentName.surroundsWith("value[", "]") -> CwtConfigType.ValueValue
 		parentName.surroundsWith("enum[", "]") -> CwtConfigType.EnumValue
-		else -> return null //TODO
+		parentName.surroundsWith("value[", "]") -> CwtConfigType.ValueValue
+		parentName == "links" -> CwtConfigType.Link
+		parentName == "localisation_links" -> CwtConfigType.LocalisationLink
+		parentName == "localisation_commands" -> CwtConfigType.LocalisationCommand
+		parentName == "modifier_categories" -> CwtConfigType.ModifierCategory
+		parentName == "modifiers" -> CwtConfigType.Modifier
+		parentName == "scopes" -> CwtConfigType.Scope
+		parentName == "scope_groups" -> CwtConfigType.ScopeGroup
+		else -> null
 	}
 }
 
@@ -274,7 +283,7 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 	val childPropertyOccurrence = definitionInfo.resolveChildPropertyOccurrence(childPropertyConfigs, element, configGroup)
 	val childValueOccurrence = definitionInfo.resolveChildValueOccurrence(childValueConfigs, element, configGroup)
 	return ParadoxDefinitionPropertyInfo(
-		path, scope,propertyConfigs, childPropertyConfigs, childValueConfigs,
+		path, scope, propertyConfigs, childPropertyConfigs, childValueConfigs,
 		childPropertyOccurrence, childValueOccurrence, gameType, pointer
 	)
 }
@@ -444,33 +453,33 @@ fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boo
 	return properties.find { it.name.equals(propertyName, ignoreCase) }
 }
 
-fun ParadoxDefinitionProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
-	return properties.filter { it.name.equals(propertyName, ignoreCase) }
-}
-
-fun ParadoxDefinitionProperty.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
-	return values.find { it.value.equals(value, ignoreCase) }
-}
-
-fun ParadoxDefinitionProperty.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
-	return values.filter { it.value.equals(value, ignoreCase) }
-}
-
-fun ParadoxScriptBlock.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
-	return propertyList.find { it.name.equals(propertyName, ignoreCase) }
-}
-
-fun ParadoxScriptBlock.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
-	return propertyList.filter { it.name.equals(propertyName, ignoreCase) }
-}
-
-fun ParadoxScriptBlock.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
-	return valueList.find { it.value.equals(value, ignoreCase) }
-}
-
-fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
-	return valueList.filter { it.value.equals(value, ignoreCase) }
-}
+//fun ParadoxDefinitionProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
+//	return properties.filter { it.name.equals(propertyName, ignoreCase) }
+//}
+//
+//fun ParadoxDefinitionProperty.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
+//	return values.find { it.value.equals(value, ignoreCase) }
+//}
+//
+//fun ParadoxDefinitionProperty.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
+//	return values.filter { it.value.equals(value, ignoreCase) }
+//}
+//
+//fun ParadoxScriptBlock.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
+//	return propertyList.find { it.name.equals(propertyName, ignoreCase) }
+//}
+//
+//fun ParadoxScriptBlock.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
+//	return propertyList.filter { it.name.equals(propertyName, ignoreCase) }
+//}
+//
+//fun ParadoxScriptBlock.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
+//	return valueList.find { it.value.equals(value, ignoreCase) }
+//}
+//
+//fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
+//	return valueList.filter { it.value.equals(value, ignoreCase) }
+//}
 
 /**
  * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
@@ -552,16 +561,16 @@ fun findScriptVariablesInFile(file: PsiFile): List<ParadoxScriptVariable> {
 	return file.descendantsOfType<ParadoxScriptVariable>().toList()
 }
 
-/**
- * 基于脚本变量名字索引，根据名字查判断是否存在脚本变量（scriptedVariable）。
- */
-fun existsScriptVariable(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): Boolean {
-	return ParadoxScriptVariableNameIndex.exists(name, project, scope)
-}
+///**
+// * 基于脚本变量名字索引，根据名字查判断是否存在脚本变量（scriptedVariable）。
+// */
+//fun existsScriptVariable(
+//	name: String,
+//	project: Project,
+//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+//): Boolean {
+//	return ParadoxScriptVariableNameIndex.exists(name, project, scope)
+//}
 
 /**
  * 基于脚本变量名字索引，根据名字查找脚本变量（scriptedVariable）。
@@ -964,35 +973,35 @@ inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true
 	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun VirtualFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
-}
+//@Suppress("NOTHING_TO_INLINE")
+//inline fun VirtualFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
+//	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
+//}
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun PsiFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
-}
+//@Suppress("NOTHING_TO_INLINE")
+//inline fun PsiFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
+//	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
+//}
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.renderText(): String {
 	return ParadoxLocalisationTextRenderer.render(this)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxLocalisationProperty.renderTextTo(buffer: StringBuilder) {
-	ParadoxLocalisationTextRenderer.renderTo(this, buffer)
-}
+//@Suppress("NOTHING_TO_INLINE")
+//inline fun ParadoxLocalisationProperty.renderTextTo(buffer: StringBuilder) {
+//	ParadoxLocalisationTextRenderer.renderTo(this, buffer)
+//}
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxLocalisationProperty.extractText(): String {
 	return ParadoxLocalisationTextExtractor.extract(this)
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
-	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
-}
+//@Suppress("NOTHING_TO_INLINE")
+//inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
+//	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
+//}
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun CwtFile.resolveConfig(): CwtFileConfig {

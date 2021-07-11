@@ -146,6 +146,7 @@
 * [X] modifiers从cwt规则文件中的`modifiers = { $name = $scope }`中解析，而非从`modifiers.log`
 * [X] 匹配、提示和解析modifier
 * [X] 提示modifier时匹配scope
+* [X] 为modifier提供特殊的文档注释
 * [ ] 编写代码准备从alias/definitionProperty/subtype推断scope和scopeMap
 * [ ] 为definitionProperty提供特殊的文档注释（expression & scopeMap）
 * [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
