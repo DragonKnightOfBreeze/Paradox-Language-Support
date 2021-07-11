@@ -93,9 +93,13 @@ fun resolveTypeExpression(typeExpression: String): Pair<String, String?> {
 //endregion
 
 //region PsiElement Extensions
-val CwtProperty.cwtConfigType: CwtConfigType? get() = doGetCwtConfigType(this)
+fun PsiElement.isQuoted(): Boolean {
+	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
+}
 
-private fun doGetCwtConfigType(element: CwtProperty): CwtConfigType? {
+val CwtProperty.cwtConfigType: CwtConfigType? get() = doGetConfigType(this)
+
+private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 	val name = element.name
 	return when {
 		name.surroundsWith("type[", "]") -> CwtConfigType.Type
@@ -107,9 +111,9 @@ private fun doGetCwtConfigType(element: CwtProperty): CwtConfigType? {
 	}
 }
 
-val CwtValue.cwtConfigType: CwtConfigType? get() = doGetCwtConfigType(this)
+val CwtValue.cwtConfigType: CwtConfigType? get() = doGetConfigType(this)
 
-private fun doGetCwtConfigType(element: CwtValue): CwtConfigType? {
+private fun doGetConfigType(element: CwtValue): CwtConfigType? {
 	val parentProperty = element.parent?.parent.castOrNull<CwtProperty>() ?: return null
 	val parentName = parentProperty.name
 	return when {
@@ -117,10 +121,6 @@ private fun doGetCwtConfigType(element: CwtValue): CwtConfigType? {
 		parentName.surroundsWith("enum[", "]") -> CwtConfigType.EnumValue
 		else -> return null //TODO
 	}
-}
-
-fun PsiElement.isQuoted(): Boolean {
-	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
 }
 
 val PsiElement.paradoxGameType: ParadoxGameType? get() = doGetGameType(this)

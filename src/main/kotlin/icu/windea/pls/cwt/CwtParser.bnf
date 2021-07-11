@@ -73,7 +73,7 @@ property ::= property_key property_separator value {
   pin(".*")=1
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName getNameIdentifier getPropertyName getPropertyValue getPropertyTruncatedValue getSeparatorType getConfigType setConfigType]
+  methods=[getIcon getName setName getNameIdentifier getPropertyName getPropertyValue getPropertyTruncatedValue getSeparatorType]
 }
 property_key ::= PROPERTY_KEY_TOKEN{
   methods=[getValue]
