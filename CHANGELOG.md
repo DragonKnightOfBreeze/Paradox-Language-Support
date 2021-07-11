@@ -142,8 +142,9 @@
 * [X] 优化插件设置相关代码
 * [X] 重载文件类型时自动处理bom（改为正确的bom，不改变编码）
 * [X] 支持规则类型alias_keys_field（匹配alias的aliasSubName，和alias_name应该没有区别）
-* [ ] 编写脚本从`modifiers.log`生成`modifiers.cwt`（已经编写了从`setup.log`生成`modifiers.log`的脚本）
-* [ ] modifiers从cwt规则文件中的`modifiers = { $name = $scope }`中解析，而非从`modifiers.log`
+* [X] 编写脚本从`modifiers.log`生成`modifiers.cwt`（已经编写了从`setup.log`生成`modifiers.log`的脚本）
+* [X] modifiers从cwt规则文件中的`modifiers = { $name = $scope }`中解析，而非从`modifiers.log`
+* [X] 匹配、提示和解析modifier
 * [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型single_alias

@@ -1,7 +1,6 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.model.*
@@ -11,9 +10,7 @@ import org.slf4j.*
 class CwtConfigGroup(
 	val gameType: ParadoxGameType,
 	val project: Project,
-	cwtFileConfigs: Map<String, CwtFileConfig>,
-	logFiles: Map<String, VirtualFile>,
-	csvFiles: Map<String, VirtualFile>
+	cwtFileConfigs: Map<String, CwtFileConfig>
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
@@ -43,20 +40,20 @@ class CwtConfigGroup(
 		
 	}
 	
-	val folders: List<String> //需要扫描的文件夹的相对路径列表，可能为空
+	val folders: List<String>  
 	val types: Map<String, CwtTypeConfig>
-	val values: Map<String, CwtEnumConfig> //可能为空
-	val enums: Map<String, CwtEnumConfig> //枚举值也有可能是int、number、bool类型，这里统一用字符串表示
+	val values: Map<String, CwtEnumConfig>
+	val enums: Map<String, CwtEnumConfig> //enumValue可以是int、float、bool类型，统一用字符串表示
 	val links: Map<String, CwtLinkConfig>
-	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
 	val localisationLinks: Map<String, CwtLinkConfig>
-	val modifierCategories: Map<String, CwtModifyCategoryConfig>
+	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
+	val modifierCategories: Map<String, CwtModifierCategoryConfig>
+	val modifierCategoryIdMap:Map<String, CwtModifierCategoryConfig>
+	val modifiers:Map<String,CwtModifierConfig>
 	val scopes: Map<String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
-	val aliases: Map<String, Map<String, List<CwtAliasConfig>>> //alias[?:?] = ? alias[?:?] = ?
+	val aliases: Map<String, Map<String, List<CwtAliasConfig>>> //同名的alias可以有多个 
 	val definitions: Map<String, CwtDefinitionConfig>
-	
-	val modifierDefinitions:Map<String,CwtModifierDefinitionConfig>
 	
 	init {
 		logger.info("Resolve config group '$gameType'...")
@@ -66,9 +63,11 @@ class CwtConfigGroup(
 		values = mutableMapOf()
 		enums = mutableMapOf()
 		links = mutableMapOf()
-		localisationCommands = mutableMapOf()
 		localisationLinks = mutableMapOf()
+		localisationCommands = mutableMapOf()
 		modifierCategories = mutableMapOf()
+		modifierCategoryIdMap = mutableMapOf()
+		modifiers = mutableMapOf()
 		scopes = mutableMapOf()
 		scopeGroups = mutableMapOf()
 		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
@@ -126,15 +125,6 @@ class CwtConfigGroup(
 							links[linkName] = linkConfig
 						}
 					}
-					//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
-					"localisation_commands" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val commandName = prop.key
-							val commandConfig = resolveLocalisationCommandConfig(prop, commandName) ?: continue
-							localisationCommands[commandName] = commandConfig
-						}
-					}
 					//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
 					"localisation_links" -> {
 						val props = property.properties ?: continue
@@ -144,13 +134,32 @@ class CwtConfigGroup(
 							localisationLinks[linkName] = linkConfig
 						}
 					}
+					//找到配置文件中的顶级的key为"localisation_commands"的属性，然后解析它的子属性，添加到localisationCommands中
+					"localisation_commands" -> {
+						val props = property.properties ?: continue
+						for(prop in props) {
+							val commandName = prop.key
+							val commandConfig = resolveLocalisationCommandConfig(prop, commandName) ?: continue
+							localisationCommands[commandName] = commandConfig
+						}
+					}
 					//找到配置文件中的顶级的key为"modifier_categories"的属性，然后解析它的子属性，添加到modifierCategories中
 					"modifier_categories" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
-							val categoryName = prop.key
-							val categoryConfig = resolveModifierCategoryConfig(prop, categoryName) ?: continue
-							modifierCategories[categoryName] = categoryConfig
+							val modifierCategoryName = prop.key
+							val categoryConfig = resolveModifierCategoryConfig(prop, modifierCategoryName) ?: continue
+							modifierCategories[categoryConfig.name] = categoryConfig
+							modifierCategoryIdMap[categoryConfig.internalId] = categoryConfig
+						}
+					}
+					//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
+					"modifiers" -> {
+						val props = property.properties ?: continue
+						for(prop in props) {
+							val modifierName = prop.key
+							val modifierConfig = resolveModifierConfig(prop,modifierName)
+							modifiers[modifierName] = modifierConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"scopes"的属性，然后解析它的子属性，添加到scopes中
@@ -191,23 +200,7 @@ class CwtConfigGroup(
 			}
 		}
 		
-		modifierDefinitions = mutableMapOf()
-		for((filePath,file) in logFiles){
-			//解析modifiers.log中的modifierDefinitions
-			if(filePath == "modifiers.log" || filePath == "script-docs/modifiers.log"){
-				resolveModifiersLog(file,modifierDefinitions)
-			}
-			//如果游戏类型为stellaris且文件名为setup.log，则解析其中的modifierDefinition
-			//if(gameType == ParadoxGameType.Stellaris && filePath == "setup.log"){
-			//	resolveStellarisSetupLog(file,modifierDefinitions)
-			//}
-			//TODO
-		}
-		
-		//TODO
-		//for((filePath,file) in logFiles){
-		//	
-		//}
+		bindModifierCategories()
 		
 		logger.info("Resolve config group '$gameType' finished.")
 	}
@@ -376,7 +369,7 @@ class CwtConfigGroup(
 	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
 		var desc: String? = null
-		var fromData: Boolean = false
+		var fromData = false
 		var type:String? = null
 		var dataSource: CwtValueExpression? = null
 		var prefix:String? = null
@@ -403,19 +396,23 @@ class CwtConfigGroup(
 		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
 	}
 	
-	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifyCategoryConfig? {
-		var internalId: Int? = null
+	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierCategoryConfig? {
+		var internalId: String? = null
 		var supportedScopes: List<String>? = null
 		val props = propertyConfig.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
 			when(prop.key) {
-				"internal_id" -> internalId = prop.intValue
+				"internal_id" -> internalId = prop.value
 				"supported_scopes" -> supportedScopes = prop.stringValues
 			}
 		}
 		if(internalId == null || supportedScopes == null) return null
-		return CwtModifyCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
+		return CwtModifierCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
+	}
+	
+	private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig,name: String):CwtModifierConfig{
+		return CwtModifierConfig(propertyConfig.pointer,name,propertyConfig.value)
 	}
 	
 	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
@@ -459,70 +456,15 @@ class CwtConfigGroup(
 	}
 	//endregion
 	
-	//region 解析log文件
-	fun resolveModifiersLog(file: VirtualFile, modifierDefinitions: MutableMap<String, CwtModifierDefinitionConfig>){
-		//解析modifiers.log中的modifierDefinitions
-		//示例：
-		//Printing Modifier Definitions:
-		//Tag: diplomacy, Categories: character
-		file.inputStream.bufferedReader().forEachLine { line -> 
-			val colonIndex = line.indexOf(':')
-			if(colonIndex == -1) return@forEachLine
-			val commaIndex = line.indexOf(',',colonIndex+2)
-			if(commaIndex == -1) return@forEachLine
-			val colonIndex2 = line.indexOf(':',commaIndex+2)
-			if(colonIndex2 == -1) return@forEachLine
-			val tag = line.substring(colonIndex+2,commaIndex)
-			val categories = line.substring(colonIndex2+2)
-			val config = CwtModifierDefinitionConfig(tag,categories)
-			modifierDefinitions.put(tag,config)
+	//region 绑定cwt配置
+	private fun bindModifierCategories(){
+		for(modifier in modifiers.values) {
+			//categories可能是modifierCategory的name，也可能是modifierCategory的internalId
+			val categories = modifier.categories
+			val categoryConfig = modifierCategories[categories]?:modifierCategoryIdMap[categories]
+			modifier._categoryConfig = categoryConfig
 		}
 	}
-	
-	//private fun getTextByCppFileName(line:String,cppFileName:String):String?{ 
-	//	try{
-	//		val colonIndex = line.indexOf(':',11)
-	//		if(colonIndex == -1) return null
-	//		val actualCppFileName = line.substring(11,colonIndex)
-	//		if(actualCppFileName != cppFileName) return null
-	//		val secondColonIndex = line.indexOf(':',colonIndex+1)
-	//		if(secondColonIndex == -1) return null
-	//		return line.substring(secondColonIndex + 2)
-	//	}catch(e:Exception){
-	//		return null
-	//	}
-	//}
-	
-	//DEPRECATED 从setup.log中提取modifiers.log，仅保留关键信息
-	//private fun resolveStellarisSetupLog(file: VirtualFile, modifierDefinitions: MutableMap<String, CwtModifierDefinitionConfig>){
-	//	//解析modifierDefinition
-	//	//示例：
-	//	//[17:28:08][modifier.cpp:885]: Printing Modifier Definitions
-	//	//[17:28:08][modifier.cpp:889]: [0] Tag: blank_modifier, Categories: 2
-	//	var modifierDefinitionStart = false
-	//	var modifierDefinitionEnd = false
-	//	
-	//	file.inputStream.bufferedReader().forEachLine { line ->
-	//		if(modifierDefinitionStart && !modifierDefinitionEnd){
-	//			val text = getTextByCppFileName(line,"modifier.cpp")
-	//			if(text != null){
-	//				val wsIndex = text.indexOf(' ')
-	//				val colonIndex = text.indexOf(':',wsIndex+1)
-	//				val commaIndex = text.indexOf(',',colonIndex+2)
-	//				val colonIndex2 = text.indexOf(':',commaIndex+2)
-	//				val tag = text.substring(colonIndex+2,commaIndex)
-	//				val categories = text.substring(colonIndex2+2)
-	//				val config = CwtModifierDefinitionConfig(tag,categories)
-	//				modifierDefinitions.put(tag,config)
-	//			}else{
-	//				modifierDefinitionEnd = true 
-	//			}
-	//		}
-	//		if(!modifierDefinitionStart && line.endsWith("Printing Modifier Definitions")){
-	//			modifierDefinitionStart = true
-	//		}
-	//	}
-	//}
 	//endregion
 	
 	//region 解析得到definitionInfo

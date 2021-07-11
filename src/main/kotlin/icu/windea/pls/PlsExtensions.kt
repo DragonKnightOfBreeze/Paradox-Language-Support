@@ -17,9 +17,9 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import org.jetbrains.annotations.*
 import java.util.*
+import kotlin.Pair
 
 //region Constants
-val cwtConfigTypeKey = Key<CwtConfigType>("cwtConfigType")
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<definitionInfo>>("cachedParadoxDefinitionInfo")

@@ -29,6 +29,7 @@ val localisationIcon = IconLoader.getIcon("/icons/localisation.svg",locationClas
 val propertyIcon = IconLoader.getIcon("/icons/property.svg", locationClass)
 val valueIcon = IconLoader.getIcon("/icons/value.svg",locationClass)
 val enumIcon = IconLoader.getIcon("/icons/enum.svg",locationClass)
+val modifierIcon = IconLoader.getIcon("/icons/modifier.svg", locationClass)
 val aliasIcon = IconLoader.getIcon("/icons/alias.svg",locationClass) //目前用不到，因为名字是表达式
 
 val definitionGutterIcon = definitionIcon.resize(12)

@@ -42,6 +42,11 @@ fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 	return propertyConfig.keyExpression.type == CwtKeyExpression.Type.AliasName &&
 		propertyConfig.valueExpression.type == CwtValueExpression.Type.AliasMatchLeft
 }
+
+fun inferScope(propertyConfig: CwtPropertyConfig):Map<String,String>{
+	//向上查找作为父节点的property的名为scope/replace_scope/replace_scopes/push_scope的option
+	TODO()
+}
 //endregion
 
 //region Match Extensions
@@ -221,7 +226,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 			val key = keyElement.value
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifierDefinition(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
 			}
 		}
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
@@ -231,7 +236,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 			val key = keyElement.value
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifierDefinition(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
 			}
 		}
 		CwtKeyExpression.Type.Constant -> {
@@ -302,7 +307,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			val alias = configGroup.aliases[aliasName] ?: return false
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifierDefinition(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
 			}
 		}
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
@@ -311,7 +316,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			val alias = configGroup.aliases[aliasName] ?: return false
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifierDefinition(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
 			}
 		}
 		CwtKeyExpression.Type.Constant -> {
@@ -430,7 +435,7 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			val key = valueElement.value
 			alias.containsKey(key) || run {
 				//NOTE 如果aliasName是modifier，则key也可以是modifierDefinition的tag
-				if(aliasName == "modifier") matchesModifierDefinition(configGroup, key) else false
+				if(aliasName == "modifier") matchesModifiers(configGroup, key) else false
 			}
 		}
 		//NOTE 不在这里处理
@@ -456,9 +461,9 @@ private fun matchesAlias(propertyConfig: CwtPropertyConfig, propertyElement: Par
 	}
 }
 
-private fun matchesModifierDefinition(configGroup: CwtConfigGroup, key: String): Boolean {
-	val modifierDefinitions = configGroup.modifierDefinitions
-	return modifierDefinitions.containsKey(key) //期望比key in list更快
+private fun matchesModifiers(configGroup: CwtConfigGroup, key: String): Boolean {
+	val modifiers = configGroup.modifiers
+	return modifiers.containsKey(key)
 }
 //endregion
 
@@ -672,11 +677,11 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				//aliasConfigs的名字是相同的 
 				val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 				//aliasSubName是一个表达式
-				completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.pointer, configGroup, result)
+				completeKey(aliasConfig.expression, keyword, quoted, pointer, configGroup, result)
 			}
 			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
 			if(aliasName == "modifier") {
-				completeModifierDefinition(configGroup, keyword, quoted, result)
+				completeModifier(expression,keyword, quoted,pointer, configGroup, result)
 			}
 		}
 		CwtKeyExpression.Type.AliasName -> {
@@ -690,7 +695,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			}
 			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
 			if(aliasName == "modifier") {
-				completeModifierDefinition(configGroup, keyword, quoted, result)
+				completeModifier(expression, keyword, quoted, pointer, configGroup, result)
 			}
 		}
 		CwtKeyExpression.Type.Constant -> {
@@ -844,11 +849,11 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				//aliasConfigs的名字是相同的 
 				val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 				//aliasSubName是一个表达式
-				completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.pointer, configGroup, result)
+				completeKey(aliasConfig.expression, keyword, quoted, pointer, configGroup, result)
 			}
 			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
 			if(aliasName == "modifier") {
-				completeModifierDefinition(configGroup, keyword, quoted, result)
+				completeModifier(expression, keyword, quoted, pointer, configGroup, result)
 			}
 		}
 		CwtValueExpression.Type.AliasMatchLeft -> pass() //TODO
@@ -868,18 +873,21 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 	}
 }
 
-private fun completeModifierDefinition(configGroup: CwtConfigGroup, keyword: String, quoted: Boolean, result: CompletionResultSet) {
-	val modifierDefinitions = configGroup.modifierDefinitions
-	if(modifierDefinitions.isEmpty()) return
+private fun completeModifier(expression: Expression, keyword: String, quoted: Boolean, pointer: SmartPsiElementPointer<*>, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	val modifiers = configGroup.modifiers
+	if(modifiers.isEmpty()) return
 	var size = 0
-	for(modifierDefinition in modifierDefinitions.values) {
-		val n = modifierDefinition.tag
+	for(modifierConfig in modifiers.values) {
+		val n = modifierConfig.name
 		if(!n.matchesKeyword(keyword)) continue //预先过滤结果
 		val name = n.quoteIf(quoted)
-		val icon = propertyIcon //使用特定图标
-		val tailText = " from modifier_definitions"
-		val lookupElement = LookupElementBuilder.create(name).withIcon(icon)
+		val element = pointer.element?:continue
+		val icon = modifierIcon //使用特定图标
+		val tailText = " by $expression in ${pointer.containingFile?.name ?: anonymousString}"
+		val typeText = modifierConfig.pointer.containingFile?.name ?: anonymousString
+		val lookupElement = LookupElementBuilder.create(element,name).withIcon(icon)
 			.withTailText(tailText, true)
+			.withTypeText(typeText,true)
 			.withInsertHandler(separatorInsertHandler)
 			.withPriority(hardCodedConfigPriority)
 		result.addElement(lookupElement)
@@ -961,9 +969,13 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
 				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>() ?: return@find false
 				matchesProperty(propertyElement, it.config, configGroup)
-			} ?: return null
-			aliasConfig.pointer.element
-			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+			}
+			aliasConfig?.pointer?.element?: run{
+				//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+				if(aliasName == "modifier") {
+					resolveModifier(aliasSubName,configGroup)
+				} else null
+			}
 		}
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return null
@@ -974,9 +986,13 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
 				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>() ?: return@find false
 				matchesProperty(propertyElement, it.config, configGroup)
-			} ?: return null
-			aliasConfig.pointer.element
-			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+			}
+			aliasConfig?.pointer?.element?: run{
+				//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+				if(aliasName == "modifier") {
+					resolveModifier(aliasSubName,configGroup)
+				} else null
+			}
 		}
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element
@@ -1035,9 +1051,14 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
 				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>() ?: return@find false
 				matchesProperty(propertyElement, it.config, configGroup)
-			} ?: return emptyList()
-			aliasConfig.pointer.element.toSingletonListOrEmpty()
-			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+			}
+			val result =aliasConfig?.pointer?.element ?: run{
+				//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+				if(aliasName == "modifier") {
+					resolveModifier(aliasSubName,configGroup)
+				} else null
+			}
+			result.toSingletonListOrEmpty()
 		}
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return emptyList()
@@ -1048,9 +1069,14 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
 				val propertyElement = keyElement.parent.castOrNull<ParadoxScriptProperty>() ?: return@find false
 				matchesProperty(propertyElement, it.config, configGroup)
-			} ?: return emptyList()
-			aliasConfig.pointer.element.toSingletonListOrEmpty()
-			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+			}
+			val result =aliasConfig?.pointer?.element ?: run{
+				//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+				if(aliasName == "modifier") {
+					resolveModifier(aliasSubName,configGroup)
+				} else null
+			}
+			result.toSingletonListOrEmpty()
 		}
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element.toSingletonListOrEmpty()
@@ -1109,9 +1135,13 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			val gameType = valueElement.paradoxGameType ?: return null
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			//同名的定义有多个，取第一个即可
-			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.firstOrNull() ?: return null
-			aliasConfig.pointer.element
-			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.firstOrNull()
+			aliasConfig?.pointer?.element ?: run{
+				//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+				if(aliasName == "modifier") {
+					resolveModifier(aliasSubName,configGroup)
+				} else null
+			}
 		}
 		CwtValueExpression.Type.AliasMatchLeft -> fallbackResolveValue(valueElement) //TODO
 		CwtValueExpression.Type.Constant -> {
@@ -1179,9 +1209,14 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 			val gameType = valueElement.paradoxGameType ?: return emptyList()
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			//同名的定义有多个，取第一个即可
-			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.firstOrNull() ?: return emptyList()
-			aliasConfig.pointer.element.toSingletonListOrEmpty()
-			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.firstOrNull()
+			val result = aliasConfig?.pointer?.element ?: run{
+				//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifierDefinition的tag（在modifiers.log中定义）
+				if(aliasName == "modifier") {
+					resolveModifier(aliasSubName,configGroup)
+				} else null
+			}
+			result.toSingletonListOrEmpty()
 		}
 		CwtValueExpression.Type.AliasMatchLeft -> return fallbackMultiResolveValue(valueElement) //TODO
 		CwtValueExpression.Type.Constant -> {
@@ -1197,5 +1232,10 @@ private fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<Ps
 	return findDefinitions(name, null, project)
 		.ifEmpty { findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) }
 		.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) }
+}
+
+fun resolveModifier(name:String,configGroup:CwtConfigGroup):CwtProperty?{
+	val modifier = configGroup.modifiers[name]?:return null
+	return modifier.pointer.element
 }
 //endregion

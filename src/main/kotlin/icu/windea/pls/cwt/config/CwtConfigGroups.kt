@@ -9,9 +9,7 @@ import org.slf4j.*
 class CwtConfigGroups(
 	val project: Project,
 	declarations: Map<String, List<Map<String, Any?>>>,
-	cwtFileConfigGroups: Map<String, Map<String, CwtFileConfig>>,
-	logFileGroups: Map<String, Map<String, VirtualFile>>,
-	csvFileGroups: Map<String, Map<String, VirtualFile>>
+	cwtFileConfigGroups: Map<String, Map<String, CwtFileConfig>>
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(CwtConfigGroup::class.java)
@@ -70,9 +68,7 @@ class CwtConfigGroups(
 		for((groupName, cwtFileConfigs) in cwtFileConfigGroups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
-				val logFiles = logFileGroups.getValue(groupName)
-				val csvFiles = csvFileGroups.getValue(groupName)
-				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs, logFiles, csvFiles)
+				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)
 			}
 		}
 		logger.info("Resolve config groups finished.")

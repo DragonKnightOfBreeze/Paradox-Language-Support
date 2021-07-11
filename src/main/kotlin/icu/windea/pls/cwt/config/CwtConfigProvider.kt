@@ -18,8 +18,6 @@ class CwtConfigProvider(
 	
 	private val declarationMap: MutableMap<String, List<Map<String, Any?>>> = mutableMapOf()
 	private val cwtFileConfigGroups: MutableMap<String, MutableMap<String, CwtFileConfig>> = mutableMapOf()
-	private val logFileGroups: MutableMap<String, MutableMap<String, VirtualFile>> = mutableMapOf()
-	private val csvFileGroups: MutableMap<String, MutableMap<String, VirtualFile>> = mutableMapOf()
 	
 	val configGroups: CwtConfigGroups = ReadAction.compute<CwtConfigGroups,Exception> {  initConfigGroups() }
 	
@@ -55,7 +53,7 @@ class CwtConfigProvider(
 		val resolveTime = System.currentTimeMillis() - startTime
 		logger.info("Resolve config files finished. ($resolveTime ms)")
 		logger.info("Init config groups...")
-		val configGroups = CwtConfigGroups(project, declarationMap, cwtFileConfigGroups, logFileGroups, csvFileGroups)
+		val configGroups = CwtConfigGroups(project, declarationMap, cwtFileConfigGroups)
 		val initTime = System.currentTimeMillis() - startTime - resolveTime 
 		logger.info("Init config groups finished. ($initTime ms)") 
 		return configGroups
@@ -70,8 +68,6 @@ class CwtConfigProvider(
 	private fun addConfigGroup(groupName: String, groupFile: VirtualFile, pathPrefix: String, project: Project) {
 		//可以额外补充配置，即配置组可能不止初始化一次
 		val cwtFileConfigGroup = cwtFileConfigGroups.getOrPut(groupName) { mutableMapOf() }
-		val logFileGroup = logFileGroups.getOrPut(groupName) { mutableMapOf() }
-		val csvFileGroup = csvFileGroups.getOrPut(groupName) { mutableMapOf() }
 		
 		for(file in groupFile.children) {
 			if(file.isDirectory) {
@@ -87,14 +83,6 @@ class CwtConfigProvider(
 					} else {
 						logger.warn("Cannot resolve config file '$configName', skip it.")
 					}
-				}
-				"log" -> {
-					val configName = file.path.removePrefix(pathPrefix)
-					logFileGroup[configName] = file
-				}
-				"csv" -> {
-					val configName = file.path.removePrefix(pathPrefix)
-					csvFileGroup[configName] = file
 				}
 			}
 		}
