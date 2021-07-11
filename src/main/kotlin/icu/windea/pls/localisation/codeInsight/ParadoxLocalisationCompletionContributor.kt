@@ -9,6 +9,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.script.codeInsight.*
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	companion object{
@@ -54,6 +55,9 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			val gameType = parameters.originalFile.fileInfo?.gameType?:return
 			val configGroup = getConfig(project).get(gameType)?:return
 			completeLocalisationCommand(commandField,configGroup, result)
+			
+			//TODO 补全的scope可能不正确
+			result.addLookupAdvertisement(message("scopeOfCompletionsMayBeIncorrect"))
 		}
 	}
 	
@@ -61,7 +65,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		extend(CompletionType.BASIC, localePattern, LocaleCompletionProvider())
 		//extend(CompletionType.BASIC, sequentialNumberPattern, SequentialNumberCompletionProvider()) //NOTE 无法被匹配
 		//extend(CompletionType.BASIC, colorIdPattern, ColorCompletionProvider()) //NOTE 无法被匹配
-		extend(CompletionType.BASIC, commandFieldPattern, CommandFieldCompletionProvider()) //TODO 匹配scope
+		extend(null, commandFieldPattern, CommandFieldCompletionProvider()) //TODO 匹配scope
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {
