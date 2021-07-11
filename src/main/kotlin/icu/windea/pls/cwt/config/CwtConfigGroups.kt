@@ -1,7 +1,6 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import org.slf4j.*

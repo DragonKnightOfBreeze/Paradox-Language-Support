@@ -6,8 +6,6 @@ import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 
-//根据文件大小不同，解析耗时可能长达数秒
-
 /**
  * Cwt配置文件的解析器。
  */

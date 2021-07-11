@@ -19,10 +19,9 @@ class CwtConfigProvider(
 	private val declarationMap: MutableMap<String, List<Map<String, Any?>>> = mutableMapOf()
 	private val cwtFileConfigGroups: MutableMap<String, MutableMap<String, CwtFileConfig>> = mutableMapOf()
 	
-	val configGroups: CwtConfigGroups = ReadAction.compute<CwtConfigGroups,Exception> {  initConfigGroups() }
+	val configGroups: CwtConfigGroups =  initConfigGroups() 
 	
-	//执行时间：15724ms（读取15446ms，解析278ms）
-	//优化后的执行时间：ms（读取ms，解析ms） 
+	//执行时间：读取3698ms 解析66ms
 	@Synchronized
 	private fun initConfigGroups(): CwtConfigGroups {
 		logger.info("Resolve config files...")
@@ -32,21 +31,23 @@ class CwtConfigProvider(
 		//这里有可能找不到，这时不要报错，之后还会执行到这里
 		val configFile = VfsUtil.findFileByURL(configUrl)
 		if(configFile != null) {
-			//NOTE 并发迭代
-			val children = configFile.children
-			for(file in children) {
-				val fileName = file.name
-				when {
-					//如果是目录则将其d名字作为规则组的名字
-					file.isDirectory -> {
-						val groupName = fileName.removeSuffix("-ext") //如果有后缀"-ext"，表示这是额外提供的配置
-						initConfigGroup(groupName, file)
+			//这里必须使用ReadAction
+			ReadAction.run<Exception> {
+				val children = configFile.children
+				for(file in children) {
+					val fileName = file.name
+					when {
+						//如果是目录则将其d名字作为规则组的名字
+						file.isDirectory -> {
+							val groupName = fileName.removeSuffix("-ext") //如果有后缀"-ext"，表示这是额外提供的配置
+							initConfigGroup(groupName, file)
+						}
+						//解析顶层文件declarations.yml
+						fileName == "declarations.yml" -> {
+							initDeclarations(file)
+						}
+						//忽略其他顶层的文件
 					}
-					//解析顶层文件declarations.yml
-					fileName == "declarations.yml" -> {
-						initDeclarations(file)
-					}
-					//忽略其他顶层的文件
 				}
 			}
 		}
@@ -91,13 +92,6 @@ class CwtConfigProvider(
 	private fun resolveConfig(file: VirtualFile, project: Project): CwtFileConfig? {
 		return try {
 			file.toPsiFile<CwtFile>(project)?.resolveConfig()
-			//val result: CwtFileConfig?
-			//measureTimeMillis {
-			//	result = file.toPsiFile<CwtFile>(project)?.resolveConfig()
-			//}.also { 
-			//	logger.info("Resolve file '${file.name}' finished. ($it ms)")
-			//}
-			//result
 		} catch(e: Exception) {
 			logger.warn(e.message, e)
 			null
@@ -111,17 +105,9 @@ class CwtConfigProvider(
 		logger.info("Init declarations finished.")
 	}
 	
-	//执行时间：134ms
 	private fun resolveYamlFile(file: VirtualFile): Map<String, List<Map<String, Any?>>>? {
 		return try {
 			yaml.load(file.inputStream)
-			//val result: Map<String, List<Map<String, Any?>>>?
-			//measureTimeMillis {
-			//	result = yaml.load(file.inputStream)
-			//}.also { 
-			//	logger.info("Resolve file '${file.name}' finished. ($it ms)")
-			//}
-			//result
 		} catch(e: Exception) {
 			logger.warn(e.message, e)
 			null
