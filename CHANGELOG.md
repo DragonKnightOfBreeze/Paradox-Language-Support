@@ -142,6 +142,10 @@
 * [X] 如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
 * [X] 优化插件设置相关代码
 * [X] 重载文件类型时自动处理bom（改为正确的bom，不改变编码）
+* [X] 支持规则类型alias_keys_field（匹配alias的aliasSubName，和alias_name应该没有区别）
+* [ ] 支持规则类型value_set
+* [ ] 支持规则类型single_alias
+* [ ] 支持规则类型complex_enum
 * [ ] 进行代码提示时，alias拥有特定的注释和图标（仅限aliasSubName为constant）
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 提示localisationCommand（commandField），限制scope

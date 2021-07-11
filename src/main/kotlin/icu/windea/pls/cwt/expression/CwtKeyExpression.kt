@@ -37,14 +37,14 @@ class CwtKeyExpression(
 				}
 				expression.surroundsWith("int[", "]") -> {
 					val extraValue = expression.substring(4, expression.length - 1).toIntRangeOrNull()
-					CwtKeyExpression(expression, Type.IntExpression, null,extraValue)
+					CwtKeyExpression(expression, Type.IntRange, null,extraValue)
 				}
 				expression == "float" -> {
 					CwtKeyExpression(expression, Type.Float)
 				}
 				expression.surroundsWith("float[", "]") -> {
 					val extraValue = expression.substring(6, expression.length - 1).toFloatRangeOrNull()
-					CwtKeyExpression(expression, Type.FloatExpression, null,extraValue)
+					CwtKeyExpression(expression, Type.FloatRange, null,extraValue)
 				}
 				expression == "scalar" -> {
 					CwtKeyExpression(expression, Type.Scalar)
@@ -69,19 +69,26 @@ class CwtKeyExpression(
 				}
 				expression.surroundsWith("value[", "]") -> {
 					val value = expression.substring(6, expression.length - 1)
-					CwtKeyExpression(expression, Type.ValueExpression, value)
+					CwtKeyExpression(expression, Type.Value, value)
 				}
 				expression.surroundsWith("enum[", "]") -> {
 					val value = expression.substring(5, expression.length - 1)
-					CwtKeyExpression(expression, Type.EnumExpression, value)
+					CwtKeyExpression(expression, Type.Enum, value)
 				}
 				expression.surroundsWith("scope[", "]") -> {
 					val value = expression.substring(6, expression.length - 1)
-					CwtKeyExpression(expression, Type.ScopeExpression, value)
+					CwtKeyExpression(expression, Type.Scope, value)
+				}
+				expression == "scope_field" -> {
+					CwtKeyExpression(expression, Type.ScopeField)
+				}
+				expression.surroundsWith("alias_keys_field[", "]") -> {
+					val value = expression.substring(17, expression.length - 1)
+					CwtKeyExpression(expression, Type.AliasKeysField, value)
 				}
 				expression.surroundsWith("alias_name[", "]") -> {
 					val value = expression.substring(11, expression.length - 1)
-					CwtKeyExpression(expression, Type.AliasNameExpression, value)
+					CwtKeyExpression(expression, Type.AliasName, value)
 				}
 				else -> {
 					val value = expression
@@ -95,19 +102,21 @@ class CwtKeyExpression(
 		Any,
 		Bool,
 		Int,
-		IntExpression,
+		IntRange,
 		Float,
-		FloatExpression,
+		FloatRange,
 		Scalar,
 		Localisation,
 		SyncedLocalisation,
 		InlineLocalisation,
 		TypeExpression,
 		TypeExpressionString,
-		ValueExpression,
-		EnumExpression,
-		ScopeExpression,
-		AliasNameExpression,
+		Value,
+		Enum,
+		Scope,
+		ScopeField,
+		AliasKeysField,
+		AliasName,
 		Constant
 	}
 	

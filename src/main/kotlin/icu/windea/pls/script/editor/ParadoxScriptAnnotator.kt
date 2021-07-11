@@ -51,7 +51,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			CwtKeyExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtKeyExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtKeyExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtKeyExpression.Type.EnumExpression -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
+			CwtKeyExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)
@@ -69,8 +69,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtValueExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtValueExpression.Type.EnumExpression -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
-			CwtValueExpression.Type.AliasMatchLeftExpression -> return fallbackAnnotateString(element,holder)
+			CwtValueExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
+			CwtValueExpression.Type.AliasMatchLeft -> return fallbackAnnotateString(element,holder)
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)

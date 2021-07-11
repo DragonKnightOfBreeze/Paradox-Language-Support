@@ -31,14 +31,14 @@ class CwtValueExpression(
 				}
 				expression.surroundsWith("int[", "]") -> {
 					val extraValue = expression.substring(4, expression.length - 1).toIntRangeOrNull()
-					CwtValueExpression(expression, Type.IntExpression, null,extraValue)
+					CwtValueExpression(expression, Type.IntRange, null,extraValue)
 				}
 				expression == "float" -> {
 					CwtValueExpression(expression, Type.Float)
 				}
 				expression.surroundsWith("float[", "]") -> {
 					val extraValue = expression.substring(6, expression.length - 1)
-					CwtValueExpression(expression, Type.FloatExpression, null,extraValue)
+					CwtValueExpression(expression, Type.FloatRange, null,extraValue)
 				}
 				expression == "scalar" -> {
 					CwtValueExpression(expression, Type.Scalar)
@@ -59,15 +59,19 @@ class CwtValueExpression(
 					CwtValueExpression(expression, Type.InlineLocalisation)
 				}
 				expression == "filepath" -> {
-					CwtValueExpression(expression, Type.FilePath)
-				}
-				expression.surroundsWith("filepath[", "]") -> {
-					val value = expression.substring(9, expression.length - 1)
-					CwtValueExpression(expression, Type.FilePathExpression, value)
+					val (value,extraValue) = when{
+						expression.surroundsWith("filepath[", "]") -> {
+							val v = expression.substring(9, expression.length - 1)
+							val commaIndex = v.indexOf(',')
+							if(commaIndex == -1) v to null else v.substring(0,commaIndex) to v.substring(commaIndex+1)
+						}
+						else -> null to null
+					}
+					CwtValueExpression(expression, Type.FilePath,value,extraValue)
 				}
 				expression.surroundsWith("icon[", "]") -> {
 					val value = expression.substring(5, expression.length - 1)
-					CwtValueExpression(expression, Type.IconExpression, value)
+					CwtValueExpression(expression, Type.Icon, value)
 				}
 				expression == "date_field" -> {
 					CwtValueExpression(expression, Type.DateField)
@@ -83,50 +87,54 @@ class CwtValueExpression(
 				}
 				expression.surroundsWith("value[", "]") -> {
 					val value = expression.substring(6, expression.length - 1)
-					CwtValueExpression(expression, Type.ValueExpression, value)
+					CwtValueExpression(expression, Type.Value, value)
 				}
 				expression.surroundsWith("enum[", "]") -> {
 					val value = expression.substring(5, expression.length - 1)
-					CwtValueExpression(expression, Type.EnumExpression, value)
+					CwtValueExpression(expression, Type.Enum, value)
 				}
 				expression.surroundsWith("scope[", "]") -> {
 					val value = expression.substring(6, expression.length - 1)
-					CwtValueExpression(expression, Type.ScopeExpression, value)
+					CwtValueExpression(expression, Type.Scope, value)
 				}
 				expression == "scope_field" -> {
 					CwtValueExpression(expression, Type.ScopeField)
 				}
 				expression == "variable_field" -> {
-					CwtValueExpression(expression, Type.VariableField)
-				}
-				expression.surroundsWith("variable_field[", "]") -> {
-					val value = expression.substring(15, expression.length - 1)
-					CwtValueExpression(expression, Type.VariableFieldExpression, value)
+					val value = when{
+						expression.surroundsWith("variable_field[", "]") ->  expression.substring(15, expression.length - 1)
+						else -> null
+					}
+					CwtValueExpression(expression, Type.VariableField,value)
 				}
 				expression == "int_variable_field" -> {
-					CwtValueExpression(expression, Type.IntVariableField)
-				}
-				expression.surroundsWith("int_variable_field[", "]") -> {
-					val value = expression.substring(19, expression.length - 1)
-					CwtValueExpression(expression, Type.IntVariableFieldExpression, value)
+					val value = when{
+						expression.surroundsWith("int_variable_field[", "]") ->  expression.substring(19, expression.length - 1)
+						else -> null
+					}
+					CwtValueExpression(expression, Type.IntVariableField,value)
 				}
 				expression == "value_field" -> {
-					CwtValueExpression(expression, Type.ValueField)
-				}
-				expression.surroundsWith("value_field[", "]") -> {
-					val value = expression.substring(12, expression.length - 1)
-					CwtValueExpression(expression, Type.ValueFieldExpression, value)
+					val value = when{
+						expression.surroundsWith("value_field[", "]") ->  expression.substring(12, expression.length - 1)
+						else -> null
+					}
+					CwtValueExpression(expression, Type.ValueField,value)
 				}
 				expression == "int_value_field" -> {
-					CwtValueExpression(expression, Type.IntValueField)
+					val value = when {
+						expression.surroundsWith("int_value_field[", "]") -> expression.substring(16, expression.length - 1)
+						else -> null
+					}
+					CwtValueExpression(expression, Type.IntValueField,value)
 				}
-				expression.surroundsWith("int_value_field[", "]") -> {
-					val value = expression.substring(16, expression.length - 1)
-					CwtValueExpression(expression, Type.IntValueFieldExpression, value)
+				expression.surroundsWith("alias_keys_field[", "]") -> {
+					val value = expression.substring(17, expression.length - 1)
+					CwtValueExpression(expression, Type.AliasKeysField, value)
 				}
 				expression.surroundsWith("alias_match_left[", "]") -> {
 					val value = expression.substring(17, expression.length - 1)
-					CwtValueExpression(expression, Type.AliasMatchLeftExpression, value)
+					CwtValueExpression(expression, Type.AliasMatchLeft, value)
 				}
 				else -> {
 					val value = expression
@@ -140,9 +148,9 @@ class CwtValueExpression(
 		Any,
 		Bool,
 		Int,
-		IntExpression,
+		IntRange,
 		Float,
-		FloatExpression,
+		FloatRange,
 		Scalar,
 		PercentageField,
 		ColorField,
@@ -151,23 +159,20 @@ class CwtValueExpression(
 		InlineLocalisation,
 		FilePath,
 		FilePathExpression,
-		IconExpression,
+		Icon,
 		DateField,
 		TypeExpression,
 		TypeExpressionString,
-		ValueExpression,
-		EnumExpression,
-		ScopeExpression,
+		Value,
+		Enum,
+		Scope,
 		ScopeField,
 		VariableField,
-		VariableFieldExpression,
 		IntVariableField,
-		IntVariableFieldExpression,
 		ValueField,
-		ValueFieldExpression,
 		IntValueField,
-		IntValueFieldExpression,
-		AliasMatchLeftExpression,
+		AliasKeysField,
+		AliasMatchLeft,
 		Constant
 	}
 	

@@ -12,6 +12,8 @@ import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 @Suppress("UNCHECKED_CAST")
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	companion object {
+		private val scopeOfCompletionsMayBeIncorrect = message("scopeOfCompletionsMayBeIncorrect")
+		
 		private val stringPattern = psiElement(STRING_TOKEN)
 		private val definitionPattern = or(
 			psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID),
@@ -64,6 +66,9 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 				//进行提示
 				addValueCompletionsInBlock(valueElement, definitionProperty, result)
 			}
+			
+			//TODO 补全的scope可能不正确
+			result.addLookupAdvertisement(scopeOfCompletionsMayBeIncorrect)
 		}
 	}
 	
