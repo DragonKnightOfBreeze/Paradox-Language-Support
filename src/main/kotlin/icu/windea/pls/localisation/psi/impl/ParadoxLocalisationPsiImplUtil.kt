@@ -52,7 +52,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationProperty, @IconFlags flags: Int): Icon {
-		if(element.paradoxLocalisationInfo != null) return localisationIcon
+		if(element.localisationInfo != null) return localisationIcon
 		return localisationPropertyIcon
 	}
 	
@@ -76,7 +76,7 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getCategory(element:ParadoxLocalisationProperty):ParadoxLocalisationCategory?{
 		//注意：element.stub可能会导致ProcessCanceledException
-		return runCatching{ element.stub?.category }.getOrNull()?:element.paradoxLocalisationInfo?.category
+		return runCatching{ element.stub?.category }.getOrNull()?:element.localisationInfo?.category
 	}
 	
 	@JvmStatic

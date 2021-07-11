@@ -5,7 +5,6 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import java.io.*
-import java.util.*
 
 //用于生成markdown文档
 
@@ -38,9 +37,9 @@ private fun generateDocuments(root: String, documentNameTypeMap: Map<String, Str
 }
 
 private fun getDocumentText(documentName: String, type: String, project: Project): String {
-	val definitions = findDefinitions(type, project).filter { it.paradoxFileInfo?.rootType == ParadoxRootType.Stdlib }
+	val definitions = findDefinitions(type, project).filter { it.fileInfo?.rootType == ParadoxRootType.Stdlib }
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
-		val definition = it.paradoxDefinitionInfo
+		val definition = it.definitionInfo
 		val id = definition?.name
 		val name = definition?.localisation?.find { loc -> loc.name.lowercase() == "name" }
 			?.let { l-> findLocalisation(l.keyName, inferParadoxLocale(),project) }?.extractText()

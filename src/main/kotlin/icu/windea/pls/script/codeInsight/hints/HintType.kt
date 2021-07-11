@@ -14,7 +14,7 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 	) {
 		override fun provideHints(elem: PsiElement): List<InlayInfo> {
 			return (elem as? ParadoxScriptProperty)?.let { element ->
-				element.paradoxDefinitionInfo?.let { definitionInfo ->
+				element.definitionInfo?.let { definitionInfo ->
 					val result = mutableListOf<InlayInfo>()
 					//提示定义的名字类型信息
 					val text1 = buildString {
@@ -41,7 +41,7 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 		}
 		
 		override fun isApplicable(elem: PsiElement): Boolean {
-			return elem is ParadoxScriptProperty && elem.paradoxDefinitionInfo != null
+			return elem is ParadoxScriptProperty && elem.definitionInfo != null
 		}
 	};
 	

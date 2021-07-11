@@ -39,7 +39,7 @@ object ParadoxIconUrlResolver {
 	}
 	
 	fun resolveBySprite(sprite: ParadoxScriptProperty, defaultToUnknown: Boolean = true): String {
-		val spriteName = sprite.paradoxDefinitionInfo?.name
+		val spriteName = sprite.definitionInfo?.name
 		if(spriteName.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 		return try {
 			var url = spriteNameUrlCache[spriteName]
@@ -58,7 +58,7 @@ object ParadoxIconUrlResolver {
 	}
 	
 	fun resolveByFile(file: VirtualFile, defaultToUnknown: Boolean = true): String {
-		val path = file.paradoxFileInfo?.path?.toString()
+		val path = file.fileInfo?.path?.toString()
 		if(path.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 		return try {
 			var url = pathUrlCache[path]
@@ -77,7 +77,7 @@ object ParadoxIconUrlResolver {
 	}
 	
 	fun resolveByFile(file: PsiFile, defaultToUnknown: Boolean = true): String {
-		val path = file.paradoxFileInfo?.path?.toString()
+		val path = file.fileInfo?.path?.toString()
 		if(path.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 		return try {
 			var url = pathUrlCache[path]
@@ -108,7 +108,7 @@ object ParadoxIconUrlResolver {
 	}
 	
 	private fun doResolveBySprite(sprite: ParadoxScriptProperty): String? {
-		val fileInfo = sprite.paradoxFileInfo ?: return null
+		val fileInfo = sprite.fileInfo ?: return null
 		val rootPath = fileInfo.rootPath
 		val ddsRelPath = sprite.findProperty("textureFile", true)?.value ?: return null
 		val ddsAbsPath = rootPath.resolve(ddsRelPath).toString()
@@ -123,7 +123,7 @@ object ParadoxIconUrlResolver {
 	}
 	
 	private fun doResolveByFile(file: VirtualFile): String? {
-		val fileInfo = file.paradoxFileInfo ?: return null
+		val fileInfo = file.fileInfo ?: return null
 		val rootPath = fileInfo.rootPath
 		val ddsRelPath = fileInfo.path.path
 		val ddsAbsPath = rootPath.resolve(ddsRelPath).toString()
@@ -131,7 +131,7 @@ object ParadoxIconUrlResolver {
 	}
 	
 	private fun doResolveByFile(file: PsiFile): String? {
-		val fileInfo = file.paradoxFileInfo ?: return null
+		val fileInfo = file.fileInfo ?: return null
 		val rootPath = fileInfo.rootPath
 		val ddsRelPath = fileInfo.path.path
 		val ddsAbsPath = rootPath.resolve(ddsRelPath).toString()

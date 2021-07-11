@@ -20,7 +20,7 @@ class ParadoxLocalisationPropertyReferenceReference(
 	override fun resolve(): PsiElement? {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return null
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return null
-		val locale = file.paradoxLocale
+		val locale = file.localeInfo
 		val name = element.name
 		val project = element.project
 		return when(category) {
@@ -32,7 +32,7 @@ class ParadoxLocalisationPropertyReferenceReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
-		val locale = file.paradoxLocale
+		val locale = file.localeInfo
 		val name = element.name
 		val project = element.project
 		return when(category) {

@@ -2,17 +2,16 @@ package icu.windea.pls.model
 
 import icu.windea.pls.*
 
-class ParadoxSequentialNumber(
+class ParadoxLocaleInfo(
 	val name: String,
-	val description: String,
-	val placeholderText: String
+	val description: String
 ) {
 	val tailText = " $description"
 	val popupText = "$name - $description"
-	val icon get() = localisationSequentialNumberIcon
+	val icon get() = localisationLocaleIcon
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxSequentialNumber && name == other.name
+		return this === other || other is ParadoxLocaleInfo && name == other.name
 	}
 	
 	override fun hashCode(): Int {

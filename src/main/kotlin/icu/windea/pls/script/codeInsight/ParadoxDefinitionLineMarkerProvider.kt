@@ -21,7 +21,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//如果是definition，则添加definition的gutterIcon
 		if(element is ParadoxScriptProperty) {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return
+			val definitionInfo = element.definitionInfo ?: return
 			val lineMarkerInfo = createMarker(definitionInfo, element)
 			result.add(lineMarkerInfo)
 		}

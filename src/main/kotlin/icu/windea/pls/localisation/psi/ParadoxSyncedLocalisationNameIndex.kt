@@ -13,22 +13,22 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 	
 	override fun getCacheSize() = 2 * 1024
 	
-	fun exists(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope): Boolean {
+	fun exists(name: String, localeInfo: ParadoxLocaleInfo?, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return false
 		
-		if(locale == null) {
+		if(localeInfo == null) {
 			return existsElement(name, project, scope)
 		} else {
-			return existsElement(name, project, scope) { element -> locale == element.paradoxLocale }
+			return existsElement(name, project, scope) { element -> localeInfo == element.localeInfo }
 		}
 	}
 	
-	fun getOne(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean): ParadoxLocalisationProperty? {
+	fun getOne(name: String, localeInfo: ParadoxLocaleInfo?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean): ParadoxLocalisationProperty? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
-		if(locale == null) {
+		if(localeInfo == null) {
 			if(preferFirst) {
 				return findFirstElement(name, project, scope)
 			} else {
@@ -36,22 +36,22 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 			}
 		} else {
 			if(preferFirst) {
-				return findFirstElement(name, project, scope, hasDefault) { element -> locale == element.paradoxLocale }
+				return findFirstElement(name, project, scope, hasDefault) { element -> localeInfo == element.localeInfo }
 			} else {
-				return findLastElement(name, project, scope, hasDefault) { element -> locale == element.paradoxLocale }
+				return findLastElement(name, project, scope, hasDefault) { element -> localeInfo == element.localeInfo }
 			}
 		}
 	}
 	
-	fun findAll(name: String, locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
+	fun findAll(name: String, localeInfo: ParadoxLocaleInfo?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
 		
 		var index = 0
 		return processAllElements(name, project, scope) { element, result ->
-			val elementLocale = element.paradoxLocale
-			if(locale == null) {
+			val elementLocale = element.localeInfo
+			if(localeInfo == null) {
 				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
 				if(inferParadoxLocale() == elementLocale) {
 					result.add(index++, element)
@@ -59,7 +59,7 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 					result.add(element)
 				}
 			} else {
-				if(locale == elementLocale || hasDefault) {
+				if(localeInfo == elementLocale || hasDefault) {
 					result.add(element)
 				}
 			}
@@ -67,7 +67,7 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 		}
 	}
 	
-	//fun findAll(locale: ParadoxLocale?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
+	//fun findAll(locale: ParadoxLocaleInfo?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
 	//	//如果索引未完成
 	//	if(DumbService.isDumb(project)) return emptyList()
 	//	
@@ -79,7 +79,7 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 	//		val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
 	//		var nextIndex = index
 	//		for(element in elements) {
-	//			val elementLocale = element.paradoxLocale
+	//			val elementLocale = element.localeInfo
 	//			if(locale == null) {
 	//				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
 	//				if(elementLocale == inferParadoxLocale()) {
@@ -106,12 +106,12 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 		//需要保证返回结果的名字的唯一性
 		if(keyword.isEmpty()) {
 			return findFirstElementByKeys(project, scope, maxSize = maxSize, hasDefault = true) { element ->
-				element.paradoxLocale == inferParadoxLocale()
+				element.localeInfo == inferParadoxLocale()
 			}
 		} else {
 			return findFirstElementByKeys(project, scope, maxSize = maxSize, hasDefault = true,
 				keyPredicate = { key -> matches(key, keyword) }) { element ->
-				element.paradoxLocale == inferParadoxLocale()
+				element.localeInfo == inferParadoxLocale()
 			}
 		}
 	}

@@ -20,7 +20,7 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 	}
 	
 	override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-		val localisationInfo = psi.paradoxLocalisationInfo
+		val localisationInfo = psi.localisationInfo
 		val name = localisationInfo?.name ?: ""
 		val category = localisationInfo?.category ?: ParadoxLocalisationCategory.Localisation
 		return ParadoxLocalisationPropertyStubImpl(parentStub, name,category)
@@ -29,7 +29,7 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		//仅当是localisation或localisation_synced时才创建索引
 		val element = node.psi as? ParadoxLocalisationProperty ?: return false
-		return element.paradoxLocalisationInfo != null
+		return element.localisationInfo != null
 	}
 	
 	override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {

@@ -68,7 +68,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
-		if(element.paradoxDefinitionInfo != null) return definitionIcon
+		if(element.definitionInfo != null) return definitionIcon
 		return scriptPropertyIcon
 	}
 	

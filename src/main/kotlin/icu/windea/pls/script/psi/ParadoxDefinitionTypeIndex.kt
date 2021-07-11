@@ -61,10 +61,10 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	private fun matches(element: ParadoxScriptProperty, name: String, subtype: String?): Boolean {
 		if(subtype == null) {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val definitionInfo = element.definitionInfo ?: return false
 			return definitionInfo.name == name
 		} else {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val definitionInfo = element.definitionInfo ?: return false
 			return definitionInfo.name == name && subtype in definitionInfo.subtypes
 		}
 	}
@@ -73,19 +73,19 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 		if(subtype == null) {
 			return true
 		} else {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val definitionInfo = element.definitionInfo ?: return false
 			return subtype in definitionInfo.subtypes
 		}
 	}
 	
 	private fun matchesAndDistinct(element: ParadoxScriptProperty, keyword: String, subtype: String?, names: MutableSet<String>): Boolean {
 		if(subtype == null) {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val definitionInfo = element.definitionInfo ?: return false
 			val name = definitionInfo.name
 			if(!names.add(name)) return false
 			return name.matchesKeyword(keyword)
 		} else {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val definitionInfo = element.definitionInfo ?: return false
 			val name = definitionInfo.name
 			if(!names.add(name)) return false
 			return name.matchesKeyword(keyword) && subtype in definitionInfo.subtypes

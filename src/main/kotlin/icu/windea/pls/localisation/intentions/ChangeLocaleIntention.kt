@@ -41,17 +41,17 @@ class ChangeLocaleIntention : IntentionAction {
 	
 	private class Popup(
 		private val value: ParadoxLocalisationLocale,
-		values: Array<ParadoxLocale>
-	) : BaseListPopupStep<ParadoxLocale>(_title, *values) {
-		override fun getIconFor(value: ParadoxLocale) = value.icon
+		values: Array<ParadoxLocaleInfo>
+	) : BaseListPopupStep<ParadoxLocaleInfo>(_title, *values) {
+		override fun getIconFor(value: ParadoxLocaleInfo) = value.icon
 		
-		override fun getTextFor(value: ParadoxLocale) = value.popupText
+		override fun getTextFor(value: ParadoxLocaleInfo) = value.popupText
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxLocale, finalChoice: Boolean): PopupStep<*>? {
+		override fun onChosen(selectedValue: ParadoxLocaleInfo, finalChoice: Boolean): PopupStep<*>? {
 			runWriteAction { value.name = selectedValue.name }
 			return PopupStep.FINAL_CHOICE
 		}

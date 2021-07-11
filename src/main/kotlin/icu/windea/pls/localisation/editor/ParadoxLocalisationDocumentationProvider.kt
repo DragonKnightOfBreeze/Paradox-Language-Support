@@ -28,7 +28,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(localisation property) <b>").append(element.name).append("</b>")
 			}
 		}
@@ -37,7 +37,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun getLocalisationInfo(element: ParadoxLocalisationProperty, name:String,category: ParadoxLocalisationCategory): String {
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 		}
@@ -118,7 +118,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(localisation property) <b>").append(element.name).append("</b>")
 			}
 		}
@@ -127,7 +127,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun getLocalisationDoc(element: ParadoxLocalisationProperty, name:String,category: ParadoxLocalisationCategory): String {
 		return buildString {
 			definition {
-				element.paradoxFileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+				element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 				append("(${category.key}) <b>").append(name).append("</b>")
 			}
 			//单行注释文本
@@ -158,7 +158,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation locale) <b>").append(name).append("</b>")
 			}
 			//描述
-			val paradoxLocale = element.paradoxLocale
+			val paradoxLocale = element.localeInfo
 			if(paradoxLocale != null) {
 				content {
 					append(paradoxLocale.description)
@@ -231,7 +231,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation color) <b>").append(name).append("</b>")
 			}
 			//描述
-			val paradoxColor = element.paradoxColor
+			val paradoxColor = element.colorInfo
 			if(paradoxColor != null) {
 				val description = paradoxColor.description
 				val colorText = paradoxColor.colorText

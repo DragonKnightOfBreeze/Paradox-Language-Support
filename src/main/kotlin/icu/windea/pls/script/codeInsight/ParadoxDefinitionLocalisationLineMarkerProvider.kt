@@ -21,7 +21,7 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerPro
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//如果是definition且definition的localisation不为空，则添加definitionLocalisation的gutterIcon
 		if(element is ParadoxScriptProperty) {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return
+			val definitionInfo = element.definitionInfo ?: return
 			val localisation = definitionInfo.localisation
 			if(localisation.isEmpty()) return
 			val lineMarkerInfo = createMarker(definitionInfo, element)

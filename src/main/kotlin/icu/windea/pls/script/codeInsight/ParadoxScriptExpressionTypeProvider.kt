@@ -20,7 +20,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return when{
 			element is ParadoxScriptVariable -> getVariableHint(element)
 			element is ParadoxScriptProperty -> {
-				val definition = element.paradoxDefinitionInfo ?: return getPropertyHint(element)
+				val definition = element.definitionInfo ?: return getPropertyHint(element)
 				getDefinitionHint(definition) 
 			}
 			element is ParadoxScriptVariableReference -> {

@@ -15,8 +15,8 @@ class ParadoxScriptFileViewProvider(
 		val psi =  super.getPsiInner(target)
 		//传递fileInfo，注意virtualFile可能是LightVirtualFile
 		val fileInfo  = when(val file = virtualFile) {
-			is LightVirtualFile -> file.originalFile?.paradoxFileInfo
-			else -> file.paradoxFileInfo
+			is LightVirtualFile -> file.originalFile?.fileInfo
+			else -> file.fileInfo
 		}
 		psi?.putUserData(paradoxFileInfoKey,fileInfo)
 		return psi

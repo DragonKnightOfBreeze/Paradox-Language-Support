@@ -41,17 +41,17 @@ class ChangeSequentialNumberIntention : IntentionAction {
 	
 	private class Popup(
 		private val value: ParadoxLocalisationSequentialNumber,
-		values: Array<ParadoxSequentialNumber>
-	) : BaseListPopupStep<ParadoxSequentialNumber>(_title, *values) {
-		override fun getIconFor(value: ParadoxSequentialNumber) = value.icon
+		values: Array<ParadoxSequentialNumberInfo>
+	) : BaseListPopupStep<ParadoxSequentialNumberInfo>(_title, *values) {
+		override fun getIconFor(value: ParadoxSequentialNumberInfo) = value.icon
 		
-		override fun getTextFor(value: ParadoxSequentialNumber) = value.popupText
+		override fun getTextFor(value: ParadoxSequentialNumberInfo) = value.popupText
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxSequentialNumber, finalChoice: Boolean): PopupStep<*>? {
+		override fun onChosen(selectedValue: ParadoxSequentialNumberInfo, finalChoice: Boolean): PopupStep<*>? {
 			//需要在WriteCommandAction里面执行
 			runWriteAction { value.name = selectedValue.name }
 			return PopupStep.FINAL_CHOICE

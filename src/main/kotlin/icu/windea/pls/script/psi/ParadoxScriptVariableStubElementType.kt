@@ -26,7 +26,7 @@ class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVaria
 		//仅当是scripted_variable才创建索引
 		if(node.treeParent.elementType != ParadoxScriptTypes.ROOT_BLOCK) return false
 		val file = node.psi.containingFile
-		val parentPath = file.paradoxFileInfo?.path?.parent ?: return false
+		val parentPath = file.fileInfo?.path?.parent ?: return false
 		return "common/scripted_variables".matchesPath(parentPath)
 	}
 	

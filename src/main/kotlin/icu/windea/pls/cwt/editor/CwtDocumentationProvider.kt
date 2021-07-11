@@ -18,7 +18,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text
+			val configTypeText = element.configType?.text
 			definition {
 				if(configTypeText != null) append("(").append(configTypeText).append(") ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
@@ -29,7 +29,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getStringInfo(element: CwtString): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text
+			val configTypeText = element.configType?.text
 			definition {
 				if(configTypeText != null) append("(").append(configTypeText).append(") ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
@@ -48,7 +48,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: CwtProperty): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text
+			val configTypeText = element.configType?.text
 			definition {
 				if(configTypeText != null) append("(").append(configTypeText).append(") ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
@@ -66,7 +66,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getStringDoc(element: CwtString): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.cwtConfigType?.text
+			val configTypeText = element.configType?.text
 			definition {
 				if(configTypeText != null) append("(").append(configTypeText).append(") ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")

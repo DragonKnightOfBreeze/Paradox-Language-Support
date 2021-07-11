@@ -60,7 +60,7 @@ object ParadoxLocalisationTextExtractor {
 	}
 	
 	private fun extractSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, buffer: StringBuilder) {
-		val placeholderText = element.paradoxSequentialNumber?.placeholderText
+		val placeholderText = element.sequentialNumberInfo?.placeholderText
 		if(placeholderText != null) {
 			buffer.append(placeholderText)
 			return

@@ -28,7 +28,7 @@ class ParadoxLocalisationCommandFieldReference(
 		val project = element.project
 		//查找类型为scripted_loc的definition
 		return findDefinitionsByKeywordByType(keyword,"scripted_loc", project).mapToArray {
-			val name = it.paradoxDefinitionInfo?.name.orEmpty() //不应该为空
+			val name = it.definitionInfo?.name.orEmpty() //不应该为空
 			val icon = localisationCommandFieldIcon
 			val typeText = it.containingFile.name
 			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)

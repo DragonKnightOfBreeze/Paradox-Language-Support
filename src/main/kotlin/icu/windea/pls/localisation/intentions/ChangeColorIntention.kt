@@ -41,17 +41,17 @@ class ChangeColorIntention : IntentionAction {
 	
 	private class Popup(
 		private val value: ParadoxLocalisationColorfulText,
-		values: Array<ParadoxColor>
-	) : BaseListPopupStep<ParadoxColor>(_title, *values) {
-		override fun getIconFor(value: ParadoxColor) = value.icon
+		values: Array<ParadoxColorInfo>
+	) : BaseListPopupStep<ParadoxColorInfo>(_title, *values) {
+		override fun getIconFor(value: ParadoxColorInfo) = value.icon
 		
-		override fun getTextFor(value: ParadoxColor) = value.popupText
+		override fun getTextFor(value: ParadoxColorInfo) = value.popupText
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxColor, finalChoice: Boolean): PopupStep<*>? {
+		override fun onChosen(selectedValue: ParadoxColorInfo, finalChoice: Boolean): PopupStep<*>? {
 			runWriteAction { value.name = selectedValue.name }
 			return PopupStep.FINAL_CHOICE
 		}

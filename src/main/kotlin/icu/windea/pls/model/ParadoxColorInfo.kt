@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import com.intellij.util.ui.*
 import java.awt.*
 
-class ParadoxColor(
+class ParadoxColorInfo(
 	val name: String,
 	val description: String,
 	val colorRgb: Int,
@@ -15,7 +15,7 @@ class ParadoxColor(
 	val icon = ColorIcon(16, color)
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxColor && name == other.name
+		return this === other || other is ParadoxColorInfo && name == other.name
 	}
 	
 	override fun hashCode(): Int {

@@ -43,7 +43,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateLocale(element: ParadoxLocalisationLocale, holder: AnnotationHolder) {
 		//注明不支持的情况
-		val locale = element.paradoxLocale
+		val locale = element.localeInfo
 		if(locale == null) {
 			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedLocale", element.name))
 				.create()
@@ -60,7 +60,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//	return
 		//}
 		//颜色高亮
-		val color = element.paradoxColor
+		val color = element.colorInfo
 		if(color != null) {
 			val colorId = color.name
 			val e = element.propertyReferenceParameter
@@ -82,7 +82,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
 		//注明不支持的情况 & 颜色高亮
-		val paradoxColor = element.paradoxColor
+		val paradoxColor = element.colorInfo
 		if(paradoxColor == null) {
 			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedColor", element.name))
 				.create()

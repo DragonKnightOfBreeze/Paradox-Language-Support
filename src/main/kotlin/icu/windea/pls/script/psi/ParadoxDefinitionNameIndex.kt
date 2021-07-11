@@ -56,10 +56,10 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	
 	private fun matches(element: ParadoxScriptProperty, type: String, subtype: String?): Boolean {
 		if(subtype == null) {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val definitionInfo = element.definitionInfo ?: return false
 			return type == definitionInfo.type
 		} else {
-			val definitionInfo = element.paradoxDefinitionInfo ?: return false
+			val definitionInfo = element.definitionInfo ?: return false
 			return type == definitionInfo.type && subtype in definitionInfo.subtypes
 		}
 	}
