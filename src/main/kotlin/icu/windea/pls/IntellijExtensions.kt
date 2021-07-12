@@ -187,6 +187,16 @@ inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
 	}
 }
 
+inline fun PsiElement.findChild(predicate: (PsiElement) -> Boolean): PsiElement? {
+	//不会忽略某些特定类型的子元素
+	var child = this.firstChild
+	while(child != null) {
+		if(predicate(child)) return child
+		child = child.nextSibling
+	}
+	return null
+}
+
 inline fun <T : PsiElement, R> PsiElement.mapChildOfType(type: Class<out T>, transform: (T) -> R): List<R> {
 	//为了优化性能，使用SmartList，并且不保存中间结果
 	//参考：com.intellij.psi.util.PsiTreeUtil.getChildrenOfTypeAsList

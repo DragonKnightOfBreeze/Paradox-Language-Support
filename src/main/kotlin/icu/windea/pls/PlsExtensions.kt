@@ -131,7 +131,7 @@ private fun doGetConfigType(element: CwtValue): CwtConfigType? {
 	}
 }
 
-val PsiElement.paradoxGameType: ParadoxGameType? get() = doGetGameType(this)
+val PsiElement.gameType: ParadoxGameType? get() = doGetGameType(this)
 
 private fun doGetGameType(element: PsiElement): ParadoxGameType? {
 	return element.containingFile.fileInfo?.gameType
@@ -954,6 +954,10 @@ fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
 
 fun StringBuilder.appendBr(): StringBuilder {
 	return append("<br>")
+}
+
+fun String.optimizeDocumentText():String{
+	return this //TODO 去掉首尾空白同时去掉多余的空白
 }
 //endregion
 

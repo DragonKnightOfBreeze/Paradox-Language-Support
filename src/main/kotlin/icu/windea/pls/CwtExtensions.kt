@@ -1027,7 +1027,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 		CwtKeyExpression.Type.Value -> {
 			val valueName = expression.value ?: return null
 			val name = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return null
+			val gameType = keyElement.gameType ?: return null
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			val valueValueConfig = configGroup.values.get(valueName)?.valueConfigs?.find { it.value == name }
 			valueValueConfig?.pointer?.element?.castOrNull<CwtString>()
@@ -1038,7 +1038,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 		CwtKeyExpression.Type.Enum -> {
 			val enumName = expression.value ?: return null
 			val name = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return null
+			val gameType = keyElement.gameType ?: return null
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return null
 			enumValueConfig.pointer.element.castOrNull<CwtString>()
@@ -1050,7 +1050,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 		CwtKeyExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return null
 			val aliasSubName = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return null
+			val gameType = keyElement.gameType ?: return null
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			//同名的定义有多个，需要匹配
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
@@ -1070,7 +1070,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return null
 			val aliasSubName = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return null
+			val gameType = keyElement.gameType ?: return null
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			//同名的定义有多个，需要匹配
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
@@ -1118,7 +1118,7 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 		CwtKeyExpression.Type.Value -> {
 			val valueName = expression.value ?: return emptyList()
 			val name = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return emptyList()
+			val gameType = keyElement.gameType ?: return emptyList()
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			val valueValueConfig = configGroup.values.get(valueName)?.valueConfigs?.find { it.value == name }
 			valueValueConfig?.pointer?.element?.castOrNull<CwtString>()?.toSingletonList() ?: return emptyList()
@@ -1129,7 +1129,7 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 		CwtKeyExpression.Type.Enum -> {
 			val enumName = expression.value ?: return emptyList()
 			val name = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return emptyList()
+			val gameType = keyElement.gameType ?: return emptyList()
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return emptyList()
 			enumValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
@@ -1144,7 +1144,7 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 		CwtKeyExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return emptyList()
 			val aliasSubName = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return emptyList()
+			val gameType = keyElement.gameType ?: return emptyList()
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			//同名的定义有多个，需要匹配
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
@@ -1162,7 +1162,7 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return emptyList()
 			val aliasSubName = keyElement.value
-			val gameType = keyElement.paradoxGameType ?: return emptyList()
+			val gameType = keyElement.gameType ?: return emptyList()
 			val configGroup = getConfig(keyElement.project).getValue(gameType)
 			//同名的定义有多个，需要匹配
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.find {
@@ -1214,7 +1214,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 		CwtValueExpression.Type.Value -> {
 			val valueName = expression.value ?: return null
 			val name = valueElement.value
-			val gameType = valueElement.paradoxGameType ?: return null
+			val gameType = valueElement.gameType ?: return null
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			val valueValueConfig = configGroup.values.get(valueName)?.valueConfigs?.find { it.value == name }
 			valueValueConfig?.pointer?.element?.castOrNull<CwtString>()
@@ -1225,7 +1225,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 		CwtValueExpression.Type.Enum -> {
 			val enumName = expression.value ?: return null
 			val name = valueElement.value
-			val gameType = valueElement.paradoxGameType ?: return null
+			val gameType = valueElement.gameType ?: return null
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return null
 			enumValueConfig.pointer.element.castOrNull<CwtString>()
@@ -1240,7 +1240,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 		CwtValueExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return null
 			val aliasSubName = valueElement.value
-			val gameType = valueElement.paradoxGameType ?: return null
+			val gameType = valueElement.gameType ?: return null
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			//同名的定义有多个，取第一个即可
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.firstOrNull()
@@ -1297,7 +1297,7 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 		CwtValueExpression.Type.Value -> {
 			val valueName = expression.value ?: return emptyList()
 			val name = valueElement.value
-			val gameType = valueElement.paradoxGameType ?: return emptyList()
+			val gameType = valueElement.gameType ?: return emptyList()
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			val valueValueConfig = configGroup.values.get(valueName)?.valueConfigs?.find { it.value == name }
 			valueValueConfig?.pointer?.element.castOrNull<CwtString>()?.toSingletonList() ?: return emptyList()
@@ -1308,7 +1308,7 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 		CwtValueExpression.Type.Enum -> {
 			val enumName = expression.value ?: return emptyList()
 			val name = valueElement.value
-			val gameType = valueElement.paradoxGameType ?: return emptyList()
+			val gameType = valueElement.gameType ?: return emptyList()
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigs?.find { it.value == name } ?: return emptyList()
 			enumValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
@@ -1323,7 +1323,7 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 		CwtValueExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return emptyList()
 			val aliasSubName = valueElement.value
-			val gameType = valueElement.paradoxGameType ?: return emptyList()
+			val gameType = valueElement.gameType ?: return emptyList()
 			val configGroup = getConfig(valueElement.project).getValue(gameType)
 			//同名的定义有多个，取第一个即可
 			val aliasConfig = configGroup.aliases.get(aliasName)?.get(aliasSubName)?.firstOrNull()

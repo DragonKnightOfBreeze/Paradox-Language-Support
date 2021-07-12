@@ -12,5 +12,7 @@ data class CwtModifierCategoryConfig(
 	val name:String,
 	val internalId: String,
 	val supportedScopes:List<String>
-): CwtConfig<CwtProperty>
+): CwtConfig<CwtProperty>{
+	val supportedScopesText = supportedScopes.joinToString(" ","{ "," }")
+}
 

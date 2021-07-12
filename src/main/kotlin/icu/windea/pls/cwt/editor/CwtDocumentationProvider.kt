@@ -3,26 +3,45 @@ package icu.windea.pls.cwt.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is CwtProperty -> getPropertyInfo(element)
+			is CwtProperty -> getPropertyInfo(element,originalElement)
 			is CwtString -> getStringInfo(element)
 			else -> null
 		}
 	}
 	
-	private fun getPropertyInfo(element: CwtProperty): String {
+	private fun getPropertyInfo(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.configType?.text
+			val configType = element.configType
 			definition {
-				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				if(configType != null) append("(").append(configType.text).append(") ")
 				else append ("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				//为localisation_command/modifier提供关于scope的额外文档注释
+				when(configType) {
+					CwtConfigType.LocalisationCommand -> {
+						//可以直接从psi文本中读取
+						val supportedScopesText = element.value?.text ?: "?"
+						appendBr().append("supported_scopes = $supportedScopesText")
+					}
+					CwtConfigType.Modifier -> {
+						val gameType = originalElement?.gameType?: return@buildString
+						val configGroup = getConfig()[gameType] ?: return@buildString
+						val categories = element.value?.value?: return@buildString
+						val category = configGroup.modifierCategories[categories]
+							?: configGroup.modifierCategoryIdMap[categories]?: return@buildString
+						val supportedScopesText = category.supportedScopesText
+						appendBr().append("supported_scopes = $supportedScopesText")
+					}
+					else -> pass()
+				}
 			}
 		}
 	}
@@ -40,20 +59,38 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is CwtProperty -> getPropertyDoc(element)
+			is CwtProperty -> getPropertyDoc(element,originalElement)
 			is CwtString -> getStringDoc(element)
 			else -> null
 		}
 	}
 	
-	private fun getPropertyDoc(element: CwtProperty): String {
+	private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			val configTypeText = element.configType?.text
+			val configType = element.configType
 			definition {
-				if(configTypeText != null) append("(").append(configTypeText).append(") ")
+				if(configType != null) append("(").append(configType.text).append(") ")
 				else append ("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				//为localisation_command/modifier提供关于scope的额外文档注释
+				when(configType) {
+					CwtConfigType.LocalisationCommand -> {
+						//可以直接从psi文本中读取
+						val supportedScopesText = element.value?.text ?: "?"
+						appendBr().append("supported_scopes = $supportedScopesText")
+					}
+					CwtConfigType.Modifier -> {
+						val gameType = originalElement?.gameType?: return@buildString
+						val configGroup = getConfig()[gameType] ?: return@buildString
+						val categories = element.value?.value?: return@buildString
+						val category = configGroup.modifierCategories[categories]
+							?: configGroup.modifierCategoryIdMap[categories]?: return@buildString
+						val supportedScopesText = category.supportedScopesText
+						appendBr().append("supported_scopes = $supportedScopesText")
+					}
+					else -> pass()
+				}
 			}
 			//文档注释，以###开始
 			val documentation = getDocumentation(element)
