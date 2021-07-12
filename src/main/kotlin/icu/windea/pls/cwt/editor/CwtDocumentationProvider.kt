@@ -26,7 +26,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				else append ("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				when(configType) {
-					//为definitionProperty提供关于scope的额外文档注释
+					//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
 					null -> {
 						val propertyElement = getDefinitionProperty(originalElement)?:return@buildString
 						val gameType = propertyElement.gameType?:return@buildString
