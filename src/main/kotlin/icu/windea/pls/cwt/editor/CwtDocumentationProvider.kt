@@ -4,7 +4,6 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.config.*
-import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -29,7 +28,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				when(configType) {
 					//为definitionProperty提供关于scope的额外文档注释
 					null -> {
-						val propertyElement = getDefinitionProperty(element, originalElement)?:return@buildString
+						val propertyElement = getDefinitionProperty(originalElement)?:return@buildString
 						val config = propertyElement.propertyConfig ?:return@buildString
 						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
 						for((sk, sv) in scopeMap) {
@@ -38,8 +37,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 					//为localisation_command提供关于scope的额外文档注释
 					CwtConfigType.LocalisationCommand -> {
-						//可以直接从psi文本中读取
-						val supportedScopesText = element.value?.text ?: "?"
+						val gameType = originalElement?.gameType?: return@buildString
+						val configGroup = getConfig()[gameType] ?: return@buildString
+						val n = element.name
+						val localisationCommand = configGroup.localisationCommands[n] ?: return@buildString
+						val supportedScopesText = localisationCommand.supportedScopes
 						appendBr().append("supported_scopes = $supportedScopesText")
 					}
 					//为modifier提供关于scope的额外文档注释
@@ -88,7 +90,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				when(configType) {
 					//为definitionProperty提供特殊的文档注释（scope)
 					null -> {
-						val propertyElement = getDefinitionProperty(element, originalElement)?:return@buildString
+						val propertyElement = getDefinitionProperty(originalElement)?:return@buildString
 						val config = propertyElement.propertyConfig ?:return@buildString
 						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
 						for((sk, sv) in scopeMap) {
@@ -162,9 +164,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return documentationLines?.joinToString("\n")
 	}
 	
-	private fun getDefinitionProperty(element:CwtProperty,originalElement: PsiElement?):ParadoxScriptProperty?{
-		//如果element.text对应的expression的类型是const，并且originalElement是scriptPropertyKeyId或scriptProperty
-		if(CwtKeyExpression.resolve(element.text.unquote()).type != CwtKeyExpression.Type.Constant) return null
+	private fun getDefinitionProperty(originalElement: PsiElement?):ParadoxScriptProperty?{
 		if(originalElement == null) return null
 		val parent = originalElement.parent?:return null
 		val keyElement =  parent as? ParadoxScriptPropertyKey ?: parent.parent as? ParadoxScriptPropertyKey ?:return null 
