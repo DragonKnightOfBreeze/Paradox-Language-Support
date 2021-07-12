@@ -288,13 +288,13 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 	)
 }
 
-//val ParadoxScriptProperty.propertyConfig:CwtPropertyConfig? get() = doGetPropertyConfig(this)
-//
-//private fun doGetPropertyConfig(element: ParadoxScriptProperty): CwtPropertyConfig? {
-//	//NOTE 暂时不使用缓存，因为很容易就会过时
-//	val definitionPropertyInfo = element.paradoxDefinitionPropertyInfo ?: return null
-//	return definitionPropertyInfo.propertyConfig
-//}
+val ParadoxScriptProperty.propertyConfig:CwtPropertyConfig? get() = doGetPropertyConfig(this)
+
+private fun doGetPropertyConfig(element: ParadoxScriptProperty): CwtPropertyConfig? {
+	//NOTE 暂时不使用缓存，因为很容易就会过时
+	val definitionPropertyInfo = element.definitionPropertyInfo ?: return null
+	return definitionPropertyInfo.propertyConfig
+}
 
 val ParadoxScriptPropertyKey.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
 
@@ -954,10 +954,6 @@ fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
 
 fun StringBuilder.appendBr(): StringBuilder {
 	return append("<br>")
-}
-
-fun String.optimizeDocumentText():String{
-	return this //TODO 去掉首尾空白同时去掉多余的空白
 }
 //endregion
 

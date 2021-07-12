@@ -45,7 +45,11 @@ fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 
 fun matchesScopeAlias(alias: String, otherAlias: String, configGroup: CwtConfigGroup): Boolean {
 	return configGroup.scopeAliasMap[alias]?.aliases?.contains(otherAlias) ?: false
-	
+}
+
+fun mergeScope(scopeMap:MutableMap<String,String>,thisScope:String?):MutableMap<String,String>{
+	if(thisScope != null) scopeMap.put("this",thisScope)
+	return scopeMap
 }
 //endregion
 

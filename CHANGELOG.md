@@ -148,8 +148,8 @@
 * [X] 提示modifier时匹配scope
 * [X] 为modifier提供特殊的文档注释
 * [X] 编写代码准备从alias/definitionProperty/subtype推断scope和scopeMap
-* [ ] 为definitionProperty提供特殊的文档注释（definition & expression & scope)
-* [ ] 为localisation_command/modifier提供关于scope的额外文档注释（暂时不附加psi链接）
+* [X] 为definitionProperty提供额外的文档注释（expression & scope)
+* [x] 为localisation_command/modifier提供关于scope的额外文档注释（暂时不附加psi链接）
 * [ ] ~~为link/localisation_command/modifier/modifier_category/scope提供关于scope的额外文档注释~~
 * [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 * [ ] 支持规则类型value和value_set

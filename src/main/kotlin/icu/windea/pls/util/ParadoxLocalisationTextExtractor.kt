@@ -11,73 +11,72 @@ object ParadoxLocalisationTextExtractor {
 		return buildString { extractTo(element, this) }
 	}
 	
-	fun extractTo(element: ParadoxLocalisationProperty, buffer: StringBuilder) {
-		element.propertyValue?.richTextList?.forEach { extractTo(it, buffer) }
+	fun extractTo(element: ParadoxLocalisationProperty, builder: StringBuilder) {
+		element.propertyValue?.richTextList?.forEach { extractTo(it, builder) }
 	}
 	
-	private fun extractTo(element: ParadoxLocalisationRichText, buffer: StringBuilder) {
+	private fun extractTo(element: ParadoxLocalisationRichText, builder: StringBuilder) {
 		when(element) {
-			is ParadoxLocalisationString -> extractStringTo(element, buffer)
-			is ParadoxLocalisationEscape -> extractEscapeTo(element, buffer)
-			is ParadoxLocalisationPropertyReference -> extractPropertyReferenceTo(element, buffer)
-			is ParadoxLocalisationIcon -> extractIconTo(element, buffer)
-			is ParadoxLocalisationSequentialNumber -> extractSequentialNumberTo(element, buffer)
-			is ParadoxLocalisationCommand -> extractCodeTo(element, buffer)
-			is ParadoxLocalisationColorfulText -> extractColorfulTextTo(element, buffer)
+			is ParadoxLocalisationString -> extractStringTo(element, builder)
+			is ParadoxLocalisationEscape -> extractEscapeTo(element, builder)
+			is ParadoxLocalisationPropertyReference -> extractPropertyReferenceTo(element, builder)
+			is ParadoxLocalisationIcon -> extractIconTo(element, builder)
+			is ParadoxLocalisationSequentialNumber -> extractSequentialNumberTo(element, builder)
+			is ParadoxLocalisationCommand -> extractCodeTo(element, builder)
+			is ParadoxLocalisationColorfulText -> extractColorfulTextTo(element, builder)
 		}
 	}
 	
-	private fun extractStringTo(element: ParadoxLocalisationString, buffer: StringBuilder) {
-		buffer.append(element.text)
+	private fun extractStringTo(element: ParadoxLocalisationString, builder: StringBuilder) {
+		builder.append(element.text)
 	}
 	
-	private fun extractEscapeTo(element: ParadoxLocalisationEscape, buffer: StringBuilder) {
+	private fun extractEscapeTo(element: ParadoxLocalisationEscape, builder: StringBuilder) {
 		val elementText = element.text
 		when {
-			elementText == "\\n" -> buffer.append("\n")
-			elementText == "\\t" -> buffer.append("\t")
-			elementText.length > 1 -> buffer.append(elementText[1])
+			elementText == "\\n" -> builder.append("\n")
+			elementText == "\\t" -> builder.append("\t")
+			elementText.length > 1 -> builder.append(elementText[1])
 		}
 	}
 	
-	private fun extractPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, buffer: StringBuilder) {
+	private fun extractPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, builder: StringBuilder) {
 		val reference = element.reference
 		if(reference != null) {
 			val property = reference.resolve() as? ParadoxLocalisationProperty
 			if(property != null) {
-				extractTo(property, buffer)
+				extractTo(property, builder)
 				return
 			}
 		}
 		//如果处理文本失败，则直接使用原始文本
-		buffer.append(element.text)
+		builder.append(element.text)
 	}
 	
-	private fun extractIconTo(element: ParadoxLocalisationIcon, buffer: StringBuilder) {
-		//不提取到结果中
-		//val name = element.name
-		//buffer.append(":$name:")
+	private fun extractIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
+		//NOTE 不提取到结果中
+		//builder.append(":${element.name}:")
 	}
 	
-	private fun extractSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, buffer: StringBuilder) {
+	private fun extractSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, builder: StringBuilder) {
 		val placeholderText = element.sequentialNumberInfo?.placeholderText
 		if(placeholderText != null) {
-			buffer.append(placeholderText)
+			builder.append(placeholderText)
 			return
 		}
 		//如果处理文本失败，则直接使用原始文本
-		buffer.append(element.text)
+		builder.append(element.text)
 	}
 	
-	private fun extractCodeTo(element: ParadoxLocalisationCommand, buffer: StringBuilder) {
+	private fun extractCodeTo(element: ParadoxLocalisationCommand, builder: StringBuilder) {
 		//使用原始文本
-		buffer.append(element.text)
+		builder.append(element.text)
 	}
 	
-	private fun extractColorfulTextTo(element: ParadoxLocalisationColorfulText, buffer: StringBuilder) {
+	private fun extractColorfulTextTo(element: ParadoxLocalisationColorfulText, builder: StringBuilder) {
 		//直接渲染其中的文本
 		for(v in element.richTextList) {
-			extractTo(v, buffer)
+			extractTo(v, builder)
 		}
 	}
 }
