@@ -2,7 +2,6 @@ package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.expression.*
@@ -28,17 +27,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				else append ("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				when(configType) {
-					//为definitionProperty提供特殊的文档注释（expression & scope)
+					//为definitionProperty提供关于scope的额外文档注释
 					null -> {
-						if(isDefinitionProperty(element, originalElement)){
-							val propertyElement = originalElement?.parent?.parent as? ParadoxScriptProperty ?:return@buildString
-							val config = propertyElement.propertyConfig ?:return@buildString
-							appendBr().append("(expression) ").append(config.keyExpression)
-								.append(" = ").append(config.valueExpression)
-							val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
-							for((sk, sv) in scopeMap) {
-								appendBr().append("(scope) ").append(sk).append(" = ").append(sv)
-							}
+						val propertyElement = getDefinitionProperty(element, originalElement)?:return@buildString
+						val config = propertyElement.propertyConfig ?:return@buildString
+						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
+						for((sk, sv) in scopeMap) {
+							appendBr().append("(scope) ").append(sk).append(" = ").append(sv)
 						}
 					}
 					//为localisation_command提供关于scope的额外文档注释
@@ -91,17 +86,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				else append ("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				when(configType) {
-					//为definitionProperty提供特殊的文档注释（expression & scope)
+					//为definitionProperty提供特殊的文档注释（scope)
 					null -> {
-						if(isDefinitionProperty(element, originalElement)){
-							val propertyElement = originalElement?.parent?.parent as? ParadoxScriptProperty ?:return@buildString
-							val config = propertyElement.propertyConfig ?:return@buildString
-							appendBr().append("(expression) ").append(config.keyExpression)
-								.append(" = ").append(config.valueExpression)
-							val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
-							for((sk, sv) in scopeMap) {
-								appendBr().append("(scope) ").append(sk).append(" = ").append(sv)
-							}
+						val propertyElement = getDefinitionProperty(element, originalElement)?:return@buildString
+						val config = propertyElement.propertyConfig ?:return@buildString
+						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
+						for((sk, sv) in scopeMap) {
+							appendBr().append("(scope) ").append(sk).append(" = ").append(sv)
 						}
 					}
 					//为localisation_command提供关于scope的额外文档注释
@@ -171,10 +162,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return documentationLines?.joinToString("\n")
 	}
 	
-	private fun isDefinitionProperty(element:CwtProperty,originalElement: PsiElement?):Boolean{
-		//如果element.text对应的expression的类型是const，并且originalElement是scriptPropertyKeyId
-		return CwtKeyExpression.resolve(element.text.unquote()).type == CwtKeyExpression.Type.Constant
-			&&  originalElement?.parent is ParadoxScriptPropertyKey
+	private fun getDefinitionProperty(element:CwtProperty,originalElement: PsiElement?):ParadoxScriptProperty?{
+		//如果element.text对应的expression的类型是const，并且originalElement是scriptPropertyKeyId或scriptProperty
+		if(CwtKeyExpression.resolve(element.text.unquote()).type != CwtKeyExpression.Type.Constant) return null
+		if(originalElement == null) return null
+		val parent = originalElement.parent?:return null
+		val keyElement =  parent as? ParadoxScriptPropertyKey ?: parent.parent as? ParadoxScriptPropertyKey ?:return null 
+		return keyElement.parent as? ParadoxScriptProperty
 	}
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {

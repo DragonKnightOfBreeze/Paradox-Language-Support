@@ -21,9 +21,10 @@ data class CwtPropertyConfig(
 	override val optionValues: List<CwtOptionValueConfig>? = null,
 	val separatorType: SeparatorType = SeparatorType.EQUAL,
 	val keyExpression: CwtKeyExpression,
-	val valueExpression: CwtValueExpression,
-	override var parent: CwtPropertyConfig? = null
+	val valueExpression: CwtValueExpression
 ) : CwtKvConfig<CwtProperty>() {
+	override var parent: CwtPropertyConfig? = null
+	
 	val stringValues = values?.mapNotNull { it.stringValue }
 	val stringValueOrValues = stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue }
 	
@@ -34,8 +35,8 @@ data class CwtPropertyConfig(
 		val valuePointer = pointer.containingFile?.let { f -> pointer.element?.value?.createPointer(f) } ?: return null
 		return CwtValueConfig(
 			valuePointer, value, booleanValue, intValue, floatValue, stringValue,
-			values, properties, documentation, options, optionValues, valueExpression, parent
-		)
+			values, properties, documentation, options, optionValues, valueExpression
+		).also { it.parent = parent }
 	}
 }
 

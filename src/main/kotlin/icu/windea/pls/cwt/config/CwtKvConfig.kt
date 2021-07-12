@@ -53,8 +53,8 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	private fun doInferScopeMap(config: CwtKvConfig<*>, scopeMap: MutableMap<String, String>) {
 		val options = config.options ?: return
 		options.find { it.key == "push_scope" }?.value?.let { scopeMap.putIfAbsent("this", it) }
-		options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options?.let {
-			for(option in options) scopeMap.putIfAbsent(option.key, option.value)
+		options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options?.let { 
+			for(option in it) scopeMap.putIfAbsent(option.key, option.value)
 		}
 	}
 }
