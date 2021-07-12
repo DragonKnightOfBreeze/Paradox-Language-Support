@@ -150,6 +150,7 @@
 * [X] 编写代码准备从alias/definitionProperty/subtype推断scope和scopeMap
 * [x] 为localisation_command/modifier提供关于scope的额外文档注释（未附加psi链接）
 * [X] 为definitionProperty提供关于scope的额外文档注释（未附加psi链接）
+* [X] 为definitionProperty提供关于scope的额外文档注释（附加psi链接）
 * [ ] ~~为link/localisation_command/modifier/modifier_category/scope提供关于scope的额外文档注释~~
 * [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 * [ ] 支持规则类型value和value_set

@@ -29,10 +29,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					//为definitionProperty提供关于scope的额外文档注释
 					null -> {
 						val propertyElement = getDefinitionProperty(originalElement)?:return@buildString
+						val gameType = propertyElement.gameType?:return@buildString
 						val config = propertyElement.propertyConfig ?:return@buildString
 						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
 						for((sk, sv) in scopeMap) {
-							appendBr().append("(scope) ").append(sk).append(" = ").append(sv)
+							val scopeLink = "@${gameType.key}.scopes.$sv"
+							appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink,sv)
 						}
 					}
 					//为localisation_command提供关于scope的额外文档注释
@@ -91,10 +93,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					//为definitionProperty提供特殊的文档注释（scope)
 					null -> {
 						val propertyElement = getDefinitionProperty(originalElement)?:return@buildString
+						val gameType = propertyElement.gameType?:return@buildString
 						val config = propertyElement.propertyConfig ?:return@buildString
 						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
 						for((sk, sv) in scopeMap) {
-							appendBr().append("(scope) ").append(sk).append(" = ").append(sv)
+							val scopeLink = "@${gameType.key}.scopes.$sv"
+							appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink,sv)
 						}
 					}
 					//为localisation_command提供关于scope的额外文档注释

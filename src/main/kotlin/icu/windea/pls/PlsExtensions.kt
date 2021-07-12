@@ -893,6 +893,10 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 						.subtypes.getValue(subtypeName).pointer.element
 				}
 			}
+			"scopes" -> {
+				val name = tokens.getOrNull(2)?:return null
+				return getConfig(project).getValue(gameType).scopeAliasMap.getValue(name).pointer.element
+			}
 			else -> null
 		}
 	}.getOrNull()
@@ -928,6 +932,8 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 	DocumentationManagerUtil.createHyperlink(this, refText, label, plainLink)
 	return this
 }
+
+	
 
 fun StringBuilder.appendScriptLink(name: String, type: String): StringBuilder {
 	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
