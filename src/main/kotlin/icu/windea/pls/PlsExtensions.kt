@@ -108,7 +108,20 @@ private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 		name.surroundsWith("value[", "]") -> CwtConfigType.Value
 		name.surroundsWith("single_alias[", "]") -> CwtConfigType.SingleAlias
 		name.surroundsWith("alias[", "]") -> CwtConfigType.Alias
-		else -> null 
+		else -> {
+			val parentProperty = element.parent?.parent.castOrNull<CwtProperty>() ?: return null
+			val parentName = parentProperty.name
+			when {
+				parentName == "links" -> CwtConfigType.Link
+				parentName == "localisation_links" -> CwtConfigType.LocalisationLink
+				parentName == "localisation_commands" -> CwtConfigType.LocalisationCommand
+				parentName == "modifier_categories" -> CwtConfigType.ModifierCategory
+				parentName == "modifiers" -> CwtConfigType.Modifier
+				parentName == "scopes" -> CwtConfigType.Scope
+				parentName == "scope_groups" -> CwtConfigType.ScopeGroup
+				else -> null
+			}
+		}
 	}
 }
 
@@ -120,13 +133,6 @@ private fun doGetConfigType(element: CwtValue): CwtConfigType? {
 	return when {
 		parentName.surroundsWith("enum[", "]") -> CwtConfigType.EnumValue
 		parentName.surroundsWith("value[", "]") -> CwtConfigType.ValueValue
-		parentName == "links" -> CwtConfigType.Link
-		parentName == "localisation_links" -> CwtConfigType.LocalisationLink
-		parentName == "localisation_commands" -> CwtConfigType.LocalisationCommand
-		parentName == "modifier_categories" -> CwtConfigType.ModifierCategory
-		parentName == "modifiers" -> CwtConfigType.Modifier
-		parentName == "scopes" -> CwtConfigType.Scope
-		parentName == "scope_groups" -> CwtConfigType.ScopeGroup
 		else -> null
 	}
 }
