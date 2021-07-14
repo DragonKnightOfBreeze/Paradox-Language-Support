@@ -7,7 +7,7 @@ window.$docsify = {
   fallbackLanguages: ["zh"],
   loadSidebar: true,
   loadNavbar: true,
-  mergeNavbar: true,
+  mergeNavbar: false,
   maxLevel: 4,
   subMaxLevel: 4,
   notFoundPage: true,
