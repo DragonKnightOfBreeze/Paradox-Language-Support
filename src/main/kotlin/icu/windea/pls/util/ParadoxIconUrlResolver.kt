@@ -29,8 +29,8 @@ object ParadoxIconUrlResolver {
 				url = doResolveByName(name, project)
 				nameUrlCache[name] = url.orEmpty()
 			}
-			//如果还是没有得到则返回默认的url
-			if(url.isNullOrEmpty()) getDefaultUrl(defaultToUnknown) else url
+			//如果还是没有得到或者对应的本地png文件尚未生成完毕，则返回默认的url
+			if(url.isNullOrEmpty() || Files.notExists(Path.of(url))) getDefaultUrl(defaultToUnknown) else url
 		} catch(e: Exception) {
 			logger.warn("Resolve paradox icon failed.", e)
 			//如果出现异常，那么返回默认图标
@@ -48,8 +48,8 @@ object ParadoxIconUrlResolver {
 				url = doResolveBySprite(sprite)
 				spriteNameUrlCache[spriteName] = url.orEmpty()
 			}
-			//如果还是没有得到则返回默认的url
-			if(url.isNullOrEmpty()) getDefaultUrl(defaultToUnknown) else url
+			//如果还是没有得到或者对应的本地png文件尚未生成完毕，则返回默认的url
+			if(url.isNullOrEmpty() || Files.notExists(Path.of(url))) getDefaultUrl(defaultToUnknown) else url
 		} catch(e: Exception) {
 			logger.warn("Resolve paradox icon failed.", e)
 			//如果出现异常，那么返回默认图标
@@ -67,8 +67,8 @@ object ParadoxIconUrlResolver {
 				url = doResolveByFile(file)
 				pathUrlCache[path] = url.orEmpty()
 			}
-			//如果还是没有得到则返回默认的url
-			if(url.isNullOrEmpty()) getDefaultUrl(defaultToUnknown) else url
+			//如果还是没有得到或者对应的本地png文件尚未生成完毕，则返回默认的url
+			if(url.isNullOrEmpty() || Files.notExists(Path.of(url))) getDefaultUrl(defaultToUnknown) else url
 		} catch(e: Exception) {
 			logger.warn("Resolve paradox icon failed.", e)
 			//如果出现异常，那么返回默认图标
@@ -86,8 +86,8 @@ object ParadoxIconUrlResolver {
 				url = doResolveByFile(file)
 				pathUrlCache[path] = url.orEmpty()
 			}
-			//如果还是没有得到则返回默认的url
-			if(url.isNullOrEmpty()) getDefaultUrl(defaultToUnknown) else url
+			//如果还是没有得到或者对应的本地png文件尚未生成完毕，则返回默认的url
+			if(url.isNullOrEmpty() || Files.notExists(Path.of(url))) getDefaultUrl(defaultToUnknown) else url
 		} catch(e: Exception) {
 			logger.warn("Resolve paradox icon failed.", e)
 			//如果出现异常，那么返回默认图标

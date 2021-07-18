@@ -162,7 +162,7 @@
 * [X] 应用cwt配置文件`modifiers.cwt/modifier_categories.cwt`
 * [ ] 应用cwt配置文件`values.cwt`
 * [ ] 应用cwt配置文件`localisation.cwt` *
-* [ ] 生成本地化文本的文档注释时考虑并发解析其中的图标
+* [X] 生成本地化文本的文档注释时考虑并发解析其中的图标
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
@@ -175,6 +175,7 @@
 * 暂时不验证本地化文件中的代码（`[...]`）是否正确（通过cwt规则文件）
 * 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 * 注意：对single_alias和alias的支持还是不够完善
+* 注意：可以在文档注释中渲染dds图标，原理是从dds图片生成png图片并渲染为html，生成图片需要花费时间，首次显示时可能会显示问号图标
 
 # 遗留BUG
 

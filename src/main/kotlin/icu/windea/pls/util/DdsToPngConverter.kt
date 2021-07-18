@@ -72,7 +72,8 @@ object DdsToPngConverter{
 		pngAbsPath.parent.tryCreateDirectory() //确保png文件的父目录已经创建
 		//~/dds2png/dds2png.exe -y <dds_name> <png_name>
 		val command = ("dds2png -y ${ddsAbsPath.quote()} ${pngAbsPath.toString().quote()}")
-		execBlocking(command, dds2PngDirFile)
+		//需要花费50~80ms生成图片
+		exec(command, dds2PngDirFile)
 		return pngAbsPath.toAbsolutePath().toString()
 	}
 	

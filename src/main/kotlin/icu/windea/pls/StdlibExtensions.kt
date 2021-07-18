@@ -221,9 +221,9 @@ fun Path.notExists(): Boolean {
 	return Files.notExists(this)
 }
 
-fun Path.tryCreateDirectory(): Any? {
-	return try {
-		Files.createDirectories(this)
+fun Path.tryCreateDirectory() {
+	try {
+		if(notExists()) Files.createDirectories(this)
 	} catch(ignored: Exception) {
 	}
 }
