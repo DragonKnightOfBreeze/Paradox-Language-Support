@@ -153,6 +153,7 @@
 * [X] 为definitionProperty提供关于scope的额外文档注释（附加psi链接）
 * [X] 支持规则类型single_alias
 * [X] 支持规则类型alias_match_left
+* [ ] 支持规则类型scope和scope_field
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型complex_enum
 * [X] 应用cwt配置文件`folders.cwt`
@@ -173,6 +174,7 @@
 * 暂时不验证脚本文件的结构是否正确（通过cwt规则文件）
 * 暂时不验证本地化文件中的代码（`[...]`）是否正确（通过cwt规则文件）
 * 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
+* 注意：对single_alias和alias的支持还是不够完善
 
 # 遗留BUG
 
