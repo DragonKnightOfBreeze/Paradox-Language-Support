@@ -151,28 +151,28 @@
 * [x] 为localisation_command/modifier提供关于scope的额外文档注释（未附加psi链接）
 * [X] 为definitionProperty提供关于scope的额外文档注释（未附加psi链接）
 * [X] 为definitionProperty提供关于scope的额外文档注释（附加psi链接）
-* [ ] ~~为link/localisation_command/modifier/modifier_category/scope提供关于scope的额外文档注释~~
-* [ ] 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
+* [X] 支持规则类型single_alias
+* [X] 支持规则类型alias_match_left
 * [ ] 支持规则类型value和value_set
-* [ ] 支持规则类型single_alias
-* [ ] 支持规则类型complex_enum 
+* [ ] 支持规则类型complex_enum
 * [X] 应用cwt配置文件`folders.cwt`
 * [ ] 应用cwt配置文件`scopes.cwt`
 * [ ] 应用cwt配置文件`links.cwt`
 * [X] 应用cwt配置文件`modifiers.cwt/modifier_categories.cwt`
 * [ ] 应用cwt配置文件`values.cwt`
-* [ ] 应用cwt配置文件`localisation.cwt`
+* [ ] 应用cwt配置文件`localisation.cwt` *
 * [ ] 生成本地化文本的文档注释时考虑并发解析其中的图标
-* [ ] 进行代码提示时，alias拥有特定的注释~~和图标~~（仅限aliasSubName为constant）
-* [ ] definitionProperty本身就有对应的引用（如definition）的情况系，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
+* [ ] definitionProperty本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
+* [ ] ~~为link/localisation_command/modifier/modifier_category/scope提供关于scope的额外文档注释~~
 
 # 遗留问题
 
-* 暂时不解析scope并进行匹配（通过cwt规则文件）
+* 暂时不解析scope并进行匹配（通过cwt规则文件）(已经实现modifiers的scope匹配)
 * 暂时不验证脚本文件的结构是否正确（通过cwt规则文件）
 * 暂时不验证本地化文件中的代码（`[...]`）是否正确（通过cwt规则文件）
+* 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 
 # 遗留BUG
 

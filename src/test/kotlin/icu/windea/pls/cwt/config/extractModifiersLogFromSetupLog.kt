@@ -15,7 +15,7 @@ import java.io.*
 fun main() {
 	extractModifiersLog(
 		"src/main/resources/config/stellaris/setup.log", 
-		"src/main/resources/config/stellaris-ext/modifiers.log"
+		"src/main/resources/config/stellaris-ext/modifiers-ext.log"
 	)
 }
 

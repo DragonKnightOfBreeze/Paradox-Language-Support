@@ -90,10 +90,6 @@ class CwtKeyExpression(
 				expression == "scope_field" -> {
 					CwtKeyExpression(expression, Type.ScopeField)
 				}
-				expression.surroundsWith("single_alias_right[", "]") -> {
-					val value = expression.substring(19, expression.length - 1)
-					CwtKeyExpression(expression, Type.SingleAliasRight, value)
-				}
 				expression.surroundsWith("alias_keys_field[", "]") -> {
 					val value = expression.substring(17, expression.length - 1)
 					CwtKeyExpression(expression, Type.AliasKeysField, value)
@@ -102,10 +98,8 @@ class CwtKeyExpression(
 					val value = expression.substring(11, expression.length - 1)
 					CwtKeyExpression(expression, Type.AliasName, value)
 				}
-				else -> {
-					val value = expression
-					CwtKeyExpression(expression, Type.Constant, value)
-				}
+				expression.endsWith(']') -> CwtKeyExpression(expression, Type.Other)
+				else -> CwtKeyExpression(expression, Type.Constant, expression)
 			}
 		}
 	}
@@ -129,10 +123,10 @@ class CwtKeyExpression(
 		ValueSet,
 		Scope,
 		ScopeField,
-		SingleAliasRight,
 		AliasKeysField,
 		AliasName,
-		Constant
+		Constant,
+		Other
 	}
 	
 	operator fun component1() = type

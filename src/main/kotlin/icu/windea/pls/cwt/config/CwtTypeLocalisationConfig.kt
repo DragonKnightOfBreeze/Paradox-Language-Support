@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
@@ -18,7 +19,7 @@ data class CwtTypeLocalisationConfig(
 	fun mergeConfigs(subtypes: List<String>): List<CwtTypeLocalisationInfoConfig> {
 		val cacheKey = subtypes.joinToString(",")
 		return mergeConfigsCache.getOrPut(cacheKey){
-			val result = mutableListOf<CwtTypeLocalisationInfoConfig>()
+			val result = SmartList<CwtTypeLocalisationInfoConfig>()
 			for((subtypeExpression, typeLocalisationInfoConfig) in configs) {
 				if(subtypeExpression == null || matchesSubtypeExpression(subtypeExpression, subtypes)) {
 					result.add(typeLocalisationInfoConfig)

@@ -1,7 +1,6 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 

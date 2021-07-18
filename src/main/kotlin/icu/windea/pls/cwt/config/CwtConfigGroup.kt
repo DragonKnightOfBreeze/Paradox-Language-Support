@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.config
 
 import com.intellij.openapi.project.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.model.*
@@ -31,6 +32,10 @@ class CwtConfigGroup(
 			return expression.resolveByRemoveSurrounding("enum[", "]")
 		}
 		
+		private fun resolveSingleAliasName(expression: String):String?{
+			return expression.resolveByRemoveSurrounding("single_alias[","]")
+		}
+		
 		private fun resolveAliasName(expression: String): Pair<String, String>? {
 			return expression.resolveByRemoveSurrounding("alias[", "]")?.let {
 				val index = it.indexOf(':')
@@ -53,13 +58,14 @@ class CwtConfigGroup(
 	val scopes: Map<String, CwtScopeConfig>
 	val scopeAliasMap: Map<String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
+	val singleAliases:Map<String,List<CwtSingleAliasConfig>> //同名的single_alias可以有多个
 	val aliases: Map<String, Map<String, List<CwtAliasConfig>>> //同名的alias可以有多个 
 	val definitions: Map<String, CwtDefinitionConfig>
 	
 	init {
 		logger.info("Resolve config group '$gameType'...")
 		
-		folders = mutableListOf()
+		folders = SmartList()
 		types = mutableMapOf()
 		values = mutableMapOf()
 		enums = mutableMapOf()
@@ -72,6 +78,7 @@ class CwtConfigGroup(
 		scopes = mutableMapOf()
 		scopeAliasMap = mutableMapOf()
 		scopeGroups = mutableMapOf()
+		singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
 		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
 		definitions = mutableMapOf()
 		
@@ -186,13 +193,21 @@ class CwtConfigGroup(
 						}
 					}
 					else -> {
-						//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析它的子属性（或它的值），添加到aliases中
+						//判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到single_aliases中
+						val singleAliasName = resolveSingleAliasName(key)
+						if(singleAliasName != null){
+							val singleAliasConfig = resolveSingleAliasConfig(property,singleAliasName)
+							val list = singleAliases.getOrPut(singleAliasName) { SmartList()}
+							list.add(singleAliasConfig)
+						}
+						
+						//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中
 						val aliasNamePair = resolveAliasName(key)
 						if(aliasNamePair != null) {
 							val (aliasName, aliasSubName) = aliasNamePair
 							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
 							val map = aliases.getOrPut(aliasName) { mutableMapOf() }
-							val list = map.getOrPut(aliasSubName) { mutableListOf() }
+							val list = map.getOrPut(aliasSubName) { SmartList() }
 							list.add(aliasConfig)
 						}
 						
@@ -251,12 +266,12 @@ class CwtConfigGroup(
 						//值可能是string也可能是stringArray
 						val list = prop.stringValueOrValues
 						if(list != null) {
-							if(skipRootKey == null) skipRootKey = mutableListOf()
+							if(skipRootKey == null) skipRootKey = SmartList()
 							skipRootKey.add(list)
 						}
 					}
 					"localisation" -> {
-						val configs: MutableList<Pair<String?, CwtTypeLocalisationInfoConfig>> = mutableListOf()
+						val configs: MutableList<Pair<String?, CwtTypeLocalisationInfoConfig>> = SmartList()
 						val propPointer = prop.pointer
 						val propProps = prop.properties
 						if(propProps != null) {
@@ -436,13 +451,17 @@ class CwtConfigGroup(
 		return CwtScopeGroupConfig(propertyConfig.pointer, name, values)
 	}
 	
+	private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig,name: String):CwtSingleAliasConfig{
+		return CwtSingleAliasConfig(propertyConfig.pointer,name,propertyConfig)
+	}
+	
 	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
 		return CwtAliasConfig(propertyConfig.pointer, name, subName, propertyConfig)
 	}
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
 		val props = propertyConfig.properties ?: return null
-		val propertyConfigs = mutableListOf<Pair<String?, CwtPropertyConfig>>()
+		val propertyConfigs = SmartList<Pair<String?, CwtPropertyConfig>>()
 		for(prop in props) {
 			//这里需要进行合并
 			val subtypeName = resolveSubtypeName(prop.key)
@@ -601,7 +620,7 @@ class CwtConfigGroup(
 	
 	private fun getSubtypeConfigs(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): List<CwtSubtypeConfig> {
 		val subtypesConfig = typeConfig.subtypes
-		val result = mutableListOf<CwtSubtypeConfig>()
+		val result = SmartList<CwtSubtypeConfig>()
 		for(subtypeConfig in subtypesConfig.values) {
 			if(matchesSubtype(subtypeConfig, element, elementName, result)) result.add(subtypeConfig)
 		}
@@ -614,7 +633,7 @@ class CwtConfigGroup(
 	
 	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxDefinitionLocalisationInfo> {
 		val localisationConfig = typeConfig.localisation?.mergeConfigs(subtypes) ?: return emptyList()
-		val result = mutableListOf<ParadoxDefinitionLocalisationInfo>()
+		val result = SmartList<ParadoxDefinitionLocalisationInfo>()
 		//从已有的cwt规则
 		for(config in localisationConfig) {
 			//如果name为空，则keyName也为空 

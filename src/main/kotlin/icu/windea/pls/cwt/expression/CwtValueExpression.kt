@@ -148,10 +148,8 @@ class CwtValueExpression(
 					val value = expression.substring(17, expression.length - 1)
 					CwtValueExpression(expression, Type.AliasMatchLeft, value)
 				}
-				else -> {
-					val value = expression
-					CwtValueExpression(expression, Type.Constant, value)
-				}
+				expression.endsWith(']') -> CwtValueExpression(expression,Type.Other)
+				else -> CwtValueExpression(expression, Type.Constant, expression)
 			}
 		}
 	}
@@ -188,7 +186,8 @@ class CwtValueExpression(
 		SingleAliasRight,
 		AliasKeysField,
 		AliasMatchLeft,
-		Constant
+		Constant,
+		Other
 	}
 	
 	operator fun component1() = type
