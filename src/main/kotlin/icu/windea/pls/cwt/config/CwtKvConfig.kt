@@ -9,10 +9,9 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val optionValues: List<CwtOptionValueConfig>?
 	abstract var parent: CwtPropertyConfig?
 	
-	//懒加载
-	val cardinality by lazy { inferCardinality() }
-	val scope by lazy { inferScope() }
-	val scopeMap by lazy { inferScopeMap() }
+	val cardinality by lazy { inferCardinality() } //懒加载
+	val scope get() = inferScope() //不要缓存，因为parent可能有变动
+	val scopeMap get() = inferScopeMap() //不要缓存，因为parent可能有变动
 	
 	private fun inferCardinality(): CwtCardinalityExpression? {
 		return options?.find { it.key == "cardinality" }?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }

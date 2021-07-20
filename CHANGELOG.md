@@ -162,7 +162,8 @@
 * [X] 应用cwt配置文件`modifiers.cwt/modifier_categories.cwt`
 * [ ] 应用cwt配置文件`values.cwt`
 * [ ] 应用cwt配置文件`localisation.cwt` *
-* [X] 生成本地化文本的文档注释时考虑并发解析其中的图标
+* [X] 生成本地化文本的文档注释时考虑并发解析其中的图标（不知为什么还是有点慢）
+* [X] 不要缓存CwtKvConfig的scope和scopeGroup（因为内联的原因，parent可能有变动）
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
