@@ -61,6 +61,7 @@ alias[trigger:has_doctrine_parameter] = replace_me
 ### Is the scope character a ruler (holds any title)?
 alias[trigger:is_ruler] = bool
 
+## scopes = schema
 ### Is the scheme currently affected by the specified modifier? has_scheme_modifier = X
 alias[trigger:has_scheme_modifier] = replace_me
 
@@ -109,6 +110,7 @@ alias[trigger:is_unborn_known_bastard] = bool
 ### Scheme resistance
 alias[trigger:scheme_resistance] == replace_me_comparison
 
+## scopes = dynasty
 ### does the dynasty have the required prestige?
 alias[trigger:dynasty_prestige] == replace_me_comparison
 
@@ -226,6 +228,7 @@ alias[trigger:has_non_interference] = scope[character]
 ### does the character and the target have a number of opposing personality traits? number_of_opposing_personality_traits = { target = X value >/</>=/<= Y }
 alias[trigger:number_of_opposing_personality_traits] = replace_me
 
+## scopes = dynasty
 ### How many perks in the lifestyle does this dynasty have?
 alias[trigger:kin_legacy_track_perks] == replace_me_comparison
 
@@ -349,6 +352,7 @@ alias[trigger:yearly_character_expenses] == replace_me_comparison
 ### does the character and the target have a number of opposing traits? number_of_opposing_traits = { target = X value >/</>=/<= Y }
 alias[trigger:number_of_opposing_traits] = replace_me
 
+## scopes = dynasty
 ### Does the dynasty have this dynasty perk? has_dynasty_perk = key
 alias[trigger:has_dynasty_perk] = <dynasty_perk>
 
@@ -479,6 +483,7 @@ alias[trigger:has_special_title] = bool
 ### Is the character a guest? (is_pool_guest_of or is_foreign_court_guest_of)
 alias[trigger:is_foreign_court_or_pool_guest_of] = scope[character]
 
+## scopes = dynasty
 ### How many perks in the lifestyle does this dynasty have?
 alias[trigger:warfare_legacy_track_perks] == replace_me_comparison
 
@@ -626,6 +631,7 @@ alias[trigger:scheme_duration_days] == replace_me_comparison
 ### Checks if the character would get an alliance with the target character through such a marriage.
 alias[trigger:yields_alliance] = replace_me
 
+## scopes = dynasty
 ### Can the scoped dynasty unlock a 'relevant' perk? Relevant meaning one that isn't the first in its track unless the dynasty has no partially filled tracks
 alias[trigger:dynasty_can_unlock_relevant_perk] = bool
 
@@ -635,6 +641,7 @@ alias[trigger:has_special_character] = bool
 ### Is the character at war with the target?
 alias[trigger:is_at_war_with] = scope[character]
 
+## scopes = dynasty
 ### How many perks in the lifestyle does this dynasty have?
 alias[trigger:glory_legacy_track_perks] == replace_me_comparison
 
@@ -802,6 +809,7 @@ alias[trigger:is_shunned_for] = replace_me_character
 ### How many perk points available does the character have?
 alias[trigger:stewardship_lifestyle_perk_points] == replace_me_comparison
 
+## scopes = dynasty
 ### How many perks in the lifestyle does this dynasty have?
 alias[trigger:erudition_legacy_track_perks] == replace_me_comparison
 
@@ -946,6 +954,7 @@ alias[trigger:all_false] = replace_me
 ### is this side the winner of the combat
 alias[trigger:is_combat_side_pursuing] = bool
 
+## scopes = { dynasty house }
 ### Does the scoped house have the duration remaining on a given modifier has_house_modifier_duration_remaining = name
 alias[trigger:has_house_modifier_duration_remaining] = replace_me
 
@@ -1057,6 +1066,7 @@ alias[trigger:in_diplomatic_range] = scope[character]
 ### what size is this army?
 alias[trigger:army_size] == replace_me_comparison
 
+## scopes = dynasty
 ### How many perks in the lifestyle does this dynasty have?
 alias[trigger:law_legacy_track_perks] == replace_me_comparison
 
@@ -1111,6 +1121,7 @@ alias[trigger:in_activity_type] = replace_me
 ### Does the scoped title have a title-specific law with the given flag?
 alias[trigger:has_title_law_flag] = replace_me
 
+## scopes = dynasty
 ### How many perks in the lifestyle does this dynasty have?
 alias[trigger:blood_legacy_track_perks] == replace_me_comparison
 
@@ -1138,6 +1149,7 @@ alias[trigger:is_primary_heir_of] = scope[character]
 ### does the character have a valid living mother?
 alias[trigger:has_mother] = bool
 
+## scopes = value
 ### Compare the current value.
 alias[trigger:compare_value] == replace_me_comparison
 
@@ -1285,6 +1297,7 @@ alias[trigger:is_close_family_of] = scope[character]
 ### Checks if the game is in release mode or not.
 alias[trigger:release_only] = bool
 
+## scopes = dynasty
 ### does the dynasty have the required prestige level?
 alias[trigger:dynasty_prestige_level] == replace_me_comparison
 
@@ -1558,12 +1571,14 @@ alias[trigger:is_married] = bool
 ### The number of agents in a scheme
 alias[trigger:scheme_number_of_agents] == replace_me_comparison
 
+## scopes = dynasty
 ### How many perks in the lifestyle does this dynasty have?
 alias[trigger:guile_legacy_track_perks] == replace_me_comparison
 
 ### Check if the chance to create a faction against a target of the scope character is is true against the scripted value create_faction_type_chance = {     type = faction_type #An ongoing faction     target = target_character     value <|<=|>=|> 0 }
 alias[trigger:create_faction_type_chance] = replace_me
 
+## scopes = dynasty
 ### Does the scoped dynasty have the duration remaining on a given modifier has_dynasty_modifier_duration_remaining = name
 alias[trigger:has_dynasty_modifier_duration_remaining] = replace_me
 
@@ -1579,6 +1594,7 @@ alias[trigger:ai_values_divergence] = replace_me
 ### Replaces the tooltips for the enclosed triggers with a custom text custom_tooltip = { 	text = <text> 	<trigger> }
 alias[trigger:custom_tooltip] = replace_me
 
+## scopes = { dynasty house }
 ### Does the scoped house have a given modifier has_house_modifier = name
 alias[trigger:has_house_modifier] = replace_me
 
@@ -1627,6 +1643,7 @@ alias[trigger:has_primary_title] = scope[landed_title]_scope
 ### Is the character attracted to women?
 alias[trigger:is_attracted_to_women] = bool
 
+## scopes = religion
 ### Is the scoped faith in a given religious family is_in_family = abrhamic
 alias[trigger:is_in_family] = replace_me
 
