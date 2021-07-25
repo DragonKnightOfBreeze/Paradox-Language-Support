@@ -11,7 +11,7 @@ import java.util.*
 class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is CwtProperty -> getPropertyInfo(element,originalElement)
+			is CwtProperty -> getPropertyInfo(element, originalElement)
 			is CwtString -> getStringInfo(element)
 			else -> null
 		}
@@ -23,37 +23,51 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configType = element.configType
 			definition {
 				if(configType != null) append("(").append(configType.text).append(") ")
-				else append ("(property) ")
+				else append("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				when(configType) {
 					//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
 					null -> {
-						val propertyElement = getDefinitionProperty(originalElement)?:return@buildString
-						val gameType = propertyElement.gameType?:return@buildString
-						val config = propertyElement.propertyConfig ?:return@buildString
-						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
+						val propertyElement = getDefinitionProperty(originalElement) ?: return@buildString
+						val gameType = propertyElement.gameType ?: return@buildString
+						val config = propertyElement.propertyConfig ?: return@buildString
+						val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionPropertyInfo?.scope)
 						for((sk, sv) in scopeMap) {
 							val scopeLink = "@${gameType.key}.scopes.$sv"
-							appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink,sv)
+							appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink, sv)
 						}
 					}
-					//为localisation_command提供关于scope的额外文档注释
-					CwtConfigType.LocalisationCommand -> {
-						val gameType = originalElement?.gameType?: return@buildString
+					//为alias（一般是trigger）提供关于scope的额外文档注释（如果有的话）
+					CwtConfigType.Alias -> {
+						//同名的alias支持的scopes应该是一样的
+						val gameType = originalElement?.gameType ?: return@buildString
 						val configGroup = getConfig()[gameType] ?: return@buildString
-						val n = element.name
-						val localisationCommand = configGroup.localisationCommands[n] ?: return@buildString
-						val supportedScopesText = localisationCommand.supportedScopes
+						val index = name.indexOf(':')
+						if(index == -1) return@buildString
+						val aliasName = name.substring(0, index) 
+						val aliasSubName =name.substring(index + 1)
+						val aliasGroup = configGroup.aliases[aliasName]?:return@buildString
+						val aliases = aliasGroup[aliasSubName]?:return@buildString
+						val supportedScopesText = aliases.firstOrNull()?.supportedScopesText?:return@buildString
 						appendBr().append("supported_scopes = $supportedScopesText")
 					}
 					//为modifier提供关于scope的额外文档注释
 					CwtConfigType.Modifier -> {
-						val gameType = originalElement?.gameType?: return@buildString
+						val gameType = originalElement?.gameType ?: return@buildString
 						val configGroup = getConfig()[gameType] ?: return@buildString
-						val categories = element.value?.value?: return@buildString
+						val categories = element.value?.value ?: return@buildString
 						val category = configGroup.modifierCategories[categories]
-							?: configGroup.modifierCategoryIdMap[categories]?: return@buildString
+							?: configGroup.modifierCategoryIdMap[categories] ?: return@buildString
 						val supportedScopesText = category.supportedScopesText
+						appendBr().append("supported_scopes = $supportedScopesText")
+					}
+					//为localisation_command提供关于scope的额外文档注释
+					CwtConfigType.LocalisationCommand -> {
+						val gameType = originalElement?.gameType ?: return@buildString
+						val configGroup = getConfig()[gameType] ?: return@buildString
+						val n = element.name
+						val localisationCommand = configGroup.localisationCommands[n] ?: return@buildString
+						val supportedScopesText = localisationCommand.supportedScopes
 						appendBr().append("supported_scopes = $supportedScopesText")
 					}
 					else -> pass()
@@ -75,7 +89,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is CwtProperty -> getPropertyDoc(element,originalElement)
+			is CwtProperty -> getPropertyDoc(element, originalElement)
 			is CwtString -> getStringDoc(element)
 			else -> null
 		}
@@ -87,18 +101,18 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configType = element.configType
 			definition {
 				if(configType != null) append("(").append(configType.text).append(") ")
-				else append ("(property) ")
+				else append("(property) ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				when(configType) {
 					//为definitionProperty提供特殊的文档注释（scope)
 					null -> {
-						val propertyElement = getDefinitionProperty(originalElement)?:return@buildString
-						val gameType = propertyElement.gameType?:return@buildString
-						val config = propertyElement.propertyConfig ?:return@buildString
-						val scopeMap = mergeScope(config.scopeMap,propertyElement.definitionPropertyInfo?.scope)
+						val propertyElement = getDefinitionProperty(originalElement) ?: return@buildString
+						val gameType = propertyElement.gameType ?: return@buildString
+						val config = propertyElement.propertyConfig ?: return@buildString
+						val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionPropertyInfo?.scope)
 						for((sk, sv) in scopeMap) {
 							val scopeLink = "@${gameType.key}.scopes.$sv"
-							appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink,sv)
+							appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink, sv)
 						}
 					}
 					//为localisation_command提供关于scope的额外文档注释
@@ -109,11 +123,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 					//为modifier提供关于scope的额外文档注释
 					CwtConfigType.Modifier -> {
-						val gameType = originalElement?.gameType?: return@buildString
+						val gameType = originalElement?.gameType ?: return@buildString
 						val configGroup = getConfig()[gameType] ?: return@buildString
-						val categories = element.value?.value?: return@buildString
+						val categories = element.value?.value ?: return@buildString
 						val category = configGroup.modifierCategories[categories]
-							?: configGroup.modifierCategoryIdMap[categories]?: return@buildString
+							?: configGroup.modifierCategoryIdMap[categories] ?: return@buildString
 						val supportedScopesText = category.supportedScopesText
 						appendBr().append("supported_scopes = $supportedScopesText")
 					}
@@ -168,10 +182,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return documentationLines?.joinToString("\n")
 	}
 	
-	private fun getDefinitionProperty(originalElement: PsiElement?):ParadoxScriptProperty?{
+	private fun getDefinitionProperty(originalElement: PsiElement?): ParadoxScriptProperty? {
 		if(originalElement == null) return null
-		val parent = originalElement.parent?:return null
-		val keyElement =  parent as? ParadoxScriptPropertyKey ?: parent.parent as? ParadoxScriptPropertyKey ?:return null 
+		val parent = originalElement.parent ?: return null
+		val keyElement = parent as? ParadoxScriptPropertyKey ?: parent.parent as? ParadoxScriptPropertyKey ?: return null
 		return keyElement.parent as? ParadoxScriptProperty
 	}
 	

@@ -9,7 +9,8 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val optionValues: List<CwtOptionValueConfig>?
 	abstract var parent: CwtPropertyConfig?
 	
-	val cardinality by lazy { inferCardinality() } //懒加载
+	val cardinality = inferCardinality()
+	
 	val scope get() = inferScope() //不要缓存，因为parent可能有变动
 	val scopeMap get() = inferScopeMap() //不要缓存，因为parent可能有变动
 	
@@ -17,24 +18,24 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		return options?.find { it.key == "cardinality" }?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
 	}
 	
-	private fun inferScope(): String? {
-		//option的名字可能是：replace_scope/replace_scopes/push_scope
-		//对应的option可能位于：alias规则定义上，上一级definitionProperty规则定义上，definition规则定义上，subtype规则定义上
-		var current: CwtKvConfig<*>? = this
-		while(current != null) {
-			val scope = doInferScope(current)
-			if(scope != null) return scope
-			current = current.parent
+		private fun inferScope(): String? {
+			//option的名字可能是：replace_scope/replace_scopes/push_scope
+			//对应的option可能位于：alias规则定义上，上一级definitionProperty规则定义上，definition规则定义上，subtype规则定义上
+			var current: CwtKvConfig<*>? = this
+			while(current != null) {
+				val scope = doInferScope(current)
+				if(scope != null) return scope
+				current = current.parent
+			}
+			return null
 		}
-		return null
-	}
-	
-	private fun doInferScope(config: CwtKvConfig<*>): String? {
-		val options = config.options ?: return null
-		return options.find { it.key == "push_scope" }?.value
-			?: options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options
-				?.find { o -> o.key == "this" }?.value
-	}
+		
+		private fun doInferScope(config: CwtKvConfig<*>): String? {
+			val options = config.options ?: return null
+			return options.find { it.key == "push_scope" }?.value
+				?: options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options
+					?.find { o -> o.key == "this" }?.value
+		}
 	
 	
 	private fun inferScopeMap(): MutableMap<String,String> {

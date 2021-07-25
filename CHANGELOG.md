@@ -153,6 +153,8 @@
 * [X] 为definitionProperty提供关于scope的额外文档注释（附加psi链接）
 * [X] 支持规则类型single_alias
 * [X] 支持规则类型alias_match_left
+* [X] 提示trigger时匹配scope（来自`trigger_docs.log`或`triggers.log`，需要先转化为cwt，从名为`scope`或`scopes`的option中得到）
+* [ ] 为trigger补充名为`scope`或`scopes`的option（仅对于规则类型`alias_name[xxx]`）
 * [ ] 支持规则类型scope和scope_field
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型complex_enum
