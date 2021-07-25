@@ -37,7 +37,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 							appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink, sv)
 						}
 					}
-					//为alias（一般是trigger）提供关于scope的额外文档注释（如果有的话）
+					//为alias提供关于scope的额外文档注释（如果有的话）
 					CwtConfigType.Alias -> {
 						//同名的alias支持的scopes应该是一样的
 						val gameType = originalElement?.gameType ?: return@buildString

@@ -39,7 +39,7 @@ class CwtConfigProvider(
 					when {
 						//如果是目录则将其d名字作为规则组的名字
 						file.isDirectory -> {
-							val groupName = fileName.removeSuffix("-ext") //如果有后缀"-ext"，表示这是额外提供的配置
+							val groupName = fileName
 							initConfigGroup(groupName, file)
 						}
 						//解析顶层文件declarations.yml

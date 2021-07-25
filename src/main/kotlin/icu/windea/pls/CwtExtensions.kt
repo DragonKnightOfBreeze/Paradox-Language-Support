@@ -911,21 +911,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtValueExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return
-			val aliasGroup = configGroup.aliases[aliasName] ?: return
-			for(aliases in aliasGroup.values) {
-				//aliasConfigs的名字是相同的 
-				val aliasConfig = aliases.firstOrNull() ?: continue
-				//如果是alias，需要推断scope并向下传递
-				val finalScope = aliasConfig.config.scope ?: config.scope ?: scope
-				//aliasSubName是一个表达式
-				completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
-			}
-			//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
-			if(aliasName == "modifier") {
-				//如果是modifier，需要推断scope
-				val finalScope = config.scope ?: scope
-				completeModifier(keyword, quoted, config, configGroup, result, finalScope)
-			}
+			completeAliasName(aliasName, keyword, quoted, config, configGroup, result, scope)
 		}
 		CwtValueExpression.Type.AliasMatchLeft -> pass() //NOTE 规则会被内联，不应该被匹配到
 		CwtValueExpression.Type.Constant -> {
@@ -952,15 +938,15 @@ fun completeAliasName(aliasName: String, keyword: String, quoted: Boolean, confi
 		val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 		//NOTE alias的scope需要匹配（推断得到的scope为null时，总是提示）
 		if(scope == null || !aliasConfig.supportedScopes.any { matchesScope(scope,it,configGroup) }) continue
-		//如果是alias，需要推断scope并向下传递
-		val finalScope = aliasConfig.config.scope ?: config.scope ?: scope
+		//NOTE 需要推断scope并向下传递，注意首先需要取config.parent.scope
+		val finalScope = config.parent?.scope ?: scope
 		//aliasSubName是一个表达式
 		completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
 	}
 	//NOTE 如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
 	if(aliasName == "modifier") {
-		//如果是modifier，需要推断scope
-		val finalScope = config.scope ?: scope
+		//NOTE 需要推断scope并向下传递，注意首先需要取config.parent.scope
+		val finalScope = config.parent?.scope ?: scope
 		completeModifier(keyword, quoted, config, configGroup, result, finalScope)
 	}
 }

@@ -15,12 +15,12 @@ import java.io.*
 
 fun main() {
 	extractModifiersCwt(
-		"src/main/resources/config/stellaris-ext/modifiers-ext.log",
-		"src/main/resources/config/stellaris-ext/modifiers-ext.cwt" 
+		"src/main/resources/config/stellaris/modifiers.log",
+		"src/main/resources/config/stellaris/modifiers.ext.cwt" 
 	)
 	extractModifiersCwt(
 		"src/main/resources/config/ck3/script-docs/modifiers.log",
-		"src/main/resources/config/ck3-ext/modifiers-ext.cwt"
+		"src/main/resources/config/ck3/modifiers.ext.cwt"
 	)
 }
 

@@ -153,8 +153,8 @@
 * [X] 为definitionProperty提供关于scope的额外文档注释（附加psi链接）
 * [X] 支持规则类型single_alias
 * [X] 支持规则类型alias_match_left
-* [X] 提示trigger时匹配scope（来自`trigger_docs.log`或`triggers.log`，需要先转化为cwt，从名为`scope`或`scopes`的option中得到）
-* [ ] 为trigger补充名为`scope`或`scopes`的option（仅对于规则类型`alias_name[xxx]`）
+* [X] 提示alias时匹配scope（来自`trigger_docs.log`或`triggers.log`，需要先转化为cwt，从名为`scope`或`scopes`的option中得到）
+* [ ] 为alias补充名为`scope`或`scopes`的option（仅对于规则类型`alias_name[xxx]`）
 * [ ] 支持规则类型scope和scope_field
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型complex_enum
@@ -176,6 +176,7 @@
 * 暂时不解析scope并进行匹配（通过cwt规则文件）(已经实现modifiers的scope匹配)
 * 暂时不验证脚本文件的结构是否正确（通过cwt规则文件）
 * 暂时不验证本地化文件中的代码（`[...]`）是否正确（通过cwt规则文件）
+* 对scope和link规则需要进一步研究，以实现相关功能
 * 注意：仅解析cwt规则文件，其他文件如csv文件需要先转化成cwt规则文件再解析
 * 注意：对single_alias和alias的支持还是不够完善
 * 注意：可以在文档注释中渲染dds图标，原理是从dds图片生成png图片并渲染为html，生成图片需要花费时间，首次显示时可能会显示问号图标
