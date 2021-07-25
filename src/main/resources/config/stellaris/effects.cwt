@@ -1117,7 +1117,12 @@ alias[effect:create_country] = {
 	## cardinality = 0..1
 	name_list = scope_group[target_country]
 	## cardinality = 0..1
-	ship_prefix = scalar	#should be string or a scope
+	ship_prefix = scalar    #should be string or a scope
+	## cardinality = 0..1
+	###Sets country adjective. Allowed values are < string in localisation >/< string in localisation_synced >/< string written in quotes e.g. "Korean" >
+	adjective = localisation_synced
+	## cardinality = 0..1
+	adjective = localisation
 	## cardinality = 0..1
 	authority = random
 	## cardinality = 0..1
@@ -1171,12 +1176,12 @@ alias[effect:create_country] = {
 		#I already created an entry for flag colors etc, you should work on connecting these.
 		## cardinality = 0..1
 		icon = {
-			category = scalar			#should be some sort of key
-			file = scalar			#should be "filename.dds" in the correct folder
+			category = scalar            #should be some sort of key
+			file = scalar            #should be "filename.dds" in the correct folder
 		}
 		background = {
-			category = scalar			#should be some sort of key
-			file = scalar			#should be "filename.dds" in the correct folder
+			category = scalar            #should be some sort of key
+			file = scalar            #should be "filename.dds" in the correct folder
 		}
 		colors = {
 			##cardinality = 0..4
@@ -1192,9 +1197,9 @@ alias[effect:create_country] = {
 	###Establishing contact on_action (on_first_contact) will not fire for this country or its federation allies
 	exclude_day_zero_contact = scope_group[target_country]
 	## cardinality = 0..1
-	released_by_country = scope_group[target_country]	#scope
+	released_by_country = scope_group[target_country]    #scope
 	## cardinality = 0..1
-	released_from_country = scope_group[target_country]	#scope
+	released_from_country = scope_group[target_country]    #scope
 	## cardinality = 0..1
 	ignore_initial_colony_error = bool
 }
@@ -1240,12 +1245,12 @@ alias[effect:create_rebels] = {
 		#I already created an entry for flag colors etc, you should work on connecting these.
 		## cardinality = 0..1
 		icon = {
-			category = scalar			#should be some sort of key
-			file = scalar			#should be "filename.dds" in the correct folder
+			category = scalar            #should be some sort of key
+			file = scalar            #should be "filename.dds" in the correct folder
 		}
 		background = {
-			category = scalar			#should be some sort of key
-			file = scalar			#should be "filename.dds" in the correct folder
+			category = scalar            #should be some sort of key
+			file = scalar            #should be "filename.dds" in the correct folder
 		}
 		colors = {
 			##cardinality = 0..4
@@ -1260,7 +1265,7 @@ alias[effect:create_rebels] = {
 	name_list = random
 	## cardinality = 0..1
 	###This presumably works (report if not)
-	ship_prefix = scalar	#should be string or a scope
+	ship_prefix = scalar    #should be string or a scope
 	## cardinality = 0..1
 	released_from_country = scope_group[target_country]
 	## push_scope = country
@@ -1308,7 +1313,7 @@ alias[effect:create_leader] = {
 	## cardinality = 0..1
 	leader_age_min = int
 	## cardinality = 0..1
-	leader_age_max = int	#should not be less than min...
+	leader_age_max = int    #should not be less than min...
 	## cardinality = 0..1
 	###Warning: This is in trigger_docs but is not used in this place in Vanilla, and might not work
 	gender = enum[genders]
@@ -1360,7 +1365,7 @@ alias[effect:clone_leader] = {
 	## cardinality = 0..1
 	leader_age_min = int
 	## cardinality = 0..1
-	leader_age_max = int	#should not be less than min...
+	leader_age_max = int    #should not be less than min...
 	## cardinality = 0..1
 	###Warning: This is in trigger_docs but is not used in this place in Vanilla, and might not work
 	gender = enum[genders]
@@ -1661,12 +1666,12 @@ alias[effect:change_country_flag] = random
 ### Changes the scoped country's flag
 alias[effect:change_country_flag] = {
 	icon = {
-		category = scalar		#TODO should be a folder name. This needs to be corrected for create_country, create_rebels and prescripted_countries too (possibly more)
-		file = scalar		#TODO should be "filename.dds" in the named folder
+		category = scalar        #TODO should be a folder name. This needs to be corrected for create_country, create_rebels and prescripted_countries too (possibly more)
+		file = scalar        #TODO should be "filename.dds" in the named folder
 	}
 	background = {
-		category = scalar		#TODO should be a folder name
-		file = scalar		#TODO should be "filename.dds" in the named folder
+		category = scalar        #TODO should be a folder name
+		file = scalar        #TODO should be "filename.dds" in the named folder
 	}
 	colors = {
 		##cardinality = 0..4
@@ -1856,7 +1861,7 @@ alias[effect:create_colony] = {
 	##cardinality = 0..1
 	species = enum[buildable_pop_species]
 	##cardinality = 0..1
-	species = scalar	#key
+	species = scalar    #key
 	##cardinality = 0..1
 	ethos = random
 	##cardinality = 0..1
@@ -1920,7 +1925,7 @@ alias[effect:create_message] = {
 		type = variable
 		## cardinality = 0..1
 		varname = value[variable]
-		localization = scalar		#not localisation, but rather something that can be used in localisation
+		localization = scalar        #not localisation, but rather something that can be used in localisation
 		scope = scope[any]
 	}
 }
@@ -1976,7 +1981,7 @@ alias[effect:create_point_of_interest] = {
 alias[effect:create_pop] = {
 	species = scope_group[target_species]
 	species = enum[buildable_pop_species]
-	species = scalar	#key
+	species = scalar    #key
 	## cardinality = 0..1
 	ethos = random
 	## cardinality = 0..1
@@ -2335,7 +2340,7 @@ alias[effect:set_mission] = <observation_station_mission>
 ### Change entity of a planet.
 alias[effect:set_planet_entity] = {
 	## cardinality = 0..1
-	entity = scalar	#TODO: Link this to graphical culture <model_entity>
+	entity = scalar    #TODO: Link this to graphical culture <model_entity>
 	## cardinality = 0..1
 	graphical_culture = <graphical_culture>
 	## cardinality = 0..1
@@ -2343,9 +2348,9 @@ alias[effect:set_planet_entity] = {
 	## cardinality = 0..1
 	graphical_culture = scope[ship]
 	## cardinality = 0..1
-	picture = scalar	#filepath #TODO picture
+	picture = scalar    #filepath #TODO picture
 	## cardinality = 0..1
-	atmosphere_color = scalar	#TODO color
+	atmosphere_color = scalar    #TODO color
 	## cardinality = 0..1
 	atmosphere_intensity = float[0.0..1.0]
 	## cardinality = 0..1
@@ -2525,7 +2530,7 @@ alias[effect:start_colony] = {
 	## cardinality = 0..1
 	species = enum[buildable_pop_species]
 	## cardinality = 0..1
-	species = scalar	#key
+	species = scalar    #key
 	## cardinality = 0..1
 	ethos = owner
 	## cardinality = 0..1

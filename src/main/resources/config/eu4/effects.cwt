@@ -3011,8 +3011,8 @@ alias[effect:define_exiled_ruler] = {
 }
 
 ## scope = province
-###Adds the specified amount to the province's center of trade levels. Cannot, however, make a province that is not a center of trade into one (use center_of_trade = 1)
-alias[effect:add_center_of_trade_level] = int[1..2]
+###Adds the specified amount to the province's center of trade levels. Cannot, however, make a province that is not a center of trade into one (use center_of_trade = 1)  Negative numbers also work to remove levels.
+alias[effect:add_center_of_trade_level] = int[-2..2]
 
 ## scope = province
 ###Makes the province a center of trade of the specified level.
