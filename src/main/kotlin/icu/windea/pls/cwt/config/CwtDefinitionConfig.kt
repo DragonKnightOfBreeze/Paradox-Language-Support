@@ -39,8 +39,8 @@ data class CwtDefinitionConfig(
 	/**
 	 * 根据路径解析对应的属性配置列表。
 	 */
-	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxPropertyPath, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
-		//TODO 内联single_alias和alias_match_left
+	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxPropertyPath,
+		configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return propertyConfigsCache.getOrPut(cacheKey) {
 			when {
@@ -133,7 +133,11 @@ data class CwtDefinitionConfig(
 		}.distinctBy { it.value }
 	}
 	
-	private fun inlineConfig(key: String, quoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtPropertyConfig>): Boolean {
+	/**
+	 * 内联类型为`single_alias_right`或`alias_match_left`的规则。以便后续的代码提示、引用解析和结构验证。
+	 */
+	private fun inlineConfig(key: String, quoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup,
+		result: MutableList<CwtPropertyConfig>): Boolean {
 		val valueExpression = config.valueExpression
 		return when(valueExpression.type) {
 			CwtValueExpression.Type.SingleAliasRight -> {
@@ -144,20 +148,22 @@ data class CwtDefinitionConfig(
 						pointer = config.pointer, key = config.key, keyExpression = config.keyExpression,
 						options = config.options, optionValues = config.optionValues, documentation = config.documentation
 					)
+					c.parent = config.parent
 					result.add(c)
 				}
 				true
 			}
 			CwtValueExpression.Type.AliasMatchLeft -> {
-				val aliasName = valueExpression.value?:return false
-				val aliasGroup = configGroup.aliases[aliasName]?:return false
-				val aliasSubName = resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?:return false
-				val aliases = aliasGroup[aliasSubName]?:return false
+				val aliasName = valueExpression.value ?: return false
+				val aliasGroup = configGroup.aliases[aliasName] ?: return false
+				val aliasSubName = resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?: return false
+				val aliases = aliasGroup[aliasSubName] ?: return false
 				for(alias in aliases) {
 					val c = alias.config.copy(
 						pointer = config.pointer, key = config.key, keyExpression = config.keyExpression,
 						options = config.options, optionValues = config.optionValues, documentation = config.documentation
 					)
+					c.parent = config.parent
 					result.add(c)
 				}
 				true
