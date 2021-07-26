@@ -166,7 +166,7 @@
 * [ ] 应用cwt配置文件`localisation.cwt` *
 * [X] 生成本地化文本的文档注释时考虑并发解析其中的图标（不知为什么还是有点慢）
 * [X] 不要缓存CwtKvConfig的scope和scopeGroup（因为内联的原因，parent可能有变动）
-* [ ] 修复当规则类型为alias_name或者引用为modifier时，无法解析definitionPropertyKey的引用的bug
+* [X] 修复当规则类型为alias_name或者引用为modifier时，无法解析definitionPropertyKey的引用的bug
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
