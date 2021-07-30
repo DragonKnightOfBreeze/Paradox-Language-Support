@@ -2,14 +2,14 @@ plugins {
 	java
 	kotlin("jvm") version "1.5.0"
 	id("org.jetbrains.intellij") version "0.7.2"
-	id("org.jetbrains.grammarkit") version "2021.1.2"
+	id("org.jetbrains.grammarkit") version "2021.1"
 }
 
 group = "icu.windea"
-version = "0.3.7"
+version = "0.3.8"
 
 intellij {
-	version = "2021.1"
+	version = "2021.2"
 	pluginName = "Paradox Language Support"
 }
 

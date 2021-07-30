@@ -171,10 +171,11 @@
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [ ] ~~为link/localisation_command/modifier/modifier_category/scope提供关于scope的额外文档注释~~
+* [X] 适配IDEA版本`2021.2`
 
 # 遗留问题
 
-* 暂时不解析scope并进行匹配（通过cwt规则文件）(已经实现modifiers的scope匹配)
+* 暂时不解析scope并进行匹配（通过cwt规则文件）（已经实现modifiers的scope匹配）
 * 暂时不验证脚本文件的结构是否正确（通过cwt规则文件）
 * 暂时不验证本地化文件中的代码（`[...]`）是否正确（通过cwt规则文件）
 * 对scope和link规则需要进一步研究，以实现相关功能
