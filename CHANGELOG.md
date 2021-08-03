@@ -170,9 +170,8 @@
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
-* [ ] ~~为link/localisation_command/modifier/modifier_category/scope提供关于scope的额外文档注释~~
 * [X] 适配IDEA版本`2021.2`
-* [ ] 添加新的库作为依赖时（原始游戏目录，模组），兼容zip压缩包和文件夹
+* [ ] ~~添加新的库作为依赖时（原始游戏目录，模组），兼容zip压缩包和文件夹~~（使用基于jar协议的url打开zip文件，实际测试发现读取不到内容）
 * [ ] 实现或重构用于提示definition的nameTypeInfo的InlayHint，可以单独启用
 * [ ] 实现或重构用于提示definition的localizedName的InlayHint，可以单独启用
 * [ ] 实现或重构用于提示definitionProperty的scopes的InlayHint，可以单独启用（注意仅会在行尾的`key = {`后面提示）
