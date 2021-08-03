@@ -1,8 +1,8 @@
-package icu.windea.pls.model
+package icu.windea.pls.cwt.config
 
 import icu.windea.pls.*
 
-enum class SeparatorType(
+enum class CwtSeparatorType(
 	override val key: String,
 	override val text: String
 ) : Enumerable {
@@ -14,7 +14,7 @@ enum class SeparatorType(
 	}
 	
 	companion object {
-		fun resolve(key: String): SeparatorType? {
+		fun resolve(key: String): CwtSeparatorType? {
 			return when(key) {
 				"=", "==" -> EQUAL
 				"<>", "!=" -> NOT_EQUAL

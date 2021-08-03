@@ -101,20 +101,19 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	
 	private fun getRootType(file: VirtualFile): ParadoxRootType? {
 		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
-		val fileName = file.name.lowercase()
-		for(child in file.children) {
-			val childName = child.name.lowercase()
-			val childExpression = childName.substringAfterLast('.', "")
-			when {
-				childName == descriptorFileName -> return ParadoxRootType.Mod
-				fileName == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
-				fileName == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
-				fileName == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
-				//TODO 可能并不是这样命名，需要检查
-				//childName in ParadoxGameType.exeFileNames -> return ParadoxRootType.Stdlib
-				childExpression == "exe" -> return ParadoxRootType.Stdlib
-			}
+		val name = file.name.substringBeforeLast('.',"")
+		//处理特殊顶级目录的情况
+		when{
+			name == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
+			name == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
+			name == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
 		}
+		//处理模组目录的情况
+		val descriptorFile = file.findChild(descriptorFileName)
+		if(descriptorFile != null) return ParadoxRootType.Mod
+		//处理游戏目录的情况
+		val exeFile = file.children.find { it.name.substringAfterLast('.',"").lowercase() == "exe" } //TODO 严格验证
+		if(exeFile != null) return ParadoxRootType.Stdlib
 		return null
 	}
 	

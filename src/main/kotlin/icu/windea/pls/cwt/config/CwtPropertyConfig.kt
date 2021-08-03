@@ -4,7 +4,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
 
 data class CwtPropertyConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -19,7 +18,7 @@ data class CwtPropertyConfig(
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null,
-	val separatorType: SeparatorType = SeparatorType.EQUAL,
+	val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
 	val keyExpression: CwtKeyExpression,
 	val valueExpression: CwtValueExpression
 ) : CwtKvConfig<CwtProperty>() {

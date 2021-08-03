@@ -310,7 +310,7 @@ class CwtConfigGroup(
 				when(key) {
 					"starts_with" -> startsWith = option.stringValue ?: continue
 					"type_key_filter" -> {
-						val reversed = option.separatorType == SeparatorType.NOT_EQUAL
+						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
 						//值可能是string也可能是stringArray
 						val list = option.stringValueOrValues
 						typeKeyFilter = list?.toReversibleList(reversed)
@@ -345,7 +345,7 @@ class CwtConfigGroup(
 				val key = option.key
 				when(key) {
 					"type_key_filter" -> {
-						val reversed = option.separatorType == SeparatorType.NOT_EQUAL
+						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
 						//值可能是string也可能是stringArray
 						val list = option.stringValueOrValues
 						typeKeyFilter = list?.toReversibleList(reversed)

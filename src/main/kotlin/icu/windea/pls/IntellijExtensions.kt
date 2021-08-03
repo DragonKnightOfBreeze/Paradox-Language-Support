@@ -94,19 +94,6 @@ fun selectElement(editor: Editor, element: PsiElement?) {
 	editor.selectionModel.setSelection(range.startOffset, range.endOffset)
 }
 
-/**
- * 得到处理后的[VirtualFile]，以便查看它的子节点。
- *
- * 如果当前的[VirtualFile]是一个压缩文件，则进行特殊处理，否则返回自身。
- */
-fun VirtualFile.optimized(): VirtualFile {
-	val extension = this.extension
-	return when {
-		extension == "jar" || extension == "zip" -> JarFileSystem.getInstance().getRootByLocal(this) ?: this
-		else -> this
-	}
-}
-
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
 fun DataContext.findElement(): PsiElement? {
 	var element = this.getData(CommonDataKeys.PSI_ELEMENT)

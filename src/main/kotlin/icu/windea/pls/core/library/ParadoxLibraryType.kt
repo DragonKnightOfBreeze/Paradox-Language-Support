@@ -1,5 +1,6 @@
 package icu.windea.pls.core.library
 
+import com.intellij.ide.highlighter.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
@@ -42,42 +43,6 @@ abstract class ParadoxLibraryType(
 	
 	override fun getExternalRootTypes() = arrayOf(OrderRootType.SOURCES)
 	
-	//TODO 兼容zip压缩包
-	//如果存在描述符文件，其中有name属性则取name属性的值，否则取库的文件名/目录
-	//如果存在游戏执行文件，则认为是标准库
-	//如果根目录名是特定的字符串，需要特殊处理，视为特殊的rootType
-	private fun getLibraryName(file: VirtualFile, project: Project): String? {
-		val fileName = file.name
-		for(child in file.children) {
-			val childName = child.name
-			val childExtension = child.extension
-			//要求：根目录包含描述符文件descriptor.mod或者对应的.exe文件，或者根目录名是特定的字符串
-			when {
-				childName.equals(descriptorFileName, true) -> {
-					val text = child.inputStream.reader().use { it.readText() }
-					for(line in text.lines()) {
-						if(line.startsWith("name")) {
-							return line.substringAfter('=').trim().unquote().trim()
-						}
-					}
-					return file.nameWithoutExtension
-				}
-				fileName.equals(ParadoxRootType.PdxLauncher.key, true) -> return ParadoxRootType.PdxLauncher.text
-				fileName.equals(ParadoxRootType.PdxOnlineAssets.key, true) -> return ParadoxRootType.PdxOnlineAssets.text
-				fileName.equals(ParadoxRootType.TweakerGuiAssets.key, true) -> return ParadoxRootType.TweakerGuiAssets.text
-				//TODO 可能并不是这样命名，需要检查
-				//childName.equals("${gameType.name}.exe", true) -> return ParadoxRootType.Stdlib.text
-				childExtension.equals("exe", true) -> return ParadoxRootType.Stdlib.text
-			}
-		}
-		showInvalidLibraryDialog(project)
-		return null
-	}
-	
-	private fun showInvalidLibraryDialog(project: Project) {
-		Messages.showWarningDialog(project, _invalidLibraryPathMessage, _invalidLibraryPathTitle)
-	}
-	
 	//必须是一个文件夹，但必须包含descriptor.mod或者.exe文件
 	override fun createNewLibrary(parentComponent: JComponent, contextDirectory: VirtualFile?, project: Project): NewLibraryConfiguration? {
 		if(contextDirectory == null) return null
@@ -88,6 +53,56 @@ abstract class ParadoxLibraryType(
 		val name = getLibraryName(file, project) ?: return null
 		val libraryProperties = ParadoxLibraryProperties.instance
 		return ParadoxNewLibraryConfiguration(namePrefix + name, this, file, libraryProperties)
+	}
+	
+	//如果存在描述符文件，其中有name属性则取name属性的值，否则取库的文件名/目录
+	//如果存在游戏执行文件，则认为是标准库
+	//如果根目录名是特定的字符串，需要特殊处理，视为特殊的rootType
+	//TODO 兼容文件夹和zip压缩包
+	private fun getLibraryName(file: VirtualFile, project: Project): String? {
+		//这里file如果是zip文件而不是目录，则file.children返回空
+		val name = file.name.substringBeforeLast('.',"")
+		//FIXME 实际测试读不到zip文件中的内容
+		//if(file.fileType == ArchiveFileType.INSTANCE){
+		//	val zipFile = JarFileSystem.getInstance().getRootByLocal(file)!!
+		//	val files = zipFile.children
+		//	println("111")
+		//}
+		//处理特殊顶级目录的情况
+		when{
+			name.equals(ParadoxRootType.PdxLauncher.key, true) -> return ParadoxRootType.PdxLauncher.text
+			name.equals(ParadoxRootType.PdxOnlineAssets.key, true) -> return ParadoxRootType.PdxOnlineAssets.text
+			name.equals(ParadoxRootType.TweakerGuiAssets.key, true) -> return ParadoxRootType.TweakerGuiAssets.text
+		}
+		//处理模组目录的情况
+		val descriptorFile = file.findChild(descriptorFileName)
+		if(descriptorFile != null) {
+			//从descriptor.name中获取，或者直接使用目录/压缩包去除后缀名后的名字
+			return getLibraryNameFromDescriptorFile(descriptorFile)?:name 
+		}
+		//处理游戏目录的情况
+		val exeFile = file.children.find { it.name.substringAfterLast('.',"").lowercase() == "exe" } //TODO 严格验证
+		if(exeFile != null){
+			return ParadoxRootType.Stdlib.text
+		} 
+		//不合法的情况要弹出对话框
+		showInvalidLibraryDialog(project)
+		return null
+	}
+	
+	private fun getLibraryNameFromDescriptorFile(file:VirtualFile):String?{
+		val text = file.inputStream.reader().use { it.readText() }
+		for(line in text.lines()) {
+			val lineText = line.trim()
+			if(lineText.startsWith("name")) {
+				return line.substringAfter('=').trim().unquote().trim()
+			}
+		}
+		return null
+	}
+	
+	private fun showInvalidLibraryDialog(project: Project) {
+		Messages.showWarningDialog(project, _invalidLibraryPathMessage, _invalidLibraryPathTitle)
 	}
 	
 	override fun createPropertiesEditor(editorComponent: LibraryEditorComponent<ParadoxLibraryProperties>) = null

@@ -6,8 +6,8 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -49,15 +49,15 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element:CwtOption): SeparatorType {
+	fun getSeparatorType(element:CwtOption): CwtSeparatorType {
 		//这里不能遍历element.children
 		element.forEachChild { child->
 			when(child.elementType){
-				CwtTypes.EQUAL_SIGN -> return SeparatorType.EQUAL
-				CwtTypes.NOT_EQUAL_SIGN -> return SeparatorType.NOT_EQUAL
+				CwtTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+				CwtTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
 			}
 		}
-		return SeparatorType.EQUAL
+		return CwtSeparatorType.EQUAL
 	}
 	//endregion
 	
@@ -105,15 +105,15 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element:CwtProperty): SeparatorType {
+	fun getSeparatorType(element:CwtProperty): CwtSeparatorType {
 		//这里不能遍历element.children
 		element.forEachChild { child->
 			when(child.elementType){
-				CwtTypes.EQUAL_SIGN -> return SeparatorType.EQUAL
-				CwtTypes.NOT_EQUAL_SIGN -> return SeparatorType.NOT_EQUAL
+				CwtTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+				CwtTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
 			}
 		}
-		return SeparatorType.EQUAL
+		return CwtSeparatorType.EQUAL
 	}
 	//endregion
 	
