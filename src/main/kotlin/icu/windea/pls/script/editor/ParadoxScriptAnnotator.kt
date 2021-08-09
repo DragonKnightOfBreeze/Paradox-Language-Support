@@ -38,7 +38,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//注明无法解析的情况
 		val reference = element.reference
 		if(reference.resolve() == null) {
-			holder.newAnnotation(ERROR, message("paradox.script.annotator.unresolvedVariable", element.name))
+			holder.newAnnotation(ERROR, message("script.annotator.unresolvedVariable", element.name))
 				.create()
 		}
 	}

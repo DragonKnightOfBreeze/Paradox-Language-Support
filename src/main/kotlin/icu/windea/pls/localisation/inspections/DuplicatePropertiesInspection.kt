@@ -9,12 +9,13 @@ import com.intellij.psi.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
 class DuplicatePropertiesInspection : LocalInspectionTool() {
 	companion object{
-		private fun _description(key: String) = message("paradox.localisation.inspection.duplicateProperties.description", key)
+		private fun _description(key: String) = message("localisation.inspection.duplicateProperties.description", key)
 	}
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -22,8 +23,8 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 	}
 
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
-		override fun visitFile(element: PsiFile) {
-			val file = element as? ParadoxLocalisationFile ?: return
+		override fun visitFile(file: PsiFile) {
+			if(file !is ParadoxLocalisationFile) return
 			val propertyGroup = file.properties.groupBy { it.name }
 			for((key, values) in propertyGroup) {
 				if(values.size <= 1) continue
@@ -44,9 +45,9 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 		private val pointers = ContainerUtil.map(duplicates) { SmartPointerManager.createPointer(it) }
 
 		companion object{
-			private val _name = message("paradox.localisation.quickFix.navigateToDuplicates")
-			private fun _header(key:String) = message("paradox.localisation.quickFix.navigateToDuplicates.header", key)
-			private fun _text(key: String,lineNumber:Int) = message("paradox.localisation.quickFix.navigateToDuplicates.text", key, lineNumber)
+			private val _name = message("localisation.quickFix.navigateToDuplicates")
+			private fun _header(key:String) = message("localisation.quickFix.navigateToDuplicates.header", key)
+			private fun _text(key: String,lineNumber:Int) = message("localisation.quickFix.navigateToDuplicates.text", key, lineNumber)
 		}
 		
 		override fun getFamilyName() = _name

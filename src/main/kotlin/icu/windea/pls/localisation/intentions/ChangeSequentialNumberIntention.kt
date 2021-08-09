@@ -13,8 +13,8 @@ import icu.windea.pls.model.*
 
 class ChangeSequentialNumberIntention : IntentionAction {
 	companion object {
-		private val _name = message("paradox.localisation.intention.changeSequentialNumber")
-		private val _title = message("paradox.localisation.intention.changeSequentialNumber.title")
+		private val _name = message("localisation.intention.changeSequentialNumber")
+		private val _title = message("localisation.intention.changeSequentialNumber.title")
 	}
 	
 	override fun startInWriteAction() = false

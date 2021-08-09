@@ -7,8 +7,8 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptDescriptionProvider : ElementDescriptionProvider {
 	companion object {
-		private val _variableDescription = message("paradox.script.description.variable")
-		private val _propertyDescription = message("paradox.script.description.property")
+		private val _variableDescription = message("script.description.variable")
+		private val _propertyDescription = message("script.description.property")
 	}
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {

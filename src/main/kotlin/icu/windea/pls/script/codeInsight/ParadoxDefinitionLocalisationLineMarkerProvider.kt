@@ -10,8 +10,8 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	companion object {
-		private val _name = message("paradox.script.gutterIcon.definitionLocalisation")
-		private val _title = message("paradox.script.gutterIcon.definitionLocalisation.title")
+		private val _name = message("script.gutterIcon.definitionLocalisation")
+		private val _title = message("script.gutterIcon.definitionLocalisation.title")
 	}
 	
 	override fun getName() = _name

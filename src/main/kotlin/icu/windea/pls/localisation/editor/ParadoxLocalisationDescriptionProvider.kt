@@ -7,13 +7,13 @@ import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationDescriptionProvider : ElementDescriptionProvider {
 	companion object{
-		private val _propertyDescription = message("paradox.localisation.description.property")
-		private val _localeDescription = message("paradox.localisation.description.locale")
-		private val _iconDescription = message("paradox.localisation.description.icon")
-		private val _sequentialNumberDescription = message("paradox.localisation.description.sequentialNumber")
-		private val _commandScopeDescription = message("paradox.localisation.description.commandScope")
-		private val _commandFieldDescription = message("paradox.localisation.description.commandField")
-		private val _colorfulTextDescription = message("paradox.localisation.description.colorfulText")
+		private val _propertyDescription = message("localisation.description.property")
+		private val _localeDescription = message("localisation.description.locale")
+		private val _iconDescription = message("localisation.description.icon")
+		private val _sequentialNumberDescription = message("localisation.description.sequentialNumber")
+		private val _commandScopeDescription = message("localisation.description.commandScope")
+		private val _commandFieldDescription = message("localisation.description.commandField")
+		private val _colorfulTextDescription = message("localisation.description.colorfulText")
 	}
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {

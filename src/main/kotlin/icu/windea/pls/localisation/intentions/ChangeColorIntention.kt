@@ -13,8 +13,8 @@ import icu.windea.pls.model.*
 
 class ChangeColorIntention : IntentionAction {
 	companion object {
-		private val _name = message("paradox.localisation.intention.changeColor")
-		private val _title = message("paradox.localisation.intention.changeColor.title")
+		private val _name = message("localisation.intention.changeColor")
+		private val _title = message("localisation.intention.changeColor.title")
 	}
 	
 	override fun startInWriteAction() = false

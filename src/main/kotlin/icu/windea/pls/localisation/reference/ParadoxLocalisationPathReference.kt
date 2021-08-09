@@ -29,8 +29,8 @@ class ParadoxLocalisationPathReference(
 	
 	override fun getUnresolvedMessagePattern(): String {
 		return when(category) {
-			Localisation -> message("paradox.localisation.annotator.unresolvedLocalisationInFile", anchor, file.name)
-			SyncedLocalisation -> message("paradox.localisation.annotator.unresolvedSyncedLocalisationInFile", anchor, file.name)
+			Localisation -> message("localisation.annotator.unresolvedLocalisationInFile", anchor, file.name)
+			SyncedLocalisation -> message("localisation.annotator.unresolvedSyncedLocalisationInFile", anchor, file.name)
 		}
 	}
 }

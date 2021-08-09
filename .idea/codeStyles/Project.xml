@@ -11,7 +11,7 @@
     <CssCodeStyleSettings>
       <option name="BLANK_LINES_BETWEEN_BLOCKS" value="0" />
     </CssCodeStyleSettings>
-    <DB2CodeStyleSettings version="5">
+    <DB2CodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -55,7 +55,7 @@
         <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
       </formatting-settings>
     </DBN-SQL>
-    <DerbyCodeStyleSettings version="5">
+    <DerbyCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -75,7 +75,7 @@
       <option name="IMP_DECLARE_EL_WRAP" value="3" />
       <option name="IMP_DECLARE_ALIGN_DEFAULT" value="true" />
     </DerbyCodeStyleSettings>
-    <H2CodeStyleSettings version="5">
+    <H2CodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -93,7 +93,7 @@
       <option name="FROM_EL_WRAP" value="0" />
       <option name="FROM_EL_COMMA" value="0" />
     </H2CodeStyleSettings>
-    <H2CodeStyleSettings version="5">
+    <H2CodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -111,7 +111,7 @@
       <option name="FROM_EL_WRAP" value="0" />
       <option name="FROM_EL_COMMA" value="0" />
     </H2CodeStyleSettings>
-    <HSQLCodeStyleSettings version="5">
+    <HSQLCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -184,7 +184,7 @@
       <option name="IF_RPAREN_ON_NEW_LINE" value="false" />
       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
     </JetCodeStyleSettings>
-    <MSSQLCodeStyleSettings version="5">
+    <MSSQLCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -228,7 +228,7 @@
       <option name="TOC_TITLE_LEVEL" value="2" />
       <option name="RIGHT_MARGIN" value="120" />
     </MarkdownNavigatorCodeStyleSettings>
-    <MySQLCodeStyleSettings version="5">
+    <MySQLCodeStyleSettings version="6">
       <option name="KEYWORD_CASE" value="1" />
       <option name="IDENTIFIER_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -249,7 +249,7 @@
       <option name="FROM_EL_COMMA" value="0" />
       <option name="USE_GENERIC_STYLE" value="true" />
     </MySQLCodeStyleSettings>
-    <OracleCodeStyleSettings version="5">
+    <OracleCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -269,7 +269,7 @@
       <option name="IMP_DECLARE_EL_WRAP" value="3" />
       <option name="IMP_DECLARE_ALIGN_DEFAULT" value="true" />
     </OracleCodeStyleSettings>
-    <PostgresCodeStyleSettings version="5">
+    <PostgresCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -293,7 +293,7 @@
       <option name="SPACES_AROUND_KEY_VALUE_DELIMITER" value="true" />
       <option name="KEEP_BLANK_LINES" value="true" />
     </Properties>
-    <SQLiteCodeStyleSettings version="5">
+    <SQLiteCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -311,7 +311,7 @@
       <option name="FROM_EL_WRAP" value="0" />
       <option name="FROM_EL_COMMA" value="0" />
     </SQLiteCodeStyleSettings>
-    <SqlCodeStyleSettings version="5">
+    <SqlCodeStyleSettings version="6">
       <option name="KEYWORD_CASE" value="1" />
       <option name="IDENTIFIER_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />
@@ -346,7 +346,7 @@
       <option name="IMP_DECLARE_EL_WRAP" value="3" />
       <option name="IMP_DECLARE_ALIGN_DEFAULT" value="true" />
     </SqlCodeStyleSettings>
-    <SybaseCodeStyleSettings version="5">
+    <SybaseCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="KEYWORD_CASE" value="1" />
       <option name="TYPE_CASE" value="1" />

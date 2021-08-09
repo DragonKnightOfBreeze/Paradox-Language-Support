@@ -31,10 +31,10 @@ abstract class ParadoxLibraryType(
 	private val namePrefix = "$createActionName: "
 	
 	companion object {
-		private val _chooserTitle = message("pls.library.chooser.title")
-		private val _chooserDescription = message("pls.library.chooser.description")
-		private val _invalidLibraryPathTitle = message("pls.library.dialog.invalidLibraryPath.title")
-		private val _invalidLibraryPathMessage = message("pls.library.dialog.invalidLibraryPath.message")
+		private val _chooserTitle = message("library.chooser.title")
+		private val _chooserDescription = message("library.chooser.description")
+		private val _invalidLibraryPathTitle = message("library.dialog.invalidLibraryPath.title")
+		private val _invalidLibraryPathMessage = message("library.dialog.invalidLibraryPath.message")
 	}
 	
 	override fun getCreateActionName() = createActionName

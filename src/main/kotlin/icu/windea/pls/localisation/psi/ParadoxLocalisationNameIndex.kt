@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 
 object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
+	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("localisation.name.index")
 	
 	override fun getKey() = key
 	

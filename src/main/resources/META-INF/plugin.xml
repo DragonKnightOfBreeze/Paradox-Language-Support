@@ -252,17 +252,31 @@
     <localInspection
         language="PARADOX_SCRIPT"
         shortName="ParadoxScriptDuplicateVariables" bundle="messages.PlsBundle"
-        groupKey="paradox.script.inspection"
-        key="paradox.script.inspection.duplicateVariables"
+        groupKey="script.inspection"
+        key="script.inspection.duplicateVariables"
         enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.script.inspections.DuplicateVariablesInspection"/>
     <localInspection
         language="PARADOX_SCRIPT"
         shortName="ParadoxScriptInvalidFileEncoding" bundle="messages.PlsBundle"
-        groupKey="paradox.script.inspection"
-        key="paradox.script.inspection.invalidFileEncoding"
+        groupKey="script.inspection"
+        key="script.inspection.invalidFileEncoding"
         enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.script.inspections.InvalidFileEncodingInspection"/>
+    <localInspection
+        language="PARADOX_SCRIPT"
+        shortName="ParadoxScriptMissingEventNamespace" bundle="messages.PlsBundle"
+        groupKey="script.inspection"
+        key="script.inspection.missingEventNamespace"
+        enabledByDefault="true" level="ERROR"
+        implementationClass="icu.windea.pls.script.inspections.MissingEventNamespaceInspection"/>
+    <localInspection
+        language="PARADOX_SCRIPT"
+        shortName="ParadoxScriptMismatchedEventId" bundle="messages.PlsBundle"
+        groupKey="script.inspection"
+        key="script.inspection.mismatchedEventId"
+        enabledByDefault="true" level="ERROR"
+        implementationClass="icu.windea.pls.script.inspections.MismatchedEventIdInspection"/>
     <!--endregion-->
 
     <!--region Paradox Localisation Language-->
@@ -369,13 +383,13 @@
     <localInspection
         language="PARADOX_LOCALISATION"
         shortName="ParadoxLocalisationDuplicateProperties"
-        groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.duplicateProperties"
+        groupKey="localisation.inspection" key="localisation.inspection.duplicateProperties"
         enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertiesInspection"/>
     <localInspection
         language="PARADOX_LOCALISATION"
         shortName="ParadoxLocalisationInvalidFileEncoding"
-        groupKey="paradox.localisation.inspection" key="paradox.localisation.inspection.invalidFileEncoding"
+        groupKey="localisation.inspection" key="localisation.inspection.invalidFileEncoding"
         enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.localisation.inspections.InvalidFileEncodingInspection"/>
     <!--endregion-->

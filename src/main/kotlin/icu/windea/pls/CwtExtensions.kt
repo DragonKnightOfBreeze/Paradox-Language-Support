@@ -262,7 +262,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val key = keyElement.value
-			key == expression.value
+			key.equals(expression.value,true)
 		}
 		CwtKeyExpression.Type.Other -> return true
 	}
@@ -340,7 +340,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			matchesAliasName(key, quoted, aliasName, configGroup)
 		}
 		CwtKeyExpression.Type.Constant -> {
-			key == expression.value
+			key.equals(expression.value,true)
 		}
 		CwtKeyExpression.Type.Other -> return true
 	}

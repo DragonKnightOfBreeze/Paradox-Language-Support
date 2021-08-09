@@ -45,7 +45,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//注明不支持的情况
 		val locale = element.localeInfo
 		if(locale == null) {
-			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedLocale", element.name))
+			holder.newAnnotation(ERROR, message("localisation.annotator.unsupportedLocale", element.name))
 				.create()
 		}
 	}
@@ -55,7 +55,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//NOTE 属性引用可能是变量，因此不注明无法解析的情况
 		//val reference = element.reference?:return
 		//if(reference.resolve() == null){
-		//	holder.newAnnotation(ERROR,message("paradox.localisation.annotator.unresolvedProperty",element.name))
+		//	holder.newAnnotation(ERROR,message("localisation.annotator.unresolvedProperty",element.name))
 		//		.create()
 		//	return
 		//}
@@ -75,7 +75,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		val sequentialNumber = element.sequentialNumberInfo
 		if(sequentialNumber == null) {
-			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedSequentialNumber", element.name))
+			holder.newAnnotation(ERROR, message("localisation.annotator.unsupportedSequentialNumber", element.name))
 				.create()
 		}
 	}
@@ -84,7 +84,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//注明不支持的情况 & 颜色高亮
 		val colorInfo = element.colorInfo
 		if(colorInfo == null) {
-			holder.newAnnotation(ERROR, message("paradox.localisation.annotator.unsupportedColor", element.name))
+			holder.newAnnotation(ERROR, message("localisation.annotator.unsupportedColor", element.name))
 				.create()
 		} else {
 			val e = element.colorId
@@ -113,18 +113,18 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	//			if(index == 0) {
 	//				//primaryCommandScope, secondaryCommandScope, event_target
 	//				if(paradoxCommandScope == null) {
-	//					val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
+	//					val message = message("localisation.annotator.unsupportedCommandScope", name)
 	//					holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
 	//					break
 	//				}
 	//			} else {
 	//				//secondaryCommandScope, event_target
 	//				if(paradoxCommandScope == null) {
-	//					val message = message("paradox.localisation.annotator.unsupportedCommandScope", name)
+	//					val message = message("localisation.annotator.unsupportedCommandScope", name)
 	//					holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
 	//					break
 	//				}else if(!paradoxCommandScope.isSecondary) {
-	//					val message = message("paradox.localisation.annotator.incorrectCommandScope.secondary", name)
+	//					val message = message("localisation.annotator.incorrectCommandScope.secondary", name)
 	//					holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
 	//					break
 	//				}
@@ -133,7 +133,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	//			//commandField, scopeVariable, scriptedLoc
 	//			val paradoxCommandField = commandIdentifier.paradoxCommandField
 	//			if(paradoxCommandField == null){
-	//				val message = message("paradox.localisation.annotator.unsupportedCommandField", name)
+	//				val message = message("localisation.annotator.unsupportedCommandField", name)
 	//				holder.newAnnotation(ERROR, message).range(commandIdentifier).create()
 	//				break
 	//			}

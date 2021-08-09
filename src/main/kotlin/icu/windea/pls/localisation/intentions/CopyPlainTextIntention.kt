@@ -12,7 +12,7 @@ import java.awt.datatransfer.*
 
 class CopyPlainTextIntention: IntentionAction {
 	companion object {
-		private val _name = message("paradox.localisation.intention.copyPlainText")
+		private val _name = message("localisation.intention.copyPlainText")
 	}
 	
 	override fun startInWriteAction() = false

@@ -52,7 +52,7 @@
 * [X] 改为根据正则指定需要排除的脚本文件
 * [X] 提高脚本文件语法兼容性
 * [X] 本地化文件使用正确的`localisationColor`
-* [X] 添加`com.windea.plugin.idea.paradox.script.psi.ParadoxDefinitionTypeIndex`
+* [X] 添加`com.windea.plugin.idea.script.psi.ParadoxDefinitionTypeIndex`
 * [X] 提高脚本文件和本地化文件的语法兼容性
 * [X] 本地化文件渲染`propertyReference`时，如果有颜色参数，即使`propertyReference`未解析或者是变量，仍然正确渲染颜色，保留颜色参数
 * [X] 实现本地化属性的`CopyRawTextIntention`、`CopyPlainTextIntention`、`CopyRichTextIntention`
@@ -175,6 +175,9 @@
 * [ ] 实现或重构用于提示definition的nameTypeInfo的InlayHint，可以单独启用
 * [ ] 实现或重构用于提示definition的localizedName的InlayHint，可以单独启用
 * [ ] 实现或重构用于提示definitionProperty的scopes的InlayHint，可以单独启用（注意仅会在行尾的`key = {`后面提示）
+* [X] 添加检查，检查事件的脚本文件中的namespace必须存在
+* [X] 添加检查，检查事件的脚本文件中的event的id需要与namespace匹配
+* [X] 基于cwt文件匹配scriptPropertyKey时，如果规则类型为常量，匹配时忽略大小写
 
 # 遗留问题
 

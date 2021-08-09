@@ -9,7 +9,7 @@ import java.nio.charset.*
 
 class InvalidFileEncodingInspection: LocalInspectionTool(){
 	companion object{
-		private fun _description(charset: Charset,bom:String) = message("paradox.script.inspection.invalidFileEncoding.description", charset,bom)
+		private fun _description(charset: Charset,bom:String) = message("script.inspection.invalidFileEncoding.description", charset,bom)
 	}
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
@@ -32,7 +32,7 @@ class InvalidFileEncodingInspection: LocalInspectionTool(){
 		private val isNameList:Boolean
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		companion object{
-			private val _name = message("paradox.script.quickFix.changeFileEncoding")
+			private val _name = message("script.quickFix.changeFileEncoding")
 		}
 		
 		override fun getText() = _name

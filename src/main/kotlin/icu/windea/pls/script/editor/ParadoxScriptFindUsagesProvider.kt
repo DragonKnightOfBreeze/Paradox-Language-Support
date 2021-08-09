@@ -9,8 +9,8 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFindUsagesProvider : FindUsagesProvider {
 	companion object{
-		val _variableName = message("paradox.script.name.variable")
-		val _propertyName = message("paradox.script.name.property")
+		val _variableName = message("script.name.variable")
+		val _propertyName = message("script.name.property")
 	}
 	
 	override fun getDescriptiveName(element: PsiElement): String {

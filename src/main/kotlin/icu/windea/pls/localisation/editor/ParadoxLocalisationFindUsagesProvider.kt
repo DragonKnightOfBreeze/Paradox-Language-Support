@@ -9,13 +9,13 @@ import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
 	companion object{
-		private val _propertyName = message("paradox.localisation.name.property")
-		private val _localeName = message("paradox.localisation.name.locale")
-		private val _iconName = message("paradox.localisation.name.icon")
-		private val _sequentialNumberName = message("paradox.localisation.name.sequentialNumber")
-		private val _commandScopeName = message("paradox.localisation.name.commandScope")
-		private val _commandFieldName = message("paradox.localisation.name.commandField")
-		private val _colorfulTextName = message("paradox.localisation.name.colorfulText")
+		private val _propertyName = message("localisation.name.property")
+		private val _localeName = message("localisation.name.locale")
+		private val _iconName = message("localisation.name.icon")
+		private val _sequentialNumberName = message("localisation.name.sequentialNumber")
+		private val _commandScopeName = message("localisation.name.commandScope")
+		private val _commandFieldName = message("localisation.name.commandField")
+		private val _colorfulTextName = message("localisation.name.colorfulText")
 	}
 	
 	override fun getDescriptiveName(element: PsiElement): String {
