@@ -1,12 +1,8 @@
 package icu.windea.pls.script.inspections
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.ex.util.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
@@ -37,29 +33,30 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
 				val eventId = eventIdPropValue.value
 				if(!eventId.startsWith(eventIdPrefix, true)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
-					holder.registerProblem(eventIdPropValue, _description(eventId, eventNamespace), RenameEventId(eventIdPropValue))
+					holder.registerProblem(eventIdPropValue, _description(eventId, eventNamespace))
+					//holder.registerProblem(eventIdPropValue, _description(eventId, eventNamespace), RenameEventId(eventIdPropValue))
 				}
 			}
 			return holder?.resultsArray
 		}
 	}
 	
-	private class RenameEventId(
-		element: ParadoxScriptValue
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		companion object {
-			private val _name = message("script.quickFix.renameEventId")
-		}
-		
-		override fun getFamilyName() = _name
-		
-		override fun getText() = _name
-		
-		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-			if(editor == null) return
-			val startOffset = startElement.startOffset
-			val endOffset = startElement.endOffset
-			EditorUtil.setSelectionExpandingFoldedRegionsIfNeeded(editor, startOffset, endOffset) //选中event.id对应的scriptValue
-		}
-	}
+	//private class RenameEventId(
+	//	element: ParadoxScriptValue
+	//) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
+	//	companion object {
+	//		private val _name = message("script.quickFix.renameEventId")
+	//	}
+	//	
+	//	override fun getFamilyName() = _name
+	//	
+	//	override fun getText() = _name
+	//	
+	//	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
+	//		if(editor == null) return
+	//		val startOffset = startElement.startOffset
+	//		val endOffset = startElement.endOffset
+	//		EditorUtil.setSelectionExpandingFoldedRegionsIfNeeded(editor, startOffset, endOffset) //选中event.id对应的scriptValue
+	//	}
+	//}
 }
