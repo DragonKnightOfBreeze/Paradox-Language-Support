@@ -178,6 +178,7 @@
 * [X] 添加检查，检查事件的脚本文件中的namespace必须存在
 * [X] 添加检查，检查事件的脚本文件中的event的id需要与namespace匹配
 * [X] 基于cwt文件匹配scriptPropertyKey时，如果规则类型为常量，匹配时忽略大小写
+* [X] 输入eventId时，提示`"{namespace}."`
 
 # 遗留问题
 

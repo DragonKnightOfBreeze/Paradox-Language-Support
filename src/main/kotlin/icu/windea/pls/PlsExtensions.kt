@@ -1,7 +1,7 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
-import com.intellij.openapi.components.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -32,11 +32,9 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getSettings() = ParadoxSettingsState.getInstance()
 
-fun getConfig(): CwtConfigGroups {
-	return ServiceManager.getService(getDefaultProject(), CwtConfigProvider::class.java).configGroups
-}
+fun getConfig() = getDefaultProject().getService(CwtConfigProvider::class.java).configGroups
 
-fun getConfig(project: Project) = ServiceManager.getService(project, CwtConfigProvider::class.java).configGroups
+fun getConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
 fun inferParadoxLocale() = when(System.getProperty("user.language")) {
 	"zh" -> getConfig().localeMap.getValue("l_simp_chinese")
@@ -214,9 +212,9 @@ private fun getFileType(file: PsiFile): ParadoxFileType? {
 
 private fun getRootType(file: PsiDirectory): ParadoxRootType? {
 	if(!file.isDirectory) return null
-	val name = file.name.substringBeforeLast('.',"")
+	val name = file.name.substringBeforeLast('.', "")
 	//处理特殊顶级目录的情况
-	when{
+	when {
 		name == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
 		name == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
 		name == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
@@ -225,7 +223,7 @@ private fun getRootType(file: PsiDirectory): ParadoxRootType? {
 	val descriptorFile = file.findFile(descriptorFileName)
 	if(descriptorFile != null) return ParadoxRootType.Mod
 	//处理游戏目录的情况
-	val exeFile = file.files.find { it.name.substringAfterLast('.',"").lowercase() == "exe" } //TODO 严格验证
+	val exeFile = file.files.find { it.name.substringAfterLast('.', "").lowercase() == "exe" } //TODO 严格验证
 	if(exeFile != null) return ParadoxRootType.Stdlib
 	return null
 }
@@ -293,7 +291,7 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 	)
 }
 
-val ParadoxScriptProperty.propertyConfig:CwtPropertyConfig? get() = doGetPropertyConfig(this)
+val ParadoxScriptProperty.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
 
 private fun doGetPropertyConfig(element: ParadoxScriptProperty): CwtPropertyConfig? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
@@ -433,6 +431,18 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 	val type = ParadoxLocalisationCategory.resolve(element) ?: return null
 	return ParadoxLocalisationInfo(name, type)
 }
+
+val ParadoxScriptFile.eventNamespace: String?
+	get() {
+		//必须是事件的脚本文件
+		val rootPath = fileInfo?.path?.root?:return null
+		if(rootPath != "events") return null 
+		//必须是第一个属性且名为"namespace"，忽略大小写
+		val block = block ?: return null
+		val firstProperty = PsiTreeUtil.findChildOfType(block, ParadoxScriptProperty::class.java)
+		if(firstProperty == null || !firstProperty.name.equals("namespace", true)) return null 
+		return firstProperty.value
+	} 
 
 val ParadoxLocalisationLocale.localeInfo: ParadoxLocaleInfo?
 	get() {
@@ -899,7 +909,7 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 				}
 			}
 			"scopes" -> {
-				val name = tokens.getOrNull(2)?:return null
+				val name = tokens.getOrNull(2) ?: return null
 				return getConfig(project).getValue(gameType).scopeAliasMap.getValue(name).pointer.element
 			}
 			else -> null
@@ -938,7 +948,6 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 	return this
 }
 
-	
 
 fun StringBuilder.appendScriptLink(name: String, type: String): StringBuilder {
 	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理

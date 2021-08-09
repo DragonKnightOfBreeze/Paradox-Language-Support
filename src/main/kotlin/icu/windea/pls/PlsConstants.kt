@@ -23,7 +23,7 @@ val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toUrl(locationClass).r
 
 const val keywordPriority = 80.0
 const val propertyPriority = 40.0
-const val hardCodedConfigPriority = 10.0
+const val modifierPriority = 20.0
 
 const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length

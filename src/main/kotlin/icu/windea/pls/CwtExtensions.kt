@@ -955,7 +955,7 @@ fun completeModifier(keyword: String, quoted: Boolean, configGroup: CwtConfigGro
 			.withTailText(tailText, true)
 			.withTypeText(typeText, true)
 			.withInsertHandler(separatorInsertHandler)
-			.withPriority(hardCodedConfigPriority)
+			.withPriority(modifierPriority)
 		result.addElement(lookupElement)
 		size++
 		if(size == maxCompleteSize) return //限制补全项的数量

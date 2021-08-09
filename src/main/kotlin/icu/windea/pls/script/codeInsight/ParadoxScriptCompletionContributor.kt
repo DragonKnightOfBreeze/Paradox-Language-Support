@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.patterns.PlatformPatterns.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
@@ -17,6 +18,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID),
 			psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN)
 		)
+		private val eventIdPattern = psiElement(STRING_TOKEN)
+			.withSuperParent(3, psiElement(ParadoxScriptProperty::class.java))
 		
 		private val booleanLookupElements = booleanValues.map { value ->
 			LookupElementBuilder.create(value).bold().withPriority(keywordPriority)
@@ -70,11 +73,30 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		}
 	}
 	
+	class EventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
+		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+			val file = parameters.originalFile
+			if(file !is ParadoxScriptFile) return
+			val rootPath = file.fileInfo?.path?.root
+			if(rootPath != "events") return
+			val property = parameters.position.parentOfType<ParadoxScriptProperty>() ?: return
+			if(!property.name.equals("id",true)) return
+			val eventDefinition = property.parentOfType<ParadoxScriptProperty>()?:return
+			if(eventDefinition.definitionInfo?.type != "event") return
+			val eventNamespace = file.eventNamespace?:return
+			val lookupElement = LookupElementBuilder.create("$eventNamespace.")
+			result.addElement(lookupElement)
+		}
+	}
+	
 	init {
 		//当用户正在输入一个string时提示
 		extend(CompletionType.BASIC, stringPattern, BooleanCompletionProvider())
 		//当用户正在输入一个propertyKey或string时提示
 		extend(null, definitionPattern, DefinitionCompletionProvider())
+		
+		//当用户正在输入一个eventId时提示
+		extend(CompletionType.BASIC, eventIdPattern, EventIdCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {
