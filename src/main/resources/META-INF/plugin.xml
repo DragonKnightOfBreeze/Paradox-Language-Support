@@ -268,14 +268,14 @@
         shortName="ParadoxScriptMissingEventNamespace" bundle="messages.PlsBundle"
         groupKey="script.inspection"
         key="script.inspection.missingEventNamespace"
-        enabledByDefault="true" level="ERROR"
+        enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.script.inspections.MissingEventNamespaceInspection"/>
     <localInspection
         language="PARADOX_SCRIPT"
         shortName="ParadoxScriptMismatchedEventId" bundle="messages.PlsBundle"
         groupKey="script.inspection"
         key="script.inspection.mismatchedEventId"
-        enabledByDefault="true" level="ERROR"
+        enabledByDefault="true" level="WARNING"
         implementationClass="icu.windea.pls.script.inspections.MismatchedEventIdInspection"/>
     <!--endregion-->
 
