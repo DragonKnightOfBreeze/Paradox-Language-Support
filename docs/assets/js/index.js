@@ -1,3 +1,9 @@
+const columnLineRegex = /[ \t]*\|(.*)\|[ \t]*/g
+const codeRegex = /(`[^`\r\n]+`)/g
+const anchorRegex = /([^\r\n]*?){#([^\r\n}]+)}/g
+const footNoteRegex = /\[\^(\d+)](?!: )/g
+const footNoteReferenceRegex = /^\[\^(\d+)]:\s*(.*)$/gm
+
 window.$docsify = {
   name: "Paradox-Language-Support",
   repo: "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support",
@@ -67,11 +73,15 @@ window.$docsify = {
 
   markdown: {
     renderer: {
-      //rowspan和colspan的渲染器
+      //渲染rowspan和colspan
       tablecell(content, flags) {
-        if(content === "^") return `<td class="rowspan"></td>`
-        else if(content === "<") return `<td class="colspan"></td>>`
-        else return `<td>${content}</td>`
+        if(content === "^") {
+          return `<td class="rowspan"></td>`
+        } else if(content === "<"){
+          return `<td class="colspan"></td>>`
+        } else {
+          return `<td>${content}</td>`
+        }
       }
     }
   },
@@ -80,13 +90,20 @@ window.$docsify = {
     function(hook, vm) {
       hook.init(function() {
         redirectLocation()
-        bindServiceCssClass()
+        bindDeviceCssClass()
       })
 
       hook.beforeEach(function(html) {
         bindVariables(vm)
-        return resolveFootNote(resolveAnchor(escapeCode(html)))
+
+        html = escapeInCode(html)
+        html = resolveAnchor(html)
+        html = resolveFootNote(html)
+        return html
       })
+      hook.afterEach(function(html, next) {
+        next(html)
+      });
       hook.doneEach(function() {
         $(document).ready(function() {
           bindFootNote()
@@ -100,19 +117,19 @@ window.$docsify = {
   isMobile: false
 }
 
-window.onload = function(){
+window.onload = function() {
   redirectLocation()
-  bindServiceCssClass()
+  bindDeviceCssClass()
 }
 
 //推断语言区域
-function inferLocale(){
+function inferLocale() {
   const locale = navigator.language
-  if(locale.startsWith("zh")){
+  if(locale.startsWith("zh")) {
     return "zh"
-  }else if(locale.startsWith("en")){
+  } else if(locale.startsWith("en")) {
     return "en"
-  }else {
+  } else {
     return "zh"
   }
 }
@@ -140,29 +157,26 @@ function bindVariables(vm) {
   window.$docsify.fileUrl = `#/${vm.route.path}`
 }
 
-//绑定用于判断设备类型的css class
-function bindServiceCssClass(){
+//绑定判断设备的css class
+function bindDeviceCssClass() {
   const isMobile = /ipad|iphone|ipod|android|blackberry|windows phone|opera mini|silk/i.test(navigator.userAgent)
   const bodyElement = document.querySelector("body")
   if(isMobile) {
     bodyElement.classList.add("mobile")
     window.$docsify.isMobile = true
-  }else{
-	bodyElement.classList.add("web")
+  } else {
+    bodyElement.classList.add("web")
   }
 }
 
-const codeRegex = /(`[^`\r\n]+`)/g
-const pipeCharRegex = /\|/g
-
-//需要转义内联代码中的管道符，需要将`ps -ef | grep java`转义为`ps -ef \| grep java`，docsify的bug
-function escapeCode(html) {
-  return html.replace(codeRegex, (s, c) => {
-    return c.replace(pipeCharRegex, "\\|")
+//需要转义表格单元格中的内联代码中的管道符
+function escapeInCode(html) {
+  return html.replace(columnLineRegex,(s,content)=>{
+    return content.replace(codeRegex,(ss,c)=>{
+      return c.replace("|","\\|")
+    })
   })
 }
-
-const anchorRegex = /([^\r\n]*?){#([^\r\n}]+)}/g
 
 //解析markdown锚点，绑定heading的id
 function resolveAnchor(html) {
@@ -172,18 +186,14 @@ function resolveAnchor(html) {
   })
 }
 
-const footNoteRegex = /\[\^(\d+)](?!: )/g
-
-const footNoteReferenceRegex = /^\[\^(\d+)]:\s*(.*)$/gm
-
-//解析markdown尾注，生成bootstrap4 tooltip
+//解析markdown尾注，生成bootstrap4的tooltip
 function resolveFootNote(html) {
   const footNotes = {}
-  return html.replace(footNoteReferenceRegex, (s, p1, p2) => {
-    footNotes[p1] = p2
+  return html.replace(footNoteReferenceRegex, (s, id, text) => {
+    footNotes[id] = text
     return ""
-  }).replace(footNoteRegex, (s, p1) => {
-    return `<a href="javascript:void(0);" data-toggle="tooltip" title="${footNotes[p1]}">[${p1}]</a>`
+  }).replace(footNoteRegex, (s, id) => {
+    return `<a href="javascript:void(0);" data-toggle="tooltip" title="${footNotes[id]}">[${id}]</a>`
   })
 }
 
