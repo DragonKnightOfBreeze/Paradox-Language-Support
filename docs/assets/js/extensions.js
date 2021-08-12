@@ -97,7 +97,7 @@ window.onload = function() {
   bindDeviceCssClass()
 }
 
-window.$docsify.fileName = ""
+window.$docsify.filePath = ""
 window.$docsify.fileUrl = ""
 window.$docsify.isMobile = false
 
@@ -123,10 +123,10 @@ window.$docsify.plugins = [
       bindDeviceCssClass()
     })
     hook.beforeEach(function(html) {
-      //绑定window.$docsify.fileName，以斜线开始
-      window.$docsify.fileName = `/${vm.route.file}`
-      //绑定windows.$docsify.fileUrl，以#开始，没有文件后缀名
-      window.$docsify.fileUrl = `#/${vm.route.path}`
+      //绑定window.$docsify.filePath
+      window.$docsify.filePath = vm.route.file
+      //绑定windows.$docsify.fileUrl
+      window.$docsify.fileUrl = vm.route.path
 
       //预处理markdown
       let isCodeFence = false
@@ -166,27 +166,26 @@ function redirectLocation() {
     window.location.replace(`${url}/#/${locale}/${latestVersionSuffix}`)
   } else if(url.endsWith("/#")) {
     window.location.replace(`${url}/${locale}/${latestVersionSuffix}`)
-  } else if(url.endsWith("/#/zh")) {
-    window.location.replace(`${url}/${latestVersionSuffix}`)
-  } else if(url.endsWith("/#/zh/latest")) {
-    window.location.replace(`${url.substring(0, url.length - 7)}/${latestVersionSuffix}`)
-  } else if(url.endsWith("/#/en")) {
-    window.location.replace(`${url.substring(0, url.length - 7)}/${latestVersionSuffix}`)
-  } else if(url.endsWith("/#/en/latest")) {
-    window.location.replace(`${url}/${latestVersionSuffix}`)
+  } else{
+    const locales = window.$docsify.locales
+    locales.forEach(it=>{
+      if(url.endsWith(`/#/${it}`)){
+        window.location.replace(`${url}/${latestVersionSuffix}`)
+      }else if(url.endsWith(`/#/${it}/latest`)){
+        window.location.replace(`${url.substring(0, url.length - 7)}/${latestVersionSuffix}`)
+      }
+    })
   }
 }
 
 //推断语言区域
 function inferLocale() {
+  const locales = window.$docsify.locales
   const locale = navigator.language
-  if(locale.startsWith("zh")) {
-    return "zh"
-  } else if(locale.startsWith("en")) {
-    return "en"
-  } else {
-    return "en"
-  }
+  locales.forEach(it =>{
+    if(locale.startsWith(it)) return it
+  })
+  return "zh"
 }
 
 //绑定判断设备的css class
