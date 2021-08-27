@@ -26,7 +26,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			val rootType = getRootType(currentFile)
 			if(rootType != null) {
 				val path = getPath(subPaths)
-				val gameType = getGameType(currentFile) ?: ParadoxGameType.defaultValue()
+				val gameType = getGameType(currentFile,rootType) ?: ParadoxGameType.defaultValue()
 				
 				//如果存在对应的folders配置，则path要与之匹配
 				val folders = getConfig().get(gameType)?.folders
@@ -108,23 +108,50 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			name == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
 			name == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
 		}
-		//处理模组目录的情况
-		val descriptorFile = file.findChild(descriptorFileName)
-		if(descriptorFile != null) return ParadoxRootType.Mod
-		//处理游戏目录的情况
-		val exeFile = file.children.find { it.name.substringAfterLast('.',"").lowercase() == "exe" } //TODO 严格验证
-		if(exeFile != null) return ParadoxRootType.Stdlib
+		//处理游戏目录和模组目录的情况的情况
+		for(child in file.children) {
+			val childName = child.name
+			when {
+				ParadoxGameType.exeFileNames.any {childName.equals(it,true) } -> return ParadoxRootType.Stdlib
+				childName.equals(descriptorFileName,true) -> return ParadoxRootType.Mod
+			}
+		}
 		return null
 	}
 	
-	private fun getGameType(file: VirtualFile): ParadoxGameType? {
+	private fun getGameType(file: VirtualFile,rootType: ParadoxRootType): ParadoxGameType? {
 		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
-		for(child in file.children) {
-			val childName = child.name
-			if(childName.startsWith('.')) {
-				val gameType = ParadoxGameType.resolve(childName.drop(1))
-				if(gameType != null) return gameType
+		//如果是游戏目录后者特定游戏子目录则基于游戏执行文件，否则基于特殊文件 .${gameType}
+		try {
+			when(rootType) {
+				ParadoxRootType.Stdlib -> {
+					for(child in file.children) {
+						val childName = child.name
+						for(value in ParadoxGameType.values) {
+							if(childName.equals(value.exeFileName,true)) return value
+						}
+					}
+				}
+				ParadoxRootType.PdxLauncher, ParadoxRootType.PdxOnlineAssets,ParadoxRootType.TweakerGuiAssets -> {
+					for(child in file.parent.children) {
+						val childName = child.name
+						for(value in ParadoxGameType.values) {
+							if(childName.equals(value.exeFileName,true)) return value
+						}
+					}
+				}
+				else -> {
+					for(child in file.children) {
+						val childName = child.name
+						if(childName.startsWith('.')) {
+							val gameType = ParadoxGameType.resolve(childName.drop(1))
+							if(gameType != null) return gameType
+						}
+					}
+				}
 			}
+		} catch(e: Exception) {
+			return null
 		}
 		return null
 	}

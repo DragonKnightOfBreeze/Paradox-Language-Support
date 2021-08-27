@@ -1,6 +1,5 @@
 package icu.windea.pls.core.library
 
-import com.intellij.ide.highlighter.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
@@ -25,7 +24,7 @@ abstract class ParadoxLibraryType(
 	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind)
 	
 	val gameType = libraryKind.gameType
-		
+	
 	private val createActionName = "Paradox/${gameType}"
 	private val libraryIcon = gameType.icon
 	private val namePrefix = "$createActionName: "
@@ -60,37 +59,37 @@ abstract class ParadoxLibraryType(
 	//如果根目录名是特定的字符串，需要特殊处理，视为特殊的rootType
 	//TODO 兼容文件夹和zip压缩包
 	private fun getLibraryName(file: VirtualFile, project: Project): String? {
-		//这里file如果是zip文件而不是目录，则file.children返回空
-		val name = file.name.substringBeforeLast('.',"")
+		//选定的文件可能是目录也可能是zip压缩包（尽管目前不支持），因此这里需要去除扩展名
+		val name = file.nameWithoutExtension
 		//FIXME 实际测试读不到zip文件中的内容
+		//这里file如果是zip文件而不是目录，则file.children返回空
 		//if(file.fileType == ArchiveFileType.INSTANCE){
 		//	val zipFile = JarFileSystem.getInstance().getRootByLocal(file)!!
 		//	val files = zipFile.children
 		//	println("111")
 		//}
 		//处理特殊顶级目录的情况
-		when{
+		when {
 			name.equals(ParadoxRootType.PdxLauncher.key, true) -> return ParadoxRootType.PdxLauncher.text
 			name.equals(ParadoxRootType.PdxOnlineAssets.key, true) -> return ParadoxRootType.PdxOnlineAssets.text
 			name.equals(ParadoxRootType.TweakerGuiAssets.key, true) -> return ParadoxRootType.TweakerGuiAssets.text
 		}
-		//处理模组目录的情况
-		val descriptorFile = file.findChild(descriptorFileName)
-		if(descriptorFile != null) {
-			//从descriptor.name中获取，或者直接使用目录/压缩包去除后缀名后的名字
-			return getLibraryNameFromDescriptorFile(descriptorFile)?:name 
+		//处理游戏目录和模组目录的情况的情况
+		for(child in file.children) {
+			val childName = child.name
+			when {
+				//游戏执行文件名要匹配
+				childName.equals(gameType.exeFileName, true) -> return ParadoxRootType.Stdlib.text
+				//从descriptor.name中获取，或者直接使用目录/压缩包去除后缀名后的名字
+				childName.equals(descriptorFileName, true) -> return getLibraryNameFromDescriptorFile(child) ?: name
+			}
 		}
-		//处理游戏目录的情况
-		val exeFile = file.children.find { it.name.substringAfterLast('.',"").lowercase() == "exe" } //TODO 严格验证
-		if(exeFile != null){
-			return ParadoxRootType.Stdlib.text
-		} 
 		//不合法的情况要弹出对话框
 		showInvalidLibraryDialog(project)
 		return null
 	}
 	
-	private fun getLibraryNameFromDescriptorFile(file:VirtualFile):String?{
+	private fun getLibraryNameFromDescriptorFile(file: VirtualFile): String? {
 		val text = file.inputStream.reader().use { it.readText() }
 		for(line in text.lines()) {
 			val lineText = line.trim()
