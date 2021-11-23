@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.openapi.application.*
 import com.intellij.util.*
 import java.io.*
 import java.net.*
@@ -10,8 +9,7 @@ import java.util.*
 import java.util.concurrent.*
 import javax.swing.*
 
-//Misc Extensions
-
+//region Misc Extensions
 @Suppress("NOTHING_TO_INLINE")
 inline fun pass() {
 }
@@ -351,9 +349,9 @@ inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
 fun <T> T.toSingletonList() = Collections.singletonList(this)
 
 fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
+//endregion
 
-//System Extensions
-
+//region System Extensions
 /**
  * 执行命令。（基于操作系统）
  */
@@ -378,9 +376,9 @@ fun execBlocking(command: String, timeout: Long, timeUnit: TimeUnit, workDirecto
 private fun optimizeCommand(command: String): Array<String> {
 	return arrayOf("cmd", "/c", command)
 }
+//endregion
 
-//Specific Collections
-
+//region Collection & Tuple & Range Extensions
 data class ReversibleList<T>(val list: List<T>, val reverse: Boolean) : List<T> by list
 
 fun <T> List<T>.toReversibleList(reverse: Boolean) = ReversibleList(this, reverse)
@@ -394,8 +392,6 @@ interface Enumerable {
 	val text: String
 }
 
-//Tuple Extensions
-
 typealias Tuple2<A, B> = Pair<A, B>
 
 typealias Tuple3<A, B, C> = Triple<A, B, C>
@@ -404,6 +400,5 @@ fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
 
 fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
 
-//Range Extensions
-
 typealias FloatRange = ClosedRange<Float>
+//endregion
