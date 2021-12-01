@@ -9,20 +9,6 @@
 
   <description><![CDATA[
     <p>
-      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README.md">中文文档</a> |
-      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README_en.md">English Documentation</a>
-    </p>
-    <p>
-      <a href="https://windea.icu/Paradox-Language-Support/#/zh/">中文参考文档</a> |
-      <a href="https://windea.icu/Paradox-Language-Support/#/en/">English Reference Documentation</a>
-    </p>
-    <p>
-      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">Github</a>
-    </p>
-
-    <br>
-    
-    <p>
       Support for Paradox Language.
     </p>
     <p>
@@ -65,6 +51,20 @@
       <li>如果需要添加游戏目录以及第三方模组作为依赖，如同Java和Kotlin一样，将它们作为库添加到你的模组对应的项目模块即可。</li>
       <li>如果遇到某些有关索引的IDE问题，请尝试重新构建索引。（点击<code>File -> Invalidate Caches... -> Invalidate and Restart</code>）</li>
     </ul>
+
+    <br>
+
+    <p>
+      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README.md">中文文档</a> |
+      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/README_en.md">English Documentation</a>
+    </p>
+    <p>
+      <a href="https://windea.icu/Paradox-Language-Support/#/zh/">中文参考文档</a> |
+      <a href="https://windea.icu/Paradox-Language-Support/#/en/">English Reference Documentation</a>
+    </p>
+    <p>
+      <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">Github</a>
+    </p>
     ]]></description>
 
   <change-notes><![CDATA[
