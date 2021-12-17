@@ -1,6 +1,5 @@
 plugins {
-	java
-	kotlin("jvm") version "1.5.0"
+	id("org.jetbrains.kotlin.jvm") version "1.6.0"
 	id("org.jetbrains.intellij") version "0.7.2"
 	id("org.jetbrains.grammarkit") version "2021.1"
 }
@@ -28,8 +27,8 @@ repositories {
 }
 
 dependencies{
-	implementation(kotlin("stdlib"))
-	implementation(kotlin("reflect"))
+	implementation("org.jetbrains.kotlin:kotlin-stdlib")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
 sourceSets {
