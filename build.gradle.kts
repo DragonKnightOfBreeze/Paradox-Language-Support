@@ -5,25 +5,16 @@ plugins {
 }
 
 group = "icu.windea"
-version = "0.3.9"
+version = "0.4.0"
 
 intellij {
-	version = "2021.2"
+	version = "2021.3"
 	pluginName = "Paradox Language Support"
-}
-
-buildscript{
-	repositories {
-		maven("https://maven.aliyun.com/nexus/content/groups/public")
-		mavenCentral()
-		maven("https://plugins.gradle.org/m2")
-	}
 }
 
 repositories {
 	maven("https://maven.aliyun.com/nexus/content/groups/public")
 	mavenCentral()
-	maven("https://plugins.gradle.org/m2")
 }
 
 dependencies{
@@ -31,14 +22,34 @@ dependencies{
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
-sourceSets {
-	main {
-		java.srcDir("src/main/gen")
-		java.srcDir("src/main/kotlin")
+sourceSets.main {
+	java.srcDirs("src/main/java", "src/main/kotlin", "src/main/gen")
+}
+
+java {
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(11))
 	}
 }
 
+kotlin {
+	jvmToolchain {
+		this as JavaToolchainSpec
+		languageVersion.set(JavaLanguageVersion.of(11))
+	}
+}
+
+val projectCompiler = javaToolchains.compilerFor {
+	languageVersion.set(JavaLanguageVersion.of(11))
+}
+
 tasks {
+	compileJava {
+		javaCompiler.set(projectCompiler)
+	}
+	compileTestJava {
+		javaCompiler.set(projectCompiler)
+	}
 	compileKotlin {
 		kotlinOptions{
 			jvmTarget = "11"

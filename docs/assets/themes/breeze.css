@@ -1,5 +1,7 @@
 :root {
   --theme-color: #0074d9;
+  --navbar-height: 60px;
+  --sidebar-width: 320px;
 }
 * {
   -webkit-font-smoothing: antialiased;
@@ -49,6 +51,9 @@ div#app:empty::before {
   font-style: normal;
   font-weight: bold;
 }
+.search input {
+  border-radius: 5px;
+}
 html, body {
   height: 100%;
 }
@@ -84,12 +89,19 @@ li input[type='checkbox'] {
   vertical-align: middle;
 }
 .app-nav {
-  margin: 25px 60px 0 0;
-  position: absolute;
+  position: fixed !important;
+  width: 100% !important;
+  height: var(--navbar-height) !important;
+  margin: 0 0 0 0 !important;
+  padding: 0 60px 0 30px !important;
+  top: 0;
   right: 0;
   text-align: right;
-  z-index: 10;
-  /* navbar dropdown */
+  z-index: 100 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, .07) !important;
+  transition: transform .25s ease-out !important;
+  background-color: #fff !important;
+  display: block !important;
 }
 .app-nav.no-badge {
   margin-right: 25px;
@@ -167,7 +179,8 @@ li input[type='checkbox'] {
   right: 0;
   text-decoration: none;
   top: 0;
-  z-index: 1;
+  transform: scale(0.75) translate(10px, -10px);
+  z-index: 200 !important;
 }
 .github-corner:hover .octo-arm {
   -webkit-animation: octocat-wave 560ms ease-in-out;
@@ -210,7 +223,8 @@ main.hidden {
   left: 0;
   transition: transform 250ms ease-out;
   width: 20rem;
-  z-index: 20;
+  margin-top: var(--navbar-height) !important;
+  padding-top: 0 !important;
 }
 .sidebar > h1 {
   margin: 1rem auto 1rem;
@@ -292,13 +306,14 @@ body.sticky .sidebar, body.sticky .sidebar-toggle {
   position: fixed;
 }
 .content {
-  padding-top: 60px;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 300px;
+  left: var(--sidebar-width);
   transition: left 250ms ease;
+  margin-top: var(--navbar-height) !important;
+  padding-top: 0 !important;
 }
 .markdown-section {
   margin: 0 auto;
@@ -422,7 +437,7 @@ body.content-close .content {
   }
 
   .sidebar {
-    left: -300px;
+    left: calc(var(--sidebar-width) * -1);
     transition: transform 250ms ease-out;
   }
 
@@ -434,8 +449,7 @@ body.content-close .content {
     transition: transform 250ms ease;
   }
 
-  .app-nav,
-  .github-corner {
+  .app-nav, .github-corner {
     transition: transform 250ms ease-out;
   }
 
@@ -458,10 +472,6 @@ body.content-close .content {
 
   body.content-close .content {
     transform: translateX(20rem);
-  }
-
-  body.content-close .app-nav, body.content-close .github-corner {
-    display: none;
   }
 
   .github-corner:hover .octo-arm {
@@ -791,24 +801,6 @@ pre > code {
 .app-name {
   font-weight: bold !important;
 }
-.app-nav {
-  position: fixed !important;
-  width: 100% !important;
-  height: 80px !important;
-  margin: 0 0 0 0 !important;
-  top: 0;
-  z-index: 100 !important;
-  border-bottom: 1px solid rgba(0, 0, 0, .07) !important;
-  transition: transform .25s ease-out !important;
-  background-color: #fff !important;
-  display: block !important;
-}
-.web .app-nav {
-  padding: 10px 80px 10px 30px !important;
-}
-.mobile .app-nav {
-  padding: 10px 80px 10px 30px !important;
-}
 .navicon {
   height: 60px !important;
   padding: 5px 0 !important;
@@ -823,20 +815,6 @@ pre > code {
 }
 .app-nav > ul > li {
   padding-top: 20px !important;
-}
-.github-corner {
-  z-index: 200 !important;
-}
-.content {
-  margin-top: 80px !important;
-  padding-top: 0 !important;
-}
-.sidebar {
-  margin-top: 80px !important;
-  padding-top: 0 !important;
-}
-.search input {
-  border-radius: 5px;
 }
 
 /*减小侧边栏目录的高度*/
