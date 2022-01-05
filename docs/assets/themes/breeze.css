@@ -1,6 +1,7 @@
 :root {
   --theme-color: #0074d9;
   --navbar-height: 60px;
+  --github-corner-size: var(--navbar-height);
   --sidebar-width: 320px;
   --tooltip-width: 40em;
 }
@@ -178,7 +179,6 @@ li input[type=checkbox] {
   right: 0;
   text-decoration: none;
   top: 0;
-  transform: scale(0.75) translate(10px, -10px);
   z-index: 200 !important;
 }
 .github-corner:hover .octo-arm {
@@ -188,8 +188,8 @@ li input[type=checkbox] {
 .github-corner svg {
   color: #fff;
   fill: var(--theme-color);
-  height: 80px;
-  width: 80px;
+  height: var(--github-corner-size);
+  width: var(--github-corner-size);
 }
 main {
   display: block;
