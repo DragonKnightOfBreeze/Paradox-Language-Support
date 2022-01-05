@@ -2,6 +2,7 @@
   --theme-color: #0074d9;
   --navbar-height: 60px;
   --sidebar-width: 320px;
+  --tooltip-width: 40em;
 }
 * {
   -webkit-font-smoothing: antialiased;
@@ -14,9 +15,7 @@
 body:not(.ready) {
   overflow: hidden;
 }
-body:not(.ready) [data-cloak],
-body:not(.ready) .app-nav,
-body:not(.ready) > nav {
+body:not(.ready) .app-nav, body:not(.ready) > nav, body:not(.ready) [data-cloak] {
   display: none;
 }
 div#app {
@@ -26,7 +25,7 @@ div#app {
   text-align: center;
 }
 div#app:empty::before {
-  content: 'Loading...';
+  content: "Loading...";
 }
 .emoji {
   height: 1.2rem;
@@ -61,7 +60,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   color: #34495e;
-  font-family: 'Source Sans Pro', Arial, sans-serif;
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 15px;
   letter-spacing: 0;
   margin: 0;
@@ -84,7 +83,7 @@ kbd {
   padding: 3px 5px;
   vertical-align: middle;
 }
-li input[type='checkbox'] {
+li input[type=checkbox] {
   margin: 0 0.2em 0.25em 0;
   vertical-align: middle;
 }
@@ -98,8 +97,8 @@ li input[type='checkbox'] {
   right: 0;
   text-align: right;
   z-index: 100 !important;
-  border-bottom: 1px solid rgba(0, 0, 0, .07) !important;
-  transition: transform .25s ease-out !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07) !important;
+  transition: transform 0.25s ease-out !important;
   background-color: #fff !important;
   display: block !important;
 }
@@ -133,7 +132,7 @@ li input[type='checkbox'] {
 }
 .app-nav li {
   display: inline-block;
-  margin: 0 .5rem;
+  margin: 0 0.5rem;
   padding: 5px 0;
   position: relative;
   cursor: pointer;
@@ -222,7 +221,7 @@ main.hidden {
   bottom: 0;
   left: 0;
   transition: transform 250ms ease-out;
-  width: 20rem;
+  width: var(--sidebar-width);
   margin-top: var(--navbar-height) !important;
   padding-top: 0 !important;
 }
@@ -378,8 +377,8 @@ body.sticky .sidebar, body.sticky .sidebar-toggle {
   background-color: #f66;
   border-radius: 100%;
   color: #fff;
-  content: '!';
-  font-family: 'Source Sans Pro', Arial, sans-serif;
+  content: "!";
+  font-family: "Source Sans Pro", Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
   left: -12px;
@@ -404,14 +403,14 @@ body.sticky .sidebar, body.sticky .sidebar-toggle {
 .markdown-section ul.task-list > li {
   list-style-type: none;
 }
-body.close .sidebar {
-  transform: translateX(-20rem)
+body.close-sidebar .sidebar {
+  transform: translateX(calc(var(--sidebar-width) * -1));
 }
-body.close .sidebar-toggle {
-  width: auto
+body.close-sidebar .sidebar-toggle {
+  width: auto;
 }
-body.close .content {
-  left: 0
+body.close-sidebar .content {
+  left: 0;
 }
 @media print {
   .github-corner, .sidebar-toggle, .sidebar, .app-nav {
@@ -459,18 +458,18 @@ body.close .content {
     padding: 30px 30px 10px 10px;
   }
 
-  body.close .sidebar {
+  body.close-sidebar .sidebar {
     transform: translateX(20rem);
   }
 
-  body.close .sidebar-toggle {
+  body.close-sidebar .sidebar-toggle {
     background-color: rgba(255, 255, 255, 0.8);
     transition: 1s background-color;
     width: 284px;
     padding: 10px;
   }
 
-  body.close .content {
+  body.close-sidebar .content {
     transform: translateX(20rem);
   }
 
@@ -833,35 +832,35 @@ thead tr td {
 
 /*调整alert格式*/
 .alert.callout.info {
-  border-left-color: #17a2b8 !important
+  border-left-color: #17a2b8 !important;
 }
 .alert.callout.info .title {
-  color: #17a2b8
+  color: #17a2b8;
 }
 .alert.flat.info {
   color: #02587f;
   background-color: #cdeefd;
-  border-color: #b4e6fc
+  border-color: #b4e6fc;
 }
 .alert.flat.info .title {
-  color: #01354d
+  color: #01354d;
 }
 .alert.callout.important {
-  border-left-color: #17a2b8 !important
+  border-left-color: #17a2b8 !important;
 }
 .alert.callout.important .title {
-  color: #17a2b8
+  color: #17a2b8;
 }
 .alert.flat.important {
   color: #02587f;
   background-color: #cdeefd;
-  border-color: #b4e6fc
+  border-color: #b4e6fc;
 }
 .alert.flat.important .title {
-  color: #01354d
+  color: #01354d;
 }
 
 /*增大tooltip的宽度*/
 .tooltip {
-  width: 40em;
+  width: var(--tooltip-width);
 }
