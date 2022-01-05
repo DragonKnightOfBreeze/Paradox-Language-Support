@@ -404,13 +404,13 @@ body.sticky .sidebar, body.sticky .sidebar-toggle {
 .markdown-section ul.task-list > li {
   list-style-type: none;
 }
-body.content-close .sidebar {
+body.close .sidebar {
   transform: translateX(-20rem)
 }
-body.content-close .sidebar-toggle {
+body.close .sidebar-toggle {
   width: auto
 }
-body.content-close .content {
+body.close .content {
   left: 0
 }
 @media print {
@@ -459,18 +459,18 @@ body.content-close .content {
     padding: 30px 30px 10px 10px;
   }
 
-  body.content-close .sidebar {
+  body.close .sidebar {
     transform: translateX(20rem);
   }
 
-  body.content-close .sidebar-toggle {
+  body.close .sidebar-toggle {
     background-color: rgba(255, 255, 255, 0.8);
     transition: 1s background-color;
     width: 284px;
     padding: 10px;
   }
 
-  body.content-close .content {
+  body.close .content {
     transform: translateX(20rem);
   }
 
@@ -794,10 +794,8 @@ thead tr td {
   word-break: keep-all;
   white-space: nowrap;
 }
-pre > code {
-  padding: 1em 0 1em 0 !important;
-  margin: 0 0 !important;
-}
+
+/*调整侧边栏元素样式*/
 .app-name {
   font-weight: bold !important;
 }
