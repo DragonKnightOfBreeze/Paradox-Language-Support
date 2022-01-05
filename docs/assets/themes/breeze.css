@@ -719,12 +719,12 @@ section.cover blockquote > p > a:hover {
   background-color: #f9f9f9;
   border-left: 2px solid #eee;
   font-family: Consolas monospace;
-  font-size: 16px;
-  margin: 0 0 1em 0;
-  padding: 0 10px 12px 0;
+  line-height: 1.5rem;
+  margin: 1.2em 0;
   overflow: auto;
-  word-wrap: normal;
+  padding: 0 1.4rem;
   position: relative;
+  word-wrap: normal;
 }
 /* code highlight */
 .token.cdata, .token.comment, .token.doctype, .token.prolog {
@@ -765,15 +765,18 @@ section.cover blockquote > p > a:hover {
   cursor: help;
 }
 .markdown-section pre > code {
+  -moz-osx-font-smoothing: initial;
+  -webkit-font-smoothing: initial;
   background-color: #f8f8f8;
   border-radius: 2px;
+  color: #525252;
   display: block;
   font-family: Consolas monospace;
-  line-height: 1.25rem;
+  font-size: 0.8rem;
+  line-height: inherit;
   max-width: inherit;
   overflow: inherit;
-  padding: 20px 0.8em 20px;
-  position: relative;
+  padding: 10px 5px;
   white-space: inherit;
 }
 .markdown-section code::after, .markdown-section code::before {
