@@ -355,8 +355,16 @@ body.sticky .sidebar, body.sticky .sidebar-toggle {
   padding: 6px 12px;
 }
 .markdown-section td {
+  font-size: 14px; /*缩小字体*/
   border: 1px solid #ddd;
+  border-bottom: none;
   padding: 6px 13px;
+}
+.markdown-section td.rowspan {
+  border-top: 1px solid #fff;
+}
+.markdown-section td.colspan {
+  border-left: 1px solid #fff;
 }
 .markdown-section tr {
   border-top: 1px solid #ccc;
