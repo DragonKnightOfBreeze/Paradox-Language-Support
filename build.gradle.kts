@@ -17,7 +17,7 @@ repositories {
 	mavenCentral()
 }
 
-dependencies{
+dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
@@ -44,6 +44,10 @@ val projectCompiler = javaToolchains.compilerFor {
 }
 
 tasks {
+	jar {
+		from("README.md", "README.md", "CHANGELOG.md", "ISSUE.md")
+		from("LICENSE")
+	}
 	compileJava {
 		javaCompiler.set(projectCompiler)
 	}
@@ -51,18 +55,18 @@ tasks {
 		javaCompiler.set(projectCompiler)
 	}
 	compileKotlin {
-		kotlinOptions{
+		kotlinOptions {
 			jvmTarget = "11"
 			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
 	compileTestKotlin {
-		kotlinOptions{
+		kotlinOptions {
 			jvmTarget = "11"
 			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
-	publishPlugin{
+	publishPlugin {
 		token(System.getenv("IDEA_TOKEN"))
 	}
 }
