@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin url="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">
   <id>icu.windea.pls</id>
   <name>Paradox Language Support</name>
   <category>Languages</category>
