@@ -1,6 +1,18 @@
 # 更新日志
 
-## 0.4.0
+## TODO
+
+* [ ] BUG修复
+* [ ] 将文件中UTF8编码为160的空格视为语法错误，但允许跳过语法错误继续解析
+* [ ] 完善对CWT配置文件的支持，完善相关功能
+* [ ] 不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置目录）
+  * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
+  * 包括官方Github链接和镜像Github链接（https://github.com.cnpmjs.org）
+  * 检查Github上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
+* [ ] 对于CWT库（Cwt Config，CWT配置目录）和Paradox库（P社游戏的游戏目录/模组目录），不再根据游戏类型区分库类型，而是将其作为库的属性
+* [ ] 完善在线参考文档
+
+## 0.4.0 *
 
 * 更新IDEA版本到2021.3
 
@@ -99,9 +111,8 @@
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [X] 适配IDEA版本`2021.2`
 * [ ] ~~添加新的库作为依赖时（原始游戏目录，模组），兼容zip压缩包和文件夹~~（使用基于jar协议的url打开zip文件，实际测试发现读取不到内容）
-* [ ] 实现或重构用于提示definition的nameTypeInfo的InlayHint，可以单独启用
-* [ ] 实现或重构用于提示definition的localizedName的InlayHint，可以单独启用
-* [ ] 实现或重构用于提示definitionProperty的scopes的InlayHint，可以单独启用（注意仅会在行尾的`key = {`后面提示）
+* [X] 实现或重构用于提示definition的nameTypeInfo的InlayHint，可以单独启用
+* [X] 实现或重构用于提示definition的localizedName的InlayHint，可以单独启用
 * [X] 添加检查，检查事件的脚本文件中的namespace必须存在
 * [X] 添加检查，检查事件的脚本文件中的event的id需要与namespace匹配
 * [X] 基于cwt文件匹配scriptPropertyKey时，如果规则类型为常量，匹配时忽略大小写
