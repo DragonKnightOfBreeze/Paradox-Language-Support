@@ -8,15 +8,15 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	companion object {
-		private val _name = message("script.gutterIcon.definitionLocalisation")
-		private val _title = message("script.gutterIcon.definitionLocalisation.title")
+		private val _name = PlsBundle.message("script.gutterIcon.relatedLocalisation")
+		private val _title = PlsBundle.message("script.gutterIcon.relatedLocalisation.title")
 	}
 	
 	override fun getName() = _name
 	
-	override fun getIcon() = definitionLocalisationGutterIcon
+	override fun getIcon() = relatedLocalisationGutterIcon
 	
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//如果是definition且definition的localisation不为空，则添加definitionLocalisation的gutterIcon
@@ -30,14 +30,14 @@ class ParadoxDefinitionLocalisationLineMarkerProvider : RelatedItemLineMarkerPro
 	}
 	
 	private fun createMarker(definitionInfo: ParadoxDefinitionInfo, element: ParadoxScriptProperty): RelatedItemLineMarkerInfo<PsiElement> {
-		val icon = definitionLocalisationGutterIcon
+		val icon = relatedLocalisationGutterIcon
 		val tooltip = buildString {
 			val localisation = definitionInfo.localisation
 			var isFirst = true
 			for((n, kn) in localisation) {
 				if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
 				if(isFirst) isFirst = false else appendBr()
-				append("(definition localisation) ").append(n).append(" = ").append(kn)
+				append("(related localisation) ").append(n).append(" = ").append(kn)
 			}
 		}
 		val keyNames = definitionInfo.localisationKeyNames

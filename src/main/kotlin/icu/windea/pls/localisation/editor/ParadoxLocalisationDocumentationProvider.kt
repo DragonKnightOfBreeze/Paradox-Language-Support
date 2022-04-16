@@ -1,11 +1,11 @@
 package icu.windea.pls.localisation.editor
 
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import org.jetbrains.annotations.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
@@ -194,7 +194,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun StringBuilder.buildLocaleDefinition(name: @NotNull String) {
+	private fun StringBuilder.buildLocaleDefinition(name: String) {
 		definition {
 			append("(localisation locale) <b>").append(name).append("</b>")
 		}
@@ -210,13 +210,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun StringBuilder.buildIconDefinition(name: @NotNull String) {
+	private fun StringBuilder.buildIconDefinition(name: String) {
 		definition {
 			append("(localisation icon) <b>").append(name).append("</b>")
 		}
 	}
 	
-	private fun StringBuilder.buildSequentialNumberDefinition(name: @NotNull String) {
+	private fun StringBuilder.buildSequentialNumberDefinition(name: String) {
 		definition {
 			append("(localisation sequential number) <b>").append(name).append("</b>")
 		}
@@ -232,19 +232,19 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun StringBuilder.buildCommandScopeDefinition(name: @NotNull String) {
+	private fun StringBuilder.buildCommandScopeDefinition(name: String) {
 		definition {
 			append("(localisation command scope) <b>").append(name).append("</b>")
 		}
 	}
 	
-	private fun StringBuilder.buildCommandFieldDefinition(name: @NotNull String) {
+	private fun StringBuilder.buildCommandFieldDefinition(name: String) {
 		definition {
 			append("(localisation command field) <b>").append(name).append("</b>")
 		}
 	}
 	
-	private fun StringBuilder.buildColorDefinition(name: @NotNull String) {
+	private fun StringBuilder.buildColorDefinition(name: String) {
 		definition {
 			append("(localisation color) <b>").append(name).append("</b>")
 		}

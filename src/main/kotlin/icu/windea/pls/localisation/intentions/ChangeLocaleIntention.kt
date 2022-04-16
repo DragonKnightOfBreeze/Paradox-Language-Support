@@ -13,8 +13,8 @@ import icu.windea.pls.model.*
 
 class ChangeLocaleIntention : IntentionAction {
 	companion object {
-		private val _name = message("localisation.intention.changeLocale")
-		private val _title = message("localisation.intention.changeLocale.title")
+		private val _name = PlsBundle.message("localisation.intention.changeLocale")
+		private val _title = PlsBundle.message("localisation.intention.changeLocale.title")
 	}
 	
 	override fun startInWriteAction() = false

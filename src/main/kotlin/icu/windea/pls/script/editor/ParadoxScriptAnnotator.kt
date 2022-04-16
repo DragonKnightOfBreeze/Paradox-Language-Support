@@ -36,9 +36,10 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateVariableReference(element: ParadoxScriptVariableReference, holder: AnnotationHolder) {
 		//注明无法解析的情况
+		//TODO 提供快速修复：声明变量（同一文件中） & 导入游戏目录或模组目录
 		val reference = element.reference
 		if(reference.resolve() == null) {
-			holder.newAnnotation(ERROR, message("script.annotator.unresolvedVariable", element.name))
+			holder.newAnnotation(ERROR, PlsBundle.message("script.annotator.unresolvedVariable", element.name))
 				.create()
 		}
 	}

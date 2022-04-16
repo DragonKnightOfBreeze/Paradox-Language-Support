@@ -134,11 +134,11 @@
     <lang.documentationProvider
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtDocumentationProvider"/>
-    <elementDescriptionProvider
-        implementation="icu.windea.pls.cwt.editor.CwtDescriptionProvider"/>
     <lang.findUsagesProvider
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
+    <elementDescriptionProvider
+        implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <lang.commenter
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
@@ -200,11 +200,11 @@
     <lang.documentationProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptDocumentationProvider"/>
-    <elementDescriptionProvider
-        implementation="icu.windea.pls.script.editor.ParadoxScriptDescriptionProvider"/>
     <lang.findUsagesProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
+    <elementDescriptionProvider
+        implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <annotator
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
@@ -242,7 +242,7 @@
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionLocalisationLineMarkerProvider"/>
+        implementationClass="icu.windea.pls.script.codeInsight.ParadoxRelatedLocalisationLineMarkerProvider"/>
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
    
@@ -322,11 +322,11 @@
     <lang.documentationProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationDocumentationProvider"/>
-    <elementDescriptionProvider
-        implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationDescriptionProvider"/>
     <lang.findUsagesProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
+    <elementDescriptionProvider
+        implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
     <annotator
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationAnnotator"/>

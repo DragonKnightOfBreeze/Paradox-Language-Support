@@ -9,8 +9,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
-import icu.windea.pls.script.codeInsight.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	companion object{
@@ -58,7 +56,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			completeLocalisationCommand(commandField,configGroup, result)
 			
 			//TODO 补全的scope可能不正确
-			result.addLookupAdvertisement(message("scopeOfCompletionsMayBeIncorrect"))
+			result.addLookupAdvertisement(PlsBundle.message("scopeOfCompletionsMayBeIncorrect"))
 		}
 	}
 	

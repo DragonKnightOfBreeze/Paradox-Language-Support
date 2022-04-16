@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.*
 
 class MismatchedEventIdInspection : LocalInspectionTool() {
 	companion object {
-		private fun _description(id: String, namespace: String) = message("script.inspection.mismatchedEventId.description", id, namespace)
+		private fun _description(id: String, namespace: String) = PlsBundle.message("script.inspection.mismatchedEventId.description", id, namespace)
 	}
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

@@ -45,7 +45,8 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//注明不支持的情况
 		val locale = element.localeInfo
 		if(locale == null) {
-			holder.newAnnotation(ERROR, message("localisation.annotator.unsupportedLocale", element.name))
+			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedLocale", element.name))
+				.range(element.localeId ?: element)
 				.create()
 		}
 	}
@@ -75,7 +76,8 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		val sequentialNumber = element.sequentialNumberInfo
 		if(sequentialNumber == null) {
-			holder.newAnnotation(ERROR, message("localisation.annotator.unsupportedSequentialNumber", element.name))
+			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedSequentialNumber", element.name))
+				.range(element.sequentialNumberId ?: element)
 				.create()
 		}
 	}
@@ -84,7 +86,8 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//注明不支持的情况 & 颜色高亮
 		val colorInfo = element.colorInfo
 		if(colorInfo == null) {
-			holder.newAnnotation(ERROR, message("localisation.annotator.unsupportedColor", element.name))
+			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedColor", element.name))
+				.range(element.colorId ?: element)
 				.create()
 		} else {
 			val e = element.colorId

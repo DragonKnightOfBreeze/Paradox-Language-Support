@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-const val bundleName = "messages.PlsBundle"
 val locationClass = PlsBundle::class.java
 
 const val cwtName = "Cwt"
@@ -45,4 +44,4 @@ const val truncateLimit = 30
 
 //TODO 可以设置
 val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
-val definitionLocalisationNamesToInfer = arrayOf("title","desc","effect") //不包括name，因为可能不是localisation
+val relatedLocalisationNamesToInfer = arrayOf("title","desc","effect") //不包括name，因为可能不是localisation

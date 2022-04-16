@@ -6,20 +6,20 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 
 class CwtColorSettingsPage:ColorSettingsPage {
-	companion object{
-		private val _separatorName = message("cwt.displayName.separator")
-		private val _bracesName = message("cwt.displayName.braces")
-		private val _propertyKeyName = message("cwt.displayName.propertyKey")
-		private val _optionKeyName = message("cwt.displayName.optionKey")
-		private val _keywordName = message("cwt.displayName.keyword")
-		private val _numberName = message("cwt.displayName.number")
-		private val _stringName = message("cwt.displayName.string")
-		private val _commentName = message("cwt.displayName.comment")
-		private val _optionCommentName = message("cwt.displayName.optionComment")
-		private val _documentationCommentName = message("cwt.displayName.documentationComment")
-		private val _validEscapeName = message("cwt.displayName.validEscape")
-		private val _invalidEscapeName = message("cwt.displayName.invalidEscape")
-		private val _badCharacterName = message("cwt.displayName.badCharacter")
+	companion object {
+		private val _separatorName = PlsBundle.message("cwt.displayName.separator")
+		private val _bracesName = PlsBundle.message("cwt.displayName.braces")
+		private val _propertyKeyName = PlsBundle.message("cwt.displayName.propertyKey")
+		private val _optionKeyName = PlsBundle.message("cwt.displayName.optionKey")
+		private val _keywordName = PlsBundle.message("cwt.displayName.keyword")
+		private val _numberName = PlsBundle.message("cwt.displayName.number")
+		private val _stringName = PlsBundle.message("cwt.displayName.string")
+		private val _commentName = PlsBundle.message("cwt.displayName.comment")
+		private val _optionCommentName = PlsBundle.message("cwt.displayName.optionComment")
+		private val _documentationCommentName = PlsBundle.message("cwt.displayName.documentationComment")
+		private val _validEscapeName = PlsBundle.message("cwt.displayName.validEscape")
+		private val _invalidEscapeName = PlsBundle.message("cwt.displayName.invalidEscape")
+		private val _badCharacterName = PlsBundle.message("cwt.displayName.badCharacter")
 	}
 	
 	private val attributersDescriptors = arrayOf(

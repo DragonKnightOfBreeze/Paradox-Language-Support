@@ -78,7 +78,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildDefinitionDefinition(element, definitionInfo, localisation)
 			buildLineCommentContent(element)
 			buildDefinitionIconSections(type, element)
-			buildDefinitionLocalisationSections(localisation, element)
+			buildRelatedLocalisationSections(localisation, element)
 		}
 	}
 	
@@ -99,18 +99,33 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo,
-		localisation: List<ParadoxDefinitionLocalisationInfo>) {
+		localisation: List<ParadoxRelatedLocalisationInfo>) {
 		definition {
+			//加上定义的文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			//加上定义的名称和类型信息
 			val name = definitionInfo.name
-			val typeLinkText = definitionInfo.typeLinkText
+			val typeLinkText = buildString {
+				val gameType = definitionInfo.gameType
+				val typeConfig = definitionInfo.typeConfig
+				val typeLink = "${gameType.key}.types.${typeConfig.name}"
+				appendCwtLink(typeConfig.name, typeLink, typeConfig.pointer.element)
+				val subtypeConfigs = definitionInfo.subtypeConfigs
+				if(subtypeConfigs.isNotEmpty()) {
+					for(subtypeConfig in subtypeConfigs) {
+						append(", ")
+						val subtypeLink = "$typeLink.${subtypeConfig.name}"
+						appendCwtLink(subtypeConfig.name, subtypeLink, subtypeConfig.pointer.element)
+					}
+				}
+			}
 			append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
-			
+			//加上定义的相关本地化信息
 			if(localisation.isNotEmpty()) {
 				for((n, kn) in localisation) {
-					if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
+					if(kn.isEmpty()) continue //不显示keyName为空的relatedLocalisation
 					appendBr()
-					append("(definition localisation) ").append(n).append(" = ").appendLocalisationLink(kn)
+					append("(related localisation) ").append(n).append(" = ").appendLocalisationLink(kn, element)
 				}
 			}
 		}
@@ -129,14 +144,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildDefinitionLocalisationSections(localisation: List<ParadoxDefinitionLocalisationInfo>,
+	private fun StringBuilder.buildRelatedLocalisationSections(localisation: List<ParadoxRelatedLocalisationInfo>,
 		element: ParadoxScriptProperty) {
 		//本地化文本
 		if(renderDefinitionText) {
 			if(localisation.isNotEmpty()) {
 				val richTexts = mutableListOf<Pair<String, String>>()
 				for((n, kn) in localisation) {
-					if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
+					if(kn.isEmpty()) continue //不显示keyName为空的Name为空的relatedLocalisation
 					val e = findLocalisation(kn, element.localeInfo, element.project, hasDefault = true)
 					val richText = e?.renderText() ?: continue
 					richTexts.add(n to richText)

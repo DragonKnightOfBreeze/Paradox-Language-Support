@@ -34,6 +34,7 @@ public interface ParadoxLocalisationTypes {
   IElementType COMMAND_SEPARATOR = new ParadoxLocalisationTokenType(".");
   IElementType COMMAND_START = new ParadoxLocalisationTokenType("[");
   IElementType COMMENT = new ParadoxLocalisationTokenType("COMMENT");
+  IElementType DOUBLE_LEFT_BRACKET = new ParadoxLocalisationTokenType("[[");
   IElementType END_OF_LINE_COMMENT = new ParadoxLocalisationTokenType("END_OF_LINE_COMMENT");
   IElementType ICON_END = new ParadoxLocalisationTokenType("£");
   IElementType ICON_ID = new ParadoxLocalisationTokenType("ICON_ID");
@@ -42,6 +43,7 @@ public interface ParadoxLocalisationTypes {
   IElementType INVALID_ESCAPE_TOKEN = new ParadoxLocalisationTokenType("INVALID_ESCAPE_TOKEN");
   IElementType LEFT_QUOTE = new ParadoxLocalisationTokenType("LEFT_QUOTE");
   IElementType LOCALE_ID = new ParadoxLocalisationTokenType("LOCALE_ID");
+  IElementType NEW_LINE = new ParadoxLocalisationTokenType("NEW_LINE");
   IElementType NUMBER = new ParadoxLocalisationTokenType("NUMBER");
   IElementType PARAMETER_SEPARATOR = new ParadoxLocalisationTokenType("|");
   IElementType PROPERTY_KEY_ID = new ParadoxLocalisationTokenType("PROPERTY_KEY_ID");
@@ -95,6 +97,9 @@ public interface ParadoxLocalisationTypes {
       }
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);
+      }
+      else if (type == RICH_TEXT) {
+        return new ParadoxLocalisationRichTextImpl(node);
       }
       else if (type == SEQUENTIAL_NUMBER) {
         return new ParadoxLocalisationSequentialNumberImpl(node);

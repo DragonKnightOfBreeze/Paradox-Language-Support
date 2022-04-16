@@ -11,7 +11,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 
-public abstract class ParadoxLocalisationRichTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationRichText {
+public class ParadoxLocalisationRichTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationRichText {
 
   public ParadoxLocalisationRichTextImpl(@NotNull ASTNode node) {
     super(node);

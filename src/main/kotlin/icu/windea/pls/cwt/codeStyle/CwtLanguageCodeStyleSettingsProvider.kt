@@ -6,9 +6,9 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 
 class CwtLanguageCodeStyleSettingsProvider: LanguageCodeStyleSettingsProvider() {
-	companion object{
-		private val _spaceWithinBracesTitle = message("cwt.codeStyle.spaceWithinBraces")
-		private val _spaceAroundSeparatorTitle = message("cwt.codeStyle.spaceAroundSeparator")
+	companion object {
+		private val _spaceWithinBracesTitle = PlsBundle.message("cwt.codeStyle.spaceWithinBraces")
+		private val _spaceAroundSeparatorTitle = PlsBundle.message("cwt.codeStyle.spaceAroundSeparator")
 	}
 	
 	override fun getLanguage() = CwtLanguage

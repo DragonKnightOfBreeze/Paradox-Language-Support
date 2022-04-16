@@ -8,22 +8,22 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 import javax.swing.*
 
-class ParadoxSettingsConfigurable: BoundConfigurable(message("settings"),"settings.language.pls"),SearchableConfigurable {
+class ParadoxSettingsConfigurable: BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"),SearchableConfigurable {
 	companion object {
-		private val _genericTitle = message("settings.generic")
-		private val _defaultGameType = message("settings.generic.defaultGameType")
-		private val _defaultGameTypeTooltip = message("settings.generic.defaultGameType.tooltip")
-		private val _preferOverriddenName = message("settings.generic.preferOverridden")
-		private val _preferOverriddenTooltip = message("settings.generic.preferOverridden.tooltip")
-		private val _performanceTitle = message("settings.performance")
-		private val _maxCompleteSize = message("settings.performance.maxCompleteSize")
-		private val _maxCompleteSizeTooltip = message("settings.performance.maxCompleteSize.tooltip")
-		private val _renderLineCommentText = message("settings.performance.renderLineCommentText")
-		private val _renderLineCommentTextTooltip = message("settings.performance.renderLineCommentText.tooltip")
-		private val _renderDefinitionText = message("settings.performance.renderDefinitionText")
-		private val _renderDefinitionTextTooltip = message("settings.performance.renderDefinitionText.tooltip")
-		private val _renderLocalisationText = message("settings.performance.renderLocalisationText")
-		private val _renderLocalisationTextTooltip = message("settings.performance.renderLocalisationText.tooltip")
+		private val _genericTitle = PlsBundle.message("settings.generic")
+		private val _defaultGameType = PlsBundle.message("settings.generic.defaultGameType")
+		private val _defaultGameTypeTooltip = PlsBundle.message("settings.generic.defaultGameType.tooltip")
+		private val _preferOverriddenName = PlsBundle.message("settings.generic.preferOverridden")
+		private val _preferOverriddenTooltip = PlsBundle.message("settings.generic.preferOverridden.tooltip")
+		private val _performanceTitle = PlsBundle.message("settings.performance")
+		private val _maxCompleteSize = PlsBundle.message("settings.performance.maxCompleteSize")
+		private val _maxCompleteSizeTooltip = PlsBundle.message("settings.performance.maxCompleteSize.tooltip")
+		private val _renderLineCommentText = PlsBundle.message("settings.performance.renderLineCommentText")
+		private val _renderLineCommentTextTooltip = PlsBundle.message("settings.performance.renderLineCommentText.tooltip")
+		private val _renderDefinitionText = PlsBundle.message("settings.performance.renderDefinitionText")
+		private val _renderDefinitionTextTooltip = PlsBundle.message("settings.performance.renderDefinitionText.tooltip")
+		private val _renderLocalisationText = PlsBundle.message("settings.performance.renderLocalisationText")
+		private val _renderLocalisationTextTooltip = PlsBundle.message("settings.performance.renderLocalisationText.tooltip")
 	}
 	
 	private val settings = getSettings()

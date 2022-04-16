@@ -14,7 +14,7 @@ import kotlin.collections.component2
 
 class DuplicateVariablesInspection : LocalInspectionTool() {
 	companion object {
-		private fun _description(name: String) = message("script.inspection.duplicateVariables.description", name)
+		private fun _description(name: String) = PlsBundle.message("script.inspection.duplicateVariables.description", name)
 	}
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -44,9 +44,9 @@ class DuplicateVariablesInspection : LocalInspectionTool() {
 		private val pointers = ContainerUtil.map(duplicates) { SmartPointerManager.createPointer(it) }
 		
 		companion object {
-			private val _name = message("script.quickFix.navigateToDuplicates")
-			private fun _header(key: String) = message("script.quickFix.navigateToDuplicates.header", key)
-			private fun _text(key: String, lineNumber: Int) = message("script.quickFix.navigateToDuplicates.text", key, lineNumber)
+			private val _name = PlsBundle.message("script.quickFix.navigateToDuplicates")
+			private fun _header(key: String) = PlsBundle.message("script.quickFix.navigateToDuplicates.header", key)
+			private fun _text(key: String, lineNumber: Int) = PlsBundle.message("script.quickFix.navigateToDuplicates.text", key, lineNumber)
 		}
 		
 		override fun getFamilyName() = _name

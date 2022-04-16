@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 @Suppress("UnstableApiUsage")
 enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 	DEFINITION_NAME_TYPE_HINT(
-		message("script.hints.types.definition"),
+		PlsBundle.message("script.hints.types.definition"),
 		true
 	) {
 		override fun provideHints(elem: PsiElement): List<InlayInfo> {

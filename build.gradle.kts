@@ -1,15 +1,15 @@
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.6.0"
-	id("org.jetbrains.intellij") version "0.7.2"
-	id("org.jetbrains.grammarkit") version "2021.1"
+	id("org.jetbrains.intellij") version "1.5.2"
+	id("org.jetbrains.grammarkit") version "2021.2.2"
 }
 
 group = "icu.windea"
-version = "0.4.0"
+version = "0.4.1"
 
 intellij {
-	version = "2021.3"
-	pluginName = "Paradox Language Support"
+	version.set("2022.1")
+	pluginName.set("Paradox Language Support")
 }
 
 repositories {
@@ -45,7 +45,7 @@ val projectCompiler = javaToolchains.compilerFor {
 
 tasks {
 	jar {
-		from("README.md", "README.md", "LICENSE")
+		from("README.md", "README_en.md", "LICENSE")
 	}
 	compileJava {
 		javaCompiler.set(projectCompiler)
@@ -66,6 +66,6 @@ tasks {
 		}
 	}
 	publishPlugin {
-		token(System.getenv("IDEA_TOKEN"))
+		token.set(System.getenv("IDEA_TOKEN"))
 	}
 }

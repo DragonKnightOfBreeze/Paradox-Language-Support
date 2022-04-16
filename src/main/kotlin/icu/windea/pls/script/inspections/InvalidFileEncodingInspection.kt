@@ -8,8 +8,8 @@ import icu.windea.pls.*
 import java.nio.charset.*
 
 class InvalidFileEncodingInspection: LocalInspectionTool(){
-	companion object{
-		private fun _description(charset: Charset,bom:String) = message("script.inspection.invalidFileEncoding.description", charset,bom)
+	companion object {
+		private fun _description(charset: Charset, bom: String) = PlsBundle.message("script.inspection.invalidFileEncoding.description", charset, bom)
 	}
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
@@ -31,8 +31,8 @@ class InvalidFileEncodingInspection: LocalInspectionTool(){
 		element: PsiElement,
 		private val isNameList:Boolean
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		companion object{
-			private val _name = message("script.quickFix.changeFileEncoding")
+		companion object {
+			private val _name = PlsBundle.message("script.quickFix.changeFileEncoding")
 		}
 		
 		override fun getText() = _name

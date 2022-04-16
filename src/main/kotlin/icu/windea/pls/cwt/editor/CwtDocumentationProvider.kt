@@ -69,45 +69,45 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			when(configType) {
 				//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
 				null -> {
-					val propertyElement = getDefinitionProperty(originalElement) ?: return
-					val gameType = propertyElement.gameType ?: return
-					val config = propertyElement.propertyConfig ?: return
+					val propertyElement = getDefinitionProperty(originalElement) ?: return@definition
+					val gameType = propertyElement.gameType ?: return@definition
+					val config = propertyElement.propertyConfig ?: return@definition
 					val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionPropertyInfo?.scope)
 					for((sk, sv) in scopeMap) {
-						val scopeLink = "@${gameType.key}.scopes.$sv"
-						appendBr().append("(scope) ").append(sk).append(" = ").appendPsiLink(scopeLink, sv)
+						val scopeLink = "${gameType.key}.scopes.$sv"
+						appendBr().append("(scope) ").append(sk).append(" = ").appendCwtLink(scopeLink, sv, null)
 					}
 				}
 				//为alias提供关于scope的额外文档注释（如果有的话）
 				CwtConfigType.Alias -> {
 					//同名的alias支持的scopes应该是一样的
-					val gameType = originalElement?.gameType ?: return
-					val configGroup = getConfig()[gameType] ?: return
+					val gameType = originalElement?.gameType ?: return@definition
+					val configGroup = getConfig()[gameType] ?: return@definition
 					val index = name.indexOf(':')
-					if(index == -1) return
+					if(index == -1) return@definition
 					val aliasName = name.substring(0, index)
 					val aliasSubName = name.substring(index + 1)
-					val aliasGroup = configGroup.aliases[aliasName] ?: return
-					val aliases = aliasGroup[aliasSubName] ?: return
-					val supportedScopesText = aliases.firstOrNull()?.supportedScopesText ?: return
+					val aliasGroup = configGroup.aliases[aliasName] ?: return@definition
+					val aliases = aliasGroup[aliasSubName] ?: return@definition
+					val supportedScopesText = aliases.firstOrNull()?.supportedScopesText ?: return@definition
 					appendBr().append("supported_scopes = $supportedScopesText")
 				}
 				//为modifier提供关于scope的额外文档注释
 				CwtConfigType.Modifier -> {
-					val gameType = originalElement?.gameType ?: return
-					val configGroup = getConfig()[gameType] ?: return
-					val categories = element.value?.value ?: return
+					val gameType = originalElement?.gameType ?: return@definition
+					val configGroup = getConfig()[gameType] ?: return@definition
+					val categories = element.value?.value ?: return@definition
 					val category = configGroup.modifierCategories[categories]
-						?: configGroup.modifierCategoryIdMap[categories] ?: return
+						?: configGroup.modifierCategoryIdMap[categories] ?: return@definition
 					val supportedScopesText = category.supportedScopesText
 					appendBr().append("supported_scopes = $supportedScopesText")
 				}
 				//为localisation_command提供关于scope的额外文档注释
 				CwtConfigType.LocalisationCommand -> {
-					val gameType = originalElement?.gameType ?: return
-					val configGroup = getConfig()[gameType] ?: return
+					val gameType = originalElement?.gameType ?: return@definition
+					val configGroup = getConfig()[gameType] ?: return@definition
 					val n = element.name
-					val localisationCommand = configGroup.localisationCommands[n] ?: return
+					val localisationCommand = configGroup.localisationCommands[n] ?: return@definition
 					val supportedScopesText = localisationCommand.supportedScopes
 					appendBr().append("supported_scopes = $supportedScopesText")
 				}

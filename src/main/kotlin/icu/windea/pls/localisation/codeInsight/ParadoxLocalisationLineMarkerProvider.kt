@@ -11,8 +11,8 @@ import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
 class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	companion object {
-		private val _name = message("localisation.gutterIcon.localisation")
-		private val _title = message("localisation.gutterIcon.localisation.title")
+		private val _name = PlsBundle.message("localisation.gutterIcon.localisation")
+		private val _title = PlsBundle.message("localisation.gutterIcon.localisation.title")
 	}
 	
 	override fun getName() = _name

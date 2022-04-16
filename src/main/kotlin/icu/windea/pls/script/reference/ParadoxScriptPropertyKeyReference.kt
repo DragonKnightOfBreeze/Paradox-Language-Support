@@ -15,7 +15,7 @@ class ParadoxScriptPropertyKeyReference(
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
-			!resolved.isWritable -> throw IncorrectOperationException(message("cannotBeRenamed"))
+			!resolved.isWritable -> throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 			else -> resolved.setName(newElementName)
 		}
 		return element.setValue(newElementName)

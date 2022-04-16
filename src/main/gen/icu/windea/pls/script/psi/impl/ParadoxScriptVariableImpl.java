@@ -16,8 +16,8 @@ import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptVariableStub> implements ParadoxScriptVariable {
 
-  public ParadoxScriptVariableImpl(@NotNull ParadoxScriptVariableStub stub, @Nullable IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public ParadoxScriptVariableImpl(@NotNull ParadoxScriptVariableStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public ParadoxScriptVariableImpl(@NotNull ASTNode node) {

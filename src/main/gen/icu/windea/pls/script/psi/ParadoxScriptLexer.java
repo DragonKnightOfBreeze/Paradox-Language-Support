@@ -157,14 +157,14 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
     "\1\21\2\12\1\22\2\12\1\23\1\12\2\24\1\25"+
     "\1\26\1\12\1\27\3\12\1\30\1\12\1\31\1\32"+
     "\4\12\1\20\1\33\2\34\1\35\1\36\2\20\1\37"+
-    "\23\20\1\31\1\32\4\20\1\40\1\33\2\34\1\35"+
+    "\23\20\1\31\1\32\4\20\1\40\1\13\2\14\1\15"+
     "\1\41\1\20\1\40\1\20\1\42\2\40\1\43\2\40"+
     "\1\44\1\40\2\45\1\46\1\47\7\40\1\31\1\32"+
     "\4\40\1\20\1\33\2\34\1\35\1\36\26\20\1\31"+
     "\1\32\4\20\1\50\6\20\1\50\1\20\1\51\22\50"+
     "\2\20\4\50\1\20\1\33\2\34\1\35\1\36\2\20"+
     "\1\52\23\20\1\31\1\32\1\20\1\53\1\20\1\54"+
-    "\1\55\1\33\2\34\1\35\1\36\1\56\1\55\1\20"+
+    "\1\55\1\13\2\14\1\15\1\36\1\56\1\55\1\20"+
     "\1\57\2\55\1\60\2\55\1\61\1\55\2\62\1\63"+
     "\1\64\1\55\1\65\3\55\1\66\1\55\1\31\1\32"+
     "\4\55\1\20\1\33\2\34\1\67\1\36\26\20\1\31"+
@@ -353,7 +353,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
 
   public int nextState(){
 	  return depth <= 0 ? YYINITIAL : WAITING_PROPERTY_KEY;
-  }
+}
 
 
   /**
@@ -626,12 +626,12 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 39: break;
           case 6: 
-            { depth++;  yybegin(nextState()); return LEFT_BRACE;
+            { depth++; yybegin(nextState()); return LEFT_BRACE;
             } 
             // fall through
           case 40: break;
           case 7: 
-            { depth--;  yybegin(nextState()); return RIGHT_BRACE;
+            { depth--; yybegin(nextState()); return RIGHT_BRACE;
             } 
             // fall through
           case 41: break;

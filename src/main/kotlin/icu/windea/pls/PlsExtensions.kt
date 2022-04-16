@@ -14,11 +14,10 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
-import org.jetbrains.annotations.*
 import java.util.*
 import kotlin.Pair
 
-//region Constants
+//region Keys
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
@@ -222,8 +221,8 @@ private fun getRootType(file: PsiDirectory): ParadoxRootType? {
 	for(child in file.files) {
 		val childName = child.name
 		when {
-			ParadoxGameType.exeFileNames.any {childName.equals(it,true) } -> return ParadoxRootType.Stdlib
-			childName.equals(descriptorFileName,true) -> return ParadoxRootType.Mod
+			ParadoxGameType.exeFileNames.any { childName.equals(it, true) } -> return ParadoxRootType.Stdlib
+			childName.equals(descriptorFileName, true) -> return ParadoxRootType.Mod
 		}
 	}
 	return null
@@ -238,15 +237,15 @@ private fun getGameType(file: PsiDirectory, rootType: ParadoxRootType): ParadoxG
 				for(child in file.files) {
 					val childName = child.name
 					for(value in ParadoxGameType.values) {
-						if(childName.equals(value.exeFileName,true)) return value
+						if(childName.equals(value.exeFileName, true)) return value
 					}
 				}
 			}
-			ParadoxRootType.PdxLauncher, ParadoxRootType.PdxOnlineAssets,ParadoxRootType.TweakerGuiAssets -> {
+			ParadoxRootType.PdxLauncher, ParadoxRootType.PdxOnlineAssets, ParadoxRootType.TweakerGuiAssets -> {
 				for(child in file.parent?.files ?: return null) {
 					val childName = child.name
 					for(value in ParadoxGameType.values) {
-						if(childName.equals(value.exeFileName,true)) return value
+						if(childName.equals(value.exeFileName, true)) return value
 					}
 				}
 			}
@@ -461,14 +460,14 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 val ParadoxScriptFile.eventNamespace: String?
 	get() {
 		//必须是事件的脚本文件
-		val rootPath = fileInfo?.path?.root?:return null
-		if(rootPath != "events") return null 
+		val rootPath = fileInfo?.path?.root ?: return null
+		if(rootPath != "events") return null
 		//必须是第一个属性且名为"namespace"，忽略大小写
 		val block = block ?: return null
 		val firstProperty = PsiTreeUtil.findChildOfType(block, ParadoxScriptProperty::class.java)
-		if(firstProperty == null || !firstProperty.name.equals("namespace", true)) return null 
+		if(firstProperty == null || !firstProperty.name.equals("namespace", true)) return null
 		return firstProperty.value
-	} 
+	}
 
 val ParadoxLocalisationLocale.localeInfo: ParadoxLocaleInfo?
 	get() {
@@ -905,21 +904,29 @@ fun findSyncedLocalisationsByKeyword(
 }
 //endregion
 
-//region Link Extensions
-fun resolveLink(link: String, context: PsiElement): PsiElement? {
+//region Psi Link Extensions
+
+//com.jetbrains.python.documentation.PyDocumentationLink
+
+private const val cwtLinkPrefix = "cwt."
+private const val definitionLinkPrefix = "def."
+private const val localisationLinkPrefix = "loc."
+
+fun resolveLink(linkWithPrefix: String, context: PsiElement): PsiElement? {
 	return when {
-		link.startsWith('@') -> resolveCwtLink(link, context)
-		link.startsWith('$') -> resolveScriptLink(link, context)
-		link.startsWith('#') -> resolveLocalisationLink(link, context)
+		linkWithPrefix.startsWith(cwtLinkPrefix) -> resolveCwtLink(linkWithPrefix.drop(cwtLinkPrefix.length), context)
+		linkWithPrefix.startsWith(definitionLinkPrefix) -> resolveDefinitionLink(linkWithPrefix.drop(definitionLinkPrefix.length), context)
+		linkWithPrefix.startsWith(localisationLinkPrefix) -> resolveLocalisationLink(linkWithPrefix.drop(localisationLinkPrefix.length), context)
 		else -> null
 	}
 }
 
-//@stellaris.types.building, @stellaris.types.civic_or_origin.civic
+//c:stellaris.types.building
+//c:stellaris.types.civic_or_origin.civic
 private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 	return runCatching {
 		val project = context.project
-		val tokens = link.drop(1).split('.')
+		val tokens = link.split('.')
 		val gameType = tokens[0]
 		val configType = tokens[1]
 		when(configType) {
@@ -943,21 +950,22 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 	}.getOrNull()
 }
 
-//$ethos.ethic_authoritarian, $job.head_researcher
-private fun resolveScriptLink(link: String, context: PsiElement): ParadoxScriptProperty? {
+//d:ethos.ethic_authoritarian
+//d:job.head_researcher
+private fun resolveDefinitionLink(link: String, context: PsiElement): ParadoxScriptProperty? {
 	return runCatching {
-		val project = context.project
-		val tokens = link.drop(1).split('.')
+		val tokens = link.split('.')
 		val type = tokens[0]
 		val name = tokens[1]
-		findDefinitionByType(name, type, project)
+		findDefinitionByType(name, type, context.project)
 	}.getOrNull()
 }
 
-//#NAME, #KEY
+//l:NAME
+//l:KEY
 private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
 	return runCatching {
-		val token = link.drop(1)
+		val token = link
 		return findLocalisation(token, context.localeInfo, context.project, hasDefault = true)
 	}.getOrNull()
 }
@@ -974,15 +982,36 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 	return this
 }
 
-
-fun StringBuilder.appendScriptLink(name: String, type: String): StringBuilder {
-	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
-	return appendPsiLink("$$type.$name", name)
+fun StringBuilder.appendUnresolvedPsiLink(label: String): StringBuilder{
+	append(label) //直接显示对应的标签文本
+	return this
 }
 
-fun StringBuilder.appendLocalisationLink(name: String): StringBuilder {
-	if(name.isEmpty()) return append(unresolvedEscapedString) //如果target为空，需要特殊处理
-	return appendPsiLink("#$name", name)
+fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?): StringBuilder {
+	//如果name为空字符串，需要特殊处理
+	if(name.isEmpty()) return append(unresolvedEscapedString)
+	//如果可以被解析为CWT规则，则显示链接（context传null时总是显示）
+	if(context == null || resolveCwtLink(link, context) != null) return appendPsiLink("$cwtLinkPrefix$link", name)
+	//否则显示未解析的链接
+	return appendUnresolvedPsiLink(name)
+}
+
+fun StringBuilder.appendDefinitionLink(name: String, type: String, context: PsiElement): StringBuilder {
+	//如果name为空字符串，需要特殊处理
+	if(name.isEmpty()) return append(unresolvedEscapedString)
+	//如果可以被解析为定义，则显示链接
+	if(hasDefinition(name,null, context.project)) return appendPsiLink("$definitionLinkPrefix.$type.$name", name)
+	//否则显示未解析的链接
+	return appendUnresolvedPsiLink(name)
+}
+
+fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement): StringBuilder {
+	//如果name为空字符串，需要特殊处理
+	if(name.isEmpty()) return append(unresolvedEscapedString)
+	//如果可以被解析为本地化，则显示链接
+	if(hasLocalisation(name, null, context.project)) return appendPsiLink("$localisationLinkPrefix$name", name)
+	//否则显示未解析的链接
+	return appendUnresolvedPsiLink(name)
 }
 
 fun StringBuilder.appendIconTag(url: String, local: Boolean = true): StringBuilder {
@@ -1004,11 +1033,6 @@ fun StringBuilder.appendBr(): StringBuilder {
 //endregion
 
 //region Inline Extensions
-@Suppress("NOTHING_TO_INLINE")
-inline fun message(@PropertyKey(resourceBundle = bundleName) key: String, vararg params: Any): String {
-	return PlsBundle.getMessage(key, *params)
-}
-
 @Suppress("NOTHING_TO_INLINE")
 inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolveByName(this, project, defaultToUnknown)

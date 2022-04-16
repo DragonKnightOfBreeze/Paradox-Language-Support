@@ -16,8 +16,8 @@ import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<ParadoxScriptPropertyStub> implements ParadoxScriptProperty {
 
-  public ParadoxScriptPropertyImpl(@NotNull ParadoxScriptPropertyStub stub, @Nullable IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public ParadoxScriptPropertyImpl(@NotNull ParadoxScriptPropertyStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public ParadoxScriptPropertyImpl(@NotNull ASTNode node) {

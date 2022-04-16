@@ -4,41 +4,41 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
-	override val key:String,
-	override val text:String,
-	val flag:Boolean
-):Enumerable {
-	Localisation("localisation","Localisation",true),
-	SyncedLocalisation("localisation_synced","Synced Localisation",false);
+	override val key: String,
+	override val text: String,
+	val flag: Boolean
+) : Enumerable {
+	Localisation("localisation", "Localisation", true),
+	SyncedLocalisation("localisation_synced", "Synced Localisation", false);
 	
 	override fun toString(): String {
 		return text
 	}
 	
-	companion object{
-		fun resolve(key:String): ParadoxLocalisationCategory?{
-			return when{
+	companion object {
+		fun resolve(key: String): ParadoxLocalisationCategory? {
+			return when {
 				key == "localisation" -> Localisation
 				key == "localisation_synced" -> SyncedLocalisation
 				else -> null
 			}
 		}
 		
-		fun resolve(flag:Boolean):ParadoxLocalisationCategory{
+		fun resolve(flag: Boolean): ParadoxLocalisationCategory {
 			return if(flag) Localisation else SyncedLocalisation
 		}
 		
-		fun resolve(file:ParadoxLocalisationFile):ParadoxLocalisationCategory?{
-			val root = file.fileInfo?.path?.root?:return null
+		fun resolve(file: ParadoxLocalisationFile): ParadoxLocalisationCategory? {
+			val root = file.fileInfo?.path?.root ?: return null
 			return resolve(root)
 		}
 		
-		fun resolve(property: ParadoxLocalisationProperty): ParadoxLocalisationCategory?{
+		fun resolve(property: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
 			val root = property.fileInfo?.path?.root ?: return null
 			return resolve(root)
 		}
 		
-		fun resolve(propertyReference: ParadoxLocalisationPropertyReference): ParadoxLocalisationCategory?{
+		fun resolve(propertyReference: ParadoxLocalisationPropertyReference): ParadoxLocalisationCategory? {
 			val root = propertyReference.fileInfo?.path?.root ?: return null
 			return resolve(root)
 		}

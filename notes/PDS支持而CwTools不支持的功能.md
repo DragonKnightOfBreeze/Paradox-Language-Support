@@ -1,3 +1,4 @@
 # PDS支持而CwTools不支持的功能
 
-本地化语言支持（paradoxLocalisation，`*.yml`）
+* 本地化语言支持（paradoxLocalisation，`*.yml`）（语法解析，代码导航，文档注释等）
+* 渲染本地化文本作为富文本到定义（definition）或本地化文本（localisation）的文档注释中

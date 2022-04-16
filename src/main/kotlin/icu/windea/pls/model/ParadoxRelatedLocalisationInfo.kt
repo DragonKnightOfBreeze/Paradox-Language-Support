@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-data class ParadoxDefinitionLocalisationInfo(
+data class ParadoxRelatedLocalisationInfo(
 	val name: String,
 	val keyName: String,
 	val required: Boolean = false,

@@ -10,8 +10,8 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	companion object {
-		private val _name = message("script.gutterIcon.definition")
-		private val _title = message("script.gutterIcon.definition.title")
+		private val _name = PlsBundle.message("script.gutterIcon.definition")
+		private val _title = PlsBundle.message("script.gutterIcon.definition.title")
 	}
 	
 	override fun getName() = _name

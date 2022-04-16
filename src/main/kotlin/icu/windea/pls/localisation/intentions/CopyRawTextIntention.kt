@@ -12,7 +12,7 @@ import java.awt.datatransfer.*
 
 class CopyRawTextIntention : IntentionAction {
 	companion object {
-		private val _name = message("localisation.intention.copyRawText")
+		private val _name = PlsBundle.message("localisation.intention.copyRawText")
 	}
 	
 	override fun startInWriteAction() = false

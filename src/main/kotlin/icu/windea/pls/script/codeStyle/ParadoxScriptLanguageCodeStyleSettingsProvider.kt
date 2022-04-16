@@ -9,9 +9,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings.*
 
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
-	companion object{
-		private val _spaceWithinBracesTitle = message("script.codeStyle.spaceWithinBraces")
-		private val _spaceAroundSeparatorTitle = message("script.codeStyle.spaceAroundSeparator")
+	companion object {
+		private val _spaceWithinBracesTitle = PlsBundle.message("script.codeStyle.spaceWithinBraces")
+		private val _spaceAroundSeparatorTitle = PlsBundle.message("script.codeStyle.spaceAroundSeparator")
 	}
 	
 	override fun getLanguage() = ParadoxScriptLanguage

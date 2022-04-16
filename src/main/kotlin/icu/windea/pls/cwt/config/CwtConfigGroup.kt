@@ -627,13 +627,13 @@ class CwtConfigGroup(
 		return result
 	}
 	
-	private fun getSubtypes(subtypesConfig: List<CwtSubtypeConfig>): List<String> {
-		return subtypesConfig.map { it.name }
+	private fun getSubtypes(subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
+		return subtypeConfigs.map { it.name }
 	}
 	
-	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxDefinitionLocalisationInfo> {
+	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxRelatedLocalisationInfo> {
 		val localisationConfig = typeConfig.localisation?.mergeConfigs(subtypes) ?: return emptyList()
-		val result = SmartList<ParadoxDefinitionLocalisationInfo>()
+		val result = SmartList<ParadoxRelatedLocalisationInfo>()
 		//从已有的cwt规则
 		for(config in localisationConfig) {
 			//如果name为空，则keyName也为空 
@@ -641,15 +641,15 @@ class CwtConfigGroup(
 			//否则，keyName为expression对应的definition的同名子属性（不区分大小写）的值对应的字符串
 			val expression = config.expression
 			val keyName = resolveKeyName(name, expression, element)
-			val info = ParadoxDefinitionLocalisationInfo(config.name, keyName, config.required, config.primary)
+			val info = ParadoxRelatedLocalisationInfo(config.name, keyName, config.required, config.primary)
 			result.add(info)
 		}
 		//从推断的cwt规则
 		val names = localisationConfig.map { it.name.lowercase() }
-		for(inferredName in definitionLocalisationNamesToInfer) {
+		for(inferredName in relatedLocalisationNamesToInfer) {
 			val inferredKeyName = inferKeyName(inferredName, names, element)
 			if(inferredKeyName != null) {
-				val info = ParadoxDefinitionLocalisationInfo(inferredName, inferredKeyName)
+				val info = ParadoxRelatedLocalisationInfo(inferredName, inferredKeyName)
 				result.add(info)
 			}
 		}

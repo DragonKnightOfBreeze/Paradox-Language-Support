@@ -1,10 +1,14 @@
-# 注意事项
+# IDEA插件开发笔记
 
-## IDEA插件开发
+## 全局
 
 ### ProcessCanceledException
 
 `ProcessCanceledException`可能会在任何操作中发生，这时操作将会取消。
+
+## UI
+
+## 自定义语言
 
 ### 重命名
 
@@ -35,3 +39,13 @@
 
 * 一个stubElementType可以对应多个stubIndex
 * 一个stub可以存储多个属性，但基于key/name构建索引
+
+### 刷新文件更改到硬盘
+
+[Action doesn't see changes in xml file – IDEs Support (IntelliJ Platform) | JetBrains](https://intellij-support.jetbrains.com/hc/en-us/community/posts/206791625-Action-doesn-t-see-changes-in-xml-file)
+
+尝试使用：
+
+```
+FileDocumentManager.saveDocument(FileDocumentManager.getDocument(VirtualFile))
+```

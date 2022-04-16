@@ -19,7 +19,7 @@ class ParadoxDefinitionPathReference(
 	}
 	
 	override fun getUnresolvedMessagePattern(): String {
-		return message("script.annotator.unresolvedDefinitionInFile", anchor, file.name)
+		return PlsBundle.message("script.annotator.unresolvedDefinitionInFile", anchor, file.name)
 	}
 	
 	private fun getFile(): ParadoxScriptFile {

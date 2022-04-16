@@ -59,7 +59,9 @@ fun resolveAliasSubNameExpression(key: String, quoted: Boolean, aliasGroup: Map<
 }
 
 fun mergeScope(scopeMap: MutableMap<String, String>, thisScope: String?): MutableMap<String, String> {
-	if(thisScope != null) scopeMap.put("this", thisScope)
+	if(thisScope == null) return scopeMap
+	val mergedScopeMap = scopeMap.toMutableMap()
+	mergedScopeMap.put("this", thisScope)
 	return scopeMap
 }
 //endregion
