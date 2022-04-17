@@ -2,7 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.config.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -18,8 +18,8 @@ data class ParadoxDefinitionPropertyInfo(
 	val gameType: ParadoxGameType,
 	private val pointer: SmartPsiElementPointer<ParadoxDefinitionProperty>
 ) {
-	val propertyConfig :CwtPropertyConfig? = resolvePropertyConfig()
-	val matchedPropertyConfig:CwtPropertyConfig? =resolveMatchedPropertyConfig()
+	val propertyConfig : CwtPropertyConfig? = resolvePropertyConfig()
+	val matchedPropertyConfig: CwtPropertyConfig? =resolveMatchedPropertyConfig()
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxDefinitionPropertyInfo && path == other.path
@@ -29,16 +29,16 @@ data class ParadoxDefinitionPropertyInfo(
 		return Objects.hash(path)
 	}
 	
-	fun resolvePropertyConfig():CwtPropertyConfig?{
+	fun resolvePropertyConfig(): CwtPropertyConfig?{
 		//如果propertyConfigs不为空，则直接取第一个
 		return propertyConfigs.firstOrNull()
 	}
 	
-	fun resolveMatchedPropertyConfig():CwtPropertyConfig?{
+	fun resolveMatchedPropertyConfig(): CwtPropertyConfig?{
 		//NOTE 如果变更了其他definitionProperty导致definition的类型发生变更，valueExpression会过时
 		//需要匹配value
 		val element = pointer.element?:return null
-		val configGroup = getConfig(element.project).getValue(gameType)
+		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		if(element !is ParadoxScriptProperty) return null
 		val propertyValue = element.propertyValue ?: return null
 		if(propertyConfigs.isEmpty()) return null

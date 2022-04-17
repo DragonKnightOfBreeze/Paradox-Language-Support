@@ -7,6 +7,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 
@@ -17,7 +18,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		//private val colorIdPattern = psiElement(COLOR_ID)
 		private val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
 		
-		private val localeElements = getConfig().locales.map {
+		private val localeElements = getInternalConfig().locales.map {
 			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.tailText,true)
 		}
 		//private val sequentialNumberElements = getConfig().sequentialNumbers.map {
@@ -52,7 +53,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			val commandField = position.parent as? ParadoxLocalisationCommandField ?: return
 			val project = position.project
 			val gameType = parameters.originalFile.fileInfo?.gameType?:return
-			val configGroup = getConfig(project).get(gameType)?:return
+			val configGroup = getCwtConfig(project).get(gameType)?:return
 			completeLocalisationCommand(commandField,configGroup, result)
 			
 			//TODO 补全的scope可能不正确
@@ -71,6 +72,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		context.dummyIdentifier = dummyIdentifier
 	}
 	
+	@Suppress("RedundantOverride")
 	override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
 		super.fillCompletionVariants(parameters, result)
 	}

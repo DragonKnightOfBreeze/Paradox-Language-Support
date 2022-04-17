@@ -107,11 +107,11 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\1\33\1\34\1\35\1\36\1\37\1\40\1\41\1\42"+
     "\1\1\1\43\1\44\1\45\2\46\1\47\1\20\1\50"+
     "\1\51\1\52\1\53\1\54\1\55\1\56\2\0\1\57"+
-    "\1\60\1\61\1\62\1\0\1\63\1\64\1\65\1\0"+
-    "\1\51\1\52\1\53\1\0\1\54\1\55\1\56\1\53";
+    "\1\60\1\61\1\62\1\0\1\63\1\64\1\65\1\51"+
+    "\1\52\1\53\1\54\1\55\1\56\1\53";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[100];
+    int [] result = new int[98];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -147,11 +147,11 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\0\u02b8\0\u02b8\0\u05aa\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u0383"+
     "\0\u05c7\0\u05e4\0\u02b8\0\u0601\0\u061e\0\u063b\0\u0658\0\u0675"+
     "\0\u0692\0\u02d5\0\u0383\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u05aa"+
-    "\0\u02b8\0\u02b8\0\u02b8\0\u0601\0\u02b8\0\u02b8\0\u06af\0\u0658"+
-    "\0\u02b8\0\u02b8\0\u02b8\0\u02b8";
+    "\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u06af\0\u02b8\0\u02b8"+
+    "\0\u02b8\0\u02b8";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[100];
+    int [] result = new int[98];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -229,12 +229,12 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\1\100\2\0\1\100\2\0\1\100\1\0\1\100\1\0"+
     "\3\100\16\0\1\130\1\0\1\130\2\0\1\130\1\0"+
     "\1\131\1\130\1\132\4\0\2\130\2\0\1\130\3\0"+
-    "\1\123\2\41\1\111\63\0\1\133\1\0\1\134\1\114"+
-    "\2\135\1\114\1\134\1\114\21\134\1\114\4\134\2\136"+
-    "\2\0\31\136\2\137\2\0\31\137\1\140\1\117\2\141"+
-    "\1\117\1\140\1\117\10\140\1\117\1\140\1\117\13\140"+
-    "\2\142\2\0\31\142\3\121\1\0\2\121\1\143\26\121"+
-    "\2\144\2\0\31\144";
+    "\1\123\2\41\1\111\63\0\1\133\1\0\1\114\1\134"+
+    "\2\0\1\134\1\114\1\134\21\114\1\134\4\114\2\135"+
+    "\2\0\31\135\2\136\2\0\31\136\1\117\1\137\2\0"+
+    "\1\137\1\117\1\137\10\117\1\137\1\117\1\137\13\117"+
+    "\2\140\2\0\31\140\3\121\1\0\2\121\1\141\26\121"+
+    "\2\142\2\0\31\142";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[1740];
@@ -278,10 +278,10 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\30\0\1\11\11\1\1\11\2\1\1\11\2\1\2\11"+
     "\6\1\3\11\2\1\3\11\3\1\4\11\1\1\2\11"+
     "\1\1\4\11\3\1\1\11\6\1\2\0\4\11\1\0"+
-    "\3\11\1\0\2\11\1\1\1\0\4\11";
+    "\5\11\1\1\4\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[100];
+    int [] result = new int[98];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -879,18 +879,18 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
           case 96: break;
           case 44: 
             { //特殊处理
-	    //除了可以通过连续的两个左方括号转义之外
-        //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
-	    //否则认为是常规字符串
-	    boolean isCommandStart = yylength() > 1 && !isBlankOrDoubleQuote(yycharat(yylength()-1));
-	    yypushback(yylength()-1);
-	    if(isCommandStart){
-		    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
-		    return COMMAND_START;
-	    } else {
-		    yybegin(nextStateForText());
-		    return STRING_TOKEN;
-	    }
+    //除了可以通过连续的两个左方括号转义之外
+    //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
+    //否则认为是常规字符串
+    boolean isCommandStart = yylength() > 1 && !isBlankOrDoubleQuote(yycharat(yylength()-1));
+    yypushback(yylength()-1);
+    if(isCommandStart){
+	    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
+	    return COMMAND_START;
+    } else {
+	    yybegin(nextStateForText());
+	    return STRING_TOKEN;
+    }
             } 
             // fall through
           case 97: break;

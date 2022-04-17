@@ -152,7 +152,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val richTexts = mutableListOf<Pair<String, String>>()
 				for((n, kn) in localisation) {
 					if(kn.isEmpty()) continue //不显示keyName为空的Name为空的relatedLocalisation
-					val e = findLocalisation(kn, element.localeInfo, element.project, hasDefault = true)
+					val e = findLocalisation(kn, element.localeConfig, element.project, hasDefault = true)
 					val richText = e?.renderText() ?: continue
 					richTexts.add(n to richText)
 				}

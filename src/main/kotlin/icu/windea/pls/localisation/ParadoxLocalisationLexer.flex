@@ -116,11 +116,11 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
 COLOR_ID=[a-zA-Z]
 //双引号和百分号实际上不需要转义
 STRING_TOKEN=[^\"%$£§\[\r\n\\]+
-//[123123"
-CHECK_PROPERTY_REFERENCE_START=\$(.*?[\$\s\"])?
+//[123
+CHECK_PROPERTY_REFERENCE_START=\$[^\$\s\"]*.?
 CHECK_ICON_START=£.?
 CHECK_SEQUENTIAL_NUMBER_START=%.?.?
-CHECK_COMMAND_START=\[(.*?[\.\]\s\"])?
+CHECK_COMMAND_START=\[[^\.\]\s\"]*.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
@@ -353,20 +353,20 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
 <WAITING_CHECK_COMMAND_START>{
   {CHECK_COMMAND_START} {
-	    //特殊处理
-	    //除了可以通过连续的两个左方括号转义之外
-        //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
-	    //否则认为是常规字符串
-	    boolean isCommandStart = yylength() > 1 && !isBlankOrDoubleQuote(yycharat(yylength()-1));
-	    yypushback(yylength()-1);
-	    if(isCommandStart){
-		    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
-		    return COMMAND_START;
-	    } else {
-		    yybegin(nextStateForText());
-		    return STRING_TOKEN;
-	    }
-      }
+    //特殊处理
+    //除了可以通过连续的两个左方括号转义之外
+    //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
+    //否则认为是常规字符串
+    boolean isCommandStart = yylength() > 1 && !isBlankOrDoubleQuote(yycharat(yylength()-1));
+    yypushback(yylength()-1);
+    if(isCommandStart){
+	    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
+	    return COMMAND_START;
+    } else {
+	    yybegin(nextStateForText());
+	    return STRING_TOKEN;
+    }
+  }
 }
 
 <WAITING_CHECK_COLORFUL_TEXT_START>{

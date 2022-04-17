@@ -16,12 +16,12 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when {
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
-			element is ParadoxLocalisationLocale -> getLocaleInfo(element)
+			element is ParadoxLocalisationLocale -> getLocaleConfig(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
 			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberInfo(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
-			element is ParadoxLocalisationColorfulText -> getColorInfo(element)
+			element is ParadoxLocalisationColorfulText -> getColorConfig(element)
 			else -> null
 		}
 	}
@@ -41,7 +41,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getLocaleInfo(element: ParadoxLocalisationLocale): String {
+	private fun getLocaleConfig(element: ParadoxLocalisationLocale): String {
 		val name = element.name
 		return buildString {
 			buildLocaleDefinition(name)
@@ -76,7 +76,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getColorInfo(element: ParadoxLocalisationColorfulText): String {
+	private fun getColorConfig(element: ParadoxLocalisationColorfulText): String {
 		val name = element.name
 		return buildString {
 			buildColorDefinition(name)
@@ -157,10 +157,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 				append("(localisation color) <b>").append(name).append("</b>")
 			}
 			//描述
-			val colorInfo = element.colorInfo
-			if(colorInfo != null) {
-				val description = colorInfo.description
-				val colorText = colorInfo.colorText
+			val colorConfig = element.colorConfig
+			if(colorConfig != null) {
+				val description = colorConfig.description
+				val colorText = colorConfig.colorText
 				content {
 					append(description).append(" - ").append(colorText) //注明颜色
 				}
@@ -202,10 +202,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildLocaleContent(element: ParadoxLocalisationLocale) {
 		//描述
-		val localeInfo = element.localeInfo
-		if(localeInfo != null) {
+		val localeConfig = element.localeConfig
+		if(localeConfig != null) {
 			content {
-				append(localeInfo.description)
+				append(localeConfig.description)
 			}
 		}
 	}

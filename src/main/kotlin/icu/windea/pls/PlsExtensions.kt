@@ -1,19 +1,23 @@
+@file:Suppress("unused")
+
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
+import icu.windea.pls.tool.*
 import java.util.*
 import kotlin.Pair
 
@@ -30,20 +34,20 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getSettings() = ParadoxSettingsState.getInstance()
 
-fun getConfig() = getDefaultProject().getService(CwtConfigProvider::class.java).configGroups
+fun getInternalConfig() = ApplicationManager.getApplication().getService(InternalConfigProvider::class.java).configGroup
 
-fun getConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
+fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
 fun inferParadoxLocale() = when(System.getProperty("user.language")) {
-	"zh" -> getConfig().localeMap.getValue("l_simp_chinese")
-	"en" -> getConfig().localeMap.getValue("l_english")
-	"pt" -> getConfig().localeMap.getValue("l_braz_por")
-	"fr" -> getConfig().localeMap.getValue("l_french")
-	"de" -> getConfig().localeMap.getValue("l_german")
-	"pl" -> getConfig().localeMap.getValue("l_ponish")
-	"ru" -> getConfig().localeMap.getValue("l_russian")
-	"es" -> getConfig().localeMap.getValue("l_spanish")
-	else -> getConfig().localeMap.getValue("l_english")
+	"zh" -> getInternalConfig().localeMap.getValue("l_simp_chinese")
+	"en" -> getInternalConfig().localeMap.getValue("l_english")
+	"pt" -> getInternalConfig().localeMap.getValue("l_braz_por")
+	"fr" -> getInternalConfig().localeMap.getValue("l_french")
+	"de" -> getInternalConfig().localeMap.getValue("l_german")
+	"pl" -> getInternalConfig().localeMap.getValue("l_ponish")
+	"ru" -> getInternalConfig().localeMap.getValue("l_russian")
+	"es" -> getInternalConfig().localeMap.getValue("l_spanish")
+	else -> getInternalConfig().localeMap.getValue("l_english")
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
@@ -66,7 +70,9 @@ fun getDocTextFromPreviousComment(element: PsiElement): String {
 	return lines.joinToString("<br>")
 }
 
-/**判断指定的注释是否可认为是之前的注释。*/
+/**
+ * 判断指定的注释是否可认为是之前的注释。
+ */
 fun isPreviousComment(element: PsiElement): Boolean {
 	val elementType = element.elementType
 	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == ParadoxScriptTypes.COMMENT
@@ -79,6 +85,9 @@ fun matchesSubtypeExpression(subtypeExpression: String, subtypes: List<String>):
 	}
 }
 
+/**
+ * 解析定义类型表达式。
+ */
 fun resolveTypeExpression(typeExpression: String): Pair<String, String?> {
 	val dotIndex = typeExpression.indexOf('.')
 	val type = if(dotIndex == -1) typeExpression else typeExpression.substring(0, dotIndex)
@@ -139,12 +148,12 @@ private fun doGetGameType(element: PsiElement): ParadoxGameType? {
 	return element.containingFile.fileInfo?.gameType
 }
 
-val PsiElement.localeInfo: ParadoxLocaleInfo? get() = doGetLocale(this)
+val PsiElement.localeConfig: ParadoxLocaleConfig? get() = doGetLocale(this)
 
-private fun doGetLocale(element: PsiElement): ParadoxLocaleInfo? {
+private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 	return when(val file = element.containingFile) {
 		is ParadoxScriptFile -> inferParadoxLocale()
-		is ParadoxLocalisationFile -> file.locale?.localeInfo
+		is ParadoxLocalisationFile -> file.locale?.localeConfig
 		else -> null
 	}
 }
@@ -283,7 +292,7 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	val gameType = fileInfo.gameType
 	val elementName = element.name ?: return null
 	val project = element.project
-	val configGroup = getConfig(project).getValue(gameType) //这里需要指定project
+	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath)
 }
 
@@ -304,7 +313,7 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
 	val pointer = element.createPointer()
 	val gameType = definitionInfo.gameType
-	val configGroup = getConfig(element.project).getValue(gameType)
+	val configGroup = getCwtConfig(element.project).getValue(gameType)
 	val propertyConfigs = definitionInfo.resolvePropertyConfigs(path, configGroup)
 	val childPropertyConfigs = definitionInfo.resolveChildPropertyConfigs(path, configGroup)
 	val childValueConfigs = definitionInfo.resolveChildValuesConfigs(path, configGroup)
@@ -352,7 +361,7 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 			val childValueConfigs = definitionPropertyInfo.childValueConfigs
 			if(childValueConfigs.isEmpty()) return null
 			val gameType = definitionPropertyInfo.gameType
-			val configGroup = getConfig(element.project).getValue(gameType)
+			val configGroup = getCwtConfig(element.project).getValue(gameType)
 			return childValueConfigs.find {
 				matchesValue(it.valueExpression, element, configGroup)
 			}
@@ -460,8 +469,7 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 val ParadoxScriptFile.eventNamespace: String?
 	get() {
 		//必须是事件的脚本文件
-		val rootPath = fileInfo?.path?.root ?: return null
-		if(rootPath != "events") return null
+		if(fileInfo?.path?.path != "events") return null //认为事件的脚本文件必须直接放到events目录下
 		//必须是第一个属性且名为"namespace"，忽略大小写
 		val block = block ?: return null
 		val firstProperty = PsiTreeUtil.findChildOfType(block, ParadoxScriptProperty::class.java)
@@ -469,25 +477,25 @@ val ParadoxScriptFile.eventNamespace: String?
 		return firstProperty.value
 	}
 
-val ParadoxLocalisationLocale.localeInfo: ParadoxLocaleInfo?
+val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig?
 	get() {
-		return getConfig().localeMap[name]
+		return getInternalConfig().localeMap[name]
 	}
 
-val ParadoxLocalisationPropertyReference.colorInfo: ParadoxColorInfo?
+val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
 	get() {
 		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
 		if(colorId != null && colorId.isUpperCase()) {
-			return getConfig().colorMap[colorId.toString()]
+			return getInternalConfig().colorMap[colorId.toString()]
 		}
 		return null
 	}
 
-val ParadoxLocalisationSequentialNumber.sequentialNumberInfo: ParadoxSequentialNumberInfo?
-	get() = getConfig().sequentialNumberMap[name]
+val ParadoxLocalisationSequentialNumber.sequentialNumberInfo: ParadoxSequentialNumberConfig?
+	get() = getInternalConfig().sequentialNumberMap[name]
 
-val ParadoxLocalisationColorfulText.colorInfo: ParadoxColorInfo?
-	get() = getConfig().colorMap[name]
+val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig?
+	get() = getInternalConfig().colorMap[name]
 
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
 	return properties.find { it.name.equals(propertyName, ignoreCase) }
@@ -755,11 +763,11 @@ fun findDefinitionsByKeywordByType(
  */
 fun hasLocalisation(
 	name: String,
-	localeInfo: ParadoxLocaleInfo?,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 ): Boolean {
-	return ParadoxLocalisationNameIndex.exists(name, localeInfo, project, scope)
+	return ParadoxLocalisationNameIndex.exists(name, localeConfig, project, scope)
 }
 
 /**
@@ -768,27 +776,27 @@ fun hasLocalisation(
  */
 fun findLocalisation(
 	name: String,
-	localeInfo: ParadoxLocaleInfo?,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.findOne(name, localeInfo, project, scope, hasDefault, !preferOverridden)
+	return ParadoxLocalisationNameIndex.findOne(name, localeConfig, project, scope, hasDefault, !preferOverridden)
 }
 
 /**
  * 基于本地化名字索引，根据名字、语言区域查找所有的本地化（localisation）。
- * * 如果[localeInfo]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[localeConfig]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
  */
 fun findLocalisations(
 	name: String,
-	localeInfo: ParadoxLocaleInfo? = null,
+	localeConfig: ParadoxLocaleConfig? = null,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = true
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAll(name, localeInfo, project, scope, hasDefault)
+	return ParadoxLocalisationNameIndex.findAll(name, localeConfig, project, scope, hasDefault)
 }
 
 ///**
@@ -797,7 +805,7 @@ fun findLocalisations(
 // * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
 // */
 //fun findLocalisations(
-//	locale: ParadoxLocaleInfo? = null,
+//	locale: ParadoxLocaleConfig? = null,
 //	project: Project,
 //	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 //	hasDefault: Boolean = false
@@ -820,19 +828,19 @@ fun findLocalisationsByKeyword(
 
 /**
  * 基于本地化名字索引，根据一组名字、语言区域查找所有的本地化（localisation）。
- * * 如果[localeInfo]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[localeConfig]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
  * * 如果[keepOrder]为`true`，则根据这组名字排序查询结果。
  */
 fun findLocalisationsByNames(
 	names: Iterable<String>,
-	localeInfo: ParadoxLocaleInfo? = null,
+	localeConfig: ParadoxLocaleConfig? = null,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false,
 	keepOrder: Boolean = false
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAllByNames(names, localeInfo, project, scope, hasDefault, keepOrder)
+	return ParadoxLocalisationNameIndex.findAllByNames(names, localeConfig, project, scope, hasDefault, keepOrder)
 }
 
 /**
@@ -840,11 +848,11 @@ fun findLocalisationsByNames(
  */
 fun hasSyncedLocalisation(
 	name: String,
-	localeInfo: ParadoxLocaleInfo?,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 ): Boolean {
-	return ParadoxSyncedLocalisationNameIndex.exists(name, localeInfo, project, scope)
+	return ParadoxSyncedLocalisationNameIndex.exists(name, localeConfig, project, scope)
 }
 
 /**
@@ -853,27 +861,27 @@ fun hasSyncedLocalisation(
  */
 fun findSyncedLocalisation(
 	name: String,
-	localeInfo: ParadoxLocaleInfo?,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxSyncedLocalisationNameIndex.getOne(name, localeInfo, project, scope, hasDefault, !preferOverridden)
+	return ParadoxSyncedLocalisationNameIndex.getOne(name, localeConfig, project, scope, hasDefault, !preferOverridden)
 }
 
 /**
  * 基于同步本地化名字索引，根据名字、语言区域查找所有的同步本地化（localisation_synced）。
- * * 如果[localeInfo]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
+ * * 如果[localeConfig]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
  * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
  */
 fun findSyncedLocalisations(
 	name: String,
-	localeInfo: ParadoxLocaleInfo? = null,
+	localeConfig: ParadoxLocaleConfig? = null,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = true
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findAll(name, localeInfo, project, scope, hasDefault)
+	return ParadoxSyncedLocalisationNameIndex.findAll(name, localeConfig, project, scope, hasDefault)
 }
 
 ///**
@@ -882,7 +890,7 @@ fun findSyncedLocalisations(
 // * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
 // */
 //fun findSyncedLocalisations(
-//	locale: ParadoxLocaleInfo? = null,
+//	locale: ParadoxLocaleConfig? = null,
 //	project: Project,
 //	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 //	hasDefault: Boolean = false
@@ -935,15 +943,15 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 				val subtypeName = tokens.getOrNull(3)
 				return when {
 					name == null -> null
-					subtypeName == null -> getConfig(project).getValue(gameType).types.getValue(name)
+					subtypeName == null -> getCwtConfig(project).getValue(gameType).types.getValue(name)
 						.pointer.element
-					else -> getConfig(project).getValue(gameType).types.getValue(name)
+					else -> getCwtConfig(project).getValue(gameType).types.getValue(name)
 						.subtypes.getValue(subtypeName).pointer.element
 				}
 			}
 			"scopes" -> {
 				val name = tokens.getOrNull(2) ?: return null
-				return getConfig(project).getValue(gameType).scopeAliasMap.getValue(name).pointer.element
+				return getCwtConfig(project).getValue(gameType).scopeAliasMap.getValue(name).pointer.element
 			}
 			else -> null
 		}
@@ -966,7 +974,7 @@ private fun resolveDefinitionLink(link: String, context: PsiElement): ParadoxScr
 private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
 	return runCatching {
 		val token = link
-		return findLocalisation(token, context.localeInfo, context.project, hasDefault = true)
+		return findLocalisation(token, context.localeConfig, context.project, hasDefault = true)
 	}.getOrNull()
 }
 //endregion
@@ -982,7 +990,7 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 	return this
 }
 
-fun StringBuilder.appendUnresolvedPsiLink(label: String): StringBuilder{
+fun StringBuilder.appendUnresolvedPsiLink(label: String): StringBuilder {
 	append(label) //直接显示对应的标签文本
 	return this
 }
@@ -1000,7 +1008,7 @@ fun StringBuilder.appendDefinitionLink(name: String, type: String, context: PsiE
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedEscapedString)
 	//如果可以被解析为定义，则显示链接
-	if(hasDefinition(name,null, context.project)) return appendPsiLink("$definitionLinkPrefix.$type.$name", name)
+	if(hasDefinition(name, null, context.project)) return appendPsiLink("$definitionLinkPrefix.$type.$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedPsiLink(name)
 }
@@ -1072,11 +1080,6 @@ inline fun ParadoxLocalisationProperty.extractText(): String {
 //inline fun ParadoxLocalisationProperty.extractTextTo(buffer: StringBuilder) {
 //	ParadoxLocalisationTextExtractor.extractTo(this, buffer)
 //}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun CwtFile.resolveConfig(): CwtFileConfig {
-	return CwtConfigResolver.resolve(this)
-}
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxScriptFile.resolveData(): List<Any> {

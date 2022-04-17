@@ -2,6 +2,7 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import icu.windea.pls.*
@@ -29,7 +30,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 				val gameType = getGameType(currentFile,rootType) ?: ParadoxGameType.defaultValue()
 				
 				//如果存在对应的folders配置，则path要与之匹配
-				val folders = getConfig().get(gameType)?.folders
+				val folders = getCwtConfig(getDefaultProject()).get(gameType)?.folders
 				if(folders != null && folders.isNotEmpty()) {
 					val matched = folders.any { it.matchesPath(path.parent) }
 					if(!matched) return null

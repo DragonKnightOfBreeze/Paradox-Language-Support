@@ -48,7 +48,7 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey(_syncedLocalisationName, PROPERTY_KEY_KEY)
 	
 	val COLOR_KEYS by lazy {
-		getConfig().colorMap.mapValues { (_, color) ->
+		getInternalConfig().colorMap.mapValues { (_, color) ->
 			createTextAttributesKey("${_colorName}_${color.name}", IDENTIFIER.defaultAttributes.clone().apply {
 				foregroundColor = color.color
 			})

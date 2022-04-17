@@ -8,8 +8,8 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 
 class ChangeSequentialNumberIntention : IntentionAction {
 	companion object {
@@ -35,23 +35,23 @@ class ChangeSequentialNumberIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationSequentialNumber) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, getConfig().sequentialNumbers)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, getInternalConfig().sequentialNumbers)).showInBestPositionFor(editor)
 		}
 	}
 	
 	private class Popup(
 		private val value: ParadoxLocalisationSequentialNumber,
-		values: Array<ParadoxSequentialNumberInfo>
-	) : BaseListPopupStep<ParadoxSequentialNumberInfo>(_title, *values) {
-		override fun getIconFor(value: ParadoxSequentialNumberInfo) = value.icon
+		values: Array<ParadoxSequentialNumberConfig>
+	) : BaseListPopupStep<ParadoxSequentialNumberConfig>(_title, *values) {
+		override fun getIconFor(value: ParadoxSequentialNumberConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxSequentialNumberInfo) = value.popupText
+		override fun getTextFor(value: ParadoxSequentialNumberConfig) = value.popupText
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxSequentialNumberInfo, finalChoice: Boolean): PopupStep<*>? {
+		override fun onChosen(selectedValue: ParadoxSequentialNumberConfig, finalChoice: Boolean): PopupStep<*>? {
 			//需要在WriteCommandAction里面执行
 			runWriteAction { value.name = selectedValue.name }
 			return PopupStep.FINAL_CHOICE

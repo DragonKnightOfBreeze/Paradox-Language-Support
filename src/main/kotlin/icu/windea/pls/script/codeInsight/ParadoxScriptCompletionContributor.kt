@@ -7,6 +7,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 
@@ -77,8 +78,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 			val file = parameters.originalFile
 			if(file !is ParadoxScriptFile) return
-			val rootPath = file.fileInfo?.path?.root
-			if(rootPath != "events") return
+			if(file.fileInfo?.path?.path != "events") return //认为事件的脚本文件必须直接放到events目录下
 			val property = parameters.position.parentOfType<ParadoxScriptProperty>() ?: return
 			if(!property.name.equals("id",true)) return
 			val eventDefinition = property.parentOfType<ParadoxScriptProperty>()?:return
@@ -103,6 +103,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		context.dummyIdentifier = dummyIdentifier
 	}
 	
+	@Suppress("RedundantOverride")
 	override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
 		super.fillCompletionVariants(parameters, result)
 	}

@@ -1,5 +1,8 @@
+@file:Suppress("unused")
+
 package icu.windea.pls
 
+import com.google.common.cache.*
 import com.intellij.util.*
 import java.io.*
 import java.net.*
@@ -9,7 +12,6 @@ import java.util.*
 import java.util.concurrent.*
 import javax.swing.*
 
-//region Misc Extensions
 @Suppress("NOTHING_TO_INLINE")
 inline fun pass() {
 }
@@ -334,6 +336,10 @@ fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no")
 
 fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
 
+private val pathCache = createCache<String, Path> { Path.of(it) }
+
+fun String.toPath() = pathCache.get(this)
+
 fun String.toIntRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 
 fun String.toFloatRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
@@ -349,9 +355,7 @@ inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
 fun <T> T.toSingletonList() = Collections.singletonList(this)
 
 fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
-//endregion
 
-//region System Extensions
 /**
  * 执行命令。（基于操作系统）
  */
@@ -376,9 +380,7 @@ fun execBlocking(command: String, timeout: Long, timeUnit: TimeUnit, workDirecto
 private fun optimizeCommand(command: String): Array<String> {
 	return arrayOf("cmd", "/c", command)
 }
-//endregion
 
-//region Collection & Tuple & Range Extensions
 data class ReversibleList<T>(val list: List<T>, val reverse: Boolean) : List<T> by list
 
 fun <T> List<T>.toReversibleList(reverse: Boolean) = ReversibleList(this, reverse)
@@ -401,4 +403,3 @@ fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
 fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
 
 typealias FloatRange = ClosedRange<Float>
-//endregion

@@ -8,8 +8,8 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 
 class ChangeLocaleIntention : IntentionAction {
 	companion object {
@@ -35,23 +35,23 @@ class ChangeLocaleIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationLocale) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, getConfig().locales)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, getInternalConfig().locales)).showInBestPositionFor(editor)
 		}
 	}
 	
 	private class Popup(
 		private val value: ParadoxLocalisationLocale,
-		values: Array<ParadoxLocaleInfo>
-	) : BaseListPopupStep<ParadoxLocaleInfo>(_title, *values) {
-		override fun getIconFor(value: ParadoxLocaleInfo) = value.icon
+		values: Array<ParadoxLocaleConfig>
+	) : BaseListPopupStep<ParadoxLocaleConfig>(_title, *values) {
+		override fun getIconFor(value: ParadoxLocaleConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxLocaleInfo) = value.popupText
+		override fun getTextFor(value: ParadoxLocaleConfig) = value.popupText
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxLocaleInfo, finalChoice: Boolean): PopupStep<*>? {
+		override fun onChosen(selectedValue: ParadoxLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
 			runWriteAction { value.name = selectedValue.name }
 			return PopupStep.FINAL_CHOICE
 		}

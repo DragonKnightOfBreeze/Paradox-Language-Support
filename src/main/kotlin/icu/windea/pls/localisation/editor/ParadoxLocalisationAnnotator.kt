@@ -43,10 +43,10 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateLocale(element: ParadoxLocalisationLocale, holder: AnnotationHolder) {
 		//注明不支持的情况
-		val locale = element.localeInfo
+		val locale = element.localeConfig
 		if(locale == null) {
 			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedLocale", element.name))
-				.range(element.localeId ?: element)
+				.range(element.localeId)
 				.create()
 		}
 	}
@@ -61,7 +61,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//	return
 		//}
 		//颜色高亮
-		val color = element.colorInfo
+		val color = element.colorConfig
 		if(color != null) {
 			val colorId = color.name
 			val e = element.propertyReferenceParameter
@@ -84,8 +84,8 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
 		//注明不支持的情况 & 颜色高亮
-		val colorInfo = element.colorInfo
-		if(colorInfo == null) {
+		val colorConfig = element.colorConfig
+		if(colorConfig == null) {
 			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedColor", element.name))
 				.range(element.colorId ?: element)
 				.create()

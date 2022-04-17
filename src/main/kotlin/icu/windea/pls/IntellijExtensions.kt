@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls
 
 import com.intellij.codeInsight.completion.*
@@ -31,31 +33,6 @@ fun ASTNode.nodes(): List<ASTNode> {
 		child = child.treeNext
 	}
 	return result
-}
-
-///**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
-//fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
-//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
-//}
-
-///**查找当前项目中指定语言文件类型和作用域的PsiFile。*/
-//inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
-//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project)).mapNotNull {
-//		PsiManager.getInstance(project).findFile(it)
-//	}.filterIsInstance<T>()
-//}
-
-///**递归得到当前VirtualFile的所有作为子节点的VirtualFile。*/
-//fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
-//	for(child in this.children) {
-//		if(child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
-//	}
-//	return destination
-//}
-
-/**将VirtualFile转化为指定类型的PsiFile。*/
-inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
-	return PsiManager.getInstance(project).findFile(this) as? T
 }
 
 ///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
@@ -162,6 +139,39 @@ inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit) {
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 
 fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) anonymousEscapedString else StringUtil.escapeXmlEntities(this)
+//endregion
+
+//region VFS Extensions
+
+///**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
+//fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
+//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
+//}
+
+///**查找当前项目中指定语言文件类型和作用域的PsiFile。*/
+//inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
+//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project)).mapNotNull {
+//		PsiManager.getInstance(project).findFile(it)
+//	}.filterIsInstance<T>()
+//}
+
+///**递归得到当前VirtualFile的所有作为子节点的VirtualFile。*/
+//fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
+//	for(child in this.children) {
+//		if(child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
+//	}
+//	return destination
+//}
+
+/**将VirtualFile转化为指定类型的PsiFile。*/
+inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
+	return PsiManager.getInstance(project).findFile(this) as? T
+}
+
+/**得到当前VirtualFile相对于指定的VirtualFile的路径。*/
+fun VirtualFile.relativePathTo(other: VirtualFile): String{
+	return this.path.removePrefix(other.path);
+}
 //endregion
 
 //region PsiElement Extensions

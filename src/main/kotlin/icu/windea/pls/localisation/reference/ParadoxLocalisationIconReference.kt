@@ -48,12 +48,12 @@ class ParadoxLocalisationIconReference(
 			?: findDefinitionByType(spriteName, "spriteType", project)
 		if(sprite != null) return sprite
 		//如果不能解析为spriteType，则尝试解析为相同名字的dds文件
-		val ddsFiles = FilenameIndex.getFilesByName(project, "$name.dds", GlobalSearchScope.allScope(project))
+		val ddsFiles = FilenameIndex.getVirtualFilesByName("$name.dds", GlobalSearchScope.allScope(project))
 		val ddsIcon = ddsFiles.firstOrNull {
 			val path = it.fileInfo?.path
 			path != null && "gfx/interface/icons".matchesPath(path.parent)
 		}
-		if(ddsIcon != null) return ddsIcon
+		if(ddsIcon != null) return ddsIcon.toPsiFile(project)
 		
 		return null
 	}

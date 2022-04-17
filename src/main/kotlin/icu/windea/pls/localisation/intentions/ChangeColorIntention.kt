@@ -8,8 +8,8 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 
 class ChangeColorIntention : IntentionAction {
 	companion object {
@@ -35,23 +35,23 @@ class ChangeColorIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, getConfig().colors)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, getInternalConfig().colors)).showInBestPositionFor(editor)
 		}
 	}
 	
 	private class Popup(
 		private val value: ParadoxLocalisationColorfulText,
-		values: Array<ParadoxColorInfo>
-	) : BaseListPopupStep<ParadoxColorInfo>(_title, *values) {
-		override fun getIconFor(value: ParadoxColorInfo) = value.icon
+		values: Array<ParadoxColorConfig>
+	) : BaseListPopupStep<ParadoxColorConfig>(_title, *values) {
+		override fun getIconFor(value: ParadoxColorConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxColorInfo) = value.popupText
+		override fun getTextFor(value: ParadoxColorConfig) = value.popupText
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxColorInfo, finalChoice: Boolean): PopupStep<*>? {
+		override fun onChosen(selectedValue: ParadoxColorConfig, finalChoice: Boolean): PopupStep<*>? {
 			runWriteAction { value.name = selectedValue.name }
 			return PopupStep.FINAL_CHOICE
 		}

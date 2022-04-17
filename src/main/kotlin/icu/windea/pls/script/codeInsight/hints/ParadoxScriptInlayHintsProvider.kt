@@ -5,9 +5,8 @@ import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.ui.layout.*
+import com.intellij.ui.dsl.builder.*
 import javax.swing.*
-
 
 @Suppress("UnstableApiUsage")
 abstract class ParadoxScriptInlayHintsProvider<T:Any> : InlayHintsProvider<T> {
