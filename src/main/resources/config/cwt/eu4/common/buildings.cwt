@@ -82,6 +82,9 @@ building = {
 	make_obsolete = <building>
 	
 	## cardinality = 0..1
+	indestructible = yes
+	
+	## cardinality = 0..1
 	###Means as a manufactory it will be shown according to the old way
 	show_separate = yes 
 	

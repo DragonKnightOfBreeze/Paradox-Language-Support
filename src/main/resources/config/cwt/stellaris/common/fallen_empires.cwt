@@ -15,7 +15,6 @@ fallen_empires = {
 	}
 	## replace_scope = { root = country this = country }
 	weight_modifier = {
-		base = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	## replace_scope = { root = country this = country }

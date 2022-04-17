@@ -191,6 +191,12 @@ estate_privilege = {
 		alias_name[effect] = alias_match_left[effect]
 	}
 	## cardinality = 0..1
+	##replace_scope = { this = province }
+	###Effects executed immediately upon the privilege being taken
+	on_granted_province = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
 	###Conditions for whether the country can revoke the privilege
 	can_revoke = {
 		alias_name[trigger] = alias_match_left[trigger]
@@ -201,8 +207,20 @@ estate_privilege = {
 		alias_name[effect] = alias_match_left[effect]
 	}
 	## cardinality = 0..1
+	##replace_scope = { this = province }
+	###Effects executed upon the privilege being revoked by the country
+	on_revoked_province = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
 	###Effects executed upon the privilege being removed due to invalidity (is_valid becomes false or the estate is removed)
 	on_invalid = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	##replace_scope = { this = province }
+	###Effects executed upon the privilege being removed due to invalidity (is_valid becomes false or the estate is removed)
+	on_invalid_province = {
 		alias_name[effect] = alias_match_left[effect]
 	}
 	## cardinality = 0..1

@@ -24,6 +24,13 @@ types = {
 district = {
 	base_buildtime = int
 
+	## cardinality = 0..inf
+	desc = {
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		text = localisation
+	}
 	## cardinality = 0..1
 	min_for_deposits_on_planet = int
 	## cardinality = 0..1
@@ -34,8 +41,23 @@ district = {
 	## cardinality = 0..1
 	is_capped_by_modifier = bool
 	## cardinality = 0..1
+	###whether this district is exempt from being swapped into groups by the AI; default: no
+	exempt_from_ai_planet_specialization = bool
+	## cardinality = 0..1
 	can_demolish = bool
 
+	## cardinality = 0..1
+	destroy_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	show_tech_unlock_if = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
 	show_on_uncolonized = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
@@ -79,7 +101,6 @@ district = {
 
 	## cardinality = 0..1
 	ai_weight = {
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 

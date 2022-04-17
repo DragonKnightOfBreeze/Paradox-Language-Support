@@ -31,6 +31,8 @@ prescripted_country = {
 		name = localisation_synced
 		plural = localisation_synced
 		adjective = localisation_synced
+		## cardinality = 0..1
+		gender = enum[genders_not_set]
 		name_list = <name_list>
 		## cardinality = 0..1
 		species_bio = scalar
@@ -47,6 +49,8 @@ prescripted_country = {
 		plural = localisation_synced
 		adjective = localisation_synced
 		name_list = <name_list>
+		## cardinality = 0..1
+		gender = enum[genders_not_set]
 		## cardinality = 0..inf
     	trait = <trait.species_trait>
 	}
@@ -112,7 +116,7 @@ prescripted_country = {
 
 	ruler = {
 		name = localisation_synced
-		gender = enum[gender]
+		gender = enum[genders_not_set]
 		portrait = <portrait>
 		portrait = <portrait_group>
 		texture = int

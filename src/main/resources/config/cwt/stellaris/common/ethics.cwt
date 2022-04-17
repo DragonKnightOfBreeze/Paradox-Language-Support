@@ -62,7 +62,6 @@ ethos = {
 	}
 
 	random_weight = {
-		value = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
@@ -80,14 +79,12 @@ ethos = {
 	###Root = country
 	## replace_scope = { root = country this = country }
 	country_attraction = {
-		value = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	## cardinality = 0..1
 	###Root = pop, from = planet
 	## replace_scope = { root = pop this = pop from = planet }
 	pop_attraction = {
-		value = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }

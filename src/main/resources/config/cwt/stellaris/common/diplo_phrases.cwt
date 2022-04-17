@@ -2,8 +2,7 @@ types = {
 	type[diplo_phrase] = {
 		path = "game/common/diplo_phrases"
 
- #       name_from_file = yes
-        type_per_file = yes
+		type_per_file = yes
 
 		## type_key_filter = greetings
 		subtype[greetings] = {
@@ -36,12 +35,13 @@ diplo_phrase = {
 			trigger = { alias_name[trigger] = alias_match_left[trigger] }
 			## cardinality = 0..1
 			weight = {
-				weight = float
+				alias_name[modifier_rule] = alias_match_left[modifier_rule]
 			}
 		}
 	}
 	## cardinality = 0..inf
 	<diplomatic_action> = {
+		## cardinality = 0..inf
 		enum[diplo_phrase_types] = {
 			## cardinality = 0..inf
 			localisation = {
@@ -49,7 +49,7 @@ diplo_phrase = {
 				trigger = { alias_name[trigger] = alias_match_left[trigger] }
 				## cardinality = 0..1
 				weight = {
-					weight = float
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
 				}
 				## cardinality = 0..1
 				###Only with action_offer_trade_deal

@@ -13,6 +13,10 @@ types = {
 			## cardinality = 0..1
 			colonizable = yes
 		}
+		subtype[unhabitable_ringworld] = {
+			ringworld = yes
+			colonizable = no
+		}
 		localisation = {
 			## required
 			Name = "$"
@@ -60,9 +64,9 @@ planet_class = {
 	## cardinality = 0..1
 	fixed_entity_scale = bool
 	## cardinality = 0..1
-	icon_frame = int
+	icon = <sprite>
 	subtype[planet] = {
-		icon_frame = int
+		icon = <sprite>
 		## cardinality = 0..1
 		habitat = bool
 		## cardinality = 0..1
@@ -160,7 +164,8 @@ planet_class = {
 	colonizable = bool
 	
 	subtype[habitable_planet] = {
-		district_set = scalar
+		## severity = warning
+		district_set = enum[district_sets]
 		
 		## cardinality = 0..1
 		climate = localisation
@@ -177,6 +182,11 @@ planet_class = {
 		initial = yes
 		## cardinality = 0..1
 		carry_cap_per_free_district = float
+	}
+	subtype[unhabitable_ringworld] = {
+		## severity = warning
+		## cardinality = 0..1
+		district_set = enum[district_sets]
 	}
 	## cardinality = 0..1
 	colonizable_by_event = bool

@@ -8,29 +8,36 @@ types = {
 				always = no
 			}
 		}
+		subtype[pop_spawned] = {
+			is_pop_spawned = yes
+		}
+		subtype[has_species] = {
+			## cardinality = 0..0
+			has_species = no
+		}
 		localisation = {
 			## required
 			Name = "$"
 			## required
 			Desc = "$_desc"
-			subtype[buildable] = {
-				## required
-				Plural = "$_plural"
-			}
 		}
 	}
 }
 
 #TODO subtypes, and make stricter this was an initial pass
 #This is a draft guess (assuming that only the resources bit has changed)
-## push_scope = planet
+## replace_scope { this = planet root = planet from = species }
 army = {
 	## cardinality = 0..1
+	## replace_scope { this = country root = country }
 	resources = {
 		category = <economic_category>
 		alias_name[economic_template] = alias_match_left[economic_template]
 	}
 
+	## cardinality = 0..1
+	###Specify another army type to use names from, instead of having to copy them for each name list.
+	use_armynames_from = <army>
 	## cardinality = 0..1
 	defensive = bool
 	## cardinality = 0..1
@@ -52,13 +59,15 @@ army = {
 	## cardinality = 0..1
 	war_exhaustion = float
 	## cardinality = 0..1
-	icon_frame = int
+	icon = <sprite>
 	## cardinality = 0..1
 	has_species = bool
 	## cardinality = 0..1
 	time = int
 	## cardinality = 0..1
 	pop_limited = bool
+	## cardinality = 0..1
+	disband_if_species_lacks_rights = bool
 	## cardinality = 0..1
 	rebel = bool
 	## cardinality = 0..1
@@ -87,5 +96,14 @@ army = {
 	## cardinality = 0..1
 	on_unqueued = {
 		alias_name[effect] = alias_match_left[effect]
+	}
+	subtype[pop_spawned] = {
+		## cardinality = 0..1
+		## replace_scope { this = pop root = pop }
+		###spawn_chance: only works on defensive armies; pop scope check that lets you give weights for what sort of army should be spawned. Calculation is health * spawn_chance (default: 1), and it always picks the best one
+		spawn_chance = {
+			factor = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
 	}
 }

@@ -15,7 +15,7 @@ types = {
 
 		#some guesswork here...
 		subtype[colonisable] = {
-			is_for_colonizeable = yes
+			is_for_colonizable = yes
 		}
 		subtype[orbital] = {
 			station = shipclass_research_station
@@ -46,7 +46,7 @@ types = {
 ## push_scope = planet
 deposit = {
 	subtype[!null] = {
-		is_for_colonizeable = bool
+		is_for_colonizable = bool
 	}
 	subtype[null] = {
 		###this makes the deposit transparent, used by vanilla to designate an "empty" deposit.
@@ -89,7 +89,6 @@ deposit = {
 
 		## cardinality = 0..1
 		ai_weight = {
-			weight = float
 			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 		}
 	}
@@ -127,7 +126,6 @@ deposit = {
 	
 	subtype[!not_dropped] = {
 		drop_weight = {
-			weight = float
 			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 		}
 	}

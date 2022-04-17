@@ -10,7 +10,7 @@ types = {
 		localisation = {
 			## required
 			Name = "$"
-			## required
+			## optional
 			Description = "$_DESC"
 		}
 	}
@@ -23,8 +23,7 @@ special_project = {
 	cost = int
 	## cardinality = 0..1
 	cost = {
-		base = int
-		alias_name[scaled_modifier_rule] = alias_match_left[scaled_modifier_rule]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	## cardinality = 0..1
 	timelimit = int
@@ -35,6 +34,13 @@ special_project = {
 	## cardinality = 0..1
 	icon = filepath
 
+	## cardinality = 0..inf
+	desc = {
+		text = localisation
+		trigger = {	
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
 
 	subtype[cost] = {
 		tech_department = enum[tech_departments]
@@ -64,7 +70,6 @@ special_project = {
 
 	## cardinality = 0..1
 	AI_wait_days = {
-		weight = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 

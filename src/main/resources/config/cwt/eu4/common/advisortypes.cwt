@@ -30,6 +30,9 @@ advisor_type = {
 	## cardinality = 0..1
 	allow_only_female = yes
 	
+	## cardinality = 0..1
+	allow_only_owner_religion = yes
+	
 	## replace_scope = { this = province root = province }
 	chance = {
 		factor = float

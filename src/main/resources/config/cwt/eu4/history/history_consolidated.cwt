@@ -433,7 +433,7 @@ country_history = {
 				dip = int[0..6]
 				mil = int[0..6]
 				## cardinality = 0..1
-				regent = yes
+				regent = bool
 				## cardinality = 0..1
 				claim = int[0..100]
 				## cardinality = 0..1
@@ -460,6 +460,25 @@ country_history = {
 				}
 			}
 			## cardinality = 0..1
+			monarch_consort = {
+				name = localisation_synced #value_set[ruler_name]
+				## cardinality = 0..1
+				monarch_name = localisation_synced #value_set[ruler_name]
+				## cardinality = 0..1
+				regent = bool
+				## cardinality = 0..1
+				female = yes
+				adm = int[0..6]
+				dip = int[0..6]
+				mil = int[0..6]
+				## cardinality = 0..1
+				dynasty = localisation_synced #value_set[dynasty_name]
+				## cardinality = 0..1
+				culture = <culture>
+				## cardinality = 0..1
+				religion = <religion>
+			}
+			## cardinality = 0..1
 			heir = {
 				name = localisation_synced #value_set[heir_name]
 				## cardinality = 0..1
@@ -481,6 +500,8 @@ country_history = {
 				culture = <culture>
 				## cardinality = 0..1
 				religion = <religion>
+				## cardinality = 0..1
+				block_disinherit = yes
 
 				## cardinality = 0..1
 				leader = {

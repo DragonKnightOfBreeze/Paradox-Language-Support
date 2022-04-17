@@ -1,6 +1,6 @@
 # 概述
 
-Paradox语言支持。
+IDEA插件：Paradox语言支持。
 
 这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
 如果需要更加完善的语言支持，请考虑使用[VSCode](https://code.visualstudio.com)以及[CWTools](https://github.com/cwtools/cwtools-vscode)插件。

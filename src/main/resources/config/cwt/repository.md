@@ -1,7 +1,0 @@
-* [ck2](https://github.com/cwtools/cwtools-ck2-config)
-* [ck3](https://github.com/cwtools/cwtools-ck3-config)
-* [eu4](https://github.com/cwtools/cwtools-eu4-config)
-* [hoi4](https://github.com/cwtools/cwtools-hoi4-config)
-* [ir](https://github.com/cwtools/cwtools-ir-config)
-* [stellaris](https://github.com/cwtools/cwtools-stellaris-config)
-* [vic2](https://github.com/cwtools/cwtools-vic2-config)

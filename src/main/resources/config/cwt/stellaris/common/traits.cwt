@@ -30,6 +30,8 @@ types = {
 
 trait = {
 	## cardinality = 0..1
+	host_has_dlc = enum[DLCs]
+	## cardinality = 0..1
 	### Default = no
 	immortal_leaders = bool
 
@@ -38,27 +40,55 @@ trait = {
 		cost = int
 		## cardinality = 0..1
 		icon = filepath
+		## cardinality = 0..1
+		valid_for_all_ethics = bool
+		## cardinality = 0..1
+		###This only does something if valid_for_all_ethics is set to no
+		allowed_ethics = {
+			## cardinality = 1..inf
+			<ethos>
+		}
 		allowed_archetypes = {
 			## cardinality = 1..inf
 			<species_archetype>
 		}
-		# This should be expanded into subtypes
+		## cardinality = 0..1
+		allowed_planet_classes = {
+			## cardinality = 1..inf
+			<planet_class>
+		}
+		## cardinality = 0..1
+		ideal_planet_class = <planet_class>
+		## cardinality = 0..1
+		species_class = {
+			## cardinality = 1..inf
+			<species_class>
+		}
+		## cardinality = 0..1
 		## replace_scope = { this = country root = country }
 		modifier = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
+		## cardinality = 0..1
 		## replace_scope = { this = planet root = planet }
 		assembling_modifier = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
+		## cardinality = 0..1
 		## replace_scope = { this = planet root = planet }
 		declining_modifier = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
+		## cardinality = 0..1
 		## replace_scope = { this = planet root = planet }
 		growing_modifier = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
+		## cardinality = 0..inf
+		###won't show in trait tooltips, use custom_tooltip/custom_tooltip_with_modifiers
+		alias_name[triggered_pop_modifier] = alias_match_left[triggered_pop_modifier]
+		## cardinality = 0..inf
+		alias_name[triggered_planet_growth_habitability_modifier] = alias_match_left[triggered_planet_growth_habitability_modifier]
 		## cardinality = 0..1
 		### Default = yes
 		sapient = bool
@@ -67,8 +97,6 @@ trait = {
 		forced_happiness = bool
 		## cardinality = 0..1
 		sorting_priority = int
-		## cardinality = 0..1
-		modification = bool
 		## cardinality = 0..1
 		### Default = no
 		improves_leaders = bool
@@ -84,13 +112,31 @@ trait = {
 		## replace_scope = { this = species root = species from = country }
 		## cardinality = 0..1
 		species_potential_add = {
-			## cardinality = 0..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## replace_scope = { this = species root = species from = country }
+		## cardinality = 0..1
+		species_possible_add = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## replace_scope = { this = species root = species from = country }
+		## cardinality = 0..1
+		species_potential_remove = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
 		## replace_scope = { this = species root = species from = country }
 		## cardinality = 0..1
 		species_possible_remove = {
-			## cardinality = 0..inf
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## replace_scope = { this = species root = species from = country }
+		## cardinality = 0..1
+		species_possible_merge_add = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## replace_scope = { this = species root = species from = country }
+		## cardinality = 0..1
+		species_possible_merge_remove = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
 		## cardinality = 0..1
@@ -111,15 +157,20 @@ trait = {
 		slave_cost = {
 			energy = int
 		}
+		## cardinality = 0..1
+		infertile = bool
+
+		## cardinality = 0..1
+		random_weight = {
+			## cardinality = 1..inf
+			<species_class> = float
+		}
 	}
 
 	subtype[leader_trait] = {
 
 		cost = int
 		icon = filepath
-
-		### Default = yes
-		modification = bool
 
 		leader_trait = {
 			## cardinality = 1..5
@@ -182,6 +233,9 @@ trait = {
 
 	## cardinality = 0..1
 	custom_tooltip = localisation
+	## cardinality = 0..1
+	###unlike custom_tooltip, this shows in addition to the modifiers
+	custom_tooltip_with_modifiers = localisation
 
 	## cardinality = 0..1
 	ai_weight = {

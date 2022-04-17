@@ -143,20 +143,12 @@ technology = {
 	## cardinality = 0..1
 	## replace_scope = { this = country root = country }
 	weight_modifier = {
-		## cardinality = 0..1
-		factor = float
-		## cardinality = 0..1
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
 	## cardinality = 0..1
 	## replace_scope = { this = country root = country }
 	ai_weight = {
-		## cardinality = 0..1
-		factor = float
-		## cardinality = 0..1
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
@@ -197,6 +189,7 @@ enums = {
 		robots
 		synths
 		unlock_arcane_deciphering
+		unlocks_auto_research
 	}
 	enum[technology_areas] = {
 		engineering

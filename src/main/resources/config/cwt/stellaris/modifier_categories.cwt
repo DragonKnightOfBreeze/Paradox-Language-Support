@@ -1,94 +1,62 @@
 modifier_categories = {
-    Pop = {
-        internal_id = 2
+    Pops = {
         supported_scopes = { pop planet galacticobject country }
     }
-    Science = {
-        internal_id = 64
-        supported_scopes = { ship country }
-    }
-    Country = {
-        internal_id = 256
+    Countries = {
         supported_scopes = { country }
     }
-    Army = {
-        internal_id = 512
+    Armies = {
         supported_scopes = { army planet country }
     }
-    Leader = {
-        internal_id = 1024
+    Leaders = {
         supported_scopes = { leader country }
     }
-    Planet = {
-        internal_id = 2048
+    Planets = {
         supported_scopes = { planet galacticobject country }
     }
-    PopFaction = {
-        internal_id = 8192
+    "Pop Factions" = {
         supported_scopes = { popfaction country }
     }
-    ShipSize = {
-        internal_id = 16496
-        supported_scopes = { ship starbase country }
-    }
-    Ship = {
-        internal_id = 16508
+	"Military Ships" = {
         supported_scopes = { ship starbase fleet country }
     }
-    Megastructure = {
-        internal_id = 65536
+	"Civilian Ships" = {
+        supported_scopes = { ship starbase fleet country }
+    }
+	"Science Ships" = {
+        supported_scopes = { ship starbase fleet country }
+    }
+	"Transport Ships" = {
+        supported_scopes = { ship starbase fleet country }
+    }
+    Ships = {
+        supported_scopes = { ship starbase fleet country }
+    }
+	Fleets = {
+        supported_scopes = { fleet country }
+	}
+    Megastructures = {
         supported_scopes = { megastructure country }
     }
-    PlanetClass = {
-        internal_id = 131072
-        supported_scopes = { planet pop country }
+    Habitability = {
+        supported_scopes = { species planet country }
     }
-    Starbase = {
-        internal_id = 262144
+    Starbases = {
         supported_scopes = { starbase country }
     }
-    Starbase2 = { #Technically starbase + planet, but presumably the planet part doesn't work!
-        internal_id = 264192
-        supported_scopes = { starbase country }
+    "Economic Units" = {
+        supported_scopes = { any }
     }
-    StarbaseAndMegastructure = {
-        internal_id = 327680
-        supported_scopes = { starbase megastructure country }
-    }
-    StarbaseTrade = {
-        internal_id = 329728
-        supported_scopes = { starbase planet megastructure country }
-    }
-    Resource = {
-        internal_id = 524288
-        supported_scopes = { country planet ship pop leader }
-    }
-    System = {
-        internal_id = 1048576
+    "Star Systems" = {
         supported_scopes = { galacticobject }
     }
-    SystemAndOwner = {
-        internal_id = 1048832
-        supported_scopes = { galacticobject country }
+    Trade = {
+        supported_scopes = { country starbase }
     }
-    SystemExtended = {
-        internal_id = 1049984
-        supported_scopes = { galacticobject country leader fleet }
-    }
-    TradeCountry = {
-        internal_id = 2097408
-        supported_scopes = { country }
-    }
-    TradeStarbase = {
-        internal_id = 2359296
-        supported_scopes = { starbase }
-    }
-    Federation = {
-        internal_id = 4194304
+    Federations = {
         supported_scopes = { federation }
     }
     Espionage = {
-        internal_id = 8388608
         supported_scopes = { country spynetwork }
     }
 }

@@ -64,6 +64,9 @@ casus_belli = {
 
 	## cardinality = 0..1
 	show_in_diplomacy = bool
+
+	## cardinality = 0..1
+	aggregated_message_key = localisation
 }
 
 
@@ -149,7 +152,6 @@ war_goal = {
 	## replace_scope = { this = country root = country from = country }
 	###FROM = The targeted country, THIS = The acting country
 	ai_weight = {
-		weight = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
@@ -158,4 +160,8 @@ war_goal = {
 	galactic_empire_joins_defender = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
+
+	## cardinality = 0..1
+	###Starbases are destroyed instead of ownership being transferred
+	destroy_starbases = yes
 }

@@ -91,6 +91,8 @@ imperial_reform = {
 		potential = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
+		## cardinality = 0..1
+		disables_hre_badboy_points = yes
 	}
 	subtype[china] = {
 		empire = celestial_empire

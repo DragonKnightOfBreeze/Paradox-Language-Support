@@ -93,6 +93,10 @@ triggered_modifier = {
 	}
 	##replace_scope = { this = country root = country }
 	alias_name[modifier] = alias_match_left[modifier]
+	## cardinality = 0..1
+	ai_weight = {
+		factor = int
+	}
 }
 
 

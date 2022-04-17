@@ -1,0 +1,209 @@
+
+types = {
+	type[situation_type] = {
+		path = "game/common/situations"
+	}
+}
+
+## replace_scope = { this = situation root = situation }
+situation_type = {
+	picture = <sprite>
+
+	## cardinality = 0..1
+	on_start = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	on_fail = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	on_abort = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## cardinality = 0..1
+	abort_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	## push_scope = country
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## cardinality = 0..inf
+	triggered_modifier = {
+		potential = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## push_scope = country
+		modifier = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+	}
+	## cardinality = 0..1
+	## push_scope = planet
+	target_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	## cardinality = 0..inf
+	triggered_target_modifier = {
+		potential = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## push_scope = planet
+		modifier = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+	}
+
+	## cardinality = 0..1
+	on_monthly = {
+		## cardinality = 0..1
+		events = {
+			## cardinality = 0..inf
+			<event>
+		}
+		## cardinality = 0..1
+		random_events = {
+			## cardinality = 0..inf
+			int = 0
+			## cardinality = 0..inf
+			int = <event>
+		}
+	}
+
+	monthly_progress = {
+		alias_name[modifier_rule_with_loc] = alias_match_left[modifier_rule_with_loc]
+	}
+	on_progress_complete = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	## cardinality = 0..inf
+	approach = {
+		name = localisation
+		icon = {
+			icon = <sprite>
+			text = localisation
+		}
+		## cardinality = 0..1
+		allow = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..1
+		potential = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..1
+		## push_scope = country
+		modifier = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+		## cardinality = 0..inf
+		triggered_modifier = {
+			potential = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			## push_scope = country
+			modifier = {
+				alias_name[modifier] = alias_match_left[modifier]
+			}
+		}
+		## cardinality = 0..1
+		## push_scope = planet
+		target_modifier = {
+			alias_name[modifier] = alias_match_left[modifier]
+		}
+		## cardinality = 0..inf
+		triggered_target_modifier = {
+			potential = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			## push_scope = planet
+			modifier = {
+				alias_name[modifier] = alias_match_left[modifier]
+			}
+		}
+		## cardinality = 0..1
+		resources = {
+			category = <economic_category>
+			alias_name[economic_template] = alias_match_left[economic_template]
+		}
+		## cardinality = 0..1
+		ai_weight = {
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
+
+	## cardinality = 0..1
+	start_value = int
+	## cardinality = 0..1
+	completion_value = int
+	
+	## cardinality = 0..1
+	severity_levels = {
+		## cardinality = 1..inf
+	 	scalar = {
+	 		end = int
+			## cardinality = 0..1
+			on_first_enter = {
+				alias_name[effect] = alias_match_left[effect]
+			}
+			## cardinality = 0..1
+			potential = {
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			## cardinality = 0..1
+			## push_scope = country
+			modifier = {
+				alias_name[modifier] = alias_match_left[modifier]
+			}
+			## cardinality = 0..inf
+			triggered_modifier = {
+				potential = {
+					alias_name[trigger] = alias_match_left[trigger]
+				}
+				## push_scope = country
+				modifier = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+			}
+			## cardinality = 0..1
+			## push_scope = planet
+			target_modifier = {
+				alias_name[modifier] = alias_match_left[modifier]
+			}
+			## cardinality = 0..inf
+			triggered_target_modifier = {
+				potential = {
+					alias_name[trigger] = alias_match_left[trigger]
+				}
+				## push_scope = planet
+				modifier = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+			}
+	    }
+	}
+}
+
+enums = {
+	complex_enum[situation_approaches] = {
+		path = "game/common/situations"
+		name = {
+			approach = {
+				name = enum_name
+			}
+		}
+	}
+	complex_enum[situation_severity_levels] = {
+		path = "game/common/situations"
+		name = {
+			severity_levels = {
+				enum_name = {}
+			}
+		}
+	}
+}

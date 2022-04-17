@@ -1,9 +1,26 @@
 
+types = {
+	type[script_value] = {
+		path = "game/common/script_values"
+	}
+}
 
-#needs some "or"s
+script_value = {
+	alias_name[modifier_rule] = alias_match_left[modifier_rule]
+}
+
+alias[modifier_rule:base] = float
+alias[modifier_rule:enum[complex_maths_enum]] = value_field
+alias[modifier_rule:enum[simple_maths_enum]] = yes
+
 alias[modifier_rule:modifier] = {
-	enum[add_factor_weight] = float
+	## cardinality = 0..1
+	enum[complex_maths_enum] = value_field
+	## cardinality = 0..1
+	enum[simple_maths_enum] = yes
 	alias_name[trigger] = alias_match_left[trigger]
+	## cardinality = 0..1
+	desc = localisation
 }
 
 alias[modifier_rule:scaled_modifier] = {
@@ -23,70 +40,65 @@ alias[modifier_rule:scaled_modifier] = {
 	mul = float
 }
 
-alias[modifier_rule_factor:modifier] = {
-	factor = float
-	alias_name[trigger] = alias_match_left[trigger]
+alias[modifier_rule:complex_trigger_modifier] = {
+	trigger = alias_keys_field[trigger]
+	## cardinality = 0..1
+	trigger_scope = scope[any]
+	## cardinality = 0..1
+	parameters = {
+		## cardinality = 0..1
+		limit = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..inf
+		scalar = scalar
+	}
+	mode = enum[complex_maths_enum]
+	## cardinality = 0..1
+	mult = float
+	## cardinality = 0..1
+	desc = localisation
+	## cardinality = 0..1
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
 }
 
-alias[modifier_rule_factor:scaled_modifier] = {
-	## cardinality = 0..1
-	limit = { alias_name[trigger] = alias_match_left[trigger]  }
-	## cardinality = 1..1
-	scope = scope[any]
-	## cardinality = 1..1
-	calc = enum[scaled_modifier_calc]
-	## cardinality = 0..1
-	factor = float
-	## cardinality = 0..1
-	add = float
-	## cardinality = 0..1
-	div = float
-	## cardinality = 0..1
-	mul = float
-}
-
-#for only "add = int" (opinion modifiers, for example)
-alias[modifier_rule_add:modifier] = {
-	add = int
-	alias_name[trigger] = alias_match_left[trigger]
-}
-
-#for only "factor/add" (anomalies, for example)
-alias[modifier_rule_add_factor:modifier] = {
-	enum[add_factor] = float
-	alias_name[trigger] = alias_match_left[trigger]
-}
-
-#for effect modifiers?
-alias[modifier_rule_add_mult:modifier] = {
-	enum[add_mult] = float
-	alias_name[trigger] = alias_match_left[trigger]
-}
-
+#modifier_rule_with_loc is deliberately more restrictive because of what we can make good tooltips with
+alias[modifier_rule_with_loc:base] = float
+alias[modifier_rule_with_loc:factor] = float
 alias[modifier_rule_with_loc:modifier] = {
-	add = float
+	## cardinality = 0..1
+	enum[complex_maths_enum] = value_field
+	## cardinality = 0..1
+	enum[simple_maths_enum] = yes
 	desc = localisation
 	alias_name[trigger] = alias_match_left[trigger]
 }
-
-#for only parameter cases
-alias[scaled_modifier_rule:scaled_modifier] = {
-	limit = { alias_name[trigger] = alias_match_left[trigger]  }
-	## cardinality = 1..1
-	scope = scope[any]
-	## cardinality = 1..1
-	calc = enum[scaled_modifier_calc]
+alias[modifier_rule_with_loc:complex_trigger_modifier] = {
+	trigger = alias_keys_field[trigger]
 	## cardinality = 0..1
-	factor = float
+	trigger_scope = scope[any]
 	## cardinality = 0..1
-	add = float
+	parameters = {
+		## cardinality = 0..1
+		limit = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..inf
+		scalar = scalar
+	}
+	mode = enum[complex_maths_enum]
 	## cardinality = 0..1
-	div = float
+	mult = float
+	desc = localisation
 	## cardinality = 0..1
-	mul = float
+	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
 }
 
-#calculation types for scaled_modifier
+#calculation types
 enums = {
 	enum[scaled_modifier_calc] = {
 		pop_count
@@ -94,22 +106,24 @@ enums = {
 		planet_distance_empire
 		planets_in_country
 	}
-	enum[add_mult] = {
+	enum[complex_maths_enum] = {
+		set
+		weight
 		add
+		subtract
+		factor
 		mult
+		multiply
+		divide
+		modulo
+		round_to
+		max
+		min
 	}
-	enum[add_factor] = {
-		add
-		factor
-	}
-	enum[add_factor_weight] = {
-		add
-		factor
-		weight
-	}
-	enum[factor_weight] = {
-		factor
-		weight
+	enum[simple_maths_enum] = {
+		round
+		ceiling
+		floor
+		abs
 	}
 }
-

@@ -58,6 +58,10 @@ mission_series = {
 		###What you need to complete the mission, displayed for mission tooltip
 		trigger = {
 			alias_name[trigger] = alias_match_left[trigger]
+			## cardinality = 0..1
+			has_completed_idea_group_of_category = {
+				mil_ideas = yes
+			}
 		}
 		## replace_scope = { this = country root = country }
 		###This is what you get after you finished your mission.

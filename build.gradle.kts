@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "icu.windea"
-version = "0.5.0"
+version = "0.5.2"
 
 intellij {
 	version.set("2022.1")

@@ -8,6 +8,9 @@ types = {
 	type[music] = {
 		name_field = name
 		path = "game/music"
+		localisation = {
+			name = "$"
+		}
   }
 }
 #TODO: Add check for files existance, currently set to scalar!

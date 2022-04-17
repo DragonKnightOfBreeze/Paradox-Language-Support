@@ -103,6 +103,7 @@ peace_treaty = {
 			variable_name = ai_value
 			value = int
 		}
+		## cardinality = 0..1
 		## replace_scope = { root = country this = country from = country }
 		###if limit evaluates false, ai_weight will evaluate to 0 regardless
 		limit = { 

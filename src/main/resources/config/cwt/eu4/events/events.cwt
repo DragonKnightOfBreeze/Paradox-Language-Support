@@ -56,6 +56,9 @@ event = {
 		goto = root
 		## cardinality = 0..1
 		goto = from
+		## cardinality = 0..1
+		goto = <estate>
+		
 
 		desc = {
 			trigger = {
@@ -151,6 +154,8 @@ event = {
 			goto = root
 			## cardinality = 0..1
 			goto = from
+			## cardinality = 0..1
+			goto = <estate>
 		}
 
 		## cardinality = 0..1

@@ -44,6 +44,7 @@ enums = {
 		po_form_personal_union
 		po_gold
 		po_become_vassal
+		po_subjugate_vassal
 		po_concede_defeat
 		po_annul_treaties
 		po_change_government
@@ -63,7 +64,6 @@ enums = {
 		po_dismantle_revolution
 		po_join_empire
 		po_spread_revolution
-		po_subjugate_vassal
 		po_subjugate_tributary_state
 		po_force_out_colonizers
 		po_guaranteed_join_empire
@@ -134,6 +134,9 @@ casus_belli = {
 	}
 
 	## cardinality = 0..1
+	holy_war = yes
+	
+	## cardinality = 0..1
 	valid_for_subject = no
 
 	## cardinality = 0..1
@@ -158,61 +161,13 @@ casus_belli = {
 
 
 wargoal_type = {
+
 	type = enum[wargoal_types]
-
-	## cardinality = 0..1
-	badboy_factor = float
-	## cardinality = 0..1
-	###Multiplied with any prestige increase normally associated with a peace option.
-	prestige_factor = float
-	## cardinality = 0..1
-	###Multiplied with the cost of the peace options in the peace treaty.
-	peace_cost_factor = float
-	## cardinality = 0..1
-	peace_cost_factor_non_allowed_treaty = float
-
-	## cardinality = 0..1				  
-	peace_options = {
-        ## cardinality = 1..inf
-        <peace_options>
-        ## cardinality = 1..inf
-        enum[peace_options]
-	}
-	## cardinality = 0..1
-	peace_options = {
-			## cardinality = 1..inf
-			<peace_options>
-	}
-	## cardinality = 0..1
-	peace_options = {
-			## cardinality = 1..inf
-			enum[peace_options]
-	}
 	
 	## cardinality = 0..1
-	## replace_scope = { root = country this = province from = country }
-	###If 'po_demand_provinces' is on, badboy_factor applies to these provinces.
-	allowed_provinces = {
-		alias_name[trigger] = alias_match_left[trigger]
-	}
+	elector_relation = localisation
 	
-	## cardinality = 0..1
-	## replace_scope = { root = country this = province from = country }
-	###If 'po_demand_provinces' is on, badboy_factor applies to these provinces.
-	allowed_tribal_provinces = {
-		alias_name[trigger] = alias_match_left[trigger]
-	}
-		
-	## cardinality = 0..1
-	allowed_provinces_are_eligible = yes
-	
-	## cardinality = 0..1
-	## replace_scope = { root = country this = country from = country }
-	allowed_countries = {
-		alias_name[trigger] = alias_match_left[trigger]
-	}
-
-	## cardinality = 0..1
+	## cardinality = 1..1
 	attacker = {
 		## cardinality = 0..1
 		badboy_factor = float
@@ -237,9 +192,44 @@ wargoal_type = {
 		allowed_tribal_provinces = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
-				
+		
 		## cardinality = 0..1
 		allowed_provinces_are_eligible = yes
+		
+		## cardinality = 0..1
+		allow_annex = yes
+		
+		## cardinality = 0..1
+		deny_annex = yes
+		
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country from = country }
+		allowed_countries = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		
+		## cardinality = 0..1
+		transfer_trade_cost_factor = float
+		
+		
+		## cardinality = 0..1
+		required_treaty_to_take_provinces = {
+			## cardinality = 1..inf
+			<peace_options>
+			## cardinality = 1..inf
+			enum[peace_options]
+		}
+		## cardinality = 0..1
+		required_treaty_to_take_provinces = {
+			## cardinality = 1..inf
+			<peace_options>
+		}
+		## cardinality = 0..1
+		required_treaty_to_take_provinces = {
+			## cardinality = 1..inf
+			enum[peace_options]
+		}
+		
 		
 		peace_options = {
 			## cardinality = 1..inf
@@ -262,7 +252,7 @@ wargoal_type = {
 		country_desc = localisation
 	}
 
-	## cardinality = 0..1
+	## cardinality = 1..1
 	defender = {
 		## cardinality = 0..1
 		badboy_factor = float
@@ -290,7 +280,26 @@ wargoal_type = {
 		## cardinality = 0..1
 		allowed_provinces_are_eligible = yes
 		
-		## cardinality = 0..1				  
+		## cardinality = 0..1
+		required_treaty_to_take_provinces = {
+			## cardinality = 1..inf
+			<peace_options>
+			## cardinality = 1..inf
+			enum[peace_options]
+		}
+		## cardinality = 0..1
+		required_treaty_to_take_provinces = {
+			## cardinality = 1..inf
+			<peace_options>
+		}
+		## cardinality = 0..1
+		required_treaty_to_take_provinces = {
+			## cardinality = 1..inf
+			enum[peace_options]
+		}
+		
+		## cardinality = 0..1
+		###If po_demand_provinces is on for attacker it also needs to be on for defender
 		peace_options = {
 			## cardinality = 1..inf
 			<peace_options>
@@ -312,26 +321,12 @@ wargoal_type = {
 		prov_desc = localisation
 		## cardinality = 0..1
 		country_desc = localisation
+		
+		## cardinality = 0..1
+		transfer_trade_cost_factor = float
 	}
 
-	## cardinality = 0..1
-	elector_relation = localisation
-	## cardinality = 0..1
-	country_desc = localisation
-	## cardinality = 0..1
-	prov_desc = localisation
+	
 	## cardinality = 0..1
 	war_name = localisation
-
-	## cardinality = 0..1
-	###Multiplied with the cost for transfering trade power.
-	transfer_trade_cost_factor = float
-	
-	## cardinality = 0..1
-	###Always allow annexation (even if other rules disallow)
-	allow_annex = bool
-	
-	## cardinality = 0..1
-	###Always deny annexation (even if other rules disallow)
-	deny_annex = bool
 }

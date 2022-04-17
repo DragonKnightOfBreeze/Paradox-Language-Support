@@ -1,0 +1,38 @@
+
+types = {
+	type[golden_bull] = {
+		path = "game/common/golden_bulls"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_DESC"
+		}
+	}
+}
+
+## replace_scope = { root = country this = country }
+golden_bull = {
+	## cardinality = 0..1
+    modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+    }
+	## cardinality = 0..1
+    mechanics = {
+		enum[golden_bull_mechanics]
+    }
+    trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+    }
+    ai_will_do = {
+        factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+    }
+}
+
+enums = {
+	enum[golden_bull_mechanics] = {
+        cardinals_spread_institution
+		crusades_after_age_limit
+	}
+}

@@ -1,0 +1,34 @@
+
+types = {
+	type[defender_faith] = {
+		path = "game/common/defender_of_faith"
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_DESC"
+		}
+	}
+}
+
+## replace_scope = { root = country this = country }
+defender_faith = {
+	level = int
+	## cardinality = 0..1
+	range_to = int
+	## cardinality = 0..1
+	range_from = int
+	## cardinality = 0..1
+    modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+    }
+	## cardinality = 0..1
+    same_faith_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+    }
+	ai_will_do = {
+        factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+    }
+}
+

@@ -11,7 +11,10 @@ alias[trigger:current_date] == date_field
 alias[trigger:prisoner] = bool
 
 ###Checks if a target is in a variable list is_target_in_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
-alias[trigger:is_target_in_local_variable_list] = replace_me
+alias[trigger:is_target_in_local_variable_list] = {
+    name = value[local_variable_list]
+    target = scope_field
+}
 
 ###The total population of a country
 alias[trigger:country_population] == int_value_field
@@ -50,7 +53,10 @@ alias[trigger:has_same_culture_group_as] = scope[character]
 alias[trigger:in_command] = bool
 
 ###Checks the size of a variable list variable_list_size = { name = X target >= Y } Where X is the name of the variable Where Y is a script value or number
-alias[trigger:global_variable_list_size] = replace_me
+alias[trigger:global_variable_list_size] = {
+    name = value[global_variable_list]
+    value == int_value_field
+}
 
 ###Checks if a province has a specific trade_goods
 alias[trigger:trade_goods] = <trade_goods>
@@ -228,7 +234,7 @@ alias[trigger:is_unit_locked] = bool
 alias[trigger:game_start_date] == date_field
 
 ###Checks whether the current scope has the specified variable list set has_variable_list = name
-alias[trigger:has_variable_list] = replace_me
+alias[trigger:has_variable_list] = value[variable_list]
 
 ###does the character have a specific modifier
 alias[trigger:has_character_modifier] = <modifier_container>
@@ -247,7 +253,7 @@ alias[trigger:religious_unity] == value_field
 alias[trigger:has_monthly_income] == value_field
 
 ###Checks whether the current scope has the specified variable list set has_variable_list = name
-alias[trigger:has_local_variable_list] = replace_me
+alias[trigger:has_local_variable_list] = value[local_variable_list]
 
 ###does the country have the required number of provinces?
 alias[trigger:num_of_provinces] == int_value_field
@@ -304,7 +310,10 @@ alias[trigger:title_importance] == int_value_field
 alias[trigger:num_of_clan_retinues] == int_value_field
 
 ###Checks the size of a variable list variable_list_size = { name = X target >= Y } Where X is the name of the variable Where Y is a script value or number
-alias[trigger:variable_list_size] = replace_me
+alias[trigger:variable_list_size] = {
+    name = value[variable_list]
+    value = int_value_field
+}
 
 ###Is this office empty for the country?
 alias[trigger:office_is_empty] = <office>
@@ -411,7 +420,10 @@ alias[trigger:pop_culture_group] = <culture_group>
 alias[trigger:prestige] == int_value_field
 
 ###Checks if a target is in a variable list is_target_in_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
-alias[trigger:is_target_in_global_variable_list] = replace_me
+alias[trigger:is_target_in_global_variable_list] = {
+    name = value[global_variable_list]
+    target = scope_field
+}
 
 # TODO: Confirm
 ###Is the skill the highest skill of the character? True even when there are multiple skills with the same highest value.
@@ -486,7 +498,10 @@ alias[trigger:has_same_religion_as] = scope[character]
 alias[trigger:in_siege] = bool
 
 ###Checks the size of a variable list variable_list_size = { name = X target >= Y } Where X is the name of the variable Where Y is a script value or number
-alias[trigger:local_variable_list_size] = replace_me
+alias[trigger:local_variable_list_size] = {
+    name = value[local_variable_list]
+    value == int_value_field
+}
 
 ###Conditionally cause an assert during read time assert_read = X, where X is yes or the string to be printed in the assert
 alias[trigger:assert_read] = yes
@@ -658,7 +673,7 @@ alias[trigger:num_of_children] == int_value_field
 alias[trigger:is_same_party_as] = scope[character]
 
 ###Checks whether the current scope has the specified variable list set has_variable_list = name
-alias[trigger:has_global_variable_list] = replace_me
+alias[trigger:has_global_variable_list] = value[global_variable_list]
 
 ###which Idea a country has
 alias[trigger:idea] = <idea>
@@ -715,7 +730,10 @@ alias[trigger:number_of_health_traits] == int_value_field
 alias[trigger:is_governor] = bool
 
 ###Checks if a target is in a variable list is_target_in_variable_list = { name = X target = Y } Where X is the name of the variable Where Y is an event target
-alias[trigger:is_target_in_variable_list] = replace_me
+alias[trigger:is_target_in_variable_list] = {
+    name = value[variable_list]
+    target = scope_field
+}
 
 # TODO: might be value_field
 ###does the province have the required CivilizationValue?
@@ -1028,37 +1046,37 @@ alias[trigger:num_of_military_ideas] == int_value_field
 alias[trigger:num_of_religious_ideas] == int_value_field
 
 ### yes - Outputs to the game log when this trigger is hit debug_log_details = yes - Outputs full trigger content when this trigger is hit  --------------------  is_general - Is the scope character a General?
-alias[trigger:debug_log] = replace_me_bool
+alias[trigger:debug_log] = bool
 
 ### a negated AND trigger
 alias[trigger:nand] = replace_me
 
 ### Checks
-alias[trigger:religious_tech] == replace_me_comparison
+alias[trigger:religious_tech] == int_value_field
 
 ### Does the country have a certain military Tradition
 alias[trigger:has_military_Tradition] = replace_me
 
 ### does the province have the amount of holdings?
-alias[trigger:current_amount_of_holdings] == replace_me_comparison
+alias[trigger:current_amount_of_holdings] == int_value_field
 
 ### siege has breach
-alias[trigger:has_breach] = replace_me_bool
+alias[trigger:has_breach] = bool
 
 ### Checks
-alias[trigger:mercantile_party_conviction] == replace_me_comparison
+alias[trigger:mercantile_party_conviction] == int_value_field
 
 ### Checks population of a specified type
-alias[trigger:num_of_freemen] == replace_me_comparison
+alias[trigger:num_of_freemen] == int_value_field
 
 ### The non loyal power base of the country
-alias[trigger:non_loyal_power_base] == replace_me_comparison
+alias[trigger:non_loyal_power_base] == int_value_field
 
 ### state is Isolated
-alias[trigger:is_isolated] = replace_me_bool
+alias[trigger:is_isolated] = bool
 
 ### The amount of political influence of a country
-alias[trigger:political_influence] == replace_me_comparison
+alias[trigger:political_influence] == int_value_field
 
 ### does a country have the low economic policy for x?
 alias[trigger:has_low_economic_policy] = replace_me
@@ -1067,199 +1085,199 @@ alias[trigger:has_low_economic_policy] = replace_me
 alias[trigger:has_province_rank] = replace_me
 
 ### Checks
-alias[trigger:oratory_tech] == replace_me_comparison
+alias[trigger:oratory_tech] == int_value_field
 
 ### Checks
-alias[trigger:religious_party_conviction] == replace_me_comparison
+alias[trigger:religious_party_conviction] == int_value_field
 
 ### Do the province has the model shown. Written as is_model_shown=name_of_model
 alias[trigger:is_model_shown] = replace_me
 
 ### does the state have the required loyalty (from state level)?
 ## scopes = state
-alias[trigger:state_level_loyalty] == replace_me_comparison
+alias[trigger:state_level_loyalty] == int_value_field
 
 ### negates content of trigger
 alias[trigger:not] = replace_me
 
 ### Checks population of a specified type
-alias[trigger:num_of_citizen] == replace_me_comparison
+alias[trigger:num_of_citizen] == int_value_field
 
 ### Checks
-alias[trigger:civic_party_support] == replace_me_comparison
+alias[trigger:civic_party_support] == int_value_field
 
 ### has construction
-alias[trigger:has_construction] = replace_me_bool
+alias[trigger:has_construction] = bool
 
 ### Checks if a province has any level of winter
-alias[trigger:has_winter] = replace_me_bool
+alias[trigger:has_winter] = bool
 
 ### Checks
-alias[trigger:religious_party_support] == replace_me_comparison
+alias[trigger:religious_party_support] == int_value_field
 
 ### does a country have the mid economic policy for x?
 alias[trigger:has_mid_economic_policy] = replace_me
 
 ### AI safety level in percent
-alias[trigger:safety] == replace_me_comparison
+alias[trigger:safety] == int_value_field
 
 ### does the state have the required commerce income?
 ## scopes = state
-alias[trigger:state_commerce_income] == replace_me_comparison
+alias[trigger:state_commerce_income] == int_value_field
 
 ### does the country have the required number of cities controlled?
-alias[trigger:num_of_controlled_cities] == replace_me_comparison
+alias[trigger:num_of_controlled_cities] == int_value_field
 
 ### does the province have the required Manpower Income?
-alias[trigger:province_manpower_income] == replace_me_comparison
+alias[trigger:province_manpower_income] == int_value_field
 
 ### Checks
-alias[trigger:civic_tech] == replace_me_comparison
+alias[trigger:civic_tech] == int_value_field
 
 ### Is the scope character a co-ruler?
-alias[trigger:is_co_ruler] = replace_me_bool
+alias[trigger:is_co_ruler] = bool
 
 ### for AI: cultural unity
-alias[trigger:cultural_unity] == replace_me_comparison
+alias[trigger:cultural_unity] == int_value_field
 
 ### does the province have a minor river or not?
-alias[trigger:has_minor_river] = replace_me_bool
+alias[trigger:has_minor_river] = bool
 
 ### does the province have the required Population Capacity?
-alias[trigger:population_cap] == replace_me_comparison
+alias[trigger:population_cap] == int_value_field
 
 ### is the country an antagonist or not?
-alias[trigger:is_antagonist] = replace_me_bool
+alias[trigger:is_antagonist] = bool
 
 ### does the state have the required food?
-alias[trigger:has_state_food] == replace_me_comparison
+alias[trigger:has_state_food] == int_value_field
 
 ### Does the current government have co-rulers?
-alias[trigger:has_co_ruler_government] = replace_me_bool
+alias[trigger:has_co_ruler_government] = bool
 
 ### Checks
-alias[trigger:military_tech] == replace_me_comparison
+alias[trigger:military_tech] == int_value_field
 
 ### Checks hapiness for population of a specified type
-alias[trigger:citizen_happiness] == replace_me_comparison
+alias[trigger:citizen_happiness] == int_value_field
 
 ### a negated OR trigger
 alias[trigger:nor] = replace_me
 
 ### AI regression test: % of countries at peace with healthy economy
-alias[trigger:healthy_economy_percentage] == replace_me_comparison
+alias[trigger:healthy_economy_percentage] == int_value_field
 
 ### The amount of military experience of a country
-alias[trigger:military_experience] == replace_me_comparison
+alias[trigger:military_experience] == int_value_field
 
 ### gets country rank as integer, prefer using script values when comparing e.g. major_power etc.
-alias[trigger:rank] == replace_me_comparison
+alias[trigger:rank] == int_value_field
 
 ### how many holdings canthe character have?
-alias[trigger:max_holdings_owned] == replace_me_comparison
+alias[trigger:max_holdings_owned] == int_value_field
 
 ### Checks
-alias[trigger:populist_party_support] == replace_me_comparison
+alias[trigger:populist_party_support] == int_value_field
 
 ### does the character have the required powerbase?
-alias[trigger:power_base] == replace_me_comparison
+alias[trigger:power_base] == int_value_field
 
 ### how many holdings does the character have?
-alias[trigger:num_holdings_owned] == replace_me_comparison
+alias[trigger:num_holdings_owned] == int_value_field
 
 ### How many percent strength does this subunit have???
-alias[trigger:subunit_strength_percentage] == replace_me_comparison
+alias[trigger:subunit_strength_percentage] == int_value_field
 
 ### How many percent experience does this unit have???
-alias[trigger:experience_percentage] == replace_me_comparison
+alias[trigger:experience_percentage] == int_value_field
 
 ### is the state a capital or not?
-scopes = state
+## scopes = state
 alias[trigger:is_capital_state] = bool
 
 ### percentage of characters below max loyalty
-alias[trigger:percentage_characters_below_max_loyalty] == replace_me_comparison
+alias[trigger:percentage_characters_below_max_loyalty] == int_value_field
 
 ### Checks hapiness for population of a specified type
-alias[trigger:tribesmen_happiness] == replace_me_comparison
+alias[trigger:tribesmen_happiness] == int_value_field
 
 ### Does this country have this heritage?
 alias[trigger:heritage] = replace_me_heritage
 
 ### does the province have the max amount of holdings?
-alias[trigger:max_amount_of_holdings] == replace_me_comparison
+alias[trigger:max_amount_of_holdings] == int_value_field
 
 ### Checks
-alias[trigger:populist_party_conviction] == replace_me_comparison
+alias[trigger:populist_party_conviction] == int_value_field
 
 ### if a country is dynamically created
-alias[trigger:is_dynamic_tag] = replace_me_bool
+alias[trigger:is_dynamic_tag] = bool
 
 ### Checks if a sub_unit is of a specific type
 alias[trigger:sub_unit_type] = replace_me
 
 ### The total power base of the country
-alias[trigger:total_power_base] == replace_me_comparison
+alias[trigger:total_power_base] == int_value_field
 
 ### does a country have the high economic policy for x?
 alias[trigger:has_high_economic_policy] = replace_me
 
 ### Can this pop be moved without breaking pop movement rules?
-alias[trigger:pop_can_move] = replace_me_bool
+alias[trigger:pop_can_move] = bool
 
 ### all inside trigger must be true
 alias[trigger:and] = replace_me
 
 ### How many percent morale does this subunit have???
-alias[trigger:subunit_morale_percentage] == replace_me_comparison
+alias[trigger:subunit_morale_percentage] == int_value_field
 
 ### does AI dominate the almost seven seas? (discrete)
-alias[trigger:naval_dominance] == replace_me_comparison
+alias[trigger:naval_dominance] == int_value_field
 
 ### does the country have the required number of holdings?
-alias[trigger:total_holdings] == replace_me_comparison
+alias[trigger:total_holdings] == int_value_field
 
 ### Checks if a sub_unit is of a specific ship-category (light/medium/heavy)
 alias[trigger:ship_category] = replace_me
 
 ### Checks
-alias[trigger:civic_party_conviction] == replace_me_comparison
+alias[trigger:civic_party_conviction] == int_value_field
 
 ### does the province have a minor river or not?
-alias[trigger:is_adjacent_to_major_river] = replace_me_bool
+alias[trigger:is_adjacent_to_major_river] = bool
 
 ### If the country has any coastal cities
-alias[trigger:has_coasts] = replace_me_bool
+alias[trigger:has_coasts] = bool
 
 ### Checks population of a specified type
-alias[trigger:num_of_tribesmen] == replace_me_comparison
+alias[trigger:num_of_tribesmen] == int_value_field
 
 ### The number of max diplomatic relations for a country
-alias[trigger:max_diplomatic_relations] == replace_me_comparison
+alias[trigger:max_diplomatic_relations] == int_value_field
 
 ### Checks
-alias[trigger:mercantile_party_support] == replace_me_comparison
+alias[trigger:mercantile_party_support] == int_value_field
 
 ### Checks hapiness for population of a specified type
-alias[trigger:slaves_happiness] == replace_me_comparison
+alias[trigger:slaves_happiness] == int_value_field
 
 ### Checks
-alias[trigger:military_party_conviction] == replace_me_comparison
+alias[trigger:military_party_conviction] == int_value_field
 
 ### is the province a StateCapital or not?
-alias[trigger:is_state_capital] = replace_me_bool
+alias[trigger:is_state_capital] = bool
 
 ### Checks
-alias[trigger:military_party_support] == replace_me_comparison
+alias[trigger:military_party_support] == int_value_field
 
 ### does the country have the required number of possible holdings?
-alias[trigger:possible_holdings] == replace_me_comparison
+alias[trigger:possible_holdings] == int_value_field
 
 ### Checks hapiness for population of a specified type
-alias[trigger:freemen_happiness] == replace_me_comparison
+alias[trigger:freemen_happiness] == int_value_field
 
 ### is the province a City or not?
-alias[trigger:has_city_status] = replace_me_bool
+alias[trigger:has_city_status] = bool
 
 ### doess the character have a holding in the target province?
 alias[trigger:has_holding_in] = replace_me_province_id
@@ -1268,23 +1286,23 @@ alias[trigger:has_holding_in] = replace_me_province_id
 alias[trigger:has_holding_in] = replace_me_province_scope
 
 ### Checks population of a specified type
-alias[trigger:num_of_slaves] == replace_me_comparison
+alias[trigger:num_of_slaves] == int_value_field
 
 ### The number of active relations for a country
-alias[trigger:num_active_relations] == replace_me_comparison
+alias[trigger:num_active_relations] == int_value_field
 
 ### at least one entry inside trigger must be true
 alias[trigger:or] = replace_me
 
 ### AI distress level (discrete)
-alias[trigger:distress_level] == replace_me_comparison
+alias[trigger:distress_level] == int_value_field
 
 ### does the state have the required food capacity?
 ## scopes = state
-alias[trigger:has_state_food_capacity] == replace_me_comparison
+alias[trigger:has_state_food_capacity] == int_value_field
 
 ### does the character have the required number of loyal Veterans?
-alias[trigger:num_loyal_veterans] == replace_me_comparison
+alias[trigger:num_loyal_veterans] == int_value_field
 
 ## scopes = any
 alias[trigger:<script_value>] == value_field
@@ -1333,3 +1351,439 @@ alias[trigger:trade_good_exports] = replace_me
 ### is the state's trade good imports greater or equal than the value?
 ## scopes = state
 alias[trigger:trade_good_imports] = replace_me
+
+### How many percent of food does this unit have???
+alias[trigger:food_percentage] == replace_me_comparison
+
+### unit has reduced road building cost
+alias[trigger:has_reduced_roadbuilding_cost] = replace_me_bool
+
+### unit has reduced road building cost
+alias[trigger:has_siege_impact] = replace_me_bool
+
+### unit is carrying troops
+alias[trigger:is_carrying_troops] = replace_me_bool
+
+### unit is idle (AI state)
+alias[trigger:is_idle] = replace_me_bool
+
+### check what ability unit uses
+alias[trigger:is_unit_ability_used] = replace_me
+
+### Checks if a great work includes a specific material
+alias[trigger:great_work_any_material] = replace_me
+
+### Did the specified country build this GW?
+alias[trigger:great_work_builder] = replace_me_country_tag
+
+### Did the specified country build this GW?
+alias[trigger:great_work_builder] = replace_me_country_scope
+
+### Checks if a great work has a specific category
+alias[trigger:great_work_category] = replace_me
+
+### compare a value to the great work's lowest effect tier level
+alias[trigger:great_work_min_effect_tier] == replace_me_comparison
+
+### Checks if a great work is made of one specific material
+alias[trigger:great_work_only_material] = replace_me
+
+### is this great work an ancient wonder?
+alias[trigger:is_ancient_wonder] = replace_me_bool
+
+### Checks
+alias[trigger:boni_party_conviction] == replace_me_comparison
+
+### Checks if value for loyalty type can be added without passing the types limit for the given scripted modifier.
+alias[trigger:can_add_entire_loyalty_bonus] = replace_me_loyalty_type
+
+### does the character have the required Experience?
+alias[trigger:character_experience] == replace_me_comparison
+
+### Checks
+alias[trigger:democratic_party_conviction] == replace_me_comparison
+
+### Checks where a character has a certain loyalty modifier. has_loyalty = X X is a scripted modifier name.
+alias[trigger:has_loyalty] = replace_me_loyalty_type
+
+### Checks if a character has been deified
+alias[trigger:is_deified] = replace_me_bool
+
+### does the character lead the specific party?
+alias[trigger:is_leader_of_party] = replace_me_party_scope
+
+### does the character lead the specific party type?
+alias[trigger:is_leader_of_party_type] = replace_me_party_type
+
+### Does the scope belong to a minor family or not
+alias[trigger:is_minor_character] = replace_me_bool
+
+### does the character have a required amount of treasures?
+alias[trigger:num_character_treasures] == replace_me_comparison
+
+### Checks
+alias[trigger:oligarchic_party_conviction] == replace_me_comparison
+
+### Checks
+alias[trigger:optimates_party_conviction] == replace_me_comparison
+
+### Does the character belong to this party?
+alias[trigger:party_type] = replace_me_party_type
+
+### Checks
+alias[trigger:populares_party_conviction] == replace_me_comparison
+
+### Does the character have the required percentage of the total powerbase?
+alias[trigger:relative_power_base] == replace_me_comparison
+
+### Checks
+alias[trigger:traditionalist_party_conviction] == replace_me_comparison
+
+### does the country/province/character have a required amount of treasures?
+alias[trigger:treasure_count] == replace_me_comparison
+
+### Checks
+alias[trigger:boni_party_support] == replace_me_comparison
+
+### Can omen be activated for this deity?
+alias[trigger:can_activate] = replace_me_deity_scope
+
+### Can a country change to this idea?
+alias[trigger:can_change_idea] = replace_me
+
+### is the country's trade good exports greater or equal than the value? country_trade_good_exports = { target = X [*value >/</>=/<= Y* or *value = { min max }*  }
+alias[trigger:country_trade_good_exports] = replace_me
+
+### is the country's trade good imports greater or equal than the value? country_trade_good_imports = { target = X [*value >/</>=/<= Y* or *value = { min max }*  }
+alias[trigger:country_trade_good_imports] = replace_me
+
+### Checks
+alias[trigger:democratic_party_support] == replace_me_comparison
+
+### The amount of aggressive expansion of a country
+alias[trigger:has_aggressive_expansion] == replace_me_comparison
+
+### if a country has a great work in any province
+alias[trigger:has_any_great_work_country] = replace_me_country_tag
+
+### if a country has a great work in any province
+alias[trigger:has_any_great_work_country] = replace_me_country_scope
+
+### Has this country completed the specified mission?
+alias[trigger:has_completed_mission] = replace_me_mission_type
+
+### Has this country completed the specified mission task?
+alias[trigger:has_completed_mission_task] = replace_me_mission_task_type
+
+### check if a country has a specific effect from a great work
+alias[trigger:has_country_great_work_effect] = replace_me
+
+### Does this country have this deity in it's pantheon?
+alias[trigger:has_deity_in_pantheon] = replace_me
+
+### Does this country have military access through the other country?
+alias[trigger:has_military_access] = replace_me_country_tag
+
+### Does this country have military access through the other country?
+alias[trigger:has_military_access] = replace_me_country_scope
+
+### does the country have this party?
+alias[trigger:has_party_type] = replace_me_party_type
+
+### The country's senate approval
+alias[trigger:has_senate_approval] == replace_me_comparison
+
+### Is this country guaranteed by the other country?
+alias[trigger:is_guaranteed_by] = replace_me_country_tag
+
+### Is this country guaranteed by the other country?
+alias[trigger:is_guaranteed_by] = replace_me_country_scope
+
+### Is this deity monotheistic?
+alias[trigger:is_monotheist_deity] = replace_me_deity_scope
+
+### if a country is allowed tradition tree
+alias[trigger:is_tradition_tree_allowed] = replace_me
+
+### discrete AI migration strategies (discrete)
+alias[trigger:migration_strategy] == replace_me_comparison
+
+### The number of allowed families in a country
+alias[trigger:num_allowed_families] == replace_me_comparison
+
+### does the country have the required number of deified rulers in it's pantheon?
+alias[trigger:num_of_deified_rulers_in_pantheon] == replace_me_comparison
+
+### Checks
+alias[trigger:oligarchic_party_support] == replace_me_comparison
+
+### Checks
+alias[trigger:optimates_party_support] == replace_me_comparison
+
+### does a country own a specific area
+alias[trigger:owns_area] = replace_me_mission_task_type
+
+### does a country own a specific area
+alias[trigger:owns_or_subject_owns_area] = replace_me_mission_task_type
+
+### does a country own a specific region
+alias[trigger:owns_or_subject_owns_region] = replace_me_mission_task_type
+
+### does a country own a specific region
+alias[trigger:owns_region] = replace_me_mission_task_type
+
+### Checks
+alias[trigger:populares_party_support] == replace_me_comparison
+
+### Is the country this culture?
+alias[trigger:primary_culture] = replace_me_culture_tag
+
+### Is the country this culture?
+alias[trigger:primary_culture] = replace_me_culture_scope
+
+### country is on the way towards civil war ?
+alias[trigger:towards_civil_war] = replace_me_bool
+
+### Checks
+alias[trigger:traditionalist_party_support] == replace_me_comparison
+
+### How much food does this subunit consume?
+alias[trigger:cohort_food_consumption] == replace_me_comparison
+
+### How much food can this subunit store?
+alias[trigger:cohort_food_storage_capacity] == replace_me_comparison
+
+### has legion
+alias[trigger:has_legion_trigger] = replace_me_bool
+
+### Does the country have any agenda?
+alias[trigger:has_active_agenda] = replace_me_bool
+
+### The faction's percentage of senatorial influence
+alias[trigger:has_power_percentage] == replace_me_comparison
+
+### Check if scope is a certain faction
+alias[trigger:is_party_type] = replace_me_party_type
+
+### Does the current country scope have the given faction approval
+alias[trigger:party_approval] == replace_me_comparison
+
+### is the scope grateful
+alias[trigger:is_grateful] = replace_me_bool
+
+### returns number of expected jobs
+alias[trigger:num_of_expected_jobs] == replace_me_comparison
+
+### returns number of current jobs
+alias[trigger:num_of_jobs] == replace_me_comparison
+
+### is there room for more commanders in this legion?
+alias[trigger:can_add_commander] = replace_me_bool
+
+### how many commanders does this legion have?
+alias[trigger:commander_count] == replace_me_comparison
+
+### how many distinctions does this legion have?
+alias[trigger:distinction_count] == replace_me_comparison
+
+### does this legion have that distinction?
+alias[trigger:has_distinction] = replace_me_mission_task_type
+
+### how many units does this legion have?
+alias[trigger:unit_count] == replace_me_comparison
+
+### Is this a civil war
+alias[trigger:is_civil_war] = replace_me_bool
+
+### Is target country a war leader of this war?
+alias[trigger:is_war_leader] = replace_me_country_tag
+
+### Is target country a war leader of this war?
+alias[trigger:is_war_leader] = replace_me_country_scope
+
+### Does this war have any participants, and is it current?
+alias[trigger:is_war_over] = replace_me_bool
+
+### is the target country's war score against the opposing war leader COMPARATOR VALUE? war_score = { target = X [*value >/</>=/<= Y* or *value = { min max }*  }
+alias[trigger:war_score] = replace_me
+
+### Does this deity have this religion?
+alias[trigger:deity_religion] = replace_me_religion_tag
+
+### Does this deity have this religion?
+alias[trigger:deity_religion] = replace_me_religion_scope
+
+### Does this deity have a this active modifier?
+alias[trigger:has_active_modifier] = replace_me
+
+### does this deity have a holy site??
+alias[trigger:has_holy_site] = replace_me_bool
+
+### Does this deity have this passive modifier?
+alias[trigger:has_passive_modifier] = replace_me
+
+### Can this province build a port
+alias[trigger:can_have_port] = replace_me_bool
+
+### check if a Unit can use a unit ability in province (sent to ability's scope:province)
+alias[trigger:can_use_unit_ability] = replace_me
+
+### does the province have the required Population Capacity?
+alias[trigger:distance_to_migration_target] == replace_me_comparison
+
+### Is the great work locator in the province free. Written as great_work_locator_is_free = primary_great_work
+alias[trigger:great_work_locator_is_free] = replace_me
+
+### Do the province has the ancient wonder. Written as has_ancient_wonder = key_of_ancient_wonder
+alias[trigger:has_ancient_wonder] = replace_me
+
+### has great work
+alias[trigger:has_great_work] = replace_me_bool
+
+### Has the province a specific construction currently ongoing?
+alias[trigger:has_specific_construction] = replace_me_bool
+
+### is a country the original colonizer of a province?
+alias[trigger:is_colonizer] = replace_me_country_tag
+
+### is a country the original colonizer of a province?
+alias[trigger:is_colonizer] = replace_me_country_scope
+
+### is this province a holy site?
+alias[trigger:is_holy_site] = replace_me_bool
+
+### Does the scoped city belong to a given named Region or the same Region as the target city Region = my_Region_name OR Region = from.capital_scope
+alias[trigger:is_in_region] = replace_me
+
+### is a country the previous controller of a province?
+alias[trigger:is_previous_controller] = replace_me_country_tag
+
+### is a country the previous controller of a province?
+alias[trigger:is_previous_controller] = replace_me_country_scope
+
+### is a country the previous owner of a province?
+alias[trigger:is_previous_owner] = replace_me_country_tag
+
+### is a country the previous owner of a province?
+alias[trigger:is_previous_owner] = replace_me_country_scope
+
+### Checks hapiness for population of a specified type
+alias[trigger:nobles_happiness] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_academy_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_aqueduct_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_barracks_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_basic_settlement_infratructure_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_commerce_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_court_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_fortress_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_fortress_ramparts_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_forum_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_foundry_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_hill_fort] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_latifundia_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_library_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_local_forum_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_military_building] == replace_me_comparison
+
+### Checks population of a specified type
+alias[trigger:num_of_nobles] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_population_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_port_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_slave_mine_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_temple_building] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_theathre_building] == replace_me_comparison
+
+### Compare total number of building slots in a province
+alias[trigger:num_of_total_building_slots] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_town_hall_building] == replace_me_comparison
+
+### Compare used number of building slots in a province
+alias[trigger:num_of_used_building_slots] == replace_me_comparison
+
+### Compare number of buildings of type
+alias[trigger:num_of_workshop_building] == replace_me_comparison
+
+### does the province have a required amount of treasures?
+alias[trigger:num_province_treasures] == replace_me_comparison
+
+### pops of a particular culture
+alias[trigger:country_culture_pop_count] == replace_me_comparison
+
+### does the country culture have a specific modifier
+alias[trigger:has_country_culture_modifier] = replace_me
+
+### Does this country culture have this poptype right
+alias[trigger:has_pop_type_right] = replace_me_mission_task_type
+
+### does the country culture have the amount of integration progress?
+alias[trigger:integration_progress] == replace_me_comparison
+
+### Is this this culture the same as the country culture's culture?
+alias[trigger:is_culture] = replace_me_culture_tag
+
+### Is this this culture the same as the country culture's culture?
+alias[trigger:is_culture] = replace_me_culture_scope
+
+### is this country culture integrated?
+alias[trigger:is_integrated] = replace_me_bool
+
+### The percentage of pops in country matching this country culture
+alias[trigger:culture_pops_in_country] = replace_me
+
+### Does the country have any agenda?
+alias[trigger:has_agenda] = replace_me
+
+### If a country's religion is monotheistic
+alias[trigger:is_monotheist_religion] = replace_me_bool
+
+### Checks the size of a list list_size = { name = X value >= Y } Where X is the name of the list Where Y is a script value
+alias[trigger:list_size] == replace_me_comparison
+
+### The percentage of pops in country matching this religion
+alias[trigger:religion_pops_in_country] = replace_me
+
+### Does this country culture have this poptype right
+alias[trigger:is_pop_type_right] = replace_me_mission_task_type
+

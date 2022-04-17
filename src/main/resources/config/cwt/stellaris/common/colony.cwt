@@ -43,12 +43,36 @@ colony_automation = {
 }
 
 colony_type = {
-	icon = int
+	icon = <sprite>
+
+	## cardinality = 0..1
+	### Used by AI to estimate what will happen when we change the designation
+	ai_resource_conversion = {
+		## cardinality = 0..inf
+		<resource> = float
+		## replace_scope = { this = planet root = planet }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
+
+	## cardinality = 0..1
+	### Used by AI to estimate the current effects of this designation
+	ai_resource_current_conversion = {
+		## cardinality = 0..inf
+		<resource> = float
+		## replace_scope = { this = planet root = planet }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+	}
 
 	potential = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 
+	## cardinality = 0..1
+	custom_tooltip = localisation
 	## cardinality = 0..1
 	## replace_scope = { this = planet root = planet }
 	planet_modifier = {
@@ -59,10 +83,8 @@ colony_type = {
 
 	## replace_scope = { this = planet root = planet }
 	alias_name[triggered_planet_modifier] = alias_match_left[triggered_planet_modifier]
-	
+
 	weight_modifier = {
-		## cardinality = 0..1
-		base = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 

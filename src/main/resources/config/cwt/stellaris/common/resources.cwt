@@ -48,9 +48,7 @@ resource = {
 
 	## cardinality = 0..1
 	ai_weight = {
-		weight = float
-		#TBC
-#		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
 	## cardinality = 0..1
@@ -58,7 +56,7 @@ resource = {
 
 	## cardinality = 0..1
 	ai_wants = {
-		base = int
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
 	subtype[max] = {

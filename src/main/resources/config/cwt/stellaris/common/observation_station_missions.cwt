@@ -36,10 +36,6 @@ observation_station_mission = {
 	completion_event = <event.country>
 
 	ai_weight = {
-		## cardinality = 0..1
-		weight = float
-		## cardinality = 0..1
-		factor = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }

@@ -39,8 +39,6 @@ portrait_group = {
 			trigger = {
 				## cardinality = 0..inf
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..inf
-				scope[leader] = { gender = enum[gender] }
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -53,8 +51,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				scope[leader] = { gender = enum[gender] }
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -70,8 +66,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				gender = enum[gender]
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -84,8 +78,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				gender = enum[gender]
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -101,8 +93,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				gender = enum[gender]
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -115,8 +105,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				gender = enum[gender]
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -132,8 +120,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				scope[leader] = { gender = enum[gender] }
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -146,8 +132,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				scope[leader] = { gender = enum[gender] }
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -163,8 +147,6 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				scope[leader] = { gender = enum[gender] }
 			}
 			portraits = {
 				## cardinality = 0..inf
@@ -177,21 +159,12 @@ portrait_group = {
 			## cardinality = 0..1
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
-				## cardinality = 0..1
-				scope[leader] = { gender = enum[gender] }
 			}
 			portraits = {
 				## cardinality = 0..inf
 				<portrait>
 			}
 		}
-	}
-}
-
-enums = {
-	enum[gender] = {
-		male
-		female
 	}
 }
 

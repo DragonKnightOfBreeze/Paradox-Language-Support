@@ -79,6 +79,12 @@ types = {
 		## abbreviation = LE
 		subtype[leader] = {
 		}
+		## type_key_filter = situation_event
+		## push_scope = situation
+		## display_name = Situation event
+		## abbreviation = LE
+		subtype[situation] = {
+		}
 		## type_key_filter = event
 		subtype[scopeless] = {
 		}
@@ -102,12 +108,26 @@ types = {
 		subtype[major] = {
 			major = yes
 		}
+		subtype[inherited] = {
+			base = <event>
+		}
 	}
 }
 
 event = {
 	id = scalar
 
+	subtype[inherited] = {
+		base = <event>
+		## cardinality = 0..1
+		desc_clear = yes
+		## cardinality = 0..1
+		option_clear = yes
+		## cardinality = 0..1
+		picture_clear = yes
+		## cardinality = 0..1
+		show_sound_clear = yes
+	}
 	subtype[!hidden] = {
 		title = localisation
 		desc = localisation
@@ -184,7 +204,7 @@ event = {
 					}
 				}
 			}
-			## cardinality = 0..1
+			## cardinality = 0..inf
 			text = localisation
 			## cardinality = 0..1
 			show_sound = <sound_effect>
@@ -274,7 +294,7 @@ event = {
 				factor = float[0..10000]
 
 				#Note: Weight does not work (guaranteed error message), add seems to usually cause error messages
-				alias_name[modifier_rule_factor] = alias_match_left[modifier_rule_factor]
+				alias_name[modifier_rule] = alias_match_left[modifier_rule]
 			}
 
 			subtype[diplomatic] = {

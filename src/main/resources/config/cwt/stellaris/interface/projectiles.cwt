@@ -28,6 +28,11 @@ projectile = {
 	## cardinality = 0..1
 	windup_entity = <model_entity>
 	## cardinality = 0..1
+	windup_entity = {
+    ## cardinality = 1..inf
+    <component_slot_template> = <model_entity>
+	}
+	## cardinality = 0..1
 	stretch_to_fit = bool
 	## cardinality = 0..1
 	texture = filepath

@@ -91,7 +91,6 @@ espionage_operation = {
 	stages = int
 
 	spy_power_cost = int
-    spy_network_lvl_requirement = int
 
     resources = {
         category = <economic_category>

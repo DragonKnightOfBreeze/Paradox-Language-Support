@@ -27,6 +27,8 @@ dlc_info = {
 		<dlc_info>
 	}
 	## cardinality = 0..1
+	egs_url = scalar
+	## cardinality = 0..1
 	interesting_countries = {
 		## cardinality = 1..4
 		enum[country_tags]
@@ -60,3 +62,4 @@ dlc_recommendation = {
 		}
 	}
 }
+

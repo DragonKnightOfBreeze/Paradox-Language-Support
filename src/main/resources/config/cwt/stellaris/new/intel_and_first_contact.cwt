@@ -60,7 +60,6 @@ first_contact_stage = {
 		summary = localisation
 		## cardinality = 1..1 # this has to be there or it won't work
 		event_weight = {
-			weight = int
 			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 		}
 		event = <event.first_contact>

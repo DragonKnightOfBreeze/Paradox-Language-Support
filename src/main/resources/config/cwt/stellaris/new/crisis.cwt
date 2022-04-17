@@ -45,7 +45,6 @@ crisis_level = {
 
 crisis_objective = {
 	reward = {
-		base = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	## cardinality = 0..1

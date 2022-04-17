@@ -31,8 +31,6 @@ alias[trigger:any_pool_guest] = {
     alias_name[trigger] = alias_match_left[trigger]
 }
 
-## scopes = { dynasty house }
-## targets = character
 ### Iterate through all house members any_house_member = { <count=num/all> / <percent=fixed_point> <triggers> }
 alias[trigger:any_house_member] = {
     ## cardinality = 0..1
@@ -209,8 +207,6 @@ alias[trigger:any_independent_ruler] = {
     alias_name[trigger] = alias_match_left[trigger]
 }
 
-## scopes = schema
-## targets = character
 ### Iterate through all agents in the scheme any_scheme_agent = { <count=num/all> / <percent=fixed_point> <triggers> }
 alias[trigger:any_scheme_agent] = {
     ## cardinality = 0..1
@@ -1258,8 +1254,6 @@ alias[trigger:any_sub_realm_barony] = {
     alias_name[trigger] = alias_match_left[trigger]
 }
 
-## scopes = religion
-## targets = faith
 ### Iterate through all faiths within a religion any_faith = { <count=num/all> / <percent=fixed_point> <triggers> }
 alias[trigger:any_faith] = {
     ## cardinality = 0..1
@@ -1766,8 +1760,6 @@ alias[trigger:any_side_commander] = {
     alias_name[trigger] = alias_match_left[trigger]
 }
 
-## scopes = dynasty
-## targets = character
 ### Iterate through all dynasty members any_dynasty_member = { <count=num/all> / <percent=fixed_point> <triggers> }
 alias[trigger:any_dynasty_member] = {
     ## cardinality = 0..1
@@ -1778,4 +1770,4 @@ alias[trigger:any_dynasty_member] = {
     count = all
     alias_name[trigger] = alias_match_left[trigger]
 }
-
+

@@ -142,6 +142,11 @@ sprite = {
 	## cardinality = 0..1
 	looping = bool
 
+	## cardinality = 0..1
+	sprite_sheet_sprite_type = <sprite>
+	## cardinality = 0..1
+	default_frame = int
+
 	#cornered_tile_sprite
 	## cardinality = 0..1
 	size = {

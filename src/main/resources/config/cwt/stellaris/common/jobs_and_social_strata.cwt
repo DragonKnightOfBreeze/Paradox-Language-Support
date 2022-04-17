@@ -50,6 +50,15 @@ enums = {
 
 ## push_scope = pop
 job = {
+	## cardinality = 0..inf
+	desc = {
+		## replace_scope = { this = planet root = planet }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		text = localisation
+	}
+
 	category = <social_strata>
 	## cardinality = 0..1
 	condition_string = localisation
@@ -61,9 +70,7 @@ job = {
 	## cardinality = 0..1
 	clothes_texture_index = int
 	## cardinality = 0..1
-	icon = icon[gfx/interface/icons/jobs]
-	## cardinality = 0..1
-	icon = <job>
+	icon = filepath[gfx/interface/icons/jobs/job_,.dds]
 
 	## cardinality = 0..1
 	is_capped_by_modifier = bool
@@ -73,6 +80,8 @@ job = {
 	is_pre_sapient = bool
 	## cardinality = 0..1
 	ignores_sapience = bool
+	## cardinality = 0..1
+	ignores_favorite = bool
 	## cardinality = 0..1
 	purge = enum[purge_types]
 
@@ -85,6 +94,17 @@ job = {
 	possible_pre_triggers = {
 		alias_name[pop_pre_trigger] = alias_match_left[pop_pre_trigger]
 	}
+	
+	## cardinality = 0..1
+	possible_precalc = can_fill_ruler_job
+	## cardinality = 0..1
+	possible_precalc = can_fill_specialist_job
+	## cardinality = 0..1
+	possible_precalc = can_fill_worker_job
+	## cardinality = 0..1
+	possible_precalc = can_fill_drone_job
+	## cardinality = 0..1
+	possible_precalc = enum[job_triggers]
 
 	## cardinality = 0..1
 	possible = {
@@ -127,7 +147,6 @@ job = {
 	alias_name[triggered_pop_modifier] = alias_match_left[triggered_pop_modifier]
 
 	weight = {
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
@@ -150,7 +169,6 @@ social_strata = {
 	}
 	## cardinality = 0..1
 	weight = {
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
@@ -175,8 +193,9 @@ social_strata = {
 		alias_name[modifier] = alias_match_left[modifier]
 	}
 
-	## cardinality = 0..1
+	## cardinality = 0..inf
 	resettlement_cost = {
+		## cardinality = 0..inf
 		<resource> = int
 		## cardinality = 0..1
 		trigger = {

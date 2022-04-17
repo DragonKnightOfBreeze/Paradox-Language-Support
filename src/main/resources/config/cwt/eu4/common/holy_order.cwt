@@ -1,0 +1,42 @@
+
+holy_order = {
+	icon = <sprite>
+
+	## replace_scope = { this = country root = country }
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	cost = int
+	cost_type = enum[holy_order_cost_types]
+
+	## replace_scope = { this = province root = province }
+    per_province_effect = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+	## replace_scope = { this = province root = province }
+    per_province_abandon_effect = {
+        alias_name[effect] = alias_match_left[effect]
+    }
+	## replace_scope = { this = province root = province }
+    modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+	## replace_scope = { this = province root = province }
+    ai_priority = {
+        factor = float
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+    }
+}
+
+enums = {
+	enum[holy_order_cost_types] = {
+		adm_power
+		dip_power
+		mil_power
+	}
+}
+
+
+
+
+

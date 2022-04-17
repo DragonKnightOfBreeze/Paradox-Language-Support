@@ -15,7 +15,6 @@ types = {
 
 
 institution = {
-	penalty = float
 	bonus = {
 		alias_name[modifier] = alias_match_left[modifier]
 	}

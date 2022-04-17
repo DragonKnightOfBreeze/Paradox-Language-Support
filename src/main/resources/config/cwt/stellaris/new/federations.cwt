@@ -88,7 +88,6 @@ federation_law = {
 	}
 	## replace_scopes = { this = country root = country }
 	ai_weight = {
-		base = float
 		alias_name[modifier_rule_with_loc] = alias_match_left[modifier_rule_with_loc]
 	}
 }
@@ -178,7 +177,6 @@ federation_type = {
 
 	## replace_scopes = { this = country root = country from = country }
 	ai_weight = {
-		base = float
 		alias_name[modifier_rule_with_loc] = alias_match_left[modifier_rule_with_loc]
 	}
 }

@@ -186,14 +186,17 @@ country_type = {
 		## cardinality = 0..1
 		traditions = bool
 		## cardinality = 0..1
+		ascension_perks = bool
+		## cardinality = 0..1
 		follow = bool
 		## cardinality = 0..1
 		starbase_upgrade = bool
 		## cardinality = 0..1
 		limited_construction = bool
-
 		## cardinality = 0..1
 		can_use_market = bool
+		## cardinality = 0..1
+		espionage = bool
 		
 		## cardinality = 0..1
 		ship_data = {
@@ -209,24 +212,11 @@ country_type = {
 				system_mult = float
 				## cardinality = 0..1
 				planet_mult = float
-				## cardinality = 0..inf
+				## cardinality = 0..1
 				#TODO Check if this can be replaced with modifier_rule alias
+				## replace_scope = { this = country root = country }
 				fraction = {
-					## cardinality = 0..1
-					base = int[0..100] #max 100!, its fractions from a whole - 100% being the total ship production of said country
-					## cardinality = 0..1
-					#yes - this one is weird, see the army_data for an example (in the file)
-					factor = int
-					## replace_scope = { this = country root = country }
-					## cardinality = 0..inf
-					modifier = {
-						## cardinality = 0..1
-						add = int
-						## cardinality = 0..1
-						factor = float
-						## cardinality = 0..inf
-						alias_name[trigger] = alias_match_left[trigger]
-					}
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
 				}
 			}
 		}
@@ -242,23 +232,10 @@ country_type = {
 				max = int
 				## cardinality = 0..1
 				system_mult = float
-				## cardinality = 0..inf
-				#TODO Check if can be replaced with modifier_rule alias
+				## cardinality = 0..1
+				## replace_scope = { this = country root = country }
 				fraction = {
-					## cardinality = 0..1
-					base = int[0..100] #max 100!, its fractions from a whole - 100% being the total ship production of said country
-					## cardinality = 0..1
-					factor = int #yes - this one is weird, see the army_data for an example (in the file)
-					## replace_scope = { this = country root = country }
-					## cardinality = 0..inf
-					modifier = {
-						## cardinality = 0..1
-						add = int
-						## cardinality = 0..1
-						factor = float
-						## cardinality = 0..inf
-						alias_name[trigger] = alias_match_left[trigger]
-					}
+					alias_name[modifier_rule] = alias_match_left[modifier_rule]
 				}
 			}
 		}

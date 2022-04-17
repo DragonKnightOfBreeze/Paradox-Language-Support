@@ -38,6 +38,11 @@ types = {
 			desc = "desc_$"
 		}
 	}
+	type[mapclimate] = {
+		path = "game/map"
+		type_per_file = yes
+		path_file = "climate.txt"
+	}
 	type[region] = {
 		path = "game/map"
 		path_file = "region.txt"
@@ -113,9 +118,15 @@ continent = {
 	<province_id>
 }
 
-climate = {
-	## cardinality = 0..inf
-	<province_id>
+mapclimate = {
+	## cardinality = 1..1
+	equator_y_on_province_image = <province_id>
+	
+	## cardinality = 10..10
+	<climate> = {
+		## cardinality = 0..inf
+		<province_id>
+	}
 }
 
 region = {

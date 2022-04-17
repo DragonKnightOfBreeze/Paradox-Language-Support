@@ -35,9 +35,6 @@ solar_system_initializer = {
 	usage_odds = float
 	## cardinality = 0..1
 	usage_odds = {
-		## cardinality = 0..1
-		base = float
-		## cardinality = 0..inf
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	## cardinality = 0..1

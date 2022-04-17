@@ -37,4 +37,10 @@ event_chain = {
 			max = int
 		}
 	}
+
+	## cardinality = 0..1
+	## replace_scopes = { this = country root = country }
+	abort_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
 }

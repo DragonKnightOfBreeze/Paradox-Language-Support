@@ -87,9 +87,11 @@ ai_personality = {
 	## cardinality = 0..1
 	hull_ratio = float
 
+	## cardinality = 0..1
 	threat_modifier = float
 	## cardinality = 0..1
 	threat_others_modifier = float
+	## cardinality = 0..1
 	friction_modifier = float
 	## cardinality = 0..1
 	claims_modifier = float
@@ -163,7 +165,6 @@ ai_personality = {
 
 	## cardinality = 0..1
 	weight_modifier = {
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 

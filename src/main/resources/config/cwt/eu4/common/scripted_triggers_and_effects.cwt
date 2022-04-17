@@ -15,3 +15,66 @@ scripted_trigger = {
 scripted_effect = {
 	alias_name[effect] = alias_match_left[effect]
 }
+
+## scope = province
+### Force scripted effect to work
+Event Scope Values.
+alias[effect:add_latest_building] = {
+	## cardinality = 0..1
+	government = yes
+	## cardinality = 0..1
+	production = yes
+	## cardinality = 0..1
+	manpower = yes
+	## cardinality = 0..1
+	sailors = yes
+	## cardinality = 0..1
+	army_forcelimit = yes
+	## cardinality = 0..1
+	navy_forcelimit = yes
+	## cardinality = 0..1
+	coastal = yes
+	## cardinality = 0..1
+	fort = yes
+	## cardinality = 0..1
+	tax = yes
+	## cardinality = 0..1
+	trade = yes
+	builder = ROOT
+}
+
+## scope = country
+### Force scripted effect to work
+Event Scope Values.
+alias[effect:unlock_merc_company] = {
+	## cardinality = 0..1
+	merc_company = <mercenary_company>
+	## cardinality = 0..1
+	free_merc = yes
+}
+
+## scope = country
+### Forced scripted trigger to work
+alias[trigger:has_reached_government_reform_tier] = {
+	## cardinality = 0..1
+	tier_2 = yes
+	## cardinality = 0..1
+	tier_3 = yes
+	## cardinality = 0..1
+	tier_4 = yes
+	## cardinality = 0..1
+	tier_5 = yes
+	## cardinality = 0..1
+	tier_6 = yes
+}
+
+## replace_scope = { this = country root = country }
+### Forced scripted trigger to work
+alias[trigger:has_completed_idea_group_of_category] = {
+	## cardinality = 0..1
+	adm_ideas = yes
+	## cardinality = 0..1
+	mil_ideas = yes
+	## cardinality = 0..1
+	dip_ideas = yes
+}

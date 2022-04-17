@@ -7,6 +7,7 @@ types = {
 				## cardinality = 0..1
 				always = yes
 			}
+			archetype = <species_archetype>
 		}
 		localisation = {
 			subtype[playable] = {
@@ -41,7 +42,29 @@ types = {
 				## required
 				Organ = "$_organ"
 				## required
+				Organ plural = "$_organ_plural"
+				## required
 				Mouth = "$_mouth"
+				## required
+				Hand = "$_hand"
+				## required
+				Hand plural = "$_hand_plural"
+				## required
+				Ear = "$_ear"
+				## required
+				Ear plural = "$_ear_plural"
+				## required
+				Tooth = "$_tooth"
+				## required
+				Tooth plural = "$_tooth_plural"
+				## required
+				Fossil = "$_fossil"
+				## required
+				Fossil plural = "$_fossil_plural"
+				## required
+				Remnant = "$_remnant"
+				## required
+				Remnant plural = "$_remnant_plural"
 			}
 		}
 	}
@@ -74,6 +97,10 @@ species_archetype = {
 	}
 	## cardinality = 0..1
 	inherit_trait_points_from = <species_archetype>
+	## cardinality = 0..1
+	robotic = bool
+	## cardinality = 0..1
+	uses_modifiers = bool
 }
 
 
@@ -88,8 +115,6 @@ species_class = {
 		## cardinality = 0..1
 		alias_name[modifier] = alias_match_left[modifier]
 	}
-	## cardinality = 0..1
-	playable = bool
 	## cardinality = 0..1
 	playable = {
 		alias_name[trigger] = alias_match_left[trigger]
@@ -171,8 +196,6 @@ species_class = {
 	graphical_culture = <graphical_culture>
 	## cardinality = 0..1
 	move_pop_sound_effect = scalar #should be connected to sounds under game/sound
-	## cardinality = 0..1
-	robotic = bool
 	## cardinality = 0..1
 	use_climate_preference = bool
 	## cardinality = 0..1
@@ -317,13 +340,13 @@ enums = {
 		living_standard_utopian
 		living_standard_good
 		living_standard_normal
-		living_standard_poor
 		living_standard_subsistence
 		living_standard_servitude
 		living_standard_hive_mind
 		living_standard_none
 		living_standard_shared_burden
 		living_standard_stratified
+		living_standard_decadent
 	}
 	enum[migration_controls] = {
 		migration_control_yes

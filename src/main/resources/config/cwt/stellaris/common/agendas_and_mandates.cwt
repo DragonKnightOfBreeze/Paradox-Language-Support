@@ -21,7 +21,6 @@ types = {
 agenda = {
 	## replace_scope = { this = leader root = leader from = country }
 	weight_modifier = {
-		enum[factor_weight] = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	## replace_scope = { this = country root = country }

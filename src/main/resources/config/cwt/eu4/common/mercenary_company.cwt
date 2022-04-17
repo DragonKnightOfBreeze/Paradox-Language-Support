@@ -1,0 +1,193 @@
+
+types = {
+	type[mercenary_company] = {
+		path = "game/common/mercenary_companies"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+}
+
+mercenary_company = {
+	## cardinality = 0..1
+	regiments_per_development = float
+	## cardinality = 0..1
+	cavalry_weight = float[0.0..1.0]
+	## cardinality = 0..1
+	cavalry_cap = int
+	## cardinality = 0..1
+	artillery_weight = float[0.0..1.0]
+	## cardinality = 0..1
+	###No home province means local mercenary company
+	home_province = <province_id>
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	###Default: Always = yes
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	cost_modifier = float
+	## cardinality = 0..1
+	modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+		## cardinality = 0..1
+		may_recruit_female_generals = yes
+	}
+	## cardinality = 0..1
+	sprites = {
+		## cardinality = 1..inf
+		scalar #actually <sprite_pack>, but they're in DLC files
+	}
+	## cardinality = 0..1
+	shock_damage = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	shock_damage_received = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	fire_damage = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	fire_damage_received = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	discipline = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	infantry_power = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = infantry
+	}
+	## cardinality = 0..1
+	infantry_fire = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = infantry
+	}
+	## cardinality = 0..1
+	infantry_shock = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = infantry
+	}
+	## cardinality = 0..1
+	cavalry_power = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = cavalry
+	}
+	## cardinality = 0..1
+	cavalry_fire = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = cavalry
+	}
+	## cardinality = 0..1
+	cavalry_shock = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = cavalry
+	}
+	## cardinality = 0..1
+	cavalry_flanking = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = cavalry
+	}
+	## cardinality = 0..1	
+	artillery_power = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = artillery
+	}
+	## cardinality = 0..1
+	artillery_fire = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = artillery
+	}
+	## cardinality = 0..1	
+	artillery_shock = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+		sub_unit = artillery
+	}
+	## cardinality = 0..1
+	land_morale = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	reinforce_speed = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1	
+	movement_speed = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	land_attrition = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+	## cardinality = 0..1
+	prestige_from_land = {
+		min = float
+		max = float
+		weight = float
+		cost_modifier = float
+	}
+}

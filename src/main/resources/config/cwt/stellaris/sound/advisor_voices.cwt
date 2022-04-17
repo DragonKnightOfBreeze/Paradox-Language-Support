@@ -13,8 +13,6 @@ advisor_voice = {
 	}
 
 	weight = {
-		## cardinality = 0..1
-		base = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }

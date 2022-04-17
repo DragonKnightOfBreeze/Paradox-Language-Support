@@ -33,6 +33,12 @@ decision = {
 	}
 
 	## cardinality = 0..1
+	## replace_scope = { root = country this = country }
+	show_tech_unlock_if = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
 	potential = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
@@ -42,13 +48,32 @@ decision = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 
+	## cardinality = 0..1
+	abort_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	abort_effect = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	## cardinality = 0..1
+	on_queued = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
+	## cardinality = 0..1
+	on_unqueued = {
+		alias_name[effect] = alias_match_left[effect]
+	}
+
 	effect = {
 		alias_name[effect] = alias_match_left[effect]
 	}
 
 	## cardinality = 0..1
 	ai_weight = {
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 

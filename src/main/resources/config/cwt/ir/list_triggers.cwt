@@ -548,3 +548,267 @@ alias[trigger:any_neighbor_region] = {
             alias_name[trigger] = alias_match_left[trigger]
         }
 
+### Iterate through all character heirlooms any_character_treasure = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_character_treasure] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### units commanded by a character any_character_unit = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_character_unit] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all deity that a country can change to any_available_deity = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_available_deity] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all country cultures in the country any_country_culture = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_country_culture] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all treasures in a country any_country_treasure = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_country_treasure] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all current country wars any_current_war = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_current_war] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all governorships of a country any_governorships = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_governorships] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all integrated country cultures any_integrated_culture = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_integrated_culture] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### legion in country any_legion = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_legion] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### All holy sites in a country any_owned_holy_site = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_owned_holy_site] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all (valid) pantheon deities any_pantheon_deity = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_pantheon_deity] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all existing parties in a country any_party = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_party] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all members of a party any_party_member = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_party_member] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### commanders in legion any_legion_commander = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_legion_commander] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### units in legion any_legion_unit = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_legion_unit] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all attackers in a war any_war_attacker = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_war_attacker] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all war defenders any_war_defender = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_war_defender] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all war participants any_war_participant = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_war_participant] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all great works in a province any_great_work_in_province = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_great_work_in_province] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all province treasures any_province_treasure = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_province_treasure] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all currently active wars any_active_war = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_active_war] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all existing deities any_deity = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_deity] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### Iterate through all previous wars any_ended_war = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_ended_war] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+
+### All holy sites in a country any_holy_site = { <count=num/all> / <percent=fixed_point> <triggers> }
+alias[trigger:any_holy_site] = {
+    ## cardinality = 0..1
+    percent = value_float[0.0..1.0]
+    ## cardinality = 0..1
+    count = int_value_field
+    ## cardinality = 0..1
+    count = all
+    alias_name[trigger] = alias_match_left[trigger]
+}
+

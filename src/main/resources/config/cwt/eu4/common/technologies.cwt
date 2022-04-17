@@ -128,4 +128,10 @@ technology = {
 	may_build_flagships = yes
 	## cardinality = 0..inf
 	may_drill = yes
+
+	## cardinality = 0..1
+	expects_institution = {
+	## cardinality = 1..inf
+	<institution> = float
+	}
 }

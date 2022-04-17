@@ -32,8 +32,21 @@ enums = {
 
 ## push_scope = planet
 building = {
+	## cardinality = 0..inf
+	desc = {
+		## replace_scope = { this = planet root = planet }
+		trigger = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		text = localisation
+	}
+
 	## cardinality = 0..1
 	base_buildtime = int
+
+	## cardinality = 0..1
+	###whether this building is exempt from being swapped into groups by the AI; default: no
+	exempt_from_ai_planet_specialization = bool
 
 	## cardinality = 0..1
 	category = enum[building_categories]
@@ -71,6 +84,11 @@ building = {
 	}
 
 	## cardinality = 0..1
+	empire_limit = {
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+
+	## cardinality = 0..1
 	on_queued = {
 		alias_name[effect] = alias_match_left[effect]
 	}
@@ -92,6 +110,16 @@ building = {
 
 	## cardinality = 0..1
 	potential = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	abort_trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+
+	## cardinality = 0..1
+	ruined_trigger = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 
@@ -136,7 +164,6 @@ building = {
 
 	## cardinality = 0..1
 	ai_weight = {
-		enum[factor_weight] = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
@@ -160,9 +187,14 @@ building = {
 	country_modifier = {
 		alias_name[modifier] = alias_match_left[modifier]
 	}
+	
 	## cardinality = 0..1
 	## replace_scope = { this = army root = army }
 	army_modifier = {
 		alias_name[modifier] = alias_match_left[modifier]
 	}
+	
+	## cardinality = 0..1
+	### Property on buildings which when added to the AI build queue will remove all non essential build tasks.
+	is_essential = bool
 }

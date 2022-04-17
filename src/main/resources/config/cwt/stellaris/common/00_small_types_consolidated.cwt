@@ -235,9 +235,7 @@ country_customization = {
 	## cardinality = 0..1
 	## replace_scope = { this = country root = country }
 	weight = {
-		## cardinality = 0..1
-		base = int
-		alias_name[modifier_rule_add] = alias_match_left[modifier_rule_add]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -255,8 +253,6 @@ system_type = {
 	#TODO: it appears so, but the file uses owner (not space_owner). Check pls
 	## cardinality = 0..1
 	weight_modifier = {
-		## cardinality = 0..1
-		base = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
@@ -285,18 +281,10 @@ precursors = {
 
 sector_type = {
 	system_scores = {
-		## cardinality = 0..1
-		base = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	local_capital_scores = {
-		## cardinality = 0..1
-		base = int
-		## cardinality = 0..1
-		modifier = {
-			mult = float
-			alias_name[trigger] = alias_match_left[trigger]
-		}
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	resource_conversion_table = {
 		energy = int
@@ -317,7 +305,6 @@ sector_focus = {
 	
 	## cardinality = 0..1
 	ai_weight = {
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
@@ -325,7 +312,6 @@ sector_focus = {
 	district = {
 		key = <district>
 		weight = {
-			weight = float
 			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 		}
 	}
@@ -340,7 +326,6 @@ sector_focus = {
 		###gets built whether or not a pop would work the jobs
 		exempt_from_jobs_check = yes
 		weight = {
-			weight = float
 			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 		}
 	}
@@ -358,6 +343,8 @@ map_mode = {
 	shortcut = scalar
 	## cardinality = 0..1
 	display_claims = bool
+	## cardinality = 0..1
+	display_espionage_operations = bool
 
 	## cardinality = 1..inf
 	color = {
@@ -385,6 +372,8 @@ map_mode = {
         condition = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
+		## cardinality = 0..1
+		filter = enum[hardcoded_map_mode_filters]
     }
 }
 enums = {
@@ -392,6 +381,16 @@ enums = {
 		opinion
 		country
 		intel
+	}
+	enum[hardcoded_map_mode_filters] = {
+		exploration
+		expansion
+		exploitation
+		details
+		unions
+		players
+		sectors
+		trade_routes
 	}
 }
 
@@ -414,13 +413,11 @@ ai_budget = {
 
 	## cardinality = 0..1
 	static_max = {
-		base = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
 	## cardinality = 0..1
 	static_min = {
-		base = int
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
@@ -431,7 +428,7 @@ trade_conversion = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 	weight = {
-		weight = int
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	conversion_rate = {
 		## cardinality = 1..inf
@@ -443,8 +440,6 @@ trade_conversion = {
 
 
 economic_plan = {
-	type = scalar
-
 	income = {
 		## cardinality = 1..inf
 		<resource> = int
@@ -462,11 +457,13 @@ economic_plan = {
 			alias_name[trigger] = alias_match_left[trigger]
 		}
 
+		## cardinality = 0..1
 		income = {
 			## cardinality = 1..inf
 			<resource> = int
 		}
 	
+		## cardinality = 0..1
 		focus = {
 			## cardinality = 1..inf
 			<resource> = int
@@ -484,7 +481,6 @@ economic_plan = {
 
 	## replace_scope = { this = country root = country }
 	ai_weight = {
-		weight = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
@@ -492,9 +488,8 @@ economic_plan = {
 
 diplomacy_economy = {
 	once = {
-		#Not sure if you can define your own stuff here so used an enum
 		## cardinality = 0..inf
-		enum[diplomacy_economy_tags] = {
+		scalar = {
 			## replace_scopes = { this = country root = country from = country }
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]
@@ -508,7 +503,7 @@ diplomacy_economy = {
 	per_relation = {
 		#Not sure if you can define your own stuff here so used an enum
 		## cardinality = 0..inf
-		enum[diplomacy_economy_tags] = {
+		scalar = {
 			## replace_scopes = { this = country root = country from = country }
 			trigger = {
 				alias_name[trigger] = alias_match_left[trigger]

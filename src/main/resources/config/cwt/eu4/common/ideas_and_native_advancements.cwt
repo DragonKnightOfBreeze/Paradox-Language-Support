@@ -50,6 +50,17 @@ types = {
 			desc = "$_desc"
 		}
 	}
+	## type_key_filter <> { start trigger bonus ai_will_do }
+	type[customideas] = {
+		path = "game/common/custom_ideas"
+		skip_root_key = any
+		localisation = {
+			## required
+			name = "$"
+			## required
+			desc = "$_desc"
+		}
+	}
 }
 
 
@@ -110,5 +121,81 @@ native_advancement_group = {
 	###ai_will do does not actually determine weighting, but AI will not pick an idea with ai_will_do = 0
 	ai_will_do = {
 		factor = int[0..1]
+	}
+}
+
+customideas = {
+	subtype[selectable] = {
+		## cardinality = 0..1
+		important = yes
+
+		ai_will_do = {
+			factor = float
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+		category = enum[power_categories]
+	}
+	## cardinality = 0..7
+	alias_name[modifier] = alias_match_left[modifier]
+	## cardinality = 0..1
+	max_level = int
+	## cardinality = 0..1
+	level_cost_1 = int
+	## cardinality = 0..1
+	level_cost_2 = int
+	## cardinality = 0..1
+	level_cost_3 = int
+	## cardinality = 0..1
+	level_cost_4 = int
+	## cardinality = 0..1
+	level_cost_5 = int
+	## cardinality = 0..1
+	level_cost_6 = int
+	## cardinality = 0..1
+	level_cost_7 = int
+	## cardinality = 0..1
+	level_cost_8 = int
+	## cardinality = 0..1
+	level_cost_9 = int
+	## cardinality = 0..1
+	level_cost_10 = int
+	## cardinality = 0..1
+	default = int
+	
+	## cardinality = 0..1
+	may_perform_slave_raid = yes
+	## cardinality = 0..1
+	auto_explore_adjacent_to_colony = yes
+	## cardinality = 0..1
+	no_religion_penalty = yes
+	## cardinality = 0..1
+	cb_on_primitives = yes
+	## cardinality = 0..1
+	may_establish_frontier = yes
+	## cardinality = 0..1
+	idea_claim_colonies = yes
+	## cardinality = 0..1
+	reduced_stab_impacts = yes
+	## cardinality = 0..1
+	may_explore = yes
+	## cardinality = 0..1
+	extra_manpower_at_religious_war = yes
+	
+	
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	enabled = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	chance = {
+		factor = float
+		## cardinality = 0..inf
+		modifier = {
+			## cardinality = 0..inf
+			alias_name[trigger] = alias_match_left[trigger]
+			factor = float
+		}
 	}
 }

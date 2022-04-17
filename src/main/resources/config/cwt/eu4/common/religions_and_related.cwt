@@ -750,6 +750,36 @@ religion_group = {
 				}	
 			}
 		}
+		## cardinality = 0..1
+		uses_judaism_power = yes
+		
+		## cardinality = 0..1
+		celebrate = {
+			cost = int
+			## cardinality = 1..1
+			## replace_scope = { this = country root = country }
+			potential = {
+				## cardinality = 0..inf
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			## cardinality = 1..1
+			## replace_scope = { root = country this = country }
+			allow = {
+				## cardinality = 0..inf
+				alias_name[trigger] = alias_match_left[trigger]
+			}
+			## cardinality = 1..1
+			## replace_scope = { root = country this = country }
+			effect = {
+				## cardinality = 0..inf
+				alias_name[effect] = alias_match_left[effect]
+			}
+			## replace_scope = { root = country this = country }
+			ai_will_do = {
+				factor = float
+				alias_name[modifier_rule] = alias_match_left[modifier_rule]
+			}
+		}
 	}
 }
 
@@ -850,6 +880,12 @@ aspects_and_blessings = {
 		## cardinality = 0..1
 		sprite = gfx/interface/progress_of_the_supreme_governor_icon.dds
 		cost = int
+		## cardinality = 0..1
+		monarch_power = adm
+		## cardinality = 0..1
+		monarch_power = dip
+		## cardinality = 0..1
+		monarch_power = mil
 	}
 	## cardinality = 0..1
 	## replace_scope = { root = country this = country }

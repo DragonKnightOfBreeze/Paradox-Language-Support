@@ -77,10 +77,7 @@ anomaly_category = {
 	###Chance for this anomaly category to spawn, relative to other valid categories. Default: base = 0. Scope: planet, from = ship
 	## replace_scope = { root = planet this = planet from = ship }
 	spawn_chance = {
-		## cardinality = 0..1
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_factor] = alias_match_left[modifier_rule_add_factor]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
 	## cardinality = 0..1
@@ -102,7 +99,7 @@ anomaly_category = {
 			###Individual outcomes default to max_once_global = no
 			max_once_global = bool
 
-			alias_name[modifier_rule_add_factor] = alias_match_left[modifier_rule_add_factor]
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 
 			anomaly_event = <event.ship>
 		}
@@ -125,7 +122,6 @@ relic = {
 
 	## cardinality = 0..1
 	ai_weight = {
-		enum[factor_weight] = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
@@ -164,7 +160,6 @@ archaeological_site_type = {
 	## cardinality = 0..1
 	## replace_scope = { root = planet this = planet }
 	weight = {
-		base = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 	## cardinality = 0..1
@@ -226,7 +221,6 @@ artifact_action = {
 
 	## cardinality = 0..1
 	ai_weight = {
-		enum[factor_weight] = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 

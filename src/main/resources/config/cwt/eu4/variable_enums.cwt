@@ -1,41 +1,47 @@
 enums = {
 	enum[export_to_variable_data] = {
+		adm_advisor_culture
+		adm_advisor_religion
 		consort_adm
+		consort_age
+		consort_culture
 		consort_dip
 		consort_mil
-		consort_culture
 		consort_religion
-		consort_age
-		ruler_adm
-		ruler_dip
-		ruler_mil
-		ruler_culture
-		ruler_religion
-		ruler_age
+		dip_advisor_culture
+		dip_advisor_religion
 		heir_adm
+		heir_age
+		heir_culture
 		heir_dip
 		heir_mil
-		heir_culture
 		heir_religion
-		heir_age
-		adm_advisor_religion
-		dip_advisor_religion
-		mil_advisor_religion
-		adm_advisor_culture
-		dip_advisor_culture
-		mil_advisor_culture
-		monthly_income
-		treasury
-		max_manpower
 		manpower
-		years_of_income
-		trust
+		max_manpower
+		mil_advisor_culture
+		mil_advisor_religion
+		monthly_income
+		ruler_adm
+		ruler_age
 		ruler_consort_marriage_length
+		ruler_culture
+		ruler_dip
+		ruler_mil
+		ruler_religion
+		treasury
 		trigger_value:base_manpower
 		trigger_value:base_production
 		trigger_value:base_tax
+		trigger_value:colonysize
+		trigger_value:native_size
 		trigger_value:production_income_percentage
 		trigger_value:trade_income_percentage
+		trigger_value:monthly_income
+		trust
+		years_of_income
+		ADM
+		DIP
+		MIL
 	}
 	enum[culture_new_variables] = {
 		new_variable:consort_culture
@@ -50,6 +56,7 @@ enums = {
 		new_variable:From:adm_advisor_culture
 		new_variable:From:dip_advisor_culture
 		new_variable:From:mil_advisor_culture
+		noculture
 	}
 	enum[religion_new_variables] = {
 		new_variable:consort_religion
@@ -64,5 +71,6 @@ enums = {
 		new_variable:From:adm_advisor_religion
 		new_variable:From:dip_advisor_religion
 		new_variable:From:mil_advisor_religion
+		noreligion
 	}
 }

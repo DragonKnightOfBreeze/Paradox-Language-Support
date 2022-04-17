@@ -878,6 +878,8 @@ alias[effect:create_explorer] = {
 	culture = enum[country_tags]
 	## cardinality = 0..1
 	name = localisation_synced
+	## cardinality = 0..1
+	female = yes
 }
 
 ## scope = country
@@ -1247,6 +1249,14 @@ alias[effect:add_trust] = {
 }
 
 ## scope = country
+###Adds favors with the defined scope for the current scope. 
+alias[effect:add_favors] = {
+	who = scope[country]
+	who = enum[country_tags]
+	amount = int
+}
+
+## scope = country
 ###Adds an opinion modifier for the current scope held against the defined scope. Opinion modifiers are found in /Europa Universalis IV/common/opinion_modifiers/*.txt
 alias[effect:add_opinion] = {
 	who = scope[any]
@@ -1534,19 +1544,11 @@ alias[effect:create_independent_estate_from_religion] = {
 ## scope = country
 ###Adds an influence modifier for the defined estate used by the current scope. Estates are found in /Europa Universalis IV/common/estates/*.txt
 alias[effect:add_estate_influence_modifier] = {
+	## cardinality = 0..1
 	estate = <estate>
-	desc = localisation
-	influence = int
-	duration = int
 	## cardinality = 0..1
-	add = yes
-	## cardinality = 0..1
-	short = yes
-}
-## scope = country
-###Adds an influence modifier for the defined estate used by the current scope. Estates are found in /Europa Universalis IV/common/estates/*.txt
-alias[effect:add_estate_influence_modifier] = {
 	estate = all
+	## cardinality = 0..1
 	desc = localisation
 	influence = int
 	duration = int
@@ -1593,6 +1595,8 @@ alias[effect:remove_faction] = <faction>
 alias[effect:add_faction_influence] = {
 	faction = <faction>
 	influence = int
+	## cardinality = 0..1
+	perform_readjustment = no
 }
 
 ## scope = country
@@ -1731,6 +1735,8 @@ alias[effect:define_ruler_to_general] = {
 	shock = int
 	manuever = int
 	siege = int
+	## cardinality = 0..1
+	trait = <leader_personality>
 }
 
 ## scope = country
@@ -1781,14 +1787,11 @@ alias[effect:define_ruler] = {
 	## cardinality = 0..1
 	claim = int[0..100]
 	## cardinality = 0..1
-	adm = int[-6..6]
+	adm = int[0..6]
 	## cardinality = 0..1
-	dip = int[-6..6]
+	dip = int[0..6]
 	## cardinality = 0..1
-	mil = int[-6..6]
-	## cardinality = 0..1
-	###Makes the ruler skill roll fixed to the defined minimums.
-	fixed = yes
+	mil = int[0..6]
 	## cardinality = 0..1
 	max_random_adm = int[0..6]
 	## cardinality = 0..1
@@ -1799,7 +1802,7 @@ alias[effect:define_ruler] = {
 	###Hides the skill values for this ruler.
 	hide_skills = yes
 	## cardinality = 0..1
-	regency = yes
+	regency = bool
 	## cardinality = 0..1
 	###The name of the leader to generate with the ruler.
 	attach_leader = localisation_synced #value_set[leader_name]
@@ -1841,6 +1844,12 @@ alias[effect:define_ruler] = {
 	}
 	## cardinality = 0..1
 	force_republican_names = yes
+	## cardinality = 0..1
+	change_adm = int[-6..6]
+	## cardinality = 0..1
+	change_dip = int[-6..6]
+	## cardinality = 0..1
+	change_mil = int[-6..6]
 }
 
 ## scope = country
@@ -2078,11 +2087,16 @@ alias[effect:set_heir] = value[exiled_heir]
 
 ## scope = country
 ###Kills the heir of the current scope. Displays heir death message.
-alias[effect:kill_heir] = yes
+alias[effect:kill_heir] = {}
+## scope = country
+###Kills the heir of the current scope and auto prevents creating new heir. Displays heir death message.
+alias[effect:kill_heir] = {
+	allow_new_heir = no
+}
 
 ## scope = country
 ###Removes the heir of the current scope. Does not display the heir death message.
-alias[effect:remove_heir] = yes
+alias[effect:remove_heir] = {}
 
 ## scope = country
 ###Converts a female heir into a general.
@@ -2133,9 +2147,6 @@ alias[effect:define_heir] = {
 	## cardinality = 0..1
 	mil = int[0..6]
 	## cardinality = 0..1
-	###Makes the ruler skill roll fixed to the defined minimums.
-	fixed = yes
-	## cardinality = 0..1
 	max_random_adm = int[0..6]
 	## cardinality = 0..1
 	max_random_dip = int[0..6]
@@ -2182,6 +2193,12 @@ alias[effect:define_heir] = {
 	## cardinality = 0..1
 	### Disables the disinherit button
 	block_disinherit = yes
+	## cardinality = 0..1
+	change_adm = int[-6..6]
+	## cardinality = 0..1
+	change_dip = int[-6..6]
+	## cardinality = 0..1
+	change_mil = int[-6..6] 
 }
 
 ## scope = country
@@ -2583,8 +2600,8 @@ alias[effect:spawn_rebels] = {
 	type = <rebel_type>
 	## cardinality = 0..1
 	type = religious_rebels
-	#should be 0.5..3 but parsing floats is bugged
-	size = float[0..3]
+	#should be 0.5..6 but parsing floats is bugged
+	size = float[0..6]
 	## cardinality = 0..1
 	culture = <culture>
 	## cardinality = 0..1
@@ -2873,6 +2890,7 @@ alias[effect:kill_units] = {
 	who = enemy
 	who = owner
 	who = controller
+	who = ROOT
 	## cardinality = 0..1
 	type = enum[unit_types]
 	## cardinality = 0..1
@@ -3008,6 +3026,12 @@ alias[effect:define_exiled_ruler] = {
 	mil = int[-6..6]
 	## cardinality = 0..1
 	option = int
+	## cardinality = 0..1
+	change_adm = int[-6..6]
+	## cardinality = 0..1
+	change_dip = int[-6..6]
+	## cardinality = 0..1
+	change_mil = int[-6..6]
 }
 
 ## scope = province
@@ -3073,7 +3097,7 @@ alias[effect:dip_power_cost] = int
 alias[effect:mil_power_cost] = int
 
 ## scope = country
-alias[effect:change_government_reform_progress] = int[-450..100]
+alias[effect:change_government_reform_progress] = int[-800..100]
 
 #Removed as of 1.28.3
 # ## scope = country
@@ -3400,3 +3424,188 @@ alias[effect:appoint_next_guru] = yes
 ## scope = province
 ###set permanent province flag
 alias[effect:set_permanent_province_flag] = scalar
+
+## scope = province
+###Used only in the Europa Universalis IV/common/buildings/*.txt file.
+alias[effect:add_development_from_building] = {
+	building = <building>
+	type = enum[building_development_type]
+	value = int
+}
+
+## scope = province
+###Used only in the Europa Universalis IV/common/buildings/*.txt file.
+alias[effect:add_development_from_upgrading_or_building] = {
+	building = <building>
+	obsolete_building = <building>
+	type = enum[building_development_type]
+	value = int
+	upgrade_value = int
+}
+
+## scope = province
+###Used only in the Europa Universalis IV/common/buildings/*.txt file.
+alias[effect:remove_development_from_building] = {
+	building = <building>
+	type = enum[building_development_type]
+	value = int
+}
+
+## scope = country
+###Change cult
+alias[effect:change_cult] = <cult>
+
+## scope = country
+###Discover provinces of ROOT tag
+alias[effect:discover_provinces] = scope[country]
+## scope = country
+###Discover provinces of ROOT tag
+alias[effect:discover_provinces] = enum[country_tags]
+
+## scope = country
+###Part of Imperial Reforms - not on wiki or patch notes
+alias[effect:disables_hre_badboy_points] = bool
+
+## scope = province
+###Changes the culture of the current province scope. Cultures are found in /Europa Universalis IV/common/cultures/*.txt. Can utilise Event Scope Values.
+alias[effect:change_original_culture] = FROM
+
+## scope = province
+###Remove all rebels in target province(s).
+alias[effect:clear_rebels] = yes
+
+## scope = country
+###Adds a certain amount of power projection to the country
+alias[effect:add_power_projection] = {
+	type = <power_projection_modifier>
+	amount = float
+}
+
+## scope = country
+###Makes the current country support the independence of the specified country
+alias[effect:support_independence_of] = enum[country_tags]
+## scope = country
+###Makes the current country support the independence of the specified country
+alias[effect:support_independence_of] = scope[country]
+
+## scope = country
+###Adds or removes X amount of land from the Estate's base land share. 
+alias[effect:change_estate_land_share] = {
+	estate = <estate>
+	estate = all
+	share = float[-100.0..100.0]
+	## cardinality = 0..1
+	###This will set it to change estate land share by the development of the province / development of the country X share
+	province = scope[province]
+	## cardinality = 0..1
+	###This will set it to change estate land share by the development of the province / development of the country X share
+	province = <province_id>
+}
+
+## scope = country
+###Adds the specified estate privilege to the country.
+alias[effect:set_estate_privilege] = <estate_privilege>
+
+## scope = country
+###Removes the specified estate privilege from the country.
+alias[effect:remove_estate_privilege] = <estate_privilege>
+
+## scope = country
+###Gives you a lump sum equivalent to x years of production income by y provinces (based on how much they currently produce).
+alias[effect:add_years_of_owned_provinces_production_income] = {
+	years = int
+	## push_scope = province
+	trigger = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
+	custom_tooltip = localisation
+}
+
+## scope = mercenary_company
+###Disbands the scoped mercenary company
+alias[effect:disband_mercenary_company] = yes
+
+## scope = mercenary_company
+###Disbands the scoped mercenary company
+alias[effect:disband_mercenary_company] = this
+
+## scope = mercenary_company
+###Kills the leader of the scoped mercenary company
+alias[effect:kill_mercenary_leader] = this
+
+## scope = mercenary_company
+###Adds or subtracts X% of the mercenary company's manpower.
+alias[effect:add_company_manpower] = float[-1.0..1.0]
+
+## scope = { province country }
+###Adds the specified amount of ducats to the Curia Treasury
+alias[effect:add_curia_treasury] = int
+
+## scope = province
+###Adds unrest to a province with a specified name
+alias[effect:add_named_unrest] = {
+	name = value_set[named_unrest]
+	value = int
+}
+
+## scope = province
+###Adds unrest to a province with a specified name
+alias[effect:remove_named_unrest] = value[named_unrest]
+
+## scope = country
+###Starts an agenda for a certain or a random estate
+alias[effect:start_estate_agenda] = random
+
+## scope = country
+###Starts an agenda for a certain or a random estate
+alias[effect:start_estate_agenda] = <estate>
+
+## scope = country
+###Applies a specified sprite pack (found in gfx/sprite_packs, often in DLC files) to the country. Not great verifying in DLC files for mods.
+alias[effect:apply_sprite_pack] = scalar #actually <sprite_pack>, but they're in DLC files
+
+
+## scope = any
+###Starts a given imperial incident, or ends it if <none> is used. Do not attempt to start an incident without checking that there isn't already one active.
+alias[effect:set_imperial_incident] = <imperial_incident>
+
+## scope = any
+###Starts a given imperial incident, or ends it if <none> is used. Do not attempt to start an incident without checking that there isn't already one active.
+alias[effect:set_imperial_incident] = none
+
+## scope = province
+###Adds or removes the Revolution to/from the province.
+alias[effect:set_revolution_in_province] = bool
+
+## scope = country
+###Adds X revolutionary zeal to the country
+alias[effect:add_revolutionary_zeal] = int
+
+## scope = province
+###Sets a province as the Center of Revolution
+alias[effect:spawn_center_of_revolution] = scope[province]
+
+## scope = province
+###Sets a province as the Center of Revolution
+alias[effect:spawn_center_of_revolution] = <province_id>
+
+## scope = { country }
+###Removes the Center of Revolution from a province
+alias[effect:remove_center_of_revolution] = yes
+
+## scope = country
+###Changes the name of the country to another specified localisation key. Needs <key>_ADJ for the adjectives.
+alias[effect:override_country_name] = localisation
+
+## scope = country
+###Restores the country name to its original if it has been changed via override_country_name
+alias[effect:restore_country_name] = yes
+
+## scope = country
+###Adds yearly income x (1 - crown land share) x years
+alias[effect:add_years_of_estate_land_income] = float
+
+## scope = country
+###Removes a hired advisor of a monarch power type for the current scope. Does not fire on_action for advisor being fired.
+alias[effect:remove_advisor_by_category_no_action] = enum[power_categories]

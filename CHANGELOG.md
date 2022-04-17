@@ -7,10 +7,11 @@
 * [ ] 语法解析优化 *
 * [ ] 完善内嵌提示
 * [ ] 完善对CWT配置文件的支持，完善相关功能
-* [ ] 不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置目录）
+* [ ] 不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
-  * 包括官方Github链接和镜像Github链接（https://github.com.cnpmjs.org）
+  * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
   * 检查Github上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
+  * 每次打开项目时，检查已添加的CWT配置库的更新（`git pull`）
 * [ ] 完善在线参考文档
 
 ## 0.4

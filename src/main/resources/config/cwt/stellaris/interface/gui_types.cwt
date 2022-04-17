@@ -108,6 +108,8 @@ alias[gui:textboxType] = {
 alias[gui:instantTextboxType] = {
 	name = scalar
 	## cardinality = 0..1
+	textureFile = ""
+	## cardinality = 0..1
 	textureFile = filepath
 
 	## cardinality = 0..1

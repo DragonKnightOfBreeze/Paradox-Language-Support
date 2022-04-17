@@ -1,6 +1,6 @@
 enums = {
 	enum[DLCs] = {
-		"Plantoid"
+		"Plantoids Species Pack"
 		"Utopia"
 		"Synthetic Dawn Story Pack"
 		"Apocalypse"
@@ -15,5 +15,7 @@ enums = {
 		"Lithoids Species Pack"
 		"Federations"
 		"Necroids Species Pack"
+		"Nemesis"
+		"Aquatics Species Pack"
 	}
 }

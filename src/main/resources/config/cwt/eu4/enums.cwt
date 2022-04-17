@@ -79,6 +79,7 @@ enums = {
 		"Golden Century"
 		"Emperor"
 		"Leviathan"
+		"Origins"
 	}
 	enum[DLCNUM] = {
 		dlc001
@@ -184,6 +185,10 @@ enums = {
 		dlc107
 		dlc108
 		dlc109
+		dlc110
+		dlc111
+		dlc112
+		dlc113
 	}
 	enum[key_name] = {
 		key
@@ -365,5 +370,10 @@ enums = {
 	enum[reb_nativesponsor] = {
 		REB
 		native_sponsor_scope
+	}
+	enum[building_development_type] = {
+		manpower
+		production
+		tax
 	}
 }

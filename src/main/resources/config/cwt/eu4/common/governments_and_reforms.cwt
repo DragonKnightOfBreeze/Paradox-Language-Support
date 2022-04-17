@@ -140,6 +140,9 @@ government_reform = {
 		raze_province = bool
 		force_conversion_gives_global_holy_war_released_modifier = bool
 		allow_draft_transport_ships = bool
+		can_customise_heir = bool
+		allow_cawa = bool
+		can_change_primary_culture = bool
 	}
 
 	
@@ -257,6 +260,13 @@ government_reform = {
 		## cardinality = 0..1
 		allow_draft_transport_ships = bool
 		## cardinality = 0..1
+		can_customise_heir = bool
+		## cardinality = 0..1
+		allow_cawa = bool
+		## cardinality = 0..1
+		can_change_primary_culture = bool
+				
+		## cardinality = 0..1
 		replacement_on_independence_war = indep_daimyo
 		
 		## replace_scope = { root = country this = country }
@@ -318,7 +328,14 @@ government_reform = {
 					## cardinality = 0..inf
 					has_dlc = enum[DLCs]
 				}
+				## cardinality = 0..inf
+				OR = {
+					## cardinality = 0..inf
+					has_dlc = enum[DLCs]
+				}
 			}
+			## cardinality = 0..1
+			allow_cawa = bool
 			## cardinality = 0..1
 			allow_draft_transport_ships = bool
 			## cardinality = 0..1
@@ -380,6 +397,36 @@ government_reform = {
 				## cardinality = 0..1
 				## replace_scope = { root = country this = country }
 				theocrats = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				catholics = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				utraquists = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				federalists = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				centralists = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				conservatives = {
+					alias_name[modifier] = alias_match_left[modifier]
+				}
+				## cardinality = 0..1
+				## replace_scope = { root = country this = country }
+				liberalists = {
 					alias_name[modifier] = alias_match_left[modifier]
 				}
 			}
@@ -672,6 +719,16 @@ enums = {
 		veche_republic_legacy
 		venetian_merchant_republic
 		war_against_the_world_government
+		sacred_kingdom_legacy
+		negusa_nagast_legacy
+		solomonic_empire_legacy
+		matrilineal_system_legacy
+		tribal_confederacy_legacy
+		mossi_federal_kingdom_legacy
+		musa_rule_legacy
+		great_man_legacy
+		shaka_regime_legacy
+		feudal_tribe_legacy
 	}
 }
 
@@ -830,4 +887,3 @@ government_name = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 }
-

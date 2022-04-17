@@ -70,6 +70,8 @@ resolution = {
 	## cardinality = 0..1
 	sanction = yes
 	## cardinality = 0..1
+	fire_and_forget = yes
+	## cardinality = 0..1
 	harmful = bool
 	## cardinality = 0..1
 	###Modifier to be applied to all community members if passed. Apparently. Not sure about that...

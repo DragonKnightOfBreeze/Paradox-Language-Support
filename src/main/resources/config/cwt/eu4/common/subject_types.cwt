@@ -20,7 +20,7 @@ types = {
 
 subject_type = {
 	## cardinality = 0..1
-	###copy_from copies everything except count, is_potential_overlord, and can_be_established
+	###copy_from copies everything except count and is_potential_overlord
 	copy_from = <subject_type>
 	## cardinality = 0..1
 	###count = x means it "counts as" x in some triggers.
@@ -41,13 +41,7 @@ subject_type = {
 	is_potential_overlord = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
-	## cardinality = 0..1
-	##replace_scope = { root = country this = country from = country }
-	###This part is not copied in copy_from. Actual default is equivalent to always = yes. Root = subject, from = overlord.
-	can_be_established = {
-		alias_name[trigger] = alias_match_left[trigger]
-	}
-	
+		
 	## cardinality = 0..1
 	has_overlords_ruler = bool
 	## cardinality = 0..1
@@ -149,6 +143,10 @@ subject_type = {
 	forms_trade_companies = bool
 	## cardinality = 0..1
 	can_concentrate_development = bool
+	## cardinality = 0..1
+	can_have_great_projects_moved_by_overlord = bool
+	## cardinality = 0..1
+	extend_trading_range = bool
 	
 	## cardinality = 0..1
 	can_send_tribute = bool
@@ -179,21 +177,12 @@ subject_type = {
 	###1.0 represents the amount payed by vassals
 	pays_overlord = float
 	## cardinality = 0..1
-	###1.0 represents bonus from having a vassal
-	forcelimit_bonus = float
-	## cardinality = 0..1
 	###Percent of subject FL to use as base for modifiers
 	forcelimit_to_overlord = float
 	## cardinality = 0..1
-	naval_forcelimit_bonus = float
-	## cardinality = 0..1
 	naval_forcelimit_to_overlord = float
 	## cardinality = 0..1
-	manpower_bonus = float
-	## cardinality = 0..1
 	manpower_to_overlord = float
-	## cardinality = 0..1
-	sailors_bonus = float
 	## cardinality = 0..1
 	sailors_to_overlord = float
 	## cardinality = 0..1
@@ -437,6 +426,12 @@ subject_upgrades = {
 	}
 	## replace_scope = { root = country this = country }
 	## cardinality = 0..1
+	removed_effect = {
+		## cardinality = 0..inf
+		alias_name[effect] = alias_match_left[effect]
+	}
+	## replace_scope = { root = country this = country }
+	## cardinality = 0..1
 	modifier_overlord = {
 		## cardinality = 0..inf
 		alias_name[modifier] = alias_match_left[modifier]
@@ -447,5 +442,5 @@ subject_upgrades = {
 		## cardinality = 0..inf
 		alias_name[modifier] = alias_match_left[modifier]
 	}
-	
 }
+

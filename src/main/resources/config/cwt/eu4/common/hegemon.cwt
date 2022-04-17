@@ -1,0 +1,33 @@
+
+types = {
+	type[hegemon] = {
+		path = "game/common/hegemons"
+		localisation = {
+			## required
+			name = "$"
+		}
+	}
+}
+
+hegemon = {
+	## push_scope = country
+	allow = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	
+	## push_scope = country
+	base = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+	## push_scope = country
+	###At max 100% tickup.
+	scale = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+	
+	## push_scope = country
+	max = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+}

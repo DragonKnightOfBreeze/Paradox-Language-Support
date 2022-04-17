@@ -33,3 +33,12 @@ alias[effect:<scripted_effect>] = {
 	## cardinality = 1..inf
 	enum[scripted_effect_params] = scope_field
 }
+
+###The scripted trigger will draw the value of the right clause via $left_clause$.
+#Todo: Make sure this works
+alias[effect:<event_scripted_effect>] = {
+	## cardinality = 1..inf
+	enum[scripted_effect_params] = scalar
+	## cardinality = 1..inf
+	enum[scripted_effect_params] = scope_field
+}

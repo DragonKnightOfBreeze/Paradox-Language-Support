@@ -19,282 +19,196 @@ alias[trigger:OR] = { alias_name[trigger] = alias_match_left[trigger] }
 ###Hides the enclosed triggers from any generated tooltips
 alias[trigger:hidden_trigger] = { alias_name[trigger] = alias_match_left[trigger] }
 
-## push_scope = fleet
-###Checks if the planet's observation post meets the specified criteria
-alias[trigger:observation_outpost] = {
-	alias_name[trigger] = alias_match_left[trigger]
-}
-
 ## push_scope = country
 ###Checks if any playable country meet the specified criteria
 alias[trigger:any_playable_country] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = fleet
 ###Checks if any of the country's owned fleets meet the specified criteria
 alias[trigger:any_owned_fleet] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = fleet
 ###Checks if the planet's orbital station meets the specified criteria
 alias[trigger:any_orbital_station] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = planet
 ###Checks if any planets within the country's borders meet the specified criteria
 alias[trigger:any_planet_within_border] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = ship
 ###Checks if any of the country's ships meet the specified criteria
 alias[trigger:any_owned_ship] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = planet
 ###Checks if any planet ANYWHERE meets the specified criteria
 alias[trigger:any_galaxy_planet] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = planet
 ###Checks if any planet in the system meets the specified criteria
 alias[trigger:any_system_planet] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = planet
 ###Checks if any of the country's owned planets meet the specified criteria
 alias[trigger:any_owned_planet] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = planet
 ###Checks if any of the country's controlled planets meet the specified criteria
 alias[trigger:any_controlled_planet] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Iterate through all countries
 alias[trigger:any_country] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
-}
-
-## push_scope = fleet
-###Checks if the planet's orbital research station meets the specified criteria
-alias[trigger:any_research_station] = {
-	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
-}
-
-## push_scope = fleet
-###Checks if the planet's orbital mining station meets the specified criteria
-alias[trigger:any_mining_station] = {
-	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = system
 ###Iterate through all rim systems
 alias[trigger:any_rim_system] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = leader
 ###Checks if any of the country's leaders meet the specified criteria
 alias[trigger:any_owned_leader] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = pop
 ###Iterate through all owned pops
 alias[trigger:any_owned_pop] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = sector
 ###Iterate through every owned sector
 alias[trigger:any_owned_sector] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = ambient_object
 ###Checks if any ambient objects in the game meet the specified criteria
 alias[trigger:any_ambient_object] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = ambient_object
 ###Checks if any ambient objects in the system meet the specified criteria
 alias[trigger:any_system_ambient_object] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Iterate through all bordering countries of a system
 alias[trigger:any_bordering_country] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Checks if any of the country's subject states meet the specified criteria
 alias[trigger:any_subject] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Iterate through all relations
 alias[trigger:any_relation] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = army
 ###Iterate through each army that is owned by the country
 alias[trigger:any_owned_army] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = army
 ###Iterate through each defending army on a planet
 alias[trigger:any_planet_army] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Iterate through all neighbor countries
 alias[trigger:any_neighbor_country] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = fleet
 ###Iterate through each fleet this fleet is in combat with
 alias[trigger:any_combatant_fleet] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = leader
 ###Iterate through each leader that is recruitable for the country
 alias[trigger:any_pool_leader] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = megastructure
 ###Iterate through each megastructure
 alias[trigger:any_megastructure] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = megastructure
 ###Iterate through each owned megastructure
 alias[trigger:any_owned_megastructure] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = megastructure
 ###Iterate through each megastructure in system
 alias[trigger:any_system_megastructure] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = species
 ###Iterate through each species of a country's owned pops
 alias[trigger:any_owned_pop_species] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = starbase
 ###Iterate through every owned starbase
 alias[trigger:any_owned_starbase] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = system
 ###Iterate through all systems
 alias[trigger:any_system] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = system
 ###Iterate through all systems within the country's borders
 alias[trigger:any_system_within_border] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Iterate through all war participants
 alias[trigger:any_war_participant] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = system
@@ -323,7 +237,7 @@ alias[trigger:closest_system] = {
 ###Iterate through every owned sector
 alias[trigger:count_owned_sector] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -332,7 +246,7 @@ alias[trigger:count_owned_sector] = {
 ### Iterate through all bordering countries of a system
 alias[trigger:count_bordering_country] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -341,7 +255,7 @@ alias[trigger:count_bordering_country] = {
 ### Iterate through each fleet this fleet is in combat with
 alias[trigger:count_combatant_fleet] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -350,14 +264,14 @@ alias[trigger:count_combatant_fleet] =  {
 ### Iterate through all countries
 alias[trigger:count_country] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
 
 ### Checks the number of deposits on the tile/planet that meet the specified criteria
 alias[trigger:count_deposits] =  {
-	count = int
+	count = int_value_field
 	type = <deposit>
 }
 
@@ -365,7 +279,7 @@ alias[trigger:count_deposits] =  {
 ### Iterate through each megastructure
 alias[trigger:count_megastructure] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -374,7 +288,7 @@ alias[trigger:count_megastructure] =  {
 ### Iterate through all neighbor countries
 alias[trigger:count_neighbor_country] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -383,7 +297,7 @@ alias[trigger:count_neighbor_country] =  {
 ### Iterate through each army that is owned by the country
 alias[trigger:count_owned_army] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -392,7 +306,7 @@ alias[trigger:count_owned_army] =  {
 ### Iterate through each owned megastructure
 alias[trigger:count_owned_megastructure] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -401,7 +315,7 @@ alias[trigger:count_owned_megastructure] =  {
 ### Iterate through all owned pops
 alias[trigger:count_owned_pop] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -410,7 +324,7 @@ alias[trigger:count_owned_pop] =  {
 ### Iterate through each species of a country's owned pops
 alias[trigger:count_owned_pop_species] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -419,7 +333,7 @@ alias[trigger:count_owned_pop_species] =  {
 ### Iterate through every owned starbase
 alias[trigger:count_owned_starbase] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -428,7 +342,7 @@ alias[trigger:count_owned_starbase] =  {
 ### Iterate through each defending army on a planet
 alias[trigger:count_planet_army] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -436,7 +350,8 @@ alias[trigger:count_planet_army] =  {
 ## push_scope = planet
 ### Iterate through all planets in the galaxy
 alias[trigger:count_galaxy_planet] =  {
-	count = int
+	count = all
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -444,7 +359,8 @@ alias[trigger:count_galaxy_planet] =  {
 ## push_scope = planet
 ### Checks the planets in system that meet the criteria
 alias[trigger:count_system_planet] =  {
-	count = int
+	count = all
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -453,7 +369,7 @@ alias[trigger:count_system_planet] =  {
 ### Iterate through each leader that is recruitable for the country
 alias[trigger:count_pool_leader] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -462,7 +378,7 @@ alias[trigger:count_pool_leader] =  {
 ### Iterate through all relations
 alias[trigger:count_relation] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -471,7 +387,7 @@ alias[trigger:count_relation] =  {
 ### Iterate through all rim systems
 alias[trigger:count_rim_system] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -480,7 +396,7 @@ alias[trigger:count_rim_system] =  {
 ### Iterate through all systems
 alias[trigger:count_system] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -489,7 +405,7 @@ alias[trigger:count_system] =  {
 ### Iterate through each megastructure in system
 alias[trigger:count_system_megastructure] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -498,7 +414,7 @@ alias[trigger:count_system_megastructure] =  {
 ### Iterate through all systems within the country's borders
 alias[trigger:count_system_within_border] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -507,7 +423,7 @@ alias[trigger:count_system_within_border] =  {
 ### Iterate through all war participants
 alias[trigger:count_war_participant] =  {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -526,7 +442,7 @@ alias[trigger:count_war_participants] = {
 #Count triggers: Should all check for < > on the ints
 ## push_scope = pop_faction
 alias[trigger:count_pop_faction] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -536,7 +452,8 @@ alias[trigger:count_pop_faction] = {
 
 ## push_scope = species
 alias[trigger:count_species] = {
-	count = int
+	count = int_value_field
+	count = all
 	## cardinality = 0..1
 	limit = {
 		alias_name[trigger] = alias_match_left[trigger]
@@ -545,7 +462,8 @@ alias[trigger:count_species] = {
 
 ## push_scope = species
 alias[trigger:count_exact_species] = {
-	count = int
+	count = int_value_field
+	count = all
 	## cardinality = 0..1
 	limit = {
 		alias_name[trigger] = alias_match_left[trigger]
@@ -563,17 +481,8 @@ alias[trigger:count_armies] = {
 
 ## push_scope = ship
 alias[trigger:count_owned_ship] = {
-	count = int
+	count = int_value_field
 	count = all
-	## cardinality = 0..1
-	limit = {
-		alias_name[trigger] = alias_match_left[trigger]
-	}
-}
-
-## push_scope = country
-alias[trigger:count_diplo_ties] = {
-	count = int
 	## cardinality = 0..1
 	limit = {
 		alias_name[trigger] = alias_match_left[trigger]
@@ -598,7 +507,7 @@ alias[trigger:count_potential_war_participants] = {
 ## push_scope = ambient_object
 ###Iterate through every ambient object in the game
 alias[trigger:count_ambient_object] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -609,7 +518,7 @@ alias[trigger:count_ambient_object] = {
 ## push_scope = ambient_object
 ###Iterate through every ambient object in the solar system
 alias[trigger:count_system_ambient_object] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -620,7 +529,7 @@ alias[trigger:count_system_ambient_object] = {
 ## push_scope = country
 ###Iterate through all subjects of the scoped country
 alias[trigger:count_subject] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -631,7 +540,7 @@ alias[trigger:count_subject] = {
 ## push_scope = fleet
 ###Iterate through each fleet owned by the country
 alias[trigger:count_owned_fleet] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -642,7 +551,7 @@ alias[trigger:count_owned_fleet] = {
 ## push_scope = leader
 ###Iterate through each leader that is owned by the country
 alias[trigger:count_owned_leader] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -653,7 +562,7 @@ alias[trigger:count_owned_leader] = {
 ## push_scope = planet
 ###Iterate through each planet within the current empire's borders
 alias[trigger:count_planet_within_border] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -664,7 +573,7 @@ alias[trigger:count_planet_within_border] = {
 ## push_scope = planet
 ###Iterate through each inhabited planet owned by the current empire
 alias[trigger:count_owned_planet] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -675,7 +584,7 @@ alias[trigger:count_owned_planet] = {
 ## push_scope = planet
 ###Iterate through each inhabited planet controlled by the current empire
 alias[trigger:count_controlled_planet] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -698,6 +607,18 @@ alias[effect:every_owned_leader] = {
 }
 
 ## push_scope = leader
+###Iterate through each leader that is owned by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_leader] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = leader
 ###Executes enclosed effects on a random leader owned by scoped country that meets the limit criteria
 alias[effect:random_owned_leader] = {
 	##cardinality = 0..1
@@ -706,9 +627,8 @@ alias[effect:random_owned_leader] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
 		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -721,6 +641,18 @@ alias[effect:every_pool_leader] = {
 }
 
 ## push_scope = leader
+###Iterate through each leader that is recruitable for the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_pool_leader] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = leader
 ###Iterate through each leader that is recruitable for the country
 alias[effect:random_owned_leader] = {
 	##cardinality = 0..1
@@ -729,15 +661,25 @@ alias[effect:random_owned_leader] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = country
 ###Iterate through all war participants
 alias[effect:every_war_participant] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through all war participants - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_war_participant] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -752,15 +694,26 @@ alias[effect:random_war_participant] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
 		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = army
 ###Iterate through each army that is owned by the country
 alias[effect:every_owned_army] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = army
+###Iterate through each army that is owned by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_army] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -775,15 +728,26 @@ alias[effect:random_owned_army] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
 		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = system
 ###Iterate through all systems within the country's borders
 alias[effect:every_system_within_border] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Iterate through all systems within the country's borders - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_system_within_border] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -798,15 +762,25 @@ alias[effect:random_system_within_border] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = starbase
 ###Iterate through every owned starbase
 alias[effect:every_owned_starbase] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = starbase
+###Iterate through every owned starbase - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_starbase] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -821,15 +795,25 @@ alias[effect:random_owned_starbase] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = pop_faction
 ###Executes enclosed effects on every pop faction within the scoped country that meets the limit criteria
 alias[effect:every_pop_faction] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = pop_faction
+###Iterate through every pop faction within the scoped country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_pop_faction] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -844,15 +828,26 @@ alias[effect:random_pop_faction] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
 		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = pop
 ###Iterate through all owned pops
 alias[effect:every_owned_pop] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = pop
+###Iterate through all owned pops - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_pop] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -867,9 +862,8 @@ alias[effect:random_owned_pop] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
 		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -890,6 +884,18 @@ alias[effect:every_relation] = {
 }
 
 ## push_scope = country
+###Iterate through all relations - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_relation] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
 ###Iterate through all relations
 alias[effect:random_relation] = {
 	##cardinality = 0..1
@@ -898,15 +904,26 @@ alias[effect:random_relation] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
 		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = country
 ###Iterate through all countries
 alias[effect:every_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through all countries - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_country] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -921,15 +938,25 @@ alias[effect:random_country] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = planet
 ###Executes enclosed effects on every planet -owned by the scoped country- that meet the limit criteria
 alias[effect:every_owned_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Executes enclosed effects on every planet - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_planet] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -944,15 +971,25 @@ alias[effect:random_owned_planet] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = country
 ###switches Scope to and goes through all playable countries
 alias[effect:every_playable_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###switches Scope to and goes through all playable countries - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_playable_country] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -967,9 +1004,7 @@ alias[effect:random_playable_country] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -981,15 +1016,33 @@ alias[effect:every_system_in_cluster] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
-## push_scope = fleet
-###Checks if the planet's observation post meets the specified criteria
-alias[effect:observation_outpost] = {
+## push_scope = system
+###Iterate through systems in the cluster - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_system_in_cluster] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
 }
 
 ## push_scope = planet
 ###Executes enclosed effects on every planet within the scoped country's borders that meet the limit criteria
 alias[effect:every_planet_within_border] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Iterate through planets within the scoped country's borders - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_planet_within_border] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1004,60 +1057,25 @@ alias[effect:random_planet_within_border] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
-	}
-}
-
-## push_scope = fleet
-alias[effect:every_mining_station] = {
-	##cardinality = 0..1
-	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	alias_name[effect] = alias_match_left[effect]
-}
-
-## push_scope = fleet
-###Executes enclosed effects on a random orbital mining station that meets the limit criteria
-alias[effect:random_mining_station] = {
-	##cardinality = 0..1
-	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	alias_name[effect] = alias_match_left[effect]
-
-	##cardinality = 0..1
-	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
-	}
-}
-
-## push_scope = fleet
-###Executes enclosed effects on every orbital mining station in the game that meets the limit criteria
-alias[effect:every_research_station] = {
-	##cardinality = 0..1
-	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	alias_name[effect] = alias_match_left[effect]
-}
-
-## push_scope = fleet
-###Executes enclosed effects on a random orbital research station that meets the limit criteria
-alias[effect:random_research_station] = {
-	##cardinality = 0..1
-	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	alias_name[effect] = alias_match_left[effect]
-
-	##cardinality = 0..1
-	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = country
 ###switches Scope to and goes through all Subjects
 alias[effect:every_subject] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through scoped country's subjects - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_subject] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1072,15 +1090,25 @@ alias[effect:random_subject] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = fleet
 ###Executes enclosed effects on every fleet owned by the scoped country that meets the limit criteria
 alias[effect:every_owned_fleet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Iterate through owned fleets - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_fleet] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1095,15 +1123,25 @@ alias[effect:random_owned_fleet] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = country
 ###Iterate through all neighbor countries
 alias[effect:every_neighbor_country] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through all neighbor countries - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_neighbor_country] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1118,15 +1156,25 @@ alias[effect:random_neighbor_country] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = fleet
 ###Executes enclosed effects on every fleet in the scoped system that meets the limit criteria
 alias[effect:every_fleet_in_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Iterate through all fleets in the system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_fleet_in_system] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1141,9 +1189,7 @@ alias[effect:random_fleet_in_system] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1156,9 +1202,7 @@ alias[effect:random_ambient_object] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1171,9 +1215,7 @@ alias[effect:random_system_ambient_object] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1186,8 +1228,32 @@ alias[effect:every_ambient_object] = {
 }
 
 ## push_scope = ambient_object
+###Iterate through all ambient objects in the game - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_ambient_object] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = ambient_object
 ###Executes enclosed effects on every ambient object in the scoped system that meets the limit criteria
 alias[effect:every_system_ambient_object] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = ambient_object
+###Iterate through all ambient objects in the scoped system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_system_ambient_object] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1202,15 +1268,25 @@ alias[effect:random_owned_sector] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = sector
 ###Iterate through every owned sector
 alias[effect:every_owned_sector] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = sector
+###Iterate through every owned sector - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_sector] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1225,6 +1301,18 @@ alias[effect:every_rim_system] = {
 }
 
 ## push_scope = system
+###Iterate through all rim systems - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_rim_system] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
 ###Iterate through all rim systems
 alias[effect:random_rim_system] = {
 	##cardinality = 0..1
@@ -1233,15 +1321,25 @@ alias[effect:random_rim_system] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = planet
 ###Executes enclosed effects on every planet within the scoped system that meets the limit criteria
 alias[effect:every_system_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Iterate through all planets in the system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_system_planet] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1256,15 +1354,25 @@ alias[effect:random_system_planet] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = planet
 ###Executes enclosed effects for every planet in the game that meet the limit criteria
 alias[effect:every_galaxy_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Iterate through all planets in the galaxy - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_galaxy_planet] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1279,15 +1387,25 @@ alias[effect:random_galaxy_planet] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = ship
-###Executes enclosed effects on every ship -owned by the scoped country- that meet the limit criteria
+###Executes enclosed effects on every ship owned by the scoped fleet/country that meet the limit criteria
 alias[effect:every_owned_ship] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = ship
+###Iterate through all ships owned by the scoped fleet/country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_ship] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1302,15 +1420,25 @@ alias[effect:random_owned_ship] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = planet
 ###Executes enclosed effects on every planet -controlled by the scoped country- that meet the limit criteria
 alias[effect:every_controlled_planet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
+###Iterate through all planets controlled by the scoped country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_controlled_planet] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1325,9 +1453,7 @@ alias[effect:random_controlled_planet] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1356,15 +1482,25 @@ alias[effect:random_megastructure] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = megastructure
 ###Iterate through each megastructure
 alias[effect:every_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_megastructure] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1379,15 +1515,25 @@ alias[effect:random_owned_megastructure] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = megastructure
 ###Iterate through each owned megastructure
 alias[effect:every_owned_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = megastructure
+###Iterate through each owned megastructure - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_megastructure] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1402,15 +1548,25 @@ alias[effect:random_system_megastructure] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = megastructure
 ###Iterate through each megastructure in system
 alias[effect:every_system_megastructure] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = megastructure
+###Iterate through each megastructure in the system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_system_megastructure] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1426,15 +1582,25 @@ alias[effect:random_system] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = system
 ###Iterate through all systems
 alias[effect:every_system] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Iterate through all systems - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_system] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1450,6 +1616,18 @@ alias[effect:every_bordering_country] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = country
+###Iterate through all bordering countries of a system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_bordering_country] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 ## push_scope = fleet
 ### Iterate through each fleet this fleet is in combat with
 alias[effect:every_combatant_fleet] = {
@@ -1457,6 +1635,18 @@ alias[effect:every_combatant_fleet] = {
 	limit = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Iterate through each fleet this fleet is in combat with - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_combatant_fleet] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
 }
 
@@ -1470,6 +1660,18 @@ alias[effect:every_owned_pop_species] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = species
+###Iterate through each species of a country's owned pops - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_pop_species] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 ## push_scope = army
 ### Iterate through each defending army on a planet
 alias[effect:every_planet_army] = {
@@ -1477,6 +1679,18 @@ alias[effect:every_planet_army] = {
 	limit = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = army
+###Iterate through each defending army on a planet - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_planet_army] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
 }
 
@@ -1491,9 +1705,7 @@ alias[effect:random_bordering_country] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1508,9 +1720,7 @@ alias[effect:random_combatant_fleet] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1525,9 +1735,7 @@ alias[effect:random_owned_pop_species] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1542,9 +1750,7 @@ alias[effect:random_planet_army] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1559,9 +1765,7 @@ alias[effect:random_pool_leader] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1572,13 +1776,23 @@ alias[effect:random_pool_leader] = {
 ###Checks if any deposits on the planet meet the criteria
 alias[trigger:any_deposit] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = deposit
 ###Executes on every deposit on planet
 alias[effect:every_deposit] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = deposit
+###Iterate through each deposit on a planet - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_deposit] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1593,9 +1807,7 @@ alias[effect:random_deposit] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1603,7 +1815,7 @@ alias[effect:random_deposit] = {
 ###Iterate throught he planet's deposits
 alias[trigger:count_deposit] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -1624,9 +1836,7 @@ alias[effect:random_member] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1639,18 +1849,28 @@ alias[effect:every_member] = {
 }
 
 ## push_scope = country
+###Iterate through each member of the federation - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_member] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
 ###Iterate through each member of the federation
 alias[trigger:any_member] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Iterate through each member of the federation
 alias[trigger:count_member] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -1665,6 +1885,18 @@ alias[effect:every_war] = {
 }
 
 ## push_scope = war
+###Iterate through each war the country is fighting in - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_war] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = war
 ###Iterate through each war the country is fighting in
 alias[effect:random_war] = {
 	##cardinality = 0..1
@@ -1673,9 +1905,7 @@ alias[effect:random_war] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1683,8 +1913,6 @@ alias[effect:random_war] = {
 ###Checks if any wars meet the specified criteria
 alias[trigger:any_war] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = war
@@ -1692,7 +1920,7 @@ alias[trigger:any_war] = {
 alias[trigger:count_war] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = value_field
 	count = all
 }
 
@@ -1701,8 +1929,6 @@ alias[trigger:count_war] = {
 ###Iterate through each federation
 alias[trigger:any_federation] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = federation
@@ -1712,7 +1938,7 @@ alias[trigger:count_federation] = {
 	limit = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
-	count = int
+	count = value_field
 	count = all
 }
 
@@ -1725,15 +1951,26 @@ alias[effect:random_federation] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = federation
 ###Iterate through each federation
 alias[effect:every_federation] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = federation
+###Iterate through each federation - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_federation] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
 }
@@ -1743,8 +1980,6 @@ alias[effect:every_federation] = {
 ###Iterate through each fleet in the system
 alias[trigger:any_fleet_in_system] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = fleet
@@ -1752,7 +1987,7 @@ alias[trigger:any_fleet_in_system] = {
 alias[trigger:count_fleet_in_system] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1760,8 +1995,6 @@ alias[trigger:count_fleet_in_system] = {
 ###Iterate through each species in the galaxy
 alias[trigger:any_galaxy_species] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = species
@@ -1769,7 +2002,7 @@ alias[trigger:any_galaxy_species] = {
 alias[trigger:count_galaxy_species] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1782,14 +2015,25 @@ alias[effect:random_galaxy_species] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
+## push_scope = species
 ###Iterate through each species in the galaxy
 alias[effect:every_galaxy_species] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = species
+###Iterate through each species in the galaxy - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_galaxy_species] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -1799,8 +2043,6 @@ alias[effect:every_galaxy_species] = {
 ###Iterate through each species belonging to the country/planet
 alias[trigger:any_owned_species] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = species
@@ -1808,7 +2050,7 @@ alias[trigger:any_owned_species] = {
 alias[trigger:count_owned_species] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1821,9 +2063,7 @@ alias[effect:random_owned_species] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1836,11 +2076,21 @@ alias[effect:every_owned_species] = {
 }
 
 ## push_scope = species
+###Iterate through each species belonging to the country/planet - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_owned_species] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = species
 ###Iterate through each species enslaved by the country/planet
 alias[trigger:any_enslaved_species] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = species
@@ -1848,7 +2098,7 @@ alias[trigger:any_enslaved_species] = {
 alias[trigger:count_enslaved_species] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1861,9 +2111,7 @@ alias[effect:random_enslaved_species] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1875,14 +2123,24 @@ alias[effect:every_enslaved_species] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = species
+###Iterate through each species enslaved by the country/planet - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_enslaved_species] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 # 2.7
 
 ## push_scope = leader
 ###Iterate through each envoy available to the country
 alias[trigger:any_envoy] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = leader
@@ -1890,7 +2148,7 @@ alias[trigger:any_envoy] = {
 alias[trigger:count_envoy] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1903,9 +2161,7 @@ alias[effect:random_envoy] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1917,12 +2173,24 @@ alias[effect:every_envoy] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = leader
+###Iterate through each envoy available to the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_envoy] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 ## push_scope = country
 ###Checks if a specified number of playable countries meet the specified criteria
 alias[trigger:count_playable_country] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1930,8 +2198,6 @@ alias[trigger:count_playable_country] = {
 ###Iterate through each country rivalled by the current country
 alias[trigger:any_rival_country] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
@@ -1939,7 +2205,7 @@ alias[trigger:any_rival_country] = {
 alias[trigger:count_rival_country] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1952,9 +2218,7 @@ alias[effect:random_rival_country] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -1967,11 +2231,21 @@ alias[effect:every_rival_country] = {
 }
 
 ## push_scope = country
+###Iterate through each country rivalled by the current country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_rival_country] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
 ###Iterate through each country in a federation with the current country
 alias[trigger:any_federation_ally] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
@@ -1979,7 +2253,7 @@ alias[trigger:any_federation_ally] = {
 alias[trigger:count_federation_ally] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -1992,9 +2266,7 @@ alias[effect:random_federation_ally] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2006,12 +2278,22 @@ alias[effect:every_federation_ally] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = country
+###Iterate through each country in a federation with the current country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_federation_ally] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 ## push_scope = pop_faction
 ###Checks if any of the country's pop factions meet the specified criteria
 alias[trigger:any_pop_faction] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 
@@ -2022,8 +2304,6 @@ alias[trigger:any_pop_faction] = {
 ###Iterate through each first contact site the current country has
 alias[trigger:any_first_contact] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = first_contact
@@ -2031,7 +2311,7 @@ alias[trigger:any_first_contact] = {
 alias[trigger:count_first_contact] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -2044,9 +2324,7 @@ alias[effect:random_first_contact] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2059,11 +2337,21 @@ alias[effect:every_first_contact] = {
 }
 
 ## push_scope = first_contact
+###Iterate through each first contact site the current country has - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_first_contact] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = first_contact
 ###Iterate through each active first contact site the current country has
 alias[trigger:any_active_first_contact] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = first_contact
@@ -2071,7 +2359,7 @@ alias[trigger:any_active_first_contact] = {
 alias[trigger:count_active_first_contact] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -2084,9 +2372,7 @@ alias[effect:random_active_first_contact] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2098,12 +2384,22 @@ alias[effect:every_active_first_contact] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = first_contact
+###Iterate through each active first contact site the current country has - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_active_first_contact] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 ## push_scope = spy_network
 ###Iterate through each spy network
 alias[trigger:any_spynetwork] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = spy_network
@@ -2111,7 +2407,7 @@ alias[trigger:any_spynetwork] = {
 alias[trigger:count_spynetwork] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -2124,9 +2420,7 @@ alias[effect:random_spynetwork] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2138,13 +2432,23 @@ alias[effect:every_spynetwork] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = spy_network
+###Iterate through each spy network - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_spynetwork] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 
 ## push_scope = espionage_operation
 ###Iterate through each espionage operation
 alias[trigger:any_espionage_operation] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = espionage_operation
@@ -2152,7 +2456,7 @@ alias[trigger:any_espionage_operation] = {
 alias[trigger:count_espionage_operation] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -2165,9 +2469,7 @@ alias[effect:random_espionage_operation] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2179,13 +2481,23 @@ alias[effect:every_espionage_operation] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = espionage_operation
+###Iterate through each espionage operation - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_espionage_operation] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 
 ## push_scope = espionage_asset
 ###Iterate through each espionage asset
 alias[trigger:any_espionage_asset] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = espionage_asset
@@ -2193,7 +2505,7 @@ alias[trigger:any_espionage_asset] = {
 alias[trigger:count_espionage_asset] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
-	count = int
+	count = int_value_field
 	count = all
 }
 
@@ -2206,9 +2518,7 @@ alias[effect:random_espionage_asset] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2220,19 +2530,29 @@ alias[effect:every_espionage_asset] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = espionage_asset
+###Iterate through each espionage asset - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_espionage_asset] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 
 ## push_scope = ship
 ###Iterate through each ship in the system
 alias[trigger:any_ship_in_system] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = ship
 ###Iterate through each ship in the system
 alias[trigger:count_ship_in_system] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -2249,9 +2569,7 @@ alias[effect:random_ship_in_system] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2263,19 +2581,29 @@ alias[effect:every_ship_in_system] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = ship
+###Iterate through each ship in the system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_ship_in_system] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 
 ## push_scope = fleet
 ###Iterate through every fleet in the game
 alias[trigger:any_galaxy_fleet] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = fleet
 ###Iterate through every fleet in the game
 alias[trigger:count_galaxy_fleet] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -2292,15 +2620,25 @@ alias[effect:random_galaxy_fleet] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = fleet
 ###Iterate through every fleet in the game
 alias[effect:every_galaxy_fleet] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Iterate through every fleet in the game - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_galaxy_fleet] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -2316,9 +2654,7 @@ alias[effect:random_moon] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2331,17 +2667,27 @@ alias[effect:every_moon] = {
 }
 
 ## push_scope = planet
+###Executes enclosed effects on every moon that meets the limit criteria - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_moon] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = planet
 ###Checks if any of the planet's moons meet the specified criteria
 alias[trigger:any_moon] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = planet
 ###Iterate through the planet's moons
 alias[trigger:count_moon] = {
-	count = int
+	count = int_value_field
 	count = all
 	## cardinality = 0..1
 	limit = {
@@ -2353,15 +2699,13 @@ alias[trigger:count_moon] = {
 ###Iterate through all sectors in the game
 alias[trigger:any_galaxy_sector] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = sector
 ###Iterate through all sectors in the game
 alias[trigger:count_galaxy_sector] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -2375,9 +2719,7 @@ alias[effect:random_galaxy_sector] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2389,9 +2731,21 @@ alias[effect:every_galaxy_sector] = {
 	alias_name[effect] = alias_match_left[effect]
 }
 
+## push_scope = sector
+###Iterate through all sectors - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_galaxy_sector] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
 
 ## push_scope = system
-###Executes enclosed effects on every one of the scoped system's neighboring systems that meet the limit criteria, bypasses not included
+###Executes enclosed effects on every one of the scoped system's neighboring systems by hyperlane - that meet the limit criteria, bypasses not included
 alias[effect:every_neighbor_system] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
@@ -2399,7 +2753,19 @@ alias[effect:every_neighbor_system] = {
 }
 
 ## push_scope = system
-###Executes enclosed effects on a random system neigboring the scoped system that meets the limit criteria, bypasses not included
+###Executes enclosed effects on every one of the scoped system's neighboring systems by hyperlane - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_neighbor_system] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Executes enclosed effects on a random system neigboring the scoped system by hyperlane - that meets the limit criteria, bypasses not included
 alias[effect:random_neighbor_system] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
@@ -2407,74 +2773,91 @@ alias[effect:random_neighbor_system] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = system
-###Checks if any of the system's neighboring systems meet the specified criteria, bypasses not included
+###Checks if any of the system's neighboring systems by hyperlane - meet the specified criteria, bypasses not included
 alias[trigger:any_neighbor_system] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = system
-###Checks if X of the system's neighboring systems meet the specified criteria, bypasses not included
+###Checks if X of the system's neighboring systems by hyperlane - meet the specified criteria, bypasses not included
 alias[trigger:count_neighbor_system] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
 
 
 ## push_scope = system
-###Executes enclosed effects on every one of the scoped system's neighboring systems that meet the limit criteria
-alias[effect:every_neighbor_system_including_bypasses] = {
+###Executes enclosed effects on every one of the scoped system's neighboring systems (by closeness, not by hyperlanes) that meet the limit criteria, bypasses not included
+alias[effect:every_neighbor_system_euclidean] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
 }
 
 ## push_scope = system
-###Executes enclosed effects on a random system neigboring the scoped system that meets the limit criteria
-alias[effect:random_neighbor_system_including_bypasses] = {
+###Executes enclosed effects on every one of the scoped system's neighboring systems (by closeness, not by hyperlanes) - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_neighbor_system_euclidean] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = system
+###Executes enclosed effects on a random system neigboring the scoped system (by closeness, not by hyperlanes) that meets the limit criteria, bypasses not included
+alias[effect:random_neighbor_system_euclidean] = {
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = system
-###Checks if any of the system's neighboring systems meet the specified criteria
-alias[trigger:any_neighbor_system_including_bypasses] = {
+###Checks if any of the system's neighboring systems (by closeness, not by hyperlanes) meet the specified criteria, bypasses not included
+alias[trigger:any_neighbor_system_euclidean] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = system
-###Checks if X of the system's neighboring systems meet the specified criteria
-alias[trigger:count_neighbor_system_including_bypasses] = {
+###Checks if X of the system's neighboring systems (by closeness, not by hyperlanes) meet the specified criteria, bypasses not included
+alias[trigger:count_neighbor_system_euclidean] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
 
 
+
 ## push_scope = country
 ###Executes enclosed effects on every defender that meets the limit criteria in the scoped country's war with a specific enemy
 alias[effect:every_defender] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through the war's defenders - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_defender] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -2489,15 +2872,25 @@ alias[effect:random_defender] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
 ## push_scope = country
 ###Executes enclosed effects on every attacker that meets the limit criteria in the scoped country's war with a specific enemy
 alias[effect:every_attacker] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through the war's attackers - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_attacker] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
 	##cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 	alias_name[effect] = alias_match_left[effect]
@@ -2512,9 +2905,7 @@ alias[effect:random_attacker] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2522,23 +2913,19 @@ alias[effect:random_attacker] = {
 ###Checks if any of the defenders in the war meet the specified criteria
 alias[trigger:any_defender] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Checks if any attackers in the war meet the specified criteria
 alias[trigger:any_attacker] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Checks if X defenders in the war meet the specified criteria
 alias[trigger:count_defender] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -2547,7 +2934,7 @@ alias[trigger:count_defender] = {
 ###Checks if X attackers in the war meet the specified criteria
 alias[trigger:count_attacker] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -2562,6 +2949,18 @@ alias[effect:every_associate] = {
 }
 
 ## push_scope = country
+###Iterate through each associate member of the federation - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_associate] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
 ###Iterate through each associate member of the federation
 alias[effect:random_associate] = {
 	##cardinality = 0..1
@@ -2570,9 +2969,7 @@ alias[effect:random_associate] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2580,15 +2977,13 @@ alias[effect:random_associate] = {
 ###Iterate through each associate member of the federation
 alias[trigger:any_associate] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = country
 ###Iterate through each associate member of the federation
 alias[trigger:count_associate] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -2603,6 +2998,18 @@ alias[effect:every_species_pop] = {
 }
 
 ## push_scope = pop
+###Iterate through each pop that belongs to this species; warning: resource-intensive! - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_species_pop] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = pop
 ###Iterate through each pop that belongs to this species; warning: resource-intensive!
 alias[effect:random_species_pop] = {
 	##cardinality = 0..1
@@ -2611,9 +3018,7 @@ alias[effect:random_species_pop] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2621,15 +3026,13 @@ alias[effect:random_species_pop] = {
 ###Iterate through each pop that belongs to this species; warning: resource-intensive!
 alias[trigger:any_species_pop] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = pop
 ###Iterate through each pop that belongs to this species; warning: resource-intensive!
 alias[trigger:count_species_pop] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
@@ -2644,6 +3047,18 @@ alias[effect:every_fleet_in_orbit] = {
 }
 
 ## push_scope = fleet
+###Iterate through each fleet orbiting the current planet/starbase/megastructure - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_fleet_in_orbit] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
 ###Iterate through each fleet orbiting the current planet/starbase/megastructure
 alias[effect:random_fleet_in_orbit] = {
 	##cardinality = 0..1
@@ -2652,9 +3067,7 @@ alias[effect:random_fleet_in_orbit] = {
 
 	##cardinality = 0..1
 	weights = {
-		base = float
-		## cardinality = 0..inf
-		alias_name[modifier_rule_add_mult] = alias_match_left[modifier_rule_add_mult]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
 
@@ -2662,16 +3075,213 @@ alias[effect:random_fleet_in_orbit] = {
 ###Checks if any fleet in orbit of the planet meet the specified criteria
 alias[trigger:any_fleet_in_orbit] = {
 	alias_name[trigger] = alias_match_left[trigger]
-	##cardinality = 0..1
-	count = int
 }
 
 ## push_scope = fleet
 ###Iterate through each fleet orbiting the current planet/starbase/megastructure
 alias[trigger:count_fleet_in_orbit] = {
 	count = all
-	count = int
+	count = int_value_field
 	## cardinality = 0..1
 	limit = { alias_name[trigger] = alias_match_left[trigger] }
 }
 
+
+#3.1
+
+## push_scope = fleet
+###Iterate through each orbital station owned by the current country or in the current system - executes the enclosed effects on all of them for which the limit triggers return true
+alias[effect:every_orbital_station] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Iterate through each orbital station owned by the current country or in the current system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_orbital_station] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = fleet
+###Iterate through each orbital station owned by the current country or in the current system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+alias[effect:random_orbital_station] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+## push_scope = fleet
+###Iterate through each orbital station owned by the current country or in the current system - checks whether the enclosed triggers return true for any of them
+alias[trigger:any_orbital_station] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = fleet
+###Iterate through each orbital station owned by the current country or in the current system - checks whether the enclosed triggers return true for X/all of them
+alias[trigger:count_orbital_station] = {
+	count = all
+	count = int_value_field
+	## cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+}
+
+
+## push_scope = country
+###Iterate through each member of the galactic community - executes the enclosed effects on all of them for which the limit triggers return true
+alias[effect:every_galcom_member] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through each member of the galactic community - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_galcom_member] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through each member of the galactic community - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+alias[effect:random_galcom_member] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+## push_scope = country
+###Iterate through each member of the galactic community - checks whether the enclosed triggers return true for any of them
+alias[trigger:any_galcom_member] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+###Iterate through each member of the galactic community - checks whether the enclosed triggers return true for X/all of them
+alias[trigger:count_galcom_member] = {
+	count = all
+	count = int_value_field
+	## cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+}
+
+
+## push_scope = country
+###Iterate through each member of the galactic council - executes the enclosed effects on all of them for which the limit triggers return true
+alias[effect:every_council_member] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through each member of the galactic council - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_council_member] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = country
+###Iterate through each member of the galactic council - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+alias[effect:random_council_member] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+## push_scope = country
+###Iterate through each member of the galactic council - checks whether the enclosed triggers return true for any of them
+alias[trigger:any_council_member] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = country
+###Iterate through each member of the galactic council - checks whether the enclosed triggers return true for X/all of them
+alias[trigger:count_council_member] = {
+	count = all
+	count = int_value_field
+	## cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+}
+
+
+#3.3
+
+## push_scope = situation
+###Iterate through each situation a country is experiencing - executes the enclosed effects on all of them for which the limit triggers return true
+alias[effect:every_situation] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = situation
+###Iterate through each situation a country is experiencing - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+alias[effect:ordered_situation] = {
+	position = int
+	order_by = value_field
+	##cardinality = 0..1
+	inverse = bool
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## push_scope = situation
+###Iterate through each situation a country is experiencing - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+alias[effect:random_situation] = {
+	##cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+	alias_name[effect] = alias_match_left[effect]
+
+	##cardinality = 0..1
+	weights = {
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
+}
+
+## push_scope = situation
+###Iterate through each situation a country is experiencing - checks whether the enclosed triggers return true for any of them
+alias[trigger:any_situation] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## push_scope = situation
+###Iterate through each situation a country is experiencing - checks whether the enclosed triggers return true for X/all of them
+alias[trigger:count_situation] = {
+	count = all
+	count = int_value_field
+	## cardinality = 0..1
+	limit = { alias_name[trigger] = alias_match_left[trigger] }
+}

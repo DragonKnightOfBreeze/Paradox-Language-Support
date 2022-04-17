@@ -77,6 +77,8 @@ ship_size = {
 		modifier = {
 			alias_name[modifier] = alias_match_left[modifier]
 		}
+		## cardinality = 0..1
+		icon_frame = int
 	}
 	subtype[!starbase] = {
 		## cardinality = 0..1
@@ -105,7 +107,8 @@ ship_size = {
 		}
 	}
 	## cardinality = 0..1
-	text_icon = scalar
+	###Determines sprites. ship_size_military_1 is default. The following sprite keys are generated from it: GFX_text_<key>, GFX_<key>, GFX_<key>_top, GFX_<key>_top_damaged
+	icon = scalar
 	## cardinality = 0..1
 	use_shipnames_from = <ship_size>
 	## cardinality = 0..1
@@ -123,6 +126,13 @@ ship_size = {
 	## cardinality = 0..1
 	enable_default_design = bool
 	## cardinality = 0..1
+	enable_3dview_in_ship_browser = bool
+	## cardinality = 0..1
+	selectable = {
+		## cardinality = 0..1
+		host_has_dlc = enum[DLCs]
+	}
+	## cardinality = 0..1
 	default_behavior = <ship_behavior>
 	## cardinality = 0..1
 	prerequisites = {
@@ -139,6 +149,10 @@ ship_size = {
 	construction_type = spaceport
 	## cardinality = 0..1
 	construction_type = starbase_defenses
+	## cardinality = 0..1
+	selectable = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
 	## cardinality = 0..1
 	## replace_scope = { root = starbase this = starbase }
 	possible_starbase = {
@@ -166,12 +180,21 @@ ship_size = {
 	## cardinality = 0..1
 	combat_disengage_chance = float
 	## cardinality = 0..1
+	###if yes, ship design will have a 3d view in the ship browser
+	enable_3dview_in_ship_browser = yes
+	## cardinality = 0..1
 	empire_limit = {
 		base = int
 		## cardinality = 0..1
 		max = int
 		## cardinality = 0..1
 		naval_cap_div = int
+		## cardinality = 0..1
+		## replace_scope = { root = country this = country }
+		###This determines whether it shows in the breakdown for naval capacity
+		show = {
+			alias_name[trigger] = alias_match_left[trigger]
+		}
 	}
 	## cardinality = 0..1
 	## replace_scope = { root = country this = country }

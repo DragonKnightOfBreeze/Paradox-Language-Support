@@ -48,6 +48,9 @@ pop_faction = {
 	guiding_ethic = <ethos>
 
 	## cardinality = 0..1
+	use_guiding_ethic_as_pop_filter = bool
+
+	## cardinality = 0..1
 	### UI color for candidate header
 	election_header =  <sprite>
 
@@ -99,28 +102,13 @@ pop_faction = {
 	## cardinality = 0..1
 	### This = Pop. Pop's willingness weight to join this faction
 	attraction = {
-
-		## cardinality = 1..1
-		### Basic faction attraction weight
-		base = float
-
-		## cardinality = 0..1
-		alias_name[modifier_rule_add_factor] = alias_match_left[modifier_rule_add_factor]
-		## cardinality = 0..1
-		alias_name[scaled_modifier_rule] = alias_match_left[scaled_modifier_rule]
-
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 
 	## cardinality = 0..1
 	### This = Leader. Pop's willingness weight to join this faction
 	leader = {
-
-		## cardinality = 0..1
-		### Basic weight for leader
-		base = float
-
-		## cardinality = 0..1
-		alias_name[modifier_rule_add_factor] = alias_match_left[modifier_rule_add_factor]
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 
 	}
 
@@ -217,11 +205,6 @@ pop_faction = {
 			## cardinality = 0..1
 			### This = Pop faction.
 			ai_weight = {
-				## cardinality = 0..1
-				base = float
-				## cardinality = 0..1
-				factor = float
-				## cardinality = 0..1
 				alias_name[modifier_rule] = alias_match_left[modifier_rule]
 			}
 

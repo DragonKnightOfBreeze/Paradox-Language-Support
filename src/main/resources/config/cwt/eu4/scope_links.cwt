@@ -91,13 +91,6 @@ alias[effect:<continent>] = {
 
 ## scope = { country province }
 ## push_scope = province
-###Refers to any trade company found in /Europa Universalis IV/common/trade_companies/
-alias[effect:<trade_company>] = {
-	alias_name[effect] = alias_match_left[effect]
-}
-
-## scope = { country province }
-## push_scope = province
 ###Refers to any colonial region found in /Europa Universalis IV/common/colonial_regions/
 alias[effect:<colonial_region>] = {
 	## cardinality = 0..1
@@ -166,14 +159,6 @@ alias[trigger:<continent>] = {
 	alias_name[trigger] = alias_match_left[trigger]
 }
 
-
-## scope = { country province }
-## push_scope = province
-###Refers to any trade company found in /Europa Universalis IV/common/trade_companies/
-alias[trigger:<trade_company>] = {
-	alias_name[trigger] = alias_match_left[trigger]
-}
-
 ## scope = { country province }
 ## push_scope = province
 ###Refers to any colonial region found in /Europa Universalis IV/common/colonial_regions/
@@ -183,8 +168,14 @@ alias[trigger:<colonial_region>] = {
 	alias_name[trigger] = alias_match_left[trigger]
 }
 
-
-
+## scope = { country province }
+## push_scope = province
+###Refers to any trade company found in /Europa Universalis IV/common/trade_companies//
+alias[trigger:<trade_company>] = {
+	## cardinality = 0..1
+	type = enum[any_all]
+	alias_name[trigger] = alias_match_left[trigger]
+}
 
 
 #Effect scopes
@@ -1130,7 +1121,7 @@ alias[trigger:strongest_trade_power] = {
 }
 
 
-Trigger scopes
+#Trigger scopes
 ## push_scope = Unit
 ## scope = country
 ###Scopes to all armies currently fielded by the current scope.
@@ -1686,4 +1677,170 @@ alias[trigger:all_federation_members] = {
 ###Scopes to any federation members
 alias[trigger:any_federation_members] = {
 	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = province
+## push_scope = province
+###Scopes to exclude development from provinces with the current scope.
+alias[trigger:exclude_from_progress] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = mercenary_company
+alias[effect:random_hired_mercenary_company] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = country
+## push_scope = mercenary_company
+alias[trigger:any_hired_mercenary_company] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = mercenary_company
+## push_scope = province
+alias[trigger:home_province] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = mercenary_company
+## push_scope = province
+alias[effect:home_province] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = mercenary_company
+## push_scope = province
+alias[trigger:location] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = country
+alias[trigger:any_great_power] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = country
+## push_scope = country
+alias[trigger:any_other_great_power] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = mercenary_company
+## push_scope = province
+alias[effect:location] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:feudalism_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:feudalism_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:renaissance_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:renaissance_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:new_world_i_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:new_world_i_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:printing_press_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:printing_press_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:global_trade_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:global_trade_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:manufactories_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:manufactories_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:enlightenment_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:enlightenment_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = any
+## push_scope = province
+alias[effect:industrialization_origin] = {
+	alias_name[effect] = alias_match_left[effect]
+}
+
+## scope = any
+## push_scope = province
+alias[trigger:industrialization_origin] = {
+	alias_name[trigger] = alias_match_left[trigger]
+}
+
+## scope = { country province }
+## push_scope = province
+###Refers to any trade company found in /Europa Universalis IV/common/trade_companies/
+alias[effect:<trade_company>] = {
+	## cardinality = 0..1
+	limit = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	alias_name[effect] = alias_match_left[effect]
 }

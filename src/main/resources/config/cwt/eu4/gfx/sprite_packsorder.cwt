@@ -131,11 +131,17 @@ enums = {
 		dlc054_fra_sprite_pack 
 		dlc054_pru_sprite_pack_bra
 		dlc054_swe_sprite_pack 
+		dlc056_aqu_sprite_pack
 		dlc056_lan_sprite_pack 
 		dlc056_mlo_sprite_pack 
 		dlc056_nap_sprite_pack 
+		dlc056_sie_sprite_pack
 		dlc056_ven_sprite_pack 
+		dlc057_aju_sprite_pack
 		dlc057_eth_sprite_pack 
+		dlc057_mak_sprite_pack
+		dlc057_mba_sprite_pack
+		dlc057_mba_unique_sprite_pack
 		dlc057_mdi_sprite_pack 
 		dlc057_nub_sprite_pack 
 		dlc057_zan_sprite_pack 
@@ -236,12 +242,12 @@ enums = {
 		dlc102_hun_sprite_pack 
 		dlc102_ser_sprite_pack 
 		dlc102_wal_sprite_pack 
+		dlc103_sav_unique_sprite_pack
 		dlc103_sav_sprite_pack 
 		dlc103_sic_sprite_pack 
 		dlc103_swi_sprite_pack 
 		dlc104_ger_sprite_pack 
 		dlc104_ita_sprite_pack 
-		dlc107_aboriginal_sprite_pack 
 		dlc107_AYU_sprite_pack 
 		dlc107_BEI_sprite_pack 
 		dlc107_CHA_sprite_pack 
@@ -250,7 +256,12 @@ enums = {
 		dlc107_MAJ_sprite_pack 
 		dlc107_MLC_sprite_pack 
 		dlc107_PGR_sprite_pack 
+		dlc107_aboriginal_sprite_pack 
 		dlc107_polynesian_sprite_pack
+		dlc111_KON_sprite_pack
+		dlc111_RWA_sprite_pack
+		dlc111_SKA_sprite_pack
+		dlc111_ZIM_sprite_pack
 	}
 }	
 

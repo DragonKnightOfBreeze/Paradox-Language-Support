@@ -11,6 +11,15 @@ alias[trigger:<scripted_trigger>] = {
 	enum[scripted_effect_params] = scope_field
 }
 
+###The scripted trigger will draw the value of the right clause via $left_clause$.
+#Todo: Make sure this works
+alias[trigger:<event_scripted_trigger>] = {
+	## cardinality = 1..inf
+	enum[scripted_effect_params] = scalar
+	## cardinality = 1..inf
+	enum[scripted_effect_params] = scope_field
+}
+
 types = {
     type[scripted_trigger] = {
         path = "game/common/scripted_triggers"

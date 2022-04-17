@@ -367,7 +367,7 @@ alias[modifier:artillery_fire] = int
 ## scope = country
 alias[modifier:possible_policy] = int
 ## scope = country
-alias[modifier:power_projection_from_insults] = int
+alias[modifier:power_projection_from_insults] = float
 
 ## scope = province
 alias[modifier:local_religious_unity_contribution] = float
@@ -425,7 +425,7 @@ alias[modifier:max_free_cities] = int
 alias[modifier:max_electors] = int
 
 ## scope = country
-### Adds to the maximum number of electors allowed
+### Is an imperial modifier
 alias[modifier:is_imperial_modifier] = bool
 
 ## scope = country
@@ -495,3 +495,206 @@ alias[modifier:state_governing_cost_increase] = int
 ## scope = country
 ### Yearly doom reduction
 alias[modifier:yearly_doom_reduction] = float
+
+## scope = country
+### Global rebel suppression efficiency
+alias[modifier:global_rebel_suppression_efficiency] = float
+
+## scope = country
+### Cawa cost modifier
+alias[modifier:cawa_cost_modifier] = float
+
+## scope = country
+### Monthly gold inflation modifier
+alias[modifier:monthly_gold_inflation_modifier] = float
+
+## scope = country
+### Country gold depletion chance modifier
+alias[modifier:gold_depletion_chance_modifier] = float	
+
+## scope = province
+### Province gold depletion chance modifier
+alias[modifier:local_gold_depletion_chance_modifier] = float	
+	
+## scope = country
+### Gobal monthly devastation
+alias[modifier:global_monthly_devastation] = float
+
+## scope = country
+### Global prosperity growth
+alias[modifier:global_prosperity_growth] = float
+	
+## scope = country
+### Global prosperity growth
+alias[modifier:global_prosperity_growth] = float
+
+## scope = province
+### Local prosperity growth
+alias[modifier:local_prosperity_growth] = float		
+	
+## scope = country
+### Monthly favor modifier
+alias[modifier:monthly_favor_modifier] = float	
+	
+## scope = country
+### Tolerance of heretics capacity
+alias[modifier:tolerance_of_heretics_capacity] = float
+
+## scope = country
+### Tolerance of heathens capacity
+alias[modifier:tolerance_of_heathens_capacity] = float
+	
+## scope = country
+### Move capital cost modifier
+alias[modifier:move_capital_cost_modifier] = float		
+	
+## scope = country
+### Movement speed in fleet modifier 
+alias[modifier:movement_speed_in_fleet_modifier] = int
+
+## scope = country
+### yearly_authority
+alias[modifier:yearly_authority] = float			
+	
+## scope = country
+### Overlord naval forcelimit
+alias[modifier:overlord_naval_forcelimit] = float
+
+## scope = country
+### All estate loyalty equilibrium
+alias[modifier:all_estate_loyalty_equilibrium] = float	
+
+## scope = province
+### Local amount of cawa
+alias[modifier:local_amount_of_cawa] = float		
+
+## scope = country
+### Is a cawa modifier
+alias[modifier:is_cawa_modifier] = bool	
+ 
+## scope = country
+### Country amount of cawa
+alias[modifier:amount_of_cawa] = float
+
+## scope = country
+alias[modifier:<estate_modifier>] = float[-1.0..1.0]
+
+## scope = country
+alias[modifier:country_admin_power] = int
+
+## scope = country
+alias[modifier:country_diplomatic_power] = int
+
+## scope = country
+alias[modifier:country_military_power] = int
+
+## scope = country
+alias[modifier:yearly_patriarch_authority] = float
+
+## scope = country
+alias[modifier:yearly_karma_decay] = float
+
+## scope = country
+alias[modifier:special_unit_forcelimit_fraction] = float
+
+## scope = country
+alias[modifier:available_province_loot] = float
+
+## scope = country
+alias[modifier:stability_cost_to_declare_war] = float
+
+## scope = country
+alias[modifier:appoint_cardinal_cost] = float
+
+## scope = country
+alias[modifier:curia_treasury_contribution] = float
+
+## scope = country
+alias[modifier:curia_powers_cost] = float
+
+## scope = country
+alias[modifier:imperial_reform_catholic_approval] = int
+
+## scope = country
+alias[modifier:unrest_catholic_provinces] = float
+
+## scope = country
+alias[modifier:infantry_fire] = float
+
+## scope = country
+alias[modifier:infantry_shock] = float
+
+## scope = country
+alias[modifier:cavalry_fire] = float
+
+## scope = country
+alias[modifier:cavalry_shock] = float
+
+## scope = country
+alias[modifier:artillery_fire] = float
+
+## scope = country
+alias[modifier:artillery_shock] = float
+
+## scope = country
+alias[modifier:max_revolutionary_zeal] = int
+
+## scope = country
+alias[modifier:yearly_revolutionary_zeal] = float
+
+## scope = country
+alias[modifier:mercenary_manpower] = float
+
+## scope = country
+alias[modifier:flagship_cost] = float
+
+## scope = country
+alias[modifier:hegemon_strength] = float[0.0..100.0]
+
+## scope = country
+alias[modifier:monthly_piety_accelerator] = float
+
+## scope = province
+alias[modifier:blockade_force_required] = float
+## scope = province
+alias[modifier:hostile_disembark_speed] = float
+## scope = province
+alias[modifier:local_governing_cost] = float
+## scope = province
+alias[modifier:hostile_fleet_attrition] = float
+## scope = country
+alias[modifier:governing_capacity] = float
+## scope = country
+alias[modifier:allowed_marine_fraction] = float
+
+## scope = country
+alias[modifier:local_heir_adm] = int
+alias[modifier:local_heir_dip] = int
+alias[modifier:local_heir_mil] = int
+alias[modifier:cb_on_religious_enemies] = bool
+alias[modifier:may_perform_slave_raid_on_same_religion] = bool
+alias[modifier:state_governing_cost] = float
+alias[modifier:disengagement_chance] = float
+alias[modifier:block_introduce_heir] = bool
+alias[modifier:may_recruit_female_generals] = bool
+alias[modifier:is_revolutionary_guard_modifier] = bool
+alias[modifier:special_unit_forcelimit] = float
+alias[modifier:global_religious_conversion_resistance] = float
+alias[modifier:local_religious_conversion_resistance] = float
+alias[modifier:legitimate_subject_elector] = int
+alias[modifier:mercantilism_cost] = float
+alias[modifier:secondary_religion] = bool
+alias[modifier:monarch_lifespan] = float
+alias[modifier:accept_vassalization_reasons] = int
+alias[modifier:institution_growth] = int
+alias[modifier:trade_company_governing_cost] = float
+alias[modifier:expand_administration_cost] = float
+alias[modifier:transfer_trade_power_reasons] = int
+alias[modifier:relation_with_heretics] = int
+alias[modifier:no_stability_loss_on_monarch_death] = bool
+alias[modifier:relation_with_same_religion] = int
+alias[modifier:overlord_naval_forcelimit_modifier] = float
+alias[modifier:free_land_leader_pool] = float
+alias[modifier:free_navy_leader_pool] = float
+alias[modifier:relation_with_same_culture] = int
+alias[modifier:relation_with_same_culture_group] = int
