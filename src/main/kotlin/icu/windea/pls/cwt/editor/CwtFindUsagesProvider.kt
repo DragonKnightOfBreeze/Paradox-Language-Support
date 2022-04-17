@@ -10,6 +10,7 @@ import icu.windea.pls.cwt.psi.*
 
 class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
 	companion object {
+		val _optionDescription = PlsBundle.message("cwt.description.option")
 		val _propertyDescription = PlsBundle.message("cwt.description.property")
 		val _valueDescription = PlsBundle.message("cwt.description.value")
 	}
@@ -28,6 +29,7 @@ class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
+			is CwtOption -> if(location == UsageViewTypeLocation.INSTANCE) _optionDescription else element.name
 			is CwtProperty -> if(location == UsageViewTypeLocation.INSTANCE) _propertyDescription else element.name
 			is CwtString -> if(location == UsageViewTypeLocation.INSTANCE) _valueDescription else element.value
 			else -> null

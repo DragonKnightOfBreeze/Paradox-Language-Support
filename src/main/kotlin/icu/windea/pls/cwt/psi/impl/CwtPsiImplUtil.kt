@@ -208,7 +208,7 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun isEmpty(element: CwtBlock): Boolean {
 		for(child in element.children) {
-			if(child is CwtProperty || child is CwtValue || child is CwtOption) return false
+			if(child is CwtOption || child is CwtProperty || child is CwtValue) return false
 		}
 		return true
 	}
@@ -216,7 +216,7 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun isNotEmpty(element: CwtBlock): Boolean {
 		for(child in element.children) {
-			if(child is CwtProperty || child is CwtValue || child is CwtOption) return true
+			if(child is CwtOption || child is CwtProperty || child is CwtValue) return true
 		}
 		return true
 	}
@@ -225,8 +225,8 @@ object CwtPsiImplUtil {
 	fun isObject(element: CwtBlock): Boolean {
 		for(child in element.children) {
 			when(child) {
-				is CwtProperty -> return true
 				is CwtOption -> return true
+				is CwtProperty -> return true
 				is CwtValue -> return false
 			}
 		}
@@ -237,8 +237,8 @@ object CwtPsiImplUtil {
 	fun isArray(element: CwtBlock): Boolean {
 		for(child in element.children) {
 			when(child) {
-				is CwtProperty -> return false
 				is CwtOption -> return false
+				is CwtProperty -> return false
 				is CwtValue -> return true
 			}
 		}

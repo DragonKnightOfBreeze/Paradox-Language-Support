@@ -40,7 +40,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return when(element) {
 			is CwtProperty -> getPropertyDoc(element, originalElement)
 			is CwtString -> getStringDoc(element)
-			
 			else -> null
 		}
 	}
