@@ -12,16 +12,11 @@ This plugin is under developing, some complex functions may not be implemented y
 If you want more perfect language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
 
-For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/zh/) .
+For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) .
 
 # Reference
 
-About this plugin
-
-* Plugin Information: [plugin.xml](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/src/main/resources/META-INF/plugin.xml)
-* Change Log: [CHANGELOG.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md) (Written in Simple Chinese)
-
-Related links
+Related links：
 
 * [cwtools](https://github.com/cwtools/cwtools)
 * [cwtools vscode](https://github.com/cwtools/cwtools-vscode)

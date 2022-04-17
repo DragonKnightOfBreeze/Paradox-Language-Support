@@ -24,6 +24,11 @@
   <component name="SuppressKotlinCodeStyleNotification">
     <option name="disableForAll" value="true" />
   </component>
+  <component name="SwUserDefinedSpecifications">
+    <option name="specTypeByUrl">
+      <map />
+    </option>
+  </component>
   <component name="idea.plugin.psiviewer.controller.project.PsiViewerProjectService">
     <option name="HIGHLIGHT" value="false" />
     <option name="FILTER_WHITESPACE" value="false" />

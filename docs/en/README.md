@@ -13,19 +13,14 @@ Introduction:
 * Supported game types: ck2 / ck3 / eu4 / hoi4 / ir / stellaris / vic2.
 * Supported paradox games: Crusader Kings II / Crusader Kings III / Europa Universalis IV / Hearts of Iron IV / Imperator: Rome / Stellaris / Victoria II.
 
-Tip:
+Tips:
 
 * If you want to add game directory and third party mod as dependencies, just add them as libraries to the project module of your mod, like what Java and Kotlin does.
 * If you have met some IDE problems about indices, please try to rebuild indices. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
 
 # Reference
 
-About this plugin
-
-* Plugin Information: [plugin.xml](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/src/main/resources/META-INF/plugin.xml)
-* Change Log: [CHANGELOG.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md) (Written in Simple Chinese)
-
-Related links
+Related links：
 
 * [cwtools](https://github.com/cwtools/cwtools)
 * [cwtools vscode](https://github.com/cwtools/cwtools-vscode)

@@ -1,4 +1,12 @@
-* **Start**
-    * [Introduce](./)
-    * [Quick Start](quick-start.md)
-    * [Use Advice](use-advice.md)
+* **开始**
+  * [简介](./)
+  * [快速开始](quick-start.md)
+  * [使用建议](use-advice.md)
+* **功能介绍**
+  * [脚本语言支持](script-language-support.md)
+  * [本地化语言支持](localisation-language-support.md)
+  * [导入CWT规则](import-cwt-rules.md)
+  * [导入游戏目录与游戏模组](import-game-and-mod-directories.md)
+  * [插件设置](plugin-settings.md)
+* **常见问题**
+  * 待反馈

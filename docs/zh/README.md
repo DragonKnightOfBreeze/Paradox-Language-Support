@@ -20,12 +20,7 @@ Paradox语言支持。
 
 # 参考
 
-关于本插件
-
-* 插件信息：[plugin.xml](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/src/main/resources/META-INF/plugin.xml)
-* 更新日志：[CHANGELOG.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CHANGELOG.md)
-
-相关链接
+相关链接：
 
 * [cwtools](https://github.com/cwtools/cwtools)
 * [cwtools vscode](https://github.com/cwtools/cwtools-vscode)

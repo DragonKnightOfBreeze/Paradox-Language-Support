@@ -1,12 +1,12 @@
-* **开始**
-  * [简介](./) 
-  * [快速开始](quick-start.md)
-  * [使用建议](use-advice.md)
-* **功能介绍**
-  * 脚本语言支持
-  * 本地化语言支持
-  * 导入CWT规则
-  * 导入游戏目录与游戏模组
-  * 插件设置
-* **常见问题**
-  * 待反馈
+* **Start**
+  * [Introduce](./)
+  * [Quick Start](quick-start.md)
+  * [Use Advice](use-advice.md)
+* **Function Introduce**
+  * [Script Language Support](script-language-support.md)
+  * [Localisation Language Support](localisation-language-support.md)
+  * [Import Cwt Rules](import-cwt-rules.md)
+  * [Import Game and Mod Directories](import-game-and-mod-directories.md)
+  * [Plugin Settings](plugin-settings.md)
+* **FAQ**
+  * Wait For Feedback
