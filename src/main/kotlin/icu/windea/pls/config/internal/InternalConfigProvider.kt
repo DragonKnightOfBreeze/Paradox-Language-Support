@@ -3,9 +3,9 @@ package icu.windea.pls.config.internal
 import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import org.slf4j.*
 import org.yaml.snakeyaml.*
+import java.lang.invoke.*
 
 /**
  * 内置规则的提供器。
@@ -14,7 +14,7 @@ import org.yaml.snakeyaml.*
  */
 class InternalConfigProvider {
 	companion object {
-		private val logger = LoggerFactory.getLogger(CwtConfigProvider::class.java)
+		private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 		private val yaml = Yaml()
 		
 		private const val internalConfigPath = "/config/internal"

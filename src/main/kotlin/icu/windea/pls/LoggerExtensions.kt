@@ -3,6 +3,11 @@
 package icu.windea.pls
 
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+private val loggerCache = createCache<Class<*>, Logger> { LoggerFactory.getLogger(it) }
+
+fun Any.logger(): Logger = loggerCache.get(this.javaClass)
 
 inline fun Logger.trace(lazyMessage: () -> String) {
 	this.trace(lazyMessage())

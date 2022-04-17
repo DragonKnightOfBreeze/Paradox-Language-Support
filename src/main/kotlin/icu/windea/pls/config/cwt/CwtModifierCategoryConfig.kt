@@ -10,7 +10,7 @@ import icu.windea.pls.cwt.psi.*
 data class CwtModifierCategoryConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name:String,
-	val internalId: String,
+	val internalId: String? = null,
 	val supportedScopes:List<String>
 ): CwtConfig<CwtProperty> {
 	val supportedScopesText = supportedScopes.joinToString(" ","{ "," }")

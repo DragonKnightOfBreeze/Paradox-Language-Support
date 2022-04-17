@@ -27,7 +27,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			val rootType = getRootType(currentFile)
 			if(rootType != null) {
 				val path = getPath(subPaths)
-				val gameType = getGameType(currentFile,rootType) ?: ParadoxGameType.defaultValue()
+				val gameType = getGameType(currentFile, rootType) ?: ParadoxGameType.defaultValue()
 				
 				//如果存在对应的folders配置，则path要与之匹配
 				val folders = getCwtConfig(getDefaultProject()).get(gameType)?.folders
@@ -47,9 +47,14 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						}
 						//自动处理bom（改为正确的bom，不改变编码）
 						runCatching {
-							val hasBom = file.bom.let{ it != null && it contentEquals utf8Bom  }  
-							val isNameList = path.root == "name_lists"
-							if(!hasBom && isNameList) file.bom = utf8Bom else if(hasBom && !isNameList) file.bom = null
+							val hasBom = file.hasBom(utf8Bom)
+							val isNameList = path.parent.startsWith("common/name_lists")
+							//不能使用WriteAction.runAndWait()，可能导致死锁
+							if(isNameList && !hasBom) {
+								file.addBom(utf8Bom, false)
+							} else if(!isNameList && hasBom) {
+								file.removeBom(utf8Bom, false)
+							}
 						}
 						ParadoxScriptFileType
 					}
@@ -61,8 +66,11 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						}
 						//自动处理bom（改为正确的bom，不改变编码）
 						runCatching {
-							val hasBom = file.bom.let{ it != null && it contentEquals utf8Bom  }
-							if(!hasBom) file.bom = utf8Bom
+							val hasBom = file.hasBom(utf8Bom)
+							//不能使用WriteAction.runAndWait()，可能导致死锁
+							if(!hasBom) {
+								file.addBom(utf8Bom, false)
+							}
 						}
 						ParadoxLocalisationFileType
 					}
@@ -102,9 +110,9 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	
 	private fun getRootType(file: VirtualFile): ParadoxRootType? {
 		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
-		val name = file.name.substringBeforeLast('.',"")
+		val name = file.name.substringBeforeLast('.', "")
 		//处理特殊顶级目录的情况
-		when{
+		when {
 			name == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
 			name == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
 			name == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
@@ -113,14 +121,14 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		for(child in file.children) {
 			val childName = child.name
 			when {
-				ParadoxGameType.exeFileNames.any {childName.equals(it,true) } -> return ParadoxRootType.Stdlib
-				childName.equals(descriptorFileName,true) -> return ParadoxRootType.Mod
+				ParadoxGameType.exeFileNames.any { childName.equals(it, true) } -> return ParadoxRootType.Stdlib
+				childName.equals(descriptorFileName, true) -> return ParadoxRootType.Mod
 			}
 		}
 		return null
 	}
 	
-	private fun getGameType(file: VirtualFile,rootType: ParadoxRootType): ParadoxGameType? {
+	private fun getGameType(file: VirtualFile, rootType: ParadoxRootType): ParadoxGameType? {
 		if(file is StubVirtualFile || !file.isValid || !file.isDirectory) return null
 		//如果是游戏目录后者特定游戏子目录则基于游戏执行文件，否则基于特殊文件 .${gameType}
 		try {
@@ -129,15 +137,15 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 					for(child in file.children) {
 						val childName = child.name
 						for(value in ParadoxGameType.values) {
-							if(childName.equals(value.exeFileName,true)) return value
+							if(childName.equals(value.exeFileName, true)) return value
 						}
 					}
 				}
-				ParadoxRootType.PdxLauncher, ParadoxRootType.PdxOnlineAssets,ParadoxRootType.TweakerGuiAssets -> {
+				ParadoxRootType.PdxLauncher, ParadoxRootType.PdxOnlineAssets, ParadoxRootType.TweakerGuiAssets -> {
 					for(child in file.parent.children) {
 						val childName = child.name
 						for(value in ParadoxGameType.values) {
-							if(childName.equals(value.exeFileName,true)) return value
+							if(childName.equals(value.exeFileName, true)) return value
 						}
 					}
 				}

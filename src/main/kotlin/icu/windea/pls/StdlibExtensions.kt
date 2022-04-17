@@ -336,7 +336,7 @@ fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no")
 
 fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
 
-private val pathCache = createCache<String, Path> { Path.of(it) }
+private val pathCache = createLimitedCache<String, Path> { Path.of(it) }
 
 fun String.toPath() = pathCache.get(this)
 

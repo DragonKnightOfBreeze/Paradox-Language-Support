@@ -78,7 +78,8 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 			val file = parameters.originalFile
 			if(file !is ParadoxScriptFile) return
-			if(file.fileInfo?.path?.path != "events") return //认为事件的脚本文件必须直接放到events目录下
+			val fileInfo = file.fileInfo ?: return
+			if(!fileInfo.path.parent.startsWith("events")) return
 			val property = parameters.position.parentOfType<ParadoxScriptProperty>() ?: return
 			if(!property.name.equals("id",true)) return
 			val eventDefinition = property.parentOfType<ParadoxScriptProperty>()?:return

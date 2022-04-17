@@ -66,9 +66,9 @@
   <extensions defaultExtensionNs="com.intellij">
     <!--region Core-->
     <!--suppress PluginXmlValidity -->
-    <applicationService serviceImplementation="icu.windea.pls.config.internal.InternalConfigProvider" preload="true" order="first"/>
+    <applicationService serviceImplementation="icu.windea.pls.config.internal.InternalConfigProvider" preload="true" />
     <!--suppress PluginXmlValidity -->
-    <projectService serviceImplementation="icu.windea.pls.config.cwt.CwtConfigProvider" preload="true" order="first"/>
+    <projectService serviceImplementation="icu.windea.pls.config.cwt.CwtConfigProvider" preload="true" />
    <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
 

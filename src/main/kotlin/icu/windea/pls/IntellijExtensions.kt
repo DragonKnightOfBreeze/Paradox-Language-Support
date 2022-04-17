@@ -8,6 +8,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -20,6 +21,9 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
+import com.intellij.util.ui.IoErrorText
+import java.io.*
+import java.util.*
 
 //region Misc Extensions
 val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
@@ -163,15 +167,53 @@ fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) anonymousEscapedString el
 //	return destination
 //}
 
-/**将VirtualFile转化为指定类型的PsiFile。*/
+/** 将VirtualFile转化为指定类型的PsiFile。 */
 inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
 	return PsiManager.getInstance(project).findFile(this) as? T
 }
 
-/**得到当前VirtualFile相对于指定的VirtualFile的路径。*/
-fun VirtualFile.relativePathTo(other: VirtualFile): String{
+/** 得到当前VirtualFile相对于指定的VirtualFile的路径。 */
+fun VirtualFile.relativePathTo(other: VirtualFile): String {
 	return this.path.removePrefix(other.path);
 }
+
+/** （物理层面上）判断虚拟文件是否拥有BOM。 */
+fun VirtualFile.hasBom(bom: ByteArray): Boolean {
+	return this.bom.let { it != null && it contentEquals utf8Bom }
+}
+
+/** （物理层面上）为虚拟文件添加BOM。 */
+fun VirtualFile.addBom(bom: ByteArray, wait: Boolean = true) {
+	try {
+		this.bom = bom
+		val bytes = this.contentsToByteArray()
+		val contentWithAddedBom = ArrayUtil.mergeArrays(bom, bytes)
+		if(wait) {
+			WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithAddedBom) }
+		} else {
+			WriteAction.run<IOException> { this.setBinaryContent(contentWithAddedBom) }
+		}
+	} catch(ex: IOException) {
+		logger().warn("Unexpected exception occurred on attempt to add BOM from file $this", ex)
+	}
+}
+
+/** （物理层面上）为虚拟文件移除BOM。 */
+fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
+	this.bom = null
+	try {
+		val bytes = this.contentsToByteArray()
+		val contentWithStrippedBom = Arrays.copyOfRange(bytes, bom.size, bytes.size)
+		if(wait) {
+			WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithStrippedBom) }
+		} else {
+			WriteAction.run<IOException> { this.setBinaryContent(contentWithStrippedBom) }
+		}
+	} catch(ex: IOException) {
+		logger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", ex)
+	}
+}
+
 //endregion
 
 //region PsiElement Extensions

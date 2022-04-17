@@ -11,6 +11,8 @@
 	psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
 
 	tokens=[
+	  BLANK='regexp:\s+'
+	  NEW_LINE='regexp:\R'
 	  EQUAL_SIGN="="
 	  LT_SIGN="<"
 	  GT_SIGN=">"
@@ -56,6 +58,7 @@ private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property
 
 variable ::= variable_name variable_separator variable_value {
   pin(".*")=1
+  recoverWhile=variable_recover
   elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.getVariableType"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements="icu.windea.pls.script.psi.ParadoxScriptNamedElement"
@@ -68,9 +71,12 @@ variable_name ::= VARIABLE_NAME_ID{
 }
 private variable_separator ::= "="
 variable_value ::= boolean | number | string
+//当前变量解析失败时，需要跳过继续解析下一行
+private variable_recover ::= !(NEW_LINE | '{' | '}' | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 property ::= property_key property_separator property_value {
   pin(".*")=1
+  recoverWhile=property_recover
   elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.getPropertyType"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
@@ -85,6 +91,8 @@ property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
 }
 private property_separator ::= "=" | "<" | ">" | "<=" | ">=" | "<>"
 property_value ::= value
+//当前属性解析失败时，需要跳过继续解析下一个
+private property_recover ::= !('{' | '}' | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 value ::= variable_reference | boolean | number | string_value | block{
   implements="com.intellij.psi.PsiLiteralValue"

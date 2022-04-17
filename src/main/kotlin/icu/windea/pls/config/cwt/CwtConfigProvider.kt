@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import org.slf4j.*
+import java.lang.invoke.*
 
 /**
  * CWT规则的提供器。
@@ -14,7 +15,7 @@ class CwtConfigProvider(
 	val project: Project
 ) {
 	companion object {
-		private val logger = LoggerFactory.getLogger(CwtConfigProvider::class.java)
+		private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 		
 		private const val cwtConfigPath = "/config/cwt"
 	}

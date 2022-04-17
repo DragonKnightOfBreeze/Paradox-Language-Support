@@ -85,7 +85,7 @@ property_key ::= PROPERTY_KEY_ID
 property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
   pin(".*")=1
 }
-//当前本地化属性解析失败时，需要跳过继续解析下一个
+//当前本地化属性解析失败时，需要跳过继续解析下一行
 private property_recover ::= !(NEW_LINE | COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID)
 
 private property_value_item ::= rich_text *

@@ -8,6 +8,10 @@ import java.nio.file.*
 
 private const val maxCacheSize = 1000L
 
-fun <K, V> createCache(builder: (K) -> V): LoadingCache<K, V> {
+fun <K, V> createLimitedCache(builder: (K) -> V): LoadingCache<K, V> {
 	return CacheBuilder.newBuilder().maximumSize(maxCacheSize).build(CacheLoader.from(Function { builder(it) }))
-} 
+}
+
+fun <K, V> createCache(builder: (K) -> V): LoadingCache<K, V> {
+	return CacheBuilder.newBuilder().build(CacheLoader.from(Function { builder(it) }))
+}

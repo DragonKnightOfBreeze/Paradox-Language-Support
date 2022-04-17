@@ -12,6 +12,9 @@ import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+/**
+ * （同一文件中）重复的变量的检查。
+ */
 class DuplicateVariablesInspection : LocalInspectionTool() {
 	companion object {
 		private fun _description(name: String) = PlsBundle.message("script.inspection.duplicateVariables.description", name)

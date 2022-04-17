@@ -23,7 +23,6 @@ import kotlin.Pair
 
 //region Keys
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
-val cachedParadoxFileInfoKey = Key<CachedValue<ParadoxFileInfo>>("cachedParadoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 val cachedParadoxDefinitionPropertyInfoKey = Key<CachedValue<ParadoxDefinitionPropertyInfo>>("cachedParadoxDefinitionPropertyInfo")
 val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
@@ -160,119 +159,9 @@ private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 
 val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 
-val PsiFile.fileInfo: ParadoxFileInfo? get() = doGetFileInfo(this.originalFile) //使用原始文件
+val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile.fileInfo //使用原始文件
 
-val PsiElement.fileInfo: ParadoxFileInfo? get() = doGetFileInfo(this.containingFile.originalFile) //使用原始文件
-
-internal fun canGetFileInfo(file: PsiFile): Boolean {
-	//paradoxScriptFile, paradoxLocalisationFile, ddsFile
-	if(file is ParadoxScriptFile || file is ParadoxLocalisationFile) return true
-	val extension = file.name.substringAfterLast('.').lowercase()
-	if(extension == "dds") return true
-	return false
-}
-
-private fun doGetFileInfo(file: PsiFile): ParadoxFileInfo? {
-	if(!canGetFileInfo(file)) return null
-	//尝试基于fileViewProvider得到fileInfo
-	val quickFileInfo = file.getUserData(paradoxFileInfoKey)
-	if(quickFileInfo != null) return quickFileInfo
-	return CachedValuesManager.getCachedValue(file, cachedParadoxFileInfoKey) {
-		val value = file.virtualFile?.getUserData(paradoxFileInfoKey) ?: resolveFileInfo(file)
-		CachedValueProvider.Result.create(value, file)
-	}
-}
-
-private fun resolveFileInfo(file: PsiFile): ParadoxFileInfo? {
-	val fileType = getFileType(file) ?: return null
-	val fileName = file.name
-	val subPaths = LinkedList<String>()
-	subPaths.addFirst(fileName)
-	var currentFile = file.parent
-	while(currentFile != null) {
-		val rootType = getRootType(currentFile)
-		val rootPath = currentFile.virtualFile.toNioPath()
-		if(rootType != null) {
-			val path = getPath(subPaths)
-			val gameType = getGameType(currentFile, rootType) ?: ParadoxGameType.defaultValue()
-			return ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
-		}
-		subPaths.addFirst(currentFile.name)
-		currentFile = currentFile.parent
-	}
-	return null
-}
-
-private fun getPath(subPaths: List<String>): ParadoxPath {
-	return ParadoxPath(subPaths)
-}
-
-private fun getFileType(file: PsiFile): ParadoxFileType? {
-	val fileName = file.name.lowercase()
-	val fileExtension = fileName.substringAfterLast('.')
-	return when {
-		fileExtension in scriptFileExtensions -> ParadoxFileType.ParadoxScript
-		fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
-		else -> null
-	}
-}
-
-private fun getRootType(file: PsiDirectory): ParadoxRootType? {
-	if(!file.isDirectory) return null
-	val name = file.name.substringBeforeLast('.', "")
-	//处理特殊顶级目录的情况
-	when {
-		name == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
-		name == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
-		name == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
-	}
-	//处理游戏目录和模组目录的情况的情况
-	for(child in file.files) {
-		val childName = child.name
-		when {
-			ParadoxGameType.exeFileNames.any { childName.equals(it, true) } -> return ParadoxRootType.Stdlib
-			childName.equals(descriptorFileName, true) -> return ParadoxRootType.Mod
-		}
-	}
-	return null
-}
-
-private fun getGameType(file: PsiDirectory, rootType: ParadoxRootType): ParadoxGameType? {
-	if(!file.isDirectory) return null
-	//如果是游戏目录后者特定游戏子目录则基于游戏执行文件，否则基于特殊文件 .${gameType}
-	try {
-		when(rootType) {
-			ParadoxRootType.Stdlib -> {
-				for(child in file.files) {
-					val childName = child.name
-					for(value in ParadoxGameType.values) {
-						if(childName.equals(value.exeFileName, true)) return value
-					}
-				}
-			}
-			ParadoxRootType.PdxLauncher, ParadoxRootType.PdxOnlineAssets, ParadoxRootType.TweakerGuiAssets -> {
-				for(child in file.parent?.files ?: return null) {
-					val childName = child.name
-					for(value in ParadoxGameType.values) {
-						if(childName.equals(value.exeFileName, true)) return value
-					}
-				}
-			}
-			else -> {
-				for(child in file.files) {
-					val childName = child.name
-					if(childName.startsWith('.')) {
-						val gameType = ParadoxGameType.resolve(childName.drop(1))
-						if(gameType != null) return gameType
-					}
-				}
-			}
-		}
-	} catch(e: Exception) {
-		return null
-	}
-	return null
-}
+val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
@@ -468,8 +357,8 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 
 val ParadoxScriptFile.eventNamespace: String?
 	get() {
-		//必须是事件的脚本文件
-		if(fileInfo?.path?.path != "events") return null //认为事件的脚本文件必须直接放到events目录下
+		val fileInfo = this.fileInfo ?: return null
+		if(!fileInfo.path.parent.startsWith("events")) return null
 		//必须是第一个属性且名为"namespace"，忽略大小写
 		val block = block ?: return null
 		val firstProperty = PsiTreeUtil.findChildOfType(block, ParadoxScriptProperty::class.java)

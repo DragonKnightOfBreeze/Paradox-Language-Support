@@ -5,6 +5,11 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * 不匹配的事件ID的检查。
+ * 
+ * 仅适用于类型为event的定义。
+ */
 class MismatchedEventIdInspection : LocalInspectionTool() {
 	companion object {
 		private fun _description(id: String, namespace: String) = PlsBundle.message("script.inspection.mismatchedEventId.description", id, namespace)

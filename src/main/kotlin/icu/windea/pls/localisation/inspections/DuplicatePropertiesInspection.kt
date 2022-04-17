@@ -12,6 +12,9 @@ import icu.windea.pls.localisation.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+/**
+ * （同一文件中）重复的属性的检查。
+ */
 class DuplicatePropertiesInspection : LocalInspectionTool() {
 	companion object {
 		private fun _description(key: String) = PlsBundle.message("localisation.inspection.duplicateProperties.description", key)

@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
+import java.lang.invoke.*
 import java.nio.file.*
 import java.util.concurrent.*
 
@@ -15,7 +16,7 @@ import java.util.concurrent.*
  */
 @Suppress("unused")
 object ParadoxIconUrlResolver {
-	private val logger = LoggerFactory.getLogger(ParadoxIconUrlResolver::class.java)
+	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 	
 	private val nameUrlCache = ConcurrentHashMap<String, String>()
 	private val spriteNameUrlCache = ConcurrentHashMap<String, String>()

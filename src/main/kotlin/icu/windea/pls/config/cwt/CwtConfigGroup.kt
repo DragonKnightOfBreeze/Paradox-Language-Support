@@ -20,7 +20,7 @@ class CwtConfigGroup(
 	val localisationLinks: Map<String, CwtLinkConfig>
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
-	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
+	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig> //目前版本的CWT配置已经不再使用
 	val modifiers: Map<String, CwtModifierConfig>
 	val scopes: Map<String, CwtScopeConfig>
 	val scopeAliasMap: Map<String, CwtScopeConfig>
@@ -123,8 +123,10 @@ class CwtConfigGroup(
 						for(prop in props) {
 							val modifierCategoryName = prop.key
 							val categoryConfig = resolveModifierCategoryConfig(prop, modifierCategoryName) ?: continue
-							modifierCategories[categoryConfig.name] = categoryConfig
-							modifierCategoryIdMap[categoryConfig.internalId] = categoryConfig
+							with(categoryConfig){
+								modifierCategories[name] = categoryConfig
+								if(internalId != null) modifierCategoryIdMap[internalId] = categoryConfig
+							}
 						}
 					}
 					//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
@@ -371,7 +373,8 @@ class CwtConfigGroup(
 				"output_scope" -> outputScope = prop.value
 			}
 		}
-		if(inputScopes == null || outputScope == null) return null
+		if(inputScopes == null) inputScopes = emptyList()
+		if(outputScope == null) return null //排除
 		return CwtLinkConfig(propertyConfig.pointer, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
 	}
 	
@@ -387,11 +390,11 @@ class CwtConfigGroup(
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
 			when(prop.key) {
-				"internal_id" -> internalId = prop.value
+				"internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
 				"supported_scopes" -> supportedScopes = prop.stringValues
 			}
 		}
-		if(internalId == null || supportedScopes == null) return null
+		if(supportedScopes == null) supportedScopes = emptyList()
 		return CwtModifierCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
 	}
 	
@@ -406,7 +409,7 @@ class CwtConfigGroup(
 		for(prop in props) {
 			if(prop.key == "aliases") aliases = prop.stringValues
 		}
-		if(aliases == null) return null
+		if(aliases == null) aliases = emptyList()
 		return CwtScopeConfig(propertyConfig.pointer, name, aliases)
 	}
 	
@@ -443,7 +446,7 @@ class CwtConfigGroup(
 		return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfigs)
 	}
 	
-	//绑定cwt配置
+	//绑定CWT配置
 	
 	private fun bindModifierCategories() {
 		for(modifier in modifiers.values) {
