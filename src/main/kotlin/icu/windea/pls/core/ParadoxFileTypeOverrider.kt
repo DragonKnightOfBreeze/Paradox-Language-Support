@@ -9,6 +9,11 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import java.util.*
 
+/**
+ * 文件类型重载器。
+ * 
+ * 基于文件后缀名以及相对于游戏或模组根目录的路径，将符合的文件重载为Paradox脚本文件或Paradox本地化文件。
+ */
 @Suppress("UnstableApiUsage")
 class ParadoxFileTypeOverrider : FileTypeOverrider {
 	//仅当从所在目录下找到exe文件或者descriptor.mod文件时
@@ -43,17 +48,6 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
 						}
-						//自动处理bom（改为正确的bom，不改变编码）
-						runCatching {
-							val hasBom = file.hasBom(utf8Bom)
-							val isNameList = path.parent.startsWith("common/name_lists")
-							//不能使用WriteAction.runAndWait()，可能导致死锁
-							if(isNameList && !hasBom) {
-								file.addBom(utf8Bom, false)
-							} else if(!isNameList && hasBom) {
-								file.removeBom(utf8Bom, false)
-							}
-						}
 						ParadoxScriptFileType
 					}
 					//本地化文件
@@ -61,14 +55,6 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 						runCatching {
 							val fileInfo = ParadoxFileInfo(fileName, path, rootPath, fileType, rootType, gameType)
 							file.putUserData(paradoxFileInfoKey, fileInfo)
-						}
-						//自动处理bom（改为正确的bom，不改变编码）
-						runCatching {
-							val hasBom = file.hasBom(utf8Bom)
-							//不能使用WriteAction.runAndWait()，可能导致死锁
-							if(!hasBom) {
-								file.addBom(utf8Bom, false)
-							}
 						}
 						ParadoxLocalisationFileType
 					}

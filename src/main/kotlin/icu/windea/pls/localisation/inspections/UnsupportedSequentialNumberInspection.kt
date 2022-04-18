@@ -20,7 +20,7 @@ class UnsupportedSequentialNumberInspection : LocalInspectionTool() {
 			val sequentialNumberConfig = element.sequentialNumberConfig
 			if(sequentialNumberConfig != null) return
 			val location = element.sequentialNumberId ?: return
-			holder.registerProblem(location, _description(element.name))
+			holder.registerProblem(location, _description(element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

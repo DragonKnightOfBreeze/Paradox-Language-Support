@@ -1,5 +1,10 @@
 # 遗留问题
 
+## IDE
+
+* 当添加或移除文件的BOM时，必须手动保存文件（`Save All`）才会同步更改到编辑器，从而刷新编辑器上方关于文件编码的检查。
+  * 测试发现手动调用`fileDocumentManager.saveDocument(document)`没有效果
+
 ## CWT
 
 * 暂时不解析scope并进行匹配（通过cwt规则文件）（已经实现modifiers的scope匹配）

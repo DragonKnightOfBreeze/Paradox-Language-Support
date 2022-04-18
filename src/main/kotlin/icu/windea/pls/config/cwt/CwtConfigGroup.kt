@@ -5,7 +5,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.expression.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class CwtConfigGroup(

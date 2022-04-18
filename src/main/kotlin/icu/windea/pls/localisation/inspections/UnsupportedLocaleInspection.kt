@@ -20,7 +20,7 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
 			val localeConfig = element.localeConfig
 			if(localeConfig != null) return
 			val location = element.localeId
-			holder.registerProblem(location, _description(element.name))
+			holder.registerProblem(location, _description(element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

@@ -2,7 +2,6 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
 
 @Suppress("unused")
 class CwtConfigGroups(

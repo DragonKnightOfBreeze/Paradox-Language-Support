@@ -29,7 +29,7 @@ class UnresolvedVariableInspection : LocalInspectionTool() {
 			val reference = element.reference
 			if(reference.resolve() != null) return
 			val location = element.variableReferenceId
-			holder.registerProblem(location, _description(element.name),
+			holder.registerProblem(location, _description(element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				//IntroduceLocalVariable(variableName, element, session),
 				//IntroduceGlobalVariable(variableName, element, session),
 				//ImportGameOrModDirectory(element)

@@ -66,11 +66,12 @@
   <extensions defaultExtensionNs="com.intellij">
     <!--region Core-->
     <!--suppress PluginXmlValidity -->
-    <applicationService serviceImplementation="icu.windea.pls.config.internal.InternalConfigProvider" preload="true" />
+    <applicationService serviceImplementation="icu.windea.pls.config.internal.InternalConfigProvider" preload="true"/>
     <!--suppress PluginXmlValidity -->
-    <projectService serviceImplementation="icu.windea.pls.config.cwt.CwtConfigProvider" preload="true" />
-   <!--suppress PluginXmlValidity -->
+    <projectService serviceImplementation="icu.windea.pls.config.cwt.CwtConfigProvider" preload="true"/>
+    <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
+    <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
 
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck2LibraryType"/>
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck3LibraryType"/>
@@ -90,13 +91,13 @@
 
     <!--region Cwt Language-->
     <fileType
-      language="CWT"
-      name="Cwt" fieldName="INSTANCE"
-      implementationClass="icu.windea.pls.cwt.CwtFileType"
-      extensions="cwt"/>
+        language="CWT"
+        name="Cwt" fieldName="INSTANCE"
+        implementationClass="icu.windea.pls.cwt.CwtFileType"
+        extensions="cwt"/>
     <lang.parserDefinition
-      language="CWT"
-      implementationClass="icu.windea.pls.cwt.psi.CwtParseDefinition"/>
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.psi.CwtParseDefinition"/>
 
     <spellchecker.support
         language="CWT"
@@ -137,7 +138,7 @@
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
     <!--endregion-->
-    
+
     <!--region Paradox Script Language-->
     <fileType
         language="PARADOX_SCRIPT"
@@ -149,14 +150,14 @@
     <lang.parserDefinition
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
-    
+
     <stubElementTypeHolder
         class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes"
         externalIdPrefix="paradoxScript."/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
-    
+
     <spellchecker.support
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.ParadoxScriptSpellchecker"/>
@@ -218,7 +219,7 @@
     <completion.contributor
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptCompletionContributor"/>
-    <codeInsight.typeInfo 
+    <codeInsight.typeInfo
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
     <codeInsight.lineMarkerProvider
@@ -229,7 +230,7 @@
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxRelatedLocalisationLineMarkerProvider"/>
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
-   
+
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 
@@ -271,13 +272,13 @@
     <lang.parserDefinition
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParserDefinition"/>
-    
-    <stubElementTypeHolder 
+
+    <stubElementTypeHolder
         class="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes"
         externalIdPrefix="paradoxLocalisation."/>
     <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxSyncedLocalisationNameIndex"/>
-    
+
     <spellchecker.support
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.ParadoxLocalisationSpellchecker"/>
@@ -332,7 +333,7 @@
     <codeInsight.lineMarkerProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationLineMarkerProvider"/>
-    
+
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
 

@@ -20,7 +20,7 @@ class UnsupportedColorInspection : LocalInspectionTool() {
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) return
 			val location = element.colorId ?: return
-			holder.registerProblem(location, _description(element.name))
+			holder.registerProblem(location, _description(element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

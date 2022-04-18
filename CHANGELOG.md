@@ -8,6 +8,7 @@
 * [ ] 语法解析优化 *
 * [X] 从注解器提取出单独的本地检查 *
 * [ ] 完善内嵌提示
+* [X] 不再通过`ParadoxFileTypeOverrider`自动添加或移除文件的BOM，而是基于`ParadoxUtf8BomOptionProvider`判断创建文件时是否需要添加BOM
 * [ ] 完善对CWT配置文件的支持，完善相关功能
 * [ ] 不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
