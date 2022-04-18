@@ -10,6 +10,7 @@ import com.intellij.lang.documentation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -20,9 +21,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
-import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
-import com.intellij.util.ui.IoErrorText
 import java.io.*
 import java.util.*
 

@@ -2,9 +2,13 @@ package icu.windea.pls.script.inspections
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
+import com.intellij.openapi.vfs.encoding.EncodingUtil
 import com.intellij.psi.*
 import icu.windea.pls.*
+import org.jvnet.fastinfoset.EncodingAlgorithm
 import java.nio.charset.*
 
 //com.intellij.openapi.editor.actions.AddBomAction
@@ -26,7 +30,8 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		val virtualFile = file.virtualFile ?: return null
 		val charset = virtualFile.charset
 		val hasBom = virtualFile.hasBom(utf8Bom)
-		val isNameList = virtualFile.fileInfo?.path?.parent?.startsWith("common/name_lists") ?: false
+		val fileInfo = virtualFile.fileInfo ?: return null //无法获取文件信息时跳过检查
+		val isNameList = fileInfo.path.parent.startsWith("common/name_lists")
 		val isValid = charset == Charsets.UTF_8 && (if(isNameList) hasBom else !hasBom)
 		if(!isValid) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
@@ -49,12 +54,21 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val virtualFile = file.virtualFile
-			virtualFile.charset = Charsets.UTF_8
+			val isUtf8 = virtualFile.charset == Charsets.UTF_8
 			val hasBom = virtualFile.hasBom(utf8Bom)
 			if(isNameList && !hasBom) {
 				virtualFile.addBom(utf8Bom)
 			} else if(!isNameList && hasBom) {
 				virtualFile.removeBom(utf8Bom)
+			}
+			if(!isUtf8) virtualFile.charset = Charsets.UTF_8
+			val fileDocumentManager = FileDocumentManager.getInstance()
+			val document = fileDocumentManager.getDocument(virtualFile)
+			if(document != null) {
+				if(!isUtf8) {
+					ChangeFileEncodingAction.changeTo(project, document, editor, virtualFile, Charsets.UTF_8, EncodingUtil.Magic8.ABSOLUTELY, EncodingUtil.Magic8.ABSOLUTELY)
+				}
+				fileDocumentManager.saveDocument(document) //保存文件
 			}
 		}
 	}

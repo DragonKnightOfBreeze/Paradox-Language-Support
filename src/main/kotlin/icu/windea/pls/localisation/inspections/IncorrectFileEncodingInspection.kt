@@ -2,7 +2,9 @@ package icu.windea.pls.localisation.inspections
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.encoding.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import java.nio.charset.*
@@ -52,10 +54,19 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val virtualFile = file.virtualFile
-			virtualFile.charset = Charsets.UTF_8
+			val isUtf8 = virtualFile.charset == Charsets.UTF_8
 			val hasBom = virtualFile.hasBom(utf8Bom)
 			if(!hasBom) {
 				virtualFile.addBom(utf8Bom)
+			}
+			if(!isUtf8) virtualFile.charset = Charsets.UTF_8
+			val fileDocumentManager = FileDocumentManager.getInstance()
+			val document = fileDocumentManager.getDocument(virtualFile)
+			if(document != null) {
+				if(!isUtf8) {
+					ChangeFileEncodingAction.changeTo(project, document, editor, virtualFile, Charsets.UTF_8, EncodingUtil.Magic8.ABSOLUTELY, EncodingUtil.Magic8.ABSOLUTELY)
+				}
+				fileDocumentManager.saveDocument(document) //保存文件
 			}
 		}
 	}
