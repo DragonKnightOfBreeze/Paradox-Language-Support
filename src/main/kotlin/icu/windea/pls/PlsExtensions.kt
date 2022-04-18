@@ -874,7 +874,7 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 	return this
 }
 
-fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = false): StringBuilder {
+fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): StringBuilder {
 	DocumentationManagerUtil.createHyperlink(this, refText, label, plainLink)
 	return this
 }
