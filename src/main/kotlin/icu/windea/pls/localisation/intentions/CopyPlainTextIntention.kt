@@ -10,11 +10,12 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
-class CopyPlainTextIntention: IntentionAction {
-	companion object {
-		private val _name = PlsBundle.message("localisation.intention.copyPlainText")
-	}
-	
+private val _name = PlsBundle.message("localisation.intention.copyPlainText")
+
+/**
+ * 复制本地化文本作为纯文本到剪贴板的意向。
+ */
+class CopyPlainTextIntention : IntentionAction {
 	override fun startInWriteAction() = false
 	
 	override fun getText() = _name
@@ -23,14 +24,14 @@ class CopyPlainTextIntention: IntentionAction {
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
-		val originalElement = file.findElementAt(editor.caretModel.offset)?:return false
+		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return false
 		val element = originalElement.parentOfType<ParadoxLocalisationProperty>()
 		return element != null
 	}
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
-		val originalElement = file.findElementAt(editor.caretModel.offset)?:return
+		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parentOfType<ParadoxLocalisationProperty>() ?: return
 		val text = element.extractText()
 		CopyPasteManager.getInstance().setContents(StringSelection(text))

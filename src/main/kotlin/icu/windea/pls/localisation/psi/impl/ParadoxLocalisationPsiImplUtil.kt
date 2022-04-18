@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createCommandField
@@ -16,7 +17,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createP
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createSequentialNumber
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
 import icu.windea.pls.localisation.reference.*
-import icu.windea.pls.model.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -74,7 +74,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getCategory(element:ParadoxLocalisationProperty):ParadoxLocalisationCategory?{
+	fun getCategory(element:ParadoxLocalisationProperty): ParadoxLocalisationCategory?{
 		//注意：element.stub可能会导致ProcessCanceledException
 		return runCatching{ element.stub?.category }.getOrNull()?:element.localisationInfo?.category
 	}
@@ -151,7 +151,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationSequentialNumber): String {
-		return element.sequentialNumberId?.text?.uppercase().orEmpty()
+		return element.sequentialNumberId?.text.orEmpty()
 	}
 	
 	@JvmStatic
@@ -174,7 +174,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationColorfulText
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationColorfulText): String {
-		return element.colorId?.text?.uppercase().orEmpty()
+		return element.colorId?.text.orEmpty()
 	}
 	
 	@JvmStatic

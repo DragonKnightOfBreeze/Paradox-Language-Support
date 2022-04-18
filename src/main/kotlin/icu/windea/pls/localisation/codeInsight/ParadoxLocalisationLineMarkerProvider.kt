@@ -5,9 +5,9 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.core.ParadoxLocalisationCategory.*
 
 class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	companion object {
@@ -32,7 +32,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	private fun createMarker(element: ParadoxLocalisationProperty, name: String, category: ParadoxLocalisationCategory): RelatedItemLineMarkerInfo<PsiElement> {
 		val icon = localisationGutterIcon
 		val tooltip = buildString {
-			append("(${category.key}) <b>").append(name).append("</b>")
+			append("(${category.id}) <b>").append(name).append("</b>")
 		}
 		val project = element.project
 		val targets = when(category) {

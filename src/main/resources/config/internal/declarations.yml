@@ -1,35 +1,35 @@
 ### localisation locale
   
 locale:
-- name: "l_simp_chinese"
+- id: "l_simp_chinese"
   description: "Simple Chinese"
-- name: "l_english"
+- id: "l_english"
   description: "English"
-- name: "l_braz_por"
+- id: "l_braz_por"
   description: "Brazil Portuguese"
-- name: "l_french"
+- id: "l_french"
   description: "French"
-- name: "l_german"
+- id: "l_german"
   description: "German"
-- name: "l_polish"
+- id: "l_polish"
   description: "Polish"
-- name: "l_russian"
+- id: "l_russian"
   description: "Russian"
-- name: "l_spanish"
+- id: "l_spanish"
   description: "Spanish"
-- name: "l_default"
+- id: "l_default"
   description: "Default"
 
 ### localisation sequential number
 
 sequentialNumber:
-- name: "C"
+- id: "C"
   description: "Cardinal Number 1, 2, 3..."
   placeholderText: "1"
-- name: "O"
+- id: "O"
   description: "Ordinal Number 1st, 2nd, 3rd..."
   placeholderText: "1st"
-- name: "R"
+- id: "R"
   description: "Roman Number I, II, III..."
   placeholderText: "I"
 
@@ -37,59 +37,59 @@ sequentialNumber:
 ### see: interface/fonts.gfx#bitmapfonts.textcolors
 
 color:
-- name: "M"
+- id: "M"
   description: "Purple"
   colorRgb: 0xa335ee
   colorText: "#a335ee"
-- name: "L"
+- id: "L"
   description: "Brown"
   colorRgb: 0xc3b091
   colorText: "#c3b091"
-- name: "G"
+- id: "G"
   description: "Green"
   colorRgb: 0x29e126
   colorText: "#29e126"
-- name: "R"
+- id: "R"
   description: "Red"
   colorRgb: 0xfc5646
   colorText: "#fc5646"
-- name: "B"
+- id: "B"
   description: "Blue"
   colorRgb: 0x33a7ff
   colorText: "#33a7ff"
-- name: "Y"
+- id: "Y"
   description: "Yellow"
   colorRgb: 0xf7fc34
   colorText: "#f7fc34"
-- name: "H"
+- id: "H"
   description: "Orange"
   colorRgb: 0xfbaa29
   colorText: "#fbaa29"
-- name: "T"
+- id: "T"
   description: "Light Grey"
   colorRgb: 0xffffff
   colorText: "#ffffff"
-- name: "E"
+- id: "E"
   description: "Teal"
   colorRgb: 0x87ffcf
   colorText: "#87ffcf"
-- name: "S"
+- id: "S"
   description: "Dark Orange"
   colorRgb: 0xe49c2a
   colorText: "#e49c2a"
-- name: "W"
+- id: "W"
   description: "White"
   colorRgb: 0xffffff
   colorText: "#ffffff"
-- name: "P"
+- id: "P"
   description: "Light Red"
   colorRgb: 0xe16e6e
   colorText: "#e16e6e"
-- name: "g"
+- id: "g"
   description: "Grey"
   colorRgb: 0x808080
   colorText: "#808080"
-- name: "l"
+- id: "l"
   description: "Light Blue"
   colorRgb: 0x33a7ff
   colorText: "#33a7ff"

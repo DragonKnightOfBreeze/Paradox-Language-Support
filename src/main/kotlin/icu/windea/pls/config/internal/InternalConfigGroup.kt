@@ -15,29 +15,29 @@ class InternalConfigGroup(
 	init {
 		//初始化locale数据
 		locales = configMap.getValue("locale").mapToArray {
-			val name = it.getValue("name") as String
+			val id = it.getValue("id") as String
 			val description = it.getValue("description") as String
-			ParadoxLocaleConfig(name, description)
+			ParadoxLocaleConfig(id, description)
 		}
-		localeMap = locales.associateBy { it.name }
+		localeMap = locales.associateBy { it.id }
 		
 		//初始化sequentialNumber数据
 		sequentialNumbers = configMap.getValue("sequentialNumber").mapToArray {
-			val name = it.getValue("name") as String
+			val id = it.getValue("id") as String
 			val description = it.getValue("description") as String
 			val placeholderText = it.getValue("placeholderText") as String
-			ParadoxSequentialNumberConfig(name, description, placeholderText)
+			ParadoxSequentialNumberConfig(id, description, placeholderText)
 		}
-		sequentialNumberMap = sequentialNumbers.associateBy { it.name }
+		sequentialNumberMap = sequentialNumbers.associateBy { it.id }
 		
 		//初始化color数据
 		colors = configMap.getValue("color").mapToArray {
-			val name = it.getValue("name") as String
+			val id = it.getValue("id") as String
 			val description = it.getValue("description") as String
 			val colorRgb = it.getValue("colorRgb") as Int
 			val colorText = it.getValue("colorText") as String
-			ParadoxColorConfig(name, description, colorRgb, colorText)
+			ParadoxColorConfig(id, description, colorRgb, colorText)
 		}
-		colorMap = colors.associateBy { it.name }
+		colorMap = colors.associateBy { it.id }
 	}
 }

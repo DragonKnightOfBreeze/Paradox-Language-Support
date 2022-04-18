@@ -5,7 +5,7 @@ import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.*
 import javax.swing.*
 
 class ParadoxSettingsConfigurable: BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"),SearchableConfigurable {

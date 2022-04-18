@@ -79,7 +79,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					val config = propertyElement.propertyConfig ?: return@definition
 					val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionPropertyInfo?.scope)
 					for((sk, sv) in scopeMap) {
-						val scopeLink = "${gameType.key}.scopes.$sv"
+						val scopeLink = "${gameType.id}.scopes.$sv"
 						appendBr().append("(scope) ").append(sk).append(" = ").appendCwtLink(scopeLink, sv, null)
 					}
 				}

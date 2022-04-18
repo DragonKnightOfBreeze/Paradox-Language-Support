@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
 @Suppress("unused")
@@ -21,8 +22,8 @@ class CwtConfigGroups(
 	operator fun get(key: String) = groups.get(key)
 	fun getValue(key: String) = groups.getValue(key)
 	
-	operator fun get(key: ParadoxGameType) = groups.get(key.key)
-	fun getValue(key: ParadoxGameType) = groups.getValue(key.key)
+	operator fun get(key: ParadoxGameType) = groups.get(key.id)
+	fun getValue(key: ParadoxGameType) = groups.getValue(key.id)
 	
 	init {
 		//初始化各个游戏分组的CWT规则

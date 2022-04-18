@@ -233,34 +233,31 @@
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 
-    <localInspection
-        language="PARADOX_SCRIPT"
-        shortName="ParadoxScriptDuplicateVariables" bundle="messages.PlsBundle"
-        groupKey="script.inspection"
-        key="script.inspection.duplicateVariables"
-        enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.script.inspections.DuplicateVariablesInspection"/>
-    <localInspection
-        language="PARADOX_SCRIPT"
-        shortName="ParadoxScriptInvalidFileEncoding" bundle="messages.PlsBundle"
-        groupKey="script.inspection"
-        key="script.inspection.invalidFileEncoding"
-        enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.script.inspections.InvalidFileEncodingInspection"/>
-    <localInspection
-        language="PARADOX_SCRIPT"
-        shortName="ParadoxScriptMissingEventNamespace" bundle="messages.PlsBundle"
-        groupKey="script.inspection"
-        key="script.inspection.missingEventNamespace"
-        enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.script.inspections.MissingEventNamespaceInspection"/>
-    <localInspection
-        language="PARADOX_SCRIPT"
-        shortName="ParadoxScriptMismatchedEventId" bundle="messages.PlsBundle"
-        groupKey="script.inspection"
-        key="script.inspection.mismatchedEventId"
-        enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.script.inspections.MismatchedEventIdInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedVariable"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.unresolvedVariable"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection"
+                     implementationClass="icu.windea.pls.script.inspections.UnresolvedVariableInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateVariablesInFile"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.duplicateVariablesInFile"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection"
+                     implementationClass="icu.windea.pls.script.inspections.DuplicateVariablesInFileInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection"
+                     implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.missingEventNamespace"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection"
+                     implementationClass="icu.windea.pls.script.inspections.MissingEventNamespaceInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.mismatchedEventId"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection"
+                     implementationClass="icu.windea.pls.script.inspections.MismatchedEventIdInspection"/>
     <!--endregion-->
 
     <!--region Paradox Localisation Language-->
@@ -363,19 +360,32 @@
       <className>icu.windea.pls.localisation.intentions.CopyRichTextIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
-    
-    <localInspection
-        language="PARADOX_LOCALISATION"
-        shortName="ParadoxLocalisationDuplicateProperties"
-        groupKey="localisation.inspection" key="localisation.inspection.duplicateProperties"
-        enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertiesInspection"/>
-    <localInspection
-        language="PARADOX_LOCALISATION"
-        shortName="ParadoxLocalisationInvalidFileEncoding"
-        groupKey="localisation.inspection" key="localisation.inspection.invalidFileEncoding"
-        enabledByDefault="true" level="WARNING"
-        implementationClass="icu.windea.pls.localisation.inspections.InvalidFileEncodingInspection"/>
+
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedLocale"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.unsupportedLocale"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
+                     implementationClass="icu.windea.pls.localisation.inspections.UnsupportedLocaleInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedSequentialNumber"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.unsupportedSequentialNumber"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
+                     implementationClass="icu.windea.pls.localisation.inspections.UnsupportedSequentialNumberInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedColor"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.unsupportedColor"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
+                     implementationClass="icu.windea.pls.localisation.inspections.UnsupportedColorInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicatePropertiesInFile"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="localisation.inspection.duplicatePropertiesInFile"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
+                     implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertiesInFileInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileEncoding"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="localisation.inspection.incorrectFileEncoding"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
+                     implementationClass="icu.windea.pls.localisation.inspections.IncorrectFileEncodingInspection"/>
     <!--endregion-->
   </extensions>
 </idea-plugin>

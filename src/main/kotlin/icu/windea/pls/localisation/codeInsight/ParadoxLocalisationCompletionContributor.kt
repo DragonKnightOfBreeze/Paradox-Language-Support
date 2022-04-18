@@ -19,7 +19,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		private val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
 		
 		private val localeElements = getInternalConfig().locales.map {
-			LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.tailText,true)
+			LookupElementBuilder.create(it.id).withIcon(it.icon).withTailText(it.tailText,true)
 		}
 		//private val sequentialNumberElements = getConfig().sequentialNumbers.map {
 		//	LookupElementBuilder.create(it.name).withIcon(it.icon).withTailText(it.tailText,true)

@@ -1,4 +1,4 @@
-package icu.windea.pls.model
+package icu.windea.pls.core
 
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*

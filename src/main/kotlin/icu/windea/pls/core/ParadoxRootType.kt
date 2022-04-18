@@ -1,11 +1,11 @@
-package icu.windea.pls.model
+package icu.windea.pls.core
 
 import icu.windea.pls.*
 
 enum class ParadoxRootType(
-	override val key: String,
-	override val text: String
-):Enumerable {
+	override val id: String,
+	override val description: String
+) : IdAware, DescriptionAware {
 	Stdlib("stdlib", "Stdlib"),
 	Mod("mod", "Mod"),
 	PdxLauncher("pdx_launcher", "Paradox Launcher"),
@@ -13,6 +13,6 @@ enum class ParadoxRootType(
 	TweakerGuiAssets("tweakergui_assets", "Tweaker GUI Assets");
 	
 	override fun toString(): String {
-		return text
+		return description
 	}
 }

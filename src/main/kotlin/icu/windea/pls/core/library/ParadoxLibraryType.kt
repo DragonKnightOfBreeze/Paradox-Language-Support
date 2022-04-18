@@ -8,8 +8,8 @@ import com.intellij.openapi.roots.libraries.ui.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.library.ParadoxLibraryKind.*
-import icu.windea.pls.model.*
 import javax.swing.*
 
 abstract class ParadoxLibraryType(
@@ -70,16 +70,16 @@ abstract class ParadoxLibraryType(
 		//}
 		//处理特殊顶级目录的情况
 		when {
-			name.equals(ParadoxRootType.PdxLauncher.key, true) -> return ParadoxRootType.PdxLauncher.text
-			name.equals(ParadoxRootType.PdxOnlineAssets.key, true) -> return ParadoxRootType.PdxOnlineAssets.text
-			name.equals(ParadoxRootType.TweakerGuiAssets.key, true) -> return ParadoxRootType.TweakerGuiAssets.text
+			name.equals(ParadoxRootType.PdxLauncher.id, true) -> return ParadoxRootType.PdxLauncher.description
+			name.equals(ParadoxRootType.PdxOnlineAssets.id, true) -> return ParadoxRootType.PdxOnlineAssets.description
+			name.equals(ParadoxRootType.TweakerGuiAssets.id, true) -> return ParadoxRootType.TweakerGuiAssets.description
 		}
 		//处理游戏目录和模组目录的情况的情况
 		for(child in file.children) {
 			val childName = child.name
 			when {
 				//游戏执行文件名要匹配
-				childName.equals(gameType.exeFileName, true) -> return ParadoxRootType.Stdlib.text
+				childName.equals(gameType.exeFileName, true) -> return ParadoxRootType.Stdlib.description
 				//从descriptor.name中获取，或者直接使用目录/压缩包去除后缀名后的名字
 				childName.equals(descriptorFileName, true) -> return getLibraryNameFromDescriptorFile(child) ?: name
 			}

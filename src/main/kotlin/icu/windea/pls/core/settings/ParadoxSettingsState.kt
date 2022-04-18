@@ -2,7 +2,7 @@ package icu.windea.pls.core.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.*
 
 @State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])
 data class ParadoxSettingsState(

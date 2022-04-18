@@ -12,10 +12,10 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.internal.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.util.*
@@ -380,7 +380,7 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
 		return null
 	}
 
-val ParadoxLocalisationSequentialNumber.sequentialNumberInfo: ParadoxSequentialNumberConfig?
+val ParadoxLocalisationSequentialNumber.sequentialNumberConfig: ParadoxSequentialNumberConfig?
 	get() = getInternalConfig().sequentialNumberMap[name]
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig?

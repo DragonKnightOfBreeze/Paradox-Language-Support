@@ -14,9 +14,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			//is ParadoxLocalisationProperty -> annotateProperty(element, holder)
-			is ParadoxLocalisationLocale -> annotateLocale(element, holder)
 			is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
-			is ParadoxLocalisationSequentialNumber -> annotateSequentialNumber(element, holder)
 			//is ParadoxLocalisationCommand -> annotateCommand(element, holder)
 			is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
 		}
@@ -41,16 +39,6 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	//		.create()
 	//}
 	
-	private fun annotateLocale(element: ParadoxLocalisationLocale, holder: AnnotationHolder) {
-		//注明不支持的情况
-		val locale = element.localeConfig
-		if(locale == null) {
-			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedLocale", element.name))
-				.range(element.localeId)
-				.create()
-		}
-	}
-	
 	private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
 		//注明无法解析的情况
 		//NOTE 属性引用可能是变量，因此不注明无法解析的情况
@@ -61,37 +49,26 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//	return
 		//}
 		//颜色高亮
-		val color = element.colorConfig
-		if(color != null) {
-			val colorId = color.name
-			val e = element.propertyReferenceParameter
-			if(e != null) {
-				val startOffset = e.startOffset
+		val colorConfig = element.colorConfig
+		if(colorConfig != null) {
+			val colorId = colorConfig.id
+			val location = element.propertyReferenceParameter
+			if(location != null) {
+				val startOffset = location.startOffset
 				annotateColor(colorId, holder, TextRange(startOffset, startOffset + 1))
 			}
 		}
 	}
 	
-	private fun annotateSequentialNumber(element: ParadoxLocalisationSequentialNumber, holder: AnnotationHolder) {
-		//颜色高亮
-		val sequentialNumber = element.sequentialNumberInfo
-		if(sequentialNumber == null) {
-			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedSequentialNumber", element.name))
-				.range(element.sequentialNumberId ?: element)
-				.create()
-		}
-	}
-	
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
-		//注明不支持的情况 & 颜色高亮
+		//颜色高亮
 		val colorConfig = element.colorConfig
-		if(colorConfig == null) {
-			holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.unsupportedColor", element.name))
-				.range(element.colorId ?: element)
-				.create()
-		} else {
-			val e = element.colorId
-			if(e != null) annotateColor(element.name, holder, e.textRange)
+		if(colorConfig != null) {
+			val colorId = colorConfig.id
+			val location = element.colorId
+			if(location != null) {
+				annotateColor(colorId, holder, location.textRange)
+			}
 		}
 	}
 	

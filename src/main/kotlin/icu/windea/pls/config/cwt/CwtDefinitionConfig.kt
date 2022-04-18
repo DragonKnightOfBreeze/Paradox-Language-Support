@@ -3,9 +3,9 @@ package icu.windea.pls.config.cwt
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
 import java.util.*
 
 data class CwtDefinitionConfig(

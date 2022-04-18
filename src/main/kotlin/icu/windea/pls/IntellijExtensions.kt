@@ -20,6 +20,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
+import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
 import com.intellij.util.ui.IoErrorText
 import java.io.*

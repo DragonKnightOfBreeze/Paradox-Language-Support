@@ -1,11 +1,11 @@
 package icu.windea.pls.core.library
 
 import com.intellij.openapi.roots.libraries.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.*
 
 abstract class ParadoxLibraryKind(
 	val gameType: ParadoxGameType
-) : PersistentLibraryKind<ParadoxLibraryProperties>("paradox.${gameType.key}") {
+) : PersistentLibraryKind<ParadoxLibraryProperties>("paradox.${gameType.id}") {
 	object Ck2LibraryKind: ParadoxLibraryKind(ParadoxGameType.Ck2)
 	object Ck3LibraryKind: ParadoxLibraryKind(ParadoxGameType.Ck3)
 	object Eu4LibraryKind: ParadoxLibraryKind(ParadoxGameType.Eu4)

@@ -4,9 +4,9 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.core.ParadoxLocalisationCategory.*
 
 class ParadoxLocalisationPropertyReferenceReference(
 	element: ParadoxLocalisationPropertyReference,

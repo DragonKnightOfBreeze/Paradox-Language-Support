@@ -389,11 +389,6 @@ data class ReversibleMap<K, V>(val map: Map<K, V>, val reverse: Boolean = false)
 
 fun <K, V> Map<K, V>.toReversibleMap(reverse: Boolean) = ReversibleMap(this, reverse)
 
-interface Enumerable {
-	val key: String
-	val text: String
-}
-
 typealias Tuple2<A, B> = Pair<A, B>
 
 typealias Tuple3<A, B, C> = Triple<A, B, C>

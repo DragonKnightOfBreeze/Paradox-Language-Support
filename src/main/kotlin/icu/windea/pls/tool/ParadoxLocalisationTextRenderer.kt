@@ -70,7 +70,7 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	private fun renderSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, builder: StringBuilder) {
-		val placeholderText = element.sequentialNumberInfo?.placeholderText
+		val placeholderText = element.sequentialNumberConfig?.placeholderText
 		if(placeholderText != null) {
 			builder.append(placeholderText)
 			return

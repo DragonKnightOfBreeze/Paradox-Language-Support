@@ -11,12 +11,13 @@ import icu.windea.pls.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.localisation.psi.*
 
+private val _name = PlsBundle.message("localisation.intention.changeSequentialNumber")
+private val _popupTitle = PlsBundle.message("localisation.intention.changeSequentialNumber.title")
+
+/**
+ * 更改序列数的意向。
+ */
 class ChangeSequentialNumberIntention : IntentionAction {
-	companion object {
-		private val _name = PlsBundle.message("localisation.intention.changeSequentialNumber")
-		private val _title = PlsBundle.message("localisation.intention.changeSequentialNumber.title")
-	}
-	
 	override fun startInWriteAction() = false
 	
 	override fun getText() = _name
@@ -42,7 +43,7 @@ class ChangeSequentialNumberIntention : IntentionAction {
 	private class Popup(
 		private val value: ParadoxLocalisationSequentialNumber,
 		values: Array<ParadoxSequentialNumberConfig>
-	) : BaseListPopupStep<ParadoxSequentialNumberConfig>(_title, *values) {
+	) : BaseListPopupStep<ParadoxSequentialNumberConfig>(_popupTitle, *values) {
 		override fun getIconFor(value: ParadoxSequentialNumberConfig) = value.icon
 		
 		override fun getTextFor(value: ParadoxSequentialNumberConfig) = value.popupText
@@ -53,7 +54,7 @@ class ChangeSequentialNumberIntention : IntentionAction {
 		
 		override fun onChosen(selectedValue: ParadoxSequentialNumberConfig, finalChoice: Boolean): PopupStep<*>? {
 			//需要在WriteCommandAction里面执行
-			runWriteAction { value.name = selectedValue.name }
+			runWriteAction { value.name = selectedValue.id }
 			return PopupStep.FINAL_CHOICE
 		}
 	}

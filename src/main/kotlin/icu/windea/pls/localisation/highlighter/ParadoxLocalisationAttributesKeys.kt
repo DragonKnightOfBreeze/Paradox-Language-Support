@@ -49,7 +49,7 @@ object ParadoxLocalisationAttributesKeys {
 	
 	val COLOR_KEYS by lazy {
 		getInternalConfig().colorMap.mapValues { (_, color) ->
-			createTextAttributesKey("${_colorName}_${color.name}", IDENTIFIER.defaultAttributes.clone().apply {
+			createTextAttributesKey("${_colorName}_${color.id}", IDENTIFIER.defaultAttributes.clone().apply {
 				foregroundColor = color.color
 			})
 		}

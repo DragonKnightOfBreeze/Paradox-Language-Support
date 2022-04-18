@@ -1,28 +1,29 @@
 package icu.windea.pls.config.internal
 
 import com.intellij.util.ui.*
+import icu.windea.pls.*
 import java.awt.*
 
 class ParadoxColorConfig(
-	val name: String,
-	val description: String,
+	override val id: String,
+	override val description: String,
 	val colorRgb: Int,
 	val colorText: String
-) {
+) : IdAware, DescriptionAware, IconAware {
 	val tailText = " $description"
-	val popupText = "$name - $description"
+	val popupText = "$id - $description"
 	val color: Color = Color(colorRgb)
-	val icon = ColorIcon(16, color)
+	override val icon = ColorIcon(16, color)
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxColorConfig && name == other.name
+		return this === other || other is ParadoxColorConfig && id == other.id
 	}
 	
 	override fun hashCode(): Int {
-		return name.hashCode()
+		return id.hashCode()
 	}
 	
 	override fun toString(): String {
-		return name
+		return id
 	}
 }

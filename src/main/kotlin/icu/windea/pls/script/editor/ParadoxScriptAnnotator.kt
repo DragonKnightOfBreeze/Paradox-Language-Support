@@ -5,8 +5,8 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.expression.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -14,7 +14,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxScriptProperty -> annotateProperty(element, holder)
-			is ParadoxScriptVariableReference -> annotateVariableReference(element, holder)
 			is ParadoxScriptPropertyKey -> annotatePropertyKey(element, holder)
 			is ParadoxScriptString -> annotateString(element, holder)
 		}
@@ -32,16 +31,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)
 			.create()
 		//TODO
-	}
-	
-	private fun annotateVariableReference(element: ParadoxScriptVariableReference, holder: AnnotationHolder) {
-		//注明无法解析的情况
-		//TODO 提供快速修复：声明变量（同一文件中） & 导入游戏目录或模组目录
-		val reference = element.reference
-		if(reference.resolve() == null) {
-			holder.newAnnotation(ERROR, PlsBundle.message("script.annotator.unresolvedVariable", element.name))
-				.create()
-		}
 	}
 	
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {

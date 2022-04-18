@@ -6,24 +6,27 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
-import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+private fun _description(key: String) = PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.description", key)
+private fun _quickFix1Name() = PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.quickFix.1")
+private fun _quickFix1PopupHeader(key: String) = PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.quickFix.1.popup.header", key)
+private fun _quickFix1PopupText(key: String, lineNumber: Int) = PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.quickFix.1.popup.text", key, lineNumber)
+
 /**
- * （同一文件中）重复的属性的检查。
+ * 同一文件中重复的属性声明的检查。
+ *
+ * 提供快速修复：
+ * * 导航到重复项
  */
-class DuplicatePropertiesInspection : LocalInspectionTool() {
-	companion object {
-		private fun _description(key: String) = PlsBundle.message("localisation.inspection.duplicateProperties.description", key)
-	}
-	
+class DuplicatePropertiesInFileInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(holder)
 	}
-
+	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
 		override fun visitFile(file: PsiFile) {
 			if(file !is ParadoxLocalisationFile) return
@@ -31,31 +34,27 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 			for((key, values) in propertyGroup) {
 				if(values.size <= 1) continue
 				for(value in values) {
-					val quickFix = NavigateToDuplicates(key, value, values)
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
-					holder.registerProblem(value.propertyKey, _description(key), quickFix)
+					val location = value.propertyKey
+					holder.registerProblem(location, _description(key),
+						NavigateToDuplicates(key, value, values)
+					)
 				}
 			}
 		}
 	}
-
+	
 	private class NavigateToDuplicates(
 		private val key: String,
 		property: ParadoxLocalisationProperty,
 		duplicates: List<ParadoxLocalisationProperty>
 	) : LocalQuickFixAndIntentionActionOnPsiElement(property) {
-		private val pointers = ContainerUtil.map(duplicates) { SmartPointerManager.createPointer(it) }
+		private val pointers = duplicates.map { it.createPointer() }
 		
-		companion object {
-			private val _name = PlsBundle.message("localisation.quickFix.navigateToDuplicates")
-			private fun _header(key: String) = PlsBundle.message("localisation.quickFix.navigateToDuplicates.header", key)
-			private fun _text(key: String, lineNumber: Int) = PlsBundle.message("localisation.quickFix.navigateToDuplicates.text", key, lineNumber)
-		}
+		override fun getFamilyName() = _quickFix1Name()
 		
-		override fun getFamilyName() = _name
+		override fun getText() = _quickFix1Name()
 		
-		override fun getText() = _name
-
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return
 			//当重复的属性只有另外一个时，直接导航即可
@@ -76,10 +75,10 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 			values: List<ParadoxLocalisationProperty>,
 			private val key: String,
 			private val editor: Editor
-		) : BaseListPopupStep<ParadoxLocalisationProperty>(_header(key), values) {
+		) : BaseListPopupStep<ParadoxLocalisationProperty>(_quickFix1PopupHeader(key), values) {
 			override fun getIconFor(value: ParadoxLocalisationProperty) = value.icon
 			
-			override fun getTextFor(value: ParadoxLocalisationProperty) = _text(key,editor.document.getLineNumber(value.textOffset))
+			override fun getTextFor(value: ParadoxLocalisationProperty) = _quickFix1PopupText(key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex() = 0
 			

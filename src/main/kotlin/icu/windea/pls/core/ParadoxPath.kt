@@ -1,4 +1,4 @@
-package icu.windea.pls.model
+package icu.windea.pls.core
 
 class ParadoxPath(
 	val subPaths:List<String>

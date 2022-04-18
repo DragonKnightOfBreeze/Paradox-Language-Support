@@ -2,12 +2,10 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import java.util.*
 
@@ -113,9 +111,9 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		val name = file.name.substringBeforeLast('.', "")
 		//处理特殊顶级目录的情况
 		when {
-			name == ParadoxRootType.PdxLauncher.key -> return ParadoxRootType.PdxLauncher
-			name == ParadoxRootType.PdxOnlineAssets.key -> return ParadoxRootType.PdxOnlineAssets
-			name == ParadoxRootType.TweakerGuiAssets.key -> return ParadoxRootType.TweakerGuiAssets
+			name == ParadoxRootType.PdxLauncher.id -> return ParadoxRootType.PdxLauncher
+			name == ParadoxRootType.PdxOnlineAssets.id -> return ParadoxRootType.PdxOnlineAssets
+			name == ParadoxRootType.TweakerGuiAssets.id -> return ParadoxRootType.TweakerGuiAssets
 		}
 		//处理游戏目录和模组目录的情况的情况
 		for(child in file.children) {

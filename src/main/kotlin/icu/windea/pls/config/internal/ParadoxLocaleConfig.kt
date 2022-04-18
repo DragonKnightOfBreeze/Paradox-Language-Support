@@ -3,22 +3,22 @@ package icu.windea.pls.config.internal
 import icu.windea.pls.*
 
 class ParadoxLocaleConfig(
-	val name: String,
-	val description: String
-) {
+	override val id: String,
+	override val description: String
+) : IdAware, DescriptionAware, IconAware {
 	val tailText = " $description"
-	val popupText = "$name - $description"
-	val icon get() = localisationLocaleIcon
+	val popupText = "$id - $description"
+	override val icon get() = localisationLocaleIcon
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxLocaleConfig && name == other.name
+		return this === other || other is ParadoxLocaleConfig && id == other.id
 	}
 	
 	override fun hashCode(): Int {
-		return name.hashCode()
+		return id.hashCode()
 	}
 	
 	override fun toString(): String {
-		return name
+		return id
 	}
 }

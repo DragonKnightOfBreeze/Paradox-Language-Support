@@ -1,25 +1,25 @@
-package icu.windea.pls.model
+package icu.windea.pls.core
 
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
-	override val key: String,
-	override val text: String,
+	override val id: String,
+	override val description: String,
 	val flag: Boolean
-) : Enumerable {
+) : IdAware, DescriptionAware {
 	Localisation("localisation", "Localisation", true),
 	SyncedLocalisation("localisation_synced", "Synced Localisation", false);
 	
 	override fun toString(): String {
-		return text
+		return description
 	}
 	
 	companion object {
-		fun resolve(key: String): ParadoxLocalisationCategory? {
+		fun resolve(id: String): ParadoxLocalisationCategory? {
 			return when {
-				key == "localisation" -> Localisation
-				key == "localisation_synced" -> SyncedLocalisation
+				id == "localisation" -> Localisation
+				id == "localisation_synced" -> SyncedLocalisation
 				else -> null
 			}
 		}

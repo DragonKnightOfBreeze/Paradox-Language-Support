@@ -3,7 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
@@ -90,7 +90,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildVariableDefinition(element: ParadoxScriptVariable, name: String) {
 		definition {
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-			append("(script variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append("(variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 		}
 	}
@@ -113,7 +113,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val typeLinkText = buildString {
 				val gameType = definitionInfo.gameType
 				val typeConfig = definitionInfo.typeConfig
-				val typeLink = "${gameType.key}.types.${typeConfig.name}"
+				val typeLink = "${gameType.id}.types.${typeConfig.name}"
 				appendCwtLink(typeConfig.name, typeLink, typeConfig.pointer.element)
 				val subtypeConfigs = definitionInfo.subtypeConfigs
 				if(subtypeConfigs.isNotEmpty()) {

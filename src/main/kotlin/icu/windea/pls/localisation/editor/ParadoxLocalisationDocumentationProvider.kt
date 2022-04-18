@@ -1,11 +1,10 @@
 package icu.windea.pls.localisation.editor
 
-import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
@@ -23,7 +22,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
 			element is ParadoxLocalisationLocale -> getLocaleConfig(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
-			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberInfo(element)
+			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberConfig(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
 			element is ParadoxLocalisationColorfulText -> getColorConfig(element)
@@ -60,7 +59,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getSequentialNumberInfo(element: ParadoxLocalisationSequentialNumber): String {
+	private fun getSequentialNumberConfig(element: ParadoxLocalisationSequentialNumber): String {
 		val name = element.name
 		return buildString {
 			buildSequentialNumberDefinition(name)
@@ -183,7 +182,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, category: ParadoxLocalisationCategory, name: String) {
 		definition {
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-			append("(${category.key}) <b>").append(name).append("</b>")
+			append("(${category.id}) <b>").append(name).append("</b>")
 		}
 	}
 	
@@ -229,10 +228,10 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildSequentialNumberContent(element: ParadoxLocalisationSequentialNumber) {
 		//描述
-		val sequentialNumberInfo = element.sequentialNumberInfo
-		if(sequentialNumberInfo != null) {
+		val sequentialNumberConfig = element.sequentialNumberConfig
+		if(sequentialNumberConfig != null) {
 			content {
-				append(sequentialNumberInfo.description)
+				append(sequentialNumberConfig.description)
 			}
 		}
 	}

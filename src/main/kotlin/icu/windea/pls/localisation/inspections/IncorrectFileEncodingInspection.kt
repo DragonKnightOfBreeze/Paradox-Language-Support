@@ -11,13 +11,16 @@ import java.nio.charset.*
 //com.intellij.openapi.editor.actions.RemoveBomAction
 
 /**
- * 非法的文件编码的检查。
+ * 不正确的的文件编码的检查。
  *
  * 注意：[icu.windea.pls.core.ParadoxFileTypeOverrider]会尝试自动修正文件的BOM。
+ *
+ * 提供快速修复：
+ * * 改为正确的文件编码
  */
-class InvalidFileEncodingInspection : LocalInspectionTool() {
+class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	companion object {
-		private fun _description(charset: Charset, bom: String) = PlsBundle.message("localisation.inspection.invalidFileEncoding.description", charset, bom)
+		private fun _description(charset: Charset, bom: String) = PlsBundle.message("localisation.inspection.incorrectFileEncoding.description", charset, bom)
 	}
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
@@ -28,7 +31,9 @@ class InvalidFileEncodingInspection : LocalInspectionTool() {
 		if(!isValid) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
 			val bom = if(hasBom) "BOM" else "NO BOM"
-			holder.registerProblem(file, _description(charset, bom), ChangeFileEncoding(file))
+			holder.registerProblem(file, _description(charset, bom),
+				ChangeFileEncoding(file)
+			)
 			return holder.resultsArray
 		}
 		return null
@@ -38,7 +43,7 @@ class InvalidFileEncodingInspection : LocalInspectionTool() {
 		element: PsiElement
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		companion object {
-			private val _name = PlsBundle.message("localisation.quickFix.changeFileEncoding")
+			private val _name = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickFix.1")
 		}
 		
 		override fun getFamilyName() = _name

@@ -3,7 +3,7 @@ package icu.windea.pls.tool
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.*
 import java.io.*
 
 //用于生成markdown文档

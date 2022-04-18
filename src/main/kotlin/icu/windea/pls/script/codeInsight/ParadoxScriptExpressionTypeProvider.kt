@@ -4,11 +4,10 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptTypes.*
 
-@Suppress("DialogTitleCapitalization")
 class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 	companion object {
 		private val noExpressionFoundMessage = PlsBundle.message("noExpressionFound")
@@ -41,7 +40,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 		return element.propertyValue?.value?.getType()?:"(unknown)"
 	}
 	
-	private fun getDefinitionHint(definitionInfo:ParadoxDefinitionInfo):String{
+	private fun getDefinitionHint(definitionInfo: ParadoxDefinitionInfo):String{
 		return definitionInfo.typeText
 	}
 	

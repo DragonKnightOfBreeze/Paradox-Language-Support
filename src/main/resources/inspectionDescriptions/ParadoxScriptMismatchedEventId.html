@@ -1,6 +1,21 @@
-This inspection checks that each event declared in event script file should have a event id matched event namespace.<br/>
-In detail, the format of an event id should be <code>"{namespace}.{no}"</code> 
-while <code>"{namespace}"</code> is the event namespace, and <code>"{no}"</code> is an event number. 
-In a event script file,
-the event id is declared as a property of event definition named <code>"id"</code>,
-the event namespace is declared as the first property of file named <code>"namespace"</code>.
+<html>
+<body>
+  Checks that the event id of each event declared in an event script file matches the event namespace.
+  <p>
+    In detail,
+    the format of an event id should be <code>"{namespace}.{no}"</code>,
+    while <code>"{namespace}"</code> is the event namespace,
+    and <code>"{no}"</code> is an event number.
+  </p>
+  <p>
+    In an event script file,
+    the event id is declared as a property of an event definition named <code>"id"</code>,
+    the event namespace is declared as the first property of the file named <code>"namespace"</code>.
+  </p>
+  <!-- tooltip end -->
+  <p>
+    An event script file is a script file under directory <code>events</code>
+    relative to the game or mod root directory.
+  </p>
+</body>
+</html>
