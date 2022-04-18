@@ -10,5 +10,7 @@ class ParadoxScriptFile(
 	override fun getFileType() = ParadoxScriptFileType
 	
 	override val block get() = findChildByClass(ParadoxScriptRootBlock::class.java)
+	
+	val variables get() = block?.variableList.orEmpty()
 }
 

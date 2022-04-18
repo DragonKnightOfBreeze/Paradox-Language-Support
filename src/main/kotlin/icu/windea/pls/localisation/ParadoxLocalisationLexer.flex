@@ -16,12 +16,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 %unicode
 
 %state WAITING_LOCALE_COLON
-%state WAITING_LOCALE_EOL
+%state WAITING_LOCALE_END
 %state WAITING_PROPERTY_KEY
 %state WAITING_PROPERTY_COLON
 %state WAITING_PROPERTY_NUMBER
 %state WAITING_PROPERTY_VALUE
-%state WAITING_PROPERTY_EOL
+%state WAITING_PROPERTY_END
 %state WAITING_RICH_TEXT
 %state WAITING_PROPERTY_REFERENCE
 %state WAITING_PROPERTY_REFERENCE_PARAMETER
@@ -138,10 +138,10 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
 <WAITING_LOCALE_COLON>{
   {WHITE_SPACE} {return WHITE_SPACE; }
-  ":" {yybegin(WAITING_LOCALE_EOL); return COLON; }
+  ":" {yybegin(WAITING_LOCALE_END); return COLON; }
   {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
 }
-<WAITING_LOCALE_EOL>{
+<WAITING_LOCALE_END>{
   {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT; }
@@ -294,7 +294,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {STRING_TOKEN} {return STRING_TOKEN;}
 }
 
-<WAITING_PROPERTY_EOL>{
+<WAITING_PROPERTY_END>{
   {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT; }
@@ -388,19 +388,19 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 }
 <WAITING_CHECK_RIGHT_QUOTE>{
   {CHECK_RIGHT_QUOTE} {
-    //特殊处理
-    //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
-    //否则认为是常规字符串
-    boolean isRightQuote = yylength() == 1 || yycharat(yylength()-1) != '"';
-    yypushback(yylength()-1);
-    if(isRightQuote){
-        yybegin(WAITING_PROPERTY_EOL);
-        return RIGHT_QUOTE;
-    }else{
-        yybegin(nextStateForText());
-        return STRING_TOKEN;
+      //特殊处理
+      //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
+      //否则认为是常规字符串
+      boolean isRightQuote = yylength() == 1 || yycharat(yylength()-1) != '"';
+      yypushback(yylength()-1);
+      if(isRightQuote){
+          yybegin(WAITING_PROPERTY_END);
+          return RIGHT_QUOTE;
+      }else{
+          yybegin(nextStateForText());
+          return STRING_TOKEN;
+      }
     }
-  }
 }
 
 [^] {return TokenType.BAD_CHARACTER; }

@@ -25,12 +25,12 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   /** lexical states */
   public static final int YYINITIAL = 0;
   public static final int WAITING_LOCALE_COLON = 2;
-  public static final int WAITING_LOCALE_EOL = 4;
+  public static final int WAITING_LOCALE_END = 4;
   public static final int WAITING_PROPERTY_KEY = 6;
   public static final int WAITING_PROPERTY_COLON = 8;
   public static final int WAITING_PROPERTY_NUMBER = 10;
   public static final int WAITING_PROPERTY_VALUE = 12;
-  public static final int WAITING_PROPERTY_EOL = 14;
+  public static final int WAITING_PROPERTY_END = 14;
   public static final int WAITING_RICH_TEXT = 16;
   public static final int WAITING_PROPERTY_REFERENCE = 18;
   public static final int WAITING_PROPERTY_REFERENCE_PARAMETER = 20;
@@ -660,7 +660,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 59: break;
           case 7: 
-            { yybegin(WAITING_LOCALE_EOL); return COLON;
+            { yybegin(WAITING_LOCALE_END); return COLON;
             } 
             // fall through
           case 60: break;
@@ -913,17 +913,17 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
           case 98: break;
           case 46: 
             { //特殊处理
-    //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
-    //否则认为是常规字符串
-    boolean isRightQuote = yylength() == 1 || yycharat(yylength()-1) != '"';
-    yypushback(yylength()-1);
-    if(isRightQuote){
-        yybegin(WAITING_PROPERTY_EOL);
-        return RIGHT_QUOTE;
-    }else{
-        yybegin(nextStateForText());
-        return STRING_TOKEN;
-    }
+      //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
+      //否则认为是常规字符串
+      boolean isRightQuote = yylength() == 1 || yycharat(yylength()-1) != '"';
+      yypushback(yylength()-1);
+      if(isRightQuote){
+          yybegin(WAITING_PROPERTY_END);
+          return RIGHT_QUOTE;
+      }else{
+          yybegin(nextStateForText());
+          return STRING_TOKEN;
+      }
             } 
             // fall through
           case 99: break;

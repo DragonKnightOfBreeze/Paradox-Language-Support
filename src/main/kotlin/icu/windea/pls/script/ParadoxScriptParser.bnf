@@ -141,4 +141,4 @@ block ::= "{" block_item * "}" {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value

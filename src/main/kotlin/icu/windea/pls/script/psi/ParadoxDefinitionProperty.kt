@@ -7,7 +7,7 @@ import com.intellij.psi.*
  */
 interface ParadoxDefinitionProperty : PsiNamedElement {
 	val block: ParadoxScriptBlock?
-	val variables get() = block?.variableList.orEmpty()
+	//val variables get() = block?.variableList.orEmpty()
 	val properties get() = block?.propertyList.orEmpty()
 	val values get() = block?.valueList.orEmpty()
 }

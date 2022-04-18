@@ -1,6 +1,5 @@
 package icu.windea.pls.script.psi;
 
-import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
@@ -17,13 +16,13 @@ import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
 
 %state WAITING_VARIABLE_EQUAL_SIGN
 %state WAITING_VARIABLE_VALUE
-%state WAITING_VARIABLE_EOL
+%state WAITING_VARIABLE_END
 
 %state WAITING_PROPERTY
 %state WAITING_PROPERTY_KEY
 %state WATIING_PROPERTY_SEPARATOR
 %state WAITING_PROPERTY_VALUE
-%state WAITING_PROPERTY_EOL
+%state WAITING_PROPERTY_END
 
 %state WAITING_CODE
 
@@ -68,12 +67,12 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
   {VARIABLE_NAME_ID} {yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID;}
   //在这里根据后面是否有"="判断是否是property
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
-  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return FLOAT_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;}
+  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
+  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
+  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
+  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_VARIABLE_EQUAL_SIGN> {
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
@@ -86,16 +85,16 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
 <WAITING_VARIABLE_VALUE> {
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return FLOAT_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_VARIABLE_EOL); return QUOTED_STRING_TOKEN;}
+  {BOOLEAN_TOKEN} {yybegin(WAITING_VARIABLE_END); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {yybegin(WAITING_VARIABLE_END); return INT_TOKEN;}
+  {FLOAT_TOKEN} {yybegin(WAITING_VARIABLE_END); return FLOAT_TOKEN;}
+  {STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return QUOTED_STRING_TOKEN;}
   {EOL} { yybegin(nextState()); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
-<WAITING_VARIABLE_EOL> {
+<WAITING_VARIABLE_END> {
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   {EOL} {yybegin(nextState()); return WHITE_SPACE;}
@@ -110,14 +109,15 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
   {EOL} {return WHITE_SPACE;}
   {WHITE_SPACE} {return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
-  {VARIABLE_NAME_ID} {yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID;}
+  //{VARIABLE_NAME_ID} {yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID;}
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
-  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return FLOAT_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;}
+  {VARIABLE_REFERENCE_ID} {yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;}
+  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
+  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
+  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
+  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_PROPERTY>{
   {PROPERTY_KEY_ID} {yybegin(WATIING_PROPERTY_SEPARATOR); return PROPERTY_KEY_ID;}
@@ -143,15 +143,15 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
   {EOL} {return WHITE_SPACE;}
   {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
-  {VARIABLE_REFERENCE_ID} {yybegin(WAITING_PROPERTY_EOL); return VARIABLE_REFERENCE_ID;}
-  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return COLOR_TOKEN;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return FLOAT_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return QUOTED_STRING_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_EOL); return STRING_TOKEN;}
+  {VARIABLE_REFERENCE_ID} {yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;}
+  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
+  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
+  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
+  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
+  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
 }
-<WAITING_PROPERTY_EOL> {
+<WAITING_PROPERTY_END> {
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   {EOL} {yybegin(nextState()); return WHITE_SPACE;}
@@ -162,7 +162,7 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
 <WAITING_CODE>{
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "]" {yybegin(WAITING_PROPERTY_EOL); return CODE_END;}
+  "]" {yybegin(WAITING_PROPERTY_END); return CODE_END;}
   {EOL} {yybegin(nextState()); return WHITE_SPACE;}
   {CODE_TEXT_TOKEN} {return CODE_TEXT_TOKEN;}
 }

@@ -68,14 +68,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // END_OF_LINE_COMMENT | COMMENT | variable | property | value
+  // END_OF_LINE_COMMENT | COMMENT | property | value
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, END_OF_LINE_COMMENT);
     if (!r) r = consumeToken(b, COMMENT);
-    if (!r) r = variable(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
     exit_section_(b, m, null, r);
