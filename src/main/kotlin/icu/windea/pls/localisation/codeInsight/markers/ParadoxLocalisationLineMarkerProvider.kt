@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.codeInsight
+package icu.windea.pls.localisation.codeInsight.markers
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.navigation.*

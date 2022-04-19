@@ -224,10 +224,10 @@
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionLineMarkerProvider"/>
+        implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxDefinitionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxRelatedLocalisationLineMarkerProvider"/>
+        implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxRelatedLocalisationLineMarkerProvider"/>
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
 
@@ -332,7 +332,7 @@
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationCompletionContributor"/>
     <codeInsight.lineMarkerProvider
         language="PARADOX_LOCALISATION"
-        implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationLineMarkerProvider"/>
+        implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
