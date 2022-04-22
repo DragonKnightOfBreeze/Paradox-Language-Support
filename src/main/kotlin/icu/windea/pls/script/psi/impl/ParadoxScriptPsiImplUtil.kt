@@ -288,7 +288,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptBlock
 	@JvmStatic
 	fun getValue(element: ParadoxScriptBlock): String {
-		return emptyBlockString
+		return blockFolder
 	}
 	
 	@JvmStatic

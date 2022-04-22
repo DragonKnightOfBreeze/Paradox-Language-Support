@@ -3,6 +3,8 @@ package icu.windea.pls.config.cwt
 import com.intellij.openapi.project.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.script.psi.*

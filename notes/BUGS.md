@@ -30,4 +30,57 @@
 
 * [X] BUG：当要添加或移除文件的BOM时，没有在物理层面上添加机票移除
 
-* [ ] BUG：当进行代码提示时，无法显示对应的快速文档和快速定义（测试环境问题或者IDE BUG？）
+* [X] ~~BUG：当进行代码提示时，无法显示对应的快速文档和快速定义~~（测试环境问题或者IDE BUG？）
+
+* [ ] BUG：无法解析`trait.species_trait`
+
+```
+types = {
+	type[trait] = {
+		path = "game/common/traits"
+
+		subtype[leader_trait] = {
+			leader_trait = { }
+			leader_trait = all
+		}
+		subtype[ruler_trait] = {
+			leader_class = { ruler }
+		}
+		subtype[scientist_trait] = {
+			leader_class = { scientist }
+		}
+		subtype[species_trait] = {
+			## cardinality = 0..1
+			leader_trait = no
+		}
+
+		localisation = {
+			## required
+			Name = "$"
+			## required
+			Description = "$_desc"
+		}
+	}
+}
+```
+
+* [ ] BUG：无法解析`civic_or_origin.civic`
+
+```
+	type[civic_or_origin] = {
+		path = "game/common/governments/civics"
+		localisation = {
+			## required
+			Name = "$"
+			## required
+			Description = "$_desc"
+		}
+		subtype[origin] = {
+			is_origin = yes
+		}
+		subtype[civic] = {
+			## cardinality = 0..1
+			is_origin = no
+		}
+	}
+```

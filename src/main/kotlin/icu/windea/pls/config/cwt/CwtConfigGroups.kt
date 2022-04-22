@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 
 @Suppress("unused")

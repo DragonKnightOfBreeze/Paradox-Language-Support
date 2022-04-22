@@ -28,7 +28,6 @@ const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length
 const val commentFolder = "#..."
 const val blockFolder = "{...}"
-const val emptyBlockString = "{}"
 const val anonymousString = "<anonymous>"
 const val anonymousEscapedString = "&lt;anonymous&gt;"
 const val unknownString = "<unknown>"

@@ -2,7 +2,7 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.expression.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 
@@ -11,9 +11,9 @@ import java.util.*
  */
 object CwtConfigResolver {
 	fun resolve(file: CwtFile): CwtFileConfig {
-		val rootBlock = file.block ?: return CwtFileConfig.empty
+		val rootBlock = file.block ?: return CwtFileConfig.EmptyConfig
 		return when {
-			rootBlock.isEmpty -> CwtFileConfig.empty
+			rootBlock.isEmpty -> CwtFileConfig.EmptyConfig
 			rootBlock.isObject -> {
 				val properties = rootBlock.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
 				CwtFileConfig(emptyPointer(), emptyList(), properties)
@@ -22,7 +22,7 @@ object CwtConfigResolver {
 				val values = rootBlock.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
 				CwtFileConfig(emptyPointer(), values, emptyList())
 			}
-			else -> CwtFileConfig.empty
+			else -> CwtFileConfig.EmptyConfig
 		}
 	}
 	
@@ -91,11 +91,10 @@ object CwtConfigResolver {
 		}
 		
 		val documentation = documentationLines?.joinToString("\n")
-		val keyExpression = CwtKeyExpression.resolve(key)
-		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		val config = CwtPropertyConfig(
-			pointer, key, property.propertyValue, booleanValue, intValue, floatValue, stringValue, values , properties,
-			documentation, options, optionValues, separatorType, keyExpression, valueExpression
+			pointer, key, property.propertyValue,
+			booleanValue, intValue, floatValue, stringValue, values, properties,
+			documentation, options, optionValues, separatorType
 		)
 		values?.forEach { it.parent = config }
 		properties?.forEach { it.parent = config }
@@ -168,10 +167,10 @@ object CwtConfigResolver {
 		}
 		val documentation = documentationLines?.joinToString("\n")
 		
-		val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 		return CwtValueConfig(
-			pointer, value.value, booleanValue, intValue, floatValue, stringValue,
-			values, properties, documentation, options, optionValues, valueExpression
+			pointer, value.value, 
+			booleanValue, intValue, floatValue, stringValue,
+			values, properties, documentation, options, optionValues
 		)
 	}
 	

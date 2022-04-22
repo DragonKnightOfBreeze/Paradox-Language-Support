@@ -1,6 +1,7 @@
 package icu.windea.pls.config.internal
 
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
 
 class InternalConfigGroup(
 	configMap: InternalConfigMap

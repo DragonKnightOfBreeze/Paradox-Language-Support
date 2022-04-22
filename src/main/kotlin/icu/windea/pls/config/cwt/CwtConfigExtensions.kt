@@ -9,8 +9,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeStyle.*
@@ -79,13 +80,13 @@ fun matchesDefinitionProperty(propertyElement: ParadoxDefinitionProperty, proper
 	when {
 		//匹配属性列表
 		propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {
-			val propConfigs = propertyConfig.properties.orEmpty() //不应该为null，转为emptyList
+			val propConfigs = propertyConfig.properties
 			val props = propertyElement.properties
 			if(!matchesProperties(props, propConfigs, configGroup)) return false //继续匹配
 		}
 		//匹配值列表
 		propertyConfig.values != null && propertyConfig.values.isNotEmpty() -> {
-			val valueConfigs = propertyConfig.values.orEmpty() //不应该为null，转为emptyList
+			val valueConfigs = propertyConfig.values
 			val values = propertyElement.values
 			if(!matchesValues(values, valueConfigs, configGroup)) return false //继续匹配
 		}
@@ -118,13 +119,13 @@ fun matchesProperty(propertyElement: ParadoxScriptProperty, propertyConfig: CwtP
 			}
 			//匹配属性列表
 			propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {
-				val propConfigs = propertyConfig.properties.orEmpty() //不应该为null，转为emptyList
+				val propConfigs = propertyConfig.properties
 				val props = propertyElement.properties
 				if(!matchesProperties(props, propConfigs, configGroup)) return false //继续匹配
 			}
 			//匹配值列表
 			propertyConfig.values != null && propertyConfig.values.isNotEmpty() -> {
-				val valueConfigs = propertyConfig.values.orEmpty() //不应该为null，转为emptyList
+				val valueConfigs = propertyConfig.values
 				val values = propertyElement.values
 				if(!matchesValues(values, valueConfigs, configGroup)) return false //继续匹配
 			}
