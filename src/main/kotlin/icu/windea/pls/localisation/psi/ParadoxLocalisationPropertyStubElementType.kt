@@ -7,7 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
 
-class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>(
+class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocalisationStub, ParadoxLocalisationProperty>(
 	"PARADOX_LOCALISATION_PROPERTY",
 	ParadoxLocalisationLanguage
 ) {
@@ -15,15 +15,15 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 		return "paradoxLocalisation.property"
 	}
 	
-	override fun createPsi(stub: ParadoxLocalisationPropertyStub): ParadoxLocalisationProperty {
+	override fun createPsi(stub: ParadoxLocalisationStub): ParadoxLocalisationProperty {
 		return ParadoxLocalisationPropertyImpl(stub, this)
 	}
 	
-	override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
+	override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationStub {
 		val localisationInfo = psi.localisationInfo
 		val name = localisationInfo?.name ?: ""
 		val category = localisationInfo?.category ?: ParadoxLocalisationCategory.Localisation
-		return ParadoxLocalisationPropertyStubImpl(parentStub, name,category)
+		return ParadoxLocalisationStubImpl(parentStub, name,category)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -32,7 +32,7 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 		return element.localisationInfo != null
 	}
 	
-	override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
+	override fun indexStub(stub: ParadoxLocalisationStub, sink: IndexSink) {
 		//根据分类索引localisation和localisation_synced的name
 		val category = stub.category
 		when(category) {
@@ -41,14 +41,14 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 		}
 	}
 	
-	override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
+	override fun serialize(stub: ParadoxLocalisationStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
 		dataStream.writeBoolean(stub.category.flag)
 	}
 	
-	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
+	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationStub {
 		val key = dataStream.readNameString().orEmpty()
 		val category = ParadoxLocalisationCategory.resolve(dataStream.readBoolean())
-		return ParadoxLocalisationPropertyStubImpl(parentStub, key, category)
+		return ParadoxLocalisationStubImpl(parentStub, key, category)
 	}
 }

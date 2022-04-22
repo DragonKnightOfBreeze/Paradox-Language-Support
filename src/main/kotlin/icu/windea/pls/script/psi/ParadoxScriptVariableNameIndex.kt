@@ -7,10 +7,11 @@ import icu.windea.pls.*
 
 object ParadoxScriptVariableNameIndex : StringStubIndexExtension<ParadoxScriptVariable>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.scriptVariable.name.index")
+	private const val cacheSize = 2 * 1024
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 1024
+	override fun getCacheSize() = cacheSize
 	
 	//fun exists(name: String, project: Project, scope: GlobalSearchScope): Boolean {
 	//	//如果索引未完成

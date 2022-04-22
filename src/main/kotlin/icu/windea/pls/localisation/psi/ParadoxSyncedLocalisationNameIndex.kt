@@ -6,12 +6,15 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 
+//注意这里不能直接访问element.localisationInfo，需要优先通过element.stub获取本地化信息
+
 object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
+	private const val cacheSize = 2 * 1024
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 2 * 1024
+	override fun getCacheSize() = cacheSize
 	
 	fun exists(name: String, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成

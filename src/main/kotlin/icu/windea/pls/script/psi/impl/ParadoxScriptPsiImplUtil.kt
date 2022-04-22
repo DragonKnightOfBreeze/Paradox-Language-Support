@@ -75,7 +75,8 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getName(element: ParadoxScriptProperty): String {
 		//注意：element.stub可能会导致ProcessCanceledException
-		return runCatching { element.stub?.name }.getOrNull() ?: element.propertyKey.text.unquote()
+		//注意：这里需要得到element.stub.rootKey，而非element.stub.name，因为这里需要的是PSI元素的名字而非定义的名字
+		return runCatching { element.stub?.rootKey }.getOrNull() ?: element.propertyKey.text.unquote()
 	}
 	
 	@JvmStatic

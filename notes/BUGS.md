@@ -32,7 +32,7 @@
 
 * [X] ~~BUG：当进行代码提示时，无法显示对应的快速文档和快速定义~~（测试环境问题或者IDE BUG？）
 
-* [ ] BUG：无法解析`trait.species_trait`
+* [X] BUG：无法解析`trait.species_trait`（定义的子类型识别不准确）
 
 ```
 types = {
@@ -62,25 +62,4 @@ types = {
 		}
 	}
 }
-```
-
-* [ ] BUG：无法解析`civic_or_origin.civic`
-
-```
-	type[civic_or_origin] = {
-		path = "game/common/governments/civics"
-		localisation = {
-			## required
-			Name = "$"
-			## required
-			Description = "$_desc"
-		}
-		subtype[origin] = {
-			is_origin = yes
-		}
-		subtype[civic] = {
-			## cardinality = 0..1
-			is_origin = no
-		}
-	}
 ```

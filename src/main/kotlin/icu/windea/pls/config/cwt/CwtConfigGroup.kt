@@ -6,7 +6,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
 class CwtConfigGroup(
@@ -556,20 +555,17 @@ class CwtConfigGroup(
 	
 	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, elementName)
-		val typeKey = elementName
 		val type = typeConfig.name
 		val subtypeConfigs = getSubtypeConfigs(typeConfig, element, elementName)
-		val subtypes = getSubtypes(subtypeConfigs)
+		val subtypes = subtypeConfigs.map { it.name }
 		val localisation = getLocalisation(typeConfig, subtypes, element, name)
-		val localisationConfig = getLocalisationConfig(typeConfig)
+		val localisationConfig = typeConfig.localisation
 		val definition = getDefinition(type, subtypes)
-		val definitionConfig = getDefinitionConfig(type)
-		val graphRelatedTypes = typeConfig.graphRelatedTypes.orEmpty()
-		val unique = typeConfig.unique
-		val severity = typeConfig.severity
+		val definitionConfig = definitions.get(type)
+		val rootKey = elementName
 		return ParadoxDefinitionInfo(
 			name, type, typeConfig, subtypes, subtypeConfigs, localisation, localisationConfig,
-			definition, definitionConfig, typeKey, graphRelatedTypes, unique, severity, gameType
+			definition, definitionConfig, rootKey, gameType
 		)
 	}
 	
@@ -594,10 +590,6 @@ class CwtConfigGroup(
 			if(matchesSubtype(subtypeConfig, element, elementName, result)) result.add(subtypeConfig)
 		}
 		return result
-	}
-	
-	private fun getSubtypes(subtypeConfigs: List<CwtSubtypeConfig>): List<String> {
-		return subtypeConfigs.map { it.name }
 	}
 	
 	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxRelatedLocalisationInfo> {
@@ -625,16 +617,8 @@ class CwtConfigGroup(
 		return result
 	}
 	
-	private fun getLocalisationConfig(typeConfig: CwtTypeConfig): CwtTypeLocalisationConfig? {
-		return typeConfig.localisation
-	}
-	
 	private fun getDefinition(type: String, subtypes: List<String>): List<CwtPropertyConfig> {
 		return definitions.get(type)?.mergeConfigs(subtypes) ?: emptyList()
-	}
-	
-	private fun getDefinitionConfig(type: String): CwtDefinitionConfig? {
-		return definitions.get(type)
 	}
 	
 	private fun resolveKeyName(name: String, expression: String, element: ParadoxDefinitionProperty): String {

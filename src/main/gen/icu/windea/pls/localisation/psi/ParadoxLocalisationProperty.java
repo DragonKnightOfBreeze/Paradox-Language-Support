@@ -7,7 +7,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import icu.windea.pls.core.ParadoxLocalisationCategory;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationPropertyStub> {
+public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedElement, StubBasedPsiElement<ParadoxLocalisationStub> {
 
   @NotNull
   ParadoxLocalisationPropertyKey getPropertyKey();

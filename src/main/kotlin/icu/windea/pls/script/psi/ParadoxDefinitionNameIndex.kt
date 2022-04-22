@@ -5,12 +5,15 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 
+//注意这里不能直接访问element.definitionInfo，需要优先通过element.stub获取定义信息
+
 object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definition.name.index")
+	private const val cacheSize = 4 * 1024
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 8 * 1024
+	override fun getCacheSize() = cacheSize
 	
 	fun exists(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
@@ -55,12 +58,14 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptProper
 	}
 	
 	private fun matches(element: ParadoxScriptProperty, type: String, subtype: String?): Boolean {
-		if(subtype == null) {
-			val definitionInfo = element.definitionInfo ?: return false
-			return type == definitionInfo.type
-		} else {
-			val definitionInfo = element.definitionInfo ?: return false
-			return type == definitionInfo.type && subtype in definitionInfo.subtypes
+		val stub = element.stub
+		val definitionInfo = if(stub == null) element.definitionInfo else null
+		val targetType = runCatching { stub?.type }.getOrNull() ?: definitionInfo?.type ?: return false
+		if(type != targetType) return false
+		if(subtype != null) {
+			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+			if(subtype !in targetSubtypes) return false
 		}
+		return true
 	}
 }

@@ -204,16 +204,9 @@ private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): P
 	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
 	val pointer = element.createPointer()
 	val gameType = definitionInfo.gameType
-	val configGroup = getCwtConfig(element.project).getValue(gameType)
-	val propertyConfigs = definitionInfo.resolvePropertyConfigs(path, configGroup)
-	val childPropertyConfigs = definitionInfo.resolveChildPropertyConfigs(path, configGroup)
-	val childValueConfigs = definitionInfo.resolveChildValuesConfigs(path, configGroup)
-	val childPropertyOccurrence = definitionInfo.resolveChildPropertyOccurrence(childPropertyConfigs, element, configGroup)
-	val childValueOccurrence = definitionInfo.resolveChildValueOccurrence(childValueConfigs, element, configGroup)
-	return ParadoxDefinitionPropertyInfo(
-		path, scope, propertyConfigs, childPropertyConfigs, childValueConfigs,
-		childPropertyOccurrence, childValueOccurrence, gameType, pointer
-	)
+	val project = element.project
+	val configGroup = getCwtConfig(project).getValue(gameType)
+	return ParadoxDefinitionPropertyInfo(path, scope, gameType, definitionInfo, configGroup, pointer)
 }
 
 val ParadoxScriptProperty.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)

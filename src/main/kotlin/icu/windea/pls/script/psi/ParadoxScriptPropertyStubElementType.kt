@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.impl.*
 //或者：重写com.intellij.psi.stubs.DefaultStubBuilder.StubBuildingWalkingVisitor.createStub，尝试从更多信息中获取
 //要求：必须能够获取paradoxPath和paradoxPropertyPath！即使psiFIle在内存中也要缓存信息
 
-class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
+class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptDefinitionStub, ParadoxScriptProperty>(
 	"PARADOX_SCRIPT_PROPERTY",
 	ParadoxScriptLanguage
 ) {
@@ -21,16 +21,18 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		return "paradoxScript.property"
 	}
 	
-	override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
+	override fun createPsi(stub: ParadoxScriptDefinitionStub): ParadoxScriptProperty {
 		return ParadoxScriptPropertyImpl(stub, this)
 	}
 	
-	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
+	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptDefinitionStub {
 		//这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
 		val definitionInfo = psi.definitionInfo
 		val name = definitionInfo?.name ?: ""
 		val type = definitionInfo?.type ?: ""
-		return ParadoxScriptPropertyStubImpl(parentStub, name, type)
+		val subtypes = definitionInfo?.subtypes ?: emptyList()
+		val rootKey = definitionInfo?.rootKey ?: ""
+		return ParadoxScriptDefinitionStubImpl(parentStub, name, type, subtypes, rootKey)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -39,20 +41,24 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		return element.definitionInfo != null
 	}
 	
-	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
+	override fun indexStub(stub: ParadoxScriptDefinitionStub, sink: IndexSink) {
 		//索引definition的name和type
 		sink.occurrence(ParadoxDefinitionNameIndex.key, stub.name)
 		sink.occurrence(ParadoxDefinitionTypeIndex.key, stub.type)
 	}
 	
-	override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
+	override fun serialize(stub: ParadoxScriptDefinitionStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
 		dataStream.writeName(stub.type)
+		dataStream.writeName(stub.subtypes.toCommaDelimitedString())
+		dataStream.writeName(stub.rootKey)
 	}
 	
-	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
+	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptDefinitionStub {
 		val name = dataStream.readNameString().orEmpty()
 		val type = dataStream.readNameString().orEmpty()
-		return ParadoxScriptPropertyStubImpl(parentStub, name, type)
+		val subtypes = dataStream.readNameString().orEmpty().toCommaDelimitedStringList()
+		val rootKey = dataStream.readNameString().orEmpty()
+		return ParadoxScriptDefinitionStubImpl(parentStub, name, type, subtypes, rootKey)
 	}
 }

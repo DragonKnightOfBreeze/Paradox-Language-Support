@@ -180,13 +180,11 @@ inline fun <reified T> Any?.cast(): T = this as T
 
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
-fun Icon.resize(width: Int, height: Int = width): Icon {
-	return IconUtil.toSize(this, width, height)
-}
+fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C) : C = if(this.isNotEmpty()) block(this) else this
 
-fun <C : CharSequence> C.ifNotEmpty(block: (C) -> Unit) {
-	if(this.isNotEmpty()) block(this)
-}
+fun String.toCommaDelimitedStringList(): List<String> = if(this.isEmpty()) emptyList() else this.split(',')
+
+fun List<String>.toCommaDelimitedString(): String = if(this.isEmpty()) "" else this.joinToString(",")
 
 /**
  * 判断当前路径是否匹配另一个路径（等于或者是另一个路径的父路径）。

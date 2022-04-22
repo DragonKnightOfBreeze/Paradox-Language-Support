@@ -5,12 +5,15 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 
+//注意这里不能直接访问element.definitionInfo，需要优先通过element.stub获取定义信息
+
 object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definition.type.index")
+	private const val cacheSize = 4 * 1024
 	
 	override fun getKey() = key
 	
-	override fun getCacheSize() = 8 * 1024
+	override fun getCacheSize() = cacheSize
 	
 	fun exists(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
@@ -60,36 +63,38 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptProper
 	}
 	
 	private fun matches(element: ParadoxScriptProperty, name: String, subtype: String?): Boolean {
-		if(subtype == null) {
-			val definitionInfo = element.definitionInfo ?: return false
-			return definitionInfo.name == name
-		} else {
-			val definitionInfo = element.definitionInfo ?: return false
-			return definitionInfo.name == name && subtype in definitionInfo.subtypes
+		val stub = element.stub
+		val definitionInfo = if(stub == null) element.definitionInfo else null
+		val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
+		if(targetName != name) return false
+		if(subtype != null) {
+			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+			if(subtype !in targetSubtypes) return false
 		}
+		return true
 	}
 	
 	private fun matches(element: ParadoxScriptProperty, subtype: String?): Boolean {
-		if(subtype == null) {
-			return true
-		} else {
-			val definitionInfo = element.definitionInfo ?: return false
-			return subtype in definitionInfo.subtypes
+		val stub = element.stub
+		val definitionInfo = if(stub == null) element.definitionInfo else null
+		if(subtype != null) {
+			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+			if(subtype !in targetSubtypes) return false
 		}
+		return true
 	}
 	
 	private fun matchesAndDistinct(element: ParadoxScriptProperty, keyword: String, subtype: String?, names: MutableSet<String>): Boolean {
-		if(subtype == null) {
-			val definitionInfo = element.definitionInfo ?: return false
-			val name = definitionInfo.name
-			if(!names.add(name)) return false
-			return name.matchesKeyword(keyword)
-		} else {
-			val definitionInfo = element.definitionInfo ?: return false
-			val name = definitionInfo.name
-			if(!names.add(name)) return false
-			return name.matchesKeyword(keyword) && subtype in definitionInfo.subtypes
+		val stub = element.stub
+		val definitionInfo = if(stub == null) element.definitionInfo else null
+		val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
+		if(!names.add(targetName)) return false
+		if(!targetName.matchesKeyword(keyword)) return false
+		if(subtype != null) {
+			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+			if(subtype !in targetSubtypes) return false
 		}
+		return true
 	}
 }
 

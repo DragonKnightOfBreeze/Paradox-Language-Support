@@ -2,7 +2,7 @@ package icu.windea.pls.core
 
 import java.nio.file.*
 
-data class ParadoxFileInfo(
+class ParadoxFileInfo(
 	val name: String,
 	val path: ParadoxPath,
 	val rootPath: Path,

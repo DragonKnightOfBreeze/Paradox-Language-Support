@@ -140,7 +140,7 @@ com.intellij.diagnostic.PluginException: Cyclic service initialization: ServiceA
 	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 ```
 
-## com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion prevented *
+## com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion prevented［已解决］
 
 ```
 In file: file://D:/Documents/Projects/Stellaris-Mods/kitsune/package-tiny/common/on_actions/kisune_on_actions.txt

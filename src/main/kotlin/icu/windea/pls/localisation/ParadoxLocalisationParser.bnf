@@ -78,7 +78,7 @@ property ::= property_key ":" [NUMBER] property_value {
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes.getPropertyType"
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub"
+  stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationStub"
   methods=[getIcon getName setName getNameIdentifier getCategory getValue]
 }
 property_key ::= PROPERTY_KEY_ID
