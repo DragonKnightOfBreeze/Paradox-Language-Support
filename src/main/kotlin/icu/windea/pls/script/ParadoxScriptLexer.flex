@@ -78,7 +78,7 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "=" {yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;}
-  {EOL} {yybegin(nextState()); return WHITE_SPACE;}
+  {EOL} {return WHITE_SPACE;}
   {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
@@ -90,7 +90,7 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
   {FLOAT_TOKEN} {yybegin(WAITING_VARIABLE_END); return FLOAT_TOKEN;}
   {STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return STRING_TOKEN;}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return QUOTED_STRING_TOKEN;}
-  {EOL} { yybegin(nextState()); return WHITE_SPACE; }
+  {EOL} { return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
@@ -132,7 +132,7 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
   "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
   ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
   "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-  {EOL} {yybegin(nextState()); return WHITE_SPACE;}
+  {EOL} {return WHITE_SPACE;}
   {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
