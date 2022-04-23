@@ -1,6 +1,5 @@
 package icu.windea.pls.core
 
-import icu.windea.pls.config.internal.config.*
 import java.util.*
 
 data class ParadoxLocalisationInfo(

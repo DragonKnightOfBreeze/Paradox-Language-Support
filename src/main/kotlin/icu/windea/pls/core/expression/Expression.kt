@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.core.expression
 
 interface Expression: CharSequence{
 	val expressionString: String

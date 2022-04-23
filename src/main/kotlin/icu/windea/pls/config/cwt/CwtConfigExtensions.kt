@@ -967,7 +967,7 @@ fun completeModifier(keyword: String, quoted: Boolean, configGroup: CwtConfigGro
 			.withPriority(modifierPriority)
 		result.addElement(lookupElement)
 		size++
-		if(size == maxCompleteSize) return //限制补全项的数量
+		if(size == getSettings().maxCompleteSize) return //限制补全项的数量
 	}
 }
 
@@ -989,7 +989,7 @@ fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,
 			.withTypeText(typeText, true)
 		result.addElement(lookupElement)
 		size++
-		if(size == maxCompleteSize) return //限制补全项的数量
+		if(size == getSettings().maxCompleteSize) return //限制补全项的数量
 	}
 }
 //endregion

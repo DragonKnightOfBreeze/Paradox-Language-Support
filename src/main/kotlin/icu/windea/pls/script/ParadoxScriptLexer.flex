@@ -35,7 +35,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
 %}
 
 EOL=\s*\R\s*
-WHITE_SPACE=[ \u00a0\t]+
+WHITE_SPACE=[ \t]+
 
 COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\r\n]*
@@ -48,7 +48,7 @@ INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 STRING_TOKEN=[^@\s\{\}=\"][^\s\{\}=\"]*
 QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
-COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}
+COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}
 CODE_TEXT_TOKEN=[^\r\n\]}]+
 
 //为了兼容cwt规则文件（<xxx>格式的propertyKey），需要弄得很麻烦

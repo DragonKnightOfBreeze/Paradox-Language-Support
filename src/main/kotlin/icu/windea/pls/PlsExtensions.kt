@@ -512,7 +512,7 @@ fun findScriptVariable(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptVariable? {
-	return ParadoxScriptVariableNameIndex.findOne(name, project, scope, !preferOverridden)
+	return ParadoxScriptVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden)
 }
 
 /**
@@ -557,7 +557,7 @@ fun findDefinition(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptProperty? {
-	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, !preferOverridden)
+	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
 }
 
 /**
@@ -604,7 +604,7 @@ fun findDefinitionByType(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptProperty? {
-	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, !preferOverridden)
+	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
 }
 
 /**
@@ -639,7 +639,7 @@ fun findDefinitionsByKeywordByType(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptProperty> {
-	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword, typeExpression, project, scope, maxCompleteSize)
+	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword, typeExpression, project, scope, getSettings().maxCompleteSize)
 }
 
 /**
@@ -665,7 +665,7 @@ fun findLocalisation(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.findOne(name, localeConfig, project, scope, hasDefault, !preferOverridden)
+	return ParadoxLocalisationNameIndex.findOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
 }
 
 /**
@@ -707,7 +707,7 @@ fun findLocalisationsByKeyword(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAllByKeyword(keyword, project, scope, maxCompleteSize)
+	return ParadoxLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
 }
 
 /**
@@ -750,7 +750,7 @@ fun findSyncedLocalisation(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxSyncedLocalisationNameIndex.getOne(name, localeConfig, project, scope, hasDefault, !preferOverridden)
+	return ParadoxSyncedLocalisationNameIndex.getOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
 }
 
 /**
@@ -792,7 +792,7 @@ fun findSyncedLocalisationsByKeyword(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findAllByKeyword(keyword, project, scope, maxCompleteSize)
+	return ParadoxSyncedLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
 }
 //endregion
 

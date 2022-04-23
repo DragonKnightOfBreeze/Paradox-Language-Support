@@ -188,7 +188,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
 		//本地化文本
-		if(renderLocalisationText) {
+		if(getSettings().renderLocalisationText) {
 			val richText = element.renderText()
 			if(richText.isNotEmpty()) {
 				sections {
@@ -256,7 +256,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
 		//单行注释文本
-		if(renderLineCommentText) {
+		if(getSettings().renderLineCommentText) {
 			val docText = getDocTextFromPreviousComment(element)
 			if(docText.isNotEmpty()) {
 				content {

@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.core.expression
 
 abstract class AbstractExpression(override val expressionString: String) : Expression {
 	override val length get() = expressionString.length

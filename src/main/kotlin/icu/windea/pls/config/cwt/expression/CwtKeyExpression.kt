@@ -1,7 +1,7 @@
 package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
-import icu.windea.pls.config.*
+import icu.windea.pls.core.expression.*
 
 /**
  * CWT键表达式。

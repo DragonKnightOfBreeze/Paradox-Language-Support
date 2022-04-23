@@ -1,4 +1,4 @@
-package icu.windea.pls.config
+package icu.windea.pls.core.expression
 
 import icu.windea.pls.*
 

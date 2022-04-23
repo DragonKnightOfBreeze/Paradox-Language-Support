@@ -2,19 +2,15 @@
 
 package icu.windea.pls
 
-import com.google.common.cache.*
-import com.intellij.util.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
 import java.text.*
 import java.util.*
 import java.util.concurrent.*
-import javax.swing.*
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {
-}
+inline fun pass() {}
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Array<out T?>.cast() = this as Array<T>
@@ -296,7 +292,7 @@ fun String.isPercentageField(): Boolean {
 	return true
 }
 
-private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \u00a0\t]*\{[0-9. \u00a0\t]*}""".toRegex()
+private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
 
 fun String.isColorField(): Boolean {
 	return this.matches(isColorRegex)

@@ -152,7 +152,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildRelatedLocalisationSections(localisation: List<ParadoxRelatedLocalisationInfo>,
 		element: ParadoxScriptProperty) {
 		//本地化文本
-		if(renderDefinitionText) {
+		if(getSettings().renderDefinitionText) {
 			if(localisation.isNotEmpty()) {
 				val richTexts = mutableListOf<Pair<String, String>>()
 				for((n, kn) in localisation) {
@@ -174,7 +174,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
 		//单行注释文本
-		if(renderLineCommentText) {
+		if(getSettings().renderLineCommentText) {
 			val docText = getDocTextFromPreviousComment(element)
 			if(docText.isNotEmpty()) {
 				content {
