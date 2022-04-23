@@ -81,7 +81,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionPropertyInfo?.scope)
 					for((sk, sv) in scopeMap) {
 						val scopeLink = "${gameType.id}.scopes.$sv"
-						appendBr().append("(scope) ").append(sk).append(" = ").appendCwtLink(scopeLink, sv, null)
+						appendBr().append("(scope) ").append(sk).append(" = ").appendCwtLink(sv, scopeLink, null)
 					}
 				}
 				//为alias提供关于scope的额外文档注释（如果有的话）

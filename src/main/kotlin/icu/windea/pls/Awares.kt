@@ -13,3 +13,7 @@ interface DescriptionAware {
 interface IconAware {
 	val icon: Icon
 }
+
+interface TextAware{
+	val text: String
+}

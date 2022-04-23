@@ -1,6 +1,10 @@
 package icu.windea.pls.config.cwt.config
 
-enum class CwtConfigType(val text:String){
+import icu.windea.pls.*
+
+enum class CwtConfigType(
+	override val text: String
+) : TextAware {
 	Type("type"),
 	Subtype("subtype"),
 	Enum("enum"),
