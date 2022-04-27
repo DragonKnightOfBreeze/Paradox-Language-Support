@@ -18,7 +18,6 @@ For functions and usages of this plugin, please refer to the [Reference document
 
 Related links：
 
-* [cwtools](https://github.com/cwtools/cwtools)
-* [cwtools vscode](https://github.com/cwtools/cwtools-vscode)
-* [.cwt config file guidance](https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance)
-
+* [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
+* [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
+* [vincentzhang96/DDS4J: Java library for reading and decoding DDS files to raw ARGB and PNG](https://github.com/vincentzhang96/DDS4J)

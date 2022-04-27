@@ -2,15 +2,19 @@
 
 package icu.windea.pls
 
+import com.intellij.util.io.*
 import java.io.*
 import java.net.*
+import java.nio.charset.*
 import java.nio.file.*
 import java.text.*
 import java.util.*
 import java.util.concurrent.*
+import kotlin.io.path.*
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {}
+inline fun pass() {
+}
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Array<out T?>.cast() = this as Array<T>
@@ -176,7 +180,7 @@ inline fun <reified T> Any?.cast(): T = this as T
 
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
-fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C) : C = if(this.isNotEmpty()) block(this) else this
+fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) block(this) else this
 
 fun String.toCommaDelimitedStringList(): List<String> = if(this.isEmpty()) emptyList() else this.split(',')
 
@@ -215,11 +219,18 @@ fun Path.notExists(): Boolean {
 	return Files.notExists(this)
 }
 
-fun Path.tryCreateDirectory() {
-	try {
-		if(notExists()) Files.createDirectories(this)
-	} catch(ignored: Exception) {
+fun Path.create(): Path {
+	if(isDirectory()) {
+		createDirectories()
+	} else {
+		parent?.createDirectories()
+		try {
+			Files.createFile(this)
+		} catch(e: FileAlreadyExistsException) {
+			//ignored
+		}
 	}
+	return this
 }
 
 val nullPair = null to null
@@ -292,7 +303,7 @@ fun String.isPercentageField(): Boolean {
 	return true
 }
 
-private val isColorRegex = """(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
+private val isColorRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
 
 fun String.isColorField(): Boolean {
 	return this.matches(isColorRegex)
@@ -330,13 +341,15 @@ fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no")
 
 fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
 
-private val pathCache = createLimitedCache<String, Path> { Path.of(it) }
-
-fun String.toPath() = pathCache.get(this)
+fun String.toPath() = Path.of(this)
 
 fun String.toIntRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 
 fun String.toFloatRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
+
+fun String.toUUID(): UUID {
+	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
+}
 
 fun URL.toFile() = File(this.toURI())
 
@@ -349,6 +362,19 @@ inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
 fun <T> T.toSingletonList() = Collections.singletonList(this)
 
 fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
+
+@PublishedApi
+internal val enumValuesCache by lazy { createCache<Class<*>, Array<*>> { it.enumConstants } }
+
+/**
+ * 得到共享的指定枚举类型的所有枚举常量组成的数组。
+ */
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T : Enum<T>> enumSharedValues(): Array<T> {
+	return enumValuesCache[T::class.java] as Array<T>
+}
+
+inline val <T : Enum<T>> Class<T>.enumSharedConstants get() = enumValuesCache[this] as Array<T>
 
 /**
  * 执行命令。（基于操作系统）

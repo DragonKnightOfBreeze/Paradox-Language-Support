@@ -20,6 +20,7 @@ repositories {
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("ar.com.hjg:pngj:2.1.0") //FROM DDS4
 }
 
 sourceSets.main {

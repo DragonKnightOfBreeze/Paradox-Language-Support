@@ -1,90 +1,73 @@
 package icu.windea.pls.tool
 
-import com.intellij.util.io.*
+import co.phoenixlab.dds.*
 import icu.windea.pls.*
 import org.slf4j.*
 import java.lang.invoke.*
 import java.nio.file.*
-
-//TODO 兼容linux系统
+import kotlin.io.path.*
 
 /**
- * DDS格式文件转PNG格式文件的转换器。
+ * DDS文件到PNG文件的转化器。
+ *
+ * 基于[DDS4J](https://github.com/vincentzhang96/DDS4J)。
  */
 @Suppress("unused")
 object DdsToPngConverter {
 	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 	
-	private const val dds2PngDirName = "dds2png"
-	private const val dds2PngExeName = "dds2png.exe"
-	private const val dds2PngZipName = "dds2png.zip"
-	private const val tmpDirName = "tmp"
-	private const val unknownPngName = "unknown.png"
+	private val ddsImageDecoder by lazy { DdsImageDecoder() }
+	private val ddsCache by lazy { createCache<String, Path>() } //ddsAbsPath - pngAbsPath
 	
-	private val userHome = System.getProperty("user.home")
-	private val userHomePath = userHome.toPath()
-	private val dds2PngZipPath = userHomePath.resolve(dds2PngZipName)
-	private val dds2PngDirPath = userHomePath.resolve(dds2PngDirName)
-	private val dds2PngDirFile = dds2PngDirPath.toFile()
-	private val dds2PngExePath = dds2PngDirPath.resolve(dds2PngExeName)
-	private val tmpDirPath = dds2PngDirPath.resolve(tmpDirName)
-	private val unknownPngPath = tmpDirPath.resolve(unknownPngName)
-	private val rawUnknownPngUrl = "/$unknownPngName".toUrl(locationClass)
-	private val rawDds2PngZipUrl = "/$dds2PngZipName".toUrl(locationClass)
-	private val ddsExtensionRegex = "\\.dds".toRegex(RegexOption.IGNORE_CASE)
+	//TODO 需要检查DDS文件被更改的情况
 	
 	/**
-	 * 将dds文件转化为png文件，返回png文件的绝对路径。如果发生异常，则返回null
+	 * 将DDS文件转化为PNG文件，返回PNG文件的绝对路径。如果发生异常，则返回null。
 	 */
 	fun convert(ddsAbsPath: String, ddsRelPath: String): String? {
 		try {
-			ensureDirsAndFilesExist()
-			return doConvert(ddsAbsPath, ddsRelPath)
+			//如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
+			val pngAbsPath = getPngAbsPath(ddsAbsPath, ddsRelPath)
+			if(pngAbsPath.notExists()) {
+				doConvertDdsToPng(ddsAbsPath, pngAbsPath)
+			}
+			return pngAbsPath.absolutePathString()
 		} catch(e: Exception) {
-			logger.warn("Convert dds image to png image failed.", e)
+			logger.warn(e) { "Convert dds image to png image failed. (dds absolute path: $ddsAbsPath, dds relative path: $ddsRelPath)" }
 			return null
 		}
 	}
 	
-	
-	/**
-	 * * 检查目录`~/dds2png`和`~/dds2png/tmp`是否存在，如果不存在则创建。
-	 * * 检查执行文件`~/dds2png/dds2png.exe`是否存在，如果不存在，则将jar包中的`dds2png.zip`提取并解压到用户目录。
-	 */
-	private fun ensureDirsAndFilesExist() {
-		dds2PngDirPath.tryCreateDirectory()
-		tmpDirPath.tryCreateDirectory()
-		if(unknownPngPath.notExists()) {
-			Files.copy(rawUnknownPngUrl.openStream(), unknownPngPath) //将jar包中的unknown.png复制到~/dds2png/tmp下
-			if(dds2PngExePath.notExists()) {
-				logger.warn("File '$unknownPngPath' is not exist after trying to extract '$unknownPngName' to tmp dir.")
-			}
-		}
-		if(dds2PngExePath.notExists()) {
-			Files.copy(rawDds2PngZipUrl.openStream(), dds2PngZipPath) //将jar包中的zip复制到用户目录
-			ZipUtil.extract(dds2PngZipPath, dds2PngDirPath, null, true) //将zip解压到~/dds2png
-			if(dds2PngExePath.notExists()) {
-				logger.warn("File '$dds2PngExePath' is not exist after trying to extract '$dds2PngZipName' to user home.")
-			}
-		}
+	private fun getPngAbsPath(ddsAbsPath: String, ddsRelPath: String): Path {
+		return ddsCache.get(ddsAbsPath) { doGetPngAbsPath(ddsAbsPath, ddsRelPath) }
 	}
 	
-	private fun doConvert(ddsAbsPath: String, ddsRelPath: String): String {
-		val pngAbsPath = tmpDirPath.resolve(ddsRelPath.replace(ddsExtensionRegex, ".png"))
-		pngAbsPath.parent.tryCreateDirectory() //确保png文件的父目录已经创建
-		//~/dds2png/dds2png.exe -y <dds_name> <png_name>
-		val command = ("dds2png -y ${ddsAbsPath.quote()} ${pngAbsPath.toString().quote()}")
-		//需要花费50~80ms生成图片
-		exec(command, dds2PngDirFile)
-		return pngAbsPath.toAbsolutePath().toString()
+	private fun doGetPngAbsPath(ddsAbsPath: String, ddsRelPath: String): Path {
+		val pngAbsPath = doGetRelatedPngPath(ddsAbsPath, ddsRelPath)
+		doConvertDdsToPng(ddsAbsPath, pngAbsPath)
+		return pngAbsPath
+	}
+	
+	private fun doGetRelatedPngPath(ddsAbsPath: String, ddsRelPath: String): Path {
+		//路径：~/.pls/images/${uuid}/${ddsRelPath}.png
+		val uuid = ddsAbsPath.removePrefix(ddsRelPath).toUUID().toString() //得到基于游戏或模组目录的绝对路径的UUID
+		return imagesDirectoryPath.resolve("$uuid/$ddsRelPath.png") //直接在包括扩展名的DDS文件名后面加上".png"
+	}
+	
+	private fun doConvertDdsToPng(ddsAbsPath: String, pngAbsPath: Path) {
+		val dds = Dds()
+		dds.read(Files.newByteChannel(ddsAbsPath.toPath(), StandardOpenOption.READ))
+		pngAbsPath.create()
+		val outputStream = Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
+		ddsImageDecoder.convertToPNG(dds, outputStream)
+		outputStream.flush()
+		outputStream.close()
 	}
 	
 	fun getUnknownPngPath(): String {
 		if(unknownPngPath.notExists()) {
-			Files.copy(rawUnknownPngUrl.openStream(), unknownPngPath) //将jar包中的unknown.png复制到~/dds2png/tmp下
-			if(dds2PngExePath.notExists()) {
-				logger.warn("File '$unknownPngPath' is not exist after trying to extract '$unknownPngName' to tmp dir.")
-			}
+			val url = "/$unknownPngName".toUrl(locationClass)
+			Files.copy(url.openStream(), unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
 		}
 		return unknownPngPath.toString()
 	}

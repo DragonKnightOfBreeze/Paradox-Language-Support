@@ -10,7 +10,6 @@ import com.intellij.lang.documentation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -27,7 +26,7 @@ import java.io.*
 import java.util.*
 
 //region Misc Extensions
-val iconSize get() = DocumentationComponent.getQuickDocFontSize().size
+val fontSize get() = DocumentationComponent.getQuickDocFontSize()
 
 /**得到当前AST节点的除了空白节点之外的所有子节点。*/
 fun ASTNode.nodes(): List<ASTNode> {
@@ -175,12 +174,12 @@ inline fun <reified T : PsiFile> VirtualFile.toPsiFile(project: Project): T? {
 
 /** 得到当前VirtualFile相对于指定的VirtualFile的路径。 */
 fun VirtualFile.relativePathTo(other: VirtualFile): String {
-	return this.path.removePrefix(other.path);
+	return this.path.removePrefix(other.path)
 }
 
 /** （物理层面上）判断虚拟文件是否拥有BOM。 */
 fun VirtualFile.hasBom(bom: ByteArray): Boolean {
-	return this.bom.let { it != null && it contentEquals utf8Bom }
+	return this.bom.let { it != null && it contentEquals bom }
 }
 
 /** （物理层面上）为虚拟文件添加BOM。 */

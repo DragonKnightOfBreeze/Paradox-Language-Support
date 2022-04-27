@@ -4,6 +4,7 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.options.FontSize
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -907,12 +908,12 @@ fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement): Str
 }
 
 fun StringBuilder.appendIconTag(url: String, local: Boolean = true): StringBuilder {
-	return append("<img src=\"").appendIf(local, "file:/").append(url).append("\" hspace=\"1\"/>")
+	return append("<img src=\"").appendIf(local, "file:/").append(url).append("\" />")
 }
 
-fun StringBuilder.appendIconTag(url: String, size: Int, local: Boolean = true): StringBuilder {
+fun StringBuilder.appendIconTag(url: String, fontSize: FontSize, local: Boolean = true): StringBuilder {
 	return append("<img src=\"").appendIf(local, "file:/").append(url)
-		.append("\" width=\"").append(size).append("\" height=\"").append(size).append("\" hspace=\"1\"/>")
+		.append("\" width=\"").append(fontSize.size).append("\" height=\"").append(fontSize).append("\" />")
 }
 
 fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
@@ -927,7 +928,7 @@ fun StringBuilder.appendBr(): StringBuilder {
 //region Inline Extensions
 @Suppress("NOTHING_TO_INLINE")
 inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolveByName(this, project, defaultToUnknown)
+	return ParadoxIconUrlResolver.resolveByIconName(this, project, defaultToUnknown)
 }
 
 @Suppress("NOTHING_TO_INLINE")

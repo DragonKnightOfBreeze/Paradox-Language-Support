@@ -7,6 +7,7 @@
 * [ ] BUG修复 *
 * [ ] 语法解析优化 *
 * [X] 从注解器提取出单独的本地检查 *
+* [X] 优化DDS图片渲染
 * [ ] 完善内嵌提示
 * [X] 不再通过`ParadoxFileTypeOverrider`自动添加或移除文件的BOM，而是基于`ParadoxUtf8BomOptionProvider`判断创建文件时是否需要添加BOM
 * [ ] 完善对CWT配置文件的支持，完善相关功能
