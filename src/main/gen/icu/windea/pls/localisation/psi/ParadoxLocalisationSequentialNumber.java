@@ -9,9 +9,6 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
 
-  @Nullable
-  PsiElement getSequentialNumberId();
-
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

@@ -76,7 +76,7 @@ fun getDocTextFromPreviousComment(element: PsiElement): String {
  */
 fun isPreviousComment(element: PsiElement): Boolean {
 	val elementType = element.elementType
-	return elementType == ParadoxLocalisationTypes.COMMENT || elementType == ParadoxScriptTypes.COMMENT
+	return elementType == ParadoxLocalisationElementTypes.COMMENT || elementType == ParadoxScriptElementTypes.COMMENT
 }
 
 fun matchesSubtypeExpression(subtypeExpression: String, subtypes: List<String>): Boolean {
@@ -368,7 +368,7 @@ val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig?
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
 	get() {
-		val colorId = this.propertyReferenceParameter?.text?.firstOrNull()
+		val colorId = this.propertyReferenceParameter?.text?.firstOrNull() //TODO 需要确认
 		if(colorId != null && colorId.isUpperCase()) {
 			return getInternalConfig().colorMap[colorId.toString()]
 		}

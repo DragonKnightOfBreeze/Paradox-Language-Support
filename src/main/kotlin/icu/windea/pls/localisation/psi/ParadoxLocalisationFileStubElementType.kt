@@ -7,7 +7,7 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage){
 	override fun getExternalId(): String {

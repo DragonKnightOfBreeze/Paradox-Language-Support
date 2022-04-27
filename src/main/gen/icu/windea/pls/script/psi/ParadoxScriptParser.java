@@ -3,7 +3,7 @@ package icu.windea.pls.script.psi;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
@@ -42,7 +42,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
-  // "{" block_item * "}"
+  // LEFT_BRACE block_item * RIGHT_BRACE
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
     if (!nextTokenIs(b, LEFT_BRACE)) return false;
@@ -191,7 +191,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !('{' | '}' | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+  // !(LEFT_BRACE | RIGHT_BRACE | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
   static boolean property_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_recover")) return false;
     boolean r;
@@ -201,7 +201,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '{' | '}' | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
+  // LEFT_BRACE | RIGHT_BRACE | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
   private static boolean property_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_recover_0")) return false;
     boolean r;
@@ -224,7 +224,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "=" | "<" | ">" | "<=" | ">=" | "<>"
+  // EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
   static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
     boolean r;
@@ -351,7 +351,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(NEW_LINE | '{' | '}' | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+  // !(LEFT_BRACE | RIGHT_BRACE | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
   static boolean variable_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_recover")) return false;
     boolean r;
@@ -361,12 +361,11 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // NEW_LINE | '{' | '}' | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
+  // LEFT_BRACE | RIGHT_BRACE | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
   private static boolean variable_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_recover_0")) return false;
     boolean r;
-    r = consumeToken(b, NEW_LINE);
-    if (!r) r = consumeToken(b, LEFT_BRACE);
+    r = consumeToken(b, LEFT_BRACE);
     if (!r) r = consumeToken(b, RIGHT_BRACE);
     if (!r) r = consumeToken(b, BOOLEAN_TOKEN);
     if (!r) r = consumeToken(b, CODE_START);
@@ -397,7 +396,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "="
+  // EQUAL_SIGN
   static boolean variable_separator(PsiBuilder b, int l) {
     return consumeToken(b, EQUAL_SIGN);
   }

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import icu.windea.pls.script.psi.impl.*;
 
-public interface ParadoxScriptTypes {
+public interface ParadoxScriptElementTypes {
 
   IElementType BLOCK = new ParadoxScriptElementType("BLOCK");
   IElementType BOOLEAN = new ParadoxScriptElementType("BOOLEAN");
@@ -28,26 +28,25 @@ public interface ParadoxScriptTypes {
   IElementType VARIABLE_VALUE = new ParadoxScriptElementType("VARIABLE_VALUE");
 
   IElementType BOOLEAN_TOKEN = new ParadoxScriptTokenType("BOOLEAN_TOKEN");
-  IElementType CODE_END = new ParadoxScriptTokenType("]");
-  IElementType CODE_START = new ParadoxScriptTokenType("@\\[");
+  IElementType CODE_END = new ParadoxScriptTokenType("CODE_END");
+  IElementType CODE_START = new ParadoxScriptTokenType("CODE_START");
   IElementType CODE_TEXT_TOKEN = new ParadoxScriptTokenType("CODE_TEXT_TOKEN");
   IElementType COLOR_TOKEN = new ParadoxScriptTokenType("COLOR_TOKEN");
   IElementType COMMENT = new ParadoxScriptTokenType("COMMENT");
   IElementType END_OF_LINE_COMMENT = new ParadoxScriptTokenType("END_OF_LINE_COMMENT");
-  IElementType EQUAL_SIGN = new ParadoxScriptTokenType("=");
+  IElementType EQUAL_SIGN = new ParadoxScriptTokenType("EQUAL_SIGN");
   IElementType FLOAT_TOKEN = new ParadoxScriptTokenType("FLOAT_TOKEN");
-  IElementType GE_SIGN = new ParadoxScriptTokenType(">=");
-  IElementType GT_SIGN = new ParadoxScriptTokenType(">");
+  IElementType GE_SIGN = new ParadoxScriptTokenType("GE_SIGN");
+  IElementType GT_SIGN = new ParadoxScriptTokenType("GT_SIGN");
   IElementType INT_TOKEN = new ParadoxScriptTokenType("INT_TOKEN");
-  IElementType LEFT_BRACE = new ParadoxScriptTokenType("{");
-  IElementType LE_SIGN = new ParadoxScriptTokenType("<=");
-  IElementType LT_SIGN = new ParadoxScriptTokenType("<");
-  IElementType NEW_LINE = new ParadoxScriptTokenType("NEW_LINE");
-  IElementType NOT_EQUAL_SIGN = new ParadoxScriptTokenType("<>");
+  IElementType LEFT_BRACE = new ParadoxScriptTokenType("LEFT_BRACE");
+  IElementType LE_SIGN = new ParadoxScriptTokenType("LE_SIGN");
+  IElementType LT_SIGN = new ParadoxScriptTokenType("LT_SIGN");
+  IElementType NOT_EQUAL_SIGN = new ParadoxScriptTokenType("NOT_EQUAL_SIGN");
   IElementType PROPERTY_KEY_ID = new ParadoxScriptTokenType("PROPERTY_KEY_ID");
   IElementType QUOTED_PROPERTY_KEY_ID = new ParadoxScriptTokenType("QUOTED_PROPERTY_KEY_ID");
   IElementType QUOTED_STRING_TOKEN = new ParadoxScriptTokenType("QUOTED_STRING_TOKEN");
-  IElementType RIGHT_BRACE = new ParadoxScriptTokenType("}");
+  IElementType RIGHT_BRACE = new ParadoxScriptTokenType("RIGHT_BRACE");
   IElementType STRING_TOKEN = new ParadoxScriptTokenType("STRING_TOKEN");
   IElementType VARIABLE_NAME_ID = new ParadoxScriptTokenType("VARIABLE_NAME_ID");
   IElementType VARIABLE_REFERENCE_ID = new ParadoxScriptTokenType("VARIABLE_REFERENCE_ID");

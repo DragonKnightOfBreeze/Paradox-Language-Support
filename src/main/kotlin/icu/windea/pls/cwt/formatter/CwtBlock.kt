@@ -10,7 +10,7 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.codeStyle.*
-import icu.windea.pls.cwt.psi.CwtTypes.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtBlock(	
 	node: ASTNode,
@@ -36,7 +36,7 @@ class CwtBlock(
 				.after(LEFT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //左花括号之后如果非换行按情况可能需要空格
 				.before(RIGHT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //右花括号之前如果非换行按情况可能需要空格
 				.around(EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号周围按情况可能需要空格
-				.around(NOT_EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号周围按情况可能需要空格
+				.around(NOT_EQUAL_SIGN).spaceIf(spaceAroundSeparator) //不等号周围按情况可能需要空格
 		}
 	}
 

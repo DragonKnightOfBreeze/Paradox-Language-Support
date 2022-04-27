@@ -3,7 +3,7 @@ package icu.windea.pls.cwt.psi;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.cwt.psi.CwtTypes.*;
+import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
@@ -41,7 +41,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
-  // "{" block_item * "}"
+  // LEFT_BRACE block_item * RIGHT_BRACE
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
     if (!nextTokenIs(b, LEFT_BRACE)) return false;
@@ -71,10 +71,12 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = comment(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = option(b, l + 1);
     if (!r) r = value(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -95,14 +97,16 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comment")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = documentation_comment(b, l + 1);
     if (!r) r = option_comment(b, l + 1);
     if (!r) r = consumeToken(b, COMMENT);
+    exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // "###" documentation_text ?
+  // DOCUMENTATION_START documentation_text ?
   public static boolean documentation_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "documentation_comment")) return false;
     if (!nextTokenIs(b, DOCUMENTATION_START)) return false;
@@ -187,16 +191,15 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "##" option_comment_item
+  // OPTION_START option_comment_item
   public static boolean option_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment")) return false;
-    if (!nextTokenIs(b, OPTION_START)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, null);
+    Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, "<option comment>");
     r = consumeToken(b, OPTION_START);
     p = r; // pin = 1
     r = r && option_comment_item(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, CwtParser::option_comment_recover);
     return r || p;
   }
 
@@ -207,6 +210,35 @@ public class CwtParser implements PsiParser, LightPsiParser {
     boolean r;
     r = option(b, l + 1);
     if (!r) r = value(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN)
+  static boolean option_comment_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !option_comment_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN
+  private static boolean option_comment_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, BOOLEAN_TOKEN);
+    if (!r) r = consumeToken(b, COMMENT);
+    if (!r) r = consumeToken(b, DOCUMENTATION_START);
+    if (!r) r = consumeToken(b, FLOAT_TOKEN);
+    if (!r) r = consumeToken(b, INT_TOKEN);
+    if (!r) r = consumeToken(b, LEFT_BRACE);
+    if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
+    if (!r) r = consumeToken(b, OPTION_START);
+    if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    if (!r) r = consumeToken(b, RIGHT_BRACE);
+    if (!r) r = consumeToken(b, STRING_TOKEN);
     return r;
   }
 
@@ -223,14 +255,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "=" | "==" | "<>" | "!="
+  // EQUAL_SIGN | NOT_EQUAL_SIGN
   static boolean option_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_separator")) return false;
+    if (!nextTokenIs(b, "", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
     boolean r;
     r = consumeToken(b, EQUAL_SIGN);
-    if (!r) r = consumeToken(b, EQUAL_SIGN_2);
     if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
-    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN_2);
     return r;
   }
 
@@ -238,14 +269,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // property_key property_separator value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    if (!nextTokenIs(b, PROPERTY_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, PROPERTY, null);
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY, "<property>");
     r = property_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, property_separator(b, l + 1));
     r = p && value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, CwtParser::property_recover);
     return r || p;
   }
 
@@ -262,14 +292,42 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "=" | "==" | "<>" | "!="
+  // !(BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN)
+  static boolean property_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !property_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN
+  private static boolean property_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, BOOLEAN_TOKEN);
+    if (!r) r = consumeToken(b, COMMENT);
+    if (!r) r = consumeToken(b, DOCUMENTATION_START);
+    if (!r) r = consumeToken(b, FLOAT_TOKEN);
+    if (!r) r = consumeToken(b, INT_TOKEN);
+    if (!r) r = consumeToken(b, LEFT_BRACE);
+    if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
+    if (!r) r = consumeToken(b, OPTION_START);
+    if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    if (!r) r = consumeToken(b, RIGHT_BRACE);
+    if (!r) r = consumeToken(b, STRING_TOKEN);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // EQUAL_SIGN | NOT_EQUAL_SIGN
   static boolean property_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_separator")) return false;
+    if (!nextTokenIs(b, "", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
     boolean r;
     r = consumeToken(b, EQUAL_SIGN);
-    if (!r) r = consumeToken(b, EQUAL_SIGN_2);
     if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
-    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN_2);
     return r;
   }
 
@@ -298,9 +356,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean root_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_item")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = comment(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

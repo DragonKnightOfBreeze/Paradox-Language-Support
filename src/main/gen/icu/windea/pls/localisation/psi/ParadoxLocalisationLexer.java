@@ -6,7 +6,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 
 /**
@@ -33,7 +33,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   public static final int WAITING_PROPERTY_END = 14;
   public static final int WAITING_RICH_TEXT = 16;
   public static final int WAITING_PROPERTY_REFERENCE = 18;
-  public static final int WAITING_PROPERTY_REFERENCE_PARAMETER = 20;
+  public static final int WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN = 20;
   public static final int WAITING_ICON = 22;
   public static final int WAITING_ICON_NAME_FINISHED = 24;
   public static final int WAITING_ICON_PARAMETER = 26;
@@ -750,12 +750,12 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 77: break;
           case 25: 
-            { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER); return PARAMETER_SEPARATOR;
+            { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PARAMETER_SEPARATOR;
             } 
             // fall through
           case 78: break;
           case 26: 
-            { return PROPERTY_REFERENCE_PARAMETER;
+            { return PROPERTY_REFERENCE_PARAMETER_TOKEN;
             } 
             // fall through
           case 79: break;

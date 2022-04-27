@@ -9,9 +9,6 @@ import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
 public interface ParadoxScriptVariableReference extends ParadoxScriptValue {
 
   @NotNull
-  PsiElement getVariableReferenceId();
-
-  @NotNull
   String getName();
 
   @NotNull

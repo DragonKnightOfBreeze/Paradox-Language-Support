@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.cwt.psi.CwtTypes.*;
+import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
 
@@ -25,12 +25,6 @@ public class CwtOptionKeyImpl extends ASTWrapperPsiElement implements CwtOptionK
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getOptionKeyToken() {
-    return findNotNullChildByType(OPTION_KEY_TOKEN);
   }
 
   @Override

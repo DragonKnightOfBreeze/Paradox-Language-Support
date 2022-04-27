@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
 	companion object{

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import icu.windea.pls.localisation.psi.impl.*;
 
-public interface ParadoxLocalisationTypes {
+public interface ParadoxLocalisationElementTypes {
 
   IElementType COLORFUL_TEXT = new ParadoxLocalisationElementType("COLORFUL_TEXT");
   IElementType COMMAND = new ParadoxLocalisationElementType("COMMAND");
@@ -19,41 +19,41 @@ public interface ParadoxLocalisationTypes {
   IElementType PROPERTY = ParadoxLocalisationStubElementTypes.getPropertyType("PROPERTY");
   IElementType PROPERTY_KEY = new ParadoxLocalisationElementType("PROPERTY_KEY");
   IElementType PROPERTY_REFERENCE = new ParadoxLocalisationElementType("PROPERTY_REFERENCE");
+  IElementType PROPERTY_REFERENCE_PARAMETER = new ParadoxLocalisationElementType("PROPERTY_REFERENCE_PARAMETER");
   IElementType PROPERTY_VALUE = new ParadoxLocalisationElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = new ParadoxLocalisationElementType("RICH_TEXT");
   IElementType SEQUENTIAL_NUMBER = new ParadoxLocalisationElementType("SEQUENTIAL_NUMBER");
   IElementType STRING = new ParadoxLocalisationElementType("STRING");
 
-  IElementType COLON = new ParadoxLocalisationTokenType(":");
-  IElementType COLORFUL_TEXT_END = new ParadoxLocalisationTokenType("§!");
-  IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("§");
+  IElementType COLON = new ParadoxLocalisationTokenType("COLON");
+  IElementType COLORFUL_TEXT_END = new ParadoxLocalisationTokenType("COLORFUL_TEXT_END");
+  IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("COLORFUL_TEXT_START");
   IElementType COLOR_ID = new ParadoxLocalisationTokenType("COLOR_ID");
-  IElementType COMMAND_END = new ParadoxLocalisationTokenType("]");
+  IElementType COMMAND_END = new ParadoxLocalisationTokenType("COMMAND_END");
   IElementType COMMAND_FIELD_ID = new ParadoxLocalisationTokenType("COMMAND_FIELD_ID");
   IElementType COMMAND_SCOPE_ID = new ParadoxLocalisationTokenType("COMMAND_SCOPE_ID");
-  IElementType COMMAND_SEPARATOR = new ParadoxLocalisationTokenType(".");
-  IElementType COMMAND_START = new ParadoxLocalisationTokenType("[");
+  IElementType COMMAND_SEPARATOR = new ParadoxLocalisationTokenType("COMMAND_SEPARATOR");
+  IElementType COMMAND_START = new ParadoxLocalisationTokenType("COMMAND_START");
   IElementType COMMENT = new ParadoxLocalisationTokenType("COMMENT");
-  IElementType DOUBLE_LEFT_BRACKET = new ParadoxLocalisationTokenType("[[");
+  IElementType DOUBLE_LEFT_BRACKET = new ParadoxLocalisationTokenType("DOUBLE_LEFT_BRACKET");
   IElementType END_OF_LINE_COMMENT = new ParadoxLocalisationTokenType("END_OF_LINE_COMMENT");
-  IElementType ICON_END = new ParadoxLocalisationTokenType("£");
+  IElementType ICON_END = new ParadoxLocalisationTokenType("ICON_END");
   IElementType ICON_ID = new ParadoxLocalisationTokenType("ICON_ID");
   IElementType ICON_PARAMETER = new ParadoxLocalisationTokenType("ICON_PARAMETER");
   IElementType ICON_START = new ParadoxLocalisationTokenType("ICON_START");
   IElementType INVALID_ESCAPE_TOKEN = new ParadoxLocalisationTokenType("INVALID_ESCAPE_TOKEN");
   IElementType LEFT_QUOTE = new ParadoxLocalisationTokenType("LEFT_QUOTE");
   IElementType LOCALE_ID = new ParadoxLocalisationTokenType("LOCALE_ID");
-  IElementType NEW_LINE = new ParadoxLocalisationTokenType("NEW_LINE");
   IElementType NUMBER = new ParadoxLocalisationTokenType("NUMBER");
-  IElementType PARAMETER_SEPARATOR = new ParadoxLocalisationTokenType("|");
+  IElementType PARAMETER_SEPARATOR = new ParadoxLocalisationTokenType("PARAMETER_SEPARATOR");
   IElementType PROPERTY_KEY_ID = new ParadoxLocalisationTokenType("PROPERTY_KEY_ID");
-  IElementType PROPERTY_REFERENCE_END = new ParadoxLocalisationTokenType("$");
+  IElementType PROPERTY_REFERENCE_END = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_END");
   IElementType PROPERTY_REFERENCE_ID = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_ID");
-  IElementType PROPERTY_REFERENCE_PARAMETER = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_PARAMETER");
+  IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_START");
-  IElementType RIGHT_QUOTE = new ParadoxLocalisationTokenType("\"");
+  IElementType RIGHT_QUOTE = new ParadoxLocalisationTokenType("RIGHT_QUOTE");
   IElementType ROOT_COMMENT = new ParadoxLocalisationTokenType("ROOT_COMMENT");
-  IElementType SEQUENTIAL_NUMBER_END = new ParadoxLocalisationTokenType("%");
+  IElementType SEQUENTIAL_NUMBER_END = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_END");
   IElementType SEQUENTIAL_NUMBER_ID = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_ID");
   IElementType SEQUENTIAL_NUMBER_START = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_START");
   IElementType STRING_TOKEN = new ParadoxLocalisationTokenType("STRING_TOKEN");
@@ -94,6 +94,9 @@ public interface ParadoxLocalisationTypes {
       }
       else if (type == PROPERTY_REFERENCE) {
         return new ParadoxLocalisationPropertyReferenceImpl(node);
+      }
+      else if (type == PROPERTY_REFERENCE_PARAMETER) {
+        return new ParadoxLocalisationPropertyReferenceParameterImpl(node);
       }
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);

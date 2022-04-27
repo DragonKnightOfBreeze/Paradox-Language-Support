@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface CwtBoolean extends CwtValue {
 
-  @NotNull
-  PsiElement getBooleanToken();
-
   boolean getBooleanValue();
 
 }

@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationPropertyReferenceReference;
 
@@ -36,14 +36,8 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
 
   @Override
   @Nullable
-  public PsiElement getPropertyReferenceId() {
-    return findChildByType(PROPERTY_REFERENCE_ID);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getPropertyReferenceParameter() {
-    return findChildByType(PROPERTY_REFERENCE_PARAMETER);
+  public ParadoxLocalisationPropertyReferenceParameter getPropertyReferenceParameter() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyReferenceParameter.class);
   }
 
   @Override

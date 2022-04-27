@@ -8,7 +8,7 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.Companion.FILE
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
 	override fun getExternalId(): String {

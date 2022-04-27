@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.script.reference.ParadoxScriptPropertyKeyReference;
@@ -26,18 +26,6 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getPropertyKeyId() {
-    return findChildByType(PROPERTY_KEY_ID);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getQuotedPropertyKeyId() {
-    return findChildByType(QUOTED_PROPERTY_KEY_ID);
   }
 
   @Override

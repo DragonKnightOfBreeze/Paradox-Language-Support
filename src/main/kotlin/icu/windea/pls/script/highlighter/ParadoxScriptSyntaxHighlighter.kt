@@ -6,7 +6,7 @@ import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 	companion object {
@@ -27,14 +27,14 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 	}
 	
 	override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
-		EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN -> SEPARATOR_KEYS
+		EQUAL_SIGN, NOT_EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN -> SEPARATOR_KEYS
 		LEFT_BRACE, RIGHT_BRACE, CODE_START, CODE_END -> BRACE_KEYS
 		VARIABLE_NAME_ID -> VARIABLE_KEYS
 		PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID -> PROPERTY_KEY_KEYS
 		VARIABLE_REFERENCE_ID -> VARIABLE_KEYS
 		BOOLEAN_TOKEN -> KEYWORD_KEYS
 		COLOR_TOKEN -> COLOR_KEYS
-		INT_TOKEN,FLOAT_TOKEN -> NUMBER_KEYS
+		INT_TOKEN, FLOAT_TOKEN -> NUMBER_KEYS
 		STRING_TOKEN, QUOTED_STRING_TOKEN -> STRING_KEYS
 		CODE_TEXT_TOKEN -> CODE_KEYS
 		COMMENT -> COMMENT_KEYS

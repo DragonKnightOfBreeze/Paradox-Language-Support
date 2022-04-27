@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxScriptBoolean extends ParadoxScriptValue {
 
-  @NotNull
-  PsiElement getBooleanToken();
-
   boolean getBooleanValue();
 
 }

@@ -12,10 +12,7 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
   ParadoxLocalisationCommand getCommand();
 
   @Nullable
-  PsiElement getPropertyReferenceId();
-
-  @Nullable
-  PsiElement getPropertyReferenceParameter();
+  ParadoxLocalisationPropertyReferenceParameter getPropertyReferenceParameter();
 
   @NotNull
   String getName();

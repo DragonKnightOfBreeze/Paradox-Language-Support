@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationCommandFieldReference;
@@ -33,12 +33,6 @@ public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationName
   @Nullable
   public ParadoxLocalisationPropertyReference getPropertyReference() {
     return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyReference.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getCommandFieldId() {
-    return findChildByType(COMMAND_FIELD_ID);
   }
 
   @Override

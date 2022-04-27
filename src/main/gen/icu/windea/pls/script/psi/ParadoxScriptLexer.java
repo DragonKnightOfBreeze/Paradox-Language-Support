@@ -5,7 +5,7 @@ package icu.windea.pls.script.psi;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 
 /**

@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface CwtOptionKey extends PsiElement {
 
   @NotNull
-  PsiElement getOptionKeyToken();
-
-  @NotNull
   String getValue();
 
 }

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
 	companion object {

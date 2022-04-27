@@ -7,7 +7,7 @@ import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.cwt.psi.CwtTypes.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtSyntaxHighlighter : SyntaxHighlighterBase() {
 	companion object {
@@ -38,7 +38,7 @@ class CwtSyntaxHighlighter : SyntaxHighlighterBase() {
 		COMMENT -> COMMENT_KEYS
 		OPTION_START -> OPTION_COMMENT_KEYS
 		DOCUMENTATION_START, DOCUMENTATION_TOKEN -> DOCUMENTATION_COMMENT_KEYS
-		VALID_STRING_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS
+		VALID_STRING_ESCAPE_TOKEN -> VALID_ESCAPE_KEYS
 		INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS
 		BAD_CHARACTER -> BAD_CHARACTER_KEYS
 		else -> EMPTY_KEYS

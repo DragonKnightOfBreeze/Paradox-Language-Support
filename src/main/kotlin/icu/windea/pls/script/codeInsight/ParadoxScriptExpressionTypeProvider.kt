@@ -6,7 +6,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 	companion object {

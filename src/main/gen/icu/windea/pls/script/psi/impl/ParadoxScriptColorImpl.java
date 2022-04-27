@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import java.awt.Color;
 
@@ -26,12 +26,6 @@ public class ParadoxScriptColorImpl extends ParadoxScriptStringValueImpl impleme
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getColorToken() {
-    return notNullChild(findChildByType(COLOR_TOKEN));
   }
 
   @Override

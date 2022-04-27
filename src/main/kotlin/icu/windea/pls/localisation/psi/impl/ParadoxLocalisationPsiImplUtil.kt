@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createL
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createSequentialNumber
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.reference.*
 import javax.swing.*
 

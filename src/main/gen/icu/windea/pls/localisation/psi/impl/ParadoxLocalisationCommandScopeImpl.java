@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationCommandScopeReference;
@@ -27,12 +27,6 @@ public class ParadoxLocalisationCommandScopeImpl extends ParadoxLocalisationName
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxLocalisationVisitor) accept((ParadoxLocalisationVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getCommandScopeId() {
-    return notNullChild(findChildByType(COMMAND_SCOPE_ID));
   }
 
   @Override

@@ -7,10 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxLocalisationEscape extends ParadoxLocalisationRichText {
 
-  @Nullable
-  PsiElement getInvalidEscapeToken();
-
-  @Nullable
-  PsiElement getValidEscapeToken();
-
 }

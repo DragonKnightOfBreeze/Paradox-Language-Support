@@ -19,6 +19,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
+import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
@@ -217,13 +218,20 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 //endregion
 
 //region PsiElement Extensions
-inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
-	//不会忽略某些特定类型的子元素
-	var child = this.firstChild
-	while(child != null) {
-		block(child)
-		child = child.nextSibling
-	}
+//  @Nullable
+//  protected <T extends PsiElement> T findChildByType(IElementType type) {
+//    ASTNode node = getNode().findChildByType(type);
+//    return node == null ? null : (T)node.getPsi();
+//  }
+
+@Suppress("UNCHECKED_CAST")
+fun <T : PsiElement> PsiElement.findChild(type: IElementType): T? {
+	return node.findChildByType(type)?.psi as T?
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T : PsiElement> PsiElement.findRequiredChild(type: IElementType): T {
+	return node.findChildByType(type)?.psi as T
 }
 
 inline fun PsiElement.findChild(predicate: (PsiElement) -> Boolean): PsiElement? {
@@ -236,10 +244,19 @@ inline fun PsiElement.findChild(predicate: (PsiElement) -> Boolean): PsiElement?
 	return null
 }
 
+
+inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
+	//不会忽略某些特定类型的子元素
+	var child = this.firstChild
+	while(child != null) {
+		block(child)
+		child = child.nextSibling
+	}
+}
+
 inline fun <T : PsiElement, R> PsiElement.mapChildOfType(type: Class<out T>, transform: (T) -> R): List<R> {
 	//为了优化性能，使用SmartList，并且不保存中间结果
 	//参考：com.intellij.psi.util.PsiTreeUtil.getChildrenOfTypeAsList
-	
 	var result: MutableList<R>? = null
 	var child: PsiElement? = this.firstChild
 	while(child != null) {

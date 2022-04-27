@@ -9,12 +9,6 @@ import icu.windea.pls.script.reference.ParadoxScriptStringReference;
 
 public interface ParadoxScriptString extends ParadoxScriptStringValue, PsiLiteralValue {
 
-  @Nullable
-  PsiElement getQuotedStringToken();
-
-  @Nullable
-  PsiElement getStringToken();
-
   @NotNull
   String getValue();
 

@@ -5,7 +5,7 @@ import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.CwtTypes.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtFoldingBuilder:FoldingBuilder,DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {

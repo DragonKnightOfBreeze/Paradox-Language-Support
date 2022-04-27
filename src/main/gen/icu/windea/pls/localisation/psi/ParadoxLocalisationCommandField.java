@@ -13,9 +13,6 @@ public interface ParadoxLocalisationCommandField extends ParadoxLocalisationComm
   @Nullable
   ParadoxLocalisationPropertyReference getPropertyReference();
 
-  @Nullable
-  PsiElement getCommandFieldId();
-
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

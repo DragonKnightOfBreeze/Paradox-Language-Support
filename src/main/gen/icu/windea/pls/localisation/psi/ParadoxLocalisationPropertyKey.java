@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxLocalisationPropertyKey extends PsiElement {
 
-  @NotNull
-  PsiElement getPropertyKeyId();
-
 }

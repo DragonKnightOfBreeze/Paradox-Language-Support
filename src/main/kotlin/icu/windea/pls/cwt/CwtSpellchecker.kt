@@ -3,7 +3,7 @@ package icu.windea.pls.cwt
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.spellchecker.tokenizer.*
-import icu.windea.pls.cwt.psi.CwtTypes.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtSpellchecker:SpellcheckingStrategy() {
 	override fun getTokenizer(element: PsiElement?): Tokenizer<*> {

@@ -3,7 +3,7 @@ package icu.windea.pls.localisation
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.spellchecker.tokenizer.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 //拼写检查：
 //检查key、value、comment

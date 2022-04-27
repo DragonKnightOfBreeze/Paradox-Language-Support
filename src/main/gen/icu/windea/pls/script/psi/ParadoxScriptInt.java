@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxScriptInt extends ParadoxScriptNumber {
 
-  @NotNull
-  PsiElement getIntToken();
-
   int getIntValue();
 
 }

@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxScriptCode extends ParadoxScriptStringValue {
 
-  @Nullable
-  PsiElement getCodeTextToken();
-
 }

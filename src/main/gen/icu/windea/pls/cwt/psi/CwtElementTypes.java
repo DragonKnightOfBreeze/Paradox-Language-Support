@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import icu.windea.pls.cwt.psi.impl.*;
 
-public interface CwtTypes {
+public interface CwtElementTypes {
 
   IElementType BLOCK = new CwtElementType("BLOCK");
   IElementType BOOLEAN = new CwtElementType("BOOLEAN");
@@ -26,19 +26,17 @@ public interface CwtTypes {
 
   IElementType BOOLEAN_TOKEN = new CwtTokenType("BOOLEAN_TOKEN");
   IElementType COMMENT = new CwtTokenType("COMMENT");
-  IElementType DOCUMENTATION_START = new CwtTokenType("###");
+  IElementType DOCUMENTATION_START = new CwtTokenType("DOCUMENTATION_START");
   IElementType DOCUMENTATION_TOKEN = new CwtTokenType("DOCUMENTATION_TOKEN");
-  IElementType EQUAL_SIGN = new CwtTokenType("=");
-  IElementType EQUAL_SIGN_2 = new CwtTokenType("==");
+  IElementType EQUAL_SIGN = new CwtTokenType("EQUAL_SIGN");
   IElementType FLOAT_TOKEN = new CwtTokenType("FLOAT_TOKEN");
   IElementType INT_TOKEN = new CwtTokenType("INT_TOKEN");
-  IElementType LEFT_BRACE = new CwtTokenType("{");
-  IElementType NOT_EQUAL_SIGN = new CwtTokenType("<>");
-  IElementType NOT_EQUAL_SIGN_2 = new CwtTokenType("!=");
+  IElementType LEFT_BRACE = new CwtTokenType("LEFT_BRACE");
+  IElementType NOT_EQUAL_SIGN = new CwtTokenType("NOT_EQUAL_SIGN");
   IElementType OPTION_KEY_TOKEN = new CwtTokenType("OPTION_KEY_TOKEN");
-  IElementType OPTION_START = new CwtTokenType("##");
+  IElementType OPTION_START = new CwtTokenType("OPTION_START");
   IElementType PROPERTY_KEY_TOKEN = new CwtTokenType("PROPERTY_KEY_TOKEN");
-  IElementType RIGHT_BRACE = new CwtTokenType("}");
+  IElementType RIGHT_BRACE = new CwtTokenType("RIGHT_BRACE");
   IElementType STRING_TOKEN = new CwtTokenType("STRING_TOKEN");
 
   class Factory {

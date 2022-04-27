@@ -19,12 +19,12 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getName(element: CwtOption):String{
+	fun getName(element: CwtOption): String {
 		return element.optionName
 	}
 	
 	@JvmStatic
-	fun setName(element: CwtOption,name:String): CwtOption {
+	fun setName(element: CwtOption, name: String): CwtOption {
 		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 	}
 	
@@ -34,27 +34,27 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getOptionName(element: CwtOption):String{
+	fun getOptionName(element: CwtOption): String {
 		return element.optionKey.value
 	}
 	
 	@JvmStatic
-	fun getOptionValue(element: CwtOption):String{
+	fun getOptionValue(element: CwtOption): String {
 		return element.value?.value.orEmpty()
 	}
 	
 	@JvmStatic
-	fun getOptionTruncatedValue(element: CwtOption):String{
+	fun getOptionTruncatedValue(element: CwtOption): String {
 		return element.value?.truncatedValue.orEmpty()
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element:CwtOption): CwtSeparatorType {
+	fun getSeparatorType(element: CwtOption): CwtSeparatorType {
 		//这里不能遍历element.children
-		element.forEachChild { child->
-			when(child.elementType){
-				CwtTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				CwtTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+		element.forEachChild { child ->
+			when(child.elementType) {
+				CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+				CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
 			}
 		}
 		return CwtSeparatorType.EQUAL
@@ -63,7 +63,7 @@ object CwtPsiImplUtil {
 	
 	//region CwtOptionKey
 	@JvmStatic
-	fun getValue(element: CwtOptionKey):String{
+	fun getValue(element: CwtOptionKey): String {
 		return element.optionKeyToken.text.unquote()
 	}
 	//endregion
@@ -75,12 +75,12 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getName(element: CwtProperty):String{
+	fun getName(element: CwtProperty): String {
 		return element.propertyName
 	}
 	
 	@JvmStatic
-	fun setName(element: CwtProperty,name:String): CwtProperty {
+	fun setName(element: CwtProperty, name: String): CwtProperty {
 		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 	}
 	
@@ -90,27 +90,27 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPropertyName(element: CwtProperty):String{
+	fun getPropertyName(element: CwtProperty): String {
 		return element.propertyKey.value
 	}
 	
 	@JvmStatic
-	fun getPropertyValue(element: CwtProperty):String{
+	fun getPropertyValue(element: CwtProperty): String {
 		return element.value?.value.orEmpty()
 	}
 	
 	@JvmStatic
-	fun getPropertyTruncatedValue(element: CwtProperty):String{
+	fun getPropertyTruncatedValue(element: CwtProperty): String {
 		return element.value?.truncatedValue.orEmpty()
 	}
 	
 	@JvmStatic
-	fun getSeparatorType(element:CwtProperty): CwtSeparatorType {
+	fun getSeparatorType(element: CwtProperty): CwtSeparatorType {
 		//这里不能遍历element.children
-		element.forEachChild { child->
-			when(child.elementType){
-				CwtTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-				CwtTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+		element.forEachChild { child ->
+			when(child.elementType) {
+				CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+				CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
 			}
 		}
 		return CwtSeparatorType.EQUAL
@@ -119,7 +119,7 @@ object CwtPsiImplUtil {
 	
 	//region CwtPropertyKey
 	@JvmStatic
-	fun getValue(element: CwtPropertyKey):String{
+	fun getValue(element: CwtPropertyKey): String {
 		return element.propertyKeyToken.text.unquote()
 	}
 	//endregion
@@ -136,7 +136,7 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getTruncatedValue(element: CwtValue):String{
+	fun getTruncatedValue(element: CwtValue): String {
 		return element.value
 	}
 	//endregion
@@ -151,14 +151,14 @@ object CwtPsiImplUtil {
 	//region CwtInt
 	@JvmStatic
 	fun getIntValue(element: CwtInt): Int {
-		return element.value.toIntOrNull()?:0
+		return element.value.toIntOrNull() ?: 0
 	}
 	//endregion
 	
 	//region CwtFloat
 	@JvmStatic
 	fun getFloatValue(element: CwtFloat): Float {
-		return element.value.toFloatOrNull()?:0f
+		return element.value.toFloatOrNull() ?: 0f
 	}
 	//endregion
 	
@@ -179,12 +179,12 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getName(element: CwtString):String{
+	fun getName(element: CwtString): String {
 		return element.value
 	}
 	
 	@JvmStatic
-	fun setName(element: CwtString,name:String): CwtString {
+	fun setName(element: CwtString, name: String): CwtString {
 		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 	}
 	
@@ -254,15 +254,15 @@ object CwtPsiImplUtil {
 	
 	//region CwtDocumentationComment
 	@JvmStatic
-	fun getTokenType(element:CwtDocumentationComment): IElementType{
-		return CwtTypes.DOCUMENTATION_COMMENT
+	fun getTokenType(element: CwtDocumentationComment): IElementType {
+		return CwtElementTypes.DOCUMENTATION_COMMENT
 	}
 	//endregion
 	
 	//region CwtOptionComment
 	@JvmStatic
-	fun getTokenType(element:CwtOptionComment): IElementType{
-		return CwtTypes.OPTION_COMMENT
+	fun getTokenType(element: CwtOptionComment): IElementType {
+		return CwtElementTypes.OPTION_COMMENT
 	}
 	//endregion
 }

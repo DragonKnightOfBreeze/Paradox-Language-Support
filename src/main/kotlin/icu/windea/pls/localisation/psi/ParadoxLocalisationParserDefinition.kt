@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationParserDefinition : ParserDefinition {
 	companion object {

@@ -10,7 +10,7 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.*
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptBlock(
 	node: ASTNode,

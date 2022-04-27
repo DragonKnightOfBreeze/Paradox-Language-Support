@@ -56,6 +56,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitRichText(o);
   }
 
+  public void visitPropertyReferenceParameter(@NotNull ParadoxLocalisationPropertyReferenceParameter o) {
+    visitPsiElement(o);
+  }
+
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
     visitPsiElement(o);
   }

@@ -13,12 +13,6 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, Pa
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
 
-  @Nullable
-  PsiElement getIconId();
-
-  @Nullable
-  PsiElement getIconParameter();
-
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

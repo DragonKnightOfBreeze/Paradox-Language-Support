@@ -3,7 +3,7 @@ package icu.windea.pls.script
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.spellchecker.tokenizer.*
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 //拼写检查：
 //检查variableName、key、value、comment

@@ -8,12 +8,6 @@ import icu.windea.pls.script.reference.ParadoxScriptPropertyKeyReference;
 
 public interface ParadoxScriptPropertyKey extends PsiElement {
 
-  @Nullable
-  PsiElement getPropertyKeyId();
-
-  @Nullable
-  PsiElement getQuotedPropertyKeyId();
-
   @NotNull
   String getValue();
 

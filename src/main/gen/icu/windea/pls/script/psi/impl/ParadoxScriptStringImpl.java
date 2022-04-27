@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.script.reference.ParadoxScriptStringReference;
 
@@ -26,18 +26,6 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implem
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getQuotedStringToken() {
-    return findChildByType(QUOTED_STRING_TOKEN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getStringToken() {
-    return findChildByType(STRING_TOKEN);
   }
 
   @Override

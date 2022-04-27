@@ -10,9 +10,6 @@ import java.awt.Color;
 public interface ParadoxScriptColor extends ParadoxScriptStringValue, PsiLiteralValue {
 
   @NotNull
-  PsiElement getColorToken();
-
-  @NotNull
   String getValue();
 
   @Nullable

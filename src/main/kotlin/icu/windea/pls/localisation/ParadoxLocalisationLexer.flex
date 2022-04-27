@@ -4,7 +4,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %%
 
@@ -24,7 +24,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
 %state WAITING_PROPERTY_END
 %state WAITING_RICH_TEXT
 %state WAITING_PROPERTY_REFERENCE
-%state WAITING_PROPERTY_REFERENCE_PARAMETER
+%state WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN
 %state WAITING_ICON
 %state WAITING_ICON_NAME_FINISHED
 %state WAITING_ICON_PARAMETER
@@ -106,7 +106,7 @@ VALID_ESCAPE_TOKEN=\\[rnt\"$£§%\[]
 INVALID_ESCAPE_TOKEN=\\.
 DOUBLE_LEFT_BRACKET=\[\[
 PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-']+
-PROPERTY_REFERENCE_PARAMETER=[a-zA-Z0-9+\-*%=\[.\]]+
+PROPERTY_REFERENCE_PARAMETER_TOKEN=[a-zA-Z0-9+\-*%=\[.\]]+
 ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+
 SEQUENTIAL_NUMBER_ID=[a-zA-Z]
@@ -190,18 +190,18 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
   "[" {commandLocation=1; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);}
-  "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER); return PARAMETER_SEPARATOR;}
+  "|" {yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PARAMETER_SEPARATOR;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {PROPERTY_REFERENCE_ID} {return PROPERTY_REFERENCE_ID;}
 }
-<WAITING_PROPERTY_REFERENCE_PARAMETER>{
+<WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN>{
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; } 
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  {PROPERTY_REFERENCE_PARAMETER} {return PROPERTY_REFERENCE_PARAMETER;}
+  {PROPERTY_REFERENCE_PARAMETER_TOKEN} {return PROPERTY_REFERENCE_PARAMETER_TOKEN;}
 }
 
 <WAITING_ICON>{

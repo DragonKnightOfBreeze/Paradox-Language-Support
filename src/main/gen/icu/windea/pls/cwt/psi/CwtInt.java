@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface CwtInt extends CwtNumber {
 
-  @NotNull
-  PsiElement getIntToken();
-
   int getIntValue();
 
 }

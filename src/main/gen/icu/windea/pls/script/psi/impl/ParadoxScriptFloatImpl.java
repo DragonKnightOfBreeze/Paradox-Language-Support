@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptTypes.*;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 
 public class ParadoxScriptFloatImpl extends ParadoxScriptNumberImpl implements ParadoxScriptFloat {
@@ -25,12 +25,6 @@ public class ParadoxScriptFloatImpl extends ParadoxScriptNumberImpl implements P
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getFloatToken() {
-    return notNullChild(findChildByType(FLOAT_TOKEN));
   }
 
   @Override

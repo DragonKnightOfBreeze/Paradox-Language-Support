@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface CwtString extends CwtValue, CwtNamedElement {
 
   @NotNull
-  PsiElement getStringToken();
-
-  @NotNull
   String getValue();
 
   @NotNull

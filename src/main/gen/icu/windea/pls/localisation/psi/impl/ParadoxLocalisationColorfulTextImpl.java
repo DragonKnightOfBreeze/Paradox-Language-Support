@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 
 public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationColorfulText {
@@ -30,12 +30,6 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationName
   @NotNull
   public List<ParadoxLocalisationRichText> getRichTextList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getColorId() {
-    return findChildByType(COLOR_ID);
   }
 
   @Override

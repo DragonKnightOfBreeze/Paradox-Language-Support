@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxScriptFloat extends ParadoxScriptNumber {
 
-  @NotNull
-  PsiElement getFloatToken();
-
   float getFloatValue();
 
 }

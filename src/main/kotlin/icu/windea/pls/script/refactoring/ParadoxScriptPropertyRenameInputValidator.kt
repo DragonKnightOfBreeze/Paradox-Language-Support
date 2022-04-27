@@ -5,7 +5,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
-import icu.windea.pls.script.psi.ParadoxScriptTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptPropertyRenameInputValidator : RenameInputValidator {
 	companion object {

@@ -10,9 +10,6 @@ import javax.swing.Icon;
 public interface ParadoxLocalisationLocale extends ParadoxLocalisationNamedElement {
 
   @NotNull
-  PsiElement getLocaleId();
-
-  @NotNull
   Icon getIcon(@IconFlags int flags);
 
   @NotNull

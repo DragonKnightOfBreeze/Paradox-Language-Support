@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.CwtTypes.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtParseDefinition:ParserDefinition {
 	companion object{

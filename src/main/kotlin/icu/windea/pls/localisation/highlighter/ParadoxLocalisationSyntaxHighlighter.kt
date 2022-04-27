@@ -5,7 +5,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 	companion object {
@@ -40,10 +40,10 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 		SEQUENTIAL_NUMBER_START, SEQUENTIAL_NUMBER_END,
 		COMMAND_START, COMMAND_END,
 		COLORFUL_TEXT_START, COLORFUL_TEXT_END -> MARKER_KEYS
-		PROPERTY_REFERENCE_PARAMETER, ICON_PARAMETER -> PARAMETER_KEYS
+		PROPERTY_REFERENCE_PARAMETER_TOKEN, ICON_PARAMETER -> PARAMETER_KEYS
 		NUMBER -> NUMBER_KEYS
-		COMMAND_SCOPE -> COMMAND_SCOPE_KEYS
-		COMMAND_FIELD -> COMMAND_FIELD_KEYS
+		COMMAND_SCOPE_ID -> COMMAND_SCOPE_KEYS
+		COMMAND_FIELD_ID -> COMMAND_FIELD_KEYS
 		ICON_ID -> ICON_KEYS
 		SEQUENTIAL_NUMBER_ID -> SEQUENTIAL_NUMBER_ID_KEYS
 		COLOR_ID -> COLOR_ID_KEYS

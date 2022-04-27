@@ -8,7 +8,7 @@ import com.intellij.psi.codeStyle.*
 import com.intellij.psi.formatter.common.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 //调试没有问题就不要随便修改
 
