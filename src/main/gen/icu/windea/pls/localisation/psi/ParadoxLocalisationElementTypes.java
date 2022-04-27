@@ -101,9 +101,6 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);
       }
-      else if (type == RICH_TEXT) {
-        return new ParadoxLocalisationRichTextImpl(node);
-      }
       else if (type == SEQUENTIAL_NUMBER) {
         return new ParadoxLocalisationSequentialNumberImpl(node);
       }

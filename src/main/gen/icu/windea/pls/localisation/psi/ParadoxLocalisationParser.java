@@ -426,19 +426,28 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // rich_text *
+  // (rich_text | COLORFUL_TEXT_END) *
   static boolean property_value_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_value_item")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!rich_text(b, l + 1)) break;
+      if (!property_value_item_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "property_value_item", c)) break;
     }
     return true;
   }
 
+  // rich_text | COLORFUL_TEXT_END
+  private static boolean property_value_item_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_value_item_0")) return false;
+    boolean r;
+    r = rich_text(b, l + 1);
+    if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
+    return r;
+  }
+
   /* ********************************************************** */
-  // property_reference | command | icon | sequential_number | colorful_text | escape | string | COLORFUL_TEXT_END
+  // property_reference | command | icon | sequential_number | colorful_text | escape | string
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
     boolean r;
@@ -450,7 +459,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     if (!r) r = colorful_text(b, l + 1);
     if (!r) r = escape(b, l + 1);
     if (!r) r = string(b, l + 1);
-    if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

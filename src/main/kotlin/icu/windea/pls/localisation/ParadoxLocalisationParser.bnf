@@ -52,8 +52,8 @@ property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
 //当前本地化属性解析失败时，需要跳过继续解析下一行
 private property_recover ::= !(COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID)
 
-private property_value_item ::= rich_text *
-rich_text ::= property_reference | command | icon | sequential_number | colorful_text | escape | string | COLORFUL_TEXT_END
+private property_value_item ::= (rich_text | COLORFUL_TEXT_END) * //允许多余的彩色文本结束标记（"§!"）
+rich_text ::= property_reference | command | icon | sequential_number | colorful_text | escape | string
 
 string ::= STRING_TOKEN{
   extends=rich_text
