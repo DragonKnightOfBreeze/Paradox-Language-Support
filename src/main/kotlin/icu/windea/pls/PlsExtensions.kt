@@ -795,6 +795,90 @@ fun findSyncedLocalisationsByKeyword(
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxSyncedLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
 }
+
+/**
+ * 基于文件索引，根据相对于游戏或模组目录的路径查找匹配的文件。
+ */
+fun findFile(
+	path: ParadoxPath,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	ignoreCase: Boolean = true
+): VirtualFile? {
+	val fileName = path.fileName
+	var result: VirtualFile? = null
+	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+		if(file.fileInfo?.path?.path == path.path) {
+			result = file
+			false
+		} else {
+			true
+		}
+	}
+	return result
+}
+
+/**
+ * 基于文件索引，根据相对于游戏或模组目录的路径查找所有匹配的文件。
+ */
+fun findFiles(
+	path: ParadoxPath,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	ignoreCase: Boolean = true
+): Set<VirtualFile> {
+	val fileName = path.fileName
+	val result: MutableSet<VirtualFile> = mutableSetOf()
+	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+		if(file.fileInfo?.path?.path == path.path) {
+			result.add(file)
+		}
+		true
+	}
+	return result
+}
+
+/**
+ * 基于文件索引，根据相对于游戏或模组目录的路径查找匹配的文件。
+ */
+fun findFile(
+	path: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	ignoreCase: Boolean = true
+): VirtualFile? {
+	val fileName = path.substringAfterLast('/')
+	var result: VirtualFile? = null
+	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+		if(file.fileInfo?.path?.path == path) {
+			result = file
+			false
+		} else {
+			true
+		}
+	}
+	return result
+}
+
+/**
+ * 基于文件索引，根据相对于游戏或模组目录的路径查找所有匹配的文件。
+ */
+fun findFiles(
+	path: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	ignoreCase: Boolean = true
+): Set<VirtualFile> {
+	val fileName = path.substringAfterLast('/')
+	val result: MutableSet<VirtualFile> = mutableSetOf()
+	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+		if(file.fileInfo?.path?.path == path) {
+			result.add(file)
+		}
+		true
+	}
+	return result
+}
 //endregion
 
 //region Psi Link Extensions

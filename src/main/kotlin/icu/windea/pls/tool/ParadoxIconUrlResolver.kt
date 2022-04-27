@@ -3,13 +3,11 @@ package icu.windea.pls.tool
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 import java.lang.invoke.*
 import java.nio.file.*
-import kotlin.io.path.*
 
 /**
  * 图标地址的解析器。
@@ -87,9 +85,7 @@ object ParadoxIconUrlResolver {
 	private fun doResolveBySprite(sprite: ParadoxScriptProperty): String? {
 		val fileInfo = sprite.fileInfo ?: return null
 		val ddsRelPath = sprite.findProperty("textureFile", true)?.value ?: return null
-		val fileName = ddsRelPath.toPath().name
-		val files = FilenameIndex.getVirtualFilesByName(fileName, false, GlobalSearchScope.allScope(sprite.project))
-		val file = files.firstOrNull { it.fileInfo?.path?.toString() == ddsRelPath } ?: return null //直接取第一个
+		val file = findFile(ddsRelPath, sprite.project) ?: return null
 		return doResolveByFile(file)
 	}
 	

@@ -447,7 +447,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElements(
 	maxSize: Int = 0,
 	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
-	val result: SmartList<T> = SmartList()
+	val result: MutableList<T> = SmartList()
 	var size = 0
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 		if(cancelable) ProgressManager.checkCanceled()
@@ -470,7 +470,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	cancelable: Boolean = true,
 	crossinline action: (T, MutableList<T>) -> Boolean
 ): List<T> {
-	val result: SmartList<T> = SmartList()
+	val result: MutableList<T> = SmartList()
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 		if(cancelable) ProgressManager.checkCanceled()
 		action(element, result)
@@ -486,7 +486,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsB
 	crossinline keyPredicate: (String) -> Boolean = { true },
 	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
-	val result: SmartList<T> = SmartList()
+	val result: MutableList<T> = SmartList()
 	var size = 0
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
@@ -518,7 +518,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	crossinline keyPredicate: (String) -> Boolean = { true },
 	crossinline action: (T, MutableList<T>) -> Boolean
 ): List<T> {
-	val result: SmartList<T> = SmartList()
+	val result: MutableList<T> = SmartList()
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
 		if(keyPredicate(key)) {
@@ -541,7 +541,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 	crossinline keyPredicate: (String) -> Boolean = { true },
 	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
-	val result: SmartList<T> = SmartList()
+	val result: MutableList<T> = SmartList()
 	var size = 0
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
