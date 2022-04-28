@@ -338,6 +338,7 @@ class CwtConfigGroup(
 				when(value) {
 					"required" -> required = true
 					"primary" -> primary = true
+					//"optional" -> pass() //忽略（默认就是required = false）
 				}
 			}
 		}

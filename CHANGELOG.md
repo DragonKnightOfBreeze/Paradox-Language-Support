@@ -19,6 +19,8 @@
   * [X] 编写规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释）
   * [ ] 实现规则`types.type[*].pictures`（装订线图标，渲染到文档注释）
   * [ ] 实现规则`types.type[*].pictures`的相关功能（装订线图标，渲染到文档注释）
+* [ ] 完善对内置配置文件的支持，完善相关功能
+  * [ ] 将文件格式由YAML改为CWT，以便可以直接导航到文件中的相关规则
 * [ ] ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
