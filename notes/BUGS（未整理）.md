@@ -396,3 +396,24 @@ com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion pre
 	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
 	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:183)
 ```
+
+## java.lang.ArrayIndexOutOfBoundsException: arraycopy: last destination index 20 out of bounds for int[18]
+
+```
+Caused by: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last destination index 20 out of bounds for int[18]
+	at java.base/java.lang.System.arraycopy(Native Method)
+	at co.phoenixlab.dds.decoder.dxt.Dxt5Decoder.decodeLine(Dxt5Decoder.java:30)
+	at co.phoenixlab.dds.decoder.dxt.AbstractDxtDecoder$LineIterator.next(AbstractDxtDecoder.java:70)
+	at co.phoenixlab.dds.decoder.dxt.AbstractDxtDecoder$LineIterator.next(AbstractDxtDecoder.java:64)
+	at co.phoenixlab.dds.DdsImageDecoder.convertToPNG(DdsImageDecoder.java:162)
+	at co.phoenixlab.dds.DdsImageDecoder.convertToPNG(DdsImageDecoder.java:153)
+	at icu.windea.pls.tool.DdsToPngConverter.doConvertDdsToPng(DdsToPngConverter.kt:62)
+	at icu.windea.pls.tool.DdsToPngConverter.doGetPngAbsPath(DdsToPngConverter.kt:47)
+	at icu.windea.pls.tool.DdsToPngConverter.getPngAbsPath$lambda-1(DdsToPngConverter.kt:42)
+	at com.google.common.cache.LocalCache$LocalManualCache$1.load(LocalCache.java:4868)
+	at com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3533)
+	at com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2282)
+	at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2159)
+	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2049)
+	... 88 more
+```
