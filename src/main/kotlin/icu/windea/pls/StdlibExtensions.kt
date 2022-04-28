@@ -9,9 +9,8 @@ import java.nio.charset.*
 import java.nio.file.*
 import java.text.*
 import java.util.*
-import java.util.concurrent.*
-import kotlin.io.path.*
 
+//region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
 inline fun pass() {
 }
@@ -62,11 +61,27 @@ fun String.removeSurrounding(prefix: CharSequence, suffix: CharSequence): String
 	return removePrefix(prefix).removeSuffix(suffix)
 }
 
-fun String.resolveByRemovePrefix(prefix: CharSequence): String? {
+fun CharSequence.removePrefixOrNull(prefix: CharSequence): String? {
 	return if(startsWith(prefix)) substring(prefix.length) else null
 }
 
-fun String.resolveByRemoveSurrounding(prefix: CharSequence, suffix: CharSequence): String? {
+fun String.removePrefixOrNull(prefix: CharSequence): String? {
+	return if(startsWith(prefix)) substring(prefix.length) else null
+}
+
+fun CharSequence.removeSuffixOrNull(suffix: CharSequence): String? {
+	return if(endsWith(suffix)) substring(0, length - suffix.length) else null
+}
+
+fun String.removeSuffixOrNull(suffix: CharSequence): String? {
+	return if(endsWith(suffix)) substring(0, length - suffix.length) else null
+}
+
+fun CharSequence.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence): String? {
+	return if(surroundsWith(prefix, suffix)) substring(prefix.length, length - suffix.length) else null
+}
+
+fun String.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence): String? {
 	return if(surroundsWith(prefix, suffix)) substring(prefix.length, length - suffix.length) else null
 }
 
@@ -101,6 +116,12 @@ fun String.quoteIfNecessary() = if(containsBlank()) quote() else this //如果�
 fun String.unquote() = if(length >= 2 && startsWith('"') && endsWith('"')) substring(1, length - 1) else this
 
 fun String.truncate(limit: Int) = if(this.length <= limit) this else this.take(limit) + "..."
+
+fun String.splitToPair(delimiter: Char): Pair<String, String>? {
+	val index = this.indexOf(delimiter)
+	if(index == -1) return null
+	return this.substring(0, index) to this.substring(index + 1)
+}
 
 fun String.toCapitalizedWord(): String {
 	return if(isEmpty()) this else this[0].uppercase() + this.substring(1)
@@ -187,25 +208,30 @@ fun String.toCommaDelimitedStringList(): List<String> = if(this.isEmpty()) empty
 fun List<String>.toCommaDelimitedString(): String = if(this.isEmpty()) "" else this.joinToString(",")
 
 /**
- * 判断当前路径是否匹配另一个路径（等于或者是另一个路径的父路径）。
+ * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
+ * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
-infix fun String.matchesPath(other: String): Boolean {
-	if(this == other) return true
-	if(this == other.take(length) && other[length] == '/') return true
+fun String.matchesPath(other: String, ignoreCase: Boolean = true): Boolean {
+	val path = if(ignoreCase) this.lowercase() else this
+	val otherPath = if(ignoreCase) other.lowercase() else other
+	if(path == otherPath) return true
+	if(path == otherPath.take(length) && otherPath[length] == '/') return true
 	return false
 }
 
 /**
- * 判断当前子路径列表是否宽松匹配另一个子路径列表（长度必须相等，当前子路径列表中的子路径可以是"any"，表示匹配任意子路径，忽略大小写）。
+ * 判断当前子路径列表是否完全匹配另一个子路径列表（相同）。使用"/"作为路径分隔符。
+ * @param ignoreCase 是否忽略大小写。默认为`true`。
+ * @param useAnyWildcard 使用`"any"`字符串作为子路径通配符。表示匹配任意子路径
  */
-infix fun List<String>.relaxMatchesPath(other: List<String>): Boolean {
+fun List<String>.matchEntirePath(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true): Boolean {
 	val size = size
 	val otherSize = other.size
 	if(size != otherSize) return false
 	for(index in 0 until size) {
-		val path = this[index].lowercase()
-		if(path == "any") continue
-		val otherPath = other[index].lowercase()
+		val path = if(ignoreCase) this[index].lowercase() else this[index]
+		if(useAnyWildcard && path == "any") continue
+		val otherPath = if(ignoreCase) other[index].lowercase() else other[index]
 		if(path != otherPath) return false
 	}
 	return true
@@ -355,14 +381,6 @@ fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())
 
-inline fun <reified T> T.toSingletonArray() = arrayOf(this)
-
-inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
-
-fun <T> T.toSingletonList() = Collections.singletonList(this)
-
-fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
-
 @PublishedApi
 internal val enumValuesCache by lazy { createCache<Class<*>, Array<*>> { it.enumConstants } }
 
@@ -374,47 +392,68 @@ inline fun <reified T : Enum<T>> enumSharedValues(): Array<T> {
 	return enumValuesCache[T::class.java] as Array<T>
 }
 
+@Suppress("UNCHECKED_CAST")
 inline val <T : Enum<T>> Class<T>.enumSharedConstants get() = enumValuesCache[this] as Array<T>
+//endregion
 
-/**
- * 执行命令。（基于操作系统）
- */
-fun exec(command: String, workDirectory: File? = null): Process {
-	return Runtime.getRuntime().exec(optimizeCommand(command), null, workDirectory)
+//region Collection Extensions
+inline fun <reified T> T.toSingletonArray() = arrayOf(this)
+
+inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
+
+fun <T> T.toSingletonList() = Collections.singletonList(this)
+
+fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
+
+data class ReversibleList<T>(val list: List<T>, val notReversed: Boolean) : List<T> by list {
+	override fun contains(element: T): Boolean {
+		return if(notReversed) list.contains(element) else !list.contains(element)
+	}
+	
+	override fun containsAll(elements: Collection<T>): Boolean {
+		return if(notReversed) list.containsAll(elements) else !list.containsAll(elements)
+	}
 }
-
-/**
- * 执行命令并阻塞进程到执行结束。（基于操作系统）
- */
-fun execBlocking(command: String, workDirectory: File? = null): Process {
-	return Runtime.getRuntime().exec(optimizeCommand(command), null, workDirectory).apply { waitFor() }
-}
-
-/**
- * 执行命令并阻塞进程到执行结束。（基于操作系统）
- */
-fun execBlocking(command: String, timeout: Long, timeUnit: TimeUnit, workDirectory: File? = null): Process {
-	return Runtime.getRuntime().exec(optimizeCommand(command), null, workDirectory).apply { waitFor(timeout, timeUnit) }
-}
-
-private fun optimizeCommand(command: String): Array<String> {
-	return arrayOf("cmd", "/c", command)
-}
-
-data class ReversibleList<T>(val list: List<T>, val reverse: Boolean) : List<T> by list
 
 fun <T> List<T>.toReversibleList(reverse: Boolean) = ReversibleList(this, reverse)
 
-data class ReversibleMap<K, V>(val map: Map<K, V>, val reverse: Boolean = false) : Map<K, V> by map
+data class ReversibleSet<T>(val set: Set<T>, val notReversed: Boolean) : Set<T> by set {
+	override fun contains(element: T): Boolean {
+		return if(notReversed) set.contains(element) else !set.contains(element)
+	}
+	
+	override fun containsAll(elements: Collection<T>): Boolean {
+		return if(notReversed) set.containsAll(elements) else !set.containsAll(elements)
+	}
+}
+
+fun <T> Set<T>.toReversibleSet(reverse: Boolean) = ReversibleSet(this, reverse)
+
+data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = false) : Map<K, V> by map {
+	override fun containsKey(key: K): Boolean {
+		return if(notReversed) map.containsKey(key) else !map.containsKey(key)
+	}
+	
+	override fun containsValue(value: V): Boolean {
+		return if(notReversed) map.containsValue(value) else !map.containsValue(value)
+	}
+}
 
 fun <K, V> Map<K, V>.toReversibleMap(reverse: Boolean) = ReversibleMap(this, reverse)
+//endregion
 
+//region Tuple & Range Extensions
 typealias Tuple2<A, B> = Pair<A, B>
 
+typealias TypedTuple2<T> = Pair<T, T>
+
 typealias Tuple3<A, B, C> = Triple<A, B, C>
+
+typealias TypedTuple3<T> = Triple<T, T, T>
 
 fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
 
 fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
 
 typealias FloatRange = ClosedRange<Float>
+//endregion

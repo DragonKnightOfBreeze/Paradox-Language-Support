@@ -35,7 +35,7 @@ data class  CwtTypeConfig(
 	val unique: Boolean = false,
 	val severity: String? = null,    
 	val skipRootKey: List<List<String>>? = null,
-	val typeKeyFilter: ReversibleList<String>? = null,
+	val typeKeyFilter: ReversibleSet<String>? = null,
 	val startsWith: String? = null,
 	val graphRelatedTypes: List<String>? = null,
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),

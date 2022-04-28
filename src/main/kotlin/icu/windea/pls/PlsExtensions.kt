@@ -382,7 +382,7 @@ val ParadoxLocalisationSequentialNumber.sequentialNumberConfig: ParadoxSequentia
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig?
 	get() = getInternalConfig().colorMap[name]
 
-fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
+fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
 	return properties.find { it.name.equals(propertyName, ignoreCase) }
 }
 

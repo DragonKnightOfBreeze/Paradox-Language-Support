@@ -62,7 +62,7 @@ class CwtConfigGroup(
 					"types" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
-							val typeName = resolveTypeName(prop.key)
+							val typeName = prop.key.removeSurroundingOrNull("type[", "]")
 							if(typeName != null && typeName.isNotEmpty()) {
 								val typeConfig = resolveTypeConfig(prop, typeName)
 								types[typeName] = typeConfig
@@ -73,7 +73,7 @@ class CwtConfigGroup(
 					"values" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
-							val valueName = resolveValueName(prop.key)
+							val valueName = prop.key.removeSurroundingOrNull("value[", "]")
 							if(valueName != null && valueName.isNotEmpty()) {
 								val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
 								values[valueName] = valueConfig
@@ -84,7 +84,7 @@ class CwtConfigGroup(
 					"enums" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
-							val enumName = resolveEnumName(prop.key)
+							val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
 							if(enumName != null && enumName.isNotEmpty()) {
 								val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
 								enums[enumName] = enumConfig
@@ -124,7 +124,7 @@ class CwtConfigGroup(
 						for(prop in props) {
 							val modifierCategoryName = prop.key
 							val categoryConfig = resolveModifierCategoryConfig(prop, modifierCategoryName) ?: continue
-							with(categoryConfig){
+							with(categoryConfig) {
 								modifierCategories[name] = categoryConfig
 								if(internalId != null) modifierCategoryIdMap[internalId] = categoryConfig
 							}
@@ -162,7 +162,7 @@ class CwtConfigGroup(
 					}
 					else -> {
 						//判断配置文件中的顶级的key是否匹配"single_alias[?]"，如果匹配，则解析配置并添加到single_aliases中
-						val singleAliasName = resolveSingleAliasName(key)
+						val singleAliasName = key.removeSurroundingOrNull("single_alias[", "]")
 						if(singleAliasName != null) {
 							val singleAliasConfig = resolveSingleAliasConfig(property, singleAliasName)
 							val list = singleAliases.getOrPut(singleAliasName) { SmartList() }
@@ -170,7 +170,7 @@ class CwtConfigGroup(
 						}
 						
 						//判断配置文件中的顶级的key是否匹配"alias[?:?]"，如果匹配，则解析配置并添加到aliases中
-						val aliasNamePair = resolveAliasName(key)
+						val aliasNamePair = key.removeSurroundingOrNull("alias[", "]")?.splitToPair(':')
 						if(aliasNamePair != null) {
 							val (aliasName, aliasSubName) = aliasNamePair
 							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
@@ -208,7 +208,7 @@ class CwtConfigGroup(
 		var unique = false
 		var severity: String? = null
 		var skipRootKey: MutableList<List<String>>? = null
-		var typeKeyFilter: ReversibleList<String>? = null
+		var typeKeyFilter: ReversibleSet<String>? = null
 		var startsWith: String? = null
 		var graphRelatedTypes: List<String>? = null
 		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
@@ -231,38 +231,34 @@ class CwtConfigGroup(
 					"severity" -> severity = prop.stringValue ?: continue
 					"skip_root_key" -> {
 						//值可能是string也可能是stringArray
-						val list = prop.stringValueOrValues
-						if(list != null) {
-							if(skipRootKey == null) skipRootKey = SmartList()
-							skipRootKey.add(list)
-						}
+						val list = prop.stringValueOrValues ?: continue
+						if(skipRootKey == null) skipRootKey = SmartList()
+						skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
 					}
 					"localisation" -> {
 						val configs: MutableList<Pair<String?, CwtTypeLocalisationInfoConfig>> = SmartList()
 						val propPointer = prop.pointer
-						val propProps = prop.properties
-						if(propProps != null) {
-							for(p in propProps) {
-								val k = p.key
-								val subtypeName = resolveSubtypeName(k)
-								if(subtypeName != null) {
-									val pps = p.properties ?: continue
-									for(pp in pps) {
-										val kk = pp.key
-										val localisationConfig = resolveTypeLocalisationConfig(pp, kk) ?: continue
-										configs.add(subtypeName to localisationConfig)
-									}
-								} else {
-									val localisationConfig = resolveTypeLocalisationConfig(p, k) ?: continue
-									configs.add(null to localisationConfig)
+						val propProps = prop.properties ?: continue
+						for(p in propProps) {
+							val k = p.key
+							val subtypeName = k.removeSurroundingOrNull("subtype[", "]")
+							if(subtypeName != null) {
+								val pps = p.properties ?: continue
+								for(pp in pps) {
+									val kk = pp.key
+									val localisationConfig = resolveTypeLocalisationConfig(pp, kk) ?: continue
+									configs.add(subtypeName to localisationConfig)
 								}
+							} else {
+								val localisationConfig = resolveTypeLocalisationConfig(p, k) ?: continue
+								configs.add(null to localisationConfig)
 							}
 						}
 						localisation = CwtTypeLocalisationConfig(propPointer, configs)
 					}
 				}
 				
-				val subtypeName = resolveSubtypeName(key)
+				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
 				if(subtypeName != null) {
 					val subtypeConfig = resolveSubtypeConfig(prop, subtypeName)
 					subtypes[subtypeName] = subtypeConfig
@@ -275,13 +271,13 @@ class CwtConfigGroup(
 			for(option in options) {
 				val key = option.key
 				when(key) {
-					"starts_with" -> startsWith = option.stringValue ?: continue
 					"type_key_filter" -> {
-						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
 						//值可能是string也可能是stringArray
-						val list = option.stringValueOrValues
-						typeKeyFilter = list?.toReversibleList(reversed)
+						val set = option.stringValueOrValues?.mapTo(mutableSetOf()) { it.lowercase() } ?: continue
+						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
+						typeKeyFilter = set.toReversibleSet(reversed)
 					}
+					"starts_with" -> startsWith = option.stringValue?.lowercase() ?: continue
 					"graph_related_types" -> {
 						val optionValues = option.values ?: continue
 						val list = optionValues.map { it.value }
@@ -299,7 +295,7 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveSubtypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSubtypeConfig {
-		var typeKeyFilter: ReversibleList<String>? = null
+		var typeKeyFilter: ReversibleSet<String>? = null
 		var pushScope: String? = null
 		var startsWith: String? = null
 		var displayName: String? = null
@@ -312,16 +308,16 @@ class CwtConfigGroup(
 				val key = option.key
 				when(key) {
 					"type_key_filter" -> {
-						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
 						//值可能是string也可能是stringArray
-						val list = option.stringValueOrValues
-						typeKeyFilter = list?.toReversibleList(reversed)
+						val set = option.stringValueOrValues?.mapTo(mutableSetOf()) { it.lowercase() } ?: continue
+						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
+						typeKeyFilter = set.toReversibleSet(reversed)
 					}
-					"push_scope" -> pushScope = option.stringValue
-					"starts_with" -> startsWith = option.stringValue
-					"display_name" -> displayName = option.stringValue
-					"abbreviation" -> abbreviation = option.stringValue
-					"only_if_not" -> onlyIfNot = option.stringValues
+					"push_scope" -> pushScope = option.stringValue ?: continue
+					"starts_with" -> startsWith = option.stringValue?.lowercase() ?: continue
+					"display_name" -> displayName = option.stringValue ?: continue
+					"abbreviation" -> abbreviation = option.stringValue ?: continue
+					"only_if_not" -> onlyIfNot = option.stringValues ?: continue
 				}
 			}
 		}
@@ -432,7 +428,7 @@ class CwtConfigGroup(
 		val propertyConfigs = SmartList<Pair<String?, CwtPropertyConfig>>()
 		for(prop in props) {
 			//这里需要进行合并
-			val subtypeName = resolveSubtypeName(prop.key)
+			val subtypeName = prop.key.removeSurroundingOrNull("subtype[", "]")
 			if(subtypeName != null) {
 				val propProps = prop.properties
 				if(propProps != null) {
@@ -470,6 +466,7 @@ class CwtConfigGroup(
 	}
 	
 	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): Boolean {
+		val typeKey = elementName.lowercase()
 		//判断value是否是block
 		if(element.block == null) return false
 		//判断element是否需要是scriptFile还是scriptProperty
@@ -498,55 +495,54 @@ class CwtConfigGroup(
 		if(pathExtensionConfig != null) {
 			if(pathExtensionConfig != path.fileExtension) return false
 		}
-		//如果skip_root_key = <any>，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过
-		//skip_root_key可以为列表（多级），可以重复（其中之一匹配即可）
-		val skipRootKeyConfig = typeConfig.skipRootKey //String? | "any"
+		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
+		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
+		//skip_root_key可以重复（其中之一匹配即可）
+		val skipRootKeyConfig = typeConfig.skipRootKey
 		if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
 			if(propertyPath.length > 1) return false
 		} else {
 			var skipResult = false
 			for(keys in skipRootKeyConfig) {
-				if(keys.relaxMatchesPath(propertyPath.parentSubPaths)) {
+				if(keys.matchEntirePath(propertyPath.parentSubPaths)) {
 					skipResult = true
 					break
 				}
 			}
 			if(!skipResult) return false
 		}
-		//如果type_key_filter存在，则过滤key
+		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+		val startsWithConfig = typeConfig.startsWith
+		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
+			if(!typeKey.startsWith(startsWithConfig)) return false
+		}
+		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
 		val typeKeyFilterConfig = typeConfig.typeKeyFilter
 		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
-			val filterResult = if(typeKeyFilterConfig.reverse) {
-				elementName !in typeKeyFilterConfig
-			} else {
-				elementName in typeKeyFilterConfig
-			}
+			val filterResult = typeKeyFilterConfig.contains(typeKey)
 			if(!filterResult) return false
 		}
 		return true
 	}
 	
 	private fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxDefinitionProperty, elementName: String, result: MutableList<CwtSubtypeConfig>): Boolean {
+		val typeKey = elementName.lowercase()
 		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
 		val onlyIfNotConfig = subtypeConfig.onlyIfNot
 		if(onlyIfNotConfig != null && onlyIfNotConfig.isNotEmpty()) {
 			val matchesAny = result.any { it.name in onlyIfNotConfig }
 			if(matchesAny) return false
 		}
-		//如果type_key_filter存在，则过滤key
-		val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
-		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
-			val filterResult = if(typeKeyFilterConfig.reverse) {
-				elementName !in typeKeyFilterConfig
-			} else {
-				elementName in typeKeyFilterConfig
-			}
-			if(!filterResult) return false
-		}
-		//如果starts_with存在，则要求elementName匹配这个前缀
+		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
 		val startsWithConfig = subtypeConfig.startsWith
 		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!elementName.startsWith(startsWithConfig)) return false
+			if(!typeKey.startsWith(startsWithConfig)) return false
+		}
+		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+		val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
+		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
+			val filterResult = typeKeyFilterConfig.contains(typeKey)
+			if(!filterResult) return false
 		}
 		//根据config对property进行内容匹配
 		val elementConfig = subtypeConfig.config
@@ -636,32 +632,5 @@ class CwtConfigGroup(
 				.castOrNull<ParadoxScriptString>()?.stringValue
 		}
 		return null
-	}
-}
-
-private fun resolveTypeName(expression: String): String? {
-	return expression.resolveByRemoveSurrounding("type[", "]")
-}
-
-private fun resolveSubtypeName(expression: String): String? {
-	return expression.resolveByRemoveSurrounding("subtype[", "]")
-}
-
-private fun resolveValueName(expression: String): String? {
-	return expression.resolveByRemoveSurrounding("value[", "]")
-}
-
-private fun resolveEnumName(expression: String): String? {
-	return expression.resolveByRemoveSurrounding("enum[", "]")
-}
-
-private fun resolveSingleAliasName(expression: String): String? {
-	return expression.resolveByRemoveSurrounding("single_alias[", "]")
-}
-
-private fun resolveAliasName(expression: String): Pair<String, String>? {
-	return expression.resolveByRemoveSurrounding("alias[", "]")?.let {
-		val index = it.indexOf(':')
-		it.substring(0, index) to it.substring(index + 1)
 	}
 }

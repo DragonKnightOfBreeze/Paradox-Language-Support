@@ -16,7 +16,7 @@ data class CwtSubtypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
 	val config: CwtPropertyConfig,
-	val typeKeyFilter: ReversibleList<String>? = null,
+	val typeKeyFilter: ReversibleSet<String>? = null,
 	val pushScope: String? = null,
 	val startsWith: String? = null,
 	val displayName: String? = null,

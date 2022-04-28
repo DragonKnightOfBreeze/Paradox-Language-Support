@@ -2,7 +2,7 @@
 
 ## TODO
 
-* [ ] 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级脚本语法
+* [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
 
 ## 0.5 *
 
@@ -10,15 +10,16 @@
 * [X] 更新内置的CWT配置
 * [ ] BUG修复 *
 * [ ] 语法解析优化 *
-* [X] 从注解器提取出单独的本地检查 *
+* [X] 从注解器提取出单独的本地检查
 * [X] 优化DDS图片渲染
 * [ ] 完善内嵌提示
 * [X] 不再通过`ParadoxFileTypeOverrider`自动添加或移除文件的BOM，而是基于`ParadoxUtf8BomOptionProvider`判断创建文件时是否需要添加BOM
 * [ ] 完善对CWT配置文件的支持，完善相关功能
   * [ ] 支持在`config/cwt/${gameType}.pls`目录中提供插件额外提供的规则文件（如果可以仅添加不修改）
-  * [X] 编写规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释等）
-  * [ ] 实现规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释等）
-* [ ] 不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
+  * [X] 编写规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释）
+  * [ ] 实现规则`types.type[*].pictures`（装订线图标，渲染到文档注释）
+  * [ ] 实现规则`types.type[*].pictures`的相关功能（装订线图标，渲染到文档注释）
+* [ ] ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
   * 检查Github上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
