@@ -82,7 +82,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			buildDefinitionDefinition(element, definitionInfo, localisation)
 			buildLineCommentContent(element)
-			buildDefinitionIconSections(type, element)
+			//buildDefinitionIconSections(type, element)
 			buildRelatedLocalisationSections(localisation, element)
 		}
 	}
@@ -136,18 +136,18 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildDefinitionIconSections(type: String, element: ParadoxScriptProperty) {
-		//sprite图标
-		if(type == "sprite" || type == "spriteType") {
-			val iconUrl = element.resolveIconUrl(false)
-			if(iconUrl.isNotEmpty()) {
-				sections {
-					val iconTag = buildString { appendIconTag(iconUrl).append("&nbsp;") } //让图标垂直居中显示
-					section("Icon", iconTag)
-				}
-			}
-		}
-	}
+	//private fun StringBuilder.buildDefinitionIconSections(type: String, element: ParadoxScriptProperty) {
+	//	//sprite图标
+	//	if(type == "sprite" || type == "spriteType") {
+	//		val iconUrl = element.resolveIconUrl(false)
+	//		if(iconUrl.isNotEmpty()) {
+	//			sections {
+	//				val iconTag = buildString { appendIconTag(iconUrl).append("&nbsp;") } //让图标垂直居中显示
+	//				section("Icon", iconTag)
+	//			}
+	//		}
+	//	}
+	//}
 	
 	private fun StringBuilder.buildRelatedLocalisationSections(localisation: List<ParadoxRelatedLocalisationInfo>,
 		element: ParadoxScriptProperty) {

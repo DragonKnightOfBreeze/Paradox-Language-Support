@@ -1,6 +1,6 @@
 types = {
 	type[colony_type] = {
-		path = "game/common/colony_type"
+		path = "game/common/colony_types" # FIXED BY PLS
 		localisation = {
 			## required
 			Name = "$"

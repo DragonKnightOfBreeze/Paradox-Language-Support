@@ -83,7 +83,6 @@ object ParadoxIconUrlResolver {
 	}
 	
 	private fun doResolveBySprite(sprite: ParadoxScriptProperty): String? {
-		val fileInfo = sprite.fileInfo ?: return null
 		val ddsRelPath = sprite.findProperty("textureFile", true)?.value ?: return null
 		val file = findFile(ddsRelPath, sprite.project) ?: return null
 		return doResolveByFile(file)

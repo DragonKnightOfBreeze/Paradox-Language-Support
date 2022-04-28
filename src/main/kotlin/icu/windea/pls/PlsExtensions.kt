@@ -803,11 +803,11 @@ fun findFile(
 	path: ParadoxPath,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	ignoreCase: Boolean = true
+	caseSensitively: Boolean = false
 ): VirtualFile? {
 	val fileName = path.fileName
 	var result: VirtualFile? = null
-	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
 		if(file.fileInfo?.path?.path == path.path) {
 			result = file
 			false
@@ -825,11 +825,11 @@ fun findFiles(
 	path: ParadoxPath,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	ignoreCase: Boolean = true
+	caseSensitively: Boolean = false
 ): Set<VirtualFile> {
 	val fileName = path.fileName
 	val result: MutableSet<VirtualFile> = mutableSetOf()
-	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
 		if(file.fileInfo?.path?.path == path.path) {
 			result.add(file)
 		}
@@ -845,11 +845,11 @@ fun findFile(
 	path: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	ignoreCase: Boolean = true
+	caseSensitively: Boolean = false
 ): VirtualFile? {
 	val fileName = path.substringAfterLast('/')
 	var result: VirtualFile? = null
-	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
 		if(file.fileInfo?.path?.path == path) {
 			result = file
 			false
@@ -867,11 +867,11 @@ fun findFiles(
 	path: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	ignoreCase: Boolean = true
+	caseSensitively: Boolean = false
 ): Set<VirtualFile> {
 	val fileName = path.substringAfterLast('/')
 	val result: MutableSet<VirtualFile> = mutableSetOf()
-	FilenameIndex.processFilesByName(fileName, ignoreCase, scope) { file ->
+	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
 		if(file.fileInfo?.path?.path == path) {
 			result.add(file)
 		}
@@ -1015,6 +1015,7 @@ inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = t
 	return ParadoxIconUrlResolver.resolveByIconName(this, project, defaultToUnknown)
 }
 
+@Deprecated("")
 @Suppress("NOTHING_TO_INLINE")
 inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)

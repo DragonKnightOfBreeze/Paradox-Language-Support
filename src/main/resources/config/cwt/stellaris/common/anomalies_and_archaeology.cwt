@@ -25,7 +25,7 @@ types = {
 		}
 	}
 	type[artifact_action] = {
-		path = "game/common/artifact_action"
+		path = "game/common/artifact_actions" # FIXED BY PLS
 		localisation = {
 			## required
 			Name = "$"

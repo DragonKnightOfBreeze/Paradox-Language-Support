@@ -1381,6 +1381,9 @@
         </rules>
       </arrangement>
     </codeStyleSettings>
+    <codeStyleSettings language="CWT">
+      <option name="LINE_COMMENT_ADD_SPACE" value="true" />
+    </codeStyleSettings>
     <codeStyleSettings language="DB2">
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />

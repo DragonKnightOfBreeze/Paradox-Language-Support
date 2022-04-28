@@ -1,5 +1,9 @@
 # 更新日志
 
+## TODO
+
+* [ ] 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级脚本语法
+
 ## 0.5 *
 
 * [X] 更新IDEA版本到2022.1
@@ -11,6 +15,9 @@
 * [ ] 完善内嵌提示
 * [X] 不再通过`ParadoxFileTypeOverrider`自动添加或移除文件的BOM，而是基于`ParadoxUtf8BomOptionProvider`判断创建文件时是否需要添加BOM
 * [ ] 完善对CWT配置文件的支持，完善相关功能
+  * [ ] 支持在`config/cwt/${gameType}.pls`目录中提供插件额外提供的规则文件（如果可以仅添加不修改）
+  * [X] 编写规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释等）
+  * [ ] 实现规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释等）
 * [ ] 不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
@@ -103,6 +110,8 @@
 * [ ] 支持规则类型scope和scope_field
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型complex_enum
+* [ ] 支持规则类型icon
+* [ ] 支持规则类型path
 * [X] 应用cwt配置文件`folders.cwt`
 * [ ] 应用cwt配置文件`scopes.cwt`
 * [ ] 应用cwt配置文件`links.cwt`

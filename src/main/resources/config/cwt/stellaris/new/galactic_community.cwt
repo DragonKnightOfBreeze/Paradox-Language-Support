@@ -58,6 +58,7 @@ resolution_category = {
 
 ## replace_scope = { this = country root = country from = country }
 resolution = {
+	icon = <sprite> # FIXED BY PLS
 	icon = scalar #not really
 	resources = {
 		category = <economic_category>

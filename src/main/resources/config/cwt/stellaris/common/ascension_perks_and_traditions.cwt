@@ -59,7 +59,7 @@ types = {
 
 enums = {
 	complex_enum[tradition_swap] = {
-		path = "game/common/tradition"
+		path = "game/common/traditions" # FIXED BY PLS
 		name = {
 			tradition_swap = {
 				name = enum_name
