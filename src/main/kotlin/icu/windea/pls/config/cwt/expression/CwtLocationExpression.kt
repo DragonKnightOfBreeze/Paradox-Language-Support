@@ -50,6 +50,7 @@ class CwtLocationExpression(
 	operator fun component3() = extraPropertyNames
 	
 	fun inferLocation(definitionName: String, definition: ParadoxDefinitionProperty): String? {
+		//TODO 这里推断得到的最终的位置应当是sprite的definitionKey或者DDS文件的filePath
 		//TODO 应用extraPropertyNames
 		return if(placeholder != null && placeholder.isNotEmpty()) {
 			buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
