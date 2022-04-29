@@ -5,9 +5,12 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.*
 
+/**
+ * 定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标提供器。
+ */
 class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	companion object {
 		private val _name = PlsBundle.message("script.gutterIcon.relatedLocalisation")
@@ -16,40 +19,46 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 	
 	override fun getName() = _name
 	
-	override fun getIcon() = relatedLocalisationGutterIcon
+	override fun getIcon() = PlsIcons.relatedLocalisationGutterIcon
 	
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-		//如果是definition且definition的localisation不为空，则添加definitionLocalisation的gutterIcon
-		if(element is ParadoxScriptProperty) {
-			val definitionInfo = element.definitionInfo ?: return
-			val localisation = definitionInfo.localisation
-			if(localisation.isEmpty()) return
-			val lineMarkerInfo = createMarker(definitionInfo, element)
-			result.add(lineMarkerInfo)
-		}
-	}
-	
-	private fun createMarker(definitionInfo: ParadoxDefinitionInfo, element: ParadoxScriptProperty): RelatedItemLineMarkerInfo<PsiElement> {
-		val icon = relatedLocalisationGutterIcon
-		val tooltip = buildString {
-			val localisation = definitionInfo.localisation
-			var isFirst = true
-			for((n, kn) in localisation) {
-				if(kn.isEmpty()) continue //不显示keyName为空的definitionLocalisation
-				if(isFirst) isFirst = false else appendBr()
-				append("(related localisation) ").append(n).append(" = ").append(kn)
+		//何时显示装订线图标：element是definition，且definitionInfo.localisation不为空，且计算得到的keys不为空
+		if(element !is ParadoxScriptProperty) return
+		val definitionInfo = element.definitionInfo ?: return
+		val localisation = definitionInfo.localisation
+		if(localisation.isEmpty()) return
+		
+		//显示在提示中 & 可导航：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
+		val icon = PlsIcons.relatedLocalisationGutterIcon
+		val tooltipBuilder = StringBuilder()
+		val keys = mutableSetOf<String>()
+		val project = element.project
+		val targetMap = mutableMapOf<String, ParadoxLocalisationProperty>()
+		for((key, location) in definitionInfo.localisation) {
+			if(!targetMap.containsKey(key)) {
+				val target = findLocalisationByLocation(location, project)
+				if(target != null) targetMap.put(key, target)
 			}
 		}
-		val keyNames = definitionInfo.localisationLocations
-		val project = element.project
-		val targets = findLocalisationsByNames(keyNames, null, project, hasDefault = true, keepOrder = true)
-		val targetElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
-		return NavigationGutterIconBuilder.create(icon)
+		var isFirst = true
+		for((key, location, required) in definitionInfo.localisation) {
+			if(required || targetMap.containsKey(key)) {
+				if(keys.add(key)) {
+					if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+					tooltipBuilder.append("(related localisation) ").append(key).append(" = ").append(location)
+				}
+			}
+		}
+		if(keys.isEmpty()) return
+		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
+		val tooltip = tooltipBuilder.toString()
+		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
 			.setTooltipText(tooltip)
 			.setPopupTitle(_title)
-			.setTargets(targets)
+			.setTargets(targetMap.values)
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { _name }
-			.createLineMarkerInfo(targetElement)
+			.createLineMarkerInfo(locationElement)
+		result.add(lineMarkerInfo)
 	}
 }

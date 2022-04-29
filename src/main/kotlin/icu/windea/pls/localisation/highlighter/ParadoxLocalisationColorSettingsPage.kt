@@ -49,19 +49,19 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(_syncedLocalisationName, ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
 		)
 	}
-
+	
 	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
-
+	
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
-
-	override fun getIcon() = paradoxLocalisationFileIcon
-
+	
+	override fun getIcon() = PlsIcons.paradoxLocalisationFileIcon
+	
 	override fun getAttributeDescriptors() = attributesDescriptors
-
+	
 	override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
-
+	
 	override fun getDisplayName() = paradoxLocalisationName
-
+	
 	override fun getDemoText() = paradoxLocalisationDemoText
 }
 

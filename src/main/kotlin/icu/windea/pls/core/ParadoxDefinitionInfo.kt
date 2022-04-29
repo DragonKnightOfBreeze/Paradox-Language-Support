@@ -1,11 +1,9 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
@@ -18,7 +16,7 @@ class ParadoxDefinitionInfo(
 	val typeConfig: CwtTypeConfig,
 	val subtypes: List<String>, // = subtypeConfigs.map { it.name }
 	val subtypeConfigs: List<CwtSubtypeConfig>,
-	val localisation: List<ParadoxRelatedPicturesInfo>,
+	val localisation: List<ParadoxRelatedLocalisationInfo>,
 	val localisationConfig: CwtTypeLocalisationConfig?,
 	val pictures: List<ParadoxRelatedPicturesInfo>,
 	val picturesConfig: CwtTypePicturesConfig?,
@@ -34,17 +32,9 @@ class ParadoxDefinitionInfo(
 	val severity get() = typeConfig.severity
 	
 	val primaryLocalisationLocation: String? by lazy { localisation.firstOrNull { it.primary }?.location }
-	val localisationLocations: List<String> by lazy { localisation.map { it.location } }
+	//val localisationLocations: Set<String> by lazy { localisation.mapTo(mutableSetOf()) { it.location } }
 	val primaryPictureLocation: String? by lazy { pictures.firstOrNull { it.primary }?.location }
-	val PictureLocations: List<String> by lazy { pictures.map { it.location } }
-	
-	fun getLocalisation(location: String, project: Project): ParadoxLocalisationProperty? {
-		return findLocalisation(location, null, project, hasDefault = true)
-	}
-	
-	fun getPicture(location: String, project: Project): Any? /* ParadoxDefinitionProperty? | VirtualFile? */ {
-		return findDefinition(location, "sprite|spriteType", project) //TODO
-	}
+	//val pictureLocations: Set<String> by lazy { pictures.mapTo(mutableSetOf()) { it.location } }
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxDefinitionInfo && name == other.name && types == other.types

@@ -1,37 +1,46 @@
 package icu.windea.pls
 
 import com.intellij.openapi.util.*
+import javax.swing.*
 
-val libraryIcon = IconLoader.getIcon("/icons/library.svg", locationClass)
-
-val cwtFileIcon = IconLoader.getIcon("/icons/cwtFile.svg", locationClass)
-val paradoxScriptFileIcon = IconLoader.getIcon("/icons/paradoxScriptFile.svg", locationClass)
-val paradoxLocalisationFileIcon = IconLoader.getIcon("/icons/paradoxLocalisationFile.svg", locationClass)
-
-val cwtPropertyIcon = IconLoader.getIcon("/icons/cwtProperty.svg", locationClass)
-val cwtOptionIcon = IconLoader.getIcon("/icons/cwtOption.svg", locationClass)
-val cwtValueIcon = IconLoader.getIcon("/icons/cwtValue.svg", locationClass)
-
-val scriptVariableIcon = IconLoader.getIcon("/icons/scriptVariable.svg", locationClass)
-val scriptPropertyIcon = IconLoader.getIcon("/icons/paradoxScriptProperty.svg", locationClass)
-val scriptValueIcon = IconLoader.getIcon("/icons/paradoxScriptValue.svg", locationClass)
-
-val localisationLocaleIcon = IconLoader.getIcon("/icons/localisationLocale.svg", locationClass)
-val localisationPropertyIcon = IconLoader.getIcon("/icons/localisationProperty.svg", locationClass)
-val localisationIconIcon = IconLoader.getIcon("/icons/localisationIcon.svg", locationClass)
-val localisationSequentialNumberIcon = IconLoader.getIcon("/icons/localisationSequentialNumber.svg", locationClass)
-val localisationCommandScopeIcon = IconLoader.getIcon("/icons/localisationCommandScope.svg", locationClass)
-val localisationCommandFieldIcon = IconLoader.getIcon("/icons/localisationCommandField.svg", locationClass)
-
-val definitionIcon = IconLoader.getIcon("/icons/definition.svg", locationClass)
-val relatedLocalisationIcon = IconLoader.getIcon("/icons/relatedLocalisation.svg", locationClass)
-val localisationIcon = IconLoader.getIcon("/icons/localisation.svg", locationClass)
-val propertyIcon = IconLoader.getIcon("/icons/property.svg", locationClass)
-val valueIcon = IconLoader.getIcon("/icons/value.svg", locationClass)
-val enumIcon = IconLoader.getIcon("/icons/enum.svg", locationClass)
-val modifierIcon = IconLoader.getIcon("/icons/modifier.svg", locationClass)
-val aliasIcon = IconLoader.getIcon("/icons/alias.svg", locationClass) //目前用不到，因为名字是表达式
-
-val definitionGutterIcon = IconLoader.getIcon("/icons/gutter/definition.svg", locationClass)
-val relatedLocalisationGutterIcon = IconLoader.getIcon("/icons/gutter/relatedLocalisation.svg", locationClass)
-val localisationGutterIcon = IconLoader.getIcon("/icons/gutter/localisation.svg", locationClass)
+@Suppress("unused")
+object PlsIcons {
+	@JvmStatic val libraryIcon = loadIcon("/icons/library.svg")
+	
+	@JvmStatic val cwtFileIcon = loadIcon("/icons/cwtFile.svg")
+	@JvmStatic val paradoxScriptFileIcon = loadIcon("/icons/paradoxScriptFile.svg")
+	@JvmStatic val paradoxLocalisationFileIcon = loadIcon("/icons/paradoxLocalisationFile.svg")
+	
+	@JvmStatic val cwtPropertyIcon = loadIcon("/icons/cwtProperty.svg")
+	@JvmStatic val cwtOptionIcon = loadIcon("/icons/cwtOption.svg")
+	@JvmStatic val cwtValueIcon = loadIcon("/icons/cwtValue.svg")
+	
+	@JvmStatic val scriptVariableIcon = loadIcon("/icons/scriptVariable.svg")
+	@JvmStatic val scriptPropertyIcon = loadIcon("/icons/paradoxScriptProperty.svg")
+	@JvmStatic val scriptValueIcon = loadIcon("/icons/paradoxScriptValue.svg")
+	
+	@JvmStatic val localisationLocaleIcon = loadIcon("/icons/localisationLocale.svg")
+	@JvmStatic val localisationPropertyIcon = loadIcon("/icons/localisationProperty.svg")
+	@JvmStatic val localisationIconIcon = loadIcon("/icons/localisationIcon.svg")
+	@JvmStatic val localisationSequentialNumberIcon = loadIcon("/icons/localisationSequentialNumber.svg")
+	@JvmStatic val localisationCommandScopeIcon = loadIcon("/icons/localisationCommandScope.svg")
+	@JvmStatic val localisationCommandFieldIcon = loadIcon("/icons/localisationCommandField.svg")
+	
+	@JvmStatic val definitionIcon = loadIcon("/icons/definition.svg")
+	@JvmStatic val relatedLocalisationIcon = loadIcon("/icons/relatedLocalisation.svg")
+	@JvmStatic val localisationIcon = loadIcon("/icons/localisation.svg")
+	@JvmStatic val propertyIcon = loadIcon("/icons/property.svg")
+	@JvmStatic val valueIcon = loadIcon("/icons/value.svg")
+	@JvmStatic val enumIcon = loadIcon("/icons/enum.svg")
+	@JvmStatic val modifierIcon = loadIcon("/icons/modifier.svg")
+	@JvmStatic val aliasIcon = loadIcon("/icons/alias.svg") //目前用不到，因为名字是表达式
+	
+	@JvmStatic val definitionGutterIcon = loadIcon("/icons/gutter/definition.svg")
+	@JvmStatic val relatedLocalisationGutterIcon = loadIcon("/icons/gutter/relatedLocalisation.svg")
+	@JvmStatic val relatedPicturesGutterIcon = loadIcon("/icons/gutter/relatedPictures.svg")
+	@JvmStatic val localisationGutterIcon = loadIcon("/icons/gutter/localisation.svg")
+	
+	private fun loadIcon(path: String): Icon {
+		return IconLoader.getIcon(path, locationClass)
+	}
+}

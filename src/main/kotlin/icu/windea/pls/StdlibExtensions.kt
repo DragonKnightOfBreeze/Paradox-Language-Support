@@ -398,6 +398,14 @@ inline val <T : Enum<T>> Class<T>.enumSharedConstants get() = enumValuesCache[th
 //endregion
 
 //region Collection Extensions
+fun <T> Collection<T>.parallelForEach(action:(T)->Unit){
+	return this.parallelStream().forEach(action)
+}
+
+fun <K,V> Map<K,V>.parallelForEach(action:(Map.Entry<K,V>)->Unit){
+	return this.entries.parallelStream().forEach(action)
+}
+
 inline fun <reified T> T.toSingletonArray() = arrayOf(this)
 
 inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()

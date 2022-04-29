@@ -5,7 +5,7 @@ import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 
-class CwtColorSettingsPage:ColorSettingsPage {
+class CwtColorSettingsPage : ColorSettingsPage {
 	companion object {
 		private val _separatorName = PlsBundle.message("cwt.displayName.separator")
 		private val _bracesName = PlsBundle.message("cwt.displayName.braces")
@@ -23,26 +23,26 @@ class CwtColorSettingsPage:ColorSettingsPage {
 	}
 	
 	private val attributersDescriptors = arrayOf(
-		AttributesDescriptor(_separatorName,CwtAttributeKeys.SEPARATOR_KEY),
-		AttributesDescriptor(_bracesName,CwtAttributeKeys.BRACES_KEY),
-		AttributesDescriptor(_propertyKeyName,CwtAttributeKeys.PROPERTY_KEY_KEY),
-		AttributesDescriptor(_optionKeyName,CwtAttributeKeys.OPTION_KEY_KEY),
-		AttributesDescriptor(_keywordName,CwtAttributeKeys.KEYWORD_KEY),
-		AttributesDescriptor(_numberName,CwtAttributeKeys.NUMBER_KEY),
-		AttributesDescriptor(_stringName,CwtAttributeKeys.STRING_KEY),
-		AttributesDescriptor(_commentName,CwtAttributeKeys.COMMENT_KEY),
-		AttributesDescriptor(_optionCommentName,CwtAttributeKeys.OPTION_COMMENT_KEY),
-		AttributesDescriptor(_documentationCommentName,CwtAttributeKeys.DOCUMENTATION_COMMENT_KEY),
-		AttributesDescriptor(_validEscapeName,CwtAttributeKeys.VALID_ESCAPE_KEY),
-		AttributesDescriptor(_invalidEscapeName,CwtAttributeKeys.INVALID_ESCAPE_KEY),
-		AttributesDescriptor(_badCharacterName,CwtAttributeKeys.BAD_CHARACTER_KEY)
+		AttributesDescriptor(_separatorName, CwtAttributeKeys.SEPARATOR_KEY),
+		AttributesDescriptor(_bracesName, CwtAttributeKeys.BRACES_KEY),
+		AttributesDescriptor(_propertyKeyName, CwtAttributeKeys.PROPERTY_KEY_KEY),
+		AttributesDescriptor(_optionKeyName, CwtAttributeKeys.OPTION_KEY_KEY),
+		AttributesDescriptor(_keywordName, CwtAttributeKeys.KEYWORD_KEY),
+		AttributesDescriptor(_numberName, CwtAttributeKeys.NUMBER_KEY),
+		AttributesDescriptor(_stringName, CwtAttributeKeys.STRING_KEY),
+		AttributesDescriptor(_commentName, CwtAttributeKeys.COMMENT_KEY),
+		AttributesDescriptor(_optionCommentName, CwtAttributeKeys.OPTION_COMMENT_KEY),
+		AttributesDescriptor(_documentationCommentName, CwtAttributeKeys.DOCUMENTATION_COMMENT_KEY),
+		AttributesDescriptor(_validEscapeName, CwtAttributeKeys.VALID_ESCAPE_KEY),
+		AttributesDescriptor(_invalidEscapeName, CwtAttributeKeys.INVALID_ESCAPE_KEY),
+		AttributesDescriptor(_badCharacterName, CwtAttributeKeys.BAD_CHARACTER_KEY)
 	)
 	
-	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage,null,null)
+	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage, null, null)
 	
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
 	
-	override fun getIcon() = cwtFileIcon
+	override fun getIcon() = PlsIcons.cwtFileIcon
 	
 	override fun getAttributeDescriptors() = attributersDescriptors
 	

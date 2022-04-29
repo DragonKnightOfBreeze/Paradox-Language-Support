@@ -604,7 +604,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		CwtKeyExpression.Type.Localisation -> {
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			if(localisations.isEmpty()) return
-			val icon = localisationIcon //使用特定图标
+			val icon = PlsIcons.localisationIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(localisation in localisations) {
 				val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -620,7 +620,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		CwtKeyExpression.Type.SyncedLocalisation -> {
 			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			if(syncedLocalisations.isEmpty()) return
-			val icon = localisationIcon //使用特定图标
+			val icon = PlsIcons.localisationIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(syncedLocalisation in syncedLocalisations) {
 				val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -637,7 +637,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			if(quoted) return
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			if(localisations.isEmpty()) return
-			val icon = localisationIcon //使用特定图标
+			val icon = PlsIcons.localisationIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -653,7 +653,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val typeExpression = expression.value ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			if(definitions.isEmpty()) return
-			val icon = definitionIcon //使用特定图标
+			val icon = PlsIcons.definitionIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(definition in definitions) {
 				val n = definition.definitionInfo?.name ?: continue
@@ -671,7 +671,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			if(definitions.isEmpty()) return
 			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return
-			val icon = definitionIcon //使用特定图标
+			val icon = PlsIcons.definitionIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(definition in definitions) {
 				val definitionName = definition.definitionInfo?.name ?: continue
@@ -690,7 +690,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val valueConfig = configGroup.values[valueExpression] ?: return
 			val valueValueConfigs = valueConfig.valueConfigs
 			if(valueValueConfigs.isEmpty()) return
-			val icon = valueIcon //使用特定图标
+			val icon = PlsIcons.valueIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(valueValueConfig in valueValueConfigs) {
 				if(quoted && valueValueConfig.stringValue == null) continue
@@ -714,7 +714,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val enumConfig = configGroup.enums[enumExpression] ?: return
 			val enumValueConfigs = enumConfig.valueConfigs
 			if(enumValueConfigs.isEmpty()) return
-			val icon = enumIcon //使用特定图标
+			val icon = PlsIcons.enumIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(enumValueConfig in enumValueConfigs) {
 				if(quoted && enumValueConfig.stringValue == null) continue
@@ -749,7 +749,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			if(!n.matchesKeyword(keyword)) return //预先过滤结果
 			val name = n.quoteIf(quoted)
 			val element = config.pointer.element ?: return
-			val icon = propertyIcon //使用特定图标
+			val icon = PlsIcons.propertyIcon //使用特定图标
 			val tailText = " in ${config.pointer.containingFile?.name ?: anonymousString}"
 			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 				.withTailText(tailText, true)
@@ -770,7 +770,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.Localisation -> {
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
 			if(localisations.isEmpty()) return
-			val icon = localisationIcon //使用特定图标
+			val icon = PlsIcons.localisationIcon //使用特定图标
 			val tailText = " by $expression in $configFileName"
 			for(localisation in localisations) {
 				val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -785,7 +785,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.SyncedLocalisation -> {
 			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project)
 			if(syncedLocalisations.isEmpty()) return
-			val icon = localisationIcon //使用特定图标
+			val icon = PlsIcons.localisationIcon //使用特定图标
 			val tailText = " by $expression in $configFileName"
 			for(syncedLocalisation in syncedLocalisations) {
 				val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -801,7 +801,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			if(quoted) return
 			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
 			if(localisations.isEmpty()) return
-			val icon = localisationIcon //使用特定图标
+			val icon = PlsIcons.localisationIcon //使用特定图标
 			val tailText = " by $expression in $configFileName"
 			for(localisation in localisations) {
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -819,7 +819,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val typeExpression = expression.value ?: return
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			if(definitions.isEmpty()) return
-			val icon = definitionIcon //使用特定图标
+			val icon = PlsIcons.definitionIcon //使用特定图标
 			val tailText = " by $expression in $configFileName"
 			for(definition in definitions) {
 				val n = definition.definitionInfo?.name ?: continue
@@ -836,7 +836,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
 			if(definitions.isEmpty()) return
 			val (prefix, suffix) = expression.extraValue?.castOrNull<Pair<String, String>>() ?: return
-			val icon = definitionIcon //使用特定图标
+			val icon = PlsIcons.definitionIcon //使用特定图标
 			val tailText = " by $expression in $configFileName"
 			for(definition in definitions) {
 				val definitionName = definition.definitionInfo?.name ?: continue
@@ -854,7 +854,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val valueConfig = configGroup.values[valueExpression] ?: return
 			val valueValueConfigs = valueConfig.valueConfigs
 			if(valueValueConfigs.isEmpty()) return
-			val icon = valueIcon //使用特定图标
+			val icon = PlsIcons.valueIcon //使用特定图标
 			val tailText = " by $expression in $configFileName"
 			for(valueValueConfig in valueValueConfigs) {
 				if(quoted && valueValueConfig.stringValue == null) continue
@@ -877,7 +877,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val enumConfig = configGroup.enums[enumExpression] ?: return
 			val enumValueConfigs = enumConfig.valueConfigs
 			if(enumValueConfigs.isEmpty()) return
-			val icon = enumIcon //使用特定图标
+			val icon = PlsIcons.enumIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(enumValueConfig in enumValueConfigs) {
 				if(quoted && enumValueConfig.stringValue == null) continue
@@ -913,7 +913,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			if(!n.matchesKeyword(keyword)) return //预先过滤结果
 			val name = n.quoteIf(quoted)
 			val element = config.pointer.element ?: return
-			val icon = valueIcon //使用特定图标
+			val icon = PlsIcons.valueIcon //使用特定图标
 			val tailText = " in ${config.pointer.containingFile?.name ?: anonymousString}"
 			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 				.withTailText(tailText, true)
@@ -957,7 +957,7 @@ fun completeModifier(keyword: String, quoted: Boolean, configGroup: CwtConfigGro
 		if(!n.matchesKeyword(keyword)) continue //预先过滤结果
 		val name = n.quoteIf(quoted)
 		val element = modifierConfig.pointer.element ?: continue
-		val icon = modifierIcon //使用特定图标
+		val icon = PlsIcons.modifierIcon //使用特定图标
 		val tailText = " from modifiers"
 		val typeText = modifierConfig.pointer.containingFile?.name ?: anonymousString
 		val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
@@ -983,7 +983,7 @@ fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,
 		if(!name.matchesKeyword(keyword)) continue
 		val element = config.pointer.element ?: continue
 		//val scopes = localisationCommand
-		val icon = localisationCommandFieldIcon
+		val icon = PlsIcons.localisationCommandFieldIcon
 		val typeText = config.pointer.containingFile?.name ?: anonymousString
 		val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 			.withTypeText(typeText, true)

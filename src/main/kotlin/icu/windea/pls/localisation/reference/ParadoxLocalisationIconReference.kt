@@ -70,13 +70,13 @@ class ParadoxLocalisationIconReference(
 			when(it) {
 				is ParadoxScriptProperty -> {
 					val name = it.definitionInfo?.name?.removePrefix("GFX_text_").orEmpty()
-					val icon = localisationIconIcon //使用特定图标
+					val icon = PlsIcons.localisationIconIcon //使用特定图标
 					val typeText = it.containingFile.name
 					LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 				}
 				is VirtualFile -> {
 					val name = it.name.substringBeforeLast('.')
-					val icon = localisationIconIcon //使用特定图标
+					val icon = PlsIcons.localisationIconIcon //使用特定图标
 					val typeText = it.name
 					LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
 				}

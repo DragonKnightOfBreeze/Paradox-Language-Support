@@ -1,17 +1,29 @@
 package icu.windea.pls.core
 
-class ParadoxPath(
-	val subPaths:List<String>
-):Iterable<String>{
+import com.google.common.cache.LoadingCache
+import icu.windea.pls.*
+
+@Suppress("unused")
+class ParadoxPath private constructor(
+	val path: String
+) : Iterable<String> {
+	companion object Resolver {
+		private val cache: LoadingCache<String, ParadoxPath> = createCache { path -> ParadoxPath(path) }
+		
+		fun resolve(path: String) = cache[path]
+		
+		fun resolve(subPaths: List<String>) = cache[subPaths.joinToString("/")]
+	}
+	
+	val subPaths = path.split("/")
 	val length = subPaths.size
 	val parentSubPaths = subPaths.dropLast(1)
-	val path = subPaths.joinToString("/")
-	val parent = parentSubPaths.joinToString("/")
+	val parent = path.substringBeforeLast("/")
 	val root = parentSubPaths.firstOrNull().orEmpty()
 	val fileName = subPaths.lastOrNull().orEmpty()
 	val fileExtension = fileName.substringAfterLast('.')
 	
-	fun isEmpty() :Boolean{
+	fun isEmpty(): Boolean {
 		return length == 0
 	}
 	

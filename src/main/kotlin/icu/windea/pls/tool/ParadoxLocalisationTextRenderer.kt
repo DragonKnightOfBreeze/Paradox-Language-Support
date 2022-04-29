@@ -63,9 +63,9 @@ object ParadoxLocalisationTextRenderer {
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
 		val name = element.name
-		val iconUrl = name.resolveIconUrl(element.project)
+		val iconUrl = ParadoxDdsUrlResolver.resolveByIconName(name, element.project)
 		if(iconUrl.isNotEmpty()) {
-			builder.appendIconTag(iconUrl, fontSize) //指定图标大小为iconSize
+			builder.appendImgTag(iconUrl, fontSize) //指定图标大小为iconSize
 		}
 	}
 	

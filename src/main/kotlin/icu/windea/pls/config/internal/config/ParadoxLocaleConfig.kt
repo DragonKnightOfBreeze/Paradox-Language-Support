@@ -8,7 +8,7 @@ class ParadoxLocaleConfig(
 ) : IdAware, DescriptionAware, IconAware {
 	val tailText = " $description"
 	val popupText = "$id - $description"
-	override val icon get() = localisationLocaleIcon
+	override val icon get() = PlsIcons.localisationLocaleIcon
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxLocaleConfig && id == other.id

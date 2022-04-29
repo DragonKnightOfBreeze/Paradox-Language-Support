@@ -47,18 +47,18 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(_enumName, ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY)
 		)
 	}
-
+	
 	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxScriptLanguage, null, null)
-
+	
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
-
-	override fun getIcon() = paradoxScriptFileIcon
-
+	
+	override fun getIcon() = PlsIcons.paradoxScriptFileIcon
+	
 	override fun getAttributeDescriptors() = attributesDescriptors
-
+	
 	override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
-
+	
 	override fun getDisplayName() = paradoxScriptName
-
+	
 	override fun getDemoText() = paradoxScriptDemoText
 }

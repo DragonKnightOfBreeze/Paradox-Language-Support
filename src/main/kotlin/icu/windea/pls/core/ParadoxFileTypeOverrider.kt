@@ -78,7 +78,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	}
 	
 	private fun getPath(subPaths: List<String>): ParadoxPath {
-		return ParadoxPath(subPaths)
+		return ParadoxPath.resolve(subPaths)
 	}
 	
 	private fun getFileType(file: VirtualFile): ParadoxFileType? {

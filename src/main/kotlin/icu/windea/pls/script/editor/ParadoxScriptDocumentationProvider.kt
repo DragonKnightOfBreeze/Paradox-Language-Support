@@ -4,7 +4,9 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
@@ -45,7 +47,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
 		val localisation = definitionInfo.localisation
 		return buildString {
-			buildDefinitionDefinition(element, definitionInfo, localisation)
+			buildDefinitionDefinition(element, definitionInfo, null, null)
 		}
 	}
 	
@@ -77,19 +79,21 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
-		val type = definitionInfo.type
-		val localisation = definitionInfo.localisation
 		return buildString {
-			buildDefinitionDefinition(element, definitionInfo, localisation)
+			val localisationTargetMap = mutableMapOf<String, ParadoxLocalisationProperty>()
+			val pictureTargetMap = mutableMapOf<String, PsiElement>()
+			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, pictureTargetMap)
 			buildLineCommentContent(element)
-			//buildDefinitionIconSections(type, element)
-			buildRelatedLocalisationSections(localisation, element)
+			buildRelatedPictureSections(pictureTargetMap)
+			buildRelatedLocalisationSections(localisationTargetMap)
 		}
 	}
 	
 	private fun StringBuilder.buildVariableDefinition(element: ParadoxScriptVariable, name: String) {
 		definition {
+			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			//加上定义信息
 			append("(variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 		}
@@ -97,18 +101,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.buildPropertyDefinition(element: ParadoxScriptProperty, name: String) {
 		definition {
+			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			//加上定义信息
 			append("(script property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 		}
 	}
 	
-	private fun StringBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo,
-		localisation: List<ParadoxRelatedPicturesInfo>) {
+	private fun StringBuilder.buildDefinitionDefinition(
+		element: ParadoxScriptProperty,
+		definitionInfo: ParadoxDefinitionInfo,
+		localisationTargetMap: MutableMap<String, ParadoxLocalisationProperty>? = null,
+		pictureTargetMap: MutableMap<String, PsiElement>? = null
+	) {
 		definition {
-			//加上定义的文件信息
+			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
-			//加上定义的名称和类型信息
+			//加上定义信息
 			val name = definitionInfo.name
 			val typeLinkText = buildString {
 				val gameType = definitionInfo.gameType
@@ -125,46 +135,50 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
-			//加上定义的相关本地化信息
+			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
+			val localisation = definitionInfo.localisation
 			if(localisation.isNotEmpty()) {
-				for((n, kn) in localisation) {
-					if(kn.isEmpty()) continue //不显示keyName为空的relatedLocalisation
-					appendBr()
-					append("(related localisation) ").append(n).append(" = ").appendLocalisationLink(kn, element)
+				val project = element.project
+				val localisationKeys = mutableSetOf<String>()
+				val usedLocalisationTargetMap = localisationTargetMap ?: mutableMapOf()
+				for((key, location) in localisation) {
+					if(!usedLocalisationTargetMap.containsKey(key)) {
+						val target = findLocalisationByLocation(location, project)
+						if(target != null) usedLocalisationTargetMap.put(key, target)
+					}
+				}
+				for((key, location,required) in localisation) {
+					if(required || usedLocalisationTargetMap.containsKey(key)) {
+						if(localisationKeys.add(key)) {
+							appendBr()
+							append("(related localisation) ").append(key).append(" = ").appendLocalisationLink(location, element)
+						}
+					}
 				}
 			}
-		}
-	}
-	
-	//private fun StringBuilder.buildDefinitionIconSections(type: String, element: ParadoxScriptProperty) {
-	//	//sprite图标
-	//	if(type == "sprite" || type == "spriteType") {
-	//		val iconUrl = element.resolveIconUrl(false)
-	//		if(iconUrl.isNotEmpty()) {
-	//			sections {
-	//				val iconTag = buildString { appendIconTag(iconUrl).append("&nbsp;") } //让图标垂直居中显示
-	//				section("Icon", iconTag)
-	//			}
-	//		}
-	//	}
-	//}
-	
-	private fun StringBuilder.buildRelatedLocalisationSections(localisation: List<ParadoxRelatedPicturesInfo>,
-		element: ParadoxScriptProperty) {
-		//本地化文本
-		if(getSettings().renderDefinitionText) {
-			if(localisation.isNotEmpty()) {
-				val richTexts = mutableListOf<Pair<String, String>>()
-				for((n, kn) in localisation) {
-					if(kn.isEmpty()) continue //不显示keyName为空的Name为空的relatedLocalisation
-					val e = findLocalisation(kn, element.localeConfig, element.project, hasDefault = true)
-					val richText = e?.renderText() ?: continue
-					richTexts.add(n to richText)
+			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
+			val pictures = definitionInfo.pictures
+			if(pictures.isNotEmpty()) {
+				val project = element.project
+				val picturesKeys = mutableSetOf<String>()
+				val usedPicturesTargetMap = pictureTargetMap ?: mutableMapOf()
+				for((key, location) in pictures) {
+					if(!usedPicturesTargetMap.containsKey(key)) {
+						val target = findPictureByLocation(location, project)
+						if(target != null) usedPicturesTargetMap.put(key, target)
+					}
 				}
-				if(richTexts.isNotEmpty()) {
-					sections {
-						for((title, richText) in richTexts) {
-							section(title, richText)
+				for((key, location,required) in pictures) {
+					if(required || usedPicturesTargetMap.containsKey(key)) {
+						if(picturesKeys.add(key)) {
+							appendBr()
+							append("(related pictures) ").append(key).append(" = ")
+							//根据是否以dds后缀名结尾，判断location是filepath还是definitionKey
+							if(location.endsWith(".dds", true)){
+								appendFilePathLink(location, element)
+							} else {
+								appendDefinitionLink(location, "sprite|spriteType", element)
+							}
 						}
 					}
 				}
@@ -172,9 +186,42 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun StringBuilder.buildRelatedPictureSections(linkMap: MutableMap<String, PsiElement>) {
+		//加上DDS图片预览图
+		if(getSettings().scriptRenderRelatedPictures) {
+			if(linkMap.isNotEmpty()) {
+				sections {
+					for((key, target) in linkMap) {
+						val url = when(target) {
+							is ParadoxScriptProperty -> ParadoxDdsUrlResolver.resolveBySprite(target)
+							is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(target.virtualFile)
+							else -> continue
+						}
+						val tag = buildString { appendImgTag(url) }
+						section(key, tag)
+					}
+				}
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildRelatedLocalisationSections(targetMap: Map<String, ParadoxLocalisationProperty>) {
+		//加上渲染后的相关本地化文本
+		if(getSettings().scriptRenderRelatedLocalisation) {
+			if(targetMap.isNotEmpty()) {
+				sections {
+					for((key, target) in targetMap) {
+						val richText = target.renderText()
+						section(key, richText)
+					}
+				}
+			}
+		}
+	}
+	
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
-		//单行注释文本
-		if(getSettings().renderLineCommentText) {
+		//加上单行注释文本
+		if(getSettings().scriptRenderLineComment) {
 			val docText = getDocTextFromPreviousComment(element)
 			if(docText.isNotEmpty()) {
 				content {

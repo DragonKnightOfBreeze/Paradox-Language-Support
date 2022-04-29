@@ -118,42 +118,6 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		}
 	}
 	
-	fun findAllByNames(names: Iterable<String>, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, keepOrder: Boolean): List<ParadoxLocalisationProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		val result = mutableListOf<ParadoxLocalisationProperty>()
-		var index = 0
-		for(key in keys) {
-			if(key in names) {
-				val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-				if(elements.isEmpty()) continue
-				var nextIndex = index
-				for(element in elements) {
-					val elementLocale = element.localeConfig
-					if(localeConfig == null) {
-						//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-						if(elementLocale == inferParadoxLocale()) {
-							result.add(index++, element)
-							nextIndex++
-						} else {
-							result.add(element)
-							nextIndex++
-						}
-					} else if(localeConfig == elementLocale || hasDefault) {
-						result.add(element)
-						nextIndex++
-					}
-				}
-				index = nextIndex
-			}
-		}
-		if(keepOrder) result.sortBy { names.indexOf(it.name) }
-		return result
-	}
-	
 	private fun matches(key: String, keyword: String): Boolean {
 		return key.matchesKeyword(keyword)
 	}

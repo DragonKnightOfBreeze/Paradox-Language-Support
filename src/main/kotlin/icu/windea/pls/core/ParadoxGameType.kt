@@ -9,13 +9,13 @@ enum class ParadoxGameType(
 	override val icon: Icon
 ) : IdAware, DescriptionAware, IconAware {
 	//NOTE 暂时使用统一的库的图标
-	Ck2("ck2", "Crusader Kings II", libraryIcon),
-	Ck3("ck3", "Crusader Kings III", libraryIcon),
-	Eu4("eu4", "Europa Universalis IV", libraryIcon),
-	Hoi4("hoi4", "Hearts of Iron IV", libraryIcon),
-	Ir("ir", "Imperator: Rome", libraryIcon),
-	Stellaris("stellaris", "Stellaris", libraryIcon),
-	Vic2("vic2", "Victoria II", libraryIcon);
+	Ck2("ck2", "Crusader Kings II", PlsIcons.libraryIcon),
+	Ck3("ck3", "Crusader Kings III", PlsIcons.libraryIcon),
+	Eu4("eu4", "Europa Universalis IV", PlsIcons.libraryIcon),
+	Hoi4("hoi4", "Hearts of Iron IV", PlsIcons.libraryIcon),
+	Ir("ir", "Imperator: Rome", PlsIcons.libraryIcon),
+	Stellaris("stellaris", "Stellaris", PlsIcons.libraryIcon),
+	Vic2("vic2", "Victoria II", PlsIcons.libraryIcon);
 	
 	//NOTE 明确的执行文件名称，应当就是这样
 	val exeFileName = "$id.exe"

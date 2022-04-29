@@ -613,14 +613,14 @@ class CwtConfigGroup(
 		return result
 	}
 	
-	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxRelatedPicturesInfo> {
+	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxRelatedLocalisationInfo> {
 		val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return emptyList()
-		val result = SmartList<ParadoxRelatedPicturesInfo>()
+		val result = SmartList<ParadoxRelatedLocalisationInfo>()
 		//从已有的cwt规则
 		for(config in mergedLocalisationConfig) {
 			val expression = CwtLocationExpression.resolve(config.expression)
 			val location = expression.inferLocation(name, element) ?: continue //跳过无效的位置表达式
-			val info = ParadoxRelatedPicturesInfo(config.name, location, config.required, config.primary)
+			val info = ParadoxRelatedLocalisationInfo(config.key, location, config.required, config.primary)
 			result.add(info)
 		}
 		return result
@@ -633,7 +633,7 @@ class CwtConfigGroup(
 		for(config in mergedPicturesConfig) {
 			val expression = CwtLocationExpression.resolve(config.expression)
 			val location = expression.inferLocation(name, element) ?: continue //跳过无效的位置表达式
-			val info = ParadoxRelatedPicturesInfo(config.name, location, config.required, config.primary)
+			val info = ParadoxRelatedPicturesInfo(config.key, location, config.required, config.primary)
 			result.add(info)
 		}
 		return result

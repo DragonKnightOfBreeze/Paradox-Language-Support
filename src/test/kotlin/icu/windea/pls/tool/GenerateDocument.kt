@@ -41,11 +41,11 @@ private fun getDocumentText(documentName: String, type: String, project: Project
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
 		val definition = it.definitionInfo
 		val id = definition?.name
-		val name = definition?.localisation?.find { loc -> loc.name.lowercase() == "name" }
+		val name = definition?.localisation?.find { loc -> loc.key.lowercase() == "name" }
 			?.let { l-> findLocalisation(l.location, inferParadoxLocale(),project) }?.extractText()
-		val description = definition?.localisation?.find { loc -> loc.name.lowercase() == "description" }
+		val description = definition?.localisation?.find { loc -> loc.key.lowercase() == "description" }
 			?.let { l-> findLocalisation(l.location, inferParadoxLocale(),project) }?.extractText()
-		val effect = definition?.localisation?.find { loc -> loc.name.lowercase() == "effect" }
+		val effect = definition?.localisation?.find { loc -> loc.key.lowercase() == "effect" }
 			?.let { l-> findLocalisation(l.location, inferParadoxLocale(),project) }?.extractText()
 		buildString {
 			append("#### $name{#$id}")

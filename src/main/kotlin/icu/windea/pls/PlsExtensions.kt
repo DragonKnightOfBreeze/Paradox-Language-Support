@@ -3,8 +3,8 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.options.FontSize
+import com.intellij.openapi.application.*
+import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -90,6 +90,7 @@ fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String
 		else -> expression in subtypes
 	}
 }
+
 /**
  * 解析定义类型表达式。
  * @param expression 表达式。示例：`origin_or_civic`, `origin_or_civic.origin`, `sprite|spriteType`
@@ -317,7 +318,7 @@ fun PsiElement.resolvePath(): ParadoxPath? {
 		}
 		current = current.parent ?: break
 	}
-	return if(subPaths.isEmpty()) null else ParadoxPath(subPaths)
+	return if(subPaths.isEmpty()) null else ParadoxPath.resolve(subPaths)
 }
 
 fun ParadoxDefinitionProperty.resolvePropertyPath(maxDepth: Int = -1): ParadoxPropertyPath? {
@@ -565,7 +566,7 @@ fun findDefinition(
 	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): ParadoxScriptProperty? {
+): ParadoxDefinitionProperty? {
 	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
 }
 
@@ -578,7 +579,7 @@ fun findDefinitions(
 	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
+): List<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionNameIndex.findAll(name, typeExpression, project, scope)
 }
 
@@ -590,7 +591,7 @@ fun findDefinitions(
 	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
+): List<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope)
 }
 
@@ -616,7 +617,7 @@ fun findDefinitionByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): ParadoxScriptProperty? {
+): ParadoxDefinitionProperty? {
 	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
 }
 
@@ -629,7 +630,7 @@ fun findDefinitionsByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
+): List<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionTypeIndex.findAll(name, typeExpression, project, scope)
 }
 
@@ -641,7 +642,7 @@ fun findDefinitionsByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
+): List<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope)
 }
 
@@ -654,7 +655,7 @@ fun findDefinitionsByKeywordByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptProperty> {
+): List<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword, typeExpression, project, scope, getSettings().maxCompleteSize)
 }
 
@@ -724,23 +725,6 @@ fun findLocalisationsByKeyword(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
-}
-
-/**
- * 基于本地化名字索引，根据一组名字、语言区域查找所有的本地化（localisation）。
- * * 如果[localeConfig]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
- * * 如果[keepOrder]为`true`，则根据这组名字排序查询结果。
- */
-fun findLocalisationsByNames(
-	names: Iterable<String>,
-	localeConfig: ParadoxLocaleConfig? = null,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	keepOrder: Boolean = false
-): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAllByNames(names, localeConfig, project, scope, hasDefault, keepOrder)
 }
 
 /**
@@ -894,31 +878,50 @@ fun findFiles(
 	}
 	return result
 }
+
+/**
+ * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
+ */
+fun findLocalisationByLocation(location: String, project: Project): ParadoxLocalisationProperty? {
+	return findLocalisation(location, null, project, hasDefault = true)
+}
+
+/**
+ * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
+ */
+fun findPictureByLocation(location: String, project: Project): PsiElement? /* ParadoxDefinitionProperty? | PsiFile? */ {
+	//根据是否以dds后缀名结尾，判断location是filepath还是definitionKey
+	if(location.endsWith(".dds", true)) {
+		return findFile(location, project)?.toPsiFile(project)
+	} else {
+		return findDefinition(location, "sprite|spriteType", project)
+	}
+}
 //endregion
 
 //region Psi Link Extensions
 
 //com.jetbrains.python.documentation.PyDocumentationLink
 
-private const val cwtLinkPrefix = "cwt."
-private const val definitionLinkPrefix = "def."
-private const val localisationLinkPrefix = "loc."
+private const val cwtLinkPrefix = "cwt#"
+private const val definitionLinkPrefix = "def#"
+private const val localisationLinkPrefix = "loc#"
 
 fun resolveLink(linkWithPrefix: String, context: PsiElement): PsiElement? {
 	return when {
 		linkWithPrefix.startsWith(cwtLinkPrefix) -> resolveCwtLink(linkWithPrefix.drop(cwtLinkPrefix.length), context)
 		linkWithPrefix.startsWith(definitionLinkPrefix) -> resolveDefinitionLink(linkWithPrefix.drop(definitionLinkPrefix.length), context)
-		linkWithPrefix.startsWith(localisationLinkPrefix) -> resolveLocalisationLink(linkWithPrefix.drop(localisationLinkPrefix.length), context)
+		linkWithPrefix.startsWith(localisationLinkPrefix) -> linkWithoutPrefix(linkWithPrefix.drop(localisationLinkPrefix.length), context)
 		else -> null
 	}
 }
 
-//c:stellaris.types.building
-//c:stellaris.types.civic_or_origin.civic
-private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
+//stellaris.types.building
+//stellaris.types.civic_or_origin.civic
+private fun resolveCwtLink(linkWithoutPrefix: String, context: PsiElement): CwtProperty? {
 	return runCatching {
 		val project = context.project
-		val tokens = link.split('.')
+		val tokens = linkWithoutPrefix.split('.')
 		val gameType = tokens[0]
 		val configType = tokens[1]
 		when(configType) {
@@ -942,20 +945,21 @@ private fun resolveCwtLink(link: String, context: PsiElement): CwtProperty? {
 	}.getOrNull()
 }
 
-//d:ethos.ethic_authoritarian
-//d:job.head_researcher
-private fun resolveDefinitionLink(link: String, context: PsiElement): ParadoxScriptProperty? {
+//ethos.ethic_authoritarian
+//job.head_researcher
+//civic_or_origin.origin.origin_default
+private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement): ParadoxDefinitionProperty? {
 	return runCatching {
-		val tokens = link.split('.')
-		val type = tokens[0]
-		val name = tokens[1]
+		val lastDotIndex = linkWithoutPrefix.lastIndexOf('.')
+		val type = linkWithoutPrefix.substring(0, lastDotIndex)
+		val name = linkWithoutPrefix.substring(lastDotIndex + 1)
 		findDefinitionByType(name, type, context.project)
 	}.getOrNull()
 }
 
-//l:NAME
-//l:KEY
-private fun resolveLocalisationLink(link: String, context: PsiElement): ParadoxLocalisationProperty? {
+//NAME
+//KEY
+private fun linkWithoutPrefix(link: String, context: PsiElement): ParadoxLocalisationProperty? {
 	return runCatching {
 		val token = link
 		return findLocalisation(token, context.localeConfig, context.project, hasDefault = true)
@@ -969,13 +973,22 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 	return this
 }
 
-fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): StringBuilder {
-	DocumentationManagerUtil.createHyperlink(this, refText, label, plainLink)
+fun StringBuilder.appendUnresolvedLink(label: String): StringBuilder {
+	append(label) //直接显示对应的标签文本
 	return this
 }
 
-fun StringBuilder.appendUnresolvedPsiLink(label: String): StringBuilder {
-	append(label) //直接显示对应的标签文本
+fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement): StringBuilder{
+	val rootPath = context.fileInfo?.rootPath
+	val absPath = rootPath?.resolve(filePath)?.normalize()?.toString()
+	//如果可以定位到绝对路径，则显示链接
+	if(absPath != null) append("<a href=\"").append("file://").append(absPath).append("\">").append(filePath).append("</a>")
+	//否则显示未解析的链接
+	return appendUnresolvedLink(filePath)
+}
+
+fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): StringBuilder {
+	DocumentationManagerUtil.createHyperlink(this, refText, label, plainLink)
 	return this
 }
 
@@ -985,16 +998,16 @@ fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?
 	//如果可以被解析为CWT规则，则显示链接（context传null时总是显示）
 	if(context == null || resolveCwtLink(link, context) != null) return appendPsiLink("$cwtLinkPrefix$link", name)
 	//否则显示未解析的链接
-	return appendUnresolvedPsiLink(name)
+	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendDefinitionLink(name: String, type: String, context: PsiElement): StringBuilder {
+fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, context: PsiElement): StringBuilder {
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedEscapedString)
 	//如果可以被解析为定义，则显示链接
-	if(hasDefinition(name, null, context.project)) return appendPsiLink("$definitionLinkPrefix.$type.$name", name)
+	if(hasDefinition(name, null, context.project)) return appendPsiLink("$definitionLinkPrefix.$typeExpression.$name", name)
 	//否则显示未解析的链接
-	return appendUnresolvedPsiLink(name)
+	return appendUnresolvedLink(name)
 }
 
 fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement): StringBuilder {
@@ -1003,14 +1016,14 @@ fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement): Str
 	//如果可以被解析为本地化，则显示链接
 	if(hasLocalisation(name, null, context.project)) return appendPsiLink("$localisationLinkPrefix$name", name)
 	//否则显示未解析的链接
-	return appendUnresolvedPsiLink(name)
+	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendIconTag(url: String, local: Boolean = true): StringBuilder {
+fun StringBuilder.appendImgTag(url: String, local: Boolean = true): StringBuilder {
 	return append("<img src=\"").appendIf(local, "file:/").append(url).append("\" />")
 }
 
-fun StringBuilder.appendIconTag(url: String, fontSize: FontSize, local: Boolean = true): StringBuilder {
+fun StringBuilder.appendImgTag(url: String, fontSize: FontSize, local: Boolean = true): StringBuilder {
 	return append("<img src=\"").appendIf(local, "file:/").append(url)
 		.append("\" width=\"").append(fontSize.size).append("\" height=\"").append(fontSize).append("\" />")
 }
@@ -1024,25 +1037,19 @@ fun StringBuilder.appendBr(): StringBuilder {
 }
 //endregion
 
-//region Inline Extensions
-@Suppress("NOTHING_TO_INLINE")
-inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolveByIconName(this, project, defaultToUnknown)
-}
-
 //@Suppress("NOTHING_TO_INLINE")
 //inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true): String {
-//	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)
+//	return ParadoxDdsUrlResolver.resolveBySprite(this, defaultToUnknown)
 //}
 
 //@Suppress("NOTHING_TO_INLINE")
 //inline fun VirtualFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
-//	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
+//	return ParadoxDdsUrlResolver.resolveByFile(this, defaultToUnknown)
 //}
 
 //@Suppress("NOTHING_TO_INLINE")
 //inline fun PsiFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {
-//	return ParadoxIconUrlResolver.resolveByFile(this, defaultToUnknown)
+//	return ParadoxDdsUrlResolver.resolveByFile(this, defaultToUnknown)
 //}
 
 @Suppress("NOTHING_TO_INLINE")

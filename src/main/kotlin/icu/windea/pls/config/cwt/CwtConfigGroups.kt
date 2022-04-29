@@ -1,8 +1,10 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("unused")
 class CwtConfigGroups(
@@ -27,8 +29,9 @@ class CwtConfigGroups(
 	
 	init {
 		//初始化各个游戏分组的CWT规则
-		groups = mutableMapOf()
-		for((groupName, cwtFileConfigs) in cwtFileConfigGroups) {
+		groups = ConcurrentHashMap()
+		//NOTE 这里改为并行执行
+		cwtFileConfigGroups.parallelForEach { (groupName, cwtFileConfigs) ->
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
 				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)

@@ -4,19 +4,19 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 import java.lang.invoke.*
 import java.nio.file.*
+import kotlin.io.path.*
 
 /**
- * 图标地址的解析器。
+ * DDS图片地址的解析器。
  */
 @Suppress("unused")
-object ParadoxIconUrlResolver {
+object ParadoxDdsUrlResolver {
 	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
-	
-	//TODO 基于定义中的icon属性进行解析
 	
 	/**
 	 * 基于本地化文件中的本地化图标的名字进行解析。
@@ -30,15 +30,15 @@ object ParadoxIconUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，则返回默认图标
-			logger.warn(e) { "Resolve paradox icon failed. (name: $iconName)" }
+			logger.warn(e) { "Resolve dds url failed. (name: $iconName)" }
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}
 	
 	/**
-	 * 基于gfx文件中的类型为spriteType的定义进行解析。
+	 * 基于gfx文件中的类型为sprite的定义进行解析。
 	 */
-	fun resolveBySprite(sprite: ParadoxScriptProperty, defaultToUnknown: Boolean = true): String {
+	fun resolveBySprite(sprite: ParadoxScriptProperty, defaultToUnknown: Boolean = false): String {
 		val spriteName = sprite.definitionInfo?.name
 		if(spriteName.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 		try {
@@ -48,16 +48,15 @@ object ParadoxIconUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn(e) { "Resolve paradox icon failed. (sprite name: $spriteName)" }
+			logger.warn(e) { "Resolve dds url failed. (sprite name: $spriteName)" }
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}
 	
 	/**
-	 * 直接基于dds的文件名进行解析。
+	 * 直接基于dds文件的文件名进行解析。
 	 */
-	fun resolveByFile(file: VirtualFile, defaultToUnknown: Boolean = true): String {
-		//NOTE 这些文件应当位于interface/icons目录（及其子目录）下，暂时不做限制
+	fun resolveByFile(file: VirtualFile, defaultToUnknown: Boolean = false): String {
 		try {
 			//如果无法解析为png文件地址，则返回默认的地址
 			val url = doResolveByFile(file)
@@ -65,7 +64,39 @@ object ParadoxIconUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn(e) { "Resolve paradox icon failed. (dds file path: ${file.path})" }
+			logger.warn(e) { "Resolve dds url failed. (dds file path: ${file.path})" }
+			return getDefaultUrl(defaultToUnknown)
+		}
+	}
+	
+	/**
+	 * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。
+	 */
+	fun resolveByFilePath(filePath: String, project: Project, defaultToUnknown: Boolean = true): String {
+		try {
+			//如果无法解析为png文件地址，则返回默认的地址
+			val url = doResolveByFilePath(filePath, project)
+			if(url.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
+			return url
+		} catch(e: Exception) {
+			//如果出现异常，那么返回默认图标
+			logger.warn(e) { "Resolve dds url failed. (dds file path: ${filePath})" }
+			return getDefaultUrl(defaultToUnknown)
+		}
+	}
+	
+	/**
+	 * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。
+	 */
+	fun resolveByFilePath(filePath: ParadoxPath, project: Project, defaultToUnknown: Boolean = true): String {
+		try {
+			//如果无法解析为png文件地址，则返回默认的地址
+			val url = doResolveByFilePath(filePath, project)
+			if(url.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
+			return url
+		} catch(e: Exception) {
+			//如果出现异常，那么返回默认图标
+			logger.warn(e) { "Resolve dds url failed. (dds file path: ${filePath})" }
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}
@@ -80,7 +111,7 @@ object ParadoxIconUrlResolver {
 		return doResolveBySprite(sprite)
 	}
 	
-	private fun doResolveBySprite(sprite: ParadoxScriptProperty): String? {
+	private fun doResolveBySprite(sprite: ParadoxDefinitionProperty): String? {
 		val ddsRelPath = sprite.findProperty("textureFile", true)?.value ?: return null
 		val file = findFile(ddsRelPath, sprite.project) ?: return null
 		return doResolveByFile(file)
@@ -98,6 +129,16 @@ object ParadoxIconUrlResolver {
 		val ddsRelPath = fileInfo.path.path
 		val ddsAbsPath = rootPath.resolve(ddsRelPath).normalize().toString()
 		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
+	}
+	
+	private fun doResolveByFilePath(filePath: String, project: Project): String? {
+		val file = findFile(filePath, project) ?: return null
+		return doResolveByFile(file)
+	}
+	
+	private fun doResolveByFilePath(filePath: ParadoxPath, project: Project): String? {
+		val file = findFile(filePath, project) ?: return null
+		return doResolveByFile(file)
 	}
 	
 	private fun getDefaultUrl(defaultToUnknown: Boolean): String {

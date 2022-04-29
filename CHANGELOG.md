@@ -17,12 +17,12 @@
   * [X] 脚本语言：显示定义的额外信息（定义的名称、类型）
 * [X] 不再通过`ParadoxFileTypeOverrider`自动添加或移除文件的BOM，而是基于`ParadoxUtf8BomOptionProvider`判断创建文件时是否需要添加BOM
 * [ ] 完善内嵌提示
-* [ ] 完善装订线图标
+* [X] 完善装订线图标
 * [ ] 完善对CWT配置文件的支持，完善相关功能
-  * [X] 支持在`config/cwt/${gameType}.pls`目录中提供插件额外提供的规则文件（如果可以仅添加不修改）
+  * [ ] 支持在`config/cwt/${gameType}.pls`目录中提供插件额外提供的规则文件（如果可以仅添加不修改）
   * [X] 编写规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释）
-  * [ ] 实现规则`types.type[*].pictures`的解析
-  * [ ] 实现规则`types.type[*].pictures`的相关功能（装订线图标，渲染到文档注释）
+  * [X] 实现规则`types.type[*].pictures`的解析
+  * [X] 实现规则`types.type[*].pictures`的相关功能（装订线图标，渲染到文档注释）
 * [ ] 完善对内置配置文件的支持，完善相关功能
   * [ ] 将文件格式由YAML改为CWT，以便可以直接导航到文件中的相关规则
 * [ ] ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）

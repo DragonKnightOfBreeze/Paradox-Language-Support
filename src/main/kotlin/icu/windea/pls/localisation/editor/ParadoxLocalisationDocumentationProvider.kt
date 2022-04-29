@@ -155,12 +155,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	private fun getColorDoc(element: ParadoxLocalisationColorfulText): String {
+		val name = element.name
 		return buildString {
-			val name = element.name
+			//加上元素定义信息
 			definition {
 				append("(localisation color) <b>").append(name).append("</b>")
 			}
-			//描述
+			//加上描述
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) {
 				val description = colorConfig.description
@@ -174,21 +175,25 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildPropertyDefinition(element: ParadoxLocalisationProperty) {
 		definition {
+			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			//加上元素定义信息
 			append("(localisation property) <b>").append(element.name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, category: ParadoxLocalisationCategory, name: String) {
 		definition {
+			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			//加上元素定义信息
 			append("(${category.id}) <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
-		//本地化文本
-		if(getSettings().renderLocalisationText) {
+		//加上渲染后的本地化文本
+		if(getSettings().localisationRenderLocalisation) {
 			val richText = element.renderText()
 			if(richText.isNotEmpty()) {
 				sections {
@@ -200,12 +205,13 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildLocaleDefinition(name: String) {
 		definition {
+			//加上元素定义信息
 			append("(localisation locale) <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildLocaleContent(element: ParadoxLocalisationLocale) {
-		//描述
+		//加上描述
 		val localeConfig = element.localeConfig
 		if(localeConfig != null) {
 			content {
@@ -216,18 +222,20 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildIconDefinition(name: String) {
 		definition {
+			//加上元素定义信息
 			append("(localisation icon) <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildSequentialNumberDefinition(name: String) {
 		definition {
+			//加上元素定义信息
 			append("(localisation sequential number) <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildSequentialNumberContent(element: ParadoxLocalisationSequentialNumber) {
-		//描述
+		//加上描述
 		val sequentialNumberConfig = element.sequentialNumberConfig
 		if(sequentialNumberConfig != null) {
 			content {
@@ -238,25 +246,28 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	private fun StringBuilder.buildCommandScopeDefinition(name: String) {
 		definition {
+			//加上元素定义信息
 			append("(localisation command scope) <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildCommandFieldDefinition(name: String) {
 		definition {
+			//加上元素定义信息
 			append("(localisation command field) <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildColorDefinition(name: String) {
 		definition {
+			//加上元素定义信息
 			append("(localisation color) <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
-		//单行注释文本
-		if(getSettings().renderLineCommentText) {
+		//加上单行注释文本
+		if(getSettings().localisationRenderLineComment) {
 			val docText = getDocTextFromPreviousComment(element)
 			if(docText.isNotEmpty()) {
 				content {

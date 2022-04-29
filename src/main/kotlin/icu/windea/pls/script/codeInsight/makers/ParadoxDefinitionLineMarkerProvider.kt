@@ -5,9 +5,11 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * 定义（definition）的装订线图标提供器。
+ */
 class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	companion object {
 		private val _name = PlsBundle.message("script.gutterIcon.definition")
@@ -16,19 +18,14 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	
 	override fun getName() = _name
 	
-	override fun getIcon() = definitionGutterIcon
+	override fun getIcon() = PlsIcons.definitionGutterIcon
 	
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-		//如果是definition，则添加definition的gutterIcon
-		if(element is ParadoxScriptProperty) {
-			val definitionInfo = element.definitionInfo ?: return
-			val lineMarkerInfo = createMarker(definitionInfo, element)
-			result.add(lineMarkerInfo)
-		}
-	}
-	
-	private fun createMarker(definitionInfo: ParadoxDefinitionInfo, element: ParadoxScriptProperty): RelatedItemLineMarkerInfo<PsiElement> {
-		val icon = definitionGutterIcon
+		//何时显示装订线图标：element是definition
+		if(element !is ParadoxScriptProperty) return
+		val definitionInfo = element.definitionInfo ?: return
+		
+		val icon = PlsIcons.definitionGutterIcon
 		val tooltip = buildString {
 			val name = definitionInfo.name
 			val typeText = definitionInfo.typesText
@@ -36,13 +33,14 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		}
 		val project = element.project
 		val targets = findDefinitionsByType(definitionInfo.name, definitionInfo.type, project)
-		val targetElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
-		return NavigationGutterIconBuilder.create(icon)
+		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
+		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
 			.setTooltipText(tooltip)
 			.setPopupTitle(_title)
 			.setTargets(targets)
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { _name }
-			.createLineMarkerInfo(targetElement)
+			.createLineMarkerInfo(locationElement)
+		result.add(lineMarkerInfo)
 	}
 }

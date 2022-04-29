@@ -228,6 +228,9 @@
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxRelatedLocalisationLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxRelatedPicturesLineMarkerProvider"/>
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
 

@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.tool.*
 import org.slf4j.*
 import java.lang.invoke.*
 
@@ -64,7 +65,7 @@ class CwtConfigProvider(
 	}
 	
 	private fun resolveConfigFilesOfGroup(configMaps: CwtConfigMaps, groupDirectory: VirtualFile, configRootDirectory: VirtualFile) {
-		val groupName = groupDirectory.name
+		val groupName = getGroupName(groupDirectory)
 		logger.info("Resolve cwt config files of group '$groupName'.")
 		val configMap = configMaps.getOrPut(groupName) { mutableMapOf() }
 		resolveConfigFilesInGroup(configMap, groupDirectory, groupDirectory, configRootDirectory)
@@ -103,5 +104,9 @@ class CwtConfigProvider(
 			logger.warn(e.message, e)
 			null
 		}
+	}
+	
+	private fun getGroupName(groupDirectory: VirtualFile): String {
+		return groupDirectory.name.removeSuffix(".pls")
 	}
 }

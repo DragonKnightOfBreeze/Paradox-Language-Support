@@ -21,7 +21,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptVariable
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
-		return scriptVariableIcon
+		return PlsIcons.scriptVariableIcon
 	}
 	
 	@JvmStatic
@@ -68,8 +68,8 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
-		if(element.definitionInfo != null) return definitionIcon
-		return scriptPropertyIcon
+		if(element.definitionInfo != null) return PlsIcons.definitionIcon
+		return PlsIcons.scriptPropertyIcon
 	}
 	
 	@JvmStatic
@@ -166,7 +166,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptValue
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
-		return scriptValueIcon
+		return PlsIcons.scriptValueIcon
 	}
 	
 	@JvmStatic

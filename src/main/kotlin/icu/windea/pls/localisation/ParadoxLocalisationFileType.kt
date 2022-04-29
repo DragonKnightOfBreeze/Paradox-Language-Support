@@ -5,11 +5,11 @@ import icu.windea.pls.*
 
 object ParadoxLocalisationFileType : LanguageFileType(ParadoxLocalisationLanguage) {
 	override fun getName() = paradoxLocalisationName
-
+	
 	override fun getDescription() = paradoxLocalisationDescription
-
+	
 	override fun getDefaultExtension() = paradoxLocalisationExtension
-
-	override fun getIcon() = paradoxLocalisationFileIcon
+	
+	override fun getIcon() = PlsIcons.paradoxLocalisationFileIcon
 }
 
