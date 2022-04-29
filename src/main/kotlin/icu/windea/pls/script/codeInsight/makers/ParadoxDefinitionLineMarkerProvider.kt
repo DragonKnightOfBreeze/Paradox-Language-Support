@@ -31,7 +31,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		val icon = definitionGutterIcon
 		val tooltip = buildString {
 			val name = definitionInfo.name
-			val typeText = definitionInfo.typeText
+			val typeText = definitionInfo.typesText
 			append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
 		}
 		val project = element.project

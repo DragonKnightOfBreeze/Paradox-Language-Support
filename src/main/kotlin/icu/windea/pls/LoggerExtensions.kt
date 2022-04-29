@@ -2,10 +2,11 @@
 
 package icu.windea.pls
 
+import com.google.common.cache.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-private val loggerCache by lazy { createCache<Class<*>, Logger> { LoggerFactory.getLogger(it) } }
+private val loggerCache: LoadingCache<Class<*>, Logger> by lazy { createCache { LoggerFactory.getLogger(it) } }
 
 fun Any.logger(): Logger = loggerCache.get(this.javaClass)
 

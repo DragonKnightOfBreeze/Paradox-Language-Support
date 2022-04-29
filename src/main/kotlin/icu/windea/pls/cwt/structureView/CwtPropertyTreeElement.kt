@@ -5,9 +5,10 @@ import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtPropertyTreeElement(
-	private val element: CwtProperty
+	element: CwtProperty
 ) : PsiTreeElementBase<CwtProperty>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val element = element ?: return emptyList()
 		val value = element.value ?: return emptyList()
 		return when {
 			value !is CwtBlock -> emptyList()
@@ -18,6 +19,7 @@ class CwtPropertyTreeElement(
 	}
 	
 	override fun getPresentableText(): String? {
+		val element = element ?: return null
 		return element.name
 	}
 }

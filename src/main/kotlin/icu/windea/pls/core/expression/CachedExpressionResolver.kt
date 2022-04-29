@@ -1,13 +1,14 @@
 package icu.windea.pls.core.expression
 
+import com.google.common.cache.*
 import icu.windea.pls.*
 
 abstract class CachedExpressionResolver<T : Expression> : ExpressionResolver<T> {
-	protected val cache by lazy { createCache<String, T> { doResolve(it) } }
+	protected val cache: LoadingCache<String, T> by lazy { createCache { doResolve(it) } }
 	
 	override fun resolve(expressionString: String): T {
 		return cache.get(expressionString)
 	}
 	
-	abstract fun doResolve(expressionString: String): T
+	protected abstract fun doResolve(expressionString: String): T
 }

@@ -6,10 +6,11 @@ import com.intellij.psi.util.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFileTreeElement(
-	private val element: ParadoxScriptFile
+	element: ParadoxScriptFile
 ) : PsiTreeElementBase<ParadoxScriptFile>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
-		val rootBlock = element.block ?: return mutableListOf()
+		val element = element ?: return emptyList()
+		val rootBlock = element.block ?: return emptyList()
 		return PsiTreeUtil.getChildrenOfAnyType(
 			rootBlock,
 			ParadoxScriptVariable::class.java,
@@ -25,7 +26,8 @@ class ParadoxScriptFileTreeElement(
 		}
 	}
 	
-	override fun getPresentableText(): String {
+	override fun getPresentableText(): String? {
+		val element = element ?: return null
 		return element.name
 	}
 }

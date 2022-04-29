@@ -8,7 +8,7 @@ import icu.windea.pls.core.expression.*
  * @property max 最大值，null表示无限
  * @property limitMax 如果值为`false`，则表示出现数量超出最大值时不警告
  */
-class CwtCardinalityExpression(
+class CwtCardinalityExpression private constructor(
 	expressionString: String,
 	val min: Int,
 	val max: Int?,

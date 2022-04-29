@@ -19,7 +19,7 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 					//提示定义的名字类型信息
 					val text1 = buildString {
 						val name = definitionInfo.name.ifEmpty { anonymousString }
-						val typeText = definitionInfo.typeText
+						val typeText = definitionInfo.typesText
 						append(name).append(": ").append(typeText)
 					}
 					val offset1 = elem.propertyKey.endOffset
@@ -28,7 +28,7 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 					definitionInfo.localisation.find { 
 						val name = it.name.lowercase()
 						name == "name" || name == "title"
-					}?.keyName?.let { keyName ->
+					}?.location?.let { keyName ->
 						findLocalisation(keyName, inferParadoxLocale(), elem.project, hasDefault = true)?.let { locProp ->
 							val text2 = locProp.extractText()
 							val offset2 = elem.propertyKey.endOffset

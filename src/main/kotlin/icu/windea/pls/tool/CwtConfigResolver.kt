@@ -1,4 +1,4 @@
-package icu.windea.pls.config.cwt
+package icu.windea.pls.tool
 
 import com.intellij.psi.*
 import icu.windea.pls.*

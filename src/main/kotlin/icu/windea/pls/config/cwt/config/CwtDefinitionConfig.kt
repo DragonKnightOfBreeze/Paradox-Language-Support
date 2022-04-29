@@ -1,5 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
+import com.google.common.cache.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -12,18 +13,17 @@ import java.util.*
 data class CwtDefinitionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
-	val configs: List<Pair<String?, CwtPropertyConfig>> //(subtypeExpression, propConfig)
+	val configs: List<Pair<String?, CwtPropertyConfig>> //(subtypeExpression?, propConfig)
 ) : CwtConfig<CwtProperty> {
-	//使用WeakHashMap - 减少内存占用
-	private val mergeConfigsCache = WeakHashMap<String, List<CwtPropertyConfig>>()
-	private val propertyConfigsCache = WeakHashMap<String, List<CwtPropertyConfig>>()
-	private val childPropertyConfigsCache = WeakHashMap<String, List<CwtPropertyConfig>>()
-	private val childValueConfigsCache = WeakHashMap<String, List<CwtValueConfig>>()
+	private val mergeConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
+	private val propertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
+	private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
+	private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { createCache() }
 	
 	/**
-	 * 根据子类型列表合并配置。
+	 * 得到根据子类型列表进行合并后的配置。
 	 */
-	fun mergeConfigs(subtypes: List<String>): List<CwtPropertyConfig> {
+	fun getMergeConfigs(subtypes: List<String>): List<CwtPropertyConfig> {
 		val cacheKey = subtypes.joinToString(",")
 		return mergeConfigsCache.getOrPut(cacheKey) {
 			val result = SmartList<CwtPropertyConfig>()
@@ -48,7 +48,7 @@ data class CwtDefinitionConfig(
 				//这里的属性路径不应该为空
 				path.isEmpty() -> emptyList()
 				else -> {
-					var result = mergeConfigs(subtypes)
+					var result = getMergeConfigs(subtypes)
 					var isTop = true
 					for((key, quoted) in path.subPathInfos) {
 						//如果是顶级的就不要打平，否则要打平，然后还需要根据是否匹配keyExpression进行过滤
@@ -96,7 +96,7 @@ data class CwtDefinitionConfig(
 		return childPropertyConfigsCache.getOrPut(cacheKey) {
 			when {
 				//这里的属性路径可以为空，这时得到的就是顶级属性列表
-				path.isEmpty() -> mergeConfigs(subtypes)
+				path.isEmpty() -> getMergeConfigs(subtypes)
 				else -> {
 					//打平propertyConfigs中的每一个properties
 					val propertyConfigs = resolvePropertyConfigs(subtypes, path, configGroup)

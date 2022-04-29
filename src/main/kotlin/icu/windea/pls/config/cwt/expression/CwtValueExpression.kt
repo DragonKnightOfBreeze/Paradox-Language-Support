@@ -8,12 +8,12 @@ import icu.windea.pls.core.expression.*
  * @property type 类型
  * @property value 值
  */
-class CwtValueExpression(
-	expression: String,
+class CwtValueExpression private constructor(
+	expressionString: String,
 	val type: Type,
 	val value: String? = null,
 	val extraValue: Any? = null
-) : AbstractExpression(expression), CwtExpression {
+) : AbstractExpression(expressionString), CwtExpression {
 	companion object Resolver : CachedExpressionResolver<CwtValueExpression>() {
 		val EmptyExpression = CwtValueExpression("", Type.Constant, "")
 		

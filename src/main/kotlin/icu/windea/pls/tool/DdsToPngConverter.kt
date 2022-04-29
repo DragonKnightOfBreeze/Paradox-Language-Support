@@ -1,6 +1,7 @@
 package icu.windea.pls.tool
 
 import co.phoenixlab.dds.*
+import com.google.common.cache.*
 import icu.windea.pls.*
 import org.slf4j.*
 import java.lang.invoke.*
@@ -16,8 +17,8 @@ import kotlin.io.path.*
 object DdsToPngConverter {
 	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 	
-	private val ddsImageDecoder by lazy { DdsImageDecoder() }
-	private val ddsCache by lazy { createCache<String, Path>() } //ddsAbsPath - pngAbsPath
+	private val ddsImageDecoder: DdsImageDecoder by lazy { DdsImageDecoder() }
+	private val ddsCache: Cache<String, Path> by lazy { createCache() } //ddsAbsPath - pngAbsPath
 	
 	//TODO 需要检查DDS文件被更改的情况
 	

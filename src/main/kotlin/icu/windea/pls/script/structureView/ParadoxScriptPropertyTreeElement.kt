@@ -2,12 +2,12 @@ package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
+import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptPropertyTreeElement(
-	private val element: ParadoxScriptProperty
-) : PsiTreeElementBase<ParadoxScriptProperty>(element) {
+class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTreeElementBase<ParadoxScriptProperty>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val element = element ?: return emptyList()
 		val value = element.propertyValue?.value ?: return emptyList()
 		return when {
 			value !is ParadoxScriptBlock -> emptyList()
@@ -17,7 +17,16 @@ class ParadoxScriptPropertyTreeElement(
 		}
 	}
 	
-	override fun getPresentableText(): String {
+	override fun getPresentableText(): String? {
+		val element = element ?: return null
 		return element.name
+	}
+	
+	override fun getLocationString(): String? {
+		val element = element ?: return null
+		val definitionInfo = element.definitionInfo ?: return null
+		val name = definitionInfo.name
+		val typesText = definitionInfo.typesText
+		return "$name: $typesText"
 	}
 }

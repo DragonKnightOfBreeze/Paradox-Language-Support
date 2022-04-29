@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
+@Suppress("unused")
 class ParadoxDefinitionPropertyInfo(
 	val path: ParadoxPropertyPath,
 	val scope: String? = null,

@@ -6,9 +6,10 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtValueTreeElement(
-	private val element: CwtValue
+	element: CwtValue
 ) : PsiTreeElementBase<CwtValue>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val element = element ?: return emptyList()
 		return when {
 			element !is CwtBlock -> emptyList()
 			element.isArray -> element.valueList.map { CwtValueTreeElement(it) }
@@ -18,6 +19,7 @@ class CwtValueTreeElement(
 	}
 	
 	override fun getPresentableText(): String? {
+		val element = element ?: return null
 		return when {
 			element is CwtBlock -> blockFolder
 			element is CwtString -> element.truncatedValue

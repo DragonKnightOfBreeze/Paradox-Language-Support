@@ -5,13 +5,15 @@ import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFileTreeElement(
-	private val element: ParadoxLocalisationFile
+	element: ParadoxLocalisationFile
 ) : PsiTreeElementBase<ParadoxLocalisationFile>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val element = element ?: return emptyList()
 		return element.properties.map { ParadoxLocalisationPropertyTreeElement(it) }
 	}
 	
-	override fun getPresentableText(): String {
+	override fun getPresentableText(): String? {
+		val element = element ?: return null
 		return element.name
 	}
 }

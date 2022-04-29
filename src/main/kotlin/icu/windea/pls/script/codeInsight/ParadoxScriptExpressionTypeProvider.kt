@@ -41,7 +41,7 @@ class ParadoxScriptExpressionTypeProvider:ExpressionTypeProvider<PsiElement>() {
 	}
 	
 	private fun getDefinitionHint(definitionInfo: ParadoxDefinitionInfo):String{
-		return definitionInfo.typeText
+		return definitionInfo.typesText
 	}
 	
 	override fun getErrorHint(): String {

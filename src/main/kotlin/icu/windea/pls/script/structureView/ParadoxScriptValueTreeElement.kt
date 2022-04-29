@@ -6,9 +6,10 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueTreeElement(
-	private val element: ParadoxScriptValue
+	element: ParadoxScriptValue
 ) : PsiTreeElementBase<ParadoxScriptValue>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+		val element = element ?: return emptyList()
 		return when {
 			element !is ParadoxScriptBlock -> emptyList()
 			element.isArray -> element.valueList.map { ParadoxScriptValueTreeElement(it) }
@@ -17,7 +18,8 @@ class ParadoxScriptValueTreeElement(
 		}
 	}
 	
-	override fun getPresentableText(): String {
+	override fun getPresentableText(): String? {
+		val element = element ?: return null
 		return when {
 			element is ParadoxScriptBlock -> blockFolder
 			else -> element.text.truncate(truncateLimit) //不去除包围的双引号

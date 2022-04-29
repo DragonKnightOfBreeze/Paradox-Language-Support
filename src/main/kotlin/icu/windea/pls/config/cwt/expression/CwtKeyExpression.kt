@@ -8,7 +8,7 @@ import icu.windea.pls.core.expression.*
  * @property type 类型
  * @property value 值
  */
-class CwtKeyExpression(
+class CwtKeyExpression private constructor(
 	expressionString: String,
 	val type: Type,
 	val value: String? = null,

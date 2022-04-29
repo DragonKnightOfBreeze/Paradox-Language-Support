@@ -40,7 +40,7 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 				append("(related localisation) ").append(n).append(" = ").append(kn)
 			}
 		}
-		val keyNames = definitionInfo.localisationKeyNames
+		val keyNames = definitionInfo.localisationLocations
 		val project = element.project
 		val targets = findLocalisationsByNames(keyNames, null, project, hasDefault = true, keepOrder = true)
 		val targetElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }

@@ -2,6 +2,7 @@
 
 package icu.windea.pls
 
+import com.google.common.cache.*
 import com.intellij.util.io.*
 import java.io.*
 import java.net.*
@@ -382,7 +383,7 @@ fun URL.toFile() = File(this.toURI())
 fun URL.toPath() = Paths.get(this.toURI())
 
 @PublishedApi
-internal val enumValuesCache by lazy { createCache<Class<*>, Array<*>> { it.enumConstants } }
+internal val enumValuesCache: LoadingCache<Class<*>, Array<*>> by lazy { createCache { it.enumConstants } }
 
 /**
  * 得到共享的指定枚举类型的所有枚举常量组成的数组。

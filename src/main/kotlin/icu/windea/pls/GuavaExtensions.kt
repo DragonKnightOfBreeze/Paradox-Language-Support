@@ -24,6 +24,11 @@ fun <K : Any, V> createLimitedCache(builder: (K) -> V): LoadingCache<K, V> {
 	return CacheBuilder.newBuilder().maximumSize(maxCacheSize).build(CacheLoader.from(Function { builder(it) }))
 }
 
+//相比get(key, loader)，这个方法性能应当更高？
+fun <K:Any, V> Cache<K, V>.getOrPut(key: K, defaultValue: () ->V):V{
+	return asMap().getOrPut(key, defaultValue)
+}
+
 operator fun <K : Any, V> Cache<K, V>.get(key: K): V? {
 	return getIfPresent(key)
 }

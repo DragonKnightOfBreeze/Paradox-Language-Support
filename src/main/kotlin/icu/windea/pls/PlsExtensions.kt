@@ -86,7 +86,6 @@ fun matchesSubtypeExpression(subtypeExpression: String, subtypes: List<String>):
 		else -> subtypeExpression in subtypes
 	}
 }
-
 /**
  * 解析定义类型表达式。
  */
