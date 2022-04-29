@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
-import icu.windea.pls.core.expression.*
 
 /**
  * CWT值表达式。
@@ -19,9 +18,7 @@ class CwtValueExpression private constructor(
 		
 		override fun doResolve(expressionString: String): CwtValueExpression {
 			return when {
-				expressionString.isEmpty() -> {
-					EmptyExpression
-				}
+				expressionString.isEmpty() -> EmptyExpression
 				expressionString == "any" -> {
 					CwtValueExpression(expressionString, Type.Any)
 				}
@@ -151,7 +148,9 @@ class CwtValueExpression private constructor(
 					CwtValueExpression(expressionString, Type.AliasMatchLeft, value)
 				}
 				expressionString.endsWith(']') -> CwtValueExpression(expressionString, Type.Other)
-				else -> CwtValueExpression(expressionString, Type.Constant, expressionString)
+				else -> {
+					CwtValueExpression(expressionString, Type.Constant, expressionString)
+				}
 			}
 		}
 	}

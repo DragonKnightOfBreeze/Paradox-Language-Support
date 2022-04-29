@@ -8,7 +8,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import java.util.*
 
 data class CwtDefinitionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -28,7 +27,7 @@ data class CwtDefinitionConfig(
 		return mergeConfigsCache.getOrPut(cacheKey) {
 			val result = SmartList<CwtPropertyConfig>()
 			for((subtypeExpression, propConfig) in configs) {
-				if(subtypeExpression == null || matchesSubtypeExpression(subtypeExpression, subtypes)) {
+				if(subtypeExpression == null || matchesDefinitionSubtypeExpression(subtypeExpression, subtypes)) {
 					result.add(propConfig)
 				}
 			}

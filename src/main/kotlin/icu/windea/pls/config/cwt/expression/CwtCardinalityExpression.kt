@@ -1,12 +1,14 @@
 package icu.windea.pls.config.cwt.expression
 
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.*
 
 /**
  * CWT基数表达式。
- * @property min 最小值
- * @property max 最大值，null表示无限
- * @property limitMax 如果值为`false`，则表示出现数量超出最大值时不警告
+ *
+ * 示例：`"0..1"`, `"0..inf"`, `"~0..10"`
+ * @property min 最小值。
+ * @property max 最大值，null表示无限。
+ * @property limitMax 如果值为`false`，则表示出现数量超出最大值时不警告。
  */
 class CwtCardinalityExpression private constructor(
 	expressionString: String,
@@ -19,9 +21,7 @@ class CwtCardinalityExpression private constructor(
 		
 		override fun doResolve(expressionString: String): CwtCardinalityExpression {
 			return when {
-				expressionString.isEmpty() -> {
-					EmptyExpression
-				}
+				expressionString.isEmpty() -> EmptyExpression
 				expressionString.first() == '~' -> {
 					val firstDotIndex = expressionString.indexOf('.')
 					val min = expressionString.substring(1, firstDotIndex).toIntOrNull() ?: 0

@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
-import icu.windea.pls.core.expression.*
 
 /**
  * CWT键表达式。
@@ -19,9 +18,7 @@ class CwtKeyExpression private constructor(
 		
 		override fun doResolve(expressionString: String): CwtKeyExpression {
 			return when {
-				expressionString.isEmpty() -> {
-					EmptyExpression
-				}
+				expressionString.isEmpty() -> EmptyExpression
 				expressionString == "any" -> {
 					CwtKeyExpression(expressionString, Type.Any)
 				}
@@ -94,8 +91,12 @@ class CwtKeyExpression private constructor(
 					val value = expressionString.substring(11, expressionString.length - 1)
 					CwtKeyExpression(expressionString, Type.AliasName, value)
 				}
-				expressionString.endsWith(']') -> CwtKeyExpression(expressionString, Type.Other)
-				else -> CwtKeyExpression(expressionString, Type.Constant, expressionString)
+				expressionString.endsWith(']') -> {
+					CwtKeyExpression(expressionString, Type.Other)
+				}
+				else -> {
+					CwtKeyExpression(expressionString, Type.Constant, expressionString)
+				}
 			}
 		}
 	}

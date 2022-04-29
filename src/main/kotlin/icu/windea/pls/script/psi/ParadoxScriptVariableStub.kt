@@ -2,6 +2,6 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.stubs.*
 
-interface ParadoxScriptVariableStub: StubElement<ParadoxScriptVariable> {
-	val name:String
+interface ParadoxScriptVariableStub : StubElement<ParadoxScriptVariable> {
+	val name: String?
 }

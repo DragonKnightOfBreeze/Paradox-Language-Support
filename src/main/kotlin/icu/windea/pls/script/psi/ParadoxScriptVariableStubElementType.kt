@@ -32,7 +32,7 @@ class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVaria
 	
 	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {
 		//索引scripted_variable的name
-		sink.occurrence(ParadoxScriptVariableNameIndex.key, stub.name)
+		stub.name?.let { name -> sink.occurrence(ParadoxScriptVariableNameIndex.key, name) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {
@@ -40,7 +40,7 @@ class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVaria
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptVariableStub {
-		val readNameString = dataStream.readNameString().toStringOrEmpty()
-		return ParadoxScriptVariableStubImpl(parentStub, readNameString)
+		val name = dataStream.readNameString()
+		return ParadoxScriptVariableStubImpl(parentStub, name)
 	}
 }

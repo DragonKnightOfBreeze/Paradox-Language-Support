@@ -4,6 +4,10 @@ class ParadoxPropertyPath(
 	val subPaths:List<String>,
 	val subPathInfos:List<ParadoxPropertyPathInfo>
 ):Iterable<String>{
+	companion object{
+		val EmptyPath = ParadoxPropertyPath(emptyList(), emptyList())
+	}
+	
 	val length = subPaths.size
 	val parentSubPaths = subPaths.dropLast(1)
 	val path = subPaths.joinToString("/")

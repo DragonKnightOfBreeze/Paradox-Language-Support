@@ -213,6 +213,7 @@ class CwtConfigGroup(
 		var graphRelatedTypes: List<String>? = null
 		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
 		var localisation: CwtTypeLocalisationConfig? = null
+		var pictures: CwtTypePicturesConfig? = null
 		
 		val props = propertyConfig.properties
 		if(props != null && props.isNotEmpty()) {
@@ -236,7 +237,7 @@ class CwtConfigGroup(
 						skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
 					}
 					"localisation" -> {
-						val configs: MutableList<Pair<String?, CwtTypeLocalisationInfoConfig>> = SmartList()
+						val configs: MutableList<Pair<String?, CwtLocationConfig>> = SmartList()
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
 						for(p in propProps) {
@@ -245,16 +246,35 @@ class CwtConfigGroup(
 							if(subtypeName != null) {
 								val pps = p.properties ?: continue
 								for(pp in pps) {
-									val kk = pp.key
-									val localisationConfig = resolveTypeLocalisationConfig(pp, kk) ?: continue
-									configs.add(subtypeName to localisationConfig)
+									val locationConfig = resolveLocationConfig(pp, pp.key) ?: continue
+									configs.add(subtypeName to locationConfig)
 								}
 							} else {
-								val localisationConfig = resolveTypeLocalisationConfig(p, k) ?: continue
-								configs.add(null to localisationConfig)
+								val locationConfig = resolveLocationConfig(p, k) ?: continue
+								configs.add(null to locationConfig)
 							}
 						}
 						localisation = CwtTypeLocalisationConfig(propPointer, configs)
+					}
+					"pictures" -> {
+						val configs: MutableList<Pair<String?, CwtLocationConfig>> = SmartList()
+						val propPointer = prop.pointer
+						val propProps = prop.properties ?: continue
+						for(p in propProps) {
+							val k = p.key
+							val subtypeName = k.removeSurroundingOrNull("subtype[", "]")
+							if(subtypeName != null) {
+								val pps = p.properties ?: continue
+								for(pp in pps) {
+									val locationConfig = resolveLocationConfig(pp, pp.key) ?: continue
+									configs.add(subtypeName to locationConfig)
+								}
+							} else {
+								val locationConfig = resolveLocationConfig(p, k) ?: continue
+								configs.add(null to locationConfig)
+							}
+						}
+						pictures = CwtTypePicturesConfig(propPointer, configs)
 					}
 				}
 				
@@ -290,7 +310,8 @@ class CwtConfigGroup(
 		return CwtTypeConfig(
 			propertyConfig.pointer, name, path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
-			typeKeyFilter, startsWith, graphRelatedTypes, subtypes, localisation
+			typeKeyFilter, startsWith, graphRelatedTypes, subtypes,
+			localisation, pictures
 		)
 	}
 	
@@ -327,7 +348,7 @@ class CwtConfigGroup(
 		)
 	}
 	
-	private fun resolveTypeLocalisationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeLocalisationInfoConfig? {
+	private fun resolveLocationConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocationConfig? {
 		val expression = propertyConfig.stringValue ?: return null
 		var required = false
 		var primary = false
@@ -342,7 +363,7 @@ class CwtConfigGroup(
 				}
 			}
 		}
-		return CwtTypeLocalisationInfoConfig(propertyConfig.pointer, name, expression, required, primary)
+		return CwtLocationConfig(propertyConfig.pointer, name, expression, required, primary)
 	}
 	
 	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
@@ -557,11 +578,14 @@ class CwtConfigGroup(
 		val subtypes = subtypeConfigs.map { it.name }
 		val localisation = getLocalisation(typeConfig, subtypes, element, name)
 		val localisationConfig = typeConfig.localisation
+		val pictures = getPictures(typeConfig, subtypes, element, name)
+		val picturesConfig = typeConfig.pictures
 		val definition = getDefinition(type, subtypes)
 		val definitionConfig = definitions.get(type)
 		val rootKey = elementName
 		return ParadoxDefinitionInfo(
-			name, type, typeConfig, subtypes, subtypeConfigs, localisation, localisationConfig,
+			name, type, typeConfig, subtypes, subtypeConfigs, 
+			localisation, localisationConfig, pictures, picturesConfig,
 			definition, definitionConfig, rootKey, gameType
 		)
 	}
@@ -589,14 +613,27 @@ class CwtConfigGroup(
 		return result
 	}
 	
-	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxRelatedLocalisationInfo> {
+	private fun getLocalisation(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxRelatedPicturesInfo> {
 		val mergedLocalisationConfig = typeConfig.localisation?.getMergedConfigs(subtypes) ?: return emptyList()
-		val result = SmartList<ParadoxRelatedLocalisationInfo>()
+		val result = SmartList<ParadoxRelatedPicturesInfo>()
 		//从已有的cwt规则
 		for(config in mergedLocalisationConfig) {
 			val expression = CwtLocationExpression.resolve(config.expression)
 			val location = expression.inferLocation(name, element) ?: continue //跳过无效的位置表达式
-			val info = ParadoxRelatedLocalisationInfo(config.name, location, config.required, config.primary)
+			val info = ParadoxRelatedPicturesInfo(config.name, location, config.required, config.primary)
+			result.add(info)
+		}
+		return result
+	}
+	
+	private fun getPictures(typeConfig: CwtTypeConfig, subtypes: List<String>, element: ParadoxDefinitionProperty, name: String): List<ParadoxRelatedPicturesInfo> {
+		val mergedPicturesConfig = typeConfig.pictures?.getMergedConfigs(subtypes) ?: return emptyList()
+		val result = SmartList<ParadoxRelatedPicturesInfo>()
+		//从已有的cwt规则
+		for(config in mergedPicturesConfig) {
+			val expression = CwtLocationExpression.resolve(config.expression)
+			val location = expression.inferLocation(name, element) ?: continue //跳过无效的位置表达式
+			val info = ParadoxRelatedPicturesInfo(config.name, location, config.required, config.primary)
 			result.add(info)
 		}
 		return result

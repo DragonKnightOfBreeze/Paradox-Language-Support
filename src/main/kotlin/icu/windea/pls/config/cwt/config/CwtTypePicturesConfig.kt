@@ -6,7 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
-data class CwtTypeLocalisationConfig(
+data class CwtTypePicturesConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	val configs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
 ) : CwtConfig<CwtProperty> {

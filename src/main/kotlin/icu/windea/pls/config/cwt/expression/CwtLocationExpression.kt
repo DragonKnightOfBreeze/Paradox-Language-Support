@@ -1,14 +1,14 @@
 package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
-import kotlin.math.*
 
 /**
  * CWT位置表达式。
  *
  * 用于推断relatedLocation的键值，或者relatedPicture的对应sprite的definitionName或DDS文件名。
+ *
+ * 示例：`"$"`, `"$_desc"`, `"#name"`, "#icon|#icon_frame"`
  * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成definitionName）。
  * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串）。
  * @property extraPropertyNames 额外的属性名（表达式文本以"#"开始且之后包含"|"时，为"|"之后的按","分割的子字符串）。
@@ -49,9 +49,9 @@ class CwtLocationExpression(
 	
 	operator fun component3() = extraPropertyNames
 	
-	fun inferLocation(definitionName: String ,definition: ParadoxDefinitionProperty): String?{
+	fun inferLocation(definitionName: String, definition: ParadoxDefinitionProperty): String? {
 		//TODO 应用extraPropertyNames
-		return if(placeholder != null && placeholder.isNotEmpty()){
+		return if(placeholder != null && placeholder.isNotEmpty()) {
 			buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
 		} else if(propertyName != null && propertyName.isNotEmpty()) {
 			//目前只接收类型为string的值

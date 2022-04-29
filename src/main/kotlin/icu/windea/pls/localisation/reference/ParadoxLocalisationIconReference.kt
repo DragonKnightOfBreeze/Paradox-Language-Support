@@ -44,8 +44,7 @@ class ParadoxLocalisationIconReference(
 		//尝试解析为spriteType
 		val spriteName = "GFX_text_$name"
 		val project = element.project
-		val sprite = findDefinitionByType(spriteName, "sprite", project)
-			?: findDefinitionByType(spriteName, "spriteType", project)
+		val sprite = findDefinitionByType(spriteName, "sprite|spriteType", project)
 		if(sprite != null) return sprite
 		//如果不能解析为spriteType，则尝试解析为相同名字的dds文件
 		val ddsFiles = FilenameIndex.getVirtualFilesByName("$name.dds", GlobalSearchScope.allScope(project))
@@ -61,8 +60,7 @@ class ParadoxLocalisationIconReference(
 	override fun getVariants(): Array<out Any> {
 		//根据spriteName和ddsFileName进行提示
 		val project = element.project
-		val sprites = findDefinitionsByType("sprite", project)
-			.ifEmpty { findDefinitionsByType("spriteType", project) }
+		val sprites = findDefinitionsByType("sprite|spriteType", project)
 		val ddsFiles = FilenameIndex.getAllFilesByExt(project, "dds").filter {
 			val path = it.fileInfo?.path
 			path != null && "gfx/interface/icons".matchesPath(path.parent)

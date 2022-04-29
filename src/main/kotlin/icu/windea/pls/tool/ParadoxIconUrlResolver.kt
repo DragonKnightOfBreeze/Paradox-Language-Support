@@ -76,9 +76,7 @@ object ParadoxIconUrlResolver {
 	}
 	
 	private fun doResolveBySprite(spriteName: String, project: Project): String? {
-		val sprite = findDefinitionByType(spriteName, "sprite", project)
-			?: findDefinitionByType(spriteName, "spriteType", project)
-			?: return null
+		val sprite = findDefinitionByType(spriteName, "sprite|spriteType", project) ?: return null
 		return doResolveBySprite(sprite)
 	}
 	

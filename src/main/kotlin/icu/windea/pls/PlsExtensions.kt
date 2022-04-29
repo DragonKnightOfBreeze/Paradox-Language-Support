@@ -80,19 +80,24 @@ fun isPreviousComment(element: PsiElement): Boolean {
 	return elementType == ParadoxLocalisationElementTypes.COMMENT || elementType == ParadoxScriptElementTypes.COMMENT
 }
 
-fun matchesSubtypeExpression(subtypeExpression: String, subtypes: List<String>): Boolean {
+/**
+ * 判断指定的定义子类型表达式是否匹配一组子类型。
+ * @param expression 表达式。示例：`origin`, `!origin`
+ */
+fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String>): Boolean {
 	return when {
-		subtypeExpression.startsWith('!') -> subtypeExpression.drop(1) !in subtypes
-		else -> subtypeExpression in subtypes
+		expression.startsWith('!') -> expression.drop(1) !in subtypes
+		else -> expression in subtypes
 	}
 }
 /**
  * 解析定义类型表达式。
+ * @param expression 表达式。示例：`origin_or_civic`, `origin_or_civic.origin`, `sprite|spriteType`
  */
-fun resolveTypeExpression(typeExpression: String): Pair<String, String?> {
-	val dotIndex = typeExpression.indexOf('.')
-	val type = if(dotIndex == -1) typeExpression else typeExpression.substring(0, dotIndex)
-	val subtype = if(dotIndex == -1) null else typeExpression.substring(dotIndex + 1)
+fun resolveDefinitionTypeExpression(expression: String): Pair<String, String?> {
+	val dotIndex = expression.indexOf('.')
+	val type = if(dotIndex == -1) expression else expression.substring(0, dotIndex)
+	val subtype = if(dotIndex == -1) null else expression.substring(dotIndex + 1)
 	return type to subtype
 }
 //endregion
@@ -315,10 +320,12 @@ fun PsiElement.resolvePath(): ParadoxPath? {
 	return if(subPaths.isEmpty()) null else ParadoxPath(subPaths)
 }
 
-fun PsiElement.resolvePropertyPath(maxDepth: Int = -1): ParadoxPropertyPath? {
+fun ParadoxDefinitionProperty.resolvePropertyPath(maxDepth: Int = -1): ParadoxPropertyPath? {
+	if(this is ParadoxScriptFile) return ParadoxPropertyPath.EmptyPath
+	
 	val subPaths = LinkedList<String>()
 	val subPathInfos = emptyList<ParadoxPropertyPathInfo>() //TODO 目前不需要获取
-	var current = this
+	var current: PsiElement = this
 	var depth = 0
 	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
 		when {
@@ -538,6 +545,7 @@ fun findScriptVariables(
 
 /**
  * 基于定义名字索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun hasDefinition(
 	name: String,
@@ -550,6 +558,7 @@ fun hasDefinition(
 
 /**
  * 基于定义名字索引，根据名字、类型表达式查找脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun findDefinition(
 	name: String,
@@ -562,6 +571,7 @@ fun findDefinition(
 
 /**
  * 基于定义名字索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun findDefinitions(
 	name: String,
@@ -574,6 +584,7 @@ fun findDefinitions(
 
 /**
  * 基于定义名字索引，根据类型表达式查找所有的脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun findDefinitions(
 	typeExpression: String?,
@@ -585,6 +596,7 @@ fun findDefinitions(
 
 /**
  * 基于定义类型索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun hasDefinitionByType(
 	name: String,
@@ -597,6 +609,7 @@ fun hasDefinitionByType(
 
 /**
  * 基于定义类型索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun findDefinitionByType(
 	name: String,
@@ -609,6 +622,7 @@ fun findDefinitionByType(
 
 /**
  * 基于定义类型索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun findDefinitionsByType(
 	name: String,
@@ -621,6 +635,7 @@ fun findDefinitionsByType(
 
 /**
  * 基于定义类型索引，根据类型表达式查找所有的脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun findDefinitionsByType(
 	typeExpression: String,
@@ -632,6 +647,7 @@ fun findDefinitionsByType(
 
 /**
  * 基于定义类型索引，根据关键字和类型表达式查找所有的脚本文件的定义（definition）。
+ * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
 fun findDefinitionsByKeywordByType(
 	keyword: String,
@@ -1014,11 +1030,10 @@ inline fun String.resolveIconUrl(project: Project, defaultToUnknown: Boolean = t
 	return ParadoxIconUrlResolver.resolveByIconName(this, project, defaultToUnknown)
 }
 
-@Deprecated("")
-@Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true): String {
-	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)
-}
+//@Suppress("NOTHING_TO_INLINE")
+//inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true): String {
+//	return ParadoxIconUrlResolver.resolveBySprite(this, defaultToUnknown)
+//}
 
 //@Suppress("NOTHING_TO_INLINE")
 //inline fun VirtualFile.resolveIconUrl(defaultToUnknown: Boolean = true): String {

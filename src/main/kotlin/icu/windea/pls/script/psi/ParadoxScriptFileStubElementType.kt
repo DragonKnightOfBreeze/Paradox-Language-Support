@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.Companion.FILE
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
 	override fun getExternalId(): String {
@@ -28,7 +29,40 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 		}
 	}
 	
+	override fun indexStub(stub: PsiFileStub<*>, sink: IndexSink) {
+		if(stub is ParadoxScriptFileStub) {
+			stub.name?.let { name -> sink.occurrence(ParadoxDefinitionNameIndex.key, name) }
+			stub.type?.let { type -> sink.occurrence(ParadoxDefinitionTypeIndex.key, type) }
+		}
+		super.indexStub(stub, sink)
+	}
+	
+	override fun serialize(stub: PsiFileStub<*>, dataStream: StubOutputStream) {
+		if(stub is ParadoxScriptFileStub) {
+			dataStream.writeName(stub.name)
+			dataStream.writeName(stub.type)
+			dataStream.writeName(stub.subtypes?.toCommaDelimitedString())
+		}
+		super.serialize(stub, dataStream)
+	}
+	
+	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): PsiFileStub<*> {
+		val name = dataStream.readNameString()
+		val type = dataStream.readNameString()
+		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
+		return ParadoxScriptFileStubImpl(null, name, type, subtypes)
+	}
+	
 	class Builder : DefaultStubBuilder() {
+		override fun createStubForFile(file: PsiFile): StubElement<*> {
+			val psiFile = file as? ParadoxScriptFile ?: return super.createStubForFile(file)
+			val definitionInfo = psiFile.definitionInfo
+			val name = definitionInfo?.name
+			val type = definitionInfo?.type
+			val subtypes = definitionInfo?.subtypes
+			return ParadoxScriptFileStubImpl(psiFile, name, type, subtypes)
+		}
+		
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
 			//仅包括variable和property
 			val type = node.elementType

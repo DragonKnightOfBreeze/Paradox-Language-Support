@@ -104,7 +104,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo,
-		localisation: List<ParadoxRelatedLocalisationInfo>) {
+		localisation: List<ParadoxRelatedPicturesInfo>) {
 		definition {
 			//加上定义的文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
@@ -149,7 +149,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	//	}
 	//}
 	
-	private fun StringBuilder.buildRelatedLocalisationSections(localisation: List<ParadoxRelatedLocalisationInfo>,
+	private fun StringBuilder.buildRelatedLocalisationSections(localisation: List<ParadoxRelatedPicturesInfo>,
 		element: ParadoxScriptProperty) {
 		//本地化文本
 		if(getSettings().renderDefinitionText) {
