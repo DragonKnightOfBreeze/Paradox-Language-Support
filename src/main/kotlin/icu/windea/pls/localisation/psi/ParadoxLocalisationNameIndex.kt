@@ -52,12 +52,13 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
+		val inferParadoxLocale = if(localeConfig == null) inferParadoxLocale() else null
 		var index = 0
 		return processAllElements(name, project, scope) { element, result ->
 			val elementLocale = element.localeConfig
 			if(localeConfig == null) {
 				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-				if(inferParadoxLocale() == elementLocale) {
+				if(inferParadoxLocale == elementLocale) {
 					result.add(index++, element)
 				} else {
 					result.add(element)
@@ -78,6 +79,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		val keys = getAllKeys(project)
 		if(keys.isEmpty()) return emptyList()
 		
+		val inferParadoxLocale = if(localeConfig == null) inferParadoxLocale() else null
 		val result: MutableList<ParadoxLocalisationProperty> = SmartList()
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 		var index = 0
@@ -90,7 +92,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 				val elementLocale = element.localeConfig
 				if(localeConfig == null) {
 					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-					if(elementLocale == inferParadoxLocale()) {
+					if(elementLocale == inferParadoxLocale) {
 						result.add(index++, element)
 						nextIndex++
 					} else {

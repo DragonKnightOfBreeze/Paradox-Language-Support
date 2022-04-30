@@ -10,7 +10,7 @@ import java.util.*
 
 @Suppress("unused")
 class ParadoxDefinitionPropertyInfo(
-	val elementPath: ParadoxElementPath<*, ParadoxDefinitionProperty>,
+	val elementPath: ParadoxDefinitionPropertyPath,
 	val scope: String? = null,
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,

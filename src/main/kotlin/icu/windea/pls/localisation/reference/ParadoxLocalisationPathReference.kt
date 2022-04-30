@@ -22,8 +22,8 @@ class ParadoxLocalisationPathReference(
 		val project = element.project
 		val scope = GlobalSearchScope.fileScope(file)
 		return when(category) {
-			Localisation -> findLocalisation(anchor, null, project, scope, hasDefault = true)
-			SyncedLocalisation -> findSyncedLocalisation(anchor, null, project, scope, hasDefault = true)
+			Localisation -> findLocalisation(anchor, inferParadoxLocale(), project, scope, hasDefault = true)
+			SyncedLocalisation -> findSyncedLocalisation(anchor, inferParadoxLocale(), project, scope, hasDefault = true)
 		}
 	}
 	

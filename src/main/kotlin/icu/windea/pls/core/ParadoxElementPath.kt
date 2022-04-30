@@ -5,7 +5,8 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import java.util.LinkedList
 
-typealias ParadoxDefinitionPath = ParadoxElementPath<ParadoxDefinitionProperty, ParadoxScriptFile>
+typealias ParadoxDefinitionPath = ParadoxElementPath<ParadoxScriptFile>
+typealias ParadoxDefinitionPropertyPath = ParadoxElementPath<ParadoxDefinitionProperty>
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -20,10 +21,10 @@ typealias ParadoxDefinitionPath = ParadoxElementPath<ParadoxDefinitionProperty, 
  * * `foo/-` 对应文所属文件或定义中名为"foo"的属性的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
  */
 @Suppress("unused")
-class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
+class ParadoxElementPath<R : PsiElement> private constructor(
 	val originalSubPaths: List<String>, //注意：这里传入的子路径需要保留可能的括起的双引号
-	val pointer: SmartPsiElementPointer<out E>,
-	val rootPointer: SmartPsiElementPointer<out R>?,
+	//val pointer: SmartPsiElementPointer<out R>? = null //不能加上，会导致递归循环
+	val rootPointer: SmartPsiElementPointer<out R>? = null
 ) : Iterable<String> {
 	companion object Resolver {
 		/**
@@ -31,14 +32,14 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 		 */
 		fun resolveFromFile(element: ParadoxDefinitionProperty, maxDepth: Int = -1): ParadoxDefinitionPath? {
 			if(element is ParadoxScriptFile) {
-				return resolveEmptyPath(element)
+				return ParadoxElementPath(emptyList(), element.createPointer(element))
 			}
 			var current: PsiElement = element
 			var depth = 0
 			val originalSubPaths = LinkedList<String>()
 			while(current !is ParadoxScriptFile) {
 				when {
-					current is PsiFile -> return resolveEmptyPath(element) //不应当出现
+					current is PsiFile -> return ParadoxElementPath(emptyList()) //不应当出现
 					current is ParadoxScriptProperty -> {
 						originalSubPaths.addFirst(current.propertyKey.text) //这里需要使用原始文本
 						depth++
@@ -53,22 +54,21 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 				current = current.parent ?: break
 			}
 			val file = current as ParadoxScriptFile
-			val pointer = element.createPointer(file)
 			val rootPointer = file.createPointer(file)
-			return ParadoxElementPath(originalSubPaths, pointer, rootPointer)
+			return ParadoxElementPath(originalSubPaths, rootPointer)
 		}
 		
 		/**
 		 * 解析指定元素相对于所属定义的属性路径。
 		 */
-		fun <E : PsiElement> resolveFromDefinition(element: E): ParadoxElementPath<E, ParadoxDefinitionProperty>? {
+		fun <E : PsiElement> resolveFromDefinition(element: E): ParadoxDefinitionPropertyPath? {
 			var current: PsiElement = element
 			var depth = 0
 			val subPaths = LinkedList<String>()
 			var definition: ParadoxDefinitionProperty? = null
 			while(current !is ParadoxScriptFile) {
 				when {
-					current is PsiFile -> return resolveEmptyPath(element) //不应当出现
+					current is PsiFile -> return ParadoxElementPath(emptyList()) //不应当出现
 					current is ParadoxScriptProperty -> {
 						val definitionInfo = current.definitionInfo
 						if(definitionInfo != null) {
@@ -90,14 +90,8 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 			}
 			if(definition == null) return null //如果未找到所属的definition，则直接返回null
 			val file = definition.containingFile
-			val pointer = element.createPointer(file)
 			val rootPointer = definition.createPointer(file)
-			return ParadoxElementPath(subPaths, pointer, rootPointer)
-		}
-		
-		fun <E : PsiElement, R : PsiElement> resolveEmptyPath(element: E): ParadoxElementPath<E, R> {
-			val pointer = element.createPointer()
-			return ParadoxElementPath(emptyList(), pointer, null)
+			return ParadoxElementPath(subPaths, rootPointer)
 		}
 	}
 	

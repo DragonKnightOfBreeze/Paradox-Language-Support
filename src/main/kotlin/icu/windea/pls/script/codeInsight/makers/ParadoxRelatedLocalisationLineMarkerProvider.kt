@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
+import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.*
@@ -31,22 +32,16 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 		//显示在提示中 & 可导航：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
 		val icon = PlsIcons.relatedLocalisationGutterIcon
 		val tooltipBuilder = StringBuilder()
-		val keys = mutableSetOf<String>()
 		val project = element.project
-		val targetMap = mutableMapOf<String, ParadoxLocalisationProperty>()
-		for((key, location) in definitionInfo.localisation) {
-			if(!targetMap.containsKey(key)) {
-				val target = findLocalisationByLocation(location, project)
-				if(target != null) targetMap.put(key, target)
-			}
-		}
+		val keys = mutableSetOf<String>()
+		val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
 		var isFirst = true
 		for((key, location, required) in definitionInfo.localisation) {
-			if(required || targetMap.containsKey(key)) {
-				if(keys.add(key)) {
-					if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-					tooltipBuilder.append("(related localisation) ").append(key).append(" = ").append(location)
-				}
+			val list = findLocalisationsByLocation(location, null, project)
+			if(list.isNotEmpty()) targets.addAll(list)
+			if((required || list.isNotEmpty()) && keys.add(key)) {
+				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+				tooltipBuilder.append("(related localisation) ").append(key).append(" = ").append(location)
 			}
 		}
 		if(keys.isEmpty()) return
@@ -55,7 +50,7 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
 			.setTooltipText(tooltip)
 			.setPopupTitle(_title)
-			.setTargets(targetMap.values)
+			.setTargets(targets)
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
 			.setNamer { _name }
 			.createLineMarkerInfo(locationElement)

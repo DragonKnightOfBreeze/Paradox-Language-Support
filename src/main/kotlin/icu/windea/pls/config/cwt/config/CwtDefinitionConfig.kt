@@ -39,7 +39,7 @@ data class CwtDefinitionConfig(
 	/**
 	 * 根据路径解析对应的属性配置列表。
 	 */
-	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*,*>,configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
+	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*>,configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return propertyConfigsCache.getOrPut(cacheKey) {
 			when {
@@ -90,7 +90,7 @@ data class CwtDefinitionConfig(
 	/**
 	 * 根据路径解析对应的子属性配置列表。（过滤重复的）
 	 */
-	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*,*>, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
+	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return childPropertyConfigsCache.getOrPut(cacheKey) {
 			when {
@@ -113,7 +113,7 @@ data class CwtDefinitionConfig(
 	/**
 	 * 根据路径解析对应的子值配置列表。（过滤重复的）
 	 */
-	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath<*,*>, configGroup: CwtConfigGroup): List<CwtValueConfig> {
+	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtValueConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}$path"
 		return childValueConfigsCache.getOrPut(cacheKey) {
 			when {

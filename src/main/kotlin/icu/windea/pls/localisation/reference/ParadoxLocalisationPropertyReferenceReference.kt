@@ -32,13 +32,13 @@ class ParadoxLocalisationPropertyReferenceReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
-		val locale = file.localeConfig
+		val localeConfig = file.localeConfig
 		val name = element.name
 		val project = element.project
 		return when(category) {
-			Localisation -> findLocalisations(name, locale, project, hasDefault = true)
-			SyncedLocalisation -> findSyncedLocalisations(name, locale, project, hasDefault = true)
-		}.mapToArray { 
+			Localisation -> findLocalisations(name, localeConfig, project, hasDefault = true) //仅查找对应语言区域的
+			SyncedLocalisation -> findSyncedLocalisations(name, localeConfig, project, hasDefault = true) //仅查找对应语言区域的
+		}.mapToArray {
 			PsiElementResolveResult(it)
 		}
 	}

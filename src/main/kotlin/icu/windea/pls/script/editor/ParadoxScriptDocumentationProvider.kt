@@ -45,7 +45,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getDefinitionInfo(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String {
-		val localisation = definitionInfo.localisation
 		return buildString {
 			buildDefinitionDefinition(element, definitionInfo, null, null)
 		}
@@ -143,7 +142,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val usedLocalisationTargetMap = localisationTargetMap ?: mutableMapOf()
 				for((key, location) in localisation) {
 					if(!usedLocalisationTargetMap.containsKey(key)) {
-						val target = findLocalisationByLocation(location, project)
+						val target = findLocalisationByLocation(location, inferParadoxLocale(), project)
 						if(target != null) usedLocalisationTargetMap.put(key, target)
 					}
 				}

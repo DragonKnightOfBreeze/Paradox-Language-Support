@@ -1070,11 +1070,11 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 	return when(expression.type) {
 		CwtKeyExpression.Type.Localisation -> {
 			val name = keyElement.value
-			findLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
+			findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 		}
 		CwtKeyExpression.Type.SyncedLocalisation -> {
 			val name = keyElement.value
-			findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
+			findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val name = keyElement.value
@@ -1198,8 +1198,8 @@ private fun fallbackResolveValue(valueElement: ParadoxScriptValue): PsiNamedElem
 	val name = valueElement.value
 	val project = valueElement.project
 	return findDefinition(name, null, project)
-		?: findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
-		?: findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+		?: findLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
+		?: findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 }
 
 fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
@@ -1212,11 +1212,11 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 	return when(expression.type) {
 		CwtValueExpression.Type.Localisation -> {
 			val name = valueElement.value
-			findLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
+			findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 		}
 		CwtValueExpression.Type.SyncedLocalisation -> {
 			val name = valueElement.value
-			findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true)
+			findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 		}
 		CwtValueExpression.Type.TypeExpression -> {
 			val name = valueElement.value
@@ -1271,8 +1271,8 @@ private fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<Ps
 	val name = valueElement.value
 	val project = valueElement.project
 	return findDefinitions(name, null, project)
-		.ifEmpty { findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) }
-		.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) }
+		.ifEmpty { findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的 
+		.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的
 }
 
 fun resolveAliasName(aliasName: String, keyElement: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): PsiNamedElement? {

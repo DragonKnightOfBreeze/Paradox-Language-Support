@@ -113,8 +113,7 @@ fun PsiElement.isQuoted(): Boolean {
  * 判断当前scriptValue是否是独立的value（不作为变量或属性的值）。
  */
 fun ParadoxScriptValue.isLonelyValue(): Boolean {
-	val parent = this.parent
-	return parent is PsiFile || parent is ParadoxScriptBlock
+	return this.parent is ParadoxScriptBlock // ParadoxScriptBlock | ParadoxScriptRootBlock
 }
 
 val CwtProperty.configType: CwtConfigType? get() = doGetConfigType(this)
@@ -168,9 +167,8 @@ val PsiElement.localeConfig: ParadoxLocaleConfig? get() = doGetLocale(this)
 
 private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 	return when(val file = element.containingFile) {
-		is ParadoxScriptFile -> inferParadoxLocale()
 		is ParadoxLocalisationFile -> file.locale?.localeConfig
-		else -> null
+		else -> inferParadoxLocale()
 	}
 }
 
@@ -589,6 +587,7 @@ fun findDefinitionsByType(
 
 /**
  * 基于本地化名字索引，根据名字、语言区域判断是否存在本地化（localisation）。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
  */
 fun hasLocalisation(
 	name: String,
@@ -601,6 +600,7 @@ fun hasLocalisation(
 
 /**
  * 基于本地化名字索引，根据名字、语言区域查找本地化（localisation）。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
  * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  */
 fun findLocalisation(
@@ -615,13 +615,13 @@ fun findLocalisation(
 
 /**
  * 基于本地化名字索引，根据名字、语言区域查找所有的本地化（localisation）。
- * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
  * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  * @see inferParadoxLocale
  */
 fun findLocalisations(
 	name: String,
-	localeConfig: ParadoxLocaleConfig? = null,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
@@ -631,13 +631,13 @@ fun findLocalisations(
 
 /**
  * 基于本地化名字索引，根据语言区域查找所有的本地化（localisation）。
- * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
  * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  * @param distinct 是否需要对相同键的本地化进行去重。默认为`false`。
  * @see inferParadoxLocale
  */
 fun findAllLocalisations(
-	localeConfig: ParadoxLocaleConfig? = null,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false,
@@ -662,6 +662,7 @@ fun findLocalisationsByKeyword(
 
 /**
  * 基于本地化名字索引，根据名字、语言区域判断是否存在同步本地化（localisation_synced）。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
  */
 fun hasSyncedLocalisation(
 	name: String,
@@ -674,6 +675,7 @@ fun hasSyncedLocalisation(
 
 /**
  * 基于同步本地化名字索引，根据名字、语言区域查找同步本地化（localisation_synced）。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
  * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  */
 fun findSyncedLocalisation(
@@ -688,13 +690,13 @@ fun findSyncedLocalisation(
 
 /**
  * 基于同步本地化名字索引，根据名字、语言区域查找所有的同步本地化（localisation_synced）。
- * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
  * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。。
  * @see inferParadoxLocale
  */
 fun findSyncedLocalisations(
 	name: String,
-	localeConfig: ParadoxLocaleConfig? = null,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
@@ -704,13 +706,13 @@ fun findSyncedLocalisations(
 
 /**
  * 基于同步本地化名字索引，根据语言区域查找所有的同步本地化（localisation_synced）。
- * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
  * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  * @param distinct 是否需要对相同键的本地化进行去重。默认为`false`。
  * @see inferParadoxLocale
  */
 fun findAllSyncedLocalisations(
-	localeConfig: ParadoxLocaleConfig? = null,
+	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false,
@@ -820,8 +822,15 @@ fun findFiles(
 /**
  * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
  */
-fun findLocalisationByLocation(location: String, project: Project): ParadoxLocalisationProperty? {
-	return findLocalisation(location, null, project, hasDefault = true)
+fun findLocalisationByLocation(location: String, localeConfig: ParadoxLocaleConfig?, project: Project): ParadoxLocalisationProperty? {
+	return findLocalisation(location, localeConfig, project, hasDefault = true)
+}
+
+/**
+ * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
+ */
+fun findLocalisationsByLocation(location: String, localeConfig: ParadoxLocaleConfig?, project: Project): List<ParadoxLocalisationProperty> {
+	return findLocalisations(location, localeConfig, project, hasDefault = true)
 }
 
 /**
@@ -833,6 +842,18 @@ fun findPictureByLocation(location: String, project: Project): PsiElement? /* Pa
 		return findFile(location, project)?.toPsiFile(project)
 	} else {
 		return findDefinitionByType(location, "sprite|spriteType", project)
+	}
+}
+
+/**
+ * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
+ */
+fun findPicturesByLocation(location: String, project: Project): List<PsiElement> /* ParadoxDefinitionProperty? | PsiFile? */ {
+	//根据是否以dds后缀名结尾，判断location是filepath还是definitionKey
+	if(location.endsWith(".dds", true)) {
+		return findFiles(location, project).mapNotNull { it.toPsiFile(project) }
+	} else {
+		return findDefinitionsByType(location, "sprite|spriteType", project)
 	}
 }
 //endregion
@@ -975,6 +996,7 @@ fun StringBuilder.appendBr(): StringBuilder {
 }
 //endregion
 
+//region Inline Extensions
 //@Suppress("NOTHING_TO_INLINE")
 //inline fun ParadoxScriptProperty.resolveIconUrl(defaultToUnknown: Boolean = true): String {
 //	return ParadoxDdsUrlResolver.resolveBySprite(this, defaultToUnknown)
