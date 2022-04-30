@@ -1,5 +1,6 @@
 package icu.windea.pls.cwt.psi.impl
 
+import com.intellij.navigation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
@@ -8,6 +9,9 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.structureView.*
+import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.structureView.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -75,6 +79,11 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getPresentation(element: CwtProperty): ItemPresentation {
+		return CwtPropertyTreeElement(element)
+	}
+	
+	@JvmStatic
 	fun getName(element: CwtProperty): String {
 		return element.propertyName
 	}
@@ -128,6 +137,11 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.cwtValueIcon
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: CwtValue): ItemPresentation {
+		return CwtValueTreeElement(element)
 	}
 	
 	@JvmStatic

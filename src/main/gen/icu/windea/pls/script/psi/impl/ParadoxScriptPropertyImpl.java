@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
@@ -49,6 +50,18 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
@@ -63,12 +76,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Nullable
   public PsiElement getNameIdentifier() {
     return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

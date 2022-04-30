@@ -18,6 +18,9 @@ public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, Parado
   ParadoxScriptVariableValue getVariableValue();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -25,9 +28,6 @@ public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, Parado
 
   @NotNull
   PsiElement getNameIdentifier();
-
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
 
   @Nullable
   String getValue();

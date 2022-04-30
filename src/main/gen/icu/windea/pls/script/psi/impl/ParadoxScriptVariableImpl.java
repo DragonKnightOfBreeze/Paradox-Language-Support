@@ -49,6 +49,12 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
@@ -63,12 +69,6 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
   @NotNull
   public PsiElement getNameIdentifier() {
     return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

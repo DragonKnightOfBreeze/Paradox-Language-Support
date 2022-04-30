@@ -1,5 +1,6 @@
 package icu.windea.pls.localisation.psi.impl
 
+import com.intellij.navigation.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -17,6 +18,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createP
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createSequentialNumber
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.reference.*
+import icu.windea.pls.localisation.structureView.*
+import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.structureView.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -57,6 +61,11 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation {
+		return ParadoxLocalisationPropertyTreeElement(element)
+	}
+	
+	@JvmStatic
 	fun getName(element: ParadoxLocalisationProperty): String {
 		//注意：element.stub可能会导致ProcessCanceledException
 		return runCatching { element.stub?.name }.getOrNull() ?: element.propertyKey.text
@@ -74,9 +83,9 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getCategory(element:ParadoxLocalisationProperty): ParadoxLocalisationCategory?{
+	fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
 		//注意：element.stub可能会导致ProcessCanceledException
-		return runCatching{ element.stub?.category }.getOrNull()?:element.localisationInfo?.category
+		return runCatching { element.stub?.category }.getOrNull() ?: element.localisationInfo?.category
 	}
 	
 	@JvmStatic
@@ -104,7 +113,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPropertyReferenceReference? {
-		val rangeInElement = element.propertyReferenceId?.textRangeInParent?:return null
+		val rangeInElement = element.propertyReferenceId?.textRangeInParent ?: return null
 		return ParadoxLocalisationPropertyReferenceReference(element, rangeInElement)
 	}
 	//endregion
@@ -138,7 +147,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationIcon): ParadoxLocalisationIconReference? {
-		val rangeInElement = element.iconId?.textRangeInParent?:return null
+		val rangeInElement = element.iconId?.textRangeInParent ?: return null
 		return ParadoxLocalisationIconReference(element, rangeInElement)
 	}
 	//endregion
@@ -271,7 +280,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxLocalisationCommandField): ParadoxLocalisationCommandFieldReference? {
-		val rangeInElement = element.commandFieldId?.textRangeInParent?:return null
+		val rangeInElement = element.commandFieldId?.textRangeInParent ?: return null
 		return ParadoxLocalisationCommandFieldReference(element, rangeInElement)
 	}
 	//endregion

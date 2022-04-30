@@ -796,10 +796,10 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
           case 34: 
             { //如果匹配到的文本以等号结尾，则将空白之前的部分解析为VARIABLE_NAME_ID，否则将其解析为VARIABLE_REFERENCE_ID
 	CharSequence text = yytext();
-	if(text.charAt(text.length() -1) == '='){
+	  int length = text.length();
+	if(text.charAt(length -1) == '='){
 	  //计算需要回退的长度
 	  int n = 1;
-	  int length = text.length();
 	  for (int i = length - 2; i > 0; i--) {
 	    char c = text.charAt(i);
 		if(!Character.isWhitespace(c)) break;

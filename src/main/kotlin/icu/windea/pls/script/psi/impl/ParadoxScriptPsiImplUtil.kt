@@ -1,5 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
+import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -9,6 +10,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createValue
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createVariableName
 import icu.windea.pls.script.reference.*
+import icu.windea.pls.script.structureView.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 import javax.swing.*
@@ -23,6 +25,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.scriptVariableIcon
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: ParadoxScriptVariable): ItemPresentation{
+		return ParadoxScriptVariableTreeElement(element)
 	}
 	
 	@JvmStatic
@@ -76,6 +83,11 @@ object ParadoxScriptPsiImplUtil {
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
 		if(element.definitionInfo != null) return PlsIcons.definitionIcon
 		return PlsIcons.scriptPropertyIcon
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation{
+		return ParadoxScriptPropertyTreeElement(element)
 	}
 	
 	@JvmStatic
@@ -202,6 +214,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.scriptValueIcon
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: ParadoxScriptValue): ItemPresentation{
+		return ParadoxScriptValueTreeElement(element)
 	}
 	
 	@JvmStatic

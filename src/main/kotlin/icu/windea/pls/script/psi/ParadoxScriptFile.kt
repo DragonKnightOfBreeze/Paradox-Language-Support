@@ -1,11 +1,13 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.extapi.psi.*
+import com.intellij.navigation.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
+import icu.windea.pls.script.structureView.*
 import javax.swing.*
 
 class ParadoxScriptFile(
@@ -15,6 +17,10 @@ class ParadoxScriptFile(
 	
 	override fun getStub(): ParadoxScriptFileStub? {
 		return super.getStub().cast()
+	}
+	
+	override fun getPresentation(): ItemPresentation {
+		return ParadoxScriptFileTreeElement(this)
 	}
 	
 	override fun getIcon(flags: Int): Icon? {

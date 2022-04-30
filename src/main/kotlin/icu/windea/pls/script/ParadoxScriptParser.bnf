@@ -35,7 +35,7 @@ variable ::= variable_name variable_separator variable_value {
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptVariableStub"
-  methods=[getName setName getNameIdentifier getIcon getValue getUnquotedValue getValueType]
+  methods=[getIcon getName setName getNameIdentifier getValue getUnquotedValue getValueType]
 }
 
 variable_name ::= VARIABLE_NAME_ID{
@@ -57,7 +57,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getName setName getNameIdentifier getIcon getValue getTruncatedValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
+  methods=[getIcon getPresentation getName setName getNameIdentifier getValue getTruncatedValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
 }
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
   methods=[getValue setValue getReference]
@@ -72,7 +72,7 @@ value ::= variable_reference | boolean | number | string | color | block | advan
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
   ]
-  methods=[getIcon getValue getTruncatedValue]
+  methods=[getIcon getPresentation getValue getTruncatedValue]
 }
 variable_reference ::= VARIABLE_REFERENCE_ID {
   extends=value

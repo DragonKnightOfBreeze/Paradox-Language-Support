@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
@@ -18,6 +19,12 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   ParadoxScriptPropertyValue getPropertyValue();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  @NotNull
   String getName();
 
   @NotNull
@@ -25,9 +32,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @Nullable
   PsiElement getNameIdentifier();
-
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
 
   @Nullable
   String getValue();
