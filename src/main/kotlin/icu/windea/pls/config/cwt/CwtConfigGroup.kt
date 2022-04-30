@@ -496,7 +496,7 @@ class CwtConfigGroup(
 		//判断element.value是否需要是block
 		val blockConfig = typeConfig.block
 		val elementBlock = element.block
-		if(blockConfig){
+		if(blockConfig) {
 			if(elementBlock == null) return false
 		} else {
 			if(elementBlock != null) return false
@@ -537,7 +537,7 @@ class CwtConfigGroup(
 		} else {
 			var skipResult = false
 			for(keys in skipRootKeyConfig) {
-				if(keys.matchEntirePath(elementPath.parentSubPaths)) {
+				if(keys.matchEntirePath(elementPath.subPaths, matchesParent = true)) {
 					skipResult = true
 					break
 				}
@@ -595,9 +595,9 @@ class CwtConfigGroup(
 		val definitionConfig = definitions.get(type)
 		val rootKey = elementName
 		return ParadoxDefinitionInfo(
-			name, type, typeConfig, subtypes, subtypeConfigs, 
+			name, type, typeConfig, subtypes, subtypeConfigs,
 			localisation, localisationConfig, pictures, picturesConfig,
-			definition, definitionConfig, rootKey, elementPath,  gameType
+			definition, definitionConfig, rootKey, elementPath, gameType
 		)
 	}
 	

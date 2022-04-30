@@ -8,19 +8,20 @@ import java.util.LinkedList
 typealias ParadoxDefinitionPath = ParadoxElementPath<ParadoxDefinitionProperty, ParadoxScriptFile>
 
 /**
- * 定义或定义属性相对于所属文件或定义的路径。
+ * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
  *
  * 示例：
  * * （空字符串） - 对应所属文件或定义本身。
  * * `foo` - 对应所属文件或定义中名为"foo"的属性。
  * * `foo/bar` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性
+ * * `foo/"bar"` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性（在脚本中用引号括起）
  * * `#` - 对应所属定义的值（非代码块）
  * * `-` - 对应所属文件或定义的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
  * * `foo/-` 对应文所属文件或定义中名为"foo"的属性的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
  */
 @Suppress("unused")
 class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
-	val subPaths: List<String>,
+	val originalSubPaths: List<String>, //注意：这里传入的子路径需要保留可能的括起的双引号
 	val pointer: SmartPsiElementPointer<out E>,
 	val rootPointer: SmartPsiElementPointer<out R>?,
 ) : Iterable<String> {
@@ -34,16 +35,16 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 			}
 			var current: PsiElement = element
 			var depth = 0
-			val subPaths = LinkedList<String>()
-			while(current !is ParadoxScriptFile && current !is ParadoxScriptRootBlock) {
+			val originalSubPaths = LinkedList<String>()
+			while(current !is ParadoxScriptFile) {
 				when {
 					current is PsiFile -> return resolveEmptyPath(element) //不应当出现
 					current is ParadoxScriptProperty -> {
-						subPaths.addFirst(current.name)
+						originalSubPaths.addFirst(current.propertyKey.text) //这里需要使用原始文本
 						depth++
 					}
 					current is ParadoxScriptValue && current.isLonelyValue() -> {
-						subPaths.addFirst("-")
+						originalSubPaths.addFirst("-")
 						depth++
 					}
 				}
@@ -54,7 +55,7 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 			val file = current as ParadoxScriptFile
 			val pointer = element.createPointer(file)
 			val rootPointer = file.createPointer(file)
-			return ParadoxElementPath(subPaths, pointer, rootPointer)
+			return ParadoxElementPath(originalSubPaths, pointer, rootPointer)
 		}
 		
 		/**
@@ -65,7 +66,7 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 			var depth = 0
 			val subPaths = LinkedList<String>()
 			var definition: ParadoxDefinitionProperty? = null
-			while(current !is ParadoxScriptFile && current !is ParadoxScriptRootBlock) {
+			while(current !is ParadoxScriptFile) {
 				when {
 					current is PsiFile -> return resolveEmptyPath(element) //不应当出现
 					current is ParadoxScriptProperty -> {
@@ -77,7 +78,7 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 							definition = current
 							break
 						}
-						subPaths.addFirst(current.name)
+						subPaths.addFirst(current.propertyKey.text) //这里需要使用原始文本
 						depth++
 					}
 					current is ParadoxScriptValue && current.isLonelyValue() -> {
@@ -100,20 +101,20 @@ class ParadoxElementPath<E : PsiElement, R : PsiElement> private constructor(
 		}
 	}
 	
+	val originalPath = originalSubPaths.joinToString("/")
+	val subPaths = originalSubPaths.map { it.unquote() }
 	val path = subPaths.joinToString("/")
-	val length = subPaths.size
-	val parentSubPaths = subPaths.dropLast(1)
-	val parent = path.substringBeforeLast("/")
+	val length = originalSubPaths.size
 	
 	fun isEmpty(): Boolean {
 		return length == 0
 	}
 	
 	override fun iterator(): Iterator<String> {
-		return subPaths.iterator()
+		return originalSubPaths.iterator()
 	}
 	
 	override fun toString(): String {
-		return path
+		return originalPath
 	}
 }

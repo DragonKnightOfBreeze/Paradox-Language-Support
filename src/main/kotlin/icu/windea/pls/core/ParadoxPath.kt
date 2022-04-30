@@ -4,7 +4,7 @@ import com.google.common.cache.LoadingCache
 import icu.windea.pls.*
 
 /**
- * 文件或目录相对于游戏或模组根路径的路径。
+ * 文件或目录相对于游戏或模组根路径的路径。保留大小写。
  *
  * 示例：
  * * `common/buildings/00_capital_buildings.txt`
@@ -25,12 +25,11 @@ class ParadoxPath private constructor(
 	}
 	
 	val subPaths = path.split("/")
-	val length = subPaths.size
-	val parentSubPaths = subPaths.dropLast(1)
-	val parent = path.substringBeforeLast("/")
-	val root = parentSubPaths.firstOrNull().orEmpty()
+	val parent = path.substringBeforeLast("/", "")
+	val root = path.substringBefore("/", "")
 	val fileName = subPaths.lastOrNull().orEmpty()
-	val fileExtension = fileName.substringAfterLast('.')
+	val fileExtension = fileName.substringAfterLast('.',"")
+	val length = subPaths.size
 	
 	fun isEmpty(): Boolean {
 		return length == 0

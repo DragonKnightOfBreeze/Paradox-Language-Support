@@ -39,7 +39,7 @@ data class CwtDefinitionConfig(
 	/**
 	 * 根据路径解析对应的属性配置列表。
 	 */
-	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxElementPath,configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
+	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*,*>,configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return propertyConfigsCache.getOrPut(cacheKey) {
 			when {
@@ -48,7 +48,8 @@ data class CwtDefinitionConfig(
 				else -> {
 					var result = getMergeConfigs(subtypes)
 					var isTop = true
-					for((key, quoted) in path.subPathInfos) {
+					for(key in path.originalSubPaths) {
+						val isQuoted = key.isQuoted()
 						//如果是顶级的就不要打平，否则要打平，然后还需要根据是否匹配keyExpression进行过滤
 						//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left
 						//则需要内联这些规则
@@ -56,9 +57,9 @@ data class CwtDefinitionConfig(
 							isTop = false
 							val nextResult = SmartList<CwtPropertyConfig>()
 							for(config in result) {
-								if(matchesKey(config.keyExpression, key, quoted, configGroup)) {
+								if(matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
 									//如果valueExpressionType是single_alias_right或alias_match_left,则要进行内联
-									val inlined = inlineConfig(key, quoted, config, configGroup, nextResult)
+									val inlined = inlineConfig(key, isQuoted, config, configGroup, nextResult)
 									if(!inlined) nextResult.add(config)
 								}
 							}
@@ -69,9 +70,9 @@ data class CwtDefinitionConfig(
 								val configs = r.properties
 								if(configs != null && configs.isNotEmpty()) {
 									for(config in configs) {
-										if(matchesKey(config.keyExpression, key, quoted, configGroup)) {
+										if(matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
 											//如果valueExpressionType是single_alias_right或alias_match_left,则要进行内联
-											val inlined = inlineConfig(key, quoted, config, configGroup, nextResult)
+											val inlined = inlineConfig(key, isQuoted, config, configGroup, nextResult)
 											if(!inlined) nextResult.add(config)
 										}
 									}
@@ -89,7 +90,7 @@ data class CwtDefinitionConfig(
 	/**
 	 * 根据路径解析对应的子属性配置列表。（过滤重复的）
 	 */
-	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
+	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*,*>, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return childPropertyConfigsCache.getOrPut(cacheKey) {
 			when {
@@ -112,7 +113,7 @@ data class CwtDefinitionConfig(
 	/**
 	 * 根据路径解析对应的子值配置列表。（过滤重复的）
 	 */
-	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup): List<CwtValueConfig> {
+	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath<*,*>, configGroup: CwtConfigGroup): List<CwtValueConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}$path"
 		return childValueConfigsCache.getOrPut(cacheKey) {
 			when {

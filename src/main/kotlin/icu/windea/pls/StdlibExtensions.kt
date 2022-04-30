@@ -108,13 +108,15 @@ fun String.containsBlankLine(): Boolean {
 	return false
 }
 
-fun String.quote() = if(startsWith('"') && endsWith('"')) this else "\"$this\""
+fun String.isQuoted() = length >= 2 && surroundsWith('"', '"')
+
+fun String.quote() = if(isQuoted()) this else "\"$this\""
 
 fun String.quoteIf(quoted: Boolean) = if(quoted) "\"$this\"" else this //不判断之前是否已经用引号括起，依据quoted 
 
 fun String.quoteIfNecessary() = if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
 
-fun String.unquote() = if(length >= 2 && startsWith('"') && endsWith('"')) substring(1, length - 1) else this
+fun String.unquote() = if(isQuoted()) substring(1, length - 1) else this
 
 fun String.truncate(limit: Int) = if(this.length <= limit) this else this.take(limit) + "..."
 
@@ -224,11 +226,13 @@ fun String.matchesPath(other: String, ignoreCase: Boolean = true): Boolean {
  * 判断当前子路径列表是否完全匹配另一个子路径列表（相同）。使用"/"作为路径分隔符。
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  * @param useAnyWildcard 使用`"any"`字符串作为子路径通配符。表示匹配任意子路径
+ * @param matchesParent 是否需要仅匹配另一个路径的父路径。
  */
-fun List<String>.matchEntirePath(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true): Boolean {
+fun List<String>.matchEntirePath(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true, matchesParent: Boolean = false): Boolean {
 	val size = size
-	val otherSize = other.size
-	if(size != otherSize) return false
+	val otherSize = if(matchesParent) other.size - 1 else other.size
+	if(size != otherSize) return false //路径长度不一致
+	if(otherSize < 0) return false //需要匹配另一个路径的父路径而另一个路径为空
 	for(index in 0 until size) {
 		val path = if(ignoreCase) this[index].lowercase() else this[index]
 		if(useAnyWildcard && path == "any") continue
@@ -398,11 +402,11 @@ inline val <T : Enum<T>> Class<T>.enumSharedConstants get() = enumValuesCache[th
 //endregion
 
 //region Collection Extensions
-fun <T> Collection<T>.parallelForEach(action:(T)->Unit){
+fun <T> Collection<T>.parallelForEach(action: (T) -> Unit) {
 	return this.parallelStream().forEach(action)
 }
 
-fun <K,V> Map<K,V>.parallelForEach(action:(Map.Entry<K,V>)->Unit){
+fun <K, V> Map<K, V>.parallelForEach(action: (Map.Entry<K, V>) -> Unit) {
 	return this.entries.parallelStream().forEach(action)
 }
 
