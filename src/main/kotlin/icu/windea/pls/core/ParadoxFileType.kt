@@ -11,6 +11,6 @@ enum class ParadoxFileType(
 	Dds("dds", "Dds File");
 	
 	override fun toString(): String {
-		return description
+		return id
 	}
 }

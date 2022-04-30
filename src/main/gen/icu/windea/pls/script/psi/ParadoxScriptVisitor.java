@@ -4,10 +4,14 @@ package icu.windea.pls.script.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
 import com.intellij.psi.PsiListLikeElement;
+import com.intellij.psi.PsiLiteralValue;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
+
+  public void visitAdvanceValue(@NotNull ParadoxScriptAdvanceValue o) {
+    visitValue(o);
+  }
 
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
@@ -19,12 +23,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitCode(@NotNull ParadoxScriptCode o) {
-    visitStringValue(o);
+    visitValue(o);
   }
 
   public void visitColor(@NotNull ParadoxScriptColor o) {
-    visitStringValue(o);
-    // visitPsiLiteralValue(o);
+    visitValue(o);
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
@@ -41,6 +44,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
     visitNamedElement(o);
+    // visitExpression(o);
     // visitParadoxDefinitionProperty(o);
   }
 
@@ -57,20 +61,17 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitString(@NotNull ParadoxScriptString o) {
-    visitStringValue(o);
-    // visitPsiLiteralValue(o);
-  }
-
-  public void visitStringValue(@NotNull ParadoxScriptStringValue o) {
     visitValue(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
     visitPsiLiteralValue(o);
+    // visitExpression(o);
   }
 
   public void visitVariable(@NotNull ParadoxScriptVariable o) {
     visitNamedElement(o);
+    // visitExpression(o);
   }
 
   public void visitVariableName(@NotNull ParadoxScriptVariableName o) {

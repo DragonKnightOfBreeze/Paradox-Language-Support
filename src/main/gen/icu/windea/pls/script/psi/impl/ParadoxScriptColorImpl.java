@@ -9,9 +9,10 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import icu.windea.pls.core.ParadoxValueType;
 import java.awt.Color;
 
-public class ParadoxScriptColorImpl extends ParadoxScriptStringValueImpl implements ParadoxScriptColor {
+public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements ParadoxScriptColor {
 
   public ParadoxScriptColorImpl(@NotNull ASTNode node) {
     super(node);
@@ -43,6 +44,18 @@ public class ParadoxScriptColorImpl extends ParadoxScriptStringValueImpl impleme
   @Override
   public void setColor(@NotNull Color color) {
     ParadoxScriptPsiImplUtil.setColor(this, color);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxValueType getValueType() {
+    return ParadoxScriptPsiImplUtil.getValueType(this);
+  }
+
+  @Override
+  @Nullable
+  public String getType() {
+    return ParadoxScriptPsiImplUtil.getType(this);
   }
 
 }

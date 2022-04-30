@@ -11,6 +11,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -91,6 +92,18 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Nullable
   public ParadoxScriptBlock getBlock() {
     return ParadoxScriptPsiImplUtil.getBlock(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxValueType getValueType() {
+    return ParadoxScriptPsiImplUtil.getValueType(this);
+  }
+
+  @Override
+  @Nullable
+  public String getType() {
+    return ParadoxScriptPsiImplUtil.getType(this);
   }
 
 }

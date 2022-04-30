@@ -8,7 +8,7 @@ import com.intellij.psi.PsiLiteralValue;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface ParadoxScriptValue extends PsiLiteralValue {
+public interface ParadoxScriptValue extends PsiLiteralValue, ParadoxScriptExpression {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

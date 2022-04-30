@@ -13,6 +13,6 @@ enum class ParadoxRootType(
 	TweakerGuiAssets("tweakergui_assets", "Tweaker GUI Assets");
 	
 	override fun toString(): String {
-		return description
+		return id
 	}
 }

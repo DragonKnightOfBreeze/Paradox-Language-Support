@@ -6,13 +6,14 @@ import icu.windea.pls.localisation.psi.*
 enum class ParadoxLocalisationCategory(
 	override val id: String,
 	override val description: String,
+	override val text: String,
 	val flag: Boolean
-) : IdAware, DescriptionAware {
-	Localisation("localisation", "Localisation", true),
-	SyncedLocalisation("localisation_synced", "Synced Localisation", false);
+) : IdAware, DescriptionAware, TextAware {
+	Localisation("localisation", "Localisation", "localisation", true),
+	SyncedLocalisation("localisation_synced", "Synced Localisation", "localisation_synced", false);
 	
 	override fun toString(): String {
-		return description
+		return text
 	}
 	
 	companion object {

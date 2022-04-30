@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi.impl
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createValue
@@ -50,11 +51,16 @@ object ParadoxScriptPsiImplUtil {
 	fun getUnquotedValue(element: ParadoxScriptVariable): String? {
 		return element.variableValue?.text
 	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptVariable): ParadoxValueType? {
+		return element.variableValue?.value?.valueType
+	}
 	//endregion
 	
 	//region ParadoxScriptVariableName
 	@JvmStatic
-	fun getValue(element:ParadoxScriptVariableName):String{
+	fun getValue(element: ParadoxScriptVariableName): String {
 		return element.text
 	}
 	
@@ -118,16 +124,30 @@ object ParadoxScriptPsiImplUtil {
 	fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
 		return element.propertyValue?.value?.castOrNull()
 	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptProperty): ParadoxValueType? {
+		return element.propertyValue?.value?.valueType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptProperty): String? {
+		val definitionInfo = element.definitionInfo
+		if(definitionInfo != null) {
+			return definitionInfo.typesText
+		}
+		return null //TODO 支持定义元素的类型
+	}
 	//endregion
 	
 	//region ParadoxScriptPropertyKey
 	@JvmStatic
-	fun getValue(element:ParadoxScriptPropertyKey):String{
+	fun getValue(element: ParadoxScriptPropertyKey): String {
 		return element.text.unquote()
 	}
 	
 	@JvmStatic
-	fun setValue(element: ParadoxScriptPropertyKey,value:String):ParadoxScriptPropertyKey{
+	fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
 		element.replace(createPropertyKey(element.project, value))
 		return element
 	}
@@ -154,12 +174,17 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptVariableReferenceReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
-		return ParadoxScriptVariableReferenceReference(element,rangeInElement)
+		return ParadoxScriptVariableReferenceReference(element, rangeInElement)
 	}
 	
 	@JvmStatic
 	fun getReferenceValue(element: ParadoxScriptVariableReference): ParadoxScriptValue? {
 		return element.reference.resolve()?.variableValue?.value
+	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptVariableReference): ParadoxValueType? {
+		return element.reference.resolve()?.variableValue?.value?.valueType
 	}
 	//endregion
 	
@@ -185,6 +210,16 @@ object ParadoxScriptPsiImplUtil {
 	fun getBooleanValue(element: ParadoxScriptBoolean): Boolean {
 		return element.value.toBooleanYesNo()
 	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptBoolean): ParadoxValueType {
+		return ParadoxValueType.BooleanType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptBoolean): String? {
+		return null //TODO 支持定义元素的类型
+	}
 	//endregion
 	
 	//region ParadoxScriptInt
@@ -192,12 +227,32 @@ object ParadoxScriptPsiImplUtil {
 	fun getIntValue(element: ParadoxScriptInt): Int {
 		return element.value.toIntOrNull() ?: 0
 	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptInt): ParadoxValueType {
+		return ParadoxValueType.IntType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptInt): String? {
+		return null //TODO 支持定义元素的类型
+	}
 	//endregion
 	
 	//region ParadoxScriptFloat
 	@JvmStatic
 	fun getFloatValue(element: ParadoxScriptFloat): Float {
 		return element.value.toFloatOrNull() ?: 0f
+	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptFloat): ParadoxValueType {
+		return ParadoxValueType.FloatType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptFloat): String? {
+		return null //TODO 支持定义元素的类型
 	}
 	//endregion
 	
@@ -222,6 +277,16 @@ object ParadoxScriptPsiImplUtil {
 	fun getReference(element: ParadoxScriptString): ParadoxScriptStringReference {
 		val rangeInElement = TextRange(0, element.textLength) //包括可能的括起字符串的双引号
 		return ParadoxScriptStringReference(element, rangeInElement)
+	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptString): ParadoxValueType {
+		return ParadoxValueType.StringType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptString): String? {
+		return null //TODO 支持定义元素的类型
 	}
 	//endregion
 	
@@ -284,6 +349,16 @@ object ParadoxScriptPsiImplUtil {
 	private fun ColorHsv.toColor() = Color(ColorConversions.convertHSVtoRGB(this))
 	
 	//private fun Color.toColorHsv() = ColorConversions.convertRGBtoHSV(this.rgb)
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptColor): ParadoxValueType {
+		return ParadoxValueType.ColorType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptColor): String? {
+		return null //TODO 支持定义元素的类型
+	}
 	//endregion
 	
 	//region ParadoxScriptBlock
@@ -339,6 +414,28 @@ object ParadoxScriptPsiImplUtil {
 	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
 		//如果存在元素为property，则认为所有合法的元素都是property
 		return if(element.isObject) element.propertyList else element.valueList
+	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptBlock): ParadoxValueType {
+		return ParadoxValueType.BlockType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptBlock): String? {
+		return null //TODO 支持定义元素的类型
+	}
+	//endregion
+	
+	//region ParadoxScriptCode
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptCode): ParadoxValueType {
+		return ParadoxValueType.CodeType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptCode): String? {
+		return null //TODO 支持定义元素的类型
 	}
 	//endregion
 }

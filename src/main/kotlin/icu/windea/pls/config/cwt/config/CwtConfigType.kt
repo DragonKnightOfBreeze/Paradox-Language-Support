@@ -21,5 +21,9 @@ enum class CwtConfigType(
 	ModifierCategory("modifier category"),
 	Modifier("modifier"),
 	Scope("scope"),
-	ScopeGroup("scope group")
+	ScopeGroup("scope group");
+	
+	override fun toString(): String {
+		return text
+	}
 }

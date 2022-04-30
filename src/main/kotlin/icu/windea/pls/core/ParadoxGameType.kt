@@ -21,7 +21,7 @@ enum class ParadoxGameType(
 	val exeFileName = "$id.exe"
 	
 	override fun toString(): String {
-		return description
+		return id
 	}
 	
 	companion object {

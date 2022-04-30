@@ -6,9 +6,10 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptExpression, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();
@@ -38,5 +39,11 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @Nullable
   ParadoxScriptBlock getBlock();
+
+  @Nullable
+  ParadoxValueType getValueType();
+
+  @Nullable
+  String getType();
 
 }

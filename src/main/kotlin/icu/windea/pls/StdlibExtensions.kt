@@ -198,9 +198,9 @@ fun <K, V> Map<K, V>.findOrNull(predicate: (Map.Entry<K, V>) -> Boolean): V? {
 	return null
 }
 
-inline fun <reified T> Any?.cast(): T = this as T
+inline fun <T> Any?.cast(): T = this as T
 
-inline fun <reified T> Any?.castOrNull(): T? = this as? T
+inline fun <T> Any?.castOrNull(): T? = this as? T
 
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) block(this) else this
 

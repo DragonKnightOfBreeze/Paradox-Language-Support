@@ -4,10 +4,10 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
+import icu.windea.pls.core.ParadoxValueType;
 import icu.windea.pls.script.reference.ParadoxScriptStringReference;
 
-public interface ParadoxScriptString extends ParadoxScriptStringValue, PsiLiteralValue {
+public interface ParadoxScriptString extends ParadoxScriptValue {
 
   @NotNull
   String getValue();
@@ -20,5 +20,11 @@ public interface ParadoxScriptString extends ParadoxScriptStringValue, PsiLitera
 
   @NotNull
   String getStringValue();
+
+  @NotNull
+  ParadoxValueType getValueType();
+
+  @Nullable
+  String getType();
 
 }

@@ -10,7 +10,7 @@ enum class CwtSeparatorType(
 	NOT_EQUAL("<>", "Not Equal");
 	
 	override fun toString(): String {
-		return description
+		return id
 	}
 	
 	companion object {

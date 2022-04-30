@@ -8,6 +8,7 @@ import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
 
+  IElementType ADVANCE_VALUE = new ParadoxScriptElementType("ADVANCE_VALUE");
   IElementType BLOCK = new ParadoxScriptElementType("BLOCK");
   IElementType BOOLEAN = new ParadoxScriptElementType("BOOLEAN");
   IElementType CODE = new ParadoxScriptElementType("CODE");
@@ -20,7 +21,6 @@ public interface ParadoxScriptElementTypes {
   IElementType PROPERTY_VALUE = new ParadoxScriptElementType("PROPERTY_VALUE");
   IElementType ROOT_BLOCK = new ParadoxScriptElementType("ROOT_BLOCK");
   IElementType STRING = new ParadoxScriptElementType("STRING");
-  IElementType STRING_VALUE = new ParadoxScriptElementType("STRING_VALUE");
   IElementType VALUE = new ParadoxScriptElementType("VALUE");
   IElementType VARIABLE = ParadoxScriptStubElementTypes.getVariableType("VARIABLE");
   IElementType VARIABLE_NAME = new ParadoxScriptElementType("VARIABLE_NAME");

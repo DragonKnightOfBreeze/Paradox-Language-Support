@@ -11,6 +11,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptVariableStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -80,6 +81,12 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
   @Nullable
   public String getUnquotedValue() {
     return ParadoxScriptPsiImplUtil.getUnquotedValue(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxValueType getValueType() {
+    return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
 }

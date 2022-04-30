@@ -9,9 +9,10 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import icu.windea.pls.core.ParadoxValueType;
 import icu.windea.pls.script.reference.ParadoxScriptStringReference;
 
-public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implements ParadoxScriptString {
+public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
 
   public ParadoxScriptStringImpl(@NotNull ASTNode node) {
     super(node);
@@ -50,6 +51,18 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStringValueImpl implem
   @NotNull
   public String getStringValue() {
     return ParadoxScriptPsiImplUtil.getStringValue(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxValueType getValueType() {
+    return ParadoxScriptPsiImplUtil.getValueType(this);
+  }
+
+  @Override
+  @Nullable
+  public String getType() {
+    return ParadoxScriptPsiImplUtil.getType(this);
   }
 
 }

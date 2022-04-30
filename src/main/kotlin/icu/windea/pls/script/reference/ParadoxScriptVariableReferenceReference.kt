@@ -27,8 +27,7 @@ class ParadoxScriptVariableReferenceReference(
 		//首先尝试从当前文件中查找引用，然后从全局范围中查找引用
 		val name = element.name
 		val project = element.project
-		val file = element.containingFile
-		return findScriptVariableInFile(name, file, element)
+		return findScriptVariableInFile(name, element)
 			?: findScriptVariable(name, project)
 	}
 	
@@ -37,7 +36,7 @@ class ParadoxScriptVariableReferenceReference(
 		val name = element.name
 		val project = element.project
 		val file = element.containingFile
-		return findScriptVariablesInFile(name, file, element)
+		return findScriptVariablesInFile(name, element)
 			.ifEmpty { findScriptVariables(name, project) }
 			.mapToArray { PsiElementResolveResult(it) }
 	}
@@ -45,8 +44,7 @@ class ParadoxScriptVariableReferenceReference(
 	override fun getVariants(): Array<out Any> {
 		//同时需要同时查找当前文件中的和全局的
 		val project = element.project
-		val file = element.containingFile
-		return (findScriptVariablesInFile(file) + findScriptVariables(project)).mapToArray {
+		return (findScriptVariablesInFile(element) + findScriptVariables(project)).mapToArray {
 			val name = it.name
 			val icon = it.icon
 			val typeText = it.containingFile.name

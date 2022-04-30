@@ -109,6 +109,14 @@ fun PsiElement.isQuoted(): Boolean {
 	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
 }
 
+/**
+ * 判断当前scriptValue是否是独立的value（不作为变量或属性的值）。
+ */
+fun ParadoxScriptValue.isLonelyValue(): Boolean {
+	val parent = this.parent
+	return parent is PsiFile || parent is ParadoxScriptBlock
+}
+
 val CwtProperty.configType: CwtConfigType? get() = doGetConfigType(this)
 
 private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
@@ -182,9 +190,8 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 }
 
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	//NOTE cwt文件中定义的definition的propertyPath的minDepth是4（跳过3个rootKey）
-	//NOTE 这个方法有可能导致ProcessCanceledException，因为调用element.name导致！
-	val propertyPath = element.resolvePropertyPath(4) ?: return null
+	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
+	val propertyPath = ParadoxElementPath.resolveFromFile(element, 4) ?: return null
 	val fileInfo = element.fileInfo ?: return null
 	val path = fileInfo.path
 	val gameType = fileInfo.gameType
@@ -205,15 +212,15 @@ private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): Par
 
 private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	//NOTE 注意这里获得的definitionInfo可能会过时！因为对应的type和subtypes可能基于其他的definitionProperty
-	//NOTE 这里的definitionProperty可能是scriptFile也可能是scriptProperty
-	val (_, definitionInfo, path) = element.findParentDefinitionAndExtraInfo() ?: return null
-	//推断scope：匹配的subtypeConfig上的第一个存在的名为push_scope的option的值，可能为null
+	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
+	val definition = elementPath.rootPointer?.element ?: return null
+	val definitionInfo = definition.definitionInfo ?: return null
 	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
 	val pointer = element.createPointer()
 	val gameType = definitionInfo.gameType
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType)
-	return ParadoxDefinitionPropertyInfo(path, scope, gameType, definitionInfo, configGroup, pointer)
+	return ParadoxDefinitionPropertyInfo(elementPath, scope, gameType, definitionInfo, configGroup, pointer)
 }
 
 val ParadoxScriptProperty.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
@@ -261,89 +268,6 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 	}
 }
 
-fun ParadoxScriptValue.getType(): String? {
-	return when(this) {
-		is ParadoxScriptBlock -> "block"
-		is ParadoxScriptString -> "string"
-		is ParadoxScriptBoolean -> "boolean"
-		is ParadoxScriptInt -> "int"
-		is ParadoxScriptFloat -> "float"
-		is ParadoxScriptColor -> "color"
-		is ParadoxScriptCode -> "code"
-		else -> null
-	}
-}
-
-fun ParadoxScriptValue.checkType(type: String): Boolean {
-	return when(type) {
-		"block" -> this is ParadoxScriptBlock
-		"string" -> this is ParadoxScriptString
-		"boolean" -> this is ParadoxScriptBoolean
-		"int" -> this is ParadoxScriptInt
-		"float" -> this is ParadoxScriptFloat
-		"color" -> this is ParadoxScriptColor
-		"code" -> this is ParadoxScriptCode
-		else -> false
-	}
-}
-
-fun ParadoxScriptValue.isNullLike(): Boolean {
-	return when {
-		this is ParadoxScriptBlock -> this.isEmpty || this.isAlwaysYes() //兼容always=yes
-		this is ParadoxScriptString -> this.textMatches("")
-		this is ParadoxScriptNumber -> this.text.toIntOrNull() == 0 //兼容0.0和0.00这样的情况
-		this is ParadoxScriptBoolean -> this.textMatches("no")
-		else -> false
-	}
-}
-
-fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
-	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
-}
-
-fun PsiElement.resolvePath(): ParadoxPath? {
-	val subPaths = LinkedList<String>()
-	var current = this
-	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
-		when {
-			current is ParadoxScriptProperty -> {
-				subPaths.addFirst(current.name)
-			}
-			current is ParadoxScriptValue -> {
-				val parent = current.parent ?: break
-				if(parent is ParadoxScriptBlock) {
-					subPaths.addFirst(parent.indexOfChild(current).toString())
-				}
-				current = parent
-			}
-		}
-		current = current.parent ?: break
-	}
-	return if(subPaths.isEmpty()) null else ParadoxPath.resolve(subPaths)
-}
-
-fun ParadoxDefinitionProperty.resolvePropertyPath(maxDepth: Int = -1): ParadoxPropertyPath? {
-	if(this is ParadoxScriptFile) return ParadoxPropertyPath.EmptyPath
-	
-	val subPaths = LinkedList<String>()
-	val subPathInfos = emptyList<ParadoxPropertyPathInfo>() //TODO 目前不需要获取
-	var current: PsiElement = this
-	var depth = 0
-	while(current !is PsiFile && current !is ParadoxScriptRootBlock) {
-		when {
-			current is ParadoxScriptProperty -> {
-				subPaths.addFirst(current.name)
-				depth++
-			}
-			//忽略scriptValue
-		}
-		//如果发现深度超出指定的最大深度，则直接返回null
-		if(maxDepth != -1 && maxDepth < depth) return null
-		current = current.parent ?: break
-	}
-	return ParadoxPropertyPath(subPaths, subPathInfos)
-}
-
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)
 
 private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
@@ -389,90 +313,34 @@ val ParadoxLocalisationSequentialNumber.sequentialNumberConfig: ParadoxSequentia
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig?
 	get() = getInternalConfig().colorMap[name]
+//endregion
 
-fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
-	return properties.find { it.name.equals(propertyName, ignoreCase) }
+//region Type Extensions
+fun ParadoxScriptValue.inferValueType(): String? {
+	return when(this) {
+		is ParadoxScriptBoolean -> "boolean"
+		is ParadoxScriptInt -> "int"
+		is ParadoxScriptFloat -> "float"
+		is ParadoxScriptString -> "string"
+		is ParadoxScriptColor -> "color"
+		is ParadoxScriptBlock -> "block"
+		is ParadoxScriptCode -> "code"
+		else -> null
+	}
 }
 
-//fun ParadoxDefinitionProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
-//	return properties.filter { it.name.equals(propertyName, ignoreCase) }
-//}
-//
-//fun ParadoxDefinitionProperty.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
-//	return values.find { it.value.equals(value, ignoreCase) }
-//}
-//
-//fun ParadoxDefinitionProperty.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
-//	return values.filter { it.value.equals(value, ignoreCase) }
-//}
-//
-//fun ParadoxScriptBlock.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
-//	return propertyList.find { it.name.equals(propertyName, ignoreCase) }
-//}
-//
-//fun ParadoxScriptBlock.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
-//	return propertyList.filter { it.name.equals(propertyName, ignoreCase) }
-//}
-//
-//fun ParadoxScriptBlock.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
-//	return valueList.find { it.value.equals(value, ignoreCase) }
-//}
-//
-//fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
-//	return valueList.filter { it.value.equals(value, ignoreCase) }
-//}
-
-/**
- * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
- */
-fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
-	var current: PsiElement = this
-	do {
-		if(current is ParadoxDefinitionProperty) {
-			return current
-		}
-		current = current.parent ?: break
-	} while(current !is PsiFile)
-	return null
+fun ParadoxScriptValue.isNullLike(): Boolean {
+	return when {
+		this is ParadoxScriptBlock -> this.isEmpty || this.isAlwaysYes() //兼容always=yes
+		this is ParadoxScriptString -> this.textMatches("")
+		this is ParadoxScriptNumber -> this.text.toIntOrNull() == 0 //兼容0.0和0.00这样的情况
+		this is ParadoxScriptBoolean -> this.textMatches("no")
+		else -> false
+	}
 }
 
-/**
- * 得到上一级definitionProperty，跳过正在填写的，可能为自身，可能为null，可能也是definition。
- */
-fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty? {
-	var current: PsiElement = this
-	do {
-		if(current is ParadoxScriptRootBlock) {
-			return (current.parent ?: break) as ParadoxDefinitionProperty
-		} else if(current is ParadoxScriptBlock) {
-			return (current.parent.parent ?: break) as ParadoxDefinitionProperty
-		}
-		current = current.parent ?: break
-	} while(current !is PsiFile)
-	return null
-}
-
-/**
- * 得到上一级definition，可能为自身，可能为null。
- */
-fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionProperty, ParadoxDefinitionInfo, ParadoxPropertyPath>? {
-	var current: PsiElement = this
-	val subPaths = LinkedList<String>()
-	val subPathInfos = LinkedList<ParadoxPropertyPathInfo>()
-	do {
-		if(current is ParadoxDefinitionProperty) {
-			val name = current.name ?: return null
-			val definitionInfo = current.definitionInfo
-			if(definitionInfo != null) {
-				val path = ParadoxPropertyPath(subPaths, subPathInfos)
-				return tupleOf(current, definitionInfo, path)
-			}
-			subPaths.addFirst(name)
-			subPathInfos.addFirst(ParadoxPropertyPathInfo(name, current.isQuoted()))
-		}
-		current = current.parent ?: break
-	} while(current !is PsiFile)
-	return null
+fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
+	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
 }
 //endregion
 
@@ -480,16 +348,13 @@ fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionPrope
 /**
  * 根据名字在指定文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
  * @param name 变量的名字，以"@"开始。
- * @param file 指定的文件。
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，递归向上查找。
  */
-fun findScriptVariableInFile(name: String, file: PsiFile, context: PsiElement): ParadoxScriptVariable? {
-	//仅限脚本文件
-	if(file !is ParadoxScriptFile) return null
+fun findScriptVariableInFile(name: String, context: PsiElement): ParadoxScriptVariable? {
 	//在整个脚本文件中递归向上查找，返回查找到的第一个
 	var result: ParadoxScriptVariable? = null
 	var current = context
-	while(current !is PsiFile) {
+	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
 			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
@@ -506,16 +371,13 @@ fun findScriptVariableInFile(name: String, file: PsiFile, context: PsiElement): 
 /**
  * 根据名字在指定文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
  * @param name 变量的名字，以"@"开始。
- * @param file 指定的文件。
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，向上查找。
  */
-fun findScriptVariablesInFile(name: String, file: PsiFile, context: PsiElement): List<ParadoxScriptVariable> {
-	//仅限脚本文件
-	if(file !is ParadoxScriptFile) return emptyList()
+fun findScriptVariablesInFile(name: String, context: PsiElement): List<ParadoxScriptVariable> {
 	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
 	var result: MutableList<ParadoxScriptVariable>? = null
 	var current = context
-	while(current !is PsiFile) {
+	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
 			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
@@ -534,10 +396,24 @@ fun findScriptVariablesInFile(name: String, file: PsiFile, context: PsiElement):
 /**
  * 在当前文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
  */
-fun findScriptVariablesInFile(file: PsiFile): List<ParadoxScriptVariable> {
-	//在所在文件中递归查找（不一定定义在顶层）
-	if(file !is ParadoxScriptFile) return emptyList()
-	return file.descendantsOfType<ParadoxScriptVariable>().toList()
+fun findScriptVariablesInFile(context: PsiElement): List<ParadoxScriptVariable> {
+	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
+	var result: MutableList<ParadoxScriptVariable>? = null
+	var current = context
+	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
+		var prevSibling = current.prevSibling
+		while(prevSibling != null) {
+			if(prevSibling is ParadoxScriptVariable) {
+				if(result == null) result = SmartList()
+				result.add(prevSibling)
+				break
+			}
+			prevSibling = prevSibling.prevSibling
+		}
+		current = current.parent ?: break
+	}
+	if(result == null) return emptyList()
+	return result
 }
 
 ///**

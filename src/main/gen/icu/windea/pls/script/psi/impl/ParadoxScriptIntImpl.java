@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import icu.windea.pls.core.ParadoxValueType;
 
 public class ParadoxScriptIntImpl extends ParadoxScriptNumberImpl implements ParadoxScriptInt {
 
@@ -30,6 +31,18 @@ public class ParadoxScriptIntImpl extends ParadoxScriptNumberImpl implements Par
   @Override
   public int getIntValue() {
     return ParadoxScriptPsiImplUtil.getIntValue(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxValueType getValueType() {
+    return ParadoxScriptPsiImplUtil.getValueType(this);
+  }
+
+  @Override
+  @Nullable
+  public String getType() {
+    return ParadoxScriptPsiImplUtil.getType(this);
   }
 
 }

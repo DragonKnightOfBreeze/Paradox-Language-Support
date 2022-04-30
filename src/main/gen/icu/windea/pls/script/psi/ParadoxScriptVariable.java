@@ -6,9 +6,10 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, StubBasedPsiElement<ParadoxScriptVariableStub> {
+public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, ParadoxScriptExpression, StubBasedPsiElement<ParadoxScriptVariableStub> {
 
   @NotNull
   ParadoxScriptVariableName getVariableName();
@@ -33,5 +34,8 @@ public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, StubBa
 
   @Nullable
   String getUnquotedValue();
+
+  @Nullable
+  ParadoxValueType getValueType();
 
 }

@@ -221,7 +221,7 @@
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptCompletionContributor"/>
     <codeInsight.typeInfo
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptExpressionTypeProvider"/>
+        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxDefinitionLineMarkerProvider"/>

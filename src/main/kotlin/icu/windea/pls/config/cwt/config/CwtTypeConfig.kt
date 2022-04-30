@@ -5,6 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
 /**
+ * @property block (property) block: boolean EXTENDED BY PLS
  * @property path (property) path: string/path
  * @property pathStrict (property) path_strict: boolean
  * @property pathFile (property) path_file: string/fileName
@@ -23,9 +24,10 @@ import icu.windea.pls.cwt.psi.*
  * @property localisation (property*) localisation: localisationInfo
  * @property pictures (property*) pictures: picturesInfo
  */
-data class  CwtTypeConfig(
+data class CwtTypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
+	val block: Boolean = true, //EXTENDED BY PLS
 	val path: String? = null,
 	val pathStrict: Boolean = false,
 	val pathFile: String? = null,
@@ -34,7 +36,7 @@ data class  CwtTypeConfig(
 	val nameFromFile: Boolean = false,
 	val typePerFile: Boolean = false,
 	val unique: Boolean = false,
-	val severity: String? = null,    
+	val severity: String? = null,
 	val skipRootKey: List<List<String>>? = null,
 	val typeKeyFilter: ReversibleSet<String>? = null,
 	val startsWith: String? = null,
@@ -42,5 +44,5 @@ data class  CwtTypeConfig(
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
 	val localisation: CwtTypeLocalisationConfig? = null,
 	val pictures: CwtTypePicturesConfig? = null
-	
+
 ) : CwtConfig<CwtProperty>

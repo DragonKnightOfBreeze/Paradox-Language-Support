@@ -36,10 +36,22 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(BLOCK, BOOLEAN, CODE, COLOR,
-      FLOAT, INT, NUMBER, ROOT_BLOCK,
-      STRING, STRING_VALUE, VALUE, VARIABLE_REFERENCE),
+    create_token_set_(ADVANCE_VALUE, BLOCK, BOOLEAN, CODE,
+      COLOR, FLOAT, INT, NUMBER,
+      ROOT_BLOCK, STRING, VALUE, VARIABLE_REFERENCE),
   };
+
+  /* ********************************************************** */
+  // code
+  public static boolean advance_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "advance_value")) return false;
+    if (!nextTokenIs(b, CODE_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _COLLAPSE_, ADVANCE_VALUE, null);
+    r = code(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
 
   /* ********************************************************** */
   // LEFT_BRACE block_item * RIGHT_BRACE
@@ -298,20 +310,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // color | code | string
-  public static boolean string_value(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_value")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, STRING_VALUE, "<string value>");
-    r = color(b, l + 1);
-    if (!r) r = code(b, l + 1);
-    if (!r) r = string(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // variable_reference | boolean | number | string_value | block
+  // variable_reference | boolean | number | string | color | block | advance_value
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -319,8 +318,10 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     r = variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = number(b, l + 1);
-    if (!r) r = string_value(b, l + 1);
+    if (!r) r = string(b, l + 1);
+    if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
+    if (!r) r = advance_value(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

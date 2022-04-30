@@ -14,6 +14,6 @@ interface IconAware {
 	val icon: Icon
 }
 
-interface TextAware{
+interface TextAware {
 	val text: String
 }

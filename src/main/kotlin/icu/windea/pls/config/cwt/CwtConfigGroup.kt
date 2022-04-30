@@ -198,6 +198,7 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveTypeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTypeConfig {
+		var block = true
 		var path: String? = null
 		var pathStrict = false
 		var pathFile: String? = null
@@ -220,6 +221,8 @@ class CwtConfigGroup(
 			for(prop in props) {
 				val key = prop.key
 				when(key) {
+					//定义的值是否需要为代码块，默认为是
+					"block" -> block = prop.booleanValue ?: continue //EXTENDED BY PLS
 					//这里path需要移除前缀"game/"，这个插件会忽略它
 					"path" -> path = prop.stringValue?.removePrefix("game/") ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue
@@ -308,7 +311,8 @@ class CwtConfigGroup(
 		}
 		
 		return CwtTypeConfig(
-			propertyConfig.pointer, name, path, pathStrict, pathFile, pathExtension,
+			propertyConfig.pointer, name,
+			block, path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
 			typeKeyFilter, startsWith, graphRelatedTypes, subtypes,
 			localisation, pictures
@@ -478,23 +482,30 @@ class CwtConfigGroup(
 	
 	//解析得到definitionInfo
 	
-	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): ParadoxDefinitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
-			if(matchesType(typeConfig, element, elementName, path, propertyPath)) {
-				return toDefinitionInfo(typeConfig, element, elementName)
+			if(matchesType(typeConfig, element, elementName, path, elementPath)) {
+				return toDefinitionInfo(typeConfig, element, elementName, elementPath)
 			}
 		}
 		return null
 	}
 	
-	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, propertyPath: ParadoxPropertyPath): Boolean {
+	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): Boolean {
 		val typeKey = elementName.lowercase()
-		//判断value是否是block
-		if(element.block == null) return false
+		//判断element.value是否需要是block
+		val blockConfig = typeConfig.block
+		val elementBlock = element.block
+		if(blockConfig){
+			if(elementBlock == null) return false
+		} else {
+			if(elementBlock != null) return false
+		}
+		if(elementBlock == null) return false
 		//判断element是否需要是scriptFile还是scriptProperty
 		//TODO nameFromFile和typePerFile有什么区别？
-		val nameFromFile = typeConfig.nameFromFile || typeConfig.typePerFile
-		if(nameFromFile) {
+		val nameFromFileConfig = typeConfig.nameFromFile || typeConfig.typePerFile
+		if(nameFromFileConfig) {
 			if(element !is ParadoxScriptFile) return false
 		} else {
 			if(element !is ParadoxScriptProperty) return false
@@ -522,11 +533,11 @@ class CwtConfigGroup(
 		//skip_root_key可以重复（其中之一匹配即可）
 		val skipRootKeyConfig = typeConfig.skipRootKey
 		if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
-			if(propertyPath.length > 1) return false
+			if(elementPath.length > 1) return false
 		} else {
 			var skipResult = false
 			for(keys in skipRootKeyConfig) {
-				if(keys.matchEntirePath(propertyPath.parentSubPaths)) {
+				if(keys.matchEntirePath(elementPath.parentSubPaths)) {
 					skipResult = true
 					break
 				}
@@ -571,7 +582,7 @@ class CwtConfigGroup(
 		return matchesDefinitionProperty(element, elementConfig, this)
 	}
 	
-	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): ParadoxDefinitionInfo {
+	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, elementName)
 		val type = typeConfig.name
 		val subtypeConfigs = getSubtypeConfigs(typeConfig, element, elementName)
@@ -586,7 +597,7 @@ class CwtConfigGroup(
 		return ParadoxDefinitionInfo(
 			name, type, typeConfig, subtypes, subtypeConfigs, 
 			localisation, localisationConfig, pictures, picturesConfig,
-			definition, definitionConfig, rootKey, gameType
+			definition, definitionConfig, rootKey, elementPath,  gameType
 		)
 	}
 	

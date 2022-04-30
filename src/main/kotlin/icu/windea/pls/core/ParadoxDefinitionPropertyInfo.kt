@@ -10,7 +10,7 @@ import java.util.*
 
 @Suppress("unused")
 class ParadoxDefinitionPropertyInfo(
-	val path: ParadoxPropertyPath,
+	val elementPath: ParadoxElementPath,
 	val scope: String? = null,
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,
@@ -26,18 +26,18 @@ class ParadoxDefinitionPropertyInfo(
 	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy { resolveChildValueOccurrence() }
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxDefinitionPropertyInfo && path == other.path
+		return this === other || other is ParadoxDefinitionPropertyInfo && elementPath == other.elementPath
 	}
 	
 	override fun hashCode(): Int {
-		return Objects.hash(path)
+		return Objects.hash(elementPath)
 	}
 	
 	/**
 	 * 根据路径解析对应的属性配置列表。
 	 */
 	private fun resolvePropertyConfigs(): List<CwtPropertyConfig> {
-		return definitionInfo.definitionConfig?.resolvePropertyConfigs(definitionInfo.subtypes, path, configGroup) ?: emptyList()
+		return definitionInfo.definitionConfig?.resolvePropertyConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
 	private fun resolvePropertyConfig(): CwtPropertyConfig? {
@@ -59,14 +59,14 @@ class ParadoxDefinitionPropertyInfo(
 	 * 根据路径解析对应的子属性配置列表。（过滤重复的）
 	 */
 	private fun resolveChildPropertyConfigs(): List<CwtPropertyConfig> {
-		return definitionInfo.definitionConfig?.resolveChildPropertyConfigs(definitionInfo.subtypes, path, configGroup) ?: emptyList()
+		return definitionInfo.definitionConfig?.resolveChildPropertyConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
 	/**
 	 * 根据路径解析对应的子值配置列表。（过滤重复的）
 	 */
 	private fun resolveChildValuesConfigs(): List<CwtValueConfig> {
-		return definitionInfo.definitionConfig?.resolveChildValuesConfigs(definitionInfo.subtypes, path, configGroup) ?: emptyList()
+		return definitionInfo.definitionConfig?.resolveChildValuesConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
 	/**

@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiListLikeElement;
+import icu.windea.pls.core.ParadoxValueType;
 
 public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeElement {
 
@@ -33,5 +34,11 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeEleme
 
   @NotNull
   List<PsiElement> getComponents();
+
+  @NotNull
+  ParadoxValueType getValueType();
+
+  @Nullable
+  String getType();
 
 }

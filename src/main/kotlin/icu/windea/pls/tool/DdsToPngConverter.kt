@@ -52,7 +52,7 @@ object DdsToPngConverter {
 	private fun doGetRelatedPngPath(ddsAbsPath: String, ddsRelPath: String): Path {
 		//路径：~/.pls/images/${uuid}/${ddsRelPath}.png
 		val uuid = ddsAbsPath.removePrefix(ddsRelPath).toUUID().toString() //得到基于游戏或模组目录的绝对路径的UUID
-		return imagesDirectoryPath.resolve("$uuid/$ddsRelPath.png") //直接在包括扩展名的DDS文件名后面加上".png"
+		return PlsPaths.imagesDirectoryPath.resolve("$uuid/$ddsRelPath.png") //直接在包括扩展名的DDS文件名后面加上".png"
 	}
 	
 	private fun doConvertDdsToPng(ddsAbsPath: String, pngAbsPath: Path) {
@@ -66,10 +66,10 @@ object DdsToPngConverter {
 	}
 	
 	fun getUnknownPngPath(): String {
-		if(unknownPngPath.notExists()) {
-			val url = "/$unknownPngName".toUrl(locationClass)
-			Files.copy(url.openStream(), unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
+		if(PlsPaths.unknownPngPath.notExists()) {
+			val url = "/${PlsPaths.unknownPngName}".toUrl(locationClass)
+			Files.copy(url.openStream(), PlsPaths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
 		}
-		return unknownPngPath.toString()
+		return PlsPaths.unknownPngPath.toString()
 	}
 }
