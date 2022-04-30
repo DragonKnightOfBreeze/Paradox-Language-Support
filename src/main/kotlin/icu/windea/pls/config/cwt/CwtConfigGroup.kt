@@ -525,17 +525,6 @@ class CwtConfigGroup(
 		if(pathExtensionConfig != null) {
 			if(pathExtensionConfig != path.fileExtension) return false
 		}
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
-		val startsWithConfig = typeConfig.startsWith
-		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!typeKey.startsWith(startsWithConfig)) return false
-		}
-		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
-		val typeKeyFilterConfig = typeConfig.typeKeyFilter
-		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
-			val filterResult = typeKeyFilterConfig.contains(typeKey)
-			if(!filterResult) return false
-		}
 		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
 		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
 		//skip_root_key可以重复（其中之一匹配即可）
@@ -551,6 +540,17 @@ class CwtConfigGroup(
 				}
 			}
 			if(!skipResult) return false
+		}
+		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+		val startsWithConfig = typeConfig.startsWith
+		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
+			if(!typeKey.startsWith(startsWithConfig)) return false
+		}
+		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+		val typeKeyFilterConfig = typeConfig.typeKeyFilter
+		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
+			val filterResult = typeKeyFilterConfig.contains(typeKey)
+			if(!filterResult) return false
 		}
 		//到这里再次处理block为false的情况
 		if(!blockConfig) {

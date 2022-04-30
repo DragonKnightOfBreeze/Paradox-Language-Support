@@ -19,7 +19,7 @@ class ParadoxScriptFile(
 	
 	override fun getIcon(flags: Int): Icon? {
 		//如果文件名是descriptor.mod（不区分大小写），这里仍然要显示脚本文件的图标
-		if(definitionInfo != null && name.equals(descriptorFileName, true)) return PlsIcons.definitionIcon
+		if(definitionInfo != null && !name.equals(descriptorFileName, true)) return PlsIcons.definitionIcon
 		return super.getIcon(flags)
 	}
 	

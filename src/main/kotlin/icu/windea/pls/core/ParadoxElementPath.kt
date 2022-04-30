@@ -35,15 +35,11 @@ class ParadoxElementPath<R : PsiElement> private constructor(
 				return ParadoxElementPath(emptyList(), element.createPointer(element))
 			}
 			var current: PsiElement = element
-			var file: ParadoxScriptFile? = null
 			var depth = 0
 			val originalSubPaths = LinkedList<String>()
-			while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
-				if(current is ParadoxScriptFile) {
-					file = current
-				}
+			while(current !is ParadoxScriptFile) { 
 				when {
-					current is ParadoxDefinitionProperty -> {
+					current is ParadoxScriptProperty -> {
 						originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 						depth++
 					}
@@ -56,7 +52,8 @@ class ParadoxElementPath<R : PsiElement> private constructor(
 				if(maxDepth != -1 && maxDepth < depth) return null
 				current = current.parent ?: break
 			}
-			val rootPointer = file?.createPointer(file)
+			val file = current as ParadoxScriptFile
+			val rootPointer = file.createPointer(file)
 			return ParadoxElementPath(originalSubPaths, rootPointer)
 		}
 		
