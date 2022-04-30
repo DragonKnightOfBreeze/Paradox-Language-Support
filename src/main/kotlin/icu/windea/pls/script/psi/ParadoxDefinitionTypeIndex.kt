@@ -49,30 +49,33 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		}
 	}
 	
-	fun findAll(typeExpression: String, project: Project, scope: GlobalSearchScope): List<ParadoxDefinitionProperty> {
+	fun findAll(typeExpression: String, project: Project, scope: GlobalSearchScope, distinct: Boolean): List<ParadoxDefinitionProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
 		val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
 		return expression.collect { type, subtype ->
-			findAllElements(type, project, scope) { element -> matches(element, subtype) }
+			val namesToDistinct = if(distinct) mutableSetOf<String>() else null
+			findAllElements(type, project, scope) { element -> matches(element, subtype, namesToDistinct) }
 		}
 	}
 	
-	fun findAllByKeyword(keyword: String, typeExpression: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxDefinitionProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		//需要保证返回结果的名字的唯一性
-		val names = mutableSetOf<String>()
-		val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-		return expression.collect { type, subtype ->
-			findAllElements(type, project, scope, maxSize = maxSize) { element -> matchesAndDistinct(element, keyword, subtype, names) }
-		}
-	}
+	//fun findAllByKeyword(keyword: String, typeExpression: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxDefinitionProperty> {
+	//	//如果索引未完成
+	//	if(DumbService.isDumb(project)) return emptyList()
+	//	
+	//	//需要保证返回结果的名字的唯一性
+	//	val names = mutableSetOf<String>()
+	//	val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
+	//	return expression.collect { type, subtype ->
+	//		findAllElements(type, project, scope, maxSize = maxSize) { element -> matchesAndDistinct(element, keyword, subtype, names) }
+	//	}
+	//}
+	
+	//以下匹配方法只能定义在ParadoxDefinitionTypeExpression之外
 	
 	private fun matches(element: ParadoxDefinitionProperty, name: String, subtype: String?): Boolean {
-		val stub = element.stub
+		val stub = element.getStub()
 		val definitionInfo = if(stub == null) element.definitionInfo else null
 		val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
 		if(targetName != name) return false
@@ -83,9 +86,11 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		return true
 	}
 	
-	private fun matches(element: ParadoxDefinitionProperty, subtype: String?): Boolean {
-		val stub = element.stub
+	private fun matches(element: ParadoxDefinitionProperty, subtype: String?, namesToDistinct: MutableSet<String>? = null): Boolean {
+		val stub = element.getStub()
 		val definitionInfo = if(stub == null) element.definitionInfo else null
+		val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
+		if(namesToDistinct != null && !namesToDistinct.add(targetName)) return false
 		if(subtype != null) {
 			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
 			if(subtype !in targetSubtypes) return false
@@ -93,17 +98,17 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		return true
 	}
 	
-	private fun matchesAndDistinct(element: ParadoxDefinitionProperty, keyword: String, subtype: String?, names: MutableSet<String>): Boolean {
-		val stub = element.stub
-		val definitionInfo = if(stub == null) element.definitionInfo else null
-		val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
-		if(!names.add(targetName)) return false
-		if(!targetName.matchesKeyword(keyword)) return false
-		if(subtype != null) {
-			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
-			if(subtype !in targetSubtypes) return false
-		}
-		return true
-	}
+	//private fun matchesAndDistinct(element: ParadoxDefinitionProperty, keyword: String, subtype: String?, names: MutableSet<String>): Boolean {
+	//	val stub = element.stub
+	//	val definitionInfo = if(stub == null) element.definitionInfo else null
+	//	val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
+	//	if(!names.add(targetName)) return false
+	//	if(!targetName.matchesKeyword(keyword)) return false
+	//	if(subtype != null) {
+	//		val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+	//		if(subtype !in targetSubtypes) return false
+	//	}
+	//	return true
+	//}
 }
 

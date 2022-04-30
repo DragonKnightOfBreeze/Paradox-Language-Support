@@ -1,8 +1,10 @@
 package icu.windea.pls.localisation.psi
 
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 
@@ -70,38 +72,45 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 		}
 	}
 	
-	//fun findAll(locale: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
-	//	//如果索引未完成
-	//	if(DumbService.isDumb(project)) return emptyList()
-	//	
-	//	val keys = getAllKeys(project)
-	//	if(keys.isEmpty()) return emptyList()
-	//	val result = mutableListOf<ParadoxLocalisationProperty>()
-	//	var index = 0
-	//	for(key in keys) {
-	//		val elements = StubIndex.getElements(getKey(), key, project, scope, ParadoxLocalisationProperty::class.java)
-	//		var nextIndex = index
-	//		for(element in elements) {
-	//			val elementLocale = element.localeConfig
-	//			if(locale == null) {
-	//				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-	//				if(elementLocale == inferParadoxLocale()) {
-	//					result.add(index++, element)
-	//					nextIndex++
-	//				} else {
-	//					result.add(element)
-	//					nextIndex++
-	//				}
-	//			} else if(locale == elementLocale || hasDefault) {
-	//				result.add(element)
-	//				nextIndex++
-	//			}
-	//		}
-	//		index = nextIndex
-	//	}
-	//	return result
-	//}
+	fun findAll(localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, distinct: Boolean): List<ParadoxLocalisationProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptyList()
+		
+		val keys = ParadoxLocalisationNameIndex.getAllKeys(project)
+		if(keys.isEmpty()) return emptyList()
+		
+		val result: MutableList<ParadoxLocalisationProperty> = SmartList()
+		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
+		var index = 0
+		StubIndex.getInstance().processAllKeys(this.key, project) { key ->
+			if(keysToDistinct != null && !keysToDistinct.add(key)) return@processAllKeys true
+			ProgressManager.checkCanceled()
+			var nextIndex = index
+			StubIndex.getInstance().processElements(this.key, key, project, scope, ParadoxLocalisationProperty::class.java) { element ->
+				ProgressManager.checkCanceled()
+				val elementLocale = element.localeConfig
+				if(localeConfig == null) {
+					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
+					if(elementLocale == inferParadoxLocale()) {
+						result.add(index++, element)
+						nextIndex++
+					} else {
+						result.add(element)
+						nextIndex++
+					}
+				} else if(localeConfig == elementLocale || hasDefault) {
+					result.add(element)
+					nextIndex++
+				}
+				true
+			}
+			index = nextIndex
+			true
+		}
+		return result
+	}
 	
+	@Deprecated("Consider for removal.")
 	fun findAllByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
@@ -113,13 +122,9 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 			}
 		} else {
 			return findFirstElementByKeys(project, scope, maxSize = maxSize, hasDefault = true,
-				keyPredicate = { key -> matches(key, keyword) }) { element ->
+				keyPredicate = { key -> key.matchesKeyword(keyword) }) { element ->
 				element.localeConfig == inferParadoxLocale()
 			}
 		}
-	}
-	
-	private fun matches(key: String, keyword: String): Boolean {
-		return key.matchesKeyword(keyword)
 	}
 }

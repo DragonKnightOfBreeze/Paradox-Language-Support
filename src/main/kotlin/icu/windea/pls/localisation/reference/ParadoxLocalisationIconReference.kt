@@ -60,7 +60,7 @@ class ParadoxLocalisationIconReference(
 	override fun getVariants(): Array<out Any> {
 		//根据spriteName和ddsFileName进行提示
 		val project = element.project
-		val sprites = findDefinitionsByType("sprite|spriteType", project)
+		val sprites = findDefinitionsByType("sprite|spriteType", project, distinct = true)
 		val ddsFiles = FilenameIndex.getAllFilesByExt(project, "dds").filter {
 			val path = it.fileInfo?.path
 			path != null && "gfx/interface/icons".matchesPath(path.parent)

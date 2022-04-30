@@ -73,3 +73,5 @@ types = {
 * [X] CWT规则解析：`starts_with` `skip_root_key` `type_key_filter`的值需要忽略大小写
 
 * [X] 脚本文件语法解析：变量不需要放在顶层（尽管一般放在顶层，应当是放在定义外面即可）
+
+* [ ] 某些类型的定义即使definitionName和rootKey相同也无法查找定义（如：`asteroid_belt_type`）（）

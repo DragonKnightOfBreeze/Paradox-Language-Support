@@ -37,7 +37,7 @@ private fun generateDocuments(root: String, documentNameTypeMap: Map<String, Str
 }
 
 private fun getDocumentText(documentName: String, type: String, project: Project): String {
-	val definitions = findDefinitions(type, project).filter { it.fileInfo?.rootType == ParadoxRootType.Stdlib }
+	val definitions = findAllDefinitions(type, project).filter { it.fileInfo?.rootType == ParadoxRootType.Stdlib }
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
 		val definition = it.definitionInfo
 		val id = definition?.name

@@ -483,7 +483,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsB
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
 	maxSize: Int = 0,
-	crossinline keyPredicate: (String) -> Boolean = { true },
+	crossinline keyPredicate: (key: String) -> Boolean = { true },
 	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
 	val result: MutableList<T> = SmartList()
@@ -515,7 +515,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	project: Project,
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
-	crossinline keyPredicate: (String) -> Boolean = { true },
+	crossinline keyPredicate: (key: String) -> Boolean = { true },
 	crossinline action: (T, MutableList<T>) -> Boolean
 ): List<T> {
 	val result: MutableList<T> = SmartList()
@@ -538,7 +538,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 	cancelable: Boolean = true,
 	hasDefault: Boolean = false,
 	maxSize: Int = 0,
-	crossinline keyPredicate: (String) -> Boolean = { true },
+	crossinline keyPredicate: (key: String) -> Boolean = { true },
 	crossinline predicate: (T) -> Boolean = { true }
 ): List<T> {
 	val result: MutableList<T> = SmartList()

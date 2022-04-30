@@ -395,18 +395,21 @@ fun findScriptVariablesInFile(name: String, context: PsiElement): List<ParadoxSc
 
 /**
  * 在当前文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
  */
-fun findScriptVariablesInFile(context: PsiElement): List<ParadoxScriptVariable> {
+fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false): List<ParadoxScriptVariable> {
 	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
 	var result: MutableList<ParadoxScriptVariable>? = null
+	val namesToDistinct = if(distinct) mutableSetOf<String>() else null
 	var current = context
 	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
 			if(prevSibling is ParadoxScriptVariable) {
-				if(result == null) result = SmartList()
-				result.add(prevSibling)
-				break
+				if(namesToDistinct == null || namesToDistinct.add(prevSibling.name)) {
+					if(result == null) result = SmartList()
+					result.add(prevSibling)
+				}
 			}
 			prevSibling = prevSibling.prevSibling
 		}
@@ -416,19 +419,21 @@ fun findScriptVariablesInFile(context: PsiElement): List<ParadoxScriptVariable> 
 	return result
 }
 
-///**
-// * 基于脚本变量名字索引，根据名字查判断是否存在脚本变量（scriptedVariable）。
-// */
-//fun existsScriptVariable(
-//	name: String,
-//	project: Project,
-//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-//): Boolean {
-//	return ParadoxScriptVariableNameIndex.exists(name, project, scope)
-//}
+/**
+ * 基于脚本变量名字索引，根据名字查判断是否存在脚本变量（scriptedVariable）。
+ * @param name 变量的名字，以"@"开始。
+ */
+fun existsScriptVariable(
+	name: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+): Boolean {
+	return ParadoxScriptVariableNameIndex.exists(name, project, scope)
+}
 
 /**
  * 基于脚本变量名字索引，根据名字查找脚本变量（scriptedVariable）。
+ * @param name 变量的名字，以"@"开始。
  */
 fun findScriptVariable(
 	name: String,
@@ -440,6 +445,7 @@ fun findScriptVariable(
 
 /**
  * 基于脚本变量名字索引，根据名字查找所有的脚本变量（scriptedVariable）。
+ * @param name 变量的名字，以"@"开始。
  */
 fun findScriptVariables(
 	name: String,
@@ -451,12 +457,14 @@ fun findScriptVariables(
 
 /**
  * 基于脚本变量名字索引，查找所有的脚本变量（scriptedVariable）。
+ * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
  */
-fun findScriptVariables(
+fun findAllScriptVariables(
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	distinct: Boolean = false
 ): List<ParadoxScriptVariable> {
-	return ParadoxScriptVariableNameIndex.findAll(project, scope)
+	return ParadoxScriptVariableNameIndex.findAll(project, scope, distinct)
 }
 
 /**
@@ -501,20 +509,22 @@ fun findDefinitions(
 /**
  * 基于定义名字索引，根据类型表达式查找所有的脚本文件的定义（definition）。
  * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
+ * @param distinct 是否需要对同一基本类型而相同名字的定义进行去重。默认为`false`。
  */
-fun findDefinitions(
+fun findAllDefinitions(
 	typeExpression: String?,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	distinct: Boolean = false
 ): List<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope)
+	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope, distinct)
 }
 
 /**
  * 基于定义类型索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
  * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
-fun hasDefinitionByType(
+fun existsDefinitionByType(
 	name: String,
 	typeExpression: String,
 	project: Project,
@@ -552,27 +562,30 @@ fun findDefinitionsByType(
 /**
  * 基于定义类型索引，根据类型表达式查找所有的脚本文件的定义（definition）。
  * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
+ * @param distinct 是否需要对同一基本类型而相同名字的定义进行去重。默认为`false`。
  */
 fun findDefinitionsByType(
 	typeExpression: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	distinct: Boolean = false
 ): List<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope)
+	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope, distinct)
 }
 
-/**
- * 基于定义类型索引，根据关键字和类型表达式查找所有的脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- */
-fun findDefinitionsByKeywordByType(
-	keyword: String,
-	typeExpression: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword, typeExpression, project, scope, getSettings().maxCompleteSize)
-}
+//NOTE 查找定义时不需要预先过滤结果
+///**
+// * 基于定义类型索引，根据关键字和类型表达式查找所有的脚本文件的定义（definition）。
+// * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
+// */
+//fun findDefinitionsByKeywordByType(
+//	keyword: String,
+//	typeExpression: String,
+//	project: Project,
+//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+//): List<ParadoxDefinitionProperty> {
+//	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword, typeExpression, project, scope, getSettings().maxCompleteSize)
+//}
 
 /**
  * 基于本地化名字索引，根据名字、语言区域判断是否存在本地化（localisation）。
@@ -588,7 +601,7 @@ fun hasLocalisation(
 
 /**
  * 基于本地化名字索引，根据名字、语言区域查找本地化（localisation）。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  */
 fun findLocalisation(
 	name: String,
@@ -602,38 +615,43 @@ fun findLocalisation(
 
 /**
  * 基于本地化名字索引，根据名字、语言区域查找所有的本地化（localisation）。
- * * 如果[localeConfig]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
+ * @see inferParadoxLocale
  */
 fun findLocalisations(
 	name: String,
 	localeConfig: ParadoxLocaleConfig? = null,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = true
+	hasDefault: Boolean = false
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.findAll(name, localeConfig, project, scope, hasDefault)
 }
 
-///**
-// * 基于本地化名字索引，根据语言区域查找所有的本地化（localisation）。
-// * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
-// * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
-// */
-//fun findLocalisations(
-//	locale: ParadoxLocaleConfig? = null,
-//	project: Project,
-//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-//	hasDefault: Boolean = false
-//): List<ParadoxLocalisationProperty> {
-//	return ParadoxLocalisationNameIndex.findAll(locale, project, scope, hasDefault)
-//}
+/**
+ * 基于本地化名字索引，根据语言区域查找所有的本地化（localisation）。
+ * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
+ * @param distinct 是否需要对相同键的本地化进行去重。默认为`false`。
+ * @see inferParadoxLocale
+ */
+fun findAllLocalisations(
+	localeConfig: ParadoxLocaleConfig? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false,
+	distinct: Boolean = false
+): List<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.findAll(localeConfig, project, scope, hasDefault, distinct)
+}
 
 /**
  * 基于本地化名字索引，根据关键字查找所有的本地化（localisation）。
  * * 如果名字包含关键字（不忽略大小写），则放入结果。
  * * 返回的结果有数量限制。
  */
+@Deprecated("Consider for removal.")
 fun findLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
@@ -656,7 +674,7 @@ fun hasSyncedLocalisation(
 
 /**
  * 基于同步本地化名字索引，根据名字、语言区域查找同步本地化（localisation_synced）。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  */
 fun findSyncedLocalisation(
 	name: String,
@@ -670,38 +688,43 @@ fun findSyncedLocalisation(
 
 /**
  * 基于同步本地化名字索引，根据名字、语言区域查找所有的同步本地化（localisation_synced）。
- * * 如果[localeConfig]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
- * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
+ * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。。
+ * @see inferParadoxLocale
  */
 fun findSyncedLocalisations(
 	name: String,
 	localeConfig: ParadoxLocaleConfig? = null,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = true
+	hasDefault: Boolean = false
 ): List<ParadoxLocalisationProperty> {
 	return ParadoxSyncedLocalisationNameIndex.findAll(name, localeConfig, project, scope, hasDefault)
 }
 
-///**
-// * 基于同步本地化名字索引，根据语言区域查找所有的同步本地化（localisation_synced）。
-// * * 如果[locale]为`null`，则将用户的语言区域对应的本地化放到该组的最前面。
-// * * 如果[hasDefault]为`true`，且没有查找到对应语言区域的本地化，则忽略语言区域。
-// */
-//fun findSyncedLocalisations(
-//	locale: ParadoxLocaleConfig? = null,
-//	project: Project,
-//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-//	hasDefault: Boolean = false
-//): List<ParadoxLocalisationProperty> {
-//	return ParadoxSyncedLocalisationNameIndex.findAll(locale, project, scope, hasDefault)
-//}
+/**
+ * 基于同步本地化名字索引，根据语言区域查找所有的同步本地化（localisation_synced）。
+ * @param localeConfig 将对应语言区域的本地化放到该组的最前面。如果为`null`，则按照用户的语言区域。
+ * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
+ * @param distinct 是否需要对相同键的本地化进行去重。默认为`false`。
+ * @see inferParadoxLocale
+ */
+fun findAllSyncedLocalisations(
+	localeConfig: ParadoxLocaleConfig? = null,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	hasDefault: Boolean = false,
+	distinct: Boolean = false
+): List<ParadoxLocalisationProperty> {
+	return ParadoxSyncedLocalisationNameIndex.findAll(localeConfig, project, scope, hasDefault, distinct)
+}
 
 /**
  * 基于同步本地化名字索引，根据关键字查找所有的同步本地化（localisation_synced）。
  * * 如果名字包含关键字（不忽略大小写），则放入结果。
  * * 返回的结果有数量限制。
  */
+@Deprecated("Consider for removal.")
 fun findSyncedLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
@@ -809,7 +832,7 @@ fun findPictureByLocation(location: String, project: Project): PsiElement? /* Pa
 	if(location.endsWith(".dds", true)) {
 		return findFile(location, project)?.toPsiFile(project)
 	} else {
-		return findDefinition(location, "sprite|spriteType", project)
+		return findDefinitionByType(location, "sprite|spriteType", project)
 	}
 }
 //endregion

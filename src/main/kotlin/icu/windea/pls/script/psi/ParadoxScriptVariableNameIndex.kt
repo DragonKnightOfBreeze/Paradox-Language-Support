@@ -13,12 +13,12 @@ object ParadoxScriptVariableNameIndex : StringStubIndexExtension<ParadoxScriptVa
 	
 	override fun getCacheSize() = cacheSize
 	
-	//fun exists(name: String, project: Project, scope: GlobalSearchScope): Boolean {
-	//	//如果索引未完成
-	//	if(DumbService.isDumb(project)) return false
-	//	
-	//	return existsElement(name, project, scope)
-	//}
+	fun exists(name: String, project: Project, scope: GlobalSearchScope): Boolean {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return false
+		
+		return existsElement(name, project, scope)
+	}
 	
 	fun findOne(name: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxScriptVariable? {
 		//如果索引未完成
@@ -34,11 +34,12 @@ object ParadoxScriptVariableNameIndex : StringStubIndexExtension<ParadoxScriptVa
 		return findAllElements(name, project, scope)
 	}
 	
-	fun findAll(project: Project, scope: GlobalSearchScope): List<ParadoxScriptVariable> {
+	fun findAll(project: Project, scope: GlobalSearchScope, distinct: Boolean): List<ParadoxScriptVariable> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
-		return findAllElementsByKeys(project, scope)
+		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
+		return findAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true })
 	}
 }
 

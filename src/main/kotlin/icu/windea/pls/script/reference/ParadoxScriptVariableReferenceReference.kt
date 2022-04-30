@@ -44,11 +44,13 @@ class ParadoxScriptVariableReferenceReference(
 	override fun getVariants(): Array<out Any> {
 		//同时需要同时查找当前文件中的和全局的
 		val project = element.project
-		return (findScriptVariablesInFile(element) + findScriptVariables(project)).mapToArray {
-			val name = it.name
-			val icon = it.icon
-			val typeText = it.containingFile.name
-			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
-		}
+		return (findAllScriptVariablesInFile(element) + findAllScriptVariables(project, distinct = true))
+			.distinctBy { it.name } //这里还要进行一次去重
+			.mapToArray {
+				val name = it.name
+				val icon = it.icon
+				val typeText = it.containingFile.name
+				LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
+			}
 	}
 }

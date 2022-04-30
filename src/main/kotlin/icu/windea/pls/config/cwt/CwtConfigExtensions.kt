@@ -225,12 +225,12 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return false
 			val name = keyElement.value
-			hasDefinitionByType(name, typeExpression, configGroup.project)
+			existsDefinitionByType(name, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return false
 			val key = keyElement.value
-			hasDefinitionByType(key, typeExpression, configGroup.project)
+			existsDefinitionByType(key, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.Value -> {
 			val valueExpression = expression.value ?: return false
@@ -311,11 +311,11 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return false
-			hasDefinitionByType(key, typeExpression, configGroup.project)
+			existsDefinitionByType(key, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return false
-			hasDefinitionByType(key, typeExpression, configGroup.project)
+			existsDefinitionByType(key, typeExpression, configGroup.project)
 		}
 		CwtKeyExpression.Type.Value -> {
 			val valueExpression = expression.value ?: return false
@@ -417,13 +417,13 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 		CwtValueExpression.Type.TypeExpression -> {
 			valueElement is ParadoxScriptString && run {
 				val typeExpression = expression.value ?: return@run false
-				hasDefinitionByType(valueElement.stringValue, typeExpression, configGroup.project)
+				existsDefinitionByType(valueElement.stringValue, typeExpression, configGroup.project)
 			}
 		}
 		CwtValueExpression.Type.TypeExpressionString -> {
 			valueElement is ParadoxScriptString && run {
 				val typeExpression = expression.value ?: return@run false
-				hasDefinitionByType(valueElement.stringValue, typeExpression, configGroup.project)
+				existsDefinitionByType(valueElement.stringValue, typeExpression, configGroup.project)
 			}
 		}
 		CwtValueExpression.Type.Value -> {
@@ -651,7 +651,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 			if(definitions.isEmpty()) return
 			val icon = PlsIcons.definitionIcon //使用特定图标
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
@@ -668,7 +668,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 			if(definitions.isEmpty()) return
 			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return
 			val icon = PlsIcons.definitionIcon //使用特定图标
@@ -817,7 +817,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.Icon -> pass() //TODO
 		CwtValueExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 			if(definitions.isEmpty()) return
 			val icon = PlsIcons.definitionIcon //使用特定图标
 			val tailText = " by $expression in $configFileName"
@@ -833,7 +833,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		}
 		CwtValueExpression.Type.TypeExpressionString -> {
 			val typeExpression = expression.value ?: return
-			val definitions = findDefinitionsByKeywordByType(keyword, typeExpression, configGroup.project) //预先过滤结果
+			val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 			if(definitions.isEmpty()) return
 			val (prefix, suffix) = expression.extraValue?.castOrNull<Pair<String, String>>() ?: return
 			val icon = PlsIcons.definitionIcon //使用特定图标

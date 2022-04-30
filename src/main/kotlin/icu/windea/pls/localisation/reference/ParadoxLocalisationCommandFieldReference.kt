@@ -23,11 +23,9 @@ class ParadoxLocalisationCommandFieldReference(
 	}
 	
 	override fun getVariants(): Array<out Any> {
-		//为了避免这里得到的结果太多，采用关键字查找
-		val keyword = element.keyword
+		//查找类型为scripted_loc的definition，不预先过滤结果
 		val project = element.project
-		//查找类型为scripted_loc的definition
-		return findDefinitionsByKeywordByType(keyword,"scripted_loc", project).mapToArray {
+		return findDefinitionsByType("scripted_loc", project, distinct = true).mapToArray {
 			val name = it.definitionInfo?.name.orEmpty() //不应该为空
 			val icon = PlsIcons.localisationCommandFieldIcon
 			val typeText = it.containingFile.name
