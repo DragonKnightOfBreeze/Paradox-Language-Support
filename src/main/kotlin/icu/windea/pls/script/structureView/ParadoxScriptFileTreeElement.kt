@@ -33,7 +33,9 @@ class ParadoxScriptFileTreeElement(
 	}
 	
 	override fun getLocationString(): String? {
+		//如果文件名是descriptor.mod（不区分大小写），这里不要显示定义信息
 		val element = element ?: return null
+		if(element.name.equals(descriptorFileName, true)) return null
 		val definitionInfo = element.definitionInfo ?: return null
 		val name = definitionInfo.name
 		val typesText = definitionInfo.typesText
