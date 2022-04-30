@@ -46,4 +46,10 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable
   String getType();
 
+  @Nullable
+  String getPathName();
+
+  @Nullable
+  String getOriginalPathName();
+
 }

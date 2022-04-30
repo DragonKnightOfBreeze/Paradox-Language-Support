@@ -1,0 +1,19 @@
+types = {
+	type[descriptor] = {
+		type_per_file = yes
+	}
+}
+
+descriptor = {
+	name = scalar
+	version = scalar
+	picture = filepath
+	tags = {
+		## cardinality = 0..inf
+		scalar
+	}
+	supported_version = scalar # supported game version, support "*" wildcard
+	# use one of remote_file_id and path
+	remote_file_id = scalar # steam workshop item id
+	path = scalar # absolute directory / zip file path
+}

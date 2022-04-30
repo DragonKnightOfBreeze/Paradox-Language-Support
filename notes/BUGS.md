@@ -68,7 +68,7 @@ types = {
 
 * [ ] BUG：CWT规则解析：对于数组中的对象（`a = { { b = c } }`），无法匹配定义的属性的规则
 
-* [ ] CWT规则解析：兼容值不为代码块的定义（`key = value`）
+* [X] CWT规则解析：兼容值不为代码块的定义（`key = value`）
 
 * [X] CWT规则解析：`starts_with` `skip_root_key` `type_key_filter`的值需要忽略大小写
 

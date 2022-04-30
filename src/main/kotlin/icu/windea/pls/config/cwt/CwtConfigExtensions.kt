@@ -271,7 +271,7 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val key = keyElement.value
-			key.equals(expression.value,true)
+			key.equals(expression.value, true)
 		}
 		CwtKeyExpression.Type.Other -> return true
 	}
@@ -349,7 +349,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			matchesAliasName(key, quoted, aliasName, configGroup)
 		}
 		CwtKeyExpression.Type.Constant -> {
-			key.equals(expression.value,true)
+			key.equals(expression.value, true)
 		}
 		CwtKeyExpression.Type.Other -> return true
 	}
@@ -521,15 +521,15 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	val keyword = keyElement.keyword
 	val quoted = keyElement.isQuoted()
 	val project = propertyElement.project
-	val definitionPropertyInfo = propertyElement.definitionPropertyInfo ?: return
-	val scope = definitionPropertyInfo.scope
-	val gameType = definitionPropertyInfo.gameType
+	val definitionElementInfo = propertyElement.definitionElementInfo ?: return
+	val scope = definitionElementInfo.scope
+	val gameType = definitionElementInfo.gameType
 	val configGroup = getCwtConfig(project).getValue(gameType)
-	val childPropertyConfigs = definitionPropertyInfo.childPropertyConfigs
+	val childPropertyConfigs = definitionElementInfo.childPropertyConfigs
 	if(childPropertyConfigs.isEmpty()) return
 	
 	for(propConfig in childPropertyConfigs) {
-		if(shouldComplete(propConfig, definitionPropertyInfo)) {
+		if(shouldComplete(propConfig, definitionElementInfo)) {
 			completeKey(propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
 		}
 	}
@@ -540,11 +540,11 @@ fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefini
 	val keyword = valueElement.keyword
 	val quoted = valueElement.isQuoted()
 	val project = propertyElement.project
-	val definitionPropertyInfo = propertyElement.definitionPropertyInfo ?: return
-	val scope = definitionPropertyInfo.scope
-	val gameType = definitionPropertyInfo.gameType
+	val definitionElementInfo = propertyElement.definitionElementInfo ?: return
+	val scope = definitionElementInfo.scope
+	val gameType = definitionElementInfo.gameType
 	val configGroup = getCwtConfig(project).getValue(gameType)
-	val propertyConfigs = definitionPropertyInfo.propertyConfigs
+	val propertyConfigs = definitionElementInfo.propertyConfigs
 	if(propertyConfigs.isEmpty()) return
 	
 	for(propertyConfig in propertyConfigs) {
@@ -556,25 +556,25 @@ fun addValueCompletionsInBlock(valueElement: PsiElement, propertyElement: Parado
 	val keyword = valueElement.keyword
 	val quoted = valueElement.isQuoted()
 	val project = propertyElement.project
-	val definitionPropertyInfo = propertyElement.definitionPropertyInfo ?: return
-	val scope = definitionPropertyInfo.scope
-	val gameType = definitionPropertyInfo.gameType
+	val definitionElementInfo = propertyElement.definitionElementInfo ?: return
+	val scope = definitionElementInfo.scope
+	val gameType = definitionElementInfo.gameType
 	val configGroup = getCwtConfig(project).getValue(gameType)
-	val childValueConfigs = definitionPropertyInfo.childValueConfigs
+	val childValueConfigs = definitionElementInfo.childValueConfigs
 	if(childValueConfigs.isEmpty()) return
 	
 	for(valueConfig in childValueConfigs) {
-		if(shouldComplete(valueConfig, definitionPropertyInfo)) {
+		if(shouldComplete(valueConfig, definitionElementInfo)) {
 			completeValue(valueConfig.valueExpression, keyword, quoted, valueConfig, configGroup, result, scope)
 		}
 	}
 }
 
-private fun shouldComplete(config: CwtPropertyConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo): Boolean {
+private fun shouldComplete(config: CwtPropertyConfig, definitionElementInfo: ParadoxDefinitionPropertyInfo): Boolean {
 	val expression = config.keyExpression
 	//如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
 	if(expression.type == CwtKeyExpression.Type.AliasName) return true
-	val actualCount = definitionPropertyInfo.childPropertyOccurrence[expression] ?: 0
+	val actualCount = definitionElementInfo.childPropertyOccurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 	val cardinality = config.cardinality
 	val maxCount = when {
@@ -584,9 +584,9 @@ private fun shouldComplete(config: CwtPropertyConfig, definitionPropertyInfo: Pa
 	return maxCount == null || actualCount < maxCount
 }
 
-private fun shouldComplete(config: CwtValueConfig, definitionPropertyInfo: ParadoxDefinitionPropertyInfo): Boolean {
+private fun shouldComplete(config: CwtValueConfig, definitionElementInfo: ParadoxDefinitionPropertyInfo): Boolean {
 	val expression = config.valueExpression
-	val actualCount = definitionPropertyInfo.childValueOccurrence[expression] ?: 0
+	val actualCount = definitionElementInfo.childValueOccurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
 	val cardinality = config.cardinality
 	val maxCount = when {
@@ -1030,7 +1030,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 			valueValueConfig?.pointer?.element?.castOrNull<CwtString>()
 		}
 		CwtKeyExpression.Type.ValueSet -> {
-			null //TODO
+			propertyConfig.pointer.element //TODO
 		}
 		CwtKeyExpression.Type.Enum -> {
 			val enumName = expression.value ?: return null
@@ -1041,7 +1041,7 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 			enumValueConfig.pointer.element.castOrNull<CwtString>()
 		}
 		CwtKeyExpression.Type.ComplexEnum -> {
-			null //TODO
+			propertyConfig.pointer.element //TODO
 		}
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtKeyExpression.Type.AliasKeysField -> {
@@ -1059,7 +1059,9 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element
 		}
-		else -> null //TODO
+		else -> {
+			propertyConfig.pointer.element //TODO
+		}
 	}
 }
 
@@ -1096,7 +1098,7 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 			valueValueConfig?.pointer?.element?.castOrNull<CwtString>()?.toSingletonList() ?: return emptyList()
 		}
 		CwtKeyExpression.Type.ValueSet -> {
-			emptyList() //TODO
+			propertyConfig.pointer.element.toSingletonListOrEmpty() //TODO
 		}
 		CwtKeyExpression.Type.Enum -> {
 			val enumName = expression.value ?: return emptyList()
@@ -1107,7 +1109,7 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 			enumValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
 		}
 		CwtKeyExpression.Type.ComplexEnum -> {
-			emptyList() //TODO
+			propertyConfig.pointer.element.toSingletonListOrEmpty() //TODO
 		}
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtKeyExpression.Type.AliasKeysField -> {
@@ -1125,7 +1127,9 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element.toSingletonListOrEmpty()
 		}
-		else -> return emptyList() //TODO
+		else -> {
+			propertyConfig.pointer.element.toSingletonListOrEmpty() //TODO
+		}
 	}
 }
 
@@ -1165,7 +1169,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			valueValueConfig?.pointer?.element?.castOrNull<CwtString>()
 		}
 		CwtValueExpression.Type.ValueSet -> {
-			null //TODO
+			valueConfig.pointer.element.castOrNull<CwtString>() //TODO
 		}
 		CwtValueExpression.Type.Enum -> {
 			val enumName = expression.value ?: return null
@@ -1176,9 +1180,12 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			enumValueConfig.pointer.element.castOrNull<CwtString>()
 		}
 		CwtValueExpression.Type.ComplexEnum -> {
-			null //TODO
+			valueConfig.pointer.element.castOrNull<CwtString>() //TODO
 		}
-		CwtValueExpression.Type.SingleAliasRight -> null //NOTE 规则会被内联，不应该被匹配到
+		//NOTE 规则会被内联，不应该被匹配到
+		CwtValueExpression.Type.SingleAliasRight -> {
+			valueConfig.pointer.element.castOrNull<CwtString>()
+		}
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtValueExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return null
@@ -1186,11 +1193,16 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
 			resolveAliasName(aliasName, valueElement, configGroup)
 		}
-		CwtValueExpression.Type.AliasMatchLeft -> null //NOTE 规则会被内联，不应该被匹配到
+		//NOTE 规则会被内联，不应该被匹配到
+		CwtValueExpression.Type.AliasMatchLeft -> {
+			valueConfig.pointer.element.castOrNull<CwtString>()
+		}
 		CwtValueExpression.Type.Constant -> {
 			valueConfig.pointer.element.castOrNull<CwtString>()
 		}
-		else -> null //TODO
+		else -> {
+			valueConfig.pointer.element.castOrNull<CwtString>() //TODO
+		} 
 	}
 }
 

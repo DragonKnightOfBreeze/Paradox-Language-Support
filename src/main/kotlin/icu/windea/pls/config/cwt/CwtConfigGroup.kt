@@ -482,24 +482,22 @@ class CwtConfigGroup(
 	
 	//解析得到definitionInfo
 	
-	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
-			if(matchesType(typeConfig, element, elementName, path, elementPath)) {
-				return toDefinitionInfo(typeConfig, element, elementName, elementPath)
+			if(matchesType(typeConfig, element, rootKey, path, elementPath)) {
+				return toDefinitionInfo(typeConfig, element, rootKey, elementPath)
 			}
 		}
 		return null
 	}
 	
-	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): Boolean {
-		val typeKey = elementName.lowercase()
+	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): Boolean {
+		val typeKey = rootKey.lowercase()
 		//判断element.value是否需要是block
 		val blockConfig = typeConfig.block
 		val elementBlock = element.block
 		if(blockConfig) {
 			if(elementBlock == null) return false
-		} else {
-			return true //直接认为匹配
 		}
 		//if(elementBlock == null) return false
 		//判断element是否需要是scriptFile还是scriptProperty
@@ -528,6 +526,17 @@ class CwtConfigGroup(
 		if(pathExtensionConfig != null) {
 			if(pathExtensionConfig != path.fileExtension) return false
 		}
+		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+		val startsWithConfig = typeConfig.startsWith
+		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
+			if(!typeKey.startsWith(startsWithConfig)) return false
+		}
+		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+		val typeKeyFilterConfig = typeConfig.typeKeyFilter
+		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
+			val filterResult = typeKeyFilterConfig.contains(typeKey)
+			if(!filterResult) return false
+		}
 		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
 		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
 		//skip_root_key可以重复（其中之一匹配即可）
@@ -544,16 +553,9 @@ class CwtConfigGroup(
 			}
 			if(!skipResult) return false
 		}
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
-		val startsWithConfig = typeConfig.startsWith
-		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!typeKey.startsWith(startsWithConfig)) return false
-		}
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
-		val typeKeyFilterConfig = typeConfig.typeKeyFilter
-		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
-			val filterResult = typeKeyFilterConfig.contains(typeKey)
-			if(!filterResult) return false
+		//到这里再次处理block为false的情况
+		if(!blockConfig) {
+			return elementBlock == null
 		}
 		return true
 	}
@@ -582,10 +584,10 @@ class CwtConfigGroup(
 		return matchesDefinitionProperty(element, elementConfig, this)
 	}
 	
-	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo {
-		val name = getName(typeConfig, element, elementName)
+	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo {
+		val name = getName(typeConfig, element, rootKey)
 		val type = typeConfig.name
-		val subtypeConfigs = getSubtypeConfigs(typeConfig, element, elementName)
+		val subtypeConfigs = getSubtypeConfigs(typeConfig, element, rootKey)
 		val subtypes = subtypeConfigs.map { it.name }
 		val localisation = getLocalisation(typeConfig, subtypes, element, name)
 		val localisationConfig = typeConfig.localisation
@@ -593,7 +595,6 @@ class CwtConfigGroup(
 		val picturesConfig = typeConfig.pictures
 		val definition = getDefinition(type, subtypes)
 		val definitionConfig = definitions.get(type)
-		val rootKey = elementName
 		return ParadoxDefinitionInfo(
 			name, type, typeConfig, subtypes, subtypeConfigs,
 			localisation, localisationConfig, pictures, picturesConfig,
@@ -601,7 +602,7 @@ class CwtConfigGroup(
 		)
 	}
 	
-	private fun getName(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): String {
+	private fun getName(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String): String {
 		//如果name_from_file = yes，则返回文件名（不包含扩展）
 		val nameFromFileConfig = typeConfig.nameFromFile
 		if(nameFromFileConfig) return element.containingFile.name.substringBeforeLast('.')
@@ -611,8 +612,8 @@ class CwtConfigGroup(
 		//如果有一个子属性的propertyKey为name，那么取这个子属性的值，这是为了兼容cwt规则文件尚未考虑到的一些需要名字的情况
 		val nameProperty = element.findProperty("name", true)
 		if(nameProperty != null) return nameProperty.value.orEmpty()
-		//否则直接返回elementName
-		return elementName
+		//否则直接返回rootKey
+		return rootKey
 	}
 	
 	private fun getSubtypeConfigs(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, elementName: String): List<CwtSubtypeConfig> {

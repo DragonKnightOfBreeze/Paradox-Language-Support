@@ -11,6 +11,7 @@ types = {
 	# FIXED BY PLS
 	type[alert_icon] = {
 		path_file = "alerts.txt"
+		block = no
 		path = "game/common"
 		skip_root_key = icon
 	}

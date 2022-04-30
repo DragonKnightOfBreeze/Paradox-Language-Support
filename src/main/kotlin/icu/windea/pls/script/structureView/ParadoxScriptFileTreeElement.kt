@@ -3,6 +3,7 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFileTreeElement(
@@ -29,5 +30,13 @@ class ParadoxScriptFileTreeElement(
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
 		return element.name
+	}
+	
+	override fun getLocationString(): String? {
+		val element = element ?: return null
+		val definitionInfo = element.definitionInfo ?: return null
+		val name = definitionInfo.name
+		val typesText = definitionInfo.typesText
+		return "$name: $typesText"
 	}
 }

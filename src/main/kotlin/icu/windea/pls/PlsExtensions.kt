@@ -193,22 +193,22 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	val fileInfo = element.fileInfo ?: return null
 	val path = fileInfo.path
 	val gameType = fileInfo.gameType
-	val elementName = element.name ?: return null
+	val rootKey = element.pathName //如果是文件名，不要包含扩展名
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, elementName, path, propertyPath)
+	return configGroup.resolveDefinitionInfo(element, rootKey, path, propertyPath)
 }
 
-val ParadoxDefinitionProperty.definitionPropertyInfo: ParadoxDefinitionPropertyInfo? get() = doGetDefinitionPropertyInfo(this)
+val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionPropertyInfo? get() = doGetDefinitionElementInfo(this)
 
-private fun doGetDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
+private fun doGetDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionPropertyInfoKey) {
-		val value = resolveDefinitionPropertyInfo(element)
+		val value = resolveDefinitionElementInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
 }
 
-private fun resolveDefinitionPropertyInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
+private fun resolveDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
 	//NOTE 注意这里获得的definitionInfo可能会过时！因为对应的type和subtypes可能基于其他的definitionProperty
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
 	val definition = elementPath.rootPointer?.element ?: return null
@@ -225,8 +225,8 @@ val ParadoxScriptProperty.propertyConfig: CwtPropertyConfig? get() = doGetProper
 
 private fun doGetPropertyConfig(element: ParadoxScriptProperty): CwtPropertyConfig? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
-	val definitionPropertyInfo = element.definitionPropertyInfo ?: return null
-	return definitionPropertyInfo.propertyConfig
+	val definitionElementInfo = element.definitionElementInfo ?: return null
+	return definitionElementInfo.propertyConfig
 }
 
 val ParadoxScriptPropertyKey.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
@@ -234,8 +234,8 @@ val ParadoxScriptPropertyKey.propertyConfig: CwtPropertyConfig? get() = doGetPro
 private fun doGetPropertyConfig(element: ParadoxScriptPropertyKey): CwtPropertyConfig? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
 	val property = element.parent.castOrNull<ParadoxScriptProperty>() ?: return null
-	val definitionPropertyInfo = property.definitionPropertyInfo ?: return null
-	return definitionPropertyInfo.propertyConfig
+	val definitionElementInfo = property.definitionElementInfo ?: return null
+	return definitionElementInfo.propertyConfig
 }
 
 val ParadoxScriptValue.valueConfig: CwtValueConfig? get() = doGetValueConfig(this)
@@ -247,16 +247,16 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 		//如果value是property的value
 		is ParadoxScriptPropertyValue -> {
 			val property = parent.parent as? ParadoxScriptProperty ?: return null
-			val definitionPropertyInfo = property.definitionPropertyInfo ?: return null
-			return definitionPropertyInfo.matchedPropertyConfig?.valueConfig
+			val definitionElementInfo = property.definitionElementInfo ?: return null
+			return definitionElementInfo.matchedPropertyConfig?.valueConfig
 		}
 		//如果value是block中的value
 		is ParadoxScriptBlock -> {
 			val property = parent.parent?.parent as? ParadoxScriptProperty ?: return null
-			val definitionPropertyInfo = property.definitionPropertyInfo ?: return null
-			val childValueConfigs = definitionPropertyInfo.childValueConfigs
+			val definitionElementInfo = property.definitionElementInfo ?: return null
+			val childValueConfigs = definitionElementInfo.childValueConfigs
 			if(childValueConfigs.isEmpty()) return null
-			val gameType = definitionPropertyInfo.gameType
+			val gameType = definitionElementInfo.gameType
 			val configGroup = getCwtConfig(element.project).getValue(gameType)
 			return childValueConfigs.find {
 				matchesValue(it.valueExpression, element, configGroup)

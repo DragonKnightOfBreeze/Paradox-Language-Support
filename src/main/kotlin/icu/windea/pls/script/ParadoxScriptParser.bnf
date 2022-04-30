@@ -57,7 +57,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getName setName getNameIdentifier getIcon getValue getTruncatedValue getDepth getBlock getValueType getType]
+  methods=[getName setName getNameIdentifier getIcon getValue getTruncatedValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
 }
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
   methods=[getValue setValue getReference]

@@ -138,6 +138,16 @@ object ParadoxScriptPsiImplUtil {
 		}
 		return null //TODO 支持定义元素的类型
 	}
+	
+	@JvmStatic
+	fun getPathName(element: ParadoxScriptProperty):String?{
+		return element.propertyKey.text
+	}
+	
+	@JvmStatic
+	fun getOriginalPathName(element: ParadoxScriptProperty):String?{
+		return element.propertyKey.value
+	}
 	//endregion
 	
 	//region ParadoxScriptPropertyKey
