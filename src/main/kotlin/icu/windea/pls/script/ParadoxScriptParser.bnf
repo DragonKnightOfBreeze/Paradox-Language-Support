@@ -41,7 +41,7 @@ variable_name ::= VARIABLE_NAME_ID{
 private variable_separator ::= EQUAL_SIGN
 variable_value ::= boolean | number | string
 //当前变量解析失败时，需要跳过继续解析下一行
-private variable_recover ::= !(LEFT_BRACE | RIGHT_BRACE | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+private variable_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 property ::= property_key property_separator property_value {
   pin=1
@@ -61,7 +61,7 @@ property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 //当前属性解析失败时，需要跳过继续解析下一个
-private property_recover ::= !(LEFT_BRACE | RIGHT_BRACE | BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+private property_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 value ::= variable_reference | boolean | number | string_value | block{
   implements="com.intellij.psi.PsiLiteralValue"
@@ -110,4 +110,4 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value

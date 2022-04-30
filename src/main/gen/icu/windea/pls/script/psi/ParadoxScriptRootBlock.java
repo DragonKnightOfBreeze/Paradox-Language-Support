@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxScriptRootBlock extends ParadoxScriptBlock {
 
-  @NotNull
-  List<ParadoxScriptVariable> getVariableList();
-
 }

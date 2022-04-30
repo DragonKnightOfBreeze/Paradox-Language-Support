@@ -54,6 +54,8 @@ CODE_TEXT_TOKEN=[^\r\n\]}]+
 //为了兼容cwt规则文件（<xxx>格式的propertyKey），需要弄得很麻烦
 //要求=周围可以没有空格，但其他分隔符如<=周围必须有
 IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
+//判断接下来是变量名还是变量引用
+IS_VARIABLE={VARIABLE_NAME_ID}\s*=
 
 %%
 
@@ -109,9 +111,28 @@ IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
   {EOL} {return WHITE_SPACE;}
   {WHITE_SPACE} {return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
+  {IS_VARIABLE} {
+    //如果匹配到的文本以等号结尾，则将空白之前的部分解析为VARIABLE_NAME_ID，否则将其解析为VARIABLE_REFERENCE_ID
+	String text = yytext();
+	if(text.endsWith('=')){
+	  //计算需要回退的长度
+	  int n = 1;
+	  int length = text.length();
+	  for (int i = length - 2; i > 0; i--) {
+	    char c = text.charAt(i);
+		if(!Character.isWhitespace(c)) break;
+	  }
+	  yypushback(n);
+	  yybegin(WAITING_VARIABLE_EQUAL_SIGN);
+	  return VARIABLE_NAME_ID;
+	} else {
+	  yybegin(WAITING_PROPERTY_END);
+      return VARIABLE_REFERENCE_ID;
+	}
+  }
   //{VARIABLE_NAME_ID} {yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID;}
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
-  {VARIABLE_REFERENCE_ID} {yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;}
+  //{VARIABLE_REFERENCE_ID} {yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}

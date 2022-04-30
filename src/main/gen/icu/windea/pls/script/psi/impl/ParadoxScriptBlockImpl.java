@@ -41,6 +41,12 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
+  public List<ParadoxScriptVariable> getVariableList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }

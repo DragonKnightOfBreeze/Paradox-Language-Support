@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
+import com.intellij.util.SmartList
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.internal.*
@@ -477,19 +478,57 @@ fun PsiElement.findParentDefinitionAndExtraInfo(): Tuple3<ParadoxDefinitionPrope
 
 //region Find Extensions
 /**
- * 根据名字在当前文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * 根据名字在指定文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * @param name 变量的名字，以"@"开始。
+ * @param file 指定的文件。
+ * @param context 需要从哪个[PsiElement]开始，在整个文件内，递归向上查找。
  */
-fun findScriptVariableInFile(name: String, file: PsiFile): ParadoxScriptVariable? {
+fun findScriptVariableInFile(name: String, file: PsiFile, context: PsiElement): ParadoxScriptVariable? {
+	//仅限脚本文件
 	if(file !is ParadoxScriptFile) return null
-	return file.descendantsOfType<ParadoxScriptVariable>().find { it.name == name }
+	//在整个脚本文件中递归向上查找，返回查找到的第一个
+	var result: ParadoxScriptVariable? = null
+	var current = context
+	while(current !is PsiFile) {
+		var prevSibling = current.prevSibling
+		while(prevSibling != null) {
+			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
+				result = prevSibling
+				break
+			}
+			prevSibling = prevSibling.prevSibling
+		}
+		current = current.parent ?: break
+	}
+	return result
 }
 
 /**
- * 根据名字在当前文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * 根据名字在指定文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * @param name 变量的名字，以"@"开始。
+ * @param file 指定的文件。
+ * @param context 需要从哪个[PsiElement]开始，在整个文件内，向上查找。
  */
-fun findScriptVariablesInFile(name: String, file: PsiFile): List<ParadoxScriptVariable> {
+fun findScriptVariablesInFile(name: String, file: PsiFile, context: PsiElement): List<ParadoxScriptVariable> {
+	//仅限脚本文件
 	if(file !is ParadoxScriptFile) return emptyList()
-	return file.descendantsOfType<ParadoxScriptVariable>().filter { it.name == name }.toList()
+	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
+	var result: MutableList<ParadoxScriptVariable>? = null
+	var current = context
+	while(current !is PsiFile) {
+		var prevSibling = current.prevSibling
+		while(prevSibling != null) {
+			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
+				if(result == null) result = SmartList()
+				result.add(prevSibling)
+				break
+			}
+			prevSibling = prevSibling.prevSibling
+		}
+		current = current.parent ?: break
+	}
+	if(result == null) return emptyList()
+	return result
 }
 
 /**
@@ -978,7 +1017,7 @@ fun StringBuilder.appendUnresolvedLink(label: String): StringBuilder {
 	return this
 }
 
-fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement): StringBuilder{
+fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement): StringBuilder {
 	val rootPath = context.fileInfo?.rootPath
 	val absPath = rootPath?.resolve(filePath)?.normalize()?.toString()
 	//如果可以定位到绝对路径，则显示链接

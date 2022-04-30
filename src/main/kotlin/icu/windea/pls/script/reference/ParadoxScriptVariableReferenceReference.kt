@@ -28,7 +28,7 @@ class ParadoxScriptVariableReferenceReference(
 		val name = element.name
 		val project = element.project
 		val file = element.containingFile
-		return findScriptVariableInFile(name, file)
+		return findScriptVariableInFile(name, file, element)
 			?: findScriptVariable(name, project)
 	}
 	
@@ -37,7 +37,7 @@ class ParadoxScriptVariableReferenceReference(
 		val name = element.name
 		val project = element.project
 		val file = element.containingFile
-		return findScriptVariablesInFile(name, file)
+		return findScriptVariablesInFile(name, file, element)
 			.ifEmpty { findScriptVariables(name, project) }
 			.mapToArray { PsiElementResolveResult(it) }
 	}

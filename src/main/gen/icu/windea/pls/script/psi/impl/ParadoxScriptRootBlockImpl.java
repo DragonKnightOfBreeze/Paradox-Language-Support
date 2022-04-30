@@ -27,10 +27,4 @@ public class ParadoxScriptRootBlockImpl extends ParadoxScriptBlockImpl implement
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<ParadoxScriptVariable> getVariableList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
-  }
-
 }
