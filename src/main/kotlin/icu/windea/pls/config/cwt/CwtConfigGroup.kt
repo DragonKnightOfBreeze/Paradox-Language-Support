@@ -499,7 +499,7 @@ class CwtConfigGroup(
 		if(blockConfig) {
 			if(elementBlock == null) return false
 		} else {
-			if(elementBlock != null) return false
+			return true //直接认为匹配
 		}
 		//if(elementBlock == null) return false
 		//判断element是否需要是scriptFile还是scriptProperty

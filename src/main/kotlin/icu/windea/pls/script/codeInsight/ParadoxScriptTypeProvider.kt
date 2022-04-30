@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 //com.intellij.codeInsight.hint.JavaTypeProvider
 
 /**
- * 脚本文件的类型提供器。
+ * 脚本文件的类型提供器。用于显示类型信息（`View > Type Info`）。
  *
  * 支持的PSI元素：
  * * 变量（variable） - 显示变量的值的类型。
@@ -35,7 +35,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression
 	 * 显示定义的类型，或者定义属性的类型，或者值的类型。
 	 */
 	override fun getInformationHint(element: ParadoxScriptExpression): String {
-		//有限显示最相关的类型
+		//优先显示最相关的类型
 		return element.type ?: element.valueType?.text ?: ParadoxValueType.UnknownType.text
 	}
 	
@@ -43,6 +43,9 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression
 		return true
 	}
 	
+	/**
+	 * 显示定义的类型（或者定义属性的类型）、值的类型。
+	 */
 	override fun getAdvancedInformationHint(element: ParadoxScriptExpression): String {
 		val children = buildList {
 			element.type?.let { type ->
@@ -64,3 +67,4 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression
 		return HtmlChunk.tag("tr").children(titleCell, contentCell)
 	}
 }
+

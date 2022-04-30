@@ -24,6 +24,8 @@ class ParadoxDefinitionInfo(
 	val elementPath: ParadoxDefinitionPath,
 	val gameType: ParadoxGameType
 ) {
+	val typeCount = subtypes.size + 1 
+		
 	val types: List<String> by lazy { mutableListOf(type).apply { addAll(subtypes) } }
 	val typesText: String by lazy { types.joinToString(", ") }
 	val primaryLocalisation: ParadoxRelatedLocalisationInfo? by lazy { localisation.firstOrNull { it.primary } }

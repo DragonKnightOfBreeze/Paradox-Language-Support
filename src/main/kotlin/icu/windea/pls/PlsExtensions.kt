@@ -342,6 +342,38 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 }
 //endregion
 
+//region Find From PsiElement Extensiosn
+/**
+ * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
+ */
+fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxDefinitionProperty) {
+			return current
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
+}
+
+/**
+ * 得到上一级definitionProperty，跳过正在填写的，可能为自身，可能为null，可能也是definition。
+ */
+fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty? {
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxScriptRootBlock) {
+			return (current.parent ?: break) as ParadoxDefinitionProperty
+		} else if(current is ParadoxScriptBlock) {
+			return (current.parent.parent ?: break) as ParadoxDefinitionProperty
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
+}
+//endregion
+
 //region Find Extensions
 /**
  * 根据名字在指定文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）

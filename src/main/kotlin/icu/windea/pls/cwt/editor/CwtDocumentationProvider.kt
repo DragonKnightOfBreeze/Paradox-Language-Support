@@ -2,6 +2,7 @@ package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -70,7 +71,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val project = element.project
 		val configType = element.configType
 		definition {
-			if(configType != null) append("(").append(configType.text).append(") ") else append("(property) ")
+			if(configType != null) {
+				append("(").append(configType.text).append(") ")
+			} else {
+				//在脚本文件中显示"(definiiton property)"
+				if(originalElement != null && originalElement.isParadoxScriptPsiElement() ) {
+					append("(property) ")
+				} else {
+					append("(definition property) ")
+				}
+			}
 			append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			when(configType) {
 				//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
