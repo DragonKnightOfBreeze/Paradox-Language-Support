@@ -4,12 +4,10 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 import java.lang.invoke.*
 import java.nio.file.*
-import kotlin.io.path.*
 
 /**
  * DDS图片地址的解析器。
@@ -85,22 +83,6 @@ object ParadoxDdsUrlResolver {
 		}
 	}
 	
-	/**
-	 * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。
-	 */
-	fun resolveByFilePath(filePath: ParadoxPath, project: Project, defaultToUnknown: Boolean = true): String {
-		try {
-			//如果无法解析为png文件地址，则返回默认的地址
-			val url = doResolveByFilePath(filePath, project)
-			if(url.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
-			return url
-		} catch(e: Exception) {
-			//如果出现异常，那么返回默认图标
-			logger.warn(e) { "Resolve dds url failed. (dds file path: ${filePath})" }
-			return getDefaultUrl(defaultToUnknown)
-		}
-	}
-	
 	private fun doResolveByIconName(iconName: String, project: Project): String? {
 		return doResolveBySprite("GFX_text_${iconName}", project)
 			?: doResolveByFile("$iconName.dds", project)
@@ -113,7 +95,7 @@ object ParadoxDdsUrlResolver {
 	
 	private fun doResolveBySprite(sprite: ParadoxDefinitionProperty): String? {
 		val ddsRelPath = sprite.findProperty("textureFile", true)?.value ?: return null
-		val file = findFile(ddsRelPath, sprite.project) ?: return null
+		val file = findFileByFilePath(ddsRelPath, sprite.project) ?: return null
 		return doResolveByFile(file)
 	}
 	
@@ -132,12 +114,7 @@ object ParadoxDdsUrlResolver {
 	}
 	
 	private fun doResolveByFilePath(filePath: String, project: Project): String? {
-		val file = findFile(filePath, project) ?: return null
-		return doResolveByFile(file)
-	}
-	
-	private fun doResolveByFilePath(filePath: ParadoxPath, project: Project): String? {
-		val file = findFile(filePath, project) ?: return null
+		val file = findFileByFilePath(filePath, project) ?: return null
 		return doResolveByFile(file)
 	}
 	

@@ -58,15 +58,12 @@ class CwtValueExpression private constructor(
 					CwtValueExpression(expressionString, Type.InlineLocalisation)
 				}
 				expressionString == "filepath" -> {
-					val (value, extraValue) = when {
-						expressionString.surroundsWith("filepath[", "]") -> {
-							val v = expressionString.substring(9, expressionString.length - 1)
-							val commaIndex = v.indexOf(',')
-							if(commaIndex == -1) v to null else v.substring(0, commaIndex) to v.substring(commaIndex + 1)
-						}
-						else -> null to null
+					if(expressionString.surroundsWith("filepath[", "]")) {
+						val value = expressionString.substring(9, expressionString.length - 1)
+						CwtValueExpression(expressionString, Type.FilePath, value)
+					} else {
+						CwtValueExpression(expressionString, Type.FilePath)
 					}
-					CwtValueExpression(expressionString, Type.FilePath, value, extraValue)
 				}
 				expressionString.surroundsWith("icon[", "]") -> {
 					val value = expressionString.substring(5, expressionString.length - 1)
@@ -169,7 +166,6 @@ class CwtValueExpression private constructor(
 		SyncedLocalisation,
 		InlineLocalisation,
 		FilePath,
-		FilePathExpression,
 		Icon,
 		DateField,
 		TypeExpression,

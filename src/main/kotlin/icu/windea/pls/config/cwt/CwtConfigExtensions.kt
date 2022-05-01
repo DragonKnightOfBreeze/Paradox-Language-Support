@@ -8,6 +8,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -402,13 +403,16 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			valueElement is ParadoxScriptString && hasLocalisation(value, null, configGroup.project)
 		}
 		CwtValueExpression.Type.FilePath -> {
-			true //TODO
-		}
-		CwtValueExpression.Type.FilePathExpression -> {
-			true //TODO
+			valueElement is ParadoxScriptString && run {
+				val resolvedPath = CwtFilePathExpressionType.FilePath.resolve(expression.value, valueElement.value)
+				findFileByFilePath(resolvedPath, configGroup.project) != null
+			}
 		}
 		CwtValueExpression.Type.Icon -> {
-			true //TODO
+			valueElement is ParadoxScriptString && run{
+				val resolvedPath = CwtFilePathExpressionType.Icon.resolve(expression.value, valueElement.value) ?: return@run false
+				findFileByFilePath(resolvedPath, configGroup.project) != null
+			}
 		}
 		CwtValueExpression.Type.DateField -> {
 			val value = valueElement.value
@@ -812,9 +816,50 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				result.addElement(lookupElement)
 			}
 		}
-		CwtValueExpression.Type.FilePath -> pass() //TODO
-		CwtValueExpression.Type.FilePathExpression -> pass() //TODO
-		CwtValueExpression.Type.Icon -> pass() //TODO
+		CwtValueExpression.Type.FilePath -> {
+			val expressionType = CwtFilePathExpressionType.FilePath
+			val expressionValue = expression.value
+			val virtualFiles = if(expressionValue == null){
+				findAllFilesByFilePath(configGroup.project, distinct = true)
+			} else {
+				findFilesByFilePath(expressionValue, configGroup.project, expressionType = expressionType, distinct = true)
+			}
+			if(virtualFiles.isEmpty()) return
+			val tailText = " by $expression in $configFileName"
+			for(virtualFile in virtualFiles) {
+				val file = virtualFile.toPsiFile<PsiFile>(configGroup.project) ?: continue
+				val filePath = virtualFile.fileInfo?.path?.path ?: continue
+				val icon = file.icon
+				val name = expressionType.extract(expressionValue, filePath) ?: continue
+				val typeText = virtualFile.name
+				val lookupElement = LookupElementBuilder.create(virtualFile, name).withIcon(icon)
+					.withTailText(tailText, true)
+					.withTypeText(typeText, true)
+				result.addElement(lookupElement)
+			}
+		}
+		CwtValueExpression.Type.Icon -> {
+			val expressionType = CwtFilePathExpressionType.Icon
+			val expressionValue = expression.value
+			val virtualFiles = if(expressionValue == null){
+				findAllFilesByFilePath(configGroup.project, distinct = true)
+			} else {
+				findFilesByFilePath(expressionValue, configGroup.project, expressionType = expressionType, distinct = true)
+			}
+			if(virtualFiles.isEmpty()) return
+			val tailText = " by $expression in $configFileName"
+			for(virtualFile in virtualFiles) {
+				val file = virtualFile.toPsiFile<PsiFile>(configGroup.project) ?: continue
+				val filePath = virtualFile.fileInfo?.path?.path ?: continue
+				val icon = file.icon
+				val name = expressionType.extract(expressionValue, filePath) ?: continue
+				val typeText = virtualFile.name
+				val lookupElement = LookupElementBuilder.create(virtualFile, name).withIcon(icon)
+					.withTailText(tailText, true)
+					.withTypeText(typeText, true)
+				result.addElement(lookupElement)
+			}
+		}
 		CwtValueExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
 			val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
@@ -901,13 +946,15 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.IntVariableField -> pass() //TODO
 		CwtValueExpression.Type.ValueField -> pass() //TODO
 		CwtValueExpression.Type.IntValueField -> pass() //TODO
-		CwtValueExpression.Type.SingleAliasRight -> pass() //NOTE 规则会被内联，不应该被匹配到
+		//规则会被内联，不应该被匹配到
+		CwtValueExpression.Type.SingleAliasRight -> pass()
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtValueExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return
 			completeAliasName(aliasName, keyword, quoted, config, configGroup, result, scope)
 		}
-		CwtValueExpression.Type.AliasMatchLeft -> pass() //NOTE 规则会被内联，不应该被匹配到
+		//规则会被内联，不应该被匹配到
+		CwtValueExpression.Type.AliasMatchLeft -> pass()
 		CwtValueExpression.Type.Constant -> {
 			val n = expression.value ?: return
 			if(!n.matchesKeyword(keyword)) return //预先过滤结果
@@ -996,7 +1043,6 @@ fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,
 
 //region Resolve Extensions
 //NOTE 基于cwt规则文件的解析方法不进一步匹配scope
-
 fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 	val propertyConfig = keyElement.propertyConfig ?: return null
 	val expression = propertyConfig.keyExpression
@@ -1149,6 +1195,16 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			val name = valueElement.value
 			findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 		}
+		CwtValueExpression.Type.FilePath -> {
+			val expressionType = CwtFilePathExpressionType.FilePath
+			val filePath = expressionType.resolve(expression.value, valueElement.value)
+			findFileByFilePath(filePath, project)?.toPsiFile(project)
+		}
+		CwtValueExpression.Type.Icon -> {
+			val expressionType = CwtFilePathExpressionType.Icon
+			val filePath = expressionType.resolve(expression.value, valueElement.value)?:return null
+			findFileByFilePath(filePath, project)?.toPsiFile(project)
+		}
 		CwtValueExpression.Type.TypeExpression -> {
 			val name = valueElement.value
 			val typeExpression = expression.value ?: return null
@@ -1182,7 +1238,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 		CwtValueExpression.Type.ComplexEnum -> {
 			valueConfig.pointer.element.castOrNull<CwtString>() //TODO
 		}
-		//NOTE 规则会被内联，不应该被匹配到
+		//规则会被内联，不应该被匹配到
 		CwtValueExpression.Type.SingleAliasRight -> {
 			valueConfig.pointer.element.castOrNull<CwtString>()
 		}
@@ -1193,7 +1249,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
 			resolveAliasName(aliasName, valueElement, configGroup)
 		}
-		//NOTE 规则会被内联，不应该被匹配到
+		//规则会被内联，不应该被匹配到
 		CwtValueExpression.Type.AliasMatchLeft -> {
 			valueConfig.pointer.element.castOrNull<CwtString>()
 		}
@@ -1230,6 +1286,16 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 			val name = valueElement.value
 			findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 		}
+		CwtValueExpression.Type.FilePath -> {
+			val expressionType = CwtFilePathExpressionType.FilePath
+			val filePath = expressionType.resolve(expression.value, valueElement.value)
+			findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project)}
+		}
+		CwtValueExpression.Type.Icon -> {
+			val expressionType = CwtFilePathExpressionType.Icon
+			val filePath = expressionType.resolve(expression.value, valueElement.value)?:return emptyList()
+			findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project)}
+		}
 		CwtValueExpression.Type.TypeExpression -> {
 			val name = valueElement.value
 			val typeExpression = expression.value ?: return emptyList()
@@ -1263,7 +1329,8 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 		CwtValueExpression.Type.ComplexEnum -> {
 			return emptyList() //TODO
 		}
-		CwtValueExpression.Type.SingleAliasRight -> emptyList() //NOTE 规则会被内联，不应该被匹配到
+		//规则会被内联，不应该被匹配到
+		CwtValueExpression.Type.SingleAliasRight -> emptyList()
 		//NOTE 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtValueExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return emptyList()
@@ -1271,7 +1338,8 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 			val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
 			resolveAliasName(aliasName, valueElement, configGroup).toSingletonListOrEmpty()
 		}
-		CwtValueExpression.Type.AliasMatchLeft -> emptyList() //NOTE 规则会被内联，不应该被匹配到
+		//规则会被内联，不应该被匹配到
+		CwtValueExpression.Type.AliasMatchLeft -> emptyList()
 		CwtValueExpression.Type.Constant -> {
 			valueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
 		}

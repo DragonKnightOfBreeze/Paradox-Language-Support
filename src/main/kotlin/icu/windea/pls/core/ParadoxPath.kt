@@ -28,7 +28,7 @@ class ParadoxPath private constructor(
 	val parent = path.substringBeforeLast("/", "")
 	val root = path.substringBefore("/", "")
 	val fileName = subPaths.lastOrNull().orEmpty()
-	val fileExtension = fileName.substringAfterLast('.',"")
+	val fileExtension = fileName.substringAfterLast('.', "")
 	val length = subPaths.size
 	
 	fun isEmpty(): Boolean {
@@ -37,6 +37,14 @@ class ParadoxPath private constructor(
 	
 	override fun iterator(): Iterator<String> {
 		return subPaths.iterator()
+	}
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxPath && path == other.path
+	}
+	
+	override fun hashCode(): Int {
+		return path.hashCode()
 	}
 	
 	override fun toString(): String {

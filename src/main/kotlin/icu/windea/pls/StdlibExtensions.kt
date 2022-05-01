@@ -62,24 +62,24 @@ fun String.removeSurrounding(prefix: CharSequence, suffix: CharSequence): String
 	return removePrefix(prefix).removeSuffix(suffix)
 }
 
-fun CharSequence.removePrefixOrNull(prefix: CharSequence): String? {
-	return if(startsWith(prefix)) substring(prefix.length) else null
+fun CharSequence.removePrefixOrNull(prefix: CharSequence, ignoreCase: Boolean = false): String? {
+	return if(startsWith(prefix, ignoreCase)) substring(prefix.length) else null
 }
 
-fun String.removePrefixOrNull(prefix: CharSequence): String? {
-	return if(startsWith(prefix)) substring(prefix.length) else null
+fun String.removePrefixOrNull(prefix: CharSequence, ignoreCase: Boolean = false): String? {
+	return if(startsWith(prefix, ignoreCase)) substring(prefix.length) else null
 }
 
-fun CharSequence.removeSuffixOrNull(suffix: CharSequence): String? {
-	return if(endsWith(suffix)) substring(0, length - suffix.length) else null
+fun CharSequence.removeSuffixOrNull(suffix: CharSequence, ignoreCase: Boolean = false): String? {
+	return if(endsWith(suffix, ignoreCase)) substring(0, length - suffix.length) else null
 }
 
-fun String.removeSuffixOrNull(suffix: CharSequence): String? {
-	return if(endsWith(suffix)) substring(0, length - suffix.length) else null
+fun String.removeSuffixOrNull(suffix: CharSequence, ignoreCase: Boolean = false): String? {
+	return if(endsWith(suffix, ignoreCase)) substring(0, length - suffix.length) else null
 }
 
-fun CharSequence.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence): String? {
-	return if(surroundsWith(prefix, suffix)) substring(prefix.length, length - suffix.length) else null
+fun CharSequence.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): String? {
+	return if(surroundsWith(prefix, suffix, ignoreCase)) substring(prefix.length, length - suffix.length) else null
 }
 
 fun String.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence): String? {
@@ -402,6 +402,10 @@ inline val <T : Enum<T>> Class<T>.enumSharedConstants get() = enumValuesCache[th
 //endregion
 
 //region Collection Extensions
+fun <K,V> mapOfKv(key: K, value:V): Map<K, V> {
+	return Collections.singletonMap(key, value)
+}
+
 fun <T> Collection<T>.parallelForEach(action: (T) -> Unit) {
 	return this.parallelStream().forEach(action)
 }

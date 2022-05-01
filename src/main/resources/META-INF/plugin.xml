@@ -73,6 +73,9 @@
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
 
+    <fileBasedIndex implementation="icu.windea.pls.core.psi.ParadoxFilePathIndexImpl"/>
+    <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true" description="Use VFS-based implementation for ParadoxFilePathIndex"/>
+
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck2LibraryType"/>
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck3LibraryType"/>
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Eu4LibraryType"/>

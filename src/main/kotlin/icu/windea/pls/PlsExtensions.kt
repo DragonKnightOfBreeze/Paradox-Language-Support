@@ -11,19 +11,20 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
-import com.intellij.util.SmartList
+import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.util.*
-import kotlin.Pair
 
 //region Keys
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
@@ -91,17 +92,6 @@ fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String
 		else -> expression in subtypes
 	}
 }
-
-/**
- * 解析定义类型表达式。
- * @param expression 表达式。示例：`origin_or_civic`, `origin_or_civic.origin`, `sprite|spriteType`
- */
-fun resolveDefinitionTypeExpression(expression: String): Pair<String, String?> {
-	val dotIndex = expression.indexOf('.')
-	val type = if(dotIndex == -1) expression else expression.substring(0, dotIndex)
-	val subtype = if(dotIndex == -1) null else expression.substring(dotIndex + 1)
-	return type to subtype
-}
 //endregion
 
 //region PsiElement Extensions
@@ -114,7 +104,7 @@ fun PsiElement.isQuoted(): Boolean {
  */
 fun ParadoxScriptValue.isLonelyValue(): Boolean {
 	return this.parent is ParadoxScriptBlock // ParadoxScriptBlock | ParadoxScriptRootBlock
-}
+}   
 
 val CwtProperty.configType: CwtConfigType? get() = doGetConfigType(this)
 
@@ -768,87 +758,49 @@ fun findSyncedLocalisationsByKeyword(
 }
 
 /**
- * 基于文件索引，根据相对于游戏或模组目录的路径查找匹配的文件。
+ * 基于文件索引，根据相对于游戏或模组目录的文件路径查找匹配的文件（非目录）。
+ * @param expressionType 使用何种文件路径表达式类型。默认使用精确路径。
+ * @param ignoreCase 匹配路径时是否忽略大小写。 默认为`true`。
  */
-fun findFile(
-	path: ParadoxPath,
+fun findFileByFilePath(
+	filePath: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	caseSensitively: Boolean = false
+	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionType.Exact,
+	ignoreCase: Boolean = true
 ): VirtualFile? {
-	val fileName = path.fileName
-	var result: VirtualFile? = null
-	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
-		if(file.fileInfo?.path?.path == path.path) {
-			result = file
-			false
-		} else {
-			true
-		}
-	}
-	return result
+	return ParadoxFilePathIndex.findOne(filePath, scope, expressionType, ignoreCase)
 }
 
 /**
- * 基于文件索引，根据相对于游戏或模组目录的路径查找所有匹配的文件。
+ * 基于文件索引，根据相对于游戏或模组目录的文件路径查找所有匹配的文件（非目录）。
+ * @param expressionType 使用何种文件路径表达式类型。默认使用精确路径。
+ * @param ignoreCase 匹配路径时是否忽略大小写。默认为`true`。
+ * @param distinct 是否需要对相同路径的文件进行去重。默认为`false`。
  */
-fun findFiles(
-	path: ParadoxPath,
+fun findFilesByFilePath(
+	filePath: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	caseSensitively: Boolean = false
+	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionType.Exact,
+	ignoreCase: Boolean = true,
+	distinct: Boolean = false
 ): Set<VirtualFile> {
-	val fileName = path.fileName
-	val result: MutableSet<VirtualFile> = mutableSetOf()
-	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
-		if(file.fileInfo?.path?.path == path.path) {
-			result.add(file)
-		}
-		true
-	}
-	return result
+	return ParadoxFilePathIndex.findAll(filePath, scope, expressionType, ignoreCase, distinct)
 }
 
 /**
- * 基于文件索引，根据相对于游戏或模组目录的路径查找匹配的文件。
+ * 基于文件索引，根据相查找所有匹配的（位于游戏或模组根目录或其子目录中的）文件（非目录）。
+ * @param ignoreCase 匹配路径时是否忽略大小写。默认为`true`。
+ * @param distinct 是否需要对相同路径的文件进行去重。默认为`false`。
  */
-fun findFile(
-	path: String,
+fun findAllFilesByFilePath(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	caseSensitively: Boolean = false
-): VirtualFile? {
-	val fileName = path.substringAfterLast('/')
-	var result: VirtualFile? = null
-	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
-		if(file.fileInfo?.path?.path == path) {
-			result = file
-			false
-		} else {
-			true
-		}
-	}
-	return result
-}
-
-/**
- * 基于文件索引，根据相对于游戏或模组目录的路径查找所有匹配的文件。
- */
-fun findFiles(
-	path: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	caseSensitively: Boolean = false
+	ignoreCase: Boolean = true,
+	distinct: Boolean = false
 ): Set<VirtualFile> {
-	val fileName = path.substringAfterLast('/')
-	val result: MutableSet<VirtualFile> = mutableSetOf()
-	FilenameIndex.processFilesByName(fileName, caseSensitively, scope) { file ->
-		if(file.fileInfo?.path?.path == path) {
-			result.add(file)
-		}
-		true
-	}
-	return result
+	return ParadoxFilePathIndex.findAll(project, scope, ignoreCase, distinct)
 }
 
 /**
@@ -871,7 +823,7 @@ fun findLocalisationsByLocation(location: String, localeConfig: ParadoxLocaleCon
 fun findPictureByLocation(location: String, project: Project): PsiElement? /* ParadoxDefinitionProperty? | PsiFile? */ {
 	//根据是否以dds后缀名结尾，判断location是filepath还是definitionKey
 	if(location.endsWith(".dds", true)) {
-		return findFile(location, project)?.toPsiFile(project)
+		return findFileByFilePath(location, project)?.toPsiFile(project)
 	} else {
 		return findDefinitionByType(location, "sprite|spriteType", project)
 	}
@@ -883,7 +835,7 @@ fun findPictureByLocation(location: String, project: Project): PsiElement? /* Pa
 fun findPicturesByLocation(location: String, project: Project): List<PsiElement> /* ParadoxDefinitionProperty? | PsiFile? */ {
 	//根据是否以dds后缀名结尾，判断location是filepath还是definitionKey
 	if(location.endsWith(".dds", true)) {
-		return findFiles(location, project).mapNotNull { it.toPsiFile(project) }
+		return findFilesByFilePath(location, project).mapNotNull { it.toPsiFile(project) }
 	} else {
 		return findDefinitionsByType(location, "sprite|spriteType", project)
 	}
