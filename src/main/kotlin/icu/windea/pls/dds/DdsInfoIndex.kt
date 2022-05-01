@@ -4,13 +4,11 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
-import icu.windea.pls.*
 import icu.windea.pls.tool.*
-import org.intellij.images.index.ImageInfoIndex
-import org.intellij.images.util.ImageInfoReader
-import org.slf4j.LoggerFactory
+import org.intellij.images.util.*
+import org.slf4j.*
 import java.io.*
-import java.lang.invoke.MethodHandles
+import java.lang.invoke.*
 
 
 //org.intellij.images.index.ImageInfoIndex
@@ -35,15 +33,14 @@ object DdsInfoIndex {
 		if(!file.isInLocalFileSystem) return@newVirtualFileGist null
 		val fileType = file.fileType
 		if(fileType != DdsFileType) return@newVirtualFileGist null
-		val pngFilePath = ParadoxDdsUrlResolver.resolveByFile(file)
-		val pngFile = VfsUtil.findFile(pngFilePath.toPath(), true)
+		//直接委托给ImageInfoReader
+		val pngFile = ParadoxDdsUrlResolver.getPngFile(file) ?: return@newVirtualFileGist null
 		val content = try {
-			file.contentsToByteArray()
+			pngFile.contentsToByteArray()
 		} catch(e: IOException) {
 			logger.error(e.message, e)
 			return@newVirtualFileGist null
 		}
-		//直接委托给ImageInfoReader
 		val info = ImageInfoReader.getInfo(content) ?: return@newVirtualFileGist null
 		DdsInfo(info.width, info.height)
 	}

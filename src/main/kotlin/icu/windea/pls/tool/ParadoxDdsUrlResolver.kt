@@ -116,6 +116,7 @@ object ParadoxDdsUrlResolver {
 		} else {
 			file.toNioPath().absolutePathString()
 		}
+		//TODO 如果文件内容已更改，需要刷新
 		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
 	}
 	
@@ -126,6 +127,11 @@ object ParadoxDdsUrlResolver {
 	
 	private fun getDefaultUrl(defaultToUnknown: Boolean): String {
 		return if(defaultToUnknown) DdsToPngConverter.getUnknownPngPath() else ""
+	}
+	
+	fun getPngFile(file: VirtualFile): VirtualFile?{
+		val absPngPath = doResolveByFile(file) ?: return null
+		return VfsUtil.findFile(absPngPath.toPath(), true)
 	}
 }
 

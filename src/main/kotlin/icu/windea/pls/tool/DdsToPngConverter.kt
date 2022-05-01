@@ -28,11 +28,11 @@ object DdsToPngConverter {
 	 * @param ddsAbsPath DDS文件的绝对路径。
 	 * @param ddsRelPath DDS文件相对于游戏或模组根路径的路径（如果可以获取）。
 	 */
-	fun convert(ddsAbsPath: String, ddsRelPath: String? = null): String? {
+	fun convert(ddsAbsPath: String, ddsRelPath: String? = null, refresh: Boolean = false): String? {
 		try {
 			//如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
 			val pngAbsPath = getPngAbsPath(ddsAbsPath, ddsRelPath)
-			if(pngAbsPath.notExists()) {
+			if(refresh || pngAbsPath.notExists()) {
 				doConvertDdsToPng(ddsAbsPath, pngAbsPath)
 			}
 			return pngAbsPath.absolutePathString()
@@ -71,6 +71,7 @@ object DdsToPngConverter {
 	private fun doConvertDdsToPng(ddsAbsPath: String, pngAbsPath: Path) {
 		val dds = Dds()
 		dds.read(Files.newByteChannel(ddsAbsPath.toPath(), StandardOpenOption.READ))
+		pngAbsPath.deleteIfExists()
 		pngAbsPath.create()
 		val outputStream = Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
 		ddsImageDecoder.convertToPNG(dds, outputStream)
