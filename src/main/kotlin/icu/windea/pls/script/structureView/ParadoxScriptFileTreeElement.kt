@@ -5,6 +5,7 @@ import com.intellij.ide.structureView.impl.common.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
+import javax.swing.*
 
 class ParadoxScriptFileTreeElement(
 	element: ParadoxScriptFile
@@ -25,6 +26,17 @@ class ParadoxScriptFileTreeElement(
 				else -> throw InternalError()
 			}
 		}
+	}
+	
+	override fun getIcon(open: Boolean): Icon? {
+		//如果文件名是descriptor.mod（不区分大小写），这里不要显示定义的图标
+		val element = element ?: return super.getIcon(open)
+		if(element.name.equals(descriptorFileName, true)) return super.getIcon(open)
+		val definitionInfo = element.definitionInfo
+		if(definitionInfo != null) {
+			return PlsIcons.definitionIcon
+		}
+		return super.getIcon(open)
 	}
 	
 	override fun getPresentableText(): String? {

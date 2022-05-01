@@ -199,6 +199,8 @@
     <lang.psiStructureViewFactory
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
+    <projectViewNodeDecorator
+        implementation="icu.windea.pls.script.projectView.ParadoxScriptProjectViewNodeDecorator"/>
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
