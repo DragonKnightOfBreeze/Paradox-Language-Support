@@ -22,20 +22,20 @@ class CwtColorSettingsPage : ColorSettingsPage {
 		private val _badCharacterName = PlsBundle.message("cwt.displayName.badCharacter")
 	}
 	
-	private val attributersDescriptors = arrayOf(
-		AttributesDescriptor(_separatorName, CwtAttributeKeys.SEPARATOR_KEY),
-		AttributesDescriptor(_bracesName, CwtAttributeKeys.BRACES_KEY),
-		AttributesDescriptor(_propertyKeyName, CwtAttributeKeys.PROPERTY_KEY_KEY),
-		AttributesDescriptor(_optionKeyName, CwtAttributeKeys.OPTION_KEY_KEY),
-		AttributesDescriptor(_keywordName, CwtAttributeKeys.KEYWORD_KEY),
-		AttributesDescriptor(_numberName, CwtAttributeKeys.NUMBER_KEY),
-		AttributesDescriptor(_stringName, CwtAttributeKeys.STRING_KEY),
-		AttributesDescriptor(_commentName, CwtAttributeKeys.COMMENT_KEY),
-		AttributesDescriptor(_optionCommentName, CwtAttributeKeys.OPTION_COMMENT_KEY),
-		AttributesDescriptor(_documentationCommentName, CwtAttributeKeys.DOCUMENTATION_COMMENT_KEY),
-		AttributesDescriptor(_validEscapeName, CwtAttributeKeys.VALID_ESCAPE_KEY),
-		AttributesDescriptor(_invalidEscapeName, CwtAttributeKeys.INVALID_ESCAPE_KEY),
-		AttributesDescriptor(_badCharacterName, CwtAttributeKeys.BAD_CHARACTER_KEY)
+	private val attributesDescriptors = arrayOf(
+		AttributesDescriptor(_separatorName, CwtAttributesKeys.SEPARATOR_KEY),
+		AttributesDescriptor(_bracesName, CwtAttributesKeys.BRACES_KEY),
+		AttributesDescriptor(_propertyKeyName, CwtAttributesKeys.PROPERTY_KEY_KEY),
+		AttributesDescriptor(_optionKeyName, CwtAttributesKeys.OPTION_KEY_KEY),
+		AttributesDescriptor(_keywordName, CwtAttributesKeys.KEYWORD_KEY),
+		AttributesDescriptor(_numberName, CwtAttributesKeys.NUMBER_KEY),
+		AttributesDescriptor(_stringName, CwtAttributesKeys.STRING_KEY),
+		AttributesDescriptor(_commentName, CwtAttributesKeys.COMMENT_KEY),
+		AttributesDescriptor(_optionCommentName, CwtAttributesKeys.OPTION_COMMENT_KEY),
+		AttributesDescriptor(_documentationCommentName, CwtAttributesKeys.DOCUMENTATION_COMMENT_KEY),
+		AttributesDescriptor(_validEscapeName, CwtAttributesKeys.VALID_ESCAPE_KEY),
+		AttributesDescriptor(_invalidEscapeName, CwtAttributesKeys.INVALID_ESCAPE_KEY),
+		AttributesDescriptor(_badCharacterName, CwtAttributesKeys.BAD_CHARACTER_KEY)
 	)
 	
 	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage, null, null)
@@ -44,7 +44,7 @@ class CwtColorSettingsPage : ColorSettingsPage {
 	
 	override fun getIcon() = PlsIcons.cwtFileIcon
 	
-	override fun getAttributeDescriptors() = attributersDescriptors
+	override fun getAttributeDescriptors() = attributesDescriptors
 	
 	override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
 	

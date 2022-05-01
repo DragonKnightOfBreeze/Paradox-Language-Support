@@ -2,11 +2,14 @@ package icu.windea.pls
 
 val locationClass = PlsBundle::class.java
 
-const val cwtName = "Cwt"
-const val cwtDescription = "Cwt config"
+const val ddsName = "DDS"
+const val ddsDescription = "DirectDraw Surface"
+
+const val cwtName = "CWT"
+const val cwtDescription = "CWT config"
 const val cwtId = "CWT"
 const val cwtExtension = "cwt"
-val cwtDemoText = "/demoText/Cwt.txt".toUrl(locationClass).readText()
+val cwtDemoText = "/demoText/CWT.txt".toUrl(locationClass).readText()
 
 const val paradoxLocalisationName = "Paradox Localisation"
 const val paradoxLocalisationDescription = "Paradox localisation"
@@ -26,13 +29,13 @@ const val modifierPriority = 20.0
 
 const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length
-const val commentFolder = "#..."
+//const val commentFolder = "#..."
 const val blockFolder = "{...}"
 const val anonymousString = "<anonymous>"
 const val anonymousEscapedString = "&lt;anonymous&gt;"
-const val unknownString = "<unknown>"
-const val unknownEscapedString = "&lt;unknown&gt;"
-const val unresolvedString = "<unresolved>"
+//const val unknownString = "<unknown>"
+//const val unknownEscapedString = "&lt;unknown&gt;"
+//const val unresolvedString = "<unresolved>"
 const val unresolvedEscapedString = "&lt;unresolved&gt;"
 
 val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())

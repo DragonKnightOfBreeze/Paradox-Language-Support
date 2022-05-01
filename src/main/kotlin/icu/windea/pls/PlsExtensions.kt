@@ -239,6 +239,7 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 			val property = parent.parent as? ParadoxScriptProperty ?: return null
 			val definitionElementInfo = property.definitionElementInfo ?: return null
 			return definitionElementInfo.matchedPropertyConfig?.valueConfig
+				?: definitionElementInfo.propertyConfigs.firstOrNull()?.valueConfig //NOTE 如果已经匹配propertyConfig但是无法匹配valueConfig，使用第一个
 		}
 		//如果value是block中的value
 		is ParadoxScriptBlock -> {
@@ -248,9 +249,8 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 			if(childValueConfigs.isEmpty()) return null
 			val gameType = definitionElementInfo.gameType
 			val configGroup = getCwtConfig(element.project).getValue(gameType)
-			return childValueConfigs.find {
-				matchesValue(it.valueExpression, element, configGroup)
-			}
+			return childValueConfigs.find { matchesValue(it.valueExpression, element, configGroup) }
+				?: childValueConfigs.firstOrNull() // NOTE 如果已经匹配propertyConfig但是无法匹配valueConfig，使用第一个
 		}
 		else -> return null
 	}

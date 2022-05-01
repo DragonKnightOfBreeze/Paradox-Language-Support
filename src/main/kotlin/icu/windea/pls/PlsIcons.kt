@@ -7,6 +7,8 @@ import javax.swing.*
 object PlsIcons {
 	@JvmStatic val libraryIcon = loadIcon("/icons/library.svg")
 	
+	@JvmStatic val ddsFileIcon = loadIcon("/icons/ddsFile.svg")
+	
 	@JvmStatic val cwtFileIcon = loadIcon("/icons/cwtFile.svg")
 	@JvmStatic val paradoxScriptFileIcon = loadIcon("/icons/paradoxScriptFile.svg")
 	@JvmStatic val paradoxLocalisationFileIcon = loadIcon("/icons/paradoxLocalisationFile.svg")

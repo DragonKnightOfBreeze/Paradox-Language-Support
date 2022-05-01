@@ -432,7 +432,7 @@ data class ReversibleList<T>(val list: List<T>, val notReversed: Boolean) : List
 	}
 }
 
-fun <T> List<T>.toReversibleList(reverse: Boolean) = ReversibleList(this, reverse)
+fun <T> List<T>.toReversibleList(notReversed: Boolean) = ReversibleList(this, notReversed)
 
 data class ReversibleSet<T>(val set: Set<T>, val notReversed: Boolean) : Set<T> by set {
 	override fun contains(element: T): Boolean {
@@ -444,7 +444,7 @@ data class ReversibleSet<T>(val set: Set<T>, val notReversed: Boolean) : Set<T> 
 	}
 }
 
-fun <T> Set<T>.toReversibleSet(reverse: Boolean) = ReversibleSet(this, reverse)
+fun <T> Set<T>.toReversibleSet(notReversed: Boolean) = ReversibleSet(this, notReversed)
 
 data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = false) : Map<K, V> by map {
 	override fun containsKey(key: K): Boolean {
@@ -456,7 +456,7 @@ data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = fa
 	}
 }
 
-fun <K, V> Map<K, V>.toReversibleMap(reverse: Boolean) = ReversibleMap(this, reverse)
+fun <K, V> Map<K, V>.toReversibleMap(notReversed: Boolean) = ReversibleMap(this, notReversed)
 //endregion
 
 //region Tuple & Range Extensions

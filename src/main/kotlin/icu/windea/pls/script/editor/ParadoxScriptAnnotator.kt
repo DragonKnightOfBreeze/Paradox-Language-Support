@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -37,10 +38,10 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		val expression = element.propertyConfig?.keyExpression ?: return
 		val attributesKey = when(expression.type) {
-			CwtKeyExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtKeyExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtKeyExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtKeyExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
+			CwtKeyExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			CwtKeyExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtKeyExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
 			else -> null //TODO
 		} ?: return
@@ -55,10 +56,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//val expression = element.valueConfig?.valueExpression ?: return 
 		val expression = element.valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
 		val attributesKey = when(expression.type) {
-			CwtValueExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtValueExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
+			CwtValueExpression.Type.FilePath, CwtValueExpression.Type.Icon -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+			CwtValueExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
 			CwtValueExpression.Type.AliasMatchLeft -> return fallbackAnnotateString(element,holder)
 			else -> null //TODO

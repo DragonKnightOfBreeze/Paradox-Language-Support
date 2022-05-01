@@ -4,8 +4,9 @@
   <category>Languages</category>
 
   <vendor email="dk_breeze@qq.com" url="https://github.com/DragonKnightOfBreeze">DragonKnightOfBreeze</vendor>
-
+  
   <depends>com.intellij.modules.lang</depends>
+  <depends>com.intellij.platform.images</depends>
 
   <description><![CDATA[
     <p>
@@ -74,7 +75,8 @@
     <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
 
     <fileBasedIndex implementation="icu.windea.pls.core.psi.ParadoxFilePathIndexImpl"/>
-    <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true" description="Use VFS-based implementation for ParadoxFilePathIndex"/>
+    <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true"
+                 description="Use VFS-based implementation for ParadoxFilePathIndex"/>
 
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck2LibraryType"/>
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck3LibraryType"/>
@@ -92,10 +94,16 @@
         serviceImplementation="icu.windea.pls.core.settings.ParadoxSettingsState"/>
     <!--endregion-->
 
-    <!--region Cwt Language-->
+    <!--region DDS-->
+    <fileType name="DDS" implementationClass="icu.windea.pls.dds.DdsFileType" fieldName="INSTANCE" extensions="dds"/>
+    <fileLookupInfoProvider implementation="icu.windea.pls.dds.DdsLookupInfoProvider"/>
+    <documentationProvider implementation="icu.windea.pls.dds.editor.DdsDocumentationProvider"/>
+    <!--endregion-->
+
+    <!--region CWT Language-->
     <fileType
         language="CWT"
-        name="Cwt" fieldName="INSTANCE"
+        name="CWT" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.cwt.CwtFileType"
         extensions="cwt"/>
     <lang.parserDefinition
@@ -241,8 +249,8 @@
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
 
-    <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
-    <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
+    <!--<additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>-->
+    <!--<additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>-->
 
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedVariable"
                      enabledByDefault="true" level="ERROR"
@@ -344,8 +352,8 @@
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
 
-    <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
-    <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
+    <!--<additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>-->
+    <!--<additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>-->
 
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.ChangeLocaleIntention</className>

@@ -10,6 +10,7 @@ version = "0.5.4"
 intellij {
 	version.set("2022.1")
 	pluginName.set("Paradox Language Support")
+	plugins.add("com.intellij.platform.images")
 }
 
 repositories {

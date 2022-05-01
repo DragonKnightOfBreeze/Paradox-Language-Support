@@ -1,0 +1,54 @@
+package icu.windea.pls.dds
+
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
+import com.intellij.util.gist.*
+import com.intellij.util.io.*
+import icu.windea.pls.*
+import icu.windea.pls.tool.*
+import org.intellij.images.index.ImageInfoIndex
+import org.intellij.images.util.ImageInfoReader
+import org.slf4j.LoggerFactory
+import java.io.*
+import java.lang.invoke.MethodHandles
+
+
+//org.intellij.images.index.ImageInfoIndex
+
+object DdsInfoIndex {
+	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+	
+	private val valueExternalizer: DataExternalizer<DdsInfo> = object : DataExternalizer<DdsInfo> {
+		override fun save(storage: DataOutput, info: DdsInfo) {
+			DataInputOutputUtil.writeINT(storage, info.width)
+			DataInputOutputUtil.writeINT(storage, info.height)
+		}
+		
+		override fun read(storage: DataInput): DdsInfo {
+			val width = DataInputOutputUtil.readINT(storage)
+			val height = DataInputOutputUtil.readINT(storage)
+			return DdsInfo(width, height)
+		}
+	}
+	
+	private val gist: VirtualFileGist<DdsInfo> = GistManager.getInstance().newVirtualFileGist("DdsInfo", 1, valueExternalizer) { project, file ->
+		if(!file.isInLocalFileSystem) return@newVirtualFileGist null
+		val fileType = file.fileType
+		if(fileType != DdsFileType) return@newVirtualFileGist null
+		val pngFilePath = ParadoxDdsUrlResolver.resolveByFile(file)
+		val pngFile = VfsUtil.findFile(pngFilePath.toPath(), true)
+		val content = try {
+			file.contentsToByteArray()
+		} catch(e: IOException) {
+			logger.error(e.message, e)
+			return@newVirtualFileGist null
+		}
+		//直接委托给ImageInfoReader
+		val info = ImageInfoReader.getInfo(content) ?: return@newVirtualFileGist null
+		DdsInfo(info.width, info.height)
+	}
+	
+	fun getInfo(file: VirtualFile, project: Project): DdsInfo? {
+		return gist.getFileData(project, file)
+	}
+}

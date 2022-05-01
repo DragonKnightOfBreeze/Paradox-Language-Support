@@ -297,8 +297,8 @@ class CwtConfigGroup(
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
 						val set = option.stringValueOrValues?.mapTo(mutableSetOf()) { it.lowercase() } ?: continue
-						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
-						typeKeyFilter = set.toReversibleSet(reversed)
+						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
+						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"starts_with" -> startsWith = option.stringValue?.lowercase() ?: continue
 					"graph_related_types" -> {
@@ -335,8 +335,8 @@ class CwtConfigGroup(
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
 						val set = option.stringValueOrValues?.mapTo(mutableSetOf()) { it.lowercase() } ?: continue
-						val reversed = option.separatorType == CwtSeparatorType.NOT_EQUAL
-						typeKeyFilter = set.toReversibleSet(reversed)
+						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
+						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"push_scope" -> pushScope = option.stringValue ?: continue
 					"starts_with" -> startsWith = option.stringValue?.lowercase() ?: continue

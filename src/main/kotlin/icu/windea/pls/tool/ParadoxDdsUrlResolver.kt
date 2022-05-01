@@ -8,6 +8,7 @@ import icu.windea.pls.script.psi.*
 import org.slf4j.*
 import java.lang.invoke.*
 import java.nio.file.*
+import kotlin.io.path.*
 
 /**
  * DDS图片地址的解析器。
@@ -70,7 +71,7 @@ object ParadoxDdsUrlResolver {
 	/**
 	 * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。
 	 */
-	fun resolveByFilePath(filePath: String, project: Project, defaultToUnknown: Boolean = true): String {
+	fun resolveByFilePath(filePath: String, project: Project, defaultToUnknown: Boolean = false): String {
 		try {
 			//如果无法解析为png文件地址，则返回默认的地址
 			val url = doResolveByFilePath(filePath, project)
@@ -106,10 +107,15 @@ object ParadoxDdsUrlResolver {
 	}
 	
 	private fun doResolveByFile(file: VirtualFile): String? {
-		val fileInfo = file.fileInfo ?: return null
-		val rootPath = fileInfo.rootPath
-		val ddsRelPath = fileInfo.path.path
-		val ddsAbsPath = rootPath.resolve(ddsRelPath).normalize().toString()
+		//如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
+		val fileInfo = file.fileInfo
+		val rootPath = fileInfo?.rootPath
+		val ddsRelPath = fileInfo?.path?.path
+		val ddsAbsPath = if(rootPath != null && ddsRelPath != null) {
+			rootPath.resolve(ddsRelPath).normalize().toString()
+		} else {
+			file.toNioPath().absolutePathString()
+		}
 		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
 	}
 	

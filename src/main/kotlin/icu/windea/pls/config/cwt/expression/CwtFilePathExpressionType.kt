@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
+import java.io.*
 
 sealed class CwtFilePathExpressionType {
 	/**
@@ -100,7 +101,8 @@ sealed class CwtFilePathExpressionType {
 		}
 		
 		override fun extract(expression: String?, filePath: String, ignoreCase: Boolean): String? {
-			return filePath.removeSurroundingOrNull(filePath, ".dds", ignoreCase)?.trimStart('/')
+			if(expression == null) return null
+			return filePath.removeSurroundingOrNull(expression, ".dds", ignoreCase)?.trimStart('/')
 		}
 	}
 }

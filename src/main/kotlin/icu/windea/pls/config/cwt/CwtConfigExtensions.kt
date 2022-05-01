@@ -1256,9 +1256,8 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 		CwtValueExpression.Type.Constant -> {
 			valueConfig.pointer.element.castOrNull<CwtString>()
 		}
-		else -> {
-			valueConfig.pointer.element.castOrNull<CwtString>() //TODO
-		} 
+		//对于值，如果类型是scalar、int等，不进行解析
+		else -> null //TODO
 	}
 }
 
@@ -1343,6 +1342,7 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 		CwtValueExpression.Type.Constant -> {
 			valueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
 		}
+		//对于值，如果类型是scalar、int等，不进行解析
 		else -> emptyList() //TODO
 	}
 }
