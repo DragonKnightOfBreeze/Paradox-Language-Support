@@ -22,25 +22,10 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val VALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.validEscape"), VALID_STRING_ESCAPE)
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.invalidEscape"), INVALID_STRING_ESCAPE)
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.badCharacter"), BAD_CHARACTER)
-	@JvmField val DEFINITION_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definition"), PROPERTY_KEY_KEY).apply {
-		//defaultAttributes.effectType = EffectType.LINE_UNDERSCORE
-		//defaultAttributes.effectColor = defaultAttributes.foregroundColor
-	}
-	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definitionReference"), DEFINITION_KEY).apply {
-		//defaultAttributes.effectType = EffectType.LINE_UNDERSCORE
-		//defaultAttributes.effectColor = defaultAttributes.foregroundColor
-	}
-	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY).apply {
-		//defaultAttributes.effectType = EffectType.LINE_UNDERSCORE
-		//defaultAttributes.effectColor = defaultAttributes.foregroundColor
-	}
-	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY).apply {
-		//defaultAttributes.effectType = EffectType.LINE_UNDERSCORE
-		//defaultAttributes.effectColor = defaultAttributes.foregroundColor
-	}
+	@JvmField val DEFINITION_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definition"), PROPERTY_KEY_KEY)
+	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definitionReference"), DEFINITION_KEY)
+	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)
+	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
 	@JvmField val ENUM_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumReference"), STATIC_FIELD)
-	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY).apply {
-		//defaultAttributes.effectType = EffectType.LINE_UNDERSCORE
-		//defaultAttributes.effectColor = Color(0x707D95)
-	}
+	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY)
 }

@@ -8,8 +8,18 @@
 
 IDEA Plugin: Support for Paradox Language.
 
+Provider syntax parsing, code validation, code completion, navigation, documentation, inlay hints,
+localisation text rendering, DDS image rendering and many other functions for
+paradox script language (mainly `*.txt` files) and paradox localisation language (`*.yml` files).
+Also provider such functions for cwt language (`*.cwt` files),
+and some convenient functions for DDS image files.
+
+Enable language support by create the descriptor file `descriptor.mod` in the root directory of your Mod,
+and can import game directory and third party mod as dependencies
+by adding related libraries to the module of your Mod in the `Project Structure` page.
+
 This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
-If you want more perfect language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
+If you want more perfect script language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
 
 For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) .

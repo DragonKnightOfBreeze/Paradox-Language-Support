@@ -43,6 +43,6 @@ object PlsIcons {
 	@JvmStatic val localisationGutterIcon = loadIcon("/icons/gutter/localisation.svg")
 	
 	private fun loadIcon(path: String): Icon {
-		return IconLoader.getIcon(path, locationClass)
+		return IconLoader.getIcon(path, PlsIcons::class.java)
 	}
 }

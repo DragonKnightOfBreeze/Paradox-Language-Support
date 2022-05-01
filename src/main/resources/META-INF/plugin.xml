@@ -13,8 +13,20 @@
       Support for Paradox Language.
     </p>
     <p>
+      Provider syntax parsing, code validation, code completion, navigation, documentation, inlay hints,
+      localisation text rendering, DDS image rendering and many other functions for
+      paradox script language (mainly <code>*.txt</code> files) and paradox localisation language (<code>*.yml</code> files).
+      Also provider such functions for cwt language (<code>*.cwt</code> files),
+      and some convenient functions for DDS image files.
+    </p>
+    <p>
+      Enable language support by create the descriptor file <code>descriptor.mod</code> in the root directory of your Mod,
+      and can import game directory and third party mod as dependencies
+      by adding related libraries to the module of your Mod in the <code>Project Structure</code> page.
+    </p>
+    <p>
       This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
-      If you want more perfect language support, please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
+      If you want more perfect script language support, please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
       This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
     </p>
     <p>
@@ -25,10 +37,18 @@
 
     <p>
       Paradox语言支持。
+    <p>
+      为脚本语言（主要是<code>*.txt</code>文件）和本地化语言（主要是<code>*.yml</code>文件）
+      提供语法解析、代码检查、代码补全、导航、文档注释、内嵌提示、本地化文本渲染、DDS图片渲染以及其他诸多功能。
+      也为CWT语言提供必要的上述功能，为DDS图片文件提供一些方便的功能。
+    </p>
+    <p>
+      通过在你的模组根文件夹下创建描述符文件<code>descriptor.mod`</code>以提供语言支持。
+      可以通过在<code>项目结构</code>页面中将对应的库添加到你的模组所属的模块，以将游戏目录或第三方模组导入作为依赖。
     </p>
     <p>
       这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
-      如果需要更加完善的语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
+      如果需要更加完善的脚本语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
       这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
     </p>
     <p>
@@ -249,8 +269,8 @@
     <anchorReferenceProvider
         implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
 
-    <!--<additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>-->
-    <!--<additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>-->
+    <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedVariable"
                      enabledByDefault="true" level="ERROR"
@@ -352,8 +372,8 @@
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
 
-    <!--<additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>-->
-    <!--<additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>-->
+    <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
 
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.ChangeLocaleIntention</className>
