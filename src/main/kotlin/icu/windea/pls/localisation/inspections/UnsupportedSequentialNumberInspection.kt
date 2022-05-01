@@ -5,8 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
-private fun _description(name: String) = PlsBundle.message("localisation.inspection.unsupportedSequentialNumber.description", name)
-
 /**
  * 不支持的序列数的检查。
  */
@@ -20,7 +18,7 @@ class UnsupportedSequentialNumberInspection : LocalInspectionTool() {
 			val sequentialNumberConfig = element.sequentialNumberConfig
 			if(sequentialNumberConfig != null) return
 			val location = element.sequentialNumberId ?: return
-			holder.registerProblem(location, _description(element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedSequentialNumber.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

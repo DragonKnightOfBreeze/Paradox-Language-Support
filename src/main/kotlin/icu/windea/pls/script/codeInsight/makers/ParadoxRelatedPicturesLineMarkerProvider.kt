@@ -5,19 +5,13 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 定义的相关图片（relatedPictures，对应类型为sprite的定义或者DDS图片）的装订线图标提供器。
  */
 class ParadoxRelatedPicturesLineMarkerProvider : RelatedItemLineMarkerProvider() {
-	companion object {
-		private val _name = PlsBundle.message("script.gutterIcon.relatedPictures")
-		private val _title = PlsBundle.message("script.gutterIcon.relatedPictures.title")
-	}
-	
-	override fun getName() = _name
+	override fun getName() = PlsBundle.message("script.gutterIcon.relatedPictures")
 	
 	override fun getIcon() = PlsIcons.relatedPicturesGutterIcon
 	
@@ -48,12 +42,11 @@ class ParadoxRelatedPicturesLineMarkerProvider : RelatedItemLineMarkerProvider()
 		val tooltip = tooltipBuilder.toString()
 		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
 			.setTooltipText(tooltip)
-			.setPopupTitle(_title)
+			.setPopupTitle(PlsBundle.message("script.gutterIcon.relatedPictures.title"))
 			.setTargets(targets)
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
-			.setNamer { _name }
+			.setNamer { PlsBundle.message("script.gutterIcon.relatedPictures") }
 			.createLineMarkerInfo(locationElement)
 		result.add(lineMarkerInfo)
 	}
-	
 }

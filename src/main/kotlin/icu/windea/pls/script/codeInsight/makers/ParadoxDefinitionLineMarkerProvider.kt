@@ -11,12 +11,7 @@ import icu.windea.pls.script.psi.*
  * 定义（definition）的装订线图标提供器。
  */
 class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
-	companion object {
-		private val _name = PlsBundle.message("script.gutterIcon.definition")
-		private val _title = PlsBundle.message("script.gutterIcon.definition.title")
-	}
-	
-	override fun getName() = _name
+	override fun getName() = PlsBundle.message("script.gutterIcon.definition")
 	
 	override fun getIcon() = PlsIcons.definitionGutterIcon
 	
@@ -36,10 +31,10 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
 		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
 			.setTooltipText(tooltip)
-			.setPopupTitle(_title)
+			.setPopupTitle(PlsBundle.message("script.gutterIcon.definition.title"))
 			.setTargets(targets)
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
-			.setNamer { _name }
+			.setNamer { PlsBundle.message("script.gutterIcon.definition") }
 			.createLineMarkerInfo(locationElement)
 		result.add(lineMarkerInfo)
 	}

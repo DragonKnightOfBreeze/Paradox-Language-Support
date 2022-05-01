@@ -118,7 +118,17 @@ fun String.quoteIfNecessary() = if(containsBlank()) quote() else this //如果�
 
 fun String.unquote() = if(isQuoted()) substring(1, length - 1) else this
 
-fun String.truncate(limit: Int) = if(this.length <= limit) this else this.take(limit) + "..."
+fun String.truncate(limit: Int): String {
+	return if(this.length <= limit) this else this.take(limit) + "..."
+}
+
+fun String.truncateAndKeepQuotes(limit: Int): String {
+	if(this.isQuoted()) {
+		return if(this.length - 2 <= limit) this else this.take(limit + 1) + "...\""
+	} else {
+		return if(this.length <= limit) this else this.take(limit) + "..."
+	}
+}
 
 fun String.splitToPair(delimiter: Char): Pair<String, String>? {
 	val index = this.indexOf(delimiter)

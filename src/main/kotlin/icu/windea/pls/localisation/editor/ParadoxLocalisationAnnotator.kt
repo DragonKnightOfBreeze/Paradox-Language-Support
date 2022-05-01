@@ -7,37 +7,38 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
-			//is ParadoxLocalisationProperty -> annotateProperty(element, holder)
+			is ParadoxLocalisationProperty -> annotateProperty(element, holder)
 			is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
 			//is ParadoxLocalisationCommand -> annotateCommand(element, holder)
 			is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
 		}
 	}
 	
-	//private fun annotateProperty(element: ParadoxLocalisationProperty, holder: AnnotationHolder) {
-	//	val localisationInfo = element.paradoxLocalisationInfo
-	//	if(localisationInfo != null) annotateLocalisation(element,holder,localisationInfo)
-	//}
+	private fun annotateProperty(element: ParadoxLocalisationProperty, holder: AnnotationHolder) {
+		val localisationInfo = element.localisationInfo
+		if(localisationInfo != null) annotateLocalisation(element, holder, localisationInfo)
+	}
 	
-	//private fun annotateLocalisation(element:ParadoxLocalisationProperty,holder:AnnotationHolder,localisationInfo:ParadoxLocalisationInfo){
-	//	//NOTE 并非特别必要，可能会严重影响性能，暂时注释掉
-	//	//颜色高亮
-	//	val category = localisationInfo.category
-	//	val attributesKey = when(category){
-	//		ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationAttributesKeys.LOCALISATION_KEY
-	//		ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY
-	//	}
-	//	holder.newSilentAnnotation(INFORMATION)
-	//		.range(element.propertyKey)
-	//		.textAttributes(attributesKey)
-	//		.create()
-	//}
+	private fun annotateLocalisation(element: ParadoxLocalisationProperty, holder: AnnotationHolder, localisationInfo: ParadoxLocalisationInfo) {
+		//NOTE 并非特别必要，可能会影响性能
+		//颜色高亮
+		val category = localisationInfo.category
+		val attributesKey = when(category) {
+			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationAttributesKeys.LOCALISATION_KEY
+			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY
+		}
+		holder.newSilentAnnotation(INFORMATION)
+			.range(element.propertyKey)
+			.textAttributes(attributesKey)
+			.create()
+	}
 	
 	private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
 		//注明无法解析的情况

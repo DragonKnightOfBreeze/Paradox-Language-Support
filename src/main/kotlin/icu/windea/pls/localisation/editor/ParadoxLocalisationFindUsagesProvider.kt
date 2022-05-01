@@ -10,18 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
-	companion object {
-		private val _propertyDescription = PlsBundle.message("localisation.name.property")
-		private val _localeDescription = PlsBundle.message("localisation.name.locale")
-		private val _iconDescription = PlsBundle.message("localisation.name.icon")
-		private val _sequentialNumberDescription = PlsBundle.message("localisation.name.sequentialNumber")
-		private val _commandScopeDescription = PlsBundle.message("localisation.name.commandScope")
-		private val _commandFieldDescription = PlsBundle.message("localisation.name.commandField")
-		private val _colorfulTextDescription = PlsBundle.message("localisation.name.colorfulText")
-		private val _localisationDescription = PlsBundle.message("localisation.name.localisation")
-		private val _syncedLocalisationDescription = PlsBundle.message("localisation.name.syncedLocalisation")
-	}
-	
 	override fun getType(element: PsiElement): String {
 		return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE)
 	}
@@ -42,22 +30,22 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 				if(localisationInfo != null) {
 					when(localisationInfo.category) {
 						ParadoxLocalisationCategory.Localisation -> {
-							if(location == UsageViewTypeLocation.INSTANCE) _localisationDescription else element.name
+							if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.localisation") else element.name
 						}
 						ParadoxLocalisationCategory.SyncedLocalisation -> {
-							if(location == UsageViewTypeLocation.INSTANCE) _syncedLocalisationDescription else element.name
+							if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.syncedLocalisation") else element.name
 						}
 					}
 				} else {
-					if(location == UsageViewTypeLocation.INSTANCE) _propertyDescription else element.name
+					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.property") else element.name
 				}
 			}
-			is ParadoxLocalisationLocale -> if(location == UsageViewTypeLocation.INSTANCE) _localeDescription else element.name
-			is ParadoxLocalisationIcon -> if(location == UsageViewTypeLocation.INSTANCE) _iconDescription else element.name
-			is ParadoxLocalisationSequentialNumber -> if(location == UsageViewTypeLocation.INSTANCE) _colorfulTextDescription else element.name
-			is ParadoxLocalisationCommandScope -> if(location == UsageViewTypeLocation.INSTANCE) _commandScopeDescription else element.name
-			is ParadoxLocalisationCommandField -> if(location == UsageViewTypeLocation.INSTANCE) _commandFieldDescription else element.name
-			is ParadoxLocalisationColorfulText -> if(location == UsageViewTypeLocation.INSTANCE) _sequentialNumberDescription else element.name
+			is ParadoxLocalisationLocale -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.locale") else element.name
+			is ParadoxLocalisationIcon -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.icon") else element.name
+			is ParadoxLocalisationSequentialNumber -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.colorfulText") else element.name
+			is ParadoxLocalisationCommandScope -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandScope") else element.name
+			is ParadoxLocalisationCommandField -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandField") else element.name
+			is ParadoxLocalisationColorfulText -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.sequentialNumber") else element.name
 			else -> null
 		}
 	}

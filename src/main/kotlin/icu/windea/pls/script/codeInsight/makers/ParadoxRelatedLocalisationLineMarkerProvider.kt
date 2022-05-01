@@ -4,7 +4,6 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
-import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.*
@@ -13,12 +12,7 @@ import icu.windea.pls.script.psi.*
  * 定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标提供器。
  */
 class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
-	companion object {
-		private val _name = PlsBundle.message("script.gutterIcon.relatedLocalisation")
-		private val _title = PlsBundle.message("script.gutterIcon.relatedLocalisation.title")
-	}
-	
-	override fun getName() = _name
+	override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisation")
 	
 	override fun getIcon() = PlsIcons.relatedLocalisationGutterIcon
 	
@@ -49,10 +43,10 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 		val tooltip = tooltipBuilder.toString()
 		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
 			.setTooltipText(tooltip)
-			.setPopupTitle(_title)
+			.setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisation.title"))
 			.setTargets(targets)
 			.setAlignment(GutterIconRenderer.Alignment.RIGHT)
-			.setNamer { _name }
+			.setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisation") }
 			.createLineMarkerInfo(locationElement)
 		result.add(lineMarkerInfo)
 	}

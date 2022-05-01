@@ -8,14 +8,9 @@ import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
 import com.intellij.openapi.vfs.encoding.EncodingUtil
 import com.intellij.psi.*
 import icu.windea.pls.*
-import org.jvnet.fastinfoset.EncodingAlgorithm
-import java.nio.charset.*
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction
-
-private fun _description(charset: Charset, bom: String) = PlsBundle.message("script.inspection.incorrectFileEncoding.description", charset, bom)
-private fun _quickFix1Name() = PlsBundle.message("script.inspection.incorrectFileEncoding.quickFix.1")
 
 /**
  * 不正确的的文件编码的检查。
@@ -36,7 +31,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		if(!isValid) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
 			val bom = if(hasBom) "BOM" else "NO BOM"
-			holder.registerProblem(file, _description(charset, bom),
+			holder.registerProblem(file, PlsBundle.message("script.inspection.incorrectFileEncoding.description", charset, bom),
 				ChangeToCorrectFileEncoding(file, isNameList)
 			)
 			return holder.resultsArray
@@ -48,9 +43,9 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		element: PsiElement,
 		private val isNameList: Boolean
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		override fun getText() = _quickFix1Name()
+		override fun getText() = PlsBundle.message("script.inspection.incorrectFileEncoding.quickFix.1")
 		
-		override fun getFamilyName() = _quickFix1Name()
+		override fun getFamilyName() = PlsBundle.message("script.inspection.incorrectFileEncoding.quickFix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val virtualFile = file.virtualFile

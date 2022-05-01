@@ -12,12 +12,7 @@ import icu.windea.pls.core.ParadoxLocalisationCategory.*
  * 本地化（localisation/localisation_synced）的装订线图标提供器。
  */
 class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
-	companion object {
-		private val _name = PlsBundle.message("localisation.gutterIcon.localisation")
-		private val _title = PlsBundle.message("localisation.gutterIcon.localisation.title")
-	}
-	
-	override fun getName() = _name
+	override fun getName() = PlsBundle.message("localisation.gutterIcon.localisation")
 	
 	override fun getIcon() = PlsIcons.localisationGutterIcon
 	
@@ -39,10 +34,10 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			val locationElement = element.propertyKey.propertyKeyId
 			val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
 				.setTooltipText(tooltip)
-				.setPopupTitle(_title)
+				.setPopupTitle(PlsBundle.message("localisation.gutterIcon.localisation.title"))
 				.setTargets(targets)
 				.setAlignment(GutterIconRenderer.Alignment.RIGHT)
-				.setNamer { _name }
+				.setNamer { PlsBundle.message("localisation.gutterIcon.localisation") }
 				.createLineMarkerInfo(locationElement)
 			result.add(lineMarkerInfo)
 		}

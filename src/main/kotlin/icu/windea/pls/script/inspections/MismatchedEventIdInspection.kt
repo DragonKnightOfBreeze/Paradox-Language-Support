@@ -9,9 +9,6 @@ import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
-private fun _description(id: String, namespace: String) = PlsBundle.message("script.inspection.mismatchedEventId.description", id, namespace)
-private fun _quickFix1Name() = PlsBundle.message("script.inspection.mismatchedEventId.quickFix.1")
-
 /**
  * 不匹配的事件ID的检查。
  *
@@ -33,7 +30,8 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
 			val eventId = eventIdPropValue.value
 			if(!eventId.startsWith(eventIdPrefix, true)) {
 				if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
-				holder.registerProblem(eventIdPropValue, _description(eventId, eventNamespace),
+				holder.registerProblem(
+					eventIdPropValue, PlsBundle.message("script.inspection.mismatchedEventId.description", eventId, eventNamespace),
 					//RenameEventId(eventIdPropValue)
 				)
 			}
@@ -44,10 +42,10 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
 	private class RenameEventId(
 		element: ParadoxScriptValue
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		override fun getFamilyName() = _quickFix1Name()
-
-		override fun getText() = _quickFix1Name()
-
+		override fun getFamilyName() = PlsBundle.message("script.inspection.mismatchedEventId.quickFix.1")
+		
+		override fun getText() = PlsBundle.message("script.inspection.mismatchedEventId.quickFix.1")
+		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return
 			val startOffset = startElement.startOffset

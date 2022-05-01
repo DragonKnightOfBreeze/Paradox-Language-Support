@@ -7,28 +7,26 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
-	companion object {
-		private val SEPARATOR_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.SEPARATOR_KEY)
-		private val NUMBER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.NUMBER_KEY)
-		private val LOCALE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.LOCALE_KEY)
-		private val PROPERTY_KEY_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
-		private val STRING_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.STRING_KEY)
-		private val COMMENT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMENT_KEY)
-		private val MARKER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.MARKER_KEY)
-		private val PARAMETER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PARAMETER_KEY)
-		private val PROPERTY_REFERENCE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY)
-		private val ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.ICON_KEY)
-		private val SEQUENTIAL_NUMBER_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.SEQUENTIAL_NUMBER_KEY)
-		private val COMMAND_SCOPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY)
-		private val COMMAND_FIELD_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY)
-		private val COLOR_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COLOR_KEY)
-		private val VALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY)
-		private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
-		private val BAD_CHARACTER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)
-		private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
-	}
+private val SEPARATOR_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.SEPARATOR_KEY)
+private val NUMBER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.NUMBER_KEY)
+private val LOCALE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.LOCALE_KEY)
+private val PROPERTY_KEY_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY)
+private val STRING_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.STRING_KEY)
+private val COMMENT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMENT_KEY)
+private val MARKER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.MARKER_KEY)
+private val PARAMETER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PARAMETER_KEY)
+private val PROPERTY_REFERENCE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY)
+private val ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.ICON_KEY)
+private val SEQUENTIAL_NUMBER_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.SEQUENTIAL_NUMBER_KEY)
+private val COMMAND_SCOPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY)
+private val COMMAND_FIELD_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY)
+private val COLOR_ID_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COLOR_KEY)
+private val VALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY)
+private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
+private val BAD_CHARACTER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)
+private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
 
+class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 	override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
 		COLON,COMMAND_SEPARATOR -> SEPARATOR_KEYS
 		LOCALE_ID -> LOCALE_KEYS

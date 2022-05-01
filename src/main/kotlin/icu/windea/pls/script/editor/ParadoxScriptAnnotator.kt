@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 
@@ -42,7 +41,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			CwtKeyExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
 			CwtKeyExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtKeyExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtKeyExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
+			CwtKeyExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)
@@ -61,7 +60,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			CwtValueExpression.Type.FilePath, CwtValueExpression.Type.Icon -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
 			CwtValueExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtValueExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_REFERENCE_KEY
+			CwtValueExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
 			CwtValueExpression.Type.AliasMatchLeft -> return fallbackAnnotateString(element,holder)
 			else -> null //TODO
 		} ?: return

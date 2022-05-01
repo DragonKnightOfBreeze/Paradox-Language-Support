@@ -7,7 +7,6 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.encoding.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import java.nio.charset.*
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction
@@ -21,10 +20,6 @@ import java.nio.charset.*
  * * 改为正确的文件编码
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
-	companion object {
-		private fun _description(charset: Charset, bom: String) = PlsBundle.message("localisation.inspection.incorrectFileEncoding.description", charset, bom)
-	}
-	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
 		val virtualFile = file.virtualFile ?: return null
 		val charset = virtualFile.charset
@@ -33,7 +28,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		if(!isValid) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
 			val bom = if(hasBom) "BOM" else "NO BOM"
-			holder.registerProblem(file, _description(charset, bom),
+			holder.registerProblem(file, PlsBundle.message("localisation.inspection.incorrectFileEncoding.description", charset, bom),
 				ChangeFileEncoding(file)
 			)
 			return holder.resultsArray
@@ -44,13 +39,10 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	private class ChangeFileEncoding(
 		element: PsiElement
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		companion object {
-			private val _name = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickFix.1")
-		}
 		
-		override fun getFamilyName() = _name
+		override fun getFamilyName() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickFix.1")
 		
-		override fun getText() = _name
+		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickFix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val virtualFile = file.virtualFile

@@ -5,8 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
-private fun _description(name: String) = PlsBundle.message("localisation.inspection.unsupportedLocale.description", name)
-
 /**
  * 不支持的语言区域的检查。
  */
@@ -20,7 +18,7 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
 			val localeConfig = element.localeConfig
 			if(localeConfig != null) return
 			val location = element.localeId
-			holder.registerProblem(location, _description(element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedLocale.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

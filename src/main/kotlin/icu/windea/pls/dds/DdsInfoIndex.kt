@@ -46,6 +46,7 @@ object DdsInfoIndex {
 	}
 	
 	fun getInfo(file: VirtualFile, project: Project): DdsInfo? {
+		//TODO 这里可能需要确认能否获取DDS图片的大小
 		return gist.getFileData(project, file)
 	}
 }

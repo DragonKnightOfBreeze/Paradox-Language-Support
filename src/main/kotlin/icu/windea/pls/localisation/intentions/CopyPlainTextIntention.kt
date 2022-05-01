@@ -10,17 +10,15 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
-private val _name = PlsBundle.message("localisation.intention.copyPlainText")
-
 /**
  * 复制本地化文本作为纯文本到剪贴板的意向。
  */
 class CopyPlainTextIntention : IntentionAction {
 	override fun startInWriteAction() = false
 	
-	override fun getText() = _name
+	override fun getText() = PlsBundle.message("localisation.intention.copyPlainText")
 	
-	override fun getFamilyName() = _name
+	override fun getFamilyName() = PlsBundle.message("localisation.intention.copyPlainText")
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false

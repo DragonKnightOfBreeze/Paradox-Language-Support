@@ -11,18 +11,15 @@ import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 
-private val _name = PlsBundle.message("localisation.intention.changeColor")
-private val _popupTitle = PlsBundle.message("localisation.intention.changeColor.title")
-
 /**
  * 更改颜色的意向。
  */
 class ChangeColorIntention : IntentionAction {
 	override fun startInWriteAction() = false
 	
-	override fun getText() = _name
+	override fun getText() = PlsBundle.message("localisation.intention.changeColor")
 	
-	override fun getFamilyName() = _name
+	override fun getFamilyName() = PlsBundle.message("localisation.intention.changeColor")
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
@@ -43,7 +40,7 @@ class ChangeColorIntention : IntentionAction {
 	private class Popup(
 		private val value: ParadoxLocalisationColorfulText,
 		values: Array<ParadoxColorConfig>
-	) : BaseListPopupStep<ParadoxColorConfig>(_popupTitle, *values) {
+	) : BaseListPopupStep<ParadoxColorConfig>(PlsBundle.message("localisation.intention.changeColor.title"), *values) {
 		override fun getIconFor(value: ParadoxColorConfig) = value.icon
 		
 		override fun getTextFor(value: ParadoxColorConfig) = value.popupText

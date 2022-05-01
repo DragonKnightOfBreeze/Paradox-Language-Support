@@ -11,18 +11,15 @@ import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 
-private val _name = PlsBundle.message("localisation.intention.changeSequentialNumber")
-private val _popupTitle = PlsBundle.message("localisation.intention.changeSequentialNumber.title")
-
 /**
  * 更改序列数的意向。
  */
 class ChangeSequentialNumberIntention : IntentionAction {
 	override fun startInWriteAction() = false
 	
-	override fun getText() = _name
+	override fun getText() = PlsBundle.message("localisation.intention.changeSequentialNumber")
 	
-	override fun getFamilyName() = _name
+	override fun getFamilyName() = PlsBundle.message("localisation.intention.changeSequentialNumber")
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
@@ -43,7 +40,7 @@ class ChangeSequentialNumberIntention : IntentionAction {
 	private class Popup(
 		private val value: ParadoxLocalisationSequentialNumber,
 		values: Array<ParadoxSequentialNumberConfig>
-	) : BaseListPopupStep<ParadoxSequentialNumberConfig>(_popupTitle, *values) {
+	) : BaseListPopupStep<ParadoxSequentialNumberConfig>(PlsBundle.message("localisation.intention.changeSequentialNumber.title"), *values) {
 		override fun getIconFor(value: ParadoxSequentialNumberConfig) = value.icon
 		
 		override fun getTextFor(value: ParadoxSequentialNumberConfig) = value.popupText

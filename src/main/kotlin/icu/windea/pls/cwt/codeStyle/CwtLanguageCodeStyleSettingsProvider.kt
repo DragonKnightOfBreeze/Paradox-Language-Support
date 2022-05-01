@@ -6,11 +6,6 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 
 class CwtLanguageCodeStyleSettingsProvider: LanguageCodeStyleSettingsProvider() {
-	companion object {
-		private val _spaceWithinBracesTitle = PlsBundle.message("cwt.codeStyle.spaceWithinBraces")
-		private val _spaceAroundSeparatorTitle = PlsBundle.message("cwt.codeStyle.spaceAroundSeparator")
-	}
-	
 	override fun getLanguage() = CwtLanguage
 	
 	override fun getCodeSample(settingsType: SettingsType) = cwtDemoText
@@ -43,13 +38,13 @@ class CwtLanguageCodeStyleSettingsProvider: LanguageCodeStyleSettingsProvider() 
 				consumer.showCustomOption(
 					CwtCodeStyleSettings::class.java,
 					CwtCodeStyleSettings.Option.SPACE_WITHIN_BRACES.name,
-					_spaceWithinBracesTitle,
+					PlsBundle.message("cwt.codeStyle.spaceWithinBraces"),
 					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
 				)
 				consumer.showCustomOption(
 					CwtCodeStyleSettings::class.java,
 					CwtCodeStyleSettings.Option.SPACE_AROUND_SEPARATOR.name,
-					_spaceAroundSeparatorTitle,
+					PlsBundle.message("cwt.codeStyle.spaceAroundSeparator"),
 					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
 				)
 			}

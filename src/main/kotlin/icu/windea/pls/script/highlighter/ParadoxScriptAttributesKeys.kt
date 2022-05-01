@@ -1,12 +1,11 @@
 package icu.windea.pls.script.highlighter
 
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
-import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.highlighter.*
-import java.awt.Color
 
 object ParadoxScriptAttributesKeys {
 	@JvmField val SEPARATOR_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.separator"), OPERATION_SIGN)
@@ -26,6 +25,6 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definitionReference"), DEFINITION_KEY)
 	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)
 	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
-	@JvmField val ENUM_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumReference"), STATIC_FIELD)
+	@JvmField val ENUM_VALUE_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumValueReference"), DefaultLanguageHighlighterColors.STATIC_FIELD)
 	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY)
 }

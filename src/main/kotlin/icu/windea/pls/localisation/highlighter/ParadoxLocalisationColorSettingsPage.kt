@@ -5,51 +5,29 @@ import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 
+private val attributesDescriptors = arrayOf(
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.separator"), ParadoxLocalisationAttributesKeys.SEPARATOR_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.number"), ParadoxLocalisationAttributesKeys.NUMBER_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.locale"), ParadoxLocalisationAttributesKeys.LOCALE_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.string"), ParadoxLocalisationAttributesKeys.STRING_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.comment"), ParadoxLocalisationAttributesKeys.COMMENT_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.marker"), ParadoxLocalisationAttributesKeys.MARKER_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.parameter"), ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyReference"), ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.icon"), ParadoxLocalisationAttributesKeys.ICON_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.sequentialNumber"), ParadoxLocalisationAttributesKeys.SEQUENTIAL_NUMBER_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScope"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.color"), ParadoxLocalisationAttributesKeys.COLOR_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.validEscape"), ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.invalidEscape"), ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.badCharacter"), ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.localisation"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
+)
+
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
-	companion object {
-		private val _separatorName = PlsBundle.message("localisation.displayName.separator")
-		private val _numberName = PlsBundle.message("localisation.displayName.number")
-		private val _localeName = PlsBundle.message("localisation.displayName.locale")
-		private val _propertyKeyName = PlsBundle.message("localisation.displayName.propertyKey")
-		private val _stringName = PlsBundle.message("localisation.displayName.string")
-		private val _commentName = PlsBundle.message("localisation.displayName.comment")
-		private val _markerName = PlsBundle.message("localisation.displayName.marker")
-		private val _parameterName = PlsBundle.message("localisation.displayName.parameter")
-		private val _propertyReferenceName = PlsBundle.message("localisation.displayName.propertyReference")
-		private val _iconName = PlsBundle.message("localisation.displayName.icon")
-		private val _sequentialNumberName = PlsBundle.message("localisation.displayName.sequentialNumber")
-		private val _commandScopeName = PlsBundle.message("localisation.displayName.commandScope")
-		private val _commandFieldName = PlsBundle.message("localisation.displayName.commandField")
-		private val _colorName = PlsBundle.message("localisation.displayName.color")
-		private val _validEscapeName = PlsBundle.message("localisation.displayName.validEscape")
-		private val _invalidEscapeName = PlsBundle.message("localisation.displayName.invalidEscape")
-		private val _badCharacterName = PlsBundle.message("localisation.displayName.badCharacter")
-		private val _localisationName = PlsBundle.message("localisation.displayName.localisation")
-		private val _syncedLocalisationName = PlsBundle.message("localisation.displayName.syncedLocalisation")
-		
-		private val attributesDescriptors = arrayOf(
-			AttributesDescriptor(_separatorName, ParadoxLocalisationAttributesKeys.SEPARATOR_KEY),
-			AttributesDescriptor(_numberName, ParadoxLocalisationAttributesKeys.NUMBER_KEY),
-			AttributesDescriptor(_localeName, ParadoxLocalisationAttributesKeys.LOCALE_KEY),
-			AttributesDescriptor(_propertyKeyName, ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY),
-			AttributesDescriptor(_stringName, ParadoxLocalisationAttributesKeys.STRING_KEY),
-			AttributesDescriptor(_commentName, ParadoxLocalisationAttributesKeys.COMMENT_KEY),
-			AttributesDescriptor(_markerName, ParadoxLocalisationAttributesKeys.MARKER_KEY),
-			AttributesDescriptor(_parameterName, ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
-			AttributesDescriptor(_propertyReferenceName, ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY),
-			AttributesDescriptor(_iconName, ParadoxLocalisationAttributesKeys.ICON_KEY),
-			AttributesDescriptor(_sequentialNumberName, ParadoxLocalisationAttributesKeys.SEQUENTIAL_NUMBER_KEY),
-			AttributesDescriptor(_commandScopeName, ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
-			AttributesDescriptor(_commandFieldName, ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
-			AttributesDescriptor(_colorName, ParadoxLocalisationAttributesKeys.COLOR_KEY),
-			AttributesDescriptor(_validEscapeName, ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY),
-			AttributesDescriptor(_invalidEscapeName, ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY),
-			AttributesDescriptor(_badCharacterName, ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY),
-			AttributesDescriptor(_localisationName, ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
-			AttributesDescriptor(_syncedLocalisationName, ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
-		)
-	}
-	
 	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
 	
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
@@ -64,4 +42,3 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 	
 	override fun getDemoText() = paradoxLocalisationDemoText
 }
-

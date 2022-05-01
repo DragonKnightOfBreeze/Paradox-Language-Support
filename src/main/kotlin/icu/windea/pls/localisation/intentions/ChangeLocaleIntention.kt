@@ -11,18 +11,15 @@ import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 
-private val _name = PlsBundle.message("localisation.intention.changeLocale")
-private val _popupTitle = PlsBundle.message("localisation.intention.changeLocale.title")
-
 /**
  * 更改语言区域的意向。
  */
 class ChangeLocaleIntention : IntentionAction {
 	override fun startInWriteAction() = false
 	
-	override fun getText() = _name
+	override fun getText() = PlsBundle.message("localisation.intention.changeLocale")
 	
-	override fun getFamilyName() = _name
+	override fun getFamilyName() = PlsBundle.message("localisation.intention.changeLocale")
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
@@ -43,7 +40,7 @@ class ChangeLocaleIntention : IntentionAction {
 	private class Popup(
 		private val value: ParadoxLocalisationLocale,
 		values: Array<ParadoxLocaleConfig>
-	) : BaseListPopupStep<ParadoxLocaleConfig>(_popupTitle, *values) {
+	) : BaseListPopupStep<ParadoxLocaleConfig>(PlsBundle.message("localisation.intention.changeLocale.title"), *values) {
 		override fun getIconFor(value: ParadoxLocaleConfig) = value.icon
 		
 		override fun getTextFor(value: ParadoxLocaleConfig) = value.popupText

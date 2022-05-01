@@ -9,11 +9,6 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings.*
 
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
-	companion object {
-		private val _spaceWithinBracesTitle = PlsBundle.message("script.codeStyle.spaceWithinBraces")
-		private val _spaceAroundSeparatorTitle = PlsBundle.message("script.codeStyle.spaceAroundSeparator")
-	}
-	
 	override fun getLanguage() = ParadoxScriptLanguage
 	
 	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptDemoText
@@ -46,13 +41,13 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 				consumer.showCustomOption(
 					ParadoxScriptCodeStyleSettings::class.java,
 					Option.SPACE_WITHIN_BRACES.name,
-					_spaceWithinBracesTitle,
+					PlsBundle.message("script.codeStyle.spaceWithinBraces"),
 					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
 				)
 				consumer.showCustomOption(
 					ParadoxScriptCodeStyleSettings::class.java,
 					Option.SPACE_AROUND_SEPARATOR.name,
-					_spaceAroundSeparatorTitle,
+					PlsBundle.message("script.codeStyle.spaceAroundSeparator"),
 					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
 				)
 			}

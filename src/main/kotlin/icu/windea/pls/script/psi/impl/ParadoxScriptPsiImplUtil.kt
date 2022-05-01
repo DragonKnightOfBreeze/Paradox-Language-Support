@@ -115,7 +115,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getTruncatedValue(element: ParadoxScriptProperty): String? {
-		return element.propertyValue?.value?.let { if(it is ParadoxScriptBlock) blockFolder else it.text.truncate(truncateLimit) }
+		return element.propertyValue?.value?.let { if(it is ParadoxScriptBlock) blockFolder else it.text.truncateAndKeepQuotes(truncateLimit) }
 	}
 	
 	//得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）

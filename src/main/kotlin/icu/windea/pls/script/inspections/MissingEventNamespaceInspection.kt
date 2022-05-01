@@ -5,8 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
-private val _description = PlsBundle.message("script.inspection.missingEventNamespace.description")
-
 /**
  * 缺失事件命名空间的检查。
  *
@@ -20,7 +18,7 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
 		val eventNamespace = file.eventNamespace
 		if(eventNamespace == null) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
-			holder.registerProblem(file, _description)
+			holder.registerProblem(file, PlsBundle.message("script.inspection.missingEventNamespace.description"))
 			return holder.resultsArray
 		}
 		return null

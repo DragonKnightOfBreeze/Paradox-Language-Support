@@ -29,13 +29,6 @@ abstract class ParadoxLibraryType(
 	private val libraryIcon = gameType.icon
 	private val namePrefix = "$createActionName: "
 	
-	companion object {
-		private val _chooserTitle = PlsBundle.message("library.chooser.title")
-		private val _chooserDescription = PlsBundle.message("library.chooser.description")
-		private val _invalidLibraryPathTitle = PlsBundle.message("library.dialog.invalidLibraryPath.title")
-		private val _invalidLibraryPathMessage = PlsBundle.message("library.dialog.invalidLibraryPath.message")
-	}
-	
 	override fun getCreateActionName() = createActionName
 	
 	override fun getIcon(properties: ParadoxLibraryProperties?) = libraryIcon
@@ -46,8 +39,8 @@ abstract class ParadoxLibraryType(
 	override fun createNewLibrary(parentComponent: JComponent, contextDirectory: VirtualFile?, project: Project): NewLibraryConfiguration? {
 		if(contextDirectory == null) return null
 		val chooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor()
-		chooserDescriptor.title = _chooserTitle
-		chooserDescriptor.description = _chooserDescription
+		chooserDescriptor.title = PlsBundle.message("library.chooser.title")
+		chooserDescriptor.description = PlsBundle.message("library.chooser.description")
 		val file = FileChooser.chooseFile(chooserDescriptor, parentComponent, project, contextDirectory) ?: return null
 		val name = getLibraryName(file, project) ?: return null
 		val libraryProperties = ParadoxLibraryProperties.instance
@@ -101,7 +94,7 @@ abstract class ParadoxLibraryType(
 	}
 	
 	private fun showInvalidLibraryDialog(project: Project) {
-		Messages.showWarningDialog(project, _invalidLibraryPathMessage, _invalidLibraryPathTitle)
+		Messages.showWarningDialog(project, PlsBundle.message("library.dialog.invalidLibraryPath.message"), PlsBundle.message("library.dialog.invalidLibraryPath.title"))
 	}
 	
 	override fun createPropertiesEditor(editorComponent: LibraryEditorComponent<ParadoxLibraryProperties>) = null
