@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 对脚本文件在项目视图中显示额外的信息。
  *
- * * 显示定义的额外信息（定义的名称、类型）（对于本身是定义的脚本文件）。
+ * * 对于本身是定义的脚本文件，显示定义的额外信息（定义的名称、类型）
  */
 class ParadoxScriptProjectViewNodeDecorator : ProjectViewNodeDecorator {
 	override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {
