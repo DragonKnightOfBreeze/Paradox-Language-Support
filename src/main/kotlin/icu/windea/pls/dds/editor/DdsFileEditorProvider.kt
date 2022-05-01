@@ -21,7 +21,7 @@ class DdsFileEditorProvider : FileEditorProvider { //NOT DumbAware
 	}
 	
 	override fun createEditor(project: Project, file: VirtualFile): FileEditor {
-		TODO("Not yet implemented")
+		return DdsFileEditor(project, file)
 	}
 	
 	override fun getEditorTypeId(): String {
