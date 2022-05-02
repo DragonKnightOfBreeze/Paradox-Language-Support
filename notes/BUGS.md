@@ -75,3 +75,5 @@ types = {
 * [X] 脚本文件语法解析：变量不需要放在顶层（尽管一般放在顶层，应当是放在定义外面即可）
 
 * [ ] 某些类型的定义即使definitionName和rootKey相同也无法查找定义（如：`asteroid_belt_type`）（）
+
+* [ ] 兼容同一个event脚本文件中有多个event_namespace的情况
