@@ -18,7 +18,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 			val resolved = element.reference?.resolve()
 			if(resolved != null) return
 			val location = element.iconId ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedColor.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedIcon.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 } 

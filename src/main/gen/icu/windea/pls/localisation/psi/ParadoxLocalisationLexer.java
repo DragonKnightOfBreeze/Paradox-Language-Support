@@ -231,10 +231,10 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\1\131\1\130\1\132\4\0\2\130\2\0\1\130\3\0"+
     "\1\123\2\41\1\111\63\0\1\133\1\0\1\114\1\134"+
     "\2\0\1\134\1\114\1\134\21\114\1\134\4\114\2\135"+
-    "\2\0\31\135\2\136\2\0\31\136\1\117\1\137\2\0"+
-    "\1\137\1\117\1\137\10\117\1\137\1\117\1\137\13\117"+
-    "\2\140\2\0\31\140\3\121\1\0\2\121\1\141\26\121"+
-    "\2\142\2\0\31\142";
+    "\2\0\31\135\2\136\2\0\31\136\2\137\2\0\1\117"+
+    "\3\137\1\117\1\137\1\117\2\137\1\117\2\137\2\117"+
+    "\4\137\2\117\2\137\1\117\2\137\2\140\2\0\31\140"+
+    "\3\121\1\0\2\121\1\141\26\121\2\142\2\0\31\142";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[1740];
@@ -880,9 +880,9 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
           case 44: 
             { //特殊处理
     //除了可以通过连续的两个左方括号转义之外
-    //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
+    //如果匹配到的字符串长度大于1，且最后一个字符为右方括号，则认为代表命令的开始
     //否则认为是常规字符串
-    boolean isCommandStart = yylength() > 1 && !isBlankOrDoubleQuote(yycharat(yylength()-1));
+    boolean isCommandStart = yylength() > 1 && yycharat(yylength()-1) == ']';
     yypushback(yylength()-1);
     if(isCommandStart){
 	    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);

@@ -415,6 +415,7 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.unsupportedColor"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.UnsupportedColorInspection"/>
+    <!--默认关闭：存在一些生成的图标-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="localisation.inspection.unresolvedIcon"

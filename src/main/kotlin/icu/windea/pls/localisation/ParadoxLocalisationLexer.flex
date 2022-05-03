@@ -120,7 +120,7 @@ STRING_TOKEN=[^\"%$£§\[\r\n\\]+
 CHECK_PROPERTY_REFERENCE_START=\$[^\$\s\"]*.?
 CHECK_ICON_START=£.?
 CHECK_SEQUENTIAL_NUMBER_START=%.?.?
-CHECK_COMMAND_START=\[[^\.\]\s\"]*.?
+CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@ \t]*.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
@@ -355,9 +355,9 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {CHECK_COMMAND_START} {
     //特殊处理
     //除了可以通过连续的两个左方括号转义之外
-    //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
+    //如果匹配到的字符串长度大于1，且最后一个字符为右方括号，则认为代表命令的开始
     //否则认为是常规字符串
-    boolean isCommandStart = yylength() > 1 && !isBlankOrDoubleQuote(yycharat(yylength()-1));
+    boolean isCommandStart = yylength() > 1 && yycharat(yylength()-1) == ']';
     yypushback(yylength()-1);
     if(isCommandStart){
 	    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
