@@ -1,6 +1,6 @@
 package icu.windea.pls
 
-val locationClass = PlsBundle::class.java
+val locationClass = PlsIcons::class.java
 
 const val ddsName = "DDS"
 const val ddsDescription = "DirectDraw Surface"

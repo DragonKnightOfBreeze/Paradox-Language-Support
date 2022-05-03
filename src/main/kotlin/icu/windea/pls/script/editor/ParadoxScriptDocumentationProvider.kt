@@ -96,7 +96,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 			//加上定义信息
-			append("(variable) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.variable")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 		}
 	}
@@ -106,7 +106,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 			//加上定义信息
-			append("(script property) <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.property")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
 		}
 	}
@@ -136,7 +136,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			append("(definition) <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
+			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
 			val localisation = definitionInfo.localisation
 			if(localisation.isNotEmpty()) {
@@ -150,7 +150,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 						if(required || target != null) {
 							if(localisationKeys.add(key)) {
 								appendBr()
-								append("(related localisation) ").append(key).append(" = ").appendLocalisationLink(targetKey, element, resolved = target != null)
+								append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ").append(key).append(" = ").appendLocalisationLink(targetKey, element, resolved = target != null)
 							}
 						}
 					}
@@ -169,7 +169,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 						if(required || target != null) {
 							if(pictureKeys.add(key)) {
 								appendBr()
-								append("(related pictures) ").append(key).append(" = ").appendFilePathLink(filePath, element, resolved = target != null)
+								append(PlsDocBundle.message("name.script.relatedPicture")).append(" ").append(key).append(" = ").appendFilePathLink(filePath, element, resolved = target != null)
 							}
 						}
 					}

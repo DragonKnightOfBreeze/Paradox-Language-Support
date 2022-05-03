@@ -8,6 +8,12 @@ import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
 
+private val validValueTypes = arrayOf(
+	CwtValueExpression.Type.FilePath,
+	CwtValueExpression.Type.Icon,
+	CwtValueExpression.Type.TypeExpression
+)
+
 /**
  * CWT图片的位置表达式。
  *
@@ -64,7 +70,7 @@ class CwtPictureLocationExpression(
 			//目前只接收类型为string的值
 			val value = definition.findProperty(propertyName)?.propertyValue?.value?.castOrNull<ParadoxScriptString>() ?: return null
 			while(true) {
-				val resolved = resolveValue(value) ?: return null
+				val resolved = resolveValue(value) { it.type in validValueTypes } ?: return null
 				when {
 					//由filePath解析为DDS文件
 					resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -102,7 +108,7 @@ class CwtPictureLocationExpression(
 			//目前只接收类型为string的值
 			val value = definition.findProperty(propertyName)?.propertyValue?.value?.castOrNull<ParadoxScriptString>() ?: return null
 			while(true) {
-				val resolved = resolveValue(value) ?: return null
+				val resolved = resolveValue(value) { it.type in validValueTypes } ?: return null
 				when {
 					//由filePath解析为DDS文件
 					resolved is PsiFile && resolved.fileType == DdsFileType -> {

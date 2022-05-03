@@ -159,7 +159,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		return buildString {
 			//加上元素定义信息
 			definition {
-				append("(localisation color) <b>").append(name).append("</b>")
+				append(PlsDocBundle.message("name.localisation.color")).append(" <b>").append(name).append("</b>")
 			}
 			//加上描述
 			val colorConfig = element.colorConfig
@@ -178,7 +178,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 			//加上元素定义信息
-			append("(localisation property) <b>").append(element.name).append("</b>")
+			append(PlsDocBundle.message("name.localisation.property")).append(" <b>").append(element.name).append("</b>")
 		}
 	}
 	
@@ -187,7 +187,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			//加上文件信息
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 			//加上元素定义信息
-			append("(${category.id}) <b>").append(name).append("</b>")
+			append(category.text).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
@@ -197,7 +197,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			val richText = element.renderText()
 			if(richText.isNotEmpty()) {
 				sections {
-					section(PlsBundle.message("title.text"), richText)
+					section(PlsDocBundle.message("title.text"), richText)
 				}
 			}
 		}
@@ -206,7 +206,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildLocaleDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append("(localisation locale) <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("name.localisation.locale")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
@@ -223,14 +223,14 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildIconDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append("(localisation icon) <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("name.localisation.icon")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildSequentialNumberDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append("(localisation sequential number) <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("name.localisation.sequentialNumber")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
@@ -247,21 +247,21 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildCommandScopeDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append("(localisation command scope) <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("name.localisation.commandScope")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildCommandFieldDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append("(localisation command field) <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("name.localisation.commandField")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	
 	private fun StringBuilder.buildColorDefinition(name: String) {
 		definition {
 			//加上元素定义信息
-			append("(localisation color) <b>").append(name).append("</b>")
+			append(PlsDocBundle.message("name.localisation.color")).append(" <b>").append(name).append("</b>")
 		}
 	}
 	

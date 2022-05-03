@@ -706,7 +706,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			for(valueValueConfig in valueValueConfigs) {
 				if(quoted && valueValueConfig.stringValue == null) continue
 				val n = valueValueConfig.value
-				if(!n.matchesKeyword(keyword)) continue //预先过滤结果
+				//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 				val name = n.quoteIf(quoted)
 				val element = valueValueConfig.pointer.element ?: continue
 				val typeText = valueConfig.pointer.containingFile?.name ?: anonymousString
@@ -730,7 +730,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			for(enumValueConfig in enumValueConfigs) {
 				if(quoted && enumValueConfig.stringValue == null) continue
 				val n = enumValueConfig.value
-				if(!n.matchesKeyword(keyword)) continue //预先过滤结果
+				//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 				val name = n.quoteIf(quoted)
 				val element = enumValueConfig.pointer.element ?: continue
 				val typeText = enumConfig.pointer.containingFile?.name ?: anonymousString
@@ -757,7 +757,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val n = expression.value ?: return
-			if(!n.matchesKeyword(keyword)) return //预先过滤结果
+			//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
 			val name = n.quoteIf(quoted)
 			val element = config.pointer.element ?: return
 			val icon = PlsIcons.propertyIcon //使用特定图标
@@ -862,7 +862,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val icon = virtualFile.fileType.icon
 				val name = expressionType.extract(expressionValue, filePath) ?: continue
 				val typeText = virtualFile.name
-				val lookupElement = LookupElementBuilder.create(virtualFile, name).withIcon(icon)
+				val lookupElement = LookupElementBuilder.create(file, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
 				result.addElement(lookupElement)
@@ -912,7 +912,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(valueValueConfig in valueValueConfigs) {
 				if(quoted && valueValueConfig.stringValue == null) continue
 				val n = valueValueConfig.value
-				if(!n.matchesKeyword(keyword)) continue //预先过滤结果
+				//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 				val name = n.quoteIf(quoted)
 				val element = valueValueConfig.pointer.element ?: continue
 				val typeText = valueConfig.pointer.containingFile?.name ?: anonymousString
@@ -935,7 +935,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(enumValueConfig in enumValueConfigs) {
 				if(quoted && enumValueConfig.stringValue == null) continue
 				val n = enumValueConfig.value
-				if(!n.matchesKeyword(keyword)) continue //预先过滤结果
+				//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 				val name = n.quoteIf(quoted)
 				val element = enumValueConfig.pointer.element ?: continue
 				val typeText = enumConfig.pointer.containingFile?.name ?: anonymousString
@@ -965,7 +965,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		CwtValueExpression.Type.AliasMatchLeft -> pass()
 		CwtValueExpression.Type.Constant -> {
 			val n = expression.value ?: return
-			if(!n.matchesKeyword(keyword)) return //预先过滤结果
+			//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
 			val name = n.quoteIf(quoted)
 			val element = config.pointer.element ?: return
 			val icon = PlsIcons.valueIcon //使用特定图标
@@ -996,20 +996,19 @@ fun completeAliasName(aliasName: String, keyword: String, quoted: Boolean, confi
 	if(aliasName == "modifier") {
 		//NOTE 需要推断scope并向下传递，注意首先需要取config.parent.scope
 		val finalScope = config.parent?.scope ?: scope
-		completeModifier(keyword, quoted, configGroup, result, finalScope)
+		completeModifier(quoted, configGroup, result, finalScope)
 	}
 }
 
-fun completeModifier(keyword: String, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
+fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 	val modifiers = configGroup.modifiers
 	if(modifiers.isEmpty()) return
-	var size = 0
 	for(modifierConfig in modifiers.values) {
 		val categoryConfig = modifierConfig.categoryConfig ?: continue
 		//NOTE modifier的scope需要匹配（推断得到的scope为null时，总是提示）
 		if(scope != null && !categoryConfig.supportedScopes.any { matchesScope(scope, it, configGroup) }) continue
 		val n = modifierConfig.name
-		if(!n.matchesKeyword(keyword)) continue //预先过滤结果
+		//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 		val name = n.quoteIf(quoted)
 		val element = modifierConfig.pointer.element ?: continue
 		val icon = PlsIcons.modifierIcon //使用特定图标
@@ -1021,21 +1020,18 @@ fun completeModifier(keyword: String, quoted: Boolean, configGroup: CwtConfigGro
 			.withInsertHandler(separatorInsertHandler)
 			.withPriority(modifierPriority)
 		result.addElement(lookupElement)
-		size++
-		if(size == getSettings().maxCompleteSize) return //限制补全项的数量
 	}
 }
 
 fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,
 	configGroup: CwtConfigGroup, result: CompletionResultSet) {
-	val keyword = commandField.keyword
+	//val keyword = commandField.keyword
 	val localisationCommands = configGroup.localisationCommands
 	if(localisationCommands.isEmpty()) return
-	var size = 0
 	for(localisationCommand in localisationCommands) {
 		val config = localisationCommand.value
 		val name = config.name
-		if(!name.matchesKeyword(keyword)) continue
+		//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 		val element = config.pointer.element ?: continue
 		//val scopes = localisationCommand
 		val icon = PlsIcons.localisationCommandFieldIcon
@@ -1043,17 +1039,21 @@ fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,
 		val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 			.withTypeText(typeText, true)
 		result.addElement(lookupElement)
-		size++
-		if(size == getSettings().maxCompleteSize) return //限制补全项的数量
 	}
 }
 //endregion
 
 //region Resolve Extensions
 //NOTE 基于cwt规则文件的解析方法不进一步匹配scope
-fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
+inline fun resolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): PsiNamedElement? {
 	val propertyConfig = keyElement.propertyConfig ?: return null
 	val expression = propertyConfig.keyExpression
+	if(!expressionPredicate(expression)) return null
+	return doResolveKey(keyElement, expression, propertyConfig)
+}
+
+@PublishedApi
+internal fun doResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): PsiNamedElement? {
 	val project = keyElement.project
 	return when(expression.type) {
 		CwtKeyExpression.Type.Localisation -> {
@@ -1119,9 +1119,15 @@ fun resolveKey(keyElement: ParadoxScriptPropertyKey): PsiNamedElement? {
 	}
 }
 
-fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement> {
+inline fun multiResolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): List<PsiNamedElement> {
 	val propertyConfig = keyElement.propertyConfig ?: return emptyList()
 	val expression = propertyConfig.keyExpression
+	if(!expressionPredicate(expression)) return emptyList()
+	return doMultiResolveKey(keyElement, expression, propertyConfig)
+}
+
+@PublishedApi
+internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): List<PsiNamedElement> {
 	val project = keyElement.project
 	return when(expression.type) {
 		CwtKeyExpression.Type.Localisation -> {
@@ -1187,12 +1193,18 @@ fun multiResolveKey(keyElement: ParadoxScriptPropertyKey): List<PsiNamedElement>
 	}
 }
 
-fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
+inline fun resolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiNamedElement? {
 	//根据对应的expression进行解析
 	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
 	val valueConfig = valueElement.valueConfig ?: return fallbackResolveValue(valueElement)
 	val expression = valueConfig.valueExpression
+	if(!expressionPredicate(expression)) return null
 	//val expression = element.expression?:return null
+	return doResolveValue(valueElement, expression, valueConfig)
+}
+
+@PublishedApi
+internal fun doResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): PsiNamedElement? {
 	val project = valueElement.project
 	return when(expression.type) {
 		CwtValueExpression.Type.Localisation -> {
@@ -1215,7 +1227,7 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 		}
 		CwtValueExpression.Type.Icon -> {
 			val expressionType = CwtFilePathExpressionType.Icon
-			val filePath = expressionType.resolve(expression.value, valueElement.value)?:return null
+			val filePath = expressionType.resolve(expression.value, valueElement.value) ?: return null
 			findFileByFilePath(filePath, project)?.toPsiFile(project)
 		}
 		CwtValueExpression.Type.TypeExpression -> {
@@ -1274,7 +1286,8 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 	}
 }
 
-private fun fallbackResolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
+@PublishedApi
+internal fun fallbackResolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 	val name = valueElement.value
 	val project = valueElement.project
 	return findDefinition(name, null, project)
@@ -1282,12 +1295,18 @@ private fun fallbackResolveValue(valueElement: ParadoxScriptValue): PsiNamedElem
 		?: findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 }
 
-fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
+inline fun multiResolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): List<PsiNamedElement> {
 	//根据对应的expression进行解析
 	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
 	val valueConfig = valueElement.valueConfig ?: return fallbackMultiResolveValue(valueElement)
 	val expression = valueConfig.valueExpression
+	if(!expressionPredicate(expression)) return emptyList()
 	//val expression = element.expression?:return emptyList()
+	return doMultiResolveValue(valueElement, expression, valueConfig)
+}
+
+@PublishedApi
+internal fun doMultiResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): List<PsiNamedElement> {
 	val project = valueElement.project
 	return when(expression.type) {
 		CwtValueExpression.Type.Localisation -> {
@@ -1306,12 +1325,12 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 		CwtValueExpression.Type.FilePath -> {
 			val expressionType = CwtFilePathExpressionType.FilePath
 			val filePath = expressionType.resolve(expression.value, valueElement.value)
-			findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project)}
+			findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project) }
 		}
 		CwtValueExpression.Type.Icon -> {
 			val expressionType = CwtFilePathExpressionType.Icon
-			val filePath = expressionType.resolve(expression.value, valueElement.value)?:return emptyList()
-			findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project)}
+			val filePath = expressionType.resolve(expression.value, valueElement.value) ?: return emptyList()
+			findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project) }
 		}
 		CwtValueExpression.Type.TypeExpression -> {
 			val name = valueElement.value
@@ -1365,7 +1384,8 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 	}
 }
 
-private fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
+@PublishedApi
+internal fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 	val name = valueElement.value
 	val project = valueElement.project
 	return findDefinitions(name, null, project)

@@ -71,14 +71,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val configType = element.configType
 		definition {
 			if(configType != null) {
-				append("(").append(configType.text).append(") ")
+				append("(").append(configType).append(") ")
 			} else {
 				//在脚本文件中显示"(definition property)"
 				if(originalElement != null && originalElement.isParadoxScriptPsiElement() ) {
-					append("(definition property) ")
+					append(PlsDocBundle.message("name.script.definitionProperty"))
 				} else {
-					append("(property) ")
+					append(PlsDocBundle.message("name.cwt.property"))
 				}
+				append(" ")
 			}
 			append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			when(configType) {
@@ -90,7 +91,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)
 					for((sk, sv) in scopeMap) {
 						val scopeLink = "${gameType.id}.scopes.$sv"
-						appendBr().append("(scope) ").append(sk).append(" = ").appendCwtLink(sv, scopeLink, null)
+						appendBr().append(PlsDocBundle.message("name.cwt.scope")).append(" ").append(sk).append(" = ").appendCwtLink(sv, scopeLink, null)
 					}
 				}
 				//为alias提供关于scope的额外文档注释（如果有的话）

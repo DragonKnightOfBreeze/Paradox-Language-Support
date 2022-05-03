@@ -3,25 +3,26 @@ package icu.windea.pls.config.cwt.config
 import icu.windea.pls.*
 
 enum class CwtConfigType(
+	override val id: String,
 	override val text: String
-) : TextAware {
-	Type("type"),
-	Subtype("subtype"),
-	Enum("enum"),
-	ComplexEnum("complex enum"),
-	Value("value"),
-	SingleAlias("single alias"),
-	Alias("alias"),
+) : IdAware, TextAware {
+	Type("type", PlsDocBundle.message("name.cwt.type")),
+	Subtype("subtype", PlsDocBundle.message("name.cwt.subtype")),
+	Enum("enum", PlsDocBundle.message("name.cwt.enum")),
+	ComplexEnum("complex enum", PlsDocBundle.message("name.cwt.complexEnum")),
+	Value("value", PlsDocBundle.message("name.cwt.value")),
+	SingleAlias("single alias", PlsDocBundle.message("name.cwt.singleAlias")),
+	Alias("alias", PlsDocBundle.message("name.cwt.alias")),
 	
-	EnumValue("enum value"),
-	ValueValue("value value"),
-	Link("link"),
-	LocalisationLink("localisation link"),
-	LocalisationCommand("localisation command"),
-	ModifierCategory("modifier category"),
-	Modifier("modifier"),
-	Scope("scope"),
-	ScopeGroup("scope group");
+	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue")),
+	ValueValue("value value", PlsDocBundle.message("name.cwt.valueValue")),
+	Link("link", PlsDocBundle.message("name.cwt.link")),
+	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink")),
+	LocalisationCommand("localisation command", PlsDocBundle.message("name.cwt.localisationCommand")),
+	ModifierCategory("modifier category", PlsDocBundle.message("name.cwt.modifierCategory")),
+	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier")),
+	Scope("scope", PlsDocBundle.message("name.cwt.scope")),
+	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup"));
 	
 	override fun toString(): String {
 		return text

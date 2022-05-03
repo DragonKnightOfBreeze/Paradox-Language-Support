@@ -6,6 +6,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import io.ktor.utils.io.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = helpTopic!!
@@ -20,6 +21,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						toolTipText = PlsBundle.message("settings.generic.defaultGameType.tooltip")
 					}
 					comboBox(ParadoxGameType.values.toList()).bindItem(settings::defaultGameType.toNullableProperty())
+				}
+				row{
+					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent { 
+						toolTipText = PlsBundle.message("settings.generic.maxCompleteSize.tooltip")
+					}
+					this.intTextField(0..1000).bindIntText(settings::maxCompleteSize)
 				}
 				row {
 					checkBox(PlsBundle.message("settings.generic.preferOverridden"))

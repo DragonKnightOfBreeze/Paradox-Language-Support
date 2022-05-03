@@ -39,14 +39,13 @@ private fun generateDocuments(root: String, documentNameTypeMap: Map<String, Str
 private fun getDocumentText(documentName: String, type: String, project: Project): String {
 	val definitions = findAllDefinitions(type, project).filter { it.fileInfo?.rootType == ParadoxRootType.Game }
 	return definitions.joinToString("\n\n", "# $documentName\n\n## Vanilla\n\n### 未分类\n\n") {
-		val definition = it.definitionInfo
-		val id = definition?.name
-		val name = definition?.localisation?.find { loc -> loc.key.lowercase() == "name" }
-			?.let { l-> findLocalisation(l.locationExpression, inferParadoxLocale(),project) }?.extractText()
-		val description = definition?.localisation?.find { loc -> loc.key.lowercase() == "description" }
-			?.let { l-> findLocalisation(l.locationExpression, inferParadoxLocale(),project) }?.extractText()
-		val effect = definition?.localisation?.find { loc -> loc.key.lowercase() == "effect" }
-			?.let { l-> findLocalisation(l.locationExpression, inferParadoxLocale(),project) }?.extractText()
+		val definitionInfo = it.definitionInfo
+		val id = definitionInfo?.name!!
+		val name = definitionInfo.localisation.find { loc -> loc.key.lowercase() == "name" }
+			?.locationExpression?.resolve(id, inferParadoxLocale() ,project)?.second?.extractText()
+		val description = definitionInfo.localisation.find { loc -> loc.key.lowercase() == "description" }?.locationExpression
+			?.resolve(id, inferParadoxLocale() ,project)?.second?.extractText()
+		val effect = definitionInfo.localisation.find { loc -> loc.key.lowercase() == "effect" }?.locationExpression?.resolve(id, inferParadoxLocale() ,project)?.second?.extractText()
 		buildString {
 			append("#### $name{#$id}")
 			if(!description.isNullOrBlank()) append("\n\n$description")

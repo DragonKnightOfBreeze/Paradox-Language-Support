@@ -24,7 +24,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			
 			val icon = PlsIcons.localisationGutterIcon
 			val tooltip = buildString {
-				append("(${category.id}) <b>").append(name).append("</b>")
+				append("${category} <b>").append(name).append("</b>")
 			}
 			val project = element.project
 			val targets = when(category) {

@@ -49,10 +49,10 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression
 	override fun getAdvancedInformationHint(element: ParadoxScriptExpression): String {
 		val children = buildList {
 			element.type?.let { type ->
-				add(makeHtmlRow(PlsBundle.message("title.type"), type))
+				add(makeHtmlRow(PlsDocBundle.message("title.type"), type))
 			}
 			element.valueType?.let { valueType ->
-				add(makeHtmlRow(PlsBundle.message("title.valueType"), valueType.text))
+				add(makeHtmlRow(PlsDocBundle.message("title.valueType"), valueType.text))
 			}
 		}
 		return HtmlChunk.tag("table").children(children).toString()

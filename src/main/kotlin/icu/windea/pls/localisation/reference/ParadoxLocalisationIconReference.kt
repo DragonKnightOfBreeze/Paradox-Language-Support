@@ -45,6 +45,7 @@ class ParadoxLocalisationIconReference(
 	}
 	
 	//TODO 研究生成的图标究竟是个啥逻辑
+	//应当可以来自游戏启动时生成的modifier，mod_$modifierName
 	
 	override fun resolve(): PsiElement? {
 		//根据spriteName和ddsFileName进行解析

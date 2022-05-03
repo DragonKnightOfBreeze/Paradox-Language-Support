@@ -3,10 +3,10 @@ package icu.windea.pls
 import com.intellij.*
 import org.jetbrains.annotations.*
 
-private const val bundleName = "messages.PlsBundle"
+private const val bundleName = "messages.PlsDocBundle"
 
 @Suppress("unused")
-object PlsBundle : DynamicBundle(bundleName) {
+object PlsDocBundle : DynamicBundle(bundleName) {
 	@Nls
 	@JvmStatic
 	fun message(@NonNls @PropertyKey(resourceBundle = bundleName) key: String, vararg params: Any): String {

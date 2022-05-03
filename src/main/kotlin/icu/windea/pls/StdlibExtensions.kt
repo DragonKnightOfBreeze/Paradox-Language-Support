@@ -78,6 +78,8 @@ fun String.containsBlankLine(): Boolean {
 	return false
 }
 
+private val commaRegex = """\s*,\s*""".toRegex()
+
 fun String.isQuoted() = length >= 2 && surroundsWith('"', '"')
 
 fun String.quote() = if(isQuoted()) this else "\"$this\""

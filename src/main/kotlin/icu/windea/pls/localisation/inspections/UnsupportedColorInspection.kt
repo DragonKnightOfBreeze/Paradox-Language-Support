@@ -18,7 +18,7 @@ class UnsupportedColorInspection : LocalInspectionTool() {
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) return
 			val location = element.colorId ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedIcon.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedColor.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

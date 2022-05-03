@@ -35,7 +35,7 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 			if(localisations.isNotEmpty()) targets.addAll(localisations)
 			if(localisations.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-				tooltipBuilder.append("(related localisation) ").append(key).append(" = ").append(localisationKey)
+				tooltipBuilder.append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ").append(key).append(" = ").append(localisationKey)
 			}
 		}
 		if(keys.isEmpty()) return
