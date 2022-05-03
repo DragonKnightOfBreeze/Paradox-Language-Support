@@ -223,8 +223,8 @@ class CwtConfigGroup(
 				when(key) {
 					//定义的值是否需要为代码块，默认为是
 					"block" -> block = prop.booleanValue ?: continue //EXTENDED BY PLS
-					//这里path需要移除前缀"game/"，这个插件会忽略它
-					"path" -> path = prop.stringValue?.removePrefix("game/") ?: continue
+					//这里path需要移除第一个子路径"game"，这个插件会忽略它
+					"path" -> path = prop.stringValue?.removePrefix("game")?.trimStart('/') ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue
 					"path_file" -> pathFile = prop.stringValue ?: continue
 					"path_extension" -> pathExtension = prop.stringValue ?: continue

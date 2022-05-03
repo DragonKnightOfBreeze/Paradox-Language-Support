@@ -16,36 +16,6 @@ import java.util.*
 inline fun pass() {
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <T> Array<out T?>.cast() = this as Array<T>
-
-fun <T> Collection<T>.asList(): List<T> {
-	return if(this is List) this else this.toList()
-}
-
-fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
-	val result = mutableMapOf<E, Int>()
-	for(e in this) {
-		val k = selector(e)
-		if(k != null) {
-			result.compute(k) { _, v -> if(v == null) 1 else v + 1 }
-		}
-	}
-	return result
-}
-
-inline fun <T, reified R> List<T>.mapToArray(block: (T) -> R): Array<R> {
-	return Array(size) { block(this[it]) }
-}
-
-inline fun <T, reified R> Array<out T>.mapToArray(block: (T) -> R): Array<R> {
-	return Array(size) { block(this[it]) }
-}
-
-inline fun <T, reified R> Sequence<T>.mapToArray(block: (T) -> R): Array<R> {
-	return toList().mapToArray(block)
-}
-
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
 	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
 }
@@ -412,6 +382,49 @@ inline val <T : Enum<T>> Class<T>.enumSharedConstants get() = enumValuesCache[th
 //endregion
 
 //region Collection Extensions
+@Suppress("UNCHECKED_CAST")
+fun <T> Array<out T?>.cast() = this as Array<T>
+
+fun <T> Collection<T>.asList(): List<T> {
+	return if(this is List) this else this.toList()
+}
+
+fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
+	val result = mutableMapOf<E, Int>()
+	for(e in this) {
+		val k = selector(e)
+		if(k != null) {
+			result.compute(k) { _, v -> if(v == null) 1 else v + 1 }
+		}
+	}
+	return result
+}
+
+inline fun <T, reified R> Array<out T>.mapToArray(block: (T) -> R): Array<R> {
+	return Array(size) { block(this[it]) }
+}
+
+inline fun <T, reified R> List<T>.mapToArray(block: (T) -> R): Array<R> {
+	return Array(size) { block(this[it]) }
+}
+
+inline fun <K, V, reified R> Map<K, V>.mapToArray(block: (Map.Entry<K, V>) -> R): Array<R> {
+	//这里不先将Set转为List
+	val size = this.size
+	val entries = this.entries
+	try {
+		val iterator = entries.iterator()
+		return Array(size) { block(iterator.next()) }
+	} catch(e: Exception) {
+		val list = entries.toList()
+		return Array(size) { block(list[it]) }
+	}
+}
+
+inline fun <T, reified R> Sequence<T>.mapToArray(block: (T) -> R): Array<R> {
+	return toList().mapToArray(block)
+}
+
 fun <K,V> mapOfKv(key: K, value:V): Map<K, V> {
 	return Collections.singletonMap(key, value)
 }

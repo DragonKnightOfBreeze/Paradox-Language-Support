@@ -21,6 +21,10 @@ types = {
 			## required
 			Desc = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # <sprite>
+		}
 	}
 }
 

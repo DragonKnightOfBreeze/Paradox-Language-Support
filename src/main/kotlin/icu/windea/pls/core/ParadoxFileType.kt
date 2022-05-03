@@ -8,7 +8,8 @@ enum class ParadoxFileType(
 ) : IdAware, DescriptionAware {
 	ParadoxScript("paradoxScript", "Paradox Script File"),
 	ParadoxLocalisation("paradoxLocalisation", "Paradox Localisation File"),
-	Dds("dds", "Dds File");
+	Dds("dds", "Dds File"),
+	Other("other", "Other File");
 	
 	override fun toString(): String {
 		return id

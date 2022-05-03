@@ -269,7 +269,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		//加上单行注释文本
 		if(getSettings().localisationRenderLineComment) {
 			val docText = getDocTextFromPreviousComment(element)
-			if(docText.isNotEmpty()) {
+			if(docText != null && docText.isNotEmpty()) {
 				content {
 					append(docText)
 				}

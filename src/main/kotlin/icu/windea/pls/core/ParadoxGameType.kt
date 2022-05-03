@@ -8,7 +8,7 @@ enum class ParadoxGameType(
 	override val description: String,
 	override val icon: Icon
 ) : IdAware, DescriptionAware, IconAware {
-	//NOTE 暂时使用统一的库的图标
+	//TODO 暂时使用统一的库的图标
 	Ck2("ck2", "Crusader Kings II", PlsIcons.libraryIcon),
 	Ck3("ck3", "Crusader Kings III", PlsIcons.libraryIcon),
 	Eu4("eu4", "Europa Universalis IV", PlsIcons.libraryIcon),
@@ -17,7 +17,7 @@ enum class ParadoxGameType(
 	Stellaris("stellaris", "Stellaris", PlsIcons.libraryIcon),
 	Vic2("vic2", "Victoria II", PlsIcons.libraryIcon);
 	
-	//NOTE 明确的执行文件名称，应当就是这样
+	//TODO 明确的执行文件名称，应当就是这样
 	val exeFileName = "$id.exe"
 	
 	override fun toString(): String {
@@ -33,9 +33,9 @@ enum class ParadoxGameType(
 			return map[id.lowercase()]
 		}
 		
-		fun isValidKey(id: String): Boolean {
-			return id.lowercase() in map
-		}
+		//fun isValidKey(id: String): Boolean {
+		//	return id.lowercase() in map
+		//}
 		
 		fun defaultValue(): ParadoxGameType {
 			return getSettings().defaultGameType

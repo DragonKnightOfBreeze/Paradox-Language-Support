@@ -9,6 +9,10 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "gfx/interface/icons/ethics/$.dds" # inferred
+		}
 	}
 	## type_key_filter = ethic_categories
 	type[ethic_categories] = {

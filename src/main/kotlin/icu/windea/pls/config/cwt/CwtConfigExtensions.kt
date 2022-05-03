@@ -7,8 +7,8 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -17,6 +17,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
+import java.nio.file.*
 import kotlin.text.removeSurrounding
 
 typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
@@ -401,6 +402,12 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			if(quoted) return true
 			val value = valueElement.value
 			valueElement is ParadoxScriptString && hasLocalisation(value, null, configGroup.project)
+		}
+		CwtValueExpression.Type.AbsoluteFilePath -> {
+			valueElement is ParadoxScriptString && run {
+				val path = valueElement.value
+				VfsUtil.findFile(Path.of(path), true) != null
+			}
 		}
 		CwtValueExpression.Type.FilePath -> {
 			valueElement is ParadoxScriptString && run {
@@ -816,6 +823,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				result.addElement(lookupElement)
 			}
 		}
+		CwtValueExpression.Type.AbsoluteFilePath -> pass() //不提示绝对路径
 		CwtValueExpression.Type.FilePath -> {
 			val expressionType = CwtFilePathExpressionType.FilePath
 			val expressionValue = expression.value
@@ -829,10 +837,10 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(virtualFile in virtualFiles) {
 				val file = virtualFile.toPsiFile<PsiFile>(configGroup.project) ?: continue
 				val filePath = virtualFile.fileInfo?.path?.path ?: continue
-				val icon = file.icon
+				val icon = virtualFile.fileType.icon
 				val name = expressionType.extract(expressionValue, filePath) ?: continue
 				val typeText = virtualFile.name
-				val lookupElement = LookupElementBuilder.create(virtualFile, name).withIcon(icon)
+				val lookupElement = LookupElementBuilder.create(file, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
 				result.addElement(lookupElement)
@@ -851,7 +859,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			for(virtualFile in virtualFiles) {
 				val file = virtualFile.toPsiFile<PsiFile>(configGroup.project) ?: continue
 				val filePath = virtualFile.fileInfo?.path?.path ?: continue
-				val icon = file.icon
+				val icon = virtualFile.fileType.icon
 				val name = expressionType.extract(expressionValue, filePath) ?: continue
 				val typeText = virtualFile.name
 				val lookupElement = LookupElementBuilder.create(virtualFile, name).withIcon(icon)
@@ -1195,6 +1203,10 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			val name = valueElement.value
 			findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 		}
+		CwtValueExpression.Type.AbsoluteFilePath -> {
+			val path = valueElement.value
+			VfsUtil.findFile(Path.of(path), true)?.toPsiFile(project)
+		}
 		CwtValueExpression.Type.FilePath -> {
 			val expressionType = CwtFilePathExpressionType.FilePath
 			val filePath = expressionType.resolve(expression.value, valueElement.value)
@@ -1284,6 +1296,10 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 		CwtValueExpression.Type.SyncedLocalisation -> {
 			val name = valueElement.value
 			findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
+		}
+		CwtValueExpression.Type.AbsoluteFilePath -> {
+			val path = valueElement.value
+			VfsUtil.findFile(Path.of(path), true)?.toPsiFile<PsiFile>(project).toSingletonListOrEmpty()
 		}
 		CwtValueExpression.Type.FilePath -> {
 			val expressionType = CwtFilePathExpressionType.FilePath

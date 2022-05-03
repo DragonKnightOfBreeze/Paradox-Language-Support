@@ -70,4 +70,7 @@ tasks {
 	publishPlugin {
 		token.set(System.getenv("IDEA_TOKEN"))
 	}
+	runIde {
+		jvmArgs = listOf("-Xmx4096m")
+	}
 }

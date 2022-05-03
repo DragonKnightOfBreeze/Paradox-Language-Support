@@ -7,6 +7,10 @@ types = {
 			## required
 			Description = "sm_$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # <sprite>
+		}
 	}
 	type[starbase_level] = {
 		path = "game/common/starbase_levels"
@@ -18,6 +22,11 @@ types = {
 			Name = "sm_$"
 			## required
 			Description = "sm_$_desc"
+		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # <sprite>
+			icon = "gfx/interface/icons/modules/spaceport_module_$.dds" # inferred
 		}
 	}
 	type[starbase_type] = {

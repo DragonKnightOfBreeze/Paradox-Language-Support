@@ -21,6 +21,10 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			portrait = "#portrait" # <sprite>
+		}
 	}
 }
 

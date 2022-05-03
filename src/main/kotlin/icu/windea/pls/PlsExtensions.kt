@@ -55,23 +55,24 @@ fun inferParadoxLocale() = when(System.getProperty("user.language")) {
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
-fun getDocTextFromPreviousComment(element: PsiElement): String {
+fun getDocTextFromPreviousComment(element: PsiElement): String? {
 	//我们认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释，但这并非文档注释的全部
-	val lines = LinkedList<String>()
+	var lines: LinkedList<String>? = null
 	var prevElement = element.prevSibling ?: element.parent?.prevSibling
 	while(prevElement != null) {
 		val text = prevElement.text
 		if(prevElement !is PsiWhiteSpace) {
 			if(!isPreviousComment(prevElement)) break
-			val documentText = text.trimStart('#').trim().escapeXml()
-			lines.addFirst(documentText)
+			val docText = text.trimStart('#').trim().escapeXml()
+			if(lines == null) lines = LinkedList()
+			lines.addFirst(docText)
 		} else {
 			if(text.containsBlankLine()) break
 		}
 		// 兼容comment在rootBlock之外的特殊情况
 		prevElement = prevElement.prevSibling
 	}
-	return lines.joinToString("<br>")
+	return lines?.joinToString("<br>")
 }
 
 /**
@@ -91,6 +92,13 @@ fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String
 		expression.startsWith('!') -> expression.drop(1) !in subtypes
 		else -> expression in subtypes
 	}
+}
+
+/**
+ * 得到sprite定义的对应DDS文件的filePath。基于名为"textureFile"的定义属性（忽略大小写）。
+ */
+fun getSpriteDdsFilePath(sprite: ParadoxDefinitionProperty): String? {
+	return sprite.findProperty("textureFile")?.propertyValue?.value?.castOrNull<ParadoxScriptString>()?.stringValue
 }
 //endregion
 

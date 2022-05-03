@@ -85,6 +85,10 @@ types = {
 			## required
 			desc = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # <sprite>
+		}
 	}
 	type[ai_budget] = {
 		path = "game/common/ai_budget"
@@ -103,6 +107,10 @@ types = {
 	type[message_type] = {
 		name_field = key
 		path = "game/common/message_types"
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon|#icon_frame" # <sprite>
+		}
 	}
 }
 

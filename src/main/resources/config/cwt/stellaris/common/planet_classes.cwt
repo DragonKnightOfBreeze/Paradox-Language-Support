@@ -33,7 +33,10 @@ types = {
 				"Preference trait description" = "trait_$_preference_desc"
 			}
 		}
-
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # <sprite>
+		}
 	}
 	## type_key_filter = random_list
 	type[planet_class_random_list] = {

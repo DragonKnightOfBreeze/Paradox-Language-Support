@@ -12,6 +12,13 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			## primary
+			icon = "#icon" # icon[gfx/interface/icons/buildings] | <building>
+			## primary
+			icon = "gfx/interface/icons/buildings/$.dds" # inferred
+		}
 	}
 }
 

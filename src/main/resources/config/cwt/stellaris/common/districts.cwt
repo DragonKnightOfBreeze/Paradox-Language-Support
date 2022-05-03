@@ -17,6 +17,11 @@ types = {
 			## required
 			Plural = "$_plural"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # icon[gfx/interface/icons/districts]
+			icon = "gfx/interface/icons/districts/$.dds" # inferred
+		}
 	}
 }
 

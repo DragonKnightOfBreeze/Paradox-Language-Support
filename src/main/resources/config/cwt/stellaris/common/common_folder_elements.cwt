@@ -5,8 +5,13 @@ types = {
 	type[alert] = {
 		path = "game/common"
 		path_file = "alerts.txt"
-		
 		skip_root_key = alerts
+		# ADDED BY PLS
+		# TODO support this rule
+		pictures = {
+			category = "#category" # <alert_icon>, `HIGH` of `HIGH = "GFX_alerticon_banner_high"`
+			icon = "#icon" # <sprite>
+		}
 	}
 	# FIXED BY PLS
 	type[alert_icon] = {
@@ -14,6 +19,12 @@ types = {
 		block = no
 		path = "game/common"
 		skip_root_key = icon
+		# ADDED BY PLS
+		# TODO support this rule
+		pictures = {
+			## primary
+			icon = "#" # the string value (not some property definition in the block value) of the definition
+		}
 	}
 	# FIXED BY PLS
 	type[achievement] = {
@@ -25,6 +36,7 @@ types = {
 # FIXED BY PLS
 alert = {
 	category = <alert_icon>
+	category = DISABLED
 	sound = <sound_effect>
 	icon = <sprite>
 }

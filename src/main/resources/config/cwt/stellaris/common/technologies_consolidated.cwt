@@ -15,6 +15,11 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # icon[gfx/interface/icons/technologies]
+			icon = "gfx/interface/icons/technologies/$.dds" # inferred
+		}
 	}
 	type[technology_tier] = {
 		path = "game/common/technology/tier"
@@ -29,6 +34,10 @@ types = {
 			Name = "$"
 			## required
 			Description = "$_desc"
+		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # filepath
 		}
 	}
 }

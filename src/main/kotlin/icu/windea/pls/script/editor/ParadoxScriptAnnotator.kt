@@ -57,7 +57,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val attributesKey = when(expression.type) {
 			CwtValueExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtValueExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtValueExpression.Type.FilePath, CwtValueExpression.Type.Icon -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+			CwtValueExpression.Type.AbsoluteFilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+			CwtValueExpression.Type.FilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+			CwtValueExpression.Type.Icon -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
 			CwtValueExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
 			CwtValueExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY

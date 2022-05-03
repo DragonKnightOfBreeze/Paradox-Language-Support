@@ -13,6 +13,10 @@ types = {
 			## optional
 			"Type desc" = "$_TYPE_DESC"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # <sprite>
+		}
 	}
 }
 

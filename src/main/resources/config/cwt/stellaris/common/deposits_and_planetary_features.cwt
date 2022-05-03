@@ -32,6 +32,11 @@ types = {
 				always = no
 			}
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # icon[gfx/interface/icons/deposits]
+			icon = "gfx/interface/icons/deposits/$.dds" # inferred
+		}
 	}
 	type[deposit_category] = {
 		path = "game/common/deposit_categories"

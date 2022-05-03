@@ -7,6 +7,12 @@ types = {
 		path = "game/interface"
 		skip_root_key = spriteTypes
 		severity = warning
+		# ADDED BY PLS
+		pictures = {
+			texturefile = "#texturefile" # filepath
+			texturefile1 = "#texturefile1" # filepath
+			texturefile2 = "#texturefile2" # filepath
+		}
 	}
 	## type_key_filter = PieChartType
 	type[piechart] = { #these are links that start with the GFX_ prefix in vanilla
@@ -32,6 +38,12 @@ types = {
 		subtype[framed_animated_sprite] = {}
 		## type_key_filter = textSpriteType
 		subtype[text_sprite] = {}
+		# ADDED BY PLS
+		pictures = {
+			## primary
+			texturefile = "#textureFile|#noOfFrames,#default_frame" # filepath
+			masking_texture = "#textureFile" # filepath
+		}
 	}
 }
 

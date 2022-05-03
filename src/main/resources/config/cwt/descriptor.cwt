@@ -1,19 +1,30 @@
 types = {
-	type[descriptor] = {
+	# ADDED BY PLS
+	type[mod_descriptor] = {
+		path = "game"
 		type_per_file = yes
 	}
 }
 
-descriptor = {
+# ADDED BY PLS
+mod_descriptor = {
+	### Mod's name.
 	name = scalar
+	### Mod's version.
 	version = scalar
+	### Mod's thumbnail picture.
 	picture = filepath
+	### Mod's Tags.
 	tags = {
 		## cardinality = 0..inf
 		scalar
 	}
-	supported_version = scalar # supported game version, support "*" wildcard
-	# use one of remote_file_id and path
-	remote_file_id = scalar # steam workshop item id
-	path = scalar # absolute directory / zip file path
+	### Mod's supported game version, support "*" wildcard.
+	supported_version = scalar
+	### Mod's Steam workshop item id.
+	### Use one of "remote_file_id" and "path".
+	remote_file_id = scalar
+	### Mod's absolute directory / absolute zip file path
+	### Use one of "remote_file_id" and "path".
+	path = abs_filepath
 }

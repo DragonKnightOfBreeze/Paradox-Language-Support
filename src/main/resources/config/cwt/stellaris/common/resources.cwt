@@ -15,6 +15,14 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "gfx/interface/icons/resources/$.dds" # inferred
+			## optional
+			icon_grey = "gfx/interface/icons/resources/$_grey.dds" # inferred
+			## optional
+			icon_large = "gfx/interface/icons/resources/$_large.dds" # inferred
+		}
 	}
 }
 

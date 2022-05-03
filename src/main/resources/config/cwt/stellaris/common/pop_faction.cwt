@@ -7,6 +7,11 @@ types = {
 			## required
 			Description = "pft_$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "gfx/interface/icons/faction_icons/faction_icons_$s.dds" # inferred
+			# election_header = "#election_header" # <sprite>
+		}
 	}
 }
 

@@ -25,6 +25,10 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # filepath
+		}
 	}
 }
 

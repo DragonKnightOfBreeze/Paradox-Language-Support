@@ -15,6 +15,10 @@ types = {
 			## required
 			Name = "$"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" <sprite>
+		}
 	}
 	## replace_scope = { this = country root = country }
 	type[resolution] = {
@@ -25,6 +29,14 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # <sprite> | scalar
+		}
+	}
+	# ADDED BY PLS
+	pictures = {
+		icon = "#icon" # <sprite>
 	}
 }
 

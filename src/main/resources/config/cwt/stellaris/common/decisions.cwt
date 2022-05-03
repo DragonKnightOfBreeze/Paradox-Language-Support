@@ -8,7 +8,11 @@ types = {
 			## required
 			desc = "$_desc"
 		}
-
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # icon[gfx/interface/icons/decisions]
+			icon = "gfx/interface/icons/decisions/$.dds" # inferred
+		}
 	}
 }
 

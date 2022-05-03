@@ -7,12 +7,20 @@ types = {
 			## required
 			Name = "$"
 		}
+		# ADDED BY PLS
+		pictures = {
+			picture = "#picture" # <sprite>
+		}
 	}
 	type[archaeological_site_type] = {
 		path = "game/common/archaeological_site_types"
 		localisation = {
 			## required
 			Name = "$"
+		}
+		# ADDED BY PLS
+		pictures = {
+			picture = "#picture" # <sprite>
 		}
 	}
 	type[relic] = {
@@ -22,6 +30,10 @@ types = {
 			Name = "$"
 			## required
 			Desc = "$_desc"
+		}
+		# ADDED BY PLS
+		pictures = {
+			portrait = "portrait" # <sprite>
 		}
 	}
 	type[artifact_action] = {

@@ -11,6 +11,10 @@ types = {
 				Name = "$"
 			}
 		}
+		# ADDED BY PLS
+		pictures = {
+			# icon = "#icon" # from cwtools: unused
+		}
 	}
 	type[component_slot_template] = {
 		path = "game/common/component_slot_templates"

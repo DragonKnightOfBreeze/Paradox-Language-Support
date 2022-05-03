@@ -8,6 +8,10 @@ types = {
 			## required
 			Desc = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "gfx/interface/icons/ascension_perks/$.dds" # inferred
+		}
 	}
 	type[tradition] = {
 		path = "game/common/traditions"
@@ -18,6 +22,11 @@ types = {
 			Flavor = "$_delayed"
 			## optional
 			Effects = "$_desc"
+		}
+		# ADDED BY PLS
+		pictures = {
+			## optional
+			icon = "gfx/interface/icons/traditions/$.dds" # inferred
 		}
 	}
 	## type_key_filter = tradition_swap
@@ -44,6 +53,11 @@ types = {
 				## optional
 				Effects = "$_desc"
 			}
+		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "gfx/interface/icons/traditions/$.dds" # inferred
+			# TODO inherit icon from parent original tradition if inherit_icon = yes
 		}
 	}
 	type[tradition_category] = { #this defines the contents of tradition trees

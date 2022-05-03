@@ -2,7 +2,6 @@ package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -74,11 +73,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			if(configType != null) {
 				append("(").append(configType.text).append(") ")
 			} else {
-				//在脚本文件中显示"(definiiton property)"
+				//在脚本文件中显示"(definition property)"
 				if(originalElement != null && originalElement.isParadoxScriptPsiElement() ) {
-					append("(property) ")
-				} else {
 					append("(definition property) ")
+				} else {
+					append("(property) ")
 				}
 			}
 			append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
@@ -152,22 +151,23 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getDocumentation(element: PsiElement): String? {
 		var current: PsiElement = element
-		var documentationLines: LinkedList<String>? = null
+		var lines: LinkedList<String>? = null
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
 				current is CwtDocumentationComment -> {
 					val documentationText = current.documentationText
 					if(documentationText != null) {
-						if(documentationLines == null) documentationLines = LinkedList()
-						documentationLines.addFirst(documentationText.text)
+						if(lines == null) lines = LinkedList()
+						val docText = documentationText.text.trimStart('#').trim().escapeXml()
+						lines.addFirst(docText)
 					}
 				}
 				current is PsiWhiteSpace || current is PsiComment -> continue
 				else -> break
 			}
 		}
-		return documentationLines?.joinToString("\n")
+		return lines?.joinToString("<br>")
 	}
 	
 	private fun getDefinitionProperty(originalElement: PsiElement?): ParadoxScriptProperty? {

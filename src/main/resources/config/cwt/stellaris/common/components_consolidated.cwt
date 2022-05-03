@@ -16,6 +16,10 @@ types = {
 			## optional
 			"Station Description" = "station_$_DESC"
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon|#icon_frame" # <sprite>
+		}
 	}
 	type[component_template] = {
 		name_field = "key"
@@ -32,6 +36,10 @@ types = {
 		localisation = {
 			## required
 			Name = "$"
+		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon|#icon_frame" # <sprite>
 		}
 	}
 }

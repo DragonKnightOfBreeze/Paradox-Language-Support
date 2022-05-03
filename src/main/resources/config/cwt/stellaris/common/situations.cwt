@@ -2,6 +2,10 @@
 types = {
 	type[situation_type] = {
 		path = "game/common/situations"
+		# ADDED BY PLS
+		pictures = {
+			picture = "#picture" # <sprite>
+		}
 	}
 }
 

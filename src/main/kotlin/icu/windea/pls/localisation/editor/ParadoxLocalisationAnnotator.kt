@@ -28,16 +28,16 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateLocalisation(element: ParadoxLocalisationProperty, holder: AnnotationHolder, localisationInfo: ParadoxLocalisationInfo) {
 		//NOTE 并非特别必要，可能会影响性能
-		//颜色高亮
-		val category = localisationInfo.category
-		val attributesKey = when(category) {
-			ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationAttributesKeys.LOCALISATION_KEY
-			ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY
-		}
-		holder.newSilentAnnotation(INFORMATION)
-			.range(element.propertyKey)
-			.textAttributes(attributesKey)
-			.create()
+		////颜色高亮
+		//val category = localisationInfo.category
+		//val attributesKey = when(category) {
+		//	ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationAttributesKeys.LOCALISATION_KEY
+		//	ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY
+		//}
+		//holder.newSilentAnnotation(INFORMATION)
+		//	.range(element.propertyKey)
+		//	.textAttributes(attributesKey)
+		//	.create()
 	}
 	
 	private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {

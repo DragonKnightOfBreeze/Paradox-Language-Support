@@ -25,7 +25,8 @@ abstract class ParadoxLibraryType(
 	
 	val gameType = libraryKind.gameType
 	
-	private val createActionName = "Paradox/${gameType}"
+	private val createActionName = "Paradox/${gameType.description}"
+	private val libraryNamePrefix = "Paradox/${gameType.description}" 
 	private val libraryIcon = gameType.icon
 	
 	override fun getCreateActionName() = createActionName
@@ -33,6 +34,10 @@ abstract class ParadoxLibraryType(
 	override fun getIcon(properties: ParadoxLibraryProperties?) = libraryIcon
 	
 	override fun getExternalRootTypes() = arrayOf(OrderRootType.SOURCES)
+	
+	override fun createLibraryRootsComponentDescriptor(): LibraryRootsComponentDescriptor? {
+		return super.createLibraryRootsComponentDescriptor()
+	}
 	
 	//必须是一个文件夹，但必须包含descriptor.mod或者对应的.exe文件
 	override fun createNewLibrary(parentComponent: JComponent, contextDirectory: VirtualFile?, project: Project): NewLibraryConfiguration? {
@@ -62,9 +67,15 @@ abstract class ParadoxLibraryType(
 		//}
 		//处理特殊顶级目录的情况
 		when {
-			name.equals(ParadoxRootType.PdxLauncher.id, true) -> return ParadoxRootType.PdxLauncher.description
-			name.equals(ParadoxRootType.PdxOnlineAssets.id, true) -> return ParadoxRootType.PdxOnlineAssets.description
-			name.equals(ParadoxRootType.TweakerGuiAssets.id, true) -> return ParadoxRootType.TweakerGuiAssets.description
+			name.equals(ParadoxRootType.PdxLauncher.id, true) -> {
+				return libraryNamePrefix + " " + ParadoxRootType.PdxLauncher.description
+			}
+			name.equals(ParadoxRootType.PdxOnlineAssets.id, true) -> {
+				return libraryNamePrefix + " " + ParadoxRootType.PdxOnlineAssets.description
+			}
+			name.equals(ParadoxRootType.TweakerGuiAssets.id, true) -> {
+				return libraryNamePrefix + " " + ParadoxRootType.TweakerGuiAssets.description
+			}
 		}
 		//处理游戏目录和模组目录的情况的情况
 		for(child in file.children) {
@@ -72,11 +83,11 @@ abstract class ParadoxLibraryType(
 			when {
 				//游戏执行文件名要匹配
 				childName.equals(gameType.exeFileName, true) -> {
-					return ParadoxRootType.Game.description
+					return libraryNamePrefix + " " + ParadoxRootType.Game.description
 				}
 				//从descriptor.mod中获取，或者直接使用目录/压缩包去除后缀名后的名字
 				childName.equals(descriptorFileName, true) -> {
-					return ParadoxRootType.Mod.description + ": " + (getLibraryNameFromDescriptorFile(child) ?: name)
+					return libraryNamePrefix + " " + ParadoxRootType.Mod.description + ": " + (getLibraryNameFromDescriptorFile(child) ?: name)
 				}
 			}
 		}

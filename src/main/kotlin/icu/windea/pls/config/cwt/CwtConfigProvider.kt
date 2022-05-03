@@ -73,7 +73,7 @@ class CwtConfigProvider(
 	}
 	
 	private fun resolveConfigFilesOfGroup(configMaps: CwtConfigMaps, groupDirectory: VirtualFile, configRootDirectory: VirtualFile) {
-		val groupName = getGroupName(groupDirectory) ?: return
+		val groupName = getGroupName(groupDirectory)
 		logger.info("Resolve cwt config files of group '$groupName'.")
 		val configMap = configMaps.getOrPut(groupName) { mutableMapOf() }
 		resolveConfigFilesInGroup(configMap, groupDirectory, groupDirectory, configRootDirectory)
@@ -126,9 +126,7 @@ class CwtConfigProvider(
 		}
 	}
 	
-	private fun getGroupName(groupDirectory: VirtualFile): String? {
-		//TODO 支持插件额外提供的规则
-		return groupDirectory.name.takeIf { !it.endsWith(".pls") }
-		//return groupDirectory.name.removeSuffix(".pls")
+	private fun getGroupName(groupDirectory: VirtualFile): String {
+		return groupDirectory.name
 	}
 }

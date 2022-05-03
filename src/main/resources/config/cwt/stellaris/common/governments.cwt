@@ -7,6 +7,12 @@ types = {
 			## required
 			Description = "$_desc"
 		}
+		# ADDED BY PLS
+		pictures = {
+			## optional
+			icon = "#icon" # filepath
+			icon = "gfx/interface/icons/governments/authorities/$.dds" # inferred
+		}
 	}
 	type[government] = {
 		path = "game/common/governments"
@@ -32,6 +38,18 @@ types = {
 		subtype[civic] = {
 			## cardinality = 0..1
 			is_origin = no
+		}
+		# ADDED BY PLS
+		pictures = {
+			## optional
+			icon = "#icon" # filepath
+			subtype[civic] = {
+				icon = "gfx/interface/icons/governments/civics/$.dds" # inferred
+			}
+			subtype[origin] = {
+				icon = "gfx/interface/icons/origins/$.dds" # inferred
+				picture = "#picture" # <sprite>
+			}
 		}
 	}
 	## type_key_filter = swap_type

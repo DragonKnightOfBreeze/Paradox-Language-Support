@@ -57,6 +57,9 @@ class CwtValueExpression private constructor(
 				expressionString == "localisation_inline" -> {
 					CwtValueExpression(expressionString, Type.InlineLocalisation)
 				}
+				expressionString == "abs_filepath" ->{
+					CwtValueExpression(expressionString, Type.AbsoluteFilePath)
+				}
 				expressionString == "filepath" -> {
 					CwtValueExpression(expressionString, Type.FilePath)
 				}
@@ -166,6 +169,7 @@ class CwtValueExpression private constructor(
 		Localisation,
 		SyncedLocalisation,
 		InlineLocalisation,
+		AbsoluteFilePath, //EXTENDED BY PLS
 		FilePath,
 		Icon,
 		DateField,

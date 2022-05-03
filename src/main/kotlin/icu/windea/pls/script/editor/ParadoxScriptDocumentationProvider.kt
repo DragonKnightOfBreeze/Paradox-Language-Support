@@ -222,7 +222,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		//加上单行注释文本
 		if(getSettings().scriptRenderLineComment) {
 			val docText = getDocTextFromPreviousComment(element)
-			if(docText.isNotEmpty()) {
+			if(docText!= null && docText.isNotEmpty()) {
 				content {
 					append(docText)
 				}

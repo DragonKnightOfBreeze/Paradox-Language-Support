@@ -31,12 +31,20 @@ types = {
 				Description = "$_desc"
 			}
 		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon|#icon_frame" # filepath, from cwtools: only subtype[planet] has icon_frame
+		}
 	}
 	type[planet_modifier] = {
 		path = "game/common/planet_modifiers"
 
 		subtype[null] = {
 			is_null = yes
+		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "gfx/interface/icons/planet_modifiers/$.dds" # inferred
 		}
 	}
 	type[notification_modifier] = {
@@ -46,6 +54,10 @@ types = {
 			Name = "$"
 			## required
 			Description = "$_desc"
+		}
+		# ADDED BY PLS
+		pictures = {
+			icon = "#icon" # filepath
 		}
 	}
 }
