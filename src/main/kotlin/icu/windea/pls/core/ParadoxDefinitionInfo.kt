@@ -1,7 +1,6 @@
 package icu.windea.pls.core
 
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
@@ -17,19 +16,23 @@ class ParadoxDefinitionInfo(
 	val localisation: List<ParadoxRelatedLocalisationInfo>,
 	val localisationConfig: CwtTypeLocalisationConfig?,
 	val pictures: List<ParadoxRelatedPicturesInfo>,
-	val picturesConfig: CwtTypePicturesConfig?,
+	val pictureConfigs: CwtTypePicturesConfig?,
 	val definition: List<CwtPropertyConfig>,
 	val definitionConfig: CwtDefinitionConfig?,
 	val rootKey: String,
 	val elementPath: ParadoxDefinitionPath,
 	val gameType: ParadoxGameType
 ) {
-	val typeCount = subtypes.size + 1 
-		
+	val typeCount = subtypes.size + 1
+	
 	val types: List<String> by lazy { mutableListOf(type).apply { addAll(subtypes) } }
 	val typesText: String by lazy { types.joinToString(", ") }
-	val primaryLocalisation: ParadoxRelatedLocalisationInfo? by lazy { localisation.firstOrNull { it.primary } }
-	val primaryPicture: ParadoxRelatedPicturesInfo? by lazy { pictures.firstOrNull { it.primary } }
+	val primaryLocalisationConfig: List<ParadoxRelatedLocalisationInfo> by lazy {
+		localisation.filter { it.primary || it.key.equals("name", true) || it.key.equals("title", true) } //TODO 额外进行一些推断，考虑可配置
+	}
+	val primaryPictureConfigs: List<ParadoxRelatedPicturesInfo> by lazy {
+		pictures.filter { it.primary }
+	}
 	
 	val graphRelatedTypes get() = typeConfig.graphRelatedTypes
 	val unique get() = typeConfig.unique

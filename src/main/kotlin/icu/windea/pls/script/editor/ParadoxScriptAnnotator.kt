@@ -75,9 +75,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val name = element.value
 		val project = element.project
 		val attributesKey = when {
-			hasDefinition(name, null, project) -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			hasLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-			hasSyncedLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
+			existsDefinition(name, null, project) -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			existsLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+			existsSyncedLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
 			else -> null
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)

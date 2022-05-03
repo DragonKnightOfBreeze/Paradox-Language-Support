@@ -9,20 +9,20 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
+//TODO 研究生成的图标究竟是个啥逻辑
+
 /**
  * 本地化图标的PSI引用。
  * 
  * 图标的名字可以对应：
  * * 名字为"GFX_text_${iconName}"，类型为sprite的定义。
  * * "gfx/interface/icons"及其子目录中，文件名为iconName（去除后缀名）的DDS文件。
+ * * 生成的图标。例如定义`job_head_researcher`拥有定义属性`icon = researcher`，将会生成图标`job_head_researcher`。
  */
 class ParadoxLocalisationIconReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), PsiPolyVariantReference {
-	//这里iconName可以对应：
-	//name有前缀"GFX_text_"的sprite，也可以直接对应"gfx/interface/icons"文件夹下相同名字的dds文件
-	
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//TODO scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 		//重命名关联的sprite或ddsFile

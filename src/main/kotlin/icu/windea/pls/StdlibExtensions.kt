@@ -402,6 +402,25 @@ fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
 	return result
 }
 
+inline fun <T, R:Any, C : MutableCollection<in R>> Iterable<T>.mapNotNullTo(destination: C, transform: (T) -> R?): C {
+	for (item in this) {
+		val result = transform(item)
+		if(result != null) destination.add(result)
+	}
+	return destination
+}
+
+inline fun <T, R : Any> List<T>.mapAndFirst(predicate: (R?) -> Boolean = { it != null }, transform: (T) -> R?): R? {
+	if(this.isEmpty()) return null
+	var first: R? = null
+	for(element in this) {
+		val result = transform(element)
+		if(predicate(result)) return result
+		first = result
+	}
+	return first
+}
+
 inline fun <T, reified R> Array<out T>.mapToArray(block: (T) -> R): Array<R> {
 	return Array(size) { block(this[it]) }
 }
@@ -427,7 +446,7 @@ inline fun <T, reified R> Sequence<T>.mapToArray(block: (T) -> R): Array<R> {
 	return toList().mapToArray(block)
 }
 
-fun <K,V> mapOfKv(key: K, value:V): Map<K, V> {
+fun <K, V> mapOfKv(key: K, value: V): Map<K, V> {
 	return Collections.singletonMap(key, value)
 }
 

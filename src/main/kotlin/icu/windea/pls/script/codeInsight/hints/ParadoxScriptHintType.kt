@@ -7,8 +7,8 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UnstableApiUsage")
-enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
-	DEFINITION_NAME_TYPE_HINT(
+enum class ParadoxScriptHintType(private val showDesc: String, defaultEnabled: Boolean) {
+	DEFINITION_HINT(
 		PlsBundle.message("script.hints.types.definition"),
 		true
 	) {
@@ -17,22 +17,22 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 				element.definitionInfo?.let { definitionInfo ->
 					val result = mutableListOf<InlayInfo>()
 					//提示定义的名字类型信息
-					val text1 = buildString {
+					val text = buildString {
 						val name = definitionInfo.name.ifEmpty { anonymousString }
 						val typeText = definitionInfo.typesText
 						append(name).append(": ").append(typeText)
 					}
-					val offset1 = elem.propertyKey.endOffset
-					result.add(InlayInfo(text1, offset1))
+					val offset = elem.propertyKey.endOffset
+					result.add(InlayInfo(text, offset))
 					//提示定义的本地化名字（对应的localisation.name为name或title）
-					definitionInfo.localisation.find { 
-						val name = it.key.lowercase()
-						name == "name" || name == "title"
-					}?.location?.let { keyName ->
-						findLocalisation(keyName, inferParadoxLocale(), elem.project, hasDefault = true)?.let { locProp ->
-							val text2 = locProp.extractText()
-							val offset2 = elem.propertyKey.endOffset
-							result.add(InlayInfo(text2, offset2))
+					val primaryLocalisationConfigs = definitionInfo.primaryLocalisationConfig
+					for(primaryLocalisationConfig in primaryLocalisationConfigs) {
+						val resolved = primaryLocalisationConfig.locationExpression.resolve(definitionInfo.name, inferParadoxLocale(), elem.project)
+						val localisation = resolved.second
+						if(localisation != null){
+							val localizedName = localisation.extractText()
+							result.add(InlayInfo(localizedName, offset))
+							break
 						}
 					}
 					result
@@ -48,12 +48,12 @@ enum class HintType(private val showDesc: String, defaultEnabled: Boolean) {
 	companion object {
 		val values = values()
 		
-		fun resolve(elem: PsiElement): HintType? {
+		fun resolve(elem: PsiElement): ParadoxScriptHintType? {
 			val applicableTypes = values.filter { it.isApplicable(elem) }
 			return applicableTypes.firstOrNull()
 		}
 		
-		fun resolveToEnabled(elem: PsiElement?): HintType? {
+		fun resolveToEnabled(elem: PsiElement?): ParadoxScriptHintType? {
 			val resolved = elem?.let { resolve(it) } ?: return null
 			return if(resolved.enabled) resolved else null
 		}

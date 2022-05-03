@@ -17,7 +17,6 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import java.nio.file.*
 import kotlin.text.removeSurrounding
 
 typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
@@ -212,17 +211,17 @@ fun matchesKey(expression: CwtKeyExpression, keyElement: ParadoxScriptPropertyKe
 		}
 		CwtKeyExpression.Type.Localisation -> {
 			val key = keyElement.value
-			hasLocalisation(key, null, configGroup.project)
+			existsLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpression.Type.SyncedLocalisation -> {
 			val key = keyElement.value
-			hasSyncedLocalisation(key, null, configGroup.project)
+			existsSyncedLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpression.Type.InlineLocalisation -> {
 			val quoted = keyElement.isQuoted()
 			if(quoted) return true
 			val key = keyElement.value
-			hasLocalisation(key, null, configGroup.project)
+			existsLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return false
@@ -302,14 +301,14 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			key.isString()
 		}
 		CwtKeyExpression.Type.Localisation -> {
-			hasLocalisation(key, null, configGroup.project)
+			existsLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpression.Type.SyncedLocalisation -> {
-			hasSyncedLocalisation(key, null, configGroup.project)
+			existsSyncedLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpression.Type.InlineLocalisation -> {
 			if(quoted) return true
-			hasLocalisation(key, null, configGroup.project)
+			existsLocalisation(key, null, configGroup.project)
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return false
@@ -391,17 +390,17 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 		}
 		CwtValueExpression.Type.Localisation -> {
 			val value = valueElement.value
-			valueElement is ParadoxScriptString && hasLocalisation(value, null, configGroup.project)
+			valueElement is ParadoxScriptString && existsLocalisation(value, null, configGroup.project)
 		}
 		CwtValueExpression.Type.SyncedLocalisation -> {
 			val value = valueElement.value
-			valueElement is ParadoxScriptString && hasSyncedLocalisation(value, null, configGroup.project)
+			valueElement is ParadoxScriptString && existsSyncedLocalisation(value, null, configGroup.project)
 		}
 		CwtValueExpression.Type.InlineLocalisation -> {
 			val quoted = valueElement.isQuoted()
 			if(quoted) return true
 			val value = valueElement.value
-			valueElement is ParadoxScriptString && hasLocalisation(value, null, configGroup.project)
+			valueElement is ParadoxScriptString && existsLocalisation(value, null, configGroup.project)
 		}
 		CwtValueExpression.Type.AbsoluteFilePath -> {
 			valueElement is ParadoxScriptString && run {

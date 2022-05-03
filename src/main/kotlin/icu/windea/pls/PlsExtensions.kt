@@ -499,7 +499,7 @@ fun findAllScriptVariables(
  * 基于定义名字索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
  * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  */
-fun hasDefinition(
+fun existsDefinition(
 	name: String,
 	typeExpression: String?,
 	project: Project,
@@ -619,7 +619,7 @@ fun findDefinitionsByType(
  * 基于本地化名字索引，根据名字、语言区域判断是否存在本地化（localisation）。
  * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
  */
-fun hasLocalisation(
+fun existsLocalisation(
 	name: String,
 	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
@@ -694,7 +694,7 @@ fun findLocalisationsByKeyword(
  * 基于本地化名字索引，根据名字、语言区域判断是否存在同步本地化（localisation_synced）。
  * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
  */
-fun hasSyncedLocalisation(
+fun existsSyncedLocalisation(
 	name: String,
 	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
@@ -812,21 +812,7 @@ fun findAllFilesByFilePath(
 }
 
 /**
- * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
- */
-fun findLocalisationByLocation(location: String, localeConfig: ParadoxLocaleConfig?, project: Project): ParadoxLocalisationProperty? {
-	return findLocalisation(location, localeConfig, project, hasDefault = true)
-}
-
-/**
- * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
- */
-fun findLocalisationsByLocation(location: String, localeConfig: ParadoxLocaleConfig?, project: Project): List<ParadoxLocalisationProperty> {
-	return findLocalisations(location, localeConfig, project, hasDefault = true)
-}
-
-/**
- * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
+ * @param location 参见[ParadoxRelatedLocalisationInfo.locationExpression]。
  */
 fun findPictureByLocation(location: String, project: Project): PsiElement? /* ParadoxDefinitionProperty? | PsiFile? */ {
 	//根据是否以dds后缀名结尾，判断location是filepath还是definitionKey
@@ -838,7 +824,7 @@ fun findPictureByLocation(location: String, project: Project): PsiElement? /* Pa
 }
 
 /**
- * @param location 参见[ParadoxRelatedLocalisationInfo.location]。
+ * @param location 参见[ParadoxRelatedLocalisationInfo.locationExpression]。
  */
 fun findPicturesByLocation(location: String, project: Project): List<PsiElement> /* ParadoxDefinitionProperty? | PsiFile? */ {
 	//根据是否以dds后缀名结尾，判断location是filepath还是definitionKey
@@ -857,12 +843,14 @@ fun findPicturesByLocation(location: String, project: Project): List<PsiElement>
 private const val cwtLinkPrefix = "cwt#"
 private const val definitionLinkPrefix = "def#"
 private const val localisationLinkPrefix = "loc#"
+private const val filePathLinkPrefix = "#"
 
-fun resolveLink(linkWithPrefix: String, context: PsiElement): PsiElement? {
+fun resolveLink(link: String, context: PsiElement): PsiElement? {
 	return when {
-		linkWithPrefix.startsWith(cwtLinkPrefix) -> resolveCwtLink(linkWithPrefix.drop(cwtLinkPrefix.length), context)
-		linkWithPrefix.startsWith(definitionLinkPrefix) -> resolveDefinitionLink(linkWithPrefix.drop(definitionLinkPrefix.length), context)
-		linkWithPrefix.startsWith(localisationLinkPrefix) -> linkWithoutPrefix(linkWithPrefix.drop(localisationLinkPrefix.length), context)
+		link.startsWith(cwtLinkPrefix) -> resolveCwtLink(link.drop(cwtLinkPrefix.length), context)
+		link.startsWith(definitionLinkPrefix) -> resolveDefinitionLink(link.drop(definitionLinkPrefix.length), context)
+		link.startsWith(localisationLinkPrefix) -> resolveLocalisationLink(link.drop(localisationLinkPrefix.length), context)
+		link.startsWith(filePathLinkPrefix) -> resolveFilePathLink(link.drop(filePathLinkPrefix.length), context)
 		else -> null
 	}
 }
@@ -910,10 +898,18 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement
 
 //NAME
 //KEY
-private fun linkWithoutPrefix(link: String, context: PsiElement): ParadoxLocalisationProperty? {
+private fun resolveLocalisationLink(linkWithoutPrefix: String, context: PsiElement): ParadoxLocalisationProperty? {
 	return runCatching {
-		val token = link
+		val token = linkWithoutPrefix
 		return findLocalisation(token, context.localeConfig, context.project, hasDefault = true)
+	}.getOrNull()
+}
+
+private fun resolveFilePathLink(linkWithoutPrefix: String, context: PsiElement): PsiFile?{
+	return runCatching {
+		val filePath = linkWithoutPrefix
+		val project = context.project
+		findFileByFilePath(filePath, project)?.toPsiFile<PsiFile>(project)
 	}.getOrNull()
 }
 //endregion
@@ -929,15 +925,6 @@ fun StringBuilder.appendUnresolvedLink(label: String): StringBuilder {
 	return this
 }
 
-fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement): StringBuilder {
-	val rootPath = context.fileInfo?.rootPath
-	val absPath = rootPath?.resolve(filePath)?.normalize()?.toString()
-	//如果可以定位到绝对路径，则显示链接
-	if(absPath != null) append("<a href=\"").append("file://").append(absPath).append("\">").append(filePath).append("</a>")
-	//否则显示未解析的链接
-	return appendUnresolvedLink(filePath)
-}
-
 fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): StringBuilder {
 	DocumentationManagerUtil.createHyperlink(this, refText, label, plainLink)
 	return this
@@ -947,27 +934,38 @@ fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedEscapedString)
 	//如果可以被解析为CWT规则，则显示链接（context传null时总是显示）
-	if(context == null || resolveCwtLink(link, context) != null) return appendPsiLink("$cwtLinkPrefix$link", name)
+	val isResolved = context == null || resolveCwtLink(link, context) != null
+	if(isResolved) return appendPsiLink("$cwtLinkPrefix$link", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, context: PsiElement): StringBuilder {
+fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedEscapedString)
 	//如果可以被解析为定义，则显示链接
-	if(hasDefinition(name, null, context.project)) return appendPsiLink("$definitionLinkPrefix.$typeExpression.$name", name)
+	val isResolved = resolved == true || (resolved == null && existsDefinition(name, null, context.project))
+	if(isResolved) return appendPsiLink("$definitionLinkPrefix.$typeExpression.$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement): StringBuilder {
+fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedEscapedString)
 	//如果可以被解析为本地化，则显示链接
-	if(hasLocalisation(name, null, context.project)) return appendPsiLink("$localisationLinkPrefix$name", name)
+	val isResolved = resolved == true || (resolved == null && existsLocalisation(name, null, context.project))
+	if(isResolved) return appendPsiLink("$localisationLinkPrefix$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
+}
+
+fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
+	//如果可以定位到绝对路径，则显示链接
+	val isResolved = resolved == true || (resolved == null && findFileByFilePath(filePath, context.project) != null)
+	if(isResolved) return appendPsiLink("$filePathLinkPrefix$filePath", filePath)
+	//否则显示未解析的链接
+	return appendUnresolvedLink(filePath)
 }
 
 fun StringBuilder.appendImgTag(url: String, local: Boolean = true): StringBuilder {

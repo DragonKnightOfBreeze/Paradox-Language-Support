@@ -20,22 +20,22 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 		//何时显示装订线图标：element是definition，且definitionInfo.localisation不为空，且计算得到的keys不为空
 		if(element !is ParadoxScriptProperty) return
 		val definitionInfo = element.definitionInfo ?: return
-		val localisation = definitionInfo.localisation
-		if(localisation.isEmpty()) return
+		val localisationConfig = definitionInfo.localisation
+		if(localisationConfig.isEmpty()) return
 		
-		//显示在提示中 & 可导航：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
+		//显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序
 		val icon = PlsIcons.relatedLocalisationGutterIcon
 		val tooltipBuilder = StringBuilder()
 		val project = element.project
 		val keys = mutableSetOf<String>()
 		val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
 		var isFirst = true
-		for((key, location, required) in definitionInfo.localisation) {
-			val list = findLocalisationsByLocation(location, null, project)
-			if(list.isNotEmpty()) targets.addAll(list)
-			if((required || list.isNotEmpty()) && keys.add(key)) {
+		for((key, locationExpression) in localisationConfig) {
+			val (localisationKey, localisations) = locationExpression.resolveAll(definitionInfo.name, null, project)
+			if(localisations.isNotEmpty()) targets.addAll(localisations)
+			if(localisations.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-				tooltipBuilder.append("(related localisation) ").append(key).append(" = ").append(location)
+				tooltipBuilder.append("(related localisation) ").append(key).append(" = ").append(localisationKey)
 			}
 		}
 		if(keys.isEmpty()) return

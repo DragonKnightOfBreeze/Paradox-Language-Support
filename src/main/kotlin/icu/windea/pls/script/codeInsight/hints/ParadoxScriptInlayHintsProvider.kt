@@ -22,7 +22,7 @@ abstract class ParadoxScriptInlayHintsProvider<T:Any> : InlayHintsProvider<T> {
 	override fun getCollectorFor(file: PsiFile, editor: Editor, settings: T, sink: InlayHintsSink): InlayHintsCollector? {
 		return object : FactoryInlayHintsCollector(editor) {
 			override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
-				val resolved = HintType.resolve(element) ?: return true
+				val resolved = ParadoxScriptHintType.resolve(element) ?: return true
 				
 				val presentations = resolved.provideHints(element).map { info -> convert(info, editor.project) }
 				if (presentations.isNotEmpty()) {
@@ -60,7 +60,7 @@ abstract class ParadoxScriptInlayHintsProvider<T:Any> : InlayHintsProvider<T> {
 		}
 	}
 	
-	protected open fun handleAfterLineEndHintsRemoval(editor: Editor, resolved: HintType, element: PsiElement) {
+	protected open fun handleAfterLineEndHintsRemoval(editor: Editor, resolved: ParadoxScriptHintType, element: PsiElement) {
 		
 	}
 	

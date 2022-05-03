@@ -629,9 +629,8 @@ class CwtConfigGroup(
 		val result = SmartList<ParadoxRelatedLocalisationInfo>()
 		//从已有的cwt规则
 		for(config in mergedLocalisationConfig) {
-			val expression = CwtLocationExpression.resolve(config.expression)
-			val location = expression.inferLocation(name, element) ?: continue //跳过无效的位置表达式
-			val info = ParadoxRelatedLocalisationInfo(config.key, location, config.required, config.primary)
+			val locationExpression = CwtLocalisationLocationExpression.resolve(config.expression)
+			val info = ParadoxRelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}
 		return result
@@ -642,9 +641,8 @@ class CwtConfigGroup(
 		val result = SmartList<ParadoxRelatedPicturesInfo>()
 		//从已有的cwt规则
 		for(config in mergedPicturesConfig) {
-			val expression = CwtLocationExpression.resolve(config.expression)
-			val location = expression.inferLocation(name, element) ?: continue //跳过无效的位置表达式
-			val info = ParadoxRelatedPicturesInfo(config.key, location, config.required, config.primary)
+			val locationExpression = CwtPictureLocationExpression.resolve(config.expression)
+			val info = ParadoxRelatedPicturesInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}
 		return result
