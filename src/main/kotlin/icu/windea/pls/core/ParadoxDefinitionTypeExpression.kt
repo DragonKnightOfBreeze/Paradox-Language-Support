@@ -36,13 +36,13 @@ class ParadoxDefinitionTypeExpression private constructor(
 					} else {
 						val pairs = SmartList<Pair<String, String?>>()
 						expressionString.split('|').mapTo(pairs) {
-							val dotIndex = expressionString.indexOf('.')
+							val dotIndex = it.indexOf('.')
 							if(dotIndex == -1) {
-								val type = expressionString
+								val type = it
 								type to null
 							} else {
-								val type = expressionString.substring(0, dotIndex)
-								val subtype = expressionString.substring(dotIndex + 1)
+								val type = it.substring(0, dotIndex)
+								val subtype = it.substring(dotIndex + 1)
 								type to subtype
 							}
 						}

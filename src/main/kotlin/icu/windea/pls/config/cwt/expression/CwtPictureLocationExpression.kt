@@ -36,7 +36,7 @@ class CwtPictureLocationExpression(
 						val propertyName = expressionString.substring(1)
 						CwtPictureLocationExpression(expressionString, null, propertyName)
 					} else {
-						val propertyName = expressionString.substring(1)
+						val propertyName = expressionString.substring(1, pipeIndex)
 						val extraPropertyNames = expressionString.substring(pipeIndex + 1).split(',')
 						CwtPictureLocationExpression(expressionString, null, propertyName, extraPropertyNames)
 					}
@@ -117,8 +117,8 @@ class CwtPictureLocationExpression(
 						val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
 						val primaryPictureConfigs = resolvedDefinitionInfo.primaryPictureConfigs
 						if(primaryPictureConfigs.isEmpty()) return null //CWT规则不完善
-						var resolvedFilePath : String? = null
-						var resolvedSet : MutableSet<PsiFile>? = null
+						var resolvedFilePath: String? = null
+						var resolvedSet: MutableSet<PsiFile>? = null
 						for(primaryPictureConfig in primaryPictureConfigs) {
 							val locationExpression = primaryPictureConfig.location
 							val (filePath, set) = locationExpression.resolveAll(resolvedDefinitionInfo, resolvedDefinition, resolvedProject) ?: continue
@@ -127,7 +127,7 @@ class CwtPictureLocationExpression(
 							resolvedSet.addAll(set)
 						}
 						if(resolvedFilePath == null) return null
-						return resolvedFilePath to (resolvedSet?: emptySet())
+						return resolvedFilePath to (resolvedSet ?: emptySet())
 					}
 					else -> return null //解析失败或不支持
 				}

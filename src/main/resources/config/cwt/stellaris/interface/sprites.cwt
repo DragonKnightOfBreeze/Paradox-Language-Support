@@ -9,9 +9,9 @@ types = {
 		severity = warning
 		# ADDED BY PLS
 		pictures = {
-			texturefile = "#texturefile" # filepath
-			texturefile1 = "#texturefile1" # filepath
-			texturefile2 = "#texturefile2" # filepath
+			textureFile = "#textureFile" # filepath
+			textureFile1 = "#textureFile1" # filepath
+			textureFile2 = "#textureFile2" # filepath
 		}
 	}
 	## type_key_filter = PieChartType
