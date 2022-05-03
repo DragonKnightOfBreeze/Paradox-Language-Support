@@ -28,11 +28,6 @@ types = {
 			icon = "gfx/interface/icons/jobs/job_$.dds" # inferred
 			building_icon = "#building_icon" #  <building> | icon[gfx/interface/icons/buildings]
 		}
-		# ADDED BY PLS
-		# TODO implement
-		generated_localisation_icons = {
-			"pop_$"
-		}
 	}
 	type[social_strata] = {
 		path = "game/common/pop_categories"

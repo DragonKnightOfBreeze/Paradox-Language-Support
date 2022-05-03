@@ -12,9 +12,10 @@ object ParadoxFilePathIndex {
 	val name = ID.create<String, Void>("paradox.file.path.index")
 	
 	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean): VirtualFile? {
+		val usedFilePath = filePath.trimEnd('/')
 		var result: VirtualFile? = null
 		if(expressionType == CwtFilePathExpressionType.Exact) {
-			val dataKeys = setOf(filePath)
+			val dataKeys = setOf(usedFilePath)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
 				result = file
 				false
@@ -22,7 +23,7 @@ object ParadoxFilePathIndex {
 		} else {
 			var dataKey: String? = null
 			FileBasedIndex.getInstance().processAllKeys(name, { path ->
-				if(expressionType.matches(filePath, path, ignoreCase)) {
+				if(expressionType.matches(usedFilePath, path, ignoreCase)) {
 					dataKey = path
 					false
 				} else {
@@ -40,9 +41,10 @@ object ParadoxFilePathIndex {
 	}
 	
 	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, distinct: Boolean): Set<VirtualFile> {
+		val usedFilePath = filePath.trimEnd('/')
 		val result: MutableSet<VirtualFile> = CollectionFactory.createSmallMemoryFootprintLinkedSet() //优化性能
 		if(expressionType == CwtFilePathExpressionType.Exact) {
-			val dataKeys = setOf(filePath)
+			val dataKeys = setOf(usedFilePath)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
 				result.add(file)
 				true
@@ -50,7 +52,7 @@ object ParadoxFilePathIndex {
 		} else {
 			val dataKeys: MutableSet<String> = mutableSetOf()
 			FileBasedIndex.getInstance().processAllKeys(name, { path ->
-				if(expressionType.matches(filePath, path, ignoreCase)) {
+				if(expressionType.matches(usedFilePath, path, ignoreCase)) {
 					dataKeys.add(path)
 				}
 				true

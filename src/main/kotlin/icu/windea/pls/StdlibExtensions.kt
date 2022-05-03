@@ -195,8 +195,8 @@ fun List<String>.toCommaDelimitedString(): String = if(this.isEmpty()) "" else t
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
 fun String.matchesPath(other: String, ignoreCase: Boolean = true): Boolean {
-	val path = if(ignoreCase) this.lowercase() else this
-	val otherPath = if(ignoreCase) other.lowercase() else other
+	val path = if(ignoreCase) this.lowercase().trimEnd('/') else this
+	val otherPath = if(ignoreCase) other.lowercase().trimEnd('/') else other
 	if(path == otherPath) return true
 	if(path == otherPath.take(length) && otherPath[length] == '/') return true
 	return false

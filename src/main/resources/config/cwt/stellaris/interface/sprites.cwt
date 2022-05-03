@@ -41,8 +41,8 @@ types = {
 		# ADDED BY PLS
 		pictures = {
 			## primary
-			texturefile = "#textureFile|#noOfFrames,#default_frame" # filepath
-			masking_texture = "#textureFile" # filepath
+			textureFile = "#textureFile|#noOfFrames,#default_frame" # filepath
+			masking_texture = "#masking_texture" # filepath
 		}
 	}
 }
