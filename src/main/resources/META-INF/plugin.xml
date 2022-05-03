@@ -415,6 +415,11 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.unsupportedColor"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.UnsupportedColorInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="localisation.inspection.unresolvedIcon"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
+                     implementationClass="icu.windea.pls.localisation.inspections.UnresolvedIconInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicatePropertiesInFile"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="localisation.inspection.duplicatePropertiesInFile"
