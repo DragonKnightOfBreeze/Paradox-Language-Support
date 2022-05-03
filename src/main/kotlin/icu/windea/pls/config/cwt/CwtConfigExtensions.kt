@@ -405,8 +405,9 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 		}
 		CwtValueExpression.Type.AbsoluteFilePath -> {
 			valueElement is ParadoxScriptString && run {
-				val path = valueElement.value
-				VfsUtil.findFile(Path.of(path), true) != null
+				val filePath = valueElement.value
+				val toPath = filePath.toPathOrNull() ?: return@run false
+				VfsUtil.findFile(toPath, true) != null
 			}
 		}
 		CwtValueExpression.Type.FilePath -> {
@@ -1204,8 +1205,9 @@ fun resolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
 			findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 		}
 		CwtValueExpression.Type.AbsoluteFilePath -> {
-			val path = valueElement.value
-			VfsUtil.findFile(Path.of(path), true)?.toPsiFile(project)
+			val filePath = valueElement.value
+			val path = filePath.toPathOrNull() ?: return null
+			VfsUtil.findFile(path, true)?.toPsiFile(project)
 		}
 		CwtValueExpression.Type.FilePath -> {
 			val expressionType = CwtFilePathExpressionType.FilePath
@@ -1298,8 +1300,9 @@ fun multiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
 			findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 		}
 		CwtValueExpression.Type.AbsoluteFilePath -> {
-			val path = valueElement.value
-			VfsUtil.findFile(Path.of(path), true)?.toPsiFile<PsiFile>(project).toSingletonListOrEmpty()
+			val filePath = valueElement.value
+			val path = filePath.toPathOrNull() ?: return emptyList()
+			VfsUtil.findFile(path, true)?.toPsiFile<PsiFile>(project).toSingletonListOrEmpty()
 		}
 		CwtValueExpression.Type.FilePath -> {
 			val expressionType = CwtFilePathExpressionType.FilePath

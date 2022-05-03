@@ -1,7 +1,9 @@
 package icu.windea.pls.tool
 
+import com.intellij.psi.PsiFile
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 本地化文本的渲染器。
@@ -62,10 +64,14 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
-		val name = element.name
-		val iconUrl = ParadoxDdsUrlResolver.resolveByIconName(name, element.project)
+		val resolved = element.reference?.resolve() ?: return
+		val iconUrl = when {
+			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveBySprite(resolved, defaultToUnknown = true)
+			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, defaultToUnknown = true)
+			else -> return
+		}
 		if(iconUrl.isNotEmpty()) {
-			builder.appendImgTag(iconUrl, fontSize) //指定图标大小为iconSize
+			builder.appendImgTag(iconUrl, fontSize) //指定图标大小为fontSize
 		}
 	}
 	

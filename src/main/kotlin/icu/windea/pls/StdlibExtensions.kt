@@ -354,6 +354,8 @@ fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
 
 fun String.toPath() = Path.of(this)
 
+fun String.toPathOrNull() = runCatching { Path.of(this) }.getOrNull()
+
 fun String.toIntRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 
 fun String.toFloatRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()

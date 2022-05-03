@@ -54,8 +54,8 @@ class ParadoxLocalisationIconReference(
 		val sprite = findDefinitionByType(spriteName, "sprite|spriteType", project)
 		if(sprite != null) return sprite
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
-		val filePath = "gfx/interface/icons/$name.dds"
-		val ddsFile = findFileByFilePath(filePath, project)
+		val filePath = "gfx/interface/icons/,$name.dds"
+		val ddsFile = findFileByFilePath(filePath, project, expressionType = CwtFilePathExpressionType.FilePath)
 		if(ddsFile != null) return ddsFile.toPsiFile(project)
 		return null
 	}
@@ -68,8 +68,8 @@ class ParadoxLocalisationIconReference(
 		val spriteName = "GFX_text_$name"
 		val sprites = findDefinitionsByType(spriteName, "sprite|spriteType", project)
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
-		val filePath = "gfx/interface/icons/$name.dds"
-		val ddsFiles = findFilesByFilePath(filePath, project)
+		val filePath = "gfx/interface/icons/,$name.dds"
+		val ddsFiles = findFilesByFilePath(filePath, project, expressionType = CwtFilePathExpressionType.FilePath)
 		if(ddsFiles.isEmpty()){
 			return sprites.mapToArray { PsiElementResolveResult(it) }
 		} else {
@@ -103,7 +103,7 @@ class ParadoxLocalisationIconReference(
 				if(name != null) map.putIfAbsent(name, sprite)
 			}
 		}
-		val ddsFiles = findFilesByFilePath("gfx/interface/icons/,.dds", project, expressionType = CwtFilePathExpressionType.Icon, distinct = true)
+		val ddsFiles = findFilesByFilePath("gfx/interface/icons/,.dds", project, expressionType = CwtFilePathExpressionType.FilePath, distinct = true)
 		if(ddsFiles.isNotEmpty()) {
 			for(ddsFile in ddsFiles) {
 				val name = ddsFile.nameWithoutExtension

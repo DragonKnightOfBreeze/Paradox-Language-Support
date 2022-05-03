@@ -29,6 +29,7 @@ object ParadoxFilePathIndex {
 					true
 				}
 			}, scope, null)
+			if(dataKey == null) return null
 			val dataKeys = setOf(dataKey)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
 				result = file
@@ -54,6 +55,7 @@ object ParadoxFilePathIndex {
 				}
 				true
 			}, scope, null)
+			if(dataKeys.isEmpty()) return emptySet()
 			val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
 				if(keysToDistinct == null || file.fileInfo?.path?.path.let { it != null && keysToDistinct.add(if(ignoreCase) it.lowercase() else it) }) {
@@ -68,6 +70,7 @@ object ParadoxFilePathIndex {
 	fun findAll(project: Project, scope: GlobalSearchScope, ignoreCase: Boolean, distinct: Boolean): Set<VirtualFile> {
 		val result: MutableSet<VirtualFile> = CollectionFactory.createSmallMemoryFootprintLinkedSet() //优化性能
 		val allKeys = FileBasedIndex.getInstance().getAllKeys(name, project)
+		if(allKeys.isEmpty()) return emptySet()
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 		FileBasedIndex.getInstance().processFilesContainingAnyKey(name, allKeys, scope, null, null) { file ->
 			if(keysToDistinct == null || file.fileInfo?.path?.path.let { it != null && keysToDistinct.add(if(ignoreCase) it.lowercase() else it) }) {

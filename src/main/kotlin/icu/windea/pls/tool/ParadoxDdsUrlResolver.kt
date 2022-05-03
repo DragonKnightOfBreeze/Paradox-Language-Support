@@ -7,7 +7,6 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 import java.lang.invoke.*
-import java.nio.file.*
 import kotlin.io.path.*
 
 /**
@@ -18,26 +17,9 @@ object ParadoxDdsUrlResolver {
 	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 	
 	/**
-	 * 基于本地化文件中的本地化图标的名字进行解析。
-	 */
-	fun resolveByIconName(iconName: String, project: Project, defaultToUnknown: Boolean = true): String {
-		if(iconName.isEmpty()) return getDefaultUrl(defaultToUnknown)
-		try {
-			//如果无法解析为png文件地址，则返回默认的地址
-			val url = doResolveByIconName(iconName, project)
-			if(url.isNullOrEmpty() || Files.notExists(url.toPath())) return getDefaultUrl(defaultToUnknown)
-			return url
-		} catch(e: Exception) {
-			//如果出现异常，则返回默认图标
-			logger.warn(e) { "Resolve dds url failed. (name: $iconName)" }
-			return getDefaultUrl(defaultToUnknown)
-		}
-	}
-	
-	/**
 	 * 基于gfx文件中的类型为sprite的定义进行解析。
 	 */
-	fun resolveBySprite(sprite: ParadoxScriptProperty, defaultToUnknown: Boolean = false): String {
+	fun resolveBySprite(sprite: ParadoxDefinitionProperty, defaultToUnknown: Boolean = false): String {
 		val spriteName = sprite.definitionInfo?.name
 		if(spriteName.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 		try {
@@ -84,18 +66,13 @@ object ParadoxDdsUrlResolver {
 		}
 	}
 	
-	private fun doResolveByIconName(iconName: String, project: Project): String? {
-		return doResolveBySprite("GFX_text_${iconName}", project)
-			?: doResolveByFile("$iconName.dds", project)
-	}
-	
 	private fun doResolveBySprite(spriteName: String, project: Project): String? {
 		val sprite = findDefinitionByType(spriteName, "sprite|spriteType", project) ?: return null
 		return doResolveBySprite(sprite)
 	}
 	
 	private fun doResolveBySprite(sprite: ParadoxDefinitionProperty): String? {
-		val ddsRelPath = sprite.findProperty("textureFile", true)?.value ?: return null
+		val ddsRelPath = getSpriteDdsFilePath(sprite) ?: return null
 		val file = findFileByFilePath(ddsRelPath, sprite.project) ?: return null
 		return doResolveByFile(file)
 	}
