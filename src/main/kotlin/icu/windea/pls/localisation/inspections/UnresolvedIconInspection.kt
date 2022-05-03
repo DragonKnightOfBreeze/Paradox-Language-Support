@@ -12,7 +12,7 @@ import javax.swing.*
 /**
  * 无法解析的图表的检查。
  *
- * @property ignoredIconNameRegex （配置项）需要忽略的图标名的正则。默认为"mod_.*"。
+ * @property ignoredIconNameRegex （配置项）需要忽略的图标名的正则。默认为"mod_.*"，以忽略生成的修饰符对应的图标。
  */
 class UnresolvedIconInspection : LocalInspectionTool() {
 	var ignoredIconNameRegex: Regex = """mod_.*""".toRegex(RegexOption.IGNORE_CASE)
