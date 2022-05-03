@@ -6,7 +6,7 @@ enum class ParadoxRootType(
 	override val id: String,
 	override val description: String
 ) : IdAware, DescriptionAware {
-	Stdlib("stdlib", "Stdlib"),
+	Game("game", "Game"),
 	Mod("mod", "Mod"),
 	PdxLauncher("pdx_launcher", "Paradox Launcher"),
 	PdxOnlineAssets("pdx_online_assets", "Paradox Online Assets"),

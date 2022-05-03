@@ -105,7 +105,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		for(child in file.children) {
 			val childName = child.name
 			when {
-				ParadoxGameType.exeFileNames.any { childName.equals(it, true) } -> return ParadoxRootType.Stdlib
+				ParadoxGameType.exeFileNames.any { childName.equals(it, true) } -> return ParadoxRootType.Game
 				childName.equals(descriptorFileName, true) -> return ParadoxRootType.Mod
 			}
 		}
@@ -117,7 +117,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		//如果是游戏目录后者特定游戏子目录则基于游戏执行文件，否则基于特殊文件 .${gameType}
 		try {
 			when(rootType) {
-				ParadoxRootType.Stdlib -> {
+				ParadoxRootType.Game -> {
 					for(child in file.children) {
 						val childName = child.name
 						for(value in ParadoxGameType.values) {

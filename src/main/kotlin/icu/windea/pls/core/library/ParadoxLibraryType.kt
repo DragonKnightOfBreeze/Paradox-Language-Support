@@ -27,7 +27,6 @@ abstract class ParadoxLibraryType(
 	
 	private val createActionName = "Paradox/${gameType}"
 	private val libraryIcon = gameType.icon
-	private val namePrefix = "$createActionName: "
 	
 	override fun getCreateActionName() = createActionName
 	
@@ -35,7 +34,7 @@ abstract class ParadoxLibraryType(
 	
 	override fun getExternalRootTypes() = arrayOf(OrderRootType.SOURCES)
 	
-	//必须是一个文件夹，但必须包含descriptor.mod或者.exe文件
+	//必须是一个文件夹，但必须包含descriptor.mod或者对应的.exe文件
 	override fun createNewLibrary(parentComponent: JComponent, contextDirectory: VirtualFile?, project: Project): NewLibraryConfiguration? {
 		if(contextDirectory == null) return null
 		val chooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor()
@@ -44,7 +43,7 @@ abstract class ParadoxLibraryType(
 		val file = FileChooser.chooseFile(chooserDescriptor, parentComponent, project, contextDirectory) ?: return null
 		val name = getLibraryName(file, project) ?: return null
 		val libraryProperties = ParadoxLibraryProperties.instance
-		return ParadoxNewLibraryConfiguration(namePrefix + name, this, file, libraryProperties)
+		return ParadoxNewLibraryConfiguration(name, this, file, libraryProperties)
 	}
 	
 	//如果存在描述符文件，其中有name属性则取name属性的值，否则取库的文件名/目录
@@ -72,9 +71,13 @@ abstract class ParadoxLibraryType(
 			val childName = child.name
 			when {
 				//游戏执行文件名要匹配
-				childName.equals(gameType.exeFileName, true) -> return ParadoxRootType.Stdlib.description
-				//从descriptor.name中获取，或者直接使用目录/压缩包去除后缀名后的名字
-				childName.equals(descriptorFileName, true) -> return getLibraryNameFromDescriptorFile(child) ?: name
+				childName.equals(gameType.exeFileName, true) -> {
+					return ParadoxRootType.Game.description
+				}
+				//从descriptor.mod中获取，或者直接使用目录/压缩包去除后缀名后的名字
+				childName.equals(descriptorFileName, true) -> {
+					return ParadoxRootType.Mod.description + ": " + (getLibraryNameFromDescriptorFile(child) ?: name)
+				}
 			}
 		}
 		//不合法的情况要弹出对话框
