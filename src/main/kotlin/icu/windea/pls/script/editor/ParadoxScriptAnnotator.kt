@@ -51,9 +51,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
 		//颜色高亮
-		//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-		//val expression = element.valueConfig?.valueExpression ?: return 
+		//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
 		val expression = element.valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
+		//val expression = element.valueConfig?.valueExpression ?: return 
 		val attributesKey = when(expression.type) {
 			CwtValueExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtValueExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
@@ -72,17 +72,18 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun fallbackAnnotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
-		val name = element.value
-		val project = element.project
-		val attributesKey = when {
-			existsDefinition(name, null, project) -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			existsLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-			existsSyncedLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			else -> null
-		} ?: return
-		holder.newSilentAnnotation(INFORMATION)
-			.textAttributes(attributesKey)
-			.create()
+		//NOTE 目前的版本不做任何处理
+		//val name = element.value
+		//val project = element.project
+		//val attributesKey = when {
+		//	existsDefinition(name, null, project) -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+		//	existsLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+		//	existsSyncedLocalisation(name, null, project) -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
+		//	else -> null
+		//} ?: return
+		//holder.newSilentAnnotation(INFORMATION)
+		//	.textAttributes(attributesKey)
+		//	.create()
 	}
 	
 }

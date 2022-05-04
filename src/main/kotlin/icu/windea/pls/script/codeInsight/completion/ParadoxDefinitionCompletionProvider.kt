@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提示定义的相关代码补全。基于CWT规则文件。
  */
-object DefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val position = parameters.position
 		val parent1 = position.parent

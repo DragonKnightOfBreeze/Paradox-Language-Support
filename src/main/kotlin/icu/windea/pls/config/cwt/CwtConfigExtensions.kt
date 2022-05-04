@@ -1194,7 +1194,7 @@ internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression:
 
 inline fun resolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiNamedElement? {
 	//根据对应的expression进行解析
-	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
+	//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
 	val valueConfig = valueElement.valueConfig ?: return fallbackResolveValue(valueElement)
 	val expression = valueConfig.valueExpression
 	if(!expressionPredicate(expression)) return null
@@ -1287,16 +1287,18 @@ internal fun doResolveValue(valueElement: ParadoxScriptValue, expression: CwtVal
 
 @PublishedApi
 internal fun fallbackResolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
-	val name = valueElement.value
-	val project = valueElement.project
-	return findDefinition(name, null, project)
-		?: findLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
-		?: findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
+	//NOTE 目前的版本不做任何处理
+	return null
+	//val name = valueElement.value
+	//val project = valueElement.project
+	//return findDefinition(name, null, project)
+	//	?: findLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
+	//	?: findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 }
 
 inline fun multiResolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): List<PsiNamedElement> {
 	//根据对应的expression进行解析
-	//NOTE 由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
+	//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
 	val valueConfig = valueElement.valueConfig ?: return fallbackMultiResolveValue(valueElement)
 	val expression = valueConfig.valueExpression
 	if(!expressionPredicate(expression)) return emptyList()
@@ -1385,11 +1387,13 @@ internal fun doMultiResolveValue(valueElement: ParadoxScriptValue, expression: C
 
 @PublishedApi
 internal fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
-	val name = valueElement.value
-	val project = valueElement.project
-	return findDefinitions(name, null, project)
-		.ifEmpty { findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的 
-		.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的
+	//NOTE 目前的版本不做任何处理
+	return emptyList()
+	//val name = valueElement.value
+	//val project = valueElement.project
+	//return findDefinitions(name, null, project)
+	//	.ifEmpty { findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的 
+	//	.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的
 }
 
 fun resolveAliasName(aliasName: String, keyElement: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): PsiNamedElement? {

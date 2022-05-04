@@ -8,7 +8,7 @@ import icu.windea.pls.*
 /**
  * 提供布尔值常量的代码补全。始终提示。
  */
-object BooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxBooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
 	private val booleanLookupElements = booleanValues.map { value ->
 		LookupElementBuilder.create(value).bold().withPriority(keywordPriority)
 	}

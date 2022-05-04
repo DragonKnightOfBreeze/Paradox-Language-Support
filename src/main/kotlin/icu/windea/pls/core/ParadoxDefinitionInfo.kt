@@ -27,7 +27,7 @@ class ParadoxDefinitionInfo(
 	
 	val types: List<String> by lazy { mutableListOf(type).apply { addAll(subtypes) } }
 	val typesText: String by lazy { types.joinToString(", ") }
-	val primaryLocalisationConfig: List<ParadoxRelatedLocalisationInfo> by lazy {
+	val primaryLocalisationConfigs: List<ParadoxRelatedLocalisationInfo> by lazy {
 		localisation.filter { it.primary || it.key.equals("name", true) || it.key.equals("title", true) } //TODO 额外进行一些推断，考虑可配置
 	}
 	val primaryPictureConfigs: List<ParadoxRelatedPicturesInfo> by lazy {

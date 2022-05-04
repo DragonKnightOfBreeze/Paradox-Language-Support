@@ -226,7 +226,22 @@
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptDefinitionHintsProvider"/>
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionInfoHintsProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxVariableReferenceInfoHintsProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
     <lang.psiStructureViewFactory
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>

@@ -12,11 +12,11 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 			psiElement(ParadoxLocalisationElementTypes.LOCALE_ID),
 			psiElement(ParadoxLocalisationElementTypes.PROPERTY_KEY_ID)
 		)
-		extend(CompletionType.BASIC, localePattern, LocaleCompletionProvider)
+		extend(CompletionType.BASIC, localePattern, ParadoxLocaleCompletionProvider)
 		
 		//当用户正在输入一个commandField时提示
 		val commandFieldPattern = psiElement(ParadoxLocalisationElementTypes.COMMAND_FIELD_ID)
-		extend(null, commandFieldPattern, CommandFieldCompletionProvider)
+		extend(null, commandFieldPattern, ParadoxCommandFieldCompletionProvider)
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

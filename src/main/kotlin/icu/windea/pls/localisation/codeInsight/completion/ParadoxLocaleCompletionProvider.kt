@@ -8,7 +8,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 
-object LocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
 	private val localeElements = getInternalConfig().locales.map {
 		LookupElementBuilder.create(it.id).withIcon(it.icon).withTailText(it.tailText, true)
 	}

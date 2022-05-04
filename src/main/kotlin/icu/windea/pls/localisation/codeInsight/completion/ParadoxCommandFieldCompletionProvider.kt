@@ -9,7 +9,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 提供内置的命令字段的代码补全（非scripted_loc）。基于CWT规则文件。
  */
-object CommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
+object ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val position = parameters.position //COMMAND_FIELD_ID
 		val commandField = position.parent as? ParadoxLocalisationCommandField ?: return
