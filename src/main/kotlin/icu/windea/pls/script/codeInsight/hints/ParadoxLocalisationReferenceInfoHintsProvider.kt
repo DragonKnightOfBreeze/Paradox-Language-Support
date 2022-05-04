@@ -73,7 +73,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 	
 	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty): InlayPresentation {
 		val text = localisation.extractText().truncate(getSettings().localisationTruncateLimit) //TODO 渲染成富文本
-		return text(text)
+		return smallText(text)
 	}
 }
 
