@@ -17,7 +17,7 @@ import kotlin.collections.component2
  * 提供快速修复：
  * * 导航到重复项
  */
-class DuplicatePropertiesInFileInspection : LocalInspectionTool() {
+class DuplicatePropertiesInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(holder)
 	}
@@ -30,7 +30,7 @@ class DuplicatePropertiesInFileInspection : LocalInspectionTool() {
 				for(value in values) {
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
 					val location = value.propertyKey
-					holder.registerProblem(location, PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.description", key),
+					holder.registerProblem(location, PlsBundle.message("localisation.inspection.duplicateProperties.description", key),
 						NavigateToDuplicates(key, value, values)
 					)
 				}
@@ -45,9 +45,9 @@ class DuplicatePropertiesInFileInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(property) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getFamilyName() = PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.quickFix.1")
+		override fun getFamilyName() = PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1")
 		
-		override fun getText() = PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.quickFix.1")
+		override fun getText() = PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return
@@ -69,10 +69,10 @@ class DuplicatePropertiesInFileInspection : LocalInspectionTool() {
 			values: List<ParadoxLocalisationProperty>,
 			private val key: String,
 			private val editor: Editor
-		) : BaseListPopupStep<ParadoxLocalisationProperty>(PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.quickFix.1.popup.header", key), values) {
+		) : BaseListPopupStep<ParadoxLocalisationProperty>(PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1.popup.header", key), values) {
 			override fun getIconFor(value: ParadoxLocalisationProperty) = value.icon
 			
-			override fun getTextFor(value: ParadoxLocalisationProperty) = PlsBundle.message("localisation.inspection.duplicatePropertiesInFile.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+			override fun getTextFor(value: ParadoxLocalisationProperty) = PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex() = 0
 			

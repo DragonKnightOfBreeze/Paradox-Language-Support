@@ -277,11 +277,11 @@
                      bundle="messages.PlsBundle" key="script.inspection.unresolvedVariable"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.UnresolvedVariableInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateVariablesInFile"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateVariables"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.duplicateVariablesInFile"
+                     bundle="messages.PlsBundle" key="script.inspection.duplicateVariables"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.DuplicateVariablesInFileInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.DuplicateVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"
@@ -291,12 +291,12 @@
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.missingEventNamespace"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.MissingEventNamespaceInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.internal.MissingEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.mismatchedEventId"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.MismatchedEventIdInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.internal.MismatchedEventIdInspection"/>
     <!--endregion-->
 
     <!--region Paradox Localisation Language-->
@@ -421,11 +421,11 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.unresolvedIcon"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.UnresolvedIconInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicatePropertiesInFile"
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="localisation.inspection.duplicatePropertiesInFile"
+                     bundle="messages.PlsBundle" key="localisation.inspection.duplicateProperties"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
-                     implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertiesInFileInspection"/>
+                     implementationClass="icu.windea.pls.localisation.inspections.DuplicatePropertiesInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileEncoding"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="localisation.inspection.incorrectFileEncoding"
@@ -433,7 +433,7 @@
                      implementationClass="icu.windea.pls.localisation.inspections.IncorrectFileEncodingInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocale"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="localisation.inspection.multipleLocale"
+                     bundle="messages.PlsBundle" key="localisation.inspection.multipleLocales"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.MultipleLocaleInspection"/>
     <!--endregion-->

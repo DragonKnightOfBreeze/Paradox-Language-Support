@@ -11,22 +11,20 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
+private val stringPattern = psiElement(STRING_TOKEN)
+private val definitionPattern = or(
+	psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID),
+	psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN)
+)
+private val eventIdPattern = psiElement(STRING_TOKEN)
+	.withSuperParent(3, psiElement(ParadoxScriptProperty::class.java))
+
+private val booleanLookupElements = booleanValues.map { value ->
+	LookupElementBuilder.create(value).bold().withPriority(keywordPriority)
+}
+
 @Suppress("UNCHECKED_CAST")
 class ParadoxScriptCompletionContributor : CompletionContributor() {
-	companion object {
-		private val stringPattern = psiElement(STRING_TOKEN)
-		private val definitionPattern = or(
-			psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID),
-			psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN)
-		)
-		private val eventIdPattern = psiElement(STRING_TOKEN)
-			.withSuperParent(3, psiElement(ParadoxScriptProperty::class.java))
-		
-		private val booleanLookupElements = booleanValues.map { value ->
-			LookupElementBuilder.create(value).bold().withPriority(keywordPriority)
-		}
-	}
-	
 	class BooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
 		override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 			result.addAllElements(booleanLookupElements) //总是提示
@@ -79,13 +77,16 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 			val file = parameters.originalFile
 			if(file !is ParadoxScriptFile) return
 			val fileInfo = file.fileInfo ?: return
-			if(!fileInfo.path.parent.startsWith("events")) return
+			if(fileInfo.path.root != "events") return
+			val properties = file.properties
+			if(properties.isEmpty()) return //空文件，跳过
+			if(properties.first { it.name.equals("namespace", true) } == null) return //没有事件命名空间，跳过
 			val property = parameters.position.parentOfType<ParadoxScriptProperty>() ?: return
-			if(!property.name.equals("id",true)) return
-			val eventDefinition = property.parentOfType<ParadoxScriptProperty>()?:return
+			if(!property.name.equals("id", true)) return
+			val eventDefinition = property.parentOfType<ParadoxScriptProperty>() ?: return
 			if(eventDefinition.definitionInfo?.type != "event") return
-			val eventNamespace = file.eventNamespace?:return
-			val lookupElement = LookupElementBuilder.create("$eventNamespace.")
+			val namespace = getEventNamespace(eventDefinition) ?: return //找不到，跳过
+			val lookupElement = LookupElementBuilder.create("$namespace.")
 			result.addElement(lookupElement)
 		}
 	}

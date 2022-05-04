@@ -96,6 +96,20 @@ fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String
 }
 
 /**
+ * 得到event定义的需要匹配的naespace。基于名为"namespace"的顶级脚本属性（忽略大小写）。
+ */
+fun getEventNamespace(event: ParadoxDefinitionProperty): String?{
+	var current = event.prevSibling ?: return null
+	while(true){
+		if(current is ParadoxScriptProperty && current.name.equals("namespace",true)){
+			val namespace = current.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: return null
+			return namespace.stringValue
+		}
+		current = event.prevSibling ?: return null
+	}
+}
+
+/**
  * 得到sprite定义的对应DDS文件的filePath。基于名为"textureFile"的定义属性（忽略大小写）。
  */
 fun getSpriteDdsFilePath(sprite: ParadoxDefinitionProperty): String? {
@@ -290,17 +304,6 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 	val type = ParadoxLocalisationCategory.resolve(element) ?: return null
 	return ParadoxLocalisationInfo(name, type)
 }
-
-val ParadoxScriptFile.eventNamespace: String?
-	get() {
-		val fileInfo = this.fileInfo ?: return null
-		if(!fileInfo.path.parent.startsWith("events")) return null
-		//必须是第一个属性且名为"namespace"，忽略大小写
-		val block = block ?: return null
-		val firstProperty = PsiTreeUtil.findChildOfType(block, ParadoxScriptProperty::class.java)
-		if(firstProperty == null || !firstProperty.name.equals("namespace", true)) return null
-		return firstProperty.value
-	}
 
 val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig?
 	get() {

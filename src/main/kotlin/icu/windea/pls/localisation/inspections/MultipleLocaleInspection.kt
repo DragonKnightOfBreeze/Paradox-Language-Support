@@ -23,15 +23,15 @@ class MultipleLocaleInspection : LocalInspectionTool() {
 		if(file !is ParadoxLocalisationFile) return null //不应该出现
 		if(file.propertyLists.size <= 1) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		holder.registerProblem(file, PlsBundle.message("localisation.inspection.multipleLocale.description"), ProblemHighlightType.WARNING)
+		holder.registerProblem(file, PlsBundle.message("localisation.inspection.multipleLocales.description"), ProblemHighlightType.WARNING)
 		return holder.resultsArray
 	}
 	
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				label(PlsBundle.message("localisation.inspection.multipleLocale.option.ignoredFileNames")).applyToComponent {
-					toolTipText = PlsBundle.message("localisation.inspection.multipleLocale.option.ignoredFileNames.tooltip")
+				label(PlsBundle.message("localisation.inspection.multipleLocales.option.ignoredFileNames")).applyToComponent {
+					toolTipText = PlsBundle.message("localisation.inspection.multipleLocales.option.ignoredFileNames.tooltip")
 				}
 				textField().bindText({ ignoredFileNames }, { ignoredFileNames = it })
 			}
