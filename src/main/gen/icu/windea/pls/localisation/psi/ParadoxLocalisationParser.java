@@ -253,7 +253,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID)
+  // !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
   static boolean locale_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "locale_recover")) return false;
     boolean r;
@@ -263,12 +263,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID
+  // COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID
   private static boolean locale_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "locale_recover_0")) return false;
     boolean r;
     r = consumeToken(b, COMMENT);
     if (!r) r = consumeToken(b, END_OF_LINE_COMMENT);
+    if (!r) r = consumeToken(b, LOCALE_ID);
     if (!r) r = consumeToken(b, PROPERTY_KEY_ID);
     return r;
   }
@@ -330,6 +331,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   // COMMENT * locale COMMENT * property_item *
   public static boolean property_list(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_list")) return false;
+    if (!nextTokenIs(b, "<property list>", COMMENT, LOCALE_ID)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY_LIST, "<property list>");
     r = property_list_0(b, l + 1);
@@ -337,7 +339,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     p = r; // pin = 2
     r = r && report_error_(b, property_list_2(b, l + 1));
     r = p && property_list_3(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, ParadoxLocalisationParser::property_list_recover);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -375,27 +377,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(COMMENT | LOCALE_ID)
-  static boolean property_list_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_list_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !property_list_recover_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // COMMENT | LOCALE_ID
-  private static boolean property_list_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_list_recover_0")) return false;
-    boolean r;
-    r = consumeToken(b, COMMENT);
-    if (!r) r = consumeToken(b, LOCALE_ID);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // !(COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID)
+  // !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
   static boolean property_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_recover")) return false;
     boolean r;
@@ -405,12 +387,13 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID
+  // COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID
   private static boolean property_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_recover_0")) return false;
     boolean r;
     r = consumeToken(b, COMMENT);
     if (!r) r = consumeToken(b, END_OF_LINE_COMMENT);
+    if (!r) r = consumeToken(b, LOCALE_ID);
     if (!r) r = consumeToken(b, PROPERTY_KEY_ID);
     return r;
   }

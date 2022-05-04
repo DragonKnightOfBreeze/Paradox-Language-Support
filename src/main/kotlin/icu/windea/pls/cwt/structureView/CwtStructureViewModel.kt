@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.psi.*
 class CwtStructureViewModel(
 	editor: Editor?,
 	psiFile: PsiFile
-) : TextEditorBasedStructureViewModel(editor, psiFile), StructureViewModel.ElementInfoProvider {
+) : TextEditorBasedStructureViewModel(editor, psiFile), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
 	companion object {
 		private val defaultSuitableClasses = arrayOf(
 			CwtFile::class.java,
@@ -28,8 +28,20 @@ class CwtStructureViewModel(
 	//指定可用的排序器，可自定义
 	override fun getSorters() = defaultSorters
 	
-	override fun isAlwaysShowsPlus(element: StructureViewTreeElement) = element.value is CwtFile
+	override fun isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean {
+		return element is CwtFileTreeElement
+	}
 	
-	override fun isAlwaysLeaf(element: StructureViewTreeElement) = false
+	override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {
+		return false
+	}
+	
+	override fun isAutoExpand(element: StructureViewTreeElement): Boolean {
+		return element is CwtFileTreeElement
+	}
+	
+	override fun isSmartExpand(): Boolean {
+		return false
+	}
 }
 

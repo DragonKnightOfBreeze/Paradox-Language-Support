@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
+import com.intellij.navigation.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFileTreeElement(

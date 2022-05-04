@@ -431,6 +431,11 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.IncorrectFileEncodingInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocale"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="localisation.inspection.multipleLocale"
+                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
+                     implementationClass="icu.windea.pls.localisation.inspections.MultipleLocaleInspection"/>
     <!--endregion-->
   </extensions>
 </idea-plugin>

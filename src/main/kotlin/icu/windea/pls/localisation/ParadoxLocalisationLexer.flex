@@ -154,7 +154,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
  	    }
  	    i--;
     }
-    return TokenType.BAD_CHARACTER; //不应该发生
+    return TokenType.BAD_CHARACTER; //不应该出现
   }
   //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_ID} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID; }
