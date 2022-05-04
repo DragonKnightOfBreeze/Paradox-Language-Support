@@ -9,16 +9,19 @@ import icu.windea.pls.script.structureView.*
 
 class ParadoxLocalisationFile(
 	viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage){
+) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
 	override fun getFileType() = ParadoxLocalisationFileType
 	
 	override fun getPresentation(): ItemPresentation {
 		return ParadoxLocalisationFileTreeElement(this)
 	}
 	
+	val propertyLists: List<ParadoxLocalisationPropertyList>
+		get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()
+	
 	val locale: ParadoxLocalisationLocale?
-		get() = findChildByClass(ParadoxLocalisationLocale::class.java)
+		get() = propertyLists.firstOrNull()?.locale
 	
 	val properties: List<ParadoxLocalisationProperty>
-		get() = findChildrenByClass(ParadoxLocalisationProperty::class.java).toList()
+		get() = propertyLists.firstOrNull()?.propertyList ?: emptyList()
 }

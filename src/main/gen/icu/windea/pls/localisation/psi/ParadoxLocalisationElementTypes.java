@@ -18,6 +18,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType LOCALE = new ParadoxLocalisationElementType("LOCALE");
   IElementType PROPERTY = ParadoxLocalisationStubElementTypes.getPropertyType("PROPERTY");
   IElementType PROPERTY_KEY = new ParadoxLocalisationElementType("PROPERTY_KEY");
+  IElementType PROPERTY_LIST = new ParadoxLocalisationElementType("PROPERTY_LIST");
   IElementType PROPERTY_REFERENCE = new ParadoxLocalisationElementType("PROPERTY_REFERENCE");
   IElementType PROPERTY_REFERENCE_PARAMETER = new ParadoxLocalisationElementType("PROPERTY_REFERENCE_PARAMETER");
   IElementType PROPERTY_VALUE = new ParadoxLocalisationElementType("PROPERTY_VALUE");
@@ -52,7 +53,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_START");
   IElementType RIGHT_QUOTE = new ParadoxLocalisationTokenType("RIGHT_QUOTE");
-  IElementType ROOT_COMMENT = new ParadoxLocalisationTokenType("ROOT_COMMENT");
   IElementType SEQUENTIAL_NUMBER_END = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_END");
   IElementType SEQUENTIAL_NUMBER_ID = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_ID");
   IElementType SEQUENTIAL_NUMBER_START = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_START");
@@ -91,6 +91,9 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == PROPERTY_KEY) {
         return new ParadoxLocalisationPropertyKeyImpl(node);
+      }
+      else if (type == PROPERTY_LIST) {
+        return new ParadoxLocalisationPropertyListImpl(node);
       }
       else if (type == PROPERTY_REFERENCE) {
         return new ParadoxLocalisationPropertyReferenceImpl(node);

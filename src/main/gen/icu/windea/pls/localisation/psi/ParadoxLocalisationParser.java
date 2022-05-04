@@ -244,13 +244,33 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   // LOCALE_ID COLON
   public static boolean locale(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "locale")) return false;
-    if (!nextTokenIs(b, LOCALE_ID)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, LOCALE, null);
+    Marker m = enter_section_(b, l, _NONE_, LOCALE, "<locale>");
     r = consumeTokens(b, 1, LOCALE_ID, COLON);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, ParadoxLocalisationParser::locale_recover);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // !(COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID)
+  static boolean locale_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "locale_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !locale_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID
+  private static boolean locale_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "locale_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, COMMENT);
+    if (!r) r = consumeToken(b, END_OF_LINE_COMMENT);
+    if (!r) r = consumeToken(b, PROPERTY_KEY_ID);
+    return r;
   }
 
   /* ********************************************************** */
@@ -307,13 +327,38 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_item *
-  static boolean property_list(PsiBuilder b, int l) {
+  // COMMENT * locale property_item *
+  public static boolean property_list(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_list")) return false;
+    if (!nextTokenIs(b, "<property list>", COMMENT, LOCALE_ID)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY_LIST, "<property list>");
+    r = property_list_0(b, l + 1);
+    r = r && locale(b, l + 1);
+    p = r; // pin = 2
+    r = r && property_list_2(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // COMMENT *
+  private static boolean property_list_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_list_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, COMMENT)) break;
+      if (!empty_element_parsed_guard_(b, "property_list_0", c)) break;
+    }
+    return true;
+  }
+
+  // property_item *
+  private static boolean property_list_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_list_2")) return false;
     while (true) {
       int c = current_position_(b);
       if (!property_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "property_list", c)) break;
+      if (!empty_element_parsed_guard_(b, "property_list_2", c)) break;
     }
     return true;
   }
@@ -464,35 +509,9 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ROOT_COMMENT * [locale] property_list
+  // property_list
   static boolean root(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = root_0(b, l + 1);
-    p = r; // pin = 1
-    r = r && report_error_(b, root_1(b, l + 1));
-    r = p && property_list(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // ROOT_COMMENT *
-  private static boolean root_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_0")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!consumeToken(b, ROOT_COMMENT)) break;
-      if (!empty_element_parsed_guard_(b, "root_0", c)) break;
-    }
-    return true;
-  }
-
-  // [locale]
-  private static boolean root_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_1")) return false;
-    locale(b, l + 1);
-    return true;
+    return property_list(b, l + 1);
   }
 
   /* ********************************************************** */

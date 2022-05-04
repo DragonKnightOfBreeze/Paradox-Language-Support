@@ -56,10 +56,10 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = { 
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 
-    16, 16, 17, 17,  8,  8, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 
-    23, 23
+     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6, 
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
+    15, 15, 16, 16,  7,  7, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 
+    22, 22
   };
 
   /** 
@@ -100,18 +100,18 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\30\0\2\1\2\2\1\3\1\4\1\5\1\1\1\6"+
+    "\27\0\2\1\2\2\1\3\1\4\1\5\1\1\1\6"+
     "\1\2\1\7\1\10\1\11\1\12\1\13\1\14\1\15"+
-    "\1\16\2\17\1\6\1\1\1\20\1\21\1\22\1\23"+
-    "\1\24\1\25\1\26\1\27\1\30\1\31\1\25\1\32"+
-    "\1\33\1\34\1\35\1\36\1\37\1\40\1\41\1\42"+
-    "\1\1\1\43\1\44\1\45\2\46\1\47\1\20\1\50"+
-    "\1\51\1\52\1\53\1\54\1\55\1\56\2\0\1\57"+
-    "\1\60\1\61\1\62\1\0\1\63\1\64\1\65\1\51"+
-    "\1\52\1\53\1\54\1\55\1\56\1\53";
+    "\2\16\1\6\1\1\1\17\1\20\1\21\1\22\1\23"+
+    "\1\24\1\25\1\26\1\27\1\30\1\24\1\31\1\32"+
+    "\1\33\1\34\1\35\1\36\1\37\1\40\1\41\1\1"+
+    "\1\42\1\43\1\44\2\45\1\46\1\17\1\47\1\50"+
+    "\1\51\1\52\1\53\1\54\1\55\2\0\1\56\1\57"+
+    "\1\60\1\61\1\0\1\62\1\63\1\64\1\50\1\51"+
+    "\1\52\1\53\1\54\1\55\1\52";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[98];
+    int [] result = new int[96];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -140,18 +140,17 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\0\350\0\u0105\0\u0122\0\u013f\0\u015c\0\u0179\0\u0196\0\u01b3"+
     "\0\u01d0\0\u01ed\0\u020a\0\u0227\0\u0244\0\u0261\0\u027e\0\u029b"+
     "\0\u02b8\0\u02d5\0\u02f2\0\u030f\0\u032c\0\u0349\0\u0366\0\u0383"+
-    "\0\u03a0\0\u03bd\0\u02b8\0\u03da\0\u03f7\0\u02b8\0\u0414\0\u0431"+
-    "\0\u02b8\0\u02b8\0\u044e\0\u046b\0\u0488\0\u04a5\0\u04c2\0\u04df"+
-    "\0\u02b8\0\u02b8\0\u02b8\0\u04fc\0\u0519\0\u02b8\0\u02b8\0\u02b8"+
-    "\0\u0536\0\u0553\0\u0570\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u058d"+
-    "\0\u02b8\0\u02b8\0\u05aa\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u0383"+
-    "\0\u05c7\0\u05e4\0\u02b8\0\u0601\0\u061e\0\u063b\0\u0658\0\u0675"+
-    "\0\u0692\0\u02d5\0\u0383\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u05aa"+
-    "\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u02b8\0\u06af\0\u02b8\0\u02b8"+
-    "\0\u02b8\0\u02b8";
+    "\0\u03a0\0\u029b\0\u03bd\0\u029b\0\u03da\0\u03f7\0\u029b\0\u029b"+
+    "\0\u0414\0\u0431\0\u044e\0\u046b\0\u0488\0\u04a5\0\u029b\0\u029b"+
+    "\0\u029b\0\u04c2\0\u04df\0\u029b\0\u029b\0\u029b\0\u04fc\0\u0519"+
+    "\0\u0536\0\u029b\0\u029b\0\u029b\0\u029b\0\u0553\0\u029b\0\u029b"+
+    "\0\u0570\0\u029b\0\u029b\0\u029b\0\u029b\0\u0366\0\u058d\0\u05aa"+
+    "\0\u029b\0\u05c7\0\u05e4\0\u0601\0\u061e\0\u063b\0\u0658\0\u02b8"+
+    "\0\u0366\0\u029b\0\u029b\0\u029b\0\u029b\0\u0570\0\u029b\0\u029b"+
+    "\0\u029b\0\u029b\0\u029b\0\u0675\0\u029b\0\u029b\0\u029b\0\u029b";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[98];
+    int [] result = new int[96];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -174,70 +173,68 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\31\1\32\2\33\1\34\1\35\2\31\1\36\2\37"+
-    "\2\31\1\36\2\31\1\36\1\37\2\31\1\37\1\31"+
-    "\1\37\7\31\1\40\2\41\1\42\25\31\1\43\3\31"+
-    "\1\40\2\41\1\42\1\44\30\31\1\32\2\33\1\34"+
-    "\1\45\2\31\3\37\2\31\1\37\2\31\2\37\2\31"+
-    "\1\37\1\31\1\37\7\31\1\40\2\41\1\42\25\31"+
-    "\1\46\3\31\1\40\2\41\1\47\2\31\1\50\2\31"+
-    "\1\50\23\31\1\40\2\41\1\42\1\31\1\51\27\31"+
-    "\1\40\2\41\1\42\1\44\1\52\26\31\1\53\1\54"+
-    "\1\55\1\41\1\54\1\53\1\52\4\53\1\56\1\57"+
-    "\1\53\1\60\3\53\1\61\5\53\1\62\1\63\3\53"+
-    "\1\31\1\40\2\41\1\64\1\31\1\52\1\31\3\65"+
-    "\1\31\1\57\1\65\1\66\1\31\2\65\2\31\1\65"+
-    "\1\31\1\65\1\31\1\67\3\31\1\70\4\31\1\71"+
-    "\1\31\1\52\3\31\1\72\1\31\1\57\6\72\1\31"+
-    "\3\72\1\31\1\67\5\31\1\40\2\41\1\64\1\31"+
-    "\1\52\1\31\1\73\1\31\2\73\1\57\1\73\1\74"+
-    "\1\31\1\73\2\31\2\73\1\31\1\73\1\31\1\75"+
-    "\1\76\2\31\1\77\1\31\1\40\2\41\1\64\1\31"+
-    "\1\52\5\31\1\57\1\31\1\74\11\31\1\75\1\76"+
-    "\2\31\1\77\1\31\1\40\2\41\1\64\1\31\1\52"+
-    "\3\31\1\100\1\31\1\57\1\100\2\31\1\100\1\31"+
-    "\1\100\1\31\3\100\1\31\1\75\1\76\4\31\1\40"+
-    "\2\41\1\64\1\31\1\52\5\31\1\57\1\101\2\31"+
-    "\1\101\1\31\1\102\3\31\1\101\7\31\1\40\2\41"+
-    "\1\42\1\31\1\52\1\31\1\103\1\31\1\103\1\31"+
-    "\1\57\1\103\1\31\1\104\1\103\5\31\2\103\1\105"+
-    "\1\31\1\103\3\31\1\40\2\41\1\42\1\31\1\52"+
-    "\5\31\1\57\2\31\1\104\1\31\1\106\6\31\1\105"+
-    "\4\31\1\107\1\110\2\41\1\111\1\107\1\52\5\107"+
-    "\1\112\1\113\2\107\1\113\5\107\1\113\6\107\30\31"+
-    "\1\114\35\31\1\115\25\31\1\116\30\31\1\117\32\31"+
-    "\1\120\26\31\1\121\26\31\36\0\1\122\2\33\1\122"+
-    "\31\0\4\33\31\0\1\122\2\33\1\34\30\0\3\35"+
-    "\1\0\31\35\10\0\1\36\2\37\2\0\1\36\2\0"+
-    "\1\36\1\37\2\0\1\37\1\0\1\37\16\0\3\37"+
-    "\2\0\1\37\2\0\2\37\2\0\1\37\1\0\1\37"+
-    "\7\0\1\123\2\41\1\123\31\0\4\41\31\0\1\123"+
-    "\2\41\1\42\30\0\3\44\1\0\2\44\1\0\26\44"+
-    "\3\45\1\0\31\45\1\0\1\123\2\41\1\47\37\0"+
-    "\1\50\2\0\1\50\22\0\3\53\1\0\2\53\1\0"+
-    "\4\53\2\0\1\53\1\0\3\53\1\0\5\53\2\0"+
-    "\4\53\1\54\1\55\1\41\1\54\1\53\1\0\4\53"+
-    "\2\0\1\53\1\0\3\53\1\0\5\53\2\0\4\53"+
-    "\2\55\1\41\1\55\1\53\1\0\4\53\2\0\1\53"+
-    "\1\0\3\53\1\0\5\53\2\0\3\53\2\124\2\0"+
-    "\2\124\1\125\5\124\3\125\3\124\1\125\5\124\2\125"+
-    "\3\124\33\0\1\126\17\0\1\127\17\0\1\123\2\41"+
-    "\1\64\40\0\3\65\2\0\1\65\2\0\2\65\2\0"+
-    "\1\65\1\0\1\65\12\0\1\71\42\0\1\72\2\0"+
-    "\6\72\1\0\3\72\16\0\1\73\1\0\2\73\1\0"+
-    "\1\73\2\0\1\73\2\0\2\73\1\0\1\73\20\0"+
-    "\1\100\2\0\1\100\2\0\1\100\1\0\1\100\1\0"+
-    "\3\100\16\0\1\130\1\0\1\130\2\0\1\130\1\0"+
-    "\1\131\1\130\1\132\4\0\2\130\2\0\1\130\3\0"+
-    "\1\123\2\41\1\111\63\0\1\133\1\0\1\114\1\134"+
-    "\2\0\1\134\1\114\1\134\21\114\1\134\4\114\2\135"+
-    "\2\0\31\135\2\136\2\0\31\136\2\137\2\0\1\117"+
-    "\3\137\1\117\1\137\1\117\2\137\1\117\2\137\2\117"+
-    "\4\137\2\117\2\137\1\117\2\137\2\140\2\0\31\140"+
-    "\3\121\1\0\2\121\1\141\26\121\2\142\2\0\31\142";
+    "\1\30\1\31\2\32\1\33\1\34\2\30\1\35\2\36"+
+    "\2\30\1\35\2\30\1\35\1\36\2\30\1\36\1\30"+
+    "\1\36\7\30\1\37\2\40\1\41\25\30\1\42\3\30"+
+    "\1\37\2\40\1\41\1\43\30\30\1\37\2\40\1\41"+
+    "\25\30\1\44\3\30\1\37\2\40\1\45\2\30\1\46"+
+    "\2\30\1\46\23\30\1\37\2\40\1\41\1\30\1\47"+
+    "\27\30\1\37\2\40\1\41\1\43\1\50\26\30\1\51"+
+    "\1\52\1\53\1\40\1\52\1\51\1\50\4\51\1\54"+
+    "\1\55\1\51\1\56\3\51\1\57\5\51\1\60\1\61"+
+    "\3\51\1\30\1\37\2\40\1\62\1\30\1\50\1\30"+
+    "\3\63\1\30\1\55\1\63\1\64\1\30\2\63\2\30"+
+    "\1\63\1\30\1\63\1\30\1\65\3\30\1\66\4\30"+
+    "\1\67\1\30\1\50\3\30\1\70\1\30\1\55\6\70"+
+    "\1\30\3\70\1\30\1\65\5\30\1\37\2\40\1\62"+
+    "\1\30\1\50\1\30\1\71\1\30\2\71\1\55\1\71"+
+    "\1\72\1\30\1\71\2\30\2\71\1\30\1\71\1\30"+
+    "\1\73\1\74\2\30\1\75\1\30\1\37\2\40\1\62"+
+    "\1\30\1\50\5\30\1\55\1\30\1\72\11\30\1\73"+
+    "\1\74\2\30\1\75\1\30\1\37\2\40\1\62\1\30"+
+    "\1\50\3\30\1\76\1\30\1\55\1\76\2\30\1\76"+
+    "\1\30\1\76\1\30\3\76\1\30\1\73\1\74\4\30"+
+    "\1\37\2\40\1\62\1\30\1\50\5\30\1\55\1\77"+
+    "\2\30\1\77\1\30\1\100\3\30\1\77\7\30\1\37"+
+    "\2\40\1\41\1\30\1\50\1\30\1\101\1\30\1\101"+
+    "\1\30\1\55\1\101\1\30\1\102\1\101\5\30\2\101"+
+    "\1\103\1\30\1\101\3\30\1\37\2\40\1\41\1\30"+
+    "\1\50\5\30\1\55\2\30\1\102\1\30\1\104\6\30"+
+    "\1\103\4\30\1\105\1\106\2\40\1\107\1\105\1\50"+
+    "\5\105\1\110\1\111\2\105\1\111\5\105\1\111\6\105"+
+    "\30\30\1\112\35\30\1\113\25\30\1\114\30\30\1\115"+
+    "\32\30\1\116\26\30\1\117\26\30\36\0\1\120\2\32"+
+    "\1\120\31\0\4\32\31\0\1\120\2\32\1\33\30\0"+
+    "\3\34\1\0\31\34\10\0\1\35\2\36\2\0\1\35"+
+    "\2\0\1\35\1\36\2\0\1\36\1\0\1\36\16\0"+
+    "\3\36\2\0\1\36\2\0\2\36\2\0\1\36\1\0"+
+    "\1\36\7\0\1\121\2\40\1\121\31\0\4\40\31\0"+
+    "\1\121\2\40\1\41\30\0\3\43\1\0\2\43\1\0"+
+    "\26\43\1\0\1\121\2\40\1\45\37\0\1\46\2\0"+
+    "\1\46\22\0\3\51\1\0\2\51\1\0\4\51\2\0"+
+    "\1\51\1\0\3\51\1\0\5\51\2\0\4\51\1\52"+
+    "\1\53\1\40\1\52\1\51\1\0\4\51\2\0\1\51"+
+    "\1\0\3\51\1\0\5\51\2\0\4\51\2\53\1\40"+
+    "\1\53\1\51\1\0\4\51\2\0\1\51\1\0\3\51"+
+    "\1\0\5\51\2\0\3\51\2\122\2\0\2\122\1\123"+
+    "\5\122\3\123\3\122\1\123\5\122\2\123\3\122\33\0"+
+    "\1\124\17\0\1\125\17\0\1\121\2\40\1\62\40\0"+
+    "\3\63\2\0\1\63\2\0\2\63\2\0\1\63\1\0"+
+    "\1\63\12\0\1\67\42\0\1\70\2\0\6\70\1\0"+
+    "\3\70\16\0\1\71\1\0\2\71\1\0\1\71\2\0"+
+    "\1\71\2\0\2\71\1\0\1\71\20\0\1\76\2\0"+
+    "\1\76\2\0\1\76\1\0\1\76\1\0\3\76\16\0"+
+    "\1\126\1\0\1\126\2\0\1\126\1\0\1\127\1\126"+
+    "\1\130\4\0\2\126\2\0\1\126\3\0\1\121\2\40"+
+    "\1\107\63\0\1\131\1\0\1\112\1\132\2\0\1\132"+
+    "\1\112\1\132\21\112\1\132\4\112\2\133\2\0\31\133"+
+    "\2\134\2\0\31\134\2\135\2\0\1\115\3\135\1\115"+
+    "\1\135\1\115\2\135\1\115\2\135\2\115\4\135\2\115"+
+    "\2\135\1\115\2\135\2\136\2\0\31\136\3\117\1\0"+
+    "\2\117\1\137\26\117\2\140\2\0\31\140";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[1740];
+    int [] result = new int[1682];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -275,13 +272,13 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\30\0\1\11\11\1\1\11\2\1\1\11\2\1\2\11"+
+    "\27\0\1\11\11\1\1\11\1\1\1\11\2\1\2\11"+
     "\6\1\3\11\2\1\3\11\3\1\4\11\1\1\2\11"+
     "\1\1\4\11\3\1\1\11\6\1\2\0\4\11\1\0"+
     "\5\11\1\1\4\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[98];
+    int [] result = new int[96];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -633,203 +630,198 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { return TokenType.BAD_CHARACTER;
             } 
             // fall through
-          case 54: break;
+          case 53: break;
           case 2: 
             { return WHITE_SPACE;
             } 
             // fall through
-          case 55: break;
+          case 54: break;
           case 3: 
-            { return ROOT_COMMENT;
+            { return COMMENT;
             } 
             // fall through
-          case 56: break;
+          case 55: break;
           case 4: 
             { yybegin(WAITING_LOCALE_COLON); return LOCALE_ID;
             } 
             // fall through
-          case 57: break;
+          case 56: break;
           case 5: 
             { yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID;
             } 
             // fall through
-          case 58: break;
+          case 57: break;
           case 6: 
             { yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE;
             } 
             // fall through
-          case 59: break;
+          case 58: break;
           case 7: 
             { yybegin(WAITING_LOCALE_END); return COLON;
             } 
             // fall through
-          case 60: break;
+          case 59: break;
           case 8: 
             { return END_OF_LINE_COMMENT;
             } 
             // fall through
-          case 61: break;
+          case 60: break;
           case 9: 
-            { return COMMENT;
-            } 
-            // fall through
-          case 62: break;
-          case 10: 
             { yybegin(WAITING_PROPERTY_NUMBER); return COLON;
             } 
             // fall through
-          case 63: break;
-          case 11: 
+          case 61: break;
+          case 10: 
             { yybegin(WAITING_PROPERTY_VALUE); return WHITE_SPACE;
             } 
             // fall through
-          case 64: break;
-          case 12: 
+          case 62: break;
+          case 11: 
             { yybegin(WAITING_PROPERTY_VALUE); return NUMBER;
             } 
             // fall through
-          case 65: break;
-          case 13: 
+          case 63: break;
+          case 12: 
             { yybegin(WAITING_RICH_TEXT); return LEFT_QUOTE;
             } 
             // fall through
-          case 66: break;
-          case 14: 
+          case 64: break;
+          case 13: 
             { yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);
             } 
             // fall through
-          case 67: break;
-          case 15: 
+          case 65: break;
+          case 14: 
             { return STRING_TOKEN;
             } 
             // fall through
-          case 68: break;
-          case 16: 
+          case 66: break;
+          case 15: 
             { yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);
             } 
             // fall through
-          case 69: break;
-          case 17: 
+          case 67: break;
+          case 16: 
             { commandLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);
             } 
             // fall through
-          case 70: break;
-          case 18: 
+          case 68: break;
+          case 17: 
             { yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);
             } 
             // fall through
-          case 71: break;
-          case 19: 
+          case 69: break;
+          case 18: 
             { propertyReferenceLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);
             } 
             // fall through
-          case 72: break;
-          case 20: 
+          case 70: break;
+          case 19: 
             { yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);
             } 
             // fall through
-          case 73: break;
-          case 21: 
+          case 71: break;
+          case 20: 
             { yybegin(nextStateForText()); return WHITE_SPACE;
             } 
             // fall through
-          case 74: break;
-          case 22: 
+          case 72: break;
+          case 21: 
             { return PROPERTY_REFERENCE_ID;
             } 
             // fall through
-          case 75: break;
-          case 23: 
+          case 73: break;
+          case 22: 
             { commandLocation=1; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);
             } 
             // fall through
-          case 76: break;
-          case 24: 
+          case 74: break;
+          case 23: 
             { yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;
             } 
             // fall through
-          case 77: break;
-          case 25: 
+          case 75: break;
+          case 24: 
             { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PARAMETER_SEPARATOR;
             } 
             // fall through
-          case 78: break;
-          case 26: 
+          case 76: break;
+          case 25: 
             { return PROPERTY_REFERENCE_PARAMETER_TOKEN;
             } 
             // fall through
-          case 79: break;
-          case 27: 
+          case 77: break;
+          case 26: 
             { yybegin(WAITING_ICON_NAME_FINISHED); return ICON_ID;
             } 
             // fall through
-          case 80: break;
-          case 28: 
+          case 78: break;
+          case 27: 
             { commandLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);
             } 
             // fall through
-          case 81: break;
-          case 29: 
+          case 79: break;
+          case 28: 
             { propertyReferenceLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);
             } 
             // fall through
-          case 82: break;
-          case 30: 
+          case 80: break;
+          case 29: 
             { yybegin(nextStateForText()); return ICON_END;
             } 
             // fall through
-          case 83: break;
-          case 31: 
+          case 81: break;
+          case 30: 
             { yybegin(WAITING_ICON_PARAMETER); return PARAMETER_SEPARATOR;
             } 
             // fall through
-          case 84: break;
-          case 32: 
+          case 82: break;
+          case 31: 
             { return ICON_PARAMETER;
             } 
             // fall through
-          case 85: break;
-          case 33: 
+          case 83: break;
+          case 32: 
             { return SEQUENTIAL_NUMBER_ID;
             } 
             // fall through
-          case 86: break;
-          case 34: 
+          case 84: break;
+          case 33: 
             { yybegin(nextStateForText()); return SEQUENTIAL_NUMBER_END;
             } 
             // fall through
-          case 87: break;
-          case 35: 
+          case 85: break;
+          case 34: 
             { yybegin(nextStateForCommand()); return COMMAND_END;
             } 
             // fall through
-          case 88: break;
-          case 36: 
+          case 86: break;
+          case 35: 
             { propertyReferenceLocation=3; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);
             } 
             // fall through
-          case 89: break;
-          case 37: 
+          case 87: break;
+          case 36: 
             { yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return COMMAND_SEPARATOR;
             } 
             // fall through
-          case 90: break;
-          case 38: 
+          case 88: break;
+          case 37: 
             { yypushback(yylength()); yybegin(WAITING_COLORFUL_TEXT);
             } 
             // fall through
-          case 91: break;
-          case 39: 
+          case 89: break;
+          case 38: 
             { yybegin(WAITING_COLORFUL_TEXT); return WHITE_SPACE;
             } 
             // fall through
-          case 92: break;
-          case 40: 
+          case 90: break;
+          case 39: 
             { yybegin(WAITING_COLORFUL_TEXT); return COLOR_ID;
             } 
             // fall through
-          case 93: break;
-          case 41: 
+          case 91: break;
+          case 40: 
             { //特殊处理
     //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
     //否则认为是常规字符串
@@ -844,8 +836,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
 	}
             } 
             // fall through
-          case 94: break;
-          case 42: 
+          case 92: break;
+          case 41: 
             { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线，则认为代表图标的开始
     //否则认为是常规字符串
@@ -860,8 +852,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 95: break;
-          case 43: 
+          case 93: break;
+          case 42: 
             { //特殊处理
     //如果匹配的字符串的第3个字符存在且为百分号，则认为整个字符串代表一个编号
     //否则认为是常规字符串
@@ -876,8 +868,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 96: break;
-          case 44: 
+          case 94: break;
+          case 43: 
             { //特殊处理
     //除了可以通过连续的两个左方括号转义之外
     //如果匹配到的字符串长度大于1，且最后一个字符为右方括号，则认为代表命令的开始
@@ -893,8 +885,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 97: break;
-          case 45: 
+          case 95: break;
+          case 44: 
             { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
     //否则认为是常规字符串
@@ -910,8 +902,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 98: break;
-          case 46: 
+          case 96: break;
+          case 45: 
             { //特殊处理
       //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
       //否则认为是常规字符串
@@ -926,42 +918,42 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
       }
             } 
             // fall through
-          case 99: break;
-          case 47: 
+          case 97: break;
+          case 46: 
             { return INVALID_ESCAPE_TOKEN;
             } 
             // fall through
-          case 100: break;
-          case 48: 
+          case 98: break;
+          case 47: 
             { return VALID_ESCAPE_TOKEN;
             } 
             // fall through
-          case 101: break;
-          case 49: 
+          case 99: break;
+          case 48: 
             { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
             } 
             // fall through
-          case 102: break;
-          case 50: 
+          case 100: break;
+          case 49: 
             { return DOUBLE_LEFT_BRACKET;
             } 
             // fall through
-          case 103: break;
-          case 51: 
+          case 101: break;
+          case 50: 
             { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_ID;
             } 
             // fall through
-          case 104: break;
-          case 52: 
+          case 102: break;
+          case 51: 
             { yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_ID;
             } 
             // fall through
-          case 105: break;
-          case 53: 
+          case 103: break;
+          case 52: 
             { decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
             } 
             // fall through
-          case 106: break;
+          case 104: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

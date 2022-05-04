@@ -30,6 +30,18 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {
+	//region ParadoxLocalisationPropertyList
+	@JvmStatic
+	fun getIcon(element: ParadoxLocalisationPropertyList, @IconFlags flags: Int): Icon{
+		return PlsIcons.localisationLocaleIcon
+	}
+	
+	@JvmStatic
+	fun getComponents(element: ParadoxLocalisationPropertyList): List<ParadoxLocalisationProperty>{
+		return element.propertyList
+	}
+	//endregion
+	
 	//region ParadoxLocalisationLocale	
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationLocale, @IconFlags flags: Int): Icon {

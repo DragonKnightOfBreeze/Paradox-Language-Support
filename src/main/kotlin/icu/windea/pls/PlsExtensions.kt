@@ -21,6 +21,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
@@ -164,9 +165,20 @@ private fun doGetGameType(element: PsiElement): ParadoxGameType? {
 val PsiElement.localeConfig: ParadoxLocaleConfig? get() = doGetLocale(this)
 
 private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
-	return when(val file = element.containingFile) {
-		is ParadoxLocalisationFile -> file.locale?.localeConfig
-		else -> inferParadoxLocale()
+	if(element.language == ParadoxLocalisationLanguage) {
+		var current = element
+		while(true) {
+			when {
+				current is ParadoxLocalisationFile -> return current.locale?.localeConfig
+				current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
+				current is ParadoxLocalisationLocale -> return current.localeConfig
+				current is PsiFile -> return inferParadoxLocale() //不应该出现
+			}
+			current = current.parent ?: break
+		}
+		return current.containingFile.localeConfig
+	} else {
+		return inferParadoxLocale()
 	}
 }
 

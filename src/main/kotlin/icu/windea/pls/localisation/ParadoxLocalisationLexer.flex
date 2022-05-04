@@ -96,7 +96,6 @@ EOL=\s*\R\s*
 WHITE_SPACE=[ \t]+
 
 COMMENT=#[^\r\n]*
-ROOT_COMMENT=#[^\r\n]*
 //行尾注释不能包含双引号，否则会有解析冲突
 END_OF_LINE_COMMENT=#[^\"\r\n]*
 NUMBER=\d+
@@ -131,7 +130,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 <YYINITIAL> {
   {EOL} {return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
-  {ROOT_COMMENT} {return ROOT_COMMENT; }
+  {COMMENT} {return COMMENT; }
   {LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_ID} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID; } //为了兼容快速定义功能
 }
@@ -151,6 +150,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {EOL} {return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   {COMMENT} {return COMMENT; }
+  {LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_ID} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID; }
 }
 <WAITING_PROPERTY_COLON>{

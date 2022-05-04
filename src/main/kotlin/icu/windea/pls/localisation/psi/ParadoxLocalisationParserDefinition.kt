@@ -11,21 +11,21 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 class ParadoxLocalisationParserDefinition : ParserDefinition {
 	companion object {
 		val WHITE_SPACES = TokenSet.create(WHITE_SPACE)
-		val COMMENTS = TokenSet.create(COMMENT, ROOT_COMMENT,END_OF_LINE_COMMENT)
+		val COMMENTS = TokenSet.create(COMMENT, END_OF_LINE_COMMENT)
 		val STRINGS = TokenSet.create(STRING_TOKEN)
 		val FILE = ParadoxLocalisationStubElementTypes.FILE
 	}
 	
 	override fun getWhitespaceTokens() = WHITE_SPACES
-
+	
 	override fun getCommentTokens() = COMMENTS
-
+	
 	override fun getStringLiteralElements() = STRINGS
 	
 	override fun getFileNodeType() = FILE
 	
 	override fun createFile(viewProvider: FileViewProvider) = ParadoxLocalisationFile(viewProvider)
-
+	
 	override fun createElement(node: ASTNode) = Factory.createElement(node)
 	
 	override fun createParser(project: Project?) = ParadoxLocalisationParser()

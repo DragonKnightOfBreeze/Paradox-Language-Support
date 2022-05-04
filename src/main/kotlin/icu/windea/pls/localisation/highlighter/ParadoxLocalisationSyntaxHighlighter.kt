@@ -28,7 +28,7 @@ private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
 
 class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 	override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
-		COLON,COMMAND_SEPARATOR -> SEPARATOR_KEYS
+		COLON, COMMAND_SEPARATOR -> SEPARATOR_KEYS
 		LOCALE_ID -> LOCALE_KEYS
 		PROPERTY_KEY_ID -> PROPERTY_KEY_KEYS
 		PROPERTY_REFERENCE_ID -> PROPERTY_REFERENCE_KEYS
@@ -45,13 +45,13 @@ class ParadoxLocalisationSyntaxHighlighter : SyntaxHighlighterBase() {
 		ICON_ID -> ICON_KEYS
 		SEQUENTIAL_NUMBER_ID -> SEQUENTIAL_NUMBER_ID_KEYS
 		COLOR_ID -> COLOR_ID_KEYS
-		COMMENT, END_OF_LINE_COMMENT, ROOT_COMMENT -> COMMENT_KEYS
+		COMMENT, END_OF_LINE_COMMENT -> COMMENT_KEYS
 		VALID_ESCAPE_TOKEN, DOUBLE_LEFT_BRACKET -> VALID_ESCAPE_KEYS
 		INVALID_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS
 		BAD_CHARACTER -> BAD_CHARACTER_KEYS
 		else -> EMPTY_KEYS
 	}
-
+	
 	override fun getHighlightingLexer() = ParadoxLocalisationLexerAdapter()
 }
 

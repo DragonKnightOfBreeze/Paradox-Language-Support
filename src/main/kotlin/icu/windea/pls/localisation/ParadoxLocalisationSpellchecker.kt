@@ -11,9 +11,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
 	override fun getTokenizer(element: PsiElement): Tokenizer<*> {
 		return when(element.elementType) {
-			PROPERTY_KEY_ID,COMMAND_SCOPE,COMMAND_FIELD, ICON_ID -> TEXT_TOKENIZER
+			PROPERTY_KEY_ID, COMMAND_SCOPE, COMMAND_FIELD, ICON_ID -> TEXT_TOKENIZER
 			STRING_TOKEN -> TEXT_TOKENIZER
-			COMMENT,ROOT_COMMENT,END_OF_LINE_COMMENT -> TEXT_TOKENIZER
+			COMMENT, END_OF_LINE_COMMENT -> TEXT_TOKENIZER
 			else -> EMPTY_TOKENIZER
 		}
 	}
