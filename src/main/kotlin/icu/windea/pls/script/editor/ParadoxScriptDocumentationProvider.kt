@@ -81,7 +81,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			//在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
 			val localisationTargetMap = mutableMapOf<String, ParadoxLocalisationProperty>()
-			val pictureTargetMap = mutableMapOf<String, PsiFile>()
+			val pictureTargetMap = mutableMapOf<String, Tuple2<PsiFile, Int>>()
 			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, pictureTargetMap)
 			buildLineCommentContent(element)
 			val sections = mutableMapOf<String, String>()
@@ -115,7 +115,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		element: ParadoxScriptProperty,
 		definitionInfo: ParadoxDefinitionInfo,
 		localisationTargetMap: MutableMap<String, ParadoxLocalisationProperty>? = null,
-		pictureTargetMap: MutableMap<String, PsiFile>? = null
+		pictureTargetMap: MutableMap<String, Tuple2<PsiFile, Int>>? = null
 	) {
 		definition {
 			//加上文件信息
@@ -164,8 +164,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val usedPictureTargetMap = pictureTargetMap ?: mutableMapOf()
 				for((key, locationExpression, required) in pictures) {
 					if(!usedPictureTargetMap.containsKey(key)) {
-						val (filePath, target) = locationExpression.resolve(definitionInfo, element, project) ?: continue //发生意外，直接跳过
-						if(target != null) usedPictureTargetMap.put(key, target)
+						val (filePath, target, frame) = locationExpression.resolve(definitionInfo, element, project) ?: continue //发生意外，直接跳过
+						if(target != null) usedPictureTargetMap.put(key, tupleOf(target, frame))
 						if(required || target != null) {
 							if(pictureKeys.add(key)) {
 								appendBr()
@@ -178,12 +178,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun buildRelatedPictureSections(map: MutableMap<String, PsiFile>, sections: MutableMap<String, String>) {
+	private fun buildRelatedPictureSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
 		//加上DDS图片预览图
 		if(getSettings().scriptRenderRelatedPictures) {
 			if(map.isNotEmpty()) {
-				for((key, target) in map) {
-					val url = ParadoxDdsUrlResolver.resolveByFile(target.virtualFile)
+				for((key, tuple) in map) {
+					val (target, frame) = tuple
+					val url = ParadoxDdsUrlResolver.resolveByFile(target.virtualFile, frame)
 					val tag = buildString { appendImgTag(url) }
 					sections.put(key, tag)
 				}

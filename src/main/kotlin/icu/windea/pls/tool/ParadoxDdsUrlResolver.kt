@@ -1,9 +1,7 @@
 package icu.windea.pls.tool
 
-import com.intellij.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.events.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.dds.*
@@ -22,12 +20,12 @@ object ParadoxDdsUrlResolver {
 	/**
 	 * 基于gfx文件中的类型为sprite的定义进行解析。
 	 */
-	fun resolveBySprite(sprite: ParadoxDefinitionProperty, defaultToUnknown: Boolean = false): String {
+	fun resolveBySprite(sprite: ParadoxDefinitionProperty, frame: Int = 0, defaultToUnknown: Boolean = false): String {
 		val spriteName = sprite.definitionInfo?.name
 		if(spriteName.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 		try {
 			//如果无法解析为png文件地址，则返回默认的地址
-			val url = doResolveBySprite(sprite)
+			val url = doResolveBySprite(sprite, frame)
 			if(url.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 			return url
 		} catch(e: Exception) {
@@ -40,10 +38,10 @@ object ParadoxDdsUrlResolver {
 	/**
 	 * 直接基于dds文件的文件名进行解析。
 	 */
-	fun resolveByFile(file: VirtualFile, defaultToUnknown: Boolean = false): String {
+	fun resolveByFile(file: VirtualFile,frame: Int = 0, defaultToUnknown: Boolean = false): String {
 		try {
 			//如果无法解析为png文件地址，则返回默认的地址
-			val url = doResolveByFile(file)
+			val url = doResolveByFile(file, frame)
 			if(url.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 			return url
 		} catch(e: Exception) {
@@ -56,10 +54,10 @@ object ParadoxDdsUrlResolver {
 	/**
 	 * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。
 	 */
-	fun resolveByFilePath(filePath: String, project: Project, defaultToUnknown: Boolean = false): String {
+	fun resolveByFilePath(filePath: String, project: Project, frame: Int = 0, defaultToUnknown: Boolean = false): String {
 		try {
 			//如果无法解析为png文件地址，则返回默认的地址
-			val url = doResolveByFilePath(filePath, project)
+			val url = doResolveByFilePath(filePath, project, frame)
 			if(url.isNullOrEmpty()) return getDefaultUrl(defaultToUnknown)
 			return url
 		} catch(e: Exception) {
@@ -69,24 +67,24 @@ object ParadoxDdsUrlResolver {
 		}
 	}
 	
-	private fun doResolveBySprite(spriteName: String, project: Project): String? {
+	private fun doResolveBySprite(spriteName: String, project: Project, frame: Int): String? {
 		val sprite = findDefinitionByType(spriteName, "sprite|spriteType", project) ?: return null
-		return doResolveBySprite(sprite)
+		return doResolveBySprite(sprite, frame)
 	}
 	
-	private fun doResolveBySprite(sprite: ParadoxDefinitionProperty): String? {
+	private fun doResolveBySprite(sprite: ParadoxDefinitionProperty, frame: Int): String? {
 		val ddsRelPath = getSpriteDdsFilePath(sprite) ?: return null
 		val file = findFileByFilePath(ddsRelPath, sprite.project) ?: return null
-		return doResolveByFile(file)
+		return doResolveByFile(file, frame)
 	}
 	
-	private fun doResolveByFile(fileName: String, project: Project): String? {
+	private fun doResolveByFile(fileName: String, project: Project, frame: Int): String? {
 		val files = FilenameIndex.getVirtualFilesByName(fileName, false, GlobalSearchScope.allScope(project))
 		val file = files.firstOrNull() ?: return null //直接取第一个
-		return doResolveByFile(file)
+		return doResolveByFile(file, frame)
 	}
 	
-	private fun doResolveByFile(file: VirtualFile): String? {
+	private fun doResolveByFile(file: VirtualFile, frame: Int): String? {
 		if(file.fileType != DdsFileType) return null
 		//如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
 		val fileInfo = file.fileInfo
@@ -97,20 +95,20 @@ object ParadoxDdsUrlResolver {
 		} else {
 			file.toNioPath().absolutePathString()
 		}
-		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
+		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath, frame)
 	}
 	
-	private fun doResolveByFilePath(filePath: String, project: Project): String? {
+	private fun doResolveByFilePath(filePath: String, project: Project, frame: Int): String? {
 		val file = findFileByFilePath(filePath, project) ?: return null
-		return doResolveByFile(file)
+		return doResolveByFile(file, frame)
 	}
 	
 	private fun getDefaultUrl(defaultToUnknown: Boolean): String {
 		return if(defaultToUnknown) DdsToPngConverter.getUnknownPngPath() else ""
 	}
 	
-	fun getPngFile(file: VirtualFile): VirtualFile?{
-		val absPngPath = doResolveByFile(file) ?: return null
+	fun getPngFile(file: VirtualFile, frame: Int = 0): VirtualFile?{
+		val absPngPath = doResolveByFile(file, frame) ?: return null
 		return VfsUtil.findFile(absPngPath.toPath(), true)
 	}
 }

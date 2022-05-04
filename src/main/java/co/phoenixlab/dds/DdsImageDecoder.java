@@ -168,6 +168,32 @@ public class DdsImageDecoder {
         pngWriter.end();
     }
 
+    public void convertToPNG(Dds dds, OutputStream outputStream, int frame) throws IOException {
+        convertToPNG(dds, outputStream, frame, "");
+    }
+
+    public void convertToPNG(Dds dds, OutputStream outputStream, int frame, String swizzle) throws IOException {
+        if(frame <= 0) throw new IllegalArgumentException();
+        DdsHeader header = dds.getHeader();
+        FormatDecoder decoder = Decoders.getDecoder(dds);
+        int width = header.getDwWidth();
+        int height = header.getDwHeight();
+        int frames = width / height;
+        ImageInfo imageInfo = new ImageInfo(height, height, 8, true);
+        PngWriter pngWriter = new PngWriter(outputStream, imageInfo);
+        ImageLineInt imageLine = new ImageLineInt(imageInfo);
+        for (int[] ints : decoder) {
+            int finalLength = ints.length / frames;
+            int[] finalInts = new int[finalLength];
+            System.arraycopy(ints,finalLength * (frame -1),finalInts, 0, finalLength);
+            swizzle(finalInts, swizzle);
+            ImageLineHelper.setPixelsRGBA8(imageLine, finalInts);
+            pngWriter.writeRow(imageLine);
+        }
+
+        pngWriter.end();
+    }
+
     private void swizzle(int[] ints, String swizzle) {
         if (swizzle.isEmpty()) {
             return;

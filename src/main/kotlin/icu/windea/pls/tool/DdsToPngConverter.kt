@@ -30,50 +30,57 @@ object DdsToPngConverter {
 	fun convert(ddsAbsPath: String, ddsRelPath: String? = null, frame: Int = 0): String? {
 		try {
 			//如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
-			val pngAbsPath = getPngAbsPath(ddsAbsPath, ddsRelPath)
+			val pngAbsPath = getPngAbsPath(ddsAbsPath, ddsRelPath, frame)
 			if(pngAbsPath.notExists()) {
-				doConvertDdsToPng(ddsAbsPath, pngAbsPath)
+				doConvertDdsToPng(ddsAbsPath, pngAbsPath, frame)
 			}
 			return pngAbsPath.absolutePathString()
 		} catch(e: Exception) {
-			logger.warn(e) { "Convert dds image to png image failed. (dds absolute path: $ddsAbsPath, dds relative path: $ddsRelPath)" }
+			logger.warn(e) { "Convert dds image to png image failed. (dds absolute path: $ddsAbsPath, dds relative path: $ddsRelPath, frame: $frame)" }
 			return null
 		}
 	}
 	
-	private fun getPngAbsPath(ddsAbsPath: String, ddsRelPath: String?): Path {
+	private fun getPngAbsPath(ddsAbsPath: String, ddsRelPath: String?, frame: Int): Path {
 		val cache = if(ddsRelPath != null) ddsCache else externalDdsCache
-		return cache.get(ddsAbsPath) { doGetPngAbsPath(ddsAbsPath, ddsRelPath) }
+		val cacheKey = getCacheKey(ddsAbsPath, frame)
+		return cache.get(cacheKey) { doGetPngAbsPath(ddsAbsPath, ddsRelPath, frame) }
 	}
 	
-	private fun doGetPngAbsPath(ddsAbsPath: String, ddsRelPath: String?): Path {
-		val pngAbsPath = doGetRelatedPngPath(ddsAbsPath, ddsRelPath)
-		doConvertDdsToPng(ddsAbsPath, pngAbsPath)
+	private fun doGetPngAbsPath(ddsAbsPath: String, ddsRelPath: String?, frame: Int): Path {
+		val pngAbsPath = doGetRelatedPngPath(ddsAbsPath, ddsRelPath, frame)
+		doConvertDdsToPng(ddsAbsPath, pngAbsPath, frame)
 		return pngAbsPath
 	}
 	
-	private fun doGetRelatedPngPath(ddsAbsPath: String, ddsRelPath: String?): Path {
+	private fun doGetRelatedPngPath(ddsAbsPath: String, ddsRelPath: String?, frame: Int): Path {
 		if(ddsRelPath != null) {
 			//路径：~/.pls/images/${uuid}/${ddsRelPath}.png
 			val uuid = ddsAbsPath.removeSuffix(ddsRelPath).toUUID().toString() //得到基于游戏或模组目录的绝对路径的UUID
-			return PlsPaths.imagesDirectoryPath.resolve("$uuid/$ddsRelPath.png") //直接在包括扩展名的DDS文件名后面加上".png"
+			val frameText = if(frame > 0) "@$frame" else ""
+			return PlsPaths.imagesDirectoryPath.resolve("$uuid/$ddsRelPath$frameText.png") //直接在包括扩展名的DDS文件名后面加上".png"
 		} else {
 			//路径：~/.pls/images/external/${uuid}/${ddsFileName}.png
 			val index = ddsAbsPath.lastIndexOf('/')
 			val parent = if(index == -1) "" else ddsAbsPath.substring(0, index)
 			val fileName = if(index == -1) ddsAbsPath else ddsAbsPath.substring(index + 1)
 			val uuid = if(parent.isEmpty()) "" else parent.toUUID().toString() //得到基于DDS文件所在目录的UUID
-			return PlsPaths.imagesDirectoryPath.resolve("external/$uuid.$fileName.png") //直接在包括扩展名的DDS文件名后面加上".png"
+			val frameText = if(frame > 0) "@$frame" else ""
+			return PlsPaths.imagesDirectoryPath.resolve("external/$uuid.$fileName$frameText.png") //直接在包括扩展名的DDS文件名后面加上".png"
 		}
 	}
 	
-	private fun doConvertDdsToPng(ddsAbsPath: String, pngAbsPath: Path) {
+	private fun doConvertDdsToPng(ddsAbsPath: String, pngAbsPath: Path, frame: Int) {
 		val dds = Dds()
 		dds.read(Files.newByteChannel(ddsAbsPath.toPath(), StandardOpenOption.READ))
 		pngAbsPath.deleteIfExists()
 		pngAbsPath.create()
 		val outputStream = Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-		ddsImageDecoder.convertToPNG(dds, outputStream)
+		if(frame > 0) {
+			ddsImageDecoder.convertToPNG(dds, outputStream, frame)
+		} else {
+			ddsImageDecoder.convertToPNG(dds, outputStream)
+		}
 		outputStream.flush()
 		outputStream.close()
 	}
@@ -83,9 +90,18 @@ object DdsToPngConverter {
 	 * @param ddsAbsPath DDS文件的绝对路径。
 	 * @param frame 帧数，用于切割DDS图片。默认为0表示不切割。
 	 */
-	fun invalidate(ddsAbsPath: String, frame: Int = 0){
-		ddsCache.invalidate(ddsAbsPath)
-		externalDdsCache.invalidate(ddsAbsPath)
+	fun invalidate(ddsAbsPath: String, frame: Int = 0) {
+		val cacheKey = getCacheKey(ddsAbsPath, frame)
+		ddsCache.invalidate(cacheKey)
+		externalDdsCache.invalidate(cacheKey)
+	}
+	
+	private fun getCacheKey(ddsAbsPath: String, frame: Int): String {
+		if(frame > 0) {
+			return "$ddsAbsPath@$frame"
+		} else {
+			return ddsAbsPath
+		}
 	}
 	
 	fun getUnknownPngPath(): String {
