@@ -10,26 +10,15 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 定义引用信息的内嵌提示（对应定义的名字和类型、本地化名字）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
-		private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
-		private val skipElementTypes = arrayOf(
-			ParadoxScriptElementTypes.VARIABLE,
-			ParadoxScriptElementTypes.VARIABLE_REFERENCE,
-			ParadoxScriptElementTypes.BOOLEAN,
-			ParadoxScriptElementTypes.INT,
-			ParadoxScriptElementTypes.FLOAT,
-			ParadoxScriptElementTypes.STRING,
-			ParadoxScriptElementTypes.COLOR,
-			ParadoxScriptElementTypes.CODE
-		)
+		private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
 		private val keyExpressionTypes = arrayOf(
 			CwtKeyExpression.Type.TypeExpression,
 			CwtKeyExpression.Type.TypeExpressionString,
@@ -47,14 +36,13 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 	
 	override val name: String get() = PlsBundle.message("script.hints.definitionReferenceLocalizedName")
 	override val description: String get() = PlsBundle.message("script.hints.definitionReferenceLocalizedName.description")
-	override val key: SettingsKey<Settings> get() = settingsKey
+	override val key: SettingsKey<NoSettings> get() = settingsKey
 	
-	override fun createSettings() = Settings()
+	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
 		val elementType = element.elementType ?: return false
 		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
-		if(elementType in skipElementTypes) return false
 		if(element is ParadoxScriptPropertyKey) {
 			val resolved = resolveKey(element) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {
@@ -95,6 +83,4 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 		}
 		return null
 	}
-	
-	class Settings
 }

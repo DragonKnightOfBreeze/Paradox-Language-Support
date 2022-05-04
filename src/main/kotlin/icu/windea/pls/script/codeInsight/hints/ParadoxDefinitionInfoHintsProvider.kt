@@ -18,16 +18,6 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionInfoHintsSettingsKey")
-		private val skipElementTypes = arrayOf(
-			ParadoxScriptElementTypes.VARIABLE,
-			ParadoxScriptElementTypes.VARIABLE_REFERENCE,
-			ParadoxScriptElementTypes.BOOLEAN,
-			ParadoxScriptElementTypes.INT,
-			ParadoxScriptElementTypes.FLOAT,
-			ParadoxScriptElementTypes.STRING,
-			ParadoxScriptElementTypes.COLOR,
-			ParadoxScriptElementTypes.CODE
-		)
 	}
 	
 	override val name: String get() = PlsBundle.message("script.hints.definitionInfo")
@@ -39,7 +29,6 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
 		val elementType = element.elementType ?: return false
 		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
-		if(elementType in skipElementTypes) return false
 		if(element is ParadoxScriptProperty) {
 			val definitionInfo = element.definitionInfo
 			if(definitionInfo != null) {

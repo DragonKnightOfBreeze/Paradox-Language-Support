@@ -20,16 +20,6 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionReferenceInfoHintsSettingsKey")
-		private val skipElementTypes = arrayOf(
-			ParadoxScriptElementTypes.VARIABLE,
-			ParadoxScriptElementTypes.VARIABLE_REFERENCE,
-			ParadoxScriptElementTypes.BOOLEAN,
-			ParadoxScriptElementTypes.INT,
-			ParadoxScriptElementTypes.FLOAT,
-			ParadoxScriptElementTypes.STRING,
-			ParadoxScriptElementTypes.COLOR,
-			ParadoxScriptElementTypes.CODE
-		)
 		private val keyExpressionTypes = arrayOf(
 			CwtKeyExpression.Type.TypeExpression,
 			CwtKeyExpression.Type.TypeExpressionString,
@@ -54,7 +44,6 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
 		val elementType = element.elementType ?: return false
 		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
-		if(elementType in skipElementTypes) return false
 		if(element is ParadoxScriptPropertyKey) {
 			val resolved = resolveKey(element) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {

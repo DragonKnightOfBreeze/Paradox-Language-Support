@@ -10,26 +10,15 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 本地化引用信息的内嵌提示（对应的本地化的渲染后文本，如果过长则会截断）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
-		private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceInfoHintsSettingsKey")
-		private val skipElementTypes = arrayOf(
-			ParadoxScriptElementTypes.VARIABLE,
-			ParadoxScriptElementTypes.VARIABLE_REFERENCE,
-			ParadoxScriptElementTypes.BOOLEAN,
-			ParadoxScriptElementTypes.INT,
-			ParadoxScriptElementTypes.FLOAT,
-			ParadoxScriptElementTypes.STRING,
-			ParadoxScriptElementTypes.COLOR,
-			ParadoxScriptElementTypes.CODE
-		)
+		private val settingsKey = SettingsKey<NoSettings>("ParadoxLocalisationReferenceInfoHintsSettingsKey")
 		private val keyExpressionTypes = arrayOf(
 			CwtKeyExpression.Type.Localisation,
 			CwtKeyExpression.Type.InlineLocalisation,
@@ -49,14 +38,13 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 	
 	override val name: String get() = PlsBundle.message("script.hints.localisationReferenceInfo")
 	override val description: String get() = PlsBundle.message("script.hints.localisationReferenceInfo.description")
-	override val key: SettingsKey<Settings> get() = settingsKey
+	override val key: SettingsKey<NoSettings> get() = settingsKey
 	
-	override fun createSettings() = Settings()
+	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
 		val elementType = element.elementType ?: return false
 		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
-		if(elementType in skipElementTypes) return false
 		if(element is ParadoxScriptPropertyKey) {
 			val resolved = resolveKey(element) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxLocalisationProperty) {
@@ -87,7 +75,5 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 		val text = localisation.extractText().truncate(truncateLimit) //TODO 渲染成富文本
 		return text(text)
 	}
-	
-	class Settings
 }
 

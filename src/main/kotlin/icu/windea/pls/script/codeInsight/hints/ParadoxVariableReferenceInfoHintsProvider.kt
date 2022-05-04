@@ -16,16 +16,6 @@ import icu.windea.pls.script.psi.*
 class ParadoxVariableReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey = SettingsKey<NoSettings>("ParadoxVariableReferenceInfoHintsSettingsKey")
-		private val skipElementTypes = arrayOf(
-			ParadoxScriptElementTypes.VARIABLE,
-			ParadoxScriptElementTypes.PROPERTY_KEY,
-			ParadoxScriptElementTypes.BOOLEAN,
-			ParadoxScriptElementTypes.INT,
-			ParadoxScriptElementTypes.FLOAT,
-			ParadoxScriptElementTypes.STRING,
-			ParadoxScriptElementTypes.COLOR,
-			ParadoxScriptElementTypes.CODE
-		)
 	}
 	
 	override val name: String get() = PlsBundle.message("script.hints.variableReferenceInfo")
@@ -37,7 +27,6 @@ class ParadoxVariableReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoS
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
 		val elementType = element.elementType ?: return false
 		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
-		if(elementType in skipElementTypes) return false
 		if(element is ParadoxScriptVariableReference) {
 			val referenceValue = element.referenceValue ?: return true //不检查值的类型
 			val presentation = collectValue(referenceValue) ?: return true
