@@ -107,7 +107,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.property")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
-			element.truncatedValue?.let { truncatedValue -> append(" = ").append(truncatedValue.escapeXml()) }
+			element.value?.let { value -> append(" = ").append(value.escapeXml()) }
 		}
 	}
 	

@@ -35,9 +35,6 @@ public interface CwtOption extends CwtNamedElement {
   String getOptionValue();
 
   @NotNull
-  String getOptionTruncatedValue();
-
-  @NotNull
   CwtSeparatorType getSeparatorType();
 
 }

@@ -22,7 +22,7 @@ class CwtValueTreeElement(
 		val element = element ?: return null
 		return when {
 			element is CwtBlock -> blockFolder
-			element is CwtString -> element.truncatedValue
+			element is CwtString -> element.text.truncateAndKeepQuotes(truncateLimit)
 			else -> element.text
 		}
 	}

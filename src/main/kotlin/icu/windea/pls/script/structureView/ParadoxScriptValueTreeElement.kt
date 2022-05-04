@@ -22,7 +22,7 @@ class ParadoxScriptValueTreeElement(
 		val element = element ?: return null
 		return when {
 			element is ParadoxScriptBlock -> blockFolder
-			else -> element.text.let { it.truncateAndKeepQuotes(truncateLimit) } //保留可能的包围的双引号
+			else -> element.text.truncateAndKeepQuotes(truncateLimit) //保留可能的包围的双引号
 		}
 	}
 }

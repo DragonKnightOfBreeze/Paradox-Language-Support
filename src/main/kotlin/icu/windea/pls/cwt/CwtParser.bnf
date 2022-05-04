@@ -39,7 +39,7 @@ option ::= option_key option_separator value{
   pin=1
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName getNameIdentifier getOptionName getOptionValue getOptionTruncatedValue getSeparatorType]
+  methods=[getIcon getName setName getNameIdentifier getOptionName getOptionValue getSeparatorType]
 }
 option_key ::= OPTION_KEY_TOKEN{
   methods=[getValue]
@@ -51,7 +51,7 @@ property ::= property_key property_separator value {
   recoverWhile=property_recover
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getPresentation getName setName getNameIdentifier getPropertyName getPropertyValue getPropertyTruncatedValue getSeparatorType]
+  methods=[getIcon getPresentation getName setName getNameIdentifier getPropertyName getPropertyValue getSeparatorType]
 }
 property_key ::= PROPERTY_KEY_TOKEN{
   methods=[getValue]
@@ -60,7 +60,7 @@ private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 private property_recover ::= !(BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN)
 
 value ::= boolean | number | string | block{
-  methods=[getIcon getPresentation getValue getTruncatedValue]
+  methods=[getIcon getPresentation getValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
@@ -81,12 +81,12 @@ string ::= STRING_TOKEN{
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getValue getTruncatedValue getStringValue getName setName getNameIdentifier]
+  methods=[getValue getStringValue getName setName getNameIdentifier]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents]
+  methods=[getValue isEmpty isNotEmpty isObject isArray getComponents]
 }
 private block_item ::= comment | property | option | value

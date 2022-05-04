@@ -11,9 +11,6 @@ public interface CwtString extends CwtValue, CwtNamedElement {
   String getValue();
 
   @NotNull
-  String getTruncatedValue();
-
-  @NotNull
   String getStringValue();
 
   @NotNull

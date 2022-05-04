@@ -86,12 +86,6 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
 
   @Override
   @NotNull
-  public String getPropertyTruncatedValue() {
-    return CwtPsiImplUtil.getPropertyTruncatedValue(this);
-  }
-
-  @Override
-  @NotNull
   public CwtSeparatorType getSeparatorType() {
     return CwtPsiImplUtil.getSeparatorType(this);
   }

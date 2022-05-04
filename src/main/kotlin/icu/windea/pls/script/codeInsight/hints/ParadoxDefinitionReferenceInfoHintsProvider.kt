@@ -19,14 +19,14 @@ import icu.windea.pls.script.psi.*
 @Suppress("UnstableApiUsage")
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
-		private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionReferenceInfoHintsSettingsKey")
-		private val keyExpressionTypes = arrayOf(
+		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
+		private val keyExpressionTypes: Array<CwtKeyExpression.Type> = arrayOf(
 			CwtKeyExpression.Type.TypeExpression,
 			CwtKeyExpression.Type.TypeExpressionString,
 			CwtKeyExpression.Type.AliasName, //需要兼容alias
 			CwtKeyExpression.Type.AliasKeysField //需要兼容alias
 		)
-		private val valueExpressionTypes = arrayOf(
+		private val valueExpressionTypes: Array<CwtValueExpression.Type> = arrayOf(
 			CwtValueExpression.Type.TypeExpression,
 			CwtValueExpression.Type.TypeExpressionString,
 			CwtValueExpression.Type.SingleAliasRight, //需要兼容single_alias
@@ -55,7 +55,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
 				}
 			}
-		} else if(element is ParadoxScriptValue) {
+		} else if(element is ParadoxScriptString) {
 			val resolved = resolveValue(element) { it.type in valueExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo

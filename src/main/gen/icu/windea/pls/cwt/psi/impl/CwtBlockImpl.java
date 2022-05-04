@@ -64,12 +64,6 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   }
 
   @Override
-  @NotNull
-  public String getTruncatedValue() {
-    return CwtPsiImplUtil.getTruncatedValue(this);
-  }
-
-  @Override
   public boolean isEmpty() {
     return CwtPsiImplUtil.isEmpty(this);
   }

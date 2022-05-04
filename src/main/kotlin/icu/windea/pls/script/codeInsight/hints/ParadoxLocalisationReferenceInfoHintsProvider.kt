@@ -18,18 +18,18 @@ import icu.windea.pls.script.psi.*
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
-		private val settingsKey = SettingsKey<NoSettings>("ParadoxLocalisationReferenceInfoHintsSettingsKey")
-		private val keyExpressionTypes = arrayOf(
+		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
+		private val keyExpressionTypes: Array<CwtKeyExpression.Type> = arrayOf(
 			CwtKeyExpression.Type.Localisation,
 			CwtKeyExpression.Type.InlineLocalisation,
 			CwtKeyExpression.Type.SyncedLocalisation,
 			CwtKeyExpression.Type.AliasName, //需要兼容alias
 			CwtKeyExpression.Type.AliasKeysField //需要兼容alias
 		)
-		private val valueExpressionTypes = arrayOf(
-			CwtKeyExpression.Type.Localisation,
-			CwtKeyExpression.Type.InlineLocalisation,
-			CwtKeyExpression.Type.SyncedLocalisation,
+		private val valueExpressionTypes: Array<CwtValueExpression.Type> = arrayOf(
+			CwtValueExpression.Type.Localisation,
+			CwtValueExpression.Type.InlineLocalisation,
+			CwtValueExpression.Type.SyncedLocalisation,
 			CwtValueExpression.Type.SingleAliasRight, //需要兼容single_alias
 			CwtValueExpression.Type.AliasKeysField, //需要兼容alias
 			CwtValueExpression.Type.AliasMatchLeft //需要兼容alias
@@ -56,7 +56,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
 				}
 			}
-		} else if(element is ParadoxScriptValue) {
+		} else if(element is ParadoxScriptString) {
 			val resolved = resolveValue(element) { it.type in valueExpressionTypes }
 			if(resolved is ParadoxLocalisationProperty) {
 				val localisationInfo = resolved.localisationInfo
@@ -72,7 +72,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 	}
 	
 	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty): InlayPresentation {
-		val text = localisation.extractText().truncate(truncateLimit) //TODO 渲染成富文本
+		val text = localisation.extractText().truncate(getSettings().localisationTruncateLimit) //TODO 渲染成富文本
 		return text(text)
 	}
 }

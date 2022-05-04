@@ -19,7 +19,4 @@ public interface CwtValue extends PsiElement {
   @NotNull
   String getValue();
 
-  @NotNull
-  String getTruncatedValue();
-
 }

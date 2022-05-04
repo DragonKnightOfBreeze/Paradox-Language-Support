@@ -48,11 +48,6 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getOptionTruncatedValue(element: CwtOption): String {
-		return element.value?.truncatedValue.orEmpty()
-	}
-	
-	@JvmStatic
 	fun getSeparatorType(element: CwtOption): CwtSeparatorType {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
@@ -109,11 +104,6 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPropertyTruncatedValue(element: CwtProperty): String {
-		return element.value?.truncatedValue.orEmpty()
-	}
-	
-	@JvmStatic
 	fun getSeparatorType(element: CwtProperty): CwtSeparatorType {
 		//这里不能遍历element.children
 		element.forEachChild { child ->
@@ -148,11 +138,6 @@ object CwtPsiImplUtil {
 	fun getValue(element: CwtValue): String {
 		return element.text
 	}
-	
-	@JvmStatic
-	fun getTruncatedValue(element: CwtValue): String {
-		return element.value
-	}
 	//endregion
 	
 	//region CwtBoolean
@@ -183,11 +168,6 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getTruncatedValue(element: CwtString): String {
-		return element.value.truncate(truncateLimit)
-	}
-	
-	@JvmStatic
 	fun getStringValue(element: CwtString): String {
 		return element.value
 	}
@@ -211,11 +191,6 @@ object CwtPsiImplUtil {
 	//region CwtBlock
 	@JvmStatic
 	fun getValue(element: CwtBlock): String {
-		return blockFolder
-	}
-	
-	@JvmStatic
-	fun getTruncatedValue(element: CwtBlock): String {
 		return blockFolder
 	}
 	

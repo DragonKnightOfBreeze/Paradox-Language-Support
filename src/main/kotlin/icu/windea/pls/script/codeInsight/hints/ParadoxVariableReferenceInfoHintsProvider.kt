@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.*
 @Suppress("UnstableApiUsage")
 class ParadoxVariableReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
-		private val settingsKey = SettingsKey<NoSettings>("ParadoxVariableReferenceInfoHintsSettingsKey")
+		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxVariableReferenceInfoHintsSettingsKey")
 	}
 	
 	override val name: String get() = PlsBundle.message("script.hints.variableReferenceInfo")

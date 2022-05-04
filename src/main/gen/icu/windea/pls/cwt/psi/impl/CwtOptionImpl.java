@@ -79,12 +79,6 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
   @Override
   @NotNull
-  public String getOptionTruncatedValue() {
-    return CwtPsiImplUtil.getOptionTruncatedValue(this);
-  }
-
-  @Override
-  @NotNull
   public CwtSeparatorType getSeparatorType() {
     return CwtPsiImplUtil.getSeparatorType(this);
   }

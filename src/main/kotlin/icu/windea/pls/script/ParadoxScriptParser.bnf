@@ -57,7 +57,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getIcon getPresentation getName setName getNameIdentifier getValue getTruncatedValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
+  methods=[getIcon getPresentation getName setName getNameIdentifier getValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
 }
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
   methods=[getValue setValue getReference]
@@ -72,7 +72,7 @@ value ::= variable_reference | boolean | number | string | color | block | advan
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
   ]
-  methods=[getIcon getPresentation getValue getTruncatedValue]
+  methods=[getIcon getPresentation getValue]
 }
 variable_reference ::= VARIABLE_REFERENCE_ID {
   extends=value
@@ -106,7 +106,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getValue getTruncatedValue isEmpty isNotEmpty isObject isArray getComponents getValueType getType]
+  methods=[getValue isEmpty isNotEmpty isObject isArray getComponents getValueType getType]
 }
 private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value
 

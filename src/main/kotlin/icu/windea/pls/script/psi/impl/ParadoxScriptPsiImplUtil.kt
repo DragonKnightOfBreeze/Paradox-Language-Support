@@ -113,11 +113,6 @@ object ParadoxScriptPsiImplUtil {
 		return element.propertyValue?.value?.value
 	}
 	
-	@JvmStatic
-	fun getTruncatedValue(element: ParadoxScriptProperty): String? {
-		return element.propertyValue?.value?.let { if(it is ParadoxScriptBlock) blockFolder else it.text.truncateAndKeepQuotes(truncateLimit) }
-	}
-	
 	//得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
 	@JvmStatic
 	fun getDepth(element: ParadoxScriptProperty): Int {
@@ -224,11 +219,6 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getValue(element: ParadoxScriptValue): String {
 		return element.text
-	}
-	
-	@JvmStatic
-	fun getTruncatedValue(element: ParadoxScriptValue): String {
-		return element.value
 	}
 	//endregion
 	
@@ -391,11 +381,6 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptBlock
 	@JvmStatic
 	fun getValue(element: ParadoxScriptBlock): String {
-		return blockFolder
-	}
-	
-	@JvmStatic
-	fun getTruncatedValue(element: ParadoxScriptBlock): String {
 		return blockFolder
 	}
 	

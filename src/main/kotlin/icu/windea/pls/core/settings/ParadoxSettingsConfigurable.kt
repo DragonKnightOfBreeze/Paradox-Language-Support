@@ -3,10 +3,8 @@ package icu.windea.pls.core.settings
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.panel
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import io.ktor.utils.io.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = helpTopic!!
@@ -54,6 +52,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 			}
 			group(PlsBundle.message("settings.localisation")) {
+				row{
+					label(PlsBundle.message("settings.localisation.truncateLimit")).applyToComponent {
+						toolTipText = PlsBundle.message("settings.localisation.truncateLimit")
+					}
+					this.intTextField(0..100).bindIntText(settings::localisationTruncateLimit)
+				}
 				buttonsGroup(PlsBundle.message("settings.localisation.doc")) {
 					row {
 						checkBox(PlsBundle.message("settings.localisation.doc.renderLineComment"))

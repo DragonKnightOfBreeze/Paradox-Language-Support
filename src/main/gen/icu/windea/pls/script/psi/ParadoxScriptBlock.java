@@ -21,9 +21,6 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeEleme
   @NotNull
   String getValue();
 
-  @NotNull
-  String getTruncatedValue();
-
   boolean isEmpty();
 
   boolean isNotEmpty();

@@ -39,9 +39,6 @@ public interface CwtProperty extends CwtNamedElement {
   String getPropertyValue();
 
   @NotNull
-  String getPropertyTruncatedValue();
-
-  @NotNull
   CwtSeparatorType getSeparatorType();
 
 }

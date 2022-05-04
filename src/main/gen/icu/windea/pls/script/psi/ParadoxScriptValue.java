@@ -20,7 +20,4 @@ public interface ParadoxScriptValue extends PsiLiteralValue, ParadoxScriptExpres
   @NotNull
   String getValue();
 
-  @NotNull
-  String getTruncatedValue();
-
 }

@@ -85,12 +85,6 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  @Nullable
-  public String getTruncatedValue() {
-    return ParadoxScriptPsiImplUtil.getTruncatedValue(this);
-  }
-
-  @Override
   public int getDepth() {
     return ParadoxScriptPsiImplUtil.getDepth(this);
   }

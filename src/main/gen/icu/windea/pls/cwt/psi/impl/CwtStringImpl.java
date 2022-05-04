@@ -34,12 +34,6 @@ public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
 
   @Override
   @NotNull
-  public String getTruncatedValue() {
-    return CwtPsiImplUtil.getTruncatedValue(this);
-  }
-
-  @Override
-  @NotNull
   public String getStringValue() {
     return CwtPsiImplUtil.getStringValue(this);
   }

@@ -18,14 +18,14 @@ import icu.windea.pls.script.psi.*
 @Suppress("UnstableApiUsage")
 class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
-		private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
-		private val keyExpressionTypes = arrayOf(
+		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
+		private val keyExpressionTypes: Array<CwtKeyExpression.Type> = arrayOf(
 			CwtKeyExpression.Type.TypeExpression,
 			CwtKeyExpression.Type.TypeExpressionString,
 			CwtKeyExpression.Type.AliasName, //需要兼容alias
 			CwtKeyExpression.Type.AliasKeysField //需要兼容alias
 		)
-		private val valueExpressionTypes = arrayOf(
+		private val valueExpressionTypes: Array<CwtValueExpression.Type> = arrayOf(
 			CwtValueExpression.Type.TypeExpression,
 			CwtValueExpression.Type.TypeExpressionString,
 			CwtValueExpression.Type.SingleAliasRight, //需要兼容single_alias
@@ -55,7 +55,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 					
 				}
 			}
-		} else if(element is ParadoxScriptValue) {
+		} else if(element is ParadoxScriptString) {
 			val resolved = resolveValue(element) { it.type in valueExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
@@ -77,7 +77,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 			val resolved = primaryLocalisationConfig.locationExpression.resolve(definitionInfo.name, inferParadoxLocale(), project)
 			val localisation = resolved.second
 			if(localisation != null) {
-				val localizedName = localisation.extractText().truncate(truncateLimit) //TODO 渲染成富文本
+				val localizedName = localisation.extractText().truncate(getSettings().localisationTruncateLimit) //TODO 渲染成富文本
 				return smallText(localizedName)
 			}
 		}

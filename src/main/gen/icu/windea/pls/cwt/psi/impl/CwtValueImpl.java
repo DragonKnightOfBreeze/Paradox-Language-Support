@@ -48,10 +48,4 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
     return CwtPsiImplUtil.getValue(this);
   }
 
-  @Override
-  @NotNull
-  public String getTruncatedValue() {
-    return CwtPsiImplUtil.getTruncatedValue(this);
-  }
-
 }

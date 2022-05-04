@@ -48,10 +48,4 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
-  @Override
-  @NotNull
-  public String getTruncatedValue() {
-    return ParadoxScriptPsiImplUtil.getTruncatedValue(this);
-  }
-
 }

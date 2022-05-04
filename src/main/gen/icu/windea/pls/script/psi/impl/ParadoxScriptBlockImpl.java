@@ -53,12 +53,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public String getTruncatedValue() {
-    return ParadoxScriptPsiImplUtil.getTruncatedValue(this);
-  }
-
-  @Override
   public boolean isEmpty() {
     return ParadoxScriptPsiImplUtil.isEmpty(this);
   }

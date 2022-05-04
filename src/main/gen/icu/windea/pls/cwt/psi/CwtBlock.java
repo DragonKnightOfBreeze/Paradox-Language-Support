@@ -26,9 +26,6 @@ public interface CwtBlock extends CwtValue, PsiListLikeElement {
   @NotNull
   String getValue();
 
-  @NotNull
-  String getTruncatedValue();
-
   boolean isEmpty();
 
   boolean isNotEmpty();
