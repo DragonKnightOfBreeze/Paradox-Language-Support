@@ -21,18 +21,17 @@ object DdsToPngConverter {
 	private val ddsCache: Cache<String, Path> by lazy { createCache() } //ddsAbsPath - pngAbsPath
 	private val externalDdsCache: Cache<String, Path> by lazy { createCache() } //ddsAbsPath - pngAbsPath
 	
-	//TODO 需要检查DDS文件被更改的情况
-	
 	/**
 	 * 将DDS文件转化为PNG文件，返回PNG文件的绝对路径。如果发生异常，则返回null。
 	 * @param ddsAbsPath DDS文件的绝对路径。
 	 * @param ddsRelPath DDS文件相对于游戏或模组根路径的路径（如果可以获取）。
+	 * @param frame 帧数，用于切割DDS图片。默认为0表示不切割。
 	 */
-	fun convert(ddsAbsPath: String, ddsRelPath: String? = null, refresh: Boolean = false): String? {
+	fun convert(ddsAbsPath: String, ddsRelPath: String? = null, frame: Int = 0): String? {
 		try {
 			//如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
 			val pngAbsPath = getPngAbsPath(ddsAbsPath, ddsRelPath)
-			if(refresh || pngAbsPath.notExists()) {
+			if(pngAbsPath.notExists()) {
 				doConvertDdsToPng(ddsAbsPath, pngAbsPath)
 			}
 			return pngAbsPath.absolutePathString()
@@ -56,7 +55,7 @@ object DdsToPngConverter {
 	private fun doGetRelatedPngPath(ddsAbsPath: String, ddsRelPath: String?): Path {
 		if(ddsRelPath != null) {
 			//路径：~/.pls/images/${uuid}/${ddsRelPath}.png
-			val uuid = ddsAbsPath.removePrefix(ddsRelPath).toUUID().toString() //得到基于游戏或模组目录的绝对路径的UUID
+			val uuid = ddsAbsPath.removeSuffix(ddsRelPath).toUUID().toString() //得到基于游戏或模组目录的绝对路径的UUID
 			return PlsPaths.imagesDirectoryPath.resolve("$uuid/$ddsRelPath.png") //直接在包括扩展名的DDS文件名后面加上".png"
 		} else {
 			//路径：~/.pls/images/external/${uuid}/${ddsFileName}.png
@@ -77,6 +76,16 @@ object DdsToPngConverter {
 		ddsImageDecoder.convertToPNG(dds, outputStream)
 		outputStream.flush()
 		outputStream.close()
+	}
+	
+	/**
+	 * 移除DDS文件缓存，以便重新转化。
+	 * @param ddsAbsPath DDS文件的绝对路径。
+	 * @param frame 帧数，用于切割DDS图片。默认为0表示不切割。
+	 */
+	fun invalidate(ddsAbsPath: String, frame: Int = 0){
+		ddsCache.invalidate(ddsAbsPath)
+		externalDdsCache.invalidate(ddsAbsPath)
 	}
 	
 	fun getUnknownPngPath(): String {

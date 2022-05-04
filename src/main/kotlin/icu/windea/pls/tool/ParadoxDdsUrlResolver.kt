@@ -1,9 +1,12 @@
 package icu.windea.pls.tool
 
+import com.intellij.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.openapi.vfs.newvfs.events.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
+import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 import java.lang.invoke.*
@@ -84,16 +87,16 @@ object ParadoxDdsUrlResolver {
 	}
 	
 	private fun doResolveByFile(file: VirtualFile): String? {
+		if(file.fileType != DdsFileType) return null
 		//如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径
 		val fileInfo = file.fileInfo
 		val rootPath = fileInfo?.rootPath
 		val ddsRelPath = fileInfo?.path?.path
 		val ddsAbsPath = if(rootPath != null && ddsRelPath != null) {
-			rootPath.resolve(ddsRelPath).normalize().toString()
+			rootPath.absolutePathString() + "/" + ddsRelPath
 		} else {
 			file.toNioPath().absolutePathString()
 		}
-		//TODO 如果文件内容已更改，需要刷新
 		return DdsToPngConverter.convert(ddsAbsPath, ddsRelPath)
 	}
 	
@@ -111,4 +114,3 @@ object ParadoxDdsUrlResolver {
 		return VfsUtil.findFile(absPngPath.toPath(), true)
 	}
 }
-

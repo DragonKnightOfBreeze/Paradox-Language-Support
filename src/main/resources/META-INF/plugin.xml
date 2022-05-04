@@ -84,6 +84,10 @@
 
   <resource-bundle>messages.PlsBundle</resource-bundle>
 
+  <applicationListeners>
+    <listener class="icu.windea.pls.dds.DdsFileListener" topic="com.intellij.openapi.vfs.AsyncFileListener"/>
+  </applicationListeners>
+  
   <extensions defaultExtensionNs="com.intellij">
     <!--region Core-->
     <!--suppress PluginXmlValidity -->

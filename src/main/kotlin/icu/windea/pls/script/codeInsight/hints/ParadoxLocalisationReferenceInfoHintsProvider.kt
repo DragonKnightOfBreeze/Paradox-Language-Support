@@ -51,7 +51,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
 					val presentation = collectLocalisation(resolved)
-					val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
+					val finalPresentation = presentation?.toFinalPresentation(this, file, element.project) ?: return true
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
 				}
@@ -62,7 +62,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
 					val presentation = collectLocalisation(resolved)
-					val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
+					val finalPresentation = presentation?.toFinalPresentation(this, file, element.project) ?: return true
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
 				}
@@ -71,8 +71,9 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 		return true
 	}
 	
-	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty): InlayPresentation {
-		val text = localisation.extractText().truncate(getSettings().localisationTruncateLimit) //TODO 渲染成富文本
+	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty): InlayPresentation? {
+		//TODO 渲染成富文本
+		val text = localisation.value?.truncate(getSettings().localisationTruncateLimit) ?: return null
 		return smallText(text)
 	}
 }

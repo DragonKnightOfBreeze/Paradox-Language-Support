@@ -77,7 +77,8 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 			val resolved = primaryLocalisationConfig.locationExpression.resolve(definitionInfo.name, inferParadoxLocale(), project)
 			val localisation = resolved.second
 			if(localisation != null) {
-				val localizedName = localisation.extractText().truncate(getSettings().localisationTruncateLimit) //TODO 渲染成富文本
+				//TODO 渲染成富文本
+				val localizedName = localisation.value?.truncate(getSettings().localisationTruncateLimit)?:return null
 				return smallText(localizedName)
 			}
 		}
