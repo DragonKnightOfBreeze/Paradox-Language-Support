@@ -3,6 +3,7 @@
 package icu.windea.pls
 
 import com.google.common.cache.*
+import com.intellij.util.SmartList
 import com.intellij.util.io.*
 import java.io.*
 import java.net.*
@@ -188,9 +189,77 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) block(this) else this
 
-fun String.toCommaDelimitedStringList(): List<String> = if(this.isEmpty()) emptyList() else this.split(',')
+fun String.toCommaDelimitedStringList(): List<String> {
+	val input = this.trim()
+	return if(input.isEmpty()) emptyList() else input.splitToSequence(',').mapTo(SmartList()) { it.trim() }
+}
 
-fun List<String>.toCommaDelimitedString(): String = if(this.isEmpty()) "" else this.joinToString(",")
+fun List<String>.toCommaDelimitedString(): String {
+	val input = this
+	return if(input.isEmpty()) "" else input.joinToString(",")
+}
+
+/**
+ * 判断当前路径是否匹配另一个ANT路径通配符。使用"."匹配单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
+ */
+fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean {
+	val usedPath = this.trimEnd('/')
+	val usedPattern = pattern.trimEnd('/')
+	var flag = false
+	val patternLength = usedPattern.length
+	var patternIndex = 0
+	val pathLength = usedPath.length
+	var pathIndex = 0
+	while(patternIndex < patternLength){
+		val c = pattern[patternIndex]
+		when {
+			flag -> {
+				patternIndex++
+				val nc =pattern.getOrNull(patternIndex)
+				if(nc == '*') {
+					patternIndex++
+					val nextPatternChar = usedPattern.getOrNull(patternIndex) ?: return true
+					while(true){
+						if(pathIndex >= pathLength) return true
+						val c1 = usedPath[pathIndex]
+						if(c1.equals(nextPatternChar, ignoreCase)) break
+						pathIndex++
+					}
+					flag = false
+				} else {
+					val nextPatternChar = nc
+					while(true){
+						if(pathIndex >= pathLength) return true
+						val c1 = usedPath[pathIndex]
+						if(c1 == '/') break
+						if(nextPatternChar != null && c1.equals(nextPatternChar, ignoreCase)) break
+						pathIndex++
+					}
+					flag = false
+					continue
+				}
+			}
+			c == '.' -> {
+				if(pathIndex == pathLength - 1) return true
+				pathIndex++
+				if(pathIndex > pathLength) return false
+				patternIndex++
+			}
+			c == '*' -> {
+				flag = true
+			}
+			else -> {
+				val cc = usedPath[pathIndex]
+				if(!cc.equals(c,ignoreCase)) return false
+				if(pathIndex == pathLength - 1) return true
+				pathIndex++
+				if(pathIndex > pathLength) return false
+				patternIndex++
+			}
+		}
+	}
+	return flag
+}
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
@@ -404,8 +473,8 @@ fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
 	return result
 }
 
-inline fun <T, R:Any, C : MutableCollection<in R>> Iterable<T>.mapNotNullTo(destination: C, transform: (T) -> R?): C {
-	for (item in this) {
+inline fun <T, R : Any, C : MutableCollection<in R>> Iterable<T>.mapNotNullTo(destination: C, transform: (T) -> R?): C {
+	for(item in this) {
 		val result = transform(item)
 		if(result != null) destination.add(result)
 	}

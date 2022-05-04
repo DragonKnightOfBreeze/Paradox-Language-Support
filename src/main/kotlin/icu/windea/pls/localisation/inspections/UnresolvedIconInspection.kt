@@ -7,8 +7,6 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
-//com.intellij.codeInspection.incorrectFormatting.IncorrectFormattingInspection
-
 /**
  * 无法解析的图表的检查。
  *
@@ -41,7 +39,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 				label(PlsBundle.message("localisation.inspection.unresolvedIcon.option.ignoredIconNameRegex")).applyToComponent {
 					toolTipText = PlsBundle.message("localisation.inspection.unresolvedIcon.option.ignoredIconNameRegex.tooltip")
 				}
-				this.textField().bindText({ ignoredIconNameRegex.toString() }, { ignoredIconNameRegex = it.toRegex(RegexOption.IGNORE_CASE) })
+				textField().bindText({ ignoredIconNameRegex.toString() }, { ignoredIconNameRegex = it.toRegex(RegexOption.IGNORE_CASE) })
 			}
 		}
 	}
