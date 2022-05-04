@@ -50,7 +50,9 @@ class ChangeColorIntention : IntentionAction {
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
 		override fun onChosen(selectedValue: ParadoxColorConfig, finalChoice: Boolean): PopupStep<*>? {
-			runWriteAction { value.name = selectedValue.id }
+			runUndoTransparentWriteAction {
+				value.name = selectedValue.id
+			}
 			return PopupStep.FINAL_CHOICE
 		}
 	}

@@ -50,8 +50,9 @@ class ChangeSequentialNumberIntention : IntentionAction {
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
 		override fun onChosen(selectedValue: ParadoxSequentialNumberConfig, finalChoice: Boolean): PopupStep<*>? {
-			//需要在WriteCommandAction里面执行
-			runWriteAction { value.name = selectedValue.id }
+			runUndoTransparentWriteAction {
+				value.name = selectedValue.id
+			}
 			return PopupStep.FINAL_CHOICE
 		}
 	}

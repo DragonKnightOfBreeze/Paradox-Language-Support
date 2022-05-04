@@ -50,7 +50,9 @@ class ChangeLocaleIntention : IntentionAction {
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
 		override fun onChosen(selectedValue: ParadoxLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
-			runWriteAction { value.name = selectedValue.id }
+			runUndoTransparentWriteAction {
+				value.name = selectedValue.id
+			}
 			return PopupStep.FINAL_CHOICE
 		}
 	}

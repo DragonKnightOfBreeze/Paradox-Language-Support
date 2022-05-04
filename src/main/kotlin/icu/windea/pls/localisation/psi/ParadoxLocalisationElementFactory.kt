@@ -13,7 +13,7 @@ object ParadoxLocalisationElementFactory {
 
 	@JvmStatic
 	fun createLocale(project: Project, locale: String): ParadoxLocalisationLocale {
-		return createDummyFile(project, "$locale:").locale!!
+		return createDummyFile(project, "$locale:\n").locale!!
 	}
 
 	@JvmStatic

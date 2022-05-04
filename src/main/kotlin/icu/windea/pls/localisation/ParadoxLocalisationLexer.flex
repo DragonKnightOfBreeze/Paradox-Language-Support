@@ -17,7 +17,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %state WAITING_LOCALE_COLON
 %state WAITING_LOCALE_END
-%state WAITING_PROPERTY_KEY
 %state WAITING_PROPERTY_COLON
 %state WAITING_PROPERTY_NUMBER
 %state WAITING_PROPERTY_VALUE
@@ -42,6 +41,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %state WAITING_CHECK_RIGHT_QUOTE
 
 %{
+  private boolean noIndent = true;
   private int depth = 0;
   private int commandLocation = 0;
   private int propertyReferenceLocation = 0;
@@ -92,14 +92,15 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 //Stellaris官方本地化文件中本身就存在语法解析错误，需要保证存在错误的情况下仍然会解析后续的本地化文本，草
 
-EOL=\s*\R\s*
-WHITE_SPACE=[ \t]+
+EOL=\s*\R
+BLANK=\s+
+WHITE_SPACE=[\s&&[^\r\n]]+
 
 COMMENT=#[^\r\n]*
 //行尾注释不能包含双引号，否则会有解析冲突
 END_OF_LINE_COMMENT=#[^\"\r\n]*
 NUMBER=\d+
-LOCALE_ID=[a-z_]+
+//LOCALE_ID=[a-z_]+
 PROPERTY_KEY_ID=[a-zA-Z0-9_.\-']+
 VALID_ESCAPE_TOKEN=\\[rnt\"$£§%\[]
 INVALID_ESCAPE_TOKEN=\\.
@@ -115,11 +116,12 @@ COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
 COLOR_ID=[a-zA-Z]
 //双引号和百分号实际上不需要转义
 STRING_TOKEN=[^\"%$£§\[\r\n\\]+
-//[123
+
+CHECK_LOCALE_ID=[a-z_]+:\s*[\r\n]
 CHECK_PROPERTY_REFERENCE_START=\$[^\$\s\"]*.?
 CHECK_ICON_START=£.?
 CHECK_SEQUENTIAL_NUMBER_START=%.?.?
-CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@ \t]*.?
+CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@\s&&[^\r\n]]*.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 
@@ -128,49 +130,63 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 //同一状态下的规则无法保证顺序
 
 <YYINITIAL> {
-  {EOL} {return WHITE_SPACE; }
-  {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
-  {COMMENT} {return COMMENT; }
-  {LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
-  {PROPERTY_KEY_ID} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID; } //为了兼容快速定义功能
+  {EOL} {noIndent=true; return WHITE_SPACE; }
+  {WHITE_SPACE} {noIndent=false; return WHITE_SPACE; } //继续解析
+  {COMMENT} {return COMMENT; } //这里可以有注释
+  {CHECK_LOCALE_ID} { //同一本地化文件中是可以有多个locale的，这是为了兼容localisation/languages.yml
+	//locale应该在之后的冒号和换行符之间没有任何字符或者只有空白字符
+    CharSequence text = yytext();
+    int length = text.length();
+    int i = length - 2;
+    while(i >= 0){
+ 	    char c = text.charAt(i);
+ 	    if(c == ':') {
+ 		    int pushback = length - i;
+			yypushback(pushback);
+			//locale之前必须没有任何缩进
+			if(noIndent){
+ 		        yybegin(WAITING_LOCALE_COLON);
+ 		        return LOCALE_ID;
+			} else {
+				yybegin(WAITING_PROPERTY_COLON);
+				return PROPERTY_KEY_ID;
+			}
+ 	    }
+ 	    i--;
+    }
+    return TokenType.BAD_CHARACTER; //不应该发生
+  }
+  //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
+  {PROPERTY_KEY_ID} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID; }
 }
-
 <WAITING_LOCALE_COLON>{
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   ":" {yybegin(WAITING_LOCALE_END); return COLON; }
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
 }
 <WAITING_LOCALE_END>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT; }
 }
-
-<WAITING_PROPERTY_KEY> {
-  {EOL} {return WHITE_SPACE; }
-  {WHITE_SPACE} {return WHITE_SPACE; }
-  {COMMENT} {return COMMENT; }
-  {LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
-  {PROPERTY_KEY_ID} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID; }
-}
 <WAITING_PROPERTY_COLON>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE;}
   ":" {yybegin(WAITING_PROPERTY_NUMBER); return COLON; }
 }
 <WAITING_PROPERTY_NUMBER>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(WAITING_PROPERTY_VALUE); return WHITE_SPACE;}
   {NUMBER} {yybegin(WAITING_PROPERTY_VALUE); return NUMBER;}
 }
 <WAITING_PROPERTY_VALUE> {
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE;}
   \" {yybegin(WAITING_RICH_TEXT); return LEFT_QUOTE; }
 }
 
 <WAITING_RICH_TEXT>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
   {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
   {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
@@ -185,7 +201,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 }
 
 <WAITING_PROPERTY_REFERENCE>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; } 
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; } 
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE;}
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;}
@@ -205,7 +221,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 }
 
 <WAITING_ICON>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
@@ -217,7 +233,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {ICON_ID} {yybegin(WAITING_ICON_NAME_FINISHED); return ICON_ID;}
 }
 <WAITING_ICON_NAME_FINISHED>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
@@ -228,7 +244,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
 }
 <WAITING_ICON_PARAMETER>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {propertyReferenceLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
@@ -239,7 +255,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 }
 
 <WAITING_SEQUENTIAL_NUMBER>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "%" {yybegin(nextStateForText()); return SEQUENTIAL_NUMBER_END;}
@@ -249,7 +265,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 }
 
 <WAITING_COMMAND_SCOPE_OR_FIELD>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "]" {yybegin(nextStateForCommand()); return COMMAND_END;}
@@ -260,7 +276,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {COMMAND_FIELD_ID_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_ID;}
 }
 <WAITING_COMMAND_SEPARATOR>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "]" {yybegin(nextStateForCommand()); return COMMAND_END;}
@@ -271,7 +287,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 }
 
 <WAITING_COLOR_ID>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(WAITING_COLORFUL_TEXT); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
@@ -280,7 +296,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   [^] {yypushback(yylength()); yybegin(WAITING_COLORFUL_TEXT); } //提高兼容性
 }
 <WAITING_COLORFUL_TEXT>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {VALID_ESCAPE_TOKEN} {return VALID_ESCAPE_TOKEN;}
   {INVALID_ESCAPE_TOKEN} {return INVALID_ESCAPE_TOKEN;}
   {DOUBLE_LEFT_BRACKET} {return DOUBLE_LEFT_BRACKET;}
@@ -295,7 +311,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
 }
 
 <WAITING_PROPERTY_END>{
-  {EOL} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE; }
+  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}

@@ -12,7 +12,7 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 /**
- * 同一文件中重复的属性声明的检查。
+ * 同一文件中重复的（同一语言区域的）属性声明的检查。
  *
  * 提供快速修复：
  * * 导航到重复项
@@ -23,9 +23,8 @@ class DuplicatePropertiesInFileInspection : LocalInspectionTool() {
 	}
 	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
-		override fun visitFile(file: PsiFile) {
-			if(file !is ParadoxLocalisationFile) return
-			val propertyGroup = file.properties.groupBy { it.name }
+		override fun visitPropertyList(element: ParadoxLocalisationPropertyList) {
+			val propertyGroup = element.propertyList.groupBy { it.name }
 			for((key, values) in propertyGroup) {
 				if(values.size <= 1) continue
 				for(value in values) {

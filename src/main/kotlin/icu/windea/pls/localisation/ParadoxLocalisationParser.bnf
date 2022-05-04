@@ -18,15 +18,17 @@
 //直接导向token的rule，在flex文件中需要使用对应的token
 //即使idea提示不需要转义，一些字符在regexp中仍然需要转义
 
-root ::= property_list {
-  pin=1
-}
-property_list ::= COMMENT * locale property_item * {
+
+root ::= property_list *
+//locale之前可以添加注释，wiki中的说明有误
+property_list ::= COMMENT * locale COMMENT * property_item * {
   pin=2
+  recoverWhile=property_list_recover
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getComponents]
 }
 private property_item ::= END_OF_LINE_COMMENT | COMMENT | property
+private property_list_recover ::= !(COMMENT | LOCALE_ID)
 
 locale ::= LOCALE_ID COLON {
   pin=1
@@ -39,7 +41,7 @@ private locale_recover ::= !(COMMENT | END_OF_LINE_COMMENT | PROPERTY_KEY_ID)
 
 property ::= property_key COLON property_key_no? property_value {
   pin=1
-  recoverWhile=property_recover
+  recoverWhile=property_recover 
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes.getPropertyType"
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"

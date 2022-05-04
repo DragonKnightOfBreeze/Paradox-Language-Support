@@ -34,8 +34,9 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 }
 %}
 
-EOL=\s*\R\s*
-WHITE_SPACE=[ \t]+
+EOL=\s*\R
+WHITE_SPACE=[\s&&[^\r\n]]+
+BLANK=\s+
 
 COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\r\n]*
@@ -48,23 +49,21 @@ INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 STRING_TOKEN=[^@\s\{\}=\"][^\s\{\}=\"]*
 QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
-COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}
+COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d.\s&&[^\r\n]]*}
 CODE_TEXT_TOKEN=[^\r\n\]}]+
 
-//为了兼容cwt规则文件（<xxx>格式的propertyKey），需要弄得很麻烦
-//要求=周围可以没有空格，但其他分隔符如<=周围必须有
-IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})((\s*=)|(\s+[=<>]))
+//判断接下来是否是属性
+IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})\s*[=<>]
 //判断接下来是变量名还是变量引用
 IS_VARIABLE={VARIABLE_NAME_ID}\s*=
 
 %%
 
 <YYINITIAL> {
+  {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "@\\[" {yybegin(WAITING_CODE); return CODE_START;} //这里的反斜线需要转义
-  {EOL} {return WHITE_SPACE;}
-  {WHITE_SPACE} {return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   {VARIABLE_NAME_ID} {yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID;}
   //在这里根据后面是否有"="判断是否是property
@@ -77,14 +76,14 @@ IS_VARIABLE={VARIABLE_NAME_ID}\s*=
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_VARIABLE_EQUAL_SIGN> {
+  {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "=" {yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;}
-  {EOL} {return WHITE_SPACE;}
-  {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 <WAITING_VARIABLE_VALUE> {
+  {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   {BOOLEAN_TOKEN} {yybegin(WAITING_VARIABLE_END); return BOOLEAN_TOKEN;}
@@ -92,24 +91,21 @@ IS_VARIABLE={VARIABLE_NAME_ID}\s*=
   {FLOAT_TOKEN} {yybegin(WAITING_VARIABLE_END); return FLOAT_TOKEN;}
   {STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return STRING_TOKEN;}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return QUOTED_STRING_TOKEN;}
-  {EOL} { return WHITE_SPACE; }
-  {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 <WAITING_VARIABLE_END> {
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   {EOL} {yybegin(nextState()); return WHITE_SPACE;}
   {WHITE_SPACE} {return WHITE_SPACE;}
+  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
+  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 
 <WAITING_PROPERTY_KEY> {
+  {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "@\\[" {yybegin(WAITING_CODE); return CODE_START;} //这里的反斜线需要转义
-  {EOL} {return WHITE_SPACE;}
-  {WHITE_SPACE} {return WHITE_SPACE;}
   {COMMENT} {return COMMENT;}
   {IS_VARIABLE} {
     //如果匹配到的文本以等号结尾，则将空白之前的部分解析为VARIABLE_NAME_ID，否则将其解析为VARIABLE_REFERENCE_ID
@@ -145,6 +141,7 @@ IS_VARIABLE={VARIABLE_NAME_ID}\s*=
   {QUOTED_PROPERTY_KEY_ID} {yybegin(WATIING_PROPERTY_SEPARATOR); return QUOTED_PROPERTY_KEY_ID;}
 }
 <WATIING_PROPERTY_SEPARATOR> {
+  {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
@@ -153,16 +150,13 @@ IS_VARIABLE={VARIABLE_NAME_ID}\s*=
   "<=" {yybegin(WAITING_PROPERTY_VALUE); return LE_SIGN;}
   ">=" {yybegin(WAITING_PROPERTY_VALUE); return GE_SIGN;}
   "<>" {yybegin(WAITING_PROPERTY_VALUE); return NOT_EQUAL_SIGN;}
-  {EOL} {return WHITE_SPACE;}
-  {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 <WAITING_PROPERTY_VALUE>{
+  {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "@\\[" {yybegin(WAITING_CODE); return CODE_START;} //这里的反斜线需要转义
-  {EOL} {return WHITE_SPACE;}
-  {WHITE_SPACE} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
   {VARIABLE_REFERENCE_ID} {yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
@@ -173,19 +167,19 @@ IS_VARIABLE={VARIABLE_NAME_ID}\s*=
   {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
 }
 <WAITING_PROPERTY_END> {
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   {EOL} {yybegin(nextState()); return WHITE_SPACE;}
   {WHITE_SPACE} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE;} //只要有空白相间隔，就可以在写同一行
+  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
+  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 
 <WAITING_CODE>{
+  {EOL} {yybegin(nextState()); return WHITE_SPACE;}
+  {CODE_TEXT_TOKEN} {return CODE_TEXT_TOKEN;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "]" {yybegin(WAITING_PROPERTY_END); return CODE_END;}
-  {EOL} {yybegin(nextState()); return WHITE_SPACE;}
-  {CODE_TEXT_TOKEN} {return CODE_TEXT_TOKEN;}
 }
 
 [^] {return BAD_CHARACTER;}
