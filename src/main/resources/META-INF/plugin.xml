@@ -251,7 +251,7 @@
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
     <completion.contributor
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptCompletionContributor"/>
+        implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
     <codeInsight.typeInfo
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
@@ -287,15 +287,16 @@
                      bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
+    
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.missingEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection"
+                     bundle="messages.PlsBundle" key="script.inspection.internal.missingEventNamespace"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal" groupPathKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.internal.MissingEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.mismatchedEventId"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection"
+                     bundle="messages.PlsBundle" key="script.inspection.internal.mismatchedEventId"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal" groupPathKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.internal.MismatchedEventIdInspection"/>
     <!--endregion-->
 
@@ -367,7 +368,7 @@
         implementation="icu.windea.pls.localisation.refactoring.ParadoxLocalisationPropertyRenameInputValidator"/>
     <completion.contributor
         language="PARADOX_LOCALISATION"
-        implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationCompletionContributor"/>
+        implementationClass="icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationCompletionContributor"/>
     <codeInsight.lineMarkerProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
@@ -415,7 +416,7 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.unsupportedColor"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.UnsupportedColorInspection"/>
-    <!--默认关闭：存在一些生成的图标-->
+    
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="localisation.inspection.unresolvedIcon"
@@ -431,11 +432,11 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.IncorrectFileEncodingInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocale"
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocales"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="localisation.inspection.multipleLocales"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
-                     implementationClass="icu.windea.pls.localisation.inspections.MultipleLocaleInspection"/>
+                     implementationClass="icu.windea.pls.localisation.inspections.MultipleLocalesInspection"/>
     <!--endregion-->
   </extensions>
 </idea-plugin>

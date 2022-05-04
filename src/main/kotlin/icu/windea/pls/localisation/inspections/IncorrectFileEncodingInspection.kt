@@ -20,7 +20,7 @@ import icu.windea.pls.*
  * * 改为正确的文件编码
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
-	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
+	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
 		val virtualFile = file.virtualFile ?: return null
 		val charset = virtualFile.charset
 		val hasBom = virtualFile.hasBom(utf8Bom)

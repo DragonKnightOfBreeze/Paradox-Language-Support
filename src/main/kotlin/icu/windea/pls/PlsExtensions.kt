@@ -105,7 +105,7 @@ fun getEventNamespace(event: ParadoxDefinitionProperty): String?{
 			val namespace = current.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: return null
 			return namespace.stringValue
 		}
-		current = event.prevSibling ?: return null
+		current = current.prevSibling ?: return null
 	}
 }
 

@@ -15,10 +15,11 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
 		if(file !is ParadoxScriptFile) return null
 		val fileInfo = file.fileInfo ?: return null
 		if(fileInfo.path.root != "events") return null
-		val eventNamespace = file.findChild {  it -> it is ParadoxScriptProperty && it.name.equals("namespace", true) }
+		val rootBlock = file.block ?: return null
+		val eventNamespace = rootBlock.findChild {  it -> it is ParadoxScriptProperty && it.name.equals("namespace", true) }
 		if(eventNamespace == null) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
-			holder.registerProblem(file, PlsBundle.message("script.inspection.missingEventNamespace.description"))
+			holder.registerProblem(file, PlsBundle.message("script.inspection.internal.missingEventNamespace.description"))
 			return holder.resultsArray
 		}
 		return null

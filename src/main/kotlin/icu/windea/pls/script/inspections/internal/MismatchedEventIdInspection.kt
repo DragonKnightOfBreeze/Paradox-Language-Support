@@ -19,9 +19,10 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
 		if(file !is ParadoxScriptFile) return null
 		val fileInfo = file.fileInfo ?: return null
 		if(fileInfo.path.root != "events") return null
-		val properties = file.properties
+		val rootBlock = file.block ?: return null
+		val properties = rootBlock.propertyList
 		if(properties.isEmpty()) return null //空文件，不进行检查
-		if(properties.first { it.name.equals("namespace", true) } == null) return null //没有事件命名空间，不进行检查
+		if(properties.find { it.name.equals("namespace", true) } == null) return null //没有事件命名空间，不进行检查
 		val eventGroup: MutableMap<String, MutableList<ParadoxScriptProperty>> = mutableMapOf()
 		var nextNamespace = ""
 		for(property in properties) {
@@ -47,7 +48,7 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
 				if(!eventId.startsWith(eventIdPrefix)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
 					holder.registerProblem(
-						eventIdProperty, PlsBundle.message("script.inspection.mismatchedEventId.description", eventId, namespace),
+						eventIdProperty, PlsBundle.message("script.inspection.internal.mismatchedEventId.description", eventId, namespace),
 						//RenameEventId(eventIdPropValue)
 					)
 				}
@@ -59,9 +60,9 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
 	private class RenameEventId(
 		element: ParadoxScriptValue
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		override fun getFamilyName() = PlsBundle.message("script.inspection.mismatchedEventId.quickFix.1")
+		override fun getFamilyName() = PlsBundle.message("script.inspection.internal.mismatchedEventId.quickFix.1")
 		
-		override fun getText() = PlsBundle.message("script.inspection.mismatchedEventId.quickFix.1")
+		override fun getText() = PlsBundle.message("script.inspection.internal.mismatchedEventId.quickFix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return

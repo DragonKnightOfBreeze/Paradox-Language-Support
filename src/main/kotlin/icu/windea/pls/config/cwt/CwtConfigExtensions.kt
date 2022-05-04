@@ -14,7 +14,6 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import kotlin.text.removeSurrounding
@@ -1023,8 +1022,8 @@ fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: Compl
 	}
 }
 
-fun completeLocalisationCommand(commandField: ParadoxLocalisationCommandField,
-	configGroup: CwtConfigGroup, result: CompletionResultSet) {
+fun completeLocalisationCommand(configGroup: CwtConfigGroup,
+	result: CompletionResultSet) {
 	//val keyword = commandField.keyword
 	val localisationCommands = configGroup.localisationCommands
 	if(localisationCommands.isEmpty()) return

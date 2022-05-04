@@ -74,6 +74,7 @@ class ParadoxScriptBlock(
 	}
 
 	override fun isLeaf(): Boolean {
+		//顶级块不是叶子节点
 		return myNode.firstChildNode == null
 	}
 }
