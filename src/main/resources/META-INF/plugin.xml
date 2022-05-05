@@ -4,7 +4,7 @@
   <category>Languages</category>
 
   <vendor email="dk_breeze@qq.com" url="https://github.com/DragonKnightOfBreeze">DragonKnightOfBreeze</vendor>
-  
+
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
 
@@ -87,7 +87,7 @@
   <applicationListeners>
     <listener class="icu.windea.pls.dds.DdsFileListener" topic="com.intellij.openapi.vfs.AsyncFileListener"/>
   </applicationListeners>
-  
+
   <extensions defaultExtensionNs="com.intellij">
     <!--region Core-->
     <!--suppress PluginXmlValidity -->
@@ -276,7 +276,9 @@
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
     <typeDeclarationProvider
         implementation="icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider"/>
-    <gotoRelatedProvider implementation=""
+    <declarationRangeHandler
+        key="icu.windea.pls.script.psi.ParadoxScriptProperty"
+        implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxDefinitionLineMarkerProvider"/>
@@ -307,16 +309,18 @@
                      bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
-    
+
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.internal.missingEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal" groupPathKey="script.inspection"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
+                     groupPathKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.internal.MissingEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.internal.mismatchedEventId"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal" groupPathKey="script.inspection"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
+                     groupPathKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.internal.MismatchedEventIdInspection"/>
     <!--endregion-->
 
@@ -392,6 +396,9 @@
     <codeInsight.lineMarkerProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
+    <declarationRangeHandler
+        key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList"
+        implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangHandler"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
@@ -436,7 +443,7 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.unsupportedColor"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.UnsupportedColorInspection"/>
-    
+
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="localisation.inspection.unresolvedIcon"
