@@ -1,7 +1,7 @@
 package icu.windea.pls.script.codeInsight.makers
 
 import com.intellij.codeInsight.daemon.*
-import com.intellij.codeInsight.navigation.*
+import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -28,8 +28,9 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		}
 		val project = element.project
 		val targets = findDefinitionsByType(definitionInfo.name, definitionInfo.type, project)
+		if(targets.isEmpty()) return
 		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
-		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
+		val lineMarkerInfo = createNavigationGutterIconBuilder(icon){ createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.definition.title"))
 			.setTargets(targets)
@@ -37,5 +38,9 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			.setNamer { PlsBundle.message("script.gutterIcon.definition") }
 			.createLineMarkerInfo(locationElement)
 		result.add(lineMarkerInfo)
+	}
+	
+	private fun createGotoRelatedItem(targets:List<ParadoxDefinitionProperty>): Collection<GotoRelatedItem>{
+		return GotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.definition"))
 	}
 }

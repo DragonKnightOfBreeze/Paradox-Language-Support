@@ -135,7 +135,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildStringDefinition(element: CwtString, name: String) {
 		val configTypeText = element.configType?.text
 		definition {
-			if(configTypeText != null) append("(").append(configTypeText).append(") ")
+			if(configTypeText != null) append(configTypeText).append(" ")
 			append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 		}
 	}

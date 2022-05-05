@@ -1,6 +1,8 @@
 package icu.windea.pls.script.codeInsight
 
 import com.intellij.codeInsight.navigation.actions.*
+import com.intellij.navigation.GotoRelatedProvider
+import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*

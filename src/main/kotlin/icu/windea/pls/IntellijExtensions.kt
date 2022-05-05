@@ -5,8 +5,10 @@ package icu.windea.pls
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.codeInsight.navigation.*
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
+import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
@@ -22,8 +24,10 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
+import com.intellij.util.containers.*
 import java.io.*
 import java.util.*
+import javax.swing.*
 
 //region Misc Extensions
 val fontSize get() = DocumentationComponent.getQuickDocFontSize()
@@ -104,6 +108,14 @@ fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
 //fun intern(table: CharTable, node: LighterASTTokenNode): String {
 //	return table.intern(node.text).toString()
 //}
+
+private val DEFAULT_PSI_CONVERTOR = NotNullFunction<PsiElement, Collection<PsiElement>> { element: PsiElement ->
+	ContainerUtil.createMaybeSingletonList(element)
+}
+
+fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiElement)-> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<PsiElement> {
+	return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
+}
 //endregion
 
 //region Documentation Extensions

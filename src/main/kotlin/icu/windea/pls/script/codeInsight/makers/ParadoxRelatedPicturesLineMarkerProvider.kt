@@ -1,7 +1,7 @@
 package icu.windea.pls.script.codeInsight.makers
 
 import com.intellij.codeInsight.daemon.*
-import com.intellij.codeInsight.navigation.*
+import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -38,9 +38,10 @@ class ParadoxRelatedPicturesLineMarkerProvider : RelatedItemLineMarkerProvider()
 			}
 		}
 		if(keys.isEmpty()) return
+		if(targets.isEmpty()) return
 		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
 		val tooltip = tooltipBuilder.toString()
-		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
+		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.relatedPictures.title"))
 			.setTargets(targets)
@@ -48,5 +49,9 @@ class ParadoxRelatedPicturesLineMarkerProvider : RelatedItemLineMarkerProvider()
 			.setNamer { PlsBundle.message("script.gutterIcon.relatedPictures") }
 			.createLineMarkerInfo(locationElement)
 		result.add(lineMarkerInfo)
+	}
+	
+	private fun createGotoRelatedItem(targets: Set<PsiElement>): Collection<GotoRelatedItem> {
+		return GotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.relatedPictures.group"))
 	}
 }

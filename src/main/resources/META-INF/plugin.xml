@@ -276,6 +276,7 @@
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
     <typeDeclarationProvider
         implementation="icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider"/>
+    <gotoRelatedProvider implementation=""
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxDefinitionLineMarkerProvider"/>

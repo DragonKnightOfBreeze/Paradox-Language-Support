@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.makers
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.navigation.*
+import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -39,9 +40,10 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 			}
 		}
 		if(keys.isEmpty()) return
+		if(targets.isEmpty()) return
 		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
 		val tooltip = tooltipBuilder.toString()
-		val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
+		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisation.title"))
 			.setTargets(targets)
@@ -49,5 +51,9 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 			.setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisation") }
 			.createLineMarkerInfo(locationElement)
 		result.add(lineMarkerInfo)
+	}
+	
+	private fun createGotoRelatedItem(targets: Set<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
+		return GotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.relatedLocalisation.group"))
 	}
 }

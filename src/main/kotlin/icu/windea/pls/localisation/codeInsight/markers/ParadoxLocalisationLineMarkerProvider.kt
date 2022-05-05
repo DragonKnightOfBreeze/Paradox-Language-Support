@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.codeInsight.markers
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.navigation.*
+import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -24,15 +25,16 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			
 			val icon = PlsIcons.localisationGutterIcon
 			val tooltip = buildString {
-				append("${category} <b>").append(name).append("</b>")
+				append("$category <b>").append(name).append("</b>")
 			}
 			val project = element.project
 			val targets = when(category) {
 				Localisation -> findLocalisations(name, null, project, hasDefault = true)
 				SyncedLocalisation -> findSyncedLocalisations(name, null, project, hasDefault = true)
 			}
+			if(targets.isEmpty()) return
 			val locationElement = element.propertyKey.propertyKeyId
-			val lineMarkerInfo = NavigationGutterIconBuilder.create(icon)
+			val lineMarkerInfo = createNavigationGutterIconBuilder(icon){ createGotoRelatedItem(targets)}
 				.setTooltipText(tooltip)
 				.setPopupTitle(PlsBundle.message("localisation.gutterIcon.localisation.title"))
 				.setTargets(targets)
@@ -43,4 +45,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		}
 	}
 	
+	private fun createGotoRelatedItem(targets: List<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
+		return GotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
+	}
 }
