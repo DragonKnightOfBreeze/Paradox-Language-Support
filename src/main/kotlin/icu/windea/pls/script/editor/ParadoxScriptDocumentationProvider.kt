@@ -197,7 +197,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		if(getSettings().scriptRenderRelatedLocalisation) {
 			if(map.isNotEmpty()) {
 				for((key, target) in map) {
-					val richText = target.renderText()
+					val richText = ParadoxLocalisationTextRenderer.render(target)
 					sections.put(key, richText)
 				}
 			}

@@ -37,4 +37,13 @@ object ParadoxLocalisationAttributesKeys {
 			})
 		}
 	}
+	
+	val COLOR_ONLY_KEYS by lazy {
+		val colorPrefix = PlsBundle.message("localisation.externalName.color")
+		getInternalConfig().colorMap.mapValues { (_, color) ->
+			createTextAttributesKey("${colorPrefix}_${color.id}", TextAttributes().apply { 
+				foregroundColor = color.color
+			})
+		}
+	}
 }

@@ -55,7 +55,7 @@ object ParadoxLocalisationTextRenderer {
 				return
 			}
 		}
-		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，保留颜色码
+		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
 		if(rgbText != null) {
 			builder.append("<code style=\"color: ").append(rgbText).append("\">").append(element.text).append("</code>")
 		} else {

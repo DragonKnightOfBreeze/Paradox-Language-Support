@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.tool.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
@@ -194,7 +195,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
 		//加上渲染后的本地化文本
 		if(getSettings().localisationRenderLocalisation) {
-			val richText = element.renderText()
+			val richText = ParadoxLocalisationTextRenderer.render(element)
 			if(richText.isNotEmpty()) {
 				sections {
 					section(PlsDocBundle.message("title.text"), richText)

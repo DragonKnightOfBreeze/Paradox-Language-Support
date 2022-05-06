@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.tool.*
 import java.awt.datatransfer.*
 
 /**
@@ -31,7 +32,7 @@ class CopyRichTextIntention : IntentionAction {
 		if(editor == null || file == null) return
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parentOfType<ParadoxLocalisationProperty>() ?: return
-		val text = element.renderText()
+		val text = ParadoxLocalisationTextRenderer.render(element)
 		CopyPasteManager.getInstance().setContents(StringSelection(text))
 	}
 }

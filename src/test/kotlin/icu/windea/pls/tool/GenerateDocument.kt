@@ -42,10 +42,10 @@ private fun getDocumentText(documentName: String, type: String, project: Project
 		val definitionInfo = it.definitionInfo
 		val id = definitionInfo?.name!!
 		val name = definitionInfo.localisation.find { loc -> loc.key.lowercase() == "name" }
-			?.locationExpression?.resolve(id, inferParadoxLocale() ,project)?.second?.extractText()
+			?.locationExpression?.resolve(id, inferParadoxLocale(), project)?.second?.let { ParadoxLocalisationTextExtractor.extract(it) }
 		val description = definitionInfo.localisation.find { loc -> loc.key.lowercase() == "description" }?.locationExpression
-			?.resolve(id, inferParadoxLocale() ,project)?.second?.extractText()
-		val effect = definitionInfo.localisation.find { loc -> loc.key.lowercase() == "effect" }?.locationExpression?.resolve(id, inferParadoxLocale() ,project)?.second?.extractText()
+			?.resolve(id, inferParadoxLocale(), project)?.second?.let { ParadoxLocalisationTextExtractor.extract(it) }
+		val effect = definitionInfo.localisation.find { loc -> loc.key.lowercase() == "effect" }?.locationExpression?.resolve(id, inferParadoxLocale(), project)?.second?.let { ParadoxLocalisationTextExtractor.extract(it) }
 		buildString {
 			append("#### $name{#$id}")
 			if(!description.isNullOrBlank()) append("\n\n$description")
