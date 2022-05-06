@@ -5,7 +5,6 @@ import com.intellij.ide.structureView.impl.common.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
-import javax.swing.*
 
 class ParadoxScriptFileTreeElement(
 	element: ParadoxScriptFile
@@ -38,8 +37,13 @@ class ParadoxScriptFileTreeElement(
 		val element = element ?: return null
 		if(element.name.equals(descriptorFileName, true)) return null
 		val definitionInfo = element.definitionInfo ?: return null
+		//如果definitionName和rootKey相同，则省略definitionName
 		val name = definitionInfo.name
 		val typesText = definitionInfo.typesText
-		return "$name: $typesText"
+		if(name.equals(definitionInfo.rootKey, true)){
+			return ": $typesText"
+		} else {
+			return "$name: $typesText"
+		}
 	}
 }

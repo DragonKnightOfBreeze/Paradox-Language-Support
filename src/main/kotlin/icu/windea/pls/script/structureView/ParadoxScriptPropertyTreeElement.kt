@@ -25,8 +25,13 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 	override fun getLocationString(): String? {
 		val element = element ?: return null
 		val definitionInfo = element.definitionInfo ?: return null
+		//如果definitionName和rootKey相同，则省略definitionName
 		val name = definitionInfo.name
 		val typesText = definitionInfo.typesText
-		return "$name: $typesText"
+		if(name.equals(definitionInfo.rootKey, true)) {
+			return ": $typesText"
+		} else {
+			return "$name: $typesText"
+		}
 	}
 }
