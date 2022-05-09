@@ -5,12 +5,8 @@ import com.intellij.openapi.observable.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
-import com.intellij.util.*
-import com.intellij.util.xmlb.XmlSerializer
-import com.twelvemonkeys.xml.XMLSerializer
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
-import org.jdom.*
 import javax.swing.*
 
 /**
@@ -60,13 +56,14 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 						whenTextChanged {
 							val document = it.document
 							val text = document.getText(0, document.length)
-							if(text != ignoredIconNameRegex){
+							if(text != ignoredIconNameRegex) {
 								ignoredIconNameRegex = text
 								finalIgnoredIConNameRegex = text.toRegex(RegexOption.IGNORE_CASE)
 							}
 						}
 					}
 					.horizontalAlign(HorizontalAlign.FILL)
+					.resizableColumn()
 			}
 		}
 	}

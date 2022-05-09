@@ -1,9 +1,11 @@
 package icu.windea.pls.core.settings
 
+import com.intellij.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -13,7 +15,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 	override fun getId() = helpTopic!!
 	
 	override fun createPanel(): DialogPanel {
-		//TODO 完善通用设置
 		val settings = getSettings()
 		return panel {
 			group(PlsBundle.message("settings.generic")) {
@@ -28,13 +29,15 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					label(PlsBundle.message("settings.generic.ignoredFileNames")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
 					}
-					expandableTextField({ it.toCommaDelimitedStringMutableList() }, { it.toCommaDelimitedString() }).bindText({
-						settings.ignoredFileNames
-					}, {
-						settings.ignoredFileNames = it
-						settings.finalIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
-					})
-					
+					expandableTextField({ it.toCommaDelimitedStringMutableList() }, { it.toCommaDelimitedString() })
+						.bindText({
+							settings.ignoredFileNames
+						}, {
+							settings.ignoredFileNames = it
+							settings.finalIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
+						})
+						.horizontalAlign(HorizontalAlign.FILL)
+						.resizableColumn()
 				}
 				row {
 					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent {
@@ -79,7 +82,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						if(languageTag.isEmpty()) {
 							text = PlsBundle.message("settings.localisation.primaryLocale.default")
 						} else {
-							text = Locale.forLanguageTag(languageTag).displayName
+							//基于dynamicBundle的语言区域，而非系统默认的
+							text = Locale.forLanguageTag(languageTag).getDisplayName(DynamicBundle.getLocale())
 						}
 						
 					}).bindItem(settings::localisationPrimaryLocale.toNullableProperty())
