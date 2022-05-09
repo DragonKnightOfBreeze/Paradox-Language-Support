@@ -2,6 +2,7 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -37,9 +38,9 @@ data class CwtTypeConfig(
 	val typePerFile: Boolean = false,
 	val unique: Boolean = false,
 	val severity: String? = null,
-	val skipRootKey: List<List<String>>? = null,
-	val typeKeyFilter: ReversibleSet<String>? = null,
-	val startsWith: String? = null,
+	val skipRootKey: List<List<@CaseInsensitive String>>? = null,
+	val typeKeyFilter: ReversibleSet<@CaseInsensitive String>? = null,
+	val startsWith: @CaseInsensitive String? = null,
 	val graphRelatedTypes: List<String>? = null,
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
 	val localisation: CwtTypeLocalisationConfig? = null,

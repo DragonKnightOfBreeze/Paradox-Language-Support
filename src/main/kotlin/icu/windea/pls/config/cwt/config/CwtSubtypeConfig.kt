@@ -2,6 +2,7 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -16,9 +17,9 @@ data class CwtSubtypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
 	val config: CwtPropertyConfig,
-	val typeKeyFilter: ReversibleSet<String>? = null,
+	val typeKeyFilter: ReversibleSet<@CaseInsensitive String>? = null,
 	val pushScope: String? = null,
-	val startsWith: String? = null,
+	val startsWith: @CaseInsensitive String? = null,
 	val displayName: String? = null,
 	val abbreviation: String? = null,
 	val onlyIfNot: List<String>? = null

@@ -2,11 +2,14 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
 import com.intellij.util.*
+import com.intellij.util.containers.CollectionFactory
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
+import io.ktor.util.*
 
 class CwtConfigGroup(
 	val gameType: ParadoxGameType,
@@ -27,7 +30,7 @@ class CwtConfigGroup(
 	val scopeAliasMap: Map<String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	val singleAliases: Map<String, List<CwtSingleAliasConfig>> //同名的single_alias可以有多个
-	val aliases: Map<String, Map<String, List<CwtAliasConfig>>> //同名的alias可以有多个 
+	val aliases: Map<String, Map<@CaseInsensitive String, List<CwtAliasConfig>>> //同名的alias可以有多个 
 	val definitions: Map<String, CwtDefinitionConfig>
 	
 	init {
@@ -174,7 +177,7 @@ class CwtConfigGroup(
 						if(aliasNamePair != null) {
 							val (aliasName, aliasSubName) = aliasNamePair
 							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
-							val map = aliases.getOrPut(aliasName) { mutableMapOf() }
+							val map = aliases.getOrPut(aliasName) { CollectionFactory.createCaseInsensitiveStringMap() } //忽略大小写
 							val list = map.getOrPut(aliasSubName) { SmartList() }
 							list.add(aliasConfig)
 						}
@@ -296,11 +299,13 @@ class CwtConfigGroup(
 				when(key) {
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
-						val set = option.stringValueOrValues?.mapTo(mutableSetOf()) { it.lowercase() } ?: continue
+						val values = option.stringValueOrValues ?: continue
+						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+						set.addAll(values)
 						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
-					"starts_with" -> startsWith = option.stringValue?.lowercase() ?: continue
+					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"graph_related_types" -> {
 						val optionValues = option.values ?: continue
 						val list = optionValues.map { it.value }
@@ -334,12 +339,14 @@ class CwtConfigGroup(
 				when(key) {
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
-						val set = option.stringValueOrValues?.mapTo(mutableSetOf()) { it.lowercase() } ?: continue
+						val values = option.stringValueOrValues ?: continue
+						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+						set.addAll(values)
 						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"push_scope" -> pushScope = option.stringValue ?: continue
-					"starts_with" -> startsWith = option.stringValue?.lowercase() ?: continue
+					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"display_name" -> displayName = option.stringValue ?: continue
 					"abbreviation" -> abbreviation = option.stringValue ?: continue
 					"only_if_not" -> onlyIfNot = option.stringValues ?: continue
@@ -371,9 +378,16 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
-		val values = propertyConfig.values?.map { it.value } ?: return null
-		val valueConfigs = propertyConfig.values
-		return CwtEnumConfig(propertyConfig.pointer, name, values, valueConfigs)
+		val propertyConfigPointer = propertyConfig.pointer
+		val propertyConfigValues = propertyConfig.values ?: return null
+		if(propertyConfigValues.isEmpty()) return CwtEnumConfig(propertyConfigPointer, name, emptySet(), emptyMap())
+		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
+		for(propertyConfigValue in propertyConfigValues) {
+			values.add(propertyConfigValue.value)
+			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
+		}
+		return CwtEnumConfig(propertyConfigPointer, name, values, valueConfigMap)
 	}
 	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
@@ -544,7 +558,7 @@ class CwtConfigGroup(
 		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
 		val startsWithConfig = typeConfig.startsWith
 		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!typeKey.startsWith(startsWithConfig)) return false
+			if(!typeKey.startsWith(startsWithConfig, true)) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 		val typeKeyFilterConfig = typeConfig.typeKeyFilter
@@ -570,7 +584,7 @@ class CwtConfigGroup(
 		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
 		val startsWithConfig = subtypeConfig.startsWith
 		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!typeKey.startsWith(startsWithConfig)) return false
+			if(!typeKey.startsWith(startsWithConfig, true)) return false
 		}
 		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
 		val typeKeyFilterConfig = subtypeConfig.typeKeyFilter

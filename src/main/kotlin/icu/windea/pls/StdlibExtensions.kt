@@ -4,7 +4,9 @@ package icu.windea.pls
 
 import com.google.common.cache.*
 import com.intellij.util.SmartList
+import com.intellij.util.containers.CollectionFactory
 import com.intellij.util.io.*
+import org.intellij.lang.annotations.Language
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -276,8 +278,8 @@ fun String.matchesPath(other: String, ignoreCase: Boolean = true): Boolean {
 /**
  * 判断当前子路径列表是否完全匹配另一个子路径列表（相同）。使用"/"作为路径分隔符。
  * @param ignoreCase 是否忽略大小写。默认为`true`。
- * @param useAnyWildcard 使用`"any"`字符串作为子路径通配符。表示匹配任意子路径
- * @param matchesParent 是否需要仅匹配另一个路径的父路径。
+ * @param useAnyWildcard 是否使用`"any"`字符串作为子路径通配符。表示匹配任意子路径。默认为`true`。
+ * @param matchesParent 是否需要仅匹配另一个路径的父路径。默认为`false`。
  */
 fun List<String>.matchEntirePath(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true, matchesParent: Boolean = false): Boolean {
 	val size = size
