@@ -42,8 +42,11 @@ val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
 val booleanValues = arrayOf("yes", "no")
 
+val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
 val localisationFileExtensions = arrayOf("yml")
-val scriptFileExtensions = arrayOf("txt", "mod", "gfx", "gui", "asset", "dlc", "settings")
+val ddsFileExtensions = arrayOf("dds")
+
+const val launcherSettingsFileName = "launcher-settings.json" 
 const val descriptorFileName = "descriptor.mod"
 
 val truncateLimit = 30

@@ -94,7 +94,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildVariableDefinition(element: ParadoxScriptVariable, name: String) {
 		definition {
 			//加上文件信息
-			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			appendFileInfoHeader(element.fileInfo, element.project)
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.variable")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
@@ -104,7 +104,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildPropertyDefinition(element: ParadoxScriptProperty, name: String) {
 		definition {
 			//加上文件信息
-			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			appendFileInfoHeader(element.fileInfo, element.project)
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.property")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.value?.let { value -> append(" = ").append(value.escapeXml()) }
@@ -119,7 +119,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		definition {
 			//加上文件信息
-			element.fileInfo?.let { fileInfo -> appendFileInfo(fileInfo).appendBr() }
+			appendFileInfoHeader(element.fileInfo, element.project)
 			//加上定义信息
 			val name = definitionInfo.name
 			val typeLinkText = buildString {

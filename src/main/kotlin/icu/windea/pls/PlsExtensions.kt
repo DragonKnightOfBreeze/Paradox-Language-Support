@@ -2,6 +2,7 @@
 
 package icu.windea.pls
 
+import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
@@ -28,9 +29,10 @@ import icu.windea.pls.tool.*
 import java.util.*
 
 //region Keys
+val cachedParadoxDescriptorInfoKey = Key<CachedValue<ParadoxDescriptorInfo>>("cachedParadoxDescriptorInfo")
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
-val cachedParadoxDefinitionPropertyInfoKey = Key<CachedValue<ParadoxDefinitionPropertyInfo>>("cachedParadoxDefinitionPropertyInfo")
+val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
 val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
 //endregion
 
@@ -202,6 +204,39 @@ val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile.fil
 
 val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 
+fun ParadoxFileInfo.getDescriptorInfo(project: Project): ParadoxDescriptorInfo? {
+	val file = descriptor?.toPsiFile<PsiFile>(project) ?: return null
+	return CachedValuesManager.getCachedValue(file, cachedParadoxDescriptorInfoKey) {
+		val value = resolveDescriptorInfo(this, file)
+		CachedValueProvider.Result.create(value, file)
+	}
+}
+
+private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: PsiFile): ParadoxDescriptorInfo? {
+	val fileName = descriptorFile.name
+	return when {
+		fileName == descriptorFileName -> {
+			val f = descriptorFile.castOrNull<ParadoxScriptFile>() ?: return null
+			val map = ParadoxScriptDataResolver.resolveToMap(f)
+			val name = map.get("name")?.toString() ?: descriptorFile.parent?.name ?: anonymousString //如果没有name属性，则使用根目录名
+			val version = map.get("version")?.toString()
+			val picture = map.get("picture")?.toString()
+			val tags = map.get("tags").castOrNull<List<Any?>>()?.mapTo(mutableSetOf()){ it.toString() }
+			val supportedVersion = map.get("supported_version")?.toString()
+			val remoteFileId = map.get("remote_file_id")?.toString()
+			val path = map.get("path")?.toString()
+			ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
+		}
+		fileName == launcherSettingsFileName -> {
+			val json = jsonMapper.readValue<Map<String, Any?>>(descriptorFile.virtualFile.inputStream)
+			val name = fileInfo.gameType.description
+			val version = json.get("rawVersion")?.toString()
+			ParadoxDescriptorInfo(name, version)
+		}
+		else -> null
+	}
+}
+
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
 private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
@@ -223,16 +258,16 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	return configGroup.resolveDefinitionInfo(element, rootKey, path, propertyPath)
 }
 
-val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionPropertyInfo? get() = doGetDefinitionElementInfo(this)
+val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
 
-private fun doGetDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
-	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionPropertyInfoKey) {
+private fun doGetDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionElementInfo? {
+	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionElementInfoKey) {
 		val value = resolveDefinitionElementInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
 }
 
-private fun resolveDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionPropertyInfo? {
+private fun resolveDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionElementInfo? {
 	//NOTE 注意这里获得的definitionInfo可能会过时！因为对应的type和subtypes可能基于其他的definitionProperty
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
 	val definition = elementPath.rootPointer?.element ?: return null
@@ -242,7 +277,7 @@ private fun resolveDefinitionElementInfo(element: ParadoxDefinitionProperty): Pa
 	val gameType = definitionInfo.gameType
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType)
-	return ParadoxDefinitionPropertyInfo(elementPath, scope, gameType, definitionInfo, configGroup, pointer)
+	return ParadoxDefinitionElementInfo(elementPath, scope, gameType, definitionInfo, configGroup, pointer)
 }
 
 val ParadoxScriptProperty.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
@@ -992,8 +1027,20 @@ fun StringBuilder.appendImgTag(url: String, fontSize: FontSize, local: Boolean =
 		.append("\" width=\"").append(fontSize.size).append("\" height=\"").append(fontSize).append("\" />")
 }
 
-fun StringBuilder.appendFileInfo(fileInfo: ParadoxFileInfo): StringBuilder {
-	return append("[").append(fileInfo.path).append("]")
+fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Project): StringBuilder {
+	if(fileInfo != null){
+		append("[").append(fileInfo.gameType.description).append(" ").append(fileInfo.rootType)
+		val descriptorInfo = fileInfo.getDescriptorInfo(project)
+		if(descriptorInfo != null){
+			if(fileInfo.rootType == ParadoxRootType.Mod){
+				append(":").append(descriptorInfo.name)
+			}
+			if(descriptorInfo.version != null) append(":").append(descriptorInfo.version)
+		}
+		append("]").appendBr()
+		append("[").append(fileInfo.path).append("]").appendBr()
+	}
+	return this
 }
 
 fun StringBuilder.appendBr(): StringBuilder {

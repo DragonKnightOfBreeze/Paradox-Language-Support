@@ -6,6 +6,7 @@ enum class ParadoxFileType(
 	override val id: String,
 	override val description: String
 ) : IdAware, DescriptionAware {
+	Directory("directory", "Directory"),
 	ParadoxScript("paradoxScript", "Paradox Script File"),
 	ParadoxLocalisation("paradoxLocalisation", "Paradox Localisation File"),
 	Dds("dds", "Dds File"),

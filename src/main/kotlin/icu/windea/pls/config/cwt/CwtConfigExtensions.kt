@@ -494,7 +494,7 @@ fun addValueCompletionsInBlock(valueElement: PsiElement, propertyElement: Parado
 	}
 }
 
-private fun shouldComplete(config: CwtPropertyConfig, definitionElementInfo: ParadoxDefinitionPropertyInfo): Boolean {
+private fun shouldComplete(config: CwtPropertyConfig, definitionElementInfo: ParadoxDefinitionElementInfo): Boolean {
 	val expression = config.keyExpression
 	//如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
 	if(expression.type == CwtKeyExpression.Type.AliasName) return true
@@ -508,7 +508,7 @@ private fun shouldComplete(config: CwtPropertyConfig, definitionElementInfo: Par
 	return maxCount == null || actualCount < maxCount
 }
 
-private fun shouldComplete(config: CwtValueConfig, definitionElementInfo: ParadoxDefinitionPropertyInfo): Boolean {
+private fun shouldComplete(config: CwtValueConfig, definitionElementInfo: ParadoxDefinitionElementInfo): Boolean {
 	val expression = config.valueExpression
 	val actualCount = definitionElementInfo.childValueOccurrence[expression] ?: 0
 	//如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制

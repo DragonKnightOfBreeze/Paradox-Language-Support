@@ -17,9 +17,6 @@ enum class ParadoxGameType(
 	Stellaris("stellaris", "Stellaris", PlsIcons.libraryIcon),
 	Vic2("vic2", "Victoria II", PlsIcons.libraryIcon);
 	
-	//TODO 明确的执行文件名称，应当就是这样
-	val exeFileName = "$id.exe"
-	
 	override fun toString(): String {
 		return id
 	}
@@ -27,18 +24,9 @@ enum class ParadoxGameType(
 	companion object {
 		val values = values()
 		val map = values.associateBy { it.id }
-		val exeFileNames = values.map { it.exeFileName }
 		
 		fun resolve(id: String): ParadoxGameType? {
 			return map[id.lowercase()]
-		}
-		
-		//fun isValidKey(id: String): Boolean {
-		//	return id.lowercase() in map
-		//}
-		
-		fun defaultValue(): ParadoxGameType {
-			return getSettings().defaultGameType
 		}
 	}
 }

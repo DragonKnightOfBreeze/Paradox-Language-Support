@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 @Suppress("unused")
-class ParadoxDefinitionPropertyInfo(
+class ParadoxDefinitionElementInfo(
 	val elementPath: ParadoxElementPath<ParadoxDefinitionProperty>,
 	val scope: String? = null,
 	val gameType: ParadoxGameType,
@@ -26,7 +26,7 @@ class ParadoxDefinitionPropertyInfo(
 	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy { resolveChildValueOccurrence() }
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxDefinitionPropertyInfo && elementPath == other.elementPath
+		return this === other || other is ParadoxDefinitionElementInfo && elementPath == other.elementPath
 	}
 	
 	override fun hashCode(): Int {
