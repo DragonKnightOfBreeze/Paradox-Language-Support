@@ -191,12 +191,21 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) block(this) else this
 
+fun String.toCommaDelimitedStringMutableList(): MutableList<String> {
+	val input = this.trim()
+	return if(input.isEmpty()) {
+		mutableListOf()
+	} else {
+		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIf { s -> s.isNotEmpty() } }
+	}
+}
+
 fun String.toCommaDelimitedStringList(): List<String> {
 	val input = this.trim()
 	return if(input.isEmpty()) {
 		emptyList()
 	} else {
-		input.splitToSequence(',').mapTo(SmartList()) { it.trim() }
+		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIf { s -> s.isNotEmpty() } }
 	}
 }
 
@@ -206,11 +215,11 @@ fun String.toCommaDelimitedStringSet(ignoreCase: Boolean = false): Set<String> {
 		emptySet()
 	} else {
 		val set = if(ignoreCase) CollectionFactory.createCaseInsensitiveStringSet() else mutableSetOf()
-		input.splitToSequence(',').mapTo(set) { it.trim() }
+		input.splitToSequence(',').mapNotNullTo(set) { it.trim().takeIf { s -> s.isNotEmpty() } }
 	}
 }
 
-fun List<String>.toCommaDelimitedString(): String {
+fun Collection<String>.toCommaDelimitedString(): String {
 	val input = this
 	return if(input.isEmpty()) "" else input.joinToString(",")
 }

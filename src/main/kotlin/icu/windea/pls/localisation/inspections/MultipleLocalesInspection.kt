@@ -36,24 +36,21 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 				}
 			}
 			row {
-				textField()
-					.bindText({
-						ignoredFileNames
-					}, {
-						ignoredFileNames = it
-						finalIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
-					})
-					.applyToComponent { 
-						whenTextChanged {
-							val document = it.document
-							val text = document.getText(0, document.length)
-							if(text != ignoredFileNames){
-								ignoredFileNames = text
-								finalIgnoredFileNames = text.toCommaDelimitedStringSet(ignoreCase = true)
-							}
+				expandableTextField({ it.toCommaDelimitedStringMutableList() }, { it.toCommaDelimitedString() }).bindText({
+					ignoredFileNames
+				}, {
+					ignoredFileNames = it
+					finalIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
+				}).applyToComponent {
+					whenTextChanged {
+						val document = it.document
+						val text = document.getText(0, document.length)
+						if(text != ignoredFileNames) {
+							ignoredFileNames = text
+							finalIgnoredFileNames = text.toCommaDelimitedStringSet(ignoreCase = true)
 						}
 					}
-					.horizontalAlign(HorizontalAlign.FILL)
+				}.horizontalAlign(HorizontalAlign.FILL)
 			}
 		}
 	}

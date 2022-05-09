@@ -22,7 +22,6 @@ import icu.windea.pls.core.*
  */
 @State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])
 data class ParadoxSettingsState(
-	//readme|changelog|license|credits
 	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris,
 	@JvmField var ignoredFileNames: String = "readme.txt,changelog.txt,license.txt,credits.txt",
 	@JvmField var preferOverridden: Boolean = false,

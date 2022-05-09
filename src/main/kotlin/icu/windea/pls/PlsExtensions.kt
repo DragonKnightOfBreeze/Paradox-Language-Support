@@ -45,7 +45,12 @@ fun getInternalConfig() = ApplicationManager.getApplication().getService(Interna
 
 fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
-fun inferParadoxLocale()= getSettings().localisationPrimaryLocale.takeIf { it.id != "l_default" }
+fun inferParadoxLocale(): ParadoxLocaleConfig? {
+	val localeId = getSettings().localisationPrimaryLocale
+	if(localeId == "l_default") return null //基于用户OS
+	val localeMap = getInternalConfig().localeMap
+	return localeMap.get(localeId) //基于localeId，不应该为null
+}
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
 fun getDocTextFromPreviousComment(element: PsiElement): String? {

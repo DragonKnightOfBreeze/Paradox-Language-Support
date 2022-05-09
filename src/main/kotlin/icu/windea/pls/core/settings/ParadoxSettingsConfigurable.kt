@@ -28,15 +28,16 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					label(PlsBundle.message("settings.generic.ignoredFileNames")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
 					}
-					textField().bindText({
+					expandableTextField({ it.toCommaDelimitedStringMutableList() }, { it.toCommaDelimitedString() }).bindText({
 						settings.ignoredFileNames
 					}, {
 						settings.ignoredFileNames = it
 						settings.finalIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
 					})
+					
 				}
-				row{
-					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent { 
+				row {
+					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generic.maxCompleteSize.tooltip")
 					}
 					this.intTextField(0..1000).bindIntText(settings::maxCompleteSize)
@@ -72,18 +73,18 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						toolTipText = PlsBundle.message("settings.localisation.primaryLocale.tooltip")
 					}
 					val values = getInternalConfig().localeMap.keys.toList()
-					comboBox(values, listCellRenderer{ value,_,_ ->
+					comboBox(values, listCellRenderer { value, _, _ ->
 						//不使用value.description
 						val languageTag = getInternalConfig().localeMap.getValue(value).languageTag
-						if(languageTag.isEmpty()){
-							text =  PlsBundle.message("settings.localisation.primaryLocale.default")
+						if(languageTag.isEmpty()) {
+							text = PlsBundle.message("settings.localisation.primaryLocale.default")
 						} else {
 							text = Locale.forLanguageTag(languageTag).displayName
 						}
 						
 					}).bindItem(settings::localisationPrimaryLocale.toNullableProperty())
 				}
-				row{
+				row {
 					label(PlsBundle.message("settings.localisation.truncateLimit")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.localisation.truncateLimit.tooltip")
 					}
