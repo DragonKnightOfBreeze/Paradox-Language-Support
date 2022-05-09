@@ -49,8 +49,4 @@ val ddsFileExtensions = arrayOf("dds")
 const val launcherSettingsFileName = "launcher-settings.json" 
 const val descriptorFileName = "descriptor.mod"
 
-val truncateLimit = 30
-
-//TODO 可以设置
-val ignoredScriptFileNameRegex = """(readme|changelog|license|credits).*\.txt""".toRegex(RegexOption.IGNORE_CASE)
-//val relatedLocalisationNamesToInfer = arrayOf("title", "desc", "effect") //不包括name，因为可能不是localisation
+const val truncateLimit = 30

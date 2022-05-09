@@ -107,7 +107,7 @@ fun setFileInfoAndGetFileType(
 			//脚本文件
 			inFolders && fileType == ParadoxFileType.ParadoxScript && !isIgnored(fileName) -> ParadoxScriptFileType
 			//本地化文件
-			inFolders && fileType == ParadoxFileType.ParadoxLocalisation && isIgnored(fileName) -> ParadoxLocalisationFileType
+			inFolders && fileType == ParadoxFileType.ParadoxLocalisation && !isIgnored(fileName) -> ParadoxLocalisationFileType
 			//其他文件（如dds）
 			else -> MockLanguageFileType.INSTANCE //这里不能直接返回null，否则缓存的文件信息会被清除
 		}

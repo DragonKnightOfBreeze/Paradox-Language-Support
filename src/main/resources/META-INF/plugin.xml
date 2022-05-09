@@ -178,7 +178,7 @@
     <fileType
         language="PARADOX_SCRIPT"
         name="Paradox Script" fieldName="INSTANCE"
-        implementationClass="icu.windea.pls.script.ParadoxScriptFileType"/>
+        implementationClass="icu.windea.pls.script.ParadoxScriptFileType" fileNames="descriptor.mod"/>
     <lang.fileViewProviderFactory
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.psi.ParadoxScriptFileViewProviderFactory"/>
