@@ -13,6 +13,6 @@ enum class ParadoxFileType(
 	Other("other", "Other File");
 	
 	override fun toString(): String {
-		return id
+		return description
 	}
 }

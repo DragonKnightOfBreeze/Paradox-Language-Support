@@ -1,24 +1,33 @@
 ### localisation locale
   
 locale:
-- id: "l_simp_chinese"
-  description: "Simple Chinese"
-- id: "l_english"
-  description: "English"
-- id: "l_braz_por"
-  description: "Brazil Portuguese"
-- id: "l_french"
-  description: "French"
-- id: "l_german"
-  description: "German"
-- id: "l_polish"
-  description: "Polish"
-- id: "l_russian"
-  description: "Russian"
-- id: "l_spanish"
-  description: "Spanish"
 - id: "l_default"
   description: "Default"
+  languageTag: ""
+- id: "l_simp_chinese"
+  description: "Simple Chinese"
+  languageTag: zh
+- id: "l_english"
+  description: "English"
+  languageTag: en
+- id: "l_braz_por"
+  description: "Brazil Portuguese"
+  languageTag: pt
+- id: "l_french"
+  description: "French"
+  languageTag: fr
+- id: "l_german"
+  description: "German"
+  languageTag: de
+- id: "l_polish"
+  description: "Polish"
+  languageTag: pl
+- id: "l_russian"
+  description: "Russian"
+  languageTag: ru
+- id: "l_spanish"
+  description: "Spanish"
+  languageTag: es
 
 ### localisation sequential number
 

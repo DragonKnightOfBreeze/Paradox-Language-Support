@@ -24,6 +24,6 @@ class ParadoxColorConfig(
 	}
 	
 	override fun toString(): String {
-		return id
+		return description
 	}
 }

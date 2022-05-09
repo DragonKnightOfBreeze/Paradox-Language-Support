@@ -45,17 +45,7 @@ fun getInternalConfig() = ApplicationManager.getApplication().getService(Interna
 
 fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
-fun inferParadoxLocale() = when(System.getProperty("user.language")) {
-	"zh" -> getInternalConfig().localeMap.getValue("l_simp_chinese")
-	"en" -> getInternalConfig().localeMap.getValue("l_english")
-	"pt" -> getInternalConfig().localeMap.getValue("l_braz_por")
-	"fr" -> getInternalConfig().localeMap.getValue("l_french")
-	"de" -> getInternalConfig().localeMap.getValue("l_german")
-	"pl" -> getInternalConfig().localeMap.getValue("l_ponish")
-	"ru" -> getInternalConfig().localeMap.getValue("l_russian")
-	"es" -> getInternalConfig().localeMap.getValue("l_spanish")
-	else -> getInternalConfig().localeMap.getValue("l_english")
-}
+fun inferParadoxLocale()= getSettings().localisationPrimaryLocale.takeIf { it.id != "l_default" }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
 fun getDocTextFromPreviousComment(element: PsiElement): String? {
@@ -971,7 +961,12 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 }
 
 fun StringBuilder.appendUnresolvedLink(label: String): StringBuilder {
-	append(label) //直接显示对应的标签文本
+	append(label.escapeXml()) //直接显示对应的标签文本
+	return this
+}
+
+fun StringBuilder.appendLink(refText: String, label: String): StringBuilder {
+	append("<a href=\"").append(refText).append("\">").append(label).append("</a>")
 	return this
 }
 
@@ -985,7 +980,7 @@ fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?
 	if(name.isEmpty()) return append(unresolvedEscapedString)
 	//如果可以被解析为CWT规则，则显示链接（context传null时总是显示）
 	val isResolved = context == null || resolveCwtLink(link, context) != null
-	if(isResolved) return appendPsiLink("$cwtLinkPrefix$link", name)
+	if(isResolved) return appendPsiLink("$cwtLinkPrefix$link".escapeXml(), name.escapeXml())
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
 }
@@ -1028,17 +1023,30 @@ fun StringBuilder.appendImgTag(url: String, fontSize: FontSize, local: Boolean =
 }
 
 fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Project): StringBuilder {
-	if(fileInfo != null){
+	if(fileInfo != null) {
+		//描述符信息（模组名、版本等）
 		append("[").append(fileInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
 		val descriptorInfo = fileInfo.getDescriptorInfo(project)
-		if(descriptorInfo != null){
-			if(fileInfo.rootType == ParadoxRootType.Mod){
-				append(": ").append(descriptorInfo.name)
+		if(descriptorInfo != null) {
+			if(fileInfo.rootType == ParadoxRootType.Mod) {
+				append(": ").append(descriptorInfo.name.escapeXml())
 			}
 			if(descriptorInfo.version != null) append("@").append(descriptorInfo.version)
 		}
-		append("]").appendBr()
-		append("[").append(fileInfo.path).append("]").appendBr()
+		append("]")
+		//steamId
+		if(descriptorInfo != null){
+			val steamId = descriptorInfo.remoteFileId
+			if(steamId != null){
+				grayed {
+					append(" steamId: ").appendLink(getWorkshopLink(steamId), steamId)
+				}
+			}
+		}
+		appendBr()
+		//文件信息（相对于游戏或模组根目录的路径）
+		append("[").append(fileInfo.path).append("]")
+		appendBr()
 	}
 	return this
 }

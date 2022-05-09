@@ -1,7 +1,9 @@
 package icu.windea.pls.config.internal
 
+import com.intellij.openapi.application.ApplicationManager
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
+import java.util.Locale
 
 class InternalConfigGroup(
 	configMap: InternalConfigMap
@@ -18,7 +20,8 @@ class InternalConfigGroup(
 		locales = configMap.getValue("locale").mapToArray {
 			val id = it.getValue("id") as String
 			val description = it.getValue("description") as String
-			ParadoxLocaleConfig(id, description)
+			val languageTag = it.getValue("languageTag") as String
+			ParadoxLocaleConfig(id, description, languageTag)
 		}
 		localeMap = locales.associateBy { it.id }
 		

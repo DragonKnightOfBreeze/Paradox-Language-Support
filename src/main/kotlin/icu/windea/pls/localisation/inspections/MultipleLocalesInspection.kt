@@ -17,10 +17,11 @@ import javax.swing.*
 class MultipleLocalesInspection : LocalInspectionTool() {
 	@JvmField var ignoredFileNames = "languages.yml"
 	
-	private var finalIgnoredFileNames = ignoredFileNames.toCommaDelimitedStringList()
+	private var finalIgnoredFileNames = ignoredFileNames.toCommaDelimitedStringSet(ignoreCase = true)
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
 		if(file !is ParadoxLocalisationFile) return null //不应该出现
+		if(finalIgnoredFileNames.contains(file.name)) return null //忽略
 		if(file.propertyLists.size <= 1) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		holder.registerProblem(file, PlsBundle.message("localisation.inspection.multipleLocales.description"), ProblemHighlightType.WARNING)
@@ -40,7 +41,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 						ignoredFileNames
 					}, {
 						ignoredFileNames = it
-						finalIgnoredFileNames = it.toCommaDelimitedStringList()
+						finalIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
 					})
 					.applyToComponent { 
 						whenTextChanged {
@@ -48,7 +49,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 							val text = document.getText(0, document.length)
 							if(text != ignoredFileNames){
 								ignoredFileNames = text
-								finalIgnoredFileNames = text.toCommaDelimitedStringList()
+								finalIgnoredFileNames = text.toCommaDelimitedStringSet(ignoreCase = true)
 							}
 						}
 					}

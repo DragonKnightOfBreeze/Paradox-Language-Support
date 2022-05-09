@@ -119,37 +119,42 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
 //endregion
 
 //region Documentation Extensions
-inline fun StringBuilder.definition(block: StringBuilder.() -> Unit) {
+inline fun StringBuilder.definition(block: StringBuilder.() -> Unit): StringBuilder {
 	append(DocumentationMarkup.DEFINITION_START)
 	block(this)
 	append(DocumentationMarkup.DEFINITION_END)
+	return this
 }
 
-inline fun StringBuilder.content(block: StringBuilder.() -> Unit) {
+inline fun StringBuilder.content(block: StringBuilder.() -> Unit): StringBuilder {
 	append(DocumentationMarkup.CONTENT_START)
 	block(this)
 	append(DocumentationMarkup.CONTENT_END)
+	return this
 }
 
-inline fun StringBuilder.sections(block: StringBuilder.() -> Unit) {
+inline fun StringBuilder.sections(block: StringBuilder.() -> Unit): StringBuilder {
 	append(DocumentationMarkup.SECTIONS_START)
 	block(this)
 	append(DocumentationMarkup.SECTIONS_END)
+	return this
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun StringBuilder.section(title: CharSequence, value: CharSequence) {
+inline fun StringBuilder.section(title: CharSequence, value: CharSequence): StringBuilder {
 	append(DocumentationMarkup.SECTION_HEADER_START)
 	append(title).append(" ")
 	append(DocumentationMarkup.SECTION_SEPARATOR).append("<p>")
 	append(value)
 	append(DocumentationMarkup.SECTION_END)
+	return this
 }
 
-inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit) {
+inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit): StringBuilder {
 	append(DocumentationMarkup.GRAYED_START)
 	block(this)
 	append(DocumentationMarkup.GRAYED_END)
+	return this
 }
 
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)

@@ -193,7 +193,21 @@ fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) 
 
 fun String.toCommaDelimitedStringList(): List<String> {
 	val input = this.trim()
-	return if(input.isEmpty()) emptyList() else input.splitToSequence(',').mapTo(SmartList()) { it.trim() }
+	return if(input.isEmpty()) {
+		emptyList()
+	} else {
+		input.splitToSequence(',').mapTo(SmartList()) { it.trim() }
+	}
+}
+
+fun String.toCommaDelimitedStringSet(ignoreCase: Boolean = false): Set<String> {
+	val input = this.trim()
+	return if(input.isEmpty()) {
+		emptySet()
+	} else {
+		val set = if(ignoreCase) CollectionFactory.createCaseInsensitiveStringSet() else mutableSetOf()
+		input.splitToSequence(',').mapTo(set) { it.trim() }
+	}
 }
 
 fun List<String>.toCommaDelimitedString(): String {

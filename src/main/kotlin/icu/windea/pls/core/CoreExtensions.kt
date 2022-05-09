@@ -6,7 +6,20 @@ import com.intellij.openapi.vfs.newvfs.impl.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
-import java.util.*
+
+fun getFileType(file: VirtualFile): ParadoxFileType? {
+	if(file is StubVirtualFile || !file.isValid) return null
+	if(file.isDirectory) return ParadoxFileType.Directory
+	val fileName = file.name
+	val fileExtension = file.extension?.lowercase() ?: return ParadoxFileType.Other
+	return when {
+		fileName == descriptorFileName -> ParadoxFileType.ParadoxScript
+		fileExtension in scriptFileExtensions -> ParadoxFileType.ParadoxScript
+		fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
+		fileExtension in ddsFileExtensions -> ParadoxFileType.Dds
+		else -> ParadoxFileType.Other
+	}
+}
 
 fun setFileInfoAndGetFileType(
 	file: VirtualFile,
@@ -91,10 +104,10 @@ fun setFileInfoAndGetFileType(
 		
 		//只解析特定根目录下的文件
 		return when {
-			//脚本文件，根据正则指定需要排除的文件
-			inFolders && fileType == ParadoxFileType.ParadoxScript && !fileName.matches(ignoredScriptFileNameRegex) -> ParadoxScriptFileType
+			//脚本文件
+			inFolders && fileType == ParadoxFileType.ParadoxScript && !isIgnored(fileName) -> ParadoxScriptFileType
 			//本地化文件
-			inFolders && fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
+			inFolders && fileType == ParadoxFileType.ParadoxLocalisation && isIgnored(fileName) -> ParadoxLocalisationFileType
 			//其他文件（如dds）
 			else -> MockLanguageFileType.INSTANCE //这里不能直接返回null，否则缓存的文件信息会被清除
 		}
@@ -102,16 +115,6 @@ fun setFileInfoAndGetFileType(
 	return null
 }
 
-fun getFileType(file: VirtualFile): ParadoxFileType? {
-	if(file is StubVirtualFile || !file.isValid) return null
-	if(file.isDirectory) return ParadoxFileType.Directory
-	val fileName = file.name
-	val fileExtension = file.extension?.lowercase() ?: return ParadoxFileType.Other
-	return when {
-		fileName == descriptorFileName -> ParadoxFileType.ParadoxScript
-		fileExtension in scriptFileExtensions -> ParadoxFileType.ParadoxScript
-		fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
-		fileExtension in ddsFileExtensions -> ParadoxFileType.Dds
-		else -> ParadoxFileType.Other
-	}
+private fun isIgnored(fileName: String): Boolean{
+	return getSettings().finalIgnoredFileNames.contains(fileName)
 }

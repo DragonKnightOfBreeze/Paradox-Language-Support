@@ -18,7 +18,7 @@ enum class ParadoxGameType(
 	Vic2("vic2", "Victoria II", PlsIcons.libraryIcon);
 	
 	override fun toString(): String {
-		return id
+		return description
 	}
 	
 	companion object {

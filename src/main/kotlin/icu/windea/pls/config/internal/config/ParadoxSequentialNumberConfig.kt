@@ -20,6 +20,6 @@ class ParadoxSequentialNumberConfig(
 	}
 	
 	override fun toString(): String {
-		return id
+		return description
 	}
 }
