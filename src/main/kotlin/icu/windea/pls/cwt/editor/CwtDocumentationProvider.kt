@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -71,7 +72,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val configType = element.configType
 		definition {
 			if(configType != null) {
-				append("(").append(configType).append(") ")
+				append(configType.text)
 			} else {
 				//在脚本文件中显示"(definition property)"
 				if(originalElement != null && originalElement.isParadoxScriptPsiElement() ) {
@@ -86,6 +87,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
 				null -> {
 					val propertyElement = getDefinitionProperty(originalElement) ?: return@definition
+					if(propertyElement.valueType != ParadoxValueType.BlockType) return@definition //仅限block
 					val gameType = propertyElement.gameType ?: return@definition
 					val config = propertyElement.propertyConfig ?: return@definition
 					val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)

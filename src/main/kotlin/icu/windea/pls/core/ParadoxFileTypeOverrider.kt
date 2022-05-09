@@ -23,12 +23,12 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		subPaths.addFirst(fileName)
 		var currentFile: VirtualFile? = file.parent
 		while(currentFile != null) {
-			setFileInfoAndGetFileType(file, currentFile, subPaths, fileName, fileType)
+			val targetFileType = setFileInfoAndGetFileType(file, currentFile, subPaths, fileName, fileType)
+			if(targetFileType != null){
+				return if(targetFileType != MockLanguageFileType.INSTANCE) targetFileType else null
+			}
 			subPaths.addFirst(currentFile.name)
 			currentFile = currentFile.parent
-		}
-		runCatching {
-			file.putUserData(paradoxFileInfoKey, null)
 		}
 		return null
 	}

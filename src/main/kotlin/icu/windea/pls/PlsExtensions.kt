@@ -1029,13 +1029,13 @@ fun StringBuilder.appendImgTag(url: String, fontSize: FontSize, local: Boolean =
 
 fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Project): StringBuilder {
 	if(fileInfo != null){
-		append("[").append(fileInfo.gameType.description).append(" ").append(fileInfo.rootType)
+		append("[").append(fileInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
 		val descriptorInfo = fileInfo.getDescriptorInfo(project)
 		if(descriptorInfo != null){
 			if(fileInfo.rootType == ParadoxRootType.Mod){
-				append(":").append(descriptorInfo.name)
+				append(": ").append(descriptorInfo.name)
 			}
-			if(descriptorInfo.version != null) append(":").append(descriptorInfo.version)
+			if(descriptorInfo.version != null) append("@").append(descriptorInfo.version)
 		}
 		append("]").appendBr()
 		append("[").append(fileInfo.path).append("]").appendBr()

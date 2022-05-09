@@ -96,7 +96,7 @@ fun setFileInfoAndGetFileType(
 			//本地化文件
 			inFolders && fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
 			//其他文件（如dds）
-			else -> null
+			else -> MockLanguageFileType.INSTANCE //这里不能直接返回null，否则缓存的文件信息会被清除
 		}
 	}
 	return null

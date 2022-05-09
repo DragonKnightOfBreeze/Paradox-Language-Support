@@ -67,7 +67,7 @@ abstract class ParadoxLibraryType(
 			append(libraryNamePrefix).append(" ").append(rootType.description)
 			val version = descriptorInfo.version
 			if(rootType == ParadoxRootType.Mod) append(": ").append(descriptorInfo.name)
-			if(version != null) append(":").append(version)
+			if(version != null) append("@").append(version)
 		}
 	}
 	
