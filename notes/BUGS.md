@@ -34,46 +34,20 @@
 
 * [X] BUG：无法解析`trait.species_trait`（定义的子类型识别不准确）
 
-```
-types = {
-	type[trait] = {
-		path = "game/common/traits"
-
-		subtype[leader_trait] = {
-			leader_trait = { }
-			leader_trait = all
-		}
-		subtype[ruler_trait] = {
-			leader_class = { ruler }
-		}
-		subtype[scientist_trait] = {
-			leader_class = { scientist }
-		}
-		subtype[species_trait] = {
-			## cardinality = 0..1
-			leader_trait = no
-		}
-
-		localisation = {
-			## required
-			Name = "$"
-			## required
-			Description = "$_desc"
-		}
-	}
-}
-```
-
-* [ ] BUG：CWT规则解析：无法匹配类型为`tradition_swap`的定义的属性的规则
-
-* [ ] BUG：CWT规则解析：对于数组中的对象（`a = { { b = c } }`），无法匹配定义的属性的规则
-
 * [X] CWT规则解析：兼容值不为代码块的定义（`key = value`）
 
 * [X] CWT规则解析：`starts_with` `skip_root_key` `type_key_filter`的值需要忽略大小写
 
 * [X] 脚本文件语法解析：变量不需要放在顶层（尽管一般放在顶层，应当是放在定义外面即可）
 
-* [ ] 某些类型的定义即使definitionName和rootKey相同也无法查找定义（如：`asteroid_belt_type`）（）
+* [X] 兼容同一个event脚本文件中有多个event_namespace的情况
 
-* [ ] 兼容同一个event脚本文件中有多个event_namespace的情况
+* [X] 兼容同一个本地化文件中有多个locale的情况
+
+* [ ] CWT规则解析：枚举值、常量类型的键/值的解析需要忽略大小写
+
+* [ ] BUG：CWT规则解析：无法匹配类型为`tradition_swap`的定义的属性的规则
+
+* [ ] BUG：CWT规则解析：对于数组中的对象（`a = { { b = c } }`），无法匹配定义的属性的规则
+
+* [ ] BUG：某些类型的定义即使definitionName和rootKey相同也无法查找定义（如：`asteroid_belt_type`）

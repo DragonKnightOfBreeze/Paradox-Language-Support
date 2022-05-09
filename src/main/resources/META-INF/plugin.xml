@@ -398,7 +398,7 @@
         implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
     <declarationRangeHandler
         key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList"
-        implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangHandler"/>
+        implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>

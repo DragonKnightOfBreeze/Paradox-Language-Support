@@ -1,6 +1,7 @@
 package icu.windea.pls.core
 
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
@@ -20,7 +21,7 @@ class ParadoxDefinitionInfo(
 	val definition: List<CwtPropertyConfig>,
 	val definitionConfig: CwtDefinitionConfig?,
 	val rootKey: String,
-	val elementPath: ParadoxDefinitionPath,
+	val elementPath: ParadoxElementPath<ParadoxScriptFile>,
 	val gameType: ParadoxGameType
 ) {
 	val typeCount = subtypes.size + 1

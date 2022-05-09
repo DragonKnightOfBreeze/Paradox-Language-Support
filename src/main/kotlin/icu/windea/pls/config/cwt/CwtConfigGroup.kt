@@ -482,7 +482,7 @@ class CwtConfigGroup(
 	
 	//解析得到definitionInfo
 	
-	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo? {
+	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath<ParadoxScriptFile>): ParadoxDefinitionInfo? {
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, rootKey, path, elementPath)) {
 				return toDefinitionInfo(typeConfig, element, rootKey, elementPath)
@@ -491,7 +491,7 @@ class CwtConfigGroup(
 		return null
 	}
 	
-	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxDefinitionPath): Boolean {
+	private fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath<ParadoxScriptFile>): Boolean {
 		val typeKey = rootKey.lowercase()
 		//判断element.value是否需要是block
 		val blockConfig = typeConfig.block
@@ -583,7 +583,7 @@ class CwtConfigGroup(
 		return matchesDefinitionProperty(element, elementConfig, this)
 	}
 	
-	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String, elementPath: ParadoxDefinitionPath): ParadoxDefinitionInfo {
+	private fun toDefinitionInfo(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String, elementPath: ParadoxElementPath<ParadoxScriptFile>): ParadoxDefinitionInfo {
 		val name = getName(typeConfig, element, rootKey)
 		val type = typeConfig.name
 		val subtypeConfigs = getSubtypeConfigs(typeConfig, element, rootKey)
