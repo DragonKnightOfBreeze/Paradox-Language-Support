@@ -1,9 +1,9 @@
 package icu.windea.pls
 
-fun getWorkshopLink(steamId:String): String{
+fun getSteamWorkshopLink(steamId:String): String{
 	return "https://steamcommunity.com/sharedfiles/filedetails/?id=$steamId"
 }
 
-fun getWorkshopLinkInSteam(steamId: String): String{
+fun getSteamWorkshopLinkOnSteam(steamId: String): String{
 	return "steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=$steamId"
 }

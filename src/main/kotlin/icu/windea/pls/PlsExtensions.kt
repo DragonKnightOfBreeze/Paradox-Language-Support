@@ -27,6 +27,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.util.*
+import kotlin.io.path.*
 
 //region Keys
 val cachedParadoxDescriptorInfoKey = Key<CachedValue<ParadoxDescriptorInfo>>("cachedParadoxDescriptorInfo")
@@ -46,10 +47,11 @@ fun getInternalConfig() = ApplicationManager.getApplication().getService(Interna
 fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
-	val localeId = getSettings().localisationPrimaryLocale
-	if(localeId == "l_default") return null //基于用户OS
-	val localeMap = getInternalConfig().localeMap
-	return localeMap.get(localeId) //基于localeId，不应该为null
+	val usedLocale = getSettings().finalLocalisationPrimaryLocale
+	if(usedLocale != getInternalConfig().defaultLocale) return usedLocale
+	//如果是默认语言区域，则基于OS，如果没有对应的语言区域，则使用英文
+	val userLanguage = System.getProperty("user.language")
+	return getInternalConfig().localeFlagMap[userLanguage] ?: getInternalConfig().localeFlagMap["en"]
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
@@ -1036,15 +1038,26 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Proj
 			if(fileInfo.rootType == ParadoxRootType.Mod) {
 				append(": ").append(descriptorInfo.name.escapeXml())
 			}
-			if(descriptorInfo.version != null) append("@").append(descriptorInfo.version)
+			val version = descriptorInfo.version
+			if(version != null) append("@").append(version)
 		}
 		append("]")
-		//steamId
-		if(descriptorInfo != null){
-			val steamId = descriptorInfo.remoteFileId
-			if(steamId != null){
-				grayed {
-					append(" steamId: ").appendLink(getWorkshopLink(steamId), steamId)
+		grayed {
+			val remoteFileId = descriptorInfo?.remoteFileId
+			//remoteFileId（暂不显示）
+			if(remoteFileId != null) {
+				//append(" ").append(PlsDocBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
+			}
+			//相关链接
+			val rootPath = fileInfo.rootPath?.absolutePathString()?.let { "file:/$it" }
+			if(rootPath != null) {
+				append(" ")
+				appendLink(rootPath, PlsDocBundle.message("name.core.localDirectoryLinkLabel"))
+				if(remoteFileId != null){
+					append(" | ")
+					appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
+					append(" | ")
+					appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel"))
 				}
 			}
 		}

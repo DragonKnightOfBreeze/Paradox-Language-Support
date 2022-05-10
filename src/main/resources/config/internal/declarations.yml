@@ -1,4 +1,5 @@
 ### localisation locale
+### see wiki: https://stellaris.paradoxwikis.com/Localisation_modding#Creating_Localisation_Files
   
 locale:
 - id: "l_default"
@@ -43,6 +44,7 @@ sequentialNumber:
   placeholderText: "I"
 
 ### localisation color
+### see wiki: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
 ### see: interface/fonts.gfx#bitmapfonts.textcolors
 
 color:
