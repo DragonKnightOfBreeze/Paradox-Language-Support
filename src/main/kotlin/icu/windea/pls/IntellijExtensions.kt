@@ -340,7 +340,7 @@ object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 	
 	override fun getContainingFile() = null
 	
-	override fun getProject() = getDefaultProject()
+	override fun getProject() = ProjectManager.getInstance().defaultProject
 	
 	override fun getVirtualFile() = null
 	

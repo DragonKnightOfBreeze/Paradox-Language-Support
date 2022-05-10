@@ -38,8 +38,6 @@ val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>
 //endregion
 
 //region Misc Extensions
-fun getDefaultProject() = ProjectManager.getInstance().defaultProject
-
 fun getSettings() = ParadoxSettingsState.getInstance()
 
 fun getInternalConfig() = ApplicationManager.getApplication().getService(InternalConfigProvider::class.java).configGroup

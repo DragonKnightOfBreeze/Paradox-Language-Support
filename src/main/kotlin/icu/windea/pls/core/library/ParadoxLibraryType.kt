@@ -47,7 +47,7 @@ abstract class ParadoxLibraryType(
 		chooserDescriptor.title = PlsBundle.message("library.chooser.title")
 		chooserDescriptor.description = PlsBundle.message("library.chooser.description")
 		val root = FileChooser.chooseFile(chooserDescriptor, parentComponent, project, contextDirectory) ?: return null
-		setFileInfoAndGetFileType(root, root, emptyList(), root.name, ParadoxFileType.Directory, getFileType = false)
+		setFileInfoAndGetFileType(root, root, project, emptyList(), root.name, ParadoxFileType.Directory, getFileType = false)
 		val fileInfo = root.fileInfo
 		val descriptorInfo = fileInfo?.getDescriptorInfo(project)
 		if(fileInfo != null && descriptorInfo != null) {

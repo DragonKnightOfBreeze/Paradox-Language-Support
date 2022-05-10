@@ -27,7 +27,7 @@
     <p>
       This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
       If you want more perfect script language support, please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
-      This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
+      This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, with some modification and extension, but related functions has not been fully implemented yet.
     </p>
     <p>
       For functions and usages of this plugin, please refer to the <a href="https://windea.icu/Paradox-Language-Support/#/en/">Reference documentation</a>.
@@ -38,7 +38,7 @@
     <p>
       Paradox语言支持。
     <p>
-      为脚本语言（主要是<code>*.txt</code>文件）和本地化语言（主要是<code>*.yml</code>文件）
+      为脚本语言（主要是<code>*.txt</code>文件）和本地化语言（<code>*.yml</code>文件）
       提供语法解析、代码检查、代码补全、导航、文档注释、内嵌提示、本地化文本渲染、DDS图片渲染以及其他诸多功能。
       也为CWT语言提供必要的上述功能，为DDS图片文件提供一些方便的功能。
     </p>
@@ -49,7 +49,7 @@
     <p>
       这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
       如果需要更加完善的脚本语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
-      这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
+      这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），经过一定的修改和扩展，但是相关功能尚未完全实现。
     </p>
     <p>
       关于插件的功能和用法，请参阅<a href="https://windea.icu/Paradox-Language-Support/#/zh/">参考文档</a>。
@@ -110,8 +110,8 @@
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$StellarisLibraryType"/>
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Vic2LibraryType"/>
 
-    <projectConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
-    <projectService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettingsState"/>
+    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettingsState"/>
     <!--endregion-->
 
     <!--region DDS-->

@@ -20,7 +20,7 @@ by adding related libraries to the module of your Mod in the `Project Structure`
 
 This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
 If you want more perfect script language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
-This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), with some modification and extension, but related functions has not been fully implemented yet.
 
 For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) .
 
@@ -31,3 +31,5 @@ Related links：
 * [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
 * [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
 * [vincentzhang96/DDS4J: Java library for reading and decoding DDS files to raw ARGB and PNG](https://github.com/vincentzhang96/DDS4J)
+* [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
+* [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)

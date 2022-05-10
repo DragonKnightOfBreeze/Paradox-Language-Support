@@ -1,6 +1,7 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import icu.windea.pls.*
@@ -24,6 +25,7 @@ fun getFileType(file: VirtualFile): ParadoxFileType? {
 fun setFileInfoAndGetFileType(
 	file: VirtualFile,
 	root: VirtualFile,
+	project: Project?,
 	subPaths: List<String>,
 	fileName: String,
 	fileType: ParadoxFileType,
@@ -99,15 +101,18 @@ fun setFileInfoAndGetFileType(
 		if(!getFileType) return null
 		
 		//如果存在对应的folders配置，则path要与之匹配或者为空，才解析为脚本或本地化文件
-		val folders = getCwtConfig(getDefaultProject()).get(gameType)?.folders
-		val inFolders = path.isEmpty() || folders == null || folders.isEmpty() || folders.any { it.matchesPath(path.parent) }
+		val shouldOverride = when {
+			path.isEmpty() -> true
+			project != null -> isInFolders(project, gameType, path)
+			else -> ProjectManager.getInstance().openProjects.any { isInFolders(it, gameType, path) } //任意项目需要重载即可
+		}
 		
 		//只解析特定根目录下的文件
 		return when {
 			//脚本文件
-			inFolders && fileType == ParadoxFileType.ParadoxScript && !isIgnored(fileName) -> ParadoxScriptFileType
+			shouldOverride && fileType == ParadoxFileType.ParadoxScript && !isIgnored(fileName) -> ParadoxScriptFileType
 			//本地化文件
-			inFolders && fileType == ParadoxFileType.ParadoxLocalisation && !isIgnored(fileName) -> ParadoxLocalisationFileType
+			shouldOverride && fileType == ParadoxFileType.ParadoxLocalisation && !isIgnored(fileName) -> ParadoxLocalisationFileType
 			//其他文件（如dds）
 			else -> MockLanguageFileType.INSTANCE //这里不能直接返回null，否则缓存的文件信息会被清除
 		}
@@ -115,6 +120,11 @@ fun setFileInfoAndGetFileType(
 	return null
 }
 
-private fun isIgnored(fileName: String): Boolean{
+private fun isInFolders(project: Project, gameType: ParadoxGameType, path: ParadoxPath): Boolean {
+	val folders = getCwtConfig(project).get(gameType)?.folders
+	return folders.isNullOrEmpty() || folders.any { it.matchesPath(path.parent) }
+}
+
+private fun isIgnored(fileName: String): Boolean {
 	return getSettings().finalIgnoredFileNames.contains(fileName)
 }

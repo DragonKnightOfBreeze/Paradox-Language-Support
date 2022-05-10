@@ -2,7 +2,7 @@
 
 IDEA插件：Paradox语言支持。
 
-为脚本语言（主要是`*.txt`文件）和本地化语言（主要是`*.yml`文件）
+为脚本语言（主要是`*.txt`文件）和本地化语言（`*.yml`文件）
 提供语法解析、代码检查、代码补全、导航、文档注释、内嵌提示、本地化文本渲染、DDS图片渲染以及其他诸多功能。
 也为CWT语言提供必要的上述功能，为DDS图片文件提供一些方便的功能。
 
@@ -11,7 +11,7 @@ IDEA插件：Paradox语言支持。
 
 这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
 如果需要更加完善的脚本语言支持，请考虑使用[VSCode](https://code.visualstudio.com)以及[CWTools](https://github.com/cwtools/cwtools-vscode)插件。
-这个插件与[CWTools](https://github.com/cwtools/cwtools-vscode)共享规则文件（`*.cwt`），但是相关功能尚未完全实现。
+这个插件与[CWTools](https://github.com/cwtools/cwtools-vscode)共享规则文件（`*.cwt`），经过一定的修改和扩展，但是相关功能尚未完全实现。
 
 说明：
 
@@ -32,4 +32,5 @@ IDEA插件：Paradox语言支持。
 * [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
 * [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
 * [vincentzhang96/DDS4J: Java library for reading and decoding DDS files to raw ARGB and PNG](https://github.com/vincentzhang96/DDS4J)
-
+* [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
+* [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)

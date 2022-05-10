@@ -2,8 +2,8 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import java.util.*
 
 /**
@@ -23,7 +23,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 		subPaths.addFirst(fileName)
 		var currentFile: VirtualFile? = file.parent
 		while(currentFile != null) {
-			val targetFileType = setFileInfoAndGetFileType(file, currentFile, subPaths, fileName, fileType)
+			val targetFileType = setFileInfoAndGetFileType(file, currentFile, null, subPaths, fileName, fileType)
 			if(targetFileType != null){
 				return if(targetFileType != MockLanguageFileType.INSTANCE) targetFileType else null
 			}

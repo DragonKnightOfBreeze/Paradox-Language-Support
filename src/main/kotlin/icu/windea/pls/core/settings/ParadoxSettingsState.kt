@@ -2,6 +2,7 @@ package icu.windea.pls.core.settings
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -25,7 +26,7 @@ data class ParadoxSettingsState(
 	@JvmField var ignoredFileNames: String = "readme.txt,changelog.txt,license.txt,credits.txt",
 	@JvmField var preferOverridden: Boolean = false,
 	@Deprecated("Consider for removal.")
-	@JvmField var maxCompleteSize:Int = 100,
+	@JvmField var maxCompleteSize: Int = 100,
 	@JvmField var scriptRenderLineComment: Boolean = false,
 	@JvmField var scriptRenderRelatedLocalisation: Boolean = true,
 	@JvmField var scriptRenderRelatedPictures: Boolean = true,
@@ -35,12 +36,12 @@ data class ParadoxSettingsState(
 	@JvmField var localisationRenderLocalisation: Boolean = true
 ) : PersistentStateComponent<ParadoxSettingsState> {
 	var finalIgnoredFileNames = ignoredFileNames.toCommaDelimitedStringSet(ignoreCase = true)
-	val finalLocalisationPrimaryLocale get() = getInternalConfig().localeMap.getValue(localisationPrimaryLocale) 
+	val finalLocalisationPrimaryLocale get() = getInternalConfig().localeMap.getValue(localisationPrimaryLocale)
 	
 	override fun getState() = this
-
+	
 	override fun loadState(state: ParadoxSettingsState) = XmlSerializerUtil.copyBean(state, this)
-
+	
 	companion object {
 		@JvmStatic
 		fun getInstance(): ParadoxSettingsState = ApplicationManager.getApplication().getService(ParadoxSettingsState::class.java)

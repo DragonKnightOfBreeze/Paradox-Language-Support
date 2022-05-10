@@ -15,9 +15,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import java.util.*
 
-class ParadoxSettingsConfigurable(
-	private val project: Project
-) : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
+class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"
 	
 	override fun createPanel(): DialogPanel {
@@ -123,17 +121,24 @@ class ParadoxSettingsConfigurable(
 	private fun refreshInlayHints() {
 		//当某些设置变更后，需要刷新内嵌提示
 		//com.intellij.codeInsight.hints.VcsCodeAuthorInlayHintsProviderKt.refreshCodeAuthorInlayHints
-		runCatching {
-			val allEditors = FileEditorManager.getInstance(project).allEditors
-			for(fileEditor in allEditors) {
-				if(fileEditor is TextEditor) {
-					val fileType = fileEditor.file.fileType
-					if(fileType == ParadoxScriptFileType) {
-						val editor = fileEditor.editor
-						InlayHintsPassFactory.clearModificationStamp(editor)
+		try {
+			val openProjects = ProjectManager.getInstance().openProjects
+			if(openProjects.isEmpty()) return
+			for(project in openProjects) {
+				val allEditors = FileEditorManager.getInstance(project).allEditors
+				if(allEditors.isEmpty()) continue
+				for(fileEditor in allEditors) {
+					if(fileEditor is TextEditor) {
+						val fileType = fileEditor.file.fileType
+						if(fileType == ParadoxScriptFileType) {
+							val editor = fileEditor.editor
+							InlayHintsPassFactory.clearModificationStamp(editor)
+						}
 					}
 				}
 			}
+		}catch(e: Exception){
+			//ignored
 		}
 	}
 }
