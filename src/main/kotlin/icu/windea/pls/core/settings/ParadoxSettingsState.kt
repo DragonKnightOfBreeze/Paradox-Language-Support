@@ -2,14 +2,13 @@ package icu.windea.pls.core.settings
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 
 /**
  * @property defaultGameType 默认游戏类型。
- * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
+ * @property scriptIgnoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
  * @property preferOverridden 是否优先使用重载后的引用。
  * @property maxCompleteSize 本地化在进行代码补全时的最大补全数量。
  * @property scriptRenderLineComment 对于脚本语言，是否需要渲染之前的单行注释文本到文档注释中。
@@ -23,10 +22,10 @@ import icu.windea.pls.core.*
 @State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])
 data class ParadoxSettingsState(
 	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris,
-	@JvmField var ignoredFileNames: String = "readme.txt,changelog.txt,license.txt,credits.txt",
 	@JvmField var preferOverridden: Boolean = false,
 	@Deprecated("Consider for removal.")
 	@JvmField var maxCompleteSize: Int = 100,
+	@JvmField var scriptIgnoredFileNames: String = "readme.txt,changelog.txt,license.txt,credits.txt",
 	@JvmField var scriptRenderLineComment: Boolean = false,
 	@JvmField var scriptRenderRelatedLocalisation: Boolean = true,
 	@JvmField var scriptRenderRelatedPictures: Boolean = true,
@@ -35,7 +34,7 @@ data class ParadoxSettingsState(
 	@JvmField var localisationRenderLineComment: Boolean = false,
 	@JvmField var localisationRenderLocalisation: Boolean = true
 ) : PersistentStateComponent<ParadoxSettingsState> {
-	var finalIgnoredFileNames = ignoredFileNames.toCommaDelimitedStringSet(ignoreCase = true)
+	var finalScriptIgnoredFileNames = scriptIgnoredFileNames.toCommaDelimitedStringSet(ignoreCase = true)
 	val finalLocalisationPrimaryLocale get() = getInternalConfig().localeMap.getValue(localisationPrimaryLocale)
 	
 	override fun getState() = this
