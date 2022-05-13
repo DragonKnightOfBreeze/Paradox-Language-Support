@@ -174,14 +174,14 @@
 * [ ] 支持规则类型scope和scope_field
 * [ ] 支持规则类型value和value_set
 * [ ] 支持规则类型complex_enum
-* [ ] 支持规则类型icon
-* [ ] 支持规则类型path
+* [X] 支持规则类型icon
+* [X] 支持规则类型path
 * [X] 应用cwt配置文件`folders.cwt`
-* [ ] 应用cwt配置文件`scopes.cwt`
-* [ ] 应用cwt配置文件`links.cwt`
+* [X] 应用cwt配置文件`scopes.cwt`
+* [X] 应用cwt配置文件`links.cwt`
 * [X] 应用cwt配置文件`modifiers.cwt/modifier_categories.cwt`
-* [ ] 应用cwt配置文件`values.cwt`
-* [ ] 应用cwt配置文件`localisation.cwt` *
+* [X] 应用cwt配置文件`values.cwt`
+* [X] 应用cwt配置文件`localisation.cwt` *
 * [X] 生成本地化文本的文档注释时考虑并发解析其中的图标（不知为什么还是有点慢）
 * [X] 不要缓存CwtKvConfig的scope和scopeGroup（因为内联的原因，parent可能有变动）
 * [X] 修复当规则类型为alias_name或者引用为modifier时，无法解析definitionPropertyKey的引用的bug
