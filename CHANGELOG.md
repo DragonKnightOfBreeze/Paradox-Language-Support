@@ -8,6 +8,7 @@
 
 * [ ] 完善在线参考文档
 * [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
+* [ ] 脚本文件语法解析优化：兼容`stellaris v3.3`开始新增的`script_value`语法
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 * [ ] ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
