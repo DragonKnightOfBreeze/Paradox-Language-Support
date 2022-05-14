@@ -37,7 +37,7 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	private fun renderStringTo(element: ParadoxLocalisationString, builder: StringBuilder) {
-		builder.append(element.text.escapeXml())
+		builder.append(element.text.escapeXml().escapeBlank()) //这里需要转义空白
 	}
 	
 	private fun renderEscapeTo(element: ParadoxLocalisationEscape, builder: StringBuilder) {
