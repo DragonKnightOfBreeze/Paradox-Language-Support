@@ -41,7 +41,7 @@ types = {
 		# ADDED BY PLS
 		pictures = {
 			## primary
-			texture = "#textureFile|#noOfFrames" # filepath
+			texture = "#textureFile" # filepath
 			masking_texture = "#masking_texture" # filepath
 			## primary
 			texture = "#sprite_sheet_sprite_type|#default_frame" # <sprite>
