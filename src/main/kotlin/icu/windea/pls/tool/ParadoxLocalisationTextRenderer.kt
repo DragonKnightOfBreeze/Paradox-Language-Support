@@ -1,5 +1,7 @@
 package icu.windea.pls.tool
 
+import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.PsiFile
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
@@ -71,7 +73,14 @@ object ParadoxLocalisationTextRenderer {
 			else -> return
 		}
 		if(iconUrl.isNotEmpty()) {
-			builder.appendImgTag(iconUrl, fontSize) //指定图标大小为fontSize
+			//找不到图标或者出现异常的话就直接跳过
+			val icon = runCatching { IconLoader.findIcon(iconUrl.toFileUrl()) }.getOrNull() ?: return
+			//基于文档的字体大小缩放图标，如果图标过宽就直接跳过
+			if(icon.iconHeight > maxTextIconHeight) return
+			val docFontSize = DocumentationComponent.getQuickDocFontSize().size
+			val usedWidth = icon.iconWidth * docFontSize / textFontSize
+			val usedHeight = icon.iconHeight * docFontSize / textFontSize
+			builder.appendImgTag(iconUrl, usedWidth, usedHeight)
 		}
 	}
 	

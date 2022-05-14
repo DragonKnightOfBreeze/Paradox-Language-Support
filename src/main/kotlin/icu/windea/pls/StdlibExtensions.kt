@@ -3,10 +3,9 @@
 package icu.windea.pls
 
 import com.google.common.cache.*
-import com.intellij.util.SmartList
-import com.intellij.util.containers.CollectionFactory
+import com.intellij.util.*
+import com.intellij.util.containers.*
 import com.intellij.util.io.*
-import org.intellij.lang.annotations.Language
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -81,7 +80,13 @@ fun String.containsBlankLine(): Boolean {
 	return false
 }
 
-private val commaRegex = """\s*,\s*""".toRegex()
+fun Char.isExactDigit(): Boolean{
+	return this in '0'..'9'
+}
+
+fun Char.isExactLetter(): Boolean {
+	return this in 'a'..'z' || this in 'A'..'Z';
+}
 
 fun String.isQuoted() = length >= 2 && surroundsWith('"', '"')
 
@@ -352,90 +357,6 @@ fun <T> Collection<T>.toListOrThis(): List<T> {
 	}
 }
 
-fun String.isBooleanYesNo(): Boolean {
-	return this == "yes" || this == "no"
-}
-
-fun String.isInt(): Boolean {
-	var isFirstChar = true
-	val chars = toCharArray()
-	for(char in chars) {
-		if(char.isDigit()) continue
-		if(isFirstChar) {
-			isFirstChar = false
-			if(char == '+' || char == '-') continue
-		}
-		return false
-	}
-	return true
-}
-
-fun String.isFloat(): Boolean {
-	var isFirstChar = true
-	var missingDot = true
-	val chars = toCharArray()
-	for(char in chars) {
-		if(char.isDigit()) continue
-		if(isFirstChar) {
-			isFirstChar = false
-			if(char == '+' || char == '-') continue
-		}
-		if(missingDot) {
-			if(char == '.') {
-				missingDot = false
-				continue
-			}
-		}
-		return false
-	}
-	return true
-}
-
-fun String.isString(): Boolean {
-	//以引号包围，或者不是布尔值、整数以及小数
-	if(surroundsWith('"', '"')) return true
-	return !isBooleanYesNo() && !isInt() && !isFloat()
-}
-
-fun String.isPercentageField(): Boolean {
-	val chars = toCharArray()
-	for(i in indices) {
-		val char = chars[i]
-		if(i == lastIndex) {
-			if(char != '%') return false
-		} else {
-			if(!char.isDigit()) return false
-		}
-	}
-	return true
-}
-
-private val isColorRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
-
-fun String.isColorField(): Boolean {
-	return this.matches(isColorRegex)
-}
-
-private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") }
-
-fun String.isDateField(): Boolean {
-	return try {
-		threadLocalDateFormat.get().parse(this)
-		true
-	} catch(e: Exception) {
-		false
-	}
-}
-
-fun String.isVariableField(): Boolean {
-	return this.startsWith('@') //NOTE 简单判断
-}
-
-fun String.isTypeOf(type: String): Boolean {
-	return (type == "boolean" && isBooleanYesNo()) || (type == "int" && isInt()) || (type == "float" && isFloat())
-		|| (type == "color" && isColorField()) || type == "string"
-}
-
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 
 fun Boolean.toInt() = if(this) 1 else 0
@@ -446,11 +367,23 @@ fun String.toBooleanYesNo() = this == "yes"
 
 fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
 
-fun String.toUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
+fun String.toFile() = File(this)
+
+fun String.toFileOrNull() = runCatching { File(this) }.getOrNull()
 
 fun String.toPath() = Path.of(this)
 
 fun String.toPathOrNull() = runCatching { Path.of(this) }.getOrNull()
+
+/**
+ * 得到当前文件绝对路径对应的URL。
+ */
+fun String.toFileUrl() = File(this).toURI().toURL()
+
+/**
+ * 得到当前相对于classpath的绝对路径对应的URL。
+ */
+fun String.toClasspathUrl() = locationClass.getResource(this)!!
 
 fun String.toIntRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 

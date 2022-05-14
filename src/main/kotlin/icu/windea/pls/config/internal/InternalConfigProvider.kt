@@ -38,7 +38,7 @@ class InternalConfigProvider {
 		val startTime = System.currentTimeMillis()
 		logger.info("Resolve internal config files.")
 		val configMap: InternalConfigMap = mutableMapOf()
-		val configUrl = internalConfigPath.toUrl(locationClass)
+		val configUrl = internalConfigPath.toClasspathUrl()
 		//通过这种方式得到的virtualFile可以位于jar压缩包中，可以直接得到它的子节点
 		val configDirectory = VfsUtil.findFileByURL(configUrl)
 		if(configDirectory != null) {

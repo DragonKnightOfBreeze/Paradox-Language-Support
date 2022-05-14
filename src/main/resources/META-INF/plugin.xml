@@ -305,19 +305,25 @@
                      bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
-
+    <!--internal inspections-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.internal.missingEventNamespace"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
                      groupPathKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.internal.MissingEventNamespaceInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventNamespace"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.internal.mismatchedEventId"
+                     bundle="messages.PlsBundle" key="script.inspection.internal.incorrectEventNamespace"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
                      groupPathKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.internal.MismatchedEventIdInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.internal.IncorrectEventNamespaceInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.internal.incorrectEventId"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
+                     groupPathKey="script.inspection"
+                     implementationClass="icu.windea.pls.script.inspections.internal.IncorrectEventIdInspection"/>
     <!--endregion-->
 
     <!--region Paradox Localisation Language-->

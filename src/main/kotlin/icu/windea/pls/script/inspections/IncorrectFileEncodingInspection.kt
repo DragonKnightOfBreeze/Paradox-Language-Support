@@ -15,10 +15,10 @@ import icu.windea.pls.*
 /**
  * 不正确的的文件编码的检查。
  *
- * 注意：[icu.windea.pls.core.ParadoxFileTypeOverrider]会尝试自动修正文件的BOM。
- *
  * 提供快速修复：
  * * 改为正确的文件编码
+ * 
+ * 注意：[icu.windea.pls.core.ParadoxFileTypeOverrider]会尝试自动修正文件的BOM。
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {

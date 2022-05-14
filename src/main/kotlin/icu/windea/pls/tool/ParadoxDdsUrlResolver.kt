@@ -18,7 +18,7 @@ object ParadoxDdsUrlResolver {
 	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 	
 	/**
-	 * 基于gfx文件中的类型为sprite的定义进行解析。
+	 * 基于gfx文件中的类型为sprite的定义进行解析。返回对应的PNG图片的绝对路径。
 	 */
 	fun resolveBySprite(sprite: ParadoxDefinitionProperty, frame: Int = 0, defaultToUnknown: Boolean = false): String {
 		val spriteName = sprite.definitionInfo?.name
@@ -36,7 +36,7 @@ object ParadoxDdsUrlResolver {
 	}
 	
 	/**
-	 * 直接基于dds文件的文件名进行解析。
+	 * 直接基于dds文件的文件名进行解析。返回对应的PNG图片的绝对路径。
 	 */
 	fun resolveByFile(file: VirtualFile,frame: Int = 0, defaultToUnknown: Boolean = false): String {
 		try {
@@ -52,7 +52,7 @@ object ParadoxDdsUrlResolver {
 	}
 	
 	/**
-	 * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。
+	 * 直接基于dds文件的相对于游戏或模组目录的路径进行解析。返回对应的PNG图片的绝对路径。
 	 */
 	fun resolveByFilePath(filePath: String, project: Project, frame: Int = 0, defaultToUnknown: Boolean = false): String {
 		try {

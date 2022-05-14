@@ -10,4 +10,6 @@ object PlsPaths {
 	val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
 	val imagesDirectoryPath by lazy { dataDirectoryPath.resolve(imagesDirectoryName) }
 	val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
+	
+	val unknownPngUrl = "/${unknownPngName}".toClasspathUrl()
 }

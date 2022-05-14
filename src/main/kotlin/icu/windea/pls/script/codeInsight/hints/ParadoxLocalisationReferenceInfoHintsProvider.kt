@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 
 /**
  * 本地化引用信息的内嵌提示（对应的本地化的渲染后文本，如果过长则会截断）。
@@ -50,7 +51,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 			if(resolved is ParadoxLocalisationProperty) {
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
-					val presentation = collectLocalisation(resolved)
+					val presentation = collectLocalisation(resolved, editor)
 					val finalPresentation = presentation?.toFinalPresentation(this, file, element.project) ?: return true
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
@@ -61,7 +62,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 			if(resolved is ParadoxLocalisationProperty) {
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
-					val presentation = collectLocalisation(resolved)
+					val presentation = collectLocalisation(resolved, editor)
 					val finalPresentation = presentation?.toFinalPresentation(this, file, element.project) ?: return true
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
@@ -71,10 +72,9 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 		return true
 	}
 	
-	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty): InlayPresentation? {
-		//TODO 渲染成富文本
-		val text = localisation.value?.truncate(getSettings().localisationTruncateLimit) ?: return null
-		return smallText(text)
+	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty, editor: Editor): InlayPresentation? {
+		//TODO 截断
+		return ParadoxLocalisationTextHintsRenderer.render(localisation,this, editor)
 	}
 }
 

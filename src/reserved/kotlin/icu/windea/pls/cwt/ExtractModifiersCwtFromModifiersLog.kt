@@ -1,4 +1,4 @@
-package icu.windea.pls.config.cwt
+package icu.windea.pls.cwt
 
 import java.io.*
 

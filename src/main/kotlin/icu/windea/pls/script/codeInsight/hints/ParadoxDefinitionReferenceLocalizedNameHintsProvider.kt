@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 
 /**
  * 定义引用信息的内嵌提示（对应定义的名字和类型、本地化名字）。
@@ -48,7 +49,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {
-					val presentation = collectDefinition(resolved, definitionInfo) ?: return true
+					val presentation = collectDefinition(resolved, definitionInfo, editor) ?: return true
 					val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
@@ -60,7 +61,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {
-					val presentation = collectDefinition(resolved, definitionInfo) ?: return true
+					val presentation = collectDefinition(resolved, definitionInfo, editor) ?: return true
 					val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
@@ -70,16 +71,15 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 		return true
 	}
 	
-	private fun PresentationFactory.collectDefinition(element: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo): InlayPresentation? {
+	private fun PresentationFactory.collectDefinition(element: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor): InlayPresentation? {
 		val project = element.project
 		val primaryLocalisationConfigs = definitionInfo.primaryLocalisationConfigs
 		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
 			val resolved = primaryLocalisationConfig.locationExpression.resolve(definitionInfo.name, inferParadoxLocale(), project)
 			val localisation = resolved.second
 			if(localisation != null) {
-				//TODO 渲染成富文本
-				val localizedName = localisation.value?.truncate(getSettings().localisationTruncateLimit)?:return null
-				return smallText(localizedName)
+				//TODO 截断
+				return ParadoxLocalisationTextHintsRenderer.render(localisation,this, editor)
 			}
 		}
 		return null

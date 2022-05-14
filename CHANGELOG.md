@@ -9,6 +9,7 @@
 * [ ] 完善在线参考文档
 * [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
 * [ ] 脚本文件语法解析优化：兼容`stellaris v3.3`开始新增的`script_value`语法
+* [ ] 文件路径分隔符兼容"/" "\" "\\"混用
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 * [ ] ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
@@ -74,8 +75,8 @@
 * [X] 在需要显示文件信息的地方显示更详细的文件信息（如所属游戏或者所属模组的名字和版本）
 * [X] 可以配置主要的语言区域
 * [X] 可以配置要忽略（识别为脚本或本地化文件）的文件 
-* [X] 为`descriptor.mod`默认注册文件类型为脚本文件 
-* [ ] 提供无法解析的文件路径（abs_filepath, filepath, icon）的检查，~~并且提供创建文件/文件夹的快速修复~~（忽略，不能手动创建DDS）
+* [X] 为`descriptor.mod`默认注册文件类型为脚本文件
+* [X] ~~提供无法解析的文件路径（abs_filepath, filepath, icon）的检查（默认忽略lua文件）~~（忽略，考虑整合到CWT检查中）
 * [ ] 查找定义时显示更详细的信息（如filePath，absPath）
 * [ ] 完善对内置配置文件的支持，完善相关功能
   * [ ] 将配置文件格式由YAML改为CWT，以便可以直接导航到文件中的相关规则
@@ -189,7 +190,7 @@
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
 * [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [X] 适配IDEA版本`2021.2`
-* [ ] ~~添加新的库作为依赖时（原始游戏目录，模组），兼容zip压缩包和文件夹~~（使用基于jar协议的url打开zip文件，实际测试发现读取不到内容）
+* [X] ~~添加新的库作为依赖时（原始游戏目录，模组），兼容zip压缩包和文件夹~~（使用基于jar协议的url打开zip文件，实际测试发现读取不到内容）
 * [X] 实现或重构用于提示definition的nameTypeInfo的InlayHint，可以单独启用
 * [X] 实现或重构用于提示definition的localizedName的InlayHint，可以单独启用
 * [X] 添加检查，检查事件的脚本文件中的namespace必须存在

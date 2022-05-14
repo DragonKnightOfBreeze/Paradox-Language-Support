@@ -68,8 +68,14 @@ object ParadoxLocalisationTextHintsRenderer {
 			else -> return
 		}
 		if(iconUrl.isNotEmpty()) {
-			val icon = IconLoader.findIcon(iconUrl, locationClass) ?: return //找不到图标的话就直接跳过
-			builder.add(icon(icon))
+			//忽略异常
+			runCatching {
+				//找不到图标或者出现异常的话就直接跳过
+				val icon = runCatching { IconLoader.findIcon(iconUrl.toFileUrl()) }.getOrNull() ?: return
+				//基于内嵌提示的字体大小缩放图标，如果图标过宽就直接跳过
+				if(icon.iconHeight > maxTextIconHeight) return
+				builder.add(smallScaledIcon(icon))
+			}
 		}
 	}
 	

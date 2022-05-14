@@ -7,6 +7,7 @@ import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import static icu.windea.pls.StdlibExtensionsKt.*;
 
 
 /**
@@ -332,52 +333,68 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
 
   /* user code: */
   private boolean noIndent = true;
-  private int depth = 0;
-  private int commandLocation = 0;
-  private int propertyReferenceLocation = 0;
-  private boolean inIconName = false;
-
-  public void increaseDepth(){
-	  depth++;
-  }
-  
-  public void decreaseDepth(){
-	  if(depth > 0) depth--;
-  }
-  
-  public int nextStateForText(){
-    return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
-  }
-  
-  public int nextStateForCommand(){
-    if(commandLocation == 0) return nextStateForText();
-    else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
-    else if (commandLocation == 2) return WAITING_ICON;
-    else return nextStateForText();
-  }
-
-  public int nextStateForPropertyReference(){
-    if(propertyReferenceLocation == 0) return nextStateForText();
-    else if (propertyReferenceLocation == 2) return WAITING_ICON;
-    else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
-    else return nextStateForText();
-  }
-  
-  public boolean isLetter(char c){
-	  return ('a' <= c && 'z' >= c) || ('A' <= c && 'Z' >= c);
-  }
-  
-  public boolean isDigit(char c){
-	  return '0' <= c && '9' >= c;
-  }
-  
-  public boolean isLetterOrDigitOrUnderline(char c){
-	  return isLetter(c) || isDigit(c) || c == '_';
-  }
-  
-  public boolean isBlankOrDoubleQuote(char c){
-	  return Character.isWhitespace(c) || c == '"';
-  }
+      private int depth = 0;
+      private int commandLocation = 0;
+      private int propertyReferenceLocation = 0;
+      private boolean inIconName = false;
+    
+      private void increaseDepth(){
+	      depth++;
+      }
+      
+      private void decreaseDepth(){
+	      if(depth > 0) depth--;
+      }
+      
+      private int nextStateForText(){
+        return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
+      }
+      
+      private int nextStateForCommand(){
+        if(commandLocation == 0) return nextStateForText();
+        else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
+        else if (commandLocation == 2) return WAITING_ICON;
+        else return nextStateForText();
+      }
+    
+      private int nextStateForPropertyReference(){
+        if(propertyReferenceLocation == 0) return nextStateForText();
+        else if (propertyReferenceLocation == 2) return WAITING_ICON;
+        else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
+        else return nextStateForText();
+      }
+      
+      private boolean isPropertyReferenceStart(){
+		  if(yylength() <= 1) return false;
+	      char c = yycharat(yylength()-1);
+	      return !Character.isWhitespace(c) && c != '"';
+      }
+      
+      private boolean isIconStart(){
+		  if(yylength() != 2) return false;
+	      char c = yycharat(1);
+	      return isExactLetter(c) || isExactDigit(c) || c == '_';
+      }
+      
+      private boolean isSequentialNumberStart(){
+		  if(yylength() != 3) return false;
+	      return yycharat(2) == '%';
+      }
+      
+      private boolean isCommandStart(){
+		  if(yylength() <= 1) return false;
+	      return yycharat(yylength()-1) == ']';
+      }
+      
+      private boolean isColorfulTextStart(){
+		  if(yylength() != 2) return false;
+	      return isExactLetter(yycharat(1));
+      }
+      
+      private boolean isRightQuote(){
+		  if(yylength() == 1) return true;
+	      return yycharat(yylength()-1) != '"';
+      }
 
 
   /**
@@ -828,7 +845,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { //特殊处理
     //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
     //否则认为是常规字符串
-    boolean isPropertyReferenceStart = yylength() > 1 && !isBlankOrDoubleQuote(yycharat(yylength()-1));
+    boolean isPropertyReferenceStart = isPropertyReferenceStart();
 	yypushback(yylength()-1);
 	if(isPropertyReferenceStart){
 		yybegin(WAITING_PROPERTY_REFERENCE);
@@ -844,7 +861,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线，则认为代表图标的开始
     //否则认为是常规字符串
-    boolean isIconStart = yylength() == 2 && isLetterOrDigitOrUnderline(yycharat(1));
+    boolean isIconStart = isIconStart();
     yypushback(yylength()-1);
     if(isIconStart){
     	  yybegin(WAITING_ICON);
@@ -860,7 +877,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { //特殊处理
     //如果匹配的字符串的第3个字符存在且为百分号，则认为整个字符串代表一个编号
     //否则认为是常规字符串
-    boolean isSequentialNumberStart = yylength() == 3 && yycharat(2) == '%';
+    boolean isSequentialNumberStart = isSequentialNumberStart();
     yypushback(yylength()-1);
     if(isSequentialNumberStart){
         yybegin(WAITING_SEQUENTIAL_NUMBER);
@@ -877,7 +894,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     //除了可以通过连续的两个左方括号转义之外
     //如果匹配到的字符串长度大于1，且最后一个字符为右方括号，则认为代表命令的开始
     //否则认为是常规字符串
-    boolean isCommandStart = yylength() > 1 && yycharat(yylength()-1) == ']';
+    boolean isCommandStart = isCommandStart();
     yypushback(yylength()-1);
     if(isCommandStart){
 	    yybegin(WAITING_COMMAND_SCOPE_OR_FIELD);
@@ -893,7 +910,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
     //否则认为是常规字符串
-    boolean isColorfulTextStart = yylength() == 2 && isLetter(yycharat(1));
+    boolean isColorfulTextStart = isColorfulTextStart();
     yypushback(yylength()-1);
     if(isColorfulTextStart){
         yybegin(WAITING_COLOR_ID);
@@ -910,7 +927,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { //特殊处理
       //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
       //否则认为是常规字符串
-      boolean isRightQuote = yylength() == 1 || yycharat(yylength()-1) != '"';
+      boolean isRightQuote = isRightQuote();
       yypushback(yylength()-1);
       if(isRightQuote){
           yybegin(WAITING_PROPERTY_END);

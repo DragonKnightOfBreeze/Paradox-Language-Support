@@ -27,7 +27,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.util.*
-import kotlin.io.path.*
 
 //region Keys
 val cachedParadoxDescriptorInfoKey = Key<CachedValue<ParadoxDescriptorInfo>>("cachedParadoxDescriptorInfo")
@@ -1022,9 +1021,9 @@ fun StringBuilder.appendImgTag(url: String, local: Boolean = true): StringBuilde
 	return append("<img src=\"").appendIf(local, "file:/").append(url).append("\" />")
 }
 
-fun StringBuilder.appendImgTag(url: String, fontSize: FontSize, local: Boolean = true): StringBuilder {
+fun StringBuilder.appendImgTag(url: String, width:Int, height:Int, local: Boolean = true): StringBuilder {
 	return append("<img src=\"").appendIf(local, "file:/").append(url)
-		.append("\" width=\"").append(fontSize.size).append("\" height=\"").append(fontSize).append("\" />")
+		.append("\" width=\"").append(width).append("\" height=\"").append(height).append("\" />")
 }
 
 fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Project): StringBuilder {
@@ -1043,19 +1042,19 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Proj
 		grayed {
 			val remoteFileId = descriptorInfo?.remoteFileId
 			//remoteFileId（暂不显示）
-			if(remoteFileId != null) {
-				//append(" ").append(PlsDocBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
-			}
+			//if(remoteFileId != null) {
+			//	append(" ").append(PlsDocBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
+			//}
 			//相关链接
-			val rootPath = fileInfo.rootPath?.absolutePathString()?.let { "file:/$it" }
-			if(rootPath != null) {
+			val rootUri = fileInfo.rootPath?.toUri()?.toString() //通过这种方式获取需要的url
+			if(rootUri != null) {
 				append(" ")
-				appendLink(rootPath, PlsDocBundle.message("name.core.localDirectoryLinkLabel"))
+				appendLink(rootUri, PlsDocBundle.message("name.core.localDirectoryLinkLabel"))
 				if(remoteFileId != null){
 					append(" | ")
 					appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
 					append(" | ")
-					appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel"))
+					appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //链接右边会自带一个特殊图标
 				}
 			}
 		}

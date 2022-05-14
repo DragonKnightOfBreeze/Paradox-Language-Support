@@ -75,14 +75,14 @@ object DdsToPngConverter {
 		dds.read(Files.newByteChannel(ddsAbsPath.toPath(), StandardOpenOption.READ))
 		pngAbsPath.deleteIfExists()
 		pngAbsPath.create()
-		val outputStream = Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-		if(frame > 0) {
-			ddsImageDecoder.convertToPNG(dds, outputStream, frame)
-		} else {
-			ddsImageDecoder.convertToPNG(dds, outputStream)
+		Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING).use { outputStream ->
+			if(frame > 0) {
+				ddsImageDecoder.convertToPNG(dds, outputStream, frame)
+			} else {
+				ddsImageDecoder.convertToPNG(dds, outputStream)
+			}
+			outputStream.flush()
 		}
-		outputStream.flush()
-		outputStream.close()
 	}
 	
 	/**
@@ -106,8 +106,9 @@ object DdsToPngConverter {
 	
 	fun getUnknownPngPath(): String {
 		if(PlsPaths.unknownPngPath.notExists()) {
-			val url = "/${PlsPaths.unknownPngName}".toUrl(locationClass)
-			Files.copy(url.openStream(), PlsPaths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
+			PlsPaths.unknownPngUrl.openStream().use { inputStream ->
+				Files.copy(inputStream, PlsPaths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
+			}
 		}
 		return PlsPaths.unknownPngPath.toString()
 	}

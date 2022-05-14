@@ -40,7 +40,7 @@ class CwtConfigProvider(
 		val startTime = System.currentTimeMillis()
 		logger.info("Resolve cwt config files.")
 		val configMaps: CwtConfigMaps = mutableMapOf()
-		val configUrl = cwtConfigPath.toUrl(locationClass)
+		val configUrl = cwtConfigPath.toClasspathUrl()
 		//通过这种方式得到的virtualFile可以位于jar压缩包中，可以直接得到它的子节点
 		val configDirectory = VfsUtil.findFileByURL(configUrl)
 		if(configDirectory != null) {

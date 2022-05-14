@@ -9,19 +9,19 @@ const val cwtName = "CWT"
 const val cwtDescription = "CWT config"
 const val cwtId = "CWT"
 const val cwtExtension = "cwt"
-val cwtDemoText = "/demoText/CWT.txt".toUrl(locationClass).readText()
+val cwtDemoText = "/demoText/CWT.txt".toClasspathUrl().readText()
 
 const val paradoxLocalisationName = "Paradox Localisation"
 const val paradoxLocalisationDescription = "Paradox localisation"
 const val paradoxLocalisationId = "PARADOX_LOCALISATION"
 const val paradoxLocalisationExtension = "yml"
-val paradoxLocalisationDemoText = "/demoText/ParadoxLocalisation.txt".toUrl(locationClass).readText()
+val paradoxLocalisationDemoText = "/demoText/ParadoxLocalisation.txt".toClasspathUrl().readText()
 
 const val paradoxScriptName = "Paradox Script"
 const val paradoxScriptDescription = "Paradox script"
 const val paradoxScriptId = "PARADOX_SCRIPT"
 const val paradoxScriptExtension = "txt"
-val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toUrl(locationClass).readText()
+val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toClasspathUrl().readText()
 
 const val keywordPriority = 80.0
 const val propertyPriority = 40.0
@@ -49,4 +49,5 @@ val ddsFileExtensions = arrayOf("dds")
 const val launcherSettingsFileName = "launcher-settings.json" 
 const val descriptorFileName = "descriptor.mod"
 
-const val truncateLimit = 30
+const val textFontSize = 20 //based on: maxTextIconHeight
+const val maxTextIconHeight = 20 //from: gfx\interface\icons\text_icons

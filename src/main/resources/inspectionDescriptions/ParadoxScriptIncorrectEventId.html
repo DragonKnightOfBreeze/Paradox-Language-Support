@@ -5,17 +5,21 @@
     In detail,
     the format of an event id should be <code>"{namespace}.{no}"</code>,
     while <code>"{namespace}"</code> is the event namespace,
-    and <code>"{no}"</code> is an event number.
+    and <code>"{no}"</code> is a non-negative integer (ignore leading zero).
   </p>
   <p>
     In an event script file,
     the event id is declared as a property of an event definition, with name <code>"id"</code>,
-    the event namespace is declared as the root property of the file, with name <code>"namespace"</code>.
+    the event namespace is declared as the root property of the file before event definitions,
+    with name<code>"namespace"</code>.
   </p>
   <!-- tooltip end -->
   <p>
     An event script file is a script file under directory <code>events</code>
     relative to the game or mod root directory.
+  </p>
+  <p>
+    NOTE: Support multiple event namespaces in the same event script file.
   </p>
 </body>
 </html>

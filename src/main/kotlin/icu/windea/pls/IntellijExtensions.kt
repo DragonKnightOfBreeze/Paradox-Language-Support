@@ -30,8 +30,6 @@ import java.util.*
 import javax.swing.*
 
 //region Misc Extensions
-val fontSize get() = DocumentationComponent.getQuickDocFontSize()
-
 /**得到当前AST节点的除了空白节点之外的所有子节点。*/
 fun ASTNode.nodes(): List<ASTNode> {
 	val result = mutableListOf<ASTNode>()
