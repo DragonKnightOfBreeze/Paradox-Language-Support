@@ -10,7 +10,6 @@ import java.io.*
 import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
-import java.text.*
 import java.util.*
 
 //region Common Extensions
@@ -98,15 +97,15 @@ fun String.quoteIfNecessary() = if(containsBlank()) quote() else this //如果�
 
 fun String.unquote() = if(isQuoted()) substring(1, length - 1) else this
 
-fun String.truncate(limit: Int): String {
-	return if(this.length <= limit) this else this.take(limit) + "..."
+fun String.truncate(limit: Int, ellipsis: String = "..."): String {
+	return if(this.length <= limit) this else this.take(limit) + ellipsis
 }
 
-fun String.truncateAndKeepQuotes(limit: Int): String {
+fun String.truncateAndKeepQuotes(limit: Int, ellipsis: String = "..."): String {
 	if(this.isQuoted()) {
-		return if(this.length - 2 <= limit) this else this.take(limit + 1) + "...\""
+		return if(this.length - 2 <= limit) this else this.take(limit + 1) + ellipsis + "\""
 	} else {
-		return if(this.length <= limit) this else this.take(limit) + "..."
+		return if(this.length <= limit) this else this.take(limit) + ellipsis
 	}
 }
 
@@ -123,7 +122,7 @@ fun String.toCapitalizedWord(): String {
 fun String.toCapitalizedWords(): String {
 	return buildString {
 		var isWordStart = true
-		for(c in this@toCapitalizedWords.toCharArray()) {
+		for(c in this@toCapitalizedWords) {
 			when {
 				isWordStart -> {
 					isWordStart = false
@@ -450,29 +449,29 @@ inline fun <T, R : Any> List<T>.mapAndFirst(predicate: (R?) -> Boolean = { it !=
 	return first
 }
 
-inline fun <T, reified R> Array<out T>.mapToArray(block: (T) -> R): Array<R> {
-	return Array(size) { block(this[it]) }
+inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R> {
+	return Array(size) { transform(this[it]) }
 }
 
-inline fun <T, reified R> List<T>.mapToArray(block: (T) -> R): Array<R> {
-	return Array(size) { block(this[it]) }
+inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
+	return Array(size) { transform(this[it]) }
 }
 
-inline fun <K, V, reified R> Map<K, V>.mapToArray(block: (Map.Entry<K, V>) -> R): Array<R> {
+inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -> R): Array<R> {
 	//这里不先将Set转为List
 	val size = this.size
 	val entries = this.entries
 	try {
 		val iterator = entries.iterator()
-		return Array(size) { block(iterator.next()) }
+		return Array(size) { transform(iterator.next()) }
 	} catch(e: Exception) {
 		val list = entries.toList()
-		return Array(size) { block(list[it]) }
+		return Array(size) { transform(list[it]) }
 	}
 }
 
-inline fun <T, reified R> Sequence<T>.mapToArray(block: (T) -> R): Array<R> {
-	return toList().mapToArray(block)
+inline fun <T, reified R> Sequence<T>.mapToArray(transform: (T) -> R): Array<R> {
+	return toList().mapToArray(transform)
 }
 
 fun <K, V> mapOfKv(key: K, value: V): Map<K, V> {

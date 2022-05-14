@@ -41,6 +41,6 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	}
 	
 	private fun createGotoRelatedItem(targets:List<ParadoxDefinitionProperty>): Collection<GotoRelatedItem>{
-		return GotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.definition"))
+		return GotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.definition.group"))
 	}
 }

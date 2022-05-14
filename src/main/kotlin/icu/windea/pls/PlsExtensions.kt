@@ -5,7 +5,6 @@ package icu.windea.pls
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -1017,13 +1016,24 @@ fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement, reso
 	return appendUnresolvedLink(filePath)
 }
 
+/**
+ * @param local 输入的[url]是否是本地绝对路径。
+ */
 fun StringBuilder.appendImgTag(url: String, local: Boolean = true): StringBuilder {
-	return append("<img src=\"").appendIf(local, "file:/").append(url).append("\" />")
+	append("<img src=\"")
+	if(local) append(url.toFileUrl()) else append(url)
+	append("\" />")
+	return this
 }
 
 fun StringBuilder.appendImgTag(url: String, width:Int, height:Int, local: Boolean = true): StringBuilder {
-	return append("<img src=\"").appendIf(local, "file:/").append(url)
-		.append("\" width=\"").append(width).append("\" height=\"").append(height).append("\" />")
+	append("<img src=\"")
+	if(local) append(url.toFileUrl()) else append(url)
+	//这里不能使用style="..."
+	append("\" width=\"").append(width).append("\" height=\"").append(height)
+	append(" vspace=\"0\" hspace=\"0\"")
+	append("\"/>")
+	return this
 }
 
 fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Project): StringBuilder {

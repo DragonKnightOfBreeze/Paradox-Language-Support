@@ -48,6 +48,3 @@ val ddsFileExtensions = arrayOf("dds")
 
 const val launcherSettingsFileName = "launcher-settings.json" 
 const val descriptorFileName = "descriptor.mod"
-
-const val textFontSize = 20 //based on: maxTextIconHeight
-const val maxTextIconHeight = 20 //from: gfx\interface\icons\text_icons

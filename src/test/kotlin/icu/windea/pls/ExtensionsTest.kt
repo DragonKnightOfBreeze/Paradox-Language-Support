@@ -26,4 +26,13 @@ class ExtensionsTest {
 		Assert.assertFalse("/foo/bar/name".matchesAntPath("/foo/bar/na.", false))
 		Assert.assertFalse("/foo/bar/name".matchesAntPath("/foo/bar/", false))
 	}
+	
+	@Test
+	fun escapeBlankTest(){
+		Assert.assertEquals("abc", "abc".escapeBlank())
+		Assert.assertEquals("abc&nbsp;", "abc ".escapeBlank())
+		Assert.assertEquals("abc&nbsp;&nbsp;", "abc  ".escapeBlank())
+		Assert.assertEquals("&nbsp;abc&nbsp;&nbsp;", " abc  ".escapeBlank())
+		Assert.assertEquals("&nbsp;a&nbsp;bc&nbsp;&nbsp;", " a bc  ".escapeBlank())
+	}
 }

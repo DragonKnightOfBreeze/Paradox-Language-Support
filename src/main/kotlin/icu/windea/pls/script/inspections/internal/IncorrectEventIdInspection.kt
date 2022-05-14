@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 不正确的事件ID的检查。
  *
- * 具体来说，事件ID的格式应当为`{namespace}.{no}`，其中`{namespace}`是事件的命名空间，`no`是一个忽略前缀的0的非负整数。
+ * 具体来说，事件ID的格式应当为`{namespace}.{no}`，其中`{namespace}`是事件的命名空间（忽略大小写），`no`是一个非负整数（忽略作为前缀的0）。
  *
  * 在一个事件脚本文件中，事件ID被声明为事件定义的名为`"id"`的属性，事件命名空间被声明为事件定义之前的名为`"namespace"`的顶级属性。
  *
@@ -61,7 +61,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 		val dotIndex = eventId.indexOf('.') //a.1 1 0,1 2,3 
 		if(dotIndex == -1) return true
 		val prefix = eventId.substring(0, dotIndex)
-		if(prefix != eventNamespace) return true
+		if(!prefix.equals(eventNamespace, true)) return true //TODO 不确定，应当需要忽略带小写
 		val no = eventId.substring(dotIndex + 1)
 		return no.all { it.isExactDigit() }
 	}

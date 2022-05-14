@@ -186,7 +186,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 					val (target, frame) = tuple
 					val url = ParadoxDdsUrlResolver.resolveByFile(target.virtualFile, frame)
 					val tag = buildString { appendImgTag(url) }
-					sections.put(key, tag)
+					sections.put(key.toCapitalizedWords(), tag)
 				}
 			}
 		}
@@ -198,7 +198,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			if(map.isNotEmpty()) {
 				for((key, target) in map) {
 					val richText = ParadoxLocalisationTextRenderer.render(target)
-					sections.put(key, richText)
+					sections.put(key.toCapitalizedWords(), richText)
 				}
 			}
 		}

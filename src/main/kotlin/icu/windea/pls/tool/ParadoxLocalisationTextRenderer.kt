@@ -2,7 +2,7 @@ package icu.windea.pls.tool
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.PsiFile
+import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -17,7 +17,11 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	fun renderTo(element: ParadoxLocalisationProperty, builder: StringBuilder) {
-		element.propertyValue?.richTextList?.forEach { renderTo(it, builder) }
+		val richTextList = element.propertyValue?.richTextList
+		if(richTextList == null || richTextList.isEmpty()) return
+		for(richText in richTextList) {
+			renderTo(richText, builder)
+		}
 	}
 	
 	private fun renderTo(element: ParadoxLocalisationRichText, builder: StringBuilder) {
@@ -40,6 +44,7 @@ object ParadoxLocalisationTextRenderer {
 		val elementText = element.text
 		when {
 			elementText == "\\n" -> builder.append("<br>\n")
+			elementText == "\\r" -> builder.append("<br>\r")
 			elementText == "\\t" -> builder.append("&emsp;")
 			elementText.length > 1 -> builder.append(elementText[1])
 		}
@@ -73,13 +78,14 @@ object ParadoxLocalisationTextRenderer {
 			else -> return
 		}
 		if(iconUrl.isNotEmpty()) {
-			//找不到图标或者出现异常的话就直接跳过
-			val icon = runCatching { IconLoader.findIcon(iconUrl.toFileUrl()) }.getOrNull() ?: return
-			//基于文档的字体大小缩放图标，如果图标过宽就直接跳过
-			if(icon.iconHeight > maxTextIconHeight) return
-			val docFontSize = DocumentationComponent.getQuickDocFontSize().size
-			val usedWidth = icon.iconWidth * docFontSize / textFontSize
-			val usedHeight = icon.iconHeight * docFontSize / textFontSize
+			//找不到图标的话就直接跳过
+			val icon = IconLoader.findIcon(iconUrl.toFileUrl()) ?: return
+			//基于文档的字体大小缩放图标，直到图标宽度等于字体宽度
+			val docFontSize = DocumentationComponent.getQuickDocFontSize().size //基于这个得到的图标大小并不完美……
+			val iconWidth = icon.iconWidth
+			val iconHeight = icon.iconHeight
+			val usedWidth = docFontSize * iconWidth / iconHeight
+			val usedHeight = docFontSize
 			builder.appendImgTag(iconUrl, usedWidth, usedHeight)
 		}
 	}
@@ -101,10 +107,12 @@ object ParadoxLocalisationTextRenderer {
 	
 	private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, builder: StringBuilder) {
 		//如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
+		val richTextList = element.richTextList
+		if(richTextList.isEmpty()) return
 		val rgbText = element.colorConfig?.colorText
 		if(rgbText != null) builder.append("<span style=\"color: ").append(rgbText).append("\">")
-		for(v in element.richTextList) {
-			renderTo(v, builder)
+		for(richText in richTextList) {
+			renderTo(richText, builder)
 		}
 		if(rgbText != null) builder.append("</span>")
 	}

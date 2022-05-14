@@ -1,6 +1,6 @@
 package co.phoenixlab.dds.decoder.dxt;
 
-import co.phoenixlab.dds.Dds;
+import co.phoenixlab.dds.*;
 
 public class Dxt5Decoder extends AbstractDxtDecoder {
 
@@ -27,7 +27,9 @@ public class Dxt5Decoder extends AbstractDxtDecoder {
         // read 4 entries... and so on until we've read enough
         int pos = subRow * 4;
         for (int i = 0; i < blockRowWidth; i++) {
-            System.arraycopy(decodedBlocks, pos, ret, i * 4, 4);
+            int destPos = i * 4;
+            int length = Math.min(ret.length - destPos, 4);
+            System.arraycopy(decodedBlocks, pos, ret, destPos, length);
             pos += 16;
         }
         ++currLine;

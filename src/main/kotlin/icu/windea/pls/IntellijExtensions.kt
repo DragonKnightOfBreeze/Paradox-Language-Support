@@ -3,7 +3,6 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.documentation.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.lang.*
@@ -158,6 +157,19 @@ inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit): StringBuilder 
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 
 fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) anonymousEscapedString else StringUtil.escapeXmlEntities(this)
+
+fun String.escapeBlank(): String {
+	var builder: StringBuilder? = null
+	for((i, c) in this.withIndex()) {
+		if(c.isWhitespace()) {
+			if(builder == null) builder = StringBuilder(substring(0,i))
+			builder.append("&nbsp;")
+		} else {
+			builder?.append(c)
+		}
+	}
+	return builder?.toString() ?: this
+}
 //endregion
 
 //region VFS Extensions
