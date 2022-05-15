@@ -53,7 +53,7 @@ object ParadoxLocalisationPsiImplUtil {
 	fun setName(element: ParadoxLocalisationLocale, name: String): ParadoxLocalisationLocale {
 		//element.localeId.replace(createLocale(element.project, name).localeId)
 		//return element
-		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
+		throw IncorrectOperationException() //不允许重命名
 	}
 	
 	@JvmStatic
@@ -182,7 +182,7 @@ object ParadoxLocalisationPsiImplUtil {
 	fun setName(element: ParadoxLocalisationSequentialNumber, name: String): ParadoxLocalisationSequentialNumber {
 		//element.sequentialNumberId?.replace(createSequentialNumber(element.project, name).sequentialNumberId!!)
 		//return element
-		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
+		throw IncorrectOperationException() //不允许重命名
 	}
 	
 	@JvmStatic
@@ -212,7 +212,7 @@ object ParadoxLocalisationPsiImplUtil {
 	fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
 		//element.colorId?.replace(createColorfulText(element.project, name).colorId!!)
 		//return element
-		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
+		throw IncorrectOperationException() //不允许重命名
 	}
 	
 	@JvmStatic

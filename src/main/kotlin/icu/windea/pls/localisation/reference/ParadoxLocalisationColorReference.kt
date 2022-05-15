@@ -11,7 +11,7 @@ class ParadoxLocalisationColorReference(
 	rangeInElement: TextRange
 ): PsiReferenceBase<ParadoxLocalisationColorfulText>(element, rangeInElement){
 	override fun handleElementRename(newElementName: String): PsiElement {
-		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed")) //不允许重命名
+		throw IncorrectOperationException() //不允许重命名
 	}
 	
 	override fun resolve(): PsiElement? {

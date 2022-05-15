@@ -16,7 +16,7 @@ class ParadoxScriptVariableReferenceReference(
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
-			!resolved.isWritable -> throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
+			!resolved.isWritable -> throw IncorrectOperationException() //不允许重命名
 			else -> resolved.name = newElementName
 		}
 		//重命名variableReference

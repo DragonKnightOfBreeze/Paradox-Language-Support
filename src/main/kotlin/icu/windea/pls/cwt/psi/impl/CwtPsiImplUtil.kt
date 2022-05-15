@@ -29,7 +29,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: CwtOption, name: String): CwtOption {
-		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
+		throw IncorrectOperationException() //不允许重命名
 	}
 	
 	@JvmStatic
@@ -85,7 +85,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: CwtProperty, name: String): CwtProperty {
-		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
+		throw IncorrectOperationException() //不允许重命名
 	}
 	
 	@JvmStatic
@@ -179,7 +179,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: CwtString, name: String): CwtString {
-		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
+		throw IncorrectOperationException() //不允许重命名
 	}
 	
 	@JvmStatic
