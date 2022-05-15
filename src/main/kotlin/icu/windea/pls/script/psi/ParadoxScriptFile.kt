@@ -19,10 +19,6 @@ class ParadoxScriptFile(
 		return super.getStub().cast()
 	}
 	
-	override fun getPresentation(): ItemPresentation {
-		return ParadoxScriptFileTreeElement(this)
-	}
-	
 	override val pathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }

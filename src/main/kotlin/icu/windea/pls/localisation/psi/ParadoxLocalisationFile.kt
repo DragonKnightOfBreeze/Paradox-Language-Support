@@ -11,11 +11,7 @@ class ParadoxLocalisationFile(
 	viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
 	override fun getFileType() = ParadoxLocalisationFileType
-	
-	override fun getPresentation(): ItemPresentation {
-		return ParadoxLocalisationFileTreeElement(this)
-	}
-	
+
 	val propertyLists: List<ParadoxLocalisationPropertyList>
 		get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()
 	

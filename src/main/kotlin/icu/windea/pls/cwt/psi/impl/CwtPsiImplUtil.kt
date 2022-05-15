@@ -74,11 +74,6 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPresentation(element: CwtProperty): ItemPresentation {
-		return CwtPropertyTreeElement(element)
-	}
-	
-	@JvmStatic
 	fun getName(element: CwtProperty): String {
 		return element.propertyName
 	}
@@ -127,11 +122,6 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.cwtValueIcon
-	}
-	
-	@JvmStatic
-	fun getPresentation(element: CwtValue): ItemPresentation {
-		return CwtValueTreeElement(element)
 	}
 	
 	@JvmStatic

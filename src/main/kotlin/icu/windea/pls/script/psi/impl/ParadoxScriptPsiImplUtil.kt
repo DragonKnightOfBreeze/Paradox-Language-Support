@@ -28,11 +28,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPresentation(element: ParadoxScriptVariable): ItemPresentation{
-		return ParadoxScriptVariableTreeElement(element)
-	}
-	
-	@JvmStatic
 	fun getName(element: ParadoxScriptVariable): String {
 		//注意：element.stub可能会导致ProcessCanceledException
 		return runCatching { element.stub?.name }.getOrNull() ?: element.variableName.text.orEmpty()
@@ -83,11 +78,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
 		if(element.definitionInfo != null) return PlsIcons.definitionIcon
 		return PlsIcons.scriptPropertyIcon
-	}
-	
-	@JvmStatic
-	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation{
-		return ParadoxScriptPropertyTreeElement(element)
 	}
 	
 	@JvmStatic
@@ -209,11 +199,6 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.scriptValueIcon
-	}
-	
-	@JvmStatic
-	fun getPresentation(element: ParadoxScriptValue): ItemPresentation{
-		return ParadoxScriptValueTreeElement(element)
 	}
 	
 	@JvmStatic

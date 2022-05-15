@@ -12,10 +12,6 @@ class CwtFile(
 ) : PsiFileBase(viewProvider, CwtLanguage) {
 	override fun getFileType() = CwtFileType
 	
-	override fun getPresentation(): ItemPresentation {
-		return CwtFileTreeElement(this)
-	}
-	
 	val block get() = findChildByClass(CwtRootBlock::class.java)
 	
 	val properties get() =  block?.propertyList.orEmpty()

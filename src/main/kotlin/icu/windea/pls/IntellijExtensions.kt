@@ -5,6 +5,7 @@ package icu.windea.pls
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
+import com.intellij.ide.util.treeView.TreeAnchorizer
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
 import com.intellij.navigation.*
@@ -338,7 +339,7 @@ val PsiElement.firstLeafOrSelf: PsiElement
 	}
 
 val PsiElement.icon
-	get() = getIcon(Iconable.ICON_FLAG_VISIBILITY)
+	get() = getIcon(0)
 
 val PsiElement.keyword
 	get() = text.removeSurrounding("\"", "\"").let { s ->

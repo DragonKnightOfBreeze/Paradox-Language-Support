@@ -7,7 +7,6 @@
 ## TODO
 
 * [ ] 完善在线参考文档
-* [ ] 查找定义时显示更详细的信息（如filePath，absPath）
 * [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
 * [ ] 脚本文件语法解析优化：兼容`stellaris v3.3`开始新增的`script_value`语法
 * [ ] 文件路径分隔符兼容"/" "\" "\\"混用
@@ -23,7 +22,7 @@
   * 检查Github上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
   * 每次打开项目时，检查已添加的CWT配置库的更新（`git pull`）
 
-## 0.5 >> 0.5.5
+## 0.5 > 0.5.5
 
 * [X] 更新IDEA版本到2022.1
 * [X] 更新内置的CWT配置
@@ -90,6 +89,7 @@
   * [X] 实现规则`types.type[*].pictures`的解析
   * [X] 实现规则`types.type[*].pictures`的相关功能（装订线图标，渲染到文档注释）
   * [X] 类型为枚举值、常量、别名名字的键/值的解析需要忽略大小写
+* [X] 显示相关信息时基于更合理更完善的`ItemPresentation`
 
 ## 0.4
 

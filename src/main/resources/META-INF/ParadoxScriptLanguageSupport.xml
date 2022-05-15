@@ -53,6 +53,9 @@
     <annotator
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
+    <itemPresentationProvider
+        forClass="com.intellij.psi.NavigatablePsiElement"
+        implementationClass="icu.windea.pls.script.navigation.ParadoxScriptPresentationProvider"/>
     <!--Try to keep correct inlay hint order-->
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"

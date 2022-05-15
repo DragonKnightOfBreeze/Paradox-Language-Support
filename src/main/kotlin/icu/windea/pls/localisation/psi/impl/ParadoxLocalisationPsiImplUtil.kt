@@ -76,11 +76,6 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation {
-		return ParadoxLocalisationPropertyTreeElement(element)
-	}
-	
-	@JvmStatic
 	fun getName(element: ParadoxLocalisationProperty): String {
 		//注意：element.stub可能会导致ProcessCanceledException
 		return runCatching { element.stub?.name }.getOrNull() ?: element.propertyKey.text
