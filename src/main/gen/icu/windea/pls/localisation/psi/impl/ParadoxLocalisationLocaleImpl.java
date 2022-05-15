@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.localisation.reference.ParadoxLocalisationLocaleReference;
 import javax.swing.Icon;
 
 public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationLocale {
@@ -50,6 +51,12 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedEleme
   @NotNull
   public PsiElement getNameIdentifier() {
     return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxLocalisationLocaleReference getReference() {
+    return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
 }

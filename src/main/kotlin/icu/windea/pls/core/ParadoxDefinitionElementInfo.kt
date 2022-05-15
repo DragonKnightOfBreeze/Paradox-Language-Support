@@ -66,4 +66,13 @@ class ParadoxDefinitionElementInfo(
 			childValueConfigs.find { matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
 		}
 	}
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxDefinitionElementInfo
+			&& elementPath == other.elementPath && gameType == other.gameType && definitionInfo == other.definitionInfo
+	}
+	
+	override fun hashCode(): Int {
+		return Objects.hash(elementPath, gameType, definitionInfo)
+	}
 }

@@ -88,8 +88,6 @@
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>
     <renameInputValidator
         implementation="icu.windea.pls.script.refactoring.ParadoxScriptVariableRenameInputValidator"/>
-    <renameInputValidator
-        implementation="icu.windea.pls.script.refactoring.ParadoxScriptPropertyRenameInputValidator"/>
     <refactoring.inlineHandler
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>

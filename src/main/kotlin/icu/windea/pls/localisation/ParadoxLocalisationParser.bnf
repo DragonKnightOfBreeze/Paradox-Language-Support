@@ -34,7 +34,7 @@ locale ::= LOCALE_ID COLON {
   recoverWhile=locale_recover
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getIcon getName setName getNameIdentifier]
+  methods=[getIcon getName setName getNameIdentifier getReference]
 }
 private locale_recover ::= !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
 
@@ -92,7 +92,7 @@ sequential_number ::= SEQUENTIAL_NUMBER_START SEQUENTIAL_NUMBER_ID SEQUENTIAL_NU
   extends=rich_text
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getReference]
 }
 
 command ::= COMMAND_START command_expression? COMMAND_END{
@@ -125,6 +125,6 @@ colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT
   extends=rich_text
   mixin="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationNamedElementImpl"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
-  methods=[getName setName getNameIdentifier getTextOffset]
+  methods=[getName setName getNameIdentifier getTextOffset getReference]
 }
 private colorful_text_item ::= rich_text *

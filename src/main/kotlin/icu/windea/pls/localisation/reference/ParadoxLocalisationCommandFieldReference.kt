@@ -17,6 +17,7 @@ class ParadoxLocalisationCommandFieldReference(
 	
 	override fun resolve(): PsiElement? {
 		//查找类型为scripted_loc的definition
+		//TODO 支持解析基于CWT的引用
 		val name = element.name
 		val project = element.project
 		return findDefinitionByType(name, "scripted_loc", project)
@@ -24,6 +25,7 @@ class ParadoxLocalisationCommandFieldReference(
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		//查找类型为scripted_loc的definition
+		//TODO 支持解析基于CWT的引用
 		val name = element.name
 		val project = element.project
 		return findDefinitionsByType(name, "scripted_loc", project).mapToArray { PsiElementResolveResult(it) }
@@ -31,6 +33,7 @@ class ParadoxLocalisationCommandFieldReference(
 	
 	override fun getVariants(): Array<out Any> {
 		//查找类型为scripted_loc的definition，不预先过滤结果
+		//TODO 整合提示基于CWT的引用
 		val project = element.project
 		val tailText = " from scripted_loc"
 		return findDefinitionsByType("scripted_loc", project, distinct = true).mapToArray {

@@ -5,6 +5,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
+import java.util.*
 
 /**
  * @property elementPath 相对于所属文件的属性路径。
@@ -18,7 +19,6 @@ class ParadoxDefinitionInfo(
 	val configGroup: CwtConfigGroup,
 	element: ParadoxDefinitionProperty //直接传入element
 ) {
-	private val elementName = element.name
 	val type: String = typeConfig.name
 	
 	//NOTE 部分属性需要使用懒加载
@@ -101,4 +101,13 @@ class ParadoxDefinitionInfo(
 	val graphRelatedTypes get() = typeConfig.graphRelatedTypes
 	val unique get() = typeConfig.unique
 	val severity get() = typeConfig.severity
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxDefinitionInfo
+			&& rootKey == other.rootKey && elementPath == other.elementPath && gameType == other.gameType
+	}
+	
+	override fun hashCode(): Int {
+		return Objects.hash(rootKey, elementPath, gameType)
+	}
 }

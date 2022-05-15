@@ -17,7 +17,7 @@ class ParadoxScriptStringReference(
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
-			resolved.isCwtPsiElement() -> pass()
+			resolved.isCwtPsiElement() -> throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 			!resolved.isWritable -> throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 			else -> resolved.setName(newElementName)
 		}

@@ -2,4 +2,6 @@
 
 package icu.windea.pls.config.internal
 
-internal typealias InternalConfigMap = MutableMap<String, List<Map<String, Any?>>>
+import icu.windea.pls.config.cwt.config.*
+
+internal typealias InternalConfigMap = MutableMap<String, CwtFileConfig>

@@ -9,7 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.ParadoxLocalisationTextHintsRenderer.renderTo
 import java.util.concurrent.atomic.*
 
 /**
@@ -80,7 +79,7 @@ object ParadoxLocalisationTextHintsRenderer {
 	
 	private fun PresentationFactory.renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, editor: Editor, builder: MutableList<InlayPresentation>, truncateRemain: AtomicInteger): Boolean {
 		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-		val rgbText = element.colorConfig?.colorText
+		val rgbText = element.colorConfig?.colorRgb
 		val textAttributesKey = if(rgbText != null) ParadoxLocalisationAttributesKeys.COLOR_ONLY_KEYS[rgbText] else null
 		val resolved = element.reference?.resolve().castOrNull<ParadoxLocalisationProperty>()
 		val presentation = when {

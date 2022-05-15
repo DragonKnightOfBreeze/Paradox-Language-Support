@@ -1,10 +1,13 @@
 package icu.windea.pls.config.internal
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.tool.*
 import org.slf4j.*
-import org.yaml.snakeyaml.*
 import java.lang.invoke.*
 
 /**
@@ -12,10 +15,11 @@ import java.lang.invoke.*
  *
  * 内置规则来自目录`config/internal`中的配置文件
  */
-class InternalConfigProvider {
+class InternalConfigProvider(
+	private val project: Project
+) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
-		private val yaml = Yaml()
 		
 		private const val internalConfigPath = "/config/internal"
 	}
@@ -59,27 +63,27 @@ class InternalConfigProvider {
 				resolveConfigFiles(configMap, configFile, configRootDirectory)
 			} else {
 				when(configFile.extension) {
-					"yml" -> resolveYamlConfigFile(configMap, configFile, configRootDirectory) //解析yaml配置文件
+					"cwt" -> resolveCwtConfigFile(configMap, configFile, configRootDirectory) //解析cwt配置文件
 					else -> pass() //不做处理
 				}
 			}
 		}
 	}
 	
-	private fun resolveYamlConfigFile(configMap: InternalConfigMap, configFile: VirtualFile, configRootDirectory: VirtualFile) {
+	private fun resolveCwtConfigFile(configMap: InternalConfigMap, configFile: VirtualFile, configRootDirectory: VirtualFile) {
 		val relativePath = configFile.relativePathTo(configRootDirectory)
 		logger.info("Resolve internal config file '$relativePath'.")
-		val config = doResolveYamlFile(configFile)
+		val config = doResolveCwtConfigFile(configFile)
 		if(config == null) {
 			logger.warn("Resolve internal config file '$relativePath' failed. Skip it.")
 			return
 		}
-		configMap.putAll(config)
+		configMap.put(relativePath, config)
 	}
 	
-	private fun doResolveYamlFile(configFile: VirtualFile): Map<String, List<Map<String, Any?>>>? {
+	private fun doResolveCwtConfigFile(configFile: VirtualFile): CwtFileConfig? {
 		return try {
-			yaml.load(configFile.inputStream)
+			configFile.toPsiFile<CwtFile>(project)?.let { CwtConfigResolver.resolve(it) }
 		} catch(e: Exception) {
 			logger.warn(e.message, e)
 			null

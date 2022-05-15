@@ -4,8 +4,8 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
@@ -80,9 +80,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				} else {
 					append(PlsDocBundle.message("name.cwt.property"))
 				}
-				append(" ")
 			}
-			append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			when(configType) {
 				//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
 				null -> {

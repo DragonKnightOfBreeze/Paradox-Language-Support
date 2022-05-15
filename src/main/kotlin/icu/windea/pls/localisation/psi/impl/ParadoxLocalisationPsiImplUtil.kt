@@ -5,22 +5,18 @@ import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createCommandField
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createCommandScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createIcon
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createSequentialNumber
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.reference.*
 import icu.windea.pls.localisation.structureView.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.structureView.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -55,13 +51,20 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationLocale, name: String): ParadoxLocalisationLocale {
-		element.localeId.replace(createLocale(element.project, name).localeId)
-		return element
+		//element.localeId.replace(createLocale(element.project, name).localeId)
+		//return element
+		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxLocalisationLocale): PsiElement {
 		return element.localeId
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxLocalisationLocale): ParadoxLocalisationLocaleReference {
+		val rangeInElement = element.localeId.textRangeInParent
+		return ParadoxLocalisationLocaleReference(element, rangeInElement)
 	}
 	//endregion
 	
@@ -177,8 +180,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationSequentialNumber, name: String): ParadoxLocalisationSequentialNumber {
-		element.sequentialNumberId?.replace(createSequentialNumber(element.project, name).sequentialNumberId!!)
-		return element
+		//element.sequentialNumberId?.replace(createSequentialNumber(element.project, name).sequentialNumberId!!)
+		//return element
+		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
@@ -190,6 +194,12 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getTextOffset(element: ParadoxLocalisationSequentialNumber): Int {
 		return element.startOffset + 1
 	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxLocalisationSequentialNumber): ParadoxLocalisationSequentialNumberReference? {
+		val rangeInElement = element.sequentialNumberId?.textRangeInParent ?: return null
+		return ParadoxLocalisationSequentialNumberReference(element, rangeInElement)
+	}
 	//endregion
 	
 	//region ParadoxLocalisationColorfulText
@@ -200,8 +210,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
-		element.colorId?.replace(createColorfulText(element.project, name).colorId!!)
-		return element
+		//element.colorId?.replace(createColorfulText(element.project, name).colorId!!)
+		//return element
+		throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 	}
 	
 	@JvmStatic
@@ -212,6 +223,12 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getTextOffset(element: ParadoxLocalisationColorfulText): Int {
 		return element.startOffset + 1
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationColorReference? {
+		val rangeInElement = element.colorId?.textRangeInParent ?: return null
+		return ParadoxLocalisationColorReference(element, rangeInElement)
 	}
 	//endregion
 	

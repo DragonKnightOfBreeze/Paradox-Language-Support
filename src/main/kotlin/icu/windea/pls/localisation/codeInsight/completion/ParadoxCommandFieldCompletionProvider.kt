@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -12,7 +13,7 @@ import icu.windea.pls.localisation.psi.*
 object ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val position = parameters.position //COMMAND_FIELD_ID
-		val commandField = position.parent as? ParadoxLocalisationCommandField ?: return
+		if(position.elementType != ParadoxLocalisationElementTypes.COMMAND_FIELD_ID) return
 		val project = position.project
 		val gameType = parameters.originalFile.fileInfo?.gameType ?: return
 		val configGroup = getCwtConfig(project).get(gameType) ?: return

@@ -166,9 +166,9 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) {
 				val description = colorConfig.description
-				val colorText = colorConfig.colorText
+				val colorText = colorConfig.colorRgb
 				content {
-					append(description).append(" - ").append(colorText) //注明颜色
+					append(description).append(" - ").append(colorText) //接受HTML，注明颜色
 				}
 			}
 		}
@@ -216,7 +216,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val localeConfig = element.localeConfig
 		if(localeConfig != null) {
 			content {
-				append(localeConfig.description)
+				append(localeConfig.description) //接受HTML
 			}
 		}
 	}
@@ -240,7 +240,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val sequentialNumberConfig = element.sequentialNumberConfig
 		if(sequentialNumberConfig != null) {
 			content {
-				append(sequentialNumberConfig.description)
+				append(sequentialNumberConfig.description) //接受HTML
 			}
 		}
 	}

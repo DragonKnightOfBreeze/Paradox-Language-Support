@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.localisation.reference.ParadoxLocalisationSequentialNumberReference;
 import javax.swing.Icon;
 
 public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationSequentialNumber {
@@ -55,6 +56,12 @@ public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisation
   @Override
   public int getTextOffset() {
     return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationSequentialNumberReference getReference() {
+    return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
 }

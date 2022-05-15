@@ -20,6 +20,7 @@ import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.settings.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -36,9 +37,11 @@ val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>
 //endregion
 
 //region Misc Extensions
+fun getDefaultProject() = ProjectManager.getInstance().defaultProject
+
 fun getSettings() = ParadoxSettingsState.getInstance()
 
-fun getInternalConfig() = ApplicationManager.getApplication().getService(InternalConfigProvider::class.java).configGroup
+fun getInternalConfig(project: Project = getDefaultProject()) = project.getService(InternalConfigProvider::class.java).configGroup
 
 fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
@@ -147,6 +150,10 @@ private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 				parentName == "modifiers" -> CwtConfigType.Modifier
 				parentName == "scopes" -> CwtConfigType.Scope
 				parentName == "scope_groups" -> CwtConfigType.ScopeGroup
+				//from internal config
+				parentName == "locales" -> CwtConfigType.LocalisationLocale
+				parentName == "sequential_numbers" -> CwtConfigType.LocalisationSequentialNumber
+				parentName == "colors" -> CwtConfigType.LocalisationColor
 				else -> null
 			}
 		}
@@ -338,23 +345,23 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 
 val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig?
 	get() {
-		return getInternalConfig().localeMap[name]
+		return getInternalConfig(project).localeMap[name]
 	}
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
 	get() {
 		val colorId = this.propertyReferenceParameter?.text?.firstOrNull() //TODO 需要确认
 		if(colorId != null && colorId.isUpperCase()) {
-			return getInternalConfig().colorMap[colorId.toString()]
+			return getInternalConfig(project).colorMap[colorId.toString()]
 		}
 		return null
 	}
 
 val ParadoxLocalisationSequentialNumber.sequentialNumberConfig: ParadoxSequentialNumberConfig?
-	get() = getInternalConfig().sequentialNumberMap[name]
+	get() = getInternalConfig(project).sequentialNumberMap[name]
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig?
-	get() = getInternalConfig().colorMap[name]
+	get() = getInternalConfig(project).colorMap[name]
 //endregion
 
 //region Type Extensions

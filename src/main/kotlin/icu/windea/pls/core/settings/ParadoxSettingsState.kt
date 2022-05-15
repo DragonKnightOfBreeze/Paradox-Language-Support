@@ -29,7 +29,7 @@ data class ParadoxSettingsState(
 	@JvmField var scriptRenderLineComment: Boolean = false,
 	@JvmField var scriptRenderRelatedLocalisation: Boolean = true,
 	@JvmField var scriptRenderRelatedPictures: Boolean = true,
-	@JvmField var localisationPrimaryLocale: String = getInternalConfig().defaultLocale.id,
+	@JvmField var localisationPrimaryLocale: String = "l_default",
 	@JvmField var localisationTruncateLimit: Int = 30,
 	@JvmField var localisationRenderLineComment: Boolean = false,
 	@JvmField var localisationRenderLocalisation: Boolean = true

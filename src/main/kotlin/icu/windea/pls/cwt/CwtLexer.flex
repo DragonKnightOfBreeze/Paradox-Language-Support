@@ -45,10 +45,10 @@ EOL=\s*\R
 BLANK=\s+
 WHITE_SPACE=[\s&&[^\r\n]]+
 
-COMMENT=(#)|(#[^#\r\n][^\r\n]*)
 RELAX_COMMENT=#[^\r\n]*
-//OPTION_COMMENT=##[^\r\n]*
-//DOCUMENTATION_COMMENT=###[^\r\n]*
+COMMENT=(#)|(#[^#\r\n][^\r\n]*)
+OPTION_COMMENT_START=##[^#]
+DOCUMENTATION_COMMENT_START=###
 
 PROPERTY_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 OPTION_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
@@ -69,9 +69,9 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
   "{" {return LEFT_BRACE;}
   "}" {return RIGHT_BRACE;}
   
-  "###" { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
-  "##" {  yybegin(WAITING_OPTION); return OPTION_START; }
   {COMMENT} {return COMMENT; }
+  {OPTION_COMMENT_START} { yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; }
+  {DOCUMENTATION_COMMENT_START} { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
   
   {IS_PROPERTY_KEY} {yypushback(yylength()); yybegin(WAITING_PROPERTY_KEY);}
   
@@ -197,11 +197,10 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
   "{" {yybegin(WAITING_OPTION); optionDepth++; return LEFT_BRACE;}
   "}" {yybegin(WAITING_OPTION); optionDepth--; return RIGHT_BRACE;}
   
-  "###" { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
-  "##" {  yybegin(WAITING_OPTION); return OPTION_START; }
- 
-  {RELAX_COMMENT} {return COMMENT; }
-      
+  {COMMENT} {return COMMENT; }
+  {OPTION_COMMENT_START} {  yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; }
+  {DOCUMENTATION_COMMENT_START} { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
+  
   {BOOLEAN_TOKEN} { yybegin(WAITING_OPTION_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_OPTION_END); return INT_TOKEN; }
   {FLOAT_TOKEN} { yybegin(WAITING_OPTION_END); return FLOAT_TOKEN; }
@@ -241,7 +240,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
 <WAITING_DOCUMENTATION>{
   {EOL} {yybegin(YYINITIAL); return WHITE_SPACE;}
   {WHITE_SPACE} { return WHITE_SPACE;}
-  
+   
   {RELAX_COMMENT} {return COMMENT; }
     
   {DOCUMENTATION_TOKEN} { yybegin(YYINITIAL); return DOCUMENTATION_TOKEN;}

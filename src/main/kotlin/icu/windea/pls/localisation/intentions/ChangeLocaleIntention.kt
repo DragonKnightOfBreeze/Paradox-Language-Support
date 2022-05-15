@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
@@ -24,8 +25,7 @@ class ChangeLocaleIntention : IntentionAction {
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return false
-		val element = originalElement.parent
-		return element is ParadoxLocalisationLocale
+		return originalElement.elementType == ParadoxLocalisationElementTypes.LOCALE_ID
 	}
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
@@ -33,7 +33,7 @@ class ChangeLocaleIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationLocale) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, getInternalConfig().locales)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, getInternalConfig(project).locales)).showInBestPositionFor(editor)
 		}
 	}
 	
@@ -51,7 +51,7 @@ class ChangeLocaleIntention : IntentionAction {
 		
 		override fun onChosen(selectedValue: ParadoxLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
 			runUndoTransparentWriteAction {
-				value.name = selectedValue.id
+				value.changeLocaleId(selectedValue.id)
 			}
 			return PopupStep.FINAL_CHOICE
 		}

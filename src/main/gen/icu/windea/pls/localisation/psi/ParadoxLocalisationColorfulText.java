@@ -4,6 +4,7 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.localisation.reference.ParadoxLocalisationColorReference;
 
 public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
 
@@ -20,5 +21,8 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
   PsiElement getNameIdentifier();
 
   int getTextOffset();
+
+  @Nullable
+  ParadoxLocalisationColorReference getReference();
 
 }

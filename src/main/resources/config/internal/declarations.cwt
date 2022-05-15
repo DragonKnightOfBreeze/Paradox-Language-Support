@@ -1,0 +1,120 @@
+### Localisation locale
+### See cwt rule: <code>enum[font_languages]</code>
+### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Creating_Localisation_Files">Creating Localisation Files</a>
+locales = {
+	### Default
+	l_default = {
+		language_tag = ""
+	}
+	### Simple Chinese - zh 
+	l_simp_chinese = {
+		language_tag = "zh"
+	}
+	### English - en
+	l_english = {
+		language_tag = "en"
+	}
+	### Brazil Portuguese - pt
+	l_braz_por = {
+		language_tag = "pt"
+	}
+	### French - fr
+	l_french = {
+		language_tag = "fr"
+	}
+	### German - de
+	l_german = {
+		language_tag = "de"
+	}
+	### Polish - pl
+	l_polish = {
+		language_tag = "pl"
+	}
+	### Russian - ru
+	l_russian = {
+		language_tag = "ru"
+	}
+	### l_spanish - es
+	l_russian = {
+		language_tag = "es"
+	}
+}
+
+### Localisation sequential number
+sequential_numbers = {
+	### Cardinal Number 1, 2, 3...
+	C = {
+		placeholder_text = "1"
+	}
+	### Ordinal Number 1st, 2nd, 3rd...
+	O = {
+		placeholder_text = "1st"
+	}
+	### Roman Number I, II, III...
+	R = {
+		placeholder_text = "I"
+	}
+}
+
+### Localisation color
+### See cwt rule: <code>complex_enum[textcolors]</code>
+### See: <code>interface/fonts.gfx#bitmapfonts.textcolors</code>
+### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes">Color Codes</a>
+colors = {
+	### Purple - #a335ee
+	M = {
+		color_rgb = "#a335ee"
+	}
+	### Brown - #c3b091
+	L = {
+		color_rgb = "#c3b091"
+	}
+	### Green - #29e126
+	G = {
+		color_rgb = "#29e126"
+	}
+	### Red - #29e126
+	R = {
+		color_rgb = "#fc5646"
+	}
+	### Blue - #33a7ff
+	B = {
+		color_rgb = "#33a7ff"
+	}
+	### Yellow - #f7fc34
+	Y = {
+		color_rgb = "#f7fc34"
+	}
+	### Orange - #fbaa29
+	H = {
+		color_rgb = "#fbaa29"
+	}
+	### Light Grey - #ffffff
+	T = {
+		color_rgb = "#ffffff"
+	}
+	### Teal - #87ffcf
+	E = {
+		color_rgb = "#87ffcf"
+	}
+	### Dark Orange - #e49c2a
+	S = {
+		color_rgb = "#e49c2a"
+	}
+	### White - #ffffff
+	W = {
+		color_rgb = "#ffffff"
+	}
+	### Light Red - #e16e6e
+	P = {
+		color_rgb = "#e16e6e"
+	}
+	### Grey - #808080
+	g = {
+		color_rgb = "#808080"
+	}
+	### Light Blue - #33a7ff
+	l = {
+		color_rgb = "#33a7ff"
+	}
+}

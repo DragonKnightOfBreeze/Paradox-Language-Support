@@ -26,7 +26,7 @@ documentation_comment ::= DOCUMENTATION_START documentation_text ?{
 }
 documentation_text ::= DOCUMENTATION_TOKEN
 
-option_comment ::= OPTION_START option_comment_item{
+option_comment ::= OPTION_START option_comment_item ? {
   pin=1
   recoverWhile=option_comment_recover
   implements=["com.intellij.psi.PsiComment"]

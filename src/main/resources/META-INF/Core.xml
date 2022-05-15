@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <!--suppress PluginXmlValidity -->
-    <applicationService serviceImplementation="icu.windea.pls.config.internal.InternalConfigProvider" preload="true"/>
+    <projectService serviceImplementation="icu.windea.pls.config.internal.InternalConfigProvider" preload="true"/>
     <!--suppress PluginXmlValidity -->
     <projectService serviceImplementation="icu.windea.pls.config.cwt.CwtConfigProvider" preload="true"/>
     <!--suppress PluginXmlValidity -->
