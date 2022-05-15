@@ -17,7 +17,9 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # icon[gfx/interface/icons/technologies]
+			## primary
 			icon = "gfx/interface/icons/technologies/$.dds" # inferred
 		}
 	}
@@ -37,6 +39,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # filepath
 		}
 	}

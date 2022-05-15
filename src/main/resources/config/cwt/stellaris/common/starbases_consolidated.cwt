@@ -25,7 +25,9 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # <sprite>
+			## primary
 			icon = "gfx/interface/icons/modules/spaceport_module_$.dds" # inferred
 		}
 	}

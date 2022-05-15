@@ -42,9 +42,9 @@ types = {
 		pictures = {
 			## primary
 			texture = "#textureFile" # filepath
-			masking_texture = "#masking_texture" # filepath
 			## primary
 			texture = "#sprite_sheet_sprite_type|#default_frame" # <sprite>
+			masking_texture = "#masking_texture" # filepath
 		}
 	}
 }

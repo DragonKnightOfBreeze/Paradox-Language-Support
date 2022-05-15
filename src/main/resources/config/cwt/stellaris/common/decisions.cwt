@@ -10,7 +10,9 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # icon[gfx/interface/icons/decisions]
+			## primary
 			icon = "gfx/interface/icons/decisions/$.dds" # inferred
 		}
 	}

@@ -11,6 +11,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "gfx/interface/icons/ethics/$.dds" # inferred
 		}
 	}

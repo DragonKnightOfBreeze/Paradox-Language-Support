@@ -33,6 +33,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon|#icon_frame" # filepath, from cwtools: only subtype[planet] has icon_frame
 		}
 	}
@@ -44,6 +45,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "gfx/interface/icons/planet_modifiers/$.dds" # inferred
 		}
 	}
@@ -57,6 +59,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # filepath
 		}
 	}

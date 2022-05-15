@@ -9,8 +9,10 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			## optional
 			icon = "#icon" # filepath
+			## primary
 			icon = "gfx/interface/icons/governments/authorities/$.dds" # inferred
 		}
 	}
@@ -41,12 +43,15 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			## optional
 			icon = "#icon" # filepath
 			subtype[civic] = {
+				## primary
 				icon = "gfx/interface/icons/governments/civics/$.dds" # inferred
 			}
 			subtype[origin] = {
+				## primary
 				icon = "gfx/interface/icons/origins/$.dds" # inferred
 				picture = "#picture" # <sprite>
 			}

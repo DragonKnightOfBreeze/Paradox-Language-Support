@@ -101,7 +101,7 @@ object ParadoxLocalisationTextHintsRenderer {
 	private fun PresentationFactory.renderIconTo(element: ParadoxLocalisationIcon, editor: Editor, builder: MutableList<InlayPresentation>, truncateRemain: AtomicInteger): Boolean {
 		val resolved = element.reference?.resolve() ?: return true
 		val iconUrl = when {
-			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveBySprite(resolved, defaultToUnknown = true)
+			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = true)
 			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, defaultToUnknown = true)
 			else -> return true
 		}

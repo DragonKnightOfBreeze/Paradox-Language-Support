@@ -28,6 +28,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			portrait = "#portrait" # <sprite>
 		}
 	}

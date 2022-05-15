@@ -10,6 +10,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "gfx/interface/icons/ascension_perks/$.dds" # inferred
 		}
 	}
@@ -25,6 +26,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			## optional
 			icon = "gfx/interface/icons/traditions/$.dds" # inferred
 		}
@@ -56,6 +58,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "gfx/interface/icons/traditions/$.dds" # inferred
 			# TODO inherit icon from parent original tradition if inherit_icon = yes
 		}

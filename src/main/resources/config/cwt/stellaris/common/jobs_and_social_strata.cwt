@@ -24,7 +24,9 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # filepath[gfx/interface/icons/jobs/job_,.dds]
+			## primary
 			icon = "gfx/interface/icons/jobs/job_$.dds" # inferred
 			building_icon = "#building_icon" #  <building> | icon[gfx/interface/icons/buildings]
 		}
@@ -41,6 +43,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "gfx/interface/icons/pop_categories/pop_cat_$.dds" # inferred
 		}
 	}

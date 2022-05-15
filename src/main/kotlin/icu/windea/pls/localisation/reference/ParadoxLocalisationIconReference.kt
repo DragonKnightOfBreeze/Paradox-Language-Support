@@ -61,7 +61,7 @@ class ParadoxLocalisationIconReference(
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val ddsFile = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionType.Icon).find { it.nameWithoutExtension == iconName }
 		if(ddsFile != null) return ddsFile.toPsiFile(project)
-		//如果上述方式都无法解析，则作为生成的图标处理
+		//如果上述方式都无法解析，则作为生成的图标处理（解析为其他类型的定义）
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
 		val jobName = iconName.removePrefixOrNull("job_")
 		if(jobName != null) {
@@ -85,7 +85,7 @@ class ParadoxLocalisationIconReference(
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionType.Icon).filter { it.nameWithoutExtension == iconName }
 		if(ddsFiles.isNotEmpty()) return ddsFiles.mapNotNullTo(SmartList()) { it.toPsiFile<PsiFile>(project) }.mapToArray { PsiElementResolveResult(it) }
-		//如果上述方式都无法解析，则作为生成的图标处理
+		//如果上述方式都无法解析，则作为生成的图标处理（解析为其他类型的定义）
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
 		val jobName = iconName.removePrefixOrNull("job_")
 		if(jobName != null) {
@@ -115,7 +115,7 @@ class ParadoxLocalisationIconReference(
 				if(file != null) map.putIfAbsent(name, file)
 			}
 		}
-		//作为生成的图标处理
+		//作为生成的图标处理（解析为其他类型的定义）
 		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
 		val jobDefinitions = findAllDefinitions("job", project, distinct = true) //FIXME PCE?
 		if(jobDefinitions.isNotEmpty()) {

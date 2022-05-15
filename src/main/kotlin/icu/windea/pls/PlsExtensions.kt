@@ -4,7 +4,6 @@ package icu.windea.pls
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.documentation.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -105,13 +104,6 @@ fun getEventNamespace(event: ParadoxDefinitionProperty): String?{
 		}
 		current = current.prevSibling ?: return null
 	}
-}
-
-/**
- * 得到sprite定义的对应DDS文件的filePath。基于名为"textureFile"的定义属性（忽略大小写）。
- */
-fun getSpriteDdsFilePath(sprite: ParadoxDefinitionProperty): String? {
-	return sprite.findProperty("textureFile")?.propertyValue?.value?.castOrNull<ParadoxScriptString>()?.stringValue
 }
 //endregion
 
@@ -1069,7 +1061,7 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Proj
 			val rootUri = fileInfo.rootPath?.toUri()?.toString() //通过这种方式获取需要的url
 			if(rootUri != null) {
 				append(" ")
-				appendLink(rootUri, PlsDocBundle.message("name.core.localDirectoryLinkLabel"))
+				appendLink(rootUri, PlsDocBundle.message("name.core.localLinkLabel"))
 				if(remoteFileId != null){
 					append(" | ")
 					appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))

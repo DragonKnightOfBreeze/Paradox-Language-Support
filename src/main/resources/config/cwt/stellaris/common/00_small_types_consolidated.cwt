@@ -87,6 +87,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # <sprite>
 		}
 	}
@@ -109,6 +110,7 @@ types = {
 		path = "game/common/message_types"
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon|#icon_frame" # <sprite>
 		}
 	}

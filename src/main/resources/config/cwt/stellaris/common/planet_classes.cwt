@@ -35,6 +35,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # <sprite>
 		}
 	}

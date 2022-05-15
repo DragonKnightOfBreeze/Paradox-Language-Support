@@ -37,7 +37,7 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	private fun renderStringTo(element: ParadoxLocalisationString, builder: StringBuilder) {
-		builder.append(element.text.escapeXml().escapeBlank()) //这里需要转义空白
+		builder.append(element.text.escapeXml())
 	}
 	
 	private fun renderEscapeTo(element: ParadoxLocalisationEscape, builder: StringBuilder) {
@@ -73,7 +73,7 @@ object ParadoxLocalisationTextRenderer {
 	private fun renderIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
 		val resolved = element.reference?.resolve() ?: return
 		val iconUrl = when {
-			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveBySprite(resolved, defaultToUnknown = true)
+			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = true)
 			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, defaultToUnknown = true)
 			else -> return
 		}

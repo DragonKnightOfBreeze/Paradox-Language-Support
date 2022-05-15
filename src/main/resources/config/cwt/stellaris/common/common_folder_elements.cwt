@@ -8,8 +8,9 @@ types = {
 		skip_root_key = alerts
 		# ADDED BY PLS
 		pictures = {
-			category = "#category" # <alert_icon>, `HIGH` of `HIGH = "GFX_alerticon_banner_high"`
+			## primary
 			icon = "#icon" # <sprite>
+			category = "#category" # <alert_icon>
 		}
 	}
 	# FIXED BY PLS

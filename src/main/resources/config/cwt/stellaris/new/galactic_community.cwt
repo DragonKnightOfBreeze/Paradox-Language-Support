@@ -17,6 +17,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" <sprite>
 		}
 	}
@@ -31,11 +32,13 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # <sprite> | scalar
 		}
 	}
 	# ADDED BY PLS
 	pictures = {
+		## primary
 		icon = "#icon" # <sprite>
 	}
 }

@@ -28,6 +28,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			## optional
 			icon = "gfx/interface/icons/federation/federation_perks/$.dds" # inferred
 		}
@@ -42,6 +43,7 @@ types = {
 		}
 		# ADDED BY PLS
 		pictures = {
+			## primary
 			icon = "#icon" # <sprite>
 		}
 	}
