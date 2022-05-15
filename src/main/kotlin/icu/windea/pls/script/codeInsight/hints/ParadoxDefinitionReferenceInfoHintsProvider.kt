@@ -72,13 +72,8 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 	
 	private fun PresentationFactory.collectDefinition(definitionInfo: ParadoxDefinitionInfo): InlayPresentation {
 		val presentations: MutableList<InlayPresentation> = SmartList()
-		val name = definitionInfo.name
-		//如果definitionName和rootKey相同，或者定义的值的类型不为代码块，则省略definitionName
-		if(name.equals(definitionInfo.rootKey, true) || !definitionInfo.typeConfig.block) {
-			presentations.add(smallText(": "))
-		} else {
-			presentations.add(smallText("$name: "))
-		}
+		//省略definitionName
+		presentations.add(smallText(": "))
 		val typeConfig = definitionInfo.typeConfig
 		presentations.add(psiSingleReference(smallText(typeConfig.name)) { typeConfig.pointer.element })
 		val subtypeConfigs = definitionInfo.subtypeConfigs

@@ -420,6 +420,8 @@ Caused by: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last destination
 
 ## #4
 
+打开某些event脚本文件时
+
 ```
 com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion prevented
 	at com.intellij.psi.impl.source.tree.FileElement.getStubbedSpine(FileElement.java:110)
