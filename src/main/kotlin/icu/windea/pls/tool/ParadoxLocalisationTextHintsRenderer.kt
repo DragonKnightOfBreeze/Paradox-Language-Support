@@ -22,6 +22,7 @@ object ParadoxLocalisationTextHintsRenderer {
 	}
 	
 	private fun PresentationFactory.render(element: ParadoxLocalisationProperty, editor: Editor): InlayPresentation? {
+		//虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
 		val truncateRemain = AtomicInteger(getSettings().localisationTruncateLimit)
 		val presentations: MutableList<InlayPresentation> = SmartList()
 		val r = renderTo(element, editor, presentations, truncateRemain)

@@ -1,0 +1,58 @@
+<idea-plugin>
+  <applicationListeners>
+    <listener class="icu.windea.pls.dds.DdsFileListener" topic="com.intellij.openapi.vfs.AsyncFileListener"/>
+  </applicationListeners>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType name="DDS" implementationClass="icu.windea.pls.dds.DdsFileType" fieldName="INSTANCE" extensions="dds"/>
+    <fileLookupInfoProvider implementation="icu.windea.pls.dds.DdsLookupInfoProvider"/>
+    <documentationProvider implementation="icu.windea.pls.dds.editor.DdsDocumentationProvider"/>
+    <fileEditorProvider implementation="icu.windea.pls.dds.editor.DdsFileEditorProvider"/>
+  </extensions>
+
+  <actions>
+    <group id="ImagesRootGroup">
+      <!--Put actions that need to rewrite here-->
+      <action class="icu.windea.pls.dds.actions.EditExternallyAction" id="Dds.EditExternally"
+              use-shortcut-of="Images.EditExternally">
+        <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
+      </action>
+      <action class="org.intellij.images.actions.EditExternalImageEditorAction" id="Dds.EditExternalEditorPath"
+              use-shortcut-of="Images.EditExternalEditorPath">
+      </action>
+      <!--Unnecessary-->
+      <!--<add-to-group group-id="Other.KeymapGroup"/>-->
+    </group>
+    <group id="Dds.EditorToolbar">
+      <reference id="Images.ToggleTransparencyChessboard"/>
+      <reference id="Images.Editor.ToggleGrid"/>
+      <separator/>
+      <reference id="Images.Editor.ZoomIn"/>
+      <reference id="Images.Editor.ZoomOut"/>
+      <reference id="Images.Editor.ActualSize"/>
+      <reference id="Images.Editor.FitZoomToWindow"/>
+      <reference id="ShowColorPicker"/>
+      <reference id="Images.ChangeBackground"/>
+    </group>
+    <group id="Dds.EditorPopupMenu">
+      <reference id="CutCopyPasteGroup"/>
+      <separator/>
+      <reference id="FindUsages"/>
+      <reference id="RefactoringMenu"/>
+      <separator/>
+      <reference id="Images.EditorToolbar"/>
+      <reference id="Images.ShowBorder"/>
+      <!--Do not show action 'Images.SetBackgroundImage'-->
+      <!--<separator/>-->
+      <!--<reference id="Images.SetBackgroundImage"/>-->
+      <separator/>
+      <reference id="AddToFavorites"/>
+      <separator/>
+      <reference id="VersionControlsGroup"/>
+      <separator/>
+      <reference id="Dds.EditExternally"/>
+      <reference id="Dds.EditExternalEditorPath"/>
+      <reference id="ExternalToolsGroup"/>
+    </group>
+  </actions>
+</idea-plugin>

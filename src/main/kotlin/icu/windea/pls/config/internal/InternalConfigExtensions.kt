@@ -2,4 +2,4 @@
 
 package icu.windea.pls.config.internal
 
-typealias InternalConfigMap = MutableMap<String, List<Map<String, Any?>>>
+internal typealias InternalConfigMap = MutableMap<String, List<Map<String, Any?>>>

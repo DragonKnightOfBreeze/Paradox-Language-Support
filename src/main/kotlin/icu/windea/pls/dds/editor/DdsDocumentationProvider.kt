@@ -25,7 +25,7 @@ class DdsDocumentationProvider : DocumentationProvider {
 					//如果能获取图片大小就显示出来，否则不显示
 					val canGetInfo = width != 0 && height != 0
 					val message = if(canGetInfo) PlsBundle.message("dds.description", width, height) else null
-					val img = HtmlChunk.tag("img").attr("src", "file:/$url")
+					val img = HtmlChunk.tag("img").attr("src", url.toFileUrl().toString())
 					val builder = HtmlBuilder().append(img)
 					if(message != null) builder.append(HtmlChunk.p().addText(message))
 					return builder.toString()

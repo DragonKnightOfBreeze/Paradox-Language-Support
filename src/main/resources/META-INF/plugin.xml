@@ -1,4 +1,7 @@
-<idea-plugin url="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">
+<idea-plugin
+    url="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+  
   <id>icu.windea.pls</id>
   <name>Paradox Language Support</name>
   <category>Languages</category>
@@ -83,11 +86,9 @@
     ]]></change-notes>
 
   <resource-bundle>messages.PlsBundle</resource-bundle>
-
-  <applicationListeners>
-    <listener class="icu.windea.pls.dds.DdsFileListener" topic="com.intellij.openapi.vfs.AsyncFileListener"/>
-  </applicationListeners>
-
+  
+  <xi:include href="/META-INF/DdsSupport.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  
   <extensions defaultExtensionNs="com.intellij">
     <!--region Core-->
     <!--suppress PluginXmlValidity -->
@@ -110,16 +111,11 @@
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$StellarisLibraryType"/>
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Vic2LibraryType"/>
 
-    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationConfigurable id="settings.language.pls" groupId="language"
+                             instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettingsState"/>
     <!--endregion-->
-
-    <!--region DDS-->
-    <fileType name="DDS" implementationClass="icu.windea.pls.dds.DdsFileType" fieldName="INSTANCE" extensions="dds"/>
-    <fileLookupInfoProvider implementation="icu.windea.pls.dds.DdsLookupInfoProvider"/>
-    <documentationProvider implementation="icu.windea.pls.dds.editor.DdsDocumentationProvider"/>
-    <!--endregion-->
-
+    
     <!--region CWT Language-->
     <fileType
         language="CWT"
