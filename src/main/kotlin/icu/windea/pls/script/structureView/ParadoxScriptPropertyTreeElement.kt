@@ -27,8 +27,8 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 		val definitionInfo = element.definitionInfo ?: return null
 		val name = definitionInfo.name
 		val typesText = definitionInfo.typesText
-		//如果definitionName和rootKey相同，或者定义的值的类型不为代码块，则省略definitionName
-		if(name.equals(definitionInfo.rootKey, true) || !definitionInfo.typeConfig.block) {
+		//如果definitionName和rootKey相同，则省略definitionName
+		if(name.equals(definitionInfo.rootKey, true)) {
 			return ": $typesText"
 		} else {
 			return "$name: $typesText"

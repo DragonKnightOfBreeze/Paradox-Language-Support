@@ -526,6 +526,8 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	val quoted = keyElement.isQuoted()
 	val project = propertyElement.project
 	val definitionElementInfo = propertyElement.definitionElementInfo ?: return
+	//不允许value直接是定义的value的情况
+	if(definitionElementInfo.elementPath.isEmpty()) return
 	val scope = definitionElementInfo.scope
 	val gameType = definitionElementInfo.gameType
 	val configGroup = getCwtConfig(project).getValue(gameType)
@@ -537,7 +539,6 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 			completeKey(propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
 		}
 	}
-	
 }
 
 fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet) {

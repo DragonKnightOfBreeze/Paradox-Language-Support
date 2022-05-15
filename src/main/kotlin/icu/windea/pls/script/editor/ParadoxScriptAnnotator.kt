@@ -52,7 +52,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
 		//颜色高亮
 		//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-		val expression = element.valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
+		val valueConfig = element.valueConfig
+		val expression = valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
 		//val expression = element.valueConfig?.valueExpression ?: return 
 		val attributesKey = when(expression.type) {
 			CwtValueExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY

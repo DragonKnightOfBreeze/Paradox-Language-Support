@@ -418,7 +418,7 @@ Caused by: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last destination
 	... 88 more
 ```
 
-## #4
+## #4［已解决］
 
 打开某些event脚本文件时
 

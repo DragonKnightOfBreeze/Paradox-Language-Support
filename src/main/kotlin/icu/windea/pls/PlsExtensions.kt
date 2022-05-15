@@ -267,11 +267,10 @@ private fun resolveDefinitionElementInfo(element: ParadoxDefinitionProperty): Pa
 	val definition = elementPath.rootPointer?.element ?: return null
 	val definitionInfo = definition.definitionInfo ?: return null
 	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
-	val pointer = element.createPointer()
 	val gameType = definitionInfo.gameType
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType)
-	return ParadoxDefinitionElementInfo(elementPath, scope, gameType, definitionInfo, configGroup, pointer)
+	return configGroup.resolveDefinitionElementInfo(elementPath, scope, definitionInfo, element)
 }
 
 val ParadoxScriptProperty.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
