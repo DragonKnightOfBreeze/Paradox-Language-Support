@@ -63,7 +63,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 		val prefix = eventId.substring(0, dotIndex)
 		if(!prefix.equals(eventNamespace, true)) return true //TODO 不确定，应当需要忽略带小写
 		val no = eventId.substring(dotIndex + 1)
-		return no.all { it.isExactDigit() }
+		return no.any { !it.isExactDigit() }
 	}
 	
 	//private class RenameEventId(

@@ -18,14 +18,22 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
+/**
+ * 如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。
+ */
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
+	if(propertyName.isEmpty()) return this.castOrNull()
 	return properties.find { it.name.equals(propertyName, ignoreCase) }
 }
 
-//fun ParadoxDefinitionProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
-//	return properties.filter { it.name.equals(propertyName, ignoreCase) }
-//}
-//
+/**
+ * 如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性组成的单例列表。
+ */
+fun ParadoxDefinitionProperty.findProperties(propertyName: String, ignoreCase: Boolean = false): List<ParadoxScriptProperty> {
+	if(propertyName.isEmpty()) return this.castOrNull<ParadoxScriptProperty>().toSingletonListOrEmpty()
+	return properties.filter { it.name.equals(propertyName, ignoreCase) }
+}
+
 //fun ParadoxDefinitionProperty.findValue(value: String, ignoreCase: Boolean = false): ParadoxScriptValue? {
 //	return values.find { it.value.equals(value, ignoreCase) }
 //}
@@ -33,7 +41,7 @@ fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boo
 //fun ParadoxDefinitionProperty.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
 //	return values.filter { it.value.equals(value, ignoreCase) }
 //}
-//
+
 //fun ParadoxScriptBlock.findProperty(propertyName: String, ignoreCase: Boolean = false): ParadoxScriptProperty? {
 //	return propertyList.find { it.name.equals(propertyName, ignoreCase) }
 //}

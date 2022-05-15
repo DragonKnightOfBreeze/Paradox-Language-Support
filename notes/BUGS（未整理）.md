@@ -1,6 +1,6 @@
 # BUGS（未整理）
 
-## com.intellij.diagnostic.PluginException: Cyclic service initialization
+## #1
 
 ```
 com.intellij.diagnostic.PluginException: Cyclic service initialization: ServiceAdapter(descriptor=ServiceDescriptor(interface='null', serviceImplementation='icu.windea.pls.config.cwt.CwtConfigProvider', testServiceImplementation='null', headlessImplementation='null', overrides=false, configurationSchemaKey='null', preload=TRUE, client=null), pluginDescriptor=PluginDescriptor(name=Paradox Language Support, id=icu.windea.pls, descriptorPath=plugin.xml, path=~\AppData\Roaming\JetBrains\IntelliJIdea2022.1\plugins\Paradox-Language-Support-0.5.4.jar, version=0.5.4, package=null, isBundled=false))
@@ -224,7 +224,7 @@ com.intellij.diagnostic.PluginException: Cyclic service initialization: ServiceA
 
 ```
 
-## com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion prevented［已解决］
+## #2［已解决］
 
 ```
 In file: file://D:/Documents/Projects/Stellaris-Mods/kitsune/package-tiny/common/on_actions/kisune_on_actions.txt
@@ -397,7 +397,7 @@ com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion pre
 	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:183)
 ```
 
-## java.lang.ArrayIndexOutOfBoundsException: arraycopy: last destination index 20 out of bounds for int[18]
+## #3［已解决］
 
 ```
 Caused by: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last destination index 20 out of bounds for int[18]
@@ -416,4 +416,101 @@ Caused by: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last destination
 	at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2159)
 	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2049)
 	... 88 more
+```
+
+## #4
+
+```
+com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion prevented
+	at com.intellij.psi.impl.source.tree.FileElement.getStubbedSpine(FileElement.java:110)
+	at com.intellij.psi.impl.source.PsiFileImpl.getStubbedSpine(PsiFileImpl.java:258)
+	at com.intellij.psi.stubs.StubProcessingHelperBase.lambda$getAllSpines$0(StubProcessingHelperBase.java:85)
+	at com.intellij.util.containers.ContainerUtil.map(ContainerUtil.java:1797)
+	at com.intellij.psi.stubs.StubProcessingHelperBase.getAllSpines(StubProcessingHelperBase.java:85)
+	at com.intellij.psi.stubs.StubProcessingHelperBase.processStubsInFile(StubProcessingHelperBase.java:65)
+	at com.intellij.psi.stubs.StubIndexEx.lambda$processElements$4(StubIndexEx.java:140)
+	at com.intellij.psi.stubs.StubIndexEx.processElements(StubIndexEx.java:187)
+	at com.intellij.psi.stubs.StubIndex.processElements(StubIndex.java:50)
+	at icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex.exists(ParadoxDefinitionTypeIndex.kt:119)
+	at icu.windea.pls.PlsExtensionsKt.existsDefinitionByType(PlsExtensions.kt:608)
+	at icu.windea.pls.PlsExtensionsKt.existsDefinitionByType$default(PlsExtensions.kt:602)
+	at icu.windea.pls.config.cwt.CwtConfigExtensionsKt.matchesValue(CwtConfigExtensions.kt:418)
+	at icu.windea.pls.config.cwt.CwtConfigExtensionsKt.matchesProperty(CwtConfigExtensions.kt:189)
+	at icu.windea.pls.config.cwt.CwtConfigExtensionsKt.matchesProperties(CwtConfigExtensions.kt:230)
+	at icu.windea.pls.config.cwt.CwtConfigExtensionsKt.matchesDefinitionProperty(CwtConfigExtensions.kt:164)
+	at icu.windea.pls.config.cwt.CwtConfigGroup.matchesSubtype(CwtConfigGroup.kt:599)
+	at icu.windea.pls.config.cwt.CwtConfigGroup.getSubtypeConfigs(CwtConfigGroup.kt:638)
+	at icu.windea.pls.config.cwt.CwtConfigGroup.toDefinitionInfo(CwtConfigGroup.kt:605)
+	at icu.windea.pls.config.cwt.CwtConfigGroup.resolveDefinitionInfo(CwtConfigGroup.kt:504)
+	at icu.windea.pls.PlsExtensionsKt.resolveDefinitionInfo(PlsExtensions.kt:251)
+	at icu.windea.pls.PlsExtensionsKt.doGetDefinitionInfo$lambda-2(PlsExtensions.kt:237)
+	at com.intellij.psi.util.CachedValuesManager$1.compute(CachedValuesManager.java:158)
+	at com.intellij.psi.impl.PsiCachedValueImpl.doCompute(PsiCachedValueImpl.java:39)
+	at com.intellij.util.CachedValueBase.lambda$getValueWithLock$3(CachedValueBase.java:227)
+	at com.intellij.util.CachedValueBase.computeData(CachedValueBase.java:42)
+	at com.intellij.util.CachedValueBase.lambda$getValueWithLock$4(CachedValueBase.java:227)
+	at com.intellij.openapi.util.RecursionManager$1.computePreventingRecursion(RecursionManager.java:114)
+	at com.intellij.openapi.util.RecursionGuard.doPreventingRecursion(RecursionGuard.java:44)
+	at com.intellij.openapi.util.RecursionManager.doPreventingRecursion(RecursionManager.java:68)
+	at com.intellij.util.CachedValueBase.getValueWithLock(CachedValueBase.java:228)
+	at com.intellij.psi.impl.PsiCachedValueImpl.getValue(PsiCachedValueImpl.java:28)
+	at com.intellij.util.CachedValuesManagerImpl.getCachedValue(CachedValuesManagerImpl.java:72)
+	at com.intellij.psi.util.CachedValuesManager.getCachedValue(CachedValuesManager.java:155)
+	at icu.windea.pls.PlsExtensionsKt.doGetDefinitionInfo(PlsExtensions.kt:236)
+	at icu.windea.pls.PlsExtensionsKt.getDefinitionInfo(PlsExtensions.kt:233)
+	at icu.windea.pls.script.psi.ParadoxScriptPropertyStubElementType.shouldCreateStub(ParadoxScriptPropertyStubElementType.kt:38)
+	at com.intellij.psi.impl.source.tree.FileElement$1.visitComposite(FileElement.java:130)
+	at com.intellij.psi.impl.source.tree.CompositeElement.acceptTree(CompositeElement.java:117)
+	at com.intellij.psi.impl.source.tree.RecursiveTreeElementWalkingVisitor$1.visit(RecursiveTreeElementWalkingVisitor.java:67)
+	at com.intellij.psi.impl.source.tree.RecursiveTreeElementWalkingVisitor$1.visit(RecursiveTreeElementWalkingVisitor.java:59)
+	at com.intellij.util.WalkingState.walkChildren(WalkingState.java:62)
+	at com.intellij.util.WalkingState.elementStarted(WalkingState.java:49)
+	at com.intellij.psi.impl.source.tree.RecursiveTreeElementWalkingVisitor.visitNode(RecursiveTreeElementWalkingVisitor.java:86)
+	at com.intellij.psi.impl.source.tree.FileElement$1.visitComposite(FileElement.java:134)
+	at com.intellij.psi.impl.source.tree.CompositeElement.acceptTree(CompositeElement.java:117)
+	at com.intellij.psi.impl.source.tree.FileElement.calcStubbedDescendants(FileElement.java:121)
+	at com.intellij.psi.impl.source.tree.FileElement.lambda$getStubbedSpine$0(FileElement.java:108)
+	at com.intellij.openapi.util.RecursionManager$1.computePreventingRecursion(RecursionManager.java:114)
+	at com.intellij.openapi.util.RecursionGuard.doPreventingRecursion(RecursionGuard.java:44)
+	at com.intellij.openapi.util.RecursionManager.doPreventingRecursion(RecursionManager.java:68)
+	at com.intellij.psi.impl.source.tree.FileElement.getStubbedSpine(FileElement.java:108)
+	at com.intellij.psi.impl.source.PsiFileImpl.getStubbedSpine(PsiFileImpl.java:258)
+	at com.intellij.psi.stubs.StubProcessingHelperBase.lambda$getAllSpines$0(StubProcessingHelperBase.java:85)
+	at com.intellij.util.containers.ContainerUtil.map(ContainerUtil.java:1797)
+	at com.intellij.psi.stubs.StubProcessingHelperBase.getAllSpines(StubProcessingHelperBase.java:85)
+	at com.intellij.psi.stubs.StubProcessingHelperBase.processStubsInFile(StubProcessingHelperBase.java:65)
+	at com.intellij.psi.stubs.StubIndexEx.lambda$processElements$4(StubIndexEx.java:140)
+	at com.intellij.psi.stubs.StubIndexEx.processElements(StubIndexEx.java:187)
+	at com.intellij.psi.stubs.StubIndex.processElements(StubIndex.java:50)
+	at icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex.findAll(ParadoxDefinitionTypeIndex.kt:185)
+	at icu.windea.pls.PlsExtensionsKt.findDefinitionsByType(PlsExtensions.kt:634)
+	at icu.windea.pls.PlsExtensionsKt.findDefinitionsByType$default(PlsExtensions.kt:628)
+	at icu.windea.pls.script.codeInsight.makers.ParadoxDefinitionLineMarkerProvider.collectNavigationMarkers(ParadoxDefinitionLineMarkerProvider.kt:30)
+	at com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider.collectNavigationMarkers(RelatedItemLineMarkerProvider.java:31)
+	at com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider.collectSlowLineMarkers(RelatedItemLineMarkerProvider.java:23)
+	at com.intellij.codeInsight.daemon.impl.LineMarkersPass.queryProviders(LineMarkersPass.java:201)
+	at com.intellij.codeInsight.daemon.impl.LineMarkersPass.lambda$doCollectInformation$3(LineMarkersPass.java:96)
+	at com.intellij.codeInsight.daemon.impl.Divider.divideInsideAndOutsideInOneRoot(Divider.java:87)
+	at com.intellij.codeInsight.daemon.impl.LineMarkersPass.doCollectInformation(LineMarkersPass.java:91)
+	at com.intellij.codeHighlighting.TextEditorHighlightingPass.collectInformation(TextEditorHighlightingPass.java:56)
+	at com.intellij.codeInsight.daemon.impl.PassExecutorService$ScheduledPass.lambda$doRun$1(PassExecutorService.java:419)
+	at com.intellij.openapi.application.impl.ApplicationImpl.tryRunReadAction(ApplicationImpl.java:1152)
+	at com.intellij.codeInsight.daemon.impl.PassExecutorService$ScheduledPass.lambda$doRun$2(PassExecutorService.java:412)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.lambda$executeProcessUnderProgress$12(CoreProgressManager.java:608)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.registerIndicatorAndRun(CoreProgressManager.java:683)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.computeUnderProgress(CoreProgressManager.java:639)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.executeProcessUnderProgress(CoreProgressManager.java:607)
+	at com.intellij.openapi.progress.impl.ProgressManagerImpl.executeProcessUnderProgress(ProgressManagerImpl.java:60)
+	at com.intellij.codeInsight.daemon.impl.PassExecutorService$ScheduledPass.doRun(PassExecutorService.java:411)
+	at com.intellij.codeInsight.daemon.impl.PassExecutorService$ScheduledPass.lambda$run$0(PassExecutorService.java:387)
+	at com.intellij.openapi.application.impl.ReadMostlyRWLock.executeByImpatientReader(ReadMostlyRWLock.java:174)
+	at com.intellij.openapi.application.impl.ApplicationImpl.executeByImpatientReader(ApplicationImpl.java:213)
+	at com.intellij.codeInsight.daemon.impl.PassExecutorService$ScheduledPass.run(PassExecutorService.java:385)
+	at com.intellij.concurrency.JobLauncherImpl$VoidForkJoinTask$1.exec(JobLauncherImpl.java:184)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:290)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1020)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1656)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:183)
+
 ```

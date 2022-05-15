@@ -39,6 +39,6 @@ class IncorrectEventNamespaceInspection  : LocalInspectionTool() {
 	}
 	
 	private fun isIncorrectEventNamespace(namespace: String): Boolean {
-		return namespace.all { it.isExactLetter() || it == '_' }
+		return namespace.any() { !it.isExactLetter() && it != '_' }
 	}
 }

@@ -11,7 +11,7 @@
   </extensions>
 
   <actions>
-    <group id="ImagesRootGroup">
+    <group id="DdsRootGroup">
       <!--Put actions that need to rewrite here-->
       <action class="icu.windea.pls.dds.actions.EditExternallyAction" id="Dds.EditExternally"
               use-shortcut-of="Images.EditExternally">

@@ -85,8 +85,8 @@ fun isPreviousComment(element: PsiElement): Boolean {
  */
 fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String>): Boolean {
 	return when {
-		expression.startsWith('!') -> expression.drop(1) !in subtypes
-		else -> expression in subtypes
+		expression.startsWith('!') -> subtypes.isEmpty() || expression.drop(1) !in subtypes
+		else -> subtypes.isNotEmpty() && expression in subtypes
 	}
 }
 
@@ -262,6 +262,7 @@ private fun doGetDefinitionElementInfo(element: ParadoxDefinitionProperty): Para
 
 private fun resolveDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionElementInfo? {
 	//NOTE 注意这里获得的definitionInfo可能会过时！因为对应的type和subtypes可能基于其他的definitionProperty
+	//NOTE 这里输入的element本身可以是定义，这是elementPath会是空字符串
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
 	val definition = elementPath.rootPointer?.element ?: return null
 	val definitionInfo = definition.definitionInfo ?: return null
@@ -286,7 +287,9 @@ val ParadoxScriptPropertyKey.propertyConfig: CwtPropertyConfig? get() = doGetPro
 private fun doGetPropertyConfig(element: ParadoxScriptPropertyKey): CwtPropertyConfig? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
 	val property = element.parent.castOrNull<ParadoxScriptProperty>() ?: return null
+	//不允许value直接是定义的value的情况
 	val definitionElementInfo = property.definitionElementInfo ?: return null
+	if(definitionElementInfo.elementPath.isEmpty()) return null
 	return definitionElementInfo.propertyConfig
 }
 
@@ -299,6 +302,7 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 		//如果value是property的value
 		is ParadoxScriptPropertyValue -> {
 			val property = parent.parent as? ParadoxScriptProperty ?: return null
+			//允许value直接是定义的value的情况
 			val definitionElementInfo = property.definitionElementInfo ?: return null
 			return definitionElementInfo.matchedPropertyConfig?.valueConfig
 				?: definitionElementInfo.propertyConfigs.firstOrNull()?.valueConfig //NOTE 如果已经匹配propertyConfig但是无法匹配valueConfig，使用第一个

@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptStringReference(
@@ -16,6 +17,7 @@ class ParadoxScriptStringReference(
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
+			resolved.isCwtPsiElement() -> pass()
 			!resolved.isWritable -> throw IncorrectOperationException(PlsBundle.message("cannotBeRenamed"))
 			else -> resolved.setName(newElementName)
 		}

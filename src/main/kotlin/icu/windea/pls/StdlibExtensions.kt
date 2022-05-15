@@ -490,9 +490,9 @@ inline fun <reified T> T.toSingletonArray() = arrayOf(this)
 
 inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
 
-fun <T> T.toSingletonList() = Collections.singletonList(this)
+fun <T> T.toSingletonList(): List<T> = Collections.singletonList(this)
 
-fun <T : Any> T?.toSingletonListOrEmpty() = if(this == null) Collections.emptyList() else Collections.singletonList(this)
+fun <T : Any> T?.toSingletonListOrEmpty(): List<T> = if(this == null) Collections.emptyList() else Collections.singletonList(this)
 
 data class ReversibleList<T>(val list: List<T>, val notReversed: Boolean) : List<T> by list {
 	override fun contains(element: T): Boolean {

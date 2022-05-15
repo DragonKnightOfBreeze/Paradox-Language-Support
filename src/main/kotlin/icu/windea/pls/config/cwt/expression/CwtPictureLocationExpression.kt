@@ -22,7 +22,7 @@ private val validValueTypes = arrayOf(
  *
  * 示例：`"$"`, `"$_desc"`, `"#name"`, "#icon|#icon_frame"`
  * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成definitionName）。
- * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串）。
+ * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串，可以为空字符串）。
  * @property extraPropertyNames 额外的属性名（表达式文本以"#"开始且之后包含"|"时，为"|"之后的按","分割的子字符串）。
  */
 class CwtPictureLocationExpression(
@@ -69,8 +69,9 @@ class CwtPictureLocationExpression(
 			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
 			val file = findFileByFilePath(filePath, project)?.toPsiFile<PsiFile>(project)
 			return tupleOf(filePath, file, frame)
-		} else if(propertyName != null && propertyName.isNotEmpty()) {
+		} else if(propertyName != null) {
 			//目前只接收类型为string的值
+			//propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
 			val value = definition.findProperty(propertyName)?.propertyValue?.value?.castOrNull<ParadoxScriptString>() ?: return null
 			val frameToUse = when {
 				frame != 0 -> frame

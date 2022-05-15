@@ -12,39 +12,47 @@ import icu.windea.pls.cwt.psi.*
 data class CwtDefinitionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
-	val configs: List<Pair<String?, CwtPropertyConfig>> //(subtypeExpression?, propConfig)
+	val propertyConfig: CwtPropertyConfig, //definitionName = ...
+	val configs: List<Pair<String?, CwtPropertyConfig>>? = null, //(subtypeExpression?, propConfig)
 ) : CwtConfig<CwtProperty> {
 	private val mergeConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
 	private val propertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
 	private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
 	private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { createCache() }
 	
+	private val propertyConfigList by lazy { propertyConfig.toSingletonList() }
+	
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
 	 */
 	fun getMergeConfigs(subtypes: List<String>): List<CwtPropertyConfig> {
-		val cacheKey = subtypes.joinToString(",")
-		return mergeConfigsCache.getOrPut(cacheKey) {
-			val result = SmartList<CwtPropertyConfig>()
-			for((subtypeExpression, propConfig) in configs) {
-				if(subtypeExpression == null || matchesDefinitionSubtypeExpression(subtypeExpression, subtypes)) {
-					result.add(propConfig)
+		return when {
+			configs == null -> propertyConfigList //定义的值不为代码块的情况
+			configs.isEmpty() -> emptyList()
+			else -> {
+				val cacheKey = subtypes.joinToString(",")
+				mergeConfigsCache.getOrPut(cacheKey) {
+					val result = SmartList<CwtPropertyConfig>()
+					for((subtypeExpression, propConfig) in configs) {
+						if(subtypeExpression == null || matchesDefinitionSubtypeExpression(subtypeExpression, subtypes)) {
+							result.add(propConfig)
+						}
+					}
+					result
 				}
 			}
-			result
 		}
 	}
-	
 	
 	/**
 	 * 根据路径解析对应的属性配置列表。
 	 */
-	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*>,configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
+	fun resolvePropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return propertyConfigsCache.getOrPut(cacheKey) {
 			when {
-				//这里的属性路径不应该为空
-				path.isEmpty() -> emptyList()
+				//这里的属性路径可以为空，这时得到的属性列表即是定义本身组成的单例列表
+				path.isEmpty() -> propertyConfigList
 				else -> {
 					var result = getMergeConfigs(subtypes)
 					var isTop = true
@@ -117,7 +125,7 @@ data class CwtDefinitionConfig(
 		val cacheKey = "${subtypes.joinToString(",")}$path"
 		return childValueConfigsCache.getOrPut(cacheKey) {
 			when {
-				//这里的属性路径可以为空，这时得到的是空列表（假定在顶级的是属性不是值）
+				//这里的属性路径可以为空，这时得到的是空列表（如果定义的值的类型是代码块，代码块中的应当是属性列表）
 				path.isEmpty() -> emptyList()
 				else -> {
 					//打平propertyConfigs中的每一个values

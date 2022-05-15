@@ -1,0 +1,27 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <!--suppress PluginXmlValidity -->
+    <applicationService serviceImplementation="icu.windea.pls.config.internal.InternalConfigProvider" preload="true"/>
+    <!--suppress PluginXmlValidity -->
+    <projectService serviceImplementation="icu.windea.pls.config.cwt.CwtConfigProvider" preload="true"/>
+    <!--suppress PluginXmlValidity -->
+    <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
+    <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
+
+    <fileBasedIndex implementation="icu.windea.pls.core.psi.ParadoxFilePathIndexImpl"/>
+    <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true"
+                 description="Use VFS-based implementation for ParadoxFilePathIndex"/>
+
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck2LibraryType"/>
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck3LibraryType"/>
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Eu4LibraryType"/>
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Hoi4LibraryType"/>
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$IrLibraryType"/>
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$StellarisLibraryType"/>
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Vic2LibraryType"/>
+
+    <applicationConfigurable id="settings.language.pls" groupId="language"
+                             instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettingsState"/>
+  </extensions>
+</idea-plugin>

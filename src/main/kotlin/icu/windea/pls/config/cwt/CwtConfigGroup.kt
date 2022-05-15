@@ -9,7 +9,6 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import io.ktor.util.*
 
 class CwtConfigGroup(
 	val gameType: ParadoxGameType,
@@ -464,23 +463,26 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig? {
-		val props = propertyConfig.properties ?: return null
-		val propertyConfigs = SmartList<Pair<String?, CwtPropertyConfig>>()
-		for(prop in props) {
-			//这里需要进行合并
-			val subtypeName = prop.key.removeSurroundingOrNull("subtype[", "]")
-			if(subtypeName != null) {
-				val propProps = prop.properties
-				if(propProps != null) {
-					for(propProp in propProps) {
-						propertyConfigs.add(subtypeName to propProp)
+		if(propertyConfig.properties != null) {
+			val configs = SmartList<Pair<String?, CwtPropertyConfig>>()
+			for(prop in propertyConfig.properties) {
+				//这里需要进行合并
+				val subtypeName = prop.key.removeSurroundingOrNull("subtype[", "]")
+				if(subtypeName != null) {
+					val propProps = prop.properties
+					if(propProps != null) {
+						for(propProp in propProps) {
+							configs.add(subtypeName to propProp)
+						}
 					}
+				} else {
+					configs.add(null to prop)
 				}
-			} else {
-				propertyConfigs.add(null to prop)
 			}
+			return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfig, configs)
+		} else {
+			return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfig, null)
 		}
-		return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfigs)
 	}
 	
 	//绑定CWT配置

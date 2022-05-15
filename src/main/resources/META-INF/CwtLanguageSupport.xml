@@ -1,0 +1,51 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType
+        language="CWT"
+        name="CWT" fieldName="INSTANCE"
+        implementationClass="icu.windea.pls.cwt.CwtFileType"
+        extensions="cwt"/>
+    <lang.parserDefinition
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.psi.CwtParseDefinition"/>
+
+    <spellchecker.support
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.CwtSpellchecker"/>
+    <lang.syntaxHighlighterFactory
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.highlighter.CwtSyntaxHighlighterFactory"/>
+    <colorSettingsPage
+        implementation="icu.windea.pls.cwt.highlighter.CwtColorSettingsPage"/>
+    <lang.braceMatcher
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
+    <lang.foldingBuilder
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtFoldingBuilder"/>
+    <lang.quoteHandler
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtQuoteHandler"/>
+    <lang.documentationProvider
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtDocumentationProvider"/>
+    <lang.findUsagesProvider
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
+    <elementDescriptionProvider
+        implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
+    <lang.commenter
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
+    <lang.psiStructureViewFactory
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
+    <lang.formatter
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
+    <codeStyleSettingsProvider
+        implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider
+        implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
+  </extensions>
+</idea-plugin>

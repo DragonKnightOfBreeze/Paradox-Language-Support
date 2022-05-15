@@ -15,6 +15,13 @@ types = {
 	type[resolution_group] = {
 		path = "game/common/resolution_groups"
 	}
+	# ADDED BY PLS
+	## type_key_filter = namespace
+	type[event_namespace] = {
+		path = "game/events"
+		block = no
+		name_field = ""
+	}
 }
 
 # ADDED BY PLS
@@ -48,3 +55,5 @@ resolution_group = {
 	color_index = int[0..inf]
 	text_color_code = scalar # TODO only accept color_code
 }
+
+event_namespace = scalar

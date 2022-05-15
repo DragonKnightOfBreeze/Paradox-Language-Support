@@ -7,7 +7,6 @@ types = {
 		path_file = "alerts.txt"
 		skip_root_key = alerts
 		# ADDED BY PLS
-		# TODO support this rule
 		pictures = {
 			category = "#category" # <alert_icon>, `HIGH` of `HIGH = "GFX_alerticon_banner_high"`
 			icon = "#icon" # <sprite>
@@ -20,10 +19,9 @@ types = {
 		path = "game/common"
 		skip_root_key = icon
 		# ADDED BY PLS
-		# TODO support this rule
 		pictures = {
 			## primary
-			icon = "#" # the string value (not some property definition in the block value) of the definition
+			icon = "#" # the string value (not some property value in the block value) of the definition
 		}
 	}
 	# FIXED BY PLS
