@@ -102,7 +102,7 @@ data class CwtDefinitionConfig(
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return childPropertyConfigsCache.getOrPut(cacheKey) {
 			when {
-				//这里的属性路径可以为空，这时得到的就是顶级属性列表
+				//这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
 				path.isEmpty() -> getMergeConfigs(subtypes)
 				else -> {
 					//打平propertyConfigs中的每一个properties
@@ -125,8 +125,8 @@ data class CwtDefinitionConfig(
 		val cacheKey = "${subtypes.joinToString(",")}$path"
 		return childValueConfigsCache.getOrPut(cacheKey) {
 			when {
-				//这里的属性路径可以为空，这时得到的是空列表（如果定义的值的类型是代码块，代码块中的应当是属性列表）
-				path.isEmpty() -> emptyList()
+				//这里的属性路径可以为空，这时得到的就是顶级值列表（定义的代码块类型的值中的值列表）
+				path.isEmpty() -> propertyConfig.values ?: emptyList()
 				else -> {
 					//打平propertyConfigs中的每一个values
 					val propertyConfigs = resolvePropertyConfigs(subtypes, path, configGroup)

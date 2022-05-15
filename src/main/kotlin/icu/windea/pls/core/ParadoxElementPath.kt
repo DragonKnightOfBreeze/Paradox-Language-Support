@@ -13,7 +13,6 @@ import java.util.LinkedList
  * * `foo` - 对应所属文件或定义中名为"foo"的属性。
  * * `foo/bar` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性
  * * `foo/"bar"` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性（在脚本中用引号括起）
- * * `#` - 对应所属定义的值（非代码块）
  * * `-` - 对应所属文件或定义的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
  * * `foo/-` 对应文所属文件或定义中名为"foo"的属性的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
  */
@@ -71,9 +70,6 @@ class ParadoxElementPath<R : PsiElement> private constructor(
 					current is ParadoxDefinitionProperty -> {
 						val definitionInfo = current.definitionInfo
 						if(definitionInfo != null) {
-							if(element is ParadoxScriptValue) { //处理指定的元素直接是所属定义的值（非代码块）的情况
-								subPaths.addFirst("#")
-							}
 							definition = current
 							break
 						}

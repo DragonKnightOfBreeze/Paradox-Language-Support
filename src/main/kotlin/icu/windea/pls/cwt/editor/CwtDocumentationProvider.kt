@@ -162,7 +162,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					val documentationText = current.documentationText
 					if(documentationText != null) {
 						if(lines == null) lines = LinkedList()
-						val docText = documentationText.text.trimStart('#').trim().escapeXml()
+						val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
 						lines.addFirst(docText)
 					}
 				}
