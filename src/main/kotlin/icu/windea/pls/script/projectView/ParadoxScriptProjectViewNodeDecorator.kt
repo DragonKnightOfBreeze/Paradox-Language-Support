@@ -18,13 +18,25 @@ class ParadoxScriptProjectViewNodeDecorator : ProjectViewNodeDecorator {
 		val virtualFile = node.virtualFile
 		val fileType = virtualFile?.fileInfo?.fileType
 		if(fileType == ParadoxFileType.ParadoxScript) {
-			val psiFile = virtualFile.toPsiFile<PsiFile>(node.project)
-			if(psiFile is ParadoxScriptFile) {
-				val definitionInfo = psiFile.definitionInfo
-				if(definitionInfo != null) {
-					node.presentation.locationString = psiFile.presentation.locationString
-				}
+			val file = virtualFile.toPsiFile<PsiFile>(node.project)
+			if(file is ParadoxScriptFile) {
+				node.presentation.locationString = getLocationString(file)
 			}
+		}
+	}
+	
+	private fun getLocationString(file: ParadoxScriptFile): String? {
+		//如果文件名是descriptor.mod（不区分大小写），这里不要显示定义信息
+		val element = file
+		if(element.name.equals(descriptorFileName, true)) return null
+		val definitionInfo = element.definitionInfo ?: return null
+		//如果definitionName和rootKey相同，则省略definitionName
+		val name = definitionInfo.name
+		val typesText = definitionInfo.typesText
+		if(name.equals(definitionInfo.rootKey, true)){
+			return ": $typesText"
+		} else {
+			return "$name: $typesText"
 		}
 	}
 	

@@ -8,6 +8,7 @@ class ParadoxScriptPresentationProvider : ItemPresentationProvider<NavigatablePs
 	override fun getPresentation(item: NavigatablePsiElement): ItemPresentation? {
 		return when {
 			item is ParadoxScriptFile -> ParadoxScriptFilePresentation(item)
+			item is ParadoxScriptVariable -> ParadoxScriptVariablePresentation(item)
 			item is ParadoxScriptProperty -> ParadoxScriptPropertyPresentation(item)
 			else -> null
 		}
