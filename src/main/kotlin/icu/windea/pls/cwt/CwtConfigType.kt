@@ -23,6 +23,7 @@ enum class CwtConfigType(
 	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier")),
 	Scope("scope", PlsDocBundle.message("name.cwt.scope")),
 	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup")),
+	Tag("tag", PlsDocBundle.message("name.cwt.tag")),
 	
 	LocalisationLocale("localisation locale", PlsDocBundle.message("name.cwt.localisationLocale")),
 	LocalisationColor("localisation color", PlsDocBundle.message("name.cwt.localisationColor"));

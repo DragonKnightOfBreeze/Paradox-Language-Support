@@ -1,7 +1,6 @@
 # ADDED BY PLS
-# Since: stellaris v3.4
-# See: common/scripted_effects/99_advanced_documentation.txt (Memory Management)
 tags = {
+	### See: common/scripted_effects/99_advanced_documentation.txt (Memory Management)
 	## since = "3.4"
 	optimize_memory = {
 		supported_types = { scripted_trigger scripted_effect }

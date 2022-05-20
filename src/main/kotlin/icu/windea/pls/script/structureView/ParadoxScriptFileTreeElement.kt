@@ -2,7 +2,7 @@ package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.psi.util.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
@@ -12,19 +12,15 @@ class ParadoxScriptFileTreeElement(
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
 		val rootBlock = element.block ?: return emptyList()
-		return PsiTreeUtil.getChildrenOfAnyType(
-			rootBlock,
-			ParadoxScriptVariable::class.java,
-			ParadoxScriptProperty::class.java,
-			ParadoxScriptValue::class.java
-		).mapTo(mutableListOf()) {
-			when(it) {
-				is ParadoxScriptVariable -> ParadoxScriptVariableTreeElement(it)
-				is ParadoxScriptProperty -> ParadoxScriptPropertyTreeElement(it)
-				is ParadoxScriptValue -> ParadoxScriptValueTreeElement(it)
-				else -> throw InternalError()
+		val result = SmartList<StructureViewTreeElement>()
+		rootBlock.forEachChild {
+			when(it){
+				is ParadoxScriptVariable -> result.add(ParadoxScriptVariableTreeElement(it))
+				is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
+				is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
 			}
 		}
+		return result
 	}
 	
 	override fun getPresentableText(): String? {

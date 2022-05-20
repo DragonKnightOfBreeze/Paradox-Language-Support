@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections.internal
+package icu.windea.pls.script.inspections.definition.event
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
@@ -32,7 +32,7 @@ class IncorrectEventNamespaceInspection  : LocalInspectionTool() {
 			val namespace = namespacePropertyValue.stringValue
 			if(isIncorrectEventNamespace(namespace)){
 				if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
-				holder.registerProblem(namespacePropertyValue, PlsBundle.message("script.inspection.internal.incorrectEventNamespace.description", namespace))
+				holder.registerProblem(namespacePropertyValue, PlsBundle.message("script.inspection.event.incorrectEventNamespace.description", namespace))
 			}
 		}
 		return holder?.resultsArray

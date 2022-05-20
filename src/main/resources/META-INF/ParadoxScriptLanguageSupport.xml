@@ -132,7 +132,7 @@
                      bundle="messages.PlsBundle" key="script.inspection.unresolvedScriptedVariable"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.UnresolvedScriptedVariableInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateVariables"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.duplicateScriptedVariables"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
@@ -142,24 +142,31 @@
                      bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
-    <!--internal inspections-->
+    <!--definition-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateTags"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.definition.duplicateTags"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
+                     groupPathKey="script.inspection.definition.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.DuplicateTagsInspection"/>
+    <!--definition > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.internal.missingEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
-                     groupPathKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.internal.MissingEventNamespaceInspection"/>
+                     bundle="messages.PlsBundle" key="script.inspection.event.missingEventNamespace"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.event"
+                     groupPathKey="script.inspection.event.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.event.MissingEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventNamespace"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.internal.incorrectEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
-                     groupPathKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.internal.IncorrectEventNamespaceInspection"/>
+                     bundle="messages.PlsBundle" key="script.inspection.event.incorrectEventNamespace"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.event"
+                     groupPathKey="script.inspection.event.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.event.IncorrectEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.internal.incorrectEventId"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.internal"
-                     groupPathKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.internal.IncorrectEventIdInspection"/>
+                     bundle="messages.PlsBundle" key="script.inspection.event.incorrectEventId"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.event"
+                     groupPathKey="script.inspection.event.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.event.IncorrectEventIdInspection"/>
   </extensions>
 </idea-plugin>

@@ -4,25 +4,36 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 @Suppress("UNCHECKED_CAST")
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
 		//当用户正在输入一个string时提示
-		val booleanPattern = psiElement(ParadoxScriptElementTypes.STRING_TOKEN)
+		val booleanPattern = psiElement(STRING_TOKEN)
 		extend(CompletionType.BASIC, booleanPattern, ParadoxBooleanCompletionProvider)
 		
 		//当用户正在输入一个propertyKey或string时提示
 		val definitionPattern = or(
-			psiElement(ParadoxScriptElementTypes.PROPERTY_KEY_ID), psiElement(ParadoxScriptElementTypes.QUOTED_PROPERTY_KEY_ID),
-			psiElement(ParadoxScriptElementTypes.STRING_TOKEN), psiElement(ParadoxScriptElementTypes.QUOTED_STRING_TOKEN)
+			psiElement(PROPERTY_KEY_ID), psiElement(QUOTED_PROPERTY_KEY_ID),
+			psiElement(STRING_TOKEN), psiElement(QUOTED_STRING_TOKEN)
 		)
 		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider)
 		
-		//当用户正在输入一个eventId时提示
-		val eventIdDefinition = psiElement(ParadoxScriptElementTypes.STRING_TOKEN)
-			.withSuperParent(3, psiElement(ParadoxScriptProperty::class.java))
-		extend(CompletionType.BASIC, eventIdDefinition, ParadoxEventIdCompletionProvider)
+		//当用户可能在输入一个eventId时提示
+		val eventIdPattern = psiElement(STRING_TOKEN)
+			.withParent(psiElement(ParadoxScriptString::class.java)
+				.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)
+					.withParent(psiElement(ParadoxScriptBlock::class.java)
+						.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
+		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider)
+		
+		//当用户可能在输入一个tag时提示
+		val tagPattern = psiElement(STRING_TOKEN)
+			.withParent(psiElement(ParadoxScriptString::class.java)
+				.withParent((psiElement(ParadoxScriptBlock::class.java)
+					.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
+		extend(null, tagPattern, ParadoxTagCompletionProvider)
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

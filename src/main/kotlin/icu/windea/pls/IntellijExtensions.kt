@@ -263,7 +263,7 @@ fun <T : PsiElement> PsiElement.findRequiredChild(type: IElementType): T {
 
 inline fun PsiElement.findChild(predicate: (PsiElement) -> Boolean): PsiElement? {
 	//不会忽略某些特定类型的子元素
-	var child = this.firstChild
+	var child: PsiElement? = this.firstChild
 	while(child != null) {
 		if(predicate(child)) return child
 		child = child.nextSibling
@@ -271,10 +271,9 @@ inline fun PsiElement.findChild(predicate: (PsiElement) -> Boolean): PsiElement?
 	return null
 }
 
-
 inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
 	//不会忽略某些特定类型的子元素
-	var child = this.firstChild
+	var child: PsiElement? = this.firstChild
 	while(child != null) {
 		block(child)
 		child = child.nextSibling
@@ -300,7 +299,6 @@ inline fun <T : PsiElement, R> PsiElement.mapChildOfType(type: Class<out T>, tra
 inline fun <T : PsiElement, R> PsiElement.mapChildOfTypeNotNull(type: Class<out T>, transform: (T) -> R?): List<R> {
 	//为了优化性能，使用SmartList，并且不保存中间结果
 	//参考：com.intellij.psi.util.PsiTreeUtil.getChildrenOfTypeAsList
-	
 	var result: MutableList<R>? = null
 	var child: PsiElement? = this.firstChild
 	while(child != null) {

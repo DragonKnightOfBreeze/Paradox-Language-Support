@@ -25,6 +25,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
 		override fun visitPropertyList(element: ParadoxLocalisationPropertyList) {
 			val propertyGroup = element.propertyList.groupBy { it.name }
+			if(propertyGroup.isEmpty()) return
 			for((key, values) in propertyGroup) {
 				if(values.size <= 1) continue
 				for(value in values) {

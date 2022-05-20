@@ -12,17 +12,17 @@ import icu.windea.pls.script.psi.*
  */
 object ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val file = parameters.originalFile
-		if(file !is ParadoxScriptFile) return
-		val fileInfo = file.fileInfo ?: return
-		if(fileInfo.path.root != "events") return
-		val rootBlock = file.block ?: return
-		val properties = rootBlock.propertyList
-		if(properties.isEmpty()) return //空文件，跳过
-		if(properties.first { it.name.equals("namespace", true) } == null) return //没有事件命名空间，跳过
-		val property = parameters.position.parentOfType<ParadoxScriptProperty>() ?: return
-		if(!property.name.equals("id", true)) return
-		val eventDefinition = property.parentOfType<ParadoxScriptProperty>() ?: return
+		//val file = parameters.originalFile
+		//if(file !is ParadoxScriptFile) return
+		//val fileInfo = file.fileInfo ?: return
+		//if(fileInfo.path.root != "events") return
+		//val rootBlock = file.block ?: return
+		//val properties = rootBlock.propertyList
+		//if(properties.isEmpty()) return //空文件，跳过
+		//if(properties.first { it.name.equals("namespace", true) } == null) return //没有事件命名空间，跳过
+		val eventIdProperty = parameters.position.parentOfType<ParadoxScriptProperty>() ?: return
+		if(!eventIdProperty.name.equals("id", true)) return
+		val eventDefinition = eventIdProperty.parentOfType<ParadoxScriptProperty>() ?: return
 		if(eventDefinition.definitionInfo?.type != "event") return
 		val namespace = getEventNamespace(eventDefinition) ?: return //找不到，跳过
 		val lookupElement = LookupElementBuilder.create("$namespace.")

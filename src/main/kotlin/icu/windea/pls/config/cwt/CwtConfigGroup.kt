@@ -24,7 +24,7 @@ class CwtConfigGroup(
 	val enums: Map<String, CwtEnumConfig>
 	
 	//since: stellaris v3.4
-	val tags: Map<String, CwtTagConfig>
+	val tags: Map<String, CwtTagConfig> //tagName - tagConfig
 	val links: Map<String, CwtLinkConfig>
 	val localisationLinks: Map<String, CwtLinkConfig>
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
@@ -44,7 +44,7 @@ class CwtConfigGroup(
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
 	//since: stellaris v3.4
-	val tagsTypeMap : Map<String, Set<CwtTagConfig>>
+	val tagMap : Map<String, Map<String, CwtTagConfig>> //definitionType - tagName - tagConfig
 	
 	init {
 		folders = mutableSetOf()
@@ -213,7 +213,7 @@ class CwtConfigGroup(
 		}
 		
 		modifierCategoryIdMap = initModifierCategoryIdMap()
-		tagsTypeMap = initTagTypeMap()
+		tagMap = initTagMap()
 		
 		bindModifierCategories()
 	}
@@ -544,14 +544,14 @@ class CwtConfigGroup(
 		return modifierCategoryIdMap
 	}
 	
-	private fun initTagTypeMap(): Map<String, Set<CwtTagConfig>> {
-		val tagTypeMap: MutableMap<String, MutableSet<CwtTagConfig>> = mutableMapOf()
+	private fun initTagMap(): Map<String, Map<String, CwtTagConfig>> {
+		val tagNameMap: MutableMap<String, MutableMap<String, CwtTagConfig>> = mutableMapOf()
 		for(tagConfig in tags.values) {
 			for(supportedType in tagConfig.supportedTypes) {
-				tagTypeMap.getOrPut(supportedType) { mutableSetOf() }.add(tagConfig)
+				tagNameMap.getOrPut(supportedType) { mutableMapOf() }.put(tagConfig.name, tagConfig)
 			}
 		}
-		return tagTypeMap
+		return tagNameMap
 	}
 	
 	//绑定CWT配置

@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections.internal
+package icu.windea.pls.script.inspections.definition.event
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
@@ -23,7 +23,7 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
 		val eventNamespace = rootBlock.findChild {  it -> it is ParadoxScriptProperty && it.name.equals("namespace", true) }
 		if(eventNamespace == null) {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
-			holder.registerProblem(file, PlsBundle.message("script.inspection.internal.missingEventNamespace.description"))
+			holder.registerProblem(file, PlsBundle.message("script.inspection.event.missingEventNamespace.description"))
 			return holder.resultsArray
 		}
 		return null

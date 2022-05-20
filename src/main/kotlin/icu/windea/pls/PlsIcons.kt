@@ -17,9 +17,9 @@ object PlsIcons {
 	@JvmStatic val cwtOptionIcon = loadIcon("/icons/cwtOption.svg")
 	@JvmStatic val cwtValueIcon = loadIcon("/icons/cwtValue.svg")
 	
-	@JvmStatic val scriptVariableIcon = loadIcon("/icons/scriptVariable.svg")
 	@JvmStatic val scriptPropertyIcon = loadIcon("/icons/paradoxScriptProperty.svg")
 	@JvmStatic val scriptValueIcon = loadIcon("/icons/paradoxScriptValue.svg")
+	@JvmStatic val scriptTagIcon = loadIcon("icons/paradoxScriptTag.svg")
 	
 	@JvmStatic val localisationLocaleIcon = loadIcon("/icons/localisationLocale.svg")
 	@JvmStatic val localisationPropertyIcon = loadIcon("/icons/localisationProperty.svg")
@@ -27,6 +27,7 @@ object PlsIcons {
 	@JvmStatic val localisationCommandScopeIcon = loadIcon("/icons/localisationCommandScope.svg")
 	@JvmStatic val localisationCommandFieldIcon = loadIcon("/icons/localisationCommandField.svg")
 	
+	@JvmStatic val scriptedVariableIcon = loadIcon("/icons/scriptedVariable.svg")
 	@JvmStatic val definitionIcon = loadIcon("/icons/definition.svg")
 	@JvmStatic val relatedLocalisationIcon = loadIcon("/icons/relatedLocalisation.svg")
 	@JvmStatic val localisationIcon = loadIcon("/icons/localisation.svg")

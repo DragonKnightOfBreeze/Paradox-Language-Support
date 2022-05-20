@@ -9,9 +9,9 @@ class ParadoxLocalisationPropertyListTreeElement(
 	element: ParadoxLocalisationPropertyList
 ) : PsiTreeElementBase<ParadoxLocalisationPropertyList>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
-		val propertyList = element?.propertyList ?: return emptyList()
-		if(propertyList.isEmpty()) return emptyList()
-		return propertyList.map { ParadoxLocalisationPropertyTreeElement(it) }
+		return element?.mapChildOfType(ParadoxLocalisationProperty::class.java) {
+			ParadoxLocalisationPropertyTreeElement(it)
+		} ?: emptyList()
 	}
 	
 	override fun getPresentableText(): String? {

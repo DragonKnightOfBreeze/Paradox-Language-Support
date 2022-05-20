@@ -1,6 +1,5 @@
 package icu.windea.pls.cwt.psi.impl
 
-import com.intellij.navigation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
@@ -9,9 +8,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.cwt.structureView.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.structureView.*
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -186,27 +182,26 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun isEmpty(element: CwtBlock): Boolean {
-		for(child in element.children) {
-			if(child is CwtOption || child is CwtProperty || child is CwtValue) return false
+		element.forEachChild {
+			if(it is CwtProperty || it is CwtValue) return false
 		}
 		return true
 	}
 	
 	@JvmStatic
 	fun isNotEmpty(element: CwtBlock): Boolean {
-		for(child in element.children) {
-			if(child is CwtOption || child is CwtProperty || child is CwtValue) return true
+		element.forEachChild {
+			if(it is CwtProperty || it is CwtValue) return true
 		}
 		return true
 	}
 	
 	@JvmStatic
 	fun isObject(element: CwtBlock): Boolean {
-		for(child in element.children) {
-			when(child) {
-				is CwtOption -> return true
-				is CwtProperty -> return true
-				is CwtValue -> return false
+		element.forEachChild {
+			when {
+				it is CwtProperty -> return true
+				it is CwtValue -> return false
 			}
 		}
 		return true
@@ -214,9 +209,8 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun isArray(element: CwtBlock): Boolean {
-		for(child in element.children) {
-			when(child) {
-				is CwtOption -> return false
+		element.forEachChild {
+			when(it) {
 				is CwtProperty -> return false
 				is CwtValue -> return true
 			}
@@ -226,8 +220,11 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getComponents(element: CwtBlock): List<PsiElement> {
-		//如果存在元素为property，则认为所有合法的元素都是property
-		return if(element.isObject) element.propertyList else element.valueList
+		val components: MutableList<PsiElement> = SmartList()
+		element.forEachChild { 
+			if(it is CwtProperty || it is CwtValue) components.add(it)
+		}
+		return components
 	}
 	//endregion
 	

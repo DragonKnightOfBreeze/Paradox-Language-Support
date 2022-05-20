@@ -18,8 +18,8 @@ object ParadoxScriptDataResolver {
 	private fun resolveBlock(block: ParadoxScriptBlock): List<Any> {
 		return when {
 			block.isEmpty -> emptyList()
-			block.isArray -> block.valueList.mapNotNull { resolveValue(it) }
-			block.isObject -> block.propertyList.mapNotNull { resolveProperty(it) }
+			block.isArray -> block.mapChildOfTypeNotNull(ParadoxScriptValue::class.java) { resolveValue(it) }
+			block.isObject -> block.mapChildOfTypeNotNull(ParadoxScriptProperty::class.java) { resolveProperty(it) }
 			else -> emptyList()
 		}
 	}
@@ -58,7 +58,7 @@ object ParadoxScriptDataResolver {
 		}
 	}
 	
-	private fun resolvePropertyToMap(property: ParadoxScriptProperty, map: MutableMap<String, Any?>){
+	private fun resolvePropertyToMap(property: ParadoxScriptProperty, map: MutableMap<String, Any?>) {
 		//注意这里名字可以重复！！
 		val name = property.name
 		val value = property.propertyValue?.value ?: return

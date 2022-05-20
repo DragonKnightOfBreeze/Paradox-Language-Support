@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 import org.apache.commons.imaging.color.*
@@ -20,7 +21,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptVariable
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptVariableIcon
+		return PlsIcons.scriptedVariableIcon
 	}
 	
 	@JvmStatic
@@ -263,6 +264,13 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptString
 	@JvmStatic
+	fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
+		//特殊处理字符串需要被识别为标签的情况
+		if(element.resolveTagConfig() != null) return PlsIcons.scriptTagIcon
+		return PlsIcons.scriptValueIcon 
+	}
+	
+	@JvmStatic
 	fun getValue(element: ParadoxScriptString): String {
 		return element.text.unquote()
 	}
@@ -387,26 +395,29 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun isEmpty(element: ParadoxScriptBlock): Boolean {
-		for(child in element.children) {
-			if(child is ParadoxScriptProperty || child is ParadoxScriptValue) return false
+		element.forEachChild {
+			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return false
 		}
 		return true
 	}
 	
 	@JvmStatic
 	fun isNotEmpty(element: ParadoxScriptBlock): Boolean {
-		for(child in element.children) {
-			if(child is ParadoxScriptProperty || child is ParadoxScriptValue) return true
+		element.forEachChild {
+			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return true
 		}
 		return true
 	}
 	
 	@JvmStatic
 	fun isObject(element: ParadoxScriptBlock): Boolean {
-		for(child in element.children) {
-			when(child) {
-				is ParadoxScriptProperty -> return true
-				is ParadoxScriptValue -> return false
+		val tagNames = element.resolveTagConfigs()?.keys
+		element.forEachChild {
+			when {
+				//忽略字符串需要被识别为标签的情况
+				it is ParadoxScriptString && tagNames != null && it.text in tagNames -> return@forEachChild
+				it is ParadoxScriptProperty -> return true
+				it is ParadoxScriptValue -> return false
 			}
 		}
 		return true
@@ -414,10 +425,13 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun isArray(element: ParadoxScriptBlock): Boolean {
-		for(child in element.children) {
-			when(child) {
-				is ParadoxScriptProperty -> return false
-				is ParadoxScriptValue -> return true
+		val tagNames = element.resolveTagConfigs()?.keys
+		element.forEachChild {
+			when {
+				//忽略字符串需要被识别为标签的情况
+				it is ParadoxScriptString && tagNames != null && it.text in tagNames -> return@forEachChild
+				it is ParadoxScriptProperty -> return false
+				it is ParadoxScriptValue -> return true
 			}
 		}
 		return true
@@ -425,8 +439,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
-		//如果存在元素为property，则认为所有合法的元素都是property
-		return if(element.isObject) element.propertyList else element.valueList
+		//允许混合value和property
+		val components: MutableList<PsiElement> = SmartList()
+		element.forEachChild {
+			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) components.add(it)
+		}
+		return components
 	}
 	
 	@JvmStatic

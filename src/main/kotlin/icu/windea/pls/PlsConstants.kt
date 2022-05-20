@@ -24,8 +24,9 @@ const val paradoxScriptExtension = "txt"
 val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toClasspathUrl().readText()
 
 const val keywordPriority = 80.0
+const val tagPriority = 60.0
 const val propertyPriority = 40.0
-const val modifierPriority = 60.0
+const val modifierPriority = 20.0
 
 const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length

@@ -49,7 +49,10 @@ fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class
 
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
 	val primaryLocale = getSettings().localisationPrimaryLocale
-	if(primaryLocale.isNotEmpty()) return getInternalConfig().localeFlagMap[primaryLocale]
+	if(primaryLocale.isNotEmpty()) {
+		val usedLocale = getInternalConfig().localeFlagMap[primaryLocale]
+		if(usedLocale != null) return usedLocale
+	}
 	//如果是默认语言区域，则基于OS，如果没有对应的语言区域，则使用英文
 	val userLanguage = System.getProperty("user.language")
 	return getInternalConfig().localeFlagMap[userLanguage] ?: getInternalConfig().localeFlagMap["en"]
@@ -96,12 +99,12 @@ fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String
 }
 
 /**
- * 得到event定义的需要匹配的naespace。基于名为"namespace"的顶级脚本属性（忽略大小写）。
+ * 得到event定义的需要匹配的namespace。基于名为"namespace"的顶级脚本属性（忽略大小写）。
  */
-fun getEventNamespace(event: ParadoxDefinitionProperty): String?{
+fun getEventNamespace(event: ParadoxDefinitionProperty): String? {
 	var current = event.prevSibling ?: return null
-	while(true){
-		if(current is ParadoxScriptProperty && current.name.equals("namespace",true)){
+	while(true) {
+		if(current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
 			val namespace = current.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: return null
 			return namespace.stringValue
 		}
@@ -136,7 +139,7 @@ fun PsiElement.isQuoted(): Boolean {
  */
 fun ParadoxScriptValue.isLonelyValue(): Boolean {
 	return this.parent is ParadoxScriptBlock // ParadoxScriptBlock | ParadoxScriptRootBlock
-}   
+}
 
 val CwtProperty.configType: CwtConfigType? get() = doGetConfigType(this)
 
@@ -161,6 +164,7 @@ private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 				parentName == "modifiers" -> CwtConfigType.Modifier
 				parentName == "scopes" -> CwtConfigType.Scope
 				parentName == "scope_groups" -> CwtConfigType.ScopeGroup
+				parentName == "tags" -> CwtConfigType.Tag
 				//from internal config
 				parentName == "locales" -> CwtConfigType.LocalisationLocale
 				parentName == "colors" -> CwtConfigType.LocalisationColor
@@ -231,7 +235,7 @@ private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: Psi
 			val name = map.get("name")?.toString() ?: descriptorFile.parent?.name ?: anonymousString //如果没有name属性，则使用根目录名
 			val version = map.get("version")?.toString()
 			val picture = map.get("picture")?.toString()
-			val tags = map.get("tags").castOrNull<List<Any?>>()?.mapTo(mutableSetOf()){ it.toString() }
+			val tags = map.get("tags").castOrNull<List<Any?>>()?.mapTo(mutableSetOf()) { it.toString() }
 			val supportedVersion = map.get("supported_version")?.toString()
 			val remoteFileId = map.get("remote_file_id")?.toString()
 			val path = map.get("path")?.toString()
@@ -935,7 +939,7 @@ private fun resolveLocalisationLink(linkWithoutPrefix: String, context: PsiEleme
 	}.getOrNull()
 }
 
-private fun resolveFilePathLink(linkWithoutPrefix: String, context: PsiElement): PsiFile?{
+private fun resolveFilePathLink(linkWithoutPrefix: String, context: PsiElement): PsiFile? {
 	return runCatching {
 		val filePath = linkWithoutPrefix
 		val project = context.project
@@ -1013,7 +1017,7 @@ fun StringBuilder.appendImgTag(url: String, local: Boolean = true): StringBuilde
 	return this
 }
 
-fun StringBuilder.appendImgTag(url: String, width:Int, height:Int, local: Boolean = true): StringBuilder {
+fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Boolean = true): StringBuilder {
 	append("<img src=\"")
 	if(local) append(url.toFileUrl()) else append(url)
 	//这里不能使用style="..."
@@ -1047,7 +1051,7 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Proj
 			if(rootUri != null) {
 				append(" ")
 				appendLink(rootUri, PlsDocBundle.message("name.core.localLinkLabel"))
-				if(remoteFileId != null){
+				if(remoteFileId != null) {
 					append(" | ")
 					appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
 					append(" | ")

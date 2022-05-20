@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections.internal
+package icu.windea.pls.script.inspections.definition.event
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
@@ -49,7 +49,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 				val eventId = eventIdPropertyValue.stringValue
 				if(isIncorrectEventId(eventId, namespace)) {
 					if(holder == null) holder = ProblemsHolder(manager, file, isOnTheFly)
-					holder.registerProblem(eventIdPropertyValue, PlsBundle.message("script.inspection.internal.incorrectEventId.description", eventId, namespace))
+					holder.registerProblem(eventIdPropertyValue, PlsBundle.message("script.inspection.event.incorrectEventId.description", eventId, namespace))
 				}
 			}
 		}

@@ -116,7 +116,10 @@ private block_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT |
 //see: common/scripted_effects/99_advanced_documentation.txt
 //see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
 
-//tag (see: Memory Management)
+//tag (see: Memory Management) 
+//resolved as string, and should:
+//in definition declarations (scripted_effect / scripted_trigger)
+//in block, before any scripted variables, (non-tag) strings and properties
 tag ::= TAG_TOKEN {
   methods=[getName setName]
 }
