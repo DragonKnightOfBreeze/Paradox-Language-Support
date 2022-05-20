@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi.impl
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
@@ -367,6 +368,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getName(element: ParadoxScriptTag): String {
 		return element.text
+	}
+	
+	@JvmStatic
+	fun setName(element: ParadoxScriptTag, name: String): ParadoxScriptVariable {
+		throw IncorrectOperationException()//不允许重命名
 	}
 	//endregion
 	

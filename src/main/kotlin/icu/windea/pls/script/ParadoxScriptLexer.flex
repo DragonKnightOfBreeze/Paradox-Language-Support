@@ -1,13 +1,12 @@
 package icu.windea.pls.script.psi;
 
-import com.intellij.openapi.project.*;import com.intellij.psi.tree.IElementType;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.config.cwt.*;
 import icu.windea.pls.core.*;
-import com.intellij.openapi.project;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import static icu.windea.pls.script.ParadoxScriptLexerExtensionsKt.*;
 
 %%
 
@@ -144,12 +143,7 @@ IS_VARIABLE={VARIABLE_NAME_ID}\s*=
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
-  {STRING_TOKEN} {
-    //NOTE 这里的字符串可能需要改为解析成标签
-    yybegin(WAITING_PROPERTY_END);
-	if(matchesTagName(this)) return TAG_TOKEN;
-    return STRING_TOKEN;
-  }
+  {STRING_TOKEN} { yybegin(WAITING_PROPERTY_END); return STRING_LIKE_TOKEN;}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
 }
 <WAITING_PROPERTY>{

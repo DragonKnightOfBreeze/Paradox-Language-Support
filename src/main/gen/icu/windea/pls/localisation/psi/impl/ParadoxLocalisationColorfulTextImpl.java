@@ -11,12 +11,13 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationColorReference;
 
-public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationColorfulText {
+public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationColorfulText {
 
   public ParadoxLocalisationColorfulTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
     visitor.visitColorfulText(this);
   }
@@ -43,17 +44,6 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationName
   @NotNull
   public ParadoxLocalisationColorfulText setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  public int getTextOffset() {
-    return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
   }
 
   @Override

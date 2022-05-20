@@ -2,14 +2,13 @@
 
 package icu.windea.pls.script.psi;
 
-import com.intellij.openapi.project.*;import com.intellij.psi.tree.IElementType;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.config.cwt.*;
 import icu.windea.pls.core.*;
-import com.intellij.openapi.project;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import static icu.windea.pls.script.ParadoxScriptLexerExtensionsKt.*;
 
 
 /**
@@ -745,10 +744,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 49: break;
           case 14: 
-            { //NOTE 这里的字符串可能需要改为解析成标签
-    yybegin(WAITING_PROPERTY_END);
-	if(matchesTagName(this)) return TAG_TOKEN;
-    return STRING_TOKEN;
+            { yybegin(WAITING_PROPERTY_END); return STRING_LIKE_TOKEN;
             } 
             // fall through
           case 50: break;

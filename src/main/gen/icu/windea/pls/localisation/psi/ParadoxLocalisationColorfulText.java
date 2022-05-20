@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationColorReference;
 
-public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText {
 
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
@@ -16,11 +16,6 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
 
   @NotNull
   ParadoxLocalisationColorfulText setName(@NotNull String name);
-
-  @Nullable
-  PsiElement getNameIdentifier();
-
-  int getTextOffset();
 
   @Nullable
   ParadoxLocalisationColorReference getReference();

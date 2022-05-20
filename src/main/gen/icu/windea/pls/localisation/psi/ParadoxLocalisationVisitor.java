@@ -10,7 +10,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitColorfulText(@NotNull ParadoxLocalisationColorfulText o) {
     visitRichText(o);
-    // visitNamedElement(o);
   }
 
   public void visitCommand(@NotNull ParadoxLocalisationCommand o) {
@@ -20,7 +19,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitCommandField(@NotNull ParadoxLocalisationCommandField o) {
     visitCommandIdentifier(o);
-    // visitNamedElement(o);
   }
 
   public void visitCommandIdentifier(@NotNull ParadoxLocalisationCommandIdentifier o) {
@@ -29,7 +27,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitCommandScope(@NotNull ParadoxLocalisationCommandScope o) {
     visitCommandIdentifier(o);
-    // visitNamedElement(o);
   }
 
   public void visitEscape(@NotNull ParadoxLocalisationEscape o) {
@@ -38,11 +35,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
-    // visitNamedElement(o);
   }
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
-    visitNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitProperty(@NotNull ParadoxLocalisationProperty o) {
@@ -75,7 +71,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitSequentialNumber(@NotNull ParadoxLocalisationSequentialNumber o) {
     visitRichText(o);
-    // visitNamedElement(o);
   }
 
   public void visitString(@NotNull ParadoxLocalisationString o) {

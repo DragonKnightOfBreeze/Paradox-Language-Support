@@ -53,11 +53,6 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   }
 
   @Override
-  public int getTextOffset() {
-    return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
-  }
-
-  @Override
   @Nullable
   public ParadoxLocalisationPropertyReferenceReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);

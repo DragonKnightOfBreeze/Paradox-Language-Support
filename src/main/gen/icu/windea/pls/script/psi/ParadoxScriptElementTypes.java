@@ -47,6 +47,7 @@ public interface ParadoxScriptElementTypes {
   IElementType QUOTED_PROPERTY_KEY_ID = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_PROPERTY_KEY_ID");
   IElementType QUOTED_STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_STRING_TOKEN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
+  IElementType STRING_LIKE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_LIKE_TOKEN");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType TAG_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("TAG_TOKEN");
   IElementType VARIABLE_NAME_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_NAME_ID");

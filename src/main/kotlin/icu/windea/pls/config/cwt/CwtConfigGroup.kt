@@ -44,7 +44,7 @@ class CwtConfigGroup(
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
 	//since: stellaris v3.4
-	val tagsTypeMap : Map<String, List<CwtTagConfig>>
+	val tagsTypeMap : Map<String, Set<CwtTagConfig>>
 	
 	init {
 		folders = mutableSetOf()
@@ -536,7 +536,7 @@ class CwtConfigGroup(
 	
 	//初始化基于解析的CWT配置的额外配置
 	
-	private fun initModifierCategoryIdMap(): MutableMap<String, CwtModifierCategoryConfig> {
+	private fun initModifierCategoryIdMap(): Map<String, CwtModifierCategoryConfig> {
 		val modifierCategoryIdMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 		for(modifierCategory in modifierCategories.values) {
 			val internalId = modifierCategory.internalId ?: continue
@@ -545,11 +545,11 @@ class CwtConfigGroup(
 		return modifierCategoryIdMap
 	}
 	
-	private fun initTagTypeMap(): MutableMap<String, MutableList<CwtTagConfig>> {
-		val tagTypeMap: MutableMap<String, MutableList<CwtTagConfig>> = mutableMapOf()
+	private fun initTagTypeMap(): Map<String, Set<CwtTagConfig>> {
+		val tagTypeMap: MutableMap<String, MutableSet<CwtTagConfig>> = mutableMapOf()
 		for(tagConfig in tags.values) {
 			for(supportedType in tagConfig.supportedTypes) {
-				tagTypeMap.getOrPut(supportedType) { mutableListOf() }.add(tagConfig)
+				tagTypeMap.getOrPut(supportedType) { mutableSetOf() }.add(tagConfig)
 			}
 		}
 		return tagTypeMap

@@ -13,12 +13,13 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationCommandFieldReference;
 import javax.swing.Icon;
 
-public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationCommandField {
+public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationCommandIdentifierImpl implements ParadoxLocalisationCommandField {
 
   public ParadoxLocalisationCommandFieldImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
     visitor.visitCommandField(this);
   }
@@ -51,12 +52,6 @@ public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationName
   @NotNull
   public ParadoxLocalisationCommandField setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override

@@ -8,12 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationLocaleReference;
 import javax.swing.Icon;
 
-public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationLocale {
+public class ParadoxLocalisationLocaleImpl extends ASTWrapperPsiElement implements ParadoxLocalisationLocale {
 
   public ParadoxLocalisationLocaleImpl(@NotNull ASTNode node) {
     super(node);
@@ -45,12 +46,6 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationNamedEleme
   @NotNull
   public ParadoxLocalisationLocale setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override

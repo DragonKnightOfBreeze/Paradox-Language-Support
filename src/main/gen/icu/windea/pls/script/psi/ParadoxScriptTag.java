@@ -10,4 +10,7 @@ public interface ParadoxScriptTag extends PsiElement {
   @NotNull
   String getName();
 
+  @NotNull
+  ParadoxScriptVariable setName(@NotNull String name);
+
 }

@@ -7,7 +7,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptVariable>(
-	"PARADOX_SCRIPT_VARIABLE",
+	"VARIABLE",
 	ParadoxScriptLanguage
 ) {
 	override fun getExternalId(): String {

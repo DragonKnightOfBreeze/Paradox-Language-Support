@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
 
 class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocalisationStub, ParadoxLocalisationProperty>(
-	"PARADOX_LOCALISATION_PROPERTY",
+	"PROPERTY",
 	ParadoxLocalisationLanguage
 ) {
 	override fun getExternalId(): String {

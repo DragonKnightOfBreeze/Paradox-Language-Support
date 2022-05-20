@@ -33,7 +33,9 @@ import java.util.*
 val cachedParadoxDescriptorInfoKey = Key<CachedValue<ParadoxDescriptorInfo>>("cachedParadoxDescriptorInfo")
 val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
+val isDefinitionKey = Key<Boolean>("isDefinition")
 val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
+val tagConfigsKey = Key<Set<CwtTagConfig>>("tagConfigs")
 val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
 //endregion
 
@@ -252,6 +254,7 @@ val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doG
 private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
 		val value = resolveDefinitionInfo(element)
+		afterResolveDefinitionInfo(element, value)
 		CachedValueProvider.Result.create(value, element)
 	}
 }
@@ -266,6 +269,12 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 	return configGroup.resolveDefinitionInfo(element, rootKey, path, propertyPath)
+}
+
+private fun afterResolveDefinitionInfo(element: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo?){
+	if(definitionInfo == null) return
+	val tagConfigs = definitionInfo.configGroup.tagsTypeMap[definitionInfo.type]
+	if(tagConfigs != null) element.putUserData(tagConfigsKey, tagConfigs)
 }
 
 val PsiElement.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)

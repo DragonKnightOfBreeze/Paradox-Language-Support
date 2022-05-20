@@ -1,6 +1,8 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
+import com.intellij.psi.tree.ILazyParseableElementTypeBase
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -13,13 +15,17 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
+val ParadoxScriptTag.tagToken: PsiElement get() = findRequiredChild(TAG_TOKEN)
+
+private val PsiElement.isLazyParseable get() = elementType is ILazyParseableElementTypeBase
+
 /**
  * 如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。
  */
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
 	if(propertyName.isEmpty()) return this.castOrNull()
 	return properties.find { it.name.equals(propertyName, ignoreCase) }
-}
+}   
 
 /**
  * 如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性组成的单例列表。

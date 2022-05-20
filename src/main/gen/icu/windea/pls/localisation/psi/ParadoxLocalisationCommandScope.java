@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationCommandScopeReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationCommandIdentifier, ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationCommandIdentifier {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -18,9 +18,6 @@ public interface ParadoxLocalisationCommandScope extends ParadoxLocalisationComm
 
   @NotNull
   ParadoxLocalisationCommandScope setName(@NotNull String name);
-
-  @NotNull
-  PsiElement getNameIdentifier();
 
   @NotNull
   ParadoxLocalisationCommandScopeReference getReference();

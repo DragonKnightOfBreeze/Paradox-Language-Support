@@ -1,22 +1,13 @@
 package icu.windea.pls.localisation.psi.impl
 
-import com.intellij.navigation.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.suggested.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createCommandField
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createCommandScope
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createIcon
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createPropertyKey
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory.createPropertyReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.reference.*
-import icu.windea.pls.localisation.structureView.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -51,14 +42,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationLocale, name: String): ParadoxLocalisationLocale {
-		//element.localeId.replace(createLocale(element.project, name).localeId)
-		//return element
-		throw IncorrectOperationException() //不允许重命名
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationLocale): PsiElement {
-		return element.localeId
+		val newNameElement = ParadoxLocalisationElementFactory.createLocale(element.project, name).localeId
+		element.localeId.replace(newNameElement)
+		return element
 	}
 	
 	@JvmStatic
@@ -83,7 +69,8 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationProperty, name: String): ParadoxLocalisationProperty {
-		element.propertyKey.replace(createPropertyKey(element.project, name))
+		val newNameElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, name)
+		element.propertyKey.replace(newNameElement)
 		return element
 	}
 	
@@ -112,13 +99,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationPropertyReference, name: String): ParadoxLocalisationPropertyReference {
-		element.propertyReferenceId?.replace(createPropertyReference(element.project, name).propertyReferenceId!!)
+		val newNameElement = ParadoxLocalisationElementFactory.createPropertyReference(element.project, name).propertyReferenceId!!
+		element.propertyReferenceId?.replace(newNameElement)
 		return element
-	}
-	
-	@JvmStatic
-	fun getTextOffset(element: ParadoxLocalisationPropertyReference): Int {
-		return element.startOffset + 1
 	}
 	
 	@JvmStatic
@@ -141,18 +124,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationIcon, name: String): ParadoxLocalisationIcon {
-		element.iconId?.replace(createIcon(element.project, name).iconId!!)
+		val newNameElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).iconId!!
+		element.iconId?.replace(newNameElement)
 		return element
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationIcon): PsiElement? {
-		return element.iconId
-	}
-	
-	@JvmStatic
-	fun getTextOffset(element: ParadoxLocalisationIcon): Int {
-		return element.startOffset + 1
 	}
 	
 	@JvmStatic
@@ -175,19 +149,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationSequentialNumber, name: String): ParadoxLocalisationSequentialNumber {
-		//element.sequentialNumberId?.replace(createSequentialNumber(element.project, name).sequentialNumberId!!)
-		//return element
-		throw IncorrectOperationException() //不允许重命名
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationSequentialNumber): PsiElement? {
-		return element.sequentialNumberId
-	}
-	
-	@JvmStatic
-	fun getTextOffset(element: ParadoxLocalisationSequentialNumber): Int {
-		return element.startOffset + 1
+		val newNameElement = ParadoxLocalisationElementFactory.createSequentialNumber(element.project, name).sequentialNumberId!!
+		element.sequentialNumberId?.replace(newNameElement)
+		return element
 	}
 	
 	@JvmStatic
@@ -205,19 +169,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
-		//element.colorId?.replace(createColorfulText(element.project, name).colorId!!)
-		//return element
-		throw IncorrectOperationException() //不允许重命名
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationColorfulText): PsiElement? {
-		return element.colorId
-	}
-	
-	@JvmStatic
-	fun getTextOffset(element: ParadoxLocalisationColorfulText): Int {
-		return element.startOffset + 1
+		val newNameElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).colorId!!
+		element.colorId?.replace(newNameElement)
+		return element
 	}
 	
 	@JvmStatic
@@ -264,13 +218,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandScope, name: String): ParadoxLocalisationCommandScope {
-		element.commandScopeId.replace(createCommandScope(element.project, name).commandScopeId)
+		val newNameElement = ParadoxLocalisationElementFactory.createCommandScope(element.project, name).commandScopeId
+		element.commandScopeId.replace(newNameElement)
 		return element
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationCommandScope): PsiElement {
-		return element.commandScopeId
 	}
 	
 	@JvmStatic
@@ -293,13 +243,9 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationCommandField, name: String): ParadoxLocalisationCommandField {
-		element.commandFieldId?.replace(createCommandField(element.project, name).commandFieldId!!)
+		val newNameElement = ParadoxLocalisationElementFactory.createCommandField(element.project, name).commandFieldId!!
+		element.commandFieldId?.replace(newNameElement)
 		return element
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxLocalisationCommandField): PsiElement? {
-		return element.commandFieldId
 	}
 	
 	@JvmStatic

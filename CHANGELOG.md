@@ -12,6 +12,7 @@
   * [ ] 兼容`stellaris v3.4`开始新增的`tag`语法
     * 仅限stellaris v3.4+，基于扩展的cwt规则
     * 支持的标签：`optimize_memory`（仅限在`scripted_trigger`或`scripted_effect`定义中使用，仅限首行，用于避免打印错误日志）
+* [ ] 添加检查：不期望的脚本语法
 * [ ] 文件路径分隔符兼容"/" "\" "\\"混用
 * [ ] 完善对CWT配置文件的支持，完善相关功能
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）

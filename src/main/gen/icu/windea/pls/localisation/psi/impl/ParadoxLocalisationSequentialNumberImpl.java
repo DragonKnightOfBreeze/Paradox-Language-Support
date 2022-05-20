@@ -13,12 +13,13 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationSequentialNumberReference;
 import javax.swing.Icon;
 
-public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisationNamedElementImpl implements ParadoxLocalisationSequentialNumber {
+public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationSequentialNumber {
 
   public ParadoxLocalisationSequentialNumberImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
     visitor.visitSequentialNumber(this);
   }
@@ -45,17 +46,6 @@ public class ParadoxLocalisationSequentialNumberImpl extends ParadoxLocalisation
   @NotNull
   public ParadoxLocalisationSequentialNumber setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  public int getTextOffset() {
-    return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
   }
 
   @Override

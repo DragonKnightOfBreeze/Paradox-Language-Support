@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationSequentialNumberReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisationRichText {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -18,11 +18,6 @@ public interface ParadoxLocalisationSequentialNumber extends ParadoxLocalisation
 
   @NotNull
   ParadoxLocalisationSequentialNumber setName(@NotNull String name);
-
-  @Nullable
-  PsiElement getNameIdentifier();
-
-  int getTextOffset();
 
   @Nullable
   ParadoxLocalisationSequentialNumberReference getReference();

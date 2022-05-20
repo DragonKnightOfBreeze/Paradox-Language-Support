@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.impl.*
 //要求：必须能够获取paradoxPath和paradoxPropertyPath！即使psiFile在内存中也要缓存信息
 
 object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
-	"PARADOX_SCRIPT_PROPERTY",
+	"PROPERTY",
 	ParadoxScriptLanguage
 ) {
 	override fun getExternalId(): String {

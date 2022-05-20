@@ -20,8 +20,6 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
   @NotNull
   ParadoxLocalisationPropertyReference setName(@NotNull String name);
 
-  int getTextOffset();
-
   @Nullable
   ParadoxLocalisationPropertyReferenceReference getReference();
 

@@ -33,4 +33,10 @@ public class ParadoxScriptTagImpl extends ASTWrapperPsiElement implements Parado
     return ParadoxScriptPsiImplUtil.getName(this);
   }
 
+  @Override
+  @NotNull
+  public ParadoxScriptVariable setName(@NotNull String name) {
+    return ParadoxScriptPsiImplUtil.setName(this, name);
+  }
+
 }

@@ -6,6 +6,7 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 
+@Deprecated("")
 class ParadoxScriptLazyParseableElementType(
 	debugName: String
 ):ILazyParseableElementType(debugName, ParadoxScriptLanguage){

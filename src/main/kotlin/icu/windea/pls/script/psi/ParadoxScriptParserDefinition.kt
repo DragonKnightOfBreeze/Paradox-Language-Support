@@ -5,9 +5,9 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
 	companion object {
@@ -40,7 +40,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		//		return ParadoxScriptTagImpl(finalNode)
 		//	}
 		//}
-		//if(node.elementType == ParadoxScriptStringLikeElementType){
+		//if(node.elementType == ParadoxScriptStringLikeTokenType){
 		//	node as CompositeElement
 		//	val childNode = node.firstChildNode as TreeElement
 		//	val childType = childNode.elementType
@@ -61,7 +61,6 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		//		else -> throw InternalError()
 		//	}
 		//}
-		return Factory.createElement(node)
 		//return when(node.elementType) {
 		//	STRING -> {
 		//		////TODO
@@ -78,6 +77,16 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		//	}
 		//	else -> Factory.createElement(node)
 		//}
+		if(node.elementType == ParadoxScriptStringLikeTokenType){
+			val childNode = node.firstChildNode
+			val childType = childNode.elementType
+			return when(childType){
+				STRING_TOKEN -> ParadoxScriptStringImpl(node)
+				TAG_TOKEN -> ParadoxScriptTagImpl(node)
+				else -> throw InternalError()
+			}
+		}
+		return Factory.createElement(node)
 	}
 	
 	override fun createParser(project: Project?) = ParadoxScriptParser()

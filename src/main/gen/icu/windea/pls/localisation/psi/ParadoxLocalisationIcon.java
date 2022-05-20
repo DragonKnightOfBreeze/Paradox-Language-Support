@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.localisation.reference.ParadoxLocalisationIconReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, ParadoxLocalisationNamedElement {
+public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
 
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
@@ -21,11 +21,6 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, Pa
 
   @NotNull
   ParadoxLocalisationIcon setName(@NotNull String name);
-
-  @Nullable
-  PsiElement getNameIdentifier();
-
-  int getTextOffset();
 
   @Nullable
   ParadoxLocalisationIconReference getReference();
