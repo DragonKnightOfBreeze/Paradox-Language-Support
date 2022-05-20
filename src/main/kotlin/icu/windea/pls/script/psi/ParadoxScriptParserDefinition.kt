@@ -77,15 +77,15 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		//	}
 		//	else -> Factory.createElement(node)
 		//}
-		if(node.elementType == ParadoxScriptStringLikeTokenType){
-			val childNode = node.firstChildNode
-			val childType = childNode.elementType
-			return when(childType){
-				STRING_TOKEN -> ParadoxScriptStringImpl(node)
-				TAG_TOKEN -> ParadoxScriptTagImpl(node)
-				else -> throw InternalError()
-			}
-		}
+		//if(node.elementType == ParadoxScriptStringLikeTokenType){
+		//	val childNode = node.firstChildNode
+		//	val childType = childNode.elementType
+		//	return when(childType){
+		//		STRING_TOKEN -> ParadoxScriptStringImpl(node)
+		//		TAG_TOKEN -> ParadoxScriptTagImpl(node)
+		//		else -> throw InternalError()
+		//	}
+		//}
 		return Factory.createElement(node)
 	}
 	

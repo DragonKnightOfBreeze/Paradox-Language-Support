@@ -114,6 +114,7 @@ private block_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT |
 
 //advanced script syntax
 //see: common/scripted_effects/99_advanced_documentation.txt
+//see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
 
 //tag (see: Memory Management)
 tag ::= TAG_TOKEN {

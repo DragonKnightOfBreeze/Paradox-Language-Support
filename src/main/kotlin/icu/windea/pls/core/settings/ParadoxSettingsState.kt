@@ -36,9 +36,11 @@ data class ParadoxSettingsState(
 ) : PersistentStateComponent<ParadoxSettingsState> {
 	var finalScriptIgnoredFileNames = scriptIgnoredFileNames.toCommaDelimitedStringSet(ignoreCase = true)
 	
-	val locales = buildList {
-		add("")
-		addAll(getInternalConfig().localeMap.keys)
+	val locales by lazy {
+		buildList {
+			add("")
+			addAll(getInternalConfig().localeMap.keys)
+		}
 	}
 	
 	override fun getState() = this

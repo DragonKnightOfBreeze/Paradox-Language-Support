@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
+@Deprecated("")
 object ParadoxScriptStringLikeTokenType : ILazyParseableElementType(
 	"STRING_LIKE_TOKEN",
 	ParadoxScriptLanguage
