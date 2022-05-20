@@ -143,18 +143,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
-		//文档注释，以###开始
-		val documentation = getDocumentation(element)
-		if(documentation != null) {
-			content {
-				append(documentation)
-			}
-		}
-	}
-	
-	private fun getDocumentation(element: PsiElement): String? {
+		//渲染文档注释（作为HTML）和版本号信息
 		var current: PsiElement = element
 		var lines: LinkedList<String>? = null
+		var since: String? = null
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
@@ -166,11 +158,27 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 						lines.addFirst(docText)
 					}
 				}
+				current is CwtOptionComment -> {
+					val option = current.option
+					if(option != null && option.name == "since"){
+						since = option.optionValue
+					}
+				}
 				current is PsiWhiteSpace || current is PsiComment -> continue
 				else -> break
 			}
 		}
-		return lines?.joinToString("<br>")
+		val documentation = lines?.joinToString("<br>")
+		if(documentation != null) {
+			content {
+				append(documentation)
+			}
+		}
+		if(since != null){
+			sections {
+				section(PlsDocBundle.message("title.since"), since)
+			}
+		}
 	}
 	
 	private fun getDefinitionProperty(originalElement: PsiElement?): ParadoxScriptProperty? {
