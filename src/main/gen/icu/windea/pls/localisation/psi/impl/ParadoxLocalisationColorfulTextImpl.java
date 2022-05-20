@@ -35,7 +35,7 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationRich
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }

@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 
 private val attributesDescriptors = arrayOf(
-	AttributesDescriptor(PlsBundle.message("localisation.displayName.separator"), ParadoxLocalisationAttributesKeys.SEPARATOR_KEY),
+	AttributesDescriptor(PlsBundle.message("localisation.displayName.operator"), ParadoxLocalisationAttributesKeys.OPERATOR_KEY),
 	AttributesDescriptor(PlsBundle.message("localisation.displayName.number"), ParadoxLocalisationAttributesKeys.NUMBER_KEY),
 	AttributesDescriptor(PlsBundle.message("localisation.displayName.locale"), ParadoxLocalisationAttributesKeys.LOCALE_KEY),
 	AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY),

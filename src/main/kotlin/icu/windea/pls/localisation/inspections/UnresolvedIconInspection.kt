@@ -28,7 +28,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 		private val holder: ProblemsHolder
 	) : ParadoxLocalisationVisitor() {
 		override fun visitIcon(element: ParadoxLocalisationIcon) {
-			val iconName = element.name
+			val iconName = element.name ?: return
 			if(inspection.finalIgnoredIConNameRegex.matches(iconName)) return //忽略
 			val resolved = element.reference?.resolve()
 			if(resolved != null) return

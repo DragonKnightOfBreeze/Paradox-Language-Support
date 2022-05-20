@@ -52,8 +52,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getIconInfo(element: ParadoxLocalisationIcon): String {
-		val name = element.name
+	private fun getIconInfo(element: ParadoxLocalisationIcon): String? {
+		val name = element.name ?: return null
 		return buildString {
 			buildIconDefinition(name)
 		}
@@ -73,8 +73,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getColorConfig(element: ParadoxLocalisationColorfulText): String {
-		val name = element.name
+	private fun getColorConfig(element: ParadoxLocalisationColorfulText): String? {
+		val name = element.name ?: return null
 		return buildString {
 			buildColorDefinition(name)
 		}
@@ -117,8 +117,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getIconDoc(element: ParadoxLocalisationIcon): String {
-		val name = element.name
+	private fun getIconDoc(element: ParadoxLocalisationIcon): String? {
+		val name = element.name ?: return null
 		return buildString {
 			buildIconDefinition(name)
 		}

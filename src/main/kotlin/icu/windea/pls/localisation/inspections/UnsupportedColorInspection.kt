@@ -15,10 +15,11 @@ class UnsupportedColorInspection : LocalInspectionTool() {
 	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
 		override fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
+			val colorName = element.name ?: return
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) return
 			val location = element.colorId ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedColor.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedColor.description", colorName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
 }

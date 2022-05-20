@@ -40,11 +40,10 @@ variable ::= variable_name variable_separator variable_value {
 }
 
 variable_name ::= VARIABLE_NAME_ID{
-  methods=[getValue setValue]
+  methods=[getName setName]
 }
 private variable_separator ::= EQUAL_SIGN
 variable_value ::= boolean | number | string
-//当前变量解析失败时，需要跳过继续解析下一行
 private variable_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 property ::= property_key property_separator property_value {

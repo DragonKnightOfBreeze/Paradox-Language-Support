@@ -17,7 +17,9 @@ class ParadoxLocalisationPropertyReferenceReference(
 		return element.setName(newElementName)
 	}
 	
-	override fun resolve(): PsiElement? {
+	//TODO may be resolved to localisation / variable / system statistics in GUI elements 
+	
+	override fun resolve(): ParadoxLocalisationProperty? {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return null
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return null
 		val locale = file.localeConfig

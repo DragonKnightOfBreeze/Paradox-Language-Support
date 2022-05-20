@@ -36,7 +36,7 @@ locale ::= LOCALE_ID COLON {
 }
 private locale_recover ::= !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
 
-property ::= property_key COLON property_key_no? property_value {
+property ::= property_key COLON property_number? property_value {
   pin=1
   recoverWhile=property_recover 
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes.getPropertyType"
@@ -48,12 +48,11 @@ property ::= property_key COLON property_key_no? property_value {
 //https://stellaris.paradoxwikis.com/Localisation_modding
 //The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking
 //https://twitter.com/Martin_Anward/status/1039175213773144066
-private property_key_no ::= NUMBER
+private property_number ::= PROPERTY_NUMBER
 property_key ::= PROPERTY_KEY_ID
 property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
   pin=1
 }
-//当前本地化属性解析失败时，需要跳过继续解析下一行
 private property_recover ::= !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
 
 private property_value_item ::= (rich_text | COLORFUL_TEXT_END) * //允许多余的彩色文本结束标记（"§!"）
@@ -67,28 +66,35 @@ escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET{
   extends=rich_text
 }
 
-property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PARAMETER_SEPARATOR [property_reference_parameter]] PROPERTY_REFERENCE_END {
+//property reference
+//see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
+//may be resolved to localisation / variable / system statistics in GUI elements 
+property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE [property_reference_parameter]] PROPERTY_REFERENCE_END {
   pin=1
   extends=rich_text
   methods=[getName setName getReference]
 }
 private property_reference_name ::= command | PROPERTY_REFERENCE_ID
-property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN
+property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
 
-icon ::= ICON_START icon_name [PARAMETER_SEPARATOR [icon_param]] ICON_END {
+//icon
+//see: https://stellaris.paradoxwikis.com/Localisation_modding#.C2.A3_Codes
+icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
   pin=1
   extends=rich_text
-  methods=[getIcon getName setName getReference]
+  methods=[getIcon getName setName getFrame getReference]
 }
-private icon_name ::= command | property_reference | ICON_ID
-private icon_param ::= ICON_PARAMETER | property_reference
+private icon_name ::= command | property_reference | ICON_ID //can be command / property reference
+private icon_frame ::= ICON_FRAME
 
+//command
+//see: https://stellaris.paradoxwikis.com/Localisation_modding#Bracket_Commands
 command ::= COMMAND_START command_expression? COMMAND_END{
   pin=1
   extends=rich_text
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
 }
-private command_expression ::= (command_scope COMMAND_SEPARATOR)* command_field {
+private command_expression ::= (command_scope DOT)* command_field {
   pin=1
 }
 //noinspection BnfUnusedRule
@@ -99,11 +105,13 @@ command_scope ::= COMMAND_SCOPE_ID{
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier]
 }
-command_field ::= property_reference | COMMAND_FIELD_ID{
+command_field ::= COMMAND_FIELD_ID{ //TODO support scope variable value ($VAL$)
   extends=command_identifier
   methods=[getIcon getName setName getReference getPrevIdentifier getNextIdentifier]
 }
 
+//colorful_text
+//see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
 colorful_text ::= COLORFUL_TEXT_START COLOR_ID colorful_text_item [COLORFUL_TEXT_END]{
   pin=1
   extends=rich_text

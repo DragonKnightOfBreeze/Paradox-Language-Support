@@ -27,10 +27,10 @@ class ParadoxLocalisationBlock(
 		}
 		
 		private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-			//数字和属性值之间有一个空格，冒号和属性值之间也有
+			//属性数字和属性值之间有一个空格，冒号和属性值之间也有
 			return SpacingBuilder(settings, ParadoxLocalisationLanguage)
 				.between(COLON, PROPERTY_VALUE).spaces(1)
-				.between(NUMBER, PROPERTY_VALUE).spaces(1)
+				.between(PROPERTY_NUMBER, PROPERTY_VALUE).spaces(1)
 		}
 	}
 	

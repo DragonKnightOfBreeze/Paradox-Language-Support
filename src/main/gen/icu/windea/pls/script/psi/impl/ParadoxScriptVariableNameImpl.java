@@ -29,14 +29,14 @@ public class ParadoxScriptVariableNameImpl extends ASTWrapperPsiElement implemen
 
   @Override
   @NotNull
-  public String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  public String getName() {
+    return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
   @NotNull
-  public ParadoxScriptVariableName setValue(@NotNull String value) {
-    return ParadoxScriptPsiImplUtil.setValue(this, value);
+  public ParadoxScriptVariableName setName(@NotNull String value) {
+    return ParadoxScriptPsiImplUtil.setName(this, value);
   }
 
 }

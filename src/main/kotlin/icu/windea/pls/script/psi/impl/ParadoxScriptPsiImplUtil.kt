@@ -1,17 +1,12 @@
 package icu.windea.pls.script.psi.impl
 
-import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.IncorrectOperationException
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createValue
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createVariableName
 import icu.windea.pls.script.reference.*
-import icu.windea.pls.script.structureView.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 import javax.swing.*
@@ -36,7 +31,9 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptVariable, name: String): ParadoxScriptVariable {
-		element.variableName.replace(createVariableName(element.project, name))
+		val nameElement = element.variableName
+		val newNameElement = ParadoxScriptElementFactory.createVariableName(element.project, name)
+		nameElement.replace(newNameElement)
 		return element
 	}
 	
@@ -63,13 +60,14 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptVariableName
 	@JvmStatic
-	fun getValue(element: ParadoxScriptVariableName): String {
+	fun getName(element: ParadoxScriptVariableName): String {
 		return element.text
 	}
 	
 	@JvmStatic
-	fun setValue(element: ParadoxScriptVariableName, value: String): ParadoxScriptVariableName {
-		element.replace(createVariableName(element.project, value))
+	fun setName(element: ParadoxScriptVariableName, value: String): ParadoxScriptVariableName {
+		val newElement = ParadoxScriptElementFactory.createVariableName(element.project, value)
+		element.replace(newElement)
 		return element
 	}
 	//endregion
@@ -90,7 +88,9 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
-		element.propertyKey.replace(createPropertyKey(element.project, name))
+		val nameElement = element.propertyKey
+		val newNameElement = ParadoxScriptElementFactory.createPropertyKey(element.project, name)
+		nameElement.replace(newNameElement)
 		return element
 	}
 	
@@ -143,7 +143,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getOriginalPathName(element: ParadoxScriptProperty):String?{
+	fun getOriginalPathName(element: ParadoxScriptProperty): String {
 		return element.propertyKey.value
 	}
 	//endregion
@@ -156,7 +156,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-		element.replace(createPropertyKey(element.project, value))
+		val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, value)
+		element.replace(newElement)
 		return element
 	}
 	
@@ -175,7 +176,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptVariableReference, name: String): ParadoxScriptVariableReference {
-		element.replace(createValue(element.project, name))
+		val newElement = ParadoxScriptElementFactory.createValue(element.project, name)
+		element.replace(newElement)
 		return element
 	}
 	
@@ -267,7 +269,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setValue(element: ParadoxScriptString, name: String): ParadoxScriptString {
-		element.replace(createValue(element.project, name.quote()))
+		val newElement = ParadoxScriptElementFactory.createValue(element.project, name.quote())
+		element.replace(newElement)
 		return element
 	}
 	
@@ -340,7 +343,7 @@ object ParadoxScriptPsiImplUtil {
 			//	"hsl" -> "hsl { ${color.toColorHsl().run { "$H $S $L" }} }"
 			//	else -> "rgba { ${color.run { "$red $green $blue $alpha" }} }"
 			//}
-			val newColor = createValue(element.project, newText) as? ParadoxScriptColor
+			val newColor = ParadoxScriptElementFactory.createValue(element.project, newText) as? ParadoxScriptColor
 			if(newColor != null) element.replace(newColor)
 		}
 	}

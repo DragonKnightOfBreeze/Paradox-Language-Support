@@ -5,11 +5,10 @@ import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.*
-import java.awt.*
 
 @Suppress("DEPRECATION")
 object ParadoxLocalisationAttributesKeys {
-	@JvmField val SEPARATOR_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.separator"), OPERATION_SIGN)
+	@JvmField val OPERATOR_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.operator"), OPERATION_SIGN)
 	@JvmField val NUMBER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.number"), NUMBER)
 	@JvmField val LOCALE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.locale"), KEYWORD)
 	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.propertyKey"), KEYWORD)

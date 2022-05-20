@@ -31,12 +31,6 @@ public class ParadoxLocalisationCommandFieldImpl extends ParadoxLocalisationComm
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationPropertyReference getPropertyReference() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyReference.class);
-  }
-
-  @Override
   @NotNull
   public Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);

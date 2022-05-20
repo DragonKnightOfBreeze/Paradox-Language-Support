@@ -71,9 +71,10 @@ object ParadoxLocalisationTextRenderer {
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
 		val resolved = element.reference?.resolve() ?: return
+		val iconFrame = element.frame
 		val iconUrl = when {
-			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, defaultToUnknown = true)
-			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, defaultToUnknown = true)
+			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, iconFrame, defaultToUnknown = true)
+			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
 			else -> return
 		}
 		if(iconUrl.isNotEmpty()) {
