@@ -8,8 +8,7 @@ import icu.windea.pls.*
  */
 enum class ParadoxValueType(
 	override val id: String,
-	override val text: String,
-	val advanceType: Boolean = false
+	override val text: String
 ) : IdAware, TextAware {
 	UnknownType("unknown", "(unknown)"),
 	BooleanType("boolean", "boolean"),
@@ -18,7 +17,8 @@ enum class ParadoxValueType(
 	StringType("string", "string"),
 	ColorType("color", "color"),
 	BlockType("block", "block"),
-	CodeType("code", "code", true);
+	
+	CodeType("code", "code");
 	//TODO 补充高级类型
 	
 	override fun toString(): String {

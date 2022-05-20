@@ -30,7 +30,7 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 	
 	override fun createParser(project: Project?) = ParadoxLocalisationParser()
 	
-	override fun createLexer(project: Project?) = ParadoxLocalisationLexerAdapter()
+	override fun createLexer(project: Project?) = ParadoxLocalisationLexerAdapter(project)
 	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
 		return when {

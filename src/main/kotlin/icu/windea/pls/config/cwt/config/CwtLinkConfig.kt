@@ -21,7 +21,7 @@ data class CwtLinkConfig(
 	val type:String? = null,
 	val dataSource: CwtValueExpression? = null,
 	val prefix:String? = null,
-	val inputScopes:List<String>,
+	val inputScopes:Set<String>,
 	val outputScope:String,
 ): CwtConfig<CwtProperty>
 

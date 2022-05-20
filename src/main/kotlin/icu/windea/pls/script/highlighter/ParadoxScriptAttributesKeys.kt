@@ -16,6 +16,7 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val COLOR_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.color"), FUNCTION_DECLARATION)
 	@JvmField val NUMBER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.number"), NUMBER)
 	@JvmField val STRING_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.string"), STRING)
+	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 	@JvmField val CODE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.code"), IDENTIFIER)
 	@JvmField val COMMENT_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.comment"), LINE_COMMENT)
 	@JvmField val VALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.validEscape"), VALID_STRING_ESCAPE)

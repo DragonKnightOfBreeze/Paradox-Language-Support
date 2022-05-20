@@ -18,7 +18,7 @@ class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
 			STRING_TOKEN -> TEXT_TOKENIZER
 			COMMENT -> TEXT_TOKENIZER
 			END_OF_LINE_COMMENT -> TEXT_TOKENIZER
-			else -> EMPTY_TOKENIZER
+			else -> super.getTokenizer(element)
 		}
 	}
 }

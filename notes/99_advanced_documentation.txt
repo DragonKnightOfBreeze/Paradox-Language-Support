@@ -1,0 +1,116 @@
+
+# There are a few advanced things you can do with scripted effects and triggers (everything in this file
+# applies to both)
+
+# First, a note: if you want to use loc commands e.g. log = [This.GetName] in a scripted effect or trigger,
+# you have to write it \\[This.GetName] or it will bug out (at the latest the second time you use one in
+# the effect).
+
+########################################
+## Scripted Effect/Trigger Parameters ##
+########################################
+
+# Normal usage is to do "<scripted_effect/trigger> = yes", but you can also feed parameters into them
+# by calling them in the following way:
+#	<scripted_effect> = {
+#		PARAM = my_parameter
+#	}
+# This lets you make a multipurpose scripted effect/trigger that varies depending on the parameters.
+
+# The entry in common/scripted_effects would then read e.g. as follows:
+# <scripted_effect> = {
+#	some_effect_or_other = {
+#		something = $PARAM$		#You can also set a default value here: $PARAM|7$ means the value of 7 is given
+#								#if no other value is specified (i.e. if you simply call "some_effect_or_other = yes")
+#	}
+# }
+# Concatenation also works: "$PARAM$_flag" is an acceptable entry in the above example. In fact, there are
+# few if any limitations on how you can use $PARAM$ (some_effect_or_other = { $PARAM1$ = $PARAM2$ } would
+# work, though it may not be sensible to write script like that...)
+
+# You can also use these parameters as booleans:
+#	<scripted_effect> = {
+#		PARAM = yes/no
+#	}
+# =>
+# <scripted_effect> = {
+#	[[ PARAM ] #executes enclosed effects if PARAM is present and not set to no ("PARAM = anything_else" defaults to "yes")
+#		some_effect_or_other = yes
+#	]
+#	[[ !PARAM ] #executes enclosed effects if PARAM = no or PARAM is not set (e.g. you call it via <scripted effect> = yes)
+#		some_effect_or_other = yes
+#	]
+# }
+
+# An example of everything put together:
+
+# In common/scripted_effects:
+# example_effect = {
+#	# To use, set ENERGY to desired energy reward. Otherwise, 100 minerals are granted
+#	[[ ENERGY ]
+#		add_resource = {
+#			energy = $ENERGY$
+#		}
+#	]
+#	[[ !ENERGY ]
+#		add_resource = {
+#			minerals = 100
+#		}
+#	]
+# }
+
+# When called in script:
+#	example_effect = yes				#adds 100 minerals
+#	example_effect = { ENERGY = 150 }	#adds 150 energy
+
+##########################
+##	Memory Management	##
+##########################
+
+# It was reported that it was possible to freeze the game by running out of memory if you did excessively
+# complicated things in scripted effects and triggers. (And I mean excessive - 1 million effects in one
+# scripted effect, for instance). So an optimization was applied by which a scripted effect or trigger
+# template would only be saved to memory once, no matter how many times it was used ingame.
+
+# This messed up error logging (specifically, it was impossible to get a precise file location), so it
+# has been disabled by default. The effect in Vanilla is quite small. But if you want to do crazy things
+# with scripted effects or triggers, PLEASE: add the tag "optimize_memory" to it.
+
+# Example:
+# my_effect = {
+# 	optimize_memory
+# 	my_other_effect = yes
+# }
+
+######################
+##	Inline Maths	##
+######################
+
+# You can run certain mathematical equations in script with the inline maths system by using the format
+# @[ <equation ]. In scripted effects/triggers, it is necessary to add an "\", i.e. @\[ <equation ]
+
+# An example:
+# add_superpower_mana = @\[ 1 + 1] #adds 2 superpower mana
+
+# Allowed operators are +, -, *, /, %.
+# You can also do ( <argument> ) and | <argument> | (latter returns distance from 0)
+# All function according to standard mathematical rules regarding e.g. priority of operators ( * before + ...)
+
+# You can also feed in variables defined in common/scripted_variables. To do so, refer to them by name
+# without the "@":
+# add_superpower_mana = @\[ 1 + tier1materialmin ] #at time of writing, adds 101 superpower mana, as @tier1materialmin = 100
+
+# Finally, in scripted effects/triggers, you can feed in $$ arguments, as shown in the section above.
+# This means you can feed a specific value into a formula from script.
+
+# For example:
+# add_scaled_superpower_mana = { REWARD = 5 }
+
+# In common/scripted_effects:
+# add_scaled_superpower_mana = {
+#	add_superpower_mana = @\[ | 2 * ( 1 - tier1materialmin / $REWARD$ ) | ]
+	# effectively: | 2 * ( 1 - 100 / 5 ) |
+	#			 = | 2 * ( -19 ) |
+	#			 = | -38 |
+	#			 = 38
+# }

@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
@@ -18,30 +19,43 @@ class CwtConfigGroup(
 	val folders: Set<String>
 	val types: Map<String, CwtTypeConfig>
 	val values: Map<String, CwtEnumConfig>
-	val enums: Map<String, CwtEnumConfig> //enumValue可以是int、float、bool类型，统一用字符串表示
+	
+	//enumValue可以是int、float、bool类型，统一用字符串表示
+	val enums: Map<String, CwtEnumConfig>
+	
+	//since: stellaris v3.4
+	val tags: Map<String, CwtTagConfig>
 	val links: Map<String, CwtLinkConfig>
 	val localisationLinks: Map<String, CwtLinkConfig>
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
-	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig> //目前版本的CWT配置已经不再使用
 	val modifiers: Map<String, CwtModifierConfig>
 	val scopes: Map<String, CwtScopeConfig>
 	val scopeAliasMap: Map<String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
-	val singleAliases: Map<String, List<CwtSingleAliasConfig>> //同名的single_alias可以有多个
-	val aliases: Map<String, Map<@CaseInsensitive String, List<CwtAliasConfig>>> //同名的alias可以有多个 
+	
+	//同名的single_alias可以有多个
+	val singleAliases: Map<String, List<CwtSingleAliasConfig>>
+	
+	//同名的alias可以有多个
+	val aliases: Map<String, Map<@CaseInsensitive String, List<CwtAliasConfig>>>
 	val definitions: Map<String, CwtDefinitionConfig>
+	
+	//目前版本的CWT配置已经不再使用
+	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
+	//since: stellaris v3.4
+	val tagsTypeMap : Map<String, List<CwtTagConfig>>
 	
 	init {
 		folders = mutableSetOf()
 		types = mutableMapOf()
 		values = mutableMapOf()
 		enums = mutableMapOf()
+		tags = mutableMapOf()
 		links = mutableMapOf()
 		localisationLinks = mutableMapOf()
 		localisationCommands = mutableMapOf()
 		modifierCategories = mutableMapOf()
-		modifierCategoryIdMap = mutableMapOf()
 		modifiers = mutableMapOf()
 		scopes = mutableMapOf()
 		scopeAliasMap = mutableMapOf()
@@ -49,6 +63,8 @@ class CwtConfigGroup(
 		singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
 		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
 		definitions = mutableMapOf()
+		
+		//目前不检查配置文件的位置和文件名
 		
 		for((filePath, fileConfig) in cwtFileConfigs) {
 			//如果存在folders.cwt，则将其中的相对路径列表添加到folders中 
@@ -93,6 +109,15 @@ class CwtConfigGroup(
 							}
 						}
 					}
+					//找到配置文件中的顶级的key为"tags"的属性，然后解析它的子属性，添加到tags中
+					"tags" -> {
+						val props = property.properties ?: continue
+						for(prop in props) {
+							val tagName = prop.key
+							val tagConfig = resolveTagConfig(prop, tagName) ?: continue
+							tags[tagName] = tagConfig
+						}
+					}
 					//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
 					"links" -> {
 						val props = property.properties ?: continue
@@ -126,10 +151,7 @@ class CwtConfigGroup(
 						for(prop in props) {
 							val modifierCategoryName = prop.key
 							val categoryConfig = resolveModifierCategoryConfig(prop, modifierCategoryName) ?: continue
-							with(categoryConfig) {
-								modifierCategories[name] = categoryConfig
-								if(internalId != null) modifierCategoryIdMap[internalId] = categoryConfig
-							}
+							modifierCategories[modifierCategoryName] = categoryConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"modifiers"的属性，然后解析它的子属性，添加到modifiers中
@@ -183,17 +205,20 @@ class CwtConfigGroup(
 						
 						//其他情况，放到definition中
 						val definitionName = key
-						val definitionConfig = resolveDefinitionConfig(property, definitionName) ?: continue
+						val definitionConfig = resolveDefinitionConfig(property, definitionName)
 						definitions[definitionName] = definitionConfig
 					}
 				}
 			}
 		}
 		
+		modifierCategoryIdMap = initModifierCategoryIdMap()
+		tagsTypeMap = initTagTypeMap()
+		
 		bindModifierCategories()
 	}
 	
-	//解析cwt配置文件
+	//解析CWT配置
 	
 	private fun resolveFoldersCwt(fileConfig: CwtFileConfig, folders: MutableSet<String>) {
 		fileConfig.values.mapTo(folders) { it.value }
@@ -213,7 +238,7 @@ class CwtConfigGroup(
 		var skipRootKey: MutableList<List<String>>? = null
 		var typeKeyFilter: ReversibleSet<String>? = null
 		var startsWith: String? = null
-		var graphRelatedTypes: List<String>? = null
+		var graphRelatedTypes: Set<String>? = null
 		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
 		var localisation: CwtTypeLocalisationConfig? = null
 		var pictures: CwtTypePicturesConfig? = null
@@ -237,7 +262,9 @@ class CwtConfigGroup(
 					"severity" -> severity = prop.stringValue ?: continue
 					"skip_root_key" -> {
 						//值可能是string也可能是stringArray
-						val list = prop.stringValueOrValues ?: continue
+						val list = prop.stringValue?.let { listOf(it) }
+							?: prop.values?.mapNotNull{ it.stringValue }
+							?: continue
 						if(skipRootKey == null) skipRootKey = SmartList()
 						skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
 					}
@@ -298,17 +325,18 @@ class CwtConfigGroup(
 				when(key) {
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
-						val values = option.stringValueOrValues ?: continue
+						val value = option.stringValue
+						val values = option.values
+						if(value == null && values == null) continue
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
-						set.addAll(values)
+						if(value != null) set.add(value)
+						if(values != null && values.isNotEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"graph_related_types" -> {
-						val optionValues = option.values ?: continue
-						val list = optionValues.map { it.value }
-						graphRelatedTypes = list
+						graphRelatedTypes = option.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 					}
 				}
 			}
@@ -329,7 +357,7 @@ class CwtConfigGroup(
 		var startsWith: String? = null
 		var displayName: String? = null
 		var abbreviation: String? = null
-		var onlyIfNot: List<String>? = null
+		var onlyIfNot: Set<String>? = null
 		
 		val options = propertyConfig.options
 		if(options != null && options.isNotEmpty()) {
@@ -338,9 +366,12 @@ class CwtConfigGroup(
 				when(key) {
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
-						val values = option.stringValueOrValues ?: continue
+						val value = option.stringValue
+						val values = option.values
+						if(value == null && values == null) continue
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
-						set.addAll(values)
+						if(value != null) set.add(value)
+						if(values != null && values.isNotEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
@@ -348,7 +379,7 @@ class CwtConfigGroup(
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"display_name" -> displayName = option.stringValue ?: continue
 					"abbreviation" -> abbreviation = option.stringValue ?: continue
-					"only_if_not" -> onlyIfNot = option.stringValues ?: continue
+					"only_if_not" -> onlyIfNot = option.values?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: continue
 				}
 			}
 		}
@@ -389,48 +420,64 @@ class CwtConfigGroup(
 		return CwtEnumConfig(propertyConfigPointer, name, values, valueConfigMap)
 	}
 	
+	private fun resolveTagConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTagConfig? {
+		var since: String? = null
+		var supportedTypes: Set<String>? = null
+		val props = propertyConfig.properties ?: return null
+		for(prop in props) {
+			when(prop.key) {
+				"since" -> since = prop.stringValue
+				"supported_types" -> supportedTypes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+			}
+		}
+		if(since == null || supportedTypes == null) return null //排除
+		return CwtTagConfig(propertyConfig.pointer, name, since, supportedTypes)
+	}
+	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
 		var desc: String? = null
 		var fromData = false
 		var type: String? = null
 		var dataSource: CwtValueExpression? = null
 		var prefix: String? = null
-		var inputScopes: List<String>? = null
+		var inputScopes: Set<String>? = null
 		var outputScope: String? = null
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
-				"desc" -> desc = prop.value
+				"desc" -> desc = prop.stringValue
 				"from_data" -> fromData = prop.booleanValue ?: false
-				"type" -> type = prop.value
+				"type" -> type = prop.stringValue
 				"data_source" -> dataSource = prop.valueExpression
-				"prefix" -> prefix = prop.value
-				"input_scopes" -> inputScopes = prop.stringValues
-				"output_scope" -> outputScope = prop.value
+				"prefix" -> prefix = prop.stringValue
+				"input_scopes" -> inputScopes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+				"output_scope" -> outputScope = prop.stringValue
 			}
 		}
-		if(inputScopes == null) inputScopes = emptyList()
+		if(inputScopes == null) inputScopes = emptySet()
 		if(outputScope == null) return null //排除
 		return CwtLinkConfig(propertyConfig.pointer, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
-		val values = propertyConfig.stringValueOrValues ?: return null
+		val values = propertyConfig.stringValue?.let { setOf(it) }
+			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+			?: return null
 		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
 	}
 	
 	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierCategoryConfig? {
 		var internalId: String? = null
-		var supportedScopes: List<String>? = null
+		var supportedScopes: Set<String>? = null
 		val props = propertyConfig.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
 			when(prop.key) {
 				"internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
-				"supported_scopes" -> supportedScopes = prop.stringValues
+				"supported_scopes" -> supportedScopes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			}
 		}
-		if(supportedScopes == null) supportedScopes = emptyList()
+		if(supportedScopes == null) supportedScopes = emptySet()
 		return CwtModifierCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
 	}
 	
@@ -439,18 +486,20 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
-		var aliases: List<String>? = null
+		var aliases: Set<String>? = null
 		val props = propertyConfig.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
-			if(prop.key == "aliases") aliases = prop.stringValues
+			if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 		}
-		if(aliases == null) aliases = emptyList()
+		if(aliases == null) aliases = emptySet()
 		return CwtScopeConfig(propertyConfig.pointer, name, aliases)
 	}
 	
 	private fun resolveScopeGroupConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeGroupConfig? {
-		val values = propertyConfig.stringValueOrValues ?: return null
+		val values = propertyConfig.stringValue?.let { setOf(it) }
+			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+			?: return null
 		return CwtScopeGroupConfig(propertyConfig.pointer, name, values)
 	}
 	
@@ -485,6 +534,27 @@ class CwtConfigGroup(
 		}
 	}
 	
+	//初始化基于解析的CWT配置的额外配置
+	
+	private fun initModifierCategoryIdMap(): MutableMap<String, CwtModifierCategoryConfig> {
+		val modifierCategoryIdMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
+		for(modifierCategory in modifierCategories.values) {
+			val internalId = modifierCategory.internalId ?: continue
+			modifierCategoryIdMap[internalId] = modifierCategory
+		}
+		return modifierCategoryIdMap
+	}
+	
+	private fun initTagTypeMap(): MutableMap<String, MutableList<CwtTagConfig>> {
+		val tagTypeMap: MutableMap<String, MutableList<CwtTagConfig>> = mutableMapOf()
+		for(tagConfig in tags.values) {
+			for(supportedType in tagConfig.supportedTypes) {
+				tagTypeMap.getOrPut(supportedType) { mutableListOf() }.add(tagConfig)
+			}
+		}
+		return tagTypeMap
+	}
+	
 	//绑定CWT配置
 	
 	private fun bindModifierCategories() {
@@ -514,7 +584,7 @@ class CwtConfigGroup(
 		elementPath: ParadoxElementPath<ParadoxDefinitionProperty>,
 		scope: String?,
 		definitionInfo: ParadoxDefinitionInfo,
-		element: ParadoxDefinitionProperty
+		element: PsiElement
 	): ParadoxDefinitionElementInfo {
 		return ParadoxDefinitionElementInfo(elementPath, scope, gameType, definitionInfo, this, element)
 	}

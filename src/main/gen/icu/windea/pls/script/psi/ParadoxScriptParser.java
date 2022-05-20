@@ -36,22 +36,10 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(ADVANCE_VALUE, BLOCK, BOOLEAN, CODE,
-      COLOR, FLOAT, INT, NUMBER,
-      ROOT_BLOCK, STRING, VALUE, VARIABLE_REFERENCE),
+    create_token_set_(BLOCK, BOOLEAN, CODE, COLOR,
+      FLOAT, INT, NUMBER, ROOT_BLOCK,
+      STRING, VALUE, VARIABLE_REFERENCE),
   };
-
-  /* ********************************************************** */
-  // code
-  public static boolean advance_value(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "advance_value")) return false;
-    if (!nextTokenIs(b, CODE_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, ADVANCE_VALUE, null);
-    r = code(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
 
   /* ********************************************************** */
   // LEFT_BRACE block_item * RIGHT_BRACE
@@ -80,13 +68,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // END_OF_LINE_COMMENT | COMMENT | variable | property | value
+  // END_OF_LINE_COMMENT | COMMENT | tag | variable | property | value
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, END_OF_LINE_COMMENT);
     if (!r) r = consumeToken(b, COMMENT);
+    if (!r) r = tag(b, l + 1);
     if (!r) r = variable(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
@@ -204,7 +193,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+  // !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
   static boolean property_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_recover")) return false;
     boolean r;
@@ -214,7 +203,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
+  // BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
   private static boolean property_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_recover_0")) return false;
     boolean r;
@@ -231,6 +220,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, QUOTED_STRING_TOKEN);
     if (!r) r = consumeToken(b, RIGHT_BRACE);
     if (!r) r = consumeToken(b, STRING_TOKEN);
+    if (!r) r = consumeToken(b, TAG_TOKEN);
     if (!r) r = consumeToken(b, VARIABLE_NAME_ID);
     if (!r) r = consumeToken(b, VARIABLE_REFERENCE_ID);
     return r;
@@ -310,7 +300,19 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // variable_reference | boolean | number | string | color | block | advance_value
+  // TAG_TOKEN
+  public static boolean tag(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag")) return false;
+    if (!nextTokenIs(b, TAG_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TAG_TOKEN);
+    exit_section_(b, m, TAG, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // variable_reference | boolean | number | string | color | block | code
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -321,7 +323,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = string(b, l + 1);
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
-    if (!r) r = advance_value(b, l + 1);
+    if (!r) r = code(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -353,7 +355,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+  // !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
   static boolean variable_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_recover")) return false;
     boolean r;
@@ -363,7 +365,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
+  // BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
   private static boolean variable_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_recover_0")) return false;
     boolean r;
@@ -380,6 +382,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, QUOTED_STRING_TOKEN);
     if (!r) r = consumeToken(b, RIGHT_BRACE);
     if (!r) r = consumeToken(b, STRING_TOKEN);
+    if (!r) r = consumeToken(b, TAG_TOKEN);
     if (!r) r = consumeToken(b, VARIABLE_NAME_ID);
     if (!r) r = consumeToken(b, VARIABLE_REFERENCE_ID);
     return r;

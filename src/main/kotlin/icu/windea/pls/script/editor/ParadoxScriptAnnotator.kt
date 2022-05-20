@@ -1,14 +1,20 @@
 package icu.windea.pls.script.editor
 
+import com.intellij.lang.*
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.PsiManagerEx
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -86,5 +92,4 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//	.textAttributes(attributesKey)
 		//	.create()
 	}
-	
 }

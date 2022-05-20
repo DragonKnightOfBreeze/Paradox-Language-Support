@@ -7,7 +7,7 @@
         extensions="cwt"/>
     <lang.parserDefinition
         language="CWT"
-        implementationClass="icu.windea.pls.cwt.psi.CwtParseDefinition"/>
+        implementationClass="icu.windea.pls.cwt.psi.CwtParserDefinition"/>
 
     <spellchecker.support
         language="CWT"

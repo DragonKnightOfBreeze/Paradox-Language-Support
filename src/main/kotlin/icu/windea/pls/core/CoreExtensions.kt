@@ -8,28 +8,12 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 
-fun getFileType(file: VirtualFile): ParadoxFileType? {
-	if(file is StubVirtualFile || !file.isValid) return null
-	if(file.isDirectory) return ParadoxFileType.Directory
-	val fileName = file.name
-	val fileExtension = file.extension?.lowercase() ?: return ParadoxFileType.Other
-	return when {
-		fileName == descriptorFileName -> ParadoxFileType.ParadoxScript
-		fileExtension in scriptFileExtensions -> ParadoxFileType.ParadoxScript
-		fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
-		fileExtension in ddsFileExtensions -> ParadoxFileType.Dds
-		else -> ParadoxFileType.Other
-	}
-}
-
 fun setFileInfoAndGetFileType(
 	file: VirtualFile,
 	root: VirtualFile,
 	project: Project?,
 	subPaths: List<String>,
-	fileName: String,
-	fileType: ParadoxFileType,
-	getFileType: Boolean = true
+	fileName: String
 ): FileType? {
 	//只有能够确定根目录类型的文件才会被解析
 	var rootType: ParadoxRootType? = null
@@ -91,6 +75,7 @@ fun setFileInfoAndGetFileType(
 	}
 	if(rootType != null) {
 		val path = ParadoxPath.resolve(subPaths)
+		val fileType = getFileType(file, project, gameType, path)
 		
 		//缓存文件信息
 		runCatching {
@@ -98,29 +83,43 @@ fun setFileInfoAndGetFileType(
 			file.putUserData(paradoxFileInfoKey, fileInfo)
 		}
 		
-		if(!getFileType) return null
-		
-		//如果存在对应的folders配置，则path要与之匹配或者为空，才解析为脚本或本地化文件
-		val shouldOverride = when {
-			path.isEmpty() -> true
-			project != null -> isInFolders(project, gameType, path)
-			else -> ProjectManager.getInstance().openProjects.any { isInFolders(it, gameType, path) } //任意项目需要重载即可
-		}
-		
 		//只解析特定根目录下的文件
 		return when {
-			//脚本文件
-			shouldOverride && fileType == ParadoxFileType.ParadoxScript && !isIgnored(fileName) -> ParadoxScriptFileType
+			//模组描述符文件
+			fileType == ParadoxFileType.ParadoxScript -> ParadoxScriptFileType
 			//本地化文件
-			shouldOverride && fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
-			//其他文件（如dds）
+			fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
+			//目录或者其他文件（如dds）
 			else -> MockLanguageFileType.INSTANCE //这里不能直接返回null，否则缓存的文件信息会被清除
 		}
 	}
 	return null
 }
 
-private fun isInFolders(project: Project, gameType: ParadoxGameType, path: ParadoxPath): Boolean {
+private fun getFileType(file: VirtualFile, project: Project?, gameType: ParadoxGameType, path: ParadoxPath): ParadoxFileType {
+	if(file.isDirectory) return ParadoxFileType.Directory
+	val fileName = file.name
+	val fileExtension = file.extension?.lowercase() ?: return ParadoxFileType.Other
+	return when {
+		fileName == descriptorFileName -> ParadoxFileType.ParadoxScript
+		fileExtension in scriptFileExtensions && !isIgnored(fileName) && isInFolders(project, gameType, path) -> ParadoxFileType.ParadoxScript
+		fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
+		fileExtension in ddsFileExtensions -> ParadoxFileType.Dds
+		else -> ParadoxFileType.Other
+	}
+}
+
+private fun isInFolders(project: Project?, gameType: ParadoxGameType, path: ParadoxPath): Boolean {
+	//如果存在对应的folders配置，则path要与之匹配，才解析为脚本或本地化文件
+	return when {
+		project != null -> doIsInFolders(project, gameType, path)
+		else -> ProjectManager.getInstance().openProjects.any { doIsInFolders(it, gameType, path) } //任意项目需要重载即可
+	}
+}
+
+private fun doIsInFolders(project: Project, gameType: ParadoxGameType, path: ParadoxPath): Boolean {
+	//排除除了模组描述符文件以外的在顶级目录的文件
+	if(path.parent.isEmpty()) return false
 	val folders = getCwtConfig(project).get(gameType)?.folders
 	return folders.isNullOrEmpty() || folders.any { it.matchesPath(path.parent) }
 }

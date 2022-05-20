@@ -8,6 +8,8 @@
 	elementTypeHolderClass="icu.windea.pls.script.psi.ParadoxScriptElementTypes"
 	elementTypeClass="icu.windea.pls.script.psi.ParadoxScriptElementType"
 	tokenTypeClass="icu.windea.pls.script.psi.ParadoxScriptTokenType"
+    elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getElementType"
+	tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
 	psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
 }
 
@@ -28,7 +30,6 @@ private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property
 variable ::= variable_name variable_separator variable_value {
   pin=1
   recoverWhile=variable_recover
-  elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.getVariableType"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
@@ -44,12 +45,11 @@ variable_name ::= VARIABLE_NAME_ID{
 private variable_separator ::= EQUAL_SIGN
 variable_value ::= boolean | number | string
 //当前变量解析失败时，需要跳过继续解析下一行
-private variable_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+private variable_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 property ::= property_key property_separator property_value {
   pin=1
   recoverWhile=property_recover
-  elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.getPropertyType"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
@@ -65,9 +65,9 @@ property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 //当前属性解析失败时，需要跳过继续解析下一个
-private property_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+private property_recover ::= !(BOOLEAN_TOKEN | CODE_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
-value ::= variable_reference | boolean | number | string | color | block | advance_value{
+value ::= variable_reference | boolean | number | string | color | block | code {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
@@ -95,6 +95,7 @@ float ::= FLOAT_TOKEN{
 }
 string ::= STRING_TOKEN | QUOTED_STRING_TOKEN {
   extends=value
+ 
   methods=[getValue setValue getReference getStringValue getValueType getType]
 }
 color ::= COLOR_TOKEN {
@@ -108,12 +109,16 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getValue isEmpty isNotEmpty isObject isArray getComponents getValueType getType]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | tag | variable | property | value
 
-//TODO
-advance_value ::= code {
-  extends=value
+//advanced script syntax
+//see: common/scripted_effects/99_advanced_documentation.txt
+
+//tag (see: Memory Management)
+tag ::= TAG_TOKEN {
+  methods=[getName]
 }
+
 code ::= CODE_START code_text CODE_END{
   pin=1
   extends=value

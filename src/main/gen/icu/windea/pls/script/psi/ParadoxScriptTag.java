@@ -5,6 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ParadoxScriptAdvanceValue extends ParadoxScriptValue {
+public interface ParadoxScriptTag extends PsiElement {
+
+  @NotNull
+  String getName();
 
 }

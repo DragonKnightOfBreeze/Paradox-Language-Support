@@ -9,10 +9,6 @@ import com.intellij.psi.PsiLiteralValue;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
-  public void visitAdvanceValue(@NotNull ParadoxScriptAdvanceValue o) {
-    visitValue(o);
-  }
-
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
     // visitPsiListLikeElement(o);
@@ -62,6 +58,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
+  }
+
+  public void visitTag(@NotNull ParadoxScriptTag o) {
+    visitPsiElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {

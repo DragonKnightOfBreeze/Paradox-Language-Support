@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
@@ -15,9 +16,10 @@ data class CwtAliasConfig(
 	val supportedScopes by lazy { inferSupportedScopes() }
 	val supportedScopesText by lazy { supportedScopes.joinToString(" ", "{ ", " }") }
 	
-	private fun inferSupportedScopes(): List<String> {
-		val options = config.options ?: return emptyList()
-		return options.find { it.key == "scope" || it.key == "scopes" }?.stringValueOrValues ?: emptyList()
+	private fun inferSupportedScopes(): Set<String> {
+		val options = config.options ?: return emptySet()
+		val option = options.find { it.key == "scope" || it.key == "scopes" } ?: return emptySet()
+		return option.stringValue?.let { setOf(it) } ?: option.values?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
 	}
 }
 

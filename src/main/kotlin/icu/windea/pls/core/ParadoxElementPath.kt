@@ -17,10 +17,10 @@ import java.util.LinkedList
  * * `foo/-` 对应文所属文件或定义中名为"foo"的属性的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
  */
 @Suppress("unused")
-class ParadoxElementPath<R : PsiElement> private constructor(
+class ParadoxElementPath<ROOT : PsiElement> private constructor(
 	val originalSubPaths: List<String>, //注意：这里传入的子路径需要保留可能的括起的双引号
-	//val pointer: SmartPsiElementPointer<out R>? = null //不能加上，会导致递归循环
-	val rootPointer: SmartPsiElementPointer<out R>? = null
+	//val pointer: SmartPsiElementPointer<PsiElement>? = null //不能加上，会导致递归循环
+	val rootPointer: SmartPsiElementPointer<out ROOT>? = null
 ) : Iterable<String> {
 	companion object Resolver {
 		/**

@@ -12,6 +12,8 @@ import java.lang.invoke.*
 
 /**
  * CWT规则的提供器。
+ *
+ * CWT规则来自目录`config/cwt`中的配置文件。使用内置且经过扩展和修改的CWT配置文件。
  */
 class CwtConfigProvider(
 	val project: Project

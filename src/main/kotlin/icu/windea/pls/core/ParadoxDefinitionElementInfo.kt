@@ -1,5 +1,6 @@
 package icu.windea.pls.core
 
+import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -14,7 +15,7 @@ class ParadoxDefinitionElementInfo(
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,
 	val configGroup: CwtConfigGroup,
-	element: ParadoxDefinitionProperty //直接传入element
+	element: PsiElement //直接传入element
 ) {
 	//NOTE 部分属性需要使用懒加载
 	
@@ -52,15 +53,23 @@ class ParadoxDefinitionElementInfo(
 	
 	/** 子属性基于配置的出现次数。 */
 	val childPropertyOccurrence: Map<CwtKeyExpression, Int> by lazy {
-		val properties = element.properties
+		val properties = when {
+			element is ParadoxScriptProperty -> element.properties
+			else -> return@lazy emptyMap()
+		}
 		if(properties.isEmpty()) return@lazy emptyMap()
 		properties.groupAndCountBy { prop ->
 			childPropertyConfigs.find { matchesKey(it.keyExpression, prop.propertyKey, configGroup) }?.keyExpression
 		}
 	}
+	
 	/** 子值基于配置的出现次数。 */
 	val childValueOccurrence: Map<CwtValueExpression, Int> by lazy {
-		val values = element.values
+		val values = when {
+			element is ParadoxScriptProperty -> element.values
+			element is ParadoxScriptBlock -> element.valueList
+			else -> return@lazy emptyMap()
+		}
 		if(values.isEmpty()) return@lazy emptyMap()
 		values.groupAndCountBy { value ->
 			childValueConfigs.find { matchesValue(it.valueExpression, value, configGroup) }?.valueExpression

@@ -11,9 +11,9 @@ import org.slf4j.*
 import java.lang.invoke.*
 
 /**
- * 内置规则的提供器。
+ * 内部规则的提供器。
  *
- * 内置规则来自目录`config/internal`中的配置文件
+ * 内部规则来自目录`config/internal`中的配置文件。不基于具体的项目。
  */
 class InternalConfigProvider(
 	private val project: Project

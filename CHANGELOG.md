@@ -4,11 +4,14 @@
 > * 脚本文件中定义的本地化名字指：定义的最相关的本地化文本（基于`cwt`规则文件，注有`## primary`的，或者从特定名字的定义属性的值推断来的，这特定名字可以在设置页面中设置）
 > * 脚本文件中的变量指：如`@var = 123`这样写在定义结构之外的声明（事实上是常量，另有高级语法）
 
-## TODO
+## 0.6 > 0.6.0
 
 * [ ] 完善在线参考文档
-* [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
 * [ ] 脚本文件语法解析优化：兼容`stellaris v3.3`开始新增的`script_value`语法
+* [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
+  * [ ] 兼容`stellaris v3.4`开始新增的`tag`语法
+    * 仅限stellaris v3.4+，基于扩展的cwt规则
+    * 支持的标签：`optimize_memory`（仅限在`scripted_trigger`或`scripted_effect`定义中使用，仅限首行，用于避免打印错误日志）
 * [ ] 文件路径分隔符兼容"/" "\" "\\"混用
 * [ ] 完善对CWT配置文件的支持，完善相关功能
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
@@ -22,7 +25,7 @@
   * 检查Github上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
   * 每次打开项目时，检查已添加的CWT配置库的更新（`git pull`）
 
-## 0.5 > 0.5.5
+## 0.5 >= 0.5.5
 
 * [X] 更新IDEA版本到2022.1
 * [X] 更新内置的CWT配置

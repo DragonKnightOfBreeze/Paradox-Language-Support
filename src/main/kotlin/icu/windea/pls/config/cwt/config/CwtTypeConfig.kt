@@ -41,7 +41,7 @@ data class CwtTypeConfig(
 	val skipRootKey: List<List<@CaseInsensitive String>>? = null,
 	val typeKeyFilter: ReversibleSet<@CaseInsensitive String>? = null,
 	val startsWith: @CaseInsensitive String? = null,
-	val graphRelatedTypes: List<String>? = null,
+	val graphRelatedTypes: Set<String>? = null,
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
 	val localisation: CwtTypeLocalisationConfig? = null,
 	val pictures: CwtTypePicturesConfig? = null

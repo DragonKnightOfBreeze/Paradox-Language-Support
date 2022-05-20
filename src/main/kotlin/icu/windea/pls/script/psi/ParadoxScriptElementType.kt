@@ -6,3 +6,4 @@ import icu.windea.pls.script.*
 class ParadoxScriptElementType(
 	debugName: String
 ) : IElementType(debugName, ParadoxScriptLanguage)
+

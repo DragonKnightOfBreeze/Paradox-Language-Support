@@ -13,6 +13,9 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeEleme
   List<ParadoxScriptProperty> getPropertyList();
 
   @NotNull
+  List<ParadoxScriptTag> getTagList();
+
+  @NotNull
   List<ParadoxScriptValue> getValueList();
 
   @NotNull

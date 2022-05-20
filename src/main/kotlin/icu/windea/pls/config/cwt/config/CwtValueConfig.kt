@@ -20,8 +20,8 @@ data class CwtValueConfig(
 ) : CwtKvConfig<CwtValue>() {
 	override var parent: CwtPropertyConfig? = null
 	
-	val stringValues by lazy { values?.mapNotNull { it.stringValue } }
-	val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
+	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
+	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
 	val valueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
 }

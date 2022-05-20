@@ -23,8 +23,10 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
+import java.lang.Integer.*
 import java.util.*
 
 //region Keys
@@ -104,6 +106,22 @@ fun getEventNamespace(event: ParadoxDefinitionProperty): String?{
 		}
 		current = current.prevSibling ?: return null
 	}
+}
+
+/**
+ * 比较游戏版本。允许通配符，如："3.3.*"
+ */
+infix fun String.compareGameVersion(otherVersion: String): Int {
+	val versionSnippets = this.split('.')
+	val otherVersionSnippets = otherVersion.split('.')
+	val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
+	for(i in 0 until minSnippetSize) {
+		val versionSnippet = versionSnippets[i]
+		var otherVersionSnippet = otherVersionSnippets[i]
+		if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
+		return versionSnippet.compareTo(otherVersionSnippet)
+	}
+	return 0
 }
 //endregion
 
@@ -192,7 +210,7 @@ private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 
 val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
 
-val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile.fileInfo //使用原始文件
+val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //使用原始文件
 
 val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 
@@ -217,13 +235,13 @@ private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: Psi
 			val supportedVersion = map.get("supported_version")?.toString()
 			val remoteFileId = map.get("remote_file_id")?.toString()
 			val path = map.get("path")?.toString()
-			ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
+			ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path, isModeDescriptor = true)
 		}
 		fileName == launcherSettingsFileName -> {
 			val json = jsonMapper.readValue<Map<String, Any?>>(descriptorFile.virtualFile.inputStream)
 			val name = fileInfo.gameType.description
 			val version = json.get("rawVersion")?.toString()
-			ParadoxDescriptorInfo(name, version)
+			ParadoxDescriptorInfo(name, version, isModeDescriptor = false)
 		}
 		else -> null
 	}
@@ -250,16 +268,18 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	return configGroup.resolveDefinitionInfo(element, rootKey, path, propertyPath)
 }
 
-val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
+val PsiElement.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
 
-private fun doGetDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionElementInfo? {
+private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
+	//必须是脚本语言的PsiElement
+	if(!(element.language == ParadoxScriptLanguage)) return null
 	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionElementInfoKey) {
 		val value = resolveDefinitionElementInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
 }
 
-private fun resolveDefinitionElementInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionElementInfo? {
+private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
 	//NOTE 注意这里获得的definitionInfo可能会过时！因为对应的type和subtypes可能基于其他的definitionProperty
 	//NOTE 这里输入的element本身可以是定义，这是elementPath会是空字符串
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
@@ -382,38 +402,6 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 
 fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
-}
-//endregion
-
-//region Find From PsiElement Extensiosn
-/**
- * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
- */
-fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
-	var current: PsiElement = this
-	do {
-		if(current is ParadoxDefinitionProperty) {
-			return current
-		}
-		current = current.parent ?: break
-	} while(current !is PsiFile)
-	return null
-}
-
-/**
- * 得到上一级definitionProperty，跳过正在填写的，可能为自身，可能为null，可能也是definition。
- */
-fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty? {
-	var current: PsiElement = this
-	do {
-		if(current is ParadoxScriptRootBlock) {
-			return (current.parent ?: break) as ParadoxDefinitionProperty
-		} else if(current is ParadoxScriptBlock) {
-			return (current.parent.parent ?: break) as ParadoxDefinitionProperty
-		}
-		current = current.parent ?: break
-	} while(current !is PsiFile)
-	return null
 }
 //endregion
 

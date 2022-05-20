@@ -2,8 +2,9 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import com.intellij.openapi.vfs.newvfs.impl.*
+import icu.windea.pls.*
 import java.util.*
 
 /**
@@ -17,18 +18,21 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 	//才有可能将所在目录（以及子目录）下的文件识别为Paradox本地化文件和脚本文件
 	
 	override fun getOverriddenFileType(file: VirtualFile): FileType? {
-		val fileType = getFileType(file) ?: return null
+		if(file is StubVirtualFile || !file.isValid) return null
 		val fileName = file.name
 		val subPaths = LinkedList<String>()
 		subPaths.addFirst(fileName)
 		var currentFile: VirtualFile? = file.parent
 		while(currentFile != null) {
-			val targetFileType = setFileInfoAndGetFileType(file, currentFile, null, subPaths, fileName, fileType)
+			val targetFileType = setFileInfoAndGetFileType(file, currentFile, null, subPaths, fileName)
 			if(targetFileType != null){
 				return if(targetFileType != MockLanguageFileType.INSTANCE) targetFileType else null
 			}
 			subPaths.addFirst(currentFile.name)
 			currentFile = currentFile.parent
+		}
+		runCatching {
+			file.putUserData(paradoxFileInfoKey, null)
 		}
 		return null
 	}

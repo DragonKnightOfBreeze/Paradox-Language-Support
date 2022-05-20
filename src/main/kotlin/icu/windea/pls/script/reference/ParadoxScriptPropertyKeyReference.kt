@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPropertyKeyReference(
@@ -17,7 +17,7 @@ class ParadoxScriptPropertyKeyReference(
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
-			resolved.isCwtPsiElement() -> throw IncorrectOperationException() //不允许重命名
+			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
 			!resolved.isWritable -> throw IncorrectOperationException() //不允许重命名
 			else -> resolved.setName(newElementName)
 		}

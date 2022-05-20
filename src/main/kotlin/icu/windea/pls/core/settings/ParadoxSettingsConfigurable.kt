@@ -3,6 +3,7 @@ package icu.windea.pls.core.settings
 import com.intellij.*
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.fileEditor.*
+import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
@@ -52,6 +53,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						}, {
 							settings.scriptIgnoredFileNames = it
 							settings.finalScriptIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
+							fireFileTypesChanged()
 						})
 						.horizontalAlign(HorizontalAlign.FILL)
 						.resizableColumn()
@@ -117,6 +119,15 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		}
 	}
 	
+	private fun fireFileTypesChanged() {
+		//通知文件类型映射发生变化
+		try {
+			FileTypeManagerEx.getInstanceEx().fireFileTypesChanged()
+		} catch(e: Exception) {
+			logger().warn(e.message)
+		}
+	}
+	
 	@Suppress("UnstableApiUsage")
 	private fun refreshInlayHints() {
 		//当某些设置变更后，需要刷新内嵌提示
@@ -137,8 +148,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					}
 				}
 			}
-		}catch(e: Exception){
-			//ignored
+		} catch(e: Exception) {
+			logger().warn(e.message)
 		}
 	}
 }

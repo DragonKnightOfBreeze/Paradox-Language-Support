@@ -1,14 +1,9 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-
-fun PsiElement.isParadoxScriptPsiElement() : Boolean{
-	val elementType = this.elementType?:return false
-	return elementType is ParadoxScriptTokenType || elementType is ParadoxScriptElementType
-}
 
 val ParadoxScriptVariableName.variableNameId: PsiElement get() = findRequiredChild(VARIABLE_NAME_ID)
 
@@ -57,3 +52,50 @@ fun ParadoxDefinitionProperty.findProperties(propertyName: String, ignoreCase: B
 //fun ParadoxScriptBlock.findValues(value: String, ignoreCase: Boolean = false): List<ParadoxScriptValue> {
 //	return valueList.filter { it.value.equals(value, ignoreCase) }
 //}
+
+/**
+ * 得到上一级definition，可能为自身，可能为null。
+ */
+fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
+	if(language != ParadoxScriptLanguage) return null
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxDefinitionProperty && current.definitionInfo != null) {
+			return current
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
+}
+
+/**
+ * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
+ */
+fun PsiElement.findParentDefinitionProperty(): ParadoxDefinitionProperty? {
+	if(language != ParadoxScriptLanguage) return null
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxDefinitionProperty) {
+			return current
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
+}
+
+/**
+ * 得到上一级definitionProperty，跳过正在填写的，可能为自身，可能为null，可能也是definition。
+ */
+fun PsiElement.findParentDefinitionPropertySkipThis(): ParadoxDefinitionProperty? {
+	if(language != ParadoxScriptLanguage) return null
+	var current: PsiElement = this
+	do {
+		if(current is ParadoxScriptRootBlock) {
+			return (current.parent ?: break) as ParadoxDefinitionProperty
+		} else if(current is ParadoxScriptBlock) {
+			return (current.parent.parent ?: break) as ParadoxDefinitionProperty
+		}
+		current = current.parent ?: break
+	} while(current !is PsiFile)
+	return null
+}

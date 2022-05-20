@@ -14,7 +14,7 @@ class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
 			PROPERTY_KEY_ID, COMMAND_SCOPE, COMMAND_FIELD, ICON_ID -> TEXT_TOKENIZER
 			STRING_TOKEN -> TEXT_TOKENIZER
 			COMMENT, END_OF_LINE_COMMENT -> TEXT_TOKENIZER
-			else -> EMPTY_TOKENIZER
+			else -> super.getTokenizer(element)
 		}
 	}
 }

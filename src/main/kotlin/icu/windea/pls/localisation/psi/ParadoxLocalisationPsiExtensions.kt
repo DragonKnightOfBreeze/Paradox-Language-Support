@@ -3,12 +3,8 @@ package icu.windea.pls.localisation.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-
-fun PsiElement.isParadoxLocalisationPsiElement(): Boolean {
-	val elementType = this.elementType ?: return false
-	return elementType is ParadoxLocalisationTokenType || elementType is ParadoxLocalisationElementType
-}
 
 val ParadoxLocalisationLocale.localeId: PsiElement get() = findRequiredChild(LOCALE_ID)
 

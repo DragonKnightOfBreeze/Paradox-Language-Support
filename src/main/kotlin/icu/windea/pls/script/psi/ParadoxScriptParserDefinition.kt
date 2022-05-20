@@ -5,6 +5,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
@@ -14,7 +16,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		val STRINGS = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val FILE = ParadoxScriptStubElementTypes.FILE
 	}
-
+	
 	override fun getWhitespaceTokens() = WHITE_SPACES
 	
 	override fun getCommentTokens() = COMMENTS
@@ -25,9 +27,62 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	override fun createFile(viewProvider: FileViewProvider) = ParadoxScriptFile(viewProvider)
 	
-	override fun createElement(node: ASTNode) = Factory.createElement(node)
+	override fun createElement(node: ASTNode): PsiElement {
+		//if(node.elementType == STRING && ) {
+		//	val nodeText = node.text
+		//	if(nodeText == "optimize_memory") {
+		//		val finalNode = ASTFactory.composite(TAG)
+		//		finalNode.rawAddChildrenWithoutNotifications(ASTFactory.leaf(TAG_TOKEN, nodeText))
+		//		val parent = node.treeParent as CompositeElement
+		//		parent.replaceChildInternal()
+		//		//parent.addInternal(finalNode, finalNode, node, true)
+		//		//parent.deleteChildInternal(node)
+		//		return ParadoxScriptTagImpl(finalNode)
+		//	}
+		//}
+		//if(node.elementType == ParadoxScriptStringLikeElementType){
+		//	node as CompositeElement
+		//	val childNode = node.firstChildNode as TreeElement
+		//	val childType = childNode.elementType
+		//	val errorNode = childNode.treeParent as TreeElement
+		//	errorNode.rawReplaceWithList(childNode)
+		//	//val parentNode = node.treeParent as CompositeElement
+		//	////node.rawRemoveAllChildren()
+		//	//parentNode.replaceChild(node, childNode)
+		//	////parentNode.replaceChildInternal(node, childNode)
+		//	////parentNode.firstChildNode = childNode
+		//	//parentNode.rawRemoveAllChildren()
+		//	//val blockNode = parentNode.treeParent
+		//	//blockNode.replaceChild(parentNode, childNode)
+		//	//blockNode.addInternal(parentNode, parentNode, childNode, true)
+		//	return when(childType){
+		//		STRING -> ParadoxScriptStringImpl(childNode)
+		//		TAG -> ParadoxScriptTagImpl(childNode)
+		//		else -> throw InternalError()
+		//	}
+		//}
+		return Factory.createElement(node)
+		//return when(node.elementType) {
+		//	STRING -> {
+		//		////TODO
+		//		//val parentNode = node.treeParent as LazyParseableElement
+		//		//val childNode = node.firstChildNode
+		//		//parentNode.rawRemoveAllChildren()
+		//		//parentNode.rawAddChildrenWithoutNotifications(childNode as TreeElement)
+		//		//val childType = childNode.elementType
+		//		//return when(childType){
+		//		//	STRING -> ParadoxScriptStringImpl(childNode)
+		//		//	TAG -> ParadoxScriptTagImpl(childNode)
+		//		//	else -> throw InternalError()
+		//		//}
+		//	}
+		//	else -> Factory.createElement(node)
+		//}
+	}
 	
 	override fun createParser(project: Project?) = ParadoxScriptParser()
 	
-	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter()
+	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter(project)
+	
+	fun createLexer(project: Project?, definitionInfo: ParadoxDefinitionInfo?) = ParadoxScriptLexerAdapter(project)
 }

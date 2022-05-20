@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.Companion.FILE
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
-class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
+object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
 	override fun getExternalId(): String {
 		return "paradoxScript.file"
 	}

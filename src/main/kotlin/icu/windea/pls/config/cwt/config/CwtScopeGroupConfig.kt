@@ -5,6 +5,6 @@ import icu.windea.pls.cwt.psi.*
 
 data class CwtScopeGroupConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	val name:String,
-	val values:List<String>
-): CwtConfig<CwtProperty>
+	val name: String,
+	val values: Set<String>
+) : CwtConfig<CwtProperty>

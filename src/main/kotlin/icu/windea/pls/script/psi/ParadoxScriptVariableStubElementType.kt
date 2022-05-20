@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptVariable>(
+object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptVariable>(
 	"PARADOX_SCRIPT_VARIABLE",
 	ParadoxScriptLanguage
 ) {

@@ -363,6 +363,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
+	//region ParadoxScriptTag
+	@JvmStatic
+	fun getName(element: ParadoxScriptTag): String {
+		return element.text
+	}
+	//endregion
+	
 	//region ParadoxScriptBlock
 	@JvmStatic
 	fun getValue(element: ParadoxScriptBlock): String {

@@ -2,7 +2,7 @@
 
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.psi.TokenType;
+import com.intellij.openapi.project.*;import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
@@ -332,69 +332,76 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-  private boolean noIndent = true;
-      private int depth = 0;
-      private int commandLocation = 0;
-      private int propertyReferenceLocation = 0;
-      private boolean inIconName = false;
+	public Project project;
+		
+    private boolean noIndent = true;
+    private int depth = 0;
+    private int commandLocation = 0;
+    private int propertyReferenceLocation = 0;
+    private boolean inIconName = false;
     
-      private void increaseDepth(){
-	      depth++;
-      }
-      
-      private void decreaseDepth(){
-	      if(depth > 0) depth--;
-      }
-      
-      private int nextStateForText(){
-        return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
-      }
-      
-      private int nextStateForCommand(){
-        if(commandLocation == 0) return nextStateForText();
-        else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
-        else if (commandLocation == 2) return WAITING_ICON;
-        else return nextStateForText();
-      }
+    public ParadoxLocalisationLexer(Project propect) {
+        this((java.io.Reader)null);
+        this.project = project;
+    }
+	
+    private void increaseDepth(){
+	    depth++;
+    }
     
-      private int nextStateForPropertyReference(){
-        if(propertyReferenceLocation == 0) return nextStateForText();
-        else if (propertyReferenceLocation == 2) return WAITING_ICON;
-        else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
-        else return nextStateForText();
-      }
-      
-      private boolean isPropertyReferenceStart(){
+    private void decreaseDepth(){
+	    if(depth > 0) depth--;
+    }
+    
+    private int nextStateForText(){
+      return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
+    }
+    
+    private int nextStateForCommand(){
+      if(commandLocation == 0) return nextStateForText();
+      else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
+      else if (commandLocation == 2) return WAITING_ICON;
+      else return nextStateForText();
+    }
+    
+    private int nextStateForPropertyReference(){
+      if(propertyReferenceLocation == 0) return nextStateForText();
+      else if (propertyReferenceLocation == 2) return WAITING_ICON;
+      else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
+      else return nextStateForText();
+    }
+    
+    private boolean isPropertyReferenceStart(){
 		  if(yylength() <= 1) return false;
-	      char c = yycharat(yylength()-1);
-	      return !Character.isWhitespace(c) && c != '"';
-      }
-      
-      private boolean isIconStart(){
+	    char c = yycharat(yylength()-1);
+	    return !Character.isWhitespace(c) && c != '"';
+    }
+    
+    private boolean isIconStart(){
 		  if(yylength() != 2) return false;
-	      char c = yycharat(1);
-	      return isExactLetter(c) || isExactDigit(c) || c == '_';
-      }
-      
-      private boolean isSequentialNumberStart(){
+	    char c = yycharat(1);
+	    return isExactLetter(c) || isExactDigit(c) || c == '_';
+    }
+    
+    private boolean isSequentialNumberStart(){
 		  if(yylength() != 3) return false;
-	      return yycharat(2) == '%';
-      }
-      
-      private boolean isCommandStart(){
+	    return yycharat(2) == '%';
+    }
+    
+    private boolean isCommandStart(){
 		  if(yylength() <= 1) return false;
-	      return yycharat(yylength()-1) == ']';
-      }
-      
-      private boolean isColorfulTextStart(){
+	    return yycharat(yylength()-1) == ']';
+    }
+    
+    private boolean isColorfulTextStart(){
 		  if(yylength() != 2) return false;
-	      return isExactLetter(yycharat(1));
-      }
-      
-      private boolean isRightQuote(){
+	    return isExactLetter(yycharat(1));
+    }
+    
+    private boolean isRightQuote(){
 		  if(yylength() == 1) return true;
-	      return yycharat(yylength()-1) != '"';
-      }
+	    return yycharat(yylength()-1) != '"';
+    }
 
 
   /**

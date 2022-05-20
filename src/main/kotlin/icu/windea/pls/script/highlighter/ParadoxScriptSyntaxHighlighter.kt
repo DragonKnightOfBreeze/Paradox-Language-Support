@@ -16,6 +16,7 @@ private val KEYWORD_KEYS = arrayOf(ParadoxScriptAttributesKeys.KEYWORD_KEY)
 private val COLOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.COLOR_KEY)
 private val NUMBER_KEYS = arrayOf(ParadoxScriptAttributesKeys.NUMBER_KEY)
 private val STRING_KEYS = arrayOf(ParadoxScriptAttributesKeys.STRING_KEY)
+private val TAG_KEYS = arrayOf(ParadoxScriptAttributesKeys.TAG_KEY)
 private val CODE_KEYS = arrayOf(ParadoxScriptAttributesKeys.CODE_KEY)
 private val COMMENT_KEYS = arrayOf(ParadoxScriptAttributesKeys.COMMENT_KEY)
 private val VALID_ESCAPE_KEYS = arrayOf(ParadoxScriptAttributesKeys.VALID_ESCAPE_KEY)
@@ -35,6 +36,7 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 		INT_TOKEN, FLOAT_TOKEN -> NUMBER_KEYS
 		STRING_TOKEN, QUOTED_STRING_TOKEN -> STRING_KEYS
 		CODE_TEXT_TOKEN -> CODE_KEYS
+		TAG_TOKEN -> TAG_KEYS
 		COMMENT -> COMMENT_KEYS
 		END_OF_LINE_COMMENT -> COMMENT_KEYS
 		VALID_STRING_ESCAPE_TOKEN -> VALID_ESCAPE_KEYS

@@ -1,0 +1,8 @@
+# ADDED BY PLS
+# See: common/scripted_effects/99_advanced_documentation.txt (Memory Management)
+tags = {
+	optimize_memory = {
+		since = "3.4.*"
+		supported_types = { scripted_trigger scripted_effect }
+	}
+}

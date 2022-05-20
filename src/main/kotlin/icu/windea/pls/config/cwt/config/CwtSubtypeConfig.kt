@@ -22,6 +22,5 @@ data class CwtSubtypeConfig(
 	val startsWith: @CaseInsensitive String? = null,
 	val displayName: String? = null,
 	val abbreviation: String? = null,
-	val onlyIfNot: List<String>? = null
+	val onlyIfNot: Set<String>? = null
 ): CwtConfig<CwtProperty>
-

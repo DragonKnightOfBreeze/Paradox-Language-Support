@@ -8,9 +8,9 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtParseDefinition:ParserDefinition {
-	companion object{
-		val WHITE_SPACES=TokenSet.create(WHITE_SPACE)
+class CwtParserDefinition : ParserDefinition {
+	companion object {
+		val WHITE_SPACES = TokenSet.create(WHITE_SPACE)
 		val COMMENTS = TokenSet.create(COMMENT) //不包含DOCUMENTATION_TOKEN
 		val STRINGS = TokenSet.create(STRING_TOKEN)
 		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
@@ -24,7 +24,7 @@ class CwtParseDefinition:ParserDefinition {
 	
 	override fun getFileNodeType() = FILE
 	
-	override fun createFile(viewProvider: FileViewProvider) =  CwtFile(viewProvider)
+	override fun createFile(viewProvider: FileViewProvider) = CwtFile(viewProvider)
 	
 	override fun createElement(node: ASTNode?) = Factory.createElement(node)
 	
