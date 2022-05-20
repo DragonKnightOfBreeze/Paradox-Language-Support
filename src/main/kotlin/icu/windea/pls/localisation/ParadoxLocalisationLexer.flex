@@ -27,7 +27,7 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 %state WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN
 %state WAITING_ICON
 %state WAITING_ICON_ID_FINISHED
-%state WAITING_ICON_PARAMETER
+%state WAITING_ICON_FRAME
 %state WAITING_COMMAND_SCOPE_OR_FIELD
 %state WAITING_COMMAND_SEPARATOR
 %state WAITING_COLOR_ID
@@ -240,7 +240,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "£" {yybegin(nextStateForText()); return ICON_END;}
   "$" {propertyReferenceLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
   "[" {commandLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);}
-  "|" {yybegin(WAITING_ICON_PARAMETER); return PIPE;}
+  "|" {yybegin(WAITING_ICON_FRAME); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {ICON_ID} {yybegin(WAITING_ICON_ID_FINISHED); return ICON_ID;}
@@ -250,11 +250,11 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
-  "|" {yybegin(WAITING_ICON_PARAMETER); return PIPE;}
+  "|" {yybegin(WAITING_ICON_FRAME); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
 }
-<WAITING_ICON_PARAMETER>{
+<WAITING_ICON_FRAME>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}

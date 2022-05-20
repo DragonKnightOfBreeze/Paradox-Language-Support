@@ -36,7 +36,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   public static final int WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN = 18;
   public static final int WAITING_ICON = 20;
   public static final int WAITING_ICON_ID_FINISHED = 22;
-  public static final int WAITING_ICON_PARAMETER = 24;
+  public static final int WAITING_ICON_FRAME = 24;
   public static final int WAITING_COMMAND_SCOPE_OR_FIELD = 26;
   public static final int WAITING_COMMAND_SEPARATOR = 28;
   public static final int WAITING_COLOR_ID = 30;
@@ -780,7 +780,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 78: break;
           case 30: 
-            { yybegin(WAITING_ICON_PARAMETER); return PIPE;
+            { yybegin(WAITING_ICON_FRAME); return PIPE;
             } 
             // fall through
           case 79: break;
