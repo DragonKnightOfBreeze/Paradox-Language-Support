@@ -10,7 +10,6 @@ class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
 		private val bracePairs = arrayOf(
 			BracePair(PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END,false),
 			BracePair(ICON_START, ICON_END,false),
-			BracePair(SEQUENTIAL_NUMBER_START, SEQUENTIAL_NUMBER_END,false),
 			BracePair(COMMAND_START, COMMAND_END,false),
 			BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END,false)
 		)

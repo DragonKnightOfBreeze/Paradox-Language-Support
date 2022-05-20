@@ -23,7 +23,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE_PARAMETER = new ParadoxLocalisationElementType("PROPERTY_REFERENCE_PARAMETER");
   IElementType PROPERTY_VALUE = new ParadoxLocalisationElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = new ParadoxLocalisationElementType("RICH_TEXT");
-  IElementType SEQUENTIAL_NUMBER = new ParadoxLocalisationElementType("SEQUENTIAL_NUMBER");
   IElementType STRING = new ParadoxLocalisationElementType("STRING");
 
   IElementType COLON = new ParadoxLocalisationTokenType("COLON");
@@ -53,9 +52,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = new ParadoxLocalisationTokenType("PROPERTY_REFERENCE_START");
   IElementType RIGHT_QUOTE = new ParadoxLocalisationTokenType("RIGHT_QUOTE");
-  IElementType SEQUENTIAL_NUMBER_END = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_END");
-  IElementType SEQUENTIAL_NUMBER_ID = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_ID");
-  IElementType SEQUENTIAL_NUMBER_START = new ParadoxLocalisationTokenType("SEQUENTIAL_NUMBER_START");
   IElementType STRING_TOKEN = new ParadoxLocalisationTokenType("STRING_TOKEN");
   IElementType VALID_ESCAPE_TOKEN = new ParadoxLocalisationTokenType("VALID_ESCAPE_TOKEN");
 
@@ -103,9 +99,6 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);
-      }
-      else if (type == SEQUENTIAL_NUMBER) {
-        return new ParadoxLocalisationSequentialNumberImpl(node);
       }
       else if (type == STRING) {
         return new ParadoxLocalisationStringImpl(node);

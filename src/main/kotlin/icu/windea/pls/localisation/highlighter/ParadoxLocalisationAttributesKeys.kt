@@ -19,7 +19,6 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val PROPERTY_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.propertyReference"), KEYWORD)
 	@JvmField val PARAMETER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.parameter"), IDENTIFIER)
 	@JvmField val ICON_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.icon"), IDENTIFIER)
-	@JvmField val SEQUENTIAL_NUMBER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.sequentialNumber"), IDENTIFIER)
 	@JvmField val COMMAND_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.commandScope"), IDENTIFIER)
 	@JvmField val COMMAND_FIELD_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.commandField"), IDENTIFIER)
 	@JvmField val COLOR_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.color"), IDENTIFIER)

@@ -40,12 +40,7 @@ object ParadoxLocalisationElementFactory {
 	fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
 		return createPropertyValue(project, "£$name£").richTextList.first() as ParadoxLocalisationIcon
 	}
-
-	@JvmStatic
-	fun createSequentialNumber(project: Project, name: String): ParadoxLocalisationSequentialNumber {
-		return createPropertyValue(project, "%$name%").richTextList.first() as ParadoxLocalisationSequentialNumber
-	}
-
+	
 	@JvmStatic
 	fun createColorfulText(project: Project, name: String,value:String = ""): ParadoxLocalisationColorfulText {
 		return createPropertyValue(project, "§$name$value§!").richTextList.first() as ParadoxLocalisationColorfulText

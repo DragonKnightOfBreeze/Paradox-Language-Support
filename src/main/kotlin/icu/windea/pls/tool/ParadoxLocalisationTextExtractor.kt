@@ -22,7 +22,6 @@ object ParadoxLocalisationTextExtractor {
 			is ParadoxLocalisationEscape -> extractEscapeTo(element, builder)
 			is ParadoxLocalisationPropertyReference -> extractPropertyReferenceTo(element, builder)
 			is ParadoxLocalisationIcon -> extractIconTo(element, builder)
-			is ParadoxLocalisationSequentialNumber -> extractSequentialNumberTo(element, builder)
 			is ParadoxLocalisationCommand -> extractCodeTo(element, builder)
 			is ParadoxLocalisationColorfulText -> extractColorfulTextTo(element, builder)
 		}
@@ -57,16 +56,6 @@ object ParadoxLocalisationTextExtractor {
 	private fun extractIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
 		//NOTE 不提取到结果中
 		//builder.append(":${element.name}:")
-	}
-	
-	private fun extractSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, builder: StringBuilder) {
-		val placeholderText = element.sequentialNumberConfig?.placeholderText
-		if(placeholderText != null) {
-			builder.append(placeholderText)
-			return
-		}
-		//如果处理文本失败，则直接使用原始文本
-		builder.append(element.text)
 	}
 	
 	private fun extractCodeTo(element: ParadoxLocalisationCommand, builder: StringBuilder) {

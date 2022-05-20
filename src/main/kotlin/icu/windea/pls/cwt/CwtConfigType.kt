@@ -25,10 +25,7 @@ enum class CwtConfigType(
 	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup")),
 	
 	LocalisationLocale("localisation locale", PlsDocBundle.message("name.cwt.localisationLocale")),
-	LocalisationSequentialNumber("localisation sequential number", PlsDocBundle.message("name.cwt.localisationSequentialNumber")),
 	LocalisationColor("localisation color", PlsDocBundle.message("name.cwt.localisationColor"));
-	
-	
 	
 	override fun toString(): String {
 		return text

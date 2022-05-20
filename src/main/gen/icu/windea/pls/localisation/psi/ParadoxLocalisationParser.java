@@ -38,7 +38,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(COMMAND_FIELD, COMMAND_IDENTIFIER, COMMAND_SCOPE),
     create_token_set_(COLORFUL_TEXT, COMMAND, ESCAPE, ICON,
-      PROPERTY_REFERENCE, RICH_TEXT, SEQUENTIAL_NUMBER, STRING),
+      PROPERTY_REFERENCE, RICH_TEXT, STRING),
   };
 
   /* ********************************************************** */
@@ -506,7 +506,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_reference | command | icon | sequential_number | colorful_text | escape | string
+  // property_reference | command | icon | colorful_text | escape | string
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
     boolean r;
@@ -514,7 +514,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     r = property_reference(b, l + 1);
     if (!r) r = command(b, l + 1);
     if (!r) r = icon(b, l + 1);
-    if (!r) r = sequential_number(b, l + 1);
     if (!r) r = colorful_text(b, l + 1);
     if (!r) r = escape(b, l + 1);
     if (!r) r = string(b, l + 1);
@@ -532,19 +531,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "root", c)) break;
     }
     return true;
-  }
-
-  /* ********************************************************** */
-  // SEQUENTIAL_NUMBER_START SEQUENTIAL_NUMBER_ID SEQUENTIAL_NUMBER_END
-  public static boolean sequential_number(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "sequential_number")) return false;
-    if (!nextTokenIs(b, SEQUENTIAL_NUMBER_START)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, SEQUENTIAL_NUMBER, null);
-    r = consumeTokens(b, 1, SEQUENTIAL_NUMBER_START, SEQUENTIAL_NUMBER_ID, SEQUENTIAL_NUMBER_END);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
   }
 
   /* ********************************************************** */

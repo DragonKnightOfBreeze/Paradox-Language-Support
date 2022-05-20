@@ -7,7 +7,6 @@ l_english:
  KEY_WITH_REFERENCE:0 "Reference text: $KEY$"
  KEY_WITH_COLORFUL_REFERENCE:0 "Reference text with parameter: $KEY|Y$"
  KEY_WITH_ICON:0 "Icon: £unity£"
- KEY_WITH_SEQUENTIAL_NUMBER:0 "Sequential number: %R%"
  KEY_WITH_COMMAND:0 "Command: [Root.GetName]"
  KEY_WITH_COLORFUL_TEXT:0 "Colorful text: §RRed text§!"
  EMPTY:0 ""

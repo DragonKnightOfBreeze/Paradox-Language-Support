@@ -51,7 +51,6 @@ object ParadoxLocalisationTextHintsRenderer {
 			is ParadoxLocalisationEscape -> renderEscapeTo(element, editor, builder, truncateRemain)
 			is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, editor, builder, truncateRemain)
 			is ParadoxLocalisationIcon -> renderIconTo(element, editor, builder, truncateRemain)
-			is ParadoxLocalisationSequentialNumber -> renderSequentialNumberTo(element, editor, builder, truncateRemain)
 			is ParadoxLocalisationCommand -> renderCodeTo(element, editor, builder, truncateRemain)
 			is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, editor, builder, truncateRemain)
 			else -> true
@@ -115,17 +114,6 @@ object ParadoxLocalisationTextHintsRenderer {
 			}
 		}
 		return true
-	}
-	
-	private fun PresentationFactory.renderSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, editor: Editor, builder: MutableList<InlayPresentation>, truncateRemain: AtomicInteger): Boolean {
-		val placeholderText = element.sequentialNumberConfig?.placeholderText
-		if(placeholderText != null) {
-			builder.add(truncatedSmallText(placeholderText, truncateRemain))
-			return continueProcess(truncateRemain)
-		}
-		//如果处理文本失败，则直接使用原始文本
-		builder.add(truncatedSmallText(element.text, truncateRemain))
-		return continueProcess(truncateRemain)
 	}
 	
 	private fun PresentationFactory.renderCodeTo(element: ParadoxLocalisationCommand, editor: Editor, builder: MutableList<InlayPresentation>, truncateRemain: AtomicInteger): Boolean {

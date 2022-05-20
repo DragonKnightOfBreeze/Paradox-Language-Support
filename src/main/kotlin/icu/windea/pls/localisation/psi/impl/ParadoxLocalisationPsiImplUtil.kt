@@ -136,31 +136,6 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxLocalisationSequentialNumber
-	@JvmStatic
-	fun getIcon(element: ParadoxLocalisationSequentialNumber, @IconFlags flags: Int): Icon {
-		return PlsIcons.localisationSequentialNumberIcon
-	}
-	
-	@JvmStatic
-	fun getName(element: ParadoxLocalisationSequentialNumber): String {
-		return element.sequentialNumberId?.text.orEmpty()
-	}
-	
-	@JvmStatic
-	fun setName(element: ParadoxLocalisationSequentialNumber, name: String): ParadoxLocalisationSequentialNumber {
-		val newNameElement = ParadoxLocalisationElementFactory.createSequentialNumber(element.project, name).sequentialNumberId!!
-		element.sequentialNumberId?.replace(newNameElement)
-		return element
-	}
-	
-	@JvmStatic
-	fun getReference(element: ParadoxLocalisationSequentialNumber): ParadoxLocalisationSequentialNumberReference? {
-		val rangeInElement = element.sequentialNumberId?.textRangeInParent ?: return null
-		return ParadoxLocalisationSequentialNumberReference(element, rangeInElement)
-	}
-	//endregion
-	
 	//region ParadoxLocalisationColorfulText
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationColorfulText): String {

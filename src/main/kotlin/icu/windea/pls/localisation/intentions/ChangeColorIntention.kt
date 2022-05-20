@@ -51,7 +51,7 @@ class ChangeColorIntention : IntentionAction {
 		
 		override fun onChosen(selectedValue: ParadoxColorConfig, finalChoice: Boolean): PopupStep<*>? {
 			runUndoTransparentWriteAction {
-				value.changeColorId(selectedValue.id)
+				value.setName(selectedValue.id)
 			}
 			return PopupStep.FINAL_CHOICE
 		}

@@ -23,7 +23,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
 			element is ParadoxLocalisationLocale -> getLocaleConfig(element)
 			element is ParadoxLocalisationIcon -> getIconInfo(element)
-			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberConfig(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
 			element is ParadoxLocalisationColorfulText -> getColorConfig(element)
@@ -60,13 +59,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getSequentialNumberConfig(element: ParadoxLocalisationSequentialNumber): String {
-		val name = element.name
-		return buildString {
-			buildSequentialNumberDefinition(name)
-		}
-	}
-	
 	private fun getCommandScopeInfo(element: ParadoxLocalisationCommandScope): String {
 		val name = element.name
 		return buildString {
@@ -93,7 +85,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			element is ParadoxLocalisationProperty -> getPropertyDoc(element)
 			element is ParadoxLocalisationLocale -> getLocaleDoc(element)
 			element is ParadoxLocalisationIcon -> getIconDoc(element)
-			element is ParadoxLocalisationSequentialNumber -> getSequentialNumberDoc(element)
 			element is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
 			element is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
 			element is ParadoxLocalisationColorfulText -> getColorDoc(element)
@@ -130,14 +121,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val name = element.name
 		return buildString {
 			buildIconDefinition(name)
-		}
-	}
-	
-	private fun getSequentialNumberDoc(element: ParadoxLocalisationSequentialNumber): String {
-		val name = element.name
-		return buildString {
-			buildSequentialNumberDefinition(name)
-			buildSequentialNumberContent(element)
 		}
 	}
 	
@@ -225,23 +208,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		definition {
 			//加上元素定义信息
 			append(PlsDocBundle.message("name.localisation.icon")).append(" <b>").append(name).append("</b>")
-		}
-	}
-	
-	private fun StringBuilder.buildSequentialNumberDefinition(name: String) {
-		definition {
-			//加上元素定义信息
-			append(PlsDocBundle.message("name.localisation.sequentialNumber")).append(" <b>").append(name).append("</b>")
-		}
-	}
-	
-	private fun StringBuilder.buildSequentialNumberContent(element: ParadoxLocalisationSequentialNumber) {
-		//加上描述
-		val sequentialNumberConfig = element.sequentialNumberConfig
-		if(sequentialNumberConfig != null) {
-			content {
-				append(sequentialNumberConfig.description) //接受HTML
-			}
 		}
 	}
 	

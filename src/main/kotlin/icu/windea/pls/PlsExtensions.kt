@@ -164,7 +164,6 @@ private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 				parentName == "scope_groups" -> CwtConfigType.ScopeGroup
 				//from internal config
 				parentName == "locales" -> CwtConfigType.LocalisationLocale
-				parentName == "sequential_numbers" -> CwtConfigType.LocalisationSequentialNumber
 				parentName == "colors" -> CwtConfigType.LocalisationColor
 				else -> null
 			}
@@ -377,9 +376,6 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
 		}
 		return null
 	}
-
-val ParadoxLocalisationSequentialNumber.sequentialNumberConfig: ParadoxSequentialNumberConfig?
-	get() = getInternalConfig(project).sequentialNumberMap[name]
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig?
 	get() = getInternalConfig(project).colorMap[name]

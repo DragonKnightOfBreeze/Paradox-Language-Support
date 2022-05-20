@@ -11,8 +11,6 @@ class InternalConfigGroup(
 	val defaultLocale: ParadoxLocaleConfig
 	val localeMap: Map<String, ParadoxLocaleConfig>
 	val localeFlagMap: Map<String, ParadoxLocaleConfig>
-	val sequentialNumbers: Array<ParadoxSequentialNumberConfig>
-	val sequentialNumberMap: Map<String, ParadoxSequentialNumberConfig>
 	val colors: Array<ParadoxColorConfig>
 	val colorMap: Map<String, ParadoxColorConfig>
 	
@@ -20,12 +18,12 @@ class InternalConfigGroup(
 		//初始化locale数据
 		val declarationsConfig = configMap.getValue("declarations.cwt")
 		var localesConfig: CwtPropertyConfig? = null
-		var sequentialNumbersConfig: CwtPropertyConfig ? = null
+		//var sequentialNumbersConfig: CwtPropertyConfig ? = null
 		var colorsConfig: CwtPropertyConfig ? = null
 		for(prop in declarationsConfig.properties) {
 			when(prop.key){
 				"locales" -> localesConfig = prop
-				"sequential_numbers" -> sequentialNumbersConfig = prop
+				//"sequential_numbers" -> sequentialNumbersConfig = prop
 				"colors" -> colorsConfig = prop
 			}
 		}
@@ -40,14 +38,14 @@ class InternalConfigGroup(
 		localeFlagMap = locales.associateBy { it.languageTag }
 		defaultLocale = localeFlagMap.getValue("")
 		
-		//初始化sequentialNumber数据
-		sequentialNumbers = sequentialNumbersConfig!!.properties!!.mapToArray {
-			val id = it.key
-			val description = it.documentation.orEmpty()
-			val placeholderText = it.properties?.find { p -> p.key == "placeholder_text" }?.stringValue!!
-			ParadoxSequentialNumberConfig(id, description, placeholderText, it.pointer)
-		}
-		sequentialNumberMap = sequentialNumbers.associateBy { it.id }
+		////初始化sequentialNumber数据
+		//sequentialNumbers = sequentialNumbersConfig!!.properties!!.mapToArray {
+		//	val id = it.key
+		//	val description = it.documentation.orEmpty()
+		//	val placeholderText = it.properties?.find { p -> p.key == "placeholder_text" }?.stringValue!!
+		//	ParadoxSequentialNumberConfig(id, description, placeholderText, it.pointer)
+		//}
+		//sequentialNumberMap = sequentialNumbers.associateBy { it.id }
 		
 		//初始化color数据
 		colors = colorsConfig!!.properties!!.mapToArray {

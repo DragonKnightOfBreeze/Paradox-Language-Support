@@ -57,7 +57,7 @@ property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
 private property_recover ::= !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
 
 private property_value_item ::= (rich_text | COLORFUL_TEXT_END) * //允许多余的彩色文本结束标记（"§!"）
-rich_text ::= property_reference | command | icon | sequential_number | colorful_text | escape | string
+rich_text ::= property_reference | command | icon | colorful_text | escape | string
 
 string ::= STRING_TOKEN{
   extends=rich_text
@@ -82,12 +82,6 @@ icon ::= ICON_START icon_name [PARAMETER_SEPARATOR [icon_param]] ICON_END {
 }
 private icon_name ::= command | property_reference | ICON_ID
 private icon_param ::= ICON_PARAMETER | property_reference
-
-sequential_number ::= SEQUENTIAL_NUMBER_START SEQUENTIAL_NUMBER_ID SEQUENTIAL_NUMBER_END {
-  pin=1
-  extends=rich_text
-  methods=[getIcon getName setName getReference]
-}
 
 command ::= COMMAND_START command_expression? COMMAND_END{
   pin=1

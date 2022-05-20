@@ -28,7 +28,6 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 %state WAITING_ICON
 %state WAITING_ICON_NAME_FINISHED
 %state WAITING_ICON_PARAMETER
-%state WAITING_SEQUENTIAL_NUMBER
 %state WAITING_COMMAND_SCOPE_OR_FIELD
 %state WAITING_COMMAND_SEPARATOR
 %state WAITING_COLOR_ID
@@ -36,7 +35,6 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 
 %state WAITING_CHECK_PROPERTY_REFERENCE_START
 %state WAITING_CHECK_ICON_START
-%state WAITING_CHECK_SEQUENTIAL_NUMBER_START
 %state WAITING_CHECK_COMMAND_START
 %state WAITING_CHECK_COLORFUL_TEXT_START
 %state WAITING_CHECK_RIGHT_QUOTE
@@ -93,11 +91,6 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 	    return isExactLetter(c) || isExactDigit(c) || c == '_';
     }
     
-    private boolean isSequentialNumberStart(){
-		  if(yylength() != 3) return false;
-	    return yycharat(2) == '%';
-    }
-    
     private boolean isCommandStart(){
 		  if(yylength() <= 1) return false;
 	    return yycharat(yylength()-1) == ']';
@@ -133,7 +126,6 @@ PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-']+
 PROPERTY_REFERENCE_PARAMETER_TOKEN=[a-zA-Z0-9+\-*%=\[.\]]+
 ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_PARAMETER=[a-zA-Z0-9+\-*%=]+
-SEQUENTIAL_NUMBER_ID=[a-zA-Z]
 COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\.
 COMMAND_SEPARATOR=\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
@@ -144,7 +136,6 @@ STRING_TOKEN=[^\"%$£§\[\r\n\\]+
 CHECK_LOCALE_ID=[a-z_]+:\s*[\r\n]
 CHECK_PROPERTY_REFERENCE_START=\$[^\$\s\"]*.?
 CHECK_ICON_START=£.?
-CHECK_SEQUENTIAL_NUMBER_START=%.?.?
 CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@\s&&[^\r\n]]*.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
@@ -217,7 +208,6 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {propertyReferenceLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
-  "%" {yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);}
   "[" {commandLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;} //允许多余的重置颜色标记
@@ -277,17 +267,6 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   {ICON_PARAMETER} {return ICON_PARAMETER;}
 }
-
-<WAITING_SEQUENTIAL_NUMBER>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
-  {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
-  \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
-  "%" {yybegin(nextStateForText()); return SEQUENTIAL_NUMBER_END;}
-  "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
-  "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  {SEQUENTIAL_NUMBER_ID} {return SEQUENTIAL_NUMBER_ID;}
-}
-
 <WAITING_COMMAND_SCOPE_OR_FIELD>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
@@ -327,7 +306,6 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "$" {propertyReferenceLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
   "£" {yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);}
-  "%" {yypushback(yylength()); yybegin(WAITING_CHECK_SEQUENTIAL_NUMBER_START);}
   "[" {commandLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
@@ -368,22 +346,6 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
     if(isIconStart){
     	  yybegin(WAITING_ICON);
     	  return ICON_START;
-    }else{
-        yybegin(nextStateForText());
-        return STRING_TOKEN;
-    }
-  }
-}
-<WAITING_CHECK_SEQUENTIAL_NUMBER_START>{
-  {CHECK_SEQUENTIAL_NUMBER_START} {
-    //特殊处理
-    //如果匹配的字符串的第3个字符存在且为百分号，则认为整个字符串代表一个编号
-    //否则认为是常规字符串
-    boolean isSequentialNumberStart = isSequentialNumberStart();
-    yypushback(yylength()-1);
-    if(isSequentialNumberStart){
-        yybegin(WAITING_SEQUENTIAL_NUMBER);
-        return SEQUENTIAL_NUMBER_START;
     }else{
         yybegin(nextStateForText());
         return STRING_TOKEN;

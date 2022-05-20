@@ -7,6 +7,7 @@
 ## 0.6 > 0.6.0
 
 * [ ] 完善在线参考文档
+* [ ] 本地化文件语法解析优化：删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
 * [ ] 脚本文件语法解析优化：兼容`stellaris v3.3`开始新增的`script_value`语法
 * [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [ ] 兼容`stellaris v3.4`开始新增的`tag`语法

@@ -67,15 +67,4 @@
       <option name="PARADOX_LOCALISATION" value="true"/>
     </context>
   </template>
-  <template name="number"
-            value="%$CODE$%$END$"
-            description="Insert a sequential number fragment"
-            toReformat="false" toShortenFQNames="true">
-    <variable name="CODE"
-              expression="enum(&quot;C&quot;,&quot;O&quot;&quot;R&quot;)"
-              alwaysStopAt="true"/>
-    <context>
-      <option name="PARADOX_LOCALISATION" value="true"/>
-    </context>
-  </template>
 </templateSet>

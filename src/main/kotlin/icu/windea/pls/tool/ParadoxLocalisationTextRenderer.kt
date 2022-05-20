@@ -30,7 +30,6 @@ object ParadoxLocalisationTextRenderer {
 			is ParadoxLocalisationEscape -> renderEscapeTo(element, builder)
 			is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, builder)
 			is ParadoxLocalisationIcon -> renderIconTo(element, builder)
-			is ParadoxLocalisationSequentialNumber -> renderSequentialNumberTo(element, builder)
 			is ParadoxLocalisationCommand -> renderCodeTo(element, builder)
 			is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, builder)
 		}
@@ -88,16 +87,6 @@ object ParadoxLocalisationTextRenderer {
 			val usedHeight = docFontSize
 			builder.appendImgTag(iconUrl, usedWidth, usedHeight)
 		}
-	}
-	
-	private fun renderSequentialNumberTo(element: ParadoxLocalisationSequentialNumber, builder: StringBuilder) {
-		val placeholderText = element.sequentialNumberConfig?.placeholderText
-		if(placeholderText != null) {
-			builder.append(placeholderText)
-			return
-		}
-		//如果处理文本失败，则直接使用原始文本
-		builder.append("<code>").append(element.text).append("</code>")
 	}
 	
 	private fun renderCodeTo(element: ParadoxLocalisationCommand, builder: StringBuilder) {

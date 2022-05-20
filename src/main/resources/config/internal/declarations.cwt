@@ -40,21 +40,21 @@ locales = {
 	}
 }
 
-### Localisation sequential number
-sequential_numbers = {
-	### Cardinal Number 1, 2, 3...
-	C = {
-		placeholder_text = "1"
-	}
-	### Ordinal Number 1st, 2nd, 3rd...
-	O = {
-		placeholder_text = "1st"
-	}
-	### Roman Number I, II, III...
-	R = {
-		placeholder_text = "I"
-	}
-}
+# ### Localisation sequential number
+# sequential_numbers = {
+# 	### Cardinal Number 1, 2, 3...
+# 	C = {
+# 		placeholder_text = "1"
+# 	}
+# 	### Ordinal Number 1st, 2nd, 3rd...
+# 	O = {
+# 		placeholder_text = "1st"
+# 	}
+# 	### Roman Number I, II, III...
+# 	R = {
+# 		placeholder_text = "I"
+# 	}
+# }
 
 ### Localisation color
 ### See cwt rule: <code>complex_enum[textcolors]</code>

@@ -90,10 +90,6 @@
       <category>Paradox localisation</category>
     </intentionAction>
     <intentionAction>
-      <className>icu.windea.pls.localisation.intentions.ChangeSequentialNumberIntention</className>
-      <category>Paradox localisation</category>
-    </intentionAction>
-    <intentionAction>
       <className>icu.windea.pls.localisation.intentions.CopyRawTextIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
@@ -111,11 +107,6 @@
                      bundle="messages.PlsBundle" key="localisation.inspection.unsupportedLocale"
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.UnsupportedLocaleInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedSequentialNumber"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="localisation.inspection.unsupportedSequentialNumber"
-                     groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
-                     implementationClass="icu.windea.pls.localisation.inspections.UnsupportedSequentialNumberInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedColor"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="localisation.inspection.unsupportedColor"

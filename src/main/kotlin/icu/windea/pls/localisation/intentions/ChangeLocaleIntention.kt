@@ -51,7 +51,7 @@ class ChangeLocaleIntention : IntentionAction {
 		
 		override fun onChosen(selectedValue: ParadoxLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
 			runUndoTransparentWriteAction {
-				value.changeLocaleId(selectedValue.id)
+				value.setName(selectedValue.id)
 			}
 			return PopupStep.FINAL_CHOICE
 		}
