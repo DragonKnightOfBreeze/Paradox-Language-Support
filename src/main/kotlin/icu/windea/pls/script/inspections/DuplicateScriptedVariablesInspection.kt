@@ -12,12 +12,12 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 /**
- * 同一文件中重复的变量声明的检查。
+ * 同一文件中重复的封装变量声明的检查。
  *
  * 提供快速修复：
  * * 导航到重复项
  */
-class DuplicateVariablesInspection : LocalInspectionTool() {
+class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(holder)
 	}
@@ -31,7 +31,7 @@ class DuplicateVariablesInspection : LocalInspectionTool() {
 				for(value in values) {
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
 					val location = value.variableName
-					holder.registerProblem(location, PlsBundle.message("script.inspection.duplicateVariables.description", name),
+					holder.registerProblem(location, PlsBundle.message("script.inspection.duplicateScriptedVariables.description", name),
 						NavigateToDuplicates(name, value, values)
 					)
 				}
@@ -46,9 +46,9 @@ class DuplicateVariablesInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getFamilyName() = PlsBundle.message("script.inspection.duplicateVariables.quickFix.1")
+		override fun getFamilyName() = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1")
 		
-		override fun getText() = PlsBundle.message("script.inspection.duplicateVariables.quickFix.1")
+		override fun getText() = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return
@@ -70,10 +70,10 @@ class DuplicateVariablesInspection : LocalInspectionTool() {
 			values: List<ParadoxScriptVariable>,
 			private val key: String,
 			private val editor: Editor
-		) : BaseListPopupStep<ParadoxScriptVariable>(PlsBundle.message("script.inspection.duplicateVariables.quickFix.1.popup.header", key), values) {
+		) : BaseListPopupStep<ParadoxScriptVariable>(PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.header", key), values) {
 			override fun getIconFor(value: ParadoxScriptVariable) = value.icon
 			
-			override fun getTextFor(value: ParadoxScriptVariable) = PlsBundle.message("script.inspection.duplicateVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+			override fun getTextFor(value: ParadoxScriptVariable) = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex(): Int = 0
 			

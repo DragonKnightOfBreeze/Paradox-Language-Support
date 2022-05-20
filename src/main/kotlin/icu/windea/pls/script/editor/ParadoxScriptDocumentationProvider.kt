@@ -22,16 +22,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
-			is ParadoxScriptVariable -> getVariableInfo(element)
+			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			else -> null
 		}
 	}
 	
-	private fun getVariableInfo(element: ParadoxScriptVariable): String {
+	private fun getScriptedVariableInfo(element: ParadoxScriptVariable): String {
 		val name = element.name
 		return buildString {
-			buildVariableDefinition(element, name)
+			buildScriptedVariableDefinition(element, name)
 		}
 	}
 	
@@ -53,16 +53,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
-			is ParadoxScriptVariable -> getVariableDoc(element)
+			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			else -> null
 		}
 	}
 	
-	private fun getVariableDoc(element: ParadoxScriptVariable): String {
+	private fun getScriptedVariableDoc(element: ParadoxScriptVariable): String {
 		val name = element.name
 		return buildString {
-			buildVariableDefinition(element, name)
+			buildScriptedVariableDefinition(element, name)
 			buildLineCommentContent(element)
 		}
 	}
@@ -91,12 +91,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildVariableDefinition(element: ParadoxScriptVariable, name: String) {
+	private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptVariable, name: String) {
 		definition {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo, element.project)
 			//加上定义信息
-			append(PlsDocBundle.message("name.script.variable")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 		}
 	}

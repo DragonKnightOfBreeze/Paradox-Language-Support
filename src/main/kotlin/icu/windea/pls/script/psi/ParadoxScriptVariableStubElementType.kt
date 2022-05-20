@@ -32,7 +32,7 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	
 	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {
 		//索引scripted_variable的name
-		stub.name?.let { name -> sink.occurrence(ParadoxScriptVariableNameIndex.key, name) }
+		stub.name?.let { name -> sink.occurrence(ParadoxScriptedVariableNameIndex.key, name) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {

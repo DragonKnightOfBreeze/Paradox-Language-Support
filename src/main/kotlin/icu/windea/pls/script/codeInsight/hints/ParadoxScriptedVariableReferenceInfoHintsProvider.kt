@@ -10,16 +10,16 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 变量引用信息的内嵌提示（变量的值）。
+ * 封装变量引用信息的内嵌提示（变量的值）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxVariableReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
+class ParadoxScriptedVariableReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxVariableReferenceInfoHintsSettingsKey")
 	}
 	
-	override val name: String get() = PlsBundle.message("script.hints.variableReferenceInfo")
-	override val description: String get() = PlsBundle.message("script.hints.variableReferenceInfo.description")
+	override val name: String get() = PlsBundle.message("script.hints.scriptedVariableReferenceInfo")
+	override val description: String get() = PlsBundle.message("script.hints.scriptedVariableReferenceInfo.description")
 	override val key: SettingsKey<NoSettings> get() = settingsKey
 	
 	override fun createSettings() = NoSettings()

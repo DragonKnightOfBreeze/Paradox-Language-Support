@@ -404,11 +404,11 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
 
 //region Find Extensions
 /**
- * 根据名字在指定文件中递归查找脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * 根据名字在指定文件中递归查找封装变量（scriptedVariable）。（不一定声明在顶层）
  * @param name 变量的名字，以"@"开始。
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，递归向上查找。
  */
-fun findScriptVariableInFile(name: String, context: PsiElement): ParadoxScriptVariable? {
+fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScriptVariable? {
 	//在整个脚本文件中递归向上查找，返回查找到的第一个
 	var result: ParadoxScriptVariable? = null
 	var current = context
@@ -427,15 +427,15 @@ fun findScriptVariableInFile(name: String, context: PsiElement): ParadoxScriptVa
 }
 
 /**
- * 根据名字在指定文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * 根据名字在指定文件中递归查找所有的封装变量（scriptedVariable）。（不一定声明在顶层）
  * @param name 变量的名字，以"@"开始。
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，向上查找。
  */
-fun findScriptVariablesInFile(name: String, context: PsiElement): List<ParadoxScriptVariable> {
+fun findScriptedVariablesInFile(name: String, context: PsiElement): List<ParadoxScriptVariable> {
 	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
 	var result: MutableList<ParadoxScriptVariable>? = null
 	var current = context
-	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
+	while(current !is PsiFile) {
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
 			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
@@ -452,7 +452,7 @@ fun findScriptVariablesInFile(name: String, context: PsiElement): List<ParadoxSc
 }
 
 /**
- * 在当前文件中递归查找所有的脚本变量（scriptedVariable）。（不一定定义在顶层）
+ * 在当前文件中递归查找所有的封装变量（scriptedVariable）。（不一定声明在顶层）
  * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
  */
 fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false): List<ParadoxScriptVariable> {
@@ -460,7 +460,7 @@ fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false)
 	var result: MutableList<ParadoxScriptVariable>? = null
 	val namesToDistinct = if(distinct) mutableSetOf<String>() else null
 	var current = context
-	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
+	while(current !is PsiFile) {
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
 			if(prevSibling is ParadoxScriptVariable) {
@@ -478,51 +478,51 @@ fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false)
 }
 
 /**
- * 基于脚本变量名字索引，根据名字查判断是否存在脚本变量（scriptedVariable）。
+ * 基于封装变量名字索引，根据名字查判断是否存在封装变量（scriptedVariable）。
  * @param name 变量的名字，以"@"开始。
  */
-fun existsScriptVariable(
+fun existsScriptedVariable(
 	name: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): Boolean {
-	return ParadoxScriptVariableNameIndex.exists(name, project, scope)
+	return ParadoxScriptedVariableNameIndex.exists(name, project, scope)
 }
 
 /**
- * 基于脚本变量名字索引，根据名字查找脚本变量（scriptedVariable）。
+ * 基于封装变量名字索引，根据名字查找封装变量（scriptedVariable）。
  * @param name 变量的名字，以"@"开始。
  */
-fun findScriptVariable(
+fun findScriptedVariable(
 	name: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): ParadoxScriptVariable? {
-	return ParadoxScriptVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden)
+	return ParadoxScriptedVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden)
 }
 
 /**
- * 基于脚本变量名字索引，根据名字查找所有的脚本变量（scriptedVariable）。
+ * 基于封装变量名字索引，根据名字查找所有的封装变量（scriptedVariable）。
  * @param name 变量的名字，以"@"开始。
  */
-fun findScriptVariables(
+fun findScriptedVariables(
 	name: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
 ): List<ParadoxScriptVariable> {
-	return ParadoxScriptVariableNameIndex.findAll(name, project, scope)
+	return ParadoxScriptedVariableNameIndex.findAll(name, project, scope)
 }
 
 /**
- * 基于脚本变量名字索引，查找所有的脚本变量（scriptedVariable）。
+ * 基于封装变量名字索引，查找所有的封装变量（scriptedVariable）。
  * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
  */
-fun findAllScriptVariables(
+fun findAllScriptedVariables(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false
 ): List<ParadoxScriptVariable> {
-	return ParadoxScriptVariableNameIndex.findAll(project, scope, distinct)
+	return ParadoxScriptedVariableNameIndex.findAll(project, scope, distinct)
 }
 
 /**

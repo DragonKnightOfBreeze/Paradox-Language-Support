@@ -14,7 +14,7 @@
     <stubElementTypeHolder
         class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes"
         externalIdPrefix="paradoxScript."/>
-    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptVariableNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
 
@@ -67,11 +67,11 @@
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxVariableReferenceInfoHintsProvider" order="after ParadoxDefinitionLocalizedNameHintsProvider"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxVariableReferenceInfoHintsProvider"/>
+        id="ParadoxScriptedVariableReferenceInfoHintsProvider" order="after ParadoxDefinitionLocalizedNameHintsProvider"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxDefinitionReferenceInfoHintsProvider" order="after ParadoxVariableReferenceInfoHintsProvider"
+        id="ParadoxDefinitionReferenceInfoHintsProvider" order="after ParadoxScriptedVariableReferenceInfoHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
@@ -127,16 +127,16 @@
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedVariable"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedScriptedVariable"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.unresolvedVariable"
+                     bundle="messages.PlsBundle" key="script.inspection.unresolvedScriptedVariable"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.UnresolvedVariableInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.UnresolvedScriptedVariableInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateVariables"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.duplicateVariables"
+                     bundle="messages.PlsBundle" key="script.inspection.duplicateScriptedVariables"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
-                     implementationClass="icu.windea.pls.script.inspections.DuplicateVariablesInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.DuplicateScriptedVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"

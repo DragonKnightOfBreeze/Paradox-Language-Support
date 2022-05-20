@@ -8,14 +8,14 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 无法解析的变量引用的检查。
+ * 无法解析的封装变量引用的检查。
  *
  * 提供快速修复：
  * * TODO 声明本地变量（在同一文件中）
- * * TODO 声明全局变量（在`common/script_variables`目录下的某一文件中）
+ * * TODO 声明全局变量（在`common/scripted_variables`目录下的某一文件中）
  * * TODO 导入游戏目录或模组目录
  */
-class UnresolvedVariableInspection : LocalInspectionTool() {
+class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
 		return Visitor(holder, session)
 	}
@@ -26,7 +26,7 @@ class UnresolvedVariableInspection : LocalInspectionTool() {
 			if(reference.resolve() != null) return
 			val location = element.variableReferenceId
 			holder.registerProblem(
-				location, PlsBundle.message("script.inspection.unresolvedVariable.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+				location, PlsBundle.message("script.inspection.unresolvedScriptedVariable.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				//IntroduceLocalVariable(variableName, element, session),
 				//IntroduceGlobalVariable(variableName, element, session),
 				//ImportGameOrModDirectory(element)
@@ -39,9 +39,9 @@ class UnresolvedVariableInspection : LocalInspectionTool() {
 		element: ParadoxScriptVariableReference,
 		session: LocalInspectionToolSession
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedVariable.quickFix.1", variableName)
+		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.1", variableName)
 		
-		override fun getText() = PlsBundle.message("script.inspection.unresolvedVariable.quickFix.1", variableName)
+		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.1", variableName)
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			//TODO
@@ -53,9 +53,9 @@ class UnresolvedVariableInspection : LocalInspectionTool() {
 		element: ParadoxScriptVariableReference,
 		session: LocalInspectionToolSession
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedVariable.quickFix.2", variableName)
+		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.2", variableName)
 		
-		override fun getText() = PlsBundle.message("script.inspection.unresolvedVariable.quickFix.2", variableName)
+		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.2", variableName)
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			//TODO
