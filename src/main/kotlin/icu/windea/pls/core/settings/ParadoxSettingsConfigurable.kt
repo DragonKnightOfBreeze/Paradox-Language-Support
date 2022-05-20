@@ -81,15 +81,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					label(PlsBundle.message("settings.localisation.primaryLocale")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.localisation.primaryLocale.tooltip")
 					}
-					val values = getInternalConfig().localeMap.keys.toList()
-					comboBox(values, listCellRenderer { value, _, _ ->
+					comboBox(settings.locales, listCellRenderer { value, _, _ ->
 						//不使用value.description
-						val languageTag = getInternalConfig().localeMap.getValue(value).languageTag
-						if(languageTag.isEmpty()) {
+						if(value == "") {
 							text = PlsBundle.message("settings.localisation.primaryLocale.default")
 						} else {
-							//基于dynamicBundle的语言区域，而非系统默认的
-							text = Locale.forLanguageTag(languageTag).getDisplayName(DynamicBundle.getLocale())
+							text = getInternalConfig().localeMap.getValue(value).description
 						}
 					})
 						.bindItem(settings::localisationPrimaryLocale.toNullableProperty())

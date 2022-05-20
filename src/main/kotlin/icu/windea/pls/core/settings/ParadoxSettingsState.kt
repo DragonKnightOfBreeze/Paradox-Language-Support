@@ -29,13 +29,17 @@ data class ParadoxSettingsState(
 	@JvmField var scriptRenderLineComment: Boolean = false,
 	@JvmField var scriptRenderRelatedLocalisation: Boolean = true,
 	@JvmField var scriptRenderRelatedPictures: Boolean = true,
-	@JvmField var localisationPrimaryLocale: String = "l_default",
+	@JvmField var localisationPrimaryLocale: String = "auto",
 	@JvmField var localisationTruncateLimit: Int = 30,
 	@JvmField var localisationRenderLineComment: Boolean = false,
 	@JvmField var localisationRenderLocalisation: Boolean = true
 ) : PersistentStateComponent<ParadoxSettingsState> {
 	var finalScriptIgnoredFileNames = scriptIgnoredFileNames.toCommaDelimitedStringSet(ignoreCase = true)
-	val finalLocalisationPrimaryLocale get() = getInternalConfig().localeMap.getValue(localisationPrimaryLocale)
+	
+	val locales = buildList {
+		add("")
+		addAll(getInternalConfig().localeMap.keys)
+	}
 	
 	override fun getState() = this
 	

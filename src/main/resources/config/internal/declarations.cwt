@@ -1,42 +1,47 @@
 ### Localisation locale
+### See: <code>localisation/languages.yml</code>
 ### See cwt rule: <code>enum[font_languages]</code>
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Creating_Localisation_Files">Creating Localisation Files</a>
 locales = {
-	### Default
-	l_default = {
-		language_tag = ""
-	}
-	### Simple Chinese - zh 
-	l_simp_chinese = {
-		language_tag = "zh"
-	}
-	### English - en
+	### English
 	l_english = {
 		language_tag = "en"
 	}
-	### Brazil Portuguese - pt
+	### Brazilian Portuguese
 	l_braz_por = {
 		language_tag = "pt"
 	}
-	### French - fr
-	l_french = {
-		language_tag = "fr"
-	}
-	### German - de
+	### German
 	l_german = {
 		language_tag = "de"
 	}
-	### Polish - pl
+	### French
+	l_french = {
+		language_tag = "fr"
+	}
+	### Spanish
+	l_spanish = {
+		language_tag = "es"
+	}
+	### Polish
 	l_polish = {
 		language_tag = "pl"
 	}
-	### Russian - ru
+	### Russian
 	l_russian = {
 		language_tag = "ru"
 	}
-	### l_spanish - es
-	l_russian = {
-		language_tag = "es"
+	### Simple Chinese
+	l_simp_chinese = {
+		language_tag = "zh"
+	}
+	### Japanese
+	l_japanese = { # Since: stellaris v3.4
+		language_tag = "ja"
+	}
+	### Korean
+	l_korean = { # Since: stellaris v3.4
+		language_tag = "ko"
 	}
 }
 
@@ -57,63 +62,63 @@ locales = {
 # }
 
 ### Localisation color
-### See cwt rule: <code>complex_enum[textcolors]</code>
 ### See: <code>interface/fonts.gfx#bitmapfonts.textcolors</code>
+### See cwt rule: <code>complex_enum[textcolors]</code>
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes">Color Codes</a>
 colors = {
-	### Purple - #a335ee
+	### Purple
 	M = {
 		color_rgb = "#a335ee"
 	}
-	### Brown - #c3b091
+	### Brown
 	L = {
 		color_rgb = "#c3b091"
 	}
-	### Green - #29e126
+	### Green
 	G = {
 		color_rgb = "#29e126"
 	}
-	### Red - #29e126
+	### Red
 	R = {
 		color_rgb = "#fc5646"
 	}
-	### Blue - #33a7ff
+	### Blue
 	B = {
 		color_rgb = "#33a7ff"
 	}
-	### Yellow - #f7fc34
+	### Yellow
 	Y = {
 		color_rgb = "#f7fc34"
 	}
-	### Orange - #fbaa29
+	### Orange
 	H = {
 		color_rgb = "#fbaa29"
 	}
-	### Light Grey - #ffffff
+	### Light Grey
 	T = {
 		color_rgb = "#ffffff"
 	}
-	### Teal - #87ffcf
+	### Teal
 	E = {
 		color_rgb = "#87ffcf"
 	}
-	### Dark Orange - #e49c2a
+	### Dark Orange
 	S = {
 		color_rgb = "#e49c2a"
 	}
-	### White - #ffffff
+	### White
 	W = {
 		color_rgb = "#ffffff"
 	}
-	### Light Red - #e16e6e
+	### Light Red
 	P = {
 		color_rgb = "#e16e6e"
 	}
-	### Grey - #808080
+	### Grey
 	g = {
 		color_rgb = "#808080"
 	}
-	### Light Blue - #33a7ff
+	### Light Blue
 	l = {
 		color_rgb = "#33a7ff"
 	}

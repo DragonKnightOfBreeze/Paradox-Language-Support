@@ -49,8 +49,8 @@ fun getInternalConfig(project: Project = getDefaultProject()) = project.getServi
 fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
-	val usedLocale = getSettings().finalLocalisationPrimaryLocale
-	if(usedLocale != getInternalConfig().defaultLocale) return usedLocale
+	val primaryLocale = getSettings().localisationPrimaryLocale
+	if(primaryLocale.isNotEmpty()) return getInternalConfig().localeFlagMap[primaryLocale]
 	//如果是默认语言区域，则基于OS，如果没有对应的语言区域，则使用英文
 	val userLanguage = System.getProperty("user.language")
 	return getInternalConfig().localeFlagMap[userLanguage] ?: getInternalConfig().localeFlagMap["en"]

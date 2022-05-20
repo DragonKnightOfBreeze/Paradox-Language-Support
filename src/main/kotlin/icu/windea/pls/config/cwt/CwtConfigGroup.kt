@@ -421,16 +421,15 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveTagConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTagConfig? {
-		var since: String? = null
-		var supportedTypes: Set<String>? = null
 		val props = propertyConfig.properties ?: return null
+		val since = propertyConfig.options?.find { it -> it.key == "since" }?.stringValue
+		var supportedTypes: Set<String>? = null
 		for(prop in props) {
 			when(prop.key) {
-				"since" -> since = prop.stringValue
 				"supported_types" -> supportedTypes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			}
 		}
-		if(since == null || supportedTypes == null) return null //排除
+		if(supportedTypes == null) return null //排除
 		return CwtTagConfig(propertyConfig.pointer, name, since, supportedTypes)
 	}
 	

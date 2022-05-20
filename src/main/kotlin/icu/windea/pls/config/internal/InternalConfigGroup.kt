@@ -8,7 +8,6 @@ class InternalConfigGroup(
 	configMap: InternalConfigMap
 ) {
 	val locales: Array<ParadoxLocaleConfig>
-	val defaultLocale: ParadoxLocaleConfig
 	val localeMap: Map<String, ParadoxLocaleConfig>
 	val localeFlagMap: Map<String, ParadoxLocaleConfig>
 	val colors: Array<ParadoxColorConfig>
@@ -36,7 +35,6 @@ class InternalConfigGroup(
 		}
 		localeMap = locales.associateBy { it.id }
 		localeFlagMap = locales.associateBy { it.languageTag }
-		defaultLocale = localeFlagMap.getValue("")
 		
 		////初始化sequentialNumber数据
 		//sequentialNumbers = sequentialNumbersConfig!!.properties!!.mapToArray {

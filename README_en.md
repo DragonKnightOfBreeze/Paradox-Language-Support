@@ -26,10 +26,14 @@ For functions and usages of this plugin, please refer to the [Reference document
 
 # Reference
 
-Related links：
+Tools and plugins:
 
 * [cwtools/cwtools](https://github.com/cwtools/cwtools)
 * [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
+* [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 * [vincentzhang96/DDS4J](https://github.com/vincentzhang96/DDS4J)
+
+Wiki:
+
 * [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 * [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)

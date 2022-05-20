@@ -10,6 +10,6 @@ import icu.windea.pls.cwt.psi.*
 data class CwtTagConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	val name: String,
-	val since: String,
+	val since: String?,
 	val supportedTypes: Set<String>
 ): CwtConfig<CwtProperty>
