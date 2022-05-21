@@ -8,36 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import icu.windea.pls.script.psi.ParadoxScriptParameter;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.core.ParadoxValueType;
 
-public class ParadoxScriptCodeImpl extends ParadoxScriptValueImpl implements ParadoxScriptCode {
+public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptParameter implements ParadoxScriptInlineMathParameter {
 
-  public ParadoxScriptCodeImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathParameterImpl(ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitCode(this);
+    visitor.visitInlineMathParameter(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public ParadoxValueType getValueType() {
-    return ParadoxScriptPsiImplUtil.getValueType(this);
-  }
-
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
   }
 
 }

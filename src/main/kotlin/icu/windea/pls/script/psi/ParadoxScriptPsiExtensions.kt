@@ -15,9 +15,9 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
-val ParadoxScriptTag.tagToken: PsiElement get() = findRequiredChild(TAG_TOKEN)
+val ParadoxScriptParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
 
-private val PsiElement.isLazyParseable get() = elementType is ILazyParseableElementTypeBase
+val ParadoxScriptParameter.defaultValueToken: PsiElement? get() = findChild(NUMBER_TOKEN)
 
 /**
  * 如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。

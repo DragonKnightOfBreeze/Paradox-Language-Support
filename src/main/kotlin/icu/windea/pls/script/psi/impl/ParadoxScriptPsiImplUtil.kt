@@ -228,6 +228,18 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
+	//region ParadoxScriptNumber
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptNumber): ParadoxValueType {
+		return ParadoxValueType.NumberType
+	}
+	
+	@JvmStatic
+	fun getType(element: ParadoxScriptNumber): String? {
+		return null //TODO 支持定义元素的类型
+	}
+	//endregion
+	
 	//region ParadoxScriptInt
 	@JvmStatic
 	fun getIntValue(element: ParadoxScriptInt): Int {
@@ -458,14 +470,14 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxScriptCode
+	//region ParadoxScriptInlineMath
 	@JvmStatic
-	fun getValueType(element: ParadoxScriptCode): ParadoxValueType {
-		return ParadoxValueType.CodeType
+	fun getValueType(element: ParadoxScriptInlineMath): ParadoxValueType {
+		return ParadoxValueType.InlineMathType
 	}
 	
 	@JvmStatic
-	fun getType(element: ParadoxScriptCode): String? {
+	fun getType(element: ParadoxScriptInlineMath): String? {
 		return null //TODO 支持定义元素的类型
 	}
 	//endregion

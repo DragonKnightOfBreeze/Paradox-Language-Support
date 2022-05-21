@@ -13,13 +13,13 @@ class CwtValueTreeElement(
 		val element = element ?: return emptyList()
 		if(element !is CwtBlock) return emptyList()
 		//允许混合value和property
+		val result: MutableList<StructureViewTreeElement> = SmartList()
 		element.forEachChild {
-			when{
+			when {
 				it is CwtValue -> result.add(CwtValueTreeElement(it))
 				it is CwtProperty -> result.add(CwtPropertyTreeElement(it))
 			}
 		}
-		val result: MutableList<StructureViewTreeElement> = SmartList()
 		return result
 	}
 	

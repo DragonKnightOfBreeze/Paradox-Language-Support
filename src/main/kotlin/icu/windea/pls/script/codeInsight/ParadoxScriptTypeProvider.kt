@@ -19,6 +19,7 @@ import icu.windea.pls.script.psi.*
  * * 变量（variable） - 显示变量的值的类型。
  * * 属性（property） - 显示定义的类型（如果是定义），或者属性的值的类型。
  * * 值（value） - 显示定义元素的类型（如果是定义元素），或者值的类型。
+ * * 内联数学表达式的操作数（inline_math__factor） - 显示数字、变量引用或参数的值的类型。
  */
 class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression>() {
 	override fun getExpressionsAt(elementAt: PsiElement): List<ParadoxScriptExpression> {

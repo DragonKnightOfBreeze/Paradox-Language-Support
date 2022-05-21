@@ -4,12 +4,12 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
 import icu.windea.pls.core.ParadoxValueType;
 
-public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValue {
+public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 
-  boolean getBooleanValue();
+  @NotNull
+  List<ParadoxScriptInlineMathFactor> getInlineMathFactorList();
 
   @NotNull
   ParadoxValueType getValueType();

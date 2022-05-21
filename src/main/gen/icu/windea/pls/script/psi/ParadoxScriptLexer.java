@@ -738,7 +738,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 53: break;
           case 19: 
-            { yybegin(WAITING_PROPERTY_END); return CODE_END;
+            { yybegin(WAITING_PROPERTY_END); return INLINE_MATH_END;
             } 
             // fall through
           case 54: break;
@@ -793,7 +793,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 64: break;
           case 30: 
-            { yybegin(WAITING_CODE); return CODE_START;
+            { yybegin(WAITING_CODE); return INLINE_MATH_START;
             } 
             // fall through
           case 65: break;

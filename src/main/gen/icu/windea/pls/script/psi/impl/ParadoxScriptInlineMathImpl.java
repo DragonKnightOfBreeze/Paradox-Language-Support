@@ -11,21 +11,27 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.core.ParadoxValueType;
 
-public abstract class ParadoxScriptNumberImpl extends ParadoxScriptValueImpl implements ParadoxScriptNumber {
+public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implements ParadoxScriptInlineMath {
 
-  public ParadoxScriptNumberImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitNumber(this);
+    visitor.visitInlineMath(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptInlineMathFactor> getInlineMathFactorList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineMathFactor.class);
   }
 
   @Override

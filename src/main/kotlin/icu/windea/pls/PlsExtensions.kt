@@ -386,7 +386,7 @@ fun ParadoxScriptValue.inferValueType(): String? {
 		is ParadoxScriptString -> "string"
 		is ParadoxScriptColor -> "color"
 		is ParadoxScriptBlock -> "block"
-		is ParadoxScriptCode -> "code"
+		is ParadoxScriptInlineMath -> "code"
 		else -> null
 	}
 }

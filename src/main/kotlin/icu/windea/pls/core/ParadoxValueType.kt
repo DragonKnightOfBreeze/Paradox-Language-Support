@@ -14,11 +14,12 @@ enum class ParadoxValueType(
 	BooleanType("boolean", "boolean"),
 	IntType("int", "int"),
 	FloatType("float", "float"),
+	NumberType("number", "number"), //int | float
 	StringType("string", "string"),
 	ColorType("color", "color"),
 	BlockType("block", "block"),
 	
-	CodeType("code", "code");
+	InlineMathType("inline_math", "inline_math");
 	//TODO 补充高级类型
 	
 	override fun toString(): String {
