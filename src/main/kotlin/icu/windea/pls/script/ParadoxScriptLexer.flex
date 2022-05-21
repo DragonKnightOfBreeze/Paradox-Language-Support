@@ -73,7 +73,7 @@ NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)? //non-negative integer / float
 //判断接下来是否是属性
 IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})\s*[=<>]
 //判断接下来是变量名还是变量引用
-IS_VARIABLE={VARIABLE_NAME_ID}\s*?=?
+IS_VARIABLE={VARIABLE_NAME_ID}(\s*=)?
 
 %%
 
