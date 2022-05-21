@@ -3,8 +3,8 @@ package icu.windea.pls.script.reference
 import com.intellij.openapi.util.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptVariableReferenceReference(
-	element: ParadoxScriptVariableReference,
+class ParadoxScriptInlineMathVariableReferenceReference(
+	element: ParadoxScriptInlineMathVariableReference,
 	rangeInElement: TextRange
 ) : AbstractParadoxScriptVariableReferenceReference(element, rangeInElement) {
 	override fun String.toVariableName(): String {
@@ -12,7 +12,6 @@ class ParadoxScriptVariableReferenceReference(
 	}
 	
 	override fun String.toReferenceName(): String {
-		return if(this.startsWith('@')) this else "@$this"
+		return this.trimStart('@')
 	}
-	
 }

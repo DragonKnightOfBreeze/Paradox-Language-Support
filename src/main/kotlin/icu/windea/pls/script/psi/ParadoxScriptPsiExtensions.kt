@@ -1,23 +1,23 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
-import com.intellij.psi.tree.ILazyParseableElementTypeBase
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 val ParadoxScriptVariableName.variableNameId: PsiElement get() = findRequiredChild(VARIABLE_NAME_ID)
 
-val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findChild(PROPERTY_KEY_ID)
+val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findOptionalChild(PROPERTY_KEY_ID)
 
-val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findChild(QUOTED_PROPERTY_KEY_ID)
+val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOptionalChild(QUOTED_PROPERTY_KEY_ID)
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
-val ParadoxScriptParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
+val IParadoxScriptParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
 
-val ParadoxScriptParameter.defaultValueToken: PsiElement? get() = findChild(NUMBER_TOKEN)
+val IParadoxScriptParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
+
+val ParadoxScriptInlineMathVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE_ID)
 
 /**
  * 如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。

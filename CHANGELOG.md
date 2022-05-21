@@ -11,11 +11,12 @@
 * [X] 本地化文件语法解析优化：支持`iconFrame`（`£leader_skill|3£`中的`3`）
 * [X] 支持本地化语言：`l_japanese` `l_korean`
 * [X] CWT文件文档渲染优化：渲染版本号(`since = "3.3"`)
-* [ ] 脚本文件语法解析优化：兼容`stellaris v3.3`开始新增的`script_value`语法
 * [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 兼容`stellaris v3.4`开始新增的`tag`语法，以及相关代码高亮、代码提示、代码检查（同一定义中重复的标签）
-  * [ ] 兼容`inline_math`语法，以及相关代码高亮、代码提示（变量名）、代码检查（同一定义中多个内联数学表达式）
-* [ ] 添加检查：不期望的脚本语法
+  * [ ] 兼容`inline_math`语法，以及相关代码高亮、代码提示、引用解析、代码检查（同一定义中多个内联数学表达式、未转义、不必要的转义）
+    * [ ] 可正常重命名`inline_math_variable_reference`
+    * [ ] 实现相关检查
+* [ ] 脚本文件语法解析优化：兼容`stellaris v3.3`开始新增的`script_value`语法
 * [ ] 文件路径分隔符兼容"/" "\" "\\"混用
 * [ ] 完善对CWT配置文件的支持，完善相关功能
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）

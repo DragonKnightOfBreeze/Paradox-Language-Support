@@ -12,36 +12,36 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtBlock(	
+class CwtBlock(
 	node: ASTNode,
 	private val settings: CodeStyleSettings
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
 	companion object {
+		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN)
+		
 		private fun createWrap(): Wrap? {
 			return null
 		}
-
+		
 		private fun createAlignment(): Alignment? {
 			return null
 		}
-
-		private fun createSpacingBuilder(node:ASTNode,settings: CodeStyleSettings): SpacingBuilder {
+		
+		private fun createSpacingBuilder(node: ASTNode, settings: CodeStyleSettings): SpacingBuilder {
 			//变量声明分隔符周围的空格，属性分隔符周围的空格
 			val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
-			val spaceWithinBraces = customSettings.SPACE_WITHIN_BRACES
-			val spaceAroundSeparator = customSettings.SPACE_AROUND_SEPARATOR
-			val endOfLine = node.treeNext?.let{ it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() }?: false
+			val endOfLine = node.treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
 			return SpacingBuilder(settings, CwtLanguage)
+				.aroundInside(separatorTokens, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //等号、不等号周围按情况可能需要空格
+				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //等号、不等号周围按情况可能需要空格
 				.between(LEFT_BRACE, RIGHT_BRACE).spaces(0) //花括号之间总是不需要空格
-				.after(LEFT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //左花括号之后如果非换行按情况可能需要空格
-				.before(RIGHT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //右花括号之前如果非换行按情况可能需要空格
-				.around(EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号周围按情况可能需要空格
-				.around(NOT_EQUAL_SIGN).spaceIf(spaceAroundSeparator) //不等号周围按情况可能需要空格
+				.after(LEFT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //左花括号之后如果非换行按情况可能需要空格
+				.before(RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //右花括号之前如果非换行按情况可能需要空格
 		}
 	}
-
-	private val spacingBuilder = createSpacingBuilder(myNode,settings)
-
+	
+	private val spacingBuilder = createSpacingBuilder(myNode, settings)
+	
 	override fun buildChildren(): List<Block> {
 		return myNode.nodes().map { CwtBlock(it, settings) }
 	}
@@ -62,18 +62,18 @@ class CwtBlock(
 		//配置换行时的自动缩进
 		//在file和rootBlock中不要缩进，在block中要缩进
 		val elementType = myNode.elementType
-		return when{
+		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
 			elementType == ROOT_BLOCK -> Indent.getNoneIndent()
 			elementType == BLOCK -> Indent.getNormalIndent()
 			else -> null
 		}
 	}
-
+	
 	override fun getSpacing(child1: Block?, child2: Block): Spacing? {
 		return spacingBuilder.getSpacing(this, child1, child2)
 	}
-
+	
 	override fun isLeaf(): Boolean {
 		return myNode.firstChildNode == null
 	}

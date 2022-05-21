@@ -40,6 +40,6 @@ class ParadoxScriptedVariableReferenceInfoHintsProvider : ParadoxScriptHintsProv
 	private fun PresentationFactory.collectValue(value: ParadoxScriptValue): InlayPresentation? {
 		val v = value.value
 		if(v.isEmpty()) return null
-		return text(v)
+		return smallText(v)
 	}
 }

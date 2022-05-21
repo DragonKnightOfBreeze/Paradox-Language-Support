@@ -28,12 +28,11 @@ documentation_text ::= DOCUMENTATION_TOKEN
 
 option_comment ::= OPTION_START option_comment_item ? {
   pin=1
-  recoverWhile=option_comment_recover
+  recoverWhile="#auto"
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
 }
 private option_comment_item ::= option | value
-private option_comment_recover ::= !(BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN)
 
 option ::= option_key option_separator value{
   pin=1
@@ -48,7 +47,7 @@ private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
 property ::= property_key property_separator value {
   pin=1
-  recoverWhile=property_recover
+  recoverWhile="#auto"
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
   methods=[getIcon getName setName getNameIdentifier getPropertyName getPropertyValue getSeparatorType]
@@ -57,7 +56,6 @@ property_key ::= PROPERTY_KEY_TOKEN{
   methods=[getValue]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
-private property_recover ::= !(BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN)
 
 value ::= boolean | number | string | block{
   methods=[getIcon getValue]

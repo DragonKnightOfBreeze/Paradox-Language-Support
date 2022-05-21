@@ -5,7 +5,6 @@ package icu.windea.pls
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
-import com.intellij.ide.util.treeView.TreeAnchorizer
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
 import com.intellij.navigation.*
@@ -14,7 +13,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -251,8 +249,22 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 //    return node == null ? null : (T)node.getPsi();
 //  }
 
+inline fun <reified T : PsiElement> PsiElement.findOptionalChild(): T? {
+	//不会忽略某些特定类型的子元素
+	var child: PsiElement? = this.firstChild
+	while(child != null) {
+		if(child is T) return child
+		child = child.nextSibling
+	}
+	return null
+}
+
+inline fun <reified T : PsiElement> PsiElement.findRequiredChild(): T {
+	return findOptionalChild()!!
+}
+
 @Suppress("UNCHECKED_CAST")
-fun <T : PsiElement> PsiElement.findChild(type: IElementType): T? {
+fun <T : PsiElement> PsiElement.findOptionalChild(type: IElementType): T? {
 	return node.findChildByType(type)?.psi as T?
 }
 

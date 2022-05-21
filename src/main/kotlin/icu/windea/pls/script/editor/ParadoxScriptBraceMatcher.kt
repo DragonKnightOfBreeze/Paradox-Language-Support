@@ -6,16 +6,19 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptBraceMatcher : PairedBraceMatcher {
-	companion object{
+	companion object {
 		private val bracePairs = arrayOf(
 			BracePair(LEFT_BRACE, RIGHT_BRACE, true),
-			BracePair(INLINE_MATH_START, INLINE_MATH_END, true)
+			BracePair(INLINE_MATH_START, INLINE_MATH_END, true),
+			BracePair(LABS_SIGN, RABS_SIGN, false),
+			BracePair(LP_SIGN, RP_SIGN, true),
+			BracePair(PARAMETER_START, PARAMETER_END, false)
 		)
 	}
-
+	
 	override fun getPairs(): Array<BracePair> = bracePairs
-
+	
 	override fun getCodeConstructStart(file: PsiFile?, openingBraceOffset: Int): Int = openingBraceOffset
-
+	
 	override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, contextType: IElementType?): Boolean = true
 }

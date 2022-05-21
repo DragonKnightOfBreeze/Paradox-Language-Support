@@ -24,8 +24,8 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression>() {
 	override fun getExpressionsAt(elementAt: PsiElement): List<ParadoxScriptExpression> {
 		//for: variable, property, value
-		val element = elementAt.parentOfTypes(ParadoxScriptExpression::class)
-		return element.toSingletonListOrEmpty()
+		val expressionElement = elementAt.parentOfType<ParadoxScriptExpression>()
+		return expressionElement.toSingletonListOrEmpty()
 	}
 	
 	override fun getErrorHint(): String {

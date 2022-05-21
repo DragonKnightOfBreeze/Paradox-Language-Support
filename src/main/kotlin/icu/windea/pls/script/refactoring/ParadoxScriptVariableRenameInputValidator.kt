@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptVariableRenameInputValidator : RenameInputValidator {
 	companion object {
-		private val regex = "@[a-zA-Z0-9_-]+".toRegex()
+		private val regex = "@[a-zA-Z_][a-zA-Z0-9_]*".toRegex()
 		private val elementPattern = or(psiElement(VARIABLE), psiElement(VARIABLE_REFERENCE))
 	}
 	

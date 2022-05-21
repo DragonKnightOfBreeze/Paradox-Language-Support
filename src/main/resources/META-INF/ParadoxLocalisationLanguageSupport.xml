@@ -24,7 +24,7 @@
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.highlighter.ParadoxLocalisationSyntaxHighlighterFactory"/>
     <colorSettingsPage
-        implementation="icu.windea.pls.localisation.highlighter.ParadoxLocalisationColorSettingsPage"/>
+        implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationColorSettingsPage"/>
     <lang.braceMatcher
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBraceMatcher"/>

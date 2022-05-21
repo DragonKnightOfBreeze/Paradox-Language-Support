@@ -19,7 +19,7 @@ enum class ParadoxValueType(
 	ColorType("color", "color"),
 	BlockType("block", "block"),
 	
-	InlineMathType("inline_math", "inline_math");
+	InlineMathType("inline_math", "inline math");
 	//TODO 补充高级类型
 	
 	override fun toString(): String {

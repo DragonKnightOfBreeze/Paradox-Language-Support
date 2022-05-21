@@ -9,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.reference.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -31,7 +30,7 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxLocalisationLocale	
+	//region ParadoxLocalisationLocale
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationLocale, @IconFlags flags: Int): Icon {
 		return PlsIcons.localisationLocaleIcon
@@ -67,13 +66,14 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationProperty): String {
 		//注意：element.stub可能会导致ProcessCanceledException
-		return runCatching { element.stub?.name }.getOrNull() ?: element.propertyKey.text
+		runCatching { element.stub?.name }.getOrNull()?.let { return it }
+		return element.propertyKey.propertyKeyId.text
 	}
 	
 	@JvmStatic
 	fun setName(element: ParadoxLocalisationProperty, name: String): ParadoxLocalisationProperty {
-		val nameElement = element.propertyKey
-		val newNameElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, name)
+		val nameElement = element.propertyKey.propertyKeyId
+		val newNameElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, name).propertyKeyId
 		nameElement.replace(newNameElement)
 		return element
 	}
@@ -86,7 +86,8 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
 		//注意：element.stub可能会导致ProcessCanceledException
-		return runCatching { element.stub?.category }.getOrNull() ?: element.localisationInfo?.category
+		runCatching { element.stub?.category }.getOrNull()?.let { return it }
+		return element.localisationInfo?.category
 	}
 	
 	@JvmStatic
@@ -98,7 +99,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationPropertyReference
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationPropertyReference): String {
-		return element.propertyReferenceId?.text?.trim().orEmpty()
+		return element.propertyReferenceId?.text.orEmpty()
 	}
 	
 	@JvmStatic
@@ -142,7 +143,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getFrame(element: ParadoxLocalisationIcon): Int{
-		val iconFrameElement = element.findChild<PsiElement>(ICON_FRAME)?:return 0 //默认为0（不切分）
+		val iconFrameElement = element.iconFrame ?:return 0 //默认为0（不切分）
 		return runCatching { iconFrameElement.text.toInt() }.getOrDefault(0)
 	}
 	
@@ -206,7 +207,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationCommandScope): String {
-		return element.text.trim()
+		return element.commandScopeId.text.trim()
 	}
 	
 	@JvmStatic

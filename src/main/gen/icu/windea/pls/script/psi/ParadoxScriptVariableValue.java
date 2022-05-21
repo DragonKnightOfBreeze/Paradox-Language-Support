@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface ParadoxScriptVariableValue extends PsiElement {
 
   @NotNull
-  ParadoxScriptValue getValue();
+  ParadoxScriptNumber getNumber();
+
+  @NotNull
+  ParadoxScriptNumber getValue();
 
 }

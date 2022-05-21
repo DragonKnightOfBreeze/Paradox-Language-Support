@@ -30,9 +30,6 @@ class ParadoxDefinitionInfo(
 		//如果name_field = <any>，则返回对应名字的property的value
 		val nameFieldConfig = typeConfig.nameField
 		if(nameFieldConfig != null) return@lazy element.findProperty(nameFieldConfig, true)?.value.orEmpty()
-		//如果有一个子属性的propertyKey为name，那么取这个子属性的值，这是为了兼容cwt规则文件尚未考虑到的一些需要名字的情况
-		val nameProperty = element.findProperty("name", true)
-		if(nameProperty != null) return@lazy nameProperty.value.orEmpty()
 		//否则直接返回rootKey
 		rootKey
 	}

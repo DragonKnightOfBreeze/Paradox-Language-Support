@@ -25,17 +25,12 @@ class ParadoxDefinitionElementInfo(
 		definitionInfo.definitionConfig?.resolvePropertyConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
-	val propertyConfig: CwtPropertyConfig? by lazy {
-		//如果propertyConfigs不为空，则直接取第一个
-		propertyConfigs.firstOrNull()
-	}
-	
 	val matchedPropertyConfig: CwtPropertyConfig? by lazy {
 		//NOTE 如果变更了其他definitionProperty导致definition的类型发生变更，valueExpression会过时
 		//需要匹配value
 		if(element !is ParadoxScriptProperty) return@lazy null
-		val propertyValue = element.propertyValue ?: return@lazy null
 		if(propertyConfigs.isEmpty()) return@lazy null
+		val propertyValue = element.propertyValue ?: return@lazy null
 		propertyConfigs.find { matchesValue(it.valueExpression, propertyValue.value, configGroup) }
 	}
 	

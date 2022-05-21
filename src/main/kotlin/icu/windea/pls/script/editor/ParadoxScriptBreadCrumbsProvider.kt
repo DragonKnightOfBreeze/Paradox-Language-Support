@@ -7,30 +7,25 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
-	companion object{
-		val defaultLanguages: Array<Language> = arrayOf(ParadoxScriptLanguage)
+	companion object {
+		private val defaultLanguages: Array<Language> = arrayOf(ParadoxScriptLanguage)
 	}
-
+	
 	override fun getLanguages(): Array<Language> {
 		return defaultLanguages
 	}
-
-	override fun getElementInfo(element: PsiElement): String {
-		return when(element){
-			is ParadoxScriptVariable -> element.name
-			is ParadoxScriptProperty -> element.name
-			is ParadoxScriptBoolean -> element.value
-			is ParadoxScriptNumber -> element.value
-			is ParadoxScriptString -> element.value
-			else -> "<anonymous element>"
-		}
-	}
-
+	
 	override fun acceptElement(element: PsiElement): Boolean {
-		return element is ParadoxScriptVariable
-		       || element is ParadoxScriptProperty
-		       || element is ParadoxScriptBoolean
-		       || element is ParadoxScriptNumber
-		       || element is ParadoxScriptString
+		return element is ParadoxScriptProperty || (element is ParadoxScriptValue && element.parent is ParadoxScriptBlock)
+			|| element is ParadoxScriptVariable
+	}
+	
+	override fun getElementInfo(element: PsiElement): String {
+		return when(element) {
+			is ParadoxScriptProperty -> element.name
+			is ParadoxScriptValue -> element.value
+			is ParadoxScriptVariable -> element.name
+			else -> throw InternalError()
+		}
 	}
 }

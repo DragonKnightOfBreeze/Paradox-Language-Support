@@ -25,7 +25,7 @@
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.highlighter.ParadoxScriptSyntaxHighlighterFactory"/>
     <colorSettingsPage
-        implementation="icu.windea.pls.script.highlighter.ParadoxScriptColorSettingsPage"/>
+        implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>

@@ -27,6 +27,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.lang.Integer.*
+import java.text.*
 import java.util.*
 
 //region Keys
@@ -126,6 +127,83 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 		return versionSnippet.compareTo(otherVersionSnippet)
 	}
 	return 0
+}
+
+fun String.isBooleanYesNo(): Boolean {
+	return this == "yes" || this == "no"
+}
+
+fun String.isInt(): Boolean {
+	var isFirstChar = true
+	val chars = toCharArray()
+	for(char in chars) {
+		if(char.isExactDigit()) continue
+		if(isFirstChar) {
+			isFirstChar = false
+			if(char == '+' || char == '-') continue
+		}
+		return false
+	}
+	return true
+}
+
+fun String.isFloat(): Boolean {
+	var isFirstChar = true
+	var missingDot = true
+	val chars = toCharArray()
+	for(char in chars) {
+		if(char.isExactDigit()) continue
+		if(isFirstChar) {
+			isFirstChar = false
+			if(char == '+' || char == '-') continue
+		}
+		if(missingDot) {
+			if(char == '.') {
+				missingDot = false
+				continue
+			}
+		}
+		return false
+	}
+	return true
+}
+
+fun String.isString(): Boolean {
+	return this.containsBlank() || (!isBooleanYesNo() && !isInt() && !isFloat())
+}
+
+fun String.isPercentageField(): Boolean {
+	val chars = toCharArray()
+	for(i in indices) {
+		val char = chars[i]
+		if(i == lastIndex) {
+			if(char != '%') return false
+		} else {
+			if(!char.isDigit()) return false
+		}
+	}
+	return true
+}
+
+private val isColorRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
+
+fun String.isColorField(): Boolean {
+	return this.matches(isColorRegex)
+}
+
+private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") }
+
+fun String.isDateField(): Boolean {
+	return try {
+		threadLocalDateFormat.get().parse(this)
+		true
+	} catch(e: Exception) {
+		false
+	}
+}
+
+fun String.isVariableField(): Boolean {
+	return this.startsWith('@') //NOTE 简单判断
 }
 //endregion
 
@@ -296,38 +374,34 @@ private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinition
 	return configGroup.resolveDefinitionElementInfo(elementPath, scope, definitionInfo, element)
 }
 
-val ParadoxScriptProperty.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
-
-private fun doGetPropertyConfig(element: ParadoxScriptProperty): CwtPropertyConfig? {
+fun ParadoxScriptProperty.getMatchedPropertyConfig(): CwtPropertyConfig? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
+	val element = this
 	val definitionElementInfo = element.definitionElementInfo ?: return null
-	return definitionElementInfo.propertyConfig
+	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
+	return definitionElementInfo.matchedPropertyConfig //需要同时匹配valueConfig
 }
 
-val ParadoxScriptPropertyKey.propertyConfig: CwtPropertyConfig? get() = doGetPropertyConfig(this)
-
-private fun doGetPropertyConfig(element: ParadoxScriptPropertyKey): CwtPropertyConfig? {
+fun ParadoxScriptPropertyKey.getPropertyConfig(): CwtPropertyConfig? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
-	val property = element.parent.castOrNull<ParadoxScriptProperty>() ?: return null
-	//不允许value直接是定义的value的情况
-	val definitionElementInfo = property.definitionElementInfo ?: return null
-	if(definitionElementInfo.elementPath.isEmpty()) return null
-	return definitionElementInfo.propertyConfig
+	val element = this
+	val definitionElementInfo = element.definitionElementInfo ?: return null
+	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
+	return definitionElementInfo.propertyConfigs.firstOrNull()
 }
 
-val ParadoxScriptValue.valueConfig: CwtValueConfig? get() = doGetValueConfig(this)
-
-private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
+fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 	//NOTE 暂时不使用缓存，因为很容易就会过时
+	//NOTE 如果已经匹配propertyConfig但是无法匹配valueConfig，使用唯一的那个或者null
+	val element = this
 	val parent = element.parent
 	when(parent) {
 		//如果value是property的value
 		is ParadoxScriptPropertyValue -> {
 			val property = parent.parent as? ParadoxScriptProperty ?: return null
-			//允许value直接是定义的value的情况
 			val definitionElementInfo = property.definitionElementInfo ?: return null
 			return definitionElementInfo.matchedPropertyConfig?.valueConfig
-				?: definitionElementInfo.propertyConfigs.firstOrNull()?.valueConfig //NOTE 如果已经匹配propertyConfig但是无法匹配valueConfig，使用第一个
+				?: definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig
 		}
 		//如果value是block中的value
 		is ParadoxScriptBlock -> {
@@ -338,7 +412,7 @@ private fun doGetValueConfig(element: ParadoxScriptValue): CwtValueConfig? {
 			val gameType = definitionElementInfo.gameType
 			val configGroup = getCwtConfig(element.project).getValue(gameType)
 			return childValueConfigs.find { matchesValue(it.valueExpression, element, configGroup) }
-				?: childValueConfigs.firstOrNull() // NOTE 如果已经匹配propertyConfig但是无法匹配valueConfig，使用第一个
+				?: childValueConfigs.singleOrNull()
 		}
 		else -> return null
 	}
@@ -413,7 +487,7 @@ fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，递归向上查找。
  */
 fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScriptVariable? {
-	//在整个脚本文件中递归向上查找，返回查找到的第一个
+	//在整个脚本文件中递归向上向前查找，返回查找到的第一个
 	var result: ParadoxScriptVariable? = null
 	var current = context
 	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
@@ -436,7 +510,7 @@ fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScript
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，向上查找。
  */
 fun findScriptedVariablesInFile(name: String, context: PsiElement): List<ParadoxScriptVariable> {
-	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
+	//在整个脚本文件中递归向上向前查找，按查找到的顺序排序
 	var result: MutableList<ParadoxScriptVariable>? = null
 	var current = context
 	while(current !is PsiFile) {

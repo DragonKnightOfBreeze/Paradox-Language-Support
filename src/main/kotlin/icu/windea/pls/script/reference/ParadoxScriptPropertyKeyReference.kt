@@ -9,17 +9,17 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPropertyKeyReference(
-	element:ParadoxScriptPropertyKey,
-	rangeInElement:TextRange
-):PsiReferenceBase<ParadoxScriptPropertyKey>(element,rangeInElement),PsiPolyVariantReference {
+	element: ParadoxScriptPropertyKey,
+	rangeInElement: TextRange
+) : PsiReferenceBase<ParadoxScriptPropertyKey>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
-			!resolved.isWritable -> throw IncorrectOperationException() //不允许重命名
-			else -> resolved.setName(newElementName)
+			resolved.isWritable -> resolved.setName(newElementName)
+			else -> throw IncorrectOperationException() //不允许重命名
 		}
 		return element.setValue(newElementName)
 	}

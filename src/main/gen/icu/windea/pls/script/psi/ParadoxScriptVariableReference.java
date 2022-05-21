@@ -4,10 +4,14 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.ParadoxValueType;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
+import javax.swing.Icon;
 
-public interface ParadoxScriptVariableReference extends ParadoxScriptValue {
+public interface ParadoxScriptVariableReference extends ParadoxScriptValue, IParadoxScriptVariableReference {
+
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
   @NotNull
   String getName();
@@ -17,11 +21,5 @@ public interface ParadoxScriptVariableReference extends ParadoxScriptValue {
 
   @NotNull
   ParadoxScriptVariableReferenceReference getReference();
-
-  @Nullable
-  ParadoxScriptValue getReferenceValue();
-
-  @Nullable
-  ParadoxValueType getValueType();
 
 }

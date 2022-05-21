@@ -4,31 +4,22 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.script.reference.ParadoxScriptInlineMathVariableReferenceReference;
+import javax.swing.Icon;
 
-public interface ParadoxScriptInlineMathVariableReference extends ParadoxScriptExpression {
+public interface ParadoxScriptInlineMathVariableReference extends IParadoxScriptVariableReference {
 
-  //WARNING: getIcon(...) is skipped
-  //matching getIcon(ParadoxScriptInlineMathVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  //WARNING: getName(...) is skipped
-  //matching getName(ParadoxScriptInlineMathVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull
+  String getName();
 
-  //WARNING: setName(...) is skipped
-  //matching setName(ParadoxScriptInlineMathVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull
+  ParadoxScriptInlineMathVariableReference setName(@NotNull String name);
 
-  //WARNING: getReference(...) is skipped
-  //matching getReference(ParadoxScriptInlineMathVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
-
-  //WARNING: getReferenceValue(...) is skipped
-  //matching getReferenceValue(ParadoxScriptInlineMathVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
-
-  //WARNING: getValueType(...) is skipped
-  //matching getValueType(ParadoxScriptInlineMathVariableReference, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull
+  ParadoxScriptInlineMathVariableReferenceReference getReference();
 
 }

@@ -29,7 +29,7 @@ private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property
 
 variable ::= variable_name variable_separator variable_value {
   pin=1
-  recoverWhile=variable_recover
+  recoverWhile="#auto"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
@@ -40,15 +40,17 @@ variable ::= variable_name variable_separator variable_value {
 }
 
 variable_name ::= VARIABLE_NAME_ID{
-  methods=[getName setName]
+  methods=[getName]
 }
 private variable_separator ::= EQUAL_SIGN
-variable_value ::= boolean | number | string
-private variable_recover ::= !(BOOLEAN_TOKEN | INLINE_MATH_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+variable_value ::= number {
+  methods=[getValue]
+}
+private variable_recover ::= !(BOOLEAN_TOKEN | INLINE_MATH_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile=property_recover
+  recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
@@ -63,10 +65,6 @@ property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
-//当前属性解析失败时，需要跳过继续解析下一个
-private property_recover ::= !(BOOLEAN_TOKEN | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN
-  | INLINE_MATH_START | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN
-  | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
 
 value ::= variable_reference | boolean | number | string | color | block | inline_math {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
@@ -74,7 +72,8 @@ value ::= variable_reference | boolean | number | string | color | block | inlin
 }
 variable_reference ::= VARIABLE_REFERENCE_ID {
   extends=value
-  methods=[getName setName getReference getReferenceValue getValueType]
+  implements="icu.windea.pls.script.psi.IParadoxScriptVariableReference"
+  methods=[getIcon getName setName getReference]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
@@ -106,15 +105,12 @@ color ::= COLOR_TOKEN {
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
-  recoverWhile=block_recover
+  recoverWhile="#auto"
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getValue isEmpty isNotEmpty isObject isArray getComponents getValueType getType]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | tag | variable | property | value | STRING_LIKE_TOKEN
-private block_recover ::= !(BOOLEAN_TOKEN | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN
-  | INLINE_MATH_START | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN
-  | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value
 
 //advanced script syntax
 //see: common/scripted_effects/99_advanced_documentation.txt
@@ -124,40 +120,38 @@ private block_recover ::= !(BOOLEAN_TOKEN | COLOR_TOKEN | COMMENT | END_OF_LINE_
 //resolved as string, and should:
 //in specific definition declarations (scripted_effect / scripted_trigger)
 //in block, before any scripted variables, (non-tag) strings and properties
-tag ::= TAG_TOKEN {
-  methods=[getName setName]
-}
 
 //parameter condition expression
 
 //inline math
-//in specific definition declarations (scripted_effect / scripted_trigger)
+//in definition declarations (should starts with "@\[" if in: scripted_effect / scripted_trigger)
 //only first inline math expression in a scripted effect / trigger is correctly recognized and evaluated
+//supported operators: + - * / %
+//also support abs operator "| 1 |" and parentheses "( 1 )"
 inline_math ::= INLINE_MATH_START inline_math_expression INLINE_MATH_END{
   pin=1
-  recoverWhile=inline_math_recover
+  recoverWhile="#auto"
   extends=value
   methods=[getValueType getType]
 }
-private inline_math_expression ::= inline_math_factor (inline_math_op inline_math_factor) *
-private inline_math_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN //+ - * / %
-private inline_math_recover ::= !(BOOLEAN_TOKEN | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN
-  | INLINE_MATH_START | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN
-  | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | TAG_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
+private inline_math_expression ::= inline_math_op_factor (inline_math_op inline_math_op_factor) *
+private inline_math_op_factor ::= (inline_math_factor) | (LABS_SIGN inline_math_expression RABS_SIGN) | (LP_SIGN inline_math_expression RP_SIGN)
+private inline_math_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
 inline_math_factor ::= inline_math_number | inline_math_variable_reference | inline_math_parameter
 inline_math_number ::= NUMBER_TOKEN { //int / float
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
   ]
-  methods=[getValueType getType]
+  methods=[getValue getValueType]
 }
 inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without prefix "@"
-  implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
-  methods=[getIcon getName setName getReference getReferenceValue getValueType]
+  implements="icu.windea.pls.script.psi.IParadoxScriptVariableReference"
+  methods=[getIcon getName setName getReference]
 }
-inline_math_parameter ::= DOLLAR_SIGN PARAMETER_ID [ PIPE NUMBER_TOKEN] DOLLAR_SIGN {
+inline_math_parameter ::= PARAMETER_START PARAMETER_ID [ PIPE NUMBER_TOKEN] PARAMETER_END {
   pin=1
-  extends="icu.windea.pls.script.psi.ParadoxScriptParameter"
+  implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
 }
 

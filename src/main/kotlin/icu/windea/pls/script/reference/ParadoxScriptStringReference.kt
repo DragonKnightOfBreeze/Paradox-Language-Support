@@ -19,8 +19,8 @@ class ParadoxScriptStringReference(
 		when {
 			resolved == null -> pass()
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
-			!resolved.isWritable -> throw IncorrectOperationException() //不允许重命名
-			else -> resolved.setName(newElementName)
+			resolved.isWritable -> resolved.setName(newElementName)
+			else -> throw IncorrectOperationException() //不允许重命名
 		}
 		return element.setValue(newElementName)
 	}

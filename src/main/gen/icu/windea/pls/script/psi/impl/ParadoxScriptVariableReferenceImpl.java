@@ -9,8 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.core.ParadoxValueType;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
+import javax.swing.Icon;
 
 public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl implements ParadoxScriptVariableReference {
 
@@ -31,6 +32,12 @@ public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl i
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
@@ -45,18 +52,6 @@ public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl i
   @NotNull
   public ParadoxScriptVariableReferenceReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptValue getReferenceValue() {
-    return ParadoxScriptPsiImplUtil.getReferenceValue(this);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxValueType getValueType() {
-    return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
 }

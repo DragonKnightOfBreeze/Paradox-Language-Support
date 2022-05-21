@@ -36,12 +36,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
-  public List<ParadoxScriptTag> getTagList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptTag.class);
-  }
-
-  @Override
-  @NotNull
   public List<ParadoxScriptValue> getValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }

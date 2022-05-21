@@ -22,23 +22,20 @@ root ::= property_list *
 //locale之前可以添加注释，wiki中的说明有误
 property_list ::= COMMENT * locale COMMENT * property_item * {
   pin=2
-//  recoverWhile=property_list_recover
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getComponents]
 }
 private property_item ::= END_OF_LINE_COMMENT | COMMENT | property
-//private property_list_recover ::= !(COMMENT | LOCALE_ID)
 
 locale ::= LOCALE_ID COLON {
   pin=1
-  recoverWhile=locale_recover
+  recoverWhile="#auto"
   methods=[getIcon getName setName getReference]
 }
-private locale_recover ::= !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
 
 property ::= property_key COLON property_number? property_value {
   pin=1
-  recoverWhile=property_recover 
+  recoverWhile="#auto" 
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes.getPropertyType"
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
@@ -53,7 +50,6 @@ property_key ::= PROPERTY_KEY_ID
 property_value ::= LEFT_QUOTE property_value_item RIGHT_QUOTE{
   pin=1
 }
-private property_recover ::= !(COMMENT | END_OF_LINE_COMMENT | LOCALE_ID | PROPERTY_KEY_ID)
 
 private property_value_item ::= (rich_text | COLORFUL_TEXT_END) * //允许多余的彩色文本结束标记（"§!"）
 rich_text ::= property_reference | command | icon | colorful_text | escape | string

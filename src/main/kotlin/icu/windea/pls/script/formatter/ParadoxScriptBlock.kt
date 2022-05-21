@@ -17,34 +17,39 @@ class ParadoxScriptBlock(
 	private val settings: CodeStyleSettings,
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
 	companion object {
+		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN)
+		private val inlineMathOperatorTokens = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
+		
 		private fun createWrap(): Wrap? {
 			return null
 		}
-
+		
 		private fun createAlignment(): Alignment? {
 			return null
 		}
-
-		private fun createSpacingBuilder(node:ASTNode,settings: CodeStyleSettings): SpacingBuilder {
+		
+		private fun createSpacingBuilder(node: ASTNode, settings: CodeStyleSettings): SpacingBuilder {
 			//变量声明分隔符周围的空格，属性分隔符周围的空格
 			val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
-			val spaceWithinBraces = customSettings.SPACE_WITHIN_BRACES
-			val spaceAroundSeparator = customSettings.SPACE_AROUND_SEPARATOR
-			val endOfLine = node.treeNext?.let{ it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() }?: false
+			val endOfLine = node.treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
 			return SpacingBuilder(settings, ParadoxScriptLanguage)
+				.aroundInside(separatorTokens, VARIABLE).spaceIf(customSettings.SPACE_AROUND_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
+				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
+				.around(inlineMathOperatorTokens).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) //内联数学表达式操作符周围按情况可能需要空格
+				.after(INLINE_MATH_START).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式开始后如果非换行按情况可能需要空格
+				.before(INLINE_MATH_END).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式结束前如果非换行按情况可能需要空格
 				.between(LEFT_BRACE, RIGHT_BRACE).spaces(0) //花括号之间总是不需要空格
-				.after(LEFT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //左花括号之后如果非换行按情况可能需要空格
-				.before(RIGHT_BRACE).spaceIf(!endOfLine && spaceWithinBraces) //右花括号之前如果非换行按情况可能需要空格
-				.around(EQUAL_SIGN).spaceIf(spaceAroundSeparator) //等号周围按情况可能需要空格
+				.after(LEFT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //左花括号之后如果非换行按情况可能需要空格
+				.before(RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //右花括号之前如果非换行按情况可能需要空格
 		}
 	}
-
-	private val spacingBuilder = createSpacingBuilder(myNode,settings)
-
+	
+	private val spacingBuilder = createSpacingBuilder(myNode, settings)
+	
 	override fun buildChildren(): List<Block> {
 		return myNode.nodes().map { ParadoxScriptBlock(it, settings) }
 	}
-
+	
 	override fun getIndent(): Indent? {
 		//配置缩进
 		//block中的属性、值、注释需要缩进
@@ -56,23 +61,23 @@ class ParadoxScriptBlock(
 			else -> Indent.getNormalIndent()
 		}
 	}
-
+	
 	override fun getChildIndent(): Indent? {
 		//配置换行时的自动缩进
 		//在file和rootBlock中不要缩进，在block中要缩进
 		val elementType = myNode.elementType
-		return when{
+		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
 			elementType == ROOT_BLOCK -> Indent.getNoneIndent()
 			elementType == BLOCK -> Indent.getNormalIndent()
 			else -> null
 		}
 	}
-
+	
 	override fun getSpacing(child1: Block?, child2: Block): Spacing? {
 		return spacingBuilder.getSpacing(this, child1, child2)
 	}
-
+	
 	override fun isLeaf(): Boolean {
 		//顶级块不是叶子节点
 		return myNode.firstChildNode == null

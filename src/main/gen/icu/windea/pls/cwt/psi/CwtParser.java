@@ -199,7 +199,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, OPTION_START);
     p = r; // pin = 1
     r = r && option_comment_1(b, l + 1);
-    exit_section_(b, l, m, r, p, CwtParser::option_comment_recover);
+    exit_section_(b, l, m, r, p, option_comment_auto_recover_);
     return r || p;
   }
 
@@ -217,35 +217,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
     boolean r;
     r = option(b, l + 1);
     if (!r) r = value(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // !(BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN)
-  static boolean option_comment_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_comment_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !option_comment_recover_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN
-  private static boolean option_comment_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_comment_recover_0")) return false;
-    boolean r;
-    r = consumeToken(b, BOOLEAN_TOKEN);
-    if (!r) r = consumeToken(b, COMMENT);
-    if (!r) r = consumeToken(b, DOCUMENTATION_START);
-    if (!r) r = consumeToken(b, FLOAT_TOKEN);
-    if (!r) r = consumeToken(b, INT_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_BRACE);
-    if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
-    if (!r) r = consumeToken(b, OPTION_START);
-    if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, RIGHT_BRACE);
-    if (!r) r = consumeToken(b, STRING_TOKEN);
     return r;
   }
 
@@ -282,7 +253,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, property_separator(b, l + 1));
     r = p && value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, CwtParser::property_recover);
+    exit_section_(b, l, m, r, p, property_auto_recover_);
     return r || p;
   }
 
@@ -295,35 +266,6 @@ public class CwtParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, PROPERTY_KEY_TOKEN);
     exit_section_(b, m, PROPERTY_KEY, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // !(BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN)
-  static boolean property_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !property_recover_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // BOOLEAN_TOKEN | COMMENT | DOCUMENTATION_START | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | OPTION_KEY_TOKEN | OPTION_START | PROPERTY_KEY_TOKEN | RIGHT_BRACE | STRING_TOKEN
-  private static boolean property_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_recover_0")) return false;
-    boolean r;
-    r = consumeToken(b, BOOLEAN_TOKEN);
-    if (!r) r = consumeToken(b, COMMENT);
-    if (!r) r = consumeToken(b, DOCUMENTATION_START);
-    if (!r) r = consumeToken(b, FLOAT_TOKEN);
-    if (!r) r = consumeToken(b, INT_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_BRACE);
-    if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
-    if (!r) r = consumeToken(b, OPTION_START);
-    if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
-    if (!r) r = consumeToken(b, RIGHT_BRACE);
-    if (!r) r = consumeToken(b, STRING_TOKEN);
     return r;
   }
 
@@ -397,4 +339,8 @@ public class CwtParser implements PsiParser, LightPsiParser {
     return r;
   }
 
+  static final Parser option_comment_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COMMENT,
+    DOCUMENTATION_START, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_KEY_TOKEN, OPTION_START,
+    PROPERTY_KEY_TOKEN, RIGHT_BRACE, STRING_TOKEN);
+  static final Parser property_auto_recover_ = option_comment_auto_recover_;
 }

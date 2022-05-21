@@ -16,91 +16,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import java.text.*
 import kotlin.text.removeSurrounding
 
 //region Internal Extensions
 internal typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
 internal typealias CwtConfigMaps = MutableMap<String, CwtConfigMap>
-
-internal fun String.isInt(): Boolean {
-	var isFirstChar = true
-	val chars = toCharArray()
-	for(char in chars) {
-		if(char.isExactDigit()) continue
-		if(isFirstChar) {
-			isFirstChar = false
-			if(char == '+' || char == '-') continue
-		}
-		return false
-	}
-	return true
-}
-
-internal fun String.isFloat(): Boolean {
-	var isFirstChar = true
-	var missingDot = true
-	val chars = toCharArray()
-	for(char in chars) {
-		if(char.isExactDigit()) continue
-		if(isFirstChar) {
-			isFirstChar = false
-			if(char == '+' || char == '-') continue
-		}
-		if(missingDot) {
-			if(char == '.') {
-				missingDot = false
-				continue
-			}
-		}
-		return false
-	}
-	return true
-}
-
-internal fun String.isBooleanYesNo(): Boolean {
-	return this == "yes" || this == "no"
-}
-
-internal fun String.isString(): Boolean {
-	//以引号包围，或者不是布尔值、整数以及小数
-	if(surroundsWith('"', '"')) return true
-	return !isBooleanYesNo() && !isInt() && !isFloat()
-}
-
-internal fun String.isPercentageField(): Boolean {
-	val chars = toCharArray()
-	for(i in indices) {
-		val char = chars[i]
-		if(i == lastIndex) {
-			if(char != '%') return false
-		} else {
-			if(!char.isDigit()) return false
-		}
-	}
-	return true
-}
-
-private val isColorRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
-
-internal fun String.isColorField(): Boolean {
-	return this.matches(isColorRegex)
-}
-
-private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") }
-
-internal fun String.isDateField(): Boolean {
-	return try {
-		threadLocalDateFormat.get().parse(this)
-		true
-	} catch(e: Exception) {
-		false
-	}
-}
-
-internal fun String.isVariableField(): Boolean {
-	return this.startsWith('@') //NOTE 简单判断
-}
 //endregion
 
 //region Misc Extensions
@@ -119,7 +39,7 @@ private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ -
 	}
 	if(offset < charsLength && chars[offset] !in separatorChars) {
 		val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
-		val spaceAroundSeparator = customSettings.SPACE_AROUND_SEPARATOR
+		val spaceAroundSeparator = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
 		val separator = if(spaceAroundSeparator) " = " else "="
 		EditorModificationUtil.insertStringAtCaret(editor, separator)
 	}
@@ -504,7 +424,7 @@ fun matchesAliasName(key: String, quoted: Boolean, aliasName: String, configGrou
 	val alias = configGroup.aliases[aliasName] ?: return false
 	val aliasSubName = resolveAliasSubNameExpression(key, quoted, alias, configGroup) ?: return false
 	val expression = CwtKeyExpression.resolve(aliasSubName)
-	if(matchesKey(expression, aliasSubName, quoted, configGroup)){
+	if(matchesKey(expression, key, quoted, configGroup)){
 		return true
 	}
 	//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
@@ -1044,7 +964,7 @@ fun completeLocalisationCommand(configGroup: CwtConfigGroup,
 //region Resolve Extensions
 //TODO 基于cwt规则文件的解析方法需要进一步匹配scope
 inline fun resolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): PsiNamedElement? {
-	val propertyConfig = keyElement.propertyConfig ?: return null
+	val propertyConfig = keyElement.getPropertyConfig() ?: return null
 	val expression = propertyConfig.keyExpression
 	if(!expressionPredicate(expression)) return null
 	return doResolveKey(keyElement, expression, propertyConfig)
@@ -1118,7 +1038,7 @@ internal fun doResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtK
 }
 
 inline fun multiResolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): List<PsiNamedElement> {
-	val propertyConfig = keyElement.propertyConfig ?: return emptyList()
+	val propertyConfig = keyElement.getPropertyConfig() ?: return emptyList()
 	val expression = propertyConfig.keyExpression
 	if(!expressionPredicate(expression)) return emptyList()
 	return doMultiResolveKey(keyElement, expression, propertyConfig)
@@ -1194,7 +1114,7 @@ internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression:
 inline fun resolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiNamedElement? {
 	//根据对应的expression进行解析
 	//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-	val valueConfig = valueElement.valueConfig ?: return fallbackResolveValue(valueElement)
+	val valueConfig = valueElement.getValueConfig() ?: return fallbackResolveValue(valueElement)
 	val expression = valueConfig.valueExpression
 	if(!expressionPredicate(expression)) return null
 	//val expression = element.expression?:return null
@@ -1298,7 +1218,7 @@ internal fun fallbackResolveValue(valueElement: ParadoxScriptValue): PsiNamedEle
 inline fun multiResolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): List<PsiNamedElement> {
 	//根据对应的expression进行解析
 	//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-	val valueConfig = valueElement.valueConfig ?: return fallbackMultiResolveValue(valueElement)
+	val valueConfig = valueElement.getValueConfig() ?: return fallbackMultiResolveValue(valueElement)
 	val expression = valueConfig.valueExpression
 	if(!expressionPredicate(expression)) return emptyList()
 	//val expression = element.expression?:return emptyList()

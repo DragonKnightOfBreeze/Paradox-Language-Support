@@ -1,20 +1,15 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.lang.*
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.impl.PsiManagerEx
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -41,7 +36,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
 		//颜色高亮
-		val expression = element.propertyConfig?.keyExpression ?: return
+		val expression = element.getPropertyConfig()?.keyExpression ?: return
 		val attributesKey = when(expression.type) {
 			CwtKeyExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
 			CwtKeyExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
@@ -66,7 +61,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		
 		//颜色高亮
 		//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-		val valueConfig = element.valueConfig
+		val valueConfig = element.getValueConfig()
 		val expression = valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
 		//val expression = element.valueConfig?.valueExpression ?: return 
 		val attributesKey = when(expression.type) {

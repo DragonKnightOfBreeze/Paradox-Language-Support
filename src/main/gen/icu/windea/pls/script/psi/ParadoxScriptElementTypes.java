@@ -24,7 +24,6 @@ public interface ParadoxScriptElementTypes {
   IElementType PROPERTY_VALUE = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType ROOT_BLOCK = ParadoxScriptElementTypeFactory.getElementType("ROOT_BLOCK");
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
-  IElementType TAG = ParadoxScriptElementTypeFactory.getElementType("TAG");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
   IElementType VARIABLE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE");
   IElementType VARIABLE_NAME = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_NAME");
@@ -35,7 +34,6 @@ public interface ParadoxScriptElementTypes {
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMENT = ParadoxScriptElementTypeFactory.getTokenType("COMMENT");
   IElementType DIV_SIGN = ParadoxScriptElementTypeFactory.getTokenType("DIV_SIGN");
-  IElementType DOLLAR_SIGN = ParadoxScriptElementTypeFactory.getTokenType("DOLLAR_SIGN");
   IElementType END_OF_LINE_COMMENT = ParadoxScriptElementTypeFactory.getTokenType("END_OF_LINE_COMMENT");
   IElementType EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("EQUAL_SIGN");
   IElementType FLOAT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("FLOAT_TOKEN");
@@ -45,23 +43,28 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_START");
   IElementType INLINE_MATH_VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_VARIABLE_REFERENCE_ID");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
+  IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
   IElementType LEFT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACE");
   IElementType LE_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LE_SIGN");
+  IElementType LP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LP_SIGN");
   IElementType LT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LT_SIGN");
   IElementType MINUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("MINUS_SIGN");
   IElementType MOD_SIGN = ParadoxScriptElementTypeFactory.getTokenType("MOD_SIGN");
   IElementType NOT_EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("NOT_EQUAL_SIGN");
   IElementType NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("NUMBER_TOKEN");
+  IElementType PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_END");
   IElementType PARAMETER_ID = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_ID");
+  IElementType PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_START");
   IElementType PIPE = ParadoxScriptElementTypeFactory.getTokenType("PIPE");
   IElementType PLUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("PLUS_SIGN");
   IElementType PROPERTY_KEY_ID = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_ID");
   IElementType QUOTED_PROPERTY_KEY_ID = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_PROPERTY_KEY_ID");
   IElementType QUOTED_STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_STRING_TOKEN");
+  IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
+  IElementType RP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RP_SIGN");
   IElementType STRING_LIKE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_LIKE_TOKEN");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
-  IElementType TAG_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("TAG_TOKEN");
   IElementType TIMES_SIGN = ParadoxScriptElementTypeFactory.getTokenType("TIMES_SIGN");
   IElementType VARIABLE_NAME_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_NAME_ID");
   IElementType VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_REFERENCE_ID");
@@ -113,9 +116,6 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == STRING) {
         return new ParadoxScriptStringImpl(node);
-      }
-      else if (type == TAG) {
-        return new ParadoxScriptTagImpl(node);
       }
       else if (type == VARIABLE) {
         return new ParadoxScriptVariableImpl(node);

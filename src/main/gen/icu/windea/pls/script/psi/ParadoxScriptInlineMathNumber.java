@@ -5,15 +5,14 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
+import icu.windea.pls.core.ParadoxValueType;
 
 public interface ParadoxScriptInlineMathNumber extends PsiLiteralValue, ParadoxScriptExpression {
 
-  //WARNING: getValueType(...) is skipped
-  //matching getValueType(ParadoxScriptInlineMathNumber, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull
+  String getValue();
 
-  //WARNING: getType(...) is skipped
-  //matching getType(ParadoxScriptInlineMathNumber, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
+  @NotNull
+  ParadoxValueType getValueType();
 
 }

@@ -29,36 +29,38 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 
 	override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
 		when(settingsType) {
-			SettingsType.INDENT_SETTINGS -> {
-				consumer.showStandardOptions(
-					IndentOption.INDENT_SIZE.name,
-					IndentOption.CONTINUATION_INDENT_SIZE.name,
-					IndentOption.KEEP_INDENTS_ON_EMPTY_LINES.name,
-					IndentOption.USE_TAB_CHARACTER.name
-				)
-			}
-			SettingsType.SPACING_SETTINGS -> {
-				consumer.showCustomOption(
-					ParadoxScriptCodeStyleSettings::class.java,
-					Option.SPACE_WITHIN_BRACES.name,
-					PlsBundle.message("script.codeStyle.spaceWithinBraces"),
-					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
-				)
-				consumer.showCustomOption(
-					ParadoxScriptCodeStyleSettings::class.java,
-					Option.SPACE_AROUND_SEPARATOR.name,
-					PlsBundle.message("script.codeStyle.spaceAroundSeparator"),
-					CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-				)
-			}
-			SettingsType.COMMENTER_SETTINGS -> {
-				consumer.showStandardOptions(
-					CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
-					CommenterOption.LINE_COMMENT_ADD_SPACE.name
-				)
-			}
+			SettingsType.INDENT_SETTINGS -> customizeIndentSettings(consumer)
+			SettingsType.SPACING_SETTINGS -> customizeSpacingSettings(consumer)
+			SettingsType.COMMENTER_SETTINGS -> customizeCommenterSettings(consumer)
 			else -> pass()
 		}
+	}
+	
+	private fun customizeIndentSettings(consumer: CodeStyleSettingsCustomizable) {
+		consumer.showStandardOptions(
+			IndentOption.INDENT_SIZE.name,
+			IndentOption.CONTINUATION_INDENT_SIZE.name,
+			IndentOption.KEEP_INDENTS_ON_EMPTY_LINES.name,
+			IndentOption.USE_TAB_CHARACTER.name
+		)
+	}
+	
+	private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
+		val spacesAroundOperators = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_AROUND_VARIABLE_SEPARATOR", PlsBundle.message("script.codeStyleSettings.spacing.around.variableSeparator"), spacesAroundOperators)
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_AROUND_PROPERTY_SEPARATOR", PlsBundle.message("script.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperators)
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_AROUND_INLINE_MATH_OPERATOR", PlsBundle.message("script.codeStyleSettings.spacing.around.inlineMathOperator"), spacesAroundOperators)
+		
+		val spacesWithin = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_WITHIN_BRACES", PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithin)
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_WITHIN_INLINE_MATH_BRACKETS", PlsBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithin)
+	}
+	
+	private fun customizeCommenterSettings(consumer: CodeStyleSettingsCustomizable) {
+		consumer.showStandardOptions(
+			CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
+			CommenterOption.LINE_COMMENT_ADD_SPACE.name
+		)
 	}
 	
 	class IndentOptionsEditor(

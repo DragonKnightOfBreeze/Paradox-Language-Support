@@ -27,67 +27,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	override fun createFile(viewProvider: FileViewProvider) = ParadoxScriptFile(viewProvider)
 	
-	override fun createElement(node: ASTNode): PsiElement {
-		//if(node.elementType == STRING && ) {
-		//	val nodeText = node.text
-		//	if(nodeText == "optimize_memory") {
-		//		val finalNode = ASTFactory.composite(TAG)
-		//		finalNode.rawAddChildrenWithoutNotifications(ASTFactory.leaf(TAG_TOKEN, nodeText))
-		//		val parent = node.treeParent as CompositeElement
-		//		parent.replaceChildInternal()
-		//		//parent.addInternal(finalNode, finalNode, node, true)
-		//		//parent.deleteChildInternal(node)
-		//		return ParadoxScriptTagImpl(finalNode)
-		//	}
-		//}
-		//if(node.elementType == ParadoxScriptStringLikeTokenType){
-		//	node as CompositeElement
-		//	val childNode = node.firstChildNode as TreeElement
-		//	val childType = childNode.elementType
-		//	val errorNode = childNode.treeParent as TreeElement
-		//	errorNode.rawReplaceWithList(childNode)
-		//	//val parentNode = node.treeParent as CompositeElement
-		//	////node.rawRemoveAllChildren()
-		//	//parentNode.replaceChild(node, childNode)
-		//	////parentNode.replaceChildInternal(node, childNode)
-		//	////parentNode.firstChildNode = childNode
-		//	//parentNode.rawRemoveAllChildren()
-		//	//val blockNode = parentNode.treeParent
-		//	//blockNode.replaceChild(parentNode, childNode)
-		//	//blockNode.addInternal(parentNode, parentNode, childNode, true)
-		//	return when(childType){
-		//		STRING -> ParadoxScriptStringImpl(childNode)
-		//		TAG -> ParadoxScriptTagImpl(childNode)
-		//		else -> throw InternalError()
-		//	}
-		//}
-		//return when(node.elementType) {
-		//	STRING -> {
-		//		////TODO
-		//		//val parentNode = node.treeParent as LazyParseableElement
-		//		//val childNode = node.firstChildNode
-		//		//parentNode.rawRemoveAllChildren()
-		//		//parentNode.rawAddChildrenWithoutNotifications(childNode as TreeElement)
-		//		//val childType = childNode.elementType
-		//		//return when(childType){
-		//		//	STRING -> ParadoxScriptStringImpl(childNode)
-		//		//	TAG -> ParadoxScriptTagImpl(childNode)
-		//		//	else -> throw InternalError()
-		//		//}
-		//	}
-		//	else -> Factory.createElement(node)
-		//}
-		//if(node.elementType == ParadoxScriptStringLikeTokenType){
-		//	val childNode = node.firstChildNode
-		//	val childType = childNode.elementType
-		//	return when(childType){
-		//		STRING_TOKEN -> ParadoxScriptStringImpl(node)
-		//		TAG_TOKEN -> ParadoxScriptTagImpl(node)
-		//		else -> throw InternalError()
-		//	}
-		//}
-		return Factory.createElement(node)
-	}
+	override fun createElement(node: ASTNode) = Factory.createElement(node)
 	
 	override fun createParser(project: Project?) = ParadoxScriptParser()
 	

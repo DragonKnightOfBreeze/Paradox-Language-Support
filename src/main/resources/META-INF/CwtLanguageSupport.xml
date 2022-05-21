@@ -16,7 +16,7 @@
         language="CWT"
         implementationClass="icu.windea.pls.cwt.highlighter.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage
-        implementation="icu.windea.pls.cwt.highlighter.CwtColorSettingsPage"/>
+        implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <lang.braceMatcher
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
@@ -37,6 +37,8 @@
     <lang.commenter
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
+    <breadcrumbsInfoProvider
+        implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
     <lang.psiStructureViewFactory
         language="CWT"
         implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
