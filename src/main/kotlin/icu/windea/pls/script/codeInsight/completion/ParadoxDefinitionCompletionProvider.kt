@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -12,18 +13,17 @@ import icu.windea.pls.script.psi.*
  */
 object ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val position = parameters.position
-		val parent1 = position.parent
-		val parent2 = parent1.parent
-		val mayBeKey = parent1 is ParadoxScriptPropertyKey || parent2 is ParadoxScriptBlock
-		val mayBeValue = parent2 is ParadoxScriptPropertyValue
-		val mayBeValueInBlock = parent2 is ParadoxScriptBlock
+		val propertyKeyOrStringElement = parameters.position.parent
+		val blockOrPropertyValueElement = propertyKeyOrStringElement.parentOfTypes(ParadoxScriptPropertyValue::class, ParadoxScriptBlock::class)
+		val mayBeKey = propertyKeyOrStringElement is ParadoxScriptPropertyKey || blockOrPropertyValueElement is ParadoxScriptBlock
+		val mayBeValue = propertyKeyOrStringElement is ParadoxScriptString && blockOrPropertyValueElement is ParadoxScriptPropertyValue
+		val mayBeValueInBlock = propertyKeyOrStringElement is ParadoxScriptString && blockOrPropertyValueElement is ParadoxScriptBlock
 		
 		ProgressManager.checkCanceled()
 		
 		if(mayBeKey) {
 			//得到key元素
-			val keyElement = parent1
+			val keyElement = propertyKeyOrStringElement
 			//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
 			val definitionProperty = keyElement.findParentDefinitionPropertySkipThis() ?: return
 			//进行提示
@@ -31,7 +31,7 @@ object ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParame
 		}
 		if(mayBeValue) {
 			//得到value元素
-			val valueElement = parent1
+			val valueElement = propertyKeyOrStringElement
 			//得到上一级definitionProperty
 			val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
 			//进行提示
@@ -39,7 +39,7 @@ object ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParame
 		}
 		if(mayBeValueInBlock) {
 			//得到value元素
-			val valueElement = parent1
+			val valueElement = propertyKeyOrStringElement
 			//得到上一级definitionProperty
 			val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
 			//进行提示

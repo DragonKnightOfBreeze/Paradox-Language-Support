@@ -14,7 +14,8 @@
 * [ ] 脚本文件语法解析优化：兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 兼容`stellaris v3.4`开始新增的`tag`语法，以及相关功能：代码高亮、代码提示、代码检查（同一定义中重复的标签）
   * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码提示、代码折叠、引用解析
-  * [ ] 兼容`parameter`语法，以及相关功能：代码高亮
+  * [X] 兼容`parameter`语法，以及相关功能：代码高亮
+  * [ ] 兼容`string_template`语法，以及相关功能：代码高亮
   * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮
 * [X] 脚本文件语法解析优化：获取变量名时不再包含作为前缀的"@"
 * [ ] 实现代码检查：不期望的脚本语法（多种情况）

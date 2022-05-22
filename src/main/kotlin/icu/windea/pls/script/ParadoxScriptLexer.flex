@@ -32,13 +32,14 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_VARIABLE_REFERENCE_NAME
 
 %state WAITING_INLINE_MATH
-%state WAITING_INLINE_MATH_PARAMETER
-%state WAITING_INLINE_MATH_PARAMETER_DEFAULT_VALUE
+%state WAITING_PARAMETER
+%state WAITING_PARAMETER_DEFAULT_VALUE
 
 %{
     public Project project;
       
     private int depth = 0;
+	private int nextStateForParameter = 0;
     private boolean leftAbsSign = true;
     
     public ParadoxScriptLexer(Project propect) {
@@ -49,6 +50,14 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     public int nextState(){
         return depth <= 0 ? YYINITIAL : WAITING_PROPERTY_KEY;
     }
+	
+	public int nextStateForParameter(){
+		if(nextStateForParameter == 0){
+			return WAITING_PROPERTY_END;
+		} else {
+			return WAITING_INLINE_MATH;
+		}
+	}
 %}
 
 EOL=\s*\R
@@ -59,13 +68,13 @@ COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\r\n]*
 VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
-PROPERTY_KEY_ID=[^#@={}\s]+[^={}\s]*
+PROPERTY_KEY_ID=[^#@={}\s][^={}\s]*
 QUOTED_PROPERTY_KEY_ID=\"([^\"(\r\n\\]|\\.)*?\"
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)? //non-negative integer / float, without unary sign 
-STRING_TOKEN=[^@\s\{\}=\"][^\s\{\}=\"]*
+STRING_TOKEN=[^#@$={}\s\"][^={}\s\"]*
 QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
 COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d.\s&&[^\r\n]]*}
 
@@ -80,7 +89,8 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于兼容性考虑，这里允许内联数学表达式
+  "$" {nextStateForParameter=0; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于语法兼容性考虑，这里允许内联数学表达式
   {COMMENT} {return COMMENT;}
   "@" {yybegin(WAITING_VARIABLE_NAME); return AT;}
   //在这里根据后面是否有"="判断是否是property
@@ -130,7 +140,8 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于兼容性考虑，这里允许内联数学表达式
+  "$" {nextStateForParameter=0; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于语法兼容性考虑，这里允许内联数学表达式
   "@" {yybegin(WAITING_IS_VARIABLE); return AT;}
   {COMMENT} {return COMMENT;}
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
@@ -161,6 +172,7 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
+  "$" {nextStateForParameter=0; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE_REFERENCE_NAME); return AT;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
@@ -210,6 +222,16 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {BLANK} {return WHITE_SPACE;}
 }
 
+<WAITING_PARAMETER>{
+  {PARAMETER_ID} {return PARAMETER_ID;}
+  "|" {yybegin(WAITING_PARAMETER_DEFAULT_VALUE); return PIPE;}
+  "$" {yybegin(nextStateForParameter()); return PARAMETER_END;}
+}
+<WAITING_PARAMETER_DEFAULT_VALUE>{
+  {NUMBER_TOKEN} {return NUMBER_TOKEN;}
+  "$" {yybegin(nextStateForParameter()); return PARAMETER_END;}
+}
+
 <WAITING_INLINE_MATH>{
   {BLANK} {return WHITE_SPACE;}
   "|" {
@@ -228,19 +250,10 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   "*" {yybegin(WAITING_INLINE_MATH); return TIMES_SIGN;}
   "/" {yybegin(WAITING_INLINE_MATH); return DIV_SIGN;}
   "%" {yybegin(WAITING_INLINE_MATH); return MOD_SIGN;}
-  "$" {yybegin(WAITING_INLINE_MATH_PARAMETER); return PARAMETER_START;}
+  "$" {nextStateForParameter=2; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {NUMBER_TOKEN} {return NUMBER_TOKEN;}
   {VARIABLE_ID} {return INLINE_MATH_VARIABLE_REFERENCE_ID;}
   "]" {leftAbsSign=true; yybegin(WAITING_PROPERTY_END); return INLINE_MATH_END;}
-}
-<WAITING_INLINE_MATH_PARAMETER>{
-  {PARAMETER_ID} {return PARAMETER_ID;}
-  "|" {yybegin(WAITING_INLINE_MATH_PARAMETER_DEFAULT_VALUE); return PIPE;}
-  "$" {yybegin(WAITING_INLINE_MATH); return PARAMETER_END;}
-}
-<WAITING_INLINE_MATH_PARAMETER_DEFAULT_VALUE>{
-  {NUMBER_TOKEN} {return NUMBER_TOKEN;}
-  "$" {yybegin(WAITING_INLINE_MATH); return PARAMETER_END;}
 }
 
 [^] {return BAD_CHARACTER;}

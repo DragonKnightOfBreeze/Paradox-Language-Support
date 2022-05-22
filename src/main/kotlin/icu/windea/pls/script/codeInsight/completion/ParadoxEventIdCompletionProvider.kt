@@ -20,7 +20,8 @@ object ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameter
 		//val properties = rootBlock.propertyList
 		//if(properties.isEmpty()) return //空文件，跳过
 		//if(properties.first { it.name.equals("namespace", true) } == null) return //没有事件命名空间，跳过
-		val eventIdProperty = parameters.position.parentOfType<ParadoxScriptProperty>() ?: return
+		val stringElement = parameters.position.parent.castOrNull<ParadoxScriptString>() ?: return
+		val eventIdProperty = stringElement.parentOfType<ParadoxScriptProperty>() ?: return
 		if(!eventIdProperty.name.equals("id", true)) return
 		val eventDefinition = eventIdProperty.parentOfType<ParadoxScriptProperty>() ?: return
 		if(eventDefinition.definitionInfo?.type != "event") return
