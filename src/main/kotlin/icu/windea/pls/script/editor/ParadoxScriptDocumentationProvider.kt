@@ -23,6 +23,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
+			is IParadoxScriptParameter -> getParameterInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			else -> null
 		}
@@ -32,6 +33,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		val name = element.name
 		return buildString {
 			buildScriptedVariableDefinition(element, name)
+		}
+	}
+	
+	private fun getParameterInfo(element: IParadoxScriptParameter): String {
+		val name = element.name
+		return buildString {
+			buildParameterDefinition(element, name)
 		}
 	}
 	
@@ -54,6 +62,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
+			is IParadoxScriptParameter -> getParameterDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			else -> null
 		}
@@ -64,6 +73,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			buildScriptedVariableDefinition(element, name)
 			buildLineCommentContent(element)
+		}
+	}
+	
+	private fun getParameterDoc(element: IParadoxScriptParameter): String {
+		val name = element.name
+		return buildString {
+			buildParameterDefinition(element, name)
 		}
 	}
 	
@@ -98,6 +114,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
+		}
+	}
+	
+	private fun StringBuilder.buildParameterDefinition(element: IParadoxScriptParameter, name: String) {
+		definition {
+			//加上文件信息
+			appendFileInfoHeader(element.fileInfo, element.project)
+			//加上定义信息
+			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 		}
 	}
 	

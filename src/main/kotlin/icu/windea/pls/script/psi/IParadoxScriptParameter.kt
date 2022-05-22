@@ -9,6 +9,8 @@ import javax.swing.*
  * 脚本参数。
  */
 interface IParadoxScriptParameter : PsiNamedElement, ParadoxScriptExpression {
+	override fun getName(): String
+	
 	val defaultValue: String?
 	
 	override val valueType: ParadoxValueType get() = ParadoxValueType.NumberType
