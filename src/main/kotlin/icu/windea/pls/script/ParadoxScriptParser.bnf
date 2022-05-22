@@ -116,14 +116,19 @@ private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | val
 //see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
 
 //tag
-//resolved as string, and should:
-//in specific definition declarations (scripted_effect / scripted_trigger)
-//in block, before any scripted variables, (non-tag) strings and properties
+//should in specific definition declarations (scripted_effect / scripted_trigger) (as value)
+//resolve from a string, before any scripted variables, (non-tag) strings and properties
 
-//parameter condition expression
+//parameter
+//should in definition declarations
+//declared as a value / property value
+
+//parameter condition
+//should in definition declarations (as value / property value)
 
 //inline math
-//in definition declarations (should starts with "@\[" if in: scripted_effect / scripted_trigger)
+//should in definition declarations (should starts with "@\[" if in: scripted_effect / scripted_trigger)
+//declared as a value / property value
 //only first inline math expression in a scripted effect / trigger is correctly recognized and evaluated
 //supported operators: + - * / %
 //also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"

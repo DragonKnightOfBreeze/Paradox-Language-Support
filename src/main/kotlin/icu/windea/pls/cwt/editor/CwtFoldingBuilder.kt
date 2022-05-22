@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
+import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
@@ -20,7 +21,7 @@ class CwtFoldingBuilder:FoldingBuilder,DumbAware {
 	}
 
 	override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
-		val descriptors = mutableListOf<FoldingDescriptor>()
+		val descriptors: MutableList<FoldingDescriptor> = SmartList()
 		collectDescriptorsRecursively(node,document,descriptors)
 		return descriptors.toTypedArray()
 	}
@@ -28,7 +29,8 @@ class CwtFoldingBuilder:FoldingBuilder,DumbAware {
 	private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
 		when(node.elementType) {
 			BLOCK -> {
-				if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
+				descriptors.add(FoldingDescriptor(node, node.textRange))
+				//if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
 			}
 		}
 		val children = node.getChildren(null)

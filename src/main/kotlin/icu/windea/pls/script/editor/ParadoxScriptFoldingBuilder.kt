@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -11,6 +12,7 @@ class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
 		return when(node.elementType){
 			BLOCK -> blockFolder
+			INLINE_MATH -> inlineMathFolder
 			else -> throw InternalError()
 		}
 	}
@@ -20,7 +22,7 @@ class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	}
 
 	override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
-		val descriptors = mutableListOf<FoldingDescriptor>()
+		val descriptors: MutableList<FoldingDescriptor> = SmartList()
 		collectDescriptorsRecursively(node,document,descriptors)
 		return descriptors.toTypedArray()
 	}
@@ -28,8 +30,10 @@ class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
 		when(node.elementType) {
 			BLOCK -> {
-				if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
+				descriptors.add(FoldingDescriptor(node, node.textRange))
+				//if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
 			}
+			INLINE_MATH -> descriptors.add(FoldingDescriptor(node, node.textRange))
 		}
 		val children = node.getChildren(null)
 		for(child in children) {
