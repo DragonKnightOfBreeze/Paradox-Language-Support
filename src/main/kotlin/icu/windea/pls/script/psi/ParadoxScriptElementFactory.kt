@@ -18,14 +18,12 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createVariable(project: Project, name: String, value: String): ParadoxScriptVariable {
-		val usedName = if(name.startsWith('@')) name else "@$name"
-		return createRootBlock(project, "$usedName=$value").findRequiredChild(VARIABLE)
+		return createRootBlock(project, "@$name=$value").findRequiredChild(VARIABLE)
 	}
 	
 	@JvmStatic
 	fun createVariableName(project: Project, name: String): ParadoxScriptVariableName {
-		val usedName = if(name.startsWith('@')) name else "@$name"
-		return createVariable(project, usedName, "0").findRequiredChild(VARIABLE_NAME)
+		return createVariable(project, name, "0").findRequiredChild(VARIABLE_NAME)
 	}
 	
 	@JvmStatic
@@ -51,8 +49,7 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createVariableReference(project: Project, name: String): ParadoxScriptVariableReference{
-		val usedName = if(name.startsWith('@')) name else "@$name"
-		return createPropertyValue(project, usedName).findRequiredChild(VARIABLE_REFERENCE)
+		return createPropertyValue(project, "@$name").findRequiredChild(VARIABLE_REFERENCE)
 	}
 	
 	@JvmStatic
@@ -63,7 +60,7 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createInlineMath(project: Project, expression: String): ParadoxScriptInlineMath {
-		return createPropertyValue(project, "@\\[$expression]").findRequiredChild(INLINE_MATH)
+		return createPropertyValue(project, "@[$expression]").findRequiredChild(INLINE_MATH)
 	}
 	
 	@JvmStatic

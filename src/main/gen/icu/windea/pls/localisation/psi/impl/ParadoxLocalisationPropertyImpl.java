@@ -72,6 +72,11 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
+  public int getTextOffset() {
+    return ParadoxLocalisationPsiImplUtil.getTextOffset(this);
+  }
+
+  @Override
   @Nullable
   public ParadoxLocalisationCategory getCategory() {
     return ParadoxLocalisationPsiImplUtil.getCategory(this);

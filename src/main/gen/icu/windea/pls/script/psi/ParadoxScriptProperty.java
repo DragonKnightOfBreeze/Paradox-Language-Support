@@ -29,6 +29,8 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable
   PsiElement getNameIdentifier();
 
+  int getTextOffset();
+
   @Nullable
   String getValue();
 

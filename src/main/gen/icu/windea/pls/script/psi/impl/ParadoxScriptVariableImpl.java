@@ -72,6 +72,11 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
+  public int getTextOffset() {
+    return ParadoxScriptPsiImplUtil.getTextOffset(this);
+  }
+
+  @Override
   @Nullable
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);

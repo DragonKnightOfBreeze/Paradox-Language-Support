@@ -22,7 +22,6 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 		private val COLOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.COLOR_KEY)
 		private val NUMBER_KEYS = arrayOf(ParadoxScriptAttributesKeys.NUMBER_KEY)
 		private val STRING_KEYS = arrayOf(ParadoxScriptAttributesKeys.STRING_KEY)
-		private val TAG_KEYS = arrayOf(ParadoxScriptAttributesKeys.TAG_KEY)
 		private val COMMENT_KEYS = arrayOf(ParadoxScriptAttributesKeys.COMMENT_KEY)
 		private val VALID_ESCAPE_KEYS = arrayOf(ParadoxScriptAttributesKeys.VALID_ESCAPE_KEY)
 		private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxScriptAttributesKeys.INVALID_ESCAPE_KEY)
@@ -38,7 +37,7 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 		PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN -> INLINE_MATH_OPERATOR_KEYS
 		LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN -> INLINE_MATH_OPERATOR_KEYS
 		COMMENT, END_OF_LINE_COMMENT -> COMMENT_KEYS
-		VARIABLE_NAME_ID, VARIABLE_REFERENCE_ID, INLINE_MATH_VARIABLE_REFERENCE_ID -> VARIABLE_KEYS
+		AT, VARIABLE_NAME_ID, VARIABLE_REFERENCE_ID, INLINE_MATH_VARIABLE_REFERENCE_ID -> VARIABLE_KEYS
 		PARAMETER_ID -> PARAMETER_KEYS
 		PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID -> PROPERTY_KEY_KEYS
 		BOOLEAN_TOKEN -> KEYWORD_KEYS

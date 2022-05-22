@@ -40,7 +40,7 @@ property ::= property_key COLON property_number? property_value {
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationStub"
-  methods=[getIcon getName setName getNameIdentifier getCategory getValue]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getCategory getValue]
 }
 //https://stellaris.paradoxwikis.com/Localisation_modding
 //The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking

@@ -12,9 +12,12 @@ import icu.windea.pls.config.internal.config.*
 
 object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
+	private const val version = 1
 	private const val cacheSize = 8 * 1024
 	
 	override fun getKey() = key
+	
+	override fun getVersion() = version
 	
 	override fun getCacheSize() = cacheSize
 	
@@ -75,7 +78,7 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 	fun findAll(localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, distinct: Boolean): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
-
+		
 		val keys = getAllKeys(project)
 		if(keys.isEmpty()) return emptyList()
 		

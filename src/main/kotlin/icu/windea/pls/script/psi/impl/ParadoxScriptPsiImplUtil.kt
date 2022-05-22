@@ -27,12 +27,14 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getName(element: ParadoxScriptVariable): String {
 		//注意：element.stub可能会导致ProcessCanceledException
+		// 不包含作为前缀的"@"
 		runCatching { element.stub?.name }.getOrNull()?.let { return it }
-		return element.variableName.variableNameId.text.orEmpty()
+		return element.variableName.variableNameId.text
 	}
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptVariable, name: String): ParadoxScriptVariable {
+		// 不包含作为前缀的"@"
 		val nameElement = element.variableName.variableNameId
 		val newNameElement = ParadoxScriptElementFactory.createVariableName(element.project, name).variableNameId
 		nameElement.replace(newNameElement)
@@ -42,6 +44,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptVariable): PsiElement {
 		return element.variableName.variableNameId
+	}
+	
+	@JvmStatic
+	fun getTextOffset(element: ParadoxScriptVariable): Int {
+		return element.nameIdentifier.textOffset
 	}
 	
 	@JvmStatic
@@ -63,6 +70,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptVariableName
 	@JvmStatic
 	fun getName(element: ParadoxScriptVariableName): String {
+		// 不包含作为前缀的"@"
 		return element.variableNameId.text
 	}
 	//endregion
@@ -100,6 +108,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptProperty): PsiElement? {
 		return element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId }
+	}
+	
+	@JvmStatic
+	fun getTextOffset(element: ParadoxScriptProperty): Int {
+		return element.propertyKey.textOffset
 	}
 	
 	@JvmStatic
@@ -179,13 +192,16 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxScriptVariableReference): String {
+		// 不包含作为前缀的"@"
 		return element.variableReferenceId.text.orEmpty()
 	}
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptVariableReference, name: String): ParadoxScriptVariableReference {
-		val newElement = ParadoxScriptElementFactory.createVariableReference(element.project, name)
-		element.replace(newElement)
+		// 不包含作为前缀的"@"
+		val nameElement = element.variableReferenceId
+		val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).variableReferenceId
+		nameElement.replace(newNameElement)
 		return element
 	}
 	
@@ -487,7 +503,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getName(element: ParadoxScriptInlineMathVariableReference): String {
-		return element.text
+		return element.variableReferenceId.text
 	}
 	
 	@JvmStatic
@@ -530,8 +546,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getTextOffset(element: ParadoxScriptInlineMathParameter): Int{
-		return element.parameterId.textOffset
+	fun getTextOffset(element: ParadoxScriptInlineMathParameter): Int {
+		return element.nameIdentifier.textOffset
 	}
 	
 	@JvmStatic

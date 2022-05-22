@@ -29,6 +29,8 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   @NotNull
   PsiElement getNameIdentifier();
 
+  int getTextOffset();
+
   @Nullable
   ParadoxLocalisationCategory getCategory();
 

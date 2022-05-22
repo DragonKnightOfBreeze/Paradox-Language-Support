@@ -441,59 +441,25 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VARIABLE_NAME_ID
+  // AT VARIABLE_NAME_ID
   public static boolean variable_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_name")) return false;
-    if (!nextTokenIs(b, VARIABLE_NAME_ID)) return false;
+    if (!nextTokenIs(b, AT)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, VARIABLE_NAME_ID);
+    r = consumeTokens(b, 0, AT, VARIABLE_NAME_ID);
     exit_section_(b, m, VARIABLE_NAME, r);
     return r;
   }
 
   /* ********************************************************** */
-  // !(BOOLEAN_TOKEN | INLINE_MATH_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID)
-  static boolean variable_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !variable_recover_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // BOOLEAN_TOKEN | INLINE_MATH_START | COLOR_TOKEN | COMMENT | END_OF_LINE_COMMENT | FLOAT_TOKEN | INT_TOKEN | LEFT_BRACE | PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | QUOTED_STRING_TOKEN | RIGHT_BRACE | STRING_LIKE_TOKEN | STRING_TOKEN | VARIABLE_NAME_ID | VARIABLE_REFERENCE_ID
-  private static boolean variable_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_recover_0")) return false;
-    boolean r;
-    r = consumeToken(b, BOOLEAN_TOKEN);
-    if (!r) r = consumeToken(b, INLINE_MATH_START);
-    if (!r) r = consumeToken(b, COLOR_TOKEN);
-    if (!r) r = consumeToken(b, COMMENT);
-    if (!r) r = consumeToken(b, END_OF_LINE_COMMENT);
-    if (!r) r = consumeToken(b, FLOAT_TOKEN);
-    if (!r) r = consumeToken(b, INT_TOKEN);
-    if (!r) r = consumeToken(b, LEFT_BRACE);
-    if (!r) r = consumeToken(b, PROPERTY_KEY_ID);
-    if (!r) r = consumeToken(b, QUOTED_PROPERTY_KEY_ID);
-    if (!r) r = consumeToken(b, QUOTED_STRING_TOKEN);
-    if (!r) r = consumeToken(b, RIGHT_BRACE);
-    if (!r) r = consumeToken(b, STRING_LIKE_TOKEN);
-    if (!r) r = consumeToken(b, STRING_TOKEN);
-    if (!r) r = consumeToken(b, VARIABLE_NAME_ID);
-    if (!r) r = consumeToken(b, VARIABLE_REFERENCE_ID);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // VARIABLE_REFERENCE_ID
+  // AT VARIABLE_REFERENCE_ID
   public static boolean variable_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_reference")) return false;
-    if (!nextTokenIs(b, VARIABLE_REFERENCE_ID)) return false;
+    if (!nextTokenIs(b, AT)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, VARIABLE_REFERENCE_ID);
+    r = consumeTokens(b, 0, AT, VARIABLE_REFERENCE_ID);
     exit_section_(b, m, VARIABLE_REFERENCE, r);
     return r;
   }
@@ -516,9 +482,9 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COLOR_TOKEN,
-    COMMENT, END_OF_LINE_COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
-    PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID, QUOTED_STRING_TOKEN, RIGHT_BRACE, STRING_TOKEN, VARIABLE_NAME_ID, VARIABLE_REFERENCE_ID);
+  static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
+    COLOR_TOKEN, COMMENT, END_OF_LINE_COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN,
+    LEFT_BRACE, PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID, QUOTED_STRING_TOKEN, RIGHT_BRACE, STRING_TOKEN);
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser property_auto_recover_ = block_auto_recover_;
   static final Parser variable_auto_recover_ = block_auto_recover_;

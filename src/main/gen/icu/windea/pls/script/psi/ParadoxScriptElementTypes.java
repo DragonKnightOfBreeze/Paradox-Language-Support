@@ -30,6 +30,7 @@ public interface ParadoxScriptElementTypes {
   IElementType VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_REFERENCE");
   IElementType VARIABLE_VALUE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_VALUE");
 
+  IElementType AT = ParadoxScriptElementTypeFactory.getTokenType("AT");
   IElementType BOOLEAN_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("BOOLEAN_TOKEN");
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMENT = ParadoxScriptElementTypeFactory.getTokenType("COMMENT");
@@ -63,7 +64,6 @@ public interface ParadoxScriptElementTypes {
   IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
   IElementType RP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RP_SIGN");
-  IElementType STRING_LIKE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_LIKE_TOKEN");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType TIMES_SIGN = ParadoxScriptElementTypeFactory.getTokenType("TIMES_SIGN");
   IElementType VARIABLE_NAME_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_NAME_ID");

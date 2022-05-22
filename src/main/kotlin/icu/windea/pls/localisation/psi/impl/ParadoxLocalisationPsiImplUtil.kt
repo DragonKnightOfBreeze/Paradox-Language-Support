@@ -84,6 +84,11 @@ object ParadoxLocalisationPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getTextOffset(element: ParadoxLocalisationProperty): Int{
+		return element.nameIdentifier.textOffset
+	}
+	
+	@JvmStatic
 	fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
 		//注意：element.stub可能会导致ProcessCanceledException
 		runCatching { element.stub?.category }.getOrNull()?.let { return it }
