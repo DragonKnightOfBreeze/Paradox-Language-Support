@@ -112,6 +112,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getValue(element: ParadoxScriptParameter): String{
+		return parameterFolder
+	}
+	
+	@JvmStatic
 	fun getDefaultValue(element: ParadoxScriptParameter): String? {
 		return element.defaultValueToken?.text
 	}
@@ -213,7 +218,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptPropertyKey): ParadoxScriptPropertyKeyReference {
+	fun getReference(element: ParadoxScriptPropertyKey): ParadoxScriptPropertyKeyReference? {
+		if(element.parameter != null) return null //propertyKey为parameter的时直接返回null
 		val rangeInElement = TextRange(0, element.textLength) //包括可能的括起字符串的双引号
 		return ParadoxScriptPropertyKeyReference(element, rangeInElement)
 	}
@@ -361,6 +367,20 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getType(element: ParadoxScriptString): String? {
 		return null //TODO 支持定义元素的类型
+	}
+	//endregion
+	
+	//region ParadoxScriptStringTemplate
+	@JvmStatic
+	fun getValue(element: ParadoxScriptStringTemplate): String{
+		return stringTemplateFolder
+	}
+	//endregion
+	
+	//region ParadoxScriptStringTemplateEntry
+	@JvmStatic
+	fun getValue(element: ParadoxScriptLiteralStringTemplateEntry): String {
+		return element.text
 	}
 	//endregion
 	
@@ -531,7 +551,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValueType(element: ParadoxScriptInlineMathNumber): ParadoxValueType {
-		return ParadoxValueType.NumberType
+		return ParadoxValueType.infer(element.text)
 	}
 	//endregion
 	

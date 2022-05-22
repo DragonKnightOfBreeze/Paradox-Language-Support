@@ -8,37 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import javax.swing.Icon;
 
-public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
+public class ParadoxScriptLiteralStringTemplateEntryImpl extends ParadoxScriptStringTemplateEntryImpl implements ParadoxScriptLiteralStringTemplateEntry {
 
-  public ParadoxScriptValueImpl(@NotNull ASTNode node) {
+  public ParadoxScriptLiteralStringTemplateEntryImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitLiteralStringTemplateEntry(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptStringTemplate getStringTemplate() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptStringTemplate.class);
-  }
-
-  @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
-    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

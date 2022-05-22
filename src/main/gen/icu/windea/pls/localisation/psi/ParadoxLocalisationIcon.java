@@ -10,8 +10,8 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText {
 
-  @Nullable
-  ParadoxLocalisationRichText getRichText();
+  @NotNull
+  List<ParadoxLocalisationRichText> getRichTextList();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

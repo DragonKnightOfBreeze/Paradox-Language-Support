@@ -23,6 +23,9 @@ public interface ParadoxScriptParameter extends ParadoxScriptValue, IParadoxScri
 
   int getTextOffset();
 
+  @NotNull
+  String getValue();
+
   @Nullable
   String getDefaultValue();
 

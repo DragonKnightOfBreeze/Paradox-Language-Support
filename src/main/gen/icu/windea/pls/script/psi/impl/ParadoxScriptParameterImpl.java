@@ -59,6 +59,12 @@ public class ParadoxScriptParameterImpl extends ParadoxScriptValueImpl implement
   }
 
   @Override
+  @NotNull
+  public String getValue() {
+    return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
   @Nullable
   public String getDefaultValue() {
     return ParadoxScriptPsiImplUtil.getDefaultValue(this);

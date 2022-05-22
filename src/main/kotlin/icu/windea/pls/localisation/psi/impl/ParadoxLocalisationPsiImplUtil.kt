@@ -133,9 +133,8 @@ object ParadoxLocalisationPsiImplUtil {
 		//string / command / property reference
 		val iconIdElement = element.iconId
 		if(iconIdElement != null) return iconIdElement.text
-		val propertyReferenceElement = element.richText.castOrNull<ParadoxLocalisationPropertyReference>()
-		if(propertyReferenceElement != null) return propertyReferenceElement.reference?.resolve()?.value
-		return null
+		val iconIdReferenceElement = element.iconIdReference ?: return null
+		return iconIdReferenceElement.reference?.resolve()?.value
 	}
 	
 	@JvmStatic
@@ -148,8 +147,13 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getFrame(element: ParadoxLocalisationIcon): Int{
-		val iconFrameElement = element.iconFrame ?:return 0 //默认为0（不切分）
-		return runCatching { iconFrameElement.text.toInt() }.getOrDefault(0)
+		//NOTE 这里的帧数可能用propertyReference表示，对应脚本中的参数，这时帧数传0
+		val iconFrameElement = element.iconFrame //默认为0（不切分）
+		if(iconFrameElement != null) return iconFrameElement.text.toIntOrDefault(0)
+		//这里的propertyReference是一个来自脚本文件的参数，不解析
+		//val iconFrameReferenceElement = element.iconFrameReference ?: return 0
+		//return iconFrameReferenceElement.reference?.resolve()?.value?.toIntOrDefault(0) ?: 0
+		return 0
 	}
 	
 	@JvmStatic

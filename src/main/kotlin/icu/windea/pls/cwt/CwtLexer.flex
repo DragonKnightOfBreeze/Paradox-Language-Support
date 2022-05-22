@@ -50,6 +50,9 @@ COMMENT=(#)|(#[^#\r\n][^\r\n]*)
 OPTION_COMMENT_START=##[^#]
 DOCUMENTATION_COMMENT_START=###
 
+CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
+CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
+
 PROPERTY_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 OPTION_KEY_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 BOOLEAN_TOKEN=(yes)|(no)
@@ -58,9 +61,6 @@ FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 TOP_STRING_TOKEN=([^\s])|([^={}\s][^={}\r\n]*[^={}\s]) //顶级的optionValue可以包含空格
 DOCUMENTATION_TOKEN=[^\r\n]+
-
-IS_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
-IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
 
 %%
 <YYINITIAL> {
@@ -73,7 +73,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
   {OPTION_COMMENT_START} { yypushback(1); yybegin(WAITING_OPTION); return OPTION_START; }
   {DOCUMENTATION_COMMENT_START} { yybegin(WAITING_DOCUMENTATION); return DOCUMENTATION_START; }
   
-  {IS_PROPERTY_KEY} {yypushback(yylength()); yybegin(WAITING_PROPERTY_KEY);}
+  {CHECK_PROPERTY_KEY} {yypushback(yylength()); yybegin(WAITING_PROPERTY_KEY);}
   
   {BOOLEAN_TOKEN} { yybegin(WAITING_PROPERTY_VALUE_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_PROPERTY_VALUE_END); return INT_TOKEN; }
@@ -148,7 +148,7 @@ IS_OPTION_KEY=({OPTION_KEY_TOKEN})?({WHITE_SPACE})?((=)|(\!=)|(<>))
 
   {RELAX_COMMENT} {return COMMENT; }
   
-  {IS_OPTION_KEY} {yypushback(yylength()); yybegin(WAITING_OPTION_KEY);}
+  {CHECK_OPTION_KEY} {yypushback(yylength()); yybegin(WAITING_OPTION_KEY);}
   
   {BOOLEAN_TOKEN} { yybegin(WAITING_OPTION_VALUE_END); return BOOLEAN_TOKEN; }
   {INT_TOKEN} { yybegin(WAITING_OPTION_VALUE_END); return INT_TOKEN; }

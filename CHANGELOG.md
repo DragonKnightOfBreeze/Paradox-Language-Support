@@ -15,15 +15,20 @@
   * [X] 兼容`stellaris v3.4`开始新增的`tag`语法，以及相关功能：代码高亮、代码提示、代码检查（同一定义中重复的标签）
   * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码提示、代码折叠、引用解析
   * [X] 兼容`parameter`语法，以及相关功能：代码高亮
-  * [ ] 兼容`string_template`语法，以及相关功能：代码高亮
+  * [X] 兼容`string_template`语法，以及相关功能：代码高亮
   * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮
+  * [ ] 兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_factor|ALTERED_STABILITY|-10|`）
 * [X] 脚本文件语法解析优化：获取变量名时不再包含作为前缀的"@"
+* [ ] 提供方法让代码中获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
 * [ ] 实现代码检查：不期望的脚本语法（多种情况）
 * [ ] 文件路径分隔符兼容"/" "\" "\\"混用
 * [ ] 完善对CWT配置文件的支持，完善相关功能
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [ ] 进行代码提示时，仅当对应的定义元素类型是boolean或者无法解析时，才会提示`yes`和`no`
   * [ ] 确认支持获取和应用嵌套的定义的CWT规则
+  * [ ] 支持规则类型scope和scope_field
+  * [ ] 支持规则类型value和value_set
+  * [ ] 支持规则类型complex_enum
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 * [ ] ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
@@ -183,9 +188,6 @@
 * [X] 支持规则类型alias_match_left
 * [X] 提示alias时匹配scope（来自`trigger_docs.log`或`triggers.log`，需要先转化为cwt，从名为`scope`或`scopes`的option中得到）
 * [ ] 为alias补充名为`scope`或`scopes`的option（仅对于规则类型`alias_name[xxx]`）
-* [ ] 支持规则类型scope和scope_field
-* [ ] 支持规则类型value和value_set
-* [ ] 支持规则类型complex_enum
 * [X] 支持规则类型icon
 * [X] 支持规则类型path
 * [X] 应用cwt配置文件`folders.cwt`

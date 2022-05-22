@@ -31,7 +31,7 @@ class ParadoxPathReferenceProvider : PathReferenceProvider {
 				if(anchorText.isEmpty()) return false //排除空锚点
 				val element = anchorReference.element
 				val rangeInElement = anchorReference.rangeInElement
-				val newReference = ParadoxDefinitionPathReference(element, rangeInElement, anchorText, file)
+				val newReference = ParadoxDefinitionAnchorReference(element, rangeInElement, anchorText, file)
 				references.removeAt(size - 1)
 				references.add(newReference)
 				return true
@@ -45,7 +45,7 @@ class ParadoxPathReferenceProvider : PathReferenceProvider {
 				if(anchorText.isEmpty()) return false //排除空锚点
 				val element = anchorReference.element
 				val rangeInElement = anchorReference.rangeInElement
-				val newReference = ParadoxLocalisationPathReference(element, rangeInElement, anchorText, file, category)
+				val newReference = ParadoxLocalisationAnchorReference(element, rangeInElement, anchorText, file, category)
 				references.removeAt(size - 1)
 				references.add(newReference)
 				return true

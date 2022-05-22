@@ -59,13 +59,13 @@ property ::= property_key property_separator property_value {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
 }
-property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
+property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter{
   methods=[getValue setValue getReference]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 
-value ::= variable_reference | parameter | boolean | number | string | color | block | inline_math {
+value ::= variable_reference | parameter | boolean | number | string | string_template | color | block | inline_math {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
   methods=[getIcon getValue]
 }
@@ -122,11 +122,23 @@ private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | val
 //parameter
 //should in definition declarations
 //declared as a value / property value
-parameter ::= PARAMETER_START PARAMETER_ID [ PIPE NUMBER_TOKEN] PARAMETER_END {
+//currently cannot be surround with double quotes
+parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_TOKEN)] PARAMETER_END {
   pin=1
   extends=value
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue]
+}
+string_template ::= string_template_entry string_template_entry+{
+  methods=[getValue]
+}
+string_template_entry ::= literal_string_template_entry | parameter_string_template_entry
+literal_string_template_entry ::= STRING_PART{
+  extends=string_template_entry
+  methods=[getValue]
+}
+parameter_string_template_entry ::= parameter {
+  extends=string_template_entry
 }
 
 //parameter condition
@@ -183,7 +195,7 @@ inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without
   implements="icu.windea.pls.script.psi.IParadoxScriptVariableReference"
   methods=[getIcon getName setName getReference]
 }
-inline_math_parameter ::= PARAMETER_START PARAMETER_ID [ PIPE NUMBER_TOKEN] PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START PARAMETER_ID [ PIPE ARG_NUMBER_TOKEN] PARAMETER_END {
   extends=inline_math_factor
   pin=1
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"

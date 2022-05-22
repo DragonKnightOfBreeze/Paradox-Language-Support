@@ -10,6 +10,9 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationCommandField extends ParadoxLocalisationCommandIdentifier {
 
+  @Nullable
+  ParadoxLocalisationPropertyReference getPropertyReference();
+
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

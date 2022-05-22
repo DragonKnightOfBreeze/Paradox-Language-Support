@@ -51,7 +51,7 @@
   </template>
   <template name="command"
             value="[$TEXT$]$END$"
-            description="Insert an command fragment"
+            description="Insert a command fragment"
             toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>

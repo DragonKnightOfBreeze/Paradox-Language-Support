@@ -19,10 +19,22 @@ enum class ParadoxValueType(
 	ColorType("color", "color"),
 	BlockType("block", "block"),
 	
+	Parameter("parameter", "parameter"),
 	InlineMathType("inline_math", "inline math");
-	//TODO 补充高级类型
 	
 	override fun toString(): String {
 		return text
+	}
+	
+	companion object {
+		@JvmStatic
+		fun infer(inputValue: String): ParadoxValueType {
+			return when {
+				inputValue.isBooleanYesNo() -> BooleanType
+				inputValue.isInt() -> IntType
+				inputValue.isFloat() -> FloatType
+				else -> StringType
+			}
+		}
 	}
 }

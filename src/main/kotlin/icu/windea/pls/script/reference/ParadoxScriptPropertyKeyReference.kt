@@ -8,6 +8,9 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
+ */
 class ParadoxScriptPropertyKeyReference(
 	element: ParadoxScriptPropertyKey,
 	rangeInElement: TextRange
@@ -32,5 +35,5 @@ class ParadoxScriptPropertyKeyReference(
 		return multiResolveKey(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
 	}
 	
-	//代码提示功能由ParadoxScriptCompletionContributor统一实现
+	//代码提示功能由ParadoxDefinitionCompletionProvider统一实现
 }

@@ -2,8 +2,6 @@ package icu.windea.pls.script.psi;
 
 import com.intellij.openapi.project.*;
 import com.intellij.psi.tree.IElementType;
-import icu.windea.pls.config.cwt.*;
-import icu.windea.pls.core.*;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
@@ -28,18 +26,22 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_PROPERTY_VALUE
 %state WAITING_PROPERTY_END
 
-%state WAITING_IS_VARIABLE
+%state WAITING_VARIABLE
 %state WAITING_VARIABLE_REFERENCE_NAME
 
-%state WAITING_INLINE_MATH
 %state WAITING_PARAMETER
 %state WAITING_PARAMETER_DEFAULT_VALUE
+%state WAITING_PARAMETER_DEFAULT_VALUE_END
+%state WAITING_AFTER_PARAMETER
+
+%state WAITING_INLINE_MATH
 
 %{
     public Project project;
-      
+                  
     private int depth = 0;
-	private int nextStateForParameter = 0;
+	private boolean isPropertyKey = false;
+    private boolean inInlineMath = false;
     private boolean leftAbsSign = true;
     
     public ParadoxScriptLexer(Project propect) {
@@ -47,119 +49,186 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         this.project = project;
     }
     
-    public int nextState(){
-        return depth <= 0 ? YYINITIAL : WAITING_PROPERTY_KEY;
+    private void beginNextState(){
+        if(depth <= 0){
+	        yybegin(YYINITIAL);
+        } else {
+	        yybegin(WAITING_PROPERTY_KEY);
+        }
     }
 	
-	public int nextStateForParameter(){
-		if(nextStateForParameter == 0){
-			return WAITING_PROPERTY_END;
+    private void beginNextStateForParameter(){
+        if(inInlineMath){
+            yybegin(WAITING_INLINE_MATH);
+        } else if(isPropertyKey){
+			isPropertyKey = false;
+			yybegin(WATIING_PROPERTY_SEPARATOR);
 		} else {
-			return WAITING_INLINE_MATH;
-		}
-	}
+            yybegin(WAITING_AFTER_PARAMETER);
+        }
+    }
+    
+    private void onBlank(){
+		//ignore
+    }
+    
+    private void pushbackUntilBeforeBlank(int begin){
+        //回退到末尾可能出现的空白之前
+        int length = yylength();
+        int i;
+        for (i = begin; i < length ; i++) {
+          char c = yycharat(length-i-1);
+          if(!Character.isWhitespace(c)) break;
+        }
+        if(i != 0){
+            yypushback(i);
+        }
+    }
 %}
 
 EOL=\s*\R
 WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
-
 COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\r\n]*
+
+//判断接下来是变量名还是变量引用
+CHECK_VARIABLE_NAME={VARIABLE_ID}(\s*=)?
+//判断接下来是否是属性
+CHECK_PROPERTY_KEY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID}|[$]{PARAMETER_ID})[$]?\s*[=<>] //不是必须匹配参数结尾的"$"
+//判断接下来是否是字符串模版中的字符串部分
+CHECK_STRING_PART={STRING_PART}[$]
+
 VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
-PROPERTY_KEY_ID=[^#@={}\s][^={}\s]*
+PROPERTY_KEY_ID=[^#@={}\s][^$={}\s]*
+//PROPERTY_KEY_ID=[^#@={}\[\]\s][^$={}\[\]\s]*
 QUOTED_PROPERTY_KEY_ID=\"([^\"(\r\n\\]|\\.)*?\"
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
-NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)? //non-negative integer / float, without unary sign 
-STRING_TOKEN=[^#@$={}\s\"][^={}\s\"]*
-QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
 COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d.\s&&[^\r\n]]*}
+STRING_TOKEN=[^#@$={}\s\"][^$={}\s\"]*
+//STRING_TOKEN=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
+QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
+STRING_PART=[^#@$={}\s\"][^$={}\s\"]*
+//STRING_PART=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
 
-//判断接下来是否是属性
-IS_PROPERTY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID})\s*[=<>]
-//判断接下来是变量名还是变量引用
-IS_VARIABLE={VARIABLE_ID}(\s*=)?
+NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)? //non-negative integer / float, without unary sign
+ARG_NUMBER_TOKEN=[+-]?{NUMBER_TOKEN}
+ARG_STRING_TOKEN={STRING_TOKEN}
 
 %%
 
 <YYINITIAL> {
-  {BLANK} {return WHITE_SPACE;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "$" {nextStateForParameter=0; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
-  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于语法兼容性考虑，这里允许内联数学表达式
-  {COMMENT} {return COMMENT;}
+  {BLANK} { onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  //出于语法兼容性考虑，这里允许内联数学表达式
+  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE_NAME); return AT;}
-  //在这里根据后面是否有"="判断是否是property
-  {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
-  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
+  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  {CHECK_PROPERTY_KEY} {
+    //根据后面是否有"="判断是否是property
+	yybegin(WATIING_PROPERTY_SEPARATOR);
+	pushbackUntilBeforeBlank(1);
+	char firstChar = yycharat(0);
+	if(firstChar == '"'){
+		return QUOTED_PROPERTY_KEY_ID;
+	} else if(firstChar == '$'){
+		//propertyKey也可以是parameter
+		isPropertyKey = true;
+		yypushback(yylength() -1);
+		yybegin(WAITING_PARAMETER);
+		return PARAMETER_START;
+	} else {
+		return PROPERTY_KEY_ID;
+	}
+  }
+  {CHECK_STRING_PART} {
+	yypushback(1);
+	return STRING_PART;
+  }
+  {BOOLEAN_TOKEN} {beginNextState(); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {beginNextState(); return INT_TOKEN;}
+  {FLOAT_TOKEN} {beginNextState(); return FLOAT_TOKEN;}
+  {COLOR_TOKEN} {beginNextState(); return COLOR_TOKEN;}
+  {STRING_TOKEN} {beginNextState(); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {beginNextState(); return QUOTED_STRING_TOKEN;}
+  {COMMENT} {return COMMENT;}
 }
 <WAITING_VARIABLE_NAME>{
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {VARIABLE_ID} {yybegin(WAITING_VARIABLE_EQUAL_SIGN); return VARIABLE_NAME_ID;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
   "=" {yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;}
-  {BLANK} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 <WAITING_VARIABLE_EQUAL_SIGN> {
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "=" {yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  {BLANK} {return WHITE_SPACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 <WAITING_VARIABLE_VALUE> {
-  {BLANK} {return WHITE_SPACE;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_VARIABLE_END); return BOOLEAN_TOKEN;}
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {INT_TOKEN} {yybegin(WAITING_VARIABLE_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_VARIABLE_END); return FLOAT_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_VARIABLE_END); return QUOTED_STRING_TOKEN;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 <WAITING_VARIABLE_END> {
-  {EOL} {yybegin(nextState()); return WHITE_SPACE;}
-  {WHITE_SPACE} {return WHITE_SPACE;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
+  //只要有空白相间隔，就可以在写同一行
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 
 <WAITING_PROPERTY_KEY> {
-  {BLANK} {return WHITE_SPACE;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "$" {nextStateForParameter=0; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
-  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于语法兼容性考虑，这里允许内联数学表达式
-  "@" {yybegin(WAITING_IS_VARIABLE); return AT;}
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  //出于语法兼容性考虑，这里允许内联数学表达式
+  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
+  "@" {yybegin(WAITING_VARIABLE); return AT;}
+  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  {CHECK_PROPERTY_KEY} {
+    //根据后面是否有"="判断是否是property
+	yybegin(WATIING_PROPERTY_SEPARATOR);
+	pushbackUntilBeforeBlank(1);
+	char firstChar = yycharat(0);
+	if(firstChar == '"'){
+		return QUOTED_PROPERTY_KEY_ID;
+	} else if(firstChar == '$'){
+		//propertyKey也可以是parameter
+		isPropertyKey = true;
+		yypushback(yylength() -1);
+		yybegin(WAITING_PARAMETER);
+		return PARAMETER_START;
+	} else {
+		return PROPERTY_KEY_ID;
+	}
+  }
+  {CHECK_STRING_PART} {
+  	yypushback(1);
+  	return STRING_PART;
+  }
+  {BOOLEAN_TOKEN} {beginNextState(); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {beginNextState(); return INT_TOKEN;}
+  {FLOAT_TOKEN} {beginNextState(); return FLOAT_TOKEN;}
+  {COLOR_TOKEN} {beginNextState(); return COLOR_TOKEN;}
+  {STRING_TOKEN} {beginNextState(); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {beginNextState(); return QUOTED_STRING_TOKEN;}
   {COMMENT} {return COMMENT;}
-  {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
-  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
-  {STRING_TOKEN} { yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
-}
-<WAITING_PROPERTY>{
-  {PROPERTY_KEY_ID} {yybegin(WATIING_PROPERTY_SEPARATOR); return PROPERTY_KEY_ID;}
-  {QUOTED_PROPERTY_KEY_ID} {yybegin(WATIING_PROPERTY_SEPARATOR); return QUOTED_PROPERTY_KEY_ID;}
 }
 <WATIING_PROPERTY_SEPARATOR> {
-  {BLANK} {return WHITE_SPACE;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "=" {yybegin(WAITING_PROPERTY_VALUE); return EQUAL_SIGN;}
   "<" {yybegin(WAITING_PROPERTY_VALUE); return LT_SIGN;}
   ">" {yybegin(WAITING_PROPERTY_VALUE); return GT_SIGN;}
@@ -169,71 +238,88 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 <WAITING_PROPERTY_VALUE>{
-  {BLANK} {return WHITE_SPACE;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "$" {nextStateForParameter=0; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
-  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE_REFERENCE_NAME); return AT;}
+  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  {BOOLEAN_TOKEN} {beginNextState(); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {beginNextState(); return INT_TOKEN;}
+  {FLOAT_TOKEN} {beginNextState(); return FLOAT_TOKEN;}
+  {COLOR_TOKEN} {beginNextState(); return COLOR_TOKEN;}
+  {CHECK_STRING_PART} {
+  	yypushback(1);
+  	return STRING_PART;
+  }
+  {STRING_TOKEN} {beginNextState(); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {beginNextState(); return QUOTED_STRING_TOKEN;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
-  {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
-  {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
-  {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
-  {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
 }
 <WAITING_PROPERTY_END> {
-  {EOL} {yybegin(nextState()); return WHITE_SPACE;}
-  {WHITE_SPACE} {yybegin(WAITING_PROPERTY_KEY); return WHITE_SPACE;} //只要有空白相间隔，就可以在写同一行
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
+  //只要有空白相间隔，就可以在写同一行
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
 
-<WAITING_IS_VARIABLE>{
-  {IS_VARIABLE} {
-    //如果匹配到的文本以等号结尾，则将空白之前的部分解析为VARIABLE_NAME_ID，否则将其解析为VARIABLE_REFERENCE_ID
-	CharSequence text = yytext();
-	  int length = text.length();
-	  if(text.charAt(length -1) == '='){
-	  //计算需要回退的长度 @1=
-	  int i;
-	  for (i = 1; i < length ; i++) {
-	    char c = text.charAt(length-i-1);
-		if(!Character.isWhitespace(c)) break;
-	  }
-	  yypushback(i);
+<WAITING_VARIABLE>{
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  {CHECK_VARIABLE_NAME} {
+    //如果匹配到的文本以等号结尾，则将空白之前的文本解析为VARIABLE_NAME_ID，否则将整个匹配文本解析为VARIABLE_REFERENCE_ID
+	if(yycharat(yylength() -1) == '='){
+	  pushbackUntilBeforeBlank(1);
 	  yybegin(WAITING_VARIABLE_EQUAL_SIGN);
 	  return VARIABLE_NAME_ID;
 	} else {
-	  yybegin(WAITING_PROPERTY_END);
+	  beginNextState(); 
       return VARIABLE_REFERENCE_ID;
 	}
   }
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  {BLANK} {return WHITE_SPACE;}
 }
 <WAITING_VARIABLE_REFERENCE_NAME>{
-  {VARIABLE_ID} {yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;}
-  "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
-  "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  {BLANK} {return WHITE_SPACE;}
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  {VARIABLE_ID} {beginNextState(); return VARIABLE_REFERENCE_ID;}
 }
 
+//TODO 这里相关的解析失败时的处理可以考虑优化
 <WAITING_PARAMETER>{
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {PARAMETER_ID} {return PARAMETER_ID;}
   "|" {yybegin(WAITING_PARAMETER_DEFAULT_VALUE); return PIPE;}
-  "$" {yybegin(nextStateForParameter()); return PARAMETER_END;}
+  "$" {beginNextStateForParameter(); return PARAMETER_END;}
 }
 <WAITING_PARAMETER_DEFAULT_VALUE>{
-  {NUMBER_TOKEN} {return NUMBER_TOKEN;}
-  "$" {yybegin(nextStateForParameter()); return PARAMETER_END;}
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  {ARG_NUMBER_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return ARG_NUMBER_TOKEN;}
+  {ARG_STRING_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return ARG_STRING_TOKEN;} 
+  "$" {beginNextStateForParameter(); return PARAMETER_END;}
+}
+<WAITING_PARAMETER_DEFAULT_VALUE_END>{
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "$" {beginNextStateForParameter(); return PARAMETER_END;}
+}
+<WAITING_AFTER_PARAMETER>{
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  {STRING_PART} {return STRING_PART; }
 }
 
 <WAITING_INLINE_MATH>{
-  {BLANK} {return WHITE_SPACE;}
+  {BLANK} {onBlank(); return WHITE_SPACE;}
   "|" {
     if(leftAbsSign){
       leftAbsSign=false; 
@@ -250,10 +336,10 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   "*" {yybegin(WAITING_INLINE_MATH); return TIMES_SIGN;}
   "/" {yybegin(WAITING_INLINE_MATH); return DIV_SIGN;}
   "%" {yybegin(WAITING_INLINE_MATH); return MOD_SIGN;}
-  "$" {nextStateForParameter=2; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {NUMBER_TOKEN} {return NUMBER_TOKEN;}
   {VARIABLE_ID} {return INLINE_MATH_VARIABLE_REFERENCE_ID;}
-  "]" {leftAbsSign=true; yybegin(WAITING_PROPERTY_END); return INLINE_MATH_END;}
+  "]" {leftAbsSign=true; inInlineMath=false; beginNextState(); return INLINE_MATH_END;}
 }
 
 [^] {return BAD_CHARACTER;}

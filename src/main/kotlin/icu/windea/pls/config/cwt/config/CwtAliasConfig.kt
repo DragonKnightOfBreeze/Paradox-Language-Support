@@ -11,7 +11,8 @@ data class CwtAliasConfig(
 	val subName: String,
 	val config: CwtPropertyConfig
 ) : CwtConfig<CwtProperty> {
-	val expression by lazy { CwtKeyExpression.resolve(subName) }
+	val keyExpression by lazy { CwtKeyExpression.resolve(subName) }
+	val valueExpression by lazy { CwtValueExpression.resolve(subName) }
 	
 	val supportedScopes by lazy { inferSupportedScopes() }
 	val supportedScopesText by lazy { supportedScopes.joinToString(" ", "{ ", " }") }

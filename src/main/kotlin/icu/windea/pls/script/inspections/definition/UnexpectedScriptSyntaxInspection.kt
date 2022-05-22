@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
  * * 不期望的参数（必须位于定义之内）
  * * 不期望的参数条件语句（必须位于定义之内）
  * * 不期望的内联数学表达式的开始（"@["和"@\["） -> 提供快速修复：修正
- * * 同一定义中存在多个内联数字表达式
+ * * 同一scripted_effect/scripted_trigger定义中存在多个内联数字表达式
  */
 class UnexpectedScriptSyntaxInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

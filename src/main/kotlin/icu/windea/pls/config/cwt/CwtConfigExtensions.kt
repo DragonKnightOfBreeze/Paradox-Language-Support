@@ -24,27 +24,6 @@ internal typealias CwtConfigMaps = MutableMap<String, CwtConfigMap>
 //endregion
 
 //region Misc Extensions
-private val separatorChars = charArrayOf('=', '<', '>', '!')
-
-private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
-	//如果后面没有分隔符，则要加上等号，并且根据代码格式设置来判断是否加上等号周围的空格
-	val editor = context.editor
-	val document = editor.document
-	val chars = document.charsSequence
-	val charsLength = chars.length
-	val oldOffset = editor.selectionModel.selectionEnd
-	var offset = oldOffset
-	while(offset < charsLength && chars[offset].isWhitespace()) {
-		offset++
-	}
-	if(offset < charsLength && chars[offset] !in separatorChars) {
-		val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
-		val spaceAroundSeparator = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
-		val separator = if(spaceAroundSeparator) " = " else "="
-		EditorModificationUtil.insertStringAtCaret(editor, separator)
-	}
-}
-
 fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 	return propertyConfig.keyExpression.type == CwtKeyExpression.Type.AliasName &&
 		propertyConfig.valueExpression.type == CwtValueExpression.Type.AliasMatchLeft
@@ -421,24 +400,24 @@ fun matchesAlias(propertyConfig: CwtPropertyConfig, propertyElement: ParadoxScri
 	}
 }
 
-fun matchesAliasName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): Boolean {
+fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): Boolean {
 	//TODO 匹配scope
 	val alias = configGroup.aliases[aliasName] ?: return false
-	val aliasSubName = resolveAliasSubNameExpression(key, quoted, alias, configGroup) ?: return false
+	val aliasSubName = resolveAliasSubNameExpression(name, quoted, alias, configGroup) ?: return false
 	val expression = CwtKeyExpression.resolve(aliasSubName)
-	if(matchesKey(expression, key, quoted, configGroup)){
+	if(matchesKey(expression, name, quoted, configGroup)) {
 		return true
 	}
 	//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
-	if(aliasName == "modifier"){
-		if(matchesModifier(key, configGroup)) return true
+	if(aliasName == "modifier") {
+		if(matchesModifier(name, configGroup)) return true
 	}
 	return false
 }
 
-fun matchesModifier(key: String, configGroup: CwtConfigGroup): Boolean {
+fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
 	val modifiers = configGroup.modifiers
-	return modifiers.containsKey(key)
+	return modifiers.containsKey(name)
 }
 //endregion
 
@@ -448,8 +427,6 @@ fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinition
 	val quoted = keyElement.isQuoted()
 	val project = propertyElement.project
 	val definitionElementInfo = propertyElement.definitionElementInfo ?: return
-	//不允许value直接是定义的value的情况
-	if(definitionElementInfo.elementPath.isEmpty()) return
 	val scope = definitionElementInfo.scope
 	val gameType = definitionElementInfo.gameType
 	val configGroup = getCwtConfig(project).getValue(gameType)
@@ -539,7 +516,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
 			}
 		}
@@ -555,7 +532,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
 			}
 		}
@@ -571,7 +548,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
 			}
 		}
@@ -588,7 +565,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
 			}
 		}
@@ -607,7 +584,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
 			}
 		}
@@ -628,7 +605,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withNeededInsertHandler(isKey = true)
 					.withCaseSensitivity(false) //忽略大小写
 				result.addElement(lookupElement)
 			}
@@ -653,7 +630,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
-					.withInsertHandler(separatorInsertHandler)
+					.withNeededInsertHandler(isKey = true)
 					.withCaseSensitivity(false) //忽略大小写
 				result.addElement(lookupElement)
 			}
@@ -666,11 +643,11 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 		//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtKeyExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return
-			completeAliasName(aliasName, keyword, quoted, config, configGroup, result, scope)
+			completeAliasName(keyword, quoted, aliasName, config, configGroup, result, scope, isKey = true)
 		}
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return
-			completeAliasName(aliasName, keyword, quoted, config, configGroup, result, scope)
+			completeAliasName(keyword, quoted, aliasName, config, configGroup, result, scope, isKey = true)
 		}
 		CwtKeyExpression.Type.Constant -> {
 			val n = expression.value ?: return
@@ -681,7 +658,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 			val tailText = " in ${config.pointer.containingFile?.name ?: anonymousString}"
 			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 				.withTailText(tailText, true)
-				.withInsertHandler(separatorInsertHandler)
+				.withNeededInsertHandler(isKey = true)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(propertyPriority)
 			result.addElement(lookupElement)
@@ -707,6 +684,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -722,6 +700,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -737,6 +716,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -760,6 +740,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val lookupElement = LookupElementBuilder.create(file, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -782,6 +763,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val lookupElement = LookupElementBuilder.create(file, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -798,6 +780,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -816,6 +799,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -837,6 +821,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
 					.withCaseSensitivity(false) //忽略大小写
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -861,6 +846,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 					.withTailText(tailText, true)
 					.withTypeText(typeText, true)
 					.withCaseSensitivity(false) //忽略大小写
+					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
 			}
 		}
@@ -878,7 +864,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 		//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 		CwtValueExpression.Type.AliasKeysField -> {
 			val aliasName = expression.value ?: return
-			completeAliasName(aliasName, keyword, quoted, config, configGroup, result, scope)
+			completeAliasName(keyword, quoted, aliasName, config, configGroup, result, scope, isKey = false)
 		}
 		//规则会被内联，不应该被匹配到
 		CwtValueExpression.Type.AliasMatchLeft -> pass()
@@ -891,6 +877,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val tailText = " in ${config.pointer.containingFile?.name ?: anonymousString}"
 			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 				.withTailText(tailText, true)
+				.withNeededInsertHandler(isKey = false)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(propertyPriority)
 			result.addElement(lookupElement)
@@ -899,8 +886,8 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 	}
 }
 
-fun completeAliasName(aliasName: String, keyword: String, quoted: Boolean, config: CwtKvConfig<*>,
-	configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String?) {
+fun completeAliasName(keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
+	configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String?, isKey: Boolean) {
 	val alias = configGroup.aliases[aliasName] ?: return
 	for(aliasConfigs in alias.values) {
 		//aliasConfigs的名字是相同的 
@@ -910,17 +897,21 @@ fun completeAliasName(aliasName: String, keyword: String, quoted: Boolean, confi
 		//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 		val finalScope = config.parent?.scope ?: scope
 		//aliasSubName是一个表达式
-		completeKey(aliasConfig.expression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
+		if(isKey) {
+			completeKey(aliasConfig.keyExpression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
+		} else {
+			completeValue(aliasConfig.valueExpression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
+		}
 	}
 	//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
 	if(aliasName == "modifier") {
 		//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 		val finalScope = config.parent?.scope ?: scope
-		completeModifier(quoted, configGroup, result, finalScope)
+		completeModifier(quoted, configGroup, result, finalScope, isKey)
 	}
 }
 
-fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
+fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null, isKey: Boolean) {
 	val modifiers = configGroup.modifiers
 	if(modifiers.isEmpty()) return
 	for(modifierConfig in modifiers.values) {
@@ -937,14 +928,14 @@ fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: Compl
 		val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 			.withTailText(tailText, true)
 			.withTypeText(typeText, true)
-			.withInsertHandler(separatorInsertHandler)
+			.withNeededInsertHandler(isKey)
 			.withPriority(modifierPriority)
 		result.addElement(lookupElement)
 	}
 }
 
-fun completeLocalisationCommand(configGroup: CwtConfigGroup,
-	result: CompletionResultSet) {
+fun completeLocalisationCommand(configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	//TODO 匹配scope
 	//val keyword = commandField.keyword
 	val localisationCommands = configGroup.localisationCommands
 	if(localisationCommands.isEmpty()) return
@@ -960,6 +951,32 @@ fun completeLocalisationCommand(configGroup: CwtConfigGroup,
 			.withTypeText(typeText, true)
 		result.addElement(lookupElement)
 	}
+}
+
+private val separatorChars = charArrayOf('=', '<', '>', '!')
+
+private val separatorInsertHandler = InsertHandler<LookupElement> { context, _ ->
+	//如果后面没有分隔符，则要加上等号，并且根据代码格式设置来判断是否加上等号周围的空格
+	val editor = context.editor
+	val document = editor.document
+	val chars = document.charsSequence
+	val charsLength = chars.length
+	val oldOffset = editor.selectionModel.selectionEnd
+	var offset = oldOffset
+	while(offset < charsLength && chars[offset].isWhitespace()) {
+		offset++
+	}
+	if(offset < charsLength && chars[offset] !in separatorChars) {
+		val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
+		val spaceAroundSeparator = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
+		val separator = if(spaceAroundSeparator) " = " else "="
+		EditorModificationUtil.insertStringAtCaret(editor, separator)
+	}
+}
+
+private fun LookupElementBuilder.withNeededInsertHandler(isKey: Boolean): LookupElementBuilder{
+	if(isKey) return withInsertHandler(separatorInsertHandler)
+	return this
 }
 //endregion
 
@@ -1022,13 +1039,13 @@ internal fun doResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtK
 			val aliasName = expression.value ?: return null
 			val gameType = keyElement.gameType ?: return null
 			val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-			resolveAliasName(aliasName, keyElement, configGroup)
+			resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup)
 		}
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return null
 			val gameType = keyElement.gameType ?: return null
 			val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-			resolveAliasName(aliasName, keyElement, configGroup)
+			resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup)
 		}
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element
@@ -1096,13 +1113,13 @@ internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression:
 			val aliasName = expression.value ?: return emptyList()
 			val gameType = keyElement.gameType ?: return emptyList()
 			val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-			resolveAliasName(aliasName, keyElement, configGroup).toSingletonListOrEmpty()
+			resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
 		}
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return emptyList()
 			val gameType = keyElement.gameType ?: return emptyList()
 			val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-			resolveAliasName(aliasName, keyElement, configGroup).toSingletonListOrEmpty()
+			resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
 		}
 		CwtKeyExpression.Type.Constant -> {
 			propertyConfig.pointer.element.toSingletonListOrEmpty()
@@ -1192,7 +1209,7 @@ internal fun doResolveValue(valueElement: ParadoxScriptValue, expression: CwtVal
 			val aliasName = expression.value ?: return null
 			val gameType = valueElement.gameType ?: return null
 			val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
-			resolveAliasName(aliasName, valueElement, configGroup)
+			resolveAliasName(valueElement.value, valueElement.isQuoted(), aliasName, configGroup)
 		}
 		//规则会被内联，不应该被匹配到
 		CwtValueExpression.Type.AliasMatchLeft -> {
@@ -1294,7 +1311,7 @@ internal fun doMultiResolveValue(valueElement: ParadoxScriptValue, expression: C
 			val aliasName = expression.value ?: return emptyList()
 			val gameType = valueElement.gameType ?: return emptyList()
 			val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
-			resolveAliasName(aliasName, valueElement, configGroup).toSingletonListOrEmpty()
+			resolveAliasName(valueElement.value, valueElement.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
 		}
 		//规则会被内联，不应该被匹配到
 		CwtValueExpression.Type.AliasMatchLeft -> emptyList()
@@ -1317,36 +1334,30 @@ internal fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<P
 	//	.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的
 }
 
-fun resolveAliasName(aliasName: String, keyElement: ParadoxScriptPropertyKey, configGroup: CwtConfigGroup): PsiNamedElement? {
-	val key = keyElement.value
-	val quoted = keyElement.isQuoted()
+fun resolveAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): PsiNamedElement? {
+	val project = configGroup.project
 	val aliasGroup = configGroup.aliases[aliasName] ?: return null
-	val aliasSubName = resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?: return null
+	val aliasSubName = resolveAliasSubNameExpression(name, quoted, aliasGroup, configGroup) ?: return null
 	val expression = CwtKeyExpression.resolve(aliasSubName)
-	val project = keyElement.project
 	val resolved = when(expression.type) {
 		CwtKeyExpression.Type.Localisation -> {
-			val name = key
 			findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 		}
 		CwtKeyExpression.Type.SyncedLocalisation -> {
-			val name = key
 			findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
-			val name = key
 			val typeExpression = expression.value ?: return null
 			findDefinitionByType(name, typeExpression, project)
 		}
 		CwtKeyExpression.Type.TypeExpressionString -> {
 			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return null
-			val name = key.removeSurrounding(prefix, suffix)
+			val nameToUse = name.removeSurrounding(prefix, suffix)
 			val typeExpression = expression.value ?: return null
-			findDefinitionByType(name, typeExpression, project)
+			findDefinitionByType(nameToUse, typeExpression, project)
 		}
 		CwtKeyExpression.Type.Value -> {
 			val valueName = expression.value ?: return null
-			val name = key
 			val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return null
 			valueValueConfig.pointer.element.castOrNull<CwtString>()
 		}
@@ -1355,7 +1366,6 @@ fun resolveAliasName(aliasName: String, keyElement: ParadoxScriptPropertyKey, co
 		}
 		CwtKeyExpression.Type.Enum -> {
 			val enumName = expression.value ?: return null
-			val name = key
 			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
 			enumValueConfig.pointer.element.castOrNull<CwtString>()
 		}
@@ -1377,19 +1387,22 @@ fun resolveAliasName(aliasName: String, keyElement: ParadoxScriptPropertyKey, co
 	if(resolved != null) return resolved
 	//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
 	if(aliasName == "modifier") {
-		val resolvedModifier = resolveModifier(key, configGroup)
+		val resolvedModifier = resolveModifier(name, configGroup)
 		if(resolvedModifier != null) return resolvedModifier
 	}
 	return null
 }
 
-fun resolveAliasName(aliasName: String, valueElement: ParadoxScriptValue, configGroup: CwtConfigGroup): PsiNamedElement? {
-	val keyElement = valueElement.parent?.parent.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
-	return resolveAliasName(aliasName, keyElement, configGroup)
-}
-
 fun resolveModifier(name: String, configGroup: CwtConfigGroup): CwtProperty? {
 	val modifier = configGroup.modifiers[name] ?: return null
 	return modifier.pointer.element
+}
+
+fun resolveLocalisationCommand(name: String, configGroup: CwtConfigGroup): CwtProperty? {
+	//TODO 匹配scope
+	val localisationCommands = configGroup.localisationCommands
+	if(localisationCommands.isEmpty()) return null
+	val commandConfig = localisationCommands[name] ?: return null
+	return commandConfig.pointer.element
 }
 //endregion

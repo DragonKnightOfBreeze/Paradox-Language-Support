@@ -8,7 +8,7 @@ import com.intellij.xml.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDefinitionPathReference(
+class ParadoxDefinitionAnchorReference(
 	element: PsiElement,
 	rangeInElement: TextRange,
 	private val anchor:String,

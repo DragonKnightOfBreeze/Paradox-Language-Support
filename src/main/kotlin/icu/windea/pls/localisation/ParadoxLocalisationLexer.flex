@@ -28,8 +28,8 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 %state WAITING_ICON
 %state WAITING_ICON_ID_FINISHED
 %state WAITING_ICON_FRAME
+%state WAITING_ICON_FRAME_FINISHED
 %state WAITING_COMMAND_SCOPE_OR_FIELD
-%state WAITING_COMMAND_SEPARATOR
 %state WAITING_COLOR_ID
 %state WAITING_COLORFUL_TEXT
 
@@ -74,7 +74,8 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
     
     private int nextStateForPropertyReference(){
       if(propertyReferenceLocation == 0) return nextStateForText();
-      else if (propertyReferenceLocation == 2) return WAITING_ICON;
+      else if (propertyReferenceLocation == 1) return WAITING_ICON_ID_FINISHED;
+      else if (propertyReferenceLocation == 2) return WAITING_ICON_FRAME_FINISHED;
       else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
       else return nextStateForText();
     }
@@ -112,25 +113,8 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 EOL=\s*\R
 BLANK=\s+
 WHITE_SPACE=[\s&&[^\r\n]]+
-
 COMMENT=#[^\r\n]*
-//行尾注释不能包含双引号，否则会有解析冲突
-END_OF_LINE_COMMENT=#[^\"\r\n]*
-NUMBER=\d+
-//LOCALE_ID=[a-z_]+
-PROPERTY_KEY_ID=[a-zA-Z0-9_.\-']+
-VALID_ESCAPE_TOKEN=\\[rnt\"$£§%\[]
-INVALID_ESCAPE_TOKEN=\\.
-DOUBLE_LEFT_BRACKET=\[\[
-PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-']+
-PROPERTY_REFERENCE_PARAMETER_TOKEN=[a-zA-Z0-9+\-*%=\[.\]]+
-ICON_ID=[a-zA-Z0-9\-_\\/]+
-ICON_FRAME=[1-9][0-9]* // positive integer
-COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\.
-COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
-COLOR_ID=[a-zA-Z]
-//双引号和百分号实际上不需要转义
-STRING_TOKEN=[^\"%$£§\[\r\n\\]+
+END_OF_LINE_COMMENT=#[^\"\r\n]* //行尾注释不能包含双引号，否则会有解析冲突
 
 CHECK_LOCALE_ID=[a-z_]+:\s*[\r\n]
 CHECK_PROPERTY_REFERENCE_START=\$[^\$\s\"]*.?
@@ -138,6 +122,21 @@ CHECK_ICON_START=£.?
 CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@\s&&[^\r\n]]*.?
 CHECK_COLORFUL_TEXT_START=§.?
 CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
+
+NUMBER=\d+
+//LOCALE_ID=[a-z_]+
+PROPERTY_KEY_ID=[a-zA-Z0-9_.\-']+
+VALID_ESCAPE_TOKEN=\\[rnt\"$£§\[]
+INVALID_ESCAPE_TOKEN=\\.
+DOUBLE_LEFT_BRACKET=\[\[
+PROPERTY_REFERENCE_ID=[a-zA-Z0-9_.\-']+
+PROPERTY_REFERENCE_PARAMETER_TOKEN=[^\"$£§\[\r\n\\]+
+ICON_ID=[a-zA-Z0-9\-_\\/]+
+ICON_FRAME=[1-9][0-9]* // positive integer
+COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\.
+COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
+COLOR_ID=[a-zA-Z]
+STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 
 %%
 
@@ -149,11 +148,10 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {COMMENT} {return COMMENT; } //这里可以有注释
   {CHECK_LOCALE_ID} { //同一本地化文件中是可以有多个locale的，这是为了兼容localisation/languages.yml
 	//locale应该在之后的冒号和换行符之间没有任何字符或者只有空白字符
-    CharSequence text = yytext();
-    int length = text.length();
+    int length = yylength();
     int i = length - 2;
     while(i >= 0){
- 	    char c = text.charAt(i);
+ 	    char c = yycharat(i);
  	    if(c == ':') {
  		    int pushback = length - i;
 			yypushback(pushback);
@@ -238,7 +236,7 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
-  "$" {propertyReferenceLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
+  "$" {propertyReferenceLocation=1; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
   "[" {commandLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);}
   "|" {yybegin(WAITING_ICON_FRAME); return PIPE;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
@@ -258,29 +256,31 @@ CHECK_RIGHT_QUOTE=\"[^\"\r\n]*\"?
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
+  "$" {propertyReferenceLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
   "£" {yybegin(nextStateForText()); return ICON_END;}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  {ICON_FRAME} {return ICON_FRAME;}
+  {ICON_FRAME} {yybegin(WAITING_ICON_FRAME_FINISHED); return ICON_FRAME;}
 }
+<WAITING_ICON_FRAME_FINISHED>{
+   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
+   {WHITE_SPACE} {yybegin(nextStateForText()); return WHITE_SPACE; }
+   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
+   "£" {yybegin(nextStateForText()); return ICON_END;}
+   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
+   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
+ }
 <WAITING_COMMAND_SCOPE_OR_FIELD>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
   "]" {yybegin(nextStateForCommand()); return COMMAND_END;}
-  "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
-  "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
-  {COMMAND_SCOPE_ID_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_SCOPE_ID;}
-  {COMMAND_FIELD_ID_WITH_SUFFIX} {yypushback(1); yybegin(WAITING_COMMAND_SEPARATOR); return COMMAND_FIELD_ID;}
-}
-<WAITING_COMMAND_SEPARATOR>{
-  {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
-  {WHITE_SPACE} {return WHITE_SPACE; }
-  \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
-  "]" {yybegin(nextStateForCommand()); return COMMAND_END;}
+  "$" {propertyReferenceLocation=3; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);}
   "§" {yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);}
   "§!" {decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;}
   "." {yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return DOT;}
+  {COMMAND_SCOPE_ID_WITH_SUFFIX} {yypushback(1); return COMMAND_SCOPE_ID;}
+  {COMMAND_FIELD_ID_WITH_SUFFIX} {yypushback(1); return COMMAND_FIELD_ID;}
 }
 
 <WAITING_COLOR_ID>{

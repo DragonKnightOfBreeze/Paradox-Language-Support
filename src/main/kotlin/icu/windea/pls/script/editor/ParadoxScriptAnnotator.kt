@@ -52,7 +52,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
 		//特殊字符串需要被识别为标签的情况
-		element.resolveTagConfig()?.let { tagConfig -> 
+		element.resolveTagConfig()?.let { _ -> 
 			//颜色高亮
 			holder.newSilentAnnotation(INFORMATION)
 				.textAttributes(ParadoxScriptAttributesKeys.TAG_KEY)
@@ -60,7 +60,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 		
 		//颜色高亮
-		//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
 		val valueConfig = element.getValueConfig()
 		val expression = valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
 		//val expression = element.valueConfig?.valueExpression ?: return 

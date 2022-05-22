@@ -76,6 +76,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitNumber(o);
   }
 
+  public void visitLiteralStringTemplateEntry(@NotNull ParadoxScriptLiteralStringTemplateEntry o) {
+    visitStringTemplateEntry(o);
+  }
+
   public void visitNumber(@NotNull ParadoxScriptNumber o) {
     visitValue(o);
     // visitPsiLiteralValue(o);
@@ -84,6 +88,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitParameter(@NotNull ParadoxScriptParameter o) {
     visitValue(o);
     // visitIParadoxScriptParameter(o);
+  }
+
+  public void visitParameterStringTemplateEntry(@NotNull ParadoxScriptParameterStringTemplateEntry o) {
+    visitStringTemplateEntry(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
@@ -107,6 +115,14 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
     // visitPsiLiteralValue(o);
+  }
+
+  public void visitStringTemplate(@NotNull ParadoxScriptStringTemplate o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringTemplateEntry(@NotNull ParadoxScriptStringTemplateEntry o) {
+    visitPsiElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {

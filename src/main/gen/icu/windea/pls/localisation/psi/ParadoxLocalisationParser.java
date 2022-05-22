@@ -133,14 +133,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMAND_FIELD_ID
+  // COMMAND_FIELD_ID | property_reference
   public static boolean command_field(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_field")) return false;
-    if (!nextTokenIs(b, COMMAND_FIELD_ID)) return false;
+    if (!nextTokenIs(b, "<command field>", COMMAND_FIELD_ID, PROPERTY_REFERENCE_START)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, COMMAND_FIELD, "<command field>");
     r = consumeToken(b, COMMAND_FIELD_ID);
-    exit_section_(b, m, COMMAND_FIELD, r);
+    if (!r) r = property_reference(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -211,9 +212,14 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ICON_FRAME
+  // ICON_FRAME | property_reference
   static boolean icon_frame(PsiBuilder b, int l) {
-    return consumeToken(b, ICON_FRAME);
+    if (!recursion_guard_(b, l, "icon_frame")) return false;
+    if (!nextTokenIs(b, "", ICON_FRAME, PROPERTY_REFERENCE_START)) return false;
+    boolean r;
+    r = consumeToken(b, ICON_FRAME);
+    if (!r) r = property_reference(b, l + 1);
+    return r;
   }
 
   /* ********************************************************** */

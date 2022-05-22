@@ -9,6 +9,9 @@ import javax.swing.Icon;
 
 public interface ParadoxScriptValue extends ParadoxScriptExpression {
 
+  @Nullable
+  ParadoxScriptStringTemplate getStringTemplate();
+
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

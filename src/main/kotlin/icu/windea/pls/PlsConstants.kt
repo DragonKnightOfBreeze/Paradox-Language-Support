@@ -30,7 +30,9 @@ const val modifierPriority = 20.0
 
 const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length
-//const val commentFolder = "#..."
+const val commentFolder = "#..."
+const val parameterFolder = "$...$"
+const val stringTemplateFolder = "..."
 const val blockFolder = "{...}"
 const val inlineMathFolder = "@[...]"
 const val anonymousString = "<anonymous>"

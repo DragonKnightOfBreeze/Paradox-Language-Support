@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.core.ParadoxLocalisationCategory.*
 
-class ParadoxLocalisationPathReference(
+class ParadoxLocalisationAnchorReference(
 	element: PsiElement,
 	rangeInElement: TextRange,
 	private val anchor: String,

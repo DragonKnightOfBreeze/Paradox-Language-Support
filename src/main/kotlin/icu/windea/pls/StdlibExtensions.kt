@@ -366,6 +366,8 @@ fun String.toBooleanYesNo() = this == "yes"
 
 fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
 
+fun String.toIntOrDefault(defaultValue:Int) = runCatching { toInt() }.getOrDefault(defaultValue)
+
 fun String.toFile() = File(this)
 
 fun String.toFileOrNull() = runCatching { File(this) }.getOrNull()

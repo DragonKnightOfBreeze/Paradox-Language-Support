@@ -1,11 +1,16 @@
 package icu.windea.pls.localisation.reference
 
-import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 
+/**
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxCommandFieldCompletionProvider
+ */
 class ParadoxLocalisationCommandFieldReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
@@ -16,33 +21,28 @@ class ParadoxLocalisationCommandFieldReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		//查找类型为scripted_loc的definition
-		//TODO 支持解析基于CWT的引用
 		val name = element.name
 		val project = element.project
+		//处理字符串需要被识别为预先定义的localisation_command的情况
+		doResolveLocalisationCommand(name, project)?.let { return it }
+		//解析为类型为scripted_loc的definition
 		return findDefinitionByType(name, "scripted_loc", project)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		//查找类型为scripted_loc的definition
-		//TODO 支持解析基于CWT的引用
 		val name = element.name
 		val project = element.project
+		//处理字符串需要被识别为预先定义的localisation_command的情况
+		doResolveLocalisationCommand(name, project)?.let { return arrayOf(PsiElementResolveResult(it)) }
+		//解析为类型为scripted_loc的definition
 		return findDefinitionsByType(name, "scripted_loc", project).mapToArray { PsiElementResolveResult(it) }
 	}
 	
-	override fun getVariants(): Array<out Any> {
-		//查找类型为scripted_loc的definition，不预先过滤结果
-		//TODO 整合提示基于CWT的引用
-		val project = element.project
-		val tailText = " from scripted_loc"
-		return findDefinitionsByType("scripted_loc", project, distinct = true).mapToArray {
-			val name = it.definitionInfo?.name.orEmpty() //不应该为空
-			val icon = PlsIcons.localisationCommandFieldIcon
-			val typeText = it.containingFile.name
-			LookupElementBuilder.create(it, name).withIcon(icon)
-				.withTailText(tailText, true)
-				.withTypeText(typeText, true)
-		}
+	private fun doResolveLocalisationCommand(name: String, project: Project): CwtProperty? {
+		val gameType = element.fileInfo?.gameType ?: return null
+		val configGroup = getCwtConfig(project).get(gameType) ?: return null
+		return resolveLocalisationCommand(name, configGroup)
 	}
+	
+	//代码提示功能由ParadoxCommandFieldCompletionProvider实现
 }

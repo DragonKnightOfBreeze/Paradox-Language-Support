@@ -13,5 +13,5 @@ interface IParadoxScriptParameter : PsiNamedElement, ParadoxScriptExpression {
 	
 	val defaultValue: String?
 	
-	override val valueType: ParadoxValueType get() = ParadoxValueType.NumberType
+	override val valueType: ParadoxValueType get() = ParadoxValueType.Parameter
 }
