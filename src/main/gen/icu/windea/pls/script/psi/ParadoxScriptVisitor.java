@@ -81,6 +81,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitPsiLiteralValue(o);
   }
 
+  public void visitParameter(@NotNull ParadoxScriptParameter o) {
+    visitValue(o);
+    // visitIParadoxScriptParameter(o);
+  }
+
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
     visitNamedElement(o);
     // visitExpression(o);

@@ -24,6 +24,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_VARIABLE_REFERENCE");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType NUMBER = ParadoxScriptElementTypeFactory.getElementType("NUMBER");
+  IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType PROPERTY_VALUE = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_VALUE");
@@ -115,6 +116,9 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);
+      }
+      else if (type == PARAMETER) {
+        return new ParadoxScriptParameterImpl(node);
       }
       else if (type == PROPERTY) {
         return new ParadoxScriptPropertyImpl(node);

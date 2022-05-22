@@ -82,6 +82,41 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
+	//region ParadoxScriptParameter
+	@JvmStatic
+	fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.scriptParameterIcon
+	}
+	
+	@JvmStatic
+	fun getName(element: ParadoxScriptParameter): String {
+		return element.parameterId.text
+	}
+	
+	@JvmStatic
+	fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
+		val nameElement = element.parameterId
+		val newNameElement = ParadoxScriptElementFactory.createParameter(element.project, name).parameterId
+		nameElement.replace(newNameElement)
+		return element
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: ParadoxScriptParameter): PsiElement {
+		return element.parameterId
+	}
+	
+	@JvmStatic
+	fun getTextOffset(element: ParadoxScriptParameter): Int {
+		return element.nameIdentifier.textOffset
+	}
+	
+	@JvmStatic
+	fun getDefaultValue(element: ParadoxScriptParameter): String? {
+		return element.defaultValueToken?.text
+	}
+	//endregion
+	
 	//region ParadoxScriptProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {

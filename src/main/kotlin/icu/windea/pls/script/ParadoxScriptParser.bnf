@@ -65,7 +65,7 @@ property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID{
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 
-value ::= variable_reference | boolean | number | string | color | block | inline_math {
+value ::= variable_reference | parameter | boolean | number | string | color | block | inline_math {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
   methods=[getIcon getValue]
 }
@@ -122,6 +122,12 @@ private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | val
 //parameter
 //should in definition declarations
 //declared as a value / property value
+parameter ::= PARAMETER_START PARAMETER_ID [ PIPE NUMBER_TOKEN] PARAMETER_END {
+  pin=1
+  extends=value
+  implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
+}
 
 //parameter condition
 //should in definition declarations (as value / property value)

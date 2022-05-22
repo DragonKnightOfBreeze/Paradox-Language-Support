@@ -80,7 +80,7 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //这里的反斜线需要转义
+  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于兼容性考虑，这里允许内联数学表达式
   {COMMENT} {return COMMENT;}
   "@" {yybegin(WAITING_VARIABLE_NAME); return AT;}
   //在这里根据后面是否有"="判断是否是property
@@ -130,7 +130,7 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //这里的反斜线需要转义
+  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //出于兼容性考虑，这里允许内联数学表达式
   "@" {yybegin(WAITING_IS_VARIABLE); return AT;}
   {COMMENT} {return COMMENT;}
   {IS_PROPERTY} {yypushback(yylength()); yybegin(WAITING_PROPERTY);}
@@ -161,8 +161,7 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   {BLANK} {return WHITE_SPACE;}
   "}" {depth--; yybegin(nextState()); return RIGHT_BRACE;}
   "{" {depth++; yybegin(nextState()); return LEFT_BRACE;}
-  "@[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
-  "@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;} //这里的反斜线需要转义
+  "@["|"@\\[" {yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE_REFERENCE_NAME); return AT;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}

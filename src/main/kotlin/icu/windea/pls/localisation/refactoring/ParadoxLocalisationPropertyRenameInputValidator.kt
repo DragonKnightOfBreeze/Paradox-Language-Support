@@ -6,11 +6,12 @@ import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class ParadoxLocalisationPropertyRenameInputValidator : RenameInputValidator {
 	companion object {
 		private val regex = "[a-zA-Z0-9_.\\-']+".toRegex()
-		private val elementPattern = or(psiElement(PROPERTY), psiElement(PROPERTY_REFERENCE))
+		private val elementPattern = psiElement(ParadoxLocalisationProperty::class.java)
 	}
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {

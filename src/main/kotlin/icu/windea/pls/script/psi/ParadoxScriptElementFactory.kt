@@ -27,6 +27,12 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
+	fun createParameter(project: Project, name: String): ParadoxScriptParameter {
+		val usedName = "$$name$"
+		return createRootBlock(project, usedName).findRequiredChild()
+	}
+	
+	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
 		val usedKey = key.quoteIfNecessary()
 		return createRootBlock(project, "$usedKey=$value").findRequiredChild(PROPERTY)

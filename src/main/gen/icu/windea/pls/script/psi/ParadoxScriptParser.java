@@ -40,8 +40,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
       INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
-      INLINE_MATH, INT, NUMBER, ROOT_BLOCK,
-      STRING, VALUE, VARIABLE_REFERENCE),
+      INLINE_MATH, INT, NUMBER, PARAMETER,
+      ROOT_BLOCK, STRING, VALUE, VARIABLE_REFERENCE),
   };
 
   /* ********************************************************** */
@@ -383,6 +383,28 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // PARAMETER_START PARAMETER_ID [ PIPE NUMBER_TOKEN] PARAMETER_END
+  public static boolean parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter")) return false;
+    if (!nextTokenIs(b, PARAMETER_START)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PARAMETER, null);
+    r = consumeTokens(b, 1, PARAMETER_START, PARAMETER_ID);
+    p = r; // pin = 1
+    r = r && report_error_(b, parameter_2(b, l + 1));
+    r = p && consumeToken(b, PARAMETER_END) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // [ PIPE NUMBER_TOKEN]
+  private static boolean parameter_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_2")) return false;
+    parseTokens(b, 0, PIPE, NUMBER_TOKEN);
+    return true;
+  }
+
+  /* ********************************************************** */
   // property_key property_separator property_value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
@@ -483,12 +505,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // variable_reference | boolean | number | string | color | block | inline_math
+  // variable_reference | parameter | boolean | number | string | color | block | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, VALUE, "<value>");
     r = variable_reference(b, l + 1);
+    if (!r) r = parameter(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = number(b, l + 1);
     if (!r) r = string(b, l + 1);
@@ -557,7 +580,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, END_OF_LINE_COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN,
-    LEFT_BRACE, PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID, QUOTED_STRING_TOKEN, RIGHT_BRACE, STRING_TOKEN);
+    LEFT_BRACE, PARAMETER_START, PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID, QUOTED_STRING_TOKEN, RIGHT_BRACE, STRING_TOKEN);
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser property_auto_recover_ = block_auto_recover_;
   static final Parser variable_auto_recover_ = block_auto_recover_;

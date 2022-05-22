@@ -9,6 +9,7 @@ class ParadoxScriptPresentationProvider : ItemPresentationProvider<NavigatablePs
 		return when {
 			item is ParadoxScriptFile -> ParadoxScriptFilePresentation(item)
 			item is ParadoxScriptVariable -> ParadoxScriptVariablePresentation(item)
+			item is IParadoxScriptParameter -> ParadoxScriptParameterPresentation(item)
 			item is ParadoxScriptProperty -> ParadoxScriptPropertyPresentation(item)
 			else -> null
 		}

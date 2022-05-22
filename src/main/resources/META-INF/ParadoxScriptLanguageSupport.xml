@@ -98,6 +98,8 @@
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>
     <renameInputValidator
         implementation="icu.windea.pls.script.refactoring.ParadoxScriptVariableRenameInputValidator"/>
+    <renameInputValidator
+        implementation="icu.windea.pls.script.refactoring.ParadoxScriptParameterRenameInputValidator"/>
     <refactoring.inlineHandler
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
@@ -143,6 +145,12 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
     <!--definition-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnexpectedSyntax"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.definition.unexpectedSyntax"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
+                     groupPathKey="script.inspection.definition.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.UnexpectedScriptSyntaxInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateTags"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="script.inspection.definition.duplicateTags"
