@@ -75,6 +75,8 @@ fun mergeScope(scopeMap: MutableMap<String, String>, thisScope: String?): Mutabl
 
 //region Matches Extensions
 //TODO 基于cwt规则文件的匹配方法需要进一步匹配scope
+//TODO 兼容variableReference inlineMath parameter  
+
 fun matchesDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 	when {
 		//匹配属性列表

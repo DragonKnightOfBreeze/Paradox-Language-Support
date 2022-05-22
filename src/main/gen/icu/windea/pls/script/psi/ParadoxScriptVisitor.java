@@ -32,21 +32,44 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitValue(o);
   }
 
+  public void visitInlineMathAbsExpression(@NotNull ParadoxScriptInlineMathAbsExpression o) {
+    visitInlineMathExpression(o);
+  }
+
+  public void visitInlineMathBiExpression(@NotNull ParadoxScriptInlineMathBiExpression o) {
+    visitInlineMathExpression(o);
+  }
+
+  public void visitInlineMathExpression(@NotNull ParadoxScriptInlineMathExpression o) {
+    visitPsiElement(o);
+  }
+
   public void visitInlineMathFactor(@NotNull ParadoxScriptInlineMathFactor o) {
     visitPsiElement(o);
   }
 
   public void visitInlineMathNumber(@NotNull ParadoxScriptInlineMathNumber o) {
-    visitPsiLiteralValue(o);
+    visitInlineMathFactor(o);
+    // visitPsiLiteralValue(o);
     // visitExpression(o);
   }
 
+  public void visitInlineMathParExpression(@NotNull ParadoxScriptInlineMathParExpression o) {
+    visitInlineMathExpression(o);
+  }
+
   public void visitInlineMathParameter(@NotNull ParadoxScriptInlineMathParameter o) {
-    visitIParadoxScriptParameter(o);
+    visitInlineMathFactor(o);
+    // visitIParadoxScriptParameter(o);
+  }
+
+  public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
+    visitInlineMathExpression(o);
   }
 
   public void visitInlineMathVariableReference(@NotNull ParadoxScriptInlineMathVariableReference o) {
-    visitIParadoxScriptVariableReference(o);
+    visitInlineMathFactor(o);
+    // visitIParadoxScriptVariableReference(o);
   }
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
@@ -101,18 +124,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitVariableValue(@NotNull ParadoxScriptVariableValue o) {
     visitPsiElement(o);
-  }
-
-  public void visitPsiLiteralValue(@NotNull PsiLiteralValue o) {
-    visitElement(o);
-  }
-
-  public void visitIParadoxScriptParameter(@NotNull IParadoxScriptParameter o) {
-    visitElement(o);
-  }
-
-  public void visitIParadoxScriptVariableReference(@NotNull IParadoxScriptVariableReference o) {
-    visitElement(o);
   }
 
   public void visitExpression(@NotNull ParadoxScriptExpression o) {

@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.script.reference.ParadoxScriptInlineMathVariableReferenceReference;
+import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
 import javax.swing.Icon;
 
-public interface ParadoxScriptInlineMathVariableReference extends IParadoxScriptVariableReference {
+public interface ParadoxScriptInlineMathVariableReference extends ParadoxScriptInlineMathFactor, IParadoxScriptVariableReference {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -20,6 +20,6 @@ public interface ParadoxScriptInlineMathVariableReference extends IParadoxScript
   ParadoxScriptInlineMathVariableReference setName(@NotNull String name);
 
   @NotNull
-  ParadoxScriptInlineMathVariableReferenceReference getReference();
+  ParadoxScriptVariableReferenceReference getReference();
 
 }

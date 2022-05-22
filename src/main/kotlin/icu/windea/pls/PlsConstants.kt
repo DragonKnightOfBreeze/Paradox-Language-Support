@@ -32,13 +32,14 @@ const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length
 //const val commentFolder = "#..."
 const val blockFolder = "{...}"
+const val inlineMathFolder = "@[...]"
 const val anonymousString = "<anonymous>"
 const val anonymousEscapedString = "&lt;anonymous&gt;"
 //const val unknownString = "<unknown>"
 //const val unknownEscapedString = "&lt;unknown&gt;"
 //const val unresolvedString = "<unresolved>"
 const val unresolvedEscapedString = "&lt;unresolved&gt;"
-
+val a= 1+111+(222 + 1 + (+3))
 val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
 val booleanValues = arrayOf("yes", "no")

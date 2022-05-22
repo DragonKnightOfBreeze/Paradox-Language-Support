@@ -9,17 +9,16 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.core.ParadoxValueType;
 
-public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implements ParadoxScriptInlineMath {
+public class ParadoxScriptInlineMathAbsExpressionImpl extends ParadoxScriptInlineMathExpressionImpl implements ParadoxScriptInlineMathAbsExpression {
 
-  public ParadoxScriptInlineMathImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathAbsExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitInlineMath(this);
+    visitor.visitInlineMathAbsExpression(this);
   }
 
   @Override
@@ -38,24 +37,6 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   @Nullable
   public ParadoxScriptInlineMathFactor getInlineMathFactor() {
     return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathFactor.class);
-  }
-
-  @Override
-  @NotNull
-  public String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  @NotNull
-  public ParadoxValueType getValueType() {
-    return ParadoxScriptPsiImplUtil.getValueType(this);
-  }
-
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
   }
 
 }

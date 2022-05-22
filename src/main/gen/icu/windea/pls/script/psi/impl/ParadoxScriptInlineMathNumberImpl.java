@@ -8,16 +8,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.core.ParadoxValueType;
 
-public class ParadoxScriptInlineMathNumberImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineMathNumber {
+public class ParadoxScriptInlineMathNumberImpl extends ParadoxScriptInlineMathFactorImpl implements ParadoxScriptInlineMathNumber {
 
   public ParadoxScriptInlineMathNumberImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitInlineMathNumber(this);
   }

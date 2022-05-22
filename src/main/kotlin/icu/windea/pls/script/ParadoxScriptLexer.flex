@@ -32,7 +32,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_VARIABLE_REFERENCE_NAME
 
 %state WAITING_INLINE_MATH
-%state WAITING_INLINE_MATH_OP
 %state WAITING_INLINE_MATH_PARAMETER
 %state WAITING_INLINE_MATH_PARAMETER_DEFAULT_VALUE
 
@@ -225,39 +224,24 @@ IS_VARIABLE={VARIABLE_ID}(\s*=)?
   }
   "(" {return LP_SIGN;}
   ")" {return RP_SIGN;}
-  "$" {yybegin(WAITING_INLINE_MATH_PARAMETER); return PARAMETER_START;}
-  {NUMBER_TOKEN} {yybegin(WAITING_INLINE_MATH_OP); return NUMBER_TOKEN;}
-  {VARIABLE_ID} {yybegin(WAITING_INLINE_MATH_OP); return INLINE_MATH_VARIABLE_REFERENCE_ID;}
-  "]" {leftAbsSign=true; yybegin(WAITING_PROPERTY_END); return INLINE_MATH_END;}
-}
-<WAITING_INLINE_MATH_OP>{
-  {BLANK} {return WHITE_SPACE;}
-  "|" {
-    if(leftAbsSign){
-      leftAbsSign=false; 
-      return LABS_SIGN;
-    }else{
-      leftAbsSign=true;
-      return RABS_SIGN;
-    }
-  }
-  "(" {return LP_SIGN;}
-  ")" {return RP_SIGN;}
   "+" {yybegin(WAITING_INLINE_MATH); return PLUS_SIGN;}
   "-" {yybegin(WAITING_INLINE_MATH); return MINUS_SIGN;}
   "*" {yybegin(WAITING_INLINE_MATH); return TIMES_SIGN;}
   "/" {yybegin(WAITING_INLINE_MATH); return DIV_SIGN;}
   "%" {yybegin(WAITING_INLINE_MATH); return MOD_SIGN;}
+  "$" {yybegin(WAITING_INLINE_MATH_PARAMETER); return PARAMETER_START;}
+  {NUMBER_TOKEN} {return NUMBER_TOKEN;}
+  {VARIABLE_ID} {return INLINE_MATH_VARIABLE_REFERENCE_ID;}
   "]" {leftAbsSign=true; yybegin(WAITING_PROPERTY_END); return INLINE_MATH_END;}
 }
 <WAITING_INLINE_MATH_PARAMETER>{
   {PARAMETER_ID} {return PARAMETER_ID;}
   "|" {yybegin(WAITING_INLINE_MATH_PARAMETER_DEFAULT_VALUE); return PIPE;}
-  "$" {yybegin(WAITING_INLINE_MATH_OP); return PARAMETER_END;}
+  "$" {yybegin(WAITING_INLINE_MATH); return PARAMETER_END;}
 }
 <WAITING_INLINE_MATH_PARAMETER_DEFAULT_VALUE>{
   {NUMBER_TOKEN} {return NUMBER_TOKEN;}
-  "$" {yybegin(WAITING_INLINE_MATH_OP); return PARAMETER_END;}
+  "$" {yybegin(WAITING_INLINE_MATH); return PARAMETER_END;}
 }
 
 [^] {return BAD_CHARACTER;}

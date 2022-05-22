@@ -13,9 +13,14 @@ public interface ParadoxScriptElementTypes {
   IElementType COLOR = ParadoxScriptElementTypeFactory.getElementType("COLOR");
   IElementType FLOAT = ParadoxScriptElementTypeFactory.getElementType("FLOAT");
   IElementType INLINE_MATH = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH");
+  IElementType INLINE_MATH_ABS_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_ABS_EXPRESSION");
+  IElementType INLINE_MATH_BI_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_BI_EXPRESSION");
+  IElementType INLINE_MATH_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_EXPRESSION");
   IElementType INLINE_MATH_FACTOR = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_FACTOR");
   IElementType INLINE_MATH_NUMBER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_NUMBER");
   IElementType INLINE_MATH_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PARAMETER");
+  IElementType INLINE_MATH_PAR_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PAR_EXPRESSION");
+  IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INLINE_MATH_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_VARIABLE_REFERENCE");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType NUMBER = ParadoxScriptElementTypeFactory.getElementType("NUMBER");
@@ -87,14 +92,23 @@ public interface ParadoxScriptElementTypes {
       else if (type == INLINE_MATH) {
         return new ParadoxScriptInlineMathImpl(node);
       }
-      else if (type == INLINE_MATH_FACTOR) {
-        return new ParadoxScriptInlineMathFactorImpl(node);
+      else if (type == INLINE_MATH_ABS_EXPRESSION) {
+        return new ParadoxScriptInlineMathAbsExpressionImpl(node);
+      }
+      else if (type == INLINE_MATH_BI_EXPRESSION) {
+        return new ParadoxScriptInlineMathBiExpressionImpl(node);
       }
       else if (type == INLINE_MATH_NUMBER) {
         return new ParadoxScriptInlineMathNumberImpl(node);
       }
       else if (type == INLINE_MATH_PARAMETER) {
         return new ParadoxScriptInlineMathParameterImpl(node);
+      }
+      else if (type == INLINE_MATH_PAR_EXPRESSION) {
+        return new ParadoxScriptInlineMathParExpressionImpl(node);
+      }
+      else if (type == INLINE_MATH_UNARY_EXPRESSION) {
+        return new ParadoxScriptInlineMathUnaryExpressionImpl(node);
       }
       else if (type == INLINE_MATH_VARIABLE_REFERENCE) {
         return new ParadoxScriptInlineMathVariableReferenceImpl(node);

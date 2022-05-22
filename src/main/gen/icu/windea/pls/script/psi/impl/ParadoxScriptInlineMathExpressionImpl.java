@@ -11,14 +11,14 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
-public abstract class ParadoxScriptInlineMathFactorImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineMathFactor {
+public abstract class ParadoxScriptInlineMathExpressionImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineMathExpression {
 
-  public ParadoxScriptInlineMathFactorImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitInlineMathFactor(this);
+    visitor.visitInlineMathExpression(this);
   }
 
   @Override

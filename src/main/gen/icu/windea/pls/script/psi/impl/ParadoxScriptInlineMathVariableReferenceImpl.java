@@ -8,18 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.script.reference.ParadoxScriptInlineMathVariableReferenceReference;
+import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
 import javax.swing.Icon;
 
-public class ParadoxScriptInlineMathVariableReferenceImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineMathVariableReference {
+public class ParadoxScriptInlineMathVariableReferenceImpl extends ParadoxScriptInlineMathFactorImpl implements ParadoxScriptInlineMathVariableReference {
 
   public ParadoxScriptInlineMathVariableReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitInlineMathVariableReference(this);
   }
@@ -50,7 +50,7 @@ public class ParadoxScriptInlineMathVariableReferenceImpl extends ASTWrapperPsiE
 
   @Override
   @NotNull
-  public ParadoxScriptInlineMathVariableReferenceReference getReference() {
+  public ParadoxScriptVariableReferenceReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

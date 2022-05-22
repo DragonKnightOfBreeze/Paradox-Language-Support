@@ -126,18 +126,41 @@ private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | val
 //in definition declarations (should starts with "@\[" if in: scripted_effect / scripted_trigger)
 //only first inline math expression in a scripted effect / trigger is correctly recognized and evaluated
 //supported operators: + - * / %
-//also support abs operator "| 1 |" and parentheses "( 1 )"
-inline_math ::= INLINE_MATH_START inline_math_expression INLINE_MATH_END{
+//also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"
+inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END{
   pin=1
   recoverWhile="#auto"
   extends=value
-  methods=[getValueType getType]
+  methods=[getValue getValueType getType]
 }
-private inline_math_expression ::= inline_math_op_factor (inline_math_op inline_math_op_factor) *
-private inline_math_op_factor ::= (inline_math_factor) | (LABS_SIGN inline_math_expression RABS_SIGN) | (LP_SIGN inline_math_expression RP_SIGN)
-private inline_math_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
+private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
+//noinspection BnfUnusedRule
+inline_math_expression ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
+inline_math_unary_expression ::= inline_math_unary_op inline_math_unary_expr{
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_unary_op ::= PLUS_SIGN | MINUS_SIGN
+private inline_math_unary_expr ::= inline_math_abs_expression | inline_math_par_expression | inline_math_factor
+inline_math_abs_expression ::= LABS_SIGN inline_math_abs_expr RABS_SIGN {
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_abs_expr ::= inline_math_expr
+inline_math_par_expression ::= LP_SIGN inline_math_par_expr RP_SIGN {
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_par_expr ::= inline_math_expr
+left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor{
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
+private inline_math_bi_right_factor ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
 inline_math_factor ::= inline_math_number | inline_math_variable_reference | inline_math_parameter
-inline_math_number ::= NUMBER_TOKEN { //int / float
+inline_math_number ::= NUMBER_TOKEN { //int | float
+  extends=inline_math_factor
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
@@ -145,10 +168,12 @@ inline_math_number ::= NUMBER_TOKEN { //int / float
   methods=[getValue getValueType]
 }
 inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without prefix "@"
+  extends=inline_math_factor
   implements="icu.windea.pls.script.psi.IParadoxScriptVariableReference"
   methods=[getIcon getName setName getReference]
 }
 inline_math_parameter ::= PARAMETER_START PARAMETER_ID [ PIPE NUMBER_TOKEN] PARAMETER_END {
+  extends=inline_math_factor
   pin=1
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]

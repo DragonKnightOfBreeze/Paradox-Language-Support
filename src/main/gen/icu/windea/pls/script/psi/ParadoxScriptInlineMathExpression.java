@@ -5,6 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ParadoxScriptInlineMathFactor extends PsiElement {
+public interface ParadoxScriptInlineMathExpression extends PsiElement {
 
 }

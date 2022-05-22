@@ -473,6 +473,11 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptInlineMath
 	@JvmStatic
+	fun getValue(element: ParadoxScriptInlineMath): String {
+		return inlineMathFolder
+	}
+	
+	@JvmStatic
 	fun getValueType(element: ParadoxScriptInlineMath): ParadoxValueType {
 		return ParadoxValueType.InlineMathType
 	}
@@ -515,9 +520,9 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptInlineMathVariableReference): ParadoxScriptInlineMathVariableReferenceReference {
+	fun getReference(element: ParadoxScriptInlineMathVariableReference): ParadoxScriptVariableReferenceReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
-		return ParadoxScriptInlineMathVariableReferenceReference(element, rangeInElement)
+		return ParadoxScriptVariableReferenceReference(element, rangeInElement)
 	}
 	//endregion
 	

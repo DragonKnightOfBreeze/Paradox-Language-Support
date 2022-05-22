@@ -1,13 +1,13 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
+import com.intellij.lang.ParserDefinition.*
+import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
 	companion object {
@@ -33,5 +33,14 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter(project)
 	
-	fun createLexer(project: Project?, definitionInfo: ParadoxDefinitionInfo?) = ParadoxScriptLexerAdapter(project)
+	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
+		val leftType = left?.elementType
+		val rightType = right?.elementType
+		return when {
+			leftType == AT && (rightType == VARIABLE_NAME_ID || rightType == VARIABLE_REFERENCE_ID) -> MUST_NOT
+			leftType == PARAMETER_START || rightType == PARAMETER_END -> MUST_NOT
+			leftType == PIPE || rightType == PIPE -> MUST_NOT
+			else -> MAY
+		}
+	}
 }

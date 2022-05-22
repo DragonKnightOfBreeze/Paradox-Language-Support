@@ -33,11 +33,14 @@ class ParadoxLocalisationParserDefinition : ParserDefinition {
 	override fun createLexer(project: Project?) = ParadoxLocalisationLexerAdapter(project)
 	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
+		val leftType = left?.elementType
+		val rightType = right?.elementType
 		return when {
+			leftType == LOCALE_ID && rightType == COLON -> MUST_NOT 
 			//语言区域之前必须换行
-			right?.elementType == LOCALE -> MUST_LINE_BREAK
+			rightType == LOCALE_ID -> MUST_LINE_BREAK
 			//属性之前必须换行
-			right?.elementType == PROPERTY -> MUST_LINE_BREAK
+			rightType == PROPERTY_KEY_ID -> MUST_LINE_BREAK
 			else -> MAY
 		}
 	}

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface ParadoxScriptInlineMathParameter extends IParadoxScriptParameter {
+public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMathFactor, IParadoxScriptParameter {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

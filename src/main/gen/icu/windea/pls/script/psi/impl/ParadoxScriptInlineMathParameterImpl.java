@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public class ParadoxScriptInlineMathParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineMathParameter {
+public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMathFactorImpl implements ParadoxScriptInlineMathParameter {
 
   public ParadoxScriptInlineMathParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitInlineMathParameter(this);
   }

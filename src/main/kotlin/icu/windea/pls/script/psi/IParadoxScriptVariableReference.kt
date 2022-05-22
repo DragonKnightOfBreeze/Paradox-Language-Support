@@ -8,7 +8,7 @@ interface IParadoxScriptVariableReference : ParadoxScriptExpression {
 	
 	fun setName(name: String): IParadoxScriptVariableReference
 	
-	override fun getReference(): AbstractParadoxScriptVariableReferenceReference
+	override fun getReference(): ParadoxScriptVariableReferenceReference
 	
 	val referenceValue: ParadoxScriptValue? get() = reference.resolve()?.variableValue?.number
 	
