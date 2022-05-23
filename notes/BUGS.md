@@ -49,5 +49,3 @@
 * [ ] BUG：CWT规则解析：无法匹配类型为`tradition_swap`的定义的属性的规则
 
 * [ ] BUG：CWT规则解析：对于数组中的对象（`a = { { b = c } }`），无法匹配定义的属性的规则
-
-* [ ] BUG：某些类型的定义即使definitionName和rootKey相同也无法查找定义（如：`asteroid_belt_type`）
