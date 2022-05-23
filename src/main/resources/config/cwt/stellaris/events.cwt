@@ -11,79 +11,86 @@ types = {
 		}
 		## type_key_filter = country_event
 		## push_scope = country
-		## display_name = Country event
+		## display_name = Country Event
 		## abbreviation = CE
 		subtype[country] = {
 		}
 		## type_key_filter = observer_event
 		## push_scope = country
+		## display_name = Observer Event
 		subtype[observer] = {
 		}
 		## type_key_filter = pop_event
 		## push_scope = pop
-		## display_name = Pop event
+		## display_name = Pop Event
 		## abbreviation = PoE
 		subtype[pop] = {
 		}
 		## type_key_filter = pop_faction_event
 		## push_scope = pop_faction
-		## display_name = Pop faction event
+		## display_name = Pop Faction Event
 		## abbreviation = PFE
 		subtype[pop_faction] = {
 		}
 		## type_key_filter = planet_event
 		## push_scope = planet
-		## display_name = Planet event
+		## display_name = Planet Event
 		## abbreviation = PE
 		subtype[planet] = {
 		}
 		## type_key_filter = first_contact_event
 		## push_scope = first_contact
-		## display_name = First contact event
+		## display_name = First Contact Event
 		## abbreviation = FCE
 		subtype[first_contact] = {
 		}
 		## type_key_filter = ship_event
 		## push_scope = ship
-		## display_name = Ship event
+		## display_name = Ship Event
 		## abbreviation = SE
 		subtype[ship] = {
 		}
 		## type_key_filter = fleet_event
 		## push_scope = fleet
-		## display_name = Fleet event
+		## display_name = Fleet Event
 		## abbreviation = FE
 		subtype[fleet] = {
 		}
 		## type_key_filter = system_event
 		## push_scope = system
-		## display_name = System event
+		## display_name = System Event
 		## abbreviation = SyE
 		subtype[system] = {
 		}
 		## type_key_filter = starbase_event
 		## push_scope = starbase
-		## display_name = Starbase event
+		## display_name = Starbase Event
 		## abbreviation = StE
 		subtype[starbase] = {
 		}
 		## type_key_filter = espionage_operation_event
 		## push_scope = espionage_operation
-		## display_name = Espionage event
+		## display_name = Espionage Event
 		## abbreviation = EOE
 		subtype[espionage_operation] = {
 		}
 		## type_key_filter = leader_event
 		## push_scope = leader
-		## display_name = Leader event
+		## display_name = Leader Event
 		## abbreviation = LE
 		subtype[leader] = {
 		}
 		## type_key_filter = situation_event
 		## push_scope = situation
-		## display_name = Situation event
+		## display_name = Situation Event
 		## abbreviation = LE
 		subtype[situation] = {
+		}
+		## type_key_filter = agreement_event
+		## push_scope = agreement
+		## display_name = Agreement Event
+		## abbreviation = LE
+		subtype[agreement] = {
 		}
 		## type_key_filter = event
 		subtype[scopeless] = {
@@ -239,6 +246,9 @@ event = {
 		location = scope[starbase]
 
 		## cardinality = 0..1
+		situation = scope[situation]
+
+		## cardinality = 0..1
 		diplomatic = bool
 
 		## cardinality = 0..1
@@ -268,6 +278,8 @@ event = {
 			## cardinality = 0..1
 			icon = {
 				icon = <sprite>
+				## cardinality = 0..1
+				icon_background = <sprite>
 				text = localisation
 			}
 

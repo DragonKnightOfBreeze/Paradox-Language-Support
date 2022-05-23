@@ -15,7 +15,7 @@ types = {
 
 solar_system_initializer = {
 	## cardinality = 0..1
-	name = localisation_synced
+	name = localisation
 	#the class below here represents star class, which is the icon of the system in galactic view.
 	class = <star_class> #this also includes random lists of stars, as defined in the star_classes files
 	class = enum[star_class_random_list]
@@ -117,7 +117,7 @@ solar_system_initializer = {
 }
 alias[planet_initializer:planet] = {
 	## cardinality = 0..1
-	name = localisation_synced
+	name = localisation
 	### count is optional, default to 1 if isn't specified or written at all
 	## cardinality = 0..1
 	count = int
@@ -213,7 +213,7 @@ alias[planet_initializer:planet] = {
 }
 alias[moon_initializer:moon] = {
 	## cardinality = 0..1
-	name = localisation_synced
+	name = localisation
 	### count is optional, default to 1 if isn't specified or written at all
 	## cardinality = 0..1
 	count = int

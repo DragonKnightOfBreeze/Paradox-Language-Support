@@ -43,6 +43,8 @@ resource = {
 
 	## cardinality = 0..1
 	deficit_modifier = <static_modifier>
+	## cardinality = 0..1
+	deficit_situation = <situation_type>
 
 	## cardinality = 0..1
 	prerequisites = {

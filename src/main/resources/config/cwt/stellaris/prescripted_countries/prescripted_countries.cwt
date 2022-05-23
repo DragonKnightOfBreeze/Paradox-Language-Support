@@ -6,7 +6,7 @@ types = {
 
 prescripted_country = {
 	name = scalar #this is not localisation, this is a string!
-	adjective = localisation_synced
+	adjective = localisation
 	## cardinality = 0..1
 	spawn_enabled = bool # yes / no / always ---> this one receives always as well!
 	## cardinality = 0..1
@@ -21,16 +21,16 @@ prescripted_country = {
 	## cardinality = 0..1
 	spawn_as_fallen = bool
 
-	ship_prefix = localisation_synced
+	ship_prefix = localisation
 
 	## cardinality = 0..1
 	species = {
 		class = <species_class>
 		portrait = <portrait>
 		portrait = <portrait_group>
-		name = localisation_synced
-		plural = localisation_synced
-		adjective = localisation_synced
+		name = localisation
+		plural = localisation
+		adjective = localisation
 		## cardinality = 0..1
 		gender = enum[genders_not_set]
 		name_list = <name_list>
@@ -45,9 +45,9 @@ prescripted_country = {
 		class = <species_class>
 		portrait = <portrait>
 		portrait = <portrait_group>
-		name = localisation_synced
-		plural = localisation_synced
-		adjective = localisation_synced
+		name = localisation
+		plural = localisation
+		adjective = localisation
 		name_list = <name_list>
 		## cardinality = 0..1
 		gender = enum[genders_not_set]
@@ -85,14 +85,14 @@ prescripted_country = {
     	## cardinality = 0..inf
 		value_set[country_flag] #this is a country flag string, can be anything.
  	}
-	planet_name = localisation_synced
+	planet_name = localisation
 	planet_class = <planet_class.habitable_planet>
 
 	## cardinality = 0..1
 	initializer = <solar_system_initializer>
 	## cardinality = 0..1
 	initializer = ""
-	system_name = localisation_synced
+	system_name = localisation
 
 	graphical_culture = <graphical_culture>
 	city_graphical_culture =  <graphical_culture> #obviously there is some difference with the one above, but im not sure - should check this connection.
@@ -115,7 +115,7 @@ prescripted_country = {
 	}
 
 	ruler = {
-		name = localisation_synced
+		name = localisation
 		gender = enum[genders_not_set]
 		portrait = <portrait>
 		portrait = <portrait_group>
@@ -125,16 +125,16 @@ prescripted_country = {
 		## cardinality = 0..1
 		clothes = int
 		## cardinality = 0..1
-		ruler_title = localisation_synced
+		ruler_title = localisation
 
 		## cardinality = 0..1
-		ruler_title_male = localisation_synced
+		ruler_title_male = localisation
 		## cardinality = 0..1
-		ruler_title_female = localisation_synced
+		ruler_title_female = localisation
 		## cardinality = 0..1
-		heir_title = localisation_synced
+		heir_title = localisation
 		## cardinality = 0..1
-		heir_title_female = localisation_synced
+		heir_title_female = localisation
 
 		## cardinality = 0..1
 		leader_class = enum[leader_classes]
@@ -146,11 +146,11 @@ prescripted_country = {
 	name_list = <name_list>
 
 	## cardinality = 0..1
-	species_name = localisation_synced
+	species_name = localisation
 	## cardinality = 0..1
-	species_plural = localisation_synced
+	species_plural = localisation
 	## cardinality = 0..1
-	species_adjective = localisation_synced
+	species_adjective = localisation
 	## cardinality = 0..1
 	species_class = <species_class>
 	## cardinality = 0..1

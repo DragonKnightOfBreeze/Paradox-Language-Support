@@ -99,5 +99,6 @@ enums = {
 		any_other
 		one_to_one
 		scripted_connection
+		hyper_relay
 	}
 }

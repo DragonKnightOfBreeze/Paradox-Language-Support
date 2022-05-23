@@ -1,6 +1,6 @@
 types = {
 	type[colony_type] = {
-		path = "game/common/colony_types" # FIXED BY PLS
+		path = "game/common/colony_type"
 		localisation = {
 			## required
 			Name = "$"
@@ -24,6 +24,9 @@ types = {
 
 ## push_scope = planet
 colony_automation = {
+	# this is a scalar rather than an enum, because the category strings themselves are defined in 00_defines.txt
+	category = scalar
+
 	available = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}

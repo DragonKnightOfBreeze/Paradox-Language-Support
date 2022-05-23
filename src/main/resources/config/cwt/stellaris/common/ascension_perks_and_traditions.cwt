@@ -124,7 +124,6 @@ ascension_perk = {
 	## cardinality = 0..1
 	## replace_scope = { root = country this = country }
 	ai_weight = {
-		factor = float
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }

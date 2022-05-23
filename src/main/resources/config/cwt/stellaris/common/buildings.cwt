@@ -4,7 +4,7 @@ types = {
 	type[building] = {
 		path = "game/common/buildings"
 		subtype[branch_office_building] = {
-			branch_office_building = yes
+			owner_type = corporate
 		}
 		localisation = {
 			## required
@@ -47,6 +47,10 @@ building = {
 		}
 		text = localisation
 	}
+	## cardinality = 0..1
+	owner_type = corporate
+	## cardinality = 0..1
+	owner_type = subject_holding
 
 	## cardinality = 0..1
 	base_buildtime = int
@@ -143,6 +147,8 @@ building = {
 
 	alias_name[triggered_planet_modifier_direct] = alias_match_left[triggered_planet_modifier_direct]
 	alias_name[triggered_desc] = alias_match_left[triggered_desc]
+
+	alias_name[triggered_country_modifier_planet] = alias_match_left[triggered_country_modifier_planet]
 
 	## cardinality = 0..1
 	resources = {

@@ -81,6 +81,9 @@ scopes = {
     Situation = {
         aliases = { situation }
     }
+	Agreement = {
+		aliases = { agreement }
+	}
 }
 
 scope_groups = {

@@ -143,6 +143,7 @@ government_reform = {
 		can_customise_heir = bool
 		allow_cawa = bool
 		can_change_primary_culture = bool
+		allow_carolean = bool
 	}
 
 	

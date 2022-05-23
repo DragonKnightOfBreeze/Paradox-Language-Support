@@ -278,10 +278,47 @@ enums = {
 		starbase
 		spynetwork
 	}
+	enum[scripted_modifier_categories] = {
+		all
+		pop
+		shipstation
+		fleet
+		country
+		army
+		leader
+		planet
+		component
+		pop_faction
+		deposit
+		megastructure
+		habitability
+		starbase
+		economic_unit
+		system
+		trade
+		federation
+		espionage
+	}
 	enum[job_triggers] = {
 		can_fill_drone_job
 		can_fill_worker_job
 		can_fill_specialist_job
 		can_fill_ruler_job
+	}
+	enum[agreement_subject_expand] = {
+		can_expand
+		can_expand_with_tithe
+		cannot_expand
+	}
+	enum[agreement_wars] = {
+		none
+		defensive
+		offensive
+		all
+	}
+	enum[megastructure_block_type] = {
+		none
+		self_type
+		multi_stage_type
 	}
 }

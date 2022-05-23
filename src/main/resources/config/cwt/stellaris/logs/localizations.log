@@ -1,11 +1,11 @@
-[12:15:33][game_application.cpp:2017]: 
+[16:38:06][game_application.cpp:2059]: 
 == LOCALIZATION DOCUMENTATION ==
 This is a list of all hardcoded scoped localization commands in the game. It does not include scripted locs (see game/customizable_localization).
 In most cases, it is also possible to get the value of variables with '[Scope.my_variable]' and saved dates with '[Scope.my_date_flag]'.
 There are also several unscoped commands: GetDate, GetMidGameDate, GetLateGameDate, GetYear, LastKilledCountryName.
 A single opening square bracket '[' will begin a scoped localization statement.
 Two consecutive opening square brackets '[[' will escape it, making a single square bracket show up in text instead, i.e. '[[example]' in loc will display as '[example]' in-game.
-
+Global script variables are accessible with $@VariableName$ where @VariableName is a variable defined in a file in the common/scripted_variables folder
 
 --Base Scope--
 Promotions:
@@ -36,12 +36,18 @@ Properties
  GetName
  GetAdj
  GetAdjective
+ GetAdjPersistent
+ GetAdjectivePersistent
  GetSpeciesName
+ GetSpeciesNamePersistent
  GetSpeciesAdj
+ GetSpeciesAdjPersistent
  GetSpeciesNamePlural
+ GetSpeciesNamePluralPersistent
  GetSpeciesClass
  GetSpeciesClassPlural
  GetAllianceName
+ GetAllianceNamePersistent
  GetRulerName
  GetRulerTitle
  GetHeirName
@@ -68,6 +74,7 @@ Properties
  GetSpeciesRemnantNamePlural
  GetRandomSpeciesSound
  GetHomeWorldName
+ GetHomeWorldNamePersistent
  GetLastLostRelic
  GetLastReceivedRelic
  GetGovernmentName
@@ -82,7 +89,9 @@ Promotions:
  Sector
 Properties
  GetName
+ GetNamePersistent
  GetAdj
+ GetAdjPersistent
  GetStarName
  GetPlanetMoon
  GetPlanetMoonCap
@@ -114,6 +123,7 @@ Promotions:
 Properties
  GetName
  GetSpeciesName
+ GetSpeciesNamePersistent
  GetSpeciesNamePlural
  GetSpeciesAdj
 
@@ -123,7 +133,9 @@ Promotions:
  Sector
 Properties
  GetName
+ GetNamePersistent
  GetAdj
+ GetAdjPersistent
  GetNebula
  GetClassName
 
@@ -195,8 +207,11 @@ Properties
 Promotions:
 Properties
  GetName
+ GetNamePersistent
  GetAdj
+ GetAdjPersistent
  GetNamePlural
+ GetNamePluralPersistent
  GetClass
  GetClassPlural
  GetNameInsult
@@ -304,6 +319,12 @@ Properties
  GetFocus
  GetType
 
+--Agreement--
+Promotions:
+ Target
+ Owner
+Properties
+
 --Situation--
 Promotions:
  Target
@@ -311,5 +332,10 @@ Promotions:
 Properties
  GetName
  GetProgress
+
+--Debris--
+Promotions:
+Properties
+ GetDescription
 
 =================

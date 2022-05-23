@@ -73,8 +73,9 @@ resolution_category = {
 
 ## replace_scope = { this = country root = country from = country }
 resolution = {
+	# TODO check
 	icon = <sprite> # FIXED BY PLS
-	icon = scalar #not really
+	# icon = scalar #not really
 	resources = {
 		category = <economic_category>
 		alias_name[economic_template] = alias_match_left[economic_template]

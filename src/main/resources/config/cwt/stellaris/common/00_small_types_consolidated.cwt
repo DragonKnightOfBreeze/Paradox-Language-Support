@@ -114,6 +114,13 @@ types = {
 			icon = "#icon|#icon_frame" # <sprite>
 		}
 	}
+	type[scripted_modifier] = {
+		path = "game/common/scripted_modifiers"
+		localisation = {
+			## required
+			name = "mod_$"
+		}
+	}
 }
 
 ambient_object = {
@@ -133,7 +140,6 @@ ambient_object = {
 	###Determines whether you can read the name of the object ingame.
 	show_name = bool
 }
-
 
 #country_color = { #commented out as it threw errors on every line anyway
 #	subtype[default] = {
@@ -168,7 +174,6 @@ ambient_object = {
 #	}
 #}
 
-
 #TODO Confirm
 #TODO Add mesh/shader references
 asteroid_belt_type = {
@@ -177,8 +182,6 @@ asteroid_belt_type = {
 	## cardinality = 0..1
 	shader = scalar
 }
-
-
 
 ##TODO confirm and refine
 attitude = {
@@ -199,7 +202,6 @@ attitude = {
 	}
 }
 
-
 # TODO Confirm
 # TODO Document
 button_effect = {
@@ -218,10 +220,8 @@ button_effect = {
 	}
 }
 
-
-
 #TODO Confirm
-#TODO DOcument
+#TODO Document
 #TODO Expand shelter
 country_customization = {
 	colony_shelter = {
@@ -249,9 +249,6 @@ country_customization = {
 	}
 }
 
-
-
-
 system_type = {
 	## replace_scope = { this = system root = system }
 	#TODO: it appears so, but the file uses owner (not space_owner). Check pls
@@ -266,7 +263,6 @@ system_type = {
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
-
 
 start_screen_message = {
 	location = int
@@ -288,7 +284,6 @@ precursors = {
 	}
 }
 
-
 sector_type = {
 	system_scores = {
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
@@ -305,7 +300,6 @@ sector_type = {
 	}
 	max_jumps = int
 }
-
 
 sector_focus = {
 	## cardinality = 0..1
@@ -340,7 +334,6 @@ sector_focus = {
 		}
 	}
 }
-
 
 #TODO Confirm
 #TODO Colours
@@ -386,6 +379,7 @@ map_mode = {
 		filter = enum[hardcoded_map_mode_filters]
     }
 }
+
 enums = {
 	enum[hardcoded_map_mode_tooltip] = {
 		opinion
@@ -447,8 +441,6 @@ trade_conversion = {
 	economic_category = <economic_category>
 }
 
-
-
 economic_plan = {
 	income = {
 		## cardinality = 1..inf
@@ -482,6 +474,13 @@ economic_plan = {
 		pops = int
 		## cardinality = 0..1
 		empire_size = float
+
+		## cardinality = 0..1
+		set_name = scalar
+		## cardinality = 0..1
+		scaling = bool
+		## cardinality = 0..1
+		optional = bool
 	}
 
 	## cardinality = 0..1
@@ -494,7 +493,6 @@ economic_plan = {
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }
-
 
 diplomacy_economy = {
 	once = {
@@ -539,4 +537,39 @@ message_type = {
 	ping = <pingmap>
 	## cardinality = 0..1
 	auto_opens = scalar
+}
+
+scripted_modifier = {
+	## cardinality = 0..1
+	###name of file in gfx\interface\icons\modifiers (without the .dds). Default is "mod_" + key
+	icon = scalar
+	## cardinality = 0..1
+	###show as a % or not (default: no)
+	percentage = bool
+	## cardinality = 0..1
+	###sets the minimum this modifier can be when used as a multiplier in the source code (so probably not relevant since this modifier will not be applied in the source code - but you could theoretically overwrite a code-generated modifier here). Default 0
+	min_mult = float
+	## cardinality = 0..1
+	###default 2
+	max_decimals = int
+	## cardinality = 0..1
+	###sets if it registers as "good" (i.e. a positive number is green, a negative red). Default no.
+	good = bool
+	## cardinality = 0..1
+	###sets if no value is either good or bad (all is yellow). Default no.
+	neutral = bool
+	## cardinality = 0..1
+	###probably hides it in tooltips? Needs testing. Default no.
+	hidden = bool
+	## cardinality = 0..1
+	###Default no
+	no_diff = bool
+	## cardinality = 0..1
+	###Default no
+	cap_zero_to_one = bool
+	## cardinality = 0..1
+	###Default no
+	localize_with_value_key = bool
+	###sets the modifier category, which is sometimes used to determine whether it is applied to a certain object (so make sure this is set to what you want)
+	category = enum[scripted_modifier_categories]
 }

@@ -95,6 +95,8 @@ ship_size = {
 	## cardinality = 0..1
 	size_multiplier = float
 	## cardinality = 0..1
+	hull_scale = float
+	## cardinality = 0..1
 	fleet_slot_size = int
 	## cardinality = 0..1
 	section_slots = {
@@ -183,20 +185,6 @@ ship_size = {
 	###if yes, ship design will have a 3d view in the ship browser
 	enable_3dview_in_ship_browser = yes
 	## cardinality = 0..1
-	empire_limit = {
-		base = int
-		## cardinality = 0..1
-		max = int
-		## cardinality = 0..1
-		naval_cap_div = int
-		## cardinality = 0..1
-		## replace_scope = { root = country this = country }
-		###This determines whether it shows in the breakdown for naval capacity
-		show = {
-			alias_name[trigger] = alias_match_left[trigger]
-		}
-	}
-	## cardinality = 0..1
 	## replace_scope = { root = country this = country }
 	potential_country = {
 		alias_name[trigger] = alias_match_left[trigger]
@@ -229,7 +217,6 @@ ship_size = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 
-
 	## cardinality = 0..1
 	resources = {
 		category = <economic_category>
@@ -242,6 +229,22 @@ ship_size = {
 		<resource> = float
 	}
 
+	## cardinality = 0..1
+	ai_ship_data = {
+		## cardinality = 0..1
+		min = int_value_field
+		## cardinality = 0..1
+		max = int_value_field
+		## cardinality = 0..1
+		system_mult = value_field
+		## cardinality = 0..1
+		planet_mult = value_field
+		## cardinality = 0..1
+		## replace_scope = { this = country root = country }
+		fraction = {
+			alias_name[modifier_rule] = alias_match_left[modifier_rule]
+		}
+	}
 }
 
 #enums = { #you can change, mod, remove and add new shipclasses. This is not an enum!

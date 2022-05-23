@@ -1,17 +1,18 @@
-# this file contains all elements that are stored in the common folder itself!
+#this file contains all elements that are stored in the common folder itself!
 
 types = {
 	# FIXED BY PLS
 	type[alert] = {
 		path = "game/common"
 		path_file = "alerts.txt"
+
 		skip_root_key = alerts
 		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # <sprite>
 			category = "#category" # <alert_icon>
-		}
+	}
 	}
 	# FIXED BY PLS
 	type[alert_icon] = {
@@ -23,7 +24,7 @@ types = {
 		pictures = {
 			## primary
 			icon = "#" # the string value (not some property value in the block value) of the definition
-		}
+	}
 	}
 	# FIXED BY PLS
 	type[achievement] = {

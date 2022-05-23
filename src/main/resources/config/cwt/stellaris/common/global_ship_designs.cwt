@@ -9,7 +9,7 @@ types = {
 #TODO Document
 global_ship_design = {
 	## cardinality = 0..1
-	name = localisation_synced
+	name = localisation
 	## cardinality = 0..1
 	ship_size = <ship_size>
 	## cardinality = 0..1

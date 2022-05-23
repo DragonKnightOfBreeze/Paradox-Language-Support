@@ -1,4 +1,3 @@
-
 types = {
 	## type_key_filter = empire_name_parts_list
 	type[empire_name_parts_list] = {
@@ -42,9 +41,6 @@ types = {
 	}
 }
 
-
-
-
 ### Define possible parts of empire name here, such as "Glorious Empire of". When generating random name for empire, format can refer to it via <key> and pick random part.
 empire_name_parts_list = {
 	### Unique ID by which list can be referred to from name format via <key>.
@@ -52,9 +48,9 @@ empire_name_parts_list = {
 	### List of possible parts. Random weights to the right are optional
 	parts = {
 		## cardinality = 0..inf
-		localisation_synced = int
+		localisation = int
 		## cardinality = 0..inf
-		localisation_synced
+		localisation
 	}
 }
 
@@ -71,22 +67,21 @@ empire_name_format = {
 	}
 
 	### Reference to localisation string for generating random name
-	format = localisation_synced
+	format = localisation
 	### String used to determine prefix for empire's ship. (Default being ISS). Usually matches name format. Optional for countries that would not ever have ships, e. g. Primitives.
 	## cardinality = 0..1
 	prefix_format = scalar
 	noun = stellaris_name_format[empire_name_parts]
+	lookups = scalar
 }
-
-
 
 pop_faction_name_parts_list = {
 	key = value_set[pop_faction_name_parts]
 	parts = {
 		## cardinality = 0..inf
-		localisation_synced = int
+		localisation = int
 		## cardinality = 0..inf
-		localisation_synced
+		localisation
 	}
 }
 
@@ -101,17 +96,15 @@ pop_faction_name_format = {
 	format = stellaris_name_format[pop_faction_name_parts]
 }
 
-
-
 pre_communications_name_parts_list = {
 	key = value_set[pre_communications_name_parts]
 	## cardinality = 0..1
 	cyclic = yes
 	parts = {
 		## cardinality = 0..inf
-		localisation_synced = int
+		localisation = int
 		## cardinality = 0..inf
-		localisation_synced
+		localisation
 	}
 }
 
@@ -126,15 +119,13 @@ pre_communications_name_format = {
 	format = stellaris_name_format[pre_communications_name_parts]
 }
 
-
-
 war_name_parts_list = {
 	key = value_set[war_name_parts]
 	parts = {
 		## cardinality = 0..inf
-		localisation_synced = int
+		localisation = int
 		## cardinality = 0..inf
-		localisation_synced
+		localisation
 	}
 }
 

@@ -132,6 +132,11 @@ job = {
 		category = <economic_category>
 		alias_name[economic_template] = alias_match_left[economic_template]
 	}
+	## cardinality = 0..1
+	overlord_resources = {
+		category = <economic_category>
+		alias_name[economic_template] = alias_match_left[economic_template]
+	}
 
 	## cardinality = 0..1
 	## replace_scope = { this = pop root = pop }

@@ -31,10 +31,10 @@ types = {
 
 #TODO subtypes, and make stricter this was an initial pass
 #This is a draft guess (assuming that only the resources bit has changed)
-## replace_scope = { this = planet root = planet from = species }
+## replace_scope { this = planet root = planet from = species }
 army = {
 	## cardinality = 0..1
-	## replace_scope = { this = country root = country }
+	## replace_scope { this = country root = country }
 	resources = {
 		category = <economic_category>
 		alias_name[economic_template] = alias_match_left[economic_template]
@@ -91,6 +91,11 @@ army = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
 	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	potential_country = {
+		alias_name[trigger] = alias_match_left[trigger]
+	}
+	## cardinality = 0..1
 	allow = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}
@@ -104,11 +109,17 @@ army = {
 	}
 	subtype[pop_spawned] = {
 		## cardinality = 0..1
-		## replace_scope = { this = pop root = pop }
+		## replace_scope { this = pop root = pop }
 		###spawn_chance: only works on defensive armies; pop scope check that lets you give weights for what sort of army should be spawned. Calculation is health * spawn_chance (default: 1), and it always picks the best one
 		spawn_chance = {
 			factor = float
 			alias_name[modifier_rule] = alias_match_left[modifier_rule]
 		}
+	}
+
+	## cardinality = 0..1
+	## replace_scope = { this = country root = country }
+	ai_weight = {
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
 	}
 }

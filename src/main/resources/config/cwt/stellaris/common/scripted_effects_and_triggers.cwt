@@ -9,9 +9,13 @@ types = {
 }
 
 scripted_trigger = {
+	## cardinality = 0..1
+	optimize_memory
 	alias_name[trigger] = alias_match_left[trigger]
 }
 
 scripted_effect = {
+	## cardinality = 0..1
+	optimize_memory
 	alias_name[effect] = alias_match_left[effect]
 }

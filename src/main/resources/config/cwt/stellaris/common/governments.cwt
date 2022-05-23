@@ -263,8 +263,15 @@ civic_or_origin = {
 	swap_type = {
 		name = localisation
 		description = localisation
+		### In empire creation / galaxy setup, this has no scope. During the game, when there are actual countries existing, it is set to country scope.
+		### If you want to use country scope here, you must always check is_scope_valid first (see civic_devouring_swarm), or you will get errors or it won't work as intended.
 		trigger = {
-			local_human_species_class = <species_class>
+			alias_name[trigger] = alias_match_left[trigger]
+		}
+		## cardinality = 0..1
+		### modifier that is applied to the country when triggers are evaluated as true
+		modifier = {
+			alias_name[modifier] = alias_match_left[modifier]
 		}
 	}
 	

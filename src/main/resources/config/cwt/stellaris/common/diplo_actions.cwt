@@ -141,4 +141,11 @@ diplomatic_action = {
 	## cardinality = 0..1
 	## replace_scope = { root = country this = country from = country }
 	on_decline = { alias_name[effect] = alias_match_left[effect] }
+
+	## cardinality = 0..1
+	## replace_scope = { root = country this = country from = country }
+	###weight field where you can define AI reasons to accept or reject the proposal. root is recipient, from is actor. Does not overwrite hardcoded reasons, and only using add and subtract is recommended, since multiplication won't affect reasons outside the ai_acceptance field
+	ai_acceptance = {
+		alias_name[modifier_rule] = alias_match_left[modifier_rule]
+	}
 }

@@ -1,4 +1,4 @@
-[12:15:33][modifier.cpp:1093]: 
+[16:38:05][modifier.cpp:1307]: 
  == MODIFIER DOCUMENTATION ==
 Note on Modifier Categories:
 -- These are used internally as a tag to suggest where they are intended to be used, but exact behavior depends upon individual implementation.
@@ -86,7 +86,9 @@ Printing Modifier Definitions:
 - ship_starting_experience_add, Category: Ships
 - ship_experience_gain_mult, Category: Ships
 - ship_jumpdrive_cooldown_mult, Category: Ships
-- army_disengage_chance_mult, Category: Ships
+- mod_ship_naval_cap_usage_add, Category: Ships
+- mod_ship_naval_cap_usage_mult, Category: Ships
+- army_disengage_chance_mult, Category: Armies
 - army_starting_experience_add, Category: Armies
 - army_health, Category: Armies
 - army_morale, Category: Armies
@@ -105,6 +107,8 @@ Printing Modifier Definitions:
 - planet_max_districts_mult, Category: Planets
 - planet_max_buildings_add, Category: Planets
 - planet_max_branch_office_buildings_add, Category: Planets
+- planet_max_subject_holding_buildings_add, Category: Planets
+- planet_max_overlord_holding_buildings_add, Category: Planets
 - planet_pop_assembly_add, Category: Planets
 - planet_pop_assembly_mult, Category: Planets
 - planet_pop_assembly_reduction, Category: Planets
@@ -131,7 +135,7 @@ Printing Modifier Definitions:
 - planet_decision_enact_speed_mult, Category: Planets
 - planet_clear_blocker_time_mult, Category: Planets
 - planet_clear_blocker_speed_mult, Category: Planets
-- planet_migration_all_mult, Category: Planets
+- planet_resettlement_unemployed_destination_mult, Category: Planets
 - planet_resettlement_unemployed_mult, Category: Planets
 - planet_immigration_pull_add, Category: Planets
 - planet_immigration_pull_mult, Category: Planets
@@ -183,6 +187,8 @@ Printing Modifier Definitions:
 - scientist_skill_levels, Category: Leaders
 - country_starbase_capacity_add, Category: Countries
 - country_starbase_capacity_mult, Category: Countries
+- country_enclave_capacity_add, Category: Countries
+- country_enclave_capacity_mult, Category: Countries
 - country_naval_cap_add, Category: Countries
 - country_naval_cap_mult, Category: Countries
 - country_naval_coverage_add, Category: Countries
@@ -193,6 +199,7 @@ Printing Modifier Definitions:
 - federation_naval_cap_contribution_mult, Category: Countries
 - country_command_limit_add, Category: Countries
 - country_command_limit_mult, Category: Countries
+- country_mia_time_mult, Category: Countries
 - planet_orbital_bombardment_damage, Category: Planets
 - country_resettlement_cost_mult, Category: Countries
 - pop_resettlement_cost_mult, Category: Pops
@@ -200,6 +207,7 @@ Printing Modifier Definitions:
 - pop_demotion_time_mult, Category: Pops
 - faction_approval, Category: Pop Factions
 - country_starbase_influence_cost_mult, Category: Countries
+- country_starbase_influence_cost_distance_mult, Category: Countries
 - country_claim_influence_cost_mult, Category: Countries
 - country_hostile_claim_influence_cost_mult, Category: Countries
 - country_war_exhaustion_mult, Category: Countries
@@ -320,6 +328,27 @@ Printing Modifier Definitions:
 - counter_intel_gain_speed, Category: Countries
 - add_base_country_intel, Category: Countries
 - diplo_action_acceptance_add, Category: Countries
+- subject_tech_cost_mult, Category: Countries
+- catapult_spread_base, Category: Megastructures
+- catapult_spread_mult, Category: Megastructures
+- catapult_range_base, Category: Megastructures
+- catapult_range_mult, Category: Megastructures
+- ship_repair_hull_mult, Category: Military Ships, Civilian Ships, Science Ships, Transport Ships
+- ship_repair_armor_mult, Category: Military Ships, Civilian Ships, Science Ships, Transport Ships
+- monthly_loyalty, Category: Countries, Planets
+- ship_friendly_territory_shield_add, Category: Ships
+- ship_friendly_territory_shield_mult, Category: Ships
+- ship_friendly_territory_evasion_add, Category: Ships
+- ship_friendly_territory_evasion_mult, Category: Ships
+- ship_friendly_territory_accuracy_add, Category: Ships
+- ship_friendly_territory_accuracy_mult, Category: Ships
+- ship_friendly_territory_tracking_add, Category: Ships
+- ship_friendly_territory_tracking_mult, Category: Ships
+- ship_friendly_territory_fire_rate_mult, Category: Ships
+- mod_habitability_floor_add, Category: Habitability
+- mod_habitability_floor_mult, Category: Habitability
+- mod_habitability_ceil_add, Category: Habitability
+- mod_habitability_ceil_mult, Category: Habitability
 - shipclass_military_build_cost_mult, Category: Planets, Starbases
 - shipclass_military_build_speed_mult, Category: Planets, Starbases
 - shipclass_military_hull_mult, Category: Ships
@@ -499,46 +528,47 @@ Printing Modifier Definitions:
 - hostile_op_cat_military_difficulty_mult, Category: Espionage
 - op_cat_military_skill_add, Category: Espionage
 - op_cat_military_skill_mult, Category: Espionage
-- country_time_produces_add, Category: Economic Units
+- country_time_cost_mult, Category: Economic Units
 - country_time_produces_mult, Category: Economic Units
-- country_energy_produces_add, Category: Economic Units
+- country_energy_cost_mult, Category: Economic Units
 - country_energy_produces_mult, Category: Economic Units
-- country_minerals_produces_add, Category: Economic Units
+- country_minerals_cost_mult, Category: Economic Units
 - country_minerals_produces_mult, Category: Economic Units
-- country_food_produces_add, Category: Economic Units
+- country_food_cost_mult, Category: Economic Units
 - country_food_produces_mult, Category: Economic Units
-- country_physics_research_produces_add, Category: Economic Units
+- country_physics_research_cost_mult, Category: Economic Units
 - country_physics_research_produces_mult, Category: Economic Units
-- country_society_research_produces_add, Category: Economic Units
+- country_society_research_cost_mult, Category: Economic Units
 - country_society_research_produces_mult, Category: Economic Units
-- country_engineering_research_produces_add, Category: Economic Units
+- country_engineering_research_cost_mult, Category: Economic Units
 - country_engineering_research_produces_mult, Category: Economic Units
-- country_influence_produces_add, Category: Economic Units
+- country_influence_cost_mult, Category: Economic Units
 - country_influence_produces_mult, Category: Economic Units
-- country_unity_produces_add, Category: Economic Units
+- country_unity_cost_mult, Category: Economic Units
 - country_unity_produces_mult, Category: Economic Units
-- country_consumer_goods_produces_add, Category: Economic Units
+- country_consumer_goods_cost_mult, Category: Economic Units
 - country_consumer_goods_produces_mult, Category: Economic Units
-- country_alloys_produces_add, Category: Economic Units
+- country_alloys_cost_mult, Category: Economic Units
 - country_alloys_produces_mult, Category: Economic Units
-- country_volatile_motes_produces_add, Category: Economic Units
+- country_volatile_motes_cost_mult, Category: Economic Units
 - country_volatile_motes_produces_mult, Category: Economic Units
-- country_exotic_gases_produces_add, Category: Economic Units
+- country_exotic_gases_cost_mult, Category: Economic Units
 - country_exotic_gases_produces_mult, Category: Economic Units
-- country_rare_crystals_produces_add, Category: Economic Units
+- country_rare_crystals_cost_mult, Category: Economic Units
 - country_rare_crystals_produces_mult, Category: Economic Units
-- country_sr_living_metal_produces_add, Category: Economic Units
+- country_sr_living_metal_cost_mult, Category: Economic Units
 - country_sr_living_metal_produces_mult, Category: Economic Units
-- country_sr_zro_produces_add, Category: Economic Units
+- country_sr_zro_cost_mult, Category: Economic Units
 - country_sr_zro_produces_mult, Category: Economic Units
-- country_sr_dark_matter_produces_add, Category: Economic Units
+- country_sr_dark_matter_cost_mult, Category: Economic Units
 - country_sr_dark_matter_produces_mult, Category: Economic Units
-- country_nanites_produces_add, Category: Economic Units
+- country_nanites_cost_mult, Category: Economic Units
 - country_nanites_produces_mult, Category: Economic Units
-- country_minor_artifacts_produces_add, Category: Economic Units
+- country_minor_artifacts_cost_mult, Category: Economic Units
 - country_minor_artifacts_produces_mult, Category: Economic Units
-- country_menace_produces_add, Category: Economic Units
+- country_menace_cost_mult, Category: Economic Units
 - country_menace_produces_mult, Category: Economic Units
+- country_cost_mult, Category: Economic Units
 - country_produces_mult, Category: Economic Units
 - country_base_time_produces_add, Category: Economic Units
 - country_base_energy_produces_add, Category: Economic Units
@@ -623,6 +653,26 @@ Printing Modifier Definitions:
 - megastructures_habitat_minor_artifacts_cost_mult, Category: Economic Units
 - megastructures_habitat_menace_cost_mult, Category: Economic Units
 - megastructures_habitat_cost_mult, Category: Economic Units
+- megastructures_hyper_relay_time_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_energy_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_minerals_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_food_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_physics_research_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_society_research_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_engineering_research_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_influence_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_unity_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_consumer_goods_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_alloys_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_volatile_motes_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_exotic_gases_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_rare_crystals_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_sr_living_metal_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_sr_zro_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_sr_dark_matter_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_nanites_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_minor_artifacts_upkeep_add, Category: Economic Units
+- megastructures_hyper_relay_menace_upkeep_add, Category: Economic Units
 - starbase_shipyard_build_time_cost_mult, Category: Economic Units
 - starbase_shipyard_build_energy_cost_mult, Category: Economic Units
 - starbase_shipyard_build_minerals_cost_mult, Category: Economic Units
@@ -769,6 +819,27 @@ Printing Modifier Definitions:
 - ship_military_station_small_nanites_cost_mult, Category: Economic Units
 - ship_military_station_small_minor_artifacts_cost_mult, Category: Economic Units
 - ship_military_station_small_menace_cost_mult, Category: Economic Units
+- shipsize_military_station_small_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_time_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_energy_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_minerals_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_food_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_physics_research_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_society_research_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_engineering_research_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_influence_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_unity_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_consumer_goods_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_alloys_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_volatile_motes_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_exotic_gases_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_rare_crystals_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_sr_living_metal_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_sr_zro_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_sr_dark_matter_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_nanites_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_minor_artifacts_upkeep_mult, Category: Economic Units
+- shipsize_military_station_small_menace_upkeep_mult, Category: Economic Units
 - ship_science_cost_mult, Category: Economic Units
 - ship_science_time_cost_mult, Category: Economic Units
 - ship_science_energy_cost_mult, Category: Economic Units
@@ -790,6 +861,48 @@ Printing Modifier Definitions:
 - ship_science_nanites_cost_mult, Category: Economic Units
 - ship_science_minor_artifacts_cost_mult, Category: Economic Units
 - ship_science_menace_cost_mult, Category: Economic Units
+- ship_military_cost_mult, Category: Economic Units
+- ship_military_time_cost_mult, Category: Economic Units
+- ship_military_energy_cost_mult, Category: Economic Units
+- ship_military_minerals_cost_mult, Category: Economic Units
+- ship_military_food_cost_mult, Category: Economic Units
+- ship_military_physics_research_cost_mult, Category: Economic Units
+- ship_military_society_research_cost_mult, Category: Economic Units
+- ship_military_engineering_research_cost_mult, Category: Economic Units
+- ship_military_influence_cost_mult, Category: Economic Units
+- ship_military_unity_cost_mult, Category: Economic Units
+- ship_military_consumer_goods_cost_mult, Category: Economic Units
+- ship_military_alloys_cost_mult, Category: Economic Units
+- ship_military_volatile_motes_cost_mult, Category: Economic Units
+- ship_military_exotic_gases_cost_mult, Category: Economic Units
+- ship_military_rare_crystals_cost_mult, Category: Economic Units
+- ship_military_sr_living_metal_cost_mult, Category: Economic Units
+- ship_military_sr_zro_cost_mult, Category: Economic Units
+- ship_military_sr_dark_matter_cost_mult, Category: Economic Units
+- ship_military_nanites_cost_mult, Category: Economic Units
+- ship_military_minor_artifacts_cost_mult, Category: Economic Units
+- ship_military_menace_cost_mult, Category: Economic Units
+- ship_military_upkeep_mult, Category: Economic Units
+- ship_military_time_upkeep_mult, Category: Economic Units
+- ship_military_energy_upkeep_mult, Category: Economic Units
+- ship_military_minerals_upkeep_mult, Category: Economic Units
+- ship_military_food_upkeep_mult, Category: Economic Units
+- ship_military_physics_research_upkeep_mult, Category: Economic Units
+- ship_military_society_research_upkeep_mult, Category: Economic Units
+- ship_military_engineering_research_upkeep_mult, Category: Economic Units
+- ship_military_influence_upkeep_mult, Category: Economic Units
+- ship_military_unity_upkeep_mult, Category: Economic Units
+- ship_military_consumer_goods_upkeep_mult, Category: Economic Units
+- ship_military_alloys_upkeep_mult, Category: Economic Units
+- ship_military_volatile_motes_upkeep_mult, Category: Economic Units
+- ship_military_exotic_gases_upkeep_mult, Category: Economic Units
+- ship_military_rare_crystals_upkeep_mult, Category: Economic Units
+- ship_military_sr_living_metal_upkeep_mult, Category: Economic Units
+- ship_military_sr_zro_upkeep_mult, Category: Economic Units
+- ship_military_sr_dark_matter_upkeep_mult, Category: Economic Units
+- ship_military_nanites_upkeep_mult, Category: Economic Units
+- ship_military_minor_artifacts_upkeep_mult, Category: Economic Units
+- ship_military_menace_upkeep_mult, Category: Economic Units
 - ships_time_upkeep_mult, Category: Economic Units
 - ships_energy_upkeep_mult, Category: Economic Units
 - ships_minerals_upkeep_mult, Category: Economic Units
@@ -1187,6 +1300,27 @@ Printing Modifier Definitions:
 - planet_branch_offices_menace_cost_mult, Category: Economic Units
 - planet_branch_offices_menace_produces_add, Category: Economic Units
 - planet_branch_offices_cost_mult, Category: Economic Units
+- planet_buildings_hab_capital_time_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_energy_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_minerals_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_food_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_physics_research_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_society_research_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_engineering_research_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_influence_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_unity_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_consumer_goods_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_alloys_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_volatile_motes_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_exotic_gases_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_rare_crystals_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_sr_living_metal_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_sr_zro_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_sr_dark_matter_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_nanites_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_minor_artifacts_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_menace_upkeep_mult, Category: Economic Units
+- planet_buildings_hab_capital_upkeep_mult, Category: Economic Units
 - planet_districts_time_cost_mult, Category: Economic Units
 - planet_districts_time_upkeep_mult, Category: Economic Units
 - planet_districts_energy_cost_mult, Category: Economic Units
@@ -1439,6 +1573,27 @@ Printing Modifier Definitions:
 - planet_jobs_complex_drone_nanites_produces_mult, Category: Economic Units
 - planet_jobs_complex_drone_minor_artifacts_produces_mult, Category: Economic Units
 - planet_jobs_complex_drone_menace_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_time_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_energy_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_minerals_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_food_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_physics_research_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_society_research_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_engineering_research_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_influence_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_unity_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_consumer_goods_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_alloys_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_volatile_motes_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_exotic_gases_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_rare_crystals_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_sr_living_metal_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_sr_zro_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_sr_dark_matter_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_nanites_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_minor_artifacts_produces_mult, Category: Economic Units
+- planet_jobs_complex_and_simple_drone_menace_produces_mult, Category: Economic Units
 - planet_jobs_robotic_produces_mult, Category: Economic Units
 - planet_jobs_robotic_time_produces_mult, Category: Economic Units
 - planet_jobs_robotic_energy_produces_mult, Category: Economic Units
@@ -1708,26 +1863,47 @@ Printing Modifier Definitions:
 - planet_miners_menace_produces_mult, Category: Economic Units
 - planet_miners_menace_upkeep_add, Category: Economic Units
 - planet_miners_produces_mult, Category: Economic Units
+- planet_sr_miners_time_produces_mult, Category: Economic Units
 - planet_sr_miners_time_upkeep_add, Category: Economic Units
+- planet_sr_miners_energy_produces_mult, Category: Economic Units
 - planet_sr_miners_energy_upkeep_add, Category: Economic Units
+- planet_sr_miners_minerals_produces_mult, Category: Economic Units
 - planet_sr_miners_minerals_upkeep_add, Category: Economic Units
+- planet_sr_miners_food_produces_mult, Category: Economic Units
 - planet_sr_miners_food_upkeep_add, Category: Economic Units
+- planet_sr_miners_physics_research_produces_mult, Category: Economic Units
 - planet_sr_miners_physics_research_upkeep_add, Category: Economic Units
+- planet_sr_miners_society_research_produces_mult, Category: Economic Units
 - planet_sr_miners_society_research_upkeep_add, Category: Economic Units
+- planet_sr_miners_engineering_research_produces_mult, Category: Economic Units
 - planet_sr_miners_engineering_research_upkeep_add, Category: Economic Units
+- planet_sr_miners_influence_produces_mult, Category: Economic Units
 - planet_sr_miners_influence_upkeep_add, Category: Economic Units
+- planet_sr_miners_unity_produces_mult, Category: Economic Units
 - planet_sr_miners_unity_upkeep_add, Category: Economic Units
+- planet_sr_miners_consumer_goods_produces_mult, Category: Economic Units
 - planet_sr_miners_consumer_goods_upkeep_add, Category: Economic Units
+- planet_sr_miners_alloys_produces_mult, Category: Economic Units
 - planet_sr_miners_alloys_upkeep_add, Category: Economic Units
+- planet_sr_miners_volatile_motes_produces_mult, Category: Economic Units
 - planet_sr_miners_volatile_motes_upkeep_add, Category: Economic Units
+- planet_sr_miners_exotic_gases_produces_mult, Category: Economic Units
 - planet_sr_miners_exotic_gases_upkeep_add, Category: Economic Units
+- planet_sr_miners_rare_crystals_produces_mult, Category: Economic Units
 - planet_sr_miners_rare_crystals_upkeep_add, Category: Economic Units
+- planet_sr_miners_sr_living_metal_produces_mult, Category: Economic Units
 - planet_sr_miners_sr_living_metal_upkeep_add, Category: Economic Units
+- planet_sr_miners_sr_zro_produces_mult, Category: Economic Units
 - planet_sr_miners_sr_zro_upkeep_add, Category: Economic Units
+- planet_sr_miners_sr_dark_matter_produces_mult, Category: Economic Units
 - planet_sr_miners_sr_dark_matter_upkeep_add, Category: Economic Units
+- planet_sr_miners_nanites_produces_mult, Category: Economic Units
 - planet_sr_miners_nanites_upkeep_add, Category: Economic Units
+- planet_sr_miners_minor_artifacts_produces_mult, Category: Economic Units
 - planet_sr_miners_minor_artifacts_upkeep_add, Category: Economic Units
+- planet_sr_miners_menace_produces_mult, Category: Economic Units
 - planet_sr_miners_menace_upkeep_add, Category: Economic Units
+- planet_sr_miners_produces_mult, Category: Economic Units
 - planet_livestock_time_produces_add, Category: Economic Units
 - planet_livestock_energy_produces_add, Category: Economic Units
 - planet_livestock_minerals_produces_add, Category: Economic Units
@@ -2058,25 +2234,45 @@ Printing Modifier Definitions:
 - planet_metallurgists_produces_mult, Category: Economic Units
 - planet_metallurgists_upkeep_mult, Category: Economic Units
 - planet_soldiers_time_produces_add, Category: Economic Units
+- planet_soldiers_time_upkeep_add, Category: Economic Units
 - planet_soldiers_energy_produces_add, Category: Economic Units
+- planet_soldiers_energy_upkeep_add, Category: Economic Units
 - planet_soldiers_minerals_produces_add, Category: Economic Units
+- planet_soldiers_minerals_upkeep_add, Category: Economic Units
 - planet_soldiers_food_produces_add, Category: Economic Units
+- planet_soldiers_food_upkeep_add, Category: Economic Units
 - planet_soldiers_physics_research_produces_add, Category: Economic Units
+- planet_soldiers_physics_research_upkeep_add, Category: Economic Units
 - planet_soldiers_society_research_produces_add, Category: Economic Units
+- planet_soldiers_society_research_upkeep_add, Category: Economic Units
 - planet_soldiers_engineering_research_produces_add, Category: Economic Units
+- planet_soldiers_engineering_research_upkeep_add, Category: Economic Units
 - planet_soldiers_influence_produces_add, Category: Economic Units
+- planet_soldiers_influence_upkeep_add, Category: Economic Units
 - planet_soldiers_unity_produces_add, Category: Economic Units
+- planet_soldiers_unity_upkeep_add, Category: Economic Units
 - planet_soldiers_consumer_goods_produces_add, Category: Economic Units
+- planet_soldiers_consumer_goods_upkeep_add, Category: Economic Units
 - planet_soldiers_alloys_produces_add, Category: Economic Units
+- planet_soldiers_alloys_upkeep_add, Category: Economic Units
 - planet_soldiers_volatile_motes_produces_add, Category: Economic Units
+- planet_soldiers_volatile_motes_upkeep_add, Category: Economic Units
 - planet_soldiers_exotic_gases_produces_add, Category: Economic Units
+- planet_soldiers_exotic_gases_upkeep_add, Category: Economic Units
 - planet_soldiers_rare_crystals_produces_add, Category: Economic Units
+- planet_soldiers_rare_crystals_upkeep_add, Category: Economic Units
 - planet_soldiers_sr_living_metal_produces_add, Category: Economic Units
+- planet_soldiers_sr_living_metal_upkeep_add, Category: Economic Units
 - planet_soldiers_sr_zro_produces_add, Category: Economic Units
+- planet_soldiers_sr_zro_upkeep_add, Category: Economic Units
 - planet_soldiers_sr_dark_matter_produces_add, Category: Economic Units
+- planet_soldiers_sr_dark_matter_upkeep_add, Category: Economic Units
 - planet_soldiers_nanites_produces_add, Category: Economic Units
+- planet_soldiers_nanites_upkeep_add, Category: Economic Units
 - planet_soldiers_minor_artifacts_produces_add, Category: Economic Units
+- planet_soldiers_minor_artifacts_upkeep_add, Category: Economic Units
 - planet_soldiers_menace_produces_add, Category: Economic Units
+- planet_soldiers_menace_upkeep_add, Category: Economic Units
 - planet_priests_time_produces_add, Category: Economic Units
 - planet_priests_time_produces_mult, Category: Economic Units
 - planet_priests_energy_produces_add, Category: Economic Units
@@ -2159,68 +2355,131 @@ Printing Modifier Definitions:
 - planet_telepaths_minor_artifacts_produces_add, Category: Economic Units
 - planet_telepaths_menace_produces_add, Category: Economic Units
 - planet_refiners_time_produces_mult, Category: Economic Units
+- planet_refiners_time_upkeep_mult, Category: Economic Units
 - planet_refiners_energy_produces_mult, Category: Economic Units
+- planet_refiners_energy_upkeep_mult, Category: Economic Units
 - planet_refiners_minerals_produces_mult, Category: Economic Units
+- planet_refiners_minerals_upkeep_mult, Category: Economic Units
 - planet_refiners_food_produces_mult, Category: Economic Units
+- planet_refiners_food_upkeep_mult, Category: Economic Units
 - planet_refiners_physics_research_produces_mult, Category: Economic Units
+- planet_refiners_physics_research_upkeep_mult, Category: Economic Units
 - planet_refiners_society_research_produces_mult, Category: Economic Units
+- planet_refiners_society_research_upkeep_mult, Category: Economic Units
 - planet_refiners_engineering_research_produces_mult, Category: Economic Units
+- planet_refiners_engineering_research_upkeep_mult, Category: Economic Units
 - planet_refiners_influence_produces_mult, Category: Economic Units
+- planet_refiners_influence_upkeep_mult, Category: Economic Units
 - planet_refiners_unity_produces_mult, Category: Economic Units
+- planet_refiners_unity_upkeep_mult, Category: Economic Units
 - planet_refiners_consumer_goods_produces_mult, Category: Economic Units
+- planet_refiners_consumer_goods_upkeep_mult, Category: Economic Units
 - planet_refiners_alloys_produces_mult, Category: Economic Units
+- planet_refiners_alloys_upkeep_mult, Category: Economic Units
 - planet_refiners_volatile_motes_produces_mult, Category: Economic Units
+- planet_refiners_volatile_motes_upkeep_mult, Category: Economic Units
 - planet_refiners_exotic_gases_produces_mult, Category: Economic Units
+- planet_refiners_exotic_gases_upkeep_mult, Category: Economic Units
 - planet_refiners_rare_crystals_produces_mult, Category: Economic Units
+- planet_refiners_rare_crystals_upkeep_mult, Category: Economic Units
 - planet_refiners_sr_living_metal_produces_mult, Category: Economic Units
+- planet_refiners_sr_living_metal_upkeep_mult, Category: Economic Units
 - planet_refiners_sr_zro_produces_mult, Category: Economic Units
+- planet_refiners_sr_zro_upkeep_mult, Category: Economic Units
 - planet_refiners_sr_dark_matter_produces_mult, Category: Economic Units
+- planet_refiners_sr_dark_matter_upkeep_mult, Category: Economic Units
 - planet_refiners_nanites_produces_mult, Category: Economic Units
+- planet_refiners_nanites_upkeep_mult, Category: Economic Units
 - planet_refiners_minor_artifacts_produces_mult, Category: Economic Units
+- planet_refiners_minor_artifacts_upkeep_mult, Category: Economic Units
 - planet_refiners_menace_produces_mult, Category: Economic Units
+- planet_refiners_menace_upkeep_mult, Category: Economic Units
 - planet_refiners_produces_mult, Category: Economic Units
+- planet_refiners_upkeep_mult, Category: Economic Units
 - planet_translucers_time_produces_mult, Category: Economic Units
+- planet_translucers_time_upkeep_mult, Category: Economic Units
 - planet_translucers_energy_produces_mult, Category: Economic Units
+- planet_translucers_energy_upkeep_mult, Category: Economic Units
 - planet_translucers_minerals_produces_mult, Category: Economic Units
+- planet_translucers_minerals_upkeep_mult, Category: Economic Units
 - planet_translucers_food_produces_mult, Category: Economic Units
+- planet_translucers_food_upkeep_mult, Category: Economic Units
 - planet_translucers_physics_research_produces_mult, Category: Economic Units
+- planet_translucers_physics_research_upkeep_mult, Category: Economic Units
 - planet_translucers_society_research_produces_mult, Category: Economic Units
+- planet_translucers_society_research_upkeep_mult, Category: Economic Units
 - planet_translucers_engineering_research_produces_mult, Category: Economic Units
+- planet_translucers_engineering_research_upkeep_mult, Category: Economic Units
 - planet_translucers_influence_produces_mult, Category: Economic Units
+- planet_translucers_influence_upkeep_mult, Category: Economic Units
 - planet_translucers_unity_produces_mult, Category: Economic Units
+- planet_translucers_unity_upkeep_mult, Category: Economic Units
 - planet_translucers_consumer_goods_produces_mult, Category: Economic Units
+- planet_translucers_consumer_goods_upkeep_mult, Category: Economic Units
 - planet_translucers_alloys_produces_mult, Category: Economic Units
+- planet_translucers_alloys_upkeep_mult, Category: Economic Units
 - planet_translucers_volatile_motes_produces_mult, Category: Economic Units
+- planet_translucers_volatile_motes_upkeep_mult, Category: Economic Units
 - planet_translucers_exotic_gases_produces_mult, Category: Economic Units
+- planet_translucers_exotic_gases_upkeep_mult, Category: Economic Units
 - planet_translucers_rare_crystals_produces_mult, Category: Economic Units
+- planet_translucers_rare_crystals_upkeep_mult, Category: Economic Units
 - planet_translucers_sr_living_metal_produces_mult, Category: Economic Units
+- planet_translucers_sr_living_metal_upkeep_mult, Category: Economic Units
 - planet_translucers_sr_zro_produces_mult, Category: Economic Units
+- planet_translucers_sr_zro_upkeep_mult, Category: Economic Units
 - planet_translucers_sr_dark_matter_produces_mult, Category: Economic Units
+- planet_translucers_sr_dark_matter_upkeep_mult, Category: Economic Units
 - planet_translucers_nanites_produces_mult, Category: Economic Units
+- planet_translucers_nanites_upkeep_mult, Category: Economic Units
 - planet_translucers_minor_artifacts_produces_mult, Category: Economic Units
+- planet_translucers_minor_artifacts_upkeep_mult, Category: Economic Units
 - planet_translucers_menace_produces_mult, Category: Economic Units
+- planet_translucers_menace_upkeep_mult, Category: Economic Units
 - planet_translucers_produces_mult, Category: Economic Units
+- planet_translucers_upkeep_mult, Category: Economic Units
 - planet_chemists_time_produces_mult, Category: Economic Units
+- planet_chemists_time_upkeep_mult, Category: Economic Units
 - planet_chemists_energy_produces_mult, Category: Economic Units
+- planet_chemists_energy_upkeep_mult, Category: Economic Units
 - planet_chemists_minerals_produces_mult, Category: Economic Units
+- planet_chemists_minerals_upkeep_mult, Category: Economic Units
 - planet_chemists_food_produces_mult, Category: Economic Units
+- planet_chemists_food_upkeep_mult, Category: Economic Units
 - planet_chemists_physics_research_produces_mult, Category: Economic Units
+- planet_chemists_physics_research_upkeep_mult, Category: Economic Units
 - planet_chemists_society_research_produces_mult, Category: Economic Units
+- planet_chemists_society_research_upkeep_mult, Category: Economic Units
 - planet_chemists_engineering_research_produces_mult, Category: Economic Units
+- planet_chemists_engineering_research_upkeep_mult, Category: Economic Units
 - planet_chemists_influence_produces_mult, Category: Economic Units
+- planet_chemists_influence_upkeep_mult, Category: Economic Units
 - planet_chemists_unity_produces_mult, Category: Economic Units
+- planet_chemists_unity_upkeep_mult, Category: Economic Units
 - planet_chemists_consumer_goods_produces_mult, Category: Economic Units
+- planet_chemists_consumer_goods_upkeep_mult, Category: Economic Units
 - planet_chemists_alloys_produces_mult, Category: Economic Units
+- planet_chemists_alloys_upkeep_mult, Category: Economic Units
 - planet_chemists_volatile_motes_produces_mult, Category: Economic Units
+- planet_chemists_volatile_motes_upkeep_mult, Category: Economic Units
 - planet_chemists_exotic_gases_produces_mult, Category: Economic Units
+- planet_chemists_exotic_gases_upkeep_mult, Category: Economic Units
 - planet_chemists_rare_crystals_produces_mult, Category: Economic Units
+- planet_chemists_rare_crystals_upkeep_mult, Category: Economic Units
 - planet_chemists_sr_living_metal_produces_mult, Category: Economic Units
+- planet_chemists_sr_living_metal_upkeep_mult, Category: Economic Units
 - planet_chemists_sr_zro_produces_mult, Category: Economic Units
+- planet_chemists_sr_zro_upkeep_mult, Category: Economic Units
 - planet_chemists_sr_dark_matter_produces_mult, Category: Economic Units
+- planet_chemists_sr_dark_matter_upkeep_mult, Category: Economic Units
 - planet_chemists_nanites_produces_mult, Category: Economic Units
+- planet_chemists_nanites_upkeep_mult, Category: Economic Units
 - planet_chemists_minor_artifacts_produces_mult, Category: Economic Units
+- planet_chemists_minor_artifacts_upkeep_mult, Category: Economic Units
 - planet_chemists_menace_produces_mult, Category: Economic Units
+- planet_chemists_menace_upkeep_mult, Category: Economic Units
 - planet_chemists_produces_mult, Category: Economic Units
+- planet_chemists_upkeep_mult, Category: Economic Units
 - planet_artisans_time_produces_add, Category: Economic Units
 - planet_artisans_time_produces_mult, Category: Economic Units
 - planet_artisans_time_upkeep_add, Category: Economic Units
@@ -2568,6 +2827,26 @@ Printing Modifier Definitions:
 - deposit_blockers_minor_artifacts_cost_mult, Category: Economic Units
 - deposit_blockers_menace_cost_mult, Category: Economic Units
 - deposit_blockers_cost_mult, Category: Economic Units
+- deposit_blockers_natural_time_produces_add, Category: Economic Units
+- deposit_blockers_natural_energy_produces_add, Category: Economic Units
+- deposit_blockers_natural_minerals_produces_add, Category: Economic Units
+- deposit_blockers_natural_food_produces_add, Category: Economic Units
+- deposit_blockers_natural_physics_research_produces_add, Category: Economic Units
+- deposit_blockers_natural_society_research_produces_add, Category: Economic Units
+- deposit_blockers_natural_engineering_research_produces_add, Category: Economic Units
+- deposit_blockers_natural_influence_produces_add, Category: Economic Units
+- deposit_blockers_natural_unity_produces_add, Category: Economic Units
+- deposit_blockers_natural_consumer_goods_produces_add, Category: Economic Units
+- deposit_blockers_natural_alloys_produces_add, Category: Economic Units
+- deposit_blockers_natural_volatile_motes_produces_add, Category: Economic Units
+- deposit_blockers_natural_exotic_gases_produces_add, Category: Economic Units
+- deposit_blockers_natural_rare_crystals_produces_add, Category: Economic Units
+- deposit_blockers_natural_sr_living_metal_produces_add, Category: Economic Units
+- deposit_blockers_natural_sr_zro_produces_add, Category: Economic Units
+- deposit_blockers_natural_sr_dark_matter_produces_add, Category: Economic Units
+- deposit_blockers_natural_nanites_produces_add, Category: Economic Units
+- deposit_blockers_natural_minor_artifacts_produces_add, Category: Economic Units
+- deposit_blockers_natural_menace_produces_add, Category: Economic Units
 - armies_time_cost_mult, Category: Economic Units
 - armies_time_upkeep_mult, Category: Economic Units
 - armies_energy_cost_mult, Category: Economic Units
@@ -3033,6 +3312,26 @@ Printing Modifier Definitions:
 - country_ethic_nanites_produces_add, Category: Economic Units
 - country_ethic_minor_artifacts_produces_add, Category: Economic Units
 - country_ethic_menace_produces_add, Category: Economic Units
+- country_first_league_homeworld_time_produces_add, Category: Economic Units
+- country_first_league_homeworld_energy_produces_add, Category: Economic Units
+- country_first_league_homeworld_minerals_produces_add, Category: Economic Units
+- country_first_league_homeworld_food_produces_add, Category: Economic Units
+- country_first_league_homeworld_physics_research_produces_add, Category: Economic Units
+- country_first_league_homeworld_society_research_produces_add, Category: Economic Units
+- country_first_league_homeworld_engineering_research_produces_add, Category: Economic Units
+- country_first_league_homeworld_influence_produces_add, Category: Economic Units
+- country_first_league_homeworld_unity_produces_add, Category: Economic Units
+- country_first_league_homeworld_consumer_goods_produces_add, Category: Economic Units
+- country_first_league_homeworld_alloys_produces_add, Category: Economic Units
+- country_first_league_homeworld_volatile_motes_produces_add, Category: Economic Units
+- country_first_league_homeworld_exotic_gases_produces_add, Category: Economic Units
+- country_first_league_homeworld_rare_crystals_produces_add, Category: Economic Units
+- country_first_league_homeworld_sr_living_metal_produces_add, Category: Economic Units
+- country_first_league_homeworld_sr_zro_produces_add, Category: Economic Units
+- country_first_league_homeworld_sr_dark_matter_produces_add, Category: Economic Units
+- country_first_league_homeworld_nanites_produces_add, Category: Economic Units
+- country_first_league_homeworld_minor_artifacts_produces_add, Category: Economic Units
+- country_first_league_homeworld_menace_produces_add, Category: Economic Units
 - country_power_projection_time_produces_add, Category: Economic Units
 - country_power_projection_time_produces_mult, Category: Economic Units
 - country_power_projection_energy_produces_add, Category: Economic Units
@@ -3177,6 +3476,26 @@ Printing Modifier Definitions:
 - operations_menace_upkeep_mult, Category: Economic Units
 - operations_cost_mult, Category: Economic Units
 - operations_upkeep_mult, Category: Economic Units
+- country_situations_time_produces_add, Category: Economic Units
+- country_situations_energy_produces_add, Category: Economic Units
+- country_situations_minerals_produces_add, Category: Economic Units
+- country_situations_food_produces_add, Category: Economic Units
+- country_situations_physics_research_produces_add, Category: Economic Units
+- country_situations_society_research_produces_add, Category: Economic Units
+- country_situations_engineering_research_produces_add, Category: Economic Units
+- country_situations_influence_produces_add, Category: Economic Units
+- country_situations_unity_produces_add, Category: Economic Units
+- country_situations_consumer_goods_produces_add, Category: Economic Units
+- country_situations_alloys_produces_add, Category: Economic Units
+- country_situations_volatile_motes_produces_add, Category: Economic Units
+- country_situations_exotic_gases_produces_add, Category: Economic Units
+- country_situations_rare_crystals_produces_add, Category: Economic Units
+- country_situations_sr_living_metal_produces_add, Category: Economic Units
+- country_situations_sr_zro_produces_add, Category: Economic Units
+- country_situations_sr_dark_matter_produces_add, Category: Economic Units
+- country_situations_nanites_produces_add, Category: Economic Units
+- country_situations_minor_artifacts_produces_add, Category: Economic Units
+- country_situations_menace_produces_add, Category: Economic Units
 - pop_cat_ruler_happiness, Category: Pops
 - pop_cat_ruler_political_power, Category: Pops
 - pop_cat_specialist_happiness, Category: Pops
@@ -3377,9 +3696,15 @@ Printing Modifier Definitions:
 - job_angler_add, Category: Planets
 - job_angler_per_pop, Category: Planets
 - job_angler_per_crime, Category: Planets
+- job_ranger_add, Category: Planets
+- job_ranger_per_pop, Category: Planets
+- job_ranger_per_crime, Category: Planets
 - job_spawning_drone_add, Category: Planets
 - job_spawning_drone_per_pop, Category: Planets
 - job_spawning_drone_per_crime, Category: Planets
+- job_offspring_drone_add, Category: Planets
+- job_offspring_drone_per_pop, Category: Planets
+- job_offspring_drone_per_crime, Category: Planets
 - job_replicator_add, Category: Planets
 - job_replicator_per_pop, Category: Planets
 - job_replicator_per_crime, Category: Planets
@@ -3554,6 +3879,9 @@ Printing Modifier Definitions:
 - job_turtle_miner_gestalt_add, Category: Planets
 - job_turtle_miner_gestalt_per_pop, Category: Planets
 - job_turtle_miner_gestalt_per_crime, Category: Planets
+- job_machine_nurse_add, Category: Planets
+- job_machine_nurse_per_pop, Category: Planets
+- job_machine_nurse_per_crime, Category: Planets
 - job_fe_overseer_add, Category: Planets
 - job_fe_overseer_per_pop, Category: Planets
 - job_fe_overseer_per_crime, Category: Planets
@@ -3596,6 +3924,132 @@ Printing Modifier Definitions:
 - job_fe_maintenance_bot_add, Category: Planets
 - job_fe_maintenance_bot_per_pop, Category: Planets
 - job_fe_maintenance_bot_per_crime, Category: Planets
+- job_overlord_propagandist_add, Category: Planets
+- job_overlord_propagandist_per_pop, Category: Planets
+- job_overlord_propagandist_per_crime, Category: Planets
+- job_overlord_propagandist_drone_add, Category: Planets
+- job_overlord_propagandist_drone_per_pop, Category: Planets
+- job_overlord_propagandist_drone_per_crime, Category: Planets
+- job_overlord_academic_add, Category: Planets
+- job_overlord_academic_per_pop, Category: Planets
+- job_overlord_academic_per_crime, Category: Planets
+- job_overlord_academic_drone_add, Category: Planets
+- job_overlord_academic_drone_per_pop, Category: Planets
+- job_overlord_academic_drone_per_crime, Category: Planets
+- job_overlord_trader_add, Category: Planets
+- job_overlord_trader_per_pop, Category: Planets
+- job_overlord_trader_per_crime, Category: Planets
+- job_overlord_trader_drone_add, Category: Planets
+- job_overlord_trader_drone_per_pop, Category: Planets
+- job_overlord_trader_drone_per_crime, Category: Planets
+- job_aid_worker_add, Category: Planets
+- job_aid_worker_per_pop, Category: Planets
+- job_aid_worker_per_crime, Category: Planets
+- job_aid_worker_drone_add, Category: Planets
+- job_aid_worker_drone_per_pop, Category: Planets
+- job_aid_worker_drone_per_crime, Category: Planets
+- job_overlord_breeder_add, Category: Planets
+- job_overlord_breeder_per_pop, Category: Planets
+- job_overlord_breeder_per_crime, Category: Planets
+- job_overlord_breeder_drone_add, Category: Planets
+- job_overlord_breeder_drone_per_pop, Category: Planets
+- job_overlord_breeder_drone_per_crime, Category: Planets
+- job_mind_thrall_add, Category: Planets
+- job_mind_thrall_per_pop, Category: Planets
+- job_mind_thrall_per_crime, Category: Planets
+- job_mind_thrall_drone_add, Category: Planets
+- job_mind_thrall_drone_per_pop, Category: Planets
+- job_mind_thrall_drone_per_crime, Category: Planets
+- job_overlord_offspring_drone_feeder_add, Category: Planets
+- job_overlord_offspring_drone_feeder_per_pop, Category: Planets
+- job_overlord_offspring_drone_feeder_per_crime, Category: Planets
+- job_overlord_offspring_drone_feeder_drone_add, Category: Planets
+- job_overlord_offspring_drone_feeder_drone_per_pop, Category: Planets
+- job_overlord_offspring_drone_feeder_drone_per_crime, Category: Planets
+- job_overlord_metallurgist_add, Category: Planets
+- job_overlord_metallurgist_per_pop, Category: Planets
+- job_overlord_metallurgist_per_crime, Category: Planets
+- job_overlord_foundry_drone_add, Category: Planets
+- job_overlord_foundry_drone_per_pop, Category: Planets
+- job_overlord_foundry_drone_per_crime, Category: Planets
+- job_overlord_fabricator_add, Category: Planets
+- job_overlord_fabricator_per_pop, Category: Planets
+- job_overlord_fabricator_per_crime, Category: Planets
+- job_overlord_catalytic_technician_add, Category: Planets
+- job_overlord_catalytic_technician_per_pop, Category: Planets
+- job_overlord_catalytic_technician_per_crime, Category: Planets
+- job_overlord_catalytic_drone_add, Category: Planets
+- job_overlord_catalytic_drone_per_pop, Category: Planets
+- job_overlord_catalytic_drone_per_crime, Category: Planets
+- job_overlord_beholder_add, Category: Planets
+- job_overlord_beholder_per_pop, Category: Planets
+- job_overlord_beholder_per_crime, Category: Planets
+- job_overlord_beholder_drone_add, Category: Planets
+- job_overlord_beholder_drone_per_pop, Category: Planets
+- job_overlord_beholder_drone_per_crime, Category: Planets
+- job_overlord_necromancer_add, Category: Planets
+- job_overlord_necromancer_per_pop, Category: Planets
+- job_overlord_necromancer_per_crime, Category: Planets
+- job_overlord_necromancer_drone_add, Category: Planets
+- job_overlord_necromancer_drone_per_pop, Category: Planets
+- job_overlord_necromancer_drone_per_crime, Category: Planets
+- job_overlord_reassigner_add, Category: Planets
+- job_overlord_reassigner_per_pop, Category: Planets
+- job_overlord_reassigner_per_crime, Category: Planets
+- job_overlord_reassigner_drone_add, Category: Planets
+- job_overlord_reassigner_drone_per_pop, Category: Planets
+- job_overlord_reassigner_drone_per_crime, Category: Planets
+- job_overlord_recruiter_add, Category: Planets
+- job_overlord_recruiter_per_pop, Category: Planets
+- job_overlord_recruiter_per_crime, Category: Planets
+- job_overlord_recruiter_drone_add, Category: Planets
+- job_overlord_recruiter_drone_per_pop, Category: Planets
+- job_overlord_recruiter_drone_per_crime, Category: Planets
+- job_overlord_ranger_add, Category: Planets
+- job_overlord_ranger_per_pop, Category: Planets
+- job_overlord_ranger_per_crime, Category: Planets
+- job_overlord_ranger_drone_add, Category: Planets
+- job_overlord_ranger_drone_per_pop, Category: Planets
+- job_overlord_ranger_drone_per_crime, Category: Planets
+- job_overlord_arborist_add, Category: Planets
+- job_overlord_arborist_per_pop, Category: Planets
+- job_overlord_arborist_per_crime, Category: Planets
+- job_overlord_arborist_drone_add, Category: Planets
+- job_overlord_arborist_drone_per_pop, Category: Planets
+- job_overlord_arborist_drone_per_crime, Category: Planets
+- job_overlord_bio_trophy_add, Category: Planets
+- job_overlord_bio_trophy_per_pop, Category: Planets
+- job_overlord_bio_trophy_per_crime, Category: Planets
+- job_overlord_bio_trophy_drone_add, Category: Planets
+- job_overlord_bio_trophy_drone_per_pop, Category: Planets
+- job_overlord_bio_trophy_drone_per_crime, Category: Planets
+- job_overlord_manager_add, Category: Planets
+- job_overlord_manager_per_pop, Category: Planets
+- job_overlord_manager_per_crime, Category: Planets
+- job_overlord_mortal_initiate_add, Category: Planets
+- job_overlord_mortal_initiate_per_pop, Category: Planets
+- job_overlord_mortal_initiate_per_crime, Category: Planets
+- job_overlord_mortal_initiate_drone_add, Category: Planets
+- job_overlord_mortal_initiate_drone_per_pop, Category: Planets
+- job_overlord_mortal_initiate_drone_per_crime, Category: Planets
+- shipsize_orbital_ring_tier_1_build_speed_mult, Category: Planets, Starbases
+- shipsize_orbital_ring_tier_1_hull_mult, Category: Ships
+- shipsize_orbital_ring_tier_1_hull_add, Category: Ships
+- shipsize_orbital_ring_tier_1_evasion_mult, Category: Ships
+- shipsize_orbital_ring_tier_1_disengage_chance_mult, Category: Ships
+- shipsize_orbital_ring_tier_1_tracking_mult, Category: Ships
+- shipsize_orbital_ring_tier_2_build_speed_mult, Category: Planets, Starbases
+- shipsize_orbital_ring_tier_2_hull_mult, Category: Ships
+- shipsize_orbital_ring_tier_2_hull_add, Category: Ships
+- shipsize_orbital_ring_tier_2_evasion_mult, Category: Ships
+- shipsize_orbital_ring_tier_2_disengage_chance_mult, Category: Ships
+- shipsize_orbital_ring_tier_2_tracking_mult, Category: Ships
+- shipsize_orbital_ring_tier_3_build_speed_mult, Category: Planets, Starbases
+- shipsize_orbital_ring_tier_3_hull_mult, Category: Ships
+- shipsize_orbital_ring_tier_3_hull_add, Category: Ships
+- shipsize_orbital_ring_tier_3_evasion_mult, Category: Ships
+- shipsize_orbital_ring_tier_3_disengage_chance_mult, Category: Ships
+- shipsize_orbital_ring_tier_3_tracking_mult, Category: Ships
 - shipsize_corvette_build_speed_mult, Category: Planets, Starbases
 - shipsize_corvette_hull_mult, Category: Ships
 - shipsize_corvette_hull_add, Category: Ships
@@ -4694,6 +5148,48 @@ Printing Modifier Definitions:
 - shipsize_star_eater_evasion_mult, Category: Ships
 - shipsize_star_eater_disengage_chance_mult, Category: Ships
 - shipsize_star_eater_tracking_mult, Category: Ships
+- shipsize_offspring_corvette_build_speed_mult, Category: Planets, Starbases
+- shipsize_offspring_corvette_hull_mult, Category: Ships
+- shipsize_offspring_corvette_hull_add, Category: Ships
+- shipsize_offspring_corvette_evasion_mult, Category: Ships
+- shipsize_offspring_corvette_disengage_chance_mult, Category: Ships
+- shipsize_offspring_corvette_tracking_mult, Category: Ships
+- shipsize_offspring_destroyer_build_speed_mult, Category: Planets, Starbases
+- shipsize_offspring_destroyer_hull_mult, Category: Ships
+- shipsize_offspring_destroyer_hull_add, Category: Ships
+- shipsize_offspring_destroyer_evasion_mult, Category: Ships
+- shipsize_offspring_destroyer_disengage_chance_mult, Category: Ships
+- shipsize_offspring_destroyer_tracking_mult, Category: Ships
+- shipsize_offspring_cruiser_build_speed_mult, Category: Planets, Starbases
+- shipsize_offspring_cruiser_hull_mult, Category: Ships
+- shipsize_offspring_cruiser_hull_add, Category: Ships
+- shipsize_offspring_cruiser_evasion_mult, Category: Ships
+- shipsize_offspring_cruiser_disengage_chance_mult, Category: Ships
+- shipsize_offspring_cruiser_tracking_mult, Category: Ships
+- shipsize_offspring_battleship_build_speed_mult, Category: Planets, Starbases
+- shipsize_offspring_battleship_hull_mult, Category: Ships
+- shipsize_offspring_battleship_hull_add, Category: Ships
+- shipsize_offspring_battleship_evasion_mult, Category: Ships
+- shipsize_offspring_battleship_disengage_chance_mult, Category: Ships
+- shipsize_offspring_battleship_tracking_mult, Category: Ships
+- shipsize_enclave_mercenary_station_build_speed_mult, Category: Planets, Starbases
+- shipsize_enclave_mercenary_station_hull_mult, Category: Ships
+- shipsize_enclave_mercenary_station_hull_add, Category: Ships
+- shipsize_enclave_mercenary_station_evasion_mult, Category: Ships
+- shipsize_enclave_mercenary_station_disengage_chance_mult, Category: Ships
+- shipsize_enclave_mercenary_station_tracking_mult, Category: Ships
+- shipsize_enclave_salvager_station_build_speed_mult, Category: Planets, Starbases
+- shipsize_enclave_salvager_station_hull_mult, Category: Ships
+- shipsize_enclave_salvager_station_hull_add, Category: Ships
+- shipsize_enclave_salvager_station_evasion_mult, Category: Ships
+- shipsize_enclave_salvager_station_disengage_chance_mult, Category: Ships
+- shipsize_enclave_salvager_station_tracking_mult, Category: Ships
+- shipsize_enclave_shroudwalker_station_build_speed_mult, Category: Planets, Starbases
+- shipsize_enclave_shroudwalker_station_hull_mult, Category: Ships
+- shipsize_enclave_shroudwalker_station_hull_add, Category: Ships
+- shipsize_enclave_shroudwalker_station_evasion_mult, Category: Ships
+- shipsize_enclave_shroudwalker_station_disengage_chance_mult, Category: Ships
+- shipsize_enclave_shroudwalker_station_tracking_mult, Category: Ships
 - damage_vs_country_type_default_mult, Category: Ships
 - damage_vs_country_type_global_event_mult, Category: Ships
 - damage_vs_country_type_faction_mult, Category: Ships
@@ -4713,6 +5209,7 @@ Printing Modifier Definitions:
 - damage_vs_country_type_rebel_mult, Category: Ships
 - damage_vs_country_type_ambient_mult, Category: Ships
 - damage_vs_country_type_enclave_mult, Category: Ships
+- damage_vs_country_type_enclave_mercenary_mult, Category: Ships
 - damage_vs_country_type_shroud_mult, Category: Ships
 - damage_vs_country_type_shroud_spirits_mult, Category: Ships
 - damage_vs_country_type_gdf_mult, Category: Ships
@@ -4762,15 +5259,19 @@ Printing Modifier Definitions:
 - damage_vs_country_type_caravaneer_home_mult, Category: Ships
 - damage_vs_country_type_caravaneer_fleet_mult, Category: Ships
 - BIOLOGICAL_species_trait_points_add, Category: Countries
+- BIOLOGICAL_species_trait_picks_add, Category: Countries
 - biological_pop_happiness, Category: Pops
 - BIOLOGICAL_pop_growth_from_immigration, Category: Planets
 - BIOLOGICAL_pop_growth_speed, Category: Planets
 - BIOLOGICAL_pop_growth_speed_reduction, Category: Planets
 - ROBOT_species_trait_points_add, Category: Countries
+- ROBOT_species_trait_picks_add, Category: Countries
 - ROBOT_pop_happiness, Category: Pops
 - MACHINE_species_trait_points_add, Category: Countries
+- MACHINE_species_trait_picks_add, Category: Countries
 - MACHINE_pop_happiness, Category: Pops
 - LITHOID_species_trait_points_add, Category: Countries
+- LITHOID_species_trait_picks_add, Category: Countries
 - lithoid_pop_happiness, Category: Pops
 - LITHOID_pop_growth_from_immigration, Category: Planets
 - LITHOID_pop_growth_speed, Category: Planets
@@ -4896,6 +5397,24 @@ Printing Modifier Definitions:
 - planet_district_rw_science_build_speed_mult, Category: Planets
 - planet_district_rw_farming_build_speed_mult, Category: Planets
 - planet_district_rw_industrial_build_speed_mult, Category: Planets
+- gateway_empire_windup_mult, Category: Countries
+- gateway_ship_windup_mult, Category: Ships
+- gateway_megastructure_bypass_windup_mult, Category: Megastructures
+- wormhole_empire_windup_mult, Category: Countries
+- wormhole_ship_windup_mult, Category: Ships
+- wormhole_megastructure_bypass_windup_mult, Category: Megastructures
+- lgate_empire_windup_mult, Category: Countries
+- lgate_ship_windup_mult, Category: Ships
+- lgate_megastructure_bypass_windup_mult, Category: Megastructures
+- relay_bypass_empire_windup_mult, Category: Countries
+- relay_bypass_ship_windup_mult, Category: Ships
+- relay_bypass_megastructure_bypass_windup_mult, Category: Megastructures
+- quantum_catapult_empire_windup_mult, Category: Countries
+- quantum_catapult_ship_windup_mult, Category: Ships
+- quantum_catapult_megastructure_bypass_windup_mult, Category: Megastructures
+- shroud_tunnel_empire_windup_mult, Category: Countries
+- shroud_tunnel_ship_windup_mult, Category: Ships
+- shroud_tunnel_megastructure_bypass_windup_mult, Category: Megastructures
 - building_mote_harvesters_max, Category: Planets
 - building_gas_extractors_max, Category: Planets
 - building_crystal_mines_max, Category: Planets
@@ -4985,6 +5504,8 @@ Printing Modifier Definitions:
 - planet_building_spawning_pool_build_speed_mult, Category: Planets
 - planet_building_slave_huts_build_speed_mult, Category: Planets
 - planet_building_overseer_homes_build_speed_mult, Category: Planets
+- planet_building_offspring_nest_build_speed_mult, Category: Planets
+- planet_building_ranger_lodge_build_speed_mult, Category: Planets
 - planet_building_autochthon_monument_build_speed_mult, Category: Planets
 - planet_building_heritage_site_build_speed_mult, Category: Planets
 - planet_building_hypercomms_forum_build_speed_mult, Category: Planets
@@ -5086,6 +5607,33 @@ Printing Modifier Definitions:
 - planet_building_executive_retreat_build_speed_mult, Category: Planets
 - planet_building_xeno_tourism_agency_build_speed_mult, Category: Planets
 - planet_building_imperial_concession_port_build_speed_mult, Category: Planets
+- planet_holding_garrison_build_speed_mult, Category: Planets
+- planet_holding_orbital_assembly_complex_build_speed_mult, Category: Planets
+- planet_holding_propaganda_office_build_speed_mult, Category: Planets
+- planet_holding_satellite_campus_build_speed_mult, Category: Planets
+- planet_holding_emporium_build_speed_mult, Category: Planets
+- planet_holding_aid_agency_build_speed_mult, Category: Planets
+- planet_holding_energy_requisitorium_build_speed_mult, Category: Planets
+- planet_holding_material_requisitorium_build_speed_mult, Category: Planets
+- planet_holding_produce_requisitorium_build_speed_mult, Category: Planets
+- planet_holding_splinter_hive_build_speed_mult, Category: Planets
+- planet_holding_distributed_processing_build_speed_mult, Category: Planets
+- planet_holding_offspring_nest_build_speed_mult, Category: Planets
+- planet_holding_offworld_foundry_build_speed_mult, Category: Planets
+- planet_holding_overlord_vigil_command_build_speed_mult, Category: Planets
+- planet_holding_parasitic_algorithms_build_speed_mult, Category: Planets
+- planet_holding_noble_vacation_homes_build_speed_mult, Category: Planets
+- planet_holding_dread_outpost_build_speed_mult, Category: Planets
+- planet_holding_communal_housing_outreach_build_speed_mult, Category: Planets
+- planet_holding_idyllic_bloom_build_speed_mult, Category: Planets
+- planet_holding_reemployment_center_build_speed_mult, Category: Planets
+- planet_holding_recruitment_office_build_speed_mult, Category: Planets
+- planet_holding_park_ranger_lodge_build_speed_mult, Category: Planets
+- planet_holding_tree_of_life_sapling_build_speed_mult, Category: Planets
+- planet_holding_experimental_crater_build_speed_mult, Category: Planets
+- planet_holding_organic_sanctuary_build_speed_mult, Category: Planets
+- planet_holding_franchise_headquarters_build_speed_mult, Category: Planets
+- planet_holding_sacrificial_shrine_build_speed_mult, Category: Planets
 - crashed_ship_asteroid_category_research_speed_mult, Category: Leaders
 - origin_asteroid_category_research_speed_mult, Category: Leaders
 - debris_asteroid_category_research_speed_mult, Category: Leaders
@@ -5126,6 +5674,7 @@ Printing Modifier Definitions:
 - the_lonely_bot_category_research_speed_mult, Category: Leaders
 - fungal_emitters_category_research_speed_mult, Category: Leaders
 - lost_soul_cat_research_speed_mult, Category: Leaders
+- on_solar_sails_cat_research_speed_mult, Category: Leaders
 - on_crashed_ship_cat_research_speed_mult, Category: Leaders
 - AST_WAVELENGTHS_1_CAT_research_speed_mult, Category: Leaders
 - AST_DEBRIS_FIELD_1_CAT_research_speed_mult, Category: Leaders
@@ -5429,3 +5978,15 @@ Printing Modifier Definitions:
 - hostile_operation_spark_rebellion_difficulty_mult, Category: Espionage
 - operation_spark_rebellion_skill_add, Category: Espionage
 - operation_spark_rebellion_skill_mult, Category: Espionage
+- operation_consume_star_speed_mult, Category: Espionage
+- operation_consume_star_difficulty_add, Category: Espionage
+- operation_consume_star_difficulty_mult, Category: Espionage
+- hostile_operation_consume_star_difficulty_add, Category: Espionage
+- hostile_operation_consume_star_difficulty_mult, Category: Espionage
+- operation_consume_star_skill_add, Category: Espionage
+- operation_consume_star_skill_mult, Category: Espionage
+- pop_job_amenities_mult, Category: Pops
+- pop_job_trade_mult, Category: Pops
+- pop_lifestyle_trade_mult, Category: Pops
+- job_soldier_stability_add, Category: Planets
+- habitat_stability_add, Category: Planets

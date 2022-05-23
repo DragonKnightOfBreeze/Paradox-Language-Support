@@ -23,7 +23,7 @@ links = {
 		output_scope = Country
 	}
 	controller = {
-		input_scopes = { Planet Starbase }
+		input_scopes = { Planet Starbase Fleet Ship }
 		output_scope = Country
 	}
 	planet_owner = {
@@ -298,6 +298,10 @@ links = {
 	galactic_custodian = {
 		input_scopes = { all }
 		output_scope = country
+	}
+	orbital_defence = {
+		input_scopes = { planet }
+		output_scope = starbase
 	}
 	script_value = {
 		from_data = yes

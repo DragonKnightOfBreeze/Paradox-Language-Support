@@ -55,6 +55,8 @@ enums = {
 		l_russian
 		l_spanish
 		l_simp_chinese
+		l_korean
+		l_japanese
 	}
 }
 

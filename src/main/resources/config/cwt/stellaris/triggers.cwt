@@ -130,6 +130,9 @@ alias[trigger:has_army_flag] = value[army_flag]
 ## severity = warning
 ###Checks if the situation has a specific, arbitrarily-named, flag
 alias[trigger:has_situation_flag] = value[situation_flag]
+## severity = warning
+###Checks if the agreement has a specific, arbitrarily-named, flag
+alias[trigger:has_agreement_flag] = value[agreement_flag]
 
 ###Checks if the country has a specific relation flag towards target country
 alias[trigger:has_relation_flag] = {
@@ -277,6 +280,11 @@ alias[trigger:is_same_empire] = scope_group[target_country]
 alias[trigger:has_migration_access] = scope_group[target_country]
 ###Check if the country has closed its borders to target country
 alias[trigger:has_closed_borders] = scope_group[target_country]
+###Checks if the country has a secret fealty from any of the target country's subjects
+alias[trigger:has_secret_fealty_from_subject_of] = scope_group[target_country]
+
+###Checks if the pop/species/leader has rights
+alias[trigger:has_citizenship_rights] = bool
 
 ###checks if the scoped object is of the same species as another object
 alias[trigger:is_same_species] = scope_group[target_species]
@@ -422,6 +430,8 @@ alias[trigger:opinion] = {
 alias[trigger:happiness] == value_field[0.0..1.0]
 ###Checks the country's number of vassals
 alias[trigger:vassals] == int_value_field
+###Checks the country's number of subjects
+alias[trigger:subjects] == int_value_field
 ###Checks the number of regular empires in the galaxy
 alias[trigger:num_empires] == int_value_field
 # ###Checks the number of members in the alliance
@@ -746,16 +756,6 @@ alias[trigger:has_deposit] = <deposit>
 ###Checks if the planet has a deposit for a specific ship class
 alias[trigger:has_deposit_for] = enum[shipsize_classes]
 
-###Checks if the country can be a subject of a specific type under target country
-alias[trigger:can_be_subject] = {
-	overlord = scope_group[target_country]
-	subject_type = <subject_type>
-}
-
-###Checks if the country is a specific type of subject
-alias[trigger:is_subject_type] = <subject_type>
-
-
 ###Checks if the country has claims on the given country or system.
 alias[trigger:has_claim] = scope_group[target_country]
 alias[trigger:has_claim] = scope[system]
@@ -858,7 +858,11 @@ alias[trigger:distance_to_core_percent] == value_field
 ### Checks the ship/fleet/planet/system's galaxy map distance to target empire
 alias[trigger:distance_to_empire] = {
 	who = scope_group[target_country]
-	distance = int #no variables here atm
+	distance = int_value_field
+	## cardinality = 0..1
+	use_bypasses = bool
+	## cardinality = 0..1
+	type = enum[hyperlane_euclidean]
 }
 
 ### Checks the country's monthly energy credit expenses
@@ -1030,9 +1034,6 @@ alias[trigger:has_tech_option] = <technology>
 
 ### Checks if a country has the given tradition.
 alias[trigger:has_tradition] = <tradition>
-
-### Checks if two countries have a research agreement.
-alias[trigger:has_tributary] = scope_group[target_country]
 
 ### Checks if the country has a valid AI personality
 alias[trigger:has_valid_ai_personality] = bool
@@ -1414,7 +1415,17 @@ alias[trigger:is_researching_special_project] = <special_project>
 ### Checks the number of starbase modules that are of the specified type
 alias[trigger:count_starbase_modules] =  {
 	count = int_value_field
+	## cardinality = 0..1
 	type = <starbase_module>
+	## cardinality = 0..1
+	include_being_constructed = bool
+}
+alias[trigger:count_starbase_buildings] =  {
+	count = int_value_field
+	## cardinality = 0..1
+	type = <starbase_module>
+	## cardinality = 0..1
+	include_being_constructed = bool
 }
 
 ### Checks if the scoped country has a specified quantity of a starbase size
@@ -1466,10 +1477,24 @@ alias[trigger:resource_stockpile_compare] = {
 	value = float #no variables here atm
 	## cardinality = 0..1
 	mult = value[variable]
+	## cardinality = 0..1
+	multiplier = value[variable]
 }
 
 ###Checks specific resource income value for the country scope (note: checks profit/loss, not revenue)
 alias[trigger:resource_income_compare] = {
+	resource = <resource>
+	value = value_field
+}
+
+###Checks specific resource expenses value for the country scope
+alias[trigger:resource_expenses_compare] = {
+	resource = <resource>
+	value = value_field
+}
+
+###Checks specific resource revenue value for the country scope
+alias[trigger:resource_revenue_compare] = {
 	resource = <resource>
 	value = value_field
 }
@@ -1916,6 +1941,9 @@ alias[trigger:is_sector_capital] = bool
 ###Checks if the current sector has the specified focus.
 alias[trigger:has_sector_focus] = <sector_focus>
 
+###Checks if the sector has any focus
+alias[trigger:has_any_sector_focus] = bool
+
 ## severity = warning
 ###Checks if the planet uses the specified district set.
 alias[trigger:uses_district_set] = enum[district_sets]
@@ -2038,8 +2066,8 @@ alias[trigger:galactic_defense_force_exists] = bool
 
 ###Checks a variable for the scope if a certain amount of arithmetic is done to it (note: the variable's value is not changed by this trigger)
 alias[trigger:check_variable_arithmetic] = {
-	which = value[variable]
-	## cardinality = 1..inf
+	which = value_field
+	## cardinality = 0..inf
 	enum[maths] = value_field
 	###Specify >/< on the value or variable fields
 	value = value_field
@@ -2056,6 +2084,9 @@ alias[trigger:allowed_crisis_type] = enum[crisis_types]
 
 ###Checks whether the country has the speficied first contact flag
 alias[trigger:has_first_contact_flag] = value[first_contact_flag]
+
+###Checks if the scoped first contact is at the specified stage.
+alias[trigger:is_current_first_contact_stage] = <first_contact_stage>
 
 ###Checks whether the current country is allowed to have the specified technology, i.e. does it fulfil the potential = { } field for that tech.
 alias[trigger:can_research_technology] = <technology>
@@ -2313,48 +2344,89 @@ alias[trigger:current_situation_approach] = enum[situation_approaches]
 alias[trigger:can_set_situation_approach] = enum[situation_approaches]
 
 # ###Checks if the specified severity level is currently active in the scoped situation.
-alias[trigger:current_severity_level] = enum[situation_severity_levels]
+alias[trigger:current_stage] = enum[situation_stages]
 
 ###Checks if the scoped situation is a certain type.
 alias[trigger:is_situation_type] = <situation_type>
 
-## scope = country
 ###Checks specific resource expenses value for the country scope
 alias[trigger:resource_expenses_compare] = {
 	resource = <resource>
 	value = value_field
 }
 
-## scope = country
 ###Checks specific resource revenue value for the country scope
 alias[trigger:resource_revenue_compare] = {
 	resource = <resource>
 	value = value_field
 }
 
-## scope = country
 ###Checks if the country has a civic in a slot 
 alias[trigger:has_civic_in_slot] = {
 	civic = <civic_or_origin.civic>
 	index = int_value_field
 }
 
-## scope = country
 ###Checks the country's number of owned (recruited) non-envoy leaders (includes the ruler)
 alias[trigger:num_owned_leaders] == int_value_field
 
-## scope = starbase
 ###Checks if scoped starbase would evaluate to be a certain starbase_type for its current owner. Warning: expensive trigger.
 alias[trigger:is_starbase_type] = <starbase_type>
 
-## scope = planet
 ###Checks if the planet's ascension tier is as specified.
 alias[trigger:has_planetary_ascension_tier] == int_value_field
 
-## scope = all
 ###Checks number of star systems in the galaxy
 alias[trigger:num_galaxy_systems] == int_value_field
 
-## scope = planet
 ###Checks if the planet has an unemployed pop of a category
 alias[trigger:has_unemployed_pop_of_category] = <social_strata>
+
+#3.4
+
+###Checks if the planet's ascension tier is as specified.
+alias[trigger:check_economic_modifier_for_job] = {
+	job = <job>
+	resource = <resource>
+	resource = {
+		## cardinality = 1..inf
+		<resource> = float
+	}
+	value = value_field
+	## cardinality = 0..1
+	species_modifiers_only = no
+}
+
+###Checks the planet's army strength (as calculated by all armies including offensive or defensive owned by its current controller). Warning: moderately intensive trigger
+alias[trigger:planet_garrison_strength] == value_field
+
+###Checks ratio between the country's income and expenditures for a specific resource. E.g. if it makes 80 energy and spends 100, its ratio is 0.8
+alias[trigger:resource_income_to_expenditure_balance_ratio] = {
+	resource = <resource>
+	value = value_field
+}
+
+###Checks the country's number of researched technologies of a certain tier
+alias[trigger:num_researched_techs_of_tier] = {
+	value = int_value_field
+	tier = int
+}
+
+###Checks whether the country can research a certain tech tie
+alias[trigger:can_research_tier] = {
+	area = enum[technology_areas]
+	tier = int
+}
+
+###Checks the value of economic production modifiers a pop has for producing a certain resource via a certain job. Can specify checking all modifiers or just those from traits. WARNING: expensive trigger
+alias[trigger:check_economic_production_modifier_for_job] = {
+	job = <job>
+	resource = <resource>
+	resource = {
+		## cardinality == 1..inf
+		<resource> = float
+	}
+	## cardinality == 0..1
+	species_modifiers_only = bool
+	value = value_field
+}

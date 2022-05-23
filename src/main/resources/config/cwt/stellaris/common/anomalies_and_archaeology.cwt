@@ -90,6 +90,7 @@ anomaly_category = {
 	max_once_global = bool
 
 	###Chance for this anomaly category to spawn, relative to other valid categories. Default: base = 0. Scope: planet, from = ship
+	## cardinality = 0..1
 	## replace_scope = { root = planet this = planet from = ship }
 	spawn_chance = {
 		alias_name[modifier_rule] = alias_match_left[modifier_rule]

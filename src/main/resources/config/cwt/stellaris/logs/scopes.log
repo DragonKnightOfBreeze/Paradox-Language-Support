@@ -1,152 +1,306 @@
-[12:15:33][game_application.cpp:1999]: 
+[16:38:06][game_application.cpp:2039]: 
 == SCOPE DOCUMENTATION ==
 These work as context switches (links) in triggers and effects (e.g. 'owner = { <triggers/effects> }'), or as targets of triggers and effects (e.g. 'is_owned_by = from'). Dot scoping (e.g. root.owner.capital_scope) is allowed.
 Complete list of scope changes:
 
 target - Scopes from a spy network to its target country, or from an espionage operation to its target (can be various objects, as set in common/espionage_operation_types).
+Supported Scopes: spy_network espionage_operation agreement situation
+Output Scope: various
 
 orbit - Scopes to the planet the current object is in orbit of. Works on ships, fleets, starbases, armies (when in military transports) and moons (scopes to the planet that a moon orbits).
+Supported Scopes: planet ship fleet army starbase
+Output Scope: planet
 
 planet - Scopes from an object to the planet it is on. Works from army, megastructure, deposit and arc site scopes.
+Supported Scopes: megastructure planet pop army starbase deposit archaeological_site
+Output Scope: planet
 
 star - Scopes from an object to the primary star (planet scope) of the system it is in. Works on all objects visible in star system view.
+Supported Scopes: megastructure planet ship fleet galactic_object ambient_object starbase archaeological_site first_contact debris
+Output Scope: planet
 
 branch_office_owner - Scopes from a planet to the owner of a branch office.
+Supported Scopes: planet
+Output Scope: country
 
 pop - Scopes from an army to the pop that spawned it.
+Supported Scopes: pop army
+Output Scope: pop
 
 species - Scopes from a country, leader, pop, army or (colonist) ship to its species.
+Supported Scopes: country ship pop leader army species
+Output Scope: species
 
 assembling_species - Scopes from a planet to the species currently being assembled on it.
+Supported Scopes: planet
+Output Scope: species
 
 built_species - Scopes from a country to its built species.
+Supported Scopes: country
+Output Scope: species
 
 declining_species - Scopes from a planet to the species currently declining on it.
+Supported Scopes: planet
+Output Scope: species
 
 fleet - Scopes from a ship, starbase or leader to its fleet, or from an army to the fleet its army transport is part of.
+Supported Scopes: ship fleet leader army starbase
+Output Scope: fleet
 
 from - Scopes to the ROOT of the previous event, or the preset hardcoded FROM scope.
+Supported Scopes: all
+Output Scope: various
 
 this - Scopes to the current scope.
+Supported Scopes: all
+Output Scope: various
 
 root - Scopes to the original scope of this context, e.g. the country of a country_event.
+Supported Scopes: all
+Output Scope: various
 
 prev - Scopes to the previous scope, e.g. owner = { capital_scope = { is_owned_by = prev } } would refer to the owner of the capital here (and always be true).
+Supported Scopes: all
+Output Scope: various
 
 capital_scope - Scopes from an empire to its capital planet.
+Supported Scopes: country
+Output Scope: planet
 
 owner - Scopes to the owner of the current object. Works on any object that could be construed as being owned by a country (incl. planets, ships, fleets, leaders, pops, solar systems, pop factions, megastructures, first contacts, spy networks, espionage operations, armies, starbases, deposits, sectors, arc sites)
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army pop_faction starbase deposit sector archaeological_site first_contact spy_network espionage_operation agreement situation debris
+Output Scope: country
 
 controller - Scopes from a planet (or starbase) to the empire controlling it (not necessarily the owner: a country occupying a planet is its controller).
+Supported Scopes: planet ship fleet starbase debris
+Output Scope: country
 
 fromfrom - Scopes to the FROM of the FROM scope (ROOT of two events ago, or the preset hardcoded FROMFROM scope).
+Supported Scopes: all
+Output Scope: various
 
 prevprev - Scopes back to two scope changes ago, e.g. planet = { owner = { any_owned_planet = { is_same_value = prevprev } } } would be checking if the owner of the planet owns any planet that is the same as the planet you are starting in (which would always be true).
+Supported Scopes: all
+Output Scope: various
 
 prevprevprev - Scopes back to three scope changes ago (the PREV of PREVPREV).
+Supported Scopes: all
+Output Scope: various
 
 prevprevprevprev - Scopes back to four scope changes ago (the PREV of PREVPREVPREV).
+Supported Scopes: all
+Output Scope: various
 
 home_planet - Scopes to a species' home planet (also works from country, pop and leader; scopes to that object's species's home planet).
+Supported Scopes: country pop leader species
+Output Scope: planet
 
 last_created_fleet - Scopes to the last fleet that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: fleet
 
 owner_main_species - Scopes to the main species of the owner of the current object. Works in every scope that 'owner' would work in.
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army species pop_faction starbase deposit sector archaeological_site first_contact spy_network espionage_operation agreement situation debris
+Output Scope: species
 
 last_created_country - Scopes to the last country that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: country
 
 last_created_species - Scopes to the last species that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: species
 
 alliance - Scopes from a country to the federation it is a member of.
+Supported Scopes: country
+Output Scope: federation
 
 overlord - Scopes from a country to its overlord.
+Supported Scopes: country
+Output Scope: country
 
 federation - Scopes from a country to the federation it is a member of.
+Supported Scopes: country
+Output Scope: federation
 
 research_station - Scopes from a planet to the research station in orbit of it.
+Supported Scopes: planet
+Output Scope: fleet
 
 mining_station - Scopes from a planet to the mining station in orbit of it.
+Supported Scopes: planet
+Output Scope: fleet
 
 last_created_pop - Scopes to the last pop that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: pop
 
 last_created_system - Scopes to the last fleet that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: galactic_object
 
 planet_owner - Scopes from an object to the owner of the planet it is on. Works from army, megastructure, deposit and arc site scopes.
+Supported Scopes: megastructure planet pop army starbase deposit archaeological_site
+Output Scope: country
 
 last_created_ambient_object - Scopes to the last ambient object that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: ambient_object
 
 last_created_ship - Scopes to the last ship that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: ship
 
 orbital_station - Scopes from a planet to the station (mining station, research station, observation outpost) orbiting it.
+Supported Scopes: planet
+Output Scope: fleet
 
 last_created_leader - Scopes to the last leader that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: leader
 
 owner_species - Scopes to the main species of the owner of the current object. Works in every scope that 'owner' would work in.
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army species pop_faction starbase deposit sector archaeological_site first_contact spy_network espionage_operation agreement situation debris
+Output Scope: species
 
 fromfromfrom - Scopes to the FROM of the FROMFROM scope (ROOT of three events ago, or the preset hardcoded FROMFROMFROM scope)
+Supported Scopes: all
+Output Scope: various
 
 last_created_army - Scopes to the last army that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: army
+
+last_created_design - Scopes to the last created ship design
+Supported Scopes: all
+Output Scope: design
 
 envoy_location_country - Scopes from an envoy to the empire it is appointed to.
+Supported Scopes: leader
+Output Scope: country
 
 contact_country - Scopes from a first contact site to the country that the owner of the site is seeking to establish communications with.
+Supported Scopes: first_contact
+Output Scope: country
 
 sector_capital - Scopes from a sector to its capital planet.
+Supported Scopes: sector
+Output Scope: planet
 
 observation_outpost_owner - Scopes from a planet to the owner of the observation outpost in orbit of it.
+Supported Scopes: planet
+Output Scope: country
 
 observation_outpost - Scopes from a planet to the observation outpost in orbit of it.
+Supported Scopes: planet
+Output Scope: fleet
 
 federation_leader - Scopes from a federation to the empire leading it.
+Supported Scopes: federation
+Output Scope: country
 
 associated_federation - Scopes from a country to the federation it is an associate of.
+Supported Scopes: country
+Output Scope: federation
 
 sector - Scopes from an object to the sector it is in. Works on all objects visible objects visible in star system view, plus star systems themselves and leaders (scopes to the sector the leader is currently located in, not necessarily the one they are assigned to as a governor).
+Supported Scopes: megastructure planet ship pop fleet galactic_object leader army ambient_object starbase deposit sector archaeological_site first_contact debris
+Output Scope: sector
 
 pop_faction - Scopes from a pop or leader to its pop faction.
+Supported Scopes: pop leader pop_faction
+Output Scope: pop_faction
 
 last_created_pop_faction - Scopes to the last pop faction that was created anywhere in the game.
+Supported Scopes: all
+Output Scope: pop_faction
 
 unhappiest_pop - Scopes from a country or planet to its unhappiest pop.
+Supported Scopes: planet country
+Output Scope: pop
 
 heir - Scopes to the heir of a country (or the heir of the object's owner).
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army pop_faction starbase deposit sector archaeological_site first_contact spy_network espionage_operation agreement situation debris
+Output Scope: leader
 
 fromfromfromfrom - Scopes to the FROM of the FROMFROMFROM scope (ROOT of four events ago, or the preset hardcoded FROMFROMFROMFROM scope)
+Supported Scopes: all
+Output Scope: various
 
 last_refugee_country - Scopes to the last country from which a pop fled to escape purge (via on_pop_displaced).
+Supported Scopes: all
+Output Scope: country
 
 starbase - Scopes from a solar system or planet to that system's starbase. Alternatively, scopes from a fleet or ship that is a starbase to its matching starbase scope.
+Supported Scopes: planet ship fleet galactic_object starbase
+Output Scope: starbase
 
 capital_star - Scopes from an empire to the primary star (planet scope) of its capital's system.
+Supported Scopes: country
+Output Scope: planet
 
 system_star - Scopes from an object to the primary star (planet scope) of the system it is in. Works on all objects visible in star system view.
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object starbase deposit archaeological_site first_contact debris
+Output Scope: planet
 
 no_scope - Sets the scope to no scope (empty scope used for certain generalized behavior).
+Supported Scopes: all
+Output Scope: no_scope
 
 archaeological_site - Scopes from an object (e.g. planet) in star system view to the arc site in the same location.
+Supported Scopes: megastructure planet ship fleet galactic_object ambient_object starbase archaeological_site debris
+Output Scope: archaeological_site
 
 excavator_fleet - Scopes from an arc site to the fleet whose leader is currently investigating it.
+Supported Scopes: archaeological_site
+Output Scope: fleet
 
 reverse_first_contact - Scopes from a first contact site to the equivalent one that the contact_country has on the site's owner.
+Supported Scopes: first_contact
+Output Scope: first_contact
 
 spynetwork - Scopes from an espionage operation or spymaster envoy to its spy network.
+Supported Scopes: leader espionage_operation
+Output Scope: spy_network
 
 growing_species - Scopes from a planet to the species currently growing (not assembling) on it.
+Supported Scopes: planet
+Output Scope: species
 
 galactic_emperor - Scopes to the ruling empire of the Galactic Imperium.
+Supported Scopes: all
+Output Scope: country
 
 galactic_custodian - Scopes to the Custodian empire of the Galactic Community.
+Supported Scopes: all
+Output Scope: country
+
+orbital_defence - Scopes from a planet to the orbital defence station (orbital ring, starbase) orbiting the planet
+Supported Scopes: planet
+Output Scope: fleet
 
 attacker - Scopes from a war to its main attacker.
+Supported Scopes: war
+Output Scope: country
 
 defender - Scopes from a war to its main defender.
+Supported Scopes: war
+Output Scope: country
 
 leader - Scopes from an object to its leader, e.g. country->ruler, fleet->admiral/scientist, sector->governor, army->general, arc site->scientist...
+Supported Scopes: country ship fleet leader army pop_faction federation sector archaeological_site first_contact spy_network espionage_operation
+Output Scope: leader
 
 solar_system - Scopes from an object to the solar system it is in. Works on all objects visible in star system view.
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object starbase deposit archaeological_site first_contact debris
+Output Scope: galactic_object
 
 space_owner - Scopes from an object to the owner of the space it is in. Works on all objects visible in star system view.
+Supported Scopes: megastructure planet country ship fleet galactic_object army ambient_object starbase archaeological_site spy_network debris
+Output Scope: country
 
 ruler - Scopes to the ruler of a country (or the ruler of the object's owner).
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army pop_faction starbase deposit sector archaeological_site first_contact spy_network espionage_operation agreement situation debris
+Output Scope: leader
 
 =================

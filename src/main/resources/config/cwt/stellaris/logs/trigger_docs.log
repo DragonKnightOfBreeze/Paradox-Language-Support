@@ -1,4 +1,4 @@
-[12:15:33][game_application.cpp:1984]: 
+[16:38:06][game_application.cpp:2024]: 
 == TRIGGER DOCUMENTATION ==
 text - For 'desc={trigger={' use. Shows custom text
 text = <text>
@@ -81,8 +81,12 @@ else_if = { limit = { <display_triggers> } <triggers> }
 Supported Scopes: all
 
 happiness - Checks the pop's happiness percentage
-happiness < 90
+happiness < 0.5
 Supported Scopes: pop
+
+agreement_preset - Checks if the agreement has the specified preset
+agreement_preset = <preset key>
+Supported Scopes: agreement
 
 is_half_species - Check if scoped species is half species of specific/any species
 is_half_species = <target/any>
@@ -105,7 +109,6 @@ num_favors = {
 	target = <country>
 	value ><= <value>/<variable>
 }
-
 Supported Scopes: country
 
 last_building_changed - Checks if the last building queued/unqueued/built/demolished/upgraded was the specified building
@@ -189,7 +192,7 @@ any_planet_within_border - Iterate through each planet within the current empire
 any_planet_within_border = { <triggers> }
 Supported Scopes: country
 
-any_owned_ship - Iterate through each ship in the fleet or owned by the country - checks whether the enclosed triggers return true for any of them
+any_owned_ship - Iterate through each ship in the fleet or controlled by the country - checks whether the enclosed triggers return true for any of them
 any_owned_ship = { <triggers> }
 Supported Scopes: country fleet
 
@@ -217,7 +220,7 @@ is_civilian - Checks if the scoped fleet or ship is civilian (as set in ship siz
 is_civilian = <yes/no>
 Supported Scopes: ship fleet
 
-vassals - Checks the country's number of vassals
+vassals - Checks the country's number of subjects with agreement preset 'preset_vassal'
 vassals > 0
 Supported Scopes: country
 
@@ -302,6 +305,10 @@ original_owner - Checks if the planet is still owned by its first colonizer
 original owner = yes
 Supported Scopes: planet
 
+subjects - Checks the country's number of subjects
+subjects > 0
+Supported Scopes: country
+
 tech_unlocked_ratio - Checks the relative amount of already-researched tech between the country and target country
 tech_unlocked_ratio = { who = <target> ratio = 0.4/variable }
 Supported Scopes: country
@@ -370,10 +377,6 @@ has_research_agreement - Checks if two countries have a research agreement.
 has_research_agreement = <target>
 Supported Scopes: country
 
-has_tributary - Checks if the target country is a tributary of the current scope.
-has_tributary = <target>
-Supported Scopes: country
-
 upgrade_days_left - Checks how many days an upgrading megastructure will take to complete its upgrade.
 upgrade_days_left > 360
 Supported Scopes: megastructure
@@ -429,7 +432,6 @@ Supported Scopes: galactic_object
 is_scope_type - Checks currently in the specified scope:
 is_scope_type = fleet
 valid tokens are: none, megastructure, planet, country, ship, pop, fleet, galactic_object, leader, army, ambient_object, species, design,pop_faction, war, alliance, starbase,deposit,observer, sector.
-
 Supported Scopes: all
 
 is_robotic - Check if the species in the scope is a robot species or not
@@ -529,9 +531,25 @@ Supported Scopes: country
 name_list_category - Checks if a specific name list is used for the a species during empire creation
 Supported Scopes: dlc_recommendation
 
-current_severity_level - Checks if the specified severity level is currently active in the scoped situation.
-current_severity_level = <severity> (name defined in situation's severity_levels)
+current_stage - Checks if the specified stage is currently active in the scoped situation.
+current_stage = <stage> (name defined in situation's stages)
 Supported Scopes: situation
+
+is_leased - Checks if the scoped fleet is leased.
+is_leased = <yes/no>
+Supported Scopes: fleet
+
+lease_days - Checks the number of days left before fleet lease contract is finished
+lease_days < 77
+Supported Scopes: fleet
+
+has_loyalty - Checks the subject's current loyalty to its overlord.
+has_loyalty >=< -50
+Supported Scopes: country
+
+has_monthly_loyalty - Checks the subject's current monthly loyalty gain/loss.
+has_monthly_loyalty >=< -5
+Supported Scopes: country
 
 hidden_trigger - Hides the tooltip for the triggers within
 hidden_trigger = { <triggers> }
@@ -576,7 +594,7 @@ Supported Scopes: country pop dlc_recommendation
 
 is_owned_by - Checks if the planet/system/army/ship is owned by the target country
 is_owned_by = <target>
-Supported Scopes: megastructure planet ship pop fleet galactic_object leader army pop_faction starbase deposit sector archaeological_site first_contact spy_network espionage_operation situation
+Supported Scopes: megastructure planet ship pop fleet galactic_object leader army pop_faction starbase deposit sector archaeological_site first_contact spy_network espionage_operation agreement situation
 
 can_live_on_planet - Checks if the pop or species is allowed to live on a specified planet
 can_live_on_planet = from.capital_scope
@@ -736,7 +754,7 @@ Supported Scopes: planet country
 
 num_districts - Checks the number the planet has of any, or a specific, district
 num_districts = { type = <key/any> value > 2/variable }
-Supported Scopes: planet
+Supported Scopes: planet country
 
 num_free_districts - Checks the number of available slots the planet has of any, or a specific, district
 num_free_districts = { type = <key/any> value > 2/variable }
@@ -753,6 +771,10 @@ Supported Scopes: first_contact
 has_situation_flag - Checks if the situation has a specific flag
 has_situation_flag = <flag> (note: one can use e.g. my_flag@from to track relationships between objects)
 Supported Scopes: situation
+
+has_agreement_flag - Checks if the agreement has a specific flag
+has_agreement_flag = <flag> (note: one can use e.g. my_flag@from to track relationships between objects)
+Supported Scopes: agreement
 
 has_federation_flag - Checks if the federation has a specific flag
 has_federation_flag = <flag> (note: one can use e.g. my_flag@from to track relationships between objects)
@@ -805,6 +827,10 @@ Supported Scopes: espionage_asset
 is_ship_class - Checks if the ship/fleet/design is a specific class
 is_ship_class = shipclass_colonizer
 Supported Scopes: ship fleet design
+
+has_attitude_behavior - Checks if the country has a ai behavior towards another country 
+has_attitude_behavior = { target = <country> behavior = attack }
+Supported Scopes: country
 
 is_ship_size - Checks if the ship/fleet/design is a specific ship size
 is_ship_size = mining_station
@@ -956,11 +982,11 @@ Supported Scopes: all
 
 is_variable_set - Checks if the specified variable is set on the current scope. Use to avoid unset variables errors
 is_variable_set = my_var
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 check_variable - Checks a variable for the country/leader/planet/system/fleet
 check_variable = { which = <variable> value >=< <float>/<variable>/<scope.variable>/trigger:<trigger> }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 check_variable_arithmetic - Checks a variable for the scope if a certain amount of arithmetic is done to it (note: the variable's value is not changed by this trigger)
 check_variable_arithmetic = {
@@ -968,11 +994,21 @@ check_variable_arithmetic = {
 	add/subtract/multiply/divide/modulo = <float>/<variable>/<scope.variable>/trigger:<trigger> (note: this line can be repeated as many times as desired)
 	value <=> <float>/<variable>/<scope.variable>/trigger:<trigger> (the value to compare against)
 }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 check_modifier_value - Checks the value of a specified modifier in the current scope against a value.
 check_modifier_value = { modifier = pop_growth_speed_reduction value > 1.05/variable
 Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army species design pop_faction spy_network espionage_operation
+
+check_economic_production_modifier_for_job - Checks the value of economic production modifiers a pop has for producing a certain resource via a certain job. Can specify checking all modifiers or just those from traits. WARNING: expensive trigger
+check_economic_production_modifier_for_job = {
+	job = miner
+	resource = minerals
+	resource = { minerals = 0.5 energy = 0.5 } (for evaluating the bonuses to multiple resources, with weights)
+	species_modifiers_only = no (default: yes - only checks trait modifiers, trait triggered pop modifiers, and species habitability)
+	value > 1.25
+}
+Supported Scopes: pop
 
 check_galaxy_setup_value - Checks the value for a specific option from the galaxy setup 
 check_galaxy_setup_value = { setting = <string> value >=< <float>/<variable> }
@@ -992,14 +1028,18 @@ has_building = yes
 has_building = building_capital_3
 Supported Scopes: planet
 
+has_holding - Checks if the planet has any, or a specific, holding
+has_holding = { holding = any/none/<holding> owner = <owner> }
+Supported Scopes: planet
+
 has_active_building - Checks if the planet has a specific building, and that that building is not disabled or ruined.
 has_building = yes
 has_active_building = building_capital_3
 Supported Scopes: planet
 
-is_controlled_by - Checks if the planet is controlled by the target country
+is_controlled_by - Checks if the planet/ship/fleet is controlled by the target country
 is_controlled_by = <target>
-Supported Scopes: planet
+Supported Scopes: planet ship fleet
 
 is_terraformed - Checks if the planet has ever been terraformed
 is_terraformed = yes
@@ -1188,7 +1228,6 @@ is_disabled = yes
 Supported Scopes: ship fleet
 
 has_existing_ship_design - Checks if the country has a specific ship design available
-
 Supported Scopes: country
 
 has_resource - Checks if the planet has a specific amount of a specific resource
@@ -1628,10 +1667,6 @@ would_join_war - Checks if the country would join the side of target country in 
 would_join_war = { attacker = <target> defender = <target> side = <target> }
 Supported Scopes: country
 
-can_be_subject - Checks if the country can be a subject of a specific type under target country
-can_be_subject = { subject_type = tributary overlord = <target> }
-Supported Scopes: country
-
 count_war_participants - Checks the number of participants in the war on a specific side that meet the specified criteria
 count_war_participants = { limit = { <triggers> } side = target count < 4/variable
 Supported Scopes: war
@@ -1661,7 +1696,12 @@ has_colony_progress > 20
 Supported Scopes: planet
 
 distance_to_empire - Checks the ship/fleet/planet/system's galaxy map distance to target empire
-distance = { who = <target> distance = x }
+distance_to_empire = {
+	who = <target>
+	distance = x
+	use_bypasses = no (default: yes)
+	type = hyperlane/euclidean (default: hyperlane)
+}
 Supported Scopes: planet ship fleet galactic_object
 
 is_unemployed - Checks if the pop is unemployed
@@ -1689,8 +1729,12 @@ has_auto_move_target = yes
 Supported Scopes: ship fleet
 
 count_starbase_modules - Checks the number of starbase modules that are of the specified type or not
-count_starbase_modules = { type = anchorage count < 12/variable }
-Supported Scopes: starbase
+count_starbase_modules = { type = anchorage include_being_constructed = yes/no count < 12/variable }
+Supported Scopes: galactic_object starbase
+
+count_starbase_buildings - Checks the number of starbase modules that are of the specified type or not
+count_starbase_modules = { type = anchorage include_being_constructed = yes/no count < 12/variable }
+Supported Scopes: galactic_object starbase
 
 is_belligerent_to - Checks if the country has a belligerent attitude towards target country
 is_belligerent_to = <target>
@@ -1744,6 +1788,14 @@ Supported Scopes: country
 
 num_researched_techs - Checks the country's number of researched technologies
 num_researched_techs > 21
+Supported Scopes: country
+
+num_researched_techs_of_tier - Checks the country's number of researched technologies of a certain tier
+num_researched_techs_of_tier = { tier = 2 value > 21
+Supported Scopes: country
+
+can_research_tier - Checks whether the country can research a certain tech tier
+can_research_tier = { tier = 1 area = society }
 Supported Scopes: country
 
 has_mandate - Checks if the leader has any, or a specific, mandate
@@ -1813,10 +1865,6 @@ fail_text = {
 	<triggers>
 }
 Supported Scopes: all
-
-is_subject_type - Checks if the country is a specific type of subject
-is_subject_type = vassal
-Supported Scopes: country
 
 has_defensive_pact - Checks if the country has a defensive pact with target country
 has_defensive_pact = <target>
@@ -1895,7 +1943,7 @@ has_non_aggression_pact = <target>
 Supported Scopes: country
 
 happiness_planet - Checks the average happiness on the planet
-happiness_planet < 60
+happiness_planet < 0.6
 Supported Scopes: planet
 
 pre_ruler_leader_class - Checks the rulers previous leader class
@@ -1941,6 +1989,13 @@ is_custom_capital_location - Checks if the spatial object is its owner's custom 
 is_custom_capital_location = yes
 Supported Scopes: planet ship fleet galactic_object
 
+resource_income_to_expenditure_balance_ratio - Checks ratio between the country's income and expenditures for a specific resource. E.g. if it makes 80 energy and spends 100, its ratio is 0.8.
+resource_income_to_expenditure_balance_ratio = {
+	resource = <resource_name>
+	value ><= <value>
+}
+Supported Scopes: country
+
 resource_stockpile_compare - Checks specific resource stockpile for the country scope:
 resource_stockpile_compare = {
 	resource = <resource_name>
@@ -1955,7 +2010,6 @@ planet_resource_compare = {
 	value ><= <value>/variable>
 	type = upkeep/produces/balance(default)
 }
-
 Supported Scopes: planet
 
 resource_income_compare - Checks specific resource income value for the country scope (note: checks profit/loss, not revenue):
@@ -1963,7 +2017,6 @@ resource_income_compare = {
 	resource = <resource_name>
 	value ><= <value>
 }
-
 Supported Scopes: country
 
 resource_expenses_compare - Checks specific resource expenses value for the country scope:
@@ -1971,7 +2024,6 @@ resource_expenses_compare = {
 	resource = <resource_name>
 	value ><= <value>
 }
-
 Supported Scopes: country
 
 resource_revenue_compare - Checks specific resource revenue value for the country scope:
@@ -1979,7 +2031,6 @@ resource_revenue_compare = {
 	resource = <resource_name>
 	value ><= <value>
 }
-
 Supported Scopes: country
 
 market_resource_price - Checks market price of a specific resource for the current country:
@@ -1989,7 +2040,6 @@ market_resource_price = {
 	trade_type = market_buy/market_sell/not_set (i.e. price without market fees)
 	value ><= <value>/<variable>
 }
-
 Supported Scopes: country
 
 pop_percentage - Checks the percentage of pops in the scope that fulfill the specified criteria
@@ -2080,6 +2130,10 @@ has_living_standard - Checks if a species/pop/leader has a particular living sta
 has_living_standard = { country = <who> type = <type> }
 Supported Scopes: pop leader species
 
+has_citizenship_rights - Checks if the pop/species/leader has rights
+has_citizenship_rights = yes/no
+Supported Scopes: pop leader
+
 num_ascension_perk_slots - Compares the number of unlocked ascension perk slots of the scope with the given value
 num_ascension_perks > 7
 Supported Scopes: country
@@ -2132,6 +2186,10 @@ trade_protected_percentage - Checks the protected trade value ratio going throug
 trade_protected_percentage >=< 40
 Supported Scopes: galactic_object
 
+planet_garrison_strength - Checks the planet's army strength (as calculated by all armies including offensive or defensive owned by its current controller). Warning: moderately intensive trigger:
+planet_garrison_strength >= 510
+Supported Scopes: planet
+
 num_trade_routes - Counts the number trade routes in the empire.
 num_trade_routes >=< 40
 Supported Scopes: country
@@ -2147,6 +2205,10 @@ Supported Scopes: planet country
 is_constructing - Checks if the scoped construction ship is building the specified thing
 is_constructing = megastructure | <megastructure type> | starbase | mining_station | research_station | observation_post | <ship class>
 Supported Scopes: ship fleet
+
+has_secret_fealty_from_subject_of - Checks if the country has a secret fealty from any of the target country's subjects
+has_secret_fealty_from_subject_of = <country>
+Supported Scopes: country
 
 has_ruler_trait - Checks if a leader has a certain ruler trait, even if they are not currently ruler
 has_ruler_trait = leader_trait_carefree
@@ -2242,6 +2304,18 @@ using_war_goal - Checks if a war has a specific war goal
 using_war_goal = { type = <war goal> owner = <eventtarget, country> }
 Supported Scopes: war
 
+has_specialist_perk - Checks if the agreement has a specific specialist perk active
+has_specialist_perk = <perk_key>
+Supported Scopes: agreement
+
+has_active_specialization - Checks if the agreement has an active specialization of the specified type, or of any type if 'any' is specified
+has_active_specialization = <specialist_type_key/any>
+Supported Scopes: agreement
+
+specialist_tier - Checks the specialization tier of the subject of the agreement.
+specialist_tier >=< 2
+Supported Scopes: agreement
+
 is_total_war - Checks if a war is a total war
 is_total_war = yes/no
 Supported Scopes: war
@@ -2253,6 +2327,10 @@ Supported Scopes: ship fleet
 valid_planet_killer_target - Checks if the scoped fleet can target the given planet with its planet killer weapon
 valid_planet_killer_target = <planet>
 Supported Scopes: fleet
+
+has_secret_fealty_with - Checks if the country has a secret fealty with the other country (in either direction)
+has_secret_fealty_with = <country>
+Supported Scopes: country
 
 has_orbital_bombardment - Checks whether a planet is under bombardment
 has_orbital_bombardment = yes
@@ -2283,6 +2361,14 @@ Supported Scopes: galactic_object
 
 is_bridge - Checks if a system has the bridge flag or not.
 is_bridge = <yes/no>
+Supported Scopes: galactic_object
+
+is_capitals_connected_through_relay_network - Checks if current country's capital is connected to target's capital through hyper relay network
+is_capitals_connected_through_relay_network = <target>
+Supported Scopes: country
+
+is_system_connected_to_relay_network - Checks if target system is connected to own capitals through hyper relay network
+is_system_connected_to_relay_network = <target>
 Supported Scopes: galactic_object
 
 inverted_switch - Switch case for a trigger treated as NOT.
@@ -2338,6 +2424,9 @@ has_ai_expansion_plan - Checks if the country AI has any plans to expand
 has_ai_expansion_plan = no
 Supported Scopes: country
 
+ai_wants_to_negotiate_agreement - Checks if the country AI wants to renegotiate any existing agreements
+Supported Scopes: country
+
 is_on_market - Checks if resource is enabled on the Galactic Market
 is_on_market = <resource_name>
 Supported Scopes: all
@@ -2356,6 +2445,10 @@ Supported Scopes: country
 
 has_overlord - Checks if the target country is the country's overlord
 has_overlord = <target>
+Supported Scopes: country
+
+has_any_overlord - Checks if the country has an overlord
+has_any_overlord = yes
 Supported Scopes: country
 
 has_sector_type - Checks if the sector has a specific type
@@ -2390,6 +2483,10 @@ Supported Scopes: planet
 
 has_sector_focus - Checks if the sector has a certain focus
 has_sector_focus = basic
+Supported Scopes: sector
+
+has_any_sector_focus - Checks if the sector has any focus
+has_any_sector_focus = yes
 Supported Scopes: sector
 
 is_site_last_die_result - Compares the last dice roll.
@@ -2536,7 +2633,7 @@ is_active_resolution - Checks if the provided Resolution is active in the Commun
 is_active_resolution = <resolution_type_key>
 Supported Scopes: all
 
-is_in_breach_of_any - Checks if an empire is in breach of any galactic resolution. Warning: quite performance intensive
+is_in_breach_of_any - Checks if an empire is in breach of any galactic resolution.
 is_in_breach_of_any = yes/no
 Supported Scopes: country
 
@@ -2778,6 +2875,43 @@ has_job_category - Checks if the pop is currently working this strata job (worke
 has_job_category = <key>
 Supported Scopes: pop
 
+has_term_value - Checks if the agreement has a specific term
+has_term_value = { term = <term> value = <term_value> }
+Supported Scopes: agreement
+
+is_action_active - Check if a trade action is already active in a trade deal with the specified empire (or with any empire if so specified)
+is_action_active = { action = <action_key> with_country = <other_country_scope/any> }
+Supported Scopes: country
+
+is_offer_terms_actual - Checks if terms of the special offer between scoped and target countries is not obsolete
+Only works in certain parts of the script marked with ai_trade_facility.
+is_offer_terms_actual = { target = <country> } 
+Supported Scopes: country
+
+can_afford_special_offer - Checks if the scoped country can afford the offer given by the target country
+Only works in certain parts of the script marked with ai_trade_facility.
+can_afford_special_offer = { target = <country> } 
+Supported Scopes: country
+
+has_design_flag - Checks if the design has a specific flag
+has_design_flag = <flag> (note: one can use e.g. my_flag@from to track relationships between objects)
+Supported Scopes: design
+
+enclave_capacity_left - Checks the country's free enclave number capacity in absolute numbers
+enclave_capacity_left > 1
+Supported Scopes: country
+
+any_agreement - Iterate through each agreement - checks whether the enclosed triggers return true for any of them
+any_agreement = { <triggers> }
+Supported Scopes: country no_scope
+
+count_agreement - Iterate through each agreement - checks whether the enclosed triggers return true for X/all of them
+count_agreement = {
+	count = <num/all/variable>
+	limit = { <triggers> }
+}
+Supported Scopes: country no_scope
+
 count_ambient_object - Iterate through every ambient object in the game - checks whether the enclosed triggers return true for X/all of them
 count_ambient_object = {
 	count = <num/all/variable>
@@ -2904,6 +3038,28 @@ count_subject = {
 }
 Supported Scopes: country
 
+any_available_debris - Iterate through all debris belong to available special projects of the scoped country - checks whether the enclosed triggers return true for any of them
+any_available_debris = { <triggers> }
+Supported Scopes: country
+
+count_available_debris - Iterate through all debris belong to available special projects of the scoped country - checks whether the enclosed triggers return true for X/all of them
+count_available_debris = {
+	count = <num/all/variable>
+	limit = { <triggers> }
+}
+Supported Scopes: country
+
+any_owned_design - Iterate through all designs owned by the current country - checks whether the enclosed triggers return true for any of them
+any_owned_design = { <triggers> }
+Supported Scopes: country
+
+count_owned_design - Iterate through all designs owned by the current country - checks whether the enclosed triggers return true for X/all of them
+count_owned_design = {
+	count = <num/all/variable>
+	limit = { <triggers> }
+}
+Supported Scopes: country
+
 any_spynetwork - Iterate through each spynetwork - checks whether the enclosed triggers return true for any of them
 any_spynetwork = { <triggers> }
 Supported Scopes: country no_scope
@@ -3005,6 +3161,17 @@ Supported Scopes: galactic_object
 
 count_owned_fleet - Iterate through each fleet owned by the country - checks whether the enclosed triggers return true for X/all of them
 count_owned_fleet = {
+	count = <num/all/variable>
+	limit = { <triggers> }
+}
+Supported Scopes: country
+
+any_controlled_fleet - Iterate through each fleet controlled by the country - checks whether the enclosed triggers return true for any of them
+any_controlled_fleet = { <triggers> }
+Supported Scopes: country
+
+count_controlled_fleet - Iterate through each fleet controlled by the country - checks whether the enclosed triggers return true for X/all of them
+count_controlled_fleet = {
 	count = <num/all/variable>
 	limit = { <triggers> }
 }
@@ -3238,8 +3405,19 @@ count_owned_sector = {
 }
 Supported Scopes: country
 
-count_owned_ship - Iterate through each ship in the fleet or owned by the country - checks whether the enclosed triggers return true for X/all of them
+count_owned_ship - Iterate through each ship in the fleet or controlled by the country - checks whether the enclosed triggers return true for X/all of them
 count_owned_ship = {
+	count = <num/all/variable>
+	limit = { <triggers> }
+}
+Supported Scopes: country fleet
+
+any_controlled_ship - Iterate through each ship in the fleet or controlled by the country - checks whether the enclosed triggers return true for any of them
+any_controlled_ship = { <triggers> }
+Supported Scopes: country fleet
+
+count_controlled_ship - Iterate through each ship in the fleet or controlled by the country - checks whether the enclosed triggers return true for X/all of them
+count_controlled_ship = {
 	count = <num/all/variable>
 	limit = { <triggers> }
 }
@@ -3262,6 +3440,17 @@ count_situation = {
 	limit = { <triggers> }
 }
 Supported Scopes: country
+
+any_targeting_situation - Iterate through each situation that is targeting the current planet - checks whether the enclosed triggers return true for any of them
+any_targeting_situation = { <triggers> }
+Supported Scopes: planet
+
+count_targeting_situation - Iterate through each situation that is targeting the current planet - checks whether the enclosed triggers return true for X/all of them
+count_targeting_situation = {
+	count = <num/all/variable>
+	limit = { <triggers> }
+}
+Supported Scopes: planet
 
 any_owned_pop_species - Iterate through each species of a country's owned pops - checks whether the enclosed triggers return true for any of them
 any_owned_pop_species = { <triggers> }
@@ -3299,11 +3488,11 @@ count_enslaved_species = {
 }
 Supported Scopes: planet country
 
-any_owned_starbase - Iterate through every owned starbase - checks whether the enclosed triggers return true for any of them
+any_owned_starbase - Iterate through every owned primary starbase - checks whether the enclosed triggers return true for any of them
 any_owned_starbase = { <triggers> }
 Supported Scopes: country
 
-count_owned_starbase - Iterate through every owned starbase - checks whether the enclosed triggers return true for X/all of them
+count_owned_starbase - Iterate through every owned primary starbase - checks whether the enclosed triggers return true for X/all of them
 count_owned_starbase = {
 	count = <num/all/variable>
 	limit = { <triggers> }
@@ -3391,7 +3580,8 @@ Supported Scopes: country
 
 
 =================
-[12:15:33][game_application.cpp:1987]: 
+
+[16:38:06][game_application.cpp:2027]: 
 == EFFECT DOCUMENTATION ==
 tooltip - Just a tooltip
 Supported Scopes: all
@@ -3475,12 +3665,28 @@ downgrade_buildings_of_type - Downgrades all buildings of a specified type on th
 downgrade_buildings_of_type = yes
 Supported Scopes: planet country
 
+remove_holding - Removes a specific holding from the scoped planet
+remove_holding = { holding = <key> owner = <owner> }
+Supported Scopes: planet
+
+add_holding - Begins construction of a specific holding on the scoped planet
+add_holding = { holding = <key> owner = <owner> }
+Supported Scopes: planet
+
 give_technology - Instantly gives a specific tech to the scoped country
 give_technology = { tech = tech_desert_colonization message = yes }
 Supported Scopes: country
 
 add_building - Begins construction of a specific building on the scoped planet
 add_building = <key>
+Supported Scopes: planet
+
+ruin_building - Ruins a single instance of a specific building on the scoped planet
+ruin_building = <key>
+Supported Scopes: planet
+
+disable_building - Disables a single instance of a specific building on the scoped planet
+disable_building = <key>
 Supported Scopes: planet
 
 add_planet_devastation - Instantly adds devastation to scoped planet
@@ -3519,6 +3725,10 @@ set_situation_flag - Sets an arbitrarily-named flag on the scoped situation
 set_situation_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
 Supported Scopes: situation
 
+set_agreement_flag - Sets an arbitrarily-named flag on the scoped agreement
+set_agreement_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
+Supported Scopes: agreement
+
 set_federation_flag - Sets an arbitrarily-named flag on the scoped federation
 set_federation_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
 Supported Scopes: federation
@@ -3547,6 +3757,10 @@ remove_situation_flag - Removes a flag from the scoped situation
 remove_situation_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
 Supported Scopes: situation
 
+remove_agreement_flag - Removes a flag from the scoped agreement
+remove_agreement_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
+Supported Scopes: agreement
+
 remove_federation_flag - Removes a flag from the scoped federation
 remove_federation_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
 Supported Scopes: federation
@@ -3567,11 +3781,11 @@ remove_ship_flag - Removes a flag from the scoped ship
 remove_ship_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
 Supported Scopes: ship
 
-every_owned_ship - Iterate through each ship in the fleet or owned by the country - executes the enclosed effects on all of them for which the limit triggers return true
+every_owned_ship - Iterate through each ship in the fleet or controlled by the country - executes the enclosed effects on all of them for which the limit triggers return true
 every_owned_ship = { limit = { <triggers> } <effects> }
 Supported Scopes: country fleet
 
-random_owned_ship - Iterate through each ship in the fleet or owned by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_owned_ship - Iterate through each ship in the fleet or controlled by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
 random_owned_ship = {
 	limit = { <triggers> }
 	weights = { (optional - adds weights to affect the chance a specific object is selected)
@@ -3656,7 +3870,7 @@ Supported Scopes: fleet ambient_object
 create_ship - Creates a new ship
 create_ship = {
 	name = <string/random>
-	design = <ship design key/target, or use random_existing_design>
+	design = <ship design key/target/last_created_design, or use random_existing_design>
 	random_existing_design = <ship size key>
 	graphical_culture = <graphical culture key>
 	prefix = <Y/N, determines if ship name should use owner country prefix>
@@ -3791,23 +4005,23 @@ Supported Scopes: country
 
 set_variable - Sets or creates an arbitrarily-named variable with a specific value in the current scope
 set_variable = { which = <string> value = <float>/<variable>/<scope.variable>/trigger:<trigger> }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 clear_variable - Clears a previously-set variable from the game.
 clear_variable = <string>
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 round_variable - Rounds a previously-set variable to the closest integer.
 round_variable = <string>
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 floor_variable - Rounds a previously-set variable down to the previous integer.
 floor_variable = <string>
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 ceiling_variable - Rounds a previously-set variable up to the next integer.
 ceiling_variable = <string>
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 export_modifier_to_variable - Exports the value of a specified modifier in the current scope to a specified variable.
 export_modifier_to_variable = { modifier = pop_growth_speed_reduction variable = <string> }
@@ -3820,7 +4034,7 @@ export_trigger_value_to_variable = {
 	variable = <string> (this example will print the amount of energy the pop produces to a variable)
 	rounded = yes (default: no)
 }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 export_resource_stockpile_to_variable - Exports the value of the current country's stockpile of the specified resource to a variable.
 export_resource_stockpile_to_variable = { resource = energy variable = <string> }
@@ -3840,7 +4054,7 @@ Supported Scopes: all
 
 change_variable - Increments a previously-set variable by a specific amount
 change_variable = { which = <string> value = <float>/<variable>/<scope.variable>/trigger:<trigger> }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 every_galaxy_pop - Executes enclosed effects for every pop in the game that meet the limit criteria
 every_galaxy_pop = { limit = { <triggers> } <effects> }
@@ -3969,7 +4183,7 @@ Supported Scopes: megastructure planet ship fleet galactic_object starbase no_sc
 
 create_nebula - Creates a new Nebula with a given radius centered around the current system.
 create_nebula = {
-	name = <name> (loc synced, optional - default is random)
+	name = <name> (loc, optional - default is random)
 	radius = 100
 	effect = { <effects on every system in the new nebula> }
 }
@@ -3998,6 +4212,20 @@ Supported Scopes: all
 clear_global_event_targets - Deletes all saved global target references
 clear_global_event_targets = yes
 Supported Scopes: all
+
+store_country_backup_data - Stores a copy of the specified data of the scoped country. The values default to 'no'.
+store_country_backup_data = {
+flag = <yes/no>
+room = <yes/no>
+name = <yes/no
+ethics = <yes/no>
+government = <yes/no>
+}
+Supported Scopes: country
+
+restore_country_backup_data - Retores backed up data to the scoped country.
+restore_galactic_community_leader_backup_data = <yes/no>
+Supported Scopes: country
 
 break - Prevents execution of subsequent effects in the same effect block, used with if-statements
 break = yes
@@ -4122,7 +4350,6 @@ Supported Scopes: galactic_object
 
 add_event_chain_counter - Increments (or decrements with negative values) an event chain counter for the scoped country by a specific amount
 add_event_chain_counter = { event_chain = <key> counter = <key> amount = <int>/<variable> }
-
 Supported Scopes: country
 
 add_anomaly - Adds a specific anomaly category to the scoped planet
@@ -4135,7 +4362,7 @@ set_disable_at_health - Sets the scoped ship to become disabled at a certain hul
 set_disable_at_health = <0-1 float>
 Supported Scopes: ship
 
-remove_building - Removes a specific building from the scoped planet
+remove_building - Removes a single instance of a specific building from the scoped planet
 remove_building = <key>
 Supported Scopes: planet
 
@@ -4160,7 +4387,7 @@ Supported Scopes: planet
 
 set_policy_cooldown - Sets the specified policy group to have a cooldown as if the policy had just been changed.
 set_policy_cooldown = <policy group e.g. diplomatic_stance>
-Supported Scopes: planet country ship pop
+Supported Scopes: country
 
 create_point_of_interest - Creates a point of interest for the scoped country at a specific location, associated with an event chain
 create_point_of_interest = { id = <key> name = <string> desc = <string> event_chain = <key> location = <target> }
@@ -4234,6 +4461,13 @@ set_timed_situation_flag = {
 }
 Supported Scopes: situation
 
+set_timed_agreement_flag - Sets an arbitrarily-named flag on the scoped agreement for a set duration
+set_timed_agreement_flag = {
+	flag = <key> (note: one can use <key>@scope e.g. my_flag@from to track relationships between objects)
+	days/months/years = <int>/<variable>
+}
+Supported Scopes: agreement
+
 set_timed_federation_flag - Sets an arbitrarily-named flag on the scoped federation for a set duration
 set_timed_federation_flag = {
 	flag = <key> (note: one can use <key>@scope e.g. my_flag@from to track relationships between objects)
@@ -4295,7 +4529,6 @@ set_timed_star_flag - Sets an arbitrarily-named flag on the scoped system for a 
 set_timed_star_flag = { 
 	flag = <key> (note: one can use <key>@scope e.g. my_flag@from to track relationships between objects)
 	days/months/years = <int>/<variable>
-
 Supported Scopes: galactic_object
 
 set_timed_army_flag - Sets an arbitrarily-named flag on the scoped army for a set duration
@@ -4360,7 +4593,7 @@ set_saved_date = {
 	days_from_present = <int>/<variable> (time until the date you wish to save)
 	expires = <int>/<variable> (time until the saved date is cleared, default is never)
 }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 every_planet_within_border - Iterate through each planet within the current empire's borders - executes the enclosed effects on all of them for which the limit triggers return true
 every_planet_within_border = { limit = { <triggers> } <effects> }
@@ -4386,7 +4619,7 @@ remove_modifier = <key>
 Supported Scopes: megastructure planet country ship pop fleet galactic_object pop_faction federation spy_network espionage_operation
 
 add_ship_design - Adds a specific ship design to the scoped country
-add_ship_design = <target>
+add_ship_design = <target/last_created_design>
 Supported Scopes: country
 
 add_mission_progress - Adds or subtracts progress to/from the scoped observation post's current mission
@@ -4499,7 +4732,7 @@ Supported Scopes: planet country pop_faction sector
 
 set_policy - Sets a policy to a specific option for the scoped country and specifies if policy cooldown should go into effect
 set_policy = { policy = <key> option = <key> cooldown = <bool> }
-Supported Scopes: all
+Supported Scopes: country
 
 recruitable - Sets scoped leader as non/recruitable
 recruitable = yes
@@ -4617,8 +4850,11 @@ remove_war_participant - Removes a specified country from the war
 remove_war_participant = <target>
 Supported Scopes: war
 
-set_subject_of - Sets the scoped country to be a specific subject of target country
-set_subject_of = { who = <target> subject_type = <key> }
+set_subject_of - Sets the scoped country to be a subject of target country. If use_demanded_terms is set to yes, then the subject agreement will use terms that have previously been demanded in a diplomatic action. If allow_instant_negotiation is set to yes, then the subject and overlord can re-negotiate their agreement right away without having to way for the cooldown. If preset is specified, then the agreement will start as that preset
+set_subject_of = { who = <target>
+use_demanded_terms = yes
+allow_instant_negotiation = yes
+preset = <preset_name> [optional] }
 Supported Scopes: country
 
 unassign_leader - Unassigns scoped leader from their post or unassigns leader from the scoped planet/ship/fleet/army
@@ -4674,26 +4910,26 @@ Supported Scopes: planet
 
 subtract_variable - Decrements a previously-set variable by a specific amount
 subtract_variable = { which = <string> value = <float>/<variable>/<scope.variable>/trigger:<trigger> }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 multiply_variable - Multiplies a previously-set variable by a specific amount
 multiply_variable = { which = <string> value = <float>/<variable>/<scope.variable>/trigger:<trigger> }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 divide_variable - Divides a previously-set variable by a specific amount
 divide_variable = { which = <string> value = <float>/<variable>/<scope.variable>/trigger:<trigger> }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 modulo_variable - Modulos a previously-set variable by a specific amount i.e. X % Y
 modulo_variable = { which = <string> value = <float>/<variable>/<scope.variable>/trigger:<trigger> }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 round_variable_to_closest - Rounds a previously-set variable to the closest X
 round_variable_to_closest = {
 	which = <string>
 	value = <float>/<variable>/<scope.variable>/trigger:<trigger> (variable will be rounded to a multiple of this value)
 }
-Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset situation
+Supported Scopes: megastructure planet country ship pop fleet galactic_object leader army ambient_object species pop_faction war federation starbase deposit sector archaeological_site first_contact spy_network espionage_operation espionage_asset agreement situation
 
 play_sound - Play the defined sound effect
 play_sound = myfirstsoundeffect
@@ -4915,7 +5151,7 @@ pop_force_add_ethic = <key>
 Supported Scopes: pop
 
 set_empire_name - Sets the name of the current Empire.
-set_empire_name = "name"
+set_empire_name = "name_loc_key"
 Supported Scopes: country
 
 set_empire_flag - Sets the flag of the current Empire.
@@ -5069,6 +5305,25 @@ remove_ruler_trait - Removes a specific ruler trait from the scoped leader, even
 remove_ruler_trait = <trait>
 Supported Scopes: leader
 
+remove_secret_fealty - Removes a secret fealty pact between the scoped subject country and the target empire
+remove_secret_fealty = <target>
+Supported Scopes: country
+
+set_agreement_terms - Sets agreement terms of the agreement. Can be used to set multiple terms at once, including resource subsidies.
+set_agreement_term = {
+	subject_diplomacy = subject_can_not_do_diplomacy
+	subject_integration = subject_can_be_integrated
+	resource_subsidies_alloys = 0.5
+}
+Supported Scopes: agreement
+
+set_agreement_preset - Sets the preset of an agreement and applies its terms on the agreement if 'apply_terms' is 'yes'.
+set_agreement_preset = {
+	preset = <preset key>
+	apply_terms = no #Defaults to 'yes'
+}
+Supported Scopes: agreement
+
 add_notification_modifier - Add a notification modifier to the country
 add_notification_modifier = <key>
 Supported Scopes: country
@@ -5096,7 +5351,6 @@ change_species_characteristics = {
 	portrait = <key/species/leader event target, limits >
 	gender = <any/male/female/leader event target, limits species to this gender or removes limit if 'any'>
 	can_change_leader = <Y/N, apply portrait and gender (randomizes new name) changes to existing leaders> 
-
 Supported Scopes: species
 
 copy_techs_from - Copies all techs from the target country to the scoped country, except for some exceptions listed. Tech weights (and weight modifiers) are honoured, meaning that techs a country should not have will not be copied.
@@ -5130,7 +5384,7 @@ create_starbase = {
 	building = <starbase_building>
 	effect = { ... }
 }
-Supported Scopes: galactic_object
+Supported Scopes: planet galactic_object
 
 set_starbase_size - Sets the ship size of a starbase
 set_starbase_size = <ship_size>
@@ -5332,11 +5586,19 @@ Supported Scopes: planet
 
 create_archaeological_site - Creates a archaeological site associated with the scope object
 create_archaeological_site = <site type>
-Supported Scopes: megastructure planet ship fleet galactic_object ambient_object starbase
+Supported Scopes: megastructure planet ship fleet galactic_object ambient_object starbase debris
 
 destroy_archaeological_site - Destroys a archaeological site in right hand site event target
 destroy_archaeological_site = <event target>
 Supported Scopes: all
+
+add_starbase_component - Adds a ship component to a starbase, standalone from any module or building
+add_starbase_component = { component = <component key> }
+Supported Scopes: starbase
+
+remove_starbase_component - Removes the specified ship component to a starbase. Only works for components that are standalone from any module or building.
+remove_starbase_component = { component = <component key> }
+Supported Scopes: starbase
 
 add_stage_clues - Adds clues to the current stage of an archaeological or first contact site
 add_stage_clues = <int>
@@ -5454,19 +5716,16 @@ Supported Scopes: federation
 set_only_leader_builds_fleets - Sets exclusive right to build fleets by federation leader
 Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
 set_only_leader_builds_fleets = <yes/no>
-
 Supported Scopes: federation
 
 set_allow_subjects_to_join - Sets right for subjects to join federations
 Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
 set_allow_subjects_to_join = <yes/no>
-
 Supported Scopes: federation
 
 set_equal_voting_power - Sets different voting weight
 Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
 set_equal_voting_power = <yes/no>
-
 Supported Scopes: federation
 
 set_diplomacy_action_setting - Sets diplomatic action custom setting
@@ -5482,7 +5741,6 @@ Supported Scopes: federation
 set_free_migration - Sets unified migration flag for federation
 Please don't use outside law on_enact, functional effect! Use set_federation_law and has_federation_law instead.
 set_free_migration = <yes/no>
-
 Supported Scopes: federation
 
 set_federation_settings - Sets diplomatic action custom setting
@@ -5503,7 +5761,6 @@ Supported Scopes: federation
 
 add_cohesion - Add cohesion to the federation
 add_cohesion = <value>
-
 Supported Scopes: federation
 
 set_council_size - Sets the number of seats on the Galactic Council
@@ -5533,6 +5790,10 @@ Supported Scopes: country
 remove_permanent_councillor - Remove the provided country from their permanent council position
 remove_permanent_councillor = yes/no
 Supported Scopes: country
+
+add_loyalty - Add loyalty to subject of an agreement
+add_loyalty = 5
+Supported Scopes: agreement
 
 set_sector_capital - Sets the scoped planet to be the capital of the sector it is part of. If used in the capital sector, it will shift the empire capital. Warning: Experimental, may have unintended consequences.
 set_sector_capital = yes
@@ -5633,6 +5894,14 @@ remove_espionage_operation_flag - Removes a flag from the scoped espionage opera
 remove_espionage_operation_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
 Supported Scopes: espionage_operation
 
+set_design_flag - Sets an arbitrarily-named flag on the scoped design
+set_design_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
+Supported Scopes: design
+
+remove_design_flag - Removes a flag from the scoped design
+remove_design_flag = <key> (note: one can use e.g. my_flag@from to track relationships between objects)
+Supported Scopes: design
+
 complete_crisis_objective - Gives the player the reward for the specified crisis objective
 complete_crisis_objective = <objective>
 Supported Scopes: country
@@ -5691,20 +5960,6 @@ add_victory_score - Adds victory score to a country
 add_victory_score = { source=<loc_key> score=<value>/<variable> }
 Supported Scopes: country
 
-store_galactic_community_leader_backup_data - Stores a copy of the specified data of the Galactic Custodian/Emperor. The values default to 'no'.
-store_galactic_community_leader_backup_data = {
-flag = <yes/no>
-room = <yes/no>
-name = <yes/no
-ethics = <yes/no>
-government = <yes/no>
-}
-Supported Scopes: all
-
-restore_galactic_community_leader_backup_data - Retores backed up data to the Galactic Custodian/Emperor
-restore_galactic_community_leader_backup_data = <yes/no>
-Supported Scopes: all
-
 activate_crisis_progression - Activates crisis progression for the country
 activate_crisis_progression = yes
 Supported Scopes: country
@@ -5719,16 +5974,18 @@ Supported Scopes: country
 
 add_custodian_term_days - Increase the current Custodian term time
 add_custodian_term_days = <days>
-
 Supported Scopes: all
 
 set_custodian_term_days - Set the current Custodian term time. -1 will make the Custodianship permanent.
 set_custodian_term_days = <days>
-
 Supported Scopes: all
 
 destroy_situation - Destroys a situation in right hand side event target, use once situation is complete (on_fail/on_complete/on_abort is not called)
 destroy_situation = <event target>
+Supported Scopes: all
+
+abort_situation - Destroys a situation in right hand side event target, firing on_abort (use to cancel and fire that effect)
+abort_situation = <event target>
 Supported Scopes: all
 
 add_situation_progress - Adds a sum of progress scoped situation
@@ -5737,6 +5994,10 @@ Supported Scopes: situation
 
 set_situation_approach - Sets the approach to the Situation. Respects allow and potential triggers.
 set_situation_approach = <approach> (name field of the approach)
+Supported Scopes: situation
+
+set_situation_locked - Locks the Situation so it will not progress until unlocked.
+set_situation_locked = yes/no (no unlocks it)
 Supported Scopes: situation
 
 pass_targeted_resolution - Immediately passes the first found (oldest) proposed/voting for/failed resolution OR a new resolution of this type that has the specified target. Ignores whether the target is valid or not.
@@ -5748,6 +6009,47 @@ On end it will trigger a full update of any dirty modifiers.
 Begin: set_update_modifiers_batch = begin
 End: set_update_modifiers_batch = end
 Supported Scopes: all
+
+set_rule_can_subject_be_integrated - Changes the agreement term for wether the Subject can be integrated
+set_rule_can_subject_be_integrated = <yes/no>
+Supported Scopes: agreement
+
+set_rule_can_subject_do_diplomacy - Changes the agreement term for whether the Subject can do diplomacy
+set_rule_can_subject_do_diplomacy = <yes/no>
+Supported Scopes: agreement
+
+set_rule_can_subject_expand - Changes the agreement term for whether the Subject can expand
+set_rule_can_subject_expand = <can_expand/can_expand_with_tithe/cannot_expand>
+Supported Scopes: agreement
+
+set_rule_can_subject_vote - Changes the agreement term for whether the Subject can vote independently of its overlord in GalCom/federations
+set_rule_can_subject_vote = <yes/no>
+Supported Scopes: agreement
+
+set_rule_join_overlord_wars - Changes the agreement term for Subject to join Overlord wars
+set_rule_join_overlord_wars = <none/defensive/offensive/all>
+Supported Scopes: agreement
+
+set_rule_join_subject_wars - Changes the agreement term for Overlord to wars of its Subject
+set_rule_join_subject_wars = <none/defensive/offensive/all>
+Supported Scopes: agreement
+
+set_rule_subject_has_access - Changes the agreement term for whether the Subject can access the overlord's territory (and territories the overlord has access to) despite closed borders
+set_rule_subject_has_access = <yes/no>
+Supported Scopes: agreement
+
+set_rule_subject_has_sensors - Changes the agreement term for whether the Subject gets sensors data from Overlord
+set_rule_subject_has_sensors = <yes/no>
+Supported Scopes: agreement
+
+convert_to_specialist - Starts the process of converting the subject of the scoped agreement to the given specialist type
+Can also be used to remove the specialization from a subject, by using 'none' as value
+convert_to_specialist = <specialist_subject_type>
+Supported Scopes: agreement
+
+pass_debris_ownership - Passes the scoped debris ownership to the specified country 
+pass_debris_ownership = { owner = <target country> }
+Supported Scopes: debris
 
 validate_planet_buildings_and_districts - Checks whether the planets and districts on the planet are valid (their potential triggers are fulfilled), removes or replaces them if not.
 validate_planet_buildings_and_districts = yes
@@ -5872,6 +6174,14 @@ clear_blocker - Clears scoped deposit blocker and fires its on_cleared effect
 clear_blocker = yes
 Supported Scopes: deposit
 
+remove_ship_design - Removes a specific ship design from the scoped country
+remove_ship_design = <target/last_created_design>
+Supported Scopes: country
+
+remove_global_ship_design - Removes a specific global design from the game
+remove_global_ship_design = <target>
+Supported Scopes: all
+
 every_system_in_cluster - Executes enclosed effects on every system in the cluster that meet the limit criteria
 every_system_in_cluster = { limit = { <triggers> } <effects> }
 Supported Scopes: all
@@ -5992,6 +6302,16 @@ Supported Scopes: planet
 run_ai_strategic_data - Recomputes ALL strategic data for AI = yes
 Supported Scopes: country
 
+get_trade_data - Passes special trade offer data from the target enclave country to the scoped country.
+Only works inside certain parts of the script marked as ai_trade_facility.
+get_trade_data = { target = <target> }
+Supported Scopes: country
+
+make_special_trade - Makes special trade deal between the target enclave country and the scoped country.
+Only works inside certain parts of the script marked as ai_trade_facility.
+make_special_trade = { target = <target> }
+Supported Scopes: country
+
 add_static_war_exhaustion - Adds static war exhaustion, scaled with value_for_planet_destruction, to owner of the battle location 
 add_static_war_exhaustion = {
 	attacker = <country>
@@ -6042,7 +6362,6 @@ Supported Scopes: country
 
 add_imperial_authority - Add imperial_authority
 add_imperial_authority = <value>
-
 Supported Scopes: all
 
 add_stage_modifier - Adds a specific modifier to the current espionage operation stage for a set duration or until stage is changed
@@ -6101,6 +6420,15 @@ situation_event = {
 }
 Supported Scopes: situation
 
+agreement_event - Fires an agreement event for the scoped agreement
+agreement_event = {
+	id = <id>
+	days = x (optional: specify delay)
+	random = y (optional: specify random delay from 0 to value, which is added on to the 'days' delay)
+	scopes = { from = fromfrom } (optional: specify scope overrides)
+}
+Supported Scopes: agreement
+
 transfer_galactic_defense_force_fleets - Moves all owned GDF fleets to the target.
 transfer_galactic_defense_force_fleets = <target>
 Supported Scopes: country
@@ -6127,6 +6455,19 @@ Supported Scopes: all
 set_emperor_can_change_council_members - Sets whether the Galactic Emperor can change Imperial Council members or not
 set_emperor_can_change_council_members = yes/no
 Supported Scopes: all
+
+give_fleet - Leases fleet out to the new controller country for a numbed of days 
+give_fleet = { controller = <target country> 
+ days = <number of days> }
+Supported Scopes: fleet
+
+break_fleet_contract - Breaks fleat lease contract 
+break_fleet_contract = yes
+Supported Scopes: fleet
+
+prolong_fleet_contract - Prolongs fleet's lease contract for a numbed of days 
+prolong_fleet_contract = { days = <number of days> }
+Supported Scopes: fleet
 
 create_leader - Creates a new leader for the scoped country
 create_leader = {
@@ -6164,6 +6505,31 @@ inverted_switch = {
 	default = { <effect> }
 }
 Supported Scopes: all
+
+random_agreement - Iterate through each agreement - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_agreement = {
+	limit = { <triggers> }
+	weights = { (optional - adds weights to affect the chance a specific object is selected)
+		base = float
+		modifier = { <add/factor = float> <triggers> }
+	}
+	<effects>
+}
+Supported Scopes: country no_scope
+
+ordered_agreement - Iterate through each agreement - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_agreement = {
+	limit = { <triggers> }
+	position = <integer, starting with 0>
+	order_by = <variable>/trigger:<trigger>
+	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
+	<effects>
+}
+Supported Scopes: country no_scope
+
+every_agreement - Iterate through each agreement - executes the enclosed effects on all of them for which the limit triggers return true
+every_agreement = { limit = { <triggers> } <effects> }
+Supported Scopes: country no_scope
 
 ordered_ambient_object - Iterate through every ambient object in the game - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
 ordered_ambient_object = {
@@ -6440,6 +6806,56 @@ ordered_subject = {
 }
 Supported Scopes: country
 
+random_available_debris - Iterate through all debris belong to available special projects of the scoped country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_available_debris = {
+	limit = { <triggers> }
+	weights = { (optional - adds weights to affect the chance a specific object is selected)
+		base = float
+		modifier = { <add/factor = float> <triggers> }
+	}
+	<effects>
+}
+Supported Scopes: country
+
+ordered_available_debris - Iterate through all debris belong to available special projects of the scoped country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_available_debris = {
+	limit = { <triggers> }
+	position = <integer, starting with 0>
+	order_by = <variable>/trigger:<trigger>
+	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
+	<effects>
+}
+Supported Scopes: country
+
+every_available_debris - Iterate through all debris belong to available special projects of the scoped country - executes the enclosed effects on all of them for which the limit triggers return true
+every_available_debris = { limit = { <triggers> } <effects> }
+Supported Scopes: country
+
+random_owned_design - Iterate through all designs owned by the current country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_owned_design = {
+	limit = { <triggers> }
+	weights = { (optional - adds weights to affect the chance a specific object is selected)
+		base = float
+		modifier = { <add/factor = float> <triggers> }
+	}
+	<effects>
+}
+Supported Scopes: country
+
+ordered_owned_design - Iterate through all designs owned by the current country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_owned_design = {
+	limit = { <triggers> }
+	position = <integer, starting with 0>
+	order_by = <variable>/trigger:<trigger>
+	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
+	<effects>
+}
+Supported Scopes: country
+
+every_owned_design - Iterate through all designs owned by the current country - executes the enclosed effects on all of them for which the limit triggers return true
+every_owned_design = { limit = { <triggers> } <effects> }
+Supported Scopes: country
+
 random_spynetwork - Iterate through each spynetwork - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
 random_spynetwork = {
 	limit = { <triggers> }
@@ -6658,6 +7074,31 @@ ordered_owned_fleet = {
 	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
 	<effects>
 }
+Supported Scopes: country
+
+random_controlled_fleet - Iterate through each fleet controlled by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_controlled_fleet = {
+	limit = { <triggers> }
+	weights = { (optional - adds weights to affect the chance a specific object is selected)
+		base = float
+		modifier = { <add/factor = float> <triggers> }
+	}
+	<effects>
+}
+Supported Scopes: country
+
+ordered_controlled_fleet - Iterate through each fleet controlled by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_controlled_fleet = {
+	limit = { <triggers> }
+	position = <integer, starting with 0>
+	order_by = <variable>/trigger:<trigger>
+	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
+	<effects>
+}
+Supported Scopes: country
+
+every_controlled_fleet - Iterate through each fleet controlled by the country - executes the enclosed effects on all of them for which the limit triggers return true
+every_controlled_fleet = { limit = { <triggers> } <effects> }
 Supported Scopes: country
 
 random_fleet_in_orbit - Iterate through each fleet orbiting the current planet/starbase/megastructure - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
@@ -7155,7 +7596,7 @@ every_owned_sector - Iterate through every owned sector - executes the enclosed 
 every_owned_sector = { limit = { <triggers> } <effects> }
 Supported Scopes: country
 
-ordered_owned_ship - Iterate through each ship in the fleet or owned by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_owned_ship - Iterate through each ship in the fleet or controlled by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
 ordered_owned_ship = {
 	limit = { <triggers> }
 	position = <integer, starting with 0>
@@ -7163,6 +7604,31 @@ ordered_owned_ship = {
 	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
 	<effects>
 }
+Supported Scopes: country fleet
+
+random_controlled_ship - Iterate through each ship in the fleet or controlled by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_controlled_ship = {
+	limit = { <triggers> }
+	weights = { (optional - adds weights to affect the chance a specific object is selected)
+		base = float
+		modifier = { <add/factor = float> <triggers> }
+	}
+	<effects>
+}
+Supported Scopes: country fleet
+
+ordered_controlled_ship - Iterate through each ship in the fleet or controlled by the country - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_controlled_ship = {
+	limit = { <triggers> }
+	position = <integer, starting with 0>
+	order_by = <variable>/trigger:<trigger>
+	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
+	<effects>
+}
+Supported Scopes: country fleet
+
+every_controlled_ship - Iterate through each ship in the fleet or controlled by the country - executes the enclosed effects on all of them for which the limit triggers return true
+every_controlled_ship = { limit = { <triggers> } <effects> }
 Supported Scopes: country fleet
 
 random_ship_in_system - Iterate through each ship in the current system - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
@@ -7214,6 +7680,31 @@ Supported Scopes: country
 every_situation - Iterate through each situation a country is experiencing - executes the enclosed effects on all of them for which the limit triggers return true
 every_situation = { limit = { <triggers> } <effects> }
 Supported Scopes: country
+
+random_targeting_situation - Iterate through each situation that is targeting the current planet - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_targeting_situation = {
+	limit = { <triggers> }
+	weights = { (optional - adds weights to affect the chance a specific object is selected)
+		base = float
+		modifier = { <add/factor = float> <triggers> }
+	}
+	<effects>
+}
+Supported Scopes: planet
+
+ordered_targeting_situation - Iterate through each situation that is targeting the current planet - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_targeting_situation = {
+	limit = { <triggers> }
+	position = <integer, starting with 0>
+	order_by = <variable>/trigger:<trigger>
+	inverse = yes/no (default: no - if yes, then 0 is lowest rather than highest)
+	<effects>
+}
+Supported Scopes: planet
+
+every_targeting_situation - Iterate through each situation that is targeting the current planet - executes the enclosed effects on all of them for which the limit triggers return true
+every_targeting_situation = { limit = { <triggers> } <effects> }
+Supported Scopes: planet
 
 random_owned_pop_species - Iterate through each species of a country's owned pops - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
 random_owned_pop_species = {
@@ -7315,7 +7806,7 @@ every_enslaved_species - Check if any of the species with enslaved pops <on the 
 every_enslaved_species = { limit = { <triggers> } <effects> }
 Supported Scopes: planet country
 
-random_owned_starbase - Iterate through every owned starbase - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
+random_owned_starbase - Iterate through every owned primary starbase - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object randomly.
 random_owned_starbase = {
 	limit = { <triggers> }
 	weights = { (optional - adds weights to affect the chance a specific object is selected)
@@ -7326,7 +7817,7 @@ random_owned_starbase = {
 }
 Supported Scopes: country
 
-ordered_owned_starbase - Iterate through every owned starbase - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
+ordered_owned_starbase - Iterate through every owned primary starbase - executes the enclosed effects on one of them for which the limit triggers return true. Picks the specific object according to the order specified (position 0, order_by = trigger:num_pops would run the effects on the X with the most pops)
 ordered_owned_starbase = {
 	limit = { <triggers> }
 	position = <integer, starting with 0>
@@ -7336,7 +7827,7 @@ ordered_owned_starbase = {
 }
 Supported Scopes: country
 
-every_owned_starbase - Iterate through every owned starbase - executes the enclosed effects on all of them for which the limit triggers return true
+every_owned_starbase - Iterate through every owned primary starbase - executes the enclosed effects on all of them for which the limit triggers return true
 every_owned_starbase = { limit = { <triggers> } <effects> }
 Supported Scopes: country
 

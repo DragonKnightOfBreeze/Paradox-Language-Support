@@ -157,6 +157,8 @@ planet_class = {
 	}
 	## cardinality = 0..1
 	uses_alternative_skies_for_moons = bool
+	## cardinality = 0..1
+	uses_alternative_skies_if_has_orbital_ring = bool
 
 	## cardinality = 0..1
 	fixed_city_level = int

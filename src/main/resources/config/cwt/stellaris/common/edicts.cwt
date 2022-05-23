@@ -54,6 +54,11 @@ edict = {
 	}
 
 	## cardinality = 0..1
+	relay_network_modifier = {
+		alias_name[modifier] = alias_match_left[modifier]
+	}
+
+	## cardinality = 0..1
 	potential = {
 		alias_name[trigger] = alias_match_left[trigger]
 	}

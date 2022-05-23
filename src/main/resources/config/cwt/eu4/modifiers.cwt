@@ -698,3 +698,4 @@ alias[modifier:free_land_leader_pool] = float
 alias[modifier:free_navy_leader_pool] = float
 alias[modifier:relation_with_same_culture] = int
 alias[modifier:relation_with_same_culture_group] = int
+alias[modifier:is_marine_modifier] = bool
