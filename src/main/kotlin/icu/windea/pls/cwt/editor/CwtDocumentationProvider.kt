@@ -147,6 +147,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		var current: PsiElement = element
 		var lines: LinkedList<String>? = null
 		var since: String? = null
+		var html = false
 		while(true) {
 			current = current.prevSibling ?: break
 			when {
@@ -159,22 +160,23 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 				current is CwtOptionComment -> {
-					val option = current.option
-					if(option != null && option.name == "since"){
-						since = option.optionValue
+					val option = current.option ?: continue
+					when {
+						option.name == "since" -> since = option.optionValue
+						option.name == "loc_format" && option.value?.value == "html" -> html = true
 					}
 				}
 				current is PsiWhiteSpace || current is PsiComment -> continue
 				else -> break
 			}
 		}
-		val documentation = lines?.joinToString("<br>")
+		val documentation = lines?.joinToString("<br>") { if(html) it else it.escapeXml() }
 		if(documentation != null) {
 			content {
 				append(documentation)
 			}
 		}
-		if(since != null){
+		if(since != null) {
 			sections {
 				section(PlsDocBundle.message("title.since"), since)
 			}

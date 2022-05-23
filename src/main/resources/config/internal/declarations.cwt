@@ -2,6 +2,7 @@
 ### See: <code>localisation/languages.yml</code>
 ### See cwt rule: <code>enum[font_languages]</code>
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Creating_Localisation_Files">Creating Localisation Files</a>
+## loc_format = html
 locales = {
 	### Default
 	l_default = {
@@ -69,6 +70,7 @@ locales = {
 ### See: <code>interface/fonts.gfx#bitmapfonts.textcolors</code>
 ### See cwt rule: <code>complex_enum[textcolors]</code>
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes">Color Codes</a>
+## loc_format = html
 colors = {
 	### Purple
 	M = {
