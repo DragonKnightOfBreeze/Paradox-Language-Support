@@ -3,6 +3,10 @@
 ### See cwt rule: <code>enum[font_languages]</code>
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Creating_Localisation_Files">Creating Localisation Files</a>
 locales = {
+	### Default
+	l_default = {
+		language_tag = ""
+	}
 	### English
 	l_english = {
 		language_tag = "en"

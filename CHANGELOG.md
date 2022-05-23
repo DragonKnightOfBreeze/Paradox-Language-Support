@@ -7,6 +7,7 @@
 ## 0.6 > 0.6.0
 
 * [ ] 完善在线参考文档
+* [ ] 更新cwt规则到最新版本（`stellaris v3.4`）
 * [X] 本地化文件语法解析优化：删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
 * [X] 本地化文件语法解析优化：支持`iconFrame`（`£leader_skill|3£`中的`3`）
 * [X] 支持本地化语言：`l_japanese` `l_korean`
