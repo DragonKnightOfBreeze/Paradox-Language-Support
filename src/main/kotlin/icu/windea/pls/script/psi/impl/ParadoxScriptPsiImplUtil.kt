@@ -332,7 +332,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
 		//特殊处理字符串需要被识别为标签的情况
-		if(element.resolveTagConfig() != null) return PlsIcons.scriptTagIcon
+		if(element.resolveTagConfig() != null) return PlsIcons.tagIcon
 		return PlsIcons.scriptValueIcon
 	}
 	
@@ -479,11 +479,9 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun isObject(element: ParadoxScriptBlock): Boolean {
-		val tagNames = element.resolveTagConfigs()?.keys
 		element.forEachChild {
 			when {
 				//忽略字符串需要被识别为标签的情况
-				it is ParadoxScriptString && tagNames != null && it.text in tagNames -> return@forEachChild
 				it is ParadoxScriptProperty -> return true
 				it is ParadoxScriptValue -> return false
 			}
@@ -493,11 +491,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun isArray(element: ParadoxScriptBlock): Boolean {
-		val tagNames = element.resolveTagConfigs()?.keys
 		element.forEachChild {
 			when {
-				//忽略字符串需要被识别为标签的情况
-				it is ParadoxScriptString && tagNames != null && it.text in tagNames -> return@forEachChild
 				it is ParadoxScriptProperty -> return false
 				it is ParadoxScriptValue -> return true
 			}

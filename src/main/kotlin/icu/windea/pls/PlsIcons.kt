@@ -21,7 +21,7 @@ object PlsIcons {
 	@JvmStatic val scriptPropertyIcon = loadIcon("/icons/paradoxScriptProperty.svg")
 	@JvmStatic val scriptValueIcon = loadIcon("/icons/paradoxScriptValue.svg")
 	@JvmStatic val scriptParameterIcon = loadIcon("/icons/paradoxScriptParameter.svg")
-	@JvmStatic val scriptTagIcon = loadIcon("icons/paradoxScriptTag.svg")
+	@JvmStatic val tagIcon = loadIcon("icons/tag.svg")
 	
 	@JvmStatic val localisationLocaleIcon = loadIcon("/icons/localisationLocale.svg")
 	@JvmStatic val localisationPropertyIcon = loadIcon("/icons/localisationProperty.svg")

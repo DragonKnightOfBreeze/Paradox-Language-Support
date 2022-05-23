@@ -19,13 +19,10 @@
   * [ ] 文件路径分隔符兼容"/" "\" "\\"混用
 * 新增功能：
   * [ ] 实现代码检查：不期望的脚本语法（多种情况，需要确认）
-* 文档渲染优化：
-  * [X] CWT文档注释：渲染版本号(`since = "3.3"`)
-  * [X] CWT文档注释：可以渲染为HTML（加上`loc_format = html`）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
-    * [ ] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能额外由CWT规则提供
-    * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码提示、代码折叠、引用解析、格式化
+    * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
+    * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码补全、代码折叠、引用解析、格式化
     * [X] 兼容`parameter`语法，以及相关功能：代码高亮
     * [X] 兼容`string_template`语法，以及相关功能：代码高亮
     * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮、格式化
@@ -38,6 +35,10 @@
   * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`）
   * [X] 支持额外的本地化语言：`l_japanese` `l_korean`
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
+* 扩展CWT配置文件：
+  * [X] 支持额外的CWT选项：`## since = "3.3"`，用于在文档注释中显示开始支持的游戏版本号
+  * [X] 支持额外的CWT选项：`## loc_format = html`，用于指定将文档注释渲染为HTML
+  * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
 * 完善对CWT配置文件的支持，完善相关功能：
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [ ] 进行代码提示时，仅当对应的定义元素类型是boolean或者无法解析时，才会提示`yes`和`no`
@@ -113,10 +114,8 @@
 * [X] 完善对内置配置文件的支持，完善相关功能
   * [X] 将配置文件格式由YAML改为CWT，以便可以直接导航到文件中的相关规则
 * [X] 完善对CWT配置文件的支持，完善相关功能
-  * [X] 实现值类型`abs_filepath[...]`的解析和应用
-  * [X] 编写规则`types.type[*].pictures`，用于提供对定义的相关图片的支持（装订线图标，渲染到文档注释）
-  * [X] 实现规则`types.type[*].pictures`的解析
-  * [X] 实现规则`types.type[*].pictures`的相关功能（装订线图标，渲染到文档注释）
+  * [X] 支持额外的值类型：`abs_filepath[...]`，以及相关功能：引用解析
+  * [X] 支持额外的CWT规则：`types.type[*].pictures`，用于提供对定义的相关图片的支持，以及相关功能：装订线图标，渲染到文档注释
   * [X] 类型为枚举值、常量、别名名字的键/值的解析需要忽略大小写
 * [X] 显示相关信息时基于更合理更完善的`ItemPresentation`
 

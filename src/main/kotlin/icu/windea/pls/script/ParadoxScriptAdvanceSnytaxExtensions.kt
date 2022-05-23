@@ -8,41 +8,12 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.script.psi.*
 
 //region tag
-internal fun ParadoxScriptProperty.resolveTagConfigs(): Map<String, CwtTagConfig>? {
-	val definitionInfo = definitionInfo ?: return null
-	return definitionInfo.configGroup.tagMap[definitionInfo.type]
-}
-
-internal fun ParadoxScriptBlock.resolveTagConfigs(): Map<String, CwtTagConfig>? {
-	val propertyValueElement = parent.castOrNull<ParadoxScriptPropertyValue>() ?: return null
-	val propertyElement = propertyValueElement.parent.castOrNull<ParadoxScriptProperty>() ?: return null
-	val definitionInfo = propertyElement.definitionInfo ?: return null
-	return definitionInfo.configGroup.tagMap[definitionInfo.type]
-}
-
-internal fun ParadoxScriptString.resolveTagConfig(): CwtTagConfig? {
+fun ParadoxScriptString.resolveTagConfig(): CwtTagConfig? {
 	val tagConfigs = resolveTagConfigs() ?: return null
 	return doResolveTagConfig(tagConfigs)
 }
 
-internal fun ParadoxScriptString.completeTagConfig(result: CompletionResultSet) {
-	val tagConfigs = resolveTagConfigs(excludeExist = true) ?: return
-	if(tagConfigs.isEmpty()) return
-	val icon = PlsIcons.scriptTagIcon
-	val tailText = " from tags"
-	for(tagConfig in tagConfigs.values) {
-		val name = tagConfig.name
-		val element = tagConfig.pointer.element ?: continue
-		val typeText = tagConfig.pointer.containingFile?.name ?: anonymousString
-		val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-			.withTailText(tailText, true)
-			.withTypeText(typeText, true)
-			.withPriority(tagPriority)
-		result.addElement(lookupElement)
-	}
-}
-
-internal fun ParadoxScriptString.resolveTagConfigs(excludeExist: Boolean = false): Map<String, CwtTagConfig>? {
+private fun ParadoxScriptString.resolveTagConfigs(excludeExist: Boolean = false): Map<String, CwtTagConfig>? {
 	val parent = parent
 	if(parent !is ParadoxScriptBlock) return null
 	val parentParent = parent.parent
@@ -81,8 +52,8 @@ internal fun ParadoxScriptString.resolveTagConfigs(excludeExist: Boolean = false
 	return tagConfigs
 }
 
-internal fun ParadoxScriptString.doResolveTagConfig(tagConfigs: Map<String, CwtTagConfig>): CwtTagConfig? {
-	//TODO 标签是否可以用引号包围？ -> 目前认为不可以
+private fun ParadoxScriptString.doResolveTagConfig(tagConfigs: Map<String, CwtTagConfig>): CwtTagConfig? {
+	//目前认为不可以用引号包围
 	val text = text
 	if(text.isQuoted()) return null
 	return tagConfigs[text]

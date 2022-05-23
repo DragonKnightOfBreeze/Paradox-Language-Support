@@ -51,7 +51,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
-		//特殊字符串需要被识别为标签的情况
+		//特殊处理字符串需要被识别为标签的情况
 		element.resolveTagConfig()?.let { _ -> 
 			//颜色高亮
 			holder.newSilentAnnotation(INFORMATION)

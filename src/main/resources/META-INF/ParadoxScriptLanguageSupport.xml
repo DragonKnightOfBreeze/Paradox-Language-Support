@@ -151,12 +151,6 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
                      groupPathKey="script.inspection.definition.path"
                      implementationClass="icu.windea.pls.script.inspections.definition.UnexpectedScriptSyntaxInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateTags"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.definition.duplicateTags"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
-                     groupPathKey="script.inspection.definition.path"
-                     implementationClass="icu.windea.pls.script.inspections.definition.DuplicateTagsInspection"/>
     <!--definition > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"

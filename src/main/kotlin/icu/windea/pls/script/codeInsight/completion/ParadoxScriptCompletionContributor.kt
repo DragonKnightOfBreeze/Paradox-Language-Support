@@ -28,13 +28,6 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 					.withParent(psiElement(ParadoxScriptBlock::class.java)
 						.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
 		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider)
-		
-		//当用户可能在输入一个tag时提示
-		val tagPattern = psiElement(STRING_TOKEN)
-			.withParent(psiElement(ParadoxScriptString::class.java)
-				.withParent((psiElement(ParadoxScriptBlock::class.java)
-					.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
-		extend(null, tagPattern, ParadoxTagCompletionProvider)
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

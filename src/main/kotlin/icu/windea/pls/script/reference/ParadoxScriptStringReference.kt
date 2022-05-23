@@ -6,8 +6,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -30,19 +28,11 @@ class ParadoxScriptStringReference(
 	}
 	
 	override fun resolve(): PsiNamedElement? {
-		//处理字符串需要被识别为标签的情况
-		doResolveTag()?.let { return it }
 		return resolveValue(element) //根据对应的expression进行解析
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		//处理字符串需要被识别为标签的情况
-		doResolveTag()?.let { return arrayOf(PsiElementResolveResult(it)) }
 		return multiResolveValue(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
-	}
-	
-	private fun doResolveTag(): CwtProperty? {
-		return element.resolveTagConfig()?.pointer?.element
 	}
 	
 	//代码提示功能由ParadoxDefinitionCompletionProvider统一实现
