@@ -17,12 +17,10 @@ class InternalConfigGroup(
 		//初始化locale数据
 		val declarationsConfig = configMap.getValue("declarations.cwt")
 		var localesConfig: CwtPropertyConfig? = null
-		//var sequentialNumbersConfig: CwtPropertyConfig ? = null
 		var colorsConfig: CwtPropertyConfig ? = null
 		for(prop in declarationsConfig.properties) {
 			when(prop.key){
 				"locales" -> localesConfig = prop
-				//"sequential_numbers" -> sequentialNumbersConfig = prop
 				"colors" -> colorsConfig = prop
 			}
 		}
@@ -35,15 +33,6 @@ class InternalConfigGroup(
 		}
 		localeMap = locales.associateBy { it.id }
 		localeFlagMap = locales.associateBy { it.languageTag }
-		
-		////初始化sequentialNumber数据
-		//sequentialNumbers = sequentialNumbersConfig!!.properties!!.mapToArray {
-		//	val id = it.key
-		//	val description = it.documentation.orEmpty()
-		//	val placeholderText = it.properties?.find { p -> p.key == "placeholder_text" }?.stringValue!!
-		//	ParadoxSequentialNumberConfig(id, description, placeholderText, it.pointer)
-		//}
-		//sequentialNumberMap = sequentialNumbers.associateBy { it.id }
 		
 		//初始化color数据
 		colors = colorsConfig!!.properties!!.mapToArray {
