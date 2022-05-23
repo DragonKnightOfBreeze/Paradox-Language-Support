@@ -116,12 +116,11 @@ private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | val
 //see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
 
 //tag
-//should in specific definition declarations (scripted_effect / scripted_trigger) (as value)
+//should in definition declarations (scripted_effect / scripted_trigger)
 //resolve from a string, before any scripted variables, (non-tag) strings and properties
 
 //parameter
-//should in definition declarations
-//declared as a value / property value
+//should in definition declarations (script_value / scripted_effect / scripted_trigger)
 //currently cannot be surround with double quotes
 parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_TOKEN)] PARAMETER_END {
   pin=1
@@ -129,27 +128,17 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue]
 }
-string_template ::= string_template_entry string_template_entry+{
-  methods=[getValue]
-}
-string_template_entry ::= literal_string_template_entry | parameter_string_template_entry
-literal_string_template_entry ::= STRING_PART{
-  extends=string_template_entry
-  methods=[getValue]
-}
-parameter_string_template_entry ::= parameter {
-  extends=string_template_entry
-}
 
 //parameter condition
-//should in definition declarations (as value / property value)
+//should in definition declarations (script_value / scripted_effect / scripted_trigger)
 
 //inline math
-//should in definition declarations (should starts with "@\[" if in: scripted_effect / scripted_trigger)
-//declared as a value / property value
+//should in definition declarations
+//should starts with "@\[" if in specific definition declarations (scripted_effect / scripted_trigger) (TO CHECK)
 //only first inline math expression in a scripted effect / trigger is correctly recognized and evaluated
 //supported operators: + - * / %
 //also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"
+//inline math factor can also be scripted_variable and (if parameter it self is allowed) parameter 
 inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END{
   pin=1
   recoverWhile="#auto"
@@ -202,3 +191,20 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_ID [ PIPE ARG_NUMBER_TOKEN] 
   methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
 }
 
+//loc commands
+//should in definition declarations
+//should starts with "\[" if in specific definition declarations (scripted_effect / scripted_trigger) (TO CHECK)
+
+//string template
+//can include: string_entry, parameter_entry, etc. (TO IMPLEMENT)
+string_template ::= string_template_entry string_template_entry+{
+  methods=[getValue]
+}
+string_template_entry ::= literal_string_template_entry | parameter_string_template_entry
+literal_string_template_entry ::= STRING_PART{
+  extends=string_template_entry
+  methods=[getValue]
+}
+parameter_string_template_entry ::= parameter {
+  extends=string_template_entry
+}
