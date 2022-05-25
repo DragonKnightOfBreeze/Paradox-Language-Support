@@ -3,21 +3,25 @@ package icu.windea.pls.localisation.formatter
 import com.intellij.formatting.*
 import com.intellij.formatting.Indent
 import com.intellij.lang.*
+import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
+import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.formatter.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-//调试没有问题就不要随便修改
-
 class ParadoxLocalisationBlock(
 	node: ASTNode,
-	private val settings: CodeStyleSettings,
-	private val root: Boolean
+	private val settings: CodeStyleSettings
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
 	companion object {
+		private val shouldIndentParentTypes = TokenSet.create(PROPERTY_LIST)
+		private val shouldIndentTypes = TokenSet.create(PROPERTY, COMMENT)
+		private val shouldChildIndentTypes = TokenSet.create(PROPERTY_LIST)
+		
 		private fun createWrap(): Wrap? {
 			return null
 		}
@@ -38,38 +42,40 @@ class ParadoxLocalisationBlock(
 	
 	//收集所有节点
 	override fun buildChildren(): List<Block> {
-		return myNode.nodes().map { ParadoxLocalisationBlock(it, settings, false) }
+		val children = SmartList<Block>()
+		myNode.processChildren { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxLocalisationBlock(it, settings) }?.addTo(children).end() }
+		return children
 	}
 	
 	override fun getIndent(): Indent? {
 		//配置缩进
+		//property_list中的property和comment需要缩进
 		//属性和非头部非行尾注释要缩进
 		val elementType = myNode.elementType
+		val parentElementType = myNode.treeParent?.elementType
 		return when {
-			elementType == COMMENT -> if(root) Indent.getNoneIndent()  else Indent.getNormalIndent()
-			elementType == PROPERTY -> Indent.getNormalIndent()
+			parentElementType in shouldIndentParentTypes && elementType in shouldIndentTypes -> Indent.getNormalIndent()
 			else -> Indent.getNoneIndent()
 		}
 	}
 	
 	override fun getChildIndent(): Indent? {
 		//配置换行时的自动缩进
-		//在psiFile中不要缩进，在property_list中要缩进
+		//在file中不要缩进
+		//在property_list中需要缩进
 		val elementType = myNode.elementType
 		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
-			elementType == PROPERTY_LIST -> Indent.getNormalIndent()
+			elementType in shouldChildIndentTypes -> Indent.getNormalIndent()
 			else -> null
 		}
 	}
 	
 	override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-		//顶级快没有spacing
 		return spacingBuilder.getSpacing(this, child1, child2)
 	}
 	
 	override fun isLeaf(): Boolean {
-		//顶级块不是叶子节点
 		return myNode.firstChildNode == null
 	}
 }

@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.codeStyle.*
@@ -18,6 +19,9 @@ class CwtBlock(
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
 	companion object {
 		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN)
+		private val shouldIndentParentTypes = TokenSet.create(BLOCK)
+		private val shouldIndentTypes = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, COMMENT, DOCUMENTATION_COMMENT, OPTION_COMMENT)
+		private val shouldChildIndentTypes = TokenSet.create(BLOCK)
 		
 		private fun createWrap(): Wrap? {
 			return null
@@ -43,29 +47,31 @@ class CwtBlock(
 	private val spacingBuilder = createSpacingBuilder(myNode, settings)
 	
 	override fun buildChildren(): List<Block> {
-		return myNode.nodes().map { CwtBlock(it, settings) }
+		val children = SmartList<Block>()
+		myNode.processChildren { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { CwtBlock(it, settings) }?.addTo(children).end() }
+		return children
 	}
 	
 	override fun getIndent(): Indent? {
 		//配置缩进
-		//block中的属性、值、注释需要缩进
+		//block中的property、value、comment、documentation_comment和option_comment需要缩进
 		val elementType = myNode.elementType
 		val parentElementType = myNode.treeParent?.elementType
 		return when {
-			parentElementType != BLOCK -> Indent.getNoneIndent()
-			elementType == LEFT_BRACE || elementType == RIGHT_BRACE -> Indent.getNoneIndent()
-			else -> Indent.getNormalIndent()
+			parentElementType in shouldIndentParentTypes && elementType in shouldIndentTypes -> Indent.getNormalIndent()
+			else -> Indent.getNoneIndent()
 		}
 	}
 	
 	override fun getChildIndent(): Indent? {
 		//配置换行时的自动缩进
-		//在file和rootBlock中不要缩进，在block中要缩进
+		//在file和rootBlock中不要缩进
+		//在block中需要缩进
 		val elementType = myNode.elementType
 		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
 			elementType == ROOT_BLOCK -> Indent.getNoneIndent()
-			elementType == BLOCK -> Indent.getNormalIndent()
+			elementType in shouldChildIndentTypes -> Indent.getNormalIndent()
 			else -> null
 		}
 	}

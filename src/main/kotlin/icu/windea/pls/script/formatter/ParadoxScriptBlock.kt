@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.*
@@ -19,6 +20,9 @@ class ParadoxScriptBlock(
 	companion object {
 		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN)
 		private val inlineMathOperatorTokens = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
+		private val shouldIndentParentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION)
+		private val shouldIndentTypes = TokenSet.create(VARIABLE, PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, STRING_TEMPLATE, PARAMETER_CONDITION, COMMENT)
+		private val shouldChildIndentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION, PARAMETER_CONDITION_EXPRESSION)
 		
 		private fun createWrap(): Wrap? {
 			return null
@@ -47,29 +51,31 @@ class ParadoxScriptBlock(
 	private val spacingBuilder = createSpacingBuilder(myNode, settings)
 	
 	override fun buildChildren(): List<Block> {
-		return myNode.nodes().map { ParadoxScriptBlock(it, settings) }
+		val children = SmartList<Block>()
+		myNode.processChildren { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxScriptBlock(it, settings) }?.addTo(children).end() }
+		return children
 	}
 	
 	override fun getIndent(): Indent? {
 		//配置缩进
-		//block中的属性、值、注释需要缩进
+		//block和parameter_condition中的variable、property、value、parameter_condition和comment需要缩进
 		val elementType = myNode.elementType
 		val parentElementType = myNode.treeParent?.elementType
 		return when {
-			parentElementType != BLOCK -> Indent.getNoneIndent()
-			elementType == LEFT_BRACE || elementType == RIGHT_BRACE -> Indent.getNoneIndent()
-			else -> Indent.getNormalIndent()
+			parentElementType in shouldIndentParentTypes && elementType in shouldIndentTypes -> Indent.getNormalIndent()
+			else -> Indent.getNoneIndent()
 		}
 	}
 	
 	override fun getChildIndent(): Indent? {
 		//配置换行时的自动缩进
-		//在file和rootBlock中不要缩进，在block中要缩进
+		//在file和rootBlock中不要缩进
+		//在block、parameter_condition、parameter_condition_expression中需要缩进
 		val elementType = myNode.elementType
 		return when {
 			elementType is IFileElementType -> Indent.getNoneIndent()
 			elementType == ROOT_BLOCK -> Indent.getNoneIndent()
-			elementType == BLOCK -> Indent.getNormalIndent()
+			elementType in shouldChildIndentTypes -> Indent.getNormalIndent()
 			else -> null
 		}
 	}

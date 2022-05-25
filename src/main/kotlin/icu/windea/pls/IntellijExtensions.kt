@@ -28,17 +28,6 @@ import java.util.*
 import javax.swing.*
 
 //region Misc Extensions
-/**得到当前AST节点的除了空白节点之外的所有子节点。*/
-fun ASTNode.nodes(): List<ASTNode> {
-	val result = mutableListOf<ASTNode>()
-	var child = this.firstChildNode
-	while(child != null) {
-		if(child.elementType !== TokenType.WHITE_SPACE) result += child
-		child = child.treeNext
-	}
-	return result
-}
-
 ///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
 //fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement? {
 //	var node = element.node
@@ -242,7 +231,43 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 
 //endregion
 
+//region AstNode Extensions
+fun <T: ASTNode> T.takeIf(elementType: IElementType): T?{
+	return takeIf { it.elementType == elementType }
+}
+
+fun <T: ASTNode> T.takeUnless(elementType: IElementType): T?{
+	return takeUnless { it.elementType == elementType }
+}
+
+inline fun ASTNode.processChildren(processor: ProcessEntry.(ASTNode) -> Boolean): Boolean {
+	var child: ASTNode? = this.firstChildNode
+	while(child != null) {
+		val result = ProcessEntry.processor(child)
+		if(!result) return false
+		child = child.treeNext
+	}
+	return true
+}
+
+inline fun ASTNode.forEachChild(action: (ASTNode) -> Unit) {
+	var child: ASTNode? = this.firstChildNode
+	while(child != null) {
+		action(child)
+		child = child.treeNext
+	}
+}
+//endregion
+
 //region PsiElement Extensions
+fun <T: PsiElement> T.takeIf(elementType: IElementType): T?{
+	return takeIf { it.elementType == elementType }
+}
+
+fun <T: PsiElement> T.takeUnless(elementType: IElementType): T?{
+	return takeUnless { it.elementType == elementType }
+}
+
 inline fun <reified T : PsiElement> PsiElement.findOptionalChild(): T? {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = this.firstChild
@@ -291,21 +316,21 @@ inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(processor: 
 	return true
 }
 
-inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
+inline fun PsiElement.forEachChild(action: (PsiElement) -> Unit) {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = this.firstChild
 	while(child != null) {
-		block(child)
+		action(child)
 		child = child.nextSibling
 	}
 }
 
-inline fun <reified T : PsiElement> PsiElement.forEachChildOfType(block: (T) -> Unit) {
+inline fun <reified T : PsiElement> PsiElement.forEachChildOfType(action: (T) -> Unit) {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = this.firstChild
 	while(child != null) {
 		if(child is T) {
-			block(child)
+			action(child)
 		}
 		child = child.nextSibling
 	}
