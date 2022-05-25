@@ -519,9 +519,10 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpression(element: ParadoxScriptParameterCondition): String {
+	fun getExpression(element: ParadoxScriptParameterCondition): String? {
+		val conditionExpression = element.parameterConditionExpression ?: return null
 		val builder = StringBuilder()
-		element.processChildren {
+		conditionExpression.processChildren {
 			when {
 				element.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
 					builder.append("!")

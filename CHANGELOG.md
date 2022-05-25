@@ -22,10 +22,10 @@
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
-  * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码补全、代码折叠、引用解析、格式化
+  * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码补全、代码折叠、引用解析、格式化、代码风格设置
   * [X] 兼容`parameter`语法，以及相关功能：代码高亮
   * [X] 兼容`string_template`语法，以及相关功能：代码高亮
-  * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮、格式化
+  * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮、格式化、代码风格设置
   * [ ] 兼容`scripted_loc`语法，以及相关功能：代码高亮、格式化、代码提示、引用解析
   * [ ] 兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_factor|ALTERED_STABILITY|-10|`）
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中

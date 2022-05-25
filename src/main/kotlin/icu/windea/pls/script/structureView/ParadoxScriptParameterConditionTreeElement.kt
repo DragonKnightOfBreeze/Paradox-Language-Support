@@ -23,6 +23,11 @@ class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameter
 	}
 	
 	override fun getPresentableText(): String? {
+		return null
+	}
+	
+	override fun getLocationString(): String? {
+		//以灰色文本显示条件表达式
 		val element = element ?: return null
 		return element.expression
 	}
