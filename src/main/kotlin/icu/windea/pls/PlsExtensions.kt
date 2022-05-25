@@ -25,7 +25,6 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
 import java.lang.Integer.*
 import java.text.*
 import java.util.*
@@ -122,7 +121,7 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 	val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
 	for(i in 0 until minSnippetSize) {
 		val versionSnippet = versionSnippets[i]
-		var otherVersionSnippet = otherVersionSnippets[i]
+		val otherVersionSnippet = otherVersionSnippets[i]
 		if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
 		return versionSnippet.compareTo(otherVersionSnippet)
 	}
@@ -299,7 +298,8 @@ val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 fun ParadoxFileInfo.getDescriptorInfo(project: Project): ParadoxDescriptorInfo? {
 	val file = descriptor?.toPsiFile<PsiFile>(project) ?: return null
 	return CachedValuesManager.getCachedValue(file, cachedParadoxDescriptorInfoKey) {
-		val value = resolveDescriptorInfo(this, file)
+		//忽略异常
+		val value = runCatching { resolveDescriptorInfo(this, file) }.getOrNull()
 		CachedValueProvider.Result.create(value, file)
 	}
 }
@@ -308,16 +308,29 @@ private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: Psi
 	val fileName = descriptorFile.name
 	return when {
 		fileName == descriptorFileName -> {
-			val f = descriptorFile.castOrNull<ParadoxScriptFile>() ?: return null
-			val map = ParadoxScriptDataResolver.resolveToMap(f)
-			val name = map.get("name")?.toString() ?: descriptorFile.parent?.name ?: anonymousString //如果没有name属性，则使用根目录名
-			val version = map.get("version")?.toString()
-			val picture = map.get("picture")?.toString()
-			val tags = map.get("tags").castOrNull<List<Any?>>()?.mapTo(mutableSetOf()) { it.toString() }
-			val supportedVersion = map.get("supported_version")?.toString()
-			val remoteFileId = map.get("remote_file_id")?.toString()
-			val path = map.get("path")?.toString()
-			ParadoxDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path, isModeDescriptor = true)
+			if(descriptorFile !is ParadoxScriptFile) return null
+			val rootBlock = descriptorFile.findOptionalChild<ParadoxScriptRootBlock>() ?: return null
+			var name: String? = null
+			var version: String? = null
+			var picture: String? = null
+			var tags: Set<String>? = null
+			var supportedVersion: String? = null
+			var remoteFileId: String? = null
+			var path: String? = null
+			rootBlock.processProperties { property ->
+				when(property.name) {
+					"name" -> name = property.findPropertyValue<ParadoxScriptString>()?.stringValue
+					"version" -> version = property.findPropertyValue<ParadoxScriptString>()?.stringValue
+					"picture" -> picture = property.findPropertyValue<ParadoxScriptString>()?.stringValue
+					"tags" -> tags = property.findPropertyValue<ParadoxScriptBlock>()?.findValues<ParadoxScriptString>()?.mapTo(mutableSetOf()) { it.stringValue }
+					"supported_version" -> supportedVersion = property.findPropertyValue<ParadoxScriptString>()?.stringValue
+					"remote_file_id" -> remoteFileId = property.findPropertyValue<ParadoxScriptString>()?.stringValue
+					"path" -> path = property.findPropertyValue<ParadoxScriptString>()?.stringValue
+				}
+				true
+			}
+			val nameToUse = name ?: descriptorFile.parent?.name ?: anonymousString //如果没有name属性，则使用根目录名
+			ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModeDescriptor = true)
 		}
 		fileName == launcherSettingsFileName -> {
 			val json = jsonMapper.readValue<Map<String, Any?>>(descriptorFile.virtualFile.inputStream)
@@ -473,10 +486,6 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 		this is ParadoxScriptBoolean -> this.textMatches("no")
 		else -> false
 	}
-}
-
-fun ParadoxScriptBlock.isAlwaysYes(): Boolean {
-	return this.isObject && this.propertyList.singleOrNull()?.let { it.name == "always" && it.value == "yes" } ?: false
 }
 //endregion
 

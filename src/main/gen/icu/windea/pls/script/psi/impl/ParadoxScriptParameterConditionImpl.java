@@ -8,18 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.core.ParadoxValueType;
 
-public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements ParadoxScriptBlock {
+public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement implements ParadoxScriptParameterCondition {
 
-  public ParadoxScriptBlockImpl(@NotNull ASTNode node) {
+  public ParadoxScriptParameterConditionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitBlock(this);
+    visitor.visitParameterCondition(this);
   }
 
   @Override
@@ -29,9 +28,9 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptParameterCondition> getParameterConditionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameterCondition.class);
+  @Nullable
+  public ParadoxScriptParameterConditionExpression getParameterConditionExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameterConditionExpression.class);
   }
 
   @Override
@@ -44,18 +43,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @NotNull
   public List<ParadoxScriptValue> getValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptVariable> getVariableList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
-  }
-
-  @Override
-  @NotNull
-  public String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override
@@ -72,18 +59,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @NotNull
   public List<PsiElement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
-  }
-
-  @Override
-  @NotNull
-  public ParadoxValueType getValueType() {
-    return ParadoxScriptPsiImplUtil.getValueType(this);
-  }
-
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
   }
 
 }

@@ -109,7 +109,7 @@ private val DEFAULT_PSI_CONVERTOR = NotNullFunction<PsiElement, Collection<PsiEl
 	ContainerUtil.createMaybeSingletonList(element)
 }
 
-fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiElement)-> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<PsiElement> {
+fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiElement) -> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<PsiElement> {
 	return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 //endregion
@@ -161,7 +161,7 @@ fun String.escapeBlank(): String {
 	var builder: StringBuilder? = null
 	for((i, c) in this.withIndex()) {
 		if(c.isWhitespace()) {
-			if(builder == null) builder = StringBuilder(substring(0,i))
+			if(builder == null) builder = StringBuilder(substring(0, i))
 			builder.append("&nbsp;")
 		} else {
 			builder?.append(c)
@@ -243,12 +243,6 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 //endregion
 
 //region PsiElement Extensions
-//  @Nullable
-//  protected <T extends PsiElement> T findChildByType(IElementType type) {
-//    ASTNode node = getNode().findChildByType(type);
-//    return node == null ? null : (T)node.getPsi();
-//  }
-
 inline fun <reified T : PsiElement> PsiElement.findOptionalChild(): T? {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = this.firstChild
@@ -273,14 +267,28 @@ fun <T : PsiElement> PsiElement.findRequiredChild(type: IElementType): T {
 	return node.findChildByType(type)?.psi as T
 }
 
-inline fun PsiElement.findChild(predicate: (PsiElement) -> Boolean): PsiElement? {
+inline fun PsiElement.processChildren(processor: ProcessEntry.(PsiElement) -> Boolean): Boolean {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = this.firstChild
 	while(child != null) {
-		if(predicate(child)) return child
+		val result = ProcessEntry.processor(child)
+		if(!result) return false
 		child = child.nextSibling
 	}
-	return null
+	return true
+}
+
+inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(processor: ProcessEntry.(T) -> Boolean): Boolean {
+	//不会忽略某些特定类型的子元素
+	var child: PsiElement? = this.firstChild
+	while(child != null) {
+		if(child is T) {
+			val result =  ProcessEntry.processor(child)
+			if(!result) return false
+		}
+		child = child.nextSibling
+	}
+	return true
 }
 
 inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
@@ -292,36 +300,39 @@ inline fun PsiElement.forEachChild(block: (PsiElement) -> Unit) {
 	}
 }
 
-inline fun <T : PsiElement, R> PsiElement.mapChildOfType(type: Class<out T>, transform: (T) -> R): List<R> {
-	//为了优化性能，使用SmartList，并且不保存中间结果
-	//参考：com.intellij.psi.util.PsiTreeUtil.getChildrenOfTypeAsList
-	var result: MutableList<R>? = null
+inline fun <reified T : PsiElement> PsiElement.forEachChildOfType(block: (T) -> Unit) {
+	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = this.firstChild
 	while(child != null) {
-		if(type.isInstance(child)) {
+		if(child is T) {
+			block(child)
+		}
+		child = child.nextSibling
+	}
+}
+
+inline fun <reified T> PsiElement.filterChildOfType(predicate: (T) -> Boolean = { true }): List<T> {
+	//不会忽略某些特定类型的子元素
+	var result: MutableList<T>? = null
+	var child: PsiElement? = this.firstChild
+	while(child != null) {
+		if(child is T && predicate(child)) {
 			if(result == null) result = SmartList()
-			val r = transform(type.cast(child))
-			result.add(r)
+			result.add(child)
 		}
 		child = child.nextSibling
 	}
 	return result ?: emptyList()
 }
 
-inline fun <T : PsiElement, R> PsiElement.mapChildOfTypeNotNull(type: Class<out T>, transform: (T) -> R?): List<R> {
-	//为了优化性能，使用SmartList，并且不保存中间结果
-	//参考：com.intellij.psi.util.PsiTreeUtil.getChildrenOfTypeAsList
-	var result: MutableList<R>? = null
+inline fun <reified T : PsiElement> PsiElement.findChildOfType(predicate: (T) -> Boolean = { true }): T? {
+	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = this.firstChild
 	while(child != null) {
-		if(type.isInstance(child)) {
-			if(result == null) result = SmartList()
-			val r = transform(type.cast(child))
-			if(r != null) result.add(r)
-		}
+		if(child is T && predicate(child)) return child
 		child = child.nextSibling
 	}
-	return result ?: emptyList()
+	return null
 }
 
 inline fun <reified T : PsiElement> PsiElement.indexOfChild(element: T): Int {

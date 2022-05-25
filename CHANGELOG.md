@@ -21,19 +21,19 @@
   * [ ] 实现代码检查：不期望的脚本语法（多种情况，需要确认）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
-    * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
-    * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码补全、代码折叠、引用解析、格式化
-    * [X] 兼容`parameter`语法，以及相关功能：代码高亮
-    * [X] 兼容`string_template`语法，以及相关功能：代码高亮
-    * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮、格式化
-    * [ ] 兼容`scripted_loc`语法，以及相关功能：代码高亮、格式化、代码提示、引用解析
-    * [ ] 兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_factor|ALTERED_STABILITY|-10|`）
-    * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
+  * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
+  * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码补全、代码折叠、引用解析、格式化
+  * [X] 兼容`parameter`语法，以及相关功能：代码高亮
+  * [X] 兼容`string_template`语法，以及相关功能：代码高亮
+  * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮、格式化
+  * [ ] 兼容`scripted_loc`语法，以及相关功能：代码高亮、格式化、代码提示、引用解析
+  * [ ] 兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_factor|ALTERED_STABILITY|-10|`）
+  * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
   * [X] 获取封装变量名时不再包含作为前缀的"@"
 * 本地化文件语法解析优化：
   * [X] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
-  * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`）
-  * [X] 支持额外的本地化语言：`l_japanese` `l_korean`
+  * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`，可以为变量，如`$LEVEL$`）
+  * [X] 支持本地化语言`l_japanese`和`l_korean`
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
 * 扩展CWT配置文件：
   * [X] 支持额外的CWT选项：`## since = "3.3"`，用于在文档注释中显示开始支持的游戏版本号
@@ -43,9 +43,10 @@
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [ ] 进行代码提示时，仅当对应的定义元素类型是boolean或者无法解析时，才会提示`yes`和`no`
   * [ ] 确认支持获取和应用嵌套的定义的CWT规则
-  * [ ] 支持规则类型scope和scope_field
-  * [ ] 支持规则类型value和value_set
-  * [ ] 支持规则类型complex_enum
+  * [ ] 确认支持且能正确处理`scope`和`scope_link`
+  * [ ] 确认支持且能正确处理`localisation_link`
+  * [ ] 确认支持所有在`guidance.md`中提到的值类型，包括规则匹配、代码补全、引用解析等功能
+  * [ ] 使用CWT规则校验脚本结构（通过annotator）
 * ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~

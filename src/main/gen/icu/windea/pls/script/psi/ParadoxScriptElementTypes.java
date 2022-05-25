@@ -26,6 +26,9 @@ public interface ParadoxScriptElementTypes {
   IElementType LITERAL_STRING_TEMPLATE_ENTRY = ParadoxScriptElementTypeFactory.getElementType("LITERAL_STRING_TEMPLATE_ENTRY");
   IElementType NUMBER = ParadoxScriptElementTypeFactory.getElementType("NUMBER");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
+  IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
+  IElementType PARAMETER_CONDITION_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_EXPRESSION");
+  IElementType PARAMETER_CONDITION_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_PARAMETER");
   IElementType PARAMETER_STRING_TEMPLATE_ENTRY = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_STRING_TEMPLATE_ENTRY");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
@@ -58,12 +61,14 @@ public interface ParadoxScriptElementTypes {
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
   IElementType LEFT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACE");
+  IElementType LEFT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACKET");
   IElementType LE_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LE_SIGN");
   IElementType LP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LP_SIGN");
   IElementType LT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LT_SIGN");
   IElementType MINUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("MINUS_SIGN");
   IElementType MOD_SIGN = ParadoxScriptElementTypeFactory.getTokenType("MOD_SIGN");
   IElementType NOT_EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("NOT_EQUAL_SIGN");
+  IElementType NOT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("NOT_SIGN");
   IElementType NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("NUMBER_TOKEN");
   IElementType PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_END");
   IElementType PARAMETER_ID = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_ID");
@@ -75,6 +80,7 @@ public interface ParadoxScriptElementTypes {
   IElementType QUOTED_STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_STRING_TOKEN");
   IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
+  IElementType RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACKET");
   IElementType RP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RP_SIGN");
   IElementType STRING_PART = ParadoxScriptElementTypeFactory.getTokenType("STRING_PART");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
@@ -129,6 +135,15 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == PARAMETER) {
         return new ParadoxScriptParameterImpl(node);
+      }
+      else if (type == PARAMETER_CONDITION) {
+        return new ParadoxScriptParameterConditionImpl(node);
+      }
+      else if (type == PARAMETER_CONDITION_EXPRESSION) {
+        return new ParadoxScriptParameterConditionExpressionImpl(node);
+      }
+      else if (type == PARAMETER_CONDITION_PARAMETER) {
+        return new ParadoxScriptParameterConditionParameterImpl(node);
       }
       else if (type == PARAMETER_STRING_TEMPLATE_ENTRY) {
         return new ParadoxScriptParameterStringTemplateEntryImpl(node);

@@ -59,7 +59,8 @@ property ::= property_key property_separator property_value {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
 }
-property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter{
+//property_key can be parameter
+property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter {
   methods=[getValue setValue getReference]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
@@ -107,20 +108,20 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   recoverWhile="#auto"
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getValue isEmpty isNotEmpty isObject isArray getComponents getValueType getType]
+  methods=[getValue isEmpty isNotEmpty getComponents getValueType getType]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value | parameter_condition
 
 //advanced script syntax
 //see: common/scripted_effects/99_advanced_documentation.txt
 //see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
 
 //tag
-//should in definition declarations (scripted_effect / scripted_trigger)
+//should in definition declaration (scripted_effect / scripted_trigger)
 //resolve from a string, before any scripted variables, (non-tag) strings and properties
 
 //parameter
-//should in definition declarations (script_value / scripted_effect / scripted_trigger)
+//should in definition declaration (script_value / scripted_effect / scripted_trigger)
 //currently cannot be surround with double quotes
 parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_TOKEN)] PARAMETER_END {
   pin=1
@@ -128,13 +129,27 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue]
 }
-
+//TODO
 //parameter condition
-//should in definition declarations (script_value / scripted_effect / scripted_trigger)
+//should in definition declaration (script_value / scripted_effect / scripted_trigger)
+parameter_condition ::= LEFT_BRACKET parameter_condition_expression LEFT_BRACKET RIGHT_BRACKET parameter_condition_item * RIGHT_BRACKET{
+  pin=1
+  recoverWhile="#auto"
+  implements="com.intellij.psi.PsiListLikeElement"
+  methods=[isEmpty isNotEmpty getComponents]
+}
+parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
+parameter_condition_parameter ::= PARAMETER_ID {
+  implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
+}
+//variable should outside of definition declaration
+//nested parameter_condition is not supported
+private parameter_condition_item ::= END_OF_LINE_COMMENT | COMMENT | property | value
 
 //inline math
-//should in definition declarations
-//should starts with "@\[" if in specific definition declarations (scripted_effect / scripted_trigger) (TO CHECK)
+//should in definition declaration
+//should starts with "@\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)
 //only first inline math expression in a scripted effect / trigger is correctly recognized and evaluated
 //supported operators: + - * / %
 //also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"
@@ -191,13 +206,13 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_ID [ PIPE ARG_NUMBER_TOKEN] 
   methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
 }
 
-//loc commands
-//should in definition declarations
-//should starts with "\[" if in specific definition declarations (scripted_effect / scripted_trigger) (TO CHECK)
+//loc command
+//should in definition declaration
+//should starts with "\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)
 
 //string template
 //can include: string_entry, parameter_entry, etc. (TO IMPLEMENT)
-string_template ::= string_template_entry string_template_entry+{
+string_template ::= string_template_entry string_template_entry + {
   methods=[getValue]
 }
 string_template_entry ::= literal_string_template_entry | parameter_string_template_entry

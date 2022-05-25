@@ -2,7 +2,6 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
@@ -72,13 +71,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getName(element: ParadoxScriptVariableName): String {
 		// 不包含作为前缀的"@"
 		return element.variableNameId.text
-	}
-	//endregion
-	
-	//region ParadoxScriptVariableValue
-	@JvmStatic
-	fun getValue(element: ParadoxScriptVariableValue): ParadoxScriptNumber {
-		return element.number
 	}
 	//endregion
 	
@@ -464,7 +456,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun isEmpty(element: ParadoxScriptBlock): Boolean {
 		element.forEachChild {
-			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return false
+			when {
+				it is ParadoxScriptProperty -> return false
+				it is ParadoxScriptValue -> return false
+				it is ParadoxScriptParameterCondition && it.isNotEmpty() -> return false
+			}
 		}
 		return true
 	}
@@ -472,42 +468,24 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun isNotEmpty(element: ParadoxScriptBlock): Boolean {
 		element.forEachChild {
-			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) return true
-		}
-		return true
-	}
-	
-	@JvmStatic
-	fun isObject(element: ParadoxScriptBlock): Boolean {
-		element.forEachChild {
 			when {
-				//忽略字符串需要被识别为标签的情况
 				it is ParadoxScriptProperty -> return true
-				it is ParadoxScriptValue -> return false
-			}
-		}
-		return true
-	}
-	
-	@JvmStatic
-	fun isArray(element: ParadoxScriptBlock): Boolean {
-		element.forEachChild {
-			when {
-				it is ParadoxScriptProperty -> return false
 				it is ParadoxScriptValue -> return true
+				it is ParadoxScriptParameterCondition && it.isNotEmpty() -> return true
 			}
 		}
-		return true
+		return false
 	}
 	
 	@JvmStatic
 	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
 		//允许混合value和property
-		val components: MutableList<PsiElement> = SmartList()
-		element.forEachChild {
-			if(it is ParadoxScriptProperty || it is ParadoxScriptValue) components.add(it)
-		}
-		return components
+		return element.filterChildOfType { isBlockComponent(it) }
+	}
+	
+	private fun isBlockComponent(element: PsiElement):Boolean{
+		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+			|| element is ParadoxScriptParameterCondition
 	}
 	
 	@JvmStatic
@@ -518,6 +496,77 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getType(element: ParadoxScriptBlock): String? {
 		return null //TODO 支持定义元素的类型
+	}
+	//endregion
+	
+	//region ParadoxScriptVariableValue
+	@JvmStatic
+	fun getValue(element: ParadoxScriptVariableValue): ParadoxScriptNumber {
+		return element.number
+	}
+	//endregion
+	
+	//region ParadoxScriptParameterCondition
+	@JvmStatic
+	fun isEmpty(element: ParadoxScriptParameterCondition): Boolean {
+		element.forEachChild {
+			when {
+				it is ParadoxScriptProperty -> return false
+				it is ParadoxScriptValue -> return false
+			}
+		}
+		return true
+	}
+	
+	@JvmStatic
+	fun isNotEmpty(element: ParadoxScriptParameterCondition): Boolean {
+		element.forEachChild {
+			when {
+				it is ParadoxScriptProperty -> return true
+				it is ParadoxScriptValue -> return true
+			}
+		}
+		return false
+	}
+	
+	@JvmStatic
+	fun getComponents(element: ParadoxScriptParameterCondition): List<PsiElement> {
+		//允许混合value和property
+		return element.filterChildOfType { isParameterConditionComponent(it) }
+	}
+	
+	private fun isParameterConditionComponent(element: PsiElement):Boolean{
+		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+	}
+	//endregion
+	
+	//region ParadoxScriptParameterConditionParameter
+	@JvmStatic
+	fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.scriptParameterIcon
+	}
+	
+	@JvmStatic
+	fun getName(element: ParadoxScriptParameterConditionParameter): String {
+		return element.parameterId.text
+	}
+	
+	@JvmStatic
+	fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
+		val nameElement = element.parameterId
+		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId
+		nameElement.replace(newNameElement)
+		return element
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: ParadoxScriptParameterConditionParameter): PsiElement {
+		return element.parameterId
+	}
+	
+	@JvmStatic
+	fun getTextOffset(element: ParadoxScriptParameterConditionParameter): Int {
+		return element.nameIdentifier.textOffset
 	}
 	//endregion
 	

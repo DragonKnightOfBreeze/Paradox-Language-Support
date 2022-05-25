@@ -13,28 +13,90 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOption
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
-val IParadoxScriptParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
+val ParadoxScriptParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
 
-val IParadoxScriptParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
+val ParadoxScriptParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
+
+val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
 
 val ParadoxScriptInlineMathVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE_ID)
 
-//TODO 应用
-fun ParadoxDefinitionProperty.forEachProperty(includeConditional: Boolean = true){
-	
-}
+val ParadoxScriptInlineMathParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
 
-//TODO 应用
-fun ParadoxDefinitionProperty.forEachValue(includeConditional: Boolean = true){
-	
+val ParadoxScriptInlineMathParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
+
+
+/**
+ * 遍历当前代码块中的所有（直接作为子节点的）属性。
+ * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ */
+fun ParadoxScriptBlock.processProperties(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+	return processChildren {
+		when {
+			it is ParadoxScriptProperty -> processor(it)
+			includeConditional && it is ParadoxScriptParameterCondition -> it.processProperties(processor)
+			else -> true
+		}
+	}
 }
 
 /**
- * 如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。
+ * 遍历当前代码块中的所有（直接作为子节点的）值。
+ * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的值。
+ */
+fun ParadoxScriptBlock.processValues(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+	return processChildren {
+		when {
+			it is ParadoxScriptValue -> processor(it)
+			includeConditional && it is ParadoxScriptParameterCondition -> it.processValues(processor)
+			else -> true
+		}
+	}
+}
+
+/**
+ * 遍历当前参数表达式中的所有（直接作为子节点的）属性。
+ */
+fun ParadoxScriptParameterCondition.processProperties(processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+	return processChildren {
+		when {
+			it is ParadoxScriptProperty -> processor(it)
+			else -> true
+		}
+	}
+}
+
+/**
+ * 遍历当前参数表达式中的所有（直接作为子节点的）值。
+ */
+fun ParadoxScriptParameterCondition.processValues(processor: (ParadoxScriptValue) -> Boolean): Boolean {
+	return processChildren {
+		when {
+			it is ParadoxScriptValue -> processor(it)
+			else -> true
+		}
+	}
+}
+
+
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findPropertyValue(): T? {
+	return findOptionalChild<ParadoxScriptPropertyValue>()?.findOptionalChild()
+}
+
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlock.findValues(): List<T> {
+	return filterChildOfType() 
+}
+
+/**
+ * 得到指定名字的definitionProperty。如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。
  */
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
-	if(propertyName.isEmpty()) return this.castOrNull()
-	return properties.find { it.name.equals(propertyName, ignoreCase) }
+	if(propertyName.isEmpty() && this is ParadoxScriptProperty) return this
+	processChildren {
+		if(it is ParadoxScriptProperty && it.name.equals(propertyName, ignoreCase)) return it
+		true
+	}
+	return null
 }
 
 /**

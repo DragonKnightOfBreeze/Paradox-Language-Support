@@ -79,7 +79,7 @@ fun String.containsBlankLine(): Boolean {
 	return false
 }
 
-fun Char.isExactDigit(): Boolean{
+fun Char.isExactDigit(): Boolean {
 	return this in '0'..'9'
 }
 
@@ -239,16 +239,16 @@ fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean
 	var patternIndex = 0
 	val pathLength = usedPath.length
 	var pathIndex = 0
-	while(patternIndex < patternLength){
+	while(patternIndex < patternLength) {
 		val c = pattern[patternIndex]
 		when {
 			flag -> {
 				patternIndex++
-				val nc =pattern.getOrNull(patternIndex)
+				val nc = pattern.getOrNull(patternIndex)
 				if(nc == '*') {
 					patternIndex++
 					val nextPatternChar = usedPattern.getOrNull(patternIndex) ?: return true
-					while(true){
+					while(true) {
 						if(pathIndex >= pathLength) return true
 						val c1 = usedPath[pathIndex]
 						if(c1.equals(nextPatternChar, ignoreCase)) break
@@ -257,7 +257,7 @@ fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean
 					flag = false
 				} else {
 					val nextPatternChar = nc
-					while(true){
+					while(true) {
 						if(pathIndex >= pathLength) return true
 						val c1 = usedPath[pathIndex]
 						if(c1 == '/') break
@@ -279,7 +279,7 @@ fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean
 			}
 			else -> {
 				val cc = usedPath[pathIndex]
-				if(!cc.equals(c,ignoreCase)) return false
+				if(!cc.equals(c, ignoreCase)) return false
 				if(pathIndex == pathLength - 1) return true
 				pathIndex++
 				if(pathIndex > pathLength) return false
@@ -366,7 +366,7 @@ fun String.toBooleanYesNo() = this == "yes"
 
 fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
 
-fun String.toIntOrDefault(defaultValue:Int) = runCatching { toInt() }.getOrDefault(defaultValue)
+fun String.toIntOrDefault(defaultValue: Int) = runCatching { toInt() }.getOrDefault(defaultValue)
 
 fun String.toFile() = File(this)
 
@@ -405,18 +405,15 @@ internal val enumValuesCache: LoadingCache<Class<*>, Array<*>> by lazy { createC
  * 得到共享的指定枚举类型的所有枚举常量组成的数组。
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : Enum<T>> enumSharedValues(): Array<T> {
+inline fun <reified T : Enum<T>> sharedEnumValues(): Array<T> {
 	return enumValuesCache[T::class.java] as Array<T>
 }
 
 @Suppress("UNCHECKED_CAST")
-inline val <T : Enum<T>> Class<T>.enumSharedConstants get() = enumValuesCache[this] as Array<T>
+inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[this] as Array<T>
 //endregion
 
 //region Collection Extensions
-@Suppress("UNCHECKED_CAST")
-fun <T> Array<out T?>.cast() = this as Array<T>
-
 fun <T> Collection<T>.asList(): List<T> {
 	return if(this is List) this else this.toList()
 }
@@ -531,6 +528,32 @@ data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = fa
 }
 
 fun <K, V> Map<K, V>.toReversibleMap(notReversed: Boolean) = ReversibleMap(this, notReversed)
+
+fun <T> Iterable<T>.process(processor: ProcessEntry.(T) -> Boolean): Boolean {
+	for(e in this) {
+		val result = ProcessEntry.processor(e)
+		if(!result) return false
+	}
+	return true
+}
+
+fun <K,V> Map<K,V>.process(processor: ProcessEntry.(Map.Entry<K,V>) -> Boolean): Boolean {
+	for(entry in this) {
+		val result = ProcessEntry.processor(entry)
+		if(!result) return false
+	}
+	return true
+}
+
+object ProcessEntry {
+	fun <T> T.addTo(destination: MutableCollection<T>) = destination.add(this)
+	
+	fun <T: Collection<T>> T.addAllTo(destination: MutableCollection<T>) = destination.addAll(this)
+	
+	fun Any?.end() = true
+	
+	fun Any?.stop() = false
+}
 //endregion
 
 //region Tuple & Range Extensions
@@ -547,4 +570,11 @@ fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
 fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
 
 typealias FloatRange = ClosedRange<Float>
+//endregion
+
+//region Other Types
+data class BlockEntry<out K, out V>(
+	val key: K,
+	val value: V
+)
 //endregion

@@ -10,7 +10,7 @@ import java.util.function.*
 internal object InternalUtils {
 	@JvmStatic fun <T> bitsToSet(bits: Int, tClass: Class<T>): Set<T> where T : Enum<T>, T : IntSupplier {
 		val ret = EnumSet.noneOf(tClass)
-		val enums = tClass.enumSharedConstants
+		val enums = tClass.sharedEnumConstants
 		for(t in enums) {
 			if(bits and t.asInt != 0) {
 				ret.add(t)

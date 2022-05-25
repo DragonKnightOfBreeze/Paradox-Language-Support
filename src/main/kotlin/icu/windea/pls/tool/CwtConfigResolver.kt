@@ -1,6 +1,7 @@
 package icu.windea.pls.tool
 
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
@@ -15,11 +16,13 @@ object CwtConfigResolver {
 		return when {
 			rootBlock.isEmpty -> CwtFileConfig.EmptyConfig
 			rootBlock.isObject -> {
-				val properties = rootBlock.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
+				val properties = SmartList<CwtPropertyConfig>()
+				rootBlock.processChildrenOfType<CwtProperty> { resolveProperty(it, file).addTo(properties).end() }
 				CwtFileConfig(emptyPointer(), emptyList(), properties)
 			}
 			rootBlock.isArray -> {
-				val values = rootBlock.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
+				val values = SmartList<CwtValueConfig>()
+				rootBlock.processChildrenOfType<CwtValue> { resolveValue(it, file).addTo(values).end() }
 				CwtFileConfig(emptyPointer(), values, emptyList())
 			}
 			else -> CwtFileConfig.EmptyConfig
@@ -36,9 +39,9 @@ object CwtConfigResolver {
 		var stringValue: String? = null
 		var values: List<CwtValueConfig>? = null
 		var properties: List<CwtPropertyConfig>? = null
-		var documentationLines:LinkedList<String>? = null
+		var documentationLines: LinkedList<String>? = null
 		var options: LinkedList<CwtOptionConfig>? = null
-		var optionValues :LinkedList<CwtOptionValueConfig>? = null
+		var optionValues: LinkedList<CwtOptionValueConfig>? = null
 		val separatorType = property.separatorType
 		when {
 			propValue is CwtBoolean -> booleanValue = propValue.booleanValue
@@ -51,10 +54,12 @@ object CwtConfigResolver {
 					properties = emptyList()
 				}
 				propValue.isObject -> {
-					properties = propValue.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
+					properties = SmartList()
+					propValue.processChildrenOfType<CwtProperty> { resolveProperty(it, file)?.addTo(properties).end() }
 				}
 				propValue.isArray -> {
-					values = propValue.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
+					values = SmartList()
+					propValue.processChildrenOfType<CwtValue> { resolveValue(it, file).addTo(values).end() }
 				}
 			}
 		}
@@ -109,9 +114,9 @@ object CwtConfigResolver {
 		var stringValue: String? = null
 		var values: List<CwtValueConfig>? = null
 		var properties: List<CwtPropertyConfig>? = null
-		var documentationLines:LinkedList<String>? = null
+		var documentationLines: LinkedList<String>? = null
 		var options: LinkedList<CwtOptionConfig>? = null
-		var optionValues :LinkedList<CwtOptionValueConfig>? = null
+		var optionValues: LinkedList<CwtOptionValueConfig>? = null
 		
 		when {
 			value is CwtBoolean -> booleanValue = value.booleanValue
@@ -124,10 +129,12 @@ object CwtConfigResolver {
 					properties = emptyList()
 				}
 				value.isObject -> {
-					properties = value.mapChildOfTypeNotNull(CwtProperty::class.java) { resolveProperty(it, file) }
+					properties = SmartList()
+					value.processChildrenOfType<CwtProperty> { resolveProperty(it, file)?.addTo(properties).end() }
 				}
 				value.isArray -> {
-					values = value.mapChildOfType(CwtValue::class.java) { resolveValue(it, file) }
+					values = SmartList()
+					value.processChildrenOfType<CwtValue> { resolveValue(it, file).addTo(values).end() }
 				}
 			}
 		}
@@ -146,9 +153,9 @@ object CwtConfigResolver {
 				current is CwtOptionComment -> {
 					val option = current.option
 					if(option != null) {
-						if(options == null){
+						if(options == null) {
 							options = LinkedList()
-						} else{
+						} else {
 							val resolvedOption = resolveOption(option, file)
 							if(resolvedOption != null) options.addFirst(resolvedOption)
 						}
@@ -168,7 +175,7 @@ object CwtConfigResolver {
 		val documentation = documentationLines?.joinToString("\n")
 		
 		return CwtValueConfig(
-			pointer, value.value, 
+			pointer, value.value,
 			booleanValue, intValue, floatValue, stringValue,
 			values, properties, documentation, options, optionValues
 		)
@@ -195,10 +202,12 @@ object CwtConfigResolver {
 					options = emptyList()
 				}
 				optionValue.isObject -> {
-					options = optionValue.mapChildOfTypeNotNull(CwtOption::class.java) { resolveOption(it, file) }
+					options = SmartList()
+					optionValue.processChildrenOfType<CwtOption> { resolveOption(it, file)?.addTo(options).end() }
 				}
 				optionValue.isArray -> {
-					values = optionValue.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
+					values = SmartList()
+					optionValue.processChildrenOfType<CwtValue> { resolveOptionValue(it, file).addTo(values).end() }
 				}
 			}
 		}
@@ -235,10 +244,12 @@ object CwtConfigResolver {
 						options = emptyList()
 					}
 					option.isObject -> {
-						options = option.mapChildOfTypeNotNull(CwtOption::class.java)  { resolveOption(it, file) }
+						options = SmartList()
+						option.processChildrenOfType<CwtOption> { resolveOption(it, file)?.addTo(options).end() }
 					}
 					option.isArray -> {
-						values = option.mapChildOfType(CwtValue::class.java) { resolveOptionValue(it, file) }
+						values = SmartList()
+						option.processChildrenOfType<CwtValue> { resolveOptionValue(it, file).addTo(values).end() }
 					}
 				}
 			}

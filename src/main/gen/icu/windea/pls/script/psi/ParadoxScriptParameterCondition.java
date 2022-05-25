@@ -5,12 +5,11 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiListLikeElement;
-import icu.windea.pls.core.ParadoxValueType;
 
-public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeElement {
+public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
 
-  @NotNull
-  List<ParadoxScriptParameterCondition> getParameterConditionList();
+  @Nullable
+  ParadoxScriptParameterConditionExpression getParameterConditionExpression();
 
   @NotNull
   List<ParadoxScriptProperty> getPropertyList();
@@ -18,23 +17,11 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeEleme
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @NotNull
-  List<ParadoxScriptVariable> getVariableList();
-
-  @NotNull
-  String getValue();
-
   boolean isEmpty();
 
   boolean isNotEmpty();
 
   @NotNull
   List<PsiElement> getComponents();
-
-  @NotNull
-  ParadoxValueType getValueType();
-
-  @Nullable
-  String getType();
 
 }
