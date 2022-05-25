@@ -439,30 +439,43 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACKET parameter_condition_expression LEFT_BRACKET RIGHT_BRACKET parameter_condition_item * RIGHT_BRACKET
+  // LEFT_BRACKET parameter_condition_expr parameter_condition_item * RIGHT_BRACKET
   public static boolean parameter_condition(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PARAMETER_CONDITION, "<parameter condition>");
     r = consumeToken(b, LEFT_BRACKET);
     p = r; // pin = 1
-    r = r && report_error_(b, parameter_condition_expression(b, l + 1));
-    r = p && report_error_(b, consumeTokens(b, -1, LEFT_BRACKET, RIGHT_BRACKET)) && r;
-    r = p && report_error_(b, parameter_condition_4(b, l + 1)) && r;
+    r = r && report_error_(b, parameter_condition_expr(b, l + 1));
+    r = p && report_error_(b, parameter_condition_2(b, l + 1)) && r;
     r = p && consumeToken(b, RIGHT_BRACKET) && r;
     exit_section_(b, l, m, r, p, parameter_condition_auto_recover_);
     return r || p;
   }
 
   // parameter_condition_item *
-  private static boolean parameter_condition_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_condition_4")) return false;
+  private static boolean parameter_condition_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_condition_2")) return false;
     while (true) {
       int c = current_position_(b);
       if (!parameter_condition_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "parameter_condition_4", c)) break;
+      if (!empty_element_parsed_guard_(b, "parameter_condition_2", c)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // LEFT_BRACKET parameter_condition_expression RIGHT_BRACKET
+  static boolean parameter_condition_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_condition_expr")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, LEFT_BRACKET);
+    p = r; // pin = 1
+    r = r && report_error_(b, parameter_condition_expression(b, l + 1));
+    r = p && consumeToken(b, RIGHT_BRACKET) && r;
+    exit_section_(b, l, m, r, p, parameter_condition_expr_auto_recover_);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -745,6 +758,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     RIGHT_BRACE, RIGHT_BRACKET, STRING_PART, STRING_TOKEN);
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
+  static final Parser parameter_condition_expr_auto_recover_ = block_auto_recover_;
   static final Parser property_auto_recover_ = block_auto_recover_;
   static final Parser variable_auto_recover_ = block_auto_recover_;
 }

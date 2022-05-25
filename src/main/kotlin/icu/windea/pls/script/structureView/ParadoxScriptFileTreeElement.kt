@@ -4,6 +4,7 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFileTreeElement(
@@ -14,10 +15,10 @@ class ParadoxScriptFileTreeElement(
 		val rootBlock = element.block ?: return emptyList()
 		val result = SmartList<StructureViewTreeElement>()
 		rootBlock.forEachChild {
-			when(it){
-				is ParadoxScriptVariable -> result.add(ParadoxScriptVariableTreeElement(it))
-				is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
-				is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
+			when {
+				it is ParadoxScriptVariable -> result.add(ParadoxScriptVariableTreeElement(it))
+				it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
+				it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
 			}
 		}
 		return result

@@ -129,14 +129,18 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue]
 }
-//TODO
+
 //parameter condition
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
-parameter_condition ::= LEFT_BRACKET parameter_condition_expression LEFT_BRACKET RIGHT_BRACKET parameter_condition_item * RIGHT_BRACKET{
+parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_condition_item * RIGHT_BRACKET{
   pin=1
   recoverWhile="#auto"
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[isEmpty isNotEmpty getComponents]
+}
+private parameter_condition_expr ::= LEFT_BRACKET parameter_condition_expression RIGHT_BRACKET{
+  pin=1
+  recoverWhile="#auto"
 }
 parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
 parameter_condition_parameter ::= PARAMETER_ID {

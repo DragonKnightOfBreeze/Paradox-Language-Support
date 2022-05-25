@@ -34,6 +34,9 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_PARAMETER_DEFAULT_VALUE_END
 %state WAITING_AFTER_PARAMETER
 
+%state WAITING_PARAMETER_CONDITION
+%state WAITING_PARAMETER_CONDITION_EXPRESSION
+
 %state WAITING_INLINE_MATH
 
 %{
@@ -41,6 +44,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
                   
     private int depth = 0;
 	private boolean isPropertyKey = false;
+	private boolean inParameterCondition = false;
     private boolean inInlineMath = false;
     private boolean leftAbsSign = true;
     
@@ -50,11 +54,15 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     }
     
     private void beginNextState(){
-        if(depth <= 0){
-	        yybegin(YYINITIAL);
-        } else {
-	        yybegin(WAITING_PROPERTY_KEY);
-        }
+		if(inParameterCondition){
+			yybegin(WAITING_PARAMETER_CONDITION);
+		} else {
+	        if(depth <= 0){
+		        yybegin(YYINITIAL);
+	        } else {
+		        yybegin(WAITING_PROPERTY_KEY);
+	        }
+		}
     }
 	
     private void beginNextStateForParameter(){
@@ -101,18 +109,15 @@ CHECK_STRING_PART={STRING_PART}[$]
 
 VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
-PROPERTY_KEY_ID=[^#@={}\s][^$={}\s]*
-//PROPERTY_KEY_ID=[^#@={}\[\]\s][^$={}\[\]\s]*
+PROPERTY_KEY_ID=[^#@={}\[\]\s][^$={}\[\]\s]*
 QUOTED_PROPERTY_KEY_ID=\"([^\"(\r\n\\]|\\.)*?\"
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d.\s&&[^\r\n]]*}
-STRING_TOKEN=[^#@$={}\s\"][^$={}\s\"]*
-//STRING_TOKEN=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
+STRING_TOKEN=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
 QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
-STRING_PART=[^#@$={}\s\"][^$={}\s\"]*
-//STRING_PART=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
+STRING_PART=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
 
 NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)? //non-negative integer / float, without unary sign
 ARG_NUMBER_TOKEN=[+-]?{NUMBER_TOKEN}
@@ -196,6 +201,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE); return AT;}
   "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  "[" {inParameterCondition=true; yybegin(WAITING_PARAMETER_CONDITION); return LEFT_BRACKET;}
   {CHECK_PROPERTY_KEY} {
     //根据后面是否有"="判断是否是property
 	yybegin(WATIING_PROPERTY_SEPARATOR);
@@ -316,6 +322,55 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {STRING_PART} {return STRING_PART; }
+}
+
+<WAITING_PARAMETER_CONDITION>{
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "[" {yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return LEFT_BRACKET;}
+  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
+  //出于语法兼容性考虑，这里允许内联数学表达式
+  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
+  "@" {yybegin(WAITING_VARIABLE); return AT;}
+  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  {CHECK_PROPERTY_KEY} {
+    //根据后面是否有"="判断是否是property
+	yybegin(WATIING_PROPERTY_SEPARATOR);
+	pushbackUntilBeforeBlank(1);
+	char firstChar = yycharat(0);
+	if(firstChar == '"'){
+		return QUOTED_PROPERTY_KEY_ID;
+	} else if(firstChar == '$'){
+		//propertyKey也可以是parameter
+		isPropertyKey = true;
+		yypushback(yylength() -1);
+		yybegin(WAITING_PARAMETER);
+		return PARAMETER_START;
+	} else {
+		return PROPERTY_KEY_ID;
+	}
+  }
+  {CHECK_STRING_PART} {
+  	yypushback(1);
+  	return STRING_PART;
+  }
+  {BOOLEAN_TOKEN} {beginNextState(); return BOOLEAN_TOKEN;}
+  {INT_TOKEN} {beginNextState(); return INT_TOKEN;}
+  {FLOAT_TOKEN} {beginNextState(); return FLOAT_TOKEN;}
+  {COLOR_TOKEN} {beginNextState(); return COLOR_TOKEN;}
+  {STRING_TOKEN} {beginNextState(); return STRING_TOKEN;}
+  {QUOTED_STRING_TOKEN} {beginNextState(); return QUOTED_STRING_TOKEN;}
+  {COMMENT} {return COMMENT;}
+}
+
+<WAITING_PARAMETER_CONDITION_EXPRESSION>{
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "!" {return NOT_SIGN;}
+  {PARAMETER_ID} {return PARAMETER_ID;}
+  "]" {yybegin(WAITING_PARAMETER_CONDITION); return RIGHT_BRACKET;}
 }
 
 <WAITING_INLINE_MATH>{

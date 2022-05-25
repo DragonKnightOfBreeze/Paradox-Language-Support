@@ -11,7 +11,7 @@ import javax.swing.*
 interface IParadoxScriptParameter : PsiNamedElement, ParadoxScriptExpression {
 	override fun getName(): String
 	
-	val defaultValue: String?
+	val defaultValue: String? get() = null
 	
 	override val valueType: ParadoxValueType get() = ParadoxValueType.Parameter
 }

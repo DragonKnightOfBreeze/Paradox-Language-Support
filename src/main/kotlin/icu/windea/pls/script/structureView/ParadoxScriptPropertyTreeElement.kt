@@ -16,8 +16,7 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 		val result: MutableList<StructureViewTreeElement> = SmartList()
 		value.forEachChild {
 			when{
-				//忽略字符串需要被识别为标签的情况
-				it is ParadoxScriptString && it.resolveTagConfig() != null -> return@forEachChild
+				it is ParadoxScriptVariable -> result.add(ParadoxScriptVariableTreeElement(it))
 				it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
 				it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
 			}
