@@ -80,7 +80,7 @@ fun setFileInfoAndGetFileType(
 		//缓存文件信息
 		runCatching {
 			val fileInfo = ParadoxFileInfo(fileName, path, root, descriptor, fileType, rootType, gameType)
-			file.putUserData(paradoxFileInfoKey, fileInfo)
+			file.putUserData(PlsKeys.paradoxFileInfoKey, fileInfo)
 		}
 		
 		//只解析特定根目录下的文件

@@ -18,7 +18,7 @@ class ParadoxScriptFileViewProvider(
 			is LightVirtualFile -> file.originalFile?.fileInfo
 			else -> file.fileInfo
 		}
-		psi?.putUserData(paradoxFileInfoKey,fileInfo)
+		psi?.putUserData(PlsKeys.paradoxFileInfoKey, fileInfo)
 		return psi
 	}
 }

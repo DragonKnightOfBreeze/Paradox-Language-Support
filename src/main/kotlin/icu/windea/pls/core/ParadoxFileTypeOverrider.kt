@@ -32,7 +32,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 			currentFile = currentFile.parent
 		}
 		runCatching {
-			file.putUserData(paradoxFileInfoKey, null)
+			file.putUserData(PlsKeys.paradoxFileInfoKey, null)
 		}
 		return null
 	}

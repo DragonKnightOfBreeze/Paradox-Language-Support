@@ -5,7 +5,6 @@ package icu.windea.pls
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
@@ -28,15 +27,6 @@ import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
 import java.text.*
 import java.util.*
-
-//region Keys
-val cachedParadoxDescriptorInfoKey = Key<CachedValue<ParadoxDescriptorInfo>>("cachedParadoxDescriptorInfo")
-val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
-val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
-val isDefinitionKey = Key<Boolean>("isDefinition")
-val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
-val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
-//endregion
 
 //region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
@@ -289,7 +279,7 @@ private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 	}
 }
 
-val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserData(paradoxFileInfoKey)
+val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserData(PlsKeys.paradoxFileInfoKey)
 
 val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //使用原始文件
 
@@ -297,7 +287,7 @@ val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 
 fun ParadoxFileInfo.getDescriptorInfo(project: Project): ParadoxDescriptorInfo? {
 	val file = descriptor?.toPsiFile<PsiFile>(project) ?: return null
-	return CachedValuesManager.getCachedValue(file, cachedParadoxDescriptorInfoKey) {
+	return CachedValuesManager.getCachedValue(file, PlsKeys.cachedParadoxDescriptorInfoKey) {
 		//忽略异常
 		val value = runCatching { resolveDescriptorInfo(this, file) }.getOrNull()
 		CachedValueProvider.Result.create(value, file)
@@ -345,7 +335,7 @@ private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: Psi
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
 private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionInfoKey) {
+	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionInfoKey) {
 		val value = resolveDefinitionInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
@@ -367,8 +357,8 @@ val PsiElement.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGe
 
 private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
 	//必须是脚本语言的PsiElement
-	if(!(element.language == ParadoxScriptLanguage)) return null
-	return CachedValuesManager.getCachedValue(element, cachedParadoxDefinitionElementInfoKey) {
+	if(element.language != ParadoxScriptLanguage) return null
+	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionElementInfoKey) {
 		val value = resolveDefinitionElementInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
@@ -434,7 +424,7 @@ fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)
 
 private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-	return CachedValuesManager.getCachedValue(element, cachedParadoxLocalisationInfoKey) {
+	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxLocalisationInfoKey) {
 		val value = resolveLocalisationInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
