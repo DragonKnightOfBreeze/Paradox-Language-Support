@@ -465,15 +465,15 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BRACKET parameter_condition_expression RIGHT_BRACKET
+  // NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET
   static boolean parameter_condition_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition_expr")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, LEFT_BRACKET);
+    r = consumeToken(b, NESTED_LEFT_BRACKET);
     p = r; // pin = 1
     r = r && report_error_(b, parameter_condition_expression(b, l + 1));
-    r = p && consumeToken(b, RIGHT_BRACKET) && r;
+    r = p && consumeToken(b, NESTED_RIGHT_BRACKET) && r;
     exit_section_(b, l, m, r, p, parameter_condition_expr_auto_recover_);
     return r || p;
   }

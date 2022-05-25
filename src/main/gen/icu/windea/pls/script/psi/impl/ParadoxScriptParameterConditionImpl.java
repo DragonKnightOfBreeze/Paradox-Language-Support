@@ -10,6 +10,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
 public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement implements ParadoxScriptParameterCondition {
 
@@ -43,6 +45,18 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   @NotNull
   public List<ParadoxScriptValue> getValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
+  public String getExpression() {
+    return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override

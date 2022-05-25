@@ -910,12 +910,12 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 84: break;
           case 30: 
-            { yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return LEFT_BRACKET;
+            { yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;
             } 
             // fall through
           case 85: break;
           case 31: 
-            { yybegin(WAITING_PARAMETER_CONDITION); return RIGHT_BRACKET;
+            { yybegin(WAITING_PARAMETER_CONDITION); return NESTED_RIGHT_BRACKET;
             } 
             // fall through
           case 86: break;

@@ -108,7 +108,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   recoverWhile="#auto"
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getValue isEmpty isNotEmpty getComponents getValueType getType]
+  methods=[getIcon getValue isEmpty isNotEmpty getComponents getValueType getType]
 }
 private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value | parameter_condition
 
@@ -136,9 +136,9 @@ parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_conditio
   pin=1
   recoverWhile="#auto"
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[isEmpty isNotEmpty getComponents]
+  methods=[getIcon getExpression isEmpty isNotEmpty getComponents]
 }
-private parameter_condition_expr ::= LEFT_BRACKET parameter_condition_expression RIGHT_BRACKET{
+private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET{
   pin=1
   recoverWhile="#auto"
 }

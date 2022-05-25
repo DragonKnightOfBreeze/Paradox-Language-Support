@@ -10,6 +10,8 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val BRACES_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.braces"), BRACES)
 	@JvmField val OPERATOR_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.operator"), OPERATION_SIGN)
 	@JvmField val MARKER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.marker"), KEYWORD)
+	@JvmField val PARAMETER_CONDITION_BRACKETS_KEYS = createTextAttributesKey(PlsBundle.message("script.externalName.parameterConditionBrackets"), BRACES)
+	@JvmField val PARAMETER_CONDITION_EXPRESSION_BRACKETS_KEYS = createTextAttributesKey(PlsBundle.message("script.externalName.parameterConditionExpressionBrackets"), BRACES)
 	@JvmField val INLINE_MATH_BRACES_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.inlineMathBraces"), BRACES)
 	@JvmField val INLINE_MATH_OPERATOR_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.inlineMathOperator"), OPERATION_SIGN)
 	@JvmField val COMMENT_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.comment"), LINE_COMMENT)

@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
@@ -104,7 +105,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getValue(element: ParadoxScriptParameter): String{
+	fun getValue(element: ParadoxScriptParameter): String {
 		return parameterFolder
 	}
 	
@@ -364,7 +365,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptStringTemplate
 	@JvmStatic
-	fun getValue(element: ParadoxScriptStringTemplate): String{
+	fun getValue(element: ParadoxScriptStringTemplate): String {
 		return stringTemplateFolder
 	}
 	//endregion
@@ -449,6 +450,11 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptBlock
 	@JvmStatic
+	fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon{
+		return PlsIcons.scriptBlockIcon
+	}
+	
+	@JvmStatic
 	fun getValue(element: ParadoxScriptBlock): String {
 		return blockFolder
 	}
@@ -483,7 +489,7 @@ object ParadoxScriptPsiImplUtil {
 		return element.filterChildOfType { isBlockComponent(it) }
 	}
 	
-	private fun isBlockComponent(element: PsiElement):Boolean{
+	private fun isBlockComponent(element: PsiElement): Boolean {
 		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
 			|| element is ParadoxScriptParameterCondition
 	}
@@ -507,6 +513,30 @@ object ParadoxScriptPsiImplUtil {
 	//endregion
 	
 	//region ParadoxScriptParameterCondition
+	@JvmStatic
+	fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon{
+		return PlsIcons.scriptParameterConditionIcon
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxScriptParameterCondition): String {
+		val builder = StringBuilder()
+		element.processChildren {
+			when {
+				element.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
+					builder.append("!")
+					true
+				}
+				element is ParadoxScriptParameterConditionParameter -> {
+					builder.append(element.name)
+					false
+				}
+				else -> true
+			}
+		}
+		return builder.toString()
+	}
+	
 	@JvmStatic
 	fun isEmpty(element: ParadoxScriptParameterCondition): Boolean {
 		element.forEachChild {
@@ -535,7 +565,7 @@ object ParadoxScriptPsiImplUtil {
 		return element.filterChildOfType { isParameterConditionComponent(it) }
 	}
 	
-	private fun isParameterConditionComponent(element: PsiElement):Boolean{
+	private fun isParameterConditionComponent(element: PsiElement): Boolean {
 		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
 	}
 	//endregion

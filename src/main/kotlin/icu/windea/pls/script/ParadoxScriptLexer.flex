@@ -328,7 +328,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   {BLANK} {onBlank(); return WHITE_SPACE;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "[" {yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return LEFT_BRACKET;}
+  "[" {yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;}
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   //出于语法兼容性考虑，这里允许内联数学表达式
   "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
@@ -370,7 +370,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "!" {return NOT_SIGN;}
   {PARAMETER_ID} {return PARAMETER_ID;}
-  "]" {yybegin(WAITING_PARAMETER_CONDITION); return RIGHT_BRACKET;}
+  "]" {yybegin(WAITING_PARAMETER_CONDITION); return NESTED_RIGHT_BRACKET;}
 }
 
 <WAITING_INLINE_MATH>{

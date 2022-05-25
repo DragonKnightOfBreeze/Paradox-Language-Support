@@ -5,6 +5,8 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiListLikeElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
 public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
 
@@ -16,6 +18,12 @@ public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
 
   @NotNull
   List<ParadoxScriptValue> getValueList();
+
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
+  String getExpression();
 
   boolean isEmpty();
 

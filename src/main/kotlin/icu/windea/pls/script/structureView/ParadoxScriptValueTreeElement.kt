@@ -14,15 +14,14 @@ class ParadoxScriptValueTreeElement(
 ) : PsiTreeElementBase<ParadoxScriptValue>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
-		if(element !is ParadoxScriptBlock) return emptyList()
+		val parent = element.castOrNull<ParadoxScriptBlock>() ?: return emptyList()
 		//允许混合value和property
 		val result: MutableList<StructureViewTreeElement> = SmartList()
-		value.forEachChild {
+		parent.forEachChild {
 			when{
-				//忽略字符串需要被识别为标签的情况 - 这里没有必要
-				//it is ParadoxScriptString && it.resolveTagConfig() != null -> return@forEachChild
 				it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
 				it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
+				it is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
 			}
 		}
 		return result
