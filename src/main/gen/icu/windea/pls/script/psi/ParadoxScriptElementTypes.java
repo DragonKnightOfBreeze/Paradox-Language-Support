@@ -58,6 +58,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_END = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_END");
   IElementType INLINE_MATH_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_START");
   IElementType INLINE_MATH_VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_VARIABLE_REFERENCE_ID");
+  IElementType INPUT_PARAMETER_ID = ParadoxScriptElementTypeFactory.getTokenType("INPUT_PARAMETER_ID");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
   IElementType LEFT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACE");

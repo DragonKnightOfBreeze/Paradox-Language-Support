@@ -1,5 +1,10 @@
 <?xml version='1.0'?>
 <list>
+  <option name="PARADOX_SCRIPT.INPUT_PARAMETER">
+    <value>
+      <option name="FOREGROUND" value="467CDA"/>
+    </value>
+  </option>
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
       <option name="FOREGROUND" value="9876AA"/>

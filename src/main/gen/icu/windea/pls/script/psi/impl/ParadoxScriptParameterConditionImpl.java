@@ -54,7 +54,7 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getExpression() {
     return ParadoxScriptPsiImplUtil.getExpression(this);
   }

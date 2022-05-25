@@ -16,6 +16,7 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val INLINE_MATH_OPERATOR_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.inlineMathOperator"), OPERATION_SIGN)
 	@JvmField val COMMENT_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.comment"), LINE_COMMENT)
 	@JvmField val VARIABLE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.variable"), STATIC_FIELD)
+	@JvmField val INPUT_PARAMETER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.inputParameter"), KEYWORD)
 	@JvmField val PARAMETER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.parameter"), KEYWORD)
 	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.propertyKey"), INSTANCE_FIELD)
 	@JvmField val KEYWORD_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.keyword"), KEYWORD)

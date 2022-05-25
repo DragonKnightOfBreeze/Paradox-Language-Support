@@ -18,6 +18,7 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 		private val INLINE_MATH_BRACES_KEYS = arrayOf(ParadoxScriptAttributesKeys.INLINE_MATH_BRACES_KEY)
 		private val INLINE_MATH_OPERATOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.INLINE_MATH_OPERATOR_KEY)
 		private val VARIABLE_KEYS = arrayOf(ParadoxScriptAttributesKeys.VARIABLE_KEY)
+		private val INPUT_PARAMETER_KEYS = arrayOf(ParadoxScriptAttributesKeys.INPUT_PARAMETER_KEY)
 		private val PARAMETER_KEYS = arrayOf(ParadoxScriptAttributesKeys.PARAMETER_KEY)
 		private val PROPERTY_KEY_KEYS = arrayOf(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
 		private val KEYWORD_KEYS = arrayOf(ParadoxScriptAttributesKeys.KEYWORD_KEY)
@@ -42,6 +43,7 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 		LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN -> INLINE_MATH_OPERATOR_KEYS
 		COMMENT, END_OF_LINE_COMMENT -> COMMENT_KEYS
 		AT, VARIABLE_NAME_ID, VARIABLE_REFERENCE_ID, INLINE_MATH_VARIABLE_REFERENCE_ID -> VARIABLE_KEYS
+		INPUT_PARAMETER_ID -> INPUT_PARAMETER_KEYS
 		PARAMETER_ID -> PARAMETER_KEYS
 		PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID -> PROPERTY_KEY_KEYS
 		BOOLEAN_TOKEN -> KEYWORD_KEYS
