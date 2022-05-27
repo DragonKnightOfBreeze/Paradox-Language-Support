@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*
 import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.script.psi.*
 
 class CwtFoldingBuilder:FoldingBuilder,DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
@@ -28,10 +29,8 @@ class CwtFoldingBuilder:FoldingBuilder,DumbAware {
 
 	private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
 		when(node.elementType) {
-			BLOCK -> {
-				descriptors.add(FoldingDescriptor(node, node.textRange))
-				//if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
-			}
+			BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
+			//BLOCK -> if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
 		}
 		val children = node.getChildren(null)
 		for(child in children) {

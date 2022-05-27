@@ -34,10 +34,9 @@ class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	
 	private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
 		when(node.elementType) {
-			BLOCK -> {
-				descriptors.add(FoldingDescriptor(node, node.textRange))
-				//if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
-			}
+			BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
+			//BLOCK -> if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
+			PARAMETER_CONDITION -> descriptors.add(FoldingDescriptor(node, node.textRange)) 
 			INLINE_MATH -> descriptors.add(FoldingDescriptor(node, node.textRange))
 		}
 		val children = node.getChildren(null)
