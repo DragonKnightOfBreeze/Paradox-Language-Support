@@ -1,49 +1,49 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <fileType
-        language="CWT"
+        language="Cwt"
         name="CWT" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.cwt.CwtFileType"
         extensions="cwt"/>
     <lang.parserDefinition
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.psi.CwtParserDefinition"/>
 
     <spellchecker.support
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.CwtSpellchecker"/>
     <lang.syntaxHighlighterFactory
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.highlighter.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage
         implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <lang.braceMatcher
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
     <lang.foldingBuilder
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.editor.CwtFoldingBuilder"/>
     <lang.quoteHandler
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.editor.CwtQuoteHandler"/>
     <lang.documentationProvider
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.editor.CwtDocumentationProvider"/>
     <lang.findUsagesProvider
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <elementDescriptionProvider
         implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <lang.commenter
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
     <breadcrumbsInfoProvider
         implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
     <lang.psiStructureViewFactory
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
     <lang.formatter
-        language="CWT"
+        language="Cwt"
         implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <codeStyleSettingsProvider
         implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
