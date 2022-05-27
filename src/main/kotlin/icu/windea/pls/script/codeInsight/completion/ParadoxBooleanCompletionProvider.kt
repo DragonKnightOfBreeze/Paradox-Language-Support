@@ -10,7 +10,7 @@ import icu.windea.pls.*
  */
 object ParadoxBooleanCompletionProvider : CompletionProvider<CompletionParameters>() {
 	private val booleanLookupElements = booleanValues.map { value ->
-		LookupElementBuilder.create(value).bold().withPriority(keywordPriority)
+		LookupElementBuilder.create(value).bold().withPriority(PlsPriorities.keywordPriority)
 	}
 	
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

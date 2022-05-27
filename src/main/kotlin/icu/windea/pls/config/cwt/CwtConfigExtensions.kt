@@ -16,7 +16,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import javax.swing.*
 import kotlin.text.removeSurrounding
 
 //region Internal Extensions
@@ -661,7 +660,7 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 				.withTailText(tailText, true)
 				.withNeededInsertHandler(isKey = true)
 				.withCaseSensitivity(false) //忽略大小写
-				.withPriority(propertyPriority)
+				.withPriority(PlsPriorities.propertyPriority)
 			result.addElement(lookupElement)
 		}
 		else -> pass()
@@ -880,7 +879,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 				.withTailText(tailText, true)
 				.withNeededInsertHandler(isKey = false)
 				.withCaseSensitivity(false) //忽略大小写
-				.withPriority(propertyPriority)
+				.withPriority(PlsPriorities.propertyPriority)
 			result.addElement(lookupElement)
 		}
 		else -> pass()
@@ -930,7 +929,7 @@ fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: Compl
 			.withTailText(tailText, true)
 			.withTypeText(typeText, true)
 			.withNeededInsertHandler(isKey)
-			.withPriority(modifierPriority)
+			.withPriority(PlsPriorities.modifierPriority)
 		result.addElement(lookupElement)
 	}
 }

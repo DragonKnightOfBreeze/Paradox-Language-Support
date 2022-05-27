@@ -10,8 +10,8 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtFoldingBuilder:FoldingBuilder,DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
-		return when(node.elementType){
-			BLOCK -> blockFolder
+		return when(node.elementType) {
+			BLOCK -> PlsFolders.blockFolder
 			else -> throw InternalError()
 		}
 	}

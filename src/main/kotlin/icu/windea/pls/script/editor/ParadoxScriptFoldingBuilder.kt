@@ -7,26 +7,31 @@ import com.intellij.openapi.project.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
-		return when(node.elementType){
-			BLOCK -> blockFolder
-			INLINE_MATH -> inlineMathFolder
+		return when(node.elementType) {
+			BLOCK -> PlsFolders.blockFolder
+			PARAMETER_CONDITION -> {
+				val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.expression ?: PlsFolders.ellipsis
+				PlsFolders.parameterConditionFolder(expression)
+			}
+			INLINE_MATH -> PlsFolders.inlineMathFolder
 			else -> throw InternalError()
 		}
 	}
-
+	
 	override fun isCollapsedByDefault(node: ASTNode): Boolean {
 		return false
 	}
-
+	
 	override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
 		val descriptors: MutableList<FoldingDescriptor> = SmartList()
-		collectDescriptorsRecursively(node,document,descriptors)
+		collectDescriptorsRecursively(node, document, descriptors)
 		return descriptors.toTypedArray()
 	}
-
+	
 	private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
 		when(node.elementType) {
 			BLOCK -> {

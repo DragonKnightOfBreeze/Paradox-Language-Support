@@ -4,9 +4,6 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.cwt.structureView.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueTreeElement(
@@ -30,7 +27,7 @@ class ParadoxScriptValueTreeElement(
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
 		return when {
-			element is ParadoxScriptBlock -> blockFolder
+			element is ParadoxScriptBlock -> PlsFolders.blockFolder
 			else -> element.text //保留可能的包围的双引号
 		}
 	}

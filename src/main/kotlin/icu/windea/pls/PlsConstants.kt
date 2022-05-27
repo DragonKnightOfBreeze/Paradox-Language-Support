@@ -1,5 +1,7 @@
 package icu.windea.pls
 
+import com.intellij.lang.ASTNode
+
 val locationClass = PlsIcons::class.java
 
 const val ddsName = "DDS"
@@ -23,22 +25,12 @@ const val paradoxScriptId = "PARADOX_SCRIPT"
 const val paradoxScriptExtension = "txt"
 val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toClasspathUrl().readText()
 
-const val keywordPriority = 80.0
-const val propertyPriority = 40.0
-const val modifierPriority = 20.0
-
 const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length
 
-const val commentFolder = "#..."
-const val parameterFolder = "$...$"
-const val stringTemplateFolder = "..."
-const val blockFolder = "{...}"
-fun parameterConditionFolder(expression: String) = "[[$expression]...]"
-const val inlineMathFolder = "@[...]"
-
 const val anonymousString = "<anonymous>"
 const val anonymousEscapedString = "&lt;anonymous&gt;"
+
 //const val unknownString = "<unknown>"
 //const val unknownEscapedString = "&lt;unknown&gt;"
 //const val unresolvedString = "<unresolved>"
@@ -52,5 +44,35 @@ val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "setting
 val localisationFileExtensions = arrayOf("yml")
 val ddsFileExtensions = arrayOf("dds")
 
-const val launcherSettingsFileName = "launcher-settings.json" 
+const val launcherSettingsFileName = "launcher-settings.json"
 const val descriptorFileName = "descriptor.mod"
+
+object PlsFolders {
+	const val ellipsis = "..."
+	const val commentFolder = "#..."
+	const val parameterFolder = "$...$"
+	const val stringTemplateFolder = "..."
+	const val blockFolder = "{...}"
+	fun parameterConditionFolder(expression: String) = "[[$expression]...]"
+	const val inlineMathFolder = "@[...]"
+}
+
+object PlsPriorities {
+	const val keywordPriority = 80.0
+	const val propertyPriority = 40.0
+	const val modifierPriority = 20.0
+}
+
+object PlsPaths {
+	val userHome = System.getProperty("user.home")
+	const val dataDirectoryName = ".pls"
+	const val imagesDirectoryName = "images"
+	const val unknownPngName = "unknown.png"
+	
+	val userHomePath by lazy { userHome.toPath() }
+	val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
+	val imagesDirectoryPath by lazy { dataDirectoryPath.resolve(imagesDirectoryName) }
+	val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
+	
+	val unknownPngUrl = "/${unknownPngName}".toClasspathUrl()
+}

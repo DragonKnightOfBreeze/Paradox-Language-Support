@@ -106,7 +106,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptParameter): String {
-		return parameterFolder
+		return PlsFolders.parameterFolder
 	}
 	
 	@JvmStatic
@@ -366,7 +366,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptStringTemplate
 	@JvmStatic
 	fun getValue(element: ParadoxScriptStringTemplate): String {
-		return stringTemplateFolder
+		return PlsFolders.stringTemplateFolder
 	}
 	//endregion
 	
@@ -456,7 +456,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptBlock): String {
-		return blockFolder
+		return PlsFolders.blockFolder
 	}
 	
 	@JvmStatic
@@ -604,7 +604,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptInlineMath
 	@JvmStatic
 	fun getValue(element: ParadoxScriptInlineMath): String {
-		return inlineMathFolder
+		return PlsFolders.inlineMathFolder
 	}
 	
 	@JvmStatic

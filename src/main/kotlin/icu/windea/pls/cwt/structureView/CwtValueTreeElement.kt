@@ -26,7 +26,7 @@ class CwtValueTreeElement(
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
 		return when {
-			element is CwtBlock -> blockFolder
+			element is CwtBlock -> PlsFolders.blockFolder
 			element is CwtString -> element.text //保留可能包围的引号
 			else -> element.text
 		}
