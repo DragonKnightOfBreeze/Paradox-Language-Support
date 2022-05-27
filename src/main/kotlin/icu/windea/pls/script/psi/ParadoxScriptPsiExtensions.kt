@@ -84,7 +84,7 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findPropertyVa
 }
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlock.findValues(): List<T> {
-	return filterChildOfType() 
+	return filterChildOfType()
 }
 
 /**
@@ -102,11 +102,18 @@ fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boo
 /**
  * 得到上一级definition，可能为自身，可能为null。
  */
-fun PsiElement.findParentDefinition(skipThis: Boolean = false): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinition(skipFirstParent: Boolean = false): ParadoxDefinitionProperty? {
 	if(language != ParadoxScriptLanguage) return null
-	var current: PsiElement = (if(skipThis) this.parent else this) ?: return null
+	var current: PsiElement = (if(skipFirstParent) this.parent else this) ?: return null
+	var skipped = !skipFirstParent
 	while(current !is PsiFile) {
-		if(current is ParadoxDefinitionProperty && current.definitionInfo != null) return current
+		if(current is ParadoxDefinitionProperty && current.definitionInfo != null) {
+			if(skipped) {
+				return current
+			} else {
+				skipped = true
+			}
+		}
 		current = current.parent ?: break
 	}
 	return null
@@ -115,11 +122,18 @@ fun PsiElement.findParentDefinition(skipThis: Boolean = false): ParadoxDefinitio
 /**
  * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
  */
-fun PsiElement.findParentDefinitionProperty(skipThis: Boolean = false): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinitionProperty(skipFirstParent: Boolean = false): ParadoxDefinitionProperty? {
 	if(language != ParadoxScriptLanguage) return null
-	var current: PsiElement = (if(skipThis) this.parent else this) ?: return null
+	var current: PsiElement = this
+	var skipped = !skipFirstParent
 	while(current !is PsiFile) {
-		if(current is ParadoxDefinitionProperty) return current
+		if(current is ParadoxDefinitionProperty) {
+			if(skipped) {
+				return current
+			} else {
+				skipped = true
+			}
+		}
 		current = current.parent ?: break
 	}
 	return null
