@@ -5,6 +5,7 @@ import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 
 class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTreeElementBase<ParadoxScriptProperty>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
@@ -34,10 +35,17 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 		val name = definitionInfo.name
 		val typesText = definitionInfo.typesText
 		//如果definitionName和rootKey相同，则省略definitionName
-		if(name.equals(definitionInfo.rootKey, true)) {
-			return ": $typesText"
-		} else {
-			return "$name: $typesText"
+		val builder = StringBuilder()
+		if(!name.equals(definitionInfo.rootKey, true)) {
+			builder.append(name)
 		}
+		builder.append(": ").append(typesText)
+		//如果存在，显示定义的本地化名字（最相关的本地化文本）
+		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation()
+		if(primaryLocalisation != null){
+			val localizedName = ParadoxLocalisationTextRenderer.render(primaryLocalisation)
+			builder.append(" ").append(localizedName)
+		}
+		return builder.toString()
 	}
 }

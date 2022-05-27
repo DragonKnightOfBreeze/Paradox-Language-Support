@@ -1,9 +1,11 @@
 package icu.windea.pls.core
 
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -93,11 +95,21 @@ class ParadoxDefinitionInfo(
 	
 	val typeCount get() = types.size
 	val localisationConfig get() = typeConfig.localisation
-	val picturesConfig get() = typeConfig.pictures 
+	val picturesConfig get() = typeConfig.pictures
 	val definitionConfig get() = configGroup.definitions.get(type)
 	val graphRelatedTypes get() = typeConfig.graphRelatedTypes
 	val unique get() = typeConfig.unique
 	val severity get() = typeConfig.severity
+	
+	fun resolvePrimaryLocalisation(): ParadoxLocalisationProperty? {
+		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
+		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
+			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, inferParadoxLocale(), configGroup.project)
+			val localisation = resolved.second
+			if(localisation != null) return localisation
+		}
+		return null
+	}
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxDefinitionInfo

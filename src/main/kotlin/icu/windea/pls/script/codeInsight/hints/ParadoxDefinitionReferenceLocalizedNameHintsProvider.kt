@@ -49,7 +49,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {
-					val presentation = collectDefinition(resolved, definitionInfo, editor) ?: return true
+					val presentation = collectDefinition(definitionInfo, editor) ?: return true
 					val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
@@ -61,7 +61,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {
-					val presentation = collectDefinition(resolved, definitionInfo, editor) ?: return true
+					val presentation = collectDefinition(definitionInfo, editor) ?: return true
 					val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
@@ -71,17 +71,8 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 		return true
 	}
 	
-	private fun PresentationFactory.collectDefinition(element: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor): InlayPresentation? {
-		val project = element.project
-		val primaryLocalisationConfigs = definitionInfo.primaryLocalisationConfigs
-		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
-			val resolved = primaryLocalisationConfig.locationExpression.resolve(definitionInfo.name, inferParadoxLocale(), project)
-			val localisation = resolved.second
-			if(localisation != null) {
-				//TODO 截断
-				return ParadoxLocalisationTextHintsRenderer.render(localisation,this, editor)
-			}
-		}
-		return null
+	private fun PresentationFactory.collectDefinition(definitionInfo: ParadoxDefinitionInfo, editor: Editor): InlayPresentation? {
+		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation() ?: return null
+		return ParadoxLocalisationTextHintsRenderer.render(primaryLocalisation,this, editor)
 	}
 }

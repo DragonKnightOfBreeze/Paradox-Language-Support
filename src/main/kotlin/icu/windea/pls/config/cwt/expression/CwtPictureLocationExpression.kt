@@ -95,7 +95,7 @@ class CwtPictureLocationExpression(
 						val resolvedDefinition = resolved
 						val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
 						val primaryPictureConfigs = resolvedDefinitionInfo.primaryPictureConfigs
-						if(primaryPictureConfigs.isEmpty()) return null //CWT规则不完善
+						if(primaryPictureConfigs.isEmpty()) return null //没有或者CWT规则不完善
 						return primaryPictureConfigs.mapAndFirst({ it?.second != null }) { primaryPictureConfig ->
 							val locationExpression = primaryPictureConfig.location
 							locationExpression.resolve(resolvedDefinitionInfo, resolvedDefinition, resolvedProject, frameToUse)
@@ -141,7 +141,7 @@ class CwtPictureLocationExpression(
 						val resolvedDefinition = resolved
 						val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
 						val primaryPictureConfigs = resolvedDefinitionInfo.primaryPictureConfigs
-						if(primaryPictureConfigs.isEmpty()) return null //CWT规则不完善
+						if(primaryPictureConfigs.isEmpty()) return null //没有或者CWT规则不完善
 						var resolvedFilePath: String? = null
 						var resolvedSet: MutableSet<PsiFile>? = null
 						for(primaryPictureConfig in primaryPictureConfigs) {

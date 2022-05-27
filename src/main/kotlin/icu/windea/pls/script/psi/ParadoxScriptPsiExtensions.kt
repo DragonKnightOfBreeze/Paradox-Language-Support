@@ -30,7 +30,7 @@ val ParadoxScriptInlineMathParameter.defaultValueToken: PsiElement? get() = find
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  */
-fun ParadoxScriptBlock.processProperties(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+inline fun ParadoxScriptBlock.processProperties(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
 	return processChildren {
 		when {
 			it is ParadoxScriptProperty -> processor(it)
@@ -44,7 +44,7 @@ fun ParadoxScriptBlock.processProperties(includeConditional: Boolean = false, pr
  * 遍历当前代码块中的所有（直接作为子节点的）值。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的值。
  */
-fun ParadoxScriptBlock.processValues(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+inline fun ParadoxScriptBlock.processValues(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
 	return processChildren {
 		when {
 			it is ParadoxScriptValue -> processor(it)
@@ -57,7 +57,7 @@ fun ParadoxScriptBlock.processValues(includeConditional: Boolean = false, proces
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）属性。
  */
-fun ParadoxScriptParameterCondition.processProperties(processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+inline fun ParadoxScriptParameterCondition.processProperties(processor: (ParadoxScriptProperty) -> Boolean): Boolean {
 	return processChildren {
 		when {
 			it is ParadoxScriptProperty -> processor(it)
@@ -69,7 +69,7 @@ fun ParadoxScriptParameterCondition.processProperties(processor: (ParadoxScriptP
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）值。
  */
-fun ParadoxScriptParameterCondition.processValues(processor: (ParadoxScriptValue) -> Boolean): Boolean {
+inline fun ParadoxScriptParameterCondition.processValues(processor: (ParadoxScriptValue) -> Boolean): Boolean {
 	return processChildren {
 		when {
 			it is ParadoxScriptValue -> processor(it)
@@ -92,8 +92,8 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlock.findValues(): Lis
  */
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
 	if(propertyName.isEmpty() && this is ParadoxScriptProperty) return this
-	processChildren {
-		if(it is ParadoxScriptProperty && it.name.equals(propertyName, ignoreCase)) return it
+	block?.processProperties(includeConditional = true) {
+		if(it.name.equals(propertyName, ignoreCase)) return it
 		true
 	}
 	return null

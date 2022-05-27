@@ -4,8 +4,8 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 
 class ParadoxScriptFileTreeElement(
 	element: ParadoxScriptFile
@@ -30,17 +30,24 @@ class ParadoxScriptFileTreeElement(
 	}
 	
 	override fun getLocationString(): String? {
-		//如果文件名是descriptor.mod（不区分大小写），这里不要显示定义信息
 		val element = element ?: return null
+		//如果文件名是descriptor.mod（不区分大小写），不显示定义信息
 		if(element.name.equals(descriptorFileName, true)) return null
 		val definitionInfo = element.definitionInfo ?: return null
-		//如果definitionName和rootKey相同，则省略definitionName
 		val name = definitionInfo.name
 		val typesText = definitionInfo.typesText
-		if(name.equals(definitionInfo.rootKey, true)){
-			return ": $typesText"
-		} else {
-			return "$name: $typesText"
+		//如果definitionName和rootKey相同，则省略definitionName
+		val builder = StringBuilder()
+		if(!name.equals(definitionInfo.rootKey, true)) {
+			builder.append(name)
 		}
+		builder.append(": ").append(typesText)
+		//如果存在，显示定义的本地化名字（最相关的本地化文本）
+		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation()
+		if(primaryLocalisation != null) {
+			val localizedName = ParadoxLocalisationTextRenderer.render(primaryLocalisation)
+			builder.append(" ").append(localizedName)
+		}
+		return builder.toString()
 	}
 }

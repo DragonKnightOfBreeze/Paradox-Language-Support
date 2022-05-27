@@ -73,7 +73,6 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 	}
 	
 	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty, editor: Editor): InlayPresentation? {
-		//TODO 截断
 		return ParadoxLocalisationTextHintsRenderer.render(localisation,this, editor)
 	}
 }
