@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.*
 class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 	override fun getLanguage() = ParadoxLocalisationLanguage
 	
-	override fun getCodeSample(settingsType: SettingsType) = paradoxLocalisationDemoText
+	override fun getCodeSample(settingsType: SettingsType) = paradoxLocalisationCodeStyleSettingsDemoText
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
 	

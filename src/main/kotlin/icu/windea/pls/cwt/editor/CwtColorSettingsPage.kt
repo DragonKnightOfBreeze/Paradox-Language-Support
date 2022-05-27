@@ -14,9 +14,9 @@ class CwtColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.comment"), CwtAttributesKeys.COMMENT_KEY),
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.optionComment"), CwtAttributesKeys.OPTION_COMMENT_KEY),
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.documentationComment"), CwtAttributesKeys.DOCUMENTATION_COMMENT_KEY),
+			AttributesDescriptor(PlsBundle.message("cwt.displayName.keyword"), CwtAttributesKeys.KEYWORD_KEY),
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.propertyKey"), CwtAttributesKeys.PROPERTY_KEY_KEY),
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.optionKey"), CwtAttributesKeys.OPTION_KEY_KEY),
-			AttributesDescriptor(PlsBundle.message("cwt.displayName.keyword"), CwtAttributesKeys.KEYWORD_KEY),
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.number"), CwtAttributesKeys.NUMBER_KEY),
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.string"), CwtAttributesKeys.STRING_KEY),
 			AttributesDescriptor(PlsBundle.message("cwt.displayName.validEscape"), CwtAttributesKeys.VALID_ESCAPE_KEY),
@@ -37,5 +37,5 @@ class CwtColorSettingsPage : ColorSettingsPage {
 	
 	override fun getDisplayName() = cwtName
 	
-	override fun getDemoText() = cwtDemoText
+	override fun getDemoText() = cwtColorSettingsDemoText
 }

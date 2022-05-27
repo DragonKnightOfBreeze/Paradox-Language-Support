@@ -1,0 +1,13 @@
+# Root comment
+# Second line comment
+l_english:
+ # Comment
+ KEY:0 "Value"
+ KEY_1:0 "Value\nNew line"
+ KEY_WITH_REFERENCE:0 "Reference text: $KEY$"
+ KEY_WITH_COLORFUL_REFERENCE:0 "Reference text with parameter: $KEY|Y$"
+ KEY_WITH_ICON:0 "Icon: £unity£"
+ KEY_WITH_ICON_AND_FRAME:0 "Icon: £leader_skill|3£"
+ KEY_WITH_COMMAND:0 "Command: [Root.GetName]"
+ KEY_WITH_COLORFUL_TEXT:0 "Colorful text: §RRed text§!"
+ EMPTY:0 ""

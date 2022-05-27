@@ -39,8 +39,7 @@ class CwtBlock(
 				.aroundInside(separatorTokens, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //等号、不等号周围按情况可能需要空格
 				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //等号、不等号周围按情况可能需要空格
 				.between(LEFT_BRACE, RIGHT_BRACE).spaces(0) //花括号之间总是不需要空格
-				.after(LEFT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //左花括号之后如果非换行按情况可能需要空格
-				.before(RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //右花括号之前如果非换行按情况可能需要空格
+				.withinPair(LEFT_BRACE,RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
 		}
 	}
 	

@@ -521,21 +521,23 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getExpression(element: ParadoxScriptParameterCondition): String? {
 		val conditionExpression = element.parameterConditionExpression ?: return null
-		val builder = StringBuilder()
+		var builder: StringBuilder? = null
 		conditionExpression.processChildren {
 			when {
-				element.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
-					builder.append("!")
+				it.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
+					val builderToUse = builder ?: StringBuilder().apply { builder = this }
+					builderToUse.append("!")
 					true
 				}
-				element is ParadoxScriptParameterConditionParameter -> {
-					builder.append(element.name)
+				it is ParadoxScriptParameterConditionParameter -> {
+					val builderToUse = builder ?: StringBuilder().apply { builder = this }
+					builderToUse.append(it.name)
 					false
 				}
 				else -> true
 			}
 		}
-		return builder.toString()
+		return builder?.toString()
 	}
 	
 	@JvmStatic

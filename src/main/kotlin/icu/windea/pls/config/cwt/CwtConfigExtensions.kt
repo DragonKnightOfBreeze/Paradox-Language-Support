@@ -212,7 +212,7 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			key in valueValues
 		}
 		CwtKeyExpression.Type.ValueSet -> {
-			true //TODO
+			false //TODO
 		}
 		CwtKeyExpression.Type.Enum -> {
 			val enumExpression = expression.value ?: return false
@@ -220,13 +220,13 @@ fun matchesKey(expression: CwtKeyExpression, key: String, quoted: Boolean, confi
 			key in enumValues
 		}
 		CwtKeyExpression.Type.ComplexEnum -> {
-			true //TODO
+			false //TODO
 		}
 		CwtKeyExpression.Type.Scope -> {
-			true //TODO
+			false //TODO
 		}
 		CwtKeyExpression.Type.ScopeField -> {
-			true //TODO
+			false //TODO
 		}
 		CwtKeyExpression.Type.AliasName -> {
 			val aliasName = expression.value ?: return false
@@ -333,7 +333,7 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			}
 		}
 		CwtValueExpression.Type.ValueSet -> {
-			true //TODO
+			false //TODO
 		}
 		CwtValueExpression.Type.Enum -> {
 			valueElement is ParadoxScriptString && run {
@@ -343,13 +343,13 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			}
 		}
 		CwtValueExpression.Type.ComplexEnum -> {
-			true //TODO
+			false //TODO
 		}
 		CwtValueExpression.Type.Scope -> {
-			true //TODO
+			false //TODO
 		}
 		CwtValueExpression.Type.ScopeField -> {
-			true //TODO
+			false //TODO
 		}
 		CwtValueExpression.Type.VariableField -> {
 			valueElement is ParadoxScriptString && valueElement.stringValue.isVariableField() //TODO
@@ -358,10 +358,10 @@ fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValu
 			valueElement is ParadoxScriptString && valueElement.stringValue.isVariableField() //TODO
 		}
 		CwtValueExpression.Type.ValueField -> {
-			true //TODO
+			false //TODO
 		}
 		CwtValueExpression.Type.IntValueField -> {
-			true //TODO
+			false //TODO
 		}
 		CwtValueExpression.Type.SingleAliasRight -> false //不在这里处理
 		//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认

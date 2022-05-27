@@ -1,7 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.lang.ASTNode
-
 val locationClass = PlsIcons::class.java
 
 const val ddsName = "DDS"
@@ -11,19 +9,22 @@ const val cwtName = "Cwt"
 const val cwtDescription = "Cwt config"
 const val cwtId = "CWT"
 const val cwtExtension = "cwt"
-val cwtDemoText = "/demoText/Cwt.txt".toClasspathUrl().readText()
+val cwtColorSettingsDemoText = "/demoText/Cwt.colorSettings.txt".toClasspathUrl().readText()
+val cwtCodeStyleSettingsDemoText = "/demoText/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
 
 const val paradoxLocalisationName = "Paradox Localisation"
 const val paradoxLocalisationDescription = "Paradox localisation"
 const val paradoxLocalisationId = "PARADOX_LOCALISATION"
 const val paradoxLocalisationExtension = "yml"
-val paradoxLocalisationDemoText = "/demoText/ParadoxLocalisation.txt".toClasspathUrl().readText()
+val paradoxLocalisationColorSettingsDemoText = "/demoText/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
+val paradoxLocalisationCodeStyleSettingsDemoText = "/demoText/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
 
 const val paradoxScriptName = "Paradox Script"
 const val paradoxScriptDescription = "Paradox script"
 const val paradoxScriptId = "PARADOX_SCRIPT"
 const val paradoxScriptExtension = "txt"
-val paradoxScriptDemoText = "/demoText/ParadoxScript.txt".toClasspathUrl().readText()
+val paradoxScriptColorSettingsDemoText = "/demoText/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
+val paradoxScriptCodeStyleSettingsDemoText = "/demoText/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
 
 const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length

@@ -1,0 +1,36 @@
+# Root comment
+# Second line comment
+@var1 = 123
+@var2 = 1
+
+settings = {
+	# Line comment
+	variable_value = @var1 # variable reference
+	boolean_value = yes # yes or no
+	number_value = 123 # number
+	string_value = Foo # simple text
+	string_value = "Foo\n bar " # text (require quotes when contains blank)
+	property_value = {
+		foo = bar
+		number < 1 # predicate expression (treat as property)
+	}
+	list_value = {
+		"A" "B" "C"
+	}
+	values = { 1 2 3 }
+	color = rgb { 142 188 241 }
+	
+	parameter = $PARAM$
+	[[!PARAM] parameter_condition = $PARAM$ ]
+	inline_math = @[2 + ($MAX$ - 1 + var1)]
+}
+
+<definition><k>definition_name</k></definition> = {
+	<tag>tag_name</tag>
+	key = <definition-reference>definition_reference</definition-reference>
+	key = <localisation-reference>localisation_reference</localisation-reference>
+	key = <localisation-reference>localisation_reference</localisation-reference>
+	key = <synced-localisation-reference>synced_localisation_reference</synced-localisation-reference>
+	key = <enum-value-reference>enum_value_reference</enum-value-reference>
+	key = <path-reference>path_reference</path-reference>
+}

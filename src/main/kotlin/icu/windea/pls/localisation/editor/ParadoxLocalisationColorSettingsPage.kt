@@ -16,9 +16,9 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.locale"), ParadoxLocalisationAttributesKeys.LOCALE_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.string"), ParadoxLocalisationAttributesKeys.STRING_KEY),
-			AttributesDescriptor(PlsBundle.message("localisation.displayName.parameter"), ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyReference"), ParadoxLocalisationAttributesKeys.PROPERTY_REFERENCE_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.icon"), ParadoxLocalisationAttributesKeys.ICON_KEY),
+			AttributesDescriptor(PlsBundle.message("localisation.displayName.iconParameter"), ParadoxLocalisationAttributesKeys.ICON_PARAMETER_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScope"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.color"), ParadoxLocalisationAttributesKeys.COLOR_KEY),
@@ -43,5 +43,5 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 	
 	override fun getDisplayName() = paradoxLocalisationName
 	
-	override fun getDemoText() = paradoxLocalisationDemoText
+	override fun getDemoText() = paradoxLocalisationColorSettingsDemoText
 }

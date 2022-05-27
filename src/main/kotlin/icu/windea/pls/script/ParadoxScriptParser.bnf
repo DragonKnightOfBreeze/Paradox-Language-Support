@@ -144,8 +144,8 @@ private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_exp
 }
 parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
 parameter_condition_parameter ::= INPUT_PARAMETER_ID {
-  implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
+  implements="icu.windea.pls.script.psi.IParadoxScriptInputParameter"
+  methods=[getIcon getName setName getNameIdentifier getTextOffset]
 }
 //variable should outside of definition declaration
 //nested parameter_condition is not supported

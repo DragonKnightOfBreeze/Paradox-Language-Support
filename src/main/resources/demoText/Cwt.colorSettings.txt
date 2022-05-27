@@ -1,0 +1,29 @@
+types = {
+	### Army
+	type[army] = {
+		path = "game/common/armies"
+		subtype[buildable] = {
+			potential = {
+				## cardinality = 0..0
+				always = no
+			}
+		}
+		subtype[pop_spawned] = {
+			is_pop_spawned = yes
+		}
+		subtype[has_species] = {
+			## cardinality = 0..0
+			has_species = no
+		}
+		localisation = {
+			## required
+			Name = "$"
+			## required
+			Desc = "$_desc"
+		}
+		pictures = {
+			## primary
+			icon = "#icon" # <sprite>
+		}
+	}
+}

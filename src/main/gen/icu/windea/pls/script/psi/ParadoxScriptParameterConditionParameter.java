@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import javax.swing.Icon;
 
-public interface ParadoxScriptParameterConditionParameter extends IParadoxScriptParameter {
+public interface ParadoxScriptParameterConditionParameter extends IParadoxScriptInputParameter {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -22,9 +22,5 @@ public interface ParadoxScriptParameterConditionParameter extends IParadoxScript
   PsiElement getNameIdentifier();
 
   int getTextOffset();
-
-  //WARNING: getDefaultValue(...) is skipped
-  //matching getDefaultValue(ParadoxScriptParameterConditionParameter, ...)
-  //methods are not found in ParadoxScriptPsiImplUtil
 
 }

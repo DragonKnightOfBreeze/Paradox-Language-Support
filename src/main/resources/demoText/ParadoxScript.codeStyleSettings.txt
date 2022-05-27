@@ -20,7 +20,7 @@ settings = {
 	values = { 1 2 3 }
 	color = rgb { 142 188 241 }
 	
-	parameter = $param$
-	parameter_condition = [[!param] not = $param$ ]
+	parameter = $PARAM$
+	[[!PARAM] parameter_condition = $PARAM$ ]
 	inline_math = @[2 + ($MAX$ - 1 + var1)]
 }

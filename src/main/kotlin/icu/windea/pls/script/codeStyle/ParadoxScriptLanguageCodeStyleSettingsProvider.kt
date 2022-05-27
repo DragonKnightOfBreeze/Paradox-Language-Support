@@ -6,12 +6,11 @@ import com.intellij.psi.codeStyle.*
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings.*
 
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 	override fun getLanguage() = ParadoxScriptLanguage
 	
-	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptDemoText
+	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptCodeStyleSettingsDemoText
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxScriptCodeStyleSettings(settings)
 
@@ -53,6 +52,8 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 		
 		val spacesWithin = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
 		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_WITHIN_BRACES", PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithin)
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS", PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionBrackets"), spacesWithin)
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS", PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionExpressionBrackets"), spacesWithin)
 		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_WITHIN_INLINE_MATH_BRACKETS", PlsBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithin)
 	}
 	

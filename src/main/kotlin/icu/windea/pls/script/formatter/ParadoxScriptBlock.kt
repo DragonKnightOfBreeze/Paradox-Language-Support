@@ -40,11 +40,18 @@ class ParadoxScriptBlock(
 				.aroundInside(separatorTokens, VARIABLE).spaceIf(customSettings.SPACE_AROUND_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
 				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
 				.around(inlineMathOperatorTokens).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) //内联数学表达式操作符周围按情况可能需要空格
-				.after(INLINE_MATH_START).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式开始后如果非换行按情况可能需要空格
-				.before(INLINE_MATH_END).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式结束前如果非换行按情况可能需要空格
 				.between(LEFT_BRACE, RIGHT_BRACE).spaces(0) //花括号之间总是不需要空格
-				.after(LEFT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //左花括号之后如果非换行按情况可能需要空格
-				.before(RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //右花括号之前如果非换行按情况可能需要空格
+				.withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
+				
+				//TODO 为什么就下面这几个没有效果？
+				.betweenInside(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET, PARAMETER_CONDITION).spaces(0) //参数条件表达式如果为空则不需要空格（尽管这是语法错误）
+				.withinPairInside(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET, PARAMETER_CONDITION).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS) //参数条件表达式内侧如果非换行按情况可能需要空格
+				.betweenInside(NESTED_RIGHT_BRACKET, RIGHT_BRACKET, PARAMETER_CONDITION).spaces(0) //参数条件代码块如果为空则不需要空格
+				.afterInside(NESTED_RIGHT_BRACKET, PARAMETER_CONDITION).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS) //参数条件代码块内侧如果非换行按情况可能需要空格
+				
+				.beforeInside(RIGHT_BRACKET, PARAMETER_CONDITION).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS) //参数条件代码块内侧如果非换行按情况可能需要空格
+				.between(INLINE_MATH_START, INLINE_MATH_END).spaces(0) //内联数字表达式如果为空则不需要空格（尽管这是语法错误）
+				.withinPair(INLINE_MATH_START, INLINE_MATH_END).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式内侧如果非换行按情况可能需要空格
 		}
 	}
 	
