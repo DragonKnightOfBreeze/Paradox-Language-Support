@@ -96,59 +96,11 @@ class ParadoxLocalisationIconReference(
 		return ResolveResult.EMPTY_ARRAY
 	}
 	
-	override fun getVariants(): Array<out Any> {
-		//TODO 结果可能太多，需要优化性能
-		val project = element.project
-		val map = CollectionFactory.createSmallMemoryFootprintLinkedMap<String, PsiElement>() //优化性能
-		//根据spriteName和ddsFileName进行提示
-		val sprites = findDefinitionsByType("sprite|spriteType", project, distinct = true)
-		if(sprites.isNotEmpty()) {
-			for(sprite in sprites) {
-				val spriteName = sprite.definitionInfo?.name
-				val name = spriteName?.removePrefixOrNull("GFX_")?.removePrefix("text_")
-				if(name != null) map.putIfAbsent(name, sprite)
-			}
-		}
-		val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionType.Icon, distinct = true)
-		if(ddsFiles.isNotEmpty()) {
-			for(ddsFile in ddsFiles) {
-				val name = ddsFile.nameWithoutExtension
-				val file = ddsFile.toPsiFile<PsiFile>(project)
-				if(file != null) map.putIfAbsent(name, file)
-			}
-		}
-		//作为生成的图标处理（解析为其他类型的定义）
-		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
-		val jobDefinitions = findAllDefinitions("job", project, distinct = true) //FIXME PCE?
-		if(jobDefinitions.isNotEmpty()) {
-			for(jobDefinition in jobDefinitions) {
-				val jobName = jobDefinition.definitionInfo?.name ?: continue
-				map.putIfAbsent("job_$jobName", jobDefinition)
-			}
-		}
-		if(map.isEmpty()) return ResolveResult.EMPTY_ARRAY
-		return map.mapToArray { (name, it) ->
-			when(it) {
-				//val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
-				is ParadoxDefinitionProperty -> {
-					val icon = PlsIcons.localisationIconIcon //使用特定图标
-					val definitionInfo = it.definitionInfo //不应该为null
-					val tailText = if(definitionInfo != null) " from ${definitionInfo.type} definition ${definitionInfo.name}" else ""
-					val typeText = it.containingFile.name
-					LookupElementBuilder.create(it, name).withIcon(icon)
-						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-				}
-				is PsiFile -> {
-					val icon = PlsIcons.localisationIconIcon //使用特定图标
-					val tailText = " from dds file ${it.name}"
-					val typeText = it.name
-					LookupElementBuilder.create(it, name).withIcon(icon)
-						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-				}
-				else -> throw InternalError()
-			}
-		}
+	/**
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxIconCompletionProvider
+	 */
+	@Suppress("RedundantOverride")
+	override fun getVariants(): Array<Any> {
+		return super<PsiReferenceBase>.getVariants() //not here
 	}
 }

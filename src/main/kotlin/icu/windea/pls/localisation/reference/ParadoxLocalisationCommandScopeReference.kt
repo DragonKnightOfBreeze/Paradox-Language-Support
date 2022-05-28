@@ -14,12 +14,10 @@ class ParadoxLocalisationCommandScopeReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		//TODO
-		return null
+		return null //TODO
 	}
 	
 	override fun getVariants(): Array<out Any> {
-		//TODO
-		return emptyArray()
+		return emptyArray() //TODO
 	}
 }

@@ -20,4 +20,6 @@ class ParadoxLocalisationFile(
 	
 	val properties: List<ParadoxLocalisationProperty>
 		get() = propertyLists.firstOrNull()?.propertyList ?: emptyList()
+	
+	val localeIdFromFileName get() = "l_" + name.substringBeforeLast('.').substringAfterLast("l_")
 }

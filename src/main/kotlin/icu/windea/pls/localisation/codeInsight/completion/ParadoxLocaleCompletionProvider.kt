@@ -8,6 +8,9 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
+/**
+ * 提供语言区域名字的代码补全。
+ */
 object ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		//直到所在行开始没有任何空白，直到所在行结束没有除了冒号之外的任何其他字符
@@ -17,13 +20,21 @@ object ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters
 					it.elementType != TokenType.WHITE_SPACE || it.text.last().let { c -> c != '\n' && c != '\r' }
 				} == true) return
 		}
-		val project = position.project
-		for(locale in getInternalConfig(project).locales) {
+		val file = parameters.originalFile
+		val project = file.project
+		val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.localeIdFromFileName
+		//批量提示
+		val lookupElements = mutableSetOf<LookupElement>()
+		val locales = getInternalConfig(project).locales
+		for(locale in locales) {
 			val element = locale.pointer.element ?: continue
 			val typeText = locale.pointer.containingFile?.name ?: anonymousString
+			val pinned = locale.id == localeIdFromFileName
 			val lookupElement = LookupElementBuilder.create(element, locale.id).withIcon(locale.icon)
 				.withTypeText(typeText, true)
-			result.addElement(lookupElement)
+				.withPriority(if(pinned) PlsPriorities.pinnedPriority else 0.0) //优先提示与文件名匹配的语言区域
+			lookupElements.add(lookupElement)
 		}
+		result.addAllElements(lookupElements)
 	}
 }

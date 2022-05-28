@@ -44,5 +44,11 @@ class ParadoxLocalisationCommandFieldReference(
 		return resolveLocalisationCommand(name, configGroup)
 	}
 	
-	//代码提示功能由ParadoxCommandFieldCompletionProvider实现
+	/**
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxCommandFieldCompletionProvider
+	 */
+	@Suppress("RedundantOverride")
+	override fun getVariants(): Array<Any> {
+		return super<PsiReferenceBase>.getVariants() //not here
+	}
 }

@@ -1,6 +1,5 @@
 package icu.windea.pls.core.settings
 
-import com.intellij.*
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileTypes.ex.*
@@ -14,7 +13,6 @@ import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
-import java.util.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"
@@ -82,9 +80,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						toolTipText = PlsBundle.message("settings.localisation.primaryLocale.tooltip")
 					}
 					comboBox(settings.locales, listCellRenderer { value, _, _ ->
-						//不使用value.description
 						if(value == "") {
-							text = PlsBundle.message("settings.localisation.primaryLocale.default")
+							text = PlsBundle.message("settings.localisation.primaryLocale.auto")
 						} else {
 							text = getInternalConfig().localeMap.getValue(value).description
 						}

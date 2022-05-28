@@ -732,7 +732,7 @@ fun existsLocalisation(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 ): Boolean {
-	return ParadoxLocalisationNameIndex.exists(name, localeConfig, project, scope)
+	return ParadoxLocalisationNameIndex.Localisation.exists(name, localeConfig, project, scope)
 }
 
 /**
@@ -747,7 +747,7 @@ fun findLocalisation(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.findOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
+	return ParadoxLocalisationNameIndex.Localisation.findOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
 }
 
 /**
@@ -763,37 +763,22 @@ fun findLocalisations(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAll(name, localeConfig, project, scope, hasDefault)
+	return ParadoxLocalisationNameIndex.Localisation.findAll(name, localeConfig, project, scope, hasDefault)
 }
 
 /**
- * 基于本地化名字索引，根据语言区域查找所有的本地化（localisation）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
- * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
- * @param distinct 是否需要对相同键的本地化进行去重。默认为`false`。
+ * 基于本地化名字索引，根据推断的语言区域遍历所有的本地化（localisation）。
  * @see inferParadoxLocale
  */
-fun findAllLocalisations(
-	localeConfig: ParadoxLocaleConfig?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	distinct: Boolean = false
-): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAll(localeConfig, project, scope, hasDefault, distinct)
-}
-
-/**
- * 基于本地化名字索引，根据关键字查找所有的本地化（localisation）。
- * * 如果名字包含关键字（不忽略大小写），则放入结果。
- * * 返回的结果有数量限制。
- */
-fun findLocalisationsByKeyword(
+inline fun processLocalisationVariants(
 	keyword: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): Set<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
+): Boolean {
+	val maxSize = 0
+	//val maxSize = getSettings().maxCompleteSize
+	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize = maxSize, processor = processor)
 }
 
 /**
@@ -806,7 +791,7 @@ fun existsSyncedLocalisation(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 ): Boolean {
-	return ParadoxSyncedLocalisationNameIndex.exists(name, localeConfig, project, scope)
+	return ParadoxLocalisationNameIndex.SyncedLocalisation.exists(name, localeConfig, project, scope)
 }
 
 /**
@@ -821,7 +806,7 @@ fun findSyncedLocalisation(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): ParadoxLocalisationProperty? {
-	return ParadoxSyncedLocalisationNameIndex.getOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
+	return ParadoxLocalisationNameIndex.SyncedLocalisation.findOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
 }
 
 /**
@@ -837,38 +822,24 @@ fun findSyncedLocalisations(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	hasDefault: Boolean = false
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findAll(name, localeConfig, project, scope, hasDefault)
+	return ParadoxLocalisationNameIndex.SyncedLocalisation.findAll(name, localeConfig, project, scope, hasDefault)
 }
 
 /**
- * 基于同步本地化名字索引，根据语言区域查找所有的同步本地化（localisation_synced）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
- * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
- * @param distinct 是否需要对相同键的本地化进行去重。默认为`false`。
+ * 基于同步本地化名字索引，根据推断的语言区域遍历所有的同步本地化（synced_localisation）。
  * @see inferParadoxLocale
  */
-fun findAllSyncedLocalisations(
-	localeConfig: ParadoxLocaleConfig?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	distinct: Boolean = false
-): List<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findAll(localeConfig, project, scope, hasDefault, distinct)
-}
-
-/**
- * 基于同步本地化名字索引，根据关键字查找所有的同步本地化（localisation_synced）。
- * * 如果名字包含关键字（不忽略大小写），则放入结果。
- * * 返回的结果有数量限制。
- */
-fun findSyncedLocalisationsByKeyword(
+inline fun processSyncedLocalisationVariants(
 	keyword: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): Set<ParadoxLocalisationProperty> {
-	return ParadoxSyncedLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
+): Boolean{
+	val maxSize = 0
+	//val maxSize = getSettings().maxCompleteSize
+	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize = maxSize, processor = processor)
 }
+
 
 /**
  * 基于文件索引，根据相对于游戏或模组目录的文件路径查找匹配的文件（非目录）。

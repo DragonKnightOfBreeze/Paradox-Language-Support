@@ -19,8 +19,11 @@ class ParadoxLocalisationLocaleReference(
 		return element.localeConfig?.pointer?.element
 	}
 	
+	/**
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocaleCompletionProvider
+	 */
 	@Suppress("RedundantOverride")
 	override fun getVariants(): Array<Any> {
-		return super.getVariants() //交由ParadoxLocaleCompletionProvider实现
+		return super.getVariants() //not here
 	}
 }

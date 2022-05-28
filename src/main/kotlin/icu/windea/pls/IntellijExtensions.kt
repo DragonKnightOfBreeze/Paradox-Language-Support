@@ -51,6 +51,10 @@ fun LookupElement.withPriority(priority: Double): LookupElement {
 	return PrioritizedLookupElement.withPriority(this, priority)
 }
 
+fun LookupElement.withExplicitProximity(explicitProximity: Int): LookupElement {
+	return PrioritizedLookupElement.withExplicitProximity(this, explicitProximity)
+}
+
 /**导航到指定元素的位置*/
 fun navigateToElement(editor: Editor, element: PsiElement?) {
 	val offset = element?.textOffset ?: return
@@ -431,6 +435,8 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.existsElement(
 	project: Project,
 	scope: GlobalSearchScope
 ): Boolean {
+	if(DumbService.isDumb(project)) return false
+	
 	var result = false
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) {
 		result = true
@@ -443,8 +449,10 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.existsElement(
 	key: String,
 	project: Project,
 	scope: GlobalSearchScope,
-	crossinline predicate: (T) -> Boolean
+	crossinline predicate: (element: T) -> Boolean
 ): Boolean {
+	if(DumbService.isDumb(project)) return false
+	
 	var result = false
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 		if(predicate(element)) {
@@ -461,6 +469,8 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 	project: Project,
 	scope: GlobalSearchScope
 ): T? {
+	if(DumbService.isDumb(project)) return null
+	
 	var result: T? = null
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 		result = element
@@ -474,16 +484,18 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 	project: Project,
 	scope: GlobalSearchScope,
 	hasDefault: Boolean = false,
-	crossinline predicate: (T) -> Boolean
+	crossinline predicate: (element: T) -> Boolean
 ): T? {
+	if(DumbService.isDumb(project)) return null
+	
 	var result: T? = null
 	var defaultResult: T? = null
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
-		if(hasDefault) defaultResult = element
 		if(predicate(element)) {
 			result = element
 			return@processElements false
 		}
+		if(hasDefault) defaultResult = element
 		true
 	}
 	return result ?: defaultResult
@@ -494,6 +506,8 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findLastElement(
 	project: Project,
 	scope: GlobalSearchScope
 ): T? {
+	if(DumbService.isDumb(project)) return null
+	
 	var result: T? = null
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 		result = element
@@ -507,15 +521,17 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findLastElement(
 	project: Project,
 	scope: GlobalSearchScope,
 	hasDefault: Boolean = false,
-	crossinline predicate: (T) -> Boolean
+	crossinline predicate: (element: T) -> Boolean
 ): T? {
+	if(DumbService.isDumb(project)) return null
+	
 	var result: T? = null
 	var defaultResult: T? = null
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
-		if(hasDefault) defaultResult = element
 		if(predicate(element)) {
 			result = element
 		}
+		if(hasDefault) defaultResult = element
 		true
 	}
 	return result ?: defaultResult
@@ -527,8 +543,10 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElements(
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
 	maxSize: Int = 0,
-	crossinline predicate: (T) -> Boolean = { true }
+	crossinline predicate: (element: T) -> Boolean = { true }
 ): List<T> {
+	if(DumbService.isDumb(project)) return emptyList()
+	
 	val result: MutableList<T> = SmartList()
 	var size = 0
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
@@ -549,9 +567,11 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	key: String,
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = false,
+	cancelable: Boolean = true,
 	crossinline action: (T, MutableList<T>) -> Boolean
 ): List<T> {
+	if(DumbService.isDumb(project)) return emptyList()
+	
 	val result: MutableList<T> = SmartList()
 	StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 		if(cancelable) ProgressManager.checkCanceled()
@@ -564,11 +584,13 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsB
 	result: MutableCollection<T>,
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = false,
+	cancelable: Boolean = true,
 	maxSize: Int = 0,
 	crossinline keyPredicate: (key: String) -> Boolean = { true },
-	crossinline predicate: (T) -> Boolean = { true }
+	crossinline predicate: (element: T) -> Boolean = { true }
 ) {
+	if(DumbService.isDumb(project)) return
+	
 	var size = 0
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
@@ -595,10 +617,12 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsB
 inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElementsByKeys(
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = false,
+	cancelable: Boolean = true,
 	crossinline keyPredicate: (key: String) -> Boolean = { true },
-	crossinline action: (T) -> Boolean
+	crossinline action: (element: T) -> Boolean
 ) {
+	if(DumbService.isDumb(project)) return
+	
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
 		if(keyPredicate(key)) {
@@ -611,37 +635,38 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	}
 }
 
-inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElementByKeys(
-	result: MutableCollection<T>,
+inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processFirstElementByKeys(
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = false,
+	cancelable: Boolean = true,
 	hasDefault: Boolean = false,
 	maxSize: Int = 0,
 	crossinline keyPredicate: (key: String) -> Boolean = { true },
-	crossinline predicate: (T) -> Boolean = { true }
-) {
+	crossinline predicate: (T) -> Boolean = { true },
+	crossinline processor: ProcessEntry.(element: T) -> Boolean
+): Boolean {
+	if(DumbService.isDumb(project)) return true
+	
 	var size = 0
-	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
+	var value: T?
+	var defaultValue: T?
+	return StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
 		if(keyPredicate(key)) {
-			var value: T? = null
-			var defaultValue: T? = null
+			value = null
+			defaultValue = null
 			StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
-				if(hasDefault) defaultValue = element
 				if(predicate(element)) {
 					value = element
 					return@processElements false
 				}
+				if(hasDefault) defaultValue = element
 				true
 			}
 			val finalValue = value ?: defaultValue
 			if(finalValue != null) {
-				result.add(finalValue)
-				if(maxSize > 0) {
-					size++
-					if(size == maxSize) return@processAllKeys false
-				}
+				val result = ProcessEntry.processor(finalValue)
+				if(result && maxSize > 0 && ++size == maxSize) return@processAllKeys false
 			}
 		}
 		true

@@ -23,6 +23,7 @@ import icu.windea.pls.core.*
 data class ParadoxSettingsState(
 	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris,
 	@JvmField var preferOverridden: Boolean = false,
+	@Deprecated("Consider for removal.")
 	@JvmField var maxCompleteSize: Int = 100,
 	@JvmField var scriptIgnoredFileNames: String = "readme.txt,changelog.txt,license.txt,credits.txt",
 	@JvmField var scriptRenderLineComment: Boolean = false,

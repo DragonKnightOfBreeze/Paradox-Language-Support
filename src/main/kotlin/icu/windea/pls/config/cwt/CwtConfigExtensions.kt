@@ -403,7 +403,7 @@ fun matchesAlias(propertyConfig: CwtPropertyConfig, propertyElement: ParadoxScri
 fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): Boolean {
 	//TODO 匹配scope
 	val alias = configGroup.aliases[aliasName] ?: return false
-	val aliasSubName = resolveAliasSubNameExpression(name, quoted, alias, configGroup) 
+	val aliasSubName = resolveAliasSubNameExpression(name, quoted, alias, configGroup)
 	if(aliasSubName != null) {
 		val expression = CwtKeyExpression.resolve(aliasSubName)
 		if(matchesKey(expression, name, quoted, configGroup)) {
@@ -507,11 +507,9 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 	if(expression.isEmpty()) return
 	when(expression.type) {
 		CwtKeyExpression.Type.Localisation -> {
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
-			if(localisations.isEmpty()) return
 			val icon = CwtConfigIconResolver.resolve(config, keyType = expression.type)
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
-			for(localisation in localisations) {
+			processLocalisationVariants(keyword, configGroup.project) { localisation ->
 				val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val name = n.quoteIf(quoted)
 				val typeText = localisation.containingFile.name
@@ -520,14 +518,13 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 					.withTypeText(typeText, true)
 					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
+				true
 			}
 		}
 		CwtKeyExpression.Type.SyncedLocalisation -> {
-			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
-			if(syncedLocalisations.isEmpty()) return
 			val icon = CwtConfigIconResolver.resolve(config, keyType = expression.type)
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
-			for(syncedLocalisation in syncedLocalisations) {
+			processSyncedLocalisationVariants(keyword, configGroup.project) { syncedLocalisation ->
 				val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 				val name = n.quoteIf(quoted)
 				val typeText = syncedLocalisation.containingFile.name
@@ -536,15 +533,14 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 					.withTypeText(typeText, true)
 					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
+				true
 			}
 		}
 		CwtKeyExpression.Type.InlineLocalisation -> {
 			if(quoted) return
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
-			if(localisations.isEmpty()) return
 			val icon = CwtConfigIconResolver.resolve(config, keyType = expression.type)
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
-			for(localisation in localisations) {
+			processLocalisationVariants(keyword, configGroup.project){ localisation ->
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
@@ -552,13 +548,14 @@ fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, 
 					.withTypeText(typeText, true)
 					.withNeededInsertHandler(isKey = true)
 				result.addElement(lookupElement)
+				true
 			}
 		}
 		CwtKeyExpression.Type.TypeExpression -> {
 			val typeExpression = expression.value ?: return
 			val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 			if(definitions.isEmpty()) return
-			val icon =CwtConfigIconResolver.resolve(config, keyType = expression.type)
+			val icon = CwtConfigIconResolver.resolve(config, keyType = expression.type)
 			val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
 			for(definition in definitions) {
 				val n = definition.definitionInfo?.name ?: continue
@@ -675,11 +672,9 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 	val configFileName = config.pointer.containingFile?.name ?: anonymousString
 	when(expression.type) {
 		CwtValueExpression.Type.Localisation -> {
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project) //预先过滤结果
-			if(localisations.isEmpty()) return
 			val icon = CwtConfigIconResolver.resolve(config, valueType = expression.type)
 			val tailText = " by $expression in $configFileName"
-			for(localisation in localisations) {
+			processLocalisationVariants(keyword, configGroup.project){ localisation ->
 				val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val name = n.quoteIf(quoted)
 				val typeText = localisation.containingFile.name
@@ -688,14 +683,13 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 					.withTypeText(typeText, true)
 					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
+				true
 			}
 		}
 		CwtValueExpression.Type.SyncedLocalisation -> {
-			val syncedLocalisations = findSyncedLocalisationsByKeyword(keyword, configGroup.project)
-			if(syncedLocalisations.isEmpty()) return
 			val icon = CwtConfigIconResolver.resolve(config, valueType = expression.type)
 			val tailText = " by $expression in $configFileName"
-			for(syncedLocalisation in syncedLocalisations) {
+			processSyncedLocalisationVariants(keyword, configGroup.project){ syncedLocalisation ->
 				val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 				val name = n.quoteIf(quoted)
 				val typeText = syncedLocalisation.containingFile.name
@@ -704,15 +698,14 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 					.withTypeText(typeText, true)
 					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
+				true
 			}
 		}
 		CwtValueExpression.Type.InlineLocalisation -> {
 			if(quoted) return
-			val localisations = findLocalisationsByKeyword(keyword, configGroup.project)
-			if(localisations.isEmpty()) return
 			val icon = CwtConfigIconResolver.resolve(config, valueType = expression.type)
 			val tailText = " by $expression in $configFileName"
-			for(localisation in localisations) {
+			processLocalisationVariants(keyword, configGroup.project){ localisation ->
 				val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 				val typeText = localisation.containingFile.name
 				val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
@@ -720,6 +713,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 					.withTypeText(typeText, true)
 					.withNeededInsertHandler(isKey = false)
 				result.addElement(lookupElement)
+				true
 			}
 		}
 		CwtValueExpression.Type.AbsoluteFilePath -> pass() //不提示绝对路径
@@ -810,7 +804,7 @@ fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boole
 			val valueConfig = configGroup.values[valueExpression] ?: return
 			val valueValueConfigs = valueConfig.valueConfigMap.values
 			if(valueValueConfigs.isEmpty()) return
-			val icon =  CwtConfigIconResolver.resolve(config, valueType = expression.type)
+			val icon = CwtConfigIconResolver.resolve(config, valueType = expression.type)
 			val tailText = " by $expression in $configFileName"
 			for(valueValueConfig in valueValueConfigs) {
 				if(quoted && valueValueConfig.stringValue == null) continue
@@ -941,6 +935,8 @@ fun completeLocalisationCommand(configGroup: CwtConfigGroup, result: CompletionR
 	//val keyword = commandField.keyword
 	val localisationCommands = configGroup.localisationCommands
 	if(localisationCommands.isEmpty()) return
+	//批量提示
+	val lookupElements = mutableSetOf<LookupElement>()
 	for(localisationCommand in localisationCommands) {
 		val config = localisationCommand.value
 		val name = config.name
@@ -951,8 +947,9 @@ fun completeLocalisationCommand(configGroup: CwtConfigGroup, result: CompletionR
 		val typeText = config.pointer.containingFile?.name ?: anonymousString
 		val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 			.withTypeText(typeText, true)
-		result.addElement(lookupElement)
+		lookupElements.add(lookupElement)
 	}
+	result.addAllElements(lookupElements)
 }
 
 private val separatorChars = charArrayOf('=', '<', '>', '!')

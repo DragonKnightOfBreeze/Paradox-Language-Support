@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.reference
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.containers.CollectionFactory
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.ParadoxLocalisationCategory.*
@@ -45,22 +46,12 @@ class ParadoxLocalisationPropertyReferenceReference(
 		}
 	}
 	
-	override fun getVariants(): Array<out Any> {
-		//TODO 结果可能太多，需要优化性能
-		//为了避免这里得到的结果太多，采用关键字查找
-		val keyword = element.propertyReferenceId?.keyword ?: return emptyArray()
-		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
-		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
-		val project = element.project
-		return when(category) {
-			Localisation -> findLocalisationsByKeyword(keyword, project)
-			SyncedLocalisation -> findSyncedLocalisationsByKeyword(keyword, project)
-		}.mapToArray {
-			val name = it.name
-			val icon = it.icon
-			val typeText = it.containingFile.name
-			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
-		}
+	/**
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxPropertyReferenceCompletionProvider
+	 */
+	@Suppress("RedundantOverride")
+	override fun getVariants(): Array<Any> {
+		return super<PsiReferenceBase>.getVariants() //not here
 	}
 }
 

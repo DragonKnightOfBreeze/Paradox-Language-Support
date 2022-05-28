@@ -20,6 +20,6 @@ class ParadoxLocalisationColorReference(
 	
 	@Suppress("RedundantOverride")
 	override fun getVariants(): Array<Any> {
-		return super.getVariants() //不需要进行提示
+		return super.getVariants() //unnecessary
 	}
 }

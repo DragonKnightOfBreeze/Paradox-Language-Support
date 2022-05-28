@@ -5,22 +5,33 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
-import com.intellij.util.containers.CollectionFactory
+import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
+import io.ktor.utils.io.*
 
 //注意这里不能直接访问element.localisationInfo，需要优先通过element.stub获取本地化信息
 
-object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-	private const val version = 1
-	private const val cacheSize = 8 * 1024
+sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
+	object Localisation : ParadoxLocalisationNameIndex() {
+		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
+		private const val version = 2
+		private const val cacheSize = 200 * 1024
+		
+		override fun getKey() = key
+		override fun getVersion() = version
+		override fun getCacheSize() = cacheSize
+	}
 	
-	override fun getKey() = key
-	
-	override fun getVersion() = version
-	
-	override fun getCacheSize() = cacheSize
+	object SyncedLocalisation : ParadoxLocalisationNameIndex() {
+		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
+		private const val version = 2
+		private const val cacheSize = 2 * 1024
+		
+		override fun getKey() = key
+		override fun getVersion() = version
+		override fun getCacheSize() = cacheSize
+	}
 	
 	fun exists(name: String, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope): Boolean {
 		//如果索引未完成
@@ -76,65 +87,18 @@ object ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisati
 		}
 	}
 	
-	fun findAll(localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, distinct: Boolean): List<ParadoxLocalisationProperty> {
+	inline fun processVariants(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int, crossinline processor: ProcessEntry.(element: ParadoxLocalisationProperty) -> Boolean): Boolean {
 		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
+		if(DumbService.isDumb(project)) return true
 		
-		val keys = getAllKeys(project)
-		if(keys.isEmpty()) return emptyList()
-		
-		val inferParadoxLocale = if(localeConfig == null) inferParadoxLocale() else null
-		val result: MutableList<ParadoxLocalisationProperty> = SmartList()
-		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
-		var index = 0
-		StubIndex.getInstance().processAllKeys(this.key, project) { key ->
-			if(keysToDistinct != null && !keysToDistinct.add(key)) return@processAllKeys true
-			ProgressManager.checkCanceled()
-			var nextIndex = index
-			StubIndex.getInstance().processElements(this.key, key, project, scope, ParadoxLocalisationProperty::class.java) { element ->
-				ProgressManager.checkCanceled()
-				val elementLocale = element.localeConfig
-				if(localeConfig == null) {
-					//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
-					if(elementLocale == inferParadoxLocale) {
-						result.add(index++, element)
-						nextIndex++
-					} else {
-						result.add(element)
-						nextIndex++
-					}
-				} else if(localeConfig == elementLocale || hasDefault) {
-					result.add(element)
-					nextIndex++
-				}
-				true
-			}
-			index = nextIndex
-			true
-		}
-		return result
-	}
-	
-	fun findAllByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): Set<ParadoxLocalisationProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptySet()
-		
+		//注意：如果不预先过滤，结果可能过多（10w+）
 		//需要保证返回结果的名字的唯一性
-		val result = CollectionFactory.createSmallMemoryFootprintLinkedSet<ParadoxLocalisationProperty>() //优化性能
+		val noKeyword = keyword.isEmpty()
 		val inferredParadoxLocale = inferParadoxLocale()
-		if(keyword.isEmpty()) {
-			findFirstElementByKeys(result, project, scope, maxSize = maxSize, hasDefault = true) { element ->
-				element.localeConfig == inferredParadoxLocale
-			}
-		} else {
-			findFirstElementByKeys(result, project, scope, maxSize = maxSize, hasDefault = true,
-				keyPredicate = { key -> key.matchesKeyword(keyword) }) { element ->
-				element.localeConfig == inferredParadoxLocale
-			}
-		}
-		return result
+		return processFirstElementByKeys(project,scope, hasDefault = true, maxSize = maxSize, 
+			keyPredicate = {key -> noKeyword || key.matchesKeyword(keyword)},
+			predicate = {element -> element.localeConfig == inferredParadoxLocale},
+			processor = processor
+		)
 	}
 }
-
-
-

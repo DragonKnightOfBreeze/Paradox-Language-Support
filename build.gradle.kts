@@ -1,5 +1,3 @@
-import javax.naming.Name
-
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.6.0"
 	id("org.jetbrains.intellij") version "1.5.2"
@@ -26,11 +24,11 @@ dependencies {
 	implementation("ar.com.hjg:pngj:2.1.0") //FROM DDS4
 }
 
-sourceSets{
+sourceSets {
 	main {
 		java.srcDirs("src/main/java", "src/main/kotlin", "src/main/gen")
 	}
-	test{
+	test {
 		java.srcDirs("src/test/java", "src/test/kotlin", "src/reserved/java", "src/reserved/kotlin")
 		resources.srcDirs("src/test/resources", "src/reserved/resources")
 	}
