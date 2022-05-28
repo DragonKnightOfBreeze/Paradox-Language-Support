@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 

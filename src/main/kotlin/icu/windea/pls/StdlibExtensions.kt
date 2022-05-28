@@ -456,6 +456,14 @@ inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
 }
 
+inline fun <T, reified R> Set<T>.mapToArray(transform: (T) -> R): Array<R> {
+	val result = arrayOfNulls<R>(this.size)
+	for((i, e) in this.withIndex()) {
+		result[i] = transform(e)
+	}
+	return result.cast()
+}
+
 inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -> R): Array<R> {
 	//这里不先将Set转为List
 	val size = this.size

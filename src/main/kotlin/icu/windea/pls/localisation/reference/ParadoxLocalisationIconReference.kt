@@ -3,7 +3,8 @@ package icu.windea.pls.localisation.reference
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.SmartList
+import com.intellij.util.*
+import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
@@ -96,9 +97,10 @@ class ParadoxLocalisationIconReference(
 	}
 	
 	override fun getVariants(): Array<out Any> {
-		//根据spriteName和ddsFileName进行提示
+		//TODO 结果可能太多，需要优化性能
 		val project = element.project
-		val map = mutableMapOf<String, PsiElement>()
+		val map = CollectionFactory.createSmallMemoryFootprintLinkedMap<String, PsiElement>() //优化性能
+		//根据spriteName和ddsFileName进行提示
 		val sprites = findDefinitionsByType("sprite|spriteType", project, distinct = true)
 		if(sprites.isNotEmpty()) {
 			for(sprite in sprites) {

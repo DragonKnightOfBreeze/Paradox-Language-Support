@@ -5,8 +5,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.core.ParadoxLocalisationCategory.*
+import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationPropertyReferenceReference(
 	element: ParadoxLocalisationPropertyReference,
@@ -46,10 +46,11 @@ class ParadoxLocalisationPropertyReferenceReference(
 	}
 	
 	override fun getVariants(): Array<out Any> {
+		//TODO 结果可能太多，需要优化性能
+		//为了避免这里得到的结果太多，采用关键字查找
+		val keyword = element.propertyReferenceId?.keyword ?: return emptyArray()
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
-		//为了避免这里得到的结果太多，采用关键字查找
-		val keyword = element.keyword
 		val project = element.project
 		return when(category) {
 			Localisation -> findLocalisationsByKeyword(keyword, project)

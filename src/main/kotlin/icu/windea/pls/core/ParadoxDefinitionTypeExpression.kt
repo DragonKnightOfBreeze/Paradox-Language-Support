@@ -1,6 +1,6 @@
 package icu.windea.pls.core
 
-import com.intellij.util.SmartList
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 

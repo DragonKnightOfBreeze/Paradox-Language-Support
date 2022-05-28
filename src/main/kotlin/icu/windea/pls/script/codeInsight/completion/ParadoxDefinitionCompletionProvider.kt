@@ -25,7 +25,7 @@ object ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParame
 			//得到key元素
 			val keyElement = propertyKeyOrStringElement
 			//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
-			val definitionProperty = keyElement.findParentDefinitionProperty(skipFirstParent = true) ?: return
+			val definitionProperty = keyElement.findParentDefinitionProperty(fromParentBlock = true) ?: return
 			//进行提示
 			addKeyCompletions(keyElement, definitionProperty, result)
 		}

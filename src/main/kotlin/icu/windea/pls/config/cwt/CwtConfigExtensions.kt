@@ -403,10 +403,12 @@ fun matchesAlias(propertyConfig: CwtPropertyConfig, propertyElement: ParadoxScri
 fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): Boolean {
 	//TODO 匹配scope
 	val alias = configGroup.aliases[aliasName] ?: return false
-	val aliasSubName = resolveAliasSubNameExpression(name, quoted, alias, configGroup) ?: return false
-	val expression = CwtKeyExpression.resolve(aliasSubName)
-	if(matchesKey(expression, name, quoted, configGroup)) {
-		return true
+	val aliasSubName = resolveAliasSubNameExpression(name, quoted, alias, configGroup) 
+	if(aliasSubName != null) {
+		val expression = CwtKeyExpression.resolve(aliasSubName)
+		if(matchesKey(expression, name, quoted, configGroup)) {
+			return true
+		}
 	}
 	//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
 	if(aliasName == "modifier") {
@@ -1337,54 +1339,56 @@ internal fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<P
 fun resolveAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): PsiNamedElement? {
 	val project = configGroup.project
 	val aliasGroup = configGroup.aliases[aliasName] ?: return null
-	val aliasSubName = resolveAliasSubNameExpression(name, quoted, aliasGroup, configGroup) ?: return null
-	val expression = CwtKeyExpression.resolve(aliasSubName)
-	val resolved = when(expression.type) {
-		CwtKeyExpression.Type.Localisation -> {
-			findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
-		}
-		CwtKeyExpression.Type.SyncedLocalisation -> {
-			findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
-		}
-		CwtKeyExpression.Type.TypeExpression -> {
-			val typeExpression = expression.value ?: return null
-			findDefinitionByType(name, typeExpression, project)
-		}
-		CwtKeyExpression.Type.TypeExpressionString -> {
-			val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return null
-			val nameToUse = name.removeSurrounding(prefix, suffix)
-			val typeExpression = expression.value ?: return null
-			findDefinitionByType(nameToUse, typeExpression, project)
-		}
-		CwtKeyExpression.Type.Value -> {
-			val valueName = expression.value ?: return null
-			val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return null
-			valueValueConfig.pointer.element.castOrNull<CwtString>()
-		}
-		CwtKeyExpression.Type.ValueSet -> {
-			null //TODO
-		}
-		CwtKeyExpression.Type.Enum -> {
-			val enumName = expression.value ?: return null
-			val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
-			enumValueConfig.pointer.element.castOrNull<CwtString>()
-		}
-		CwtKeyExpression.Type.ComplexEnum -> {
-			null //TODO
-		}
-		CwtKeyExpression.Type.Constant -> {
-			//同名的定义有多个，取第一个即可
-			val aliases = aliasGroup[aliasSubName]
-			if(aliases != null) {
-				val alias = aliases.firstOrNull()
-				val element = alias?.pointer?.element
-				if(element != null) return element
+	val aliasSubName = resolveAliasSubNameExpression(name, quoted, aliasGroup, configGroup)
+	if(aliasSubName != null) {
+		val expression = CwtKeyExpression.resolve(aliasSubName)
+		val resolved = when(expression.type) {
+			CwtKeyExpression.Type.Localisation -> {
+				findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 			}
-			null
+			CwtKeyExpression.Type.SyncedLocalisation -> {
+				findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+			}
+			CwtKeyExpression.Type.TypeExpression -> {
+				val typeExpression = expression.value ?: return null
+				findDefinitionByType(name, typeExpression, project)
+			}
+			CwtKeyExpression.Type.TypeExpressionString -> {
+				val (prefix, suffix) = expression.extraValue.castOrNull<Pair<String, String>>() ?: return null
+				val nameToUse = name.removeSurrounding(prefix, suffix)
+				val typeExpression = expression.value ?: return null
+				findDefinitionByType(nameToUse, typeExpression, project)
+			}
+			CwtKeyExpression.Type.Value -> {
+				val valueName = expression.value ?: return null
+				val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return null
+				valueValueConfig.pointer.element.castOrNull<CwtString>()
+			}
+			CwtKeyExpression.Type.ValueSet -> {
+				null //TODO
+			}
+			CwtKeyExpression.Type.Enum -> {
+				val enumName = expression.value ?: return null
+				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
+				enumValueConfig.pointer.element.castOrNull<CwtString>()
+			}
+			CwtKeyExpression.Type.ComplexEnum -> {
+				null //TODO
+			}
+			CwtKeyExpression.Type.Constant -> {
+				//同名的定义有多个，取第一个即可
+				val aliases = aliasGroup[aliasSubName]
+				if(aliases != null) {
+					val alias = aliases.firstOrNull()
+					val element = alias?.pointer?.element
+					if(element != null) return element
+				}
+				null
+			}
+			else -> null //TODO
 		}
-		else -> null //TODO
+		if(resolved != null) return resolved
 	}
-	if(resolved != null) return resolved
 	//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
 	if(aliasName == "modifier") {
 		val resolvedModifier = resolveModifier(name, configGroup)

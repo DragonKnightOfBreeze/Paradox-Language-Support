@@ -100,39 +100,33 @@ fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boo
 }
 
 /**
- * 得到上一级definition，可能为自身，可能为null。
+ * 得到上一级definition，可能为null。
  */
-fun PsiElement.findParentDefinition(skipFirstParent: Boolean = false): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinition(): ParadoxDefinitionProperty? {
 	if(language != ParadoxScriptLanguage) return null
-	var current: PsiElement = (if(skipFirstParent) this.parent else this) ?: return null
-	var skipped = !skipFirstParent
+	var current: PsiElement = this
 	while(current !is PsiFile) {
-		if(current is ParadoxDefinitionProperty && current.definitionInfo != null) {
-			if(skipped) {
-				return current
-			} else {
-				skipped = true
-			}
-		}
+		if(current is ParadoxDefinitionProperty && current.definitionInfo != null) return current
 		current = current.parent ?: break
 	}
 	return null
 }
 
 /**
- * 得到上一级definitionProperty，可能为自身，可能为null，可能也是definition。
+ * 得到上一级definitionProperty，可能为null，可能也是definition。
  */
-fun PsiElement.findParentDefinitionProperty(skipFirstParent: Boolean = false): ParadoxDefinitionProperty? {
+fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): ParadoxDefinitionProperty? {
 	if(language != ParadoxScriptLanguage) return null
-	var current: PsiElement = this
-	var skipped = !skipFirstParent
+	var current: PsiElement = if(fromParentBlock) this.parent else this
 	while(current !is PsiFile) {
-		if(current is ParadoxDefinitionProperty) {
-			if(skipped) {
-				return current
-			} else {
-				skipped = true
+		if(fromParentBlock) {
+			if(current is ParadoxScriptRootBlock) {
+				return (current.parent ?: break) as ParadoxDefinitionProperty
+			} else if(current is ParadoxScriptBlock) {
+				return (current.parent.parent ?: break) as ParadoxDefinitionProperty
 			}
+		} else {
+			if(current is ParadoxDefinitionProperty) return current
 		}
 		current = current.parent ?: break
 	}

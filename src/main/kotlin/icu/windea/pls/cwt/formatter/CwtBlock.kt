@@ -31,19 +31,18 @@ class CwtBlock(
 			return null
 		}
 		
-		private fun createSpacingBuilder(node: ASTNode, settings: CodeStyleSettings): SpacingBuilder {
+		private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
 			//变量声明分隔符周围的空格，属性分隔符周围的空格
 			val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
-			val endOfLine = node.treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
 			return SpacingBuilder(settings, CwtLanguage)
 				.aroundInside(separatorTokens, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //等号、不等号周围按情况可能需要空格
 				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //等号、不等号周围按情况可能需要空格
-				.between(LEFT_BRACE, RIGHT_BRACE).spaces(0) //花括号之间总是不需要空格
-				.withinPair(LEFT_BRACE,RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
+				.between(LEFT_BRACE, RIGHT_BRACE).none() //花括号之间总是不需要空格
+				.withinPair(LEFT_BRACE,RIGHT_BRACE).spaceIf( customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
 		}
 	}
 	
-	private val spacingBuilder = createSpacingBuilder(myNode, settings)
+	private val spacingBuilder = createSpacingBuilder(settings)
 	
 	override fun buildChildren(): List<Block> {
 		val children = SmartList<Block>()

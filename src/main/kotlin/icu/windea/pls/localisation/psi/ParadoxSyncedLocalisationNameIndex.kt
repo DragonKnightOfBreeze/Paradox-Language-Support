@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
+import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 
@@ -17,7 +18,7 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 	
 	override fun getKey() = key
 	
-	override fun getVersion() = 1
+	override fun getVersion() = version
 	
 	override fun getCacheSize() = cacheSize
 	
@@ -114,21 +115,23 @@ object ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 		return result
 	}
 	
-	@Deprecated("Consider for removal.")
-	fun findAllByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): List<ParadoxLocalisationProperty> {
+	fun findAllByKeyword(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int): Set<ParadoxLocalisationProperty> {
 		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
+		if(DumbService.isDumb(project)) return emptySet()
 		
 		//需要保证返回结果的名字的唯一性
+		val result = CollectionFactory.createSmallMemoryFootprintLinkedSet<ParadoxLocalisationProperty>() //优化性能
+		val inferredParadoxLocale = inferParadoxLocale()
 		if(keyword.isEmpty()) {
-			return findFirstElementByKeys(project, scope, maxSize = maxSize, hasDefault = true) { element ->
-				element.localeConfig == inferParadoxLocale()
+			findFirstElementByKeys(result, project, scope, maxSize = maxSize, hasDefault = true) { element ->
+				element.localeConfig == inferredParadoxLocale
 			}
 		} else {
-			return findFirstElementByKeys(project, scope, maxSize = maxSize, hasDefault = true,
+			findFirstElementByKeys(result, project, scope, maxSize = maxSize, hasDefault = true,
 				keyPredicate = { key -> key.matchesKeyword(keyword) }) { element ->
-				element.localeConfig == inferParadoxLocale()
+				element.localeConfig == inferredParadoxLocale
 			}
 		}
+		return result
 	}
 }

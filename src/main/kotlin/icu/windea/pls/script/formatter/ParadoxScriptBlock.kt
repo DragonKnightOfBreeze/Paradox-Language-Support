@@ -32,30 +32,25 @@ class ParadoxScriptBlock(
 			return null
 		}
 		
-		private fun createSpacingBuilder(node: ASTNode, settings: CodeStyleSettings): SpacingBuilder {
+		private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
 			//变量声明分隔符周围的空格，属性分隔符周围的空格
 			val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
-			val endOfLine = node.treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
 			return SpacingBuilder(settings, ParadoxScriptLanguage)
 				.aroundInside(separatorTokens, VARIABLE).spaceIf(customSettings.SPACE_AROUND_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
 				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
 				.around(inlineMathOperatorTokens).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) //内联数学表达式操作符周围按情况可能需要空格
-				.between(LEFT_BRACE, RIGHT_BRACE).spaces(0) //花括号之间总是不需要空格
-				.withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
-				
-				//TODO 为什么就下面这几个没有效果？
-				.betweenInside(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET, PARAMETER_CONDITION).spaces(0) //参数条件表达式如果为空则不需要空格（尽管这是语法错误）
-				.withinPairInside(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET, PARAMETER_CONDITION).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS) //参数条件表达式内侧如果非换行按情况可能需要空格
-				.betweenInside(NESTED_RIGHT_BRACKET, RIGHT_BRACKET, PARAMETER_CONDITION).spaces(0) //参数条件代码块如果为空则不需要空格
-				.afterInside(NESTED_RIGHT_BRACKET, PARAMETER_CONDITION).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS) //参数条件代码块内侧如果非换行按情况可能需要空格
-				
-				.beforeInside(RIGHT_BRACKET, PARAMETER_CONDITION).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS) //参数条件代码块内侧如果非换行按情况可能需要空格
-				.between(INLINE_MATH_START, INLINE_MATH_END).spaces(0) //内联数字表达式如果为空则不需要空格（尽管这是语法错误）
-				.withinPair(INLINE_MATH_START, INLINE_MATH_END).spaceIf(!endOfLine && customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式内侧如果非换行按情况可能需要空格
+				.between(LEFT_BRACE, RIGHT_BRACE).none()//花括号之间总是不需要空格
+				.withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES) //花括号内侧如果非换行按情况可能需要空格
+				.between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() //参数条件表达式如果为空则不需要空格（尽管这是语法错误）
+				.withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS) //参数条件表达式内侧如果非换行按情况可能需要空格
+				.between(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).none() //参数条件代码块如果为空则不需要空格
+				.withinPair(NESTED_RIGHT_BRACKET, RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS) //参数条件代码块内侧如果非换行按情况可能需要空格
+				.between(INLINE_MATH_START, INLINE_MATH_END).none() //内联数字表达式如果为空则不需要空格（尽管这是语法错误）
+				.withinPair(INLINE_MATH_START, INLINE_MATH_END).spaceIf(customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS) //内联数学表达式内侧如果非换行按情况可能需要空格
 		}
 	}
 	
-	private val spacingBuilder = createSpacingBuilder(myNode, settings)
+	private val spacingBuilder = createSpacingBuilder(settings)
 	
 	override fun buildChildren(): List<Block> {
 		val children = SmartList<Block>()

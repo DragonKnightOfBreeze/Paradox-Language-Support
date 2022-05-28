@@ -37,12 +37,14 @@ object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScript
 		return findAllElements(name, project, scope)
 	}
 	
-	fun findAll(project: Project, scope: GlobalSearchScope, distinct: Boolean): List<ParadoxScriptVariable> {
+	fun findAll(project: Project, scope: GlobalSearchScope, distinct: Boolean): Set<ParadoxScriptVariable> {
 		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
+		if(DumbService.isDumb(project)) return emptySet()
 		
+		val result = mutableSetOf<ParadoxScriptVariable>()
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
-		return findAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true })
+		findAllElementsByKeys(result, project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true })
+		return result
 	}
 }
 

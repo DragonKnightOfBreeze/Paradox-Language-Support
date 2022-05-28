@@ -598,7 +598,7 @@ fun findAllScriptedVariables(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false
-): List<ParadoxScriptVariable> {
+): Set<ParadoxScriptVariable> {
 	return ParadoxScriptedVariableNameIndex.findAll(project, scope, distinct)
 }
 
@@ -651,7 +651,7 @@ fun findAllDefinitions(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false
-): List<ParadoxDefinitionProperty> {
+): Set<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope, distinct)
 }
 
@@ -788,12 +788,11 @@ fun findAllLocalisations(
  * * 如果名字包含关键字（不忽略大小写），则放入结果。
  * * 返回的结果有数量限制。
  */
-@Deprecated("Consider for removal.")
 fun findLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxLocalisationProperty> {
+): Set<ParadoxLocalisationProperty> {
 	return ParadoxLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
 }
 
@@ -863,12 +862,11 @@ fun findAllSyncedLocalisations(
  * * 如果名字包含关键字（不忽略大小写），则放入结果。
  * * 返回的结果有数量限制。
  */
-@Deprecated("Consider for removal.")
 fun findSyncedLocalisationsByKeyword(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxLocalisationProperty> {
+): Set<ParadoxLocalisationProperty> {
 	return ParadoxSyncedLocalisationNameIndex.findAllByKeyword(keyword, project, scope, getSettings().maxCompleteSize)
 }
 

@@ -232,11 +232,11 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 //endregion
 
 //region AstNode Extensions
-fun <T: ASTNode> T.takeIf(elementType: IElementType): T?{
+fun <T : ASTNode> T.takeIf(elementType: IElementType): T? {
 	return takeIf { it.elementType == elementType }
 }
 
-fun <T: ASTNode> T.takeUnless(elementType: IElementType): T?{
+fun <T : ASTNode> T.takeUnless(elementType: IElementType): T? {
 	return takeUnless { it.elementType == elementType }
 }
 
@@ -257,14 +257,22 @@ inline fun ASTNode.forEachChild(action: (ASTNode) -> Unit) {
 		child = child.treeNext
 	}
 }
+
+fun ASTNode.isStartOfLine(): Boolean {
+	return treePrev?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
+}
+
+fun ASTNode.isEndOfLine(): Boolean {
+	return treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
+}
 //endregion
 
 //region PsiElement Extensions
-fun <T: PsiElement> T.takeIf(elementType: IElementType): T?{
+fun <T : PsiElement> T.takeIf(elementType: IElementType): T? {
 	return takeIf { it.elementType == elementType }
 }
 
-fun <T: PsiElement> T.takeUnless(elementType: IElementType): T?{
+fun <T : PsiElement> T.takeUnless(elementType: IElementType): T? {
 	return takeUnless { it.elementType == elementType }
 }
 
@@ -308,7 +316,7 @@ inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(processor: 
 	var child: PsiElement? = this.firstChild
 	while(child != null) {
 		if(child is T) {
-			val result =  ProcessEntry.processor(child)
+			val result = ProcessEntry.processor(child)
 			if(!result) return false
 		}
 		child = child.nextSibling
@@ -388,7 +396,7 @@ val PsiElement.icon
 	get() = getIcon(0)
 
 val PsiElement.keyword
-	get() = text.removeSurrounding("\"", "\"").let { s ->
+	get() = text.trim('"').let { s ->
 		runCatching { s.dropLast(dummyIdentifierLength) }.getOrElse { s }
 	}
 
@@ -541,7 +549,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	key: String,
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = true,
+	cancelable: Boolean = false,
 	crossinline action: (T, MutableList<T>) -> Boolean
 ): List<T> {
 	val result: MutableList<T> = SmartList()
@@ -553,14 +561,14 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 }
 
 inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsByKeys(
+	result: MutableCollection<T>,
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = true,
+	cancelable: Boolean = false,
 	maxSize: Int = 0,
 	crossinline keyPredicate: (key: String) -> Boolean = { true },
 	crossinline predicate: (T) -> Boolean = { true }
-): List<T> {
-	val result: MutableList<T> = SmartList()
+) {
 	var size = 0
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
@@ -582,40 +590,37 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findAllElementsB
 		}
 		true
 	}
-	return result
 }
 
 inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElementsByKeys(
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = true,
+	cancelable: Boolean = false,
 	crossinline keyPredicate: (key: String) -> Boolean = { true },
-	crossinline action: (T, MutableList<T>) -> Boolean
-): List<T> {
-	val result: MutableList<T> = SmartList()
+	crossinline action: (T) -> Boolean
+) {
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
 		if(keyPredicate(key)) {
 			StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 				if(cancelable) ProgressManager.checkCanceled()
-				action(element, result)
+				action(element)
 			}
 		}
 		true
 	}
-	return result
 }
 
 inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElementByKeys(
+	result: MutableCollection<T>,
 	project: Project,
 	scope: GlobalSearchScope,
-	cancelable: Boolean = true,
+	cancelable: Boolean = false,
 	hasDefault: Boolean = false,
 	maxSize: Int = 0,
 	crossinline keyPredicate: (key: String) -> Boolean = { true },
 	crossinline predicate: (T) -> Boolean = { true }
-): List<T> {
-	val result: MutableList<T> = SmartList()
+) {
 	var size = 0
 	StubIndex.getInstance().processAllKeys(this.key, project) { key ->
 		if(cancelable) ProgressManager.checkCanceled()
@@ -641,6 +646,5 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.findFirstElement
 		}
 		true
 	}
-	return result
 }
 //endregion

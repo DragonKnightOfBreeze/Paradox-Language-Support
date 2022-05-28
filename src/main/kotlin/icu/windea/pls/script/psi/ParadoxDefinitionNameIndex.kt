@@ -52,15 +52,20 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		return findAllElements(name, project, scope) { element -> expression.matches(element) }
 	}
 	
-	fun findAll(typeExpression: String?, project: Project, scope: GlobalSearchScope, distinct: Boolean): List<ParadoxDefinitionProperty> {
+	fun findAll(typeExpression: String?, project: Project, scope: GlobalSearchScope, distinct: Boolean): Set<ParadoxDefinitionProperty> {
 		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
+		if(DumbService.isDumb(project)) return emptySet()
 		
+		val result = mutableSetOf<ParadoxDefinitionProperty>()
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
-		if(typeExpression == null) return findAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true })
-		val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-		return findAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }) { element ->
-			expression.matches(element)
+		if(typeExpression == null) {
+			findAllElementsByKeys(result, project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true })
+		} else {
+			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
+			findAllElementsByKeys(result, project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }) { element ->
+				expression.matches(element)
+			}
 		}
+		return result
 	}
 }
