@@ -7,8 +7,11 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationTemplateContext : TemplateContextType(paradoxLocalisationId, paradoxLocalisationName) {
-	override fun isInContext(file: PsiFile, offset: Int): Boolean {
-		val element = file.findElementAt(offset)
-		return element?.parentOfType<ParadoxLocalisationPropertyValue>(true) != null
+	override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
+		val file = templateActionContext.file
+		val startOffset = templateActionContext.startOffset
+		val element = file.findElementAt(startOffset)
+		val elementType = element.elementType
+		return elementType == ParadoxLocalisationElementTypes.STRING_TOKEN //仅在string_token中提示
 	}
 }
