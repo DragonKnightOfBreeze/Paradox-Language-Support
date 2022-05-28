@@ -50,7 +50,7 @@
     <annotator
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationAnnotator"/>
-    <itemPresentationProvider 
+    <itemPresentationProvider
         forClass="com.intellij.psi.NavigatablePsiElement"
         implementationClass="icu.windea.pls.localisation.navigation.ParadoxLocalisationPresentationProvider"/>
     <lang.psiStructureViewFactory
@@ -78,6 +78,11 @@
         key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList"
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
 
+    <!--floating toolbar-->
+    <fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationTextEditorProvider"/>
+    <advancedSetting id="paradoxLocalisation.hide.floating.toolbar" default="false" groupKey="settings"/>
+    <customizableActionGroupProvider implementation="icu.windea.pls.localisation.ui.floating.FloatingToolbarCustomizableGroupProvider"/>
+    
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
 
@@ -134,4 +139,9 @@
                      groupBundle="messages.PlsBundle" groupKey="localisation.inspection"
                      implementationClass="icu.windea.pls.localisation.inspections.MultipleLocalesInspection"/>
   </extensions>
+
+  <actions>
+    <group id="ParadoxLocalisation.Toolbar.Floating"
+           class="icu.windea.pls.localisation.ui.actions.styling.FloatingToolbarGroup"/>
+  </actions>
 </idea-plugin>

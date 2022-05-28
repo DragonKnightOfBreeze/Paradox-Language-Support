@@ -1,0 +1,182 @@
+package icu.windea.pls.localisation.ui.floating
+
+import com.intellij.codeInsight.hint.*
+import com.intellij.ide.ui.customization.*
+import com.intellij.openapi.*
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.impl.*
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.editor.event.*
+import com.intellij.psi.*
+import com.intellij.psi.util.*
+import com.intellij.ui.*
+import icu.windea.pls.localisation.psi.*
+import java.awt.*
+import java.awt.event.*
+import javax.swing.*
+import kotlin.properties.*
+
+//org.intellij.plugins.markdown.ui.floating.FloatingToolbar
+
+/**
+ * 当用户光标选中本地化文本(的其中一部分)时,将会显示的悬浮攻击栏。提供快速更改文本颜色的动作。
+ * @see icu.windea.pls.localisation.ui.actions.styling.FloatingToolbarGroup
+ * @see icu.windea.pls.localisation.ui.actions.styling.SetColorAction
+ */
+class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : Disposable {
+	private val mouseListener = MouseListener()
+	private val keyboardListener = KeyboardListener()
+	private val mouseMotionListener = MouseMotionListener()
+	
+	private var hint: LightweightHint? = null
+	private var buttonSize: Int by Delegates.notNull()
+	private var lastSelection: String? = null
+	
+	init {
+		registerListeners()
+	}
+	
+	fun isShown() = hint != null
+	
+	fun hideIfShown() {
+		hint?.hide()
+	}
+	
+	fun showIfHidden() {
+		if(hint != null || !canBeShownAtCurrentSelection()) {
+			return
+		}
+		val toolbar = createActionToolbar(editor.contentComponent) ?: return
+		buttonSize = toolbar.maxButtonHeight
+		
+		val newHint = LightweightHint(toolbar.component)
+		newHint.setForceShowAsPopup(true)
+		
+		showOrUpdateLocation(newHint)
+		newHint.addHintListener { this.hint = null }
+		this.hint = newHint
+	}
+	
+	fun updateLocationIfShown() {
+		showOrUpdateLocation(hint ?: return)
+	}
+	
+	override fun dispose() {
+		unregisterListeners()
+		hideIfShown()
+		hint = null
+	}
+	
+	private fun createActionToolbar(targetComponent: JComponent): ActionToolbar? {
+		val group = CustomActionsSchema.getInstance().getCorrectedAction(actionGroupId) as? ActionGroup ?: return null
+		val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
+			override fun addNotify() {
+				super.addNotify()
+				updateActionsImmediately()
+				//updateActionsImmediately(true)
+			}
+		}
+		toolbar.targetComponent = targetComponent
+		toolbar.setReservePlaceAutoPopupIcon(false)
+		return toolbar
+	}
+	
+	private fun showOrUpdateLocation(hint: LightweightHint) {
+		HintManagerImpl.getInstanceImpl().showEditorHint(
+			hint,
+			editor,
+			getHintPosition(hint),
+			HintManager.HIDE_BY_ESCAPE or HintManager.UPDATE_BY_SCROLLING,
+			0,
+			true
+		)
+	}
+	
+	private fun registerListeners() {
+		editor.addEditorMouseListener(mouseListener)
+		editor.addEditorMouseMotionListener(mouseMotionListener)
+		editor.contentComponent.addKeyListener(keyboardListener)
+	}
+	
+	private fun unregisterListeners() {
+		editor.removeEditorMouseListener(mouseListener)
+		editor.removeEditorMouseMotionListener(mouseMotionListener)
+		editor.contentComponent.removeKeyListener(keyboardListener)
+	}
+	
+	private fun canBeShownAtCurrentSelection(): Boolean {
+		val file = PsiEditorUtil.getPsiFile(editor)
+		PsiDocumentManager.getInstance(file.project).commitDocument(editor.document)
+		val selectionModel = editor.selectionModel
+		val selectionStart = selectionModel.selectionStart
+		val selectionEnd = selectionModel.selectionEnd
+		//忽略跨行的情况
+		if(editor.document.getLineNumber(selectionStart) != editor.document.getLineNumber(selectionEnd)) return false
+		val elementAtStart = PsiUtilCore.getElementAtOffset(file, selectionStart)
+		val elementAtEnd = PsiUtilCore.getElementAtOffset(file, selectionEnd)
+		//开始位置和结束位置的PSI元素类型必须是string_token
+		return elementAtStart.elementType == ParadoxLocalisationElementTypes.STRING_TOKEN
+			&& elementAtEnd.elementType == ParadoxLocalisationElementTypes.STRING_TOKEN
+	}
+	
+	private fun getHintPosition(hint: LightweightHint): Point {
+		val hintPos = HintManagerImpl.getInstanceImpl().getHintPosition(hint, editor, HintManager.DEFAULT)
+		// because of `hint.setForceShowAsPopup(true)`, HintManager.ABOVE does not place the hint above
+		// the hint remains on the line, so we need to move it up ourselves
+		val dy = -(hint.component.preferredSize.height + 2)
+		val dx = buttonSize * -2
+		hintPos.translate(dx, dy)
+		return hintPos
+	}
+	
+	private fun updateOnProbablyChangedSelection(onSelectionChanged: (String) -> Unit) {
+		val newSelection = editor.selectionModel.selectedText
+		
+		when(newSelection) {
+			null -> hideIfShown()
+			lastSelection -> Unit
+			else -> onSelectionChanged(newSelection)
+		}
+		
+		lastSelection = newSelection
+	}
+	
+	private inner class MouseListener : EditorMouseListener {
+		//FIXME 为啥这里的监听器没有效果啊我草
+		override fun mouseReleased(e: EditorMouseEvent) {
+			updateOnProbablyChangedSelection {
+				if(isShown()) {
+					updateLocationIfShown()
+				} else {
+					showIfHidden()
+				}
+			}
+		}
+	}
+	
+	private inner class KeyboardListener : KeyAdapter() {
+		override fun keyReleased(e: KeyEvent) {
+			super.keyReleased(e)
+			if(e.source != editor.contentComponent) {
+				return
+			}
+			updateOnProbablyChangedSelection {
+				hideIfShown()
+			}
+		}
+	}
+	
+	private inner class MouseMotionListener : EditorMouseMotionListener {
+		override fun mouseMoved(e: EditorMouseEvent) {
+			val visualPosition = e.visualPosition
+			val hoverSelected = editor.caretModel.allCarets.any {
+				val beforeSelectionEnd = it.selectionEndPosition.after(visualPosition)
+				val afterSelectionStart = visualPosition.after(it.selectionStartPosition)
+				beforeSelectionEnd && afterSelectionStart
+			}
+			if(hoverSelected) {
+				showIfHidden()
+			}
+		}
+	}
+}

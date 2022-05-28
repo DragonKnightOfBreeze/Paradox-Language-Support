@@ -10,7 +10,7 @@
 
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
-
+  
   <description><![CDATA[
     <p>
       Support for Paradox Language.

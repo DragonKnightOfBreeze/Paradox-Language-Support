@@ -11,6 +11,10 @@ intellij {
 	version.set("2022.1")
 	pluginName.set("Paradox Language Support")
 	plugins.add("com.intellij.platform.images")
+	
+	//reference
+	plugins.add("markdown")
+	plugins.add("org.jetbrains.kotlin")
 }
 
 repositories {
