@@ -125,7 +125,7 @@ types = {
 
 ambient_object = {
 	subtype[show_name] = {
-		###A localisation key. Does not use localisation_synced.
+		###A localisation key.
 		name = localisation
 	}
 	subtype[!show_name] = {
