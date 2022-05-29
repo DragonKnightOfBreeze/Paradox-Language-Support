@@ -18,12 +18,13 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
+import com.intellij.refactoring.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
+import com.intellij.refactoring.util.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import java.io.*

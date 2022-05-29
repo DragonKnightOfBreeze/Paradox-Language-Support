@@ -11,7 +11,7 @@
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 
-## 0.6 >> 0.6.0
+## 0.6 > 0.6.1
 
 * [X] 更新cwt规则到最新版本（`stellaris v3.4`）（2022/5/28）
 * 代码优化：
@@ -23,8 +23,9 @@
   * [X] 本地化文件：仅允许在正确的位置（`string_token`）插入动态模版
   * [X] 优化代码补全性能：尽可能确保提示本地化图标和属性引用时不会导致`ProcessCanceledException`
 * 新增功能：
-  * [ ] 本地化文件：提供快速更改文本颜色的悬浮工具栏 
-  * [ ] 脚本文件：本地封装变量（`scripted_variable`）的提取和快速修复（无法解析时）
+  * [X] 本地化文件：提供快速更改文本颜色的悬浮工具栏（未生效，原因未知） 
+  * [X] 脚本文件：本地封装变量（`scripted_variable`）的提取和快速修复（无法解析时）
+  * [X] 实现快速修复：导入游戏目录或模组目录
   * [ ] 实现代码检查：不期望的脚本语法（多种情况，需要确认）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
@@ -32,7 +33,7 @@
   * [X] 兼容`inline_math`语法，以及相关功能：代码高亮、代码补全、代码折叠、引用解析、格式化、代码风格设置
   * [X] 兼容`parameter`语法，以及相关功能：代码高亮
   * [X] 兼容`string_template`语法，以及相关功能：代码高亮
-  * [ ] 兼容`parameter_condition`语法，以及相关功能：代码高亮、代码折叠、格式化、代码风格设置
+  * [X] 兼容`parameter_condition`语法，以及相关功能：代码高亮、代码折叠、格式化、代码风格设置
   * [X] ~~兼容`scripted_loc`语法，以及相关功能：代码高亮、格式化、代码提示、引用解析~~（视为其中一种`string_template`）
   * [ ] 兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_facPtor|ALTERED_STABILITY|-10|`）
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中

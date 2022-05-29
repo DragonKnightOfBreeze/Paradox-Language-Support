@@ -32,23 +32,23 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
 					val location = value.propertyKey
 					holder.registerProblem(location, PlsBundle.message("localisation.inspection.duplicateProperties.description", key),
-						NavigateToDuplicates(key, value, values)
+						NavigateToDuplicatesFix(key, value, values)
 					)
 				}
 			}
 		}
 	}
 	
-	private class NavigateToDuplicates(
+	private class NavigateToDuplicatesFix(
 		private val key: String,
 		property: ParadoxLocalisationProperty,
 		duplicates: List<ParadoxLocalisationProperty>
 	) : LocalQuickFixAndIntentionActionOnPsiElement(property) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getFamilyName() = PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1")
+		override fun getFamilyName() = PlsBundle.message("localisation.inspection.duplicateProperties.fix.1")
 		
-		override fun getText() = PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1")
+		override fun getText() = PlsBundle.message("localisation.inspection.duplicateProperties.fix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return

@@ -33,23 +33,23 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
 					val location = value.variableName
 					holder.registerProblem(location, PlsBundle.message("script.inspection.duplicateScriptedVariables.description", name),
-						NavigateToDuplicates(name, value, values)
+						NavigateToDuplicatesFix(name, value, values)
 					)
 				}
 			}
 		}
 	}
 	
-	private class NavigateToDuplicates(
+	private class NavigateToDuplicatesFix(
 		private val key: String,
 		element: ParadoxScriptVariable,
 		duplicates: List<ParadoxScriptVariable>
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getFamilyName() = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1")
+		override fun getFamilyName() = PlsBundle.message("script.inspection.duplicateScriptedVariables.fix.1")
 		
-		override fun getText() = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1")
+		override fun getText() = PlsBundle.message("script.inspection.duplicateScriptedVariables.fix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return

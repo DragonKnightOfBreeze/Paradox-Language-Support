@@ -9,24 +9,33 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.*
 import icu.windea.pls.*
+import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 /**
  * 声明本地封装变量的重构。
  */
-object ParadoxScriptIntroduceLocalScriptedVariableHandler : RefactoringActionHandler {
+object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
 	private const val commandName = "Introduce Local Scripted Variable"
 	
-	@Suppress("UnstableApiUsage")
-	override fun invoke(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext?) {
+	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
-		val position = file.findElementAt(offset) ?: return
+		val position = file.findElementAt(offset) ?: return false
 		val positionType = position.elementType
-		if(positionType != INT_TOKEN && positionType != FLOAT_TOKEN) return
-		val parentDefinition = position.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() ?: return
+		if(positionType != INT_TOKEN && positionType != FLOAT_TOKEN) return false
+		return position.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() != null
+	}
+	
+	@Suppress("UnstableApiUsage")
+	override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
+		val offset = editor.caretModel.offset
+		val position = file.findElementAt(offset) ?: return false
+		val positionType = position.elementType
+		if(positionType != INT_TOKEN && positionType != FLOAT_TOKEN) return false
+		val parentDefinition = position.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() ?: return false
+		
 		//在所属定义之前另起一行（跳过注释和空白），声明对应名字的封装变量，默认值给0，要求用户编辑变量名
 		runUndoTransparentWriteAction {
 			val value = position.text
@@ -58,9 +67,6 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : RefactoringActionHan
 				})
 			}
 		}
-	}
-	
-	override fun invoke(project: Project, elements: Array<out PsiElement>, dataContext: DataContext?) {
-		//not support
+		return true
 	}
 }

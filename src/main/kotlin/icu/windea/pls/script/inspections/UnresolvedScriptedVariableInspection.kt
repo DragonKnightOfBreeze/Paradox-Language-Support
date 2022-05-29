@@ -8,6 +8,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.quickFix.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 import org.jetbrains.kotlin.idea.util.application.*
@@ -18,9 +19,9 @@ private const val i = 1
  * 无法解析的封装变量引用的检查。
  *
  * 提供快速修复：
- * * TODO 声明本地变量（在同一文件中）
+ * * 声明本地变量（在同一文件中）
  * * TODO 声明全局变量（在`common/scripted_variables`目录下的某一文件中）
- * * TODO 导入游戏目录或模组目录
+ * * 导入游戏目录或模组目录
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	companion object {
@@ -45,11 +46,11 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 					?.castOrNull<ParadoxScriptProperty>()
 					?.apply { session.putUserData(parentDefinitionKey, this) }
 					?.apply {
-						quickFixList.add(IntroduceLocalVariable(element, session))
-						quickFixList.add(IntroduceGlobalVariable(element, session))
+						quickFixList.add(IntroduceLocalVariableFix(element, session))
+						quickFixList.add(IntroduceGlobalVariableFix(element, session))
 					}
 			}
-			//quickFixes.add(ImportGameOrModDirectory(element))
+			quickFixList.add(ImportGameOrModDirectoryFix(element))
 			val quickFixes = quickFixList.toTypedArray()
 			
 			val location = element
@@ -57,7 +58,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		}
 	}
 	
-	private class IntroduceLocalVariable(
+	private class IntroduceLocalVariableFix(
 		element: ParadoxScriptVariableReference,
 		private val session: LocalInspectionToolSession
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
@@ -65,9 +66,9 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		private val variableReference get() = session.getUserData(variableReferenceKey)!!
 		private val parentDefinition get() = session.getUserData(parentDefinitionKey)!!
 		
-		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.1", variableName)
+		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.1", variableName)
 		
-		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.1", variableName)
+		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.1", variableName)
 		
 		override fun getPriority() = PriorityAction.Priority.TOP
 		
@@ -84,7 +85,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		}
 	}
 	
-	private class IntroduceGlobalVariable(
+	private class IntroduceGlobalVariableFix(
 		element: ParadoxScriptVariableReference,
 		private val session: LocalInspectionToolSession
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
@@ -92,9 +93,9 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		private val variableReference get() = session.getUserData(variableReferenceKey)!!
 		private val parentDefinition get() = session.getUserData(parentDefinitionKey)!!
 		
-		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.2", variableName)
+		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.2", variableName)
 		
-		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickFix.2", variableName)
+		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.2", variableName)
 		
 		override fun getPriority() = PriorityAction.Priority.HIGH
 		

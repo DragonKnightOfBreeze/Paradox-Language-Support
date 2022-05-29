@@ -29,20 +29,20 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 			val holder = ProblemsHolder(manager, file, isOnTheFly)
 			val bom = if(hasBom) "BOM" else "NO BOM"
 			holder.registerProblem(file, PlsBundle.message("localisation.inspection.incorrectFileEncoding.description", charset, bom),
-				ChangeFileEncoding(file)
+				ChangeFileEncodingFix(file)
 			)
 			return holder.resultsArray
 		}
 		return null
 	}
 	
-	private class ChangeFileEncoding(
+	private class ChangeFileEncodingFix(
 		element: PsiElement
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		
-		override fun getFamilyName() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickFix.1")
+		override fun getFamilyName() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.fix.1")
 		
-		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickFix.1")
+		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.fix.1")
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val virtualFile = file.virtualFile
