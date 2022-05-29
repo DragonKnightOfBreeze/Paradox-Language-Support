@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  * 声明本地封装变量的重构。
  */
 object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
-	private const val commandName = "Introduce Local Scripted Variable"
+	//private const val commandName = "Introduce Local Scripted Variable"
 	
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
@@ -46,25 +46,27 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 				newVariableReference = position.parent.replace(newVariableReference).cast()
 				val variableReferenceId = newVariableReference.variableReferenceId
 				
-				val startAction = StartMarkAction.start(editor, project, commandName)
+				//参照Kotlin的相关实现，完成后光标不需要回到原来的位置
+				//val startAction = StartMarkAction.start(editor, project, commandName)
 				val builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(newVariable.parent)
 				val variableNameId = newVariable.variableName.variableNameId
 				builder.replaceElement(variableNameId, "variableName", TextExpression(variableNameId.text), true)
 				builder.replaceElement(variableReferenceId, "variableReference", "variableName", false)
-				val caretMarker = editor.document.createRangeMarker(0, editor.caretModel.offset)
-				caretMarker.isGreedyToRight = true
-				editor.caretModel.moveToOffset(0)
+				//val caretMarker = editor.document.createRangeMarker(0, editor.caretModel.offset)
+				//caretMarker.isGreedyToRight = true
+				//editor.caretModel.moveToOffset(0)
 				val template = builder.buildInlineTemplate()
 				template.isToReformat = true
-				TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
-					try {
-						//回到原来的光标位置
-						editor.caretModel.moveToOffset(caretMarker.endOffset)
-						editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-					} finally {
-						FinishMarkAction.finish(project, editor, startAction)
-					}
-				})
+				TemplateManager.getInstance(project).startTemplate(editor, template)
+				//TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
+				//	try {
+				//		//回到原来的光标位置
+				//		editor.caretModel.moveToOffset(caretMarker.endOffset)
+				//		editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+				//	} finally {
+				//		FinishMarkAction.finish(project, editor, startAction)
+				//	}
+				//})
 			}
 		}
 		return true

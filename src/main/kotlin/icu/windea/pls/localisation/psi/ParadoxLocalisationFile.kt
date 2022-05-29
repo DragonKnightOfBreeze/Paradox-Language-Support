@@ -23,7 +23,7 @@ class ParadoxLocalisationFile(
 		val dotIndex = name.lastIndexOf('.').let { if(it == -1) name.lastIndex else it }
 		val prefixIndex = name.lastIndexOf("l_", dotIndex)
 		if(prefixIndex == -1) return null
-		return name.substring(prefixIndex + 2, name.length - 4)
+		return name.substring(prefixIndex, name.length - 4)
 	}
 	
 	fun getExpectedFileName(localeId: String): String  {

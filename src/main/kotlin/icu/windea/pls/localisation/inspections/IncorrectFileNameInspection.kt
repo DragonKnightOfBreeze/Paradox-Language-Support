@@ -22,6 +22,8 @@ import icu.windea.pls.localisation.psi.*
 class IncorrectFileNameInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxLocalisationFile) return null //不应该出现
+		val fileRoot = file.fileInfo?.path?.root ?: return null
+		if(fileRoot != "localisation" && fileRoot != "localization") return null //仅对于localisation
 		//仅对于存在且仅存在一个locale的本地化文件
 		var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
 		file.processChildrenOfType<ParadoxLocalisationPropertyList> {
@@ -35,16 +37,18 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 		val locale = theOnlyPropertyList?.locale ?: return null
 		if(!locale.isValid) return null //locale尚未填写完成时也跳过检查
 		val localeConfig = locale.localeConfig ?: return null //locale不支持时也跳过检查
+		val localeId = localeConfig.id
 		val fileName = file.name
 		val localeIdFromFile = file.getLocaleIdFromFileName()
-		val expectedFileName = file.getExpectedFileName(localeConfig.id)
+		if(localeIdFromFile == localeId) return null //匹配语言区域，跳过
+		val expectedFileName = file.getExpectedFileName(localeId)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		val quickFixList = SmartList<LocalQuickFix>()
 		quickFixList.add(RenameFileFix(locale, expectedFileName))
 		if(localeIdFromFile != null) quickFixList.add(RenameLocaleFix(locale, localeIdFromFile))
 		val quickFixes = quickFixList.toTypedArray()
 		//将检查注册在locale上，而非file上
-		holder.registerProblem(locale, PlsBundle.message("localisation.inspection.incorrectFileName.description", fileName, localeConfig.id), *quickFixes)
+		holder.registerProblem(locale, PlsBundle.message("localisation.inspection.incorrectFileName.description", fileName, localeId), *quickFixes)
 		return holder.resultsArray
 	}
 	
