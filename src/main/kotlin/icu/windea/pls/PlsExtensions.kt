@@ -1013,7 +1013,7 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 
 fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?): StringBuilder {
 	//如果name为空字符串，需要特殊处理
-	if(name.isEmpty()) return append(unresolvedEscapedString)
+	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为CWT规则，则显示链接（context传null时总是显示）
 	val isResolved = context == null || resolveCwtLink(link, context) != null
 	if(isResolved) return appendPsiLink("$cwtLinkPrefix$link".escapeXml(), name.escapeXml())
@@ -1023,7 +1023,7 @@ fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?
 
 fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
-	if(name.isEmpty()) return append(unresolvedEscapedString)
+	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为定义，则显示链接
 	val isResolved = resolved == true || (resolved == null && existsDefinition(name, null, context.project))
 	if(isResolved) return appendPsiLink("$definitionLinkPrefix.$typeExpression.$name", name)
@@ -1033,7 +1033,7 @@ fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, con
 
 fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
-	if(name.isEmpty()) return append(unresolvedEscapedString)
+	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为本地化，则显示链接
 	val isResolved = resolved == true || (resolved == null && existsLocalisation(name, null, context.project))
 	if(isResolved) return appendPsiLink("$localisationLinkPrefix$name", name)

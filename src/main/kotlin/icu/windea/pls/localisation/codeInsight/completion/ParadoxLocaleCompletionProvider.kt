@@ -22,7 +22,7 @@ object ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters
 		}
 		val file = parameters.originalFile
 		val project = file.project
-		val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.localeIdFromFileName
+		val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		val locales = getInternalConfig(project).locales

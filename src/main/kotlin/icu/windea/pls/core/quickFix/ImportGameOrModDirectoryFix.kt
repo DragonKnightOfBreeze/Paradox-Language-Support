@@ -34,4 +34,6 @@ class ImportGameOrModDirectoryFix(
 		}
 		projectSettingsService.openGlobalLibraries()
 	}
+	
+	override fun startInWriteAction() = false
 }

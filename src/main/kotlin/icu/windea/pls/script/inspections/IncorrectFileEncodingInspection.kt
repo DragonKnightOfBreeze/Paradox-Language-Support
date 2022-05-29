@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
 import com.intellij.openapi.vfs.encoding.EncodingUtil
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.psi.*
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction
@@ -22,6 +23,7 @@ import icu.windea.pls.*
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
+		if(file !is ParadoxLocalisationFile) return null //不应该出现
 		val virtualFile = file.virtualFile ?: return null
 		val charset = virtualFile.charset
 		val hasBom = virtualFile.hasBom(utf8Bom)
@@ -66,5 +68,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 				fileDocumentManager.saveDocument(document) //保存文件
 			}
 		}
+		
+		override fun startInWriteAction() = false
 	}
 }

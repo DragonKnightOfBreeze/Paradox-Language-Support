@@ -66,6 +66,8 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 			}
 		}
 		
+		override fun startInWriteAction() = false
+		
 		private class Popup(
 			values: List<ParadoxLocalisationProperty>,
 			private val key: String,
