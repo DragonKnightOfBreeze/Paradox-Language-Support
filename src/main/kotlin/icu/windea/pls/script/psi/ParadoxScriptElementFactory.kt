@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -10,6 +11,11 @@ object ParadoxScriptElementFactory {
 	@JvmStatic
 	fun createDummyFile(project: Project, text: String): ParadoxScriptFile {
 		return PsiFileFactory.getInstance(project).createFileFromText(ParadoxScriptLanguage, text).cast()
+	}
+	
+	@JvmStatic
+	fun createLine(project: Project):PsiElement{
+		return ParadoxLocalisationElementFactory.createDummyFile(project, "\n").firstChild
 	}
 	
 	fun createRootBlock(project: Project, text: String): ParadoxScriptRootBlock {

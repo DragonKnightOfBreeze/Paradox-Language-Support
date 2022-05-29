@@ -10,6 +10,7 @@
 
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
+  <depends>org.jetbrains.kotlin</depends>
   
   <description><![CDATA[
     <p>

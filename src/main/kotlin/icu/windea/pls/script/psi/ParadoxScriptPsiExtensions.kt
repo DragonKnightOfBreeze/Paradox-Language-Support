@@ -1,9 +1,13 @@
 package icu.windea.pls.script.psi
 
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import org.jetbrains.kotlin.idea.util.*
 
 val ParadoxScriptVariableName.variableNameId: PsiElement get() = findRequiredChild(VARIABLE_NAME_ID)
 
@@ -131,4 +135,36 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 		current = current.parent ?: break
 	}
 	return null
+}
+
+
+fun introduceScriptedVariable(
+	name: String,
+	value: String,
+	parentDefinition: ParadoxScriptProperty,
+	project: Project,
+	editor: Editor?,
+	callback: ((ParadoxScriptVariable, Editor) -> Unit)? = null
+) {
+	val (parent, anchor) = parentDefinition.findParentAndAnchorToIntroduceVariable()
+	var newVariable = ParadoxScriptElementFactory.createVariable(project, name, value)
+	val newLine = ParadoxScriptElementFactory.createLine(project)
+	newVariable = parent.addAfter(newVariable, anchor).cast()
+	if(anchor != null) parent.addBefore(newLine, newVariable) else parent.addAfter(newLine, newVariable)
+	newVariable = newVariable.reformatted().cast()
+	if(editor != null) {
+		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document)
+		if(callback != null) callback(newVariable, editor)
+	}
+}
+
+private fun ParadoxScriptProperty.findParentAndAnchorToIntroduceVariable(): Pair<PsiElement, PsiElement?> {
+	val parent = parent
+	val anchor: PsiElement? = this.siblings(forward = false, withSelf = false).find {
+		it !is PsiWhiteSpace && it !is PsiComment
+	}
+	if(anchor == null && parent is ParadoxScriptRootBlock) {
+		return parent.parent to null //(file, null)
+	}
+	return parent to anchor
 }

@@ -48,6 +48,8 @@ val ddsFileExtensions = arrayOf("dds")
 const val launcherSettingsFileName = "launcher-settings.json"
 const val descriptorFileName = "descriptor.mod"
 
+const val defaultScriptedVariableName = "var"
+
 object PlsFolders {
 	const val ellipsis = "..."
 	const val commentFolder = "#..."

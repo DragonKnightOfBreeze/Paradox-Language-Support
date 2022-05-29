@@ -75,11 +75,13 @@
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxDefinitionReferenceLocalizedNameHintsProvider" order="after ParadoxDefinitionReferenceInfoHintsProvider"
+        id="ParadoxDefinitionReferenceLocalizedNameHintsProvider"
+        order="after ParadoxDefinitionReferenceInfoHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxLocalisationReferenceInfoHintsProvider" order="after ParadoxDefinitionReferenceLocalizedNameHintsProvider"
+        id="ParadoxLocalisationReferenceInfoHintsProvider"
+        order="after ParadoxDefinitionReferenceLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
     <lang.psiStructureViewFactory
         language="PARADOX_SCRIPT"
@@ -100,6 +102,12 @@
         implementation="icu.windea.pls.script.refactoring.ParadoxScriptVariableRenameInputValidator"/>
     <renameInputValidator
         implementation="icu.windea.pls.script.refactoring.ParadoxScriptParameterRenameInputValidator"/>
+    <refactoring.extractIncludeHandler
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableHandler"/>
+    <refactoring.extractIncludeHandler
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableHandler"/>
     <refactoring.inlineHandler
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
@@ -172,4 +180,19 @@
                      groupPathKey="script.inspection.event.path"
                      implementationClass="icu.windea.pls.script.inspections.definition.event.IncorrectEventIdInspection"/>
   </extensions>
+
+  <actions>
+    <group id="ParadoxScript.RefactoringGroup" popup="false">
+      <action id="ParadoxScript.IntroduceLocalScriptedVariable"
+              class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceLocalScriptedVariableAction">
+        <keyboard-shortcut first-keystroke="control alt v" keymap="$default"/>
+        <add-to-group group-id="IntroduceActionsGroup" anchor="first"/>
+      </action>
+      <action id="ParadoxScript.IntroduceGlobalScriptedVariable"
+              class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
+        <keyboard-shortcut first-keystroke="control alt g" keymap="$default"/>
+        <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
+      </action>
+    </group>
+  </actions>
 </idea-plugin>

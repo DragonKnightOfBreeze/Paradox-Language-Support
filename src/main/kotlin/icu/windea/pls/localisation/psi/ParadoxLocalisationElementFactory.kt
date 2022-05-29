@@ -12,6 +12,11 @@ object ParadoxLocalisationElementFactory {
 	}
 
 	@JvmStatic
+	fun createLine(project: Project):PsiElement{
+		return createDummyFile(project, "\n").firstChild
+	}
+	
+	@JvmStatic
 	fun createLocale(project: Project, locale: String): ParadoxLocalisationLocale {
 		return createDummyFile(project, "$locale:\n").locale!!
 	}

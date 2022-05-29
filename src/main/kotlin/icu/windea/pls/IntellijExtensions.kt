@@ -5,6 +5,8 @@ package icu.windea.pls
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
+import com.intellij.codeInsight.template.*
+import com.intellij.codeInsight.template.impl.*
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
 import com.intellij.navigation.*
@@ -16,6 +18,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
@@ -161,6 +164,24 @@ fun String.escapeBlank(): String {
 		}
 	}
 	return builder?.toString() ?: this
+}
+//endregion
+
+//region Code Insight Extensions
+fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
+
+fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
+
+fun interface TemplateEditingFinishedListener: TemplateEditingListener{
+	override fun beforeTemplateFinished(state: TemplateState, template: Template?) {}
+	
+	override fun templateCancelled(template: Template) {
+		templateFinished(template, false)
+	}
+	
+	override fun currentVariableChanged(templateState: TemplateState, template: Template, oldIndex: Int, newIndex: Int) {}
+	
+	override fun waitingForInput(template: Template) {}
 }
 //endregion
 

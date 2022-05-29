@@ -20,7 +20,6 @@
 //DONE 列表的元素可以是字符串
 //DONE 分隔符可以是比较运算符
 
-//root_block也是block，但不能直接extends，否则root下面会是value而非root_block
 root ::= root_block
 root_block ::= root_block_item * {
   extends=block

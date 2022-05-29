@@ -73,9 +73,6 @@ fun String.containsBlankLine(): Boolean {
 		if((char == '\r' && chars[i + 1] != '\n') || char == '\n') newLine++
 		if(newLine >= 2) return true
 	}
-	forEach {
-		if(it == '\r' || it == '\n') newLine++
-	}
 	return false
 }
 

@@ -24,7 +24,7 @@
   * [X] 优化代码补全性能：尽可能确保提示本地化图标和属性引用时不会导致`ProcessCanceledException`
 * 新增功能：
   * [ ] 本地化文件：提供快速更改文本颜色的悬浮工具栏 
-  * [ ] 脚本文件：封装变量（`scripted_variable`）的提取和快速修复（无法解析时）
+  * [ ] 脚本文件：本地封装变量（`scripted_variable`）的提取和快速修复（无法解析时）
   * [ ] 实现代码检查：不期望的脚本语法（多种情况，需要确认）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
