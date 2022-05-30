@@ -80,7 +80,7 @@ projectile = {
 
 planet_killer_animation = {
  	texture = filepath
-	## color_type = rgb
+	## color_type = rgba
 	color = {
     	## cardinality = 4..4
 		float[0..1]

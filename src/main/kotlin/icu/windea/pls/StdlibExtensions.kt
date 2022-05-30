@@ -11,10 +11,20 @@ import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
+import kotlin.math.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {
+inline fun pass() {}
+
+fun Number.format(digits: Int): String {
+	val power = 10.0.pow(abs(position))
+	return when {
+		position > 0 -> (round(this.toLong() / power) * power).toLong().toString()
+		position == 0 -> this.toLong().toString()
+		else -> (round(this.toDouble() * power) / power).toString()
+			.let { if(it.lastIndexOf('.') == -1) "$it.0" else it }
+	}
 }
 
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {

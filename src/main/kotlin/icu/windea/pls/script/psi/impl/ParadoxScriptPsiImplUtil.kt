@@ -3,7 +3,6 @@ package icu.windea.pls.script.psi.impl
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
@@ -13,6 +12,7 @@ import org.apache.commons.imaging.color.*
 import org.jetbrains.kotlin.idea.util.*
 import java.awt.*
 import javax.swing.*
+import kotlin.math.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
@@ -576,11 +576,22 @@ object ParadoxScriptPsiImplUtil {
 			//仅支持设置rgb/rgba颜色
 			if(values.size != 3 && values.size != 4) return //中断操作
 			val isRgba = values.size == 4
-			val newText = color.run { if(isRgba) "{ $red $green $blue $alpha }" else "{ $red $green $blue }" }
+			val newText = color.run {
+				when {
+					values.all { it is ParadoxScriptInt } -> {
+						if(isRgba) "{ $red $green $blue $alpha }" else "{ $red $green $blue }"
+					}
+					values.all { it is ParadoxScriptFloat } -> {
+						if(isRgba) "{ ${red.roundToString(-2)} ${green.roundToString(-2)} ${blue.roundToString(-2)} ${alpha.roundToString(-2)} }"
+						else "{ ${red.roundToString(-2)} ${green.roundToString(-2)} ${blue.roundToString(-2)} }"
+					}
+					else -> return //中断操作
+				}
+			}
 			val newBlock = ParadoxScriptElementFactory.createValue(element.project, newText) as? ParadoxScriptBlock
 			if(newBlock != null) {
 				val block = element.replace(newBlock)
-				block.reformatted()
+				if(block.isValid) block.reformatted()
 			}
 		}
 	}
