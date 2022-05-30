@@ -251,6 +251,7 @@ model_entity = {
 		## cardinality = 0..1
 		dissolve_on_death = float
 		## cardinality = 0..1
+		## color_type = rgba
 		ship_color = {
 			## cardinality = 3..4
 			float

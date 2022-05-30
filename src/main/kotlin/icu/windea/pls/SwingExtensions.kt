@@ -1,6 +1,7 @@
 package icu.windea.pls
 
 import com.intellij.util.IconUtil
+import org.apache.commons.imaging.color.*
 import java.awt.*
 import javax.swing.Icon
 
@@ -20,3 +21,11 @@ val Color.rgbString get() = buildString {
 	if(b.length == 1) append('0')
 	append(b)
 }
+
+fun ColorHsl.toColor() = Color(ColorConversions.convertHSLtoRGB(this))
+
+//fun Color.toColorHsl() = ColorConversions.convertRGBtoHSL(this.rgb)
+
+fun ColorHsv.toColor() = Color(ColorConversions.convertHSVtoRGB(this))
+
+//fun Color.toColorHsv() = ColorConversions.convertRGBtoHSV(this.rgb)

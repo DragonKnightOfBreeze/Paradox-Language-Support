@@ -21,7 +21,7 @@
 //DONE 分隔符可以是比较运算符
 
 root ::= root_block
-root_block ::= root_block_item * {
+root_block ::= root_block_item + {
   extends=block
 }
 private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property | value
@@ -107,7 +107,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   recoverWhile="#auto"
   extends=value
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getIcon getValue isEmpty isNotEmpty getComponents getValueType getType]
+  methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType getType]
 }
 private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value | parameter_condition
 

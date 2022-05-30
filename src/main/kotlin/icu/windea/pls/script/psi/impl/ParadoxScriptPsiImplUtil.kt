@@ -3,18 +3,16 @@ package icu.windea.pls.script.psi.impl
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 import org.apache.commons.imaging.color.*
+import org.jetbrains.kotlin.idea.util.*
 import java.awt.*
 import javax.swing.*
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.component3
-import kotlin.collections.component4
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
@@ -393,11 +391,11 @@ object ParadoxScriptPsiImplUtil {
 			
 			//根据不同的颜色类型得到不同的颜色对象
 			when(colorType) {
-				"rgb" -> args.let { (r, g, b) -> Color(r.toInt(), g.toInt(), b.toInt()) }
-				"rgba" -> args.let { (r, g, b, a) -> Color(r.toInt(), g.toInt(), b.toInt(), a.toInt()) }
-				"hsb" -> args.let { (h, s, b) -> Color.getHSBColor(h.toFloat(), s.toFloat(), b.toFloat()) }
-				"hsv" -> args.let { (h, s, v) -> ColorHsv(h.toDouble(), s.toDouble(), v.toDouble()).toColor() }
-				"hsl" -> args.let { (h, s, l) -> ColorHsl(h.toDouble(), s.toDouble(), l.toDouble()).toColor() }
+				"rgb" -> args.takeIf { it.size == 3 }?.map { it.toInt() }?.let { Color(it[0], it[1], it[2]) }
+				"rgba" -> args.takeIf { it.size == 3 || it.size == 4 }?.map { it.toInt() }?.let { Color(it[0], it[1], it[2], it.getOrElse(3) { 255 }) }
+				"hsb" -> args.takeIf { it.size == 3 }?.map { it.toFloat() }?.let { Color.getHSBColor(it[0], it[1], it[2]) }
+				"hsv" -> args.takeIf { it.size == 3 }?.map { it.toDouble() }?.let { ColorHsv(it[0], it[1], it[2]).toColor() }
+				"hsl" -> args.takeIf { it.size == 3 }?.map { it.toDouble() }?.let { ColorHsl(it[0], it[1], it[2]).toColor() }
 				else -> null
 			}
 		}.getOrNull()
@@ -405,18 +403,18 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setColor(element: ParadoxScriptColor, color: Color) {
+		//忽略异常
 		runCatching {
 			val text = element.text
 			val colorType = text.substringBefore('{').trim()
-			
-			//使用rgb或者rgba
+			//仅支持设置rgb/rgba颜色
+			if(colorType != "rgb" && colorType != "rgba") return //中断操作
 			val shouldBeRgba = color.alpha != 255
 			val newText = when {
 				colorType == "rgba" || shouldBeRgba -> "rgba { ${color.run { "$red $green $blue $alpha" }} }"
 				else -> "rgb { ${color.run { "$red $green $blue" }} }"
 			}
-			
-			////根据不同的颜色类型生成不同的文本
+			//不支持根据不同的颜色类型生成不同的文本
 			//val newText = when(colorType) {
 			//	"rgb" -> "rgb { ${color.run { "$red $green $blue" }} }"
 			//	"rgba" -> "rgba { ${color.run { "$red $green $blue $alpha" }} }"
@@ -428,14 +426,6 @@ object ParadoxScriptPsiImplUtil {
 			if(newColor != null) element.replace(newColor)
 		}
 	}
-	
-	private fun ColorHsl.toColor() = Color(ColorConversions.convertHSLtoRGB(this))
-	
-	//private fun Color.toColorHsl() = ColorConversions.convertRGBtoHSL(this.rgb)
-	
-	private fun ColorHsv.toColor() = Color(ColorConversions.convertHSVtoRGB(this))
-	
-	//private fun Color.toColorHsv() = ColorConversions.convertRGBtoHSV(this.rgb)
 	
 	@JvmStatic
 	fun getValueType(element: ParadoxScriptColor): ParadoxValueType {
@@ -450,7 +440,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptBlock
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon{
+	fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.scriptBlockIcon
 	}
 	
@@ -465,7 +455,7 @@ object ParadoxScriptPsiImplUtil {
 			when {
 				it is ParadoxScriptProperty -> return false
 				it is ParadoxScriptValue -> return false
-				it is ParadoxScriptParameterCondition && it.isNotEmpty() -> return false
+				it is ParadoxScriptParameterCondition && it.isNotEmpty -> return false
 			}
 		}
 		return true
@@ -477,7 +467,7 @@ object ParadoxScriptPsiImplUtil {
 			when {
 				it is ParadoxScriptProperty -> return true
 				it is ParadoxScriptValue -> return true
-				it is ParadoxScriptParameterCondition && it.isNotEmpty() -> return true
+				it is ParadoxScriptParameterCondition && it.isNotEmpty -> return true
 			}
 		}
 		return false
@@ -492,6 +482,73 @@ object ParadoxScriptPsiImplUtil {
 	private fun isBlockComponent(element: PsiElement): Boolean {
 		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
 			|| element is ParadoxScriptParameterCondition
+	}
+	
+	@JvmStatic
+	fun getColor(element: ParadoxScriptBlock): Color? {
+		//忽略异常
+		return runCatching {
+			val parent = element.parent
+			val colorTypeOptionLocation = when {
+				parent is ParadoxScriptPropertyValue -> parent.parent.castOrNull<ParadoxScriptProperty>()?.getPropertyConfig()
+				else -> element.getValueConfig()
+			}
+			val colorTypeOption = colorTypeOptionLocation?.options?.find { it.key == "color_type" } ?: return@runCatching null
+			val colorType = colorTypeOption.stringValue ?: return@runCatching null
+			//目前仅支持rgb和rgba
+			if(colorType == "rgb" || colorType == "rgba") {
+				val values = element.findValues<ParadoxScriptValue>()
+				getColorFromValues(colorType, values)
+			} else {
+				null
+			}
+		}.getOrNull()
+	}
+	
+	private fun getColorFromValues(colorType: String, values: List<ParadoxScriptValue>): Color? {
+		when(colorType) {
+			"rgb" -> {
+				if(values.size != 3) return null
+				when {
+					values.all { it is ParadoxScriptInt } -> {
+						return values.map { it.cast<ParadoxScriptInt>().intValue }.let { Color(it[0], it[1], it[2]) }
+					}
+					values.all { it is ParadoxScriptFloat } -> {
+						return values.map { it.cast<ParadoxScriptFloat>().floatValue }.let { Color(it[0], it[1], it[2]) }
+					}
+					else -> return null
+				}
+			}
+			"rgba" -> {
+				if(values.size != 3 && values.size != 4) return null
+				when {
+					values.all { it is ParadoxScriptInt } -> {
+						return values.map { it.cast<ParadoxScriptInt>().intValue }.let { Color(it[0], it[1], it[2], it.getOrElse(3) { 255 }) }
+					}
+					values.all { it is ParadoxScriptFloat } -> {
+						return values.map { it.cast<ParadoxScriptFloat>().floatValue }.let { Color(it[0], it[1], it[2], it.getOrElse(3) { 1.0f }) }
+					}
+					else -> return null
+				}
+			}
+			else -> return null
+		}
+	}
+	
+	@JvmStatic
+	fun setColor(element: ParadoxScriptBlock, color: Color) {
+		runCatching {
+			val values = element.findValues<ParadoxScriptValue>()
+			//仅支持设置rgb/rgba颜色
+			if(values.size != 3 && values.size != 4) return //中断操作
+			val isRgba = values.size == 4
+			val newText = color.run { if(isRgba) "{ $red $green $blue }" else "{ $red $green $blue $alpha }" }
+			val newBlock = ParadoxScriptElementFactory.createValue(element.project, newText) as? ParadoxScriptBlock
+			if(newBlock != null) {
+				val block = element.replace(newBlock)
+				block.reformatted()
+			}
+		}
 	}
 	
 	@JvmStatic
@@ -514,7 +571,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptParameterCondition
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon{
+	fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.scriptParameterConditionIcon
 	}
 	

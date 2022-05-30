@@ -23,7 +23,7 @@ class ParadoxScriptFile(
 	
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	
-	override val block get() = findChildByClass(ParadoxScriptRootBlock::class.java)
+	override val block get() = findOptionalChild<ParadoxScriptRootBlock>()
 	
 	val variables get() = block?.variableList.orEmpty()
 }

@@ -11,6 +11,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.ParadoxValueType;
+import java.awt.Color;
 import javax.swing.Icon;
 
 public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements ParadoxScriptBlock {
@@ -80,6 +81,17 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @NotNull
   public List<PsiElement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
+  }
+
+  @Override
+  @Nullable
+  public Color getColor() {
+    return ParadoxScriptPsiImplUtil.getColor(this);
+  }
+
+  @Override
+  public void setColor(@NotNull Color color) {
+    ParadoxScriptPsiImplUtil.setColor(this, color);
   }
 
   @Override

@@ -360,15 +360,16 @@ val PsiElement.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGe
 private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
 	//必须是脚本语言的PsiElement
 	if(element.language != ParadoxScriptLanguage) return null
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionElementInfoKey) {
-		val value = resolveDefinitionElementInfo(element)
-		CachedValueProvider.Result.create(value, element)
-	}
+	return resolveDefinitionElementInfo(element)
+	//return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionElementInfoKey) {
+	//	val value = resolveDefinitionElementInfo(element)
+	//	CachedValueProvider.Result.create(value, element)
+	//}
 }
 
 private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
-	//NOTE 注意这里获得的definitionInfo可能会过时！因为对应的type和subtypes可能基于其他的definitionProperty
-	//NOTE 这里输入的element本身可以是定义，这是elementPath会是空字符串
+	//NOTE 注意这里获得的definitionInfo很容易就会过时！因为对应的type和subtypes可能基于其他的definitionProperty
+	//NOTE 这里输入的element本身可以是定义，这时elementPath会是空字符串
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
 	val definition = elementPath.rootPointer?.element ?: return null
 	val definitionInfo = definition.definitionInfo ?: return null
@@ -385,6 +386,14 @@ fun ParadoxScriptProperty.getMatchedPropertyConfig(): CwtPropertyConfig? {
 	val definitionElementInfo = element.definitionElementInfo ?: return null
 	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
 	return definitionElementInfo.matchedPropertyConfig //需要同时匹配valueConfig
+}
+
+fun ParadoxScriptProperty.getPropertyConfig(): CwtPropertyConfig? {
+	//NOTE 暂时不使用缓存，因为很容易就会过时
+	val element = this
+	val definitionElementInfo = element.definitionElementInfo ?: return null
+	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
+	return definitionElementInfo.propertyConfigs.firstOrNull()
 }
 
 fun ParadoxScriptPropertyKey.getPropertyConfig(): CwtPropertyConfig? {

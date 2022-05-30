@@ -11,7 +11,6 @@ import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
-import kotlin.contracts.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
@@ -409,6 +408,10 @@ inline fun <reified T : Enum<T>> sharedEnumValues(): Array<T> {
 
 @Suppress("UNCHECKED_CAST")
 inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[this] as Array<T>
+
+//fun <T> Result<T>.getOrThrow(predicate: (Throwable) -> Boolean): T? {
+//	return this.onFailure { if(predicate(it)) throw it }.getOrNull()
+//}
 //endregion
 
 //region Collection Extensions
@@ -543,7 +546,7 @@ fun <T> Iterable<T>.process(processor: ProcessEntry.(T) -> Boolean): Boolean {
 	return true
 }
 
-fun <K,V> Map<K,V>.process(processor: ProcessEntry.(Map.Entry<K,V>) -> Boolean): Boolean {
+fun <K, V> Map<K, V>.process(processor: ProcessEntry.(Map.Entry<K, V>) -> Boolean): Boolean {
 	for(entry in this) {
 		val result = ProcessEntry.processor(entry)
 		if(!result) return false
@@ -554,7 +557,7 @@ fun <K,V> Map<K,V>.process(processor: ProcessEntry.(Map.Entry<K,V>) -> Boolean):
 object ProcessEntry {
 	fun <T> T.addTo(destination: MutableCollection<T>) = destination.add(this)
 	
-	fun <T: Collection<T>> T.addAllTo(destination: MutableCollection<T>) = destination.addAll(this)
+	fun <T : Collection<T>> T.addAllTo(destination: MutableCollection<T>) = destination.addAll(this)
 	
 	fun Any?.end() = true
 	

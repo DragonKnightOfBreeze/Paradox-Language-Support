@@ -254,6 +254,7 @@ component_template = {
 		type = enum[weapon_type2]
 		projectile_gfx = scalar #tied to defined entites under gfx
 		## cardinality = 0..1
+		## color_type = rgba
 		color = {
 			## cardinality = 3..4
 			float

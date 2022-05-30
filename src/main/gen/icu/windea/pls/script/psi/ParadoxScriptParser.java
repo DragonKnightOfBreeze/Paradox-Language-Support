@@ -595,17 +595,19 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // root_block_item *
+  // root_block_item +
   public static boolean root_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block")) return false;
+    boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, ROOT_BLOCK, "<root block>");
-    while (true) {
+    r = root_block_item(b, l + 1);
+    while (r) {
       int c = current_position_(b);
       if (!root_block_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "root_block", c)) break;
     }
-    exit_section_(b, l, m, true, false, null);
-    return true;
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */

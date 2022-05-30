@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiListLikeElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.ParadoxValueType;
+import java.awt.Color;
 import javax.swing.Icon;
 
 public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeElement {
@@ -35,6 +36,11 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeEleme
 
   @NotNull
   List<PsiElement> getComponents();
+
+  @Nullable
+  Color getColor();
+
+  void setColor(@NotNull Color color);
 
   @NotNull
   ParadoxValueType getValueType();

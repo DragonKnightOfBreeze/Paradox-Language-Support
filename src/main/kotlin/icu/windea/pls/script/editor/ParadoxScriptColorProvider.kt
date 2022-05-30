@@ -9,6 +9,7 @@ class ParadoxScriptColorProvider : ElementColorProvider {
 	override fun getColorFrom(element: PsiElement): Color? {
 		return when(element){
 			is ParadoxScriptColor -> element.color
+			is ParadoxScriptBlock -> element.color
 			else -> null
 		}
 	}
@@ -16,6 +17,7 @@ class ParadoxScriptColorProvider : ElementColorProvider {
 	override fun setColorTo(element: PsiElement, color: Color) {
 		when(element){
 			is ParadoxScriptColor -> element.setColor(color)
+			is ParadoxScriptBlock -> element.setColor(color)
 		}
 	}
 }

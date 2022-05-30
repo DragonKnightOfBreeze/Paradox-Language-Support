@@ -8,7 +8,7 @@ object PlsKeys {
 	val cachedParadoxDescriptorInfoKey = Key<CachedValue<ParadoxDescriptorInfo>>("cachedParadoxDescriptorInfo")
 	val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 	val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
-	val isDefinitionKey = Key<Boolean>("isDefinition")
-	val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
+	//val isDefinitionKey = Key<Boolean>("isDefinition")
+	//val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
 	val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
 }

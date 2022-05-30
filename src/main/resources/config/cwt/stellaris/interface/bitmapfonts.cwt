@@ -63,6 +63,7 @@ enums = {
 
 textcolors = {
 	## cardinality = 14..inf
+	## color_type = rgb
 	scalar = {  #these should really have a unique ID each - so they can be refered to. They are linked to in GUI files in /interface.
 		## cardinality = 3..3
 		int[0..255]

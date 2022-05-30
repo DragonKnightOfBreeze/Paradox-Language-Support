@@ -17,6 +17,7 @@ types = {
 
 projectile = {
 	name = scalar #this is where the projectile key is defined, the
+	## color_type = rgba
 	color = {
     	## cardinality = 4..4
 		float[0..1]
@@ -79,6 +80,7 @@ projectile = {
 
 planet_killer_animation = {
  	texture = filepath
+	## color_type = rgb
 	color = {
     	## cardinality = 4..4
 		float[0..1]
