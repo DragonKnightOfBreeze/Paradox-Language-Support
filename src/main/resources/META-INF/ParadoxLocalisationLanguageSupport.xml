@@ -79,7 +79,8 @@
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
 
     <!--floating toolbar-->
-    <fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationTextEditorProvider"/>
+    <!--<fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationTextEditorProvider"/>--> <!--unnecessary-->
+    <fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationEditorProvider"/>
     <advancedSetting id="paradoxLocalisation.hide.floating.toolbar" default="false" groupKey="settings"/>
     <customizableActionGroupProvider implementation="icu.windea.pls.localisation.ui.floating.FloatingToolbarCustomizableGroupProvider"/>
     

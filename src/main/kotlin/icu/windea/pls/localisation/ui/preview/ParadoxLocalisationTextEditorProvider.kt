@@ -3,8 +3,7 @@ package icu.windea.pls.localisation.ui.preview
 import com.intellij.ide.scratch.*
 import com.intellij.lang.*
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileEditor.impl.text.PsiAwareTextEditorProvider
-import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
+import com.intellij.openapi.fileEditor.impl.text.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.advanced.*
 import com.intellij.openapi.project.*
@@ -33,9 +32,13 @@ class ParadoxLocalisationTextEditorProvider: PsiAwareTextEditorProvider() {
 	override fun createEditor(project: Project, file: VirtualFile): FileEditor {
 		val actualEditor = super.createEditor(project, file)
 		if (actualEditor is TextEditor && !AdvancedSettings.getBoolean("paradoxLocalisation.hide.floating.toolbar")) {
-			val toolbar = FloatingToolbar(actualEditor.editor, "Markdown.Toolbar.Floating")
+			val toolbar = FloatingToolbar(actualEditor.editor, "ParadoxLocalisation.Toolbar.Floating")
 			Disposer.register(actualEditor, toolbar)
 		}
 		return actualEditor
+	}
+	
+	override fun getPolicy(): FileEditorPolicy {
+		return FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR
 	}
 }

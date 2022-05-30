@@ -11,6 +11,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import java.awt.*
 import java.awt.event.*
 import javax.swing.*
@@ -19,7 +20,9 @@ import kotlin.properties.*
 //org.intellij.plugins.markdown.ui.floating.FloatingToolbar
 
 /**
- * 当用户光标选中本地化文本(的其中一部分)时,将会显示的悬浮攻击栏。提供快速更改文本颜色的动作。
+ * 当用户光标选中本地化文本(的其中一部分)时,将会显示的悬浮工具栏栏。
+ * 提供动作：
+ * * 更改文本颜色（所有可用的，基于内置规则文件）
  * @see icu.windea.pls.localisation.ui.actions.styling.FloatingToolbarGroup
  * @see icu.windea.pls.localisation.ui.actions.styling.SetColorAction
  */
@@ -70,10 +73,10 @@ class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : D
 	private fun createActionToolbar(targetComponent: JComponent): ActionToolbar? {
 		val group = CustomActionsSchema.getInstance().getCorrectedAction(actionGroupId) as? ActionGroup ?: return null
 		val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
+			@Suppress("UnstableApiUsage")
 			override fun addNotify() {
 				super.addNotify()
-				updateActionsImmediately()
-				//updateActionsImmediately(true)
+				updateActionsImmediately(true) //这是必要的，否则显示悬浮工具栏时其中的图标不会立即全部显示
 			}
 		}
 		toolbar.targetComponent = targetComponent
@@ -115,8 +118,8 @@ class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : D
 		val elementAtStart = PsiUtilCore.getElementAtOffset(file, selectionStart)
 		val elementAtEnd = PsiUtilCore.getElementAtOffset(file, selectionEnd)
 		//开始位置和结束位置的PSI元素类型必须是string_token
-		return elementAtStart.elementType == ParadoxLocalisationElementTypes.STRING_TOKEN
-			&& elementAtEnd.elementType == ParadoxLocalisationElementTypes.STRING_TOKEN
+		return elementAtStart.elementType.let {  it == STRING_TOKEN || it == COLORFUL_TEXT_START || it == COLOR_ID}
+			&& elementAtEnd.elementType.let{ it == STRING_TOKEN || it == COLORFUL_TEXT_END}
 	}
 	
 	private fun getHintPosition(hint: LightweightHint): Point {
@@ -142,7 +145,6 @@ class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : D
 	}
 	
 	private inner class MouseListener : EditorMouseListener {
-		//FIXME 为啥这里的监听器没有效果啊我草
 		override fun mouseReleased(e: EditorMouseEvent) {
 			updateOnProbablyChangedSelection {
 				if(isShown()) {
