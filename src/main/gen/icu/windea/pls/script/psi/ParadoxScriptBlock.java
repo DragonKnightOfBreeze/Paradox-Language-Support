@@ -4,13 +4,12 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiListLikeElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.ParadoxValueType;
 import java.awt.Color;
 import javax.swing.Icon;
 
-public interface ParadoxScriptBlock extends ParadoxScriptValue, PsiListLikeElement {
+public interface ParadoxScriptBlock extends ParadoxScriptValue, IParadoxScriptBlock {
 
   @NotNull
   List<ParadoxScriptParameterCondition> getParameterConditionList();

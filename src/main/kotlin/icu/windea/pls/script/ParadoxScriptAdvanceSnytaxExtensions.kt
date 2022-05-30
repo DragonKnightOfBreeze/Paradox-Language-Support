@@ -15,7 +15,7 @@ fun ParadoxScriptString.resolveTagConfig(): CwtTagConfig? {
 
 private fun ParadoxScriptString.resolveTagConfigs(excludeExist: Boolean = false): Map<String, CwtTagConfig>? {
 	val parent = parent
-	if(parent !is ParadoxScriptBlock || parent is ParadoxScriptRootBlock) return null
+	if(parent !is IParadoxScriptBlock) return null
 	val parentParent = parent.parent
 	if(parentParent !is ParadoxScriptPropertyValue) return null
 	val parentParentParent = parentParent.parent

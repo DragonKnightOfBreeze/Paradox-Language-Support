@@ -19,7 +19,7 @@ object ParadoxScriptDataResolver {
 		return resolveBlock(rootBlock)
 	}
 	
-	private fun resolveBlock(block: ParadoxScriptBlock): List<BlockEntry<String?, Any>> {
+	private fun resolveBlock(block: IParadoxScriptBlock): List<BlockEntry<String?, Any>> {
 		val result: MutableList<BlockEntry<String?, Any>> = SmartList()
 		block.processChildren block@{ blockItem ->
 			if(!blockItem.isValid) return@block true

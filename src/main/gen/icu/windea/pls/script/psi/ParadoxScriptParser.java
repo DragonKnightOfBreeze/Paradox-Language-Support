@@ -42,7 +42,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
       INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
       INLINE_MATH, INT, NUMBER, PARAMETER,
-      ROOT_BLOCK, STRING, VALUE, VARIABLE_REFERENCE),
+      STRING, VALUE, VARIABLE_REFERENCE),
   };
 
   /* ********************************************************** */
@@ -599,7 +599,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   public static boolean root_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, ROOT_BLOCK, "<root block>");
+    Marker m = enter_section_(b, l, _NONE_, ROOT_BLOCK, "<root block>");
     r = root_block_item(b, l + 1);
     while (r) {
       int c = current_position_(b);

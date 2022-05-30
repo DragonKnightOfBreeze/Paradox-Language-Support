@@ -25,7 +25,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxScriptVisitor() {
 		override fun visitFile(file: PsiFile) {
 			if(file !is ParadoxScriptFile) return
-			val variableGroup = file.variables.groupBy { it.name }
+			val variableGroup = file.variableList.groupBy { it.name }
 			if(variableGroup.isEmpty()) return
 			for((name, values) in variableGroup) {
 				if(values.size <= 1) continue

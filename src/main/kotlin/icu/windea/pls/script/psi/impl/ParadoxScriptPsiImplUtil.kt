@@ -16,6 +16,40 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
+	//region ParadoxScriptRootBlock
+	@JvmStatic
+	fun isEmpty(element: ParadoxScriptRootBlock): Boolean {
+		element.forEachChild {
+			when {
+				it is ParadoxScriptProperty -> return false
+				it is ParadoxScriptValue -> return false
+			}
+		}
+		return true
+	}
+	
+	@JvmStatic
+	fun isNotEmpty(element: ParadoxScriptRootBlock): Boolean {
+		element.forEachChild {
+			when {
+				it is ParadoxScriptProperty -> return true
+				it is ParadoxScriptValue -> return true
+			}
+		}
+		return false
+	}
+	
+	@JvmStatic
+	fun getComponents(element: ParadoxScriptRootBlock): List<PsiElement> {
+		//允许混合value和property
+		return element.filterChildOfType { isRootBlockComponent(it) }
+	}
+	
+	private fun isRootBlockComponent(element: PsiElement): Boolean {
+		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+	}
+	//endregion
+	
 	//region ParadoxScriptVariable
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
@@ -542,7 +576,7 @@ object ParadoxScriptPsiImplUtil {
 			//仅支持设置rgb/rgba颜色
 			if(values.size != 3 && values.size != 4) return //中断操作
 			val isRgba = values.size == 4
-			val newText = color.run { if(isRgba) "{ $red $green $blue }" else "{ $red $green $blue $alpha }" }
+			val newText = color.run { if(isRgba) "{ $red $green $blue $alpha }" else "{ $red $green $blue }" }
 			val newBlock = ParadoxScriptElementFactory.createValue(element.project, newText) as? ParadoxScriptBlock
 			if(newBlock != null) {
 				val block = element.replace(newBlock)

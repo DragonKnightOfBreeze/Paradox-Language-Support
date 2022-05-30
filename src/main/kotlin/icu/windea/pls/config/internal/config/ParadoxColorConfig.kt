@@ -60,7 +60,7 @@ class ParadoxColorConfig(
 					val id = prop.name
 					if(id.singleOrNull()?.isExactLetter() != true) return@processProperties true
 					if(id != colorId) return@processProperties true
-					val rgbList = prop.values.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
+					val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
 					if(rgbList.size != 3) return@processProperties true
 					val description = getInternalConfig(project).colorMap[id]?.description.orEmpty() //来自内置规则文件
 					val colorConfig = ParadoxColorConfig(id, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
@@ -87,7 +87,7 @@ class ParadoxColorConfig(
 				definition.block?.processProperties { prop ->
 					val id = prop.name
 					if(id.singleOrNull()?.isExactLetter() != true) return@processProperties true
-					val rgbList = prop.values.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
+					val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
 					if(rgbList.size != 3) return@processProperties true
 					val description = getInternalConfig(project).colorMap[id]?.description.orEmpty() //来自内置规则文件
 					val colorConfig = ParadoxColorConfig(id, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())

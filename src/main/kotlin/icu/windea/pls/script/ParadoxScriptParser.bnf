@@ -22,7 +22,8 @@
 
 root ::= root_block
 root_block ::= root_block_item + {
-  extends=block
+  implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
+  methods=[isEmpty isNotEmpty getComponents]
 }
 private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property | value
 
@@ -106,7 +107,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   recoverWhile="#auto"
   extends=value
-  implements="com.intellij.psi.PsiListLikeElement"
+  implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
   methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType getType]
 }
 private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value | parameter_condition

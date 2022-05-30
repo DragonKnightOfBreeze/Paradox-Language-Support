@@ -34,7 +34,7 @@ val ParadoxScriptInlineMathParameter.defaultValueToken: PsiElement? get() = find
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  */
-inline fun ParadoxScriptBlock.processProperties(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+inline fun IParadoxScriptBlock.processProperties(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
 	return processChildren {
 		when {
 			it is ParadoxScriptProperty -> processor(it)
@@ -48,7 +48,7 @@ inline fun ParadoxScriptBlock.processProperties(includeConditional: Boolean = fa
  * 遍历当前代码块中的所有（直接作为子节点的）值。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的值。
  */
-inline fun ParadoxScriptBlock.processValues(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+inline fun IParadoxScriptBlock.processValues(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
 	return processChildren {
 		when {
 			it is ParadoxScriptValue -> processor(it)

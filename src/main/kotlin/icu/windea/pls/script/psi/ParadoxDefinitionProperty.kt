@@ -13,9 +13,9 @@ interface ParadoxDefinitionProperty : PsiNamedElement {
 	val pathName: String
 	val originalPathName: String
 	
-	val block: ParadoxScriptBlock?
-	//val variables get() = block?.variableList.orEmpty()
-	val properties get() = block?.propertyList.orEmpty()
-	val values get() = block?.valueList.orEmpty()
+	val block: IParadoxScriptBlock?
+	val variableList: List<ParadoxScriptVariable> get() = block?.variableList.orEmpty()
+	val propertyList: List<ParadoxScriptProperty> get() = block?.propertyList.orEmpty()
+	val valueList: List<ParadoxScriptValue> get() = block?.valueList.orEmpty()
 }
 

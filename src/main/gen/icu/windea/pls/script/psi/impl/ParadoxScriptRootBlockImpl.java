@@ -8,15 +8,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
-public class ParadoxScriptRootBlockImpl extends ParadoxScriptBlockImpl implements ParadoxScriptRootBlock {
+public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements ParadoxScriptRootBlock {
 
   public ParadoxScriptRootBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitRootBlock(this);
   }
@@ -25,6 +25,40 @@ public class ParadoxScriptRootBlockImpl extends ParadoxScriptBlockImpl implement
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptProperty> getPropertyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptValue> getValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptVariable> getVariableList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return ParadoxScriptPsiImplUtil.isEmpty(this);
+  }
+
+  @Override
+  public boolean isNotEmpty() {
+    return ParadoxScriptPsiImplUtil.isNotEmpty(this);
+  }
+
+  @Override
+  @NotNull
+  public List<PsiElement> getComponents() {
+    return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
 }

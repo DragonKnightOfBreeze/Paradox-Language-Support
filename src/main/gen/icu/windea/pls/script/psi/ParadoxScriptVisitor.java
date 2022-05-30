@@ -11,7 +11,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
-    // visitPsiListLikeElement(o);
+    // visitIParadoxScriptBlock(o);
   }
 
   public void visitBoolean(@NotNull ParadoxScriptBoolean o) {
@@ -121,7 +121,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
-    visitBlock(o);
+    visitIParadoxScriptBlock(o);
   }
 
   public void visitString(@NotNull ParadoxScriptString o) {
@@ -160,6 +160,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
+    visitElement(o);
+  }
+
+  public void visitIParadoxScriptBlock(@NotNull IParadoxScriptBlock o) {
     visitElement(o);
   }
 

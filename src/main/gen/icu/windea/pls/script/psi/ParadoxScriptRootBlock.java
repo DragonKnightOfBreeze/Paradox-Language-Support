@@ -5,6 +5,22 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ParadoxScriptRootBlock extends ParadoxScriptBlock {
+public interface ParadoxScriptRootBlock extends IParadoxScriptBlock {
+
+  @NotNull
+  List<ParadoxScriptProperty> getPropertyList();
+
+  @NotNull
+  List<ParadoxScriptValue> getValueList();
+
+  @NotNull
+  List<ParadoxScriptVariable> getVariableList();
+
+  boolean isEmpty();
+
+  boolean isNotEmpty();
+
+  @NotNull
+  List<PsiElement> getComponents();
 
 }
