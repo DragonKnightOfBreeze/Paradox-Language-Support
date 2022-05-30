@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -25,7 +26,7 @@ object ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters
 		val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
-		val locales = getInternalConfig(project).locales
+		val locales = ParadoxLocaleConfig.findAllAsArray(project)
 		for(locale in locales) {
 			val element = locale.pointer.element ?: continue
 			val typeText = locale.pointer.containingFile?.name ?: anonymousString

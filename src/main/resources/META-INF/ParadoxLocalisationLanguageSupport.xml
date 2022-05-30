@@ -82,7 +82,6 @@
     <!--<fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationTextEditorProvider"/>--> <!--unnecessary-->
     <fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationEditorProvider"/>
     <advancedSetting id="paradoxLocalisation.hide.floating.toolbar" default="false" groupKey="settings"/>
-    <customizableActionGroupProvider implementation="icu.windea.pls.localisation.ui.floating.FloatingToolbarCustomizableGroupProvider"/>
     
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>

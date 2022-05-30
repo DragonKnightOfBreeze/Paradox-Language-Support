@@ -13,13 +13,14 @@ import icu.windea.pls.config.internal.config.*
 //org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
 class SetColorAction(
-	private val colorConfig: ParadoxColorConfig
-) : ToggleAction(PlsBundle.message("action.ParadoxScript.SetColorAction.text", colorConfig.description), null, colorConfig.icon), DumbAware {
-	private val setColorActionBaseName = PlsBundle.message("action.ParadoxScript.SetColorAction.text", colorConfig.description)
+	val colorConfig: ParadoxColorConfig
+) : ToggleAction(colorConfig.documentation, null, colorConfig.icon), DumbAware {
+	private val setColorActionBaseName = colorConfig.documentation
 	
 	override fun update(event: AnActionEvent) {
 		val editor = event.dataContext.getData(CommonDataKeys.EDITOR) ?: return
 		event.presentation.isEnabled = editor.document.isWritable
+		super.update(event)
 	}
 	
 	override fun isSelected(event: AnActionEvent): Boolean {
@@ -28,7 +29,7 @@ class SetColorAction(
 		val caret = allCarets.singleOrNull() ?: return false
 		val selectionStart = caret.selectionStart
 		if(selectionStart <= 2) return false
-		val startString = editor.document.getText(TextRange.create(selectionStart - 2, (selectionStart + 2).coerceAtLeast(editor.document.textLength)))
+		val startString = editor.document.getText(TextRange.create(selectionStart - 2, (selectionStart + 2).coerceAtMost(editor.document.textLength)))
 		return startString.lastIndexOf('§').let { it != -1 && it != 3 && startString[it + 1] == colorConfig.id.singleOrNull() }
 	}
 	

@@ -148,10 +148,8 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 			//加上描述
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) {
-				val description = colorConfig.description
-				val colorText = colorConfig.colorRgb
 				content {
-					append(description).append(" - ").append(colorText) //接受HTML，注明颜色
+					append(colorConfig.documentation) //接受HTML
 				}
 			}
 		}
@@ -199,7 +197,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val localeConfig = element.localeConfig
 		if(localeConfig != null) {
 			content {
-				append(localeConfig.description) //接受HTML
+				append(localeConfig.documentation) //接受HTML
 			}
 		}
 	}

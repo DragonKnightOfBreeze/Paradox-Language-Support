@@ -51,9 +51,9 @@ object ParadoxLocalisationTextRenderer {
 	
 	private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, builder: StringBuilder) {
 		val reference = element.reference
-		val rgbText = element.colorConfig?.colorRgb
+		val rgbText = element.colorConfig?.color?.rgbString
 		if(reference != null) {
-			val property = reference.resolve() as? ParadoxLocalisationProperty
+			val property = reference.resolve()
 			if(property != null) {
 				if(rgbText != null) builder.append("<span style=\"color: ").append(rgbText).append("\">")
 				renderTo(property, builder)
@@ -99,7 +99,7 @@ object ParadoxLocalisationTextRenderer {
 		//如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
 		val richTextList = element.richTextList
 		if(richTextList.isEmpty()) return
-		val rgbText = element.colorConfig?.colorRgb
+		val rgbText = element.colorConfig?.color?.rgbString
 		if(rgbText != null) builder.append("<span style=\"color: ").append(rgbText).append("\">")
 		for(richText in richTextList) {
 			renderTo(richText, builder)

@@ -33,7 +33,8 @@ class ChangeLocaleIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationLocale) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, getInternalConfig(project).locales)).showInBestPositionFor(editor)
+			val values = ParadoxLocaleConfig.findAllAsArray(project)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, values)).showInBestPositionFor(editor)
 		}
 	}
 	
@@ -43,7 +44,7 @@ class ChangeLocaleIntention : IntentionAction {
 	) : BaseListPopupStep<ParadoxLocaleConfig>(PlsBundle.message("localisation.intention.changeLocale.title"), *values) {
 		override fun getIconFor(value: ParadoxLocaleConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxLocaleConfig) = value.popupText
+		override fun getTextFor(value: ParadoxLocaleConfig) = value.documentation
 		
 		override fun getDefaultOptionIndex() = 0
 		

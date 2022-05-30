@@ -48,6 +48,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		}
 	}
 	
+	@Suppress("NAME_SHADOWING")
 	private class IntroduceLocalVariableFix(
 		element: ParadoxScriptProperty,
 		private val variableName: String
@@ -81,6 +82,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun getPriority() = PriorityAction.Priority.HIGH
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
+			//在新建或者选择的文件最后另起一行，声明对应名字的封装变量，默认值给0并选中
+			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
 			//TODO
 		}
 	}

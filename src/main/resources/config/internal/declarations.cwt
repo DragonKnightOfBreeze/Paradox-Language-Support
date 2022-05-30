@@ -57,59 +57,31 @@ locales = {
 ## loc_format = html
 colors = {
 	### Purple
-	M = {
-		color_rgb = "#a335ee"
-	}
+	M = { 163 53 238 }
 	### Brown
-	L = {
-		color_rgb = "#c3b091"
-	}
+	L = { 195 176 145 }
 	### Green
-	G = {
-		color_rgb = "#29e126"
-	}
+	G = { 41 225 38 }
 	### Red
-	R = {
-		color_rgb = "#fc5646"
-	}
+	R = { 252 86 70 }
 	### Blue
-	B = {
-		color_rgb = "#33a7ff"
-	}
+	B = { 51 167 255 }
 	### Yellow
-	Y = {
-		color_rgb = "#f7fc34"
-	}
+	Y = { 247 252 52 }
 	### Orange
-	H = {
-		color_rgb = "#fbaa29"
-	}
+	H = { 251 170 41 }
 	### Light Grey
-	T = {
-		color_rgb = "#ffffff"
-	}
+	T = { 255 255 255 }
 	### Teal
-	E = {
-		color_rgb = "#87ffcf"
-	}
+	E = { 135 255 207 }
 	### Dark Orange
-	S = {
-		color_rgb = "#e49c2a"
-	}
+	S = { 228 156 42 }
 	### White
-	W = {
-		color_rgb = "#ffffff"
-	}
+	W = { 255 255 255 }
 	### Light Red
-	P = {
-		color_rgb = "#e16e6e"
-	}
+	P = { 225 110 110 }
 	### Grey
-	g = {
-		color_rgb = "#808080"
-	}
+	g = { 128 128 128 }
 	### Light Blue
-	l = {
-		color_rgb = "#33a7ff"
-	}
+	l = { 51 167 255 }
 }

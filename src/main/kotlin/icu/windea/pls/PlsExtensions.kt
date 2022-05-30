@@ -29,23 +29,25 @@ import java.text.*
 import java.util.*
 
 //region Misc Extensions
-fun getDefaultProject() = ProjectManager.getInstance().defaultProject
+val threadLocalProjectContainer = ThreadLocal<Project?>()
+
+fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
 fun getSettings() = ParadoxSettingsState.getInstance()
 
-fun getInternalConfig(project: Project = getDefaultProject()) = project.getService(InternalConfigProvider::class.java).configGroup
+fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).getService(InternalConfigProvider::class.java).configGroup
 
 fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
 	val primaryLocale = getSettings().localisationPrimaryLocale
 	if(primaryLocale.isNotEmpty()) {
-		val usedLocale = getInternalConfig().localeFlagMap[primaryLocale]
+		val usedLocale = ParadoxLocaleConfig.findByFlag(primaryLocale)
 		if(usedLocale != null) return usedLocale
 	}
 	//如果是默认语言区域，则基于OS，如果没有对应的语言区域，则使用英文
 	val userLanguage = System.getProperty("user.language")
-	return getInternalConfig().localeFlagMap[userLanguage] ?: getInternalConfig().localeFlagMap["en"]
+	return ParadoxLocaleConfig.findByFlag(userLanguage) ?: ParadoxLocaleConfig.findByFlag("en")
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
@@ -436,22 +438,26 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 	return ParadoxLocalisationInfo(name, type)
 }
 
-val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig?
-	get() {
-		return getInternalConfig(project).localeMap[name]
-	}
+val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig? get() = doGetLocaleConfig(name, project)
+
+private fun doGetLocaleConfig(id: String, project: Project): ParadoxLocaleConfig? {
+	return ParadoxLocaleConfig.find(id, project)
+}
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
 	get() {
 		val colorId = this.propertyReferenceParameter?.text?.firstOrNull() //TODO 需要确认
 		if(colorId != null && colorId.isUpperCase()) {
-			return getInternalConfig(project).colorMap[colorId.toString()]
+			return doGetColorConfig(colorId.toString(), project)
 		}
 		return null
 	}
 
-val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig?
-	get() = getInternalConfig(project).colorMap[name]
+val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig? get() = name?.let { doGetColorConfig(it, project) }
+
+private fun doGetColorConfig(id: String, project: Project): ParadoxColorConfig? {
+	return ParadoxColorConfig.find(id, project)
+}
 //endregion
 
 //region Type Extensions
@@ -834,7 +840,7 @@ inline fun processSyncedLocalisationVariants(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
-): Boolean{
+): Boolean {
 	val maxSize = 0
 	//val maxSize = getSettings().maxCompleteSize
 	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize = maxSize, processor = processor)

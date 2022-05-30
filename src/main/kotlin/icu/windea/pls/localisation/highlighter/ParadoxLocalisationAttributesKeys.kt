@@ -2,9 +2,13 @@ package icu.windea.pls.localisation.highlighter
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
+import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
+import com.intellij.openapi.project.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
+import java.awt.*
 
 @Suppress("DEPRECATION")
 object ParadoxLocalisationAttributesKeys {
@@ -28,21 +32,27 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.localisation"), PROPERTY_KEY_KEY)
 	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.syncedLocalisation"), PROPERTY_KEY_KEY)
 	
-	val COLOR_KEYS by lazy {
-		val colorPrefix = PlsBundle.message("localisation.externalName.color")
-		getInternalConfig().colorMap.mapValues { (_, color) ->
-			createTextAttributesKey("${colorPrefix}_${color.id}", IDENTIFIER.defaultAttributes.clone().apply {
-				foregroundColor = color.color
-			})
-		}
+	private val colorKeyCache = createCache<Color, TextAttributesKey> { color ->
+		createTextAttributesKey("${PlsBundle.message("localisation.externalName.color")}_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
+			foregroundColor = color
+		})
 	}
 	
-	val COLOR_ONLY_KEYS by lazy {
-		val colorPrefix = PlsBundle.message("localisation.externalName.color")
-		getInternalConfig().colorMap.mapValues { (_, color) ->
-			createTextAttributesKey("${colorPrefix}_${color.id}", TextAttributes().apply { 
-				foregroundColor = color.color
-			})
-		}
+	@JvmStatic
+	fun getColorKey(id: String, project: Project): TextAttributesKey? {
+		val color = ParadoxColorConfig.find(id, project)?.color ?: return null
+		return colorKeyCache.get(color)
+	}
+	
+	private val colorOnlyKeyCache = createCache<Color, TextAttributesKey> { color ->
+		createTextAttributesKey("${PlsBundle.message("localisation.externalName.color")}_${color.rgb}", TextAttributes().apply {
+			foregroundColor = color
+		})
+	}
+	
+	@JvmStatic
+	fun getColorOnlyKey(id: String, project: Project): TextAttributesKey? {
+		val color = ParadoxColorConfig.find(id, project)?.color ?: return null
+		return colorOnlyKeyCache.get(color)
 	}
 }

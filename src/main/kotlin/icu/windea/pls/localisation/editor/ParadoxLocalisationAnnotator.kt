@@ -56,7 +56,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 			val location = element.propertyReferenceParameter
 			if(location != null) {
 				val startOffset = location.startOffset
-				annotateColor(colorId, holder, TextRange(startOffset, startOffset + 1))
+				annotateColor(colorId, element.project, holder, TextRange(startOffset, startOffset + 1))
 			}
 		}
 	}
@@ -68,14 +68,14 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 			val colorId = colorConfig.id
 			val location = element.colorId
 			if(location != null) {
-				annotateColor(colorId, holder, location.textRange)
+				annotateColor(colorId, element.project, holder, location.textRange)
 			}
 		}
 	}
 	
-	private fun annotateColor(colorId: String, holder: AnnotationHolder, range: TextRange) {
+	private fun annotateColor(colorId: String, project: Project, holder: AnnotationHolder, range: TextRange) {
 		//颜色高亮
-		val attributesKey = ParadoxLocalisationAttributesKeys.COLOR_KEYS[colorId] ?: return
+		val attributesKey = ParadoxLocalisationAttributesKeys.getColorKey(colorId, project) ?: return
 		holder.newSilentAnnotation(INFORMATION)
 			.range(range).textAttributes(attributesKey)
 			.create()

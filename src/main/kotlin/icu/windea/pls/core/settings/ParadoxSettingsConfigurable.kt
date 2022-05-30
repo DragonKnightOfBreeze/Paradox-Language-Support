@@ -11,6 +11,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 
@@ -83,7 +84,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						if(value == "") {
 							text = PlsBundle.message("settings.localisation.primaryLocale.auto")
 						} else {
-							text = getInternalConfig().localeMap.getValue(value).description
+							text = ParadoxLocaleConfig.find(value)!!.description
 						}
 					})
 						.bindItem(settings::localisationPrimaryLocale.toNullableProperty())

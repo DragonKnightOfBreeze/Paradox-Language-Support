@@ -32,7 +32,7 @@ class ParadoxLocalisationTextEditorProvider: PsiAwareTextEditorProvider() {
 	override fun createEditor(project: Project, file: VirtualFile): FileEditor {
 		val actualEditor = super.createEditor(project, file)
 		if (actualEditor is TextEditor && !AdvancedSettings.getBoolean("paradoxLocalisation.hide.floating.toolbar")) {
-			val toolbar = FloatingToolbar(actualEditor.editor, "ParadoxLocalisation.Toolbar.Floating")
+			val toolbar = FloatingToolbar(actualEditor.editor)
 			Disposer.register(actualEditor, toolbar)
 		}
 		return actualEditor

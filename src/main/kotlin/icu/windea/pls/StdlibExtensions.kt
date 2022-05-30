@@ -11,6 +11,7 @@ import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
+import kotlin.contracts.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
@@ -81,7 +82,7 @@ fun Char.isExactDigit(): Boolean {
 }
 
 fun Char.isExactLetter(): Boolean {
-	return this in 'a'..'z' || this in 'A'..'Z';
+	return this in 'a'..'z' || this in 'A'..'Z'
 }
 
 fun String.isQuoted() = length >= 2 && surroundsWith('"', '"')

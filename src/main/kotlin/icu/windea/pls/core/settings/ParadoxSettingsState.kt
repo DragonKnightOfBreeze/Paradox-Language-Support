@@ -4,6 +4,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 
 /**
@@ -39,7 +40,7 @@ data class ParadoxSettingsState(
 	val locales by lazy {
 		buildList {
 			add("")
-			addAll(getInternalConfig().localeMap.keys)
+			addAll(ParadoxLocaleConfig.findAll().keys)
 		}
 	}
 	

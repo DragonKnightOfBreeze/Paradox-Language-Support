@@ -3,6 +3,8 @@ package icu.windea.pls.config.internal
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.cwt.psi.CwtInt
+import icu.windea.pls.script.psi.*
 
 class InternalConfigGroup(
 	configMap: InternalConfigMap
@@ -35,11 +37,12 @@ class InternalConfigGroup(
 		localeFlagMap = locales.associateBy { it.languageTag }
 		
 		//初始化color数据
-		colors = colorsConfig!!.properties!!.mapToArray {
-			val id = it.key
-			val description = it.documentation.orEmpty()
-			val colorRgb = it.properties?.find { p -> p.key == "color_rgb" }?.stringValue!!
-			ParadoxColorConfig(id, description, colorRgb, it.pointer)
+		colors = colorsConfig!!.properties!!.mapToArray { prop ->
+			val id = prop.key
+			val description = prop.documentation.orEmpty()
+			val rgbList = prop.values?.mapNotNull { it.intValue }
+			if(rgbList == null || rgbList.size != 3) throw InternalError()
+			ParadoxColorConfig(id, description, rgbList[0], rgbList[1], rgbList[2], prop.pointer)
 		}
 		colorMap = colors.associateBy { it.id }
 	}

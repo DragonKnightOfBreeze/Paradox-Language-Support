@@ -78,8 +78,8 @@ object ParadoxLocalisationTextHintsRenderer {
 	
 	private fun PresentationFactory.renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, editor: Editor, builder: MutableList<InlayPresentation>, truncateRemain: AtomicInteger): Boolean {
 		//如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-		val rgbText = element.colorConfig?.colorRgb
-		val textAttributesKey = if(rgbText != null) ParadoxLocalisationAttributesKeys.COLOR_ONLY_KEYS[rgbText] else null
+		val colorId = element.colorConfig?.id
+		val textAttributesKey = if(colorId != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorId, element.project) else null
 		val resolved = element.reference?.resolve().castOrNull<ParadoxLocalisationProperty>()
 		val presentation = when {
 			resolved != null -> {
@@ -127,7 +127,7 @@ object ParadoxLocalisationTextHintsRenderer {
 		val richTextList = element.richTextList
 		if(richTextList.isEmpty()) return true
 		val colorId = element.colorConfig?.id
-		val textAttributesKey = if(colorId != null) ParadoxLocalisationAttributesKeys.COLOR_ONLY_KEYS[colorId] else null
+		val textAttributesKey = if(colorId != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorId, element.project) else null
 		val innerBuilder: MutableList<InlayPresentation> = SmartList()
 		var continueProcess = true
 		for(richText in richTextList) {

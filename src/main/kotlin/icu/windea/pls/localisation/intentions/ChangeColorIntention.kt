@@ -33,7 +33,8 @@ class ChangeColorIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
-			JBPopupFactory.getInstance().createListPopup(Popup(element, getInternalConfig(project).colors)).showInBestPositionFor(editor)
+			val colorConfigs = ParadoxColorConfig.findAllAsArray(project)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs)).showInBestPositionFor(editor)
 		}
 	}
 	
@@ -43,7 +44,7 @@ class ChangeColorIntention : IntentionAction {
 	) : BaseListPopupStep<ParadoxColorConfig>(PlsBundle.message("localisation.intention.changeColor.title"), *values) {
 		override fun getIconFor(value: ParadoxColorConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxColorConfig) = value.popupText
+		override fun getTextFor(value: ParadoxColorConfig) = value.documentation
 		
 		override fun getDefaultOptionIndex() = 0
 		

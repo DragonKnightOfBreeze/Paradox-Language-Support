@@ -1,7 +1,6 @@
 package icu.windea.pls.localisation.ui.floating
 
 import com.intellij.codeInsight.hint.*
-import com.intellij.ide.ui.customization.*
 import com.intellij.openapi.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.impl.*
@@ -10,8 +9,9 @@ import com.intellij.openapi.editor.event.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.ui.actions.styling.*
 import java.awt.*
 import java.awt.event.*
 import javax.swing.*
@@ -26,7 +26,7 @@ import kotlin.properties.*
  * @see icu.windea.pls.localisation.ui.actions.styling.FloatingToolbarGroup
  * @see icu.windea.pls.localisation.ui.actions.styling.SetColorAction
  */
-class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : Disposable {
+class FloatingToolbar(val editor: Editor) : Disposable {
 	private val mouseListener = MouseListener()
 	private val keyboardListener = KeyboardListener()
 	private val mouseMotionListener = MouseMotionListener()
@@ -49,7 +49,7 @@ class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : D
 		if(hint != null || !canBeShownAtCurrentSelection()) {
 			return
 		}
-		val toolbar = createActionToolbar(editor.contentComponent) ?: return
+		val toolbar = createActionToolbar(editor.contentComponent)
 		buttonSize = toolbar.maxButtonHeight
 		
 		val newHint = LightweightHint(toolbar.component)
@@ -70,10 +70,11 @@ class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : D
 		hint = null
 	}
 	
-	private fun createActionToolbar(targetComponent: JComponent): ActionToolbar? {
-		val group = CustomActionsSchema.getInstance().getCorrectedAction(actionGroupId) as? ActionGroup ?: return null
+	@Suppress("UnstableApiUsage")
+	private fun createActionToolbar(targetComponent: JComponent): ActionToolbar {
+		threadLocalProjectContainer.set(editor.project)
+		val group = FloatingToolbarGroup()
 		val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
-			@Suppress("UnstableApiUsage")
 			override fun addNotify() {
 				super.addNotify()
 				updateActionsImmediately(true) //这是必要的，否则显示悬浮工具栏时其中的图标不会立即全部显示
@@ -146,11 +147,14 @@ class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : D
 	
 	private inner class MouseListener : EditorMouseListener {
 		override fun mouseReleased(e: EditorMouseEvent) {
-			updateOnProbablyChangedSelection {
-				if(isShown()) {
-					updateLocationIfShown()
-				} else {
-					showIfHidden()
+			//仅当文档可编辑时才进行处理
+			if(editor.document.isWritable) {
+				updateOnProbablyChangedSelection {
+					if(isShown()) {
+						updateLocationIfShown()
+					} else {
+						showIfHidden()
+					}
 				}
 			}
 		}
@@ -158,26 +162,32 @@ class FloatingToolbar(val editor: Editor, private val actionGroupId: String) : D
 	
 	private inner class KeyboardListener : KeyAdapter() {
 		override fun keyReleased(e: KeyEvent) {
-			super.keyReleased(e)
-			if(e.source != editor.contentComponent) {
-				return
-			}
-			updateOnProbablyChangedSelection {
-				hideIfShown()
+			//仅当文档可编辑时才进行处理
+			if(editor.document.isWritable) {
+				super.keyReleased(e)
+				if(e.source != editor.contentComponent) {
+					return
+				}
+				updateOnProbablyChangedSelection {
+					hideIfShown()
+				}
 			}
 		}
 	}
 	
 	private inner class MouseMotionListener : EditorMouseMotionListener {
 		override fun mouseMoved(e: EditorMouseEvent) {
-			val visualPosition = e.visualPosition
-			val hoverSelected = editor.caretModel.allCarets.any {
-				val beforeSelectionEnd = it.selectionEndPosition.after(visualPosition)
-				val afterSelectionStart = visualPosition.after(it.selectionStartPosition)
-				beforeSelectionEnd && afterSelectionStart
-			}
-			if(hoverSelected) {
-				showIfHidden()
+			//仅当文档可编辑时才进行处理
+			if(editor.document.isWritable) {
+				val visualPosition = e.visualPosition
+				val hoverSelected = editor.caretModel.allCarets.any {
+					val beforeSelectionEnd = it.selectionEndPosition.after(visualPosition)
+					val afterSelectionStart = visualPosition.after(it.selectionStartPosition)
+					beforeSelectionEnd && afterSelectionStart
+				}
+				if(hoverSelected) {
+					showIfHidden()
+				}
 			}
 		}
 	}
