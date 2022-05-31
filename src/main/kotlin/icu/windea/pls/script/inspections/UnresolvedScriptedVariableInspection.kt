@@ -5,7 +5,6 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.quickFix.*
 import icu.windea.pls.script.psi.*
@@ -29,22 +28,19 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun visitVariableReference(element: ParadoxScriptVariableReference) {
 			val reference = element.reference
 			if(reference.resolve() != null) return
-			val quickFixList = SmartList<LocalQuickFix>()
-			//要求封装变量引用可读且在合适的位置
-			if(element.isWritable) {
-				val variableName = element.name
-				val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>()
-				parentDefinition
-					?.apply {
-						quickFixList.add(IntroduceLocalVariableFix(parentDefinition, variableName))
-						quickFixList.add(IntroduceGlobalVariableFix(parentDefinition, variableName))
+			val quickFixes = buildList {
+				//要求封装变量引用可读且在合适的位置
+				if(element.isWritable) {
+					val variableName = element.name
+					val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>()
+					if(parentDefinition != null) {
+						this += IntroduceLocalVariableFix(parentDefinition, variableName)
+						this += IntroduceGlobalVariableFix(parentDefinition, variableName)
 					}
-			}
-			quickFixList.add(ImportGameOrModDirectoryFix(element))
-			val quickFixes = quickFixList.toTypedArray()
-			
-			val location = element
-			holder.registerProblem(location, PlsBundle.message("script.inspection.unresolvedScriptedVariable.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes)
+				}
+				this += ImportGameOrModDirectoryFix(element)
+			}.toTypedArray()
+			holder.registerProblem(element, PlsBundle.message("script.inspection.unresolvedScriptedVariable.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes)
 		}
 	}
 	

@@ -7,7 +7,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.*
 import com.intellij.refactoring.rename.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
@@ -43,10 +42,10 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 		if(localeIdFromFile == localeId) return null //匹配语言区域，跳过
 		val expectedFileName = file.getExpectedFileName(localeId)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		val quickFixList = SmartList<LocalQuickFix>()
-		quickFixList.add(RenameFileFix(locale, expectedFileName))
-		if(localeIdFromFile != null) quickFixList.add(RenameLocaleFix(locale, localeIdFromFile))
-		val quickFixes = quickFixList.toTypedArray()
+		val quickFixes = buildList {
+			this += RenameFileFix(locale, expectedFileName)
+			if(localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
+		}.toTypedArray()
 		//将检查注册在locale上，而非file上
 		holder.registerProblem(locale, PlsBundle.message("localisation.inspection.incorrectFileName.description", fileName, localeId), *quickFixes)
 		return holder.resultsArray

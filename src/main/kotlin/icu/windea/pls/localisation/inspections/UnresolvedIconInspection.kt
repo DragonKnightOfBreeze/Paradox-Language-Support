@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import icu.windea.pls.*
+import icu.windea.pls.core.quickFix.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -33,7 +34,9 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 			val resolved = element.reference?.resolve()
 			if(resolved != null) return
 			val location = element.iconId ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedIcon.description", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+				ImportGameOrModDirectoryFix(location)
+			)
 		}
 	}
 	

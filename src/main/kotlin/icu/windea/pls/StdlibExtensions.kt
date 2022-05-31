@@ -18,10 +18,10 @@ import kotlin.math.*
 inline fun pass() {}
 
 fun Number.format(digits: Int): String {
-	val power = 10.0.pow(abs(position))
+	val power = 10.0.pow(abs(digits))
 	return when {
-		position > 0 -> (round(this.toLong() / power) * power).toLong().toString()
-		position == 0 -> this.toLong().toString()
+		digits > 0 -> (round(this.toLong() / power) * power).toLong().toString()
+		digits == 0 -> this.toLong().toString()
 		else -> (round(this.toDouble() * power) / power).toString()
 			.let { if(it.lastIndexOf('.') == -1) "$it.0" else it }
 	}

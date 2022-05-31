@@ -582,8 +582,8 @@ object ParadoxScriptPsiImplUtil {
 						if(isRgba) "{ $red $green $blue $alpha }" else "{ $red $green $blue }"
 					}
 					values.all { it is ParadoxScriptFloat } -> {
-						if(isRgba) "{ ${red.roundToString(-2)} ${green.roundToString(-2)} ${blue.roundToString(-2)} ${alpha.roundToString(-2)} }"
-						else "{ ${red.roundToString(-2)} ${green.roundToString(-2)} ${blue.roundToString(-2)} }"
+						if(isRgba) "{ ${red.format(-2)} ${green.format(-2)} ${blue.format(-2)} ${alpha.format(-2)} }"
+						else "{ ${red.format(-2)} ${green.format(-2)} ${blue.format(-2)} }"
 					}
 					else -> return //中断操作
 				}
