@@ -20,15 +20,14 @@
 //DONE 列表的元素可以是字符串
 //DONE 分隔符可以是比较运算符
 
-root ::= root_block
+root ::= root_block ?
 root_block ::= root_block_item + {
   implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
   methods=[isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | variable | property | value
+private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | property | value | variable
 
 variable ::= variable_name variable_separator variable_value {
-  pin=1
   recoverWhile="#auto"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
@@ -48,7 +47,6 @@ variable_value ::= number {
 }
 
 property ::= property_key property_separator property_value {
-  pin=1
   recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
@@ -110,7 +108,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
   methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType getType]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | variable | property | value | parameter_condition
+private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value | parameter_condition | variable
 
 //advanced script syntax
 //see: common/scripted_effects/99_advanced_documentation.txt
@@ -168,7 +166,6 @@ private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_exp
 //noinspection BnfUnusedRule
 inline_math_expression ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
 inline_math_unary_expression ::= inline_math_unary_op inline_math_unary_expr{
-  pin=1
   extends=inline_math_expression
 }
 private inline_math_unary_op ::= PLUS_SIGN | MINUS_SIGN
@@ -184,7 +181,6 @@ inline_math_par_expression ::= LP_SIGN inline_math_par_expr RP_SIGN {
 }
 private inline_math_par_expr ::= inline_math_expr
 left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor{
-  pin=1
   extends=inline_math_expression
 }
 private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
@@ -203,9 +199,8 @@ inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without
   implements="icu.windea.pls.script.psi.IParadoxScriptVariableReference"
   methods=[getIcon getName setName getReference]
 }
-inline_math_parameter ::= PARAMETER_START PARAMETER_ID [ PIPE ARG_NUMBER_TOKEN] PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] PARAMETER_END {
   extends=inline_math_factor
-  pin=1
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
 }

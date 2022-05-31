@@ -42,9 +42,9 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  @Nullable
+  @NotNull
   public ParadoxLocalisationPropertyValue getPropertyValue() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyValue.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyValue.class));
   }
 
   @Override

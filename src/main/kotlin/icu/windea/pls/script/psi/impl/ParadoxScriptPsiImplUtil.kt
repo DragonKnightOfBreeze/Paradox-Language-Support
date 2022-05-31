@@ -578,6 +578,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setColor(element: ParadoxScriptBlock, color: Color) {
+		//FIXME 首次选择颜色后不关闭取色器，继续选择颜色，文档不会发生相应的变更，得到的document=null
 		runCatching {
 			val project = element.project
 			val values = element.findValues<ParadoxScriptValue>()

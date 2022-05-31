@@ -28,13 +28,11 @@ property_list ::= COMMENT * locale COMMENT * property_item * {
 private property_item ::= END_OF_LINE_COMMENT | COMMENT | property
 
 locale ::= LOCALE_ID COLON {
-  pin=1
   recoverWhile="#auto"
   methods=[getIcon getName setName getReference]
 }
 
 property ::= property_key COLON property_number? property_value {
-  pin=1
   recoverWhile="#auto" 
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes.getPropertyType"
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
@@ -66,7 +64,6 @@ escape ::= VALID_ESCAPE_TOKEN | INVALID_ESCAPE_TOKEN | DOUBLE_LEFT_BRACKET{
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
 //may be resolved to localisation / variable / system statistics in GUI elements 
 property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE [property_reference_parameter]] PROPERTY_REFERENCE_END {
-  pin=1
   extends=rich_text
   methods=[getName setName getReference]
 }
@@ -76,7 +73,6 @@ property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check
 //icon
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#.C2.A3_Codes
 icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
-  pin=1
   extends=rich_text
   methods=[getIcon getName setName getFrame getReference]
 }

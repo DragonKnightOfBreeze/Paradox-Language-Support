@@ -14,7 +14,7 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   @NotNull
   ParadoxLocalisationPropertyKey getPropertyKey();
 
-  @Nullable
+  @NotNull
   ParadoxLocalisationPropertyValue getPropertyValue();
 
   @NotNull

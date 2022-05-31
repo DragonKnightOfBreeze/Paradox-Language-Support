@@ -11,6 +11,10 @@ import icu.windea.pls.script.psi.*
 
 private const val i = 1
 
+private const val s1 = "0"
+
+private const val s = "0"
+
 /**
  * 无法解析的封装变量引用的检查。
  *
@@ -29,16 +33,14 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 			val reference = element.reference
 			if(reference.resolve() != null) return
 			val quickFixes = buildList {
-				//要求封装变量引用可读且在合适的位置
-				if(element.isWritable) {
-					val variableName = element.name
-					val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>()
-					if(parentDefinition != null) {
-						this += IntroduceLocalVariableFix(parentDefinition, variableName)
-						this += IntroduceGlobalVariableFix(parentDefinition, variableName)
-					}
+				//要求对应的variableReference在定义声明内
+				val variableName = element.name
+				val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>()
+				if(parentDefinition != null) {
+					this += IntroduceLocalVariableFix(parentDefinition, variableName)
+					this += IntroduceGlobalVariableFix(parentDefinition, variableName)
+					this += ImportGameOrModDirectoryFix(element)
 				}
-				this += ImportGameOrModDirectoryFix(element)
 			}.toTypedArray()
 			holder.registerProblem(element, PlsBundle.message("script.inspection.unresolvedScriptedVariable.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes)
 		}
@@ -58,7 +60,10 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			//在所属定义之前另起一行（跳过注释和空白），声明对应名字的封装变量，默认值给0并选中
 			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
-			introduceScriptedVariable(variableName, "0", parentDefinition, project, editor) { newVariable, editor ->
+			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinition, project)
+			if(editor != null) {
+				PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document)
+				//光标移到variableValue结束位置并选中
 				val textRange = newVariable.variableValue!!.textRange
 				editor.selectionModel.setSelection(textRange.startOffset, textRange.endOffset)
 				editor.caretModel.moveToOffset(textRange.endOffset)

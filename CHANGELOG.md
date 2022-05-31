@@ -48,7 +48,7 @@
   * [X] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
   * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`，可以为变量，如`$LEVEL$`）
   * [X] 支持本地化语言`l_japanese`和`l_korean`
-  * [ ] 兼容作为格式的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
+  * [ ] 兼容作为format的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
 * 扩展CWT配置文件：
   * [X] 支持额外的CWT选项：`## since = "3.3"`，用于在文档注释中显示开始支持的游戏版本号

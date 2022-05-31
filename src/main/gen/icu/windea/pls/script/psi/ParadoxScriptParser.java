@@ -71,17 +71,17 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // END_OF_LINE_COMMENT | COMMENT | variable | property | value | parameter_condition
+  // END_OF_LINE_COMMENT | COMMENT | property | value | parameter_condition | variable
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, END_OF_LINE_COMMENT);
     if (!r) r = consumeToken(b, COMMENT);
-    if (!r) r = variable(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
     if (!r) r = parameter_condition(b, l + 1);
+    if (!r) r = variable(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -161,13 +161,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   // inline_math_bi_op inline_math_bi_right_factor
   public static boolean inline_math_bi_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_bi_expression")) return false;
-    boolean r, p;
+    boolean r;
     Marker m = enter_section_(b, l, _LEFT_, INLINE_MATH_BI_EXPRESSION, "<inline math bi expression>");
     r = inline_math_bi_op(b, l + 1);
-    p = r; // pin = 1
     r = r && inline_math_bi_right_factor(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -290,21 +289,20 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START PARAMETER_ID [ PIPE ARG_NUMBER_TOKEN] PARAMETER_END
+  // PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] PARAMETER_END
   public static boolean inline_math_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter")) return false;
     if (!nextTokenIs(b, PARAMETER_START)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_PARAMETER, null);
-    r = consumeTokens(b, 1, PARAMETER_START, PARAMETER_ID);
-    p = r; // pin = 1
-    r = r && report_error_(b, inline_math_parameter_2(b, l + 1));
-    r = p && consumeToken(b, PARAMETER_END) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, PARAMETER_START, PARAMETER_ID);
+    r = r && inline_math_parameter_2(b, l + 1);
+    r = r && consumeToken(b, PARAMETER_END);
+    exit_section_(b, m, INLINE_MATH_PARAMETER, r);
+    return r;
   }
 
-  // [ PIPE ARG_NUMBER_TOKEN]
+  // [PIPE ARG_NUMBER_TOKEN]
   private static boolean inline_math_parameter_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter_2")) return false;
     parseTokens(b, 0, PIPE, ARG_NUMBER_TOKEN);
@@ -327,13 +325,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   public static boolean inline_math_unary_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_unary_expression")) return false;
     if (!nextTokenIs(b, "<inline math unary expression>", MINUS_SIGN, PLUS_SIGN)) return false;
-    boolean r, p;
+    boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_UNARY_EXPRESSION, "<inline math unary expression>");
     r = inline_math_unary_op(b, l + 1);
-    p = r; // pin = 1
     r = r && inline_math_unary_expr(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -540,14 +537,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   // property_key property_separator property_value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    boolean r, p;
+    boolean r;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY, "<property>");
     r = property_key(b, l + 1);
-    p = r; // pin = 1
-    r = r && report_error_(b, property_separator(b, l + 1));
-    r = p && property_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, property_auto_recover_);
-    return r || p;
+    r = r && property_separator(b, l + 1);
+    r = r && property_value(b, l + 1);
+    exit_section_(b, l, m, r, false, property_auto_recover_);
+    return r;
   }
 
   /* ********************************************************** */
@@ -589,9 +585,11 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // root_block
+  // root_block ?
   static boolean root(PsiBuilder b, int l) {
-    return root_block(b, l + 1);
+    if (!recursion_guard_(b, l, "root")) return false;
+    root_block(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -611,16 +609,16 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // END_OF_LINE_COMMENT | COMMENT | variable | property | value
+  // END_OF_LINE_COMMENT | COMMENT | property | value | variable
   static boolean root_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_item")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, END_OF_LINE_COMMENT);
     if (!r) r = consumeToken(b, COMMENT);
-    if (!r) r = variable(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
+    if (!r) r = variable(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -702,14 +700,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   // variable_name variable_separator variable_value
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
-    boolean r, p;
+    boolean r;
     Marker m = enter_section_(b, l, _NONE_, VARIABLE, "<variable>");
     r = variable_name(b, l + 1);
-    p = r; // pin = 1
-    r = r && report_error_(b, variable_separator(b, l + 1));
-    r = p && variable_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, variable_auto_recover_);
-    return r || p;
+    r = r && variable_separator(b, l + 1);
+    r = r && variable_value(b, l + 1);
+    exit_section_(b, l, m, r, false, variable_auto_recover_);
+    return r;
   }
 
   /* ********************************************************** */

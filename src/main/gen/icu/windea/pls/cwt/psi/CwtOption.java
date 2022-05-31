@@ -13,7 +13,7 @@ public interface CwtOption extends CwtNamedElement {
   @NotNull
   CwtOptionKey getOptionKey();
 
-  @Nullable
+  @NotNull
   CwtValue getValue();
 
   @NotNull

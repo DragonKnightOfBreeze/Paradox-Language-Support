@@ -20,14 +20,12 @@ private root_block_item ::=  comment | property | value
 private comment ::= documentation_comment | option_comment | COMMENT
 
 documentation_comment ::= DOCUMENTATION_START documentation_text ?{
-  pin=1
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
 }
 documentation_text ::= DOCUMENTATION_TOKEN
 
 option_comment ::= OPTION_START option_comment_item ? {
-  pin=1
   recoverWhile="#auto"
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
@@ -35,7 +33,6 @@ option_comment ::= OPTION_START option_comment_item ? {
 private option_comment_item ::= option | value
 
 option ::= option_key option_separator value{
-  pin=1
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
   methods=[getIcon getName setName getNameIdentifier getOptionName getOptionValue getSeparatorType]
@@ -46,7 +43,6 @@ option_key ::= OPTION_KEY_TOKEN{
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
 property ::= property_key property_separator value {
-  pin=1
   recoverWhile="#auto"
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"

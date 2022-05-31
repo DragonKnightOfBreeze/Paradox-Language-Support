@@ -4,9 +4,6 @@
         language="PARADOX_LOCALISATION"
         name="Paradox Localisation" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.localisation.ParadoxLocalisationFileType"/>
-    <lang.fileViewProviderFactory
-        language="PARADOX_LOCALISATION"
-        implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationFileViewProviderFactory"/>
     <lang.parserDefinition
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParserDefinition"/>

@@ -4,9 +4,6 @@
         language="PARADOX_SCRIPT"
         name="Paradox Script" fieldName="INSTANCE"
         implementationClass="icu.windea.pls.script.ParadoxScriptFileType" fileNames="descriptor.mod"/>
-    <lang.fileViewProviderFactory
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.psi.ParadoxScriptFileViewProviderFactory"/>
     <lang.parserDefinition
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
