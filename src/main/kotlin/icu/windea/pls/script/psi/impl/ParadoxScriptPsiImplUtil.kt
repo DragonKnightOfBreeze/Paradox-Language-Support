@@ -12,7 +12,6 @@ import org.apache.commons.imaging.color.*
 import org.jetbrains.kotlin.idea.util.*
 import java.awt.*
 import javax.swing.*
-import kotlin.math.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
@@ -582,8 +581,8 @@ object ParadoxScriptPsiImplUtil {
 						if(isRgba) "{ $red $green $blue $alpha }" else "{ $red $green $blue }"
 					}
 					values.all { it is ParadoxScriptFloat } -> {
-						if(isRgba) "{ ${red.format(-2)} ${green.format(-2)} ${blue.format(-2)} ${alpha.format(-2)} }"
-						else "{ ${red.format(-2)} ${green.format(-2)} ${blue.format(-2)} }"
+						if(isRgba) "{ ${red.asFloat()} ${green.asFloat()} ${blue.asFloat()} ${alpha.asFloat()} }"
+						else "{ ${red.asFloat()} ${green.asFloat()} ${blue.asFloat()} }"
 					}
 					else -> return //中断操作
 				}
@@ -594,6 +593,10 @@ object ParadoxScriptPsiImplUtil {
 				if(block.isValid) block.reformatted()
 			}
 		}
+	}
+	
+	private fun Int.asFloat(): String{
+		return (this / 255.0).format(-2)
 	}
 	
 	@JvmStatic
