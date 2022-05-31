@@ -3,8 +3,7 @@ package icu.windea.pls.script.refactoring
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInsight.template.impl.*
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.command.impl.*
+import com.intellij.openapi.command.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -18,8 +17,6 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  * 声明本地封装变量的重构。
  */
 object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandler() {
-	//private const val commandName = "Introduce Local Scripted Variable"
-	
 	override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
 		val offset = editor.caretModel.offset
 		val position = file.findElementAt(offset) ?: return false
@@ -37,7 +34,7 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 		val parentDefinition = position.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() ?: return false
 		
 		//在所属定义之前另起一行（跳过注释和空白），声明对应名字的封装变量，默认值给0，要求用户编辑变量名
-		runUndoTransparentWriteAction {
+		val command = Runnable {
 			val value = position.text
 			val name = defaultScriptedVariableName
 			introduceScriptedVariable(name, value, parentDefinition, project, editor) { newVariable, editor ->
@@ -69,6 +66,7 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 				//})
 			}
 		}
+		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.text"), null, command, file)
 		return true
 	}
 }

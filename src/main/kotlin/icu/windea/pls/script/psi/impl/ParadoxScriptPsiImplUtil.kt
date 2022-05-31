@@ -1,5 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
+import com.intellij.openapi.command.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -438,6 +439,7 @@ object ParadoxScriptPsiImplUtil {
 	fun setColor(element: ParadoxScriptColor, color: Color) {
 		//忽略异常
 		runCatching {
+			val project = element.project
 			val text = element.text
 			val colorType = text.substringBefore('{').trim()
 			//仅支持设置rgb/rgba颜色
@@ -455,8 +457,14 @@ object ParadoxScriptPsiImplUtil {
 			//	"hsl" -> "hsl { ${color.toColorHsl().run { "$H $S $L" }} }"
 			//	else -> "rgba { ${color.run { "$red $green $blue $alpha" }} }"
 			//}
-			val newColor = ParadoxScriptElementFactory.createValue(element.project, newText) as? ParadoxScriptColor
-			if(newColor != null) element.replace(newColor)
+			val newColor = ParadoxScriptElementFactory.createValue(project, newText) as? ParadoxScriptColor
+			if(newColor != null) {
+				val command = Runnable {
+					element.replace(newColor)
+				}
+				val document = PsiDocumentManager.getInstance(project).getDocument(element.containingFile)
+				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.text"), null, document)
+			}
 		}
 	}
 	
@@ -571,6 +579,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun setColor(element: ParadoxScriptBlock, color: Color) {
 		runCatching {
+			val project = element.project
 			val values = element.findValues<ParadoxScriptValue>()
 			//仅支持设置rgb/rgba颜色
 			if(values.size != 3 && values.size != 4) return //中断操作
@@ -587,15 +596,19 @@ object ParadoxScriptPsiImplUtil {
 					else -> return //中断操作
 				}
 			}
-			val newBlock = ParadoxScriptElementFactory.createValue(element.project, newText) as? ParadoxScriptBlock
+			val newBlock = ParadoxScriptElementFactory.createValue(project, newText) as? ParadoxScriptBlock
 			if(newBlock != null) {
-				val block = element.replace(newBlock)
-				if(block.isValid) block.reformatted()
+				val command = Runnable {
+					val block = element.replace(newBlock)
+					if(block.isValid) block.reformatted()
+				}
+				val document = PsiDocumentManager.getInstance(project).getDocument(element.containingFile)
+				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.text"), null, document)
 			}
 		}
 	}
 	
-	private fun Int.asFloat(): String{
+	private fun Int.asFloat(): String {
 		return (this / 255.0).format(-2)
 	}
 	

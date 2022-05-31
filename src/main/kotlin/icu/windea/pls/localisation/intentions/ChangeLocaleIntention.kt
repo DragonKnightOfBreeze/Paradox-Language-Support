@@ -34,12 +34,12 @@ class ChangeLocaleIntention : IntentionAction {
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationLocale) {
 			val values = ParadoxLocaleConfig.findAllAsArray(project)
-			JBPopupFactory.getInstance().createListPopup(Popup(element, values)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element.createPointer(file), values)).showInBestPositionFor(editor)
 		}
 	}
 	
 	private class Popup(
-		private val value: ParadoxLocalisationLocale,
+		private val value: SmartPsiElementPointer<ParadoxLocalisationLocale>,
 		values: Array<ParadoxLocaleConfig>
 	) : BaseListPopupStep<ParadoxLocaleConfig>(PlsBundle.message("localisation.intention.changeLocale.title"), *values) {
 		override fun getIconFor(value: ParadoxLocaleConfig) = value.icon
@@ -51,8 +51,9 @@ class ChangeLocaleIntention : IntentionAction {
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
 		override fun onChosen(selectedValue: ParadoxLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
+			val element = value.element ?: return PopupStep.FINAL_CHOICE
 			runUndoTransparentWriteAction {
-				value.setName(selectedValue.id)
+				element.setName(selectedValue.id)
 			}
 			return PopupStep.FINAL_CHOICE
 		}

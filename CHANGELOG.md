@@ -30,7 +30,8 @@
   * [X] 实现快速修复：导入游戏目录或模组目录
   * [X] 实现代码检查-本地化文件：不正确的文件名
   * [X] 支持自定义的本地化颜色
-  * [ ] 实现代码检查-脚本文件：缺失的相关本地化
+  * [ ] 实现代码检查-脚本文件：缺失的相关本地化（可设置包含可选的）
+  * [ ] 实现代码检查-脚本文件：无法解析的路径（对应多种CWT值类型）
   * [ ] 实现代码检查：不期望的脚本语法（多种情况，需要确认）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
@@ -47,6 +48,7 @@
   * [X] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
   * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`，可以为变量，如`$LEVEL$`）
   * [X] 支持本地化语言`l_japanese`和`l_korean`
+  * [ ] 兼容作为格式的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
 * 扩展CWT配置文件：
   * [X] 支持额外的CWT选项：`## since = "3.3"`，用于在文档注释中显示开始支持的游戏版本号

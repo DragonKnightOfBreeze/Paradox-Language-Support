@@ -26,7 +26,7 @@ object ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionPara
 		}
 		
 		//TODO 补全的scope可能不正确
-		result.addLookupAdvertisement(PlsBundle.message("scopeOfCompletionsMayBeIncorrect"))
+		result.addLookupAdvertisement(PlsBundle.message("scope.of.completions.may.be.incorrect"))
 	}
 	
 	private fun doCompleteLocalisationCommand(parameters: CompletionParameters, project: Project, result: CompletionResultSet) {

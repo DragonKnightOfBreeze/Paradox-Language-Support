@@ -29,7 +29,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression
 	}
 	
 	override fun getErrorHint(): String {
-		return PlsBundle.message("noExpressionFound")
+		return PlsBundle.message("no.expression.found")
 	}
 	
 	/**

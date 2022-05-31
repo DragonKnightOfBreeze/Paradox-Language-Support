@@ -5,7 +5,6 @@ import com.intellij.openapi.command.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 
 //org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction
@@ -50,7 +49,7 @@ class SetColorAction(
 		val end = if(endIndex != -1) selectionEnd + endIndex else selectionEnd
 		val toReplaceEnd = if(endIndex != -1) selectionEnd + endIndex - 2 else selectionEnd
 		val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) ?: return
-		WriteCommandAction.writeCommandAction(project, file).withName(setColorActionBaseName).run<Nothing> {
+		val command = Runnable {
 			val toReplace = editor.document.getText(TextRange.create(toReplaceStart, toReplaceEnd))
 			val replaced = "§${colorConfig.id}$toReplace§!"
 			editor.document.replaceString(start, end, replaced)
@@ -60,6 +59,7 @@ class SetColorAction(
 			editor.caretModel.moveToOffset(caretEnd)
 			PsiDocumentManager.getInstance(file.project).commitDocument(editor.document)
 		}
+		WriteCommandAction.runWriteCommandAction(project, setColorActionBaseName, null, command, file)
 	}
 }
 
