@@ -42,9 +42,9 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ParadoxScriptVariableValue getVariableValue() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptVariableValue.class));
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptVariableValue.class);
   }
 
   @Override

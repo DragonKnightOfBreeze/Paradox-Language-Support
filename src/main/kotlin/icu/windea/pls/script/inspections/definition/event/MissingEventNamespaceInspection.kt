@@ -18,7 +18,7 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val fileInfo = file.fileInfo ?: return null
-		if(fileInfo.path.root != "events") return null
+		if(!"events".matchesPath(fileInfo.path.path, acceptSelf = false)) return null
 		val rootBlock = file.block ?: return null
 		val eventNamespace = rootBlock.findChildOfType<ParadoxScriptProperty> {  it.name.equals("namespace", true) }
 		if(eventNamespace == null) {

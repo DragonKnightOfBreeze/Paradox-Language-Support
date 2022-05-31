@@ -20,8 +20,8 @@
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$StellarisLibraryType"/>
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Vic2LibraryType"/>
 
-    <applicationConfigurable id="settings.language.pls" groupId="language"
-                             instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
-    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettingsState"/>
+    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
+    <!--<applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxInternalProjectSettings"/>-->
   </extensions>
 </idea-plugin>

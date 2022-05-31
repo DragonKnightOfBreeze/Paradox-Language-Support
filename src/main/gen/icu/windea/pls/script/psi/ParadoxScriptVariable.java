@@ -14,7 +14,7 @@ public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, Parado
   @NotNull
   ParadoxScriptVariableName getVariableName();
 
-  @NotNull
+  @Nullable
   ParadoxScriptVariableValue getVariableValue();
 
   @NotNull

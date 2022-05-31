@@ -39,9 +39,6 @@
         implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
     <breadcrumbsInfoProvider
         implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
-    <lang.psiStructureViewFactory
-        language="CWT"
-        implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
     <lang.formatter
         language="CWT"
         implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
@@ -49,5 +46,8 @@
         implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
+    <lang.psiStructureViewFactory
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
   </extensions>
 </idea-plugin>

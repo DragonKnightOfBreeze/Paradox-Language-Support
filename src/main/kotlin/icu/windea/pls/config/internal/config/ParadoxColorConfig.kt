@@ -56,12 +56,12 @@ class ParadoxColorConfig(
 			if(definitions.isEmpty()) return null
 			var color: ParadoxColorConfig? = null
 			for(definition in definitions) {
-				definition.block?.processProperties { prop ->
+				definition.block?.processProperty { prop ->
 					val id = prop.name
-					if(id.singleOrNull()?.isExactLetter() != true) return@processProperties true
-					if(id != colorId) return@processProperties true
+					if(id.singleOrNull()?.isExactLetter() != true) return@processProperty true
+					if(id != colorId) return@processProperty true
 					val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
-					if(rgbList.size != 3) return@processProperties true
+					if(rgbList.size != 3) return@processProperty true
 					val description = getInternalConfig(project).colorMap[id]?.description.orEmpty() //来自内置规则文件
 					val colorConfig = ParadoxColorConfig(id, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
 					color = colorConfig
@@ -84,11 +84,11 @@ class ParadoxColorConfig(
 			if(definitions.isEmpty()) return emptyMap()
 			val configMap = mutableMapOf<String, ParadoxColorConfig>()
 			for(definition in definitions) {
-				definition.block?.processProperties { prop ->
+				definition.block?.processProperty { prop ->
 					val id = prop.name
-					if(id.singleOrNull()?.isExactLetter() != true) return@processProperties true
+					if(id.singleOrNull()?.isExactLetter() != true) return@processProperty true
 					val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
-					if(rgbList.size != 3) return@processProperties true
+					if(rgbList.size != 3) return@processProperty true
 					val description = getInternalConfig(project).colorMap[id]?.description.orEmpty() //来自内置规则文件
 					val colorConfig = ParadoxColorConfig(id, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
 					configMap[id] = colorConfig

@@ -48,7 +48,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					}
 					expandableTextField({ it.toCommaDelimitedStringMutableList() }, { it.toCommaDelimitedString() })
 						.bindText({
-							settings.scriptIgnoredFileNames
+							settings.scriptIgnoredFileNames.orEmpty()
 						}, {
 							settings.scriptIgnoredFileNames = it
 							settings.finalScriptIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)

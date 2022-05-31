@@ -26,8 +26,8 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 		//仅当是scripted_variable才创建索引
 		if(node.treeParent.elementType != ParadoxScriptElementTypes.ROOT_BLOCK) return false
 		val file = node.psi.containingFile
-		val parentPath = file.fileInfo?.path?.parent ?: return false
-		return "common/scripted_variables".matchesPath(parentPath)
+		val path = file.fileInfo?.path?.path ?: return false
+		return "common/scripted_variables".matchesPath(path, acceptSelf = false)
 	}
 	
 	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {

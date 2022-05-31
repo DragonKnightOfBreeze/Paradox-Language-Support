@@ -4,6 +4,7 @@ package icu.windea.pls
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -33,14 +34,16 @@ val threadLocalProjectContainer = ThreadLocal<Project?>()
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
-fun getSettings() = ParadoxSettingsState.getInstance()
+fun getSettings() = service<ParadoxSettings>().state
+
+//fun getInternalSettings(project: Project) = project.service<ParadoxInternalProjectSettings>().state
 
 fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).getService(InternalConfigProvider::class.java).configGroup
 
 fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
 
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
-	val primaryLocale = getSettings().localisationPrimaryLocale
+	val primaryLocale = getSettings().localisationPrimaryLocale.orEmpty()
 	if(primaryLocale.isNotEmpty()) {
 		val usedLocale = ParadoxLocaleConfig.findByFlag(primaryLocale)
 		if(usedLocale != null) return usedLocale
@@ -198,6 +201,15 @@ fun String.isVariableField(): Boolean {
 }
 //endregion
 
+//region VFS Extensions
+/**
+ * 当前[VirtualFile]的内容文件。（缓存且仍然存在的文件，首个子文件，或者自身）
+ */
+var VirtualFile.contentFile
+	get() = getUserData(PlsKeys.contentVirtualFileKey)?.takeIf { it.exists() } ?: this.children.firstOrNull() ?: this
+	set(value) = putUserData(PlsKeys.contentVirtualFileKey, value)
+//endregion
+
 //region PsiElement Extensions
 fun PsiElement.isQuoted(): Boolean {
 	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
@@ -309,7 +321,7 @@ private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: Psi
 			var supportedVersion: String? = null
 			var remoteFileId: String? = null
 			var path: String? = null
-			rootBlock.processProperties { property ->
+			rootBlock.processProperty { property ->
 				when(property.name) {
 					"name" -> name = property.findPropertyValue<ParadoxScriptString>()?.stringValue
 					"version" -> version = property.findPropertyValue<ParadoxScriptString>()?.stringValue

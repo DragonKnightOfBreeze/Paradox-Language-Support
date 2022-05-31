@@ -14,7 +14,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();
 
-  @NotNull
+  @Nullable
   ParadoxScriptPropertyValue getPropertyValue();
 
   @NotNull

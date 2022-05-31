@@ -20,7 +20,7 @@ class IncorrectEventNamespaceInspection  : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val fileInfo = file.fileInfo ?: return null
-		if(fileInfo.path.root != "events") return null
+		if(!"events".matchesPath(fileInfo.path.path, acceptSelf = false)) return null
 		val rootBlock = file.block ?: return null
 		val properties = rootBlock.propertyList
 		if(properties.isEmpty()) return null //空文件，不进行检查

@@ -43,10 +43,10 @@ abstract class ParadoxLibraryType(
 		//必须是一个文件夹，且必须包含descriptor.mod或launcher-settings.json
 		//TODO 兼容压缩包
 		if(contextDirectory == null) return null
-		val chooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor()
-		chooserDescriptor.title = PlsBundle.message("library.chooser.title")
-		chooserDescriptor.description = PlsBundle.message("library.chooser.description")
-		val root = FileChooser.chooseFile(chooserDescriptor, parentComponent, project, contextDirectory) ?: return null
+		val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor()
+		descriptor.title = PlsBundle.message("library.chooser.title")
+		descriptor.description = PlsBundle.message("library.chooser.description")
+		val root = FileChooser.chooseFile(descriptor, parentComponent, project, contextDirectory) ?: return null
 		setFileInfoAndGetFileType(root, root, project, emptyList(), root.name)
 		val fileInfo = root.fileInfo
 		val descriptorInfo = fileInfo?.getDescriptorInfo(project)

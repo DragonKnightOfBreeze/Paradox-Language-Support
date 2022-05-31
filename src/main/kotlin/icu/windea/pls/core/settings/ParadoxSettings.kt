@@ -1,11 +1,12 @@
 package icu.windea.pls.core.settings
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
-import com.intellij.util.xmlb.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
+
+@State(name = "ParadoxSettings", storages = [Storage("paradox-language-support.xml")])
+class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(ParadoxSettingsState())
 
 /**
  * @property defaultGameType 默认游戏类型。
@@ -20,36 +21,27 @@ import icu.windea.pls.core.*
  * @property localisationRenderLineComment 对于本地化语言，是否需要渲染之前的单行注释文本到文档注释中。
  * @property localisationRenderLocalisation 对于本地化语言，是否需要为本地化渲染本地化文本到文档注释中。
  */
-@State(name = "ParadoxSettingsState", storages = [Storage("paradoxLanguageSupport.xml")])
-data class ParadoxSettingsState(
-	@JvmField var defaultGameType: ParadoxGameType = ParadoxGameType.Stellaris,
-	@JvmField var preferOverridden: Boolean = false,
+class ParadoxSettingsState : BaseState() {
+	var defaultGameType: ParadoxGameType by enum(ParadoxGameType.Stellaris)
+	var preferOverridden: Boolean by property(true)
+	
 	@Deprecated("Consider for removal.")
-	@JvmField var maxCompleteSize: Int = 100,
-	@JvmField var scriptIgnoredFileNames: String = "readme.txt,changelog.txt,license.txt,credits.txt",
-	@JvmField var scriptRenderLineComment: Boolean = false,
-	@JvmField var scriptRenderRelatedLocalisation: Boolean = true,
-	@JvmField var scriptRenderRelatedPictures: Boolean = true,
-	@JvmField var localisationPrimaryLocale: String = "",
-	@JvmField var localisationTruncateLimit: Int = 30,
-	@JvmField var localisationRenderLineComment: Boolean = false,
-	@JvmField var localisationRenderLocalisation: Boolean = true
-) : PersistentStateComponent<ParadoxSettingsState> {
-	var finalScriptIgnoredFileNames = scriptIgnoredFileNames.toCommaDelimitedStringSet(ignoreCase = true)
+	var maxCompleteSize: Int by property(100)
+	var scriptIgnoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
+	var scriptRenderLineComment by property(false)
+	var scriptRenderRelatedLocalisation by property(true)
+	var scriptRenderRelatedPictures by property(true)
+	var localisationPrimaryLocale by string("")
+	var localisationTruncateLimit by property(30)
+	var localisationRenderLineComment by property(false)
+	var localisationRenderLocalisation by property(true)
+	
+	var finalScriptIgnoredFileNames = scriptIgnoredFileNames?.toCommaDelimitedStringSet(ignoreCase = true).orEmpty()
 	
 	val locales by lazy {
 		buildList {
 			add("")
 			addAll(ParadoxLocaleConfig.findAll().keys)
 		}
-	}
-	
-	override fun getState() = this
-	
-	override fun loadState(state: ParadoxSettingsState) = XmlSerializerUtil.copyBean(state, this)
-	
-	companion object {
-		@JvmStatic
-		fun getInstance(): ParadoxSettingsState = ApplicationManager.getApplication().getService(ParadoxSettingsState::class.java)
 	}
 }

@@ -28,6 +28,7 @@ root_block ::= root_block_item + {
 private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | property | value | variable
 
 variable ::= variable_name variable_separator variable_value {
+  pin=1
   recoverWhile="#auto"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
@@ -47,6 +48,7 @@ variable_value ::= number {
 }
 
 property ::= property_key property_separator property_value {
+  pin=1
   recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
@@ -166,6 +168,7 @@ private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_exp
 //noinspection BnfUnusedRule
 inline_math_expression ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
 inline_math_unary_expression ::= inline_math_unary_op inline_math_unary_expr{
+  pin=1
   extends=inline_math_expression
 }
 private inline_math_unary_op ::= PLUS_SIGN | MINUS_SIGN
@@ -181,6 +184,7 @@ inline_math_par_expression ::= LP_SIGN inline_math_par_expr RP_SIGN {
 }
 private inline_math_par_expr ::= inline_math_expr
 left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor{
+  pin=1
   extends=inline_math_expression
 }
 private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
@@ -201,6 +205,7 @@ inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without
 }
 inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] PARAMETER_END {
   extends=inline_math_factor
+  pin=1
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
 }

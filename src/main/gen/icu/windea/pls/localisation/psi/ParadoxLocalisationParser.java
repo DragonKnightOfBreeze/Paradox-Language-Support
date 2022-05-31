@@ -182,14 +182,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   public static boolean icon(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "icon")) return false;
     if (!nextTokenIs(b, ICON_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ICON, null);
     r = consumeToken(b, ICON_START);
-    r = r && icon_name(b, l + 1);
-    r = r && icon_2(b, l + 1);
-    r = r && consumeToken(b, ICON_END);
-    exit_section_(b, m, ICON, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, icon_name(b, l + 1));
+    r = p && report_error_(b, icon_2(b, l + 1)) && r;
+    r = p && consumeToken(b, ICON_END) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // [PIPE icon_frame]
@@ -236,25 +237,27 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   // LOCALE_ID COLON
   public static boolean locale(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "locale")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, LOCALE, "<locale>");
-    r = consumeTokens(b, 0, LOCALE_ID, COLON);
-    exit_section_(b, l, m, r, false, locale_auto_recover_);
-    return r;
+    r = consumeTokens(b, 1, LOCALE_ID, COLON);
+    p = r; // pin = 1
+    exit_section_(b, l, m, r, p, locale_auto_recover_);
+    return r || p;
   }
 
   /* ********************************************************** */
   // property_key COLON property_number? property_value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY, "<property>");
     r = property_key(b, l + 1);
-    r = r && consumeToken(b, COLON);
-    r = r && property_2(b, l + 1);
-    r = r && property_value(b, l + 1);
-    exit_section_(b, l, m, r, false, property_auto_recover_);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, consumeToken(b, COLON));
+    r = p && report_error_(b, property_2(b, l + 1)) && r;
+    r = p && property_value(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, property_auto_recover_);
+    return r || p;
   }
 
   // property_number?
@@ -349,14 +352,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   public static boolean property_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_reference")) return false;
     if (!nextTokenIs(b, PROPERTY_REFERENCE_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PROPERTY_REFERENCE, null);
     r = consumeToken(b, PROPERTY_REFERENCE_START);
-    r = r && property_reference_1(b, l + 1);
-    r = r && property_reference_2(b, l + 1);
-    r = r && consumeToken(b, PROPERTY_REFERENCE_END);
-    exit_section_(b, m, PROPERTY_REFERENCE, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, property_reference_1(b, l + 1));
+    r = p && report_error_(b, property_reference_2(b, l + 1)) && r;
+    r = p && consumeToken(b, PROPERTY_REFERENCE_END) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // [property_reference_name]

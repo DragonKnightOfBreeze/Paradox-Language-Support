@@ -13,7 +13,7 @@ public interface CwtProperty extends CwtNamedElement {
   @NotNull
   CwtPropertyKey getPropertyKey();
 
-  @NotNull
+  @Nullable
   CwtValue getValue();
 
   @NotNull

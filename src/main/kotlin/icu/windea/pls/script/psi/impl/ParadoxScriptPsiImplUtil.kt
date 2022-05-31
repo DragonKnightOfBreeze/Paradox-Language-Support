@@ -641,7 +641,7 @@ object ParadoxScriptPsiImplUtil {
 	fun getExpression(element: ParadoxScriptParameterCondition): String? {
 		val conditionExpression = element.parameterConditionExpression ?: return null
 		var builder: StringBuilder? = null
-		conditionExpression.processChildren {
+		conditionExpression.processChild {
 			when {
 				it.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
 					val builderToUse = builder ?: StringBuilder().apply { builder = this }

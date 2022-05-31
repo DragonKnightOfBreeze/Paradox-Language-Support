@@ -15,7 +15,7 @@ object ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameter
 		//val file = parameters.originalFile
 		//if(file !is ParadoxScriptFile) return
 		//val fileInfo = file.fileInfo ?: return
-		//if(fileInfo.path.root != "events") return
+		//if(!"events".matchesPath(fileInfo.path.path, acceptSelf = false)) return
 		//val rootBlock = file.block ?: return
 		//val properties = rootBlock.propertyList
 		//if(properties.isEmpty()) return //空文件，跳过

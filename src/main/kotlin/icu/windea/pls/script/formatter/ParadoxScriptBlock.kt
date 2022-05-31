@@ -54,7 +54,7 @@ class ParadoxScriptBlock(
 	
 	override fun buildChildren(): List<Block> {
 		val children = SmartList<Block>()
-		myNode.processChildren { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxScriptBlock(it, settings) }?.addTo(children).end() }
+		myNode.processChild { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxScriptBlock(it, settings) }?.addTo(children).end() }
 		return children
 	}
 	

@@ -80,9 +80,6 @@
         id="ParadoxLocalisationReferenceInfoHintsProvider"
         order="after ParadoxDefinitionReferenceLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
-    <lang.psiStructureViewFactory
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <projectViewNodeDecorator
         implementation="icu.windea.pls.script.projectView.ParadoxScriptProjectViewNodeDecorator"/>
     <lang.formatter
@@ -92,6 +89,9 @@
         implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
+    <lang.psiStructureViewFactory
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <lang.refactoringSupport
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>

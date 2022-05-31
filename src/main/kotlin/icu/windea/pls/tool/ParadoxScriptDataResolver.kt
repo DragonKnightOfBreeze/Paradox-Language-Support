@@ -21,7 +21,7 @@ object ParadoxScriptDataResolver {
 	
 	private fun resolveBlock(block: IParadoxScriptBlock): List<BlockEntry<String?, Any>> {
 		val result: MutableList<BlockEntry<String?, Any>> = SmartList()
-		block.processChildren block@{ blockItem ->
+		block.processChild block@{ blockItem ->
 			if(!blockItem.isValid) return@block true
 			when {
 				blockItem is ParadoxScriptValue -> {
@@ -33,7 +33,7 @@ object ParadoxScriptDataResolver {
 					result.add(property)
 				}
 				blockItem is ParadoxScriptParameterCondition -> {
-					blockItem.processChildren condition@{ conditionItem ->
+					blockItem.processChild condition@{ conditionItem ->
 						if(!conditionItem.isValid) return@condition true
 						when {
 							conditionItem is ParadoxScriptValue -> {

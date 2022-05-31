@@ -1,6 +1,7 @@
 package icu.windea.pls
 
 import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 
@@ -11,4 +12,5 @@ object PlsKeys {
 	//val isDefinitionKey = Key<Boolean>("isDefinition")
 	//val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
 	val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
+	val contentVirtualFileKey = Key<VirtualFile>("paradoxContentVirtualFile")
 }

@@ -34,12 +34,12 @@ class ChangeColorIntention : IntentionAction {
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
 			val colorConfigs = ParadoxColorConfig.findAllAsArray(project)
-			JBPopupFactory.getInstance().createListPopup(Popup(element.createPointer(file), colorConfigs)).showInBestPositionFor(editor)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs)).showInBestPositionFor(editor)
 		}
 	}
 	
 	private class Popup(
-		private val value: SmartPsiElementPointer<ParadoxLocalisationColorfulText>,
+		private val value: ParadoxLocalisationColorfulText,
 		values: Array<ParadoxColorConfig>
 	) : BaseListPopupStep<ParadoxColorConfig>(PlsBundle.message("localisation.intention.changeColor.title"), *values) {
 		override fun getIconFor(value: ParadoxColorConfig) = value.icon
@@ -51,10 +51,7 @@ class ChangeColorIntention : IntentionAction {
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
 		override fun onChosen(selectedValue: ParadoxColorConfig, finalChoice: Boolean): PopupStep<*>? {
-			val element = value.element ?: return PopupStep.FINAL_CHOICE
-			runUndoTransparentWriteAction {
-				element.setName(selectedValue.id)
-			}
+			runUndoTransparentWriteAction { value.setName(selectedValue.id) }
 			return PopupStep.FINAL_CHOICE
 		}
 	}

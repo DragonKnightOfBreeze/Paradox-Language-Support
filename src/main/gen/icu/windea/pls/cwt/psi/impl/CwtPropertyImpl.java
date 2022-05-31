@@ -36,9 +36,9 @@ public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty 
   }
 
   @Override
-  @NotNull
+  @Nullable
   public CwtValue getValue() {
-    return findNotNullChildByClass(CwtValue.class);
+    return findChildByClass(CwtValue.class);
   }
 
   @Override

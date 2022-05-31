@@ -299,12 +299,14 @@ fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
+ * @param acceptSelf 是否接受路径完全一致的情况，默认为`true`。当使用文件路径匹配目录路径时，考虑设为`false`。
  * @param ignoreCase 是否忽略大小写。默认为`true`。
  */
-fun String.matchesPath(other: String, ignoreCase: Boolean = true): Boolean {
+fun String.matchesPath(other: String, acceptSelf: Boolean = true, ignoreCase: Boolean = true): Boolean {
 	val path = if(ignoreCase) this.lowercase().trimEnd('/') else this
 	val otherPath = if(ignoreCase) other.lowercase().trimEnd('/') else other
-	if(path == otherPath) return true
+	if(path == otherPath) return acceptSelf
+	if(path.length > otherPath.length) return false
 	if(path == otherPath.take(length) && otherPath[length] == '/') return true
 	return false
 }

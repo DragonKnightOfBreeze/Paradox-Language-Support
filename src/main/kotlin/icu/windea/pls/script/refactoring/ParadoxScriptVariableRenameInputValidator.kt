@@ -5,16 +5,16 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptVariableRenameInputValidator : RenameInputValidator {
 	companion object {
-		private val regex = "[a-zA-Z_][a-zA-Z0-9_]*".toRegex()
 		private val elementPattern = psiElement(ParadoxScriptVariable::class.java)
 	}
 	
 	override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
-		return regex.matches(newName)
+		return PlsPatterns.scriptedVariableNameRegex.matches(newName)
 	}
 
 	override fun getPattern(): ElementPattern<out PsiElement> {

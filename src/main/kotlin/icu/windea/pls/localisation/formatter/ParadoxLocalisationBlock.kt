@@ -9,7 +9,6 @@ import com.intellij.psi.formatter.common.*
 import com.intellij.psi.tree.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.formatter.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
@@ -43,7 +42,7 @@ class ParadoxLocalisationBlock(
 	//收集所有节点
 	override fun buildChildren(): List<Block> {
 		val children = SmartList<Block>()
-		myNode.processChildren { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxLocalisationBlock(it, settings) }?.addTo(children).end() }
+		myNode.processChild { node -> node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxLocalisationBlock(it, settings) }?.addTo(children).end() }
 		return children
 	}
 	

@@ -1,13 +1,9 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import org.jetbrains.kotlin.idea.util.*
 
 val ParadoxScriptVariableName.variableNameId: PsiElement get() = findRequiredChild(VARIABLE_NAME_ID)
 
@@ -34,11 +30,11 @@ val ParadoxScriptInlineMathParameter.defaultValueToken: PsiElement? get() = find
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  */
-inline fun IParadoxScriptBlock.processProperties(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
-	return processChildren {
+inline fun IParadoxScriptBlock.processProperty(includeConditional: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+	return processChild {
 		when {
 			it is ParadoxScriptProperty -> processor(it)
-			includeConditional && it is ParadoxScriptParameterCondition -> it.processProperties(processor)
+			includeConditional && it is ParadoxScriptParameterCondition -> it.processProperty(processor)
 			else -> true
 		}
 	}
@@ -48,11 +44,11 @@ inline fun IParadoxScriptBlock.processProperties(includeConditional: Boolean = f
  * 遍历当前代码块中的所有（直接作为子节点的）值。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的值。
  */
-inline fun IParadoxScriptBlock.processValues(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
-	return processChildren {
+inline fun IParadoxScriptBlock.processValue(includeConditional: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+	return processChild {
 		when {
 			it is ParadoxScriptValue -> processor(it)
-			includeConditional && it is ParadoxScriptParameterCondition -> it.processValues(processor)
+			includeConditional && it is ParadoxScriptParameterCondition -> it.processValue(processor)
 			else -> true
 		}
 	}
@@ -61,8 +57,8 @@ inline fun IParadoxScriptBlock.processValues(includeConditional: Boolean = false
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）属性。
  */
-inline fun ParadoxScriptParameterCondition.processProperties(processor: (ParadoxScriptProperty) -> Boolean): Boolean {
-	return processChildren {
+inline fun ParadoxScriptParameterCondition.processProperty(processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+	return processChild {
 		when {
 			it is ParadoxScriptProperty -> processor(it)
 			else -> true
@@ -73,8 +69,8 @@ inline fun ParadoxScriptParameterCondition.processProperties(processor: (Paradox
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）值。
  */
-inline fun ParadoxScriptParameterCondition.processValues(processor: (ParadoxScriptValue) -> Boolean): Boolean {
-	return processChildren {
+inline fun ParadoxScriptParameterCondition.processValue(processor: (ParadoxScriptValue) -> Boolean): Boolean {
+	return processChild {
 		when {
 			it is ParadoxScriptValue -> processor(it)
 			else -> true
@@ -96,7 +92,7 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlock.findValues(): Lis
  */
 fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
 	if(propertyName.isEmpty() && this is ParadoxScriptProperty) return this
-	block?.processProperties(includeConditional = true) {
+	block?.processProperty(includeConditional = true) {
 		if(it.name.equals(propertyName, ignoreCase)) return it
 		true
 	}

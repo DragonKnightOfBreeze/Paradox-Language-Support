@@ -4,6 +4,7 @@ import com.intellij.codeInsight.intention.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.quickFix.*
@@ -58,12 +59,12 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun getPriority() = PriorityAction.Priority.TOP
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-			//在所属定义之前另起一行（跳过注释和空白），声明对应名字的封装变量，默认值给0并选中
 			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
+			//声明对应名字的封装变量，默认值给0
 			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinition, project)
 			if(editor != null) {
-				PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document)
-				//光标移到variableValue结束位置并选中
+				PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
+				//光标移到variableValue的结束位置并选中
 				val textRange = newVariable.variableValue!!.textRange
 				editor.selectionModel.setSelection(textRange.startOffset, textRange.endOffset)
 				editor.caretModel.moveToOffset(textRange.endOffset)
@@ -83,7 +84,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun getPriority() = PriorityAction.Priority.HIGH
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-			//在新建或者选择的文件最后另起一行，声明对应名字的封装变量，默认值给0并选中
+			//声明对应名字的封装变量，默认值给0并选中
 			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
 			//TODO
 		}
