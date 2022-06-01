@@ -13,21 +13,26 @@ import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.codeStyle.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
+import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import java.io.*
 import java.util.*
 import javax.swing.*
+import javax.swing.text.*
+import kotlin.reflect.*
 
 //region Misc Extensions
 ///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
@@ -166,12 +171,18 @@ fun String.escapeBlank(): String {
 }
 //endregion
 
+//region UI Extensions
+fun <T : JTextComponent> Cell<T>.bindText(prop: KMutableProperty0<String?>): Cell<T> {
+	return bindText({ prop.get().orEmpty() }, { prop.set(it) })
+}
+//endregion
+
 //region Code Insight Extensions
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
-fun interface TemplateEditingFinishedListener: TemplateEditingListener{
+fun interface TemplateEditingFinishedListener : TemplateEditingListener {
 	override fun beforeTemplateFinished(state: TemplateState, template: Template?) {}
 	
 	override fun templateCancelled(template: Template) {
@@ -324,7 +335,7 @@ fun <T : PsiElement> PsiElement.findRequiredChild(type: IElementType): T {
 	return node.findChildByType(type)?.psi as T
 }
 
-inline fun PsiElement.processChild(forward:Boolean = true, processor: ProcessEntry.(PsiElement) -> Boolean): Boolean {
+inline fun PsiElement.processChild(forward: Boolean = true, processor: ProcessEntry.(PsiElement) -> Boolean): Boolean {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
 	while(child != null) {
@@ -335,7 +346,7 @@ inline fun PsiElement.processChild(forward:Boolean = true, processor: ProcessEnt
 	return true
 }
 
-inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward:Boolean = true, processor: ProcessEntry.(T) -> Boolean): Boolean {
+inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward: Boolean = true, processor: ProcessEntry.(T) -> Boolean): Boolean {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
 	while(child != null) {
@@ -348,7 +359,7 @@ inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward:Boo
 	return true
 }
 
-inline fun PsiElement.forEachChild(forward:Boolean = true, action: (PsiElement) -> Unit) {
+inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
 	while(child != null) {
@@ -357,7 +368,7 @@ inline fun PsiElement.forEachChild(forward:Boolean = true, action: (PsiElement) 
 	}
 }
 
-inline fun <reified T : PsiElement> PsiElement.forEachChildOfType(forward:Boolean = true, action: (T) -> Unit) {
+inline fun <reified T : PsiElement> PsiElement.forEachChildOfType(forward: Boolean = true, action: (T) -> Unit) {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
 	while(child != null) {
@@ -368,7 +379,7 @@ inline fun <reified T : PsiElement> PsiElement.forEachChildOfType(forward:Boolea
 	}
 }
 
-inline fun <reified T> PsiElement.filterChildOfType(forward:Boolean = true, predicate: (T) -> Boolean = { true }): List<T> {
+inline fun <reified T> PsiElement.filterChildOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): List<T> {
 	//不会忽略某些特定类型的子元素
 	var result: MutableList<T>? = null
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
@@ -382,7 +393,7 @@ inline fun <reified T> PsiElement.filterChildOfType(forward:Boolean = true, pred
 	return result ?: emptyList()
 }
 
-inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward:Boolean = true, predicate: (T) -> Boolean = { true }): T? {
+inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
 	//不会忽略某些特定类型的子元素
 	var child: PsiElement? = if(forward) this.firstChild else this.lastChild
 	while(child != null) {
@@ -392,7 +403,7 @@ inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward:Boolean =
 	return null
 }
 
-inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward:Boolean = true, element: T): Int {
+inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
 	var child = if(forward) this.firstChild else this.lastChild
 	var index = 0
 	while(child != null) {
@@ -446,6 +457,10 @@ fun <E : PsiElement> E.createPointer(): SmartPsiElementPointer<E> {
 
 fun <E : PsiElement> E.createPointer(file: PsiFile): SmartPsiElementPointer<E> {
 	return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
+}
+
+fun PsiElement.reformatted(canChangeWhiteSpacesOnly: Boolean = false): PsiElement = let {
+	CodeStyleManager.getInstance(it.project).reformat(it, canChangeWhiteSpacesOnly)
 }
 //endregion
 

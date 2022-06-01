@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import org.jetbrains.kotlin.idea.util.*
 
 object ParadoxScriptIntroducer {
 	/**

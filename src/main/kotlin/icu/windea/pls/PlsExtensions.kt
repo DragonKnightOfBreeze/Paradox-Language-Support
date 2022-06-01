@@ -25,6 +25,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.tool.*
 import java.lang.Integer.*
 import java.text.*
 import java.util.*
@@ -203,10 +204,13 @@ fun String.isVariableField(): Boolean {
 
 //region VFS Extensions
 /**
- * 当前[VirtualFile]的内容文件。（缓存且仍然存在的文件，首个子文件，或者自身）
+ * 当前[VirtualFile]的内容文件。（缓存且仍然存在的文件，首个子文件，生成的子文件，或者自身）
  */
 var VirtualFile.contentFile
-	get() = getUserData(PlsKeys.contentVirtualFileKey)?.takeIf { it.exists() } ?: this.children.firstOrNull() ?: this
+	get() = getUserData(PlsKeys.contentVirtualFileKey)?.takeIf { it.exists() }
+		?: this.children.firstOrNull()
+		?: ParadoxFileLocator.getGeneratedFileName(this)
+		?: this
 	set(value) = putUserData(PlsKeys.contentVirtualFileKey, value)
 //endregion
 

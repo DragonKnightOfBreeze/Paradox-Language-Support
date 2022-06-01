@@ -10,7 +10,6 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 import org.apache.commons.imaging.color.*
-import org.jetbrains.kotlin.idea.util.*
 import java.awt.*
 import javax.swing.*
 

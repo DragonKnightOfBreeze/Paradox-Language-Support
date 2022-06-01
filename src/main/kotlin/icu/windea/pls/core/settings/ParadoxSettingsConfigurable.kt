@@ -33,7 +33,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generic.maxCompleteSize.tooltip")
 					}
-					this.intTextField(0..1000).bindIntText(settings::maxCompleteSize)
+					intTextField(0..1000).bindIntText(settings::maxCompleteSize)
 				}
 				row {
 					checkBox(PlsBundle.message("settings.generic.preferOverridden"))
@@ -109,6 +109,14 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 							.bindSelected(settings::localisationRenderLocalisation)
 							.applyToComponent { toolTipText = PlsBundle.message("settings.localisation.doc.renderLocalisation.tooltip") }
 					}
+				}
+			}
+			group(PlsBundle.message("settings.generation")){
+				row{
+					label(PlsBundle.message("settings.generation.fileNamePrefix")).applyToComponent { 
+						toolTipText = PlsBundle.message("settings.generation.fileNamePrefix.tooltip")
+					}
+					textField().bindText(settings::generationFileNamePrefix)
 				}
 			}
 		}

@@ -1,10 +1,8 @@
 package icu.windea.pls.localisation.ui.actions.styling
 
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
-import org.jetbrains.kotlin.js.inline.clean.*
 
 //这里actions是基于project动态获取的，需要特殊处理
 

@@ -24,17 +24,20 @@ class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(Par
 class ParadoxSettingsState : BaseState() {
 	var defaultGameType: ParadoxGameType by enum(ParadoxGameType.Stellaris)
 	var preferOverridden: Boolean by property(true)
-	
 	@Deprecated("Consider for removal.")
 	var maxCompleteSize: Int by property(100)
+	
 	var scriptIgnoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
 	var scriptRenderLineComment by property(false)
 	var scriptRenderRelatedLocalisation by property(true)
 	var scriptRenderRelatedPictures by property(true)
+	
 	var localisationPrimaryLocale by string("")
 	var localisationTruncateLimit by property(30)
 	var localisationRenderLineComment by property(false)
 	var localisationRenderLocalisation by property(true)
+	
+	var generationFileNamePrefix by string("000000_")
 	
 	var finalScriptIgnoredFileNames = scriptIgnoredFileNames?.toCommaDelimitedStringSet(ignoreCase = true).orEmpty()
 	

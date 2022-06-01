@@ -1,11 +1,11 @@
 package icu.windea.pls.config.internal.config
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.idea.util.application.*
 import java.awt.*
 import java.util.*
 
