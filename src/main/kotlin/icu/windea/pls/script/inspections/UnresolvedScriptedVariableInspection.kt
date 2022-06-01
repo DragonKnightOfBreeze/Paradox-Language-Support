@@ -68,6 +68,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
 			}
 		}
+		
+		override fun availableInBatchMode() = false
 	}
 	
 	private class IntroduceGlobalVariableFix(
@@ -101,6 +103,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
 			}
 		}
+		
+		override fun availableInBatchMode() = false
 	}
 }
 

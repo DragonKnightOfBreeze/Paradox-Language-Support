@@ -2,6 +2,7 @@ package icu.windea.pls.script.inspections.definition
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.script.psi.*
 
 //TODO 0.6
@@ -18,6 +19,7 @@ import icu.windea.pls.script.psi.*
  * * 不期望的封装本地化引用的开始（"["和"\["） -> 提供快速修复：修正
  * * 同一scripted_effect/scripted_trigger定义中存在多个内联数字表达式
  */
+@UnstableInspection
 class UnexpectedScriptSyntaxInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(holder)

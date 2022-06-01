@@ -35,4 +35,6 @@ class ImportGameOrModDirectoryFix(
 	}
 	
 	override fun startInWriteAction() = false
+	
+	override fun availableInBatchMode() = false
 }

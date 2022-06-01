@@ -1,5 +1,26 @@
 <html>
 <body>
   Reports that there are unresolved scripted variable references in a script file.
+  <p>
+    a scripted variable reference can be resolved to:
+  </p>
+  <ul>
+    <li>
+      a local scripted variable of same name. (in the same file outside of definition declaration)
+    </li>
+    <li>
+      a global scripted variable of same name. (in a scripted variables script file.)
+    </li>
+  </ul>
+  <!-- tooltip end -->
+  <p>
+    A scripted variables script file is a script file with extension ".txt"
+    under directory <code>gfx/interface</code> or it's sub directories relative to the game or mod root directory.
+  </p>
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
+    currently.
+  </p>
 </body>
 </html>

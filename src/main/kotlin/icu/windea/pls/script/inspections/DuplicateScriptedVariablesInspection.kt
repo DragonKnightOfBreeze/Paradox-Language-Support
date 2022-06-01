@@ -69,6 +69,8 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 		
 		override fun startInWriteAction() = false
 		
+		override fun availableInBatchMode() = false
+		
 		private class Popup(
 			values: List<ParadoxScriptVariable>,
 			private val key: String,

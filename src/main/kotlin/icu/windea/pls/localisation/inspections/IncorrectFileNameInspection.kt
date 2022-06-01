@@ -56,11 +56,12 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 	private class RenameFileFix(
 		element: ParadoxLocalisationLocale,
 		private val expectedFileName: String
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
+	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
 		override fun getFamilyName() = PlsBundle.message("localisation.inspection.incorrectFileName.fix.1", expectedFileName)
+		
 		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileName.fix.1", expectedFileName)
 		
-		override fun startInWriteAction() = false
+		override fun getPriority() = PriorityAction.Priority.HIGH
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			RenameProcessor(
@@ -71,6 +72,8 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 				RefactoringSettings.getInstance().RENAME_SEARCH_FOR_TEXT_FOR_FILE
 			).run()
 		}
+		
+		override fun startInWriteAction() = false
 	}
 	
 	private class RenameLocaleFix(
@@ -78,6 +81,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 		private val expectedLocaleId: String
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
 		override fun getFamilyName() = PlsBundle.message("localisation.inspection.incorrectFileName.fix.2", expectedLocaleId)
+		
 		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileName.fix.2", expectedLocaleId)
 		
 		override fun getPriority() = PriorityAction.Priority.TOP //高优先级，如果可用

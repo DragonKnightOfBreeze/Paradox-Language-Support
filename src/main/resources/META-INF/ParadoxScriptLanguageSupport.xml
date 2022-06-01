@@ -150,13 +150,24 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
     <!--definition-->
-    <!--TODO-->
-    <!--<localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnexpectedSyntax"-->
-    <!--                 enabledByDefault="true" level="ERROR"-->
-    <!--                 bundle="messages.PlsBundle" key="script.inspection.definition.unexpectedSyntax"-->
-    <!--                 groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"-->
-    <!--                 groupPathKey="script.inspection.definition.path"-->
-    <!--                 implementationClass="icu.windea.pls.script.inspections.definition.UnexpectedScriptSyntaxInspection"/>-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnexpectedSyntax"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.definition.unexpectedSyntax"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
+                     groupPathKey="script.inspection.definition.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.UnexpectedScriptSyntaxInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingRelatedLocalisation"
+                     enabledByDefault="true" level="WARN"
+                     bundle="messages.PlsBundle" key="script.inspection.definition.inspection.missingRelatedLocalisation"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
+                     groupPathKey="script.inspection.definition.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.MissingRelatedLocalisationInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedFilePath"
+                     enabledByDefault="true" level="WARN"
+                     bundle="messages.PlsBundle" key="script.inspection.definition.inspection.unresolvedFilePath"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
+                     groupPathKey="script.inspection.definition.path"
+                     implementationClass="icu.windea.pls.script.inspections.definition.UnresolvedFilePathInspection"/>
     <!--definition > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"

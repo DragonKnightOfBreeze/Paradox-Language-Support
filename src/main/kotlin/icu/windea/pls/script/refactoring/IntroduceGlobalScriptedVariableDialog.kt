@@ -23,7 +23,7 @@ class IntroduceGlobalScriptedVariableDialog(
 	private lateinit var panel: DialogPanel
 	
 	init {
-		title = PlsBundle.message("script.refactoring.introduceGlobalScriptedVariable.dialog.title")
+		title = PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.title")
 		init()
 	}
 	
@@ -38,19 +38,19 @@ class IntroduceGlobalScriptedVariableDialog(
 					.resizableColumn()
 					.focused()
 					.validationOnApply { validateScriptedVariableName() }
-					.label(PlsBundle.message("script.refactoring.introduceGlobalScriptedVariable.dialog.variableName"))
+					.label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName"))
 			}
 			row {
 				//选择目标文件 - 仅允许用户选择同一游戏或模组根目录下的common/scripted_variables目录下的文件
 				val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
 					.withRoots(scriptedVariablesFile)
 					.withTreeRootVisible(true)
-				textFieldWithBrowseButton(PlsBundle.message("script.refactoring.introduceGlobalScriptedVariable.dialog.chooseDestination"), project, descriptor) { it.also { file = it }.path }
+				textFieldWithBrowseButton(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.chooseDestination"), project, descriptor) { it.also { file = it }.path }
 					.bindText(dialog::filePath)
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 					.validationOnApply { validateScriptedVariableFilePath() }
-					.label(PlsBundle.message("script.refactoring.introduceGlobalScriptedVariable.dialog.extractToFile"), LabelPosition.TOP)
+					.label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile"), LabelPosition.TOP)
 			}
 		}.apply {
 			withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
@@ -60,7 +60,7 @@ class IntroduceGlobalScriptedVariableDialog(
 	
 	private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {
 		if(!PlsPatterns.scriptedVariableNameRegex.matches(variableName)) {
-			return error(PlsBundle.message("script.refactoring.introduceGlobalScriptedVariable.dialog.variableName.invalid", variableName))
+			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid", variableName))
 		}
 		return null
 	}
@@ -69,7 +69,7 @@ class IntroduceGlobalScriptedVariableDialog(
 		//val virtualFile = VfsUtil.findFile(Path.of(filePath), false)
 		val path = file.fileInfo?.path?.path
 		if(path == null || !"common/scripted_variables".matchesPath(path, acceptSelf = false)) {
-			return error(PlsBundle.message("script.refactoring.introduceGlobalScriptedVariable.dialog.extractToFile.invalid"))
+			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid"))
 		}
 		return null
 	}
