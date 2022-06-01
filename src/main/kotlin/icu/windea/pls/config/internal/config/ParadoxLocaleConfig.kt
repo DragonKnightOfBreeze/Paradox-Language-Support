@@ -33,15 +33,15 @@ class ParadoxLocaleConfig(
 		/**
 		 * 从内置规则文件中得到指定ID的语言区域设置。
 		 */
-		fun find(localeId: String, project: Project? = null): ParadoxLocaleConfig? {
-			return getInternalConfig(project).localeMap[localeId]
+		fun find(id: String, project: Project? = null): ParadoxLocaleConfig? {
+			return getInternalConfig(project).localeMap[id]
 		}
 		
 		/**
 		 * 从内置规则文件中得到指定FLAG的语言区域设置。
 		 */
-		fun findByFlag(localeFlag: String, project: Project? = null): ParadoxLocaleConfig? {
-			return getInternalConfig(project).localeFlagMap[localeFlag]
+		fun findByFlag(flag: String, project: Project? = null): ParadoxLocaleConfig? {
+			return getInternalConfig(project).localeFlagMap[flag]
 		}
 		
 		/**

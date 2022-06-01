@@ -45,25 +45,25 @@ class ParadoxColorConfig(
 		/**
 		 * 从`interface/fonts.gfx#bitmapfonts.textcolors`中得到指定ID的游戏目录中的或者自定义的颜色设置。或者从内置规则文件中得到。
 		 */
-		fun find(colorId: String, project: Project? = null): ParadoxColorConfig? {
-			if(project != null) runReadAction { doFind(colorId, project) }?.also { return it }
-			return getInternalConfig(project).colorMap[colorId]
+		fun find(id: String, project: Project? = null): ParadoxColorConfig? {
+			if(project != null) runReadAction { doFind(id, project) }?.also { return it }
+			return getInternalConfig(project).colorMap[id]
 		}
 		
-		private fun doFind(colorId: String, project: Project): ParadoxColorConfig? {
-			if(colorId.singleOrNull()?.isExactLetter() != true) return null
+		private fun doFind(id: String, project: Project): ParadoxColorConfig? {
+			if(id.singleOrNull()?.isExactLetter() != true) return null
 			val definitions = findDefinitionsByType("textcolors", project)
 			if(definitions.isEmpty()) return null
 			var color: ParadoxColorConfig? = null
 			for(definition in definitions) {
 				definition.block?.processProperty { prop ->
-					val id = prop.name
-					if(id.singleOrNull()?.isExactLetter() != true) return@processProperty true
-					if(id != colorId) return@processProperty true
+					val colorId = prop.name
+					if(colorId.singleOrNull()?.isExactLetter() != true) return@processProperty true
+					if(colorId != id) return@processProperty true
 					val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
 					if(rgbList.size != 3) return@processProperty true
-					val description = getInternalConfig(project).colorMap[id]?.description.orEmpty() //来自内置规则文件
-					val colorConfig = ParadoxColorConfig(id, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
+					val description = getInternalConfig(project).colorMap[colorId]?.description.orEmpty() //来自内置规则文件
+					val colorConfig = ParadoxColorConfig(colorId, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
 					color = colorConfig
 					true
 				}
@@ -85,13 +85,13 @@ class ParadoxColorConfig(
 			val configMap = mutableMapOf<String, ParadoxColorConfig>()
 			for(definition in definitions) {
 				definition.block?.processProperty { prop ->
-					val id = prop.name
-					if(id.singleOrNull()?.isExactLetter() != true) return@processProperty true
+					val colorId = prop.name
+					if(colorId.singleOrNull()?.isExactLetter() != true) return@processProperty true
 					val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
 					if(rgbList.size != 3) return@processProperty true
-					val description = getInternalConfig(project).colorMap[id]?.description.orEmpty() //来自内置规则文件
-					val colorConfig = ParadoxColorConfig(id, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
-					configMap[id] = colorConfig
+					val description = getInternalConfig(project).colorMap[colorId]?.description.orEmpty() //来自内置规则文件
+					val colorConfig = ParadoxColorConfig(colorId, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
+					configMap[colorId] = colorConfig
 					true
 				}
 			}

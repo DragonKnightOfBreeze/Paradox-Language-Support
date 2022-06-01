@@ -1,6 +1,8 @@
 package icu.windea.pls.tool
 
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -43,9 +45,12 @@ object ParadoxLocalisationTextExtractor {
 	private fun extractPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, builder: StringBuilder) {
 		val reference = element.reference
 		if(reference != null) {
-			val property = reference.resolve() as? ParadoxLocalisationProperty
-			if(property != null) {
-				extractTo(property, builder)
+			val resolved = reference.resolve()
+			if(resolved is ParadoxLocalisationProperty) {
+				extractTo(resolved, builder)
+				return
+			} else if(resolved is CwtProperty){
+				builder.append(resolved.propertyValue)
 				return
 			}
 		}

@@ -62,6 +62,6 @@ object VariablesFilter: Filter{
 	}
 	
 	override fun getPresentation(): ActionPresentation {
-		return ActionPresentationData(PlsBundle.message("script.structureView.showVariables"), null, PlsIcons.scriptVariableIcon)
+		return ActionPresentationData(PlsBundle.message("script.structureView.showScriptedVariables"), null, PlsIcons.scriptedVariableIcon)
 	}
 }

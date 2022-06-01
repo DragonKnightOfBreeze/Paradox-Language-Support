@@ -253,6 +253,7 @@ private fun doGetConfigType(element: CwtProperty): CwtConfigType? {
 				//from internal config
 				parentName == "locales" -> CwtConfigType.LocalisationLocale
 				parentName == "colors" -> CwtConfigType.LocalisationColor
+				parentName == "predefined_variables" -> CwtConfigType.LocalisationPredefinedVariable
 				else -> null
 			}
 		}

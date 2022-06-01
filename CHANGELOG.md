@@ -34,6 +34,8 @@
   * [ ] 实现代码检查-脚本文件：缺失的相关本地化（可设置包含可选的）
   * [ ] ~~实现代码检查-脚本文件：无法解析的路径（对应多种CWT值类型）~~（待确定）
   * [ ] ~~实现代码检查：不期望的脚本语法（多种情况，需要确认）~~（待确定）
+  * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
+  * [ ] 实现工具栏动作：生成所有缺失的相关本地化
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
@@ -51,12 +53,13 @@
   * [X] 支持本地化语言`l_japanese`和`l_korean`
   * [ ] 兼容作为format的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
-* 扩展CWT配置文件：
+* 内置配置：
+  * [X] 添加`predefined_variables`，表示预定义的变量，在本地化文本中使用，实现相关功能：引用解析
+* CWT配置：
   * [X] 支持额外的CWT选项：`## since = "3.3"`，用于在文档注释中显示开始支持的游戏版本号
   * [X] 支持额外的CWT选项：`## loc_format = html`，用于指定将文档注释渲染为HTML
   * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
   * [X] 支持额外的CWT选项：`## color_type = rgb / rgba`，用于以装订线图标的方式显示对应的颜色
-* 完善对CWT配置文件的支持，完善相关功能：
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [ ] 进行代码提示时，仅当对应的定义元素类型是boolean或者无法解析时，才会提示`yes`和`no`
   * [ ] 确认支持获取和应用嵌套的定义的CWT规则

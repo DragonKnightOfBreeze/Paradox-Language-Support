@@ -4,6 +4,7 @@ import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -53,11 +54,14 @@ object ParadoxLocalisationTextRenderer {
 		val reference = element.reference
 		val rgbText = element.colorConfig?.color?.rgbString
 		if(reference != null) {
-			val property = reference.resolve()
-			if(property != null) {
+			val resolved = reference.resolve()
+			if(resolved is ParadoxLocalisationProperty) {
 				if(rgbText != null) builder.append("<span style=\"color: ").append(rgbText).append("\">")
-				renderTo(property, builder)
+				renderTo(resolved, builder)
 				if(rgbText != null) builder.append("</span>")
+				return
+			} else if(resolved is CwtProperty){
+				builder.append(resolved.propertyValue)
 				return
 			}
 		}

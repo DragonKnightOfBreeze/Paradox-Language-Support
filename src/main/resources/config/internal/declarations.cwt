@@ -1,4 +1,4 @@
-### Localisation locale
+### Localisation locales
 ### See: <code>localisation/languages.yml</code>
 ### See cwt rule: <code>enum[font_languages]</code>
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Creating_Localisation_Files">Creating Localisation Files</a>
@@ -50,7 +50,7 @@ locales = {
 	}
 }
 
-### Localisation color
+### Localisation colors
 ### See: <code>interface/fonts.gfx#bitmapfonts.textcolors</code>
 ### See cwt rule: <code>complex_enum[textcolors]</code>
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes">Color Codes</a>
@@ -84,4 +84,15 @@ colors = {
 	g = { 128 128 128 }
 	### Light Blue
 	l = { 51 167 255 }
+}
+
+### Predefined variables used in localisation text
+### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes">$ Codes</a>
+predefined_variables = {
+	### Cardinal Number 1, 2, 3...
+	C = "1"
+	### Ordinal Number 1st, 2nd, 3rd...
+	O = "1st"
+	### Roman Number I, II, III...
+	R = "I"
 }

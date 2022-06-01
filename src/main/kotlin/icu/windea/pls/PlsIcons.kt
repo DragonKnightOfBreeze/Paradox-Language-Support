@@ -17,13 +17,11 @@ object PlsIcons {
 	@JvmStatic val cwtOptionIcon = loadIcon("/icons/cwtOption.svg")
 	@JvmStatic val cwtValueIcon = loadIcon("/icons/cwtValue.svg")
 	
-	@JvmStatic val scriptVariableIcon = loadIcon("/icons/scriptVariable.svg")
 	@JvmStatic val scriptPropertyIcon = loadIcon("/icons/paradoxScriptProperty.svg")
 	@JvmStatic val scriptValueIcon = loadIcon("/icons/paradoxScriptValue.svg")
 	@JvmStatic val scriptBlockIcon = loadIcon("/icons/paradoxScriptBlock.svg")
 	@JvmStatic val scriptParameterConditionIcon = loadIcon("/icons/paradoxScriptParameterCondition.svg")
 	@JvmStatic val scriptParameterIcon = loadIcon("/icons/paradoxScriptParameter.svg")
-	@JvmStatic val tagIcon = loadIcon("icons/tag.svg")
 	
 	@JvmStatic val localisationLocaleIcon = loadIcon("/icons/localisationLocale.svg")
 	@JvmStatic val localisationPropertyIcon = loadIcon("/icons/localisationProperty.svg")
@@ -34,11 +32,15 @@ object PlsIcons {
 	@JvmStatic val definitionIcon = loadIcon("/icons/definition.svg")
 	@JvmStatic val relatedLocalisationIcon = loadIcon("/icons/relatedLocalisation.svg")
 	@JvmStatic val localisationIcon = loadIcon("/icons/localisation.svg")
+	@JvmStatic val scriptedVariableIcon = loadIcon("/icons/scriptedVariable.svg")
 	@JvmStatic val propertyIcon = loadIcon("/icons/property.svg")
 	@JvmStatic val valueIcon = loadIcon("/icons/value.svg")
+	@JvmStatic val parameterIcon = loadIcon("/icons/parameter.svg")
+	@JvmStatic val variableIcon = loadIcon("/icons/variable.svg")
 	@JvmStatic val enumIcon = loadIcon("/icons/enum.svg")
 	@JvmStatic val modifierIcon = loadIcon("/icons/modifier.svg")
 	@JvmStatic val aliasIcon = loadIcon("/icons/alias.svg") //目前用不到，因为名字是表达式
+	@JvmStatic val tagIcon = loadIcon("icons/tag.svg")
 	
 	@JvmStatic val definitionGutterIcon = loadIcon("/icons/gutter/definition.svg")
 	@JvmStatic val relatedLocalisationGutterIcon = loadIcon("/icons/gutter/relatedLocalisation.svg")

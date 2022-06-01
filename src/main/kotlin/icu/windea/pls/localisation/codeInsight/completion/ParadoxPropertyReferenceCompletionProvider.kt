@@ -18,6 +18,10 @@ object ParadoxPropertyReferenceCompletionProvider: CompletionProvider<Completion
 		val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return
 		val project = parameters.originalFile.project
+		
+		//不提示predefined_variable
+		
+		//提示localisation或者synced_localisation
 		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
 			val name = it.name
 			val icon = it.icon

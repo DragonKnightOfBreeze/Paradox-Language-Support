@@ -134,7 +134,7 @@ object ParadoxLocalisationPsiImplUtil {
 		val iconIdElement = element.iconId
 		if(iconIdElement != null) return iconIdElement.text
 		val iconIdReferenceElement = element.iconIdReference ?: return null
-		return iconIdReferenceElement.reference?.resolve()?.value
+		return iconIdReferenceElement.reference?.resolve()?.castOrNull<ParadoxLocalisationProperty>()?.value
 	}
 	
 	@JvmStatic

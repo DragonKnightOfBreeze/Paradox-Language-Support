@@ -1,10 +1,9 @@
 package icu.windea.pls.localisation.reference
 
-import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.containers.CollectionFactory
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.ParadoxLocalisationCategory.*
 import icu.windea.pls.localisation.psi.*
@@ -20,12 +19,17 @@ class ParadoxLocalisationPropertyReferenceReference(
 	
 	//TODO may be resolved to localisation / variable / system statistics in GUI elements 
 	
-	override fun resolve(): ParadoxLocalisationProperty? {
+	override fun resolve(): PsiElement? {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return null
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return null
 		val locale = file.localeConfig
 		val name = element.name
 		val project = element.project
+		
+		//尝试解析成predefined_variable
+		ParadoxPredefinedVariableConfig.find(name)?.pointer?.element?.let { return it }
+		
+		//解析成localisation或者synced_localisation
 		return when(category) {
 			Localisation -> findLocalisation(name, locale, project, hasDefault = true)
 			SyncedLocalisation -> findSyncedLocalisation(name, locale, project, hasDefault = true)
@@ -38,6 +42,11 @@ class ParadoxLocalisationPropertyReferenceReference(
 		val localeConfig = file.localeConfig
 		val name = element.name
 		val project = element.project
+		
+		//尝试解析成predefined_variable
+		ParadoxPredefinedVariableConfig.find(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
+		
+		//解析成localisation或者synced_localisation
 		return when(category) {
 			Localisation -> findLocalisations(name, localeConfig, project, hasDefault = true) //仅查找对应语言区域的
 			SyncedLocalisation -> findSyncedLocalisations(name, localeConfig, project, hasDefault = true) //仅查找对应语言区域的

@@ -26,7 +26,8 @@ enum class CwtConfigType(
 	Tag("tag", PlsDocBundle.message("name.cwt.tag")),
 	
 	LocalisationLocale("localisation locale", PlsDocBundle.message("name.cwt.localisationLocale")),
-	LocalisationColor("localisation color", PlsDocBundle.message("name.cwt.localisationColor"));
+	LocalisationColor("localisation color", PlsDocBundle.message("name.cwt.localisationColor")),
+	LocalisationPredefinedVariable("localisation predefined variable", PlsDocBundle.message("name.cwt.localisationPredefinedVariable"));
 	
 	override fun toString(): String {
 		return text
