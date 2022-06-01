@@ -33,7 +33,7 @@ object ParadoxScriptIntroducer {
 	/**
 	 * 在指定文件的最后一个封装变量声明后或者最后一个PSI元素后另起一行，声明指定名字和值的封装变量。
 	 */
-	fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): Any {
+	fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): ParadoxScriptVariable {
 		val (parent, anchor) = targetFile.findParentAndAnchorToIntroduceGlobalScriptedVariable()
 		var newVariable = ParadoxScriptElementFactory.createVariable(project, name, value)
 		val newLine = ParadoxScriptElementFactory.createLine(project)

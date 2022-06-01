@@ -4,17 +4,12 @@ import com.intellij.codeInsight.intention.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.quickFix.*
 import icu.windea.pls.script.psi.*
-
-private const val i = 1
-
-private const val s1 = "0"
-
-private const val s = "0"
+import icu.windea.pls.script.refactoring.*
+import icu.windea.pls.tool.*
 
 /**
  * 无法解析的封装变量引用的检查。
@@ -38,8 +33,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 				val variableName = element.name
 				val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>()
 				if(parentDefinition != null) {
-					this += IntroduceLocalVariableFix(parentDefinition, variableName)
-					this += IntroduceGlobalVariableFix(parentDefinition, variableName)
+					this += IntroduceLocalVariableFix(variableName, parentDefinition)
+					this += IntroduceGlobalVariableFix(variableName, parentDefinition)
 					this += ImportGameOrModDirectoryFix(element)
 				}
 			}.toTypedArray()
@@ -49,8 +44,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	
 	@Suppress("NAME_SHADOWING")
 	private class IntroduceLocalVariableFix(
-		element: ParadoxScriptProperty,
-		private val variableName: String
+		private val variableName: String,
+		element: ParadoxScriptProperty
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
 		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.1", variableName)
 		
@@ -59,11 +54,13 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun getPriority() = PriorityAction.Priority.TOP
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
 			//声明对应名字的封装变量，默认值给0
+			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
 			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinition, project)
+			
+			val document = PsiDocumentManager.getInstance(project).getDocument(file)
+			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
 			if(editor != null) {
-				PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
 				//光标移到variableValue的结束位置并选中
 				val textRange = newVariable.variableValue!!.textRange
 				editor.selectionModel.setSelection(textRange.startOffset, textRange.endOffset)
@@ -74,8 +71,8 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	}
 	
 	private class IntroduceGlobalVariableFix(
-		element: ParadoxScriptProperty,
 		private val variableName: String,
+		element: ParadoxScriptProperty,
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
 		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.2", variableName)
 		
@@ -84,9 +81,25 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun getPriority() = PriorityAction.Priority.HIGH
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
+			//打开对话框
+			val virtualFile = file.virtualFile ?: return
+			val scriptedVariablesDirectory = ParadoxFileLocator.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
+			val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory)
+			if(!dialog.showAndGet()) return //取消
+			
 			//声明对应名字的封装变量，默认值给0并选中
-			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
-			//TODO
+			val targetFile = dialog.file.toPsiFile<ParadoxScriptFile>(project) ?: return //不期望的结果
+			val newVariable = ParadoxScriptIntroducer.introduceGlobalScriptedVariable(variableName, "0", targetFile, project)
+			
+			val document = PsiDocumentManager.getInstance(project).getDocument(targetFile)
+			if(document != null) PsiDocumentManager.getInstance(project).commitDocument(document) //提交文档更改
+			if(editor != null) {
+				//光标移到variableValue的结束位置并选中
+				val textRange = newVariable.variableValue!!.textRange
+				editor.selectionModel.setSelection(textRange.startOffset, textRange.endOffset)
+				editor.caretModel.moveToOffset(textRange.endOffset)
+				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+			}
 		}
 	}
 }
