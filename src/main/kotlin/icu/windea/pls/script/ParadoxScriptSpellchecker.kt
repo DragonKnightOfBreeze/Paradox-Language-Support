@@ -5,17 +5,14 @@ import com.intellij.psi.util.*
 import com.intellij.spellchecker.tokenizer.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
-//拼写检查：
-//检查variableName、key、value、comment
-
 class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
 	override fun getTokenizer(element: PsiElement): Tokenizer<*> {
 		return when(element.elementType) {
-			VARIABLE_NAME_ID -> TEXT_TOKENIZER
-			PROPERTY_KEY_ID -> TEXT_TOKENIZER
-			VARIABLE_REFERENCE_ID -> TEXT_TOKENIZER
-			QUOTED_STRING_TOKEN -> TEXT_TOKENIZER
-			STRING_TOKEN -> TEXT_TOKENIZER
+			//VARIABLE_NAME_ID -> TEXT_TOKENIZER
+			//PROPERTY_KEY_ID -> TEXT_TOKENIZER
+			//VARIABLE_REFERENCE_ID -> TEXT_TOKENIZER
+			//QUOTED_STRING_TOKEN -> TEXT_TOKENIZER
+			//STRING_TOKEN -> TEXT_TOKENIZER
 			COMMENT -> TEXT_TOKENIZER
 			END_OF_LINE_COMMENT -> TEXT_TOKENIZER
 			else -> super.getTokenizer(element)
