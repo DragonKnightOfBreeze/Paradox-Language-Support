@@ -326,7 +326,7 @@ class CwtConfigGroup(
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
 						val value = option.stringValue
-						val values = option.values
+						val values = option.optionValues
 						if(value == null && values == null) continue
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
@@ -336,7 +336,7 @@ class CwtConfigGroup(
 					}
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"graph_related_types" -> {
-						graphRelatedTypes = option.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+						graphRelatedTypes = option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 					}
 				}
 			}
@@ -367,7 +367,7 @@ class CwtConfigGroup(
 					"type_key_filter" -> {
 						//值可能是string也可能是stringArray
 						val value = option.stringValue
-						val values = option.values
+						val values = option.optionValues
 						if(value == null && values == null) continue
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
@@ -379,7 +379,7 @@ class CwtConfigGroup(
 					"starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
 					"display_name" -> displayName = option.stringValue ?: continue
 					"abbreviation" -> abbreviation = option.stringValue ?: continue
-					"only_if_not" -> onlyIfNot = option.values?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: continue
+					"only_if_not" -> onlyIfNot = option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: continue
 				}
 			}
 		}

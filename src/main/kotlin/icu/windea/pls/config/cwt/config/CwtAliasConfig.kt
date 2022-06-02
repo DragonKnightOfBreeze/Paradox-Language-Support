@@ -20,7 +20,7 @@ data class CwtAliasConfig(
 	private fun inferSupportedScopes(): Set<String> {
 		val options = config.options ?: return emptySet()
 		val option = options.find { it.key == "scope" || it.key == "scopes" } ?: return emptySet()
-		return option.stringValue?.let { setOf(it) } ?: option.values?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
+		return option.stringValue?.let { setOf(it) } ?: option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
 	}
 }
 

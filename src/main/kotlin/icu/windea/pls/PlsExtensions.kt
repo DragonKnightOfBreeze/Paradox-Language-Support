@@ -219,9 +219,10 @@ fun PsiElement.isQuoted(): Boolean {
 	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
 }
 
-/**
- * 判断当前scriptValue是否是独立的（不作为变量或属性的值）。
- */
+fun CwtValue.isLonely(): Boolean {
+	return this.parent is ICwtBlock // CwtBlock | CwtRootBlock
+}
+
 fun ParadoxScriptValue.isLonely(): Boolean {
 	return this.parent is IParadoxScriptBlock // ParadoxScriptBlock | ParadoxScriptRootBlock
 }

@@ -46,6 +46,7 @@
         implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
+    <navbar implementation="icu.windea.pls.cwt.navigation.CwtNavBar"/>
     <lang.psiStructureViewFactory
         language="CWT"
         implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>

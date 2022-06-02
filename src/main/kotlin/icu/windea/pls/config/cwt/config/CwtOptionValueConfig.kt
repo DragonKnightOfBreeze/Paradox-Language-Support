@@ -10,6 +10,6 @@ data class CwtOptionValueConfig(
 	val intValue: Int? = null,
 	val floatValue: Float? = null,
 	val stringValue: String? = null,
-	val values: List<CwtOptionValueConfig>? = null,
-	val options: List<CwtOptionConfig>? = null
+	val options: List<CwtOptionConfig>? = null,
+	val optionValues: List<CwtOptionValueConfig>? = null
 ) : CwtConfig<CwtValue>

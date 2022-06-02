@@ -18,6 +18,11 @@ import javax.swing.*
 object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptRootBlock
 	@JvmStatic
+	fun getValue(element: ParadoxScriptRootBlock): String {
+		return PlsFolders.blockFolder
+	}
+	
+	@JvmStatic
 	fun isEmpty(element: ParadoxScriptRootBlock): Boolean {
 		element.forEachChild {
 			when {

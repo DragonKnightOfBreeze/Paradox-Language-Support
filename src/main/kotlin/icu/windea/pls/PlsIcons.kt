@@ -16,6 +16,7 @@ object PlsIcons {
 	@JvmStatic val cwtPropertyIcon = loadIcon("/icons/cwtProperty.svg")
 	@JvmStatic val cwtOptionIcon = loadIcon("/icons/cwtOption.svg")
 	@JvmStatic val cwtValueIcon = loadIcon("/icons/cwtValue.svg")
+	@JvmStatic val cwtBlockIcon = loadIcon("/icons/paradoxScriptBlock.svg")
 	
 	@JvmStatic val scriptPropertyIcon = loadIcon("/icons/paradoxScriptProperty.svg")
 	@JvmStatic val scriptValueIcon = loadIcon("/icons/paradoxScriptValue.svg")

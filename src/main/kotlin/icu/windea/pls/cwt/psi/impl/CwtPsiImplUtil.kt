@@ -12,6 +12,34 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object CwtPsiImplUtil {
+	//region CwtRootBlock
+	@JvmStatic
+	fun getValue(element: CwtRootBlock): String {
+		return PlsFolders.blockFolder
+	}
+	
+	@JvmStatic
+	fun isEmpty(element: CwtRootBlock): Boolean {
+		element.forEachChild {
+			if(it is CwtProperty || it is CwtValue) return false
+		}
+		return true
+	}
+	
+	@JvmStatic
+	fun isNotEmpty(element: CwtRootBlock): Boolean {
+		element.forEachChild {
+			if(it is CwtProperty || it is CwtValue) return true
+		}
+		return true
+	}
+	
+	@JvmStatic
+	fun getComponents(element: CwtRootBlock): List<PsiElement> {
+		return element.filterChildOfType { it is CwtProperty || it is CwtValue}
+	}
+	//endregion
+	
 	//region CwtOption
 	@JvmStatic
 	fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
@@ -176,6 +204,11 @@ object CwtPsiImplUtil {
 	
 	//region CwtBlock
 	@JvmStatic
+	fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
+		return PlsIcons.cwtBlockIcon
+	}
+	
+	@JvmStatic
 	fun getValue(element: CwtBlock): String {
 		return PlsFolders.blockFolder
 	}
@@ -197,34 +230,8 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun isObject(element: CwtBlock): Boolean {
-		element.forEachChild {
-			when {
-				it is CwtProperty -> return true
-				it is CwtValue -> return false
-			}
-		}
-		return true
-	}
-	
-	@JvmStatic
-	fun isArray(element: CwtBlock): Boolean {
-		element.forEachChild {
-			when(it) {
-				is CwtProperty -> return false
-				is CwtValue -> return true
-			}
-		}
-		return true
-	}
-	
-	@JvmStatic
 	fun getComponents(element: CwtBlock): List<PsiElement> {
-		val components: MutableList<PsiElement> = SmartList()
-		element.forEachChild { 
-			if(it is CwtProperty || it is CwtValue) components.add(it)
-		}
-		return components
+		return element.filterChildOfType { it is CwtProperty || it is CwtValue}
 	}
 	//endregion
 	

@@ -5,13 +5,12 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiListLikeElement;
 
 public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull CwtBlock o) {
     visitValue(o);
-    // visitPsiListLikeElement(o);
+    // visitICwtBlock(o);
   }
 
   public void visitBoolean(@NotNull CwtBoolean o) {
@@ -59,7 +58,7 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
-    visitBlock(o);
+    visitICwtBlock(o);
   }
 
   public void visitString(@NotNull CwtString o) {
@@ -77,6 +76,10 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitNamedElement(@NotNull CwtNamedElement o) {
     visitPsiElement(o);
+  }
+
+  public void visitICwtBlock(@NotNull ICwtBlock o) {
+    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

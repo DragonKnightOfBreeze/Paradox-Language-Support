@@ -15,6 +15,6 @@ class ParadoxScriptVariableTreeElement(
 		val element = element ?: return null
 		val name = element.name
 		val value = element.value
-		return if(value == null) name else "$name = $value"
+		return if(value == null) name else "@$name = $value"
 	}
 }

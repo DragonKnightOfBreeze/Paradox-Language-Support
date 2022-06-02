@@ -23,7 +23,7 @@
 root ::= root_block ?
 root_block ::= root_block_item + {
   implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
-  methods=[isEmpty isNotEmpty getComponents]
+  methods=[getValue isEmpty isNotEmpty getComponents]
 }
 private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | property | value | variable
 

@@ -9,6 +9,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
 public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
 
@@ -59,6 +61,12 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
 
   @Override
   @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return CwtPsiImplUtil.getIcon(this, flags);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }
@@ -71,16 +79,6 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   @Override
   public boolean isNotEmpty() {
     return CwtPsiImplUtil.isNotEmpty(this);
-  }
-
-  @Override
-  public boolean isObject() {
-    return CwtPsiImplUtil.isObject(this);
-  }
-
-  @Override
-  public boolean isArray() {
-    return CwtPsiImplUtil.isArray(this);
   }
 
   @Override

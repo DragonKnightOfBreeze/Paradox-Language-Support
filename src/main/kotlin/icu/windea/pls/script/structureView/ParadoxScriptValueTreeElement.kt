@@ -26,10 +26,7 @@ class ParadoxScriptValueTreeElement(
 	
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
-		return when {
-			element is ParadoxScriptBlock -> PlsFolders.blockFolder
-			else -> element.text //保留可能的包围的双引号
-		}
+		return element.value
 	}
 }
 

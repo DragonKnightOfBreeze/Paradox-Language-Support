@@ -50,9 +50,6 @@
     <annotator
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
-    <itemPresentationProvider
-        forClass="com.intellij.psi.NavigatablePsiElement"
-        implementationClass="icu.windea.pls.script.navigation.ParadoxScriptPresentationProvider"/>
     <!--Try to keep correct inlay hint order-->
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
@@ -80,8 +77,6 @@
         id="ParadoxLocalisationReferenceInfoHintsProvider"
         order="after ParadoxDefinitionReferenceLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
-    <projectViewNodeDecorator
-        implementation="icu.windea.pls.script.projectView.ParadoxScriptProjectViewNodeDecorator"/>
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
@@ -89,6 +84,12 @@
         implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
+    <itemPresentationProvider
+        forClass="com.intellij.psi.NavigatablePsiElement"
+        implementationClass="icu.windea.pls.script.navigation.ParadoxScriptPresentationProvider"/>
+    <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
+    <projectViewNodeDecorator
+        implementation="icu.windea.pls.script.projectView.ParadoxScriptProjectViewNodeDecorator"/>
     <lang.psiStructureViewFactory
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>

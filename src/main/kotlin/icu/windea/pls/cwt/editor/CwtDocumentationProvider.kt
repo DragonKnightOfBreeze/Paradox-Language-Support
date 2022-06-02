@@ -78,8 +78,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = if(originalElement is ParadoxScriptPropertyKey) originalElement.value else originalElement.text
 				append(PlsDocBundle.message("name.script.definitionProperty"))
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				grayed {
-					append(" by ").append(name.escapeXmlOrAnonymous())
+				if(name != originalName) {
+					grayed {
+						append(" by ").append(name.escapeXmlOrAnonymous())
+					}
 				}
 			}
 			
@@ -146,8 +148,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = if(originalElement is ParadoxScriptValue) originalElement.value else originalElement.text
 				append(PlsDocBundle.message("name.script.definitionValue"))
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				grayed {
-					append(" by ").append(name.escapeXmlOrAnonymous())
+				if(name != originalName) {
+					grayed {
+						append(" by ").append(name.escapeXmlOrAnonymous())
+					}
 				}
 			}
 		}

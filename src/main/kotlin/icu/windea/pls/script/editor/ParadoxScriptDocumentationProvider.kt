@@ -112,7 +112,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo, element.project)
 			//加上定义信息
-			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>@").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
 		}
 	}

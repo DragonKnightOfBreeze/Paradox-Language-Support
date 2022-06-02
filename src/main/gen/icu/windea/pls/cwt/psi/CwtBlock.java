@@ -4,9 +4,10 @@ package icu.windea.pls.cwt.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiListLikeElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
-public interface CwtBlock extends CwtValue, PsiListLikeElement {
+public interface CwtBlock extends CwtValue, ICwtBlock {
 
   @NotNull
   List<CwtDocumentationComment> getDocumentationCommentList();
@@ -24,15 +25,14 @@ public interface CwtBlock extends CwtValue, PsiListLikeElement {
   List<CwtValue> getValueList();
 
   @NotNull
+  Icon getIcon(@IconFlags int flags);
+
+  @NotNull
   String getValue();
 
   boolean isEmpty();
 
   boolean isNotEmpty();
-
-  boolean isObject();
-
-  boolean isArray();
 
   @NotNull
   List<PsiElement> getComponents();

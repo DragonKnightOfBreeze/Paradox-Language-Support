@@ -46,6 +46,12 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
+  @NotNull
+  public String getValue() {
+    return ParadoxScriptPsiImplUtil.getValue(this);
+  }
+
+  @Override
   public boolean isEmpty() {
     return ParadoxScriptPsiImplUtil.isEmpty(this);
   }

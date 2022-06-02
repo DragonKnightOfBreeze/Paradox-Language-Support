@@ -16,6 +16,9 @@ public interface ParadoxScriptRootBlock extends IParadoxScriptBlock {
   @NotNull
   List<ParadoxScriptVariable> getVariableList();
 
+  @NotNull
+  String getValue();
+
   boolean isEmpty();
 
   boolean isNotEmpty();

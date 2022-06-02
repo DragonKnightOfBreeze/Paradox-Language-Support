@@ -11,11 +11,12 @@
 	psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
 }
 
-root ::= root_block
-root_block ::= root_block_item * {
-  extends=block
+root ::= root_block ?
+root_block ::= root_block_item + {
+  implements="icu.windea.pls.cwt.psi.ICwtBlock"
+  methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::=  comment | property | value
+private root_block_item ::= comment | property | value
 
 private comment ::= documentation_comment | option_comment | COMMENT
 
@@ -79,12 +80,12 @@ string ::= STRING_TOKEN{
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getValue getStringValue getName setName getNameIdentifier]
+  methods=[getIcon getValue getStringValue getName setName getNameIdentifier]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
-  implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getValue isEmpty isNotEmpty isObject isArray getComponents]
+  implements="icu.windea.pls.cwt.psi.ICwtBlock"
+  methods=[getIcon getValue isEmpty isNotEmpty getComponents]
 }
 private block_item ::= comment | property | option | value

@@ -26,5 +26,4 @@ class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameter
 		val element = element ?: return null
 		return "[" + element.expression + "]"
 	}
-	
 }

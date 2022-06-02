@@ -13,20 +13,17 @@ import java.util.*
 object CwtConfigResolver {
 	fun resolve(file: CwtFile): CwtFileConfig {
 		val rootBlock = file.block ?: return CwtFileConfig.EmptyConfig
-		return when {
-			rootBlock.isEmpty -> CwtFileConfig.EmptyConfig
-			rootBlock.isObject -> {
-				val properties = SmartList<CwtPropertyConfig>()
-				rootBlock.processChildrenOfType<CwtProperty> { resolveProperty(it, file).addTo(properties).end() }
-				CwtFileConfig(emptyPointer(), emptyList(), properties)
+		if(rootBlock.isEmpty) return CwtFileConfig.EmptyConfig
+		val properties = SmartList<CwtPropertyConfig>()
+		val values = SmartList<CwtValueConfig>()
+		rootBlock.processChild { 
+			when{
+				it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
+				it is CwtValue -> resolveValue(it, file).addTo(values).end()
+				else -> end()
 			}
-			rootBlock.isArray -> {
-				val values = SmartList<CwtValueConfig>()
-				rootBlock.processChildrenOfType<CwtValue> { resolveValue(it, file).addTo(values).end() }
-				CwtFileConfig(emptyPointer(), values, emptyList())
-			}
-			else -> CwtFileConfig.EmptyConfig
 		}
+		return CwtFileConfig(file.createPointer(), properties, values)
 	}
 	
 	private fun resolveProperty(property: CwtProperty, file: CwtFile): CwtPropertyConfig? {
@@ -37,8 +34,8 @@ object CwtConfigResolver {
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtValueConfig>? = null
 		var properties: List<CwtPropertyConfig>? = null
+		var values: List<CwtValueConfig>? = null
 		var documentationLines: LinkedList<String>? = null
 		var options: LinkedList<CwtOptionConfig>? = null
 		var optionValues: LinkedList<CwtOptionValueConfig>? = null
@@ -50,16 +47,19 @@ object CwtConfigResolver {
 			propValue is CwtString -> stringValue = propValue.stringValue
 			propValue is CwtBlock -> when {
 				propValue.isEmpty -> {
-					values = emptyList()
 					properties = emptyList()
+					values = emptyList()
 				}
-				propValue.isObject -> {
+				else -> {
 					properties = SmartList()
-					propValue.processChildrenOfType<CwtProperty> { resolveProperty(it, file)?.addTo(properties).end() }
-				}
-				propValue.isArray -> {
 					values = SmartList()
-					propValue.processChildrenOfType<CwtValue> { resolveValue(it, file).addTo(values).end() }
+					propValue.processChild {
+						when{
+							it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
+							it is CwtValue -> resolveValue(it, file).addTo(values).end()
+							else -> end()
+						}
+					}
 				}
 			}
 		}
@@ -98,7 +98,7 @@ object CwtConfigResolver {
 		val documentation = documentationLines?.joinToString("\n")
 		val config = CwtPropertyConfig(
 			pointer, key, property.propertyValue,
-			booleanValue, intValue, floatValue, stringValue, values, properties,
+			booleanValue, intValue, floatValue, stringValue, properties, values,
 			documentation, options, optionValues, separatorType
 		)
 		values?.forEach { it.parent = config }
@@ -128,13 +128,16 @@ object CwtConfigResolver {
 					values = emptyList()
 					properties = emptyList()
 				}
-				value.isObject -> {
+				else -> {
 					properties = SmartList()
-					value.processChildrenOfType<CwtProperty> { resolveProperty(it, file)?.addTo(properties).end() }
-				}
-				value.isArray -> {
 					values = SmartList()
-					value.processChildrenOfType<CwtValue> { resolveValue(it, file).addTo(values).end() }
+					value.processChild {
+						when{
+							it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
+							it is CwtValue -> resolveValue(it, file).addTo(values).end()
+							else -> end()
+						}
+					}
 				}
 			}
 		}
@@ -188,8 +191,8 @@ object CwtConfigResolver {
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtOptionValueConfig>? = null
 		var options: List<CwtOptionConfig>? = null
+		var optionValues: List<CwtOptionValueConfig>? = null
 		val separatorType = option.separatorType
 		when {
 			optionValue is CwtBoolean -> booleanValue = optionValue.booleanValue
@@ -198,22 +201,25 @@ object CwtConfigResolver {
 			optionValue is CwtString -> stringValue = optionValue.stringValue
 			optionValue is CwtBlock -> when {
 				optionValue.isEmpty -> {
-					values = emptyList()
 					options = emptyList()
+					optionValues = emptyList()
 				}
-				optionValue.isObject -> {
+				else -> {
 					options = SmartList()
-					optionValue.processChildrenOfType<CwtOption> { resolveOption(it, file)?.addTo(options).end() }
-				}
-				optionValue.isArray -> {
-					values = SmartList()
-					optionValue.processChildrenOfType<CwtValue> { resolveOptionValue(it, file).addTo(values).end() }
+					optionValues = SmartList()
+					optionValue.processChild {
+						when{
+							it is CwtOption -> resolveOption(it, file).addTo(options).end()
+							it is CwtValue -> resolveOptionValue(it, file).addTo(optionValues).end()
+							else -> end()
+						}
+					}
 				}
 			}
 		}
 		return CwtOptionConfig(
 			emptyPointer(), key, optionValue.value,
-			booleanValue, intValue, floatValue, stringValue, values, options, separatorType
+			booleanValue, intValue, floatValue, stringValue, options, optionValues, separatorType
 		)
 	}
 	
@@ -222,8 +228,8 @@ object CwtConfigResolver {
 		var intValue: Int? = null
 		var floatValue: Float? = null
 		var stringValue: String? = null
-		var values: List<CwtOptionValueConfig>? = null
 		var options: List<CwtOptionConfig>? = null
+		var optionValues: List<CwtOptionValueConfig>? = null
 		when {
 			option is CwtBoolean -> {
 				booleanValue = option.booleanValue
@@ -240,23 +246,26 @@ object CwtConfigResolver {
 			option is CwtBlock -> {
 				when {
 					option.isEmpty -> {
-						values = emptyList()
 						options = emptyList()
+						optionValues = emptyList()
 					}
-					option.isObject -> {
+					else -> {
 						options = SmartList()
-						option.processChildrenOfType<CwtOption> { resolveOption(it, file)?.addTo(options).end() }
-					}
-					option.isArray -> {
-						values = SmartList()
-						option.processChildrenOfType<CwtValue> { resolveOptionValue(it, file).addTo(values).end() }
+						optionValues = SmartList()
+						option.processChild {
+							when{
+								it is CwtOption -> resolveOption(it, file).addTo(options).end()
+								it is CwtValue -> resolveOptionValue(it, file).addTo(optionValues).end()
+								else -> end()
+							}
+						}
 					}
 				}
 			}
 		}
 		return CwtOptionValueConfig(
 			emptyPointer(), option.value,
-			booleanValue, intValue, floatValue, stringValue, values, options
+			booleanValue, intValue, floatValue, stringValue, options, optionValues
 		)
 	}
 }

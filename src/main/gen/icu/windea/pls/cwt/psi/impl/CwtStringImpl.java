@@ -9,6 +9,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import javax.swing.Icon;
 
 public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
 
@@ -24,6 +26,12 @@ public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
