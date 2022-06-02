@@ -1,11 +1,11 @@
 package icu.windea.pls.config.internal
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
 import org.slf4j.*
@@ -16,6 +16,7 @@ import java.lang.invoke.*
  *
  * 内部规则来自目录`config/internal`中的配置文件。不基于具体的项目。
  */
+@Service(Service.Level.PROJECT)
 class InternalConfigProvider(
 	private val project: Project
 ) {
@@ -59,7 +60,7 @@ class InternalConfigProvider(
 	
 	private fun resolveConfigFiles(configMap: InternalConfigMap, configDirectory: VirtualFile, configRootDirectory: VirtualFile) {
 		for(configFile in configDirectory.children) {
-			if(configFile.isDirectory){
+			if(configFile.isDirectory) {
 				//继续解析子目录里面的配置文件
 				resolveConfigFiles(configMap, configFile, configRootDirectory)
 			} else {

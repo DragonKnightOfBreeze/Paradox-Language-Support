@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
@@ -15,8 +16,9 @@ import java.lang.invoke.*
  *
  * CWT规则来自目录`config/cwt`中的配置文件。使用内置且经过扩展和修改的CWT配置文件。
  */
+@Service(Service.Level.PROJECT)
 class CwtConfigProvider(
-	val project: Project
+	private val project: Project
 ) {
 	companion object {
 		private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())

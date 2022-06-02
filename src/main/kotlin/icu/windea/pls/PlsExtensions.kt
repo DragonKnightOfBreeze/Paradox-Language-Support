@@ -39,9 +39,9 @@ fun getSettings() = service<ParadoxSettings>().state
 
 //fun getInternalSettings(project: Project) = project.service<ParadoxInternalProjectSettings>().state
 
-fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).getService(InternalConfigProvider::class.java).configGroup
+fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).service<InternalConfigProvider>().configGroup
 
-fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class.java).configGroups
+fun getCwtConfig(project: Project) = project.service<CwtConfigProvider>().configGroups
 
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
 	val primaryLocale = getSettings().localisationPrimaryLocale.orEmpty()
