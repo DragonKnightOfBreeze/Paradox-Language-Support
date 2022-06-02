@@ -34,10 +34,4 @@ public abstract class ParadoxScriptNumberImpl extends ParadoxScriptValueImpl imp
     return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
 }

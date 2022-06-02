@@ -24,4 +24,7 @@ data class CwtValueConfig(
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
 	val valueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
+	
+	//不显示标注的option和optionValue
+	val typeText = value
 }

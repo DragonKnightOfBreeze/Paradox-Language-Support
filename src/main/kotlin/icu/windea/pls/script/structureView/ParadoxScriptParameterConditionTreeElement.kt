@@ -6,14 +6,14 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameterCondition): PsiTreeElementBase<ParadoxScriptParameterCondition>(element){
+class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameterCondition) : PsiTreeElementBase<ParadoxScriptParameterCondition>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
 		val parent = element
 		//允许混合value和property
 		val result: MutableList<StructureViewTreeElement> = SmartList()
 		parent.forEachChild {
-			when{
+			when {
 				it is ParadoxScriptVariable -> result.add(ParadoxScriptVariableTreeElement(it))
 				it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
 				it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
@@ -23,12 +23,8 @@ class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameter
 	}
 	
 	override fun getPresentableText(): String? {
-		return null
+		val element = element ?: return null
+		return "[" + element.expression + "]"
 	}
 	
-	override fun getLocationString(): String? {
-		//以灰色文本显示条件表达式
-		val element = element ?: return null
-		return element.expression
-	}
 }

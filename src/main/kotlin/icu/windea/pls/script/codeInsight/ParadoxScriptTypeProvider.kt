@@ -17,13 +17,12 @@ import icu.windea.pls.script.psi.*
  *
  * 支持的PSI元素：
  * * 变量（variable） - 显示变量的值的类型。
- * * 属性（property） - 显示定义的类型（如果是定义），或者属性的值的类型。
- * * 值（value） - 显示定义元素的类型（如果是定义元素），或者值的类型。
- * * 内联数学表达式的操作数（inline_math__factor） - 显示数字、变量引用或参数的值的类型。
+ * * 属性（property） - 显示定义的类型（如果是定义），或者定义元素的规则表达式（如果是定义元素），或者属性的值的类型。
+ * * 值（value） - 显示定义元素的规则表达式（如果是定义元素），或者值的类型。
+ * * 内联数学表达式的操作数（inline_math_factor） - 显示数字、变量引用或参数的值的类型。
  */
 class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression>() {
 	override fun getExpressionsAt(elementAt: PsiElement): List<ParadoxScriptExpression> {
-		//for: variable, property, value
 		val expressionElement = elementAt.parentOfType<ParadoxScriptExpression>()
 		return expressionElement.toSingletonListOrEmpty()
 	}
@@ -37,7 +36,10 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression
 	 */
 	override fun getInformationHint(element: ParadoxScriptExpression): String {
 		//优先显示最相关的类型
-		return element.type ?: element.valueType?.text ?: ParadoxValueType.UnknownType.text
+		return element.definitionType
+			?: element.configExpression
+			?: element.valueType?.text
+			?: ParadoxValueType.UnknownType.text
 	}
 	
 	override fun hasAdvancedInformation(): Boolean {
@@ -49,8 +51,11 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression
 	 */
 	override fun getAdvancedInformationHint(element: ParadoxScriptExpression): String {
 		val children = buildList {
-			element.type?.let { type ->
-				add(makeHtmlRow(PlsDocBundle.message("title.type"), type))
+			element.definitionType?.let { type ->
+				add(makeHtmlRow(PlsDocBundle.message("title.definitionType"), type))
+			}
+			element.configExpression?.let { configExpression ->
+				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
 			}
 			element.valueType?.let { valueType ->
 				add(makeHtmlRow(PlsDocBundle.message("title.valueType"), valueType.text))

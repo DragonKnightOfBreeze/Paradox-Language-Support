@@ -28,6 +28,9 @@ data class CwtPropertyConfig(
 	val keyExpression: CwtKeyExpression by lazy { CwtKeyExpression.resolve(key) }
 	val valueExpression: CwtValueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
 	
+	//不显示标注的option和optionValue、以及block中的嵌套规则
+	val typeText = "$key = $value"
+	
 	val valueConfig by lazy { doGetValueConfig() }
 	
 	private fun doGetValueConfig(): CwtValueConfig? {

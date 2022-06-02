@@ -32,7 +32,7 @@ class ParadoxScriptProjectViewNodeDecorator : ProjectViewNodeDecorator {
 		val definitionInfo = element.definitionInfo ?: return null
 		//如果definitionName和rootKey相同，则省略definitionName
 		val name = definitionInfo.name
-		val typesText = definitionInfo.typesText
+		val typesText = definitionInfo.typeText
 		if(name.equals(definitionInfo.rootKey, true)){
 			return ": $typesText"
 		} else {

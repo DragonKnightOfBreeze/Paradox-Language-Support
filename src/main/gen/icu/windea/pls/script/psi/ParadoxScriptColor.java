@@ -21,7 +21,4 @@ public interface ParadoxScriptColor extends ParadoxScriptValue, PsiLiteralValue 
   @NotNull
   ParadoxValueType getValueType();
 
-  @Nullable
-  String getType();
-
 }

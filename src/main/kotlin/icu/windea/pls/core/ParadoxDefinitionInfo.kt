@@ -81,7 +81,7 @@ class ParadoxDefinitionInfo(
 		mutableListOf(type).apply { addAll(subtypes) }
 	}
 	
-	val typesText: String by lazy {
+	val typeText: String by lazy {
 		types.joinToString(", ")
 	}
 	

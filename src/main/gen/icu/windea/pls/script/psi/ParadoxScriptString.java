@@ -25,7 +25,4 @@ public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue
   @NotNull
   ParadoxValueType getValueType();
 
-  @Nullable
-  String getType();
-
 }

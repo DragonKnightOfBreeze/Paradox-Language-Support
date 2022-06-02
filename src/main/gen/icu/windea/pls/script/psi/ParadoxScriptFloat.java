@@ -13,7 +13,4 @@ public interface ParadoxScriptFloat extends ParadoxScriptNumber {
   @NotNull
   ParadoxValueType getValueType();
 
-  @Nullable
-  String getType();
-
 }

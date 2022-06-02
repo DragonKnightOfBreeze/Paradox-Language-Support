@@ -57,7 +57,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getValueType getType getPathName getOriginalPathName]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName]
 }
 //property_key can be parameter
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter {
@@ -68,7 +68,7 @@ property_value ::= value
 
 value ::= variable_reference | parameter | boolean | number | string | string_template | color | block | inline_math {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
-  methods=[getIcon getValue]
+  methods=[getIcon getValue getConfigExpression]
 }
 variable_reference ::= AT VARIABLE_REFERENCE_ID {
   extends=value
@@ -78,37 +78,37 @@ variable_reference ::= AT VARIABLE_REFERENCE_ID {
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getBooleanValue getValueType getType]
+  methods=[getBooleanValue getValueType]
 }
 number ::= int | float {
   extends=value
   implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValueType getType]
+  methods=[getValueType]
 }
 int ::= INT_TOKEN {
   extends=number
-  methods=[getIntValue getValueType getType]
+  methods=[getIntValue getValueType]
 }
 float ::= FLOAT_TOKEN{
   extends=number
-  methods=[getFloatValue getValueType getType]
+  methods=[getFloatValue getValueType]
 }
 string ::= STRING_TOKEN | QUOTED_STRING_TOKEN {
   extends=value
   implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue setValue getReference getStringValue getValueType getType]
+  methods=[getValue setValue getReference getStringValue getValueType]
 }
 color ::= COLOR_TOKEN {
   extends=value
   implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue getColor setColor getValueType getType]
+  methods=[getValue getColor setColor getValueType]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   recoverWhile="#auto"
   extends=value
   implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
-  methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType getType]
+  methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType]
 }
 private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value | parameter_condition | variable
 
@@ -162,7 +162,7 @@ inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END{
   pin=1
   recoverWhile="#auto"
   extends=value
-  methods=[getValue getValueType getType]
+  methods=[getValue getValueType]
 }
 private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
 //noinspection BnfUnusedRule

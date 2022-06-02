@@ -47,4 +47,10 @@ public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements Para
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
+  @Override
+  @Nullable
+  public String getConfigExpression() {
+    return ParadoxScriptPsiImplUtil.getConfigExpression(this);
+  }
+
 }

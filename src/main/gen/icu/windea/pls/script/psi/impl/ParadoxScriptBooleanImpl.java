@@ -39,10 +39,4 @@ public class ParadoxScriptBooleanImpl extends ParadoxScriptValueImpl implements 
     return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
 }

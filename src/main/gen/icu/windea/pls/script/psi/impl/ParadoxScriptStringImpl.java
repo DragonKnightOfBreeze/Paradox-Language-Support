@@ -59,10 +59,4 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
     return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
 }

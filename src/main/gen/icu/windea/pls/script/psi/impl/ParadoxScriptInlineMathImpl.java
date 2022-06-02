@@ -52,10 +52,4 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
     return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
 }

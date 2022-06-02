@@ -18,4 +18,7 @@ public interface ParadoxScriptValue extends ParadoxScriptExpression {
   @NotNull
   String getValue();
 
+  @Nullable
+  String getConfigExpression();
+
 }

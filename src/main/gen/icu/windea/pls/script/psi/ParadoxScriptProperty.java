@@ -40,10 +40,13 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   ParadoxScriptBlock getBlock();
 
   @Nullable
-  ParadoxValueType getValueType();
+  String getDefinitionType();
 
   @Nullable
-  String getType();
+  String getConfigExpression();
+
+  @Nullable
+  ParadoxValueType getValueType();
 
   @Nullable
   String getPathName();

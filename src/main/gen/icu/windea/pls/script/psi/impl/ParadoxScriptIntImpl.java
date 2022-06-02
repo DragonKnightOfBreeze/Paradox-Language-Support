@@ -39,10 +39,4 @@ public class ParadoxScriptIntImpl extends ParadoxScriptNumberImpl implements Par
     return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
 }

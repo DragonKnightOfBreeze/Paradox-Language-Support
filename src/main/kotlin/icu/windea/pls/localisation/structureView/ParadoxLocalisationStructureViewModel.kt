@@ -29,7 +29,7 @@ class ParadoxLocalisationStructureViewModel(
 	override fun getSorters() = defaultSorters
 	
 	override fun isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean {
-		return element is ParadoxLocalisationFileTreeElement
+		return element is ParadoxLocalisationFileTreeElement || element is ParadoxLocalisationPropertyListTreeElement
 	}
 	
 	override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {

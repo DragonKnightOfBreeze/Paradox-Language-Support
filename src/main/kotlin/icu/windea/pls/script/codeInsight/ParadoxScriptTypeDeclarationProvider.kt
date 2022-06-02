@@ -1,18 +1,17 @@
 package icu.windea.pls.script.codeInsight
 
 import com.intellij.codeInsight.navigation.actions.*
-import com.intellij.navigation.GotoRelatedProvider
-import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 脚本文件的类型声明提供器。用于导航到类型声明（`Navigate > Type Declaration`）。
  *
  * 支持的PSI元素：
- * * 属性（property） - 导航到定义的类型，包括子类型（如果是定义）。
- * * 值（value） - 导航到定义元素的类型（如果是定义元素）。
+ * * 属性（property） - 导航到定义的类型声明，包括子类型（如果是定义），或者定义元素对应的规则声明（如果是定义元素）。
+ * * 值（value） - 导航到定义元素对应的规则声明（如果是定义元素）。
  */
 class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 	override fun getSymbolTypeDeclarations(symbol: PsiElement): Array<PsiElement>? {
@@ -24,19 +23,25 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 						return definitionInfo.typeConfig.pointer.element?.toSingletonArray()
 					} else {
 						//这里的element可能是null，以防万一，处理是null的情况
-						val typeElements = mutableListOf<PsiElement>()
-						definitionInfo.typeConfig.pointer.element?.let { typeElements.add(it) }
-						definitionInfo.subtypeConfigs.forEach { subtypeConfig ->
-							subtypeConfig.pointer.element?.let { typeElements.add(it) }
-						}
-						return typeElements.toTypedArray()
+						return buildList {
+							definitionInfo.typeConfig.pointer.element?.let { add(it) }
+							definitionInfo.subtypeConfigs.forEach { subtypeConfig ->
+								subtypeConfig.pointer.element?.let { add(it) }
+							}
+						}.toTypedArray()
 					}
 				}
-				//TODO 支持定义元素的类型
+				val propertyConfig = symbol.getPropertyConfig()
+				if(propertyConfig != null) {
+					return propertyConfig.pointer.element?.toSingletonArray()
+				}
 				return null
 			}
 			symbol is ParadoxScriptValue -> {
-				//TODO 支持定义元素的类型
+				val valueConfig = symbol.getValueConfig()
+				if(valueConfig != null) {
+					return valueConfig.pointer.element?.toSingletonArray()
+				}
 				return null
 			}
 			else -> return null

@@ -1167,13 +1167,12 @@ object CwtConfigHandler {
 		}
 	}
 	
-	inline fun resolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiNamedElement? {
+	inline fun resolveValue(valueElement: ParadoxScriptValue, forType: Boolean =  false, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiNamedElement? {
 		//根据对应的expression进行解析
 		//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
 		val valueConfig = valueElement.getValueConfig() ?: return fallbackResolveValue(valueElement)
 		val expression = valueConfig.valueExpression
 		if(!expressionPredicate(expression)) return null
-		//val expression = element.expression?:return null
 		return doResolveValue(valueElement, expression, valueConfig)
 	}
 	
@@ -1277,7 +1276,6 @@ object CwtConfigHandler {
 		val valueConfig = valueElement.getValueConfig() ?: return fallbackMultiResolveValue(valueElement)
 		val expression = valueConfig.valueExpression
 		if(!expressionPredicate(expression)) return emptyList()
-		//val expression = element.expression?:return emptyList()
 		return doMultiResolveValue(valueElement, expression, valueConfig)
 	}
 	

@@ -35,7 +35,7 @@ class ParadoxScriptFileTreeElement(
 		if(element.name.equals(descriptorFileName, true)) return null
 		val definitionInfo = element.definitionInfo ?: return null
 		val name = definitionInfo.name
-		val typesText = definitionInfo.typesText
+		val typesText = definitionInfo.typeText
 		//如果definitionName和rootKey相同，则省略definitionName
 		val builder = StringBuilder()
 		if(!name.equals(definitionInfo.rootKey, true)) {

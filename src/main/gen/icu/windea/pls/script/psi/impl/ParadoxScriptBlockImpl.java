@@ -100,10 +100,4 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
     return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
-  @Override
-  @Nullable
-  public String getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
 }
