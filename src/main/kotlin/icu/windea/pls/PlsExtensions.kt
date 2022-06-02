@@ -220,10 +220,10 @@ fun PsiElement.isQuoted(): Boolean {
 }
 
 /**
- * 判断当前scriptValue是否是独立的value（不作为变量或属性的值）。
+ * 判断当前scriptValue是否是独立的（不作为变量或属性的值）。
  */
-fun ParadoxScriptValue.isLonelyValue(): Boolean {
-	return this.parent is ParadoxScriptBlock // ParadoxScriptBlock | ParadoxScriptRootBlock
+fun ParadoxScriptValue.isLonely(): Boolean {
+	return this.parent is IParadoxScriptBlock // ParadoxScriptBlock | ParadoxScriptRootBlock
 }
 
 val CwtProperty.configType: CwtConfigType? get() = doGetConfigType(this)
@@ -882,7 +882,7 @@ fun findFileByFilePath(
 	filePath: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionType.Exact,
+	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
 	ignoreCase: Boolean = true
 ): VirtualFile? {
 	return ParadoxFilePathIndex.findOne(filePath, scope, expressionType, ignoreCase)
@@ -898,7 +898,7 @@ fun findFilesByFilePath(
 	filePath: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionType.Exact,
+	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
 	ignoreCase: Boolean = true,
 	distinct: Boolean = false
 ): Set<VirtualFile> {

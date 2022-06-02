@@ -20,18 +20,18 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxDefinitionReferenceInfoHintsSettingsKey")
-		private val keyExpressionTypes: Array<CwtKeyExpression.Type> = arrayOf(
-			CwtKeyExpression.Type.TypeExpression,
-			CwtKeyExpression.Type.TypeExpressionString,
-			CwtKeyExpression.Type.AliasName, //需要兼容alias
-			CwtKeyExpression.Type.AliasKeysField //需要兼容alias
+		private val keyExpressionTypes: Array<CwtKeyExpressionType> = arrayOf(
+			CwtKvExpressionTypes.TypeExpression,
+			CwtKvExpressionTypes.TypeExpressionString,
+			CwtKvExpressionTypes.AliasName, //需要兼容alias
+			CwtKvExpressionTypes.AliasKeysField //需要兼容alias
 		)
-		private val valueExpressionTypes: Array<CwtValueExpression.Type> = arrayOf(
-			CwtValueExpression.Type.TypeExpression,
-			CwtValueExpression.Type.TypeExpressionString,
-			CwtValueExpression.Type.SingleAliasRight, //需要兼容single_alias
-			CwtValueExpression.Type.AliasKeysField, //需要兼容alias
-			CwtValueExpression.Type.AliasMatchLeft //需要兼容alias
+		private val valueExpressionTypes: Array<CwtValueExpressionType> = arrayOf(
+			CwtKvExpressionTypes.TypeExpression,
+			CwtKvExpressionTypes.TypeExpressionString,
+			CwtKvExpressionTypes.SingleAliasRight, //需要兼容single_alias
+			CwtKvExpressionTypes.AliasKeysField, //需要兼容alias
+			CwtKvExpressionTypes.AliasMatchLeft //需要兼容alias
 		)
 	}
 	

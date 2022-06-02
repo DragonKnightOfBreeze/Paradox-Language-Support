@@ -2,7 +2,7 @@ package icu.windea.pls.config.cwt.expression
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.util.SmartList
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
@@ -10,9 +10,9 @@ import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
 
 private val validValueTypes = arrayOf(
-	CwtValueExpression.Type.FilePath,
-	CwtValueExpression.Type.Icon,
-	CwtValueExpression.Type.TypeExpression
+	CwtKvExpressionTypes.FilePath,
+	CwtKvExpressionTypes.Icon,
+	CwtKvExpressionTypes.TypeExpression
 )
 
 /**

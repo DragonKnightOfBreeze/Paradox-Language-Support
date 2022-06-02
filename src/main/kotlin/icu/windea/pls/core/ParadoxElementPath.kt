@@ -39,7 +39,7 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 						originalSubPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 						depth++
 					}
-					current is ParadoxScriptValue && current.isLonelyValue() -> {
+					current is ParadoxScriptValue && current.isLonely() -> {
 						originalSubPaths.addFirst("-")
 						depth++
 					}
@@ -76,7 +76,7 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 						subPaths.addFirst(current.originalPathName) //这里需要使用原始文本
 						depth++
 					}
-					current is ParadoxScriptValue && current.isLonelyValue() -> {
+					current is ParadoxScriptValue && current.isLonely() -> {
 						subPaths.addFirst("-")
 						depth++
 					}

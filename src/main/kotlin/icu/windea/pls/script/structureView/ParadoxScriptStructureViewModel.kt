@@ -52,13 +52,13 @@ class ParadoxScriptStructureViewModel(
 	}
 }
 
-object VariablesFilter: Filter{
+object VariablesFilter : Filter {
 	override fun getName() = "PARADOX_SCRIPT_SHOW_VARIABLES"
 	
 	override fun isReverted() = true
 	
 	override fun isVisible(treeNode: TreeElement): Boolean {
-		return treeNode is ParadoxScriptVariableTreeElement
+		return treeNode !is ParadoxScriptVariableTreeElement
 	}
 	
 	override fun getPresentation(): ActionPresentation {

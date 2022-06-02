@@ -34,7 +34,7 @@ object ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>(
 		}
 		//根据ddsFileName进行提示
 		runBlockingCancellable {
-			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionType.Icon, distinct = true)
+			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true)
 			if(ddsFiles.isNotEmpty()) {
 				for(ddsFile in ddsFiles) {
 					val name = ddsFile.nameWithoutExtension

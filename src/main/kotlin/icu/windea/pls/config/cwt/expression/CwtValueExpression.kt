@@ -9,187 +9,151 @@ import icu.windea.pls.*
  */
 class CwtValueExpression private constructor(
 	expressionString: String,
-	val type: Type,
-	val value: String? = null,
-	val extraValue: Any? = null
-) : AbstractExpression(expressionString), CwtExpression {
+	override val type: CwtValueExpressionType,
+	override val value: String? = null,
+	override val extraValue: Any? = null
+) : AbstractExpression(expressionString), CwtKvExpression {
 	companion object Resolver : CachedExpressionResolver<CwtValueExpression>() {
-		val EmptyExpression = CwtValueExpression("", Type.Constant, "")
+		val EmptyExpression = CwtValueExpression("", CwtKvExpressionTypes.Constant, "")
 		
 		override fun doResolve(expressionString: String): CwtValueExpression {
 			return when {
 				expressionString.isEmpty() -> EmptyExpression
 				expressionString == "any" -> {
-					CwtValueExpression(expressionString, Type.Any)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Any)
 				}
 				expressionString == "bool" -> {
-					CwtValueExpression(expressionString, Type.Bool)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Bool)
 				}
 				expressionString == "int" -> {
-					CwtValueExpression(expressionString, Type.Int)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Int)
 				}
 				expressionString.surroundsWith("int[", "]") -> {
 					val extraValue = expressionString.substring(4, expressionString.length - 1).toIntRangeOrNull()
-					CwtValueExpression(expressionString, Type.IntRange, null, extraValue)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.IntRange, null, extraValue)
 				}
 				expressionString == "float" -> {
-					CwtValueExpression(expressionString, Type.Float)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Float)
 				}
 				expressionString.surroundsWith("float[", "]") -> {
 					val extraValue = expressionString.substring(6, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.FloatRange, null, extraValue)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.FloatRange, null, extraValue)
 				}
 				expressionString == "scalar" -> {
-					CwtValueExpression(expressionString, Type.Scalar)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Scalar)
 				}
 				expressionString == "percentage_field" -> {
-					CwtValueExpression(expressionString, Type.PercentageField)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.PercentageField)
 				}
 				expressionString == "color_field" -> {
-					CwtValueExpression(expressionString, Type.ColorField)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.ColorField)
 				}
 				expressionString == "localisation" -> {
-					CwtValueExpression(expressionString, Type.Localisation)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Localisation)
 				}
 				expressionString == "localisation_synced" -> {
-					CwtValueExpression(expressionString, Type.SyncedLocalisation)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.SyncedLocalisation)
 				}
 				expressionString == "localisation_inline" -> {
-					CwtValueExpression(expressionString, Type.InlineLocalisation)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.InlineLocalisation)
 				}
-				expressionString == "abs_filepath" ->{
-					CwtValueExpression(expressionString, Type.AbsoluteFilePath)
+				expressionString == "abs_filepath" -> {
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.AbsoluteFilePath)
 				}
 				expressionString == "filepath" -> {
-					CwtValueExpression(expressionString, Type.FilePath)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.FilePath)
 				}
 				expressionString.surroundsWith("filepath[", "]") -> {
 					val value = expressionString.substring(9, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.FilePath, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.FilePath, value)
 				}
 				expressionString.surroundsWith("icon[", "]") -> {
 					val value = expressionString.substring(5, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.Icon, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Icon, value)
 				}
 				expressionString == "date_field" -> {
-					CwtValueExpression(expressionString, Type.DateField)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.DateField)
 				}
 				expressionString.surroundsWith('<', '>') -> {
 					val value = expressionString.substring(1, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.TypeExpression, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.TypeExpression, value)
 				}
 				expressionString.indexOf('<').let { it > 0 && it < expressionString.indexOf('>') } -> {
 					val value = expressionString.substring(expressionString.indexOf('<'), expressionString.indexOf('>'))
 					val extraValue = expressionString.substringBefore('<') to expressionString.substringAfterLast('>')
-					CwtValueExpression(expressionString, Type.TypeExpressionString, value, extraValue)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.TypeExpressionString, value, extraValue)
 				}
 				expressionString.surroundsWith("value[", "]") -> {
 					val value = expressionString.substring(6, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.Value, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Value, value)
 				}
 				expressionString.surroundsWith("value_set[", "]") -> {
 					val value = expressionString.substring(10, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.ValueSet, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.ValueSet, value)
 				}
 				expressionString.surroundsWith("enum[", "]") -> {
 					val value = expressionString.substring(5, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.Enum, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Enum, value)
 				}
 				expressionString.surroundsWith("complex_enum[", "]") -> {
 					val value = expressionString.substring(13, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.ComplexEnum, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.ComplexEnum, value)
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
 					val value = expressionString.substring(6, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.Scope, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Scope, value)
 				}
 				expressionString == "scope_field" -> {
-					CwtValueExpression(expressionString, Type.ScopeField)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.ScopeField)
 				}
 				expressionString == "variable_field" -> {
 					val value = when {
 						expressionString.surroundsWith("variable_field[", "]") -> expressionString.substring(15, expressionString.length - 1)
 						else -> null
 					}
-					CwtValueExpression(expressionString, Type.VariableField, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.VariableField, value)
 				}
 				expressionString == "int_variable_field" -> {
 					val value = when {
 						expressionString.surroundsWith("int_variable_field[", "]") -> expressionString.substring(19, expressionString.length - 1)
 						else -> null
 					}
-					CwtValueExpression(expressionString, Type.IntVariableField, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.IntVariableField, value)
 				}
 				expressionString == "value_field" -> {
 					val value = when {
 						expressionString.surroundsWith("value_field[", "]") -> expressionString.substring(12, expressionString.length - 1)
 						else -> null
 					}
-					CwtValueExpression(expressionString, Type.ValueField, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.ValueField, value)
 				}
 				expressionString == "int_value_field" -> {
 					val value = when {
 						expressionString.surroundsWith("int_value_field[", "]") -> expressionString.substring(16, expressionString.length - 1)
 						else -> null
 					}
-					CwtValueExpression(expressionString, Type.IntValueField, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.IntValueField, value)
 				}
 				expressionString.surroundsWith("single_alias_right[", "]") -> {
 					val value = expressionString.substring(19, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.SingleAliasRight, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.SingleAliasRight, value)
 				}
 				expressionString.surroundsWith("alias_keys_field[", "]") -> {
 					val value = expressionString.substring(17, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.AliasKeysField, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.AliasKeysField, value)
 				}
 				expressionString.surroundsWith("alias_match_left[", "]") -> {
 					val value = expressionString.substring(17, expressionString.length - 1)
-					CwtValueExpression(expressionString, Type.AliasMatchLeft, value)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.AliasMatchLeft, value)
 				}
 				expressionString.endsWith(']') -> {
-					CwtValueExpression(expressionString, Type.Other)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Other)
 				}
 				else -> {
-					CwtValueExpression(expressionString, Type.Constant, expressionString)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Constant, expressionString)
 				}
 			}
 		}
-	}
-	
-	enum class Type {
-		Any,
-		Bool,
-		Int,
-		IntRange,
-		Float,
-		FloatRange,
-		Scalar,
-		PercentageField,
-		ColorField,
-		Localisation,
-		SyncedLocalisation,
-		InlineLocalisation,
-		AbsoluteFilePath, //EXTENDED BY PLS
-		FilePath,
-		Icon,
-		DateField,
-		TypeExpression,
-		TypeExpressionString,
-		Value,
-		ValueSet,
-		Enum,
-		ComplexEnum,
-		Scope,
-		ScopeField,
-		VariableField,
-		IntVariableField,
-		ValueField,
-		IntValueField,
-		SingleAliasRight,
-		AliasKeysField,
-		AliasMatchLeft,
-		Constant,
-		Other
 	}
 	
 	operator fun component1() = type

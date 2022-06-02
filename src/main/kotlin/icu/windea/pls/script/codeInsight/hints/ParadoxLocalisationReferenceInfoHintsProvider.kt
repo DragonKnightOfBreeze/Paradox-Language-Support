@@ -20,20 +20,20 @@ import icu.windea.pls.tool.*
 class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
-		private val keyExpressionTypes: Array<CwtKeyExpression.Type> = arrayOf(
-			CwtKeyExpression.Type.Localisation,
-			CwtKeyExpression.Type.InlineLocalisation,
-			CwtKeyExpression.Type.SyncedLocalisation,
-			CwtKeyExpression.Type.AliasName, //需要兼容alias
-			CwtKeyExpression.Type.AliasKeysField //需要兼容alias
+		private val keyExpressionTypes: Array<CwtKeyExpressionType> = arrayOf(
+			CwtKvExpressionTypes.Localisation,
+			CwtKvExpressionTypes.InlineLocalisation,
+			CwtKvExpressionTypes.SyncedLocalisation,
+			CwtKvExpressionTypes.AliasName, //需要兼容alias
+			CwtKvExpressionTypes.AliasKeysField //需要兼容alias
 		)
-		private val valueExpressionTypes: Array<CwtValueExpression.Type> = arrayOf(
-			CwtValueExpression.Type.Localisation,
-			CwtValueExpression.Type.InlineLocalisation,
-			CwtValueExpression.Type.SyncedLocalisation,
-			CwtValueExpression.Type.SingleAliasRight, //需要兼容single_alias
-			CwtValueExpression.Type.AliasKeysField, //需要兼容alias
-			CwtValueExpression.Type.AliasMatchLeft //需要兼容alias
+		private val valueExpressionTypes: Array<CwtValueExpressionType> = arrayOf(
+			CwtKvExpressionTypes.Localisation,
+			CwtKvExpressionTypes.InlineLocalisation,
+			CwtKvExpressionTypes.SyncedLocalisation,
+			CwtKvExpressionTypes.SingleAliasRight, //需要兼容single_alias
+			CwtKvExpressionTypes.AliasKeysField, //需要兼容alias
+			CwtKvExpressionTypes.AliasMatchLeft //需要兼容alias
 		)
 	}
 	

@@ -1,5 +1,6 @@
 package icu.windea.pls.config.cwt
 
+import com.intellij.openapi.components.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -7,11 +8,12 @@ import javax.swing.*
 
 /**
  * CWT规则图标的提供器。
- * 
+ *
  * 用于根据配置上的选项、配置类型和表达式类型获取进行代码补全时需要显示的图标。
  */
-object CwtConfigIconProvider {
-	fun resolve(config: CwtConfig<*>, keyType: CwtKeyExpression.Type? = null, valueType: CwtValueExpression.Type? = null): Icon? {
+@Service(Service.Level.APP)
+class CwtConfigIconProvider {
+	fun resolve(config: CwtConfig<*>, keyType: CwtKeyExpressionType? = null, valueType: CwtValueExpressionType? = null): Icon? {
 		when {
 			config is CwtKvConfig<*> -> {
 				val iconOption = config.options?.find { it.key == "icon" }?.value
@@ -25,29 +27,29 @@ object CwtConfigIconProvider {
 				}
 				if(keyType != null) {
 					when(keyType) {
-						CwtKeyExpression.Type.Localisation -> return PlsIcons.localisationIcon
-						CwtKeyExpression.Type.SyncedLocalisation -> return PlsIcons.localisationIcon
-						CwtKeyExpression.Type.InlineLocalisation -> return PlsIcons.localisationIcon
-						CwtKeyExpression.Type.TypeExpression -> return PlsIcons.definitionIcon
-						CwtKeyExpression.Type.TypeExpressionString -> return PlsIcons.definitionIcon
-						CwtKeyExpression.Type.Value -> return PlsIcons.valueIcon
-						CwtKeyExpression.Type.Enum -> return PlsIcons.enumIcon
-						CwtKeyExpression.Type.ComplexEnum -> return PlsIcons.enumIcon
-						CwtKeyExpression.Type.Constant -> return PlsIcons.propertyIcon
+						CwtKvExpressionTypes.Localisation -> return PlsIcons.localisationIcon
+						CwtKvExpressionTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
+						CwtKvExpressionTypes.InlineLocalisation -> return PlsIcons.localisationIcon
+						CwtKvExpressionTypes.TypeExpression -> return PlsIcons.definitionIcon
+						CwtKvExpressionTypes.TypeExpressionString -> return PlsIcons.definitionIcon
+						CwtKvExpressionTypes.Value -> return PlsIcons.valueIcon
+						CwtKvExpressionTypes.Enum -> return PlsIcons.enumIcon
+						CwtKvExpressionTypes.ComplexEnum -> return PlsIcons.enumIcon
+						CwtKvExpressionTypes.Constant -> return PlsIcons.propertyIcon
 						else -> pass()
 					}
 				}
 				if(valueType != null) {
 					when(valueType) {
-						CwtValueExpression.Type.Localisation -> return PlsIcons.localisationIcon
-						CwtValueExpression.Type.SyncedLocalisation -> return PlsIcons.localisationIcon
-						CwtValueExpression.Type.InlineLocalisation -> return PlsIcons.localisationIcon
-						CwtValueExpression.Type.TypeExpression -> return PlsIcons.definitionIcon
-						CwtValueExpression.Type.TypeExpressionString -> return PlsIcons.definitionIcon
-						CwtValueExpression.Type.Value -> return PlsIcons.valueIcon
-						CwtValueExpression.Type.Enum -> return PlsIcons.enumIcon
-						CwtValueExpression.Type.ComplexEnum -> return PlsIcons.enumIcon
-						CwtValueExpression.Type.Constant -> return PlsIcons.valueIcon
+						CwtKvExpressionTypes.Localisation -> return PlsIcons.localisationIcon
+						CwtKvExpressionTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
+						CwtKvExpressionTypes.InlineLocalisation -> return PlsIcons.localisationIcon
+						CwtKvExpressionTypes.TypeExpression -> return PlsIcons.definitionIcon
+						CwtKvExpressionTypes.TypeExpressionString -> return PlsIcons.definitionIcon
+						CwtKvExpressionTypes.Value -> return PlsIcons.valueIcon
+						CwtKvExpressionTypes.Enum -> return PlsIcons.enumIcon
+						CwtKvExpressionTypes.ComplexEnum -> return PlsIcons.enumIcon
+						CwtKvExpressionTypes.Constant -> return PlsIcons.valueIcon
 						else -> pass()
 					}
 				}

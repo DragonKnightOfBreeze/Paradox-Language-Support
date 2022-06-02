@@ -38,11 +38,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		val expression = element.getPropertyConfig()?.keyExpression ?: return
 		val attributesKey = when(expression.type) {
-			CwtKeyExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-			CwtKeyExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtKeyExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtKeyExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtKeyExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
+			CwtKvExpressionTypes.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+			CwtKvExpressionTypes.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
+			CwtKvExpressionTypes.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			CwtKvExpressionTypes.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			CwtKvExpressionTypes.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)
@@ -64,15 +64,15 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val expression = valueConfig?.valueExpression ?: return fallbackAnnotateString(element, holder)
 		//val expression = element.valueConfig?.valueExpression ?: return 
 		val attributesKey = when(expression.type) {
-			CwtValueExpression.Type.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-			CwtValueExpression.Type.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtValueExpression.Type.AbsoluteFilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
-			CwtValueExpression.Type.FilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
-			CwtValueExpression.Type.Icon -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
-			CwtValueExpression.Type.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtValueExpression.Type.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtValueExpression.Type.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
-			CwtValueExpression.Type.AliasMatchLeft -> return fallbackAnnotateString(element,holder)
+			CwtKvExpressionTypes.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+			CwtKvExpressionTypes.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
+			CwtKvExpressionTypes.AbsoluteFilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+			CwtKvExpressionTypes.FilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+			CwtKvExpressionTypes.Icon -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+			CwtKvExpressionTypes.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			CwtKvExpressionTypes.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+			CwtKvExpressionTypes.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
+			CwtKvExpressionTypes.AliasMatchLeft -> return fallbackAnnotateString(element,holder)
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)

@@ -7,7 +7,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -75,14 +74,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			if(configType != null) {
 				append(configType.text)
 			} else {
-				//在脚本文件中显示"(definition property)"
-				if(originalElement != null && originalElement.language == ParadoxScriptLanguage) {
-					append(PlsDocBundle.message("name.script.definitionProperty"))
-				} else {
-					append(PlsDocBundle.message("name.cwt.property"))
-				}
+				append(PlsDocBundle.message("name.cwt.property"))
 			}
 			append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			//基于规则类型提供额外的定义信息
 			when(configType) {
 				//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
 				null -> {
