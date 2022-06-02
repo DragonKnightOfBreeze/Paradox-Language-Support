@@ -31,18 +31,18 @@ class ParadoxDefinitionElementInfo(
 		if(element !is ParadoxScriptProperty) return@lazy null
 		if(propertyConfigs.isEmpty()) return@lazy null
 		val propertyValue = element.propertyValue ?: return@lazy null
-		propertyConfigs.find { matchesValue(it.valueExpression, propertyValue.value, configGroup) }
+		propertyConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, propertyValue.value, configGroup) }
 	}
 	
-	/** 对应的子属性配置列表。（过滤重复的） */
+	/** 对应的子属性配置列表。 */
 	val childPropertyConfigs: List<CwtPropertyConfig> by lazy {
 		//基于上一级keyExpression，keyExpression一定唯一
 		definitionInfo.definitionConfig?.resolveChildPropertyConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
+	/** 对应的子值配置列表。 */
 	val childValueConfigs: List<CwtValueConfig> by lazy {
 		//基于上一级keyExpression，valueExpression一定唯一
-		//根据路径解析对应的子值配置列表。（过滤重复的）
 		definitionInfo.definitionConfig?.resolveChildValuesConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
@@ -54,7 +54,7 @@ class ParadoxDefinitionElementInfo(
 		}
 		if(properties.isEmpty()) return@lazy emptyMap()
 		properties.groupAndCountBy { prop ->
-			childPropertyConfigs.find { matchesKey(it.keyExpression, prop.propertyKey, configGroup) }?.keyExpression
+			childPropertyConfigs.find { CwtConfigHandler.matchesKey(it.keyExpression, prop.propertyKey, configGroup) }?.keyExpression
 		}
 	}
 	
@@ -67,7 +67,7 @@ class ParadoxDefinitionElementInfo(
 		}
 		if(values.isEmpty()) return@lazy emptyMap()
 		values.groupAndCountBy { value ->
-			childValueConfigs.find { matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
+			childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
 		}
 	}
 	

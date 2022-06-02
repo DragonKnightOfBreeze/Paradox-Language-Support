@@ -6,9 +6,11 @@ import icu.windea.pls.config.cwt.expression.*
 import javax.swing.*
 
 /**
+ * CWT规则图标的提供器。
+ * 
  * 用于根据配置上的选项、配置类型和表达式类型获取进行代码补全时需要显示的图标。
  */
-object CwtConfigIconResolver {
+object CwtConfigIconProvider {
 	fun resolve(config: CwtConfig<*>, keyType: CwtKeyExpression.Type? = null, valueType: CwtValueExpression.Type? = null): Icon? {
 		when {
 			config is CwtKvConfig<*> -> {

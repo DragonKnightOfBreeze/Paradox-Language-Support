@@ -157,13 +157,13 @@
                      groupPathKey="script.inspection.definition.path"
                      implementationClass="icu.windea.pls.script.inspections.definition.UnexpectedScriptSyntaxInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingRelatedLocalisation"
-                     enabledByDefault="true" level="WARN"
+                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.definition.inspection.missingRelatedLocalisation"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
                      groupPathKey="script.inspection.definition.path"
                      implementationClass="icu.windea.pls.script.inspections.definition.MissingRelatedLocalisationInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedFilePath"
-                     enabledByDefault="true" level="WARN"
+                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.definition.inspection.unresolvedFilePath"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
                      groupPathKey="script.inspection.definition.path"

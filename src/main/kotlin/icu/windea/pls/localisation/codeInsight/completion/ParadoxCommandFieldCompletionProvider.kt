@@ -32,7 +32,7 @@ object ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionPara
 	private fun doCompleteLocalisationCommand(parameters: CompletionParameters, project: Project, result: CompletionResultSet) {
 		val gameType = parameters.originalFile.fileInfo?.gameType ?: return
 		val configGroup = getCwtConfig(project).get(gameType) ?: return
-		completeLocalisationCommand(configGroup, result)
+		CwtConfigHandler.completeLocalisationCommand(configGroup, result)
 	}
 	
 	private fun doCompleteScriptedLoc(project: Project, result: CompletionResultSet) {

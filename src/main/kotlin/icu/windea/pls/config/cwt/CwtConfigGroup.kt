@@ -675,6 +675,6 @@ class CwtConfigGroup(
 		}
 		//根据config对property进行内容匹配
 		val elementConfig = subtypeConfig.config
-		return matchesDefinitionProperty(element, elementConfig, this)
+		return CwtConfigHandler.matchesDefinitionProperty(element, elementConfig, this)
 	}
 }

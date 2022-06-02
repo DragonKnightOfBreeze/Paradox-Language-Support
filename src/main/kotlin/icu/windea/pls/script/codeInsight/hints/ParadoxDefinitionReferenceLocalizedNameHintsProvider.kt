@@ -45,7 +45,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 		val elementType = element.elementType ?: return false
 		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
 		if(element is ParadoxScriptPropertyKey) {
-			val resolved = resolveKey(element) { it.type in keyExpressionTypes }
+			val resolved = CwtConfigHandler.resolveKey(element) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {
@@ -57,7 +57,7 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 				}
 			}
 		} else if(element is ParadoxScriptString) {
-			val resolved = resolveValue(element) { it.type in valueExpressionTypes }
+			val resolved = CwtConfigHandler.resolveValue(element) { it.type in valueExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {

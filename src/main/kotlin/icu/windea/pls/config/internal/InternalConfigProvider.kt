@@ -4,9 +4,10 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.tool.*
 import org.slf4j.*
 import java.lang.invoke.*
 

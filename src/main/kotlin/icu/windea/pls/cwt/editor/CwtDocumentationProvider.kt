@@ -90,7 +90,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					if(propertyElement.valueType != ParadoxValueType.BlockType) return@definition //仅限block
 					val gameType = propertyElement.gameType ?: return@definition
 					val config = propertyElement.getMatchedPropertyConfig() ?: return@definition
-					val scopeMap = mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)
+					val scopeMap = CwtConfigHandler.mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)
 					for((sk, sv) in scopeMap) {
 						val scopeLink = "${gameType.id}.scopes.$sv"
 						appendBr().append(PlsDocBundle.message("name.cwt.scope")).append(" ").append(sk).append(" = ").appendCwtLink(sv, scopeLink, null)

@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 
@@ -33,7 +34,7 @@ class ChangeColorIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
-			val colorConfigs = ParadoxColorConfig.findAllAsArray(project)
+			val colorConfigs = InternalConfigHandler.getColors(project)
 			JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs)).showInBestPositionFor(editor)
 		}
 	}

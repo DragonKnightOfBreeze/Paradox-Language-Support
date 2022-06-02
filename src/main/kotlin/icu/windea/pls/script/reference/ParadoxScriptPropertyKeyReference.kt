@@ -28,11 +28,11 @@ class ParadoxScriptPropertyKeyReference(
 	}
 	
 	override fun resolve(): PsiNamedElement? {
-		return resolveKey(element) //根据对应的expression进行解析
+		return CwtConfigHandler.resolveKey(element) //根据对应的expression进行解析
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		return multiResolveKey(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
+		return CwtConfigHandler.multiResolveKey(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
 	}
 	
 	//代码提示功能由ParadoxDefinitionCompletionProvider统一实现

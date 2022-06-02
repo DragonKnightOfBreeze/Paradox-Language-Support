@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.reference
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.ParadoxLocalisationCategory.*
 import icu.windea.pls.localisation.psi.*
@@ -27,7 +27,7 @@ class ParadoxLocalisationPropertyReferenceReference(
 		val project = element.project
 		
 		//尝试解析成predefined_variable
-		ParadoxPredefinedVariableConfig.find(name)?.pointer?.element?.let { return it }
+		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return it }
 		
 		//解析成localisation或者synced_localisation
 		return when(category) {
@@ -44,7 +44,7 @@ class ParadoxLocalisationPropertyReferenceReference(
 		val project = element.project
 		
 		//尝试解析成predefined_variable
-		ParadoxPredefinedVariableConfig.find(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
+		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
 		
 		//解析成localisation或者synced_localisation
 		return when(category) {

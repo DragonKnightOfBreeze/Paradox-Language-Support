@@ -1,4 +1,4 @@
-package icu.windea.pls.tool
+package icu.windea.pls.config
 
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -8,7 +8,7 @@ import icu.windea.pls.cwt.psi.*
 import java.util.*
 
 /**
- * Cwt配置文件的解析器。
+ * Cwt规则的解析器。
  */
 object CwtConfigResolver {
 	fun resolve(file: CwtFile): CwtFileConfig {

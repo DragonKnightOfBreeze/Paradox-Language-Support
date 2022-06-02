@@ -65,9 +65,9 @@ data class CwtDefinitionConfig(
 							isTop = false
 							val nextResult = SmartList<CwtPropertyConfig>()
 							for(config in result) {
-								if(matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
+								if(CwtConfigHandler.matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
 									//如果valueExpressionType是single_alias_right或alias_match_left,则要进行内联
-									val inlined = inlineConfig(key, isQuoted, config, configGroup, nextResult)
+									val inlined = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult)
 									if(!inlined) nextResult.add(config)
 								}
 							}
@@ -78,9 +78,9 @@ data class CwtDefinitionConfig(
 								val configs = r.properties
 								if(configs != null && configs.isNotEmpty()) {
 									for(config in configs) {
-										if(matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
+										if(CwtConfigHandler.matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
 											//如果valueExpressionType是single_alias_right或alias_match_left,则要进行内联
-											val inlined = inlineConfig(key, isQuoted, config, configGroup, nextResult)
+											val inlined = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult)
 											if(!inlined) nextResult.add(config)
 										}
 									}
@@ -139,45 +139,6 @@ data class CwtDefinitionConfig(
 				}
 			}
 		}.distinctBy { it.value }
-	}
-	
-	/**
-	 * 内联类型为`single_alias_right`或`alias_match_left`的规则。以便后续的代码提示、引用解析和结构验证。
-	 */
-	private fun inlineConfig(key: String, quoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup,
-		result: MutableList<CwtPropertyConfig>): Boolean {
-		val valueExpression = config.valueExpression
-		return when(valueExpression.type) {
-			CwtValueExpression.Type.SingleAliasRight -> {
-				val singleAliasName = valueExpression.value ?: return false
-				val singleAliases = configGroup.singleAliases[singleAliasName] ?: return false
-				for(singleAlias in singleAliases) {
-					val c = singleAlias.config.copy(
-						pointer = config.pointer, key = config.key,
-						options = config.options, optionValues = config.optionValues, documentation = config.documentation
-					)
-					c.parent = config.parent
-					result.add(c)
-				}
-				true
-			}
-			CwtValueExpression.Type.AliasMatchLeft -> {
-				val aliasName = valueExpression.value ?: return false
-				val aliasGroup = configGroup.aliases[aliasName] ?: return false
-				val aliasSubName = resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?: return false
-				val aliases = aliasGroup[aliasSubName] ?: return false
-				for(alias in aliases) {
-					val c = alias.config.copy(
-						pointer = config.pointer, key = config.key,
-						options = config.options, optionValues = config.optionValues, documentation = config.documentation
-					)
-					c.parent = config.parent
-					result.add(c)
-				}
-				true
-			}
-			else -> false
-		}
 	}
 }
 

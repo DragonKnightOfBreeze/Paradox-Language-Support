@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 
@@ -33,7 +34,7 @@ class ChangeLocaleIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationLocale) {
-			val values = ParadoxLocaleConfig.findAllAsArray(project)
+			val values = InternalConfigHandler.getLocales(project)
 			JBPopupFactory.getInstance().createListPopup(Popup(element, values)).showInBestPositionFor(editor)
 		}
 	}

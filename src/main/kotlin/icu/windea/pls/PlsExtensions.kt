@@ -46,12 +46,12 @@ fun getCwtConfig(project: Project) = project.getService(CwtConfigProvider::class
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
 	val primaryLocale = getSettings().localisationPrimaryLocale.orEmpty()
 	if(primaryLocale.isNotEmpty()) {
-		val usedLocale = ParadoxLocaleConfig.findByFlag(primaryLocale)
+		val usedLocale = InternalConfigHandler.getLocaleByFlag(primaryLocale)
 		if(usedLocale != null) return usedLocale
 	}
 	//如果是默认语言区域，则基于OS，如果没有对应的语言区域，则使用英文
 	val userLanguage = System.getProperty("user.language")
-	return ParadoxLocaleConfig.findByFlag(userLanguage) ?: ParadoxLocaleConfig.findByFlag("en")
+	return InternalConfigHandler.getLocaleByFlag(userLanguage) ?: InternalConfigHandler.getLocaleByFlag("en")
 }
 
 /**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
@@ -442,7 +442,7 @@ fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 			if(childValueConfigs.isEmpty()) return null
 			val gameType = definitionElementInfo.gameType
 			val configGroup = getCwtConfig(element.project).getValue(gameType)
-			return childValueConfigs.find { matchesValue(it.valueExpression, element, configGroup) }
+			return childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, element, configGroup) }
 				?: childValueConfigs.singleOrNull()
 		}
 		else -> return null
@@ -467,7 +467,7 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig? get() = doGetLocaleConfig(name, project)
 
 private fun doGetLocaleConfig(id: String, project: Project): ParadoxLocaleConfig? {
-	return ParadoxLocaleConfig.find(id, project)
+	return InternalConfigHandler.getLocale(id, project)
 }
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
@@ -482,7 +482,7 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig? get() = name?.let { doGetColorConfig(it, project) }
 
 private fun doGetColorConfig(id: String, project: Project): ParadoxColorConfig? {
-	return ParadoxColorConfig.find(id, project)
+	return InternalConfigHandler.getColor(id, project)
 }
 //endregion
 

@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.internal.*
 import java.awt.*
 
 @Suppress("DEPRECATION")
@@ -40,7 +40,7 @@ object ParadoxLocalisationAttributesKeys {
 	
 	@JvmStatic
 	fun getColorKey(id: String, project: Project): TextAttributesKey? {
-		val color = ParadoxColorConfig.find(id, project)?.color ?: return null
+		val color = InternalConfigHandler.getColor(id, project)?.color ?: return null
 		return colorKeyCache.get(color)
 	}
 	
@@ -52,7 +52,7 @@ object ParadoxLocalisationAttributesKeys {
 	
 	@JvmStatic
 	fun getColorOnlyKey(id: String, project: Project): TextAttributesKey? {
-		val color = ParadoxColorConfig.find(id, project)?.color ?: return null
+		val color = InternalConfigHandler.getColor(id, project)?.color ?: return null
 		return colorOnlyKeyCache.get(color)
 	}
 }
