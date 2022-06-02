@@ -7,6 +7,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -24,60 +25,66 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is CwtProperty -> getPropertyInfo(element, originalElement)
-			is CwtString -> getStringInfo(element)
+			is CwtString -> getStringInfo(element, originalElement)
 			else -> null
 		}
 	}
 	
 	private fun getPropertyInfo(element: CwtProperty, originalElement: PsiElement?): String {
-		val name = element.name
 		return buildString {
+			val name = element.name
 			buildPropertyDefinition(element, originalElement, name)
 		}
 	}
 	
-	private fun getStringInfo(element: CwtString): String {
-		val name = element.name
+	private fun getStringInfo(element: CwtString, originalElement: PsiElement?): String {
 		return buildString {
-			buildStringDefinition(element, name)
+			val name = element.name
+			buildStringDefinition(element, originalElement, name)
 		}
 	}
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is CwtProperty -> getPropertyDoc(element, originalElement)
-			is CwtString -> getStringDoc(element)
+			is CwtString -> getStringDoc(element, originalElement)
 			else -> null
 		}
 	}
 	
 	private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?): String {
-		val name = element.name
 		return buildString {
+			val name = element.name
 			buildPropertyDefinition(element, originalElement, name)
 			buildDocumentationContent(element)
 		}
 	}
 	
-	private fun getStringDoc(element: CwtString): String {
-		val name = element.name
+	private fun getStringDoc(element: CwtString, originalElement: PsiElement?): String {
 		return buildString {
-			buildStringDefinition(element, name)
+			val name = element.name
+			buildStringDefinition(element, originalElement, name)
 			buildDocumentationContent(element)
 		}
 	}
 	
 	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String) {
-		val project = element.project
-		val configType = element.configType
 		definition {
-			if(configType != null) {
-				append(configType.text)
-			} else {
-				append(PlsDocBundle.message("name.cwt.property"))
+			val configType = element.configType
+			if(originalElement == null || configType?.isReference == true) {
+				if(configType != null) append(configType.text)
+				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			} else{
+				val originalName = if(originalElement is ParadoxScriptPropertyKey) originalElement.value else originalElement.text
+				append(PlsDocBundle.message("name.script.definitionProperty"))
+				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
+				grayed {
+					append(" by ").append(name.escapeXmlOrAnonymous())
+				}
 			}
-			append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			
 			//基于规则类型提供额外的定义信息
+			val project = element.project
 			when(configType) {
 				//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
 				null -> {
@@ -129,11 +136,20 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildStringDefinition(element: CwtString, name: String) {
-		val configTypeText = element.configType?.text
+	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String) {
 		definition {
-			if(configTypeText != null) append(configTypeText).append(" ")
-			append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			val configType = element.configType
+			if(originalElement == null || configType?.isReference == true) {
+				if(configType != null) append(configType.text).append(" ")
+				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			} else {
+				val originalName = if(originalElement is ParadoxScriptValue) originalElement.value else originalElement.text
+				append(PlsDocBundle.message("name.script.definitionValue"))
+				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
+				grayed {
+					append(" by ").append(name.escapeXmlOrAnonymous())
+				}
+			}
 		}
 	}
 	
@@ -180,6 +196,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getDefinitionProperty(originalElement: PsiElement?): ParadoxScriptProperty? {
 		if(originalElement == null) return null
+		if(originalElement.language != ParadoxScriptLanguage) return null
 		val parent = originalElement.parent ?: return null
 		val keyElement = parent as? ParadoxScriptPropertyKey ?: parent.parent as? ParadoxScriptPropertyKey ?: return null
 		return keyElement.parent as? ParadoxScriptProperty

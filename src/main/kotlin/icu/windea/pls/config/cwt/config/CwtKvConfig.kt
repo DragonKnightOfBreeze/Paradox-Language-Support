@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 
 abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {

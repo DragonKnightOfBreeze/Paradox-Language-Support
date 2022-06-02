@@ -10,11 +10,11 @@ import icu.windea.pls.script.psi.*
  * 脚本文件的类型声明提供器。用于导航到类型声明（`Navigate > Type Declaration`）。
  *
  * 支持的PSI元素：
- * * 属性（property） - 导航到定义的类型声明，包括子类型（如果是定义），或者定义元素对应的规则声明（如果是定义元素）。
- * * 值（value） - 导航到定义元素对应的规则声明（如果是定义元素）。
+ * * 属性（property） - 导航到定义的类型声明，包括子类型（如果是定义）。
  */
 class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 	override fun getSymbolTypeDeclarations(symbol: PsiElement): Array<PsiElement>? {
+		//注意这里的symbol是解析引用后得到的PSI元素，因此无法定位到定义元素对应的规则声明。
 		when {
 			symbol is ParadoxScriptProperty -> {
 				val definitionInfo = symbol.definitionInfo
@@ -30,17 +30,6 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 							}
 						}.toTypedArray()
 					}
-				}
-				val propertyConfig = symbol.getPropertyConfig()
-				if(propertyConfig != null) {
-					return propertyConfig.pointer.element?.toSingletonArray()
-				}
-				return null
-			}
-			symbol is ParadoxScriptValue -> {
-				val valueConfig = symbol.getValueConfig()
-				if(valueConfig != null) {
-					return valueConfig.pointer.element?.toSingletonArray()
 				}
 				return null
 			}
