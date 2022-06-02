@@ -1,4 +1,4 @@
-package icu.windea.pls.core.codeInsight
+package icu.windea.pls.core.refactoring
 
 import com.intellij.lang.*
 import com.intellij.openapi.actionSystem.*

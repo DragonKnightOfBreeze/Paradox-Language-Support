@@ -27,6 +27,13 @@ class CwtNavBar : StructureAwareNavBarModelExtension() {
 		}
 	}
 	
+	//FIXME 没有排除作为属性的值的值
+	//FIXME 鼠标放置在选项注释或文档注释上时，需要定位到对应的属性或值
+	
+	override fun acceptParentFromModel(psiElement: PsiElement?): Boolean {
+		return psiElement != null
+	}
+	
 	override fun adjustElement(psiElement: PsiElement): PsiElement? {
 		val parent = psiElement.parentOfTypes(CwtOptionComment::class, CwtDocumentationComment::class, CwtValue::class, CwtProperty::class, withSelf = true)
 		if(parent == null || parent is CwtProperty || parent is CwtValue) return psiElement

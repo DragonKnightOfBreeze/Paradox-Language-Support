@@ -27,4 +27,6 @@ class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
 			else -> null
 		}
 	}
+	
+	//FIXME 没有排除作为属性的值的值
 }

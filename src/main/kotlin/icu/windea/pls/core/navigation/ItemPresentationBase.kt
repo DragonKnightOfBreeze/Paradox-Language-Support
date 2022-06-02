@@ -9,7 +9,7 @@ import javax.swing.*
 @Suppress("UNCHECKED_CAST")
 abstract class ItemPresentationBase<T : PsiElement>(
 	element: T
-) : ItemPresentation {
+) : ItemPresentation, LocationPresentation {
 	private val anchor = TreeAnchorizer.getService().createAnchor(element)
 	
 	val element get() = TreeAnchorizer.getService().retrieveElement(anchor) as T?
@@ -34,6 +34,14 @@ abstract class ItemPresentationBase<T : PsiElement>(
 		//默认使用虚拟文件的路径
 		val element = element
 		return element?.containingFile?.virtualFile?.path
+	}
+	
+	override fun getLocationPrefix(): String {
+		return " ["
+	}
+	
+	override fun getLocationSuffix(): String {
+		return "]"
 	}
 }
 

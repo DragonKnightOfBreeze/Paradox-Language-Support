@@ -87,6 +87,7 @@
     <itemPresentationProvider
         forClass="com.intellij.psi.NavigatablePsiElement"
         implementationClass="icu.windea.pls.script.navigation.ParadoxScriptPresentationProvider"/>
+    <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxScriptChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
     <projectViewNodeDecorator
         implementation="icu.windea.pls.script.projectView.ParadoxScriptProjectViewNodeDecorator"/>
