@@ -12,14 +12,12 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -220,11 +218,13 @@ fun PsiElement.isQuoted(): Boolean {
 }
 
 fun CwtValue.isLonely(): Boolean {
-	return this.parent is ICwtBlock // CwtBlock | CwtRootBlock
+	val parent = this.parent
+	return parent is ICwtBlock && parent.parent is CwtProperty
 }
 
 fun ParadoxScriptValue.isLonely(): Boolean {
-	return this.parent is IParadoxScriptBlock // ParadoxScriptBlock | ParadoxScriptRootBlock
+	val parent = this.parent
+	return parent is IParadoxScriptBlock 
 }
 
 val PsiElement.gameType: ParadoxGameType? get() = doGetGameType(this)

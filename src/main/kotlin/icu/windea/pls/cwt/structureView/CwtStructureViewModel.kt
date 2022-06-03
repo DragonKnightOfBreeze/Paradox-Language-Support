@@ -4,6 +4,8 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.util.treeView.smartTree.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtStructureViewModel(
@@ -11,11 +13,6 @@ class CwtStructureViewModel(
 	psiFile: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, psiFile), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
 	companion object {
-		private val defaultSuitableClasses = arrayOf(
-			CwtFile::class.java,
-			CwtProperty::class.java,
-			CwtValue::class.java
-		)
 		private val defaultSorters = arrayOf(Sorter.ALPHA_SORTER)
 	}
 	
@@ -23,10 +20,30 @@ class CwtStructureViewModel(
 	override fun getRoot() = CwtFileTreeElement(psiFile as CwtFile)
 	
 	//指定在结构视图中的元素
-	override fun getSuitableClasses() = defaultSuitableClasses
+	override fun isSuitable(element: PsiElement?): Boolean {
+		return element is CwtFile || element is CwtProperty || (element is CwtValue && element.isLonely())
+	}
+	
+	override fun findAcceptableElement(element: PsiElement?): Any? {
+		var current = element
+		while(current != null && current !is PsiFile) {
+			if(isSuitable(current)) return current
+			if(current is PsiComment) return current.siblings().find { it is CwtProperty }
+				?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
+			current = current.parent
+		}
+		return null
+	}
 	
 	//指定可用的排序器，可自定义
 	override fun getSorters() = defaultSorters
+	
+	override fun getCurrentEditorElement(): Any? {
+		//		val leafElement = super.getLeafElement(dataContext)
+		//		if(leafElement is CwtValue && !leafElement.isLonely()) return leafElement.parentOfType<CwtProperty>()
+		//		return leafElement
+		return super.getCurrentEditorElement()
+	}
 	
 	override fun isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean {
 		return element is CwtFileTreeElement
