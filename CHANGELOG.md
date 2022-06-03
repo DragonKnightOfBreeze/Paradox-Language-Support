@@ -61,13 +61,10 @@
   * [X] 支持额外的CWT选项：`## loc_format = html`，用于指定将文档注释渲染为HTML
   * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
   * [X] 支持额外的CWT选项：`## color_type = rgb / rgba`，用于以装订线图标的方式显示对应的颜色
+  * [X] 仅当对应的数据类型是`bool`时，才会提示`yes`和`no`
+  * [ ] 支持数据类型`scope_group` *
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
-  * [ ] 进行代码提示时，仅当对应的定义元素类型是boolean或者无法解析时，才会提示`yes`和`no`
-  * [ ] 确认支持获取和应用嵌套的定义的CWT规则
-  * [ ] 确认支持且能正确处理`scope`和`scope_link`
-  * [ ] 确认支持且能正确处理`localisation_link`
-  * [ ] 确认支持所有在`guidance.md`中提到的值类型，包括规则匹配、代码补全、引用解析等功能
-  * [ ] 使用CWT规则校验脚本结构（通过annotator）
+  * [ ] 支持基于CWT规则校验脚本结构
 * ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~

@@ -13,10 +13,6 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		val stringTokens = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val propertyKeyOrStringTokens = TokenSet.create(PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID, STRING_TOKEN, QUOTED_STRING_TOKEN)
 		
-		//当用户正在输入一个未由引号括起的string时提示
-		val booleanPattern = psiElement(STRING_TOKEN)
-		extend(CompletionType.BASIC, booleanPattern, ParadoxBooleanCompletionProvider)
-		
 		//当用户正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement().withElementType(propertyKeyOrStringTokens)
 		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider)

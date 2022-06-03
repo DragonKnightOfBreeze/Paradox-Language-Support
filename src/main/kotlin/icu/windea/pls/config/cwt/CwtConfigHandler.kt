@@ -208,20 +208,11 @@ object CwtConfigHandler {
 		if(expression.isEmpty()) return false
 		return when(expression.type) {
 			CwtKvExpressionTypes.Any -> true
-			CwtKvExpressionTypes.Bool -> {
-				key.isBooleanYesNo()
-			}
 			CwtKvExpressionTypes.Int -> {
-				key.isInt()
-			}
-			CwtKvExpressionTypes.IntRange -> {
-				key.isInt() && expression.extraValue.castOrNull<IntRange>()?.contains(key.toInt()) ?: true
+				key.isInt() && expression.extraValue?.cast<IntRange>()?.contains(key.toInt()) ?: true
 			}
 			CwtKvExpressionTypes.Float -> {
-				key.isFloat()
-			}
-			CwtKvExpressionTypes.FloatRange -> {
-				key.isFloat() && expression.extraValue.castOrNull<FloatRange>()?.contains(key.toFloat()) ?: true
+				key.isFloat() && expression.extraValue?.cast<FloatRange>()?.contains(key.toFloat()) ?: true
 			}
 			CwtKvExpressionTypes.Scalar -> {
 				key.isString()
@@ -290,18 +281,10 @@ object CwtConfigHandler {
 				valueElement is ParadoxScriptBoolean
 			}
 			CwtKvExpressionTypes.Int -> {
-				valueElement is ParadoxScriptInt
-			}
-			CwtKvExpressionTypes.IntRange -> {
-				val value = valueElement.value
-				valueElement is ParadoxScriptInt && expression.extraValue.castOrNull<IntRange>()?.contains(value.toInt()) ?: true
+				valueElement is ParadoxScriptInt && expression.extraValue?.cast<IntRange>()?.contains(valueElement.intValue) ?: true
 			}
 			CwtKvExpressionTypes.Float -> {
-				valueElement is ParadoxScriptFloat
-			}
-			CwtKvExpressionTypes.FloatRange -> {
-				val value = valueElement.value
-				valueElement is ParadoxScriptFloat && expression.extraValue.castOrNull<FloatRange>()?.contains(value.toFloat()) ?: true
+				valueElement is ParadoxScriptFloat && expression.extraValue?.cast<FloatRange>()?.contains(valueElement.floatValue) ?: true
 			}
 			CwtKvExpressionTypes.Scalar -> {
 				valueElement is ParadoxScriptString
@@ -708,6 +691,9 @@ object CwtConfigHandler {
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
 		when(expression.type) {
+			CwtKvExpressionTypes.Bool -> {
+				result.addAllElements(boolLookupElements)
+			}
 			CwtKvExpressionTypes.Localisation -> {
 				val icon = service<CwtConfigIconProvider>().resolve(config, valueType = expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
@@ -835,6 +821,9 @@ object CwtConfigHandler {
 						.withNeededInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
+			}
+			CwtKvExpressionTypes.Scope -> {
+				
 			}
 			CwtKvExpressionTypes.Value -> {
 				val valueExpression = expression.value ?: return
@@ -987,6 +976,10 @@ object CwtConfigHandler {
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
+	}
+	
+	val boolLookupElements = booleanValues.map { value ->
+		LookupElementBuilder.create(value).bold().withPriority(PlsPriorities.keywordPriority)
 	}
 	
 	private val separatorChars = charArrayOf('=', '<', '>', '!')

@@ -8,11 +8,9 @@ sealed interface CwtValueExpressionType : CwtKvExpressionType
 
 object CwtKvExpressionTypes {
 	object Any : CwtKeyExpressionType, CwtValueExpressionType
-	object Bool : CwtKeyExpressionType, CwtValueExpressionType
+	object Bool : CwtValueExpressionType
 	object Int : CwtKeyExpressionType, CwtValueExpressionType
-	object IntRange : CwtKeyExpressionType, CwtValueExpressionType
 	object Float : CwtKeyExpressionType, CwtValueExpressionType
-	object FloatRange : CwtKeyExpressionType, CwtValueExpressionType
 	object Scalar : CwtKeyExpressionType, CwtValueExpressionType
 	object PercentageField : CwtValueExpressionType
 	object ColorField : CwtValueExpressionType

@@ -30,14 +30,14 @@ class CwtValueExpression private constructor(
 				}
 				expressionString.surroundsWith("int[", "]") -> {
 					val extraValue = expressionString.substring(4, expressionString.length - 1).toIntRangeOrNull()
-					CwtValueExpression(expressionString, CwtKvExpressionTypes.IntRange, null, extraValue)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Int, null, extraValue)
 				}
 				expressionString == "float" -> {
 					CwtValueExpression(expressionString, CwtKvExpressionTypes.Float)
 				}
 				expressionString.surroundsWith("float[", "]") -> {
 					val extraValue = expressionString.substring(6, expressionString.length - 1)
-					CwtValueExpression(expressionString, CwtKvExpressionTypes.FloatRange, null, extraValue)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Float, null, extraValue)
 				}
 				expressionString == "scalar" -> {
 					CwtValueExpression(expressionString, CwtKvExpressionTypes.Scalar)
@@ -101,6 +101,10 @@ class CwtValueExpression private constructor(
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
 					val value = expressionString.substring(6, expressionString.length - 1)
+					CwtValueExpression(expressionString, CwtKvExpressionTypes.Scope, value)
+				}
+				expressionString.surroundsWith("event_target[", "]") -> {
+					val value = expressionString.substring(13, expressionString.length - 1)
 					CwtValueExpression(expressionString, CwtKvExpressionTypes.Scope, value)
 				}
 				expressionString == "scope_field" -> {

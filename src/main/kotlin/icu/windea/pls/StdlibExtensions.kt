@@ -398,9 +398,9 @@ fun String.toFileUrl() = File(this).toURI().toURL()
  */
 fun String.toClasspathUrl() = locationClass.getResource(this)!!
 
-fun String.toIntRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
+fun String.toIntRangeOrNull(): IntRange? = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 
-fun String.toFloatRangeOrNull() = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
+fun String.toFloatRangeOrNull(): FloatRange? = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
 
 fun String.toUUID(): UUID {
 	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))

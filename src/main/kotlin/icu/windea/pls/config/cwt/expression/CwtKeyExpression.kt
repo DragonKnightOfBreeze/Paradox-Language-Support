@@ -22,22 +22,19 @@ class CwtKeyExpression private constructor(
 				expressionString == "any" -> {
 					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Any)
 				}
-				expressionString == "bool" -> {
-					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Bool)
-				}
 				expressionString == "int" -> {
 					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Int)
 				}
 				expressionString.surroundsWith("int[", "]") -> {
 					val extraValue = expressionString.substring(4, expressionString.length - 1).toIntRangeOrNull()
-					CwtKeyExpression(expressionString, CwtKvExpressionTypes.IntRange, null, extraValue)
+					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Int, null, extraValue)
 				}
 				expressionString == "float" -> {
 					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Float)
 				}
 				expressionString.surroundsWith("float[", "]") -> {
 					val extraValue = expressionString.substring(6, expressionString.length - 1).toFloatRangeOrNull()
-					CwtKeyExpression(expressionString, CwtKvExpressionTypes.FloatRange, null, extraValue)
+					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Float, null, extraValue)
 				}
 				expressionString == "scalar" -> {
 					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Scalar)
@@ -78,6 +75,10 @@ class CwtKeyExpression private constructor(
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
 					val value = expressionString.substring(6, expressionString.length - 1)
+					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Scope, value)
+				}
+				expressionString.surroundsWith("event_target[", "]") -> {
+					val value = expressionString.substring(13, expressionString.length - 1)
 					CwtKeyExpression(expressionString, CwtKvExpressionTypes.Scope, value)
 				}
 				expressionString == "scope_field" -> {
