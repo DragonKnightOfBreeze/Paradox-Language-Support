@@ -5,13 +5,19 @@ import com.intellij.psi.util.*
 import com.intellij.spellchecker.tokenizer.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtSpellchecker:SpellcheckingStrategy() {
+class CwtSpellchecker : SpellcheckingStrategy() {
+	companion object {
+		private val textTokenizer = TEXT_TOKENIZER
+		private val compactTextTokenizer = EMPTY_TOKENIZER
+		private val emptyTokenizer = EMPTY_TOKENIZER
+	}
+	
 	override fun getTokenizer(element: PsiElement?): Tokenizer<*> {
-		return when(element.elementType){
-			//PROPERTY_KEY_TOKEN, OPTION_KEY_TOKEN -> TEXT_TOKENIZER
-			//STRING_TOKEN -> TEXT_TOKENIZER
-			COMMENT, DOCUMENTATION_TOKEN -> TEXT_TOKENIZER
-			else -> EMPTY_TOKENIZER
+		return when(element.elementType) {
+			PROPERTY_KEY_TOKEN, OPTION_KEY_TOKEN -> compactTextTokenizer
+			STRING_TOKEN -> compactTextTokenizer
+			COMMENT, DOCUMENTATION_TOKEN -> textTokenizer
+			else -> emptyTokenizer
 		}
 	}
 }
