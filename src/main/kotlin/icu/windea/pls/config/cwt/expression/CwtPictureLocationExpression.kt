@@ -10,9 +10,9 @@ import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
 
 private val validValueTypes = arrayOf(
-	CwtKvExpressionTypes.FilePath,
-	CwtKvExpressionTypes.Icon,
-	CwtKvExpressionTypes.TypeExpression
+	CwtDataTypes.FilePath,
+	CwtDataTypes.Icon,
+	CwtDataTypes.TypeExpression
 )
 
 /**

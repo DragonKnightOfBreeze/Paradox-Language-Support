@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
@@ -20,11 +19,11 @@ data class CwtValueConfig(
 ) : CwtKvConfig<CwtValue>() {
 	override var parent: CwtPropertyConfig? = null
 	
+	//不显示标注的option和optionValue
+	val valueConfigExpression = value
+	
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
 	val valueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
-	
-	//不显示标注的option和optionValue
-	val typeText = value
 }

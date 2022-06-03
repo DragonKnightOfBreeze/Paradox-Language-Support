@@ -13,7 +13,7 @@ import javax.swing.*
  */
 @Service(Service.Level.APP)
 class CwtConfigIconProvider {
-	fun resolve(config: CwtConfig<*>, keyType: CwtKeyExpressionType? = null, valueType: CwtValueExpressionType? = null): Icon? {
+	fun resolve(config: CwtConfig<*>, keyType: CwtKeyDataType? = null, valueType: CwtValueDataType? = null): Icon? {
 		when {
 			config is CwtKvConfig<*> -> {
 				val iconOption = config.options?.find { it.key == "icon" }?.value
@@ -27,29 +27,29 @@ class CwtConfigIconProvider {
 				}
 				if(keyType != null) {
 					when(keyType) {
-						CwtKvExpressionTypes.Localisation -> return PlsIcons.localisationIcon
-						CwtKvExpressionTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
-						CwtKvExpressionTypes.InlineLocalisation -> return PlsIcons.localisationIcon
-						CwtKvExpressionTypes.TypeExpression -> return PlsIcons.definitionIcon
-						CwtKvExpressionTypes.TypeExpressionString -> return PlsIcons.definitionIcon
-						CwtKvExpressionTypes.Value -> return PlsIcons.valueIcon
-						CwtKvExpressionTypes.Enum -> return PlsIcons.enumIcon
-						CwtKvExpressionTypes.ComplexEnum -> return PlsIcons.enumIcon
-						CwtKvExpressionTypes.Constant -> return PlsIcons.propertyIcon
+						CwtDataTypes.Localisation -> return PlsIcons.localisationIcon
+						CwtDataTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
+						CwtDataTypes.InlineLocalisation -> return PlsIcons.localisationIcon
+						CwtDataTypes.TypeExpression -> return PlsIcons.definitionIcon
+						CwtDataTypes.TypeExpressionString -> return PlsIcons.definitionIcon
+						CwtDataTypes.Value -> return PlsIcons.valueIcon
+						CwtDataTypes.Enum -> return PlsIcons.enumIcon
+						CwtDataTypes.ComplexEnum -> return PlsIcons.enumIcon
+						CwtDataTypes.Constant -> return PlsIcons.propertyIcon
 						else -> pass()
 					}
 				}
 				if(valueType != null) {
 					when(valueType) {
-						CwtKvExpressionTypes.Localisation -> return PlsIcons.localisationIcon
-						CwtKvExpressionTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
-						CwtKvExpressionTypes.InlineLocalisation -> return PlsIcons.localisationIcon
-						CwtKvExpressionTypes.TypeExpression -> return PlsIcons.definitionIcon
-						CwtKvExpressionTypes.TypeExpressionString -> return PlsIcons.definitionIcon
-						CwtKvExpressionTypes.Value -> return PlsIcons.valueIcon
-						CwtKvExpressionTypes.Enum -> return PlsIcons.enumIcon
-						CwtKvExpressionTypes.ComplexEnum -> return PlsIcons.enumIcon
-						CwtKvExpressionTypes.Constant -> return PlsIcons.valueIcon
+						CwtDataTypes.Localisation -> return PlsIcons.localisationIcon
+						CwtDataTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
+						CwtDataTypes.InlineLocalisation -> return PlsIcons.localisationIcon
+						CwtDataTypes.TypeExpression -> return PlsIcons.definitionIcon
+						CwtDataTypes.TypeExpressionString -> return PlsIcons.definitionIcon
+						CwtDataTypes.Value -> return PlsIcons.valueIcon
+						CwtDataTypes.Enum -> return PlsIcons.enumIcon
+						CwtDataTypes.ComplexEnum -> return PlsIcons.enumIcon
+						CwtDataTypes.Constant -> return PlsIcons.valueIcon
 						else -> pass()
 					}
 				}

@@ -8,15 +8,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
-public class ParadoxScriptStringTemplateImpl extends ASTWrapperPsiElement implements ParadoxScriptStringTemplate {
+public class ParadoxScriptStringTemplateImpl extends ParadoxScriptValueImpl implements ParadoxScriptStringTemplate {
 
   public ParadoxScriptStringTemplateImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitStringTemplate(this);
   }

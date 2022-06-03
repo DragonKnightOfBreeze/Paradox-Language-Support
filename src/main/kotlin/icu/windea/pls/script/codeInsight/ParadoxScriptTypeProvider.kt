@@ -16,15 +16,25 @@ import icu.windea.pls.script.psi.*
  * 脚本文件的类型提供器。用于显示类型信息（`View > Type Info`）。
  *
  * 支持的PSI元素：
- * * 变量（variable） - 显示变量的值的类型。
- * * 属性（property） - 显示定义的类型（如果是定义），或者定义元素的规则表达式（如果是定义元素），或者属性的值的类型。
- * * 值（value） - 显示定义元素的规则表达式（如果是定义元素），或者值的类型。
- * * 内联数学表达式的操作数（inline_math_factor） - 显示数字、变量引用或参数的值的类型。
+ * * 变量（variable） - 显示变量的值类型。
+ * * 属性（property） - 显示定义的类型（如果是定义），或者定义元素的规则表达式（如果是定义元素），或者属性的值类型。
+ * * 键（key） - 显示定义元素的规则表达式（如果是定义元素），或者值类型。
+ * * 值（value） - 显示定义元素的规则表达式（如果是定义元素），或者值类型。
+ * * 内联数学表达式的操作数（inline_math_factor） - 显示数字、变量引用或参数的值类型。
  */
 class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptExpression>() {
 	override fun getExpressionsAt(elementAt: PsiElement): List<ParadoxScriptExpression> {
-		val expressionElement = elementAt.parentOfType<ParadoxScriptExpression>()
-		return expressionElement.toSingletonListOrEmpty()
+		//如果最接近的expressionElement是propertyKey，需要判断作为父节点的property是否是定义
+		//如果是，直接返回property，否则返回propertyKey+property
+		val expressionElement = elementAt.parentOfType<ParadoxScriptExpression>() ?: return emptyList()
+		if(expressionElement is ParadoxScriptPropertyKey) {
+			val property = expressionElement.parent.castOrNull<ParadoxScriptProperty>()
+			if(property != null) {
+				if(property.definitionInfo != null) return listOf(property)
+				return listOf(expressionElement, property)
+			}
+		}
+		return listOf(expressionElement)
 	}
 	
 	override fun getErrorHint(): String {

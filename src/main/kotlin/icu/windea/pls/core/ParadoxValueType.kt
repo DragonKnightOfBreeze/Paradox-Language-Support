@@ -1,6 +1,7 @@
 package icu.windea.pls.core
 
 import icu.windea.pls.*
+import java.text.*
 
 /**
  * 值的类型。
@@ -19,8 +20,14 @@ enum class ParadoxValueType(
 	ColorType("color", "color"),
 	BlockType("block", "block"),
 	
-	Parameter("parameter", "parameter"),
+	ParameterType("parameter", "parameter"),
 	InlineMathType("inline_math", "inline math");
+	
+	fun matchesBooleanType() = this == BooleanType
+	fun matchesIntType() = this == UnknownType || this == IntType || this == ParameterType || this == InlineMathType
+	fun matchesFloatType() = this == UnknownType || this == FloatType || this == ParameterType || this == InlineMathType
+	fun matchesStringType() = this == UnknownType || this == StringType || this == ParameterType
+	fun matchesColorType() = this == ColorType
 	
 	override fun toString(): String {
 		return text
@@ -30,10 +37,79 @@ enum class ParadoxValueType(
 		@JvmStatic
 		fun infer(inputValue: String): ParadoxValueType {
 			return when {
-				inputValue.isBooleanYesNo() -> BooleanType
-				inputValue.isInt() -> IntType
-				inputValue.isFloat() -> FloatType
+				isBooleanYesNo(inputValue) -> BooleanType
+				isInt(inputValue) -> IntType
+				isFloat(inputValue) -> FloatType
 				else -> StringType
+			}
+		}
+		
+		fun isBooleanYesNo(string: String): Boolean {
+			return string == "yes" || string == "no"
+		}
+		
+		fun isInt(s: String): Boolean {
+			var isFirstChar = true
+			val chars = s.toCharArray()
+			for(char in chars) {
+				if(char.isExactDigit()) continue
+				if(isFirstChar) {
+					isFirstChar = false
+					if(char == '+' || char == '-') continue
+				}
+				return false
+			}
+			return true
+		}
+		
+		fun isFloat(string: String): Boolean {
+			var isFirstChar = true
+			var missingDot = true
+			val chars = string.toCharArray()
+			for(char in chars) {
+				if(char.isExactDigit()) continue
+				if(isFirstChar) {
+					isFirstChar = false
+					if(char == '+' || char == '-') continue
+				}
+				if(missingDot) {
+					if(char == '.') {
+						missingDot = false
+						continue
+					}
+				}
+				return false
+			}
+			return true
+		}
+		
+		fun isPercentageField(string: String): Boolean {
+			val chars = string.toCharArray()
+			for(i in string.indices) {
+				val char = chars[i]
+				if(i == string.lastIndex) {
+					if(char != '%') return false
+				} else {
+					if(!char.isDigit()) return false
+				}
+			}
+			return true
+		}
+		
+		private val isColorRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
+		
+		fun isColorField(string: String): Boolean {
+			return string.matches(isColorRegex)
+		}
+		
+		private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat("yyyy.MM.dd") }
+		
+		fun isDateField(string: String): Boolean {
+			return try {
+				threadLocalDateFormat.get().parse(string)
+				true
+			} catch(e: Exception) {
+				false
 			}
 		}
 	}

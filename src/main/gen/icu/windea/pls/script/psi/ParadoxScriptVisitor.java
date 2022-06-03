@@ -113,7 +113,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
-    visitPsiElement(o);
+    visitExpression(o);
   }
 
   public void visitPropertyValue(@NotNull ParadoxScriptPropertyValue o) {
@@ -130,7 +130,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitStringTemplate(@NotNull ParadoxScriptStringTemplate o) {
-    visitPsiElement(o);
+    visitValue(o);
   }
 
   public void visitStringTemplateEntry(@NotNull ParadoxScriptStringTemplateEntry o) {

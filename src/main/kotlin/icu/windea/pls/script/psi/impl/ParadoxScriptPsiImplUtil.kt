@@ -9,6 +9,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.reference.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
@@ -216,7 +217,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptProperty): String? {
-		return element.getPropertyConfig()?.typeText
+		return element.getPropertyConfig()?.propertyConfigExpression
 	}
 	
 	@JvmStatic
@@ -254,6 +255,24 @@ object ParadoxScriptPsiImplUtil {
 		val rangeInElement = TextRange(0, element.textLength) //包括可能的括起字符串的双引号
 		return ParadoxScriptPropertyKeyReference(element, rangeInElement)
 	}
+	
+	@JvmStatic
+	fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
+		return element.getPropertyConfig()?.keyConfigExpression
+	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptPropertyKey): ParadoxValueType {
+		element.processChild {
+			when(it.elementType) {
+				PROPERTY_KEY_ID -> return ParadoxValueType.infer(it.text)
+				QUOTED_PROPERTY_KEY_ID -> return ParadoxValueType.StringType
+				PARAMETER_ID -> return ParadoxValueType.ParameterType
+				else -> end()
+			}
+		}
+		return ParadoxValueType.UnknownType
+	}
 	//endregion
 	
 	//region ParadoxScriptVariableReference
@@ -282,6 +301,11 @@ object ParadoxScriptPsiImplUtil {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
 		return ParadoxScriptVariableReferenceReference(element, rangeInElement)
 	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptVariableReference): ParadoxValueType {
+		return element.reference.resolve()?.valueType ?: ParadoxValueType.UnknownType
+	}
 	//endregion
 	
 	//region ParadoxScriptValue
@@ -297,7 +321,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptValue): String? {
-		return element.getValueConfig()?.typeText
+		return element.getValueConfig()?.valueConfigExpression
+	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptValue): ParadoxValueType {
+		return ParadoxValueType.UnknownType
 	}
 	//endregion
 	
@@ -385,6 +414,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getValue(element: ParadoxScriptStringTemplate): String {
 		return PlsFolders.stringTemplateFolder
+	}
+	
+	@JvmStatic
+	fun getValueType(element: ParadoxScriptStringTemplate): ParadoxValueType {
+		return ParadoxValueType.StringType
 	}
 	//endregion
 	
@@ -619,7 +653,7 @@ object ParadoxScriptPsiImplUtil {
 		var builder: StringBuilder? = null
 		conditionExpression.processChild {
 			when {
-				it.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
+				it.elementType == NOT_EQUAL_SIGN -> {
 					val builderToUse = builder ?: StringBuilder().apply { builder = this }
 					builderToUse.append("!")
 					true

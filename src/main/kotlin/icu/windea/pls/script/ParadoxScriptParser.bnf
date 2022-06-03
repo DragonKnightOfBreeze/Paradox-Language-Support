@@ -61,14 +61,15 @@ property ::= property_key property_separator property_value {
 }
 //property_key can be parameter
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter {
-  methods=[getValue setValue getReference]
+  implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
+  methods=[getValue setValue getReference getConfigExpression getValueType]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 
 value ::= variable_reference | parameter | boolean | number | string | string_template | color | block | inline_math {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
-  methods=[getIcon getValue getConfigExpression]
+  methods=[getIcon getValue getConfigExpression getValueType]
 }
 variable_reference ::= AT VARIABLE_REFERENCE_ID {
   extends=value
@@ -217,12 +218,13 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] P
 //string template
 //can include: string_entry, parameter_entry, etc. (TO IMPLEMENT)
 string_template ::= string_template_entry string_template_entry + {
+  extends=value
   methods=[getValue]
 }
 string_template_entry ::= literal_string_template_entry | parameter_string_template_entry
 literal_string_template_entry ::= STRING_PART{
   extends=string_template_entry
-  methods=[getValue]
+  methods=[getValue getValueType]
 }
 parameter_string_template_entry ::= parameter {
   extends=string_template_entry

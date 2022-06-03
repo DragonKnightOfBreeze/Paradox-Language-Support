@@ -10,4 +10,8 @@ public interface ParadoxScriptLiteralStringTemplateEntry extends ParadoxScriptSt
   @NotNull
   String getValue();
 
+  //WARNING: getValueType(...) is skipped
+  //matching getValueType(ParadoxScriptLiteralStringTemplateEntry, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
+
 }

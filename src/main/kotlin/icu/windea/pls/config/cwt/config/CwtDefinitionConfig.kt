@@ -64,7 +64,7 @@ data class CwtDefinitionConfig(
 							isTop = false
 							val nextResult = SmartList<CwtPropertyConfig>()
 							for(config in result) {
-								if(CwtConfigHandler.matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
+								if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
 									//如果valueExpressionType是single_alias_right或alias_match_left,则要进行内联
 									val inlined = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult)
 									if(!inlined) nextResult.add(config)
@@ -77,7 +77,7 @@ data class CwtDefinitionConfig(
 								val configs = r.properties
 								if(configs != null && configs.isNotEmpty()) {
 									for(config in configs) {
-										if(CwtConfigHandler.matchesKey(config.keyExpression, key, isQuoted, configGroup)) {
+										if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
 											//如果valueExpressionType是single_alias_right或alias_match_left,则要进行内联
 											val inlined = CwtConfigHandler.inlineConfig(key, isQuoted, config, configGroup, nextResult)
 											if(!inlined) nextResult.add(config)

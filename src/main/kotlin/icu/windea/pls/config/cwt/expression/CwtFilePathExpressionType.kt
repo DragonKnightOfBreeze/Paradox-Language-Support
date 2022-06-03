@@ -43,7 +43,7 @@ object CwtFilePathExpressionTypes {
 	
 	/**
 	 * 示例：`exp=some/path, s=some/path/file.txt`, `exp=some/path/,.ext, s=file`。
-	 * @see CwtKvExpressionTypes.FilePath
+	 * @see CwtDataTypes.FilePath
 	 */
 	object FilePath : CwtFilePathExpressionType {
 		override fun matches(expression: String, filePath: String, ignoreCase: Boolean): Boolean {
@@ -89,7 +89,7 @@ object CwtFilePathExpressionTypes {
 	
 	/**
 	 * 示例：`exp=gfx/interface/icons/resources/, s=unity`
-	 * @see CwtKvExpressionTypes.Icon
+	 * @see CwtDataTypes.Icon
 	 */
 	object Icon : CwtFilePathExpressionType {
 		override fun matches(expression: String, filePath: String, ignoreCase: Boolean): Boolean {

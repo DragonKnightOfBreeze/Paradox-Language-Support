@@ -11,9 +11,10 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
 
-public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
+public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
 
   public ParadoxScriptValueImpl(@NotNull ASTNode node) {
     super(node);
@@ -27,12 +28,6 @@ public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements Para
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptStringTemplate getStringTemplate() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptStringTemplate.class);
   }
 
   @Override
@@ -51,6 +46,12 @@ public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements Para
   @Nullable
   public String getConfigExpression() {
     return ParadoxScriptPsiImplUtil.getConfigExpression(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxValueType getValueType() {
+    return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
 }
