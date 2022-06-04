@@ -7,7 +7,8 @@ types = {
 
 		localisation = {
 			## primary
-			title = title
+			title = "#title"
+			desc = "#desc"
 		}
 		## type_key_filter = country_event
 		## push_scope = country

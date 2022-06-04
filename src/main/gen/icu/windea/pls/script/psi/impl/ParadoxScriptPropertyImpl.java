@@ -123,4 +123,9 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
     return ParadoxScriptPsiImplUtil.getOriginalPathName(this);
   }
 
+  @Override
+  public void subtreeChanged() {
+    ParadoxScriptPsiImplUtil.subtreeChanged(this);
+  }
+
 }

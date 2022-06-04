@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
 
@@ -20,7 +19,7 @@ private val validValueTypes = arrayOf(
  *
  * 用于推断定义的相关图片（relatedPicture）的位置。
  *
- * 示例：`"$"`, `"$_desc"`, `"#name"`, "#icon|#icon_frame"`
+ * 示例：`"$"`, `"$_desc"`, `"#icon"`, "#icon|#icon_frame"`
  * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成definitionName）。
  * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串，可以为空字符串）。
  * @property extraPropertyNames 额外的属性名（表达式文本以"#"开始且之后包含"|"时，为"|"之后的按","分割的子字符串）。
@@ -49,9 +48,7 @@ class CwtPictureLocationExpression(
 						CwtPictureLocationExpression(expressionString, null, propertyName, extraPropertyNames)
 					}
 				}
-				else -> {
-					CwtPictureLocationExpression(expressionString, expressionString, null, null)
-				}
+				else -> CwtPictureLocationExpression(expressionString, expressionString, null, null)
 			}
 		}
 	}
@@ -62,22 +59,23 @@ class CwtPictureLocationExpression(
 	
 	operator fun component3() = extraPropertyNames
 	
-	fun resolve(definitionInfo: ParadoxDefinitionInfo, definition: ParadoxDefinitionProperty, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
-		//key, file, frame
+	//(key, file(s), frame)
+	
+	fun resolve(definitionName: String, definition: ParadoxDefinitionProperty, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
-			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
+			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
 			val file = findFileByFilePath(filePath, project)?.toPsiFile<PsiFile>(project)
 			return tupleOf(filePath, file, frame)
 		} else if(propertyName != null) {
 			//目前只接收类型为string的值
 			//propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
-			val value = definition.findProperty(propertyName)?.propertyValue?.value?.castOrNull<ParadoxScriptString>() ?: return null
+			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames == null || extraPropertyNames.isEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findProperty(propertyName)?.propertyValue?.value?.castOrNull<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
 			while(true) {
@@ -98,7 +96,7 @@ class CwtPictureLocationExpression(
 						if(primaryPictureConfigs.isEmpty()) return null //没有或者CWT规则不完善
 						return primaryPictureConfigs.mapAndFirst({ it?.second != null }) { primaryPictureConfig ->
 							val locationExpression = primaryPictureConfig.location
-							locationExpression.resolve(resolvedDefinitionInfo, resolvedDefinition, resolvedProject, frameToUse)
+							locationExpression.resolve(definitionName, resolvedDefinition, resolvedProject, frameToUse)
 						}
 					}
 					else -> return null //解析失败或不支持
@@ -109,21 +107,20 @@ class CwtPictureLocationExpression(
 		}
 	}
 	
-	fun resolveAll(definitionInfo: ParadoxDefinitionInfo, definition: ParadoxDefinitionProperty, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
-		//key, file, frame
+	fun resolveAll(definitionName: String, definition: ParadoxDefinitionProperty, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
-			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
+			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
 			val files = findFilesByFilePath(filePath, project).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
 			return tupleOf(filePath, files, frame)
 		} else if(propertyName != null && propertyName.isNotEmpty()) {
 			//目前只接收类型为string的值
-			val value = definition.findProperty(propertyName)?.propertyValue?.value?.castOrNull<ParadoxScriptString>() ?: return null
+			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames == null || extraPropertyNames.isEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findProperty(propertyName)?.propertyValue?.value?.castOrNull<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
 			while(true) {
@@ -146,7 +143,7 @@ class CwtPictureLocationExpression(
 						var resolvedSet: MutableSet<PsiFile>? = null
 						for(primaryPictureConfig in primaryPictureConfigs) {
 							val locationExpression = primaryPictureConfig.location
-							val (filePath, set) = locationExpression.resolveAll(resolvedDefinitionInfo, resolvedDefinition, resolvedProject, frameToUse) ?: continue
+							val (filePath, set) = locationExpression.resolveAll(resolvedDefinitionInfo.name, resolvedDefinition, resolvedProject, frameToUse) ?: continue
 							if(resolvedFilePath == null) resolvedFilePath = filePath
 							if(resolvedSet == null) resolvedSet = mutableSetOf()
 							resolvedSet.addAll(set)

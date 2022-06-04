@@ -12,6 +12,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
@@ -25,7 +26,6 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 import java.lang.Integer.*
-import java.text.*
 import java.util.*
 
 //region Misc Extensions
@@ -147,7 +147,7 @@ fun CwtValue.isLonely(): Boolean {
 
 fun ParadoxScriptValue.isLonely(): Boolean {
 	val parent = this.parent
-	return parent is IParadoxScriptBlock 
+	return parent is IParadoxScriptBlock
 }
 
 val PsiElement.gameType: ParadoxGameType? get() = doGetGameType(this)
@@ -250,21 +250,21 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	return configGroup.resolveDefinitionInfo(element, rootKey, path, propertyPath)
 }
 
-val PsiElement.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
+val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
+val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
 
 private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
 	//必须是脚本语言的PsiElement
 	if(element.language != ParadoxScriptLanguage) return null
-	return resolveDefinitionElementInfo(element)
-	//return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionElementInfoKey) {
-	//	val value = resolveDefinitionElementInfo(element)
-	//	CachedValueProvider.Result.create(value, element)
-	//}
+	//return resolveDefinitionElementInfo(element)
+	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionElementInfoKey) {
+		val value = resolveDefinitionElementInfo(element)
+		CachedValueProvider.Result.create(value, element)
+	}
 }
 
 private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
-	//NOTE 注意这里获得的definitionInfo很容易就会过时！因为对应的type和subtypes可能基于其他的definitionProperty
-	//NOTE 这里输入的element本身可以是定义，这时elementPath会是空字符串
+	//这里输入的element本身可以是定义，这时elementPath会是空字符串
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
 	val definition = elementPath.rootPointer?.element ?: return null
 	val definitionInfo = definition.definitionInfo ?: return null
@@ -273,6 +273,48 @@ private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinition
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType)
 	return configGroup.resolveDefinitionElementInfo(elementPath, scope, definitionInfo, element)
+}
+
+fun ParadoxScriptProperty.getPropertyConfig(): CwtPropertyConfig? {
+	val element = this
+	val definitionElementInfo = element.definitionElementInfo ?: return null
+	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
+	return definitionElementInfo.matchedPropertyConfig
+		?: definitionElementInfo.propertyConfigs.singleOrNull()
+}
+
+fun ParadoxScriptPropertyKey.getPropertyConfig(): CwtPropertyConfig? {
+	val element = this.parent.castOrNull<ParadoxScriptProperty>() ?: return null
+	val definitionElementInfo = element.definitionElementInfo ?: return null
+	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
+	return definitionElementInfo.matchedPropertyConfig
+		?: definitionElementInfo.propertyConfigs.singleOrNull()
+}
+
+fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
+	val element = this
+	val parent = element.parent
+	when(parent) {
+		//如果value是property的value
+		is ParadoxScriptPropertyValue -> {
+			val property = parent.parent as? ParadoxScriptProperty ?: return null
+			val definitionElementInfo = property.definitionElementInfo ?: return null
+			return definitionElementInfo.matchedPropertyConfig?.valueConfig
+				?: definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig
+		}
+		//如果value是block中的value
+		is ParadoxScriptBlock -> {
+			val property = parent.parent?.parent as? ParadoxScriptProperty ?: return null
+			val definitionElementInfo = property.definitionElementInfo ?: return null
+			val childValueConfigs = definitionElementInfo.childValueConfigs
+			if(childValueConfigs.isEmpty()) return null
+			val gameType = definitionElementInfo.gameType
+			val configGroup = getCwtConfig(element.project).getValue(gameType)
+			return childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, element, configGroup) }
+				?: childValueConfigs.singleOrNull()
+		}
+		else -> return null
+	}
 }
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)

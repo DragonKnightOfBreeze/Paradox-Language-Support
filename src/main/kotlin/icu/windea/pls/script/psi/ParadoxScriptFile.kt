@@ -19,5 +19,9 @@ class ParadoxScriptFile(
 	override val originalPathName get() = name.let { name -> name.substringBeforeLast(".", name) }
 	
 	override val block get() = findOptionalChild<ParadoxScriptRootBlock>()
+	
+	override fun subtreeChanged() {
+		clearDefinitionElementInfo() //清除其中的定义元素信息
+	}
 }
 

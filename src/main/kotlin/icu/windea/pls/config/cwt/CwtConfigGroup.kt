@@ -24,7 +24,7 @@ class CwtConfigGroup(
 	val enums: Map<String, CwtEnumConfig>
 	
 	//since: stellaris v3.4
-	val tags: Map<String, CwtTagConfig> //tagName - tagConfig
+	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
 	val links: Map<String, CwtLinkConfig>
 	val localisationLinks: Map<String, CwtLinkConfig>
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
@@ -43,15 +43,16 @@ class CwtConfigGroup(
 	
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
+	
 	//since: stellaris v3.4
-	val tagMap : Map<String, Map<String, CwtTagConfig>> //definitionType - tagName - tagConfig
+	val tagMap: Map<String, Map<@CaseInsensitive String, CwtTagConfig>> //definitionType - tagName - tagConfig
 	
 	init {
 		folders = mutableSetOf()
 		types = mutableMapOf()
 		values = mutableMapOf()
 		enums = mutableMapOf()
-		tags = mutableMapOf()
+		tags = CollectionFactory.createCaseInsensitiveStringMap()
 		links = mutableMapOf()
 		localisationLinks = mutableMapOf()
 		localisationCommands = mutableMapOf()
@@ -159,7 +160,7 @@ class CwtConfigGroup(
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val modifierName = prop.key
-							val modifierConfig = resolveModifierConfig(prop, modifierName)
+							val modifierConfig = resolveModifierConfig(prop, modifierName) ?: continue
 							modifiers[modifierName] = modifierConfig
 						}
 					}
@@ -263,7 +264,7 @@ class CwtConfigGroup(
 					"skip_root_key" -> {
 						//值可能是string也可能是stringArray
 						val list = prop.stringValue?.let { listOf(it) }
-							?: prop.values?.mapNotNull{ it.stringValue }
+							?: prop.values?.mapNotNull { it.stringValue }
 							?: continue
 						if(skipRootKey == null) skipRootKey = SmartList()
 						skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
@@ -480,8 +481,9 @@ class CwtConfigGroup(
 		return CwtModifierCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
 	}
 	
-	private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig {
-		return CwtModifierConfig(propertyConfig.pointer, name, propertyConfig.value)
+	private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
+		val categories = propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: return null
+		return CwtModifierConfig(propertyConfig.pointer, name, categories)
 	}
 	
 	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
@@ -496,10 +498,16 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveScopeGroupConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeGroupConfig? {
-		val values = propertyConfig.stringValue?.let { setOf(it) }
-			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-			?: return null
-		return CwtScopeGroupConfig(propertyConfig.pointer, name, values)
+		val propertyConfigPointer = propertyConfig.pointer
+		val propertyConfigValues = propertyConfig.values ?: return null
+		if(propertyConfigValues.isEmpty()) return CwtScopeGroupConfig(propertyConfigPointer, name, emptySet(), emptyMap())
+		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
+		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
+		for(propertyConfigValue in propertyConfigValues) {
+			values.add(propertyConfigValue.value)
+			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
+		}
+		return CwtScopeGroupConfig(propertyConfigPointer, name, values, valueConfigMap)
 	}
 	
 	private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSingleAliasConfig {
@@ -544,11 +552,11 @@ class CwtConfigGroup(
 		return modifierCategoryIdMap
 	}
 	
-	private fun initTagMap(): Map<String, Map<String, CwtTagConfig>> {
+	private fun initTagMap(): Map<String, Map<@CaseInsensitive String, CwtTagConfig>> {
 		val tagNameMap: MutableMap<String, MutableMap<String, CwtTagConfig>> = mutableMapOf()
 		for(tagConfig in tags.values) {
 			for(supportedType in tagConfig.supportedTypes) {
-				tagNameMap.getOrPut(supportedType) { mutableMapOf() }.put(tagConfig.name, tagConfig)
+				tagNameMap.getOrPut(supportedType) { CollectionFactory.createCaseInsensitiveStringMap() }.put(tagConfig.name, tagConfig)
 			}
 		}
 		return tagNameMap
@@ -558,10 +566,11 @@ class CwtConfigGroup(
 	
 	private fun bindModifierCategories() {
 		for(modifier in modifiers.values) {
-			//categories可能是modifierCategory的name，也可能是modifierCategory的internalId
-			val categories = modifier.categories
-			val categoryConfig = modifierCategories[categories] ?: modifierCategoryIdMap[categories]
-			modifier.categoryConfig = categoryConfig
+			//category可能是modifierCategory的name，也可能是modifierCategory的internalId
+			for(category in modifier.categories) {
+				val categoryConfig = modifierCategories[category] ?: modifierCategoryIdMap[category] ?: continue
+				modifier.categoryConfigMap[category] = categoryConfig
+			}
 		}
 	}
 	

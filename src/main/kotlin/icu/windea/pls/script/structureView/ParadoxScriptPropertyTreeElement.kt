@@ -37,7 +37,7 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 		//显示定义的类型信息
 		builder.append(": ").append(definitionInfo.typeText)
 		//如果存在，显示定义的本地化名字（最相关的本地化文本）
-		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation()
+		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation(element)
 		if(primaryLocalisation != null) {
 			val localizedName = ParadoxLocalisationTextRenderer.render(primaryLocalisation)
 			builder.append(" ").append(localizedName)

@@ -3,18 +3,16 @@
 package icu.windea.pls
 
 import com.google.common.cache.*
-import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.io.*
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
-import javax.swing.text.*
 import kotlin.math.*
-import kotlin.reflect.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")

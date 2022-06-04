@@ -13,7 +13,7 @@ import javax.swing.*
  */
 @Service(Service.Level.APP)
 class CwtConfigIconProvider {
-	fun resolve(config: CwtConfig<*>, keyType: CwtKeyDataType? = null, valueType: CwtValueDataType? = null): Icon? {
+	fun resolve(config: CwtConfig<*>, dataType: CwtDataType? = null): Icon? {
 		when {
 			config is CwtKvConfig<*> -> {
 				val iconOption = config.options?.find { it.key == "icon" }?.value
@@ -25,8 +25,8 @@ class CwtConfigIconProvider {
 						//TO IMPLEMENT
 					}
 				}
-				if(keyType != null) {
-					when(keyType) {
+				if(dataType != null) {
+					when(dataType) {
 						CwtDataTypes.Localisation -> return PlsIcons.localisationIcon
 						CwtDataTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
 						CwtDataTypes.InlineLocalisation -> return PlsIcons.localisationIcon
@@ -35,21 +35,8 @@ class CwtConfigIconProvider {
 						CwtDataTypes.Value -> return PlsIcons.valueIcon
 						CwtDataTypes.Enum -> return PlsIcons.enumIcon
 						CwtDataTypes.ComplexEnum -> return PlsIcons.enumIcon
+						CwtDataTypes.ScopeGroup -> return PlsIcons.scopeIcon
 						CwtDataTypes.Constant -> return PlsIcons.propertyIcon
-						else -> pass()
-					}
-				}
-				if(valueType != null) {
-					when(valueType) {
-						CwtDataTypes.Localisation -> return PlsIcons.localisationIcon
-						CwtDataTypes.SyncedLocalisation -> return PlsIcons.localisationIcon
-						CwtDataTypes.InlineLocalisation -> return PlsIcons.localisationIcon
-						CwtDataTypes.TypeExpression -> return PlsIcons.definitionIcon
-						CwtDataTypes.TypeExpressionString -> return PlsIcons.definitionIcon
-						CwtDataTypes.Value -> return PlsIcons.valueIcon
-						CwtDataTypes.Enum -> return PlsIcons.enumIcon
-						CwtDataTypes.ComplexEnum -> return PlsIcons.enumIcon
-						CwtDataTypes.Constant -> return PlsIcons.valueIcon
 						else -> pass()
 					}
 				}

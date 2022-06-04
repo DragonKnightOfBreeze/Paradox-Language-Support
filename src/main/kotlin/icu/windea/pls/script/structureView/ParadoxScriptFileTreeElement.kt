@@ -43,7 +43,7 @@ class ParadoxScriptFileTreeElement(
 		}
 		builder.append(": ").append(typesText)
 		//如果存在，显示定义的本地化名字（最相关的本地化文本）
-		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation()
+		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation(element)
 		if(primaryLocalisation != null) {
 			val localizedName = ParadoxLocalisationTextRenderer.render(primaryLocalisation)
 			builder.append(" ").append(localizedName)

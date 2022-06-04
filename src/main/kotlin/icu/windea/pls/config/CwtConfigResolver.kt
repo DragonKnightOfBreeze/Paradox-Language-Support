@@ -16,8 +16,8 @@ object CwtConfigResolver {
 		if(rootBlock.isEmpty) return CwtFileConfig.EmptyConfig
 		val properties = SmartList<CwtPropertyConfig>()
 		val values = SmartList<CwtValueConfig>()
-		rootBlock.processChild { 
-			when{
+		rootBlock.processChild {
+			when {
 				it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
 				it is CwtValue -> resolveValue(it, file).addTo(values).end()
 				else -> end()
@@ -54,7 +54,7 @@ object CwtConfigResolver {
 					properties = SmartList()
 					values = SmartList()
 					propValue.processChild {
-						when{
+						when {
 							it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
 							it is CwtValue -> resolveValue(it, file).addTo(values).end()
 							else -> end()
@@ -132,7 +132,7 @@ object CwtConfigResolver {
 					properties = SmartList()
 					values = SmartList()
 					value.processChild {
-						when{
+						when {
 							it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
 							it is CwtValue -> resolveValue(it, file).addTo(values).end()
 							else -> end()
@@ -156,12 +156,9 @@ object CwtConfigResolver {
 				current is CwtOptionComment -> {
 					val option = current.option
 					if(option != null) {
-						if(options == null) {
-							options = LinkedList()
-						} else {
-							val resolvedOption = resolveOption(option, file)
-							if(resolvedOption != null) options.addFirst(resolvedOption)
-						}
+						if(options == null) options = LinkedList()
+						val resolvedOption = resolveOption(option, file)
+						if(resolvedOption != null) options.addFirst(resolvedOption)
 					} else {
 						val optionValue = current.value
 						if(optionValue != null) {
@@ -208,7 +205,7 @@ object CwtConfigResolver {
 					options = SmartList()
 					optionValues = SmartList()
 					optionValue.processChild {
-						when{
+						when {
 							it is CwtOption -> resolveOption(it, file).addTo(options).end()
 							it is CwtValue -> resolveOptionValue(it, file).addTo(optionValues).end()
 							else -> end()
@@ -253,7 +250,7 @@ object CwtConfigResolver {
 						options = SmartList()
 						optionValues = SmartList()
 						option.processChild {
-							when{
+							when {
 								it is CwtOption -> resolveOption(it, file).addTo(options).end()
 								it is CwtValue -> resolveOptionValue(it, file).addTo(optionValues).end()
 								else -> end()

@@ -102,6 +102,14 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 		return originalSubPaths.iterator()
 	}
 	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxElementPath<*> && originalPath == other.originalPath
+	}
+	
+	override fun hashCode(): Int {
+		return originalPath.hashCode()
+	}
+	
 	override fun toString(): String {
 		return originalPath
 	}

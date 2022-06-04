@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.core.ParadoxValueType;
 import javax.swing.Icon;
 
 public class ParadoxScriptParameterImpl extends ParadoxScriptValueImpl implements ParadoxScriptParameter {
@@ -68,6 +69,12 @@ public class ParadoxScriptParameterImpl extends ParadoxScriptValueImpl implement
   @Nullable
   public String getDefaultValue() {
     return ParadoxScriptPsiImplUtil.getDefaultValue(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxValueType getValueType() {
+    return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
 }

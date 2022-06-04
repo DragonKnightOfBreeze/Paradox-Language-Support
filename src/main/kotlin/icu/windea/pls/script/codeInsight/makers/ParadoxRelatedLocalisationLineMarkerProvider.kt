@@ -1,7 +1,6 @@
 package icu.windea.pls.script.codeInsight.makers
 
 import com.intellij.codeInsight.daemon.*
-import com.intellij.codeInsight.navigation.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
@@ -32,7 +31,7 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 		val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
 		var isFirst = true
 		for((key, locationExpression) in localisationConfig) {
-			val (localisationKey, localisations) = locationExpression.resolveAll(definitionInfo.name, null, project)
+			val (localisationKey, localisations) = locationExpression.resolveAll(definitionInfo.name, element, null, project) ?: continue
 			if(localisations.isNotEmpty()) targets.addAll(localisations)
 			if(localisations.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()

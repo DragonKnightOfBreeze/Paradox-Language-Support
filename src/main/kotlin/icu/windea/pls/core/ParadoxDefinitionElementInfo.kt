@@ -8,6 +8,9 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
+/**
+ * @property elementPath 相对于所属定义的定义元素路径。
+ */
 @Suppress("unused")
 class ParadoxDefinitionElementInfo(
 	val elementPath: ParadoxElementPath<ParadoxDefinitionProperty>,

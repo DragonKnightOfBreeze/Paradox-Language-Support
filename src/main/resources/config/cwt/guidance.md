@@ -372,7 +372,7 @@ Like pdxscript files, the `#` character is used to comment out lines. In `.cwt` 
 - `##` is used for options `## cardinality = 0..1`
 - `###` is used for documentation `### This text will be displayed in the completion info`
 
-### Special files
+### Special files 
 
 In addition to types, enums and validation in .cwt files, there are several "magic" files used for defining core game concepts.
 

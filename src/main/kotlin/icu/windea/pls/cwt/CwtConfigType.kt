@@ -1,6 +1,8 @@
 package icu.windea.pls.cwt
 
+import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
 
 enum class CwtConfigType(
 	override val id: String,
@@ -32,5 +34,52 @@ enum class CwtConfigType(
 	
 	override fun toString(): String {
 		return text
+	}
+	
+	companion object {
+		fun resolve(element: CwtProperty): CwtConfigType? {
+			val name = element.name
+			return when {
+				name.surroundsWith("type[", "]") -> Type
+				name.surroundsWith("subtype[", "]") -> Subtype
+				name.surroundsWith("enum[", "]") -> Enum
+				name.surroundsWith("complex_enum[", "]") -> ComplexEnum
+				name.surroundsWith("value[", "]") -> Value
+				name.surroundsWith("single_alias[", "]") -> SingleAlias
+				name.surroundsWith("alias[", "]") -> Alias
+				else -> {
+					val parentProperty = element.parentOfType<CwtProperty>() ?: return null
+					val parentName = parentProperty.name
+					when {
+						parentName == "links" -> Link
+						parentName == "localisation_links" -> LocalisationLink
+						parentName == "localisation_commands" -> LocalisationCommand
+						parentName == "modifier_categories" -> ModifierCategory
+						parentName == "modifiers" -> Modifier
+						parentName == "scopes" -> Scope
+						parentName == "scope_groups" -> ScopeGroup
+						parentName == "tags" -> Tag
+						//from internal config
+						parentName == "locales" -> LocalisationLocale
+						parentName == "colors" -> LocalisationColor
+						parentName == "predefined_variables" -> LocalisationPredefinedVariable
+						else -> null
+					}
+				}
+			}
+		}
+		
+		fun resolve(element: CwtValue): CwtConfigType? {
+			val parentProperty = element.parentOfType<CwtProperty>() ?: return null
+			val parentName = parentProperty.name
+			val parentParentProperty = parentProperty.parentOfType<CwtProperty>()
+			val parentParentName = parentParentProperty?.name
+			return when {
+				parentName.surroundsWith("enum[", "]") -> EnumValue
+				parentName.surroundsWith("value[", "]") -> ValueValue
+				parentParentName == "scope_groups" -> Scope
+				else -> null
+			}
+		}
 	}
 }

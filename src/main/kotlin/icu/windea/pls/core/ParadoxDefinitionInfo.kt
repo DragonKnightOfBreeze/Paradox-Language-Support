@@ -101,10 +101,10 @@ class ParadoxDefinitionInfo(
 	val unique get() = typeConfig.unique
 	val severity get() = typeConfig.severity
 	
-	fun resolvePrimaryLocalisation(): ParadoxLocalisationProperty? {
+	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
-			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, inferParadoxLocale(), configGroup.project)
+			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, element, inferParadoxLocale(), configGroup.project) ?: continue
 			val localisation = resolved.second
 			if(localisation != null) return localisation
 		}

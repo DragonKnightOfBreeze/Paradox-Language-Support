@@ -6,7 +6,7 @@ import icu.windea.pls.cwt.psi.*
 data class CwtModifierConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
-	val categories: String
+	val categories: Set<String>
 ) : CwtConfig<CwtProperty> {
-	var categoryConfig: CwtModifierCategoryConfig? = null
+	val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 }

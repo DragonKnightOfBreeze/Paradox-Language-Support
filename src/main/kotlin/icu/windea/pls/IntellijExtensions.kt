@@ -16,6 +16,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -35,25 +36,6 @@ import javax.swing.text.*
 import kotlin.reflect.*
 
 //region Misc Extensions
-///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
-//fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement? {
-//	var node = element.node
-//	val expectedType = node.elementType
-//	var lastSeen = node
-//	while(node != null) {
-//		val elementType = node.elementType
-//		when {
-//			elementType == expectedType -> lastSeen = node
-//			elementType == TokenType.WHITE_SPACE -> {
-//				if(stopOnBlankLine && node.text.containsBlankLine()) break
-//			}
-//			else -> break
-//		}
-//		node = if(findAfter) node.treeNext else node.treePrev
-//	}
-//	return lastSeen.psi
-//}
-
 fun LookupElement.withPriority(priority: Double): LookupElement {
 	return PrioritizedLookupElement.withPriority(this, priority)
 }
@@ -111,6 +93,14 @@ private val DEFAULT_PSI_CONVERTOR = NotNullFunction<PsiElement, Collection<PsiEl
 
 fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiElement) -> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<PsiElement> {
 	return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
+}
+
+inline fun <T> UserDataHolder.getOrPutData(key: Key<T>, action: () -> T?): T? {
+	val data = this.getUserData(key)
+	if(data != null) return data
+	val newValue = action()
+	if(newValue != null) this.putUserData(key, newValue)
+	return newValue
 }
 //endregion
 
@@ -416,6 +406,25 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = t
 	return -1
 }
 
+///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
+//fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement? {
+//	var node = element.node
+//	val expectedType = node.elementType
+//	var lastSeen = node
+//	while(node != null) {
+//		val elementType = node.elementType
+//		when {
+//			elementType == expectedType -> lastSeen = node
+//			elementType == TokenType.WHITE_SPACE -> {
+//				if(stopOnBlankLine && node.text.containsBlankLine()) break
+//			}
+//			else -> break
+//		}
+//		node = if(findAfter) node.treeNext else node.treePrev
+//	}
+//	return lastSeen.psi
+//}
+
 val PsiElement.virtualFile: VirtualFile?
 	get() {
 		return PsiUtilCore.getVirtualFile(this)
@@ -463,7 +472,7 @@ fun PsiElement.reformatted(canChangeWhiteSpacesOnly: Boolean = false): PsiElemen
 	CodeStyleManager.getInstance(it.project).reformat(it, canChangeWhiteSpacesOnly)
 }
 
-fun PsiElement.isSpaceOrSingleLineBreak() = this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1 
+fun PsiElement.isSpaceOrSingleLineBreak() = this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1
 //endregion
 
 //region Index Extensions

@@ -273,6 +273,11 @@ object ParadoxScriptPsiImplUtil {
 		}
 		return ParadoxValueType.UnknownType
 	}
+	
+	@JvmStatic
+	fun subtreeChanged(element: ParadoxScriptProperty){
+		element.clearDefinitionElementInfo() //清除其中的定义元素信息
+	}
 	//endregion
 	
 	//region ParadoxScriptVariableReference

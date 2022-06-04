@@ -54,4 +54,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @NotNull
   String getOriginalPathName();
 
+  void subtreeChanged();
+
 }

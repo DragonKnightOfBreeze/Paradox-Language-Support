@@ -10,4 +10,3 @@ data class CwtEnumConfig(
 	val values: Set<@CaseInsensitive String>,
 	val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
 ) : CwtConfig<CwtProperty>
-

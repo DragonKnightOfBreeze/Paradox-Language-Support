@@ -30,7 +30,7 @@ class ParadoxRelatedPicturesLineMarkerProvider : RelatedItemLineMarkerProvider()
 		val targets = mutableSetOf<PsiElement>() //这里需要考虑基于引用相等去重
 		var isFirst = true
 		for((key, locationExpression) in picturesConfig) {
-			val (filePath, files) = locationExpression.resolveAll(definitionInfo, element, project) ?: continue
+			val (filePath, files) = locationExpression.resolveAll(definitionInfo.name, element, project) ?: continue
 			if(files.isNotEmpty()) targets.addAll(files)
 			if(files.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()

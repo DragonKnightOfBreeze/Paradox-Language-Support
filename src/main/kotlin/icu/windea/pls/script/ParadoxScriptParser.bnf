@@ -57,7 +57,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName subtreeChanged]
 }
 //property_key can be parameter
 property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter {
@@ -74,7 +74,7 @@ value ::= variable_reference | parameter | boolean | number | string | string_te
 variable_reference ::= AT VARIABLE_REFERENCE_ID {
   extends=value
   implements="icu.windea.pls.script.psi.IParadoxScriptVariableReference"
-  methods=[getIcon getName setName getReference]
+  methods=[getIcon getName setName getReference getValueType]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
@@ -128,7 +128,7 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   pin=1
   extends=value
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue getValueType]
 }
 
 //parameter condition

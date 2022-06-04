@@ -4,7 +4,7 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.tool.*
 
@@ -170,7 +170,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val usedLocalisationTargetMap = localisationTargetMap ?: mutableMapOf()
 				for((key, locationExpression, required) in localisation) {
 					if(!usedLocalisationTargetMap.containsKey(key)) {
-						val (targetKey, target) = locationExpression.resolve(definitionInfo.name, inferParadoxLocale(), project)
+						val (targetKey, target) = locationExpression.resolve(definitionInfo.name, element, inferParadoxLocale(), project) ?: continue //发生意外，直接跳过
 						if(target != null) usedLocalisationTargetMap.put(key, target)
 						if(required || target != null) {
 							if(localisationKeys.add(key)) {
@@ -189,7 +189,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val usedPictureTargetMap = pictureTargetMap ?: mutableMapOf()
 				for((key, locationExpression, required) in pictures) {
 					if(!usedPictureTargetMap.containsKey(key)) {
-						val (filePath, target, frame) = locationExpression.resolve(definitionInfo, element, project) ?: continue //发生意外，直接跳过
+						val (filePath, target, frame) = locationExpression.resolve(definitionInfo.name, element, project) ?: continue //发生意外，直接跳过
 						if(target != null) usedPictureTargetMap.put(key, tupleOf(target, frame))
 						if(required || target != null) {
 							if(pictureKeys.add(key)) {

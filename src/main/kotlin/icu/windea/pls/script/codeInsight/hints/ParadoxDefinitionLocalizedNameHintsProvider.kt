@@ -32,7 +32,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<N
 		if(element is ParadoxScriptProperty) {
 			val definitionInfo = element.definitionInfo
 			if(definitionInfo != null) {
-				val presentation = collectDefinition(definitionInfo, editor) ?: return true
+				val presentation = collectDefinition(element, definitionInfo, editor) ?: return true
 				val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
 				val endOffset = element.propertyKey.endOffset
 				sink.addInlineElement(endOffset, false, finalPresentation, false)
@@ -41,8 +41,8 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<N
 		return true
 	}
 	
-	private fun PresentationFactory.collectDefinition(definitionInfo: ParadoxDefinitionInfo, editor: Editor): InlayPresentation? {
-		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation() ?: return null
-		return ParadoxLocalisationTextHintsRenderer.render(primaryLocalisation,this, editor)
+	private fun PresentationFactory.collectDefinition(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor): InlayPresentation? {
+		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation(definition) ?: return null
+		return ParadoxLocalisationTextHintsRenderer.render(primaryLocalisation, this, editor)
 	}
 }

@@ -2,6 +2,7 @@ package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
@@ -70,15 +71,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String) {
 		definition {
-			val configType = element.configType
-			if(originalElement == null || configType?.isReference == true) {
+			val configType = CwtConfigType.resolve(element)
+			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text)
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
-			} else{
+			} else {
 				val originalName = if(originalElement is ParadoxScriptPropertyKey) originalElement.value else originalElement.text
 				append(PlsDocBundle.message("name.script.definitionProperty"))
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(name != originalName) {
+				if(!name.equals(originalName, true)) {
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}
@@ -140,15 +141,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String) {
 		definition {
-			val configType = element.configType
-			if(originalElement == null || configType?.isReference == true) {
+			val configType = CwtConfigType.resolve(element)
+			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			} else {
 				val originalName = if(originalElement is ParadoxScriptValue) originalElement.value else originalElement.text
 				append(PlsDocBundle.message("name.script.definitionValue"))
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(name != originalName) {
+				if(!name.equals(originalName, true)) {
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}
