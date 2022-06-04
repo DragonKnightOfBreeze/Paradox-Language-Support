@@ -6,9 +6,18 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
 import icu.windea.pls.core.ParadoxValueType;
-import icu.windea.pls.script.reference.ParadoxScriptStringReference;
+import icu.windea.pls.script.reference.ParadoxScriptValueReference;
 
 public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue {
+
+  @Nullable
+  ParadoxScriptLinkExpression getLinkExpression();
+
+  @Nullable
+  ParadoxScriptLinkValueExpression getLinkValueExpression();
+
+  @Nullable
+  ParadoxScriptValueStringTemplate getValueStringTemplate();
 
   @NotNull
   String getValue();
@@ -16,8 +25,8 @@ public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue
   @NotNull
   ParadoxScriptString setValue(@NotNull String name);
 
-  @NotNull
-  ParadoxScriptStringReference getReference();
+  @Nullable
+  ParadoxScriptValueReference getReference();
 
   @NotNull
   String getStringValue();

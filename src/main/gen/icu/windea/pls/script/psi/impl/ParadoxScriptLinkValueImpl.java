@@ -11,14 +11,14 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
-public abstract class ParadoxScriptStringTemplateImpl extends ASTWrapperPsiElement implements ParadoxScriptStringTemplate {
+public class ParadoxScriptLinkValueImpl extends ASTWrapperPsiElement implements ParadoxScriptLinkValue {
 
-  public ParadoxScriptStringTemplateImpl(@NotNull ASTNode node) {
+  public ParadoxScriptLinkValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitStringTemplate(this);
+    visitor.visitLinkValue(this);
   }
 
   @Override

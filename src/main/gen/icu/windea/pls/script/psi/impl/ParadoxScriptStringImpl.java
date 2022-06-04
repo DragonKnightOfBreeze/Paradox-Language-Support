@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.core.ParadoxValueType;
-import icu.windea.pls.script.reference.ParadoxScriptStringReference;
+import icu.windea.pls.script.reference.ParadoxScriptValueReference;
 
 public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
 
@@ -30,6 +30,24 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   }
 
   @Override
+  @Nullable
+  public ParadoxScriptLinkExpression getLinkExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptLinkExpression.class);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxScriptLinkValueExpression getLinkValueExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptLinkValueExpression.class);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxScriptValueStringTemplate getValueStringTemplate() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptValueStringTemplate.class);
+  }
+
+  @Override
   @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
@@ -42,8 +60,8 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   }
 
   @Override
-  @NotNull
-  public ParadoxScriptStringReference getReference() {
+  @Nullable
+  public ParadoxScriptValueReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

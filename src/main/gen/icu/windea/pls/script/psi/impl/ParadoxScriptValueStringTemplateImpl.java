@@ -8,23 +8,29 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
-public abstract class ParadoxScriptStringTemplateImpl extends ASTWrapperPsiElement implements ParadoxScriptStringTemplate {
+public class ParadoxScriptValueStringTemplateImpl extends ParadoxScriptStringTemplateImpl implements ParadoxScriptValueStringTemplate {
 
-  public ParadoxScriptStringTemplateImpl(@NotNull ASTNode node) {
+  public ParadoxScriptValueStringTemplateImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitStringTemplate(this);
+    visitor.visitValueStringTemplate(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
   }
 
 }

@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
 		val stringTokens = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val propertyKeyOrStringTokens = TokenSet.create(PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID, STRING_TOKEN, QUOTED_STRING_TOKEN)
+		val propertyKeyOrStringTokens = TokenSet.create(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN)
 		
 		//当用户正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement().withElementType(propertyKeyOrStringTokens)

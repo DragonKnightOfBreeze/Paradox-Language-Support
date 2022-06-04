@@ -323,7 +323,6 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-	public Project project;
 		
     private boolean noIndent = true;
     private int depth = 0;
@@ -331,9 +330,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     private int propertyReferenceLocation = 0;
     private boolean inIconName = false;
     
-    public ParadoxLocalisationLexer(Project propect) {
+    public ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
-        this.project = project;
     }
 	
     private void increaseDepth(){

@@ -36,13 +36,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(LITERAL_STRING_TEMPLATE_ENTRY, PARAMETER_STRING_TEMPLATE_ENTRY, STRING_TEMPLATE_ENTRY),
+    create_token_set_(KEY_STRING_TEMPLATE, STRING_TEMPLATE, VALUE_STRING_TEMPLATE),
     create_token_set_(INLINE_MATH_FACTOR, INLINE_MATH_NUMBER, INLINE_MATH_PARAMETER, INLINE_MATH_VARIABLE_REFERENCE),
     create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
       INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
       INLINE_MATH, INT, NUMBER, PARAMETER,
-      STRING, STRING_TEMPLATE, VALUE, VARIABLE_REFERENCE),
+      STRING, VALUE, VARIABLE_REFERENCE),
   };
 
   /* ********************************************************** */
@@ -372,14 +372,170 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // STRING_PART
-  public static boolean literal_string_template_entry(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "literal_string_template_entry")) return false;
-    if (!nextTokenIs(b, STRING_PART)) return false;
+  // key_string_template_entry | key_string_entry
+  static boolean key_entry(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_entry")) return false;
+    boolean r;
+    r = key_string_template_entry(b, l + 1);
+    if (!r) r = key_string_entry(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
+  static boolean key_string_entry(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_string_entry")) return false;
+    if (!nextTokenIs(b, "", PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN)) return false;
+    boolean r;
+    r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    if (!r) r = consumeToken(b, QUOTED_PROPERTY_KEY_TOKEN);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // KEY_STRING_SNIPPET ? (parameter KEY_STRING_SNIPPET ?) +
+  public static boolean key_string_template(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_string_template")) return false;
+    if (!nextTokenIs(b, "<key string template>", KEY_STRING_SNIPPET, PARAMETER_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, KEY_STRING_TEMPLATE, "<key string template>");
+    r = key_string_template_0(b, l + 1);
+    r = r && key_string_template_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // KEY_STRING_SNIPPET ?
+  private static boolean key_string_template_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_string_template_0")) return false;
+    consumeToken(b, KEY_STRING_SNIPPET);
+    return true;
+  }
+
+  // (parameter KEY_STRING_SNIPPET ?) +
+  private static boolean key_string_template_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_string_template_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, STRING_PART);
-    exit_section_(b, m, LITERAL_STRING_TEMPLATE_ENTRY, r);
+    r = key_string_template_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!key_string_template_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "key_string_template_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // parameter KEY_STRING_SNIPPET ?
+  private static boolean key_string_template_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_string_template_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parameter(b, l + 1);
+    r = r && key_string_template_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // KEY_STRING_SNIPPET ?
+  private static boolean key_string_template_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_string_template_1_0_1")) return false;
+    consumeToken(b, KEY_STRING_SNIPPET);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // key_string_template
+  static boolean key_string_template_entry(PsiBuilder b, int l) {
+    return key_string_template(b, l + 1);
+  }
+
+  /* ********************************************************** */
+  // LINK_TOKEN
+  public static boolean link(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "link")) return false;
+    if (!nextTokenIs(b, LINK_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LINK_TOKEN);
+    exit_section_(b, m, LINK, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // link (DOT link) +
+  public static boolean link_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "link_expression")) return false;
+    if (!nextTokenIs(b, LINK_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = link(b, l + 1);
+    r = r && link_expression_1(b, l + 1);
+    exit_section_(b, m, LINK_EXPRESSION, r);
+    return r;
+  }
+
+  // (DOT link) +
+  private static boolean link_expression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "link_expression_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = link_expression_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!link_expression_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "link_expression_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // DOT link
+  private static boolean link_expression_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "link_expression_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    r = r && link(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LINK_VALUE_TOKEN
+  public static boolean link_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "link_value")) return false;
+    if (!nextTokenIs(b, LINK_VALUE_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LINK_VALUE_TOKEN);
+    exit_section_(b, m, LINK_VALUE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // link_value_prefix link_value
+  public static boolean link_value_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "link_value_expression")) return false;
+    if (!nextTokenIs(b, LINK_VALUE_PREFIX_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = link_value_prefix(b, l + 1);
+    r = r && link_value(b, l + 1);
+    exit_section_(b, m, LINK_VALUE_EXPRESSION, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LINK_VALUE_PREFIX_TOKEN
+  public static boolean link_value_prefix(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "link_value_prefix")) return false;
+    if (!nextTokenIs(b, LINK_VALUE_PREFIX_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LINK_VALUE_PREFIX_TOKEN);
+    exit_section_(b, m, LINK_VALUE_PREFIX, r);
     return r;
   }
 
@@ -525,18 +681,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // parameter
-  public static boolean parameter_string_template_entry(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_string_template_entry")) return false;
-    if (!nextTokenIs(b, PARAMETER_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = parameter(b, l + 1);
-    exit_section_(b, m, PARAMETER_STRING_TEMPLATE_ENTRY, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // property_key property_separator property_value
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
@@ -551,14 +695,12 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter
+  // key_entry
   public static boolean property_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_key")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, PROPERTY_KEY, "<property key>");
-    r = consumeToken(b, PROPERTY_KEY_ID);
-    if (!r) r = consumeToken(b, QUOTED_PROPERTY_KEY_ID);
-    if (!r) r = parameter(b, l + 1);
+    r = key_entry(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -628,76 +770,137 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // STRING_TOKEN | QUOTED_STRING_TOKEN
+  // value_entry
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
-    if (!nextTokenIs(b, "<string>", QUOTED_STRING_TOKEN, STRING_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
-    r = consumeToken(b, STRING_TOKEN);
-    if (!r) r = consumeToken(b, QUOTED_STRING_TOKEN);
+    r = value_entry(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // string_template_entry string_template_entry +
+  // key_string_template | value_string_template
   public static boolean string_template(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string_template")) return false;
-    if (!nextTokenIs(b, "<string template>", PARAMETER_START, STRING_PART)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STRING_TEMPLATE, "<string template>");
-    r = string_template_entry(b, l + 1);
-    r = r && string_template_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // string_template_entry +
-  private static boolean string_template_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_template_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = string_template_entry(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!string_template_entry(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "string_template_1", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // literal_string_template_entry | parameter_string_template_entry
-  public static boolean string_template_entry(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_template_entry")) return false;
-    if (!nextTokenIs(b, "<string template entry>", PARAMETER_START, STRING_PART)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, STRING_TEMPLATE_ENTRY, "<string template entry>");
-    r = literal_string_template_entry(b, l + 1);
-    if (!r) r = parameter_string_template_entry(b, l + 1);
+    Marker m = enter_section_(b, l, _COLLAPSE_, STRING_TEMPLATE, "<string template>");
+    r = key_string_template(b, l + 1);
+    if (!r) r = value_string_template(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // variable_reference | parameter | boolean | number | string | string_template | color | block | inline_math
+  // variable_reference | boolean | number | string | color | block | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, VALUE, "<value>");
     r = variable_reference(b, l + 1);
-    if (!r) r = parameter(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = number(b, l + 1);
     if (!r) r = string(b, l + 1);
-    if (!r) r = string_template(b, l + 1);
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = inline_math(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  /* ********************************************************** */
+  // value_string_template_entry | value_link_entry | value_link_value_entry | value_string_entry
+  static boolean value_entry(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_entry")) return false;
+    boolean r;
+    r = value_string_template_entry(b, l + 1);
+    if (!r) r = value_link_entry(b, l + 1);
+    if (!r) r = value_link_value_entry(b, l + 1);
+    if (!r) r = value_string_entry(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // link_expression
+  static boolean value_link_entry(PsiBuilder b, int l) {
+    return link_expression(b, l + 1);
+  }
+
+  /* ********************************************************** */
+  // link_value_expression
+  static boolean value_link_value_entry(PsiBuilder b, int l) {
+    return link_value_expression(b, l + 1);
+  }
+
+  /* ********************************************************** */
+  // STRING_TOKEN | QUOTED_STRING_TOKEN
+  static boolean value_string_entry(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_string_entry")) return false;
+    if (!nextTokenIs(b, "", QUOTED_STRING_TOKEN, STRING_TOKEN)) return false;
+    boolean r;
+    r = consumeToken(b, STRING_TOKEN);
+    if (!r) r = consumeToken(b, QUOTED_STRING_TOKEN);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // VALUE_STRING_SNIPPET ? (parameter VALUE_STRING_SNIPPET ?) +
+  public static boolean value_string_template(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_string_template")) return false;
+    if (!nextTokenIs(b, "<value string template>", PARAMETER_START, VALUE_STRING_SNIPPET)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, VALUE_STRING_TEMPLATE, "<value string template>");
+    r = value_string_template_0(b, l + 1);
+    r = r && value_string_template_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // VALUE_STRING_SNIPPET ?
+  private static boolean value_string_template_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_string_template_0")) return false;
+    consumeToken(b, VALUE_STRING_SNIPPET);
+    return true;
+  }
+
+  // (parameter VALUE_STRING_SNIPPET ?) +
+  private static boolean value_string_template_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_string_template_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = value_string_template_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!value_string_template_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_string_template_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // parameter VALUE_STRING_SNIPPET ?
+  private static boolean value_string_template_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_string_template_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parameter(b, l + 1);
+    r = r && value_string_template_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // VALUE_STRING_SNIPPET ?
+  private static boolean value_string_template_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_string_template_1_0_1")) return false;
+    consumeToken(b, VALUE_STRING_SNIPPET);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // value_string_template
+  static boolean value_string_template_entry(PsiBuilder b, int l) {
+    return value_string_template(b, l + 1);
   }
 
   /* ********************************************************** */
@@ -758,8 +961,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, END_OF_LINE_COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN,
-    LEFT_BRACE, LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_ID, QUOTED_PROPERTY_KEY_ID, QUOTED_STRING_TOKEN,
-    RIGHT_BRACE, RIGHT_BRACKET, STRING_PART, STRING_TOKEN);
+    KEY_STRING_SNIPPET, LEFT_BRACE, LEFT_BRACKET, LINK_TOKEN, LINK_VALUE_PREFIX_TOKEN, PARAMETER_START,
+    PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET);
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_expr_auto_recover_ = block_auto_recover_;

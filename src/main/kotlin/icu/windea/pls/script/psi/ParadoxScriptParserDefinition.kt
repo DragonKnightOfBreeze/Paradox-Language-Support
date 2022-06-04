@@ -31,7 +31,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	override fun createParser(project: Project?) = ParadoxScriptParser()
 	
-	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter(project)
+	override fun createLexer(project: Project?) = ParadoxScriptLexerAdapter()
 	
 	override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
 		val leftType = left?.elementType

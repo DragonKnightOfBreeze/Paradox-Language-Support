@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
-public class ParadoxScriptParameterStringTemplateEntryImpl extends ParadoxScriptStringTemplateEntryImpl implements ParadoxScriptParameterStringTemplateEntry {
+public class ParadoxScriptLinkValueExpressionImpl extends ASTWrapperPsiElement implements ParadoxScriptLinkValueExpression {
 
-  public ParadoxScriptParameterStringTemplateEntryImpl(@NotNull ASTNode node) {
+  public ParadoxScriptLinkValueExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitParameterStringTemplateEntry(this);
+    visitor.visitLinkValueExpression(this);
   }
 
   @Override
@@ -29,8 +29,14 @@ public class ParadoxScriptParameterStringTemplateEntryImpl extends ParadoxScript
 
   @Override
   @NotNull
-  public ParadoxScriptParameter getParameter() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptParameter.class));
+  public ParadoxScriptLinkValue getLinkValue() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptLinkValue.class));
+  }
+
+  @Override
+  @NotNull
+  public ParadoxScriptLinkValuePrefix getLinkValuePrefix() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptLinkValuePrefix.class));
   }
 
 }

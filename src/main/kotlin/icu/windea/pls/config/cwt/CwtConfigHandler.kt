@@ -208,10 +208,10 @@ object CwtConfigHandler {
 				return true
 			}
 			CwtDataTypes.Int -> {
-				return valueType.matchesIntType() && expression.extraValue?.cast<IntRange>()?.contains(value.toInt()) ?: true
+				return valueType.matchesIntType() && expression.extraValue?.cast<IntRange>()?.contains(value.toIntOrNull()) ?: true
 			}
 			CwtDataTypes.Float -> {
-				return valueType.matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloat()) ?: true
+				return valueType.matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloatOrNull()) ?: true
 			}
 			CwtDataTypes.Scalar -> {
 				return valueType.matchesStringType()
@@ -292,10 +292,10 @@ object CwtConfigHandler {
 				return valueType.matchesBooleanType()
 			}
 			CwtDataTypes.Int -> {
-				return valueType.matchesIntType() && expression.extraValue?.cast<IntRange>()?.contains(value.toInt()) ?: true
+				return valueType.matchesIntType() && expression.extraValue?.cast<IntRange>()?.contains(value.toIntOrNull()) ?: true
 			}
 			CwtDataTypes.Float -> {
-				return valueType.matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloat()) ?: true
+				return valueType.matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloatOrNull()) ?: true
 			}
 			CwtDataTypes.Scalar -> {
 				return valueType.matchesStringType()
@@ -1211,6 +1211,11 @@ object CwtConfigHandler {
 				val name = valueElement.value
 				findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 			}
+			CwtDataTypes.InlineLocalisation -> {
+				if(valueElement.isQuoted()) return null
+				val name = valueElement.value
+				findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+			}
 			CwtDataTypes.AbsoluteFilePath -> {
 				val filePath = valueElement.value
 				val path = filePath.toPathOrNull() ?: return null
@@ -1321,6 +1326,11 @@ object CwtConfigHandler {
 			CwtDataTypes.SyncedLocalisation -> {
 				val name = valueElement.value
 				findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
+			}
+			CwtDataTypes.InlineLocalisation -> {
+				if(valueElement.isQuoted()) return emptyList()
+				val name = valueElement.value
+				findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
 				val filePath = valueElement.value

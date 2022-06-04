@@ -76,8 +76,28 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitNumber(o);
   }
 
-  public void visitLiteralStringTemplateEntry(@NotNull ParadoxScriptLiteralStringTemplateEntry o) {
-    visitStringTemplateEntry(o);
+  public void visitKeyStringTemplate(@NotNull ParadoxScriptKeyStringTemplate o) {
+    visitStringTemplate(o);
+  }
+
+  public void visitLink(@NotNull ParadoxScriptLink o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLinkExpression(@NotNull ParadoxScriptLinkExpression o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLinkValue(@NotNull ParadoxScriptLinkValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLinkValueExpression(@NotNull ParadoxScriptLinkValueExpression o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLinkValuePrefix(@NotNull ParadoxScriptLinkValuePrefix o) {
+    visitPsiElement(o);
   }
 
   public void visitNumber(@NotNull ParadoxScriptNumber o) {
@@ -100,10 +120,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitParameterConditionParameter(@NotNull ParadoxScriptParameterConditionParameter o) {
     visitIParadoxScriptInputParameter(o);
-  }
-
-  public void visitParameterStringTemplateEntry(@NotNull ParadoxScriptParameterStringTemplateEntry o) {
-    visitStringTemplateEntry(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
@@ -130,15 +146,15 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitStringTemplate(@NotNull ParadoxScriptStringTemplate o) {
-    visitValue(o);
-  }
-
-  public void visitStringTemplateEntry(@NotNull ParadoxScriptStringTemplateEntry o) {
     visitPsiElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
     visitExpression(o);
+  }
+
+  public void visitValueStringTemplate(@NotNull ParadoxScriptValueStringTemplate o) {
+    visitStringTemplate(o);
   }
 
   public void visitVariable(@NotNull ParadoxScriptVariable o) {

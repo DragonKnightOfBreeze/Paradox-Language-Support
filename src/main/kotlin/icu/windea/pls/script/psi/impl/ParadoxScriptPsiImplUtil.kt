@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -250,10 +249,15 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptPropertyKey): ParadoxScriptPropertyKeyReference? {
-		if(element.parameter != null) return null //propertyKey为parameter的时直接返回null
-		val rangeInElement = TextRange(0, element.textLength) //包括可能的括起字符串的双引号
-		return ParadoxScriptPropertyKeyReference(element, rangeInElement)
+	fun getReference(element: ParadoxScriptPropertyKey): ParadoxScriptKeyReference? {
+		element.processChild {
+			when(it.elementType){
+				PROPERTY_KEY_TOKEN -> return ParadoxScriptKeyReference(element, it.textRangeInParent)
+				QUOTED_PROPERTY_KEY_TOKEN -> return ParadoxScriptKeyReference(element, it.textRangeInParent)
+				else -> end()
+			}
+		}
+		return null
 	}
 	
 	@JvmStatic
@@ -265,8 +269,8 @@ object ParadoxScriptPsiImplUtil {
 	fun getValueType(element: ParadoxScriptPropertyKey): ParadoxValueType {
 		element.processChild {
 			when(it.elementType) {
-				PROPERTY_KEY_ID -> return ParadoxValueType.infer(it.text)
-				QUOTED_PROPERTY_KEY_ID -> return ParadoxValueType.StringType
+				PROPERTY_KEY_TOKEN -> return ParadoxValueType.infer(it.text)
+				QUOTED_PROPERTY_KEY_TOKEN -> return ParadoxValueType.StringType
 				PARAMETER_ID -> return ParadoxValueType.ParameterType
 				else -> end()
 			}
@@ -404,33 +408,20 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptString): ParadoxScriptStringReference {
-		val rangeInElement = TextRange(0, element.textLength) //包括可能的括起字符串的双引号
-		return ParadoxScriptStringReference(element, rangeInElement)
+	fun getReference(element: ParadoxScriptString): ParadoxScriptValueReference? {
+		element.processChild {
+			when(it.elementType){
+				STRING_TOKEN -> return ParadoxScriptValueReference(element, it.textRangeInParent)
+				QUOTED_STRING_TOKEN -> return ParadoxScriptValueReference(element, it.textRangeInParent)
+				else -> end()
+			}
+		}
+		return null
 	}
 	
 	@JvmStatic
 	fun getValueType(element: ParadoxScriptString): ParadoxValueType {
 		return ParadoxValueType.StringType
-	}
-	//endregion
-	
-	//region ParadoxScriptStringTemplate
-	@JvmStatic
-	fun getValue(element: ParadoxScriptStringTemplate): String {
-		return PlsFolders.stringTemplateFolder
-	}
-	
-	@JvmStatic
-	fun getValueType(element: ParadoxScriptStringTemplate): ParadoxValueType {
-		return ParadoxValueType.StringType
-	}
-	//endregion
-	
-	//region ParadoxScriptStringTemplateEntry
-	@JvmStatic
-	fun getValue(element: ParadoxScriptLiteralStringTemplateEntry): String {
-		return element.text
 	}
 	//endregion
 	

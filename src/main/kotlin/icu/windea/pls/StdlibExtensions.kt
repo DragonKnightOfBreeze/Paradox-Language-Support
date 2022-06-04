@@ -592,6 +592,10 @@ fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
 fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
 
 typealias FloatRange = ClosedRange<Float>
+
+public inline operator fun FloatRange.contains(element: Float?): Boolean {
+	return element != null && contains(element)
+}
 //endregion
 
 //region Other Types

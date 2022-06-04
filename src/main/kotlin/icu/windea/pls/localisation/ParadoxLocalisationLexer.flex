@@ -40,7 +40,6 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 %state WAITING_CHECK_RIGHT_QUOTE
 
 %{
-	public Project project;
 		
     private boolean noIndent = true;
     private int depth = 0;
@@ -48,9 +47,8 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
     private int propertyReferenceLocation = 0;
     private boolean inIconName = false;
     
-    public ParadoxLocalisationLexer(Project propect) {
+    public ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
-        this.project = project;
     }
 	
     private void increaseDepth(){

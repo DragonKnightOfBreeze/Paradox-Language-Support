@@ -254,6 +254,7 @@ val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInf
 val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
 
 private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
+	//icu.windea.pls.script.psi.ParadoxScriptPsiExtensionsKt.clearDefinitionElementInfo
 	//必须是脚本语言的PsiElement
 	if(element.language != ParadoxScriptLanguage) return null
 	//return resolveDefinitionElementInfo(element)

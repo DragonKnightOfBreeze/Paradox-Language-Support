@@ -1,6 +1,5 @@
 package icu.windea.pls.script.psi;
 
-import com.intellij.openapi.project.*;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
@@ -26,6 +25,9 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_PROPERTY_VALUE
 %state WAITING_PROPERTY_END
 
+%state WAITING_WILDCARD_KEY
+%state WAITING_WILDCARD_VALUE
+
 %state WAITING_VARIABLE
 %state WAITING_VARIABLE_REFERENCE_NAME
 
@@ -40,17 +42,16 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %state WAITING_INLINE_MATH
 
 %{
-    public Project project;
-                  
     private int depth = 0;
-	private boolean isPropertyKey = false;
+    private boolean inWildcardKey = false;
+    private boolean inWildcardValue = false;
+	private boolean isWildcardContainsParameter = false;
 	private boolean inParameterCondition = false;
     private boolean inInlineMath = false;
     private boolean leftAbsSign = true;
     
-    public ParadoxScriptLexer(Project propect) {
+    public ParadoxScriptLexer() {
         this((java.io.Reader)null);
-        this.project = project;
     }
     
     private void beginNextState(){
@@ -66,20 +67,40 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     }
 	
     private void beginNextStateForParameter(){
-        if(inInlineMath){
+		if(inWildcardKey){
+			yybegin(WAITING_WILDCARD_KEY);
+		} else if(inWildcardValue){
+			yybegin(WAITING_WILDCARD_VALUE);
+		} else if(inInlineMath){
             yybegin(WAITING_INLINE_MATH);
-        } else if(isPropertyKey){
-			isPropertyKey = false;
-			yybegin(WATIING_PROPERTY_SEPARATOR);
-		} else {
-            yybegin(WAITING_AFTER_PARAMETER);
+        } else {
+            beginNextState();
         }
     }
     
     private void onBlank(){
-		//ignore
+		inWildcardKey = false;
+		inWildcardValue = false;
+		isWildcardContainsParameter = false;
     }
+	
+	private void enterWildcardKey(){
+		inWildcardKey = true;
+	}
+	
+	private void enterWildcardValue(){
+		inWildcardValue = true;
+	}
     
+	private void enterInlineMath(){
+		inInlineMath = true;
+		leftAbsSign = true;
+	}
+	
+	private void exitInlineMath(){
+		inInlineMath = false;
+	}
+	
     private void pushbackUntilBeforeBlank(int begin){
         //回退到末尾可能出现的空白之前
         int length = yylength();
@@ -103,21 +124,25 @@ END_OF_LINE_COMMENT=#[^\r\n]*
 //判断接下来是变量名还是变量引用
 CHECK_VARIABLE_NAME={VARIABLE_ID}(\s*=)?
 //判断接下来是否是属性
-CHECK_PROPERTY_KEY=({PROPERTY_KEY_ID}|{QUOTED_PROPERTY_KEY_ID}|[$]{PARAMETER_ID})[$]?\s*[=<>] //不是必须匹配参数结尾的"$"
-//判断接下来是否是字符串模版中的字符串部分
-CHECK_STRING_PART={STRING_PART}[$]
+CHECK_PROPERTY_KEY=({WILDCARD_KEY_TOKEN}|{QUOTED_PROPERTY_KEY_TOKEN})\s*[=<>] //不是必须匹配参数结尾的"$"
 
 VARIABLE_ID=[a-zA-Z_][a-zA-Z0-9_]*
 PARAMETER_ID=[a-zA-Z_][a-zA-Z0-9_]*
-PROPERTY_KEY_ID=[^#@={}\[\]\s][^$={}\[\]\s]*
-QUOTED_PROPERTY_KEY_ID=\"([^\"(\r\n\\]|\\.)*?\"
+
+WILDCARD_KEY_TOKEN=[^#@={}\[\]\s][^={}\[\]\s]*
+PROPERTY_KEY_TOKEN=[^#@$={}\[\]\s][^$={}\[\]\s]*
+PROPERTY_KEY_TOKEN_WITH_SUFFIX={PROPERTY_KEY_TOKEN}[$]?
+QUOTED_PROPERTY_KEY_TOKEN=\"([^\"(\r\n\\]|\\.)*?\"
+
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 COLOR_TOKEN=(rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d.\s&&[^\r\n]]*}
+
+WILDCARD_VALUE_TOKEN=[^#@={}\[\]\s\"][^={}\[\]\s\"]*
+STRING_TOKEN_WITH_SUFFIX={STRING_TOKEN}[$]?
 STRING_TOKEN=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
 QUOTED_STRING_TOKEN=\"([^\"\r\n\\]|\\.)*?\"
-STRING_PART=[^#@$={}\[\]\s\"][^$={}\[\]\s\"]*
 
 NUMBER_TOKEN=(0|[1-9][0-9]*)(\.[0-9]+)? //non-negative integer / float, without unary sign
 ARG_NUMBER_TOKEN=[+-]?{NUMBER_TOKEN}
@@ -130,35 +155,20 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   //出于语法兼容性考虑，这里允许内联数学表达式
-  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
+  "@["|"@\\[" {enterInlineMath(); yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE_NAME); return AT;}
-  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {CHECK_PROPERTY_KEY} {
-    //根据后面是否有"="判断是否是property
-	yybegin(WATIING_PROPERTY_SEPARATOR);
-	pushbackUntilBeforeBlank(1);
-	char firstChar = yycharat(0);
-	if(firstChar == '"'){
-		return QUOTED_PROPERTY_KEY_ID;
-	} else if(firstChar == '$'){
-		//propertyKey也可以是parameter
-		isPropertyKey = true;
-		yypushback(yylength() -1);
-		yybegin(WAITING_PARAMETER);
-		return PARAMETER_START;
-	} else {
-		return PROPERTY_KEY_ID;
-	}
-  }
-  {CHECK_STRING_PART} {
-	yypushback(1);
-	return STRING_PART;
+	  if(yycharat(0) == '"'){
+		  yybegin(WATIING_PROPERTY_SEPARATOR); return QUOTED_PROPERTY_KEY_TOKEN;
+	  } else {
+	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);
+	  }
   }
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
+  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
   {COMMENT} {return COMMENT;}
 }
@@ -199,36 +209,21 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   //出于语法兼容性考虑，这里允许内联数学表达式
-  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
+  "@["|"@\\[" {enterInlineMath(); leftAbsSign=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE); return AT;}
-  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   "[" {inParameterCondition=true; yybegin(WAITING_PARAMETER_CONDITION); return LEFT_BRACKET;}
-  {CHECK_PROPERTY_KEY} {
-    //根据后面是否有"="判断是否是property
-	yybegin(WATIING_PROPERTY_SEPARATOR);
-	pushbackUntilBeforeBlank(1);
-	char firstChar = yycharat(0);
-	if(firstChar == '"'){
-		return QUOTED_PROPERTY_KEY_ID;
-	} else if(firstChar == '$'){
-		//propertyKey也可以是parameter
-		isPropertyKey = true;
-		yypushback(yylength() -1);
-		yybegin(WAITING_PARAMETER);
-		return PARAMETER_START;
-	} else {
-		return PROPERTY_KEY_ID;
-	}
-  }
-  {CHECK_STRING_PART} {
-  	yypushback(1);
-  	return STRING_PART;
+   {CHECK_PROPERTY_KEY} {
+ 	  if(yycharat(0) == '"'){
+ 		  yybegin(WATIING_PROPERTY_SEPARATOR); return QUOTED_PROPERTY_KEY_TOKEN;
+ 	  } else {
+ 	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);
+ 	  }
   }
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
+  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
   {COMMENT} {return COMMENT;}
 }
@@ -248,18 +243,13 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   {BLANK} {onBlank(); return WHITE_SPACE;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
+  "@["|"@\\[" {enterInlineMath(); yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE_REFERENCE_NAME); return AT;}
-  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END);; return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {CHECK_STRING_PART} {
-  	yypushback(1);
-  	return STRING_PART;
-  }
-  {STRING_TOKEN} {beginNextState(); return STRING_TOKEN;}
+  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {beginNextState(); return QUOTED_STRING_TOKEN;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
 }
@@ -270,6 +260,45 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT;}
+}
+
+<WAITING_WILDCARD_KEY>{
+  {BLANK} {yybegin(WATIING_PROPERTY_SEPARATOR); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "$" {isWildcardContainsParameter=true; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  //{PARAMETER_ID} {return PARAMETER_ID;}
+  {PROPERTY_KEY_TOKEN_WITH_SUFFIX} {
+	  if(yycharat(yylength() - 1) == '$'){
+		  yypushback(1);
+		  isWildcardContainsParameter = true;
+		  return KEY_STRING_SNIPPET;
+      } else if(isWildcardContainsParameter){
+          return KEY_STRING_SNIPPET;
+      } else {
+		  return PROPERTY_KEY_TOKEN;
+      }
+    }
+  //{QUOTED_PROPERTY_KEY_TOKEN} {return QUOTED_PROPERTY_KEY_TOKEN;}
+}
+<WAITING_WILDCARD_VALUE>{
+  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
+  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
+  "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  "$" {isWildcardContainsParameter=true; yybegin(WAITING_PARAMETER); return PARAMETER_START;}
+  //{PARAMETER_ID} {return PARAMETER_ID;}
+  {STRING_TOKEN_WITH_SUFFIX} {
+	  if(yycharat(yylength() - 1) == '$'){
+		  yypushback(1);
+		  isWildcardContainsParameter = true;
+		  return VALUE_STRING_SNIPPET;
+      } else if(isWildcardContainsParameter){
+          return VALUE_STRING_SNIPPET;
+      } else {
+		  return STRING_TOKEN;
+      }
+    }
+  //{QUOTED_STRING_TOKEN} {return QUOTED_STRING_TOKEN;}
 }
 
 <WAITING_VARIABLE>{
@@ -297,7 +326,6 @@ ARG_STRING_TOKEN={STRING_TOKEN}
 
 //TODO 这里相关的解析失败时的处理可以考虑优化
 <WAITING_PARAMETER>{
-  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {PARAMETER_ID} {return PARAMETER_ID;}
@@ -305,7 +333,6 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
 }
 <WAITING_PARAMETER_DEFAULT_VALUE>{
-  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {ARG_NUMBER_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return ARG_NUMBER_TOKEN;}
@@ -313,18 +340,9 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
 }
 <WAITING_PARAMETER_DEFAULT_VALUE_END>{
-  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
-}
-<WAITING_AFTER_PARAMETER>{
-  {BLANK} {beginNextState(); onBlank(); return WHITE_SPACE;}
-  "}" {depth--; beginNextState(); return RIGHT_BRACE;}
-  "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
-  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
-  {STRING_PART} {return STRING_PART; }
 }
 
 <WAITING_PARAMETER_CONDITION>{
@@ -334,35 +352,20 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "[" {yybegin(WAITING_PARAMETER_CONDITION_EXPRESSION); return NESTED_LEFT_BRACKET;}
   "]" {inParameterCondition=false; beginNextState(); return RIGHT_BRACKET;}
   //出于语法兼容性考虑，这里允许内联数学表达式
-  "@["|"@\\[" {inInlineMath=true; yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
+  "@["|"@\\[" {enterInlineMath(); yybegin(WAITING_INLINE_MATH); return INLINE_MATH_START;}
   "@" {yybegin(WAITING_VARIABLE); return AT;}
-  "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {CHECK_PROPERTY_KEY} {
-    //根据后面是否有"="判断是否是property
-	yybegin(WATIING_PROPERTY_SEPARATOR);
-	pushbackUntilBeforeBlank(1);
-	char firstChar = yycharat(0);
-	if(firstChar == '"'){
-		return QUOTED_PROPERTY_KEY_ID;
-	} else if(firstChar == '$'){
-		//propertyKey也可以是parameter
-		isPropertyKey = true;
-		yypushback(yylength() -1);
-		yybegin(WAITING_PARAMETER);
-		return PARAMETER_START;
-	} else {
-		return PROPERTY_KEY_ID;
-	}
-  }
-  {CHECK_STRING_PART} {
-  	yypushback(1);
-  	return STRING_PART;
+ 	  if(yycharat(0) == '"'){
+ 		  yybegin(WATIING_PROPERTY_SEPARATOR); return QUOTED_PROPERTY_KEY_TOKEN;
+ 	  } else {
+ 	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);
+ 	  }
   }
   {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_PROPERTY_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_PROPERTY_END); return FLOAT_TOKEN;}
   {COLOR_TOKEN} {yybegin(WAITING_PROPERTY_END); return COLOR_TOKEN;}
-  {STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return STRING_TOKEN;}
+  {WILDCARD_VALUE_TOKEN} { enterWildcardValue(); yypushback(yylength()); yybegin(WAITING_WILDCARD_VALUE);}
   {QUOTED_STRING_TOKEN} {yybegin(WAITING_PROPERTY_END); return QUOTED_STRING_TOKEN;}
   {COMMENT} {return COMMENT;}
 }
@@ -397,7 +400,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "$" {yybegin(WAITING_PARAMETER); return PARAMETER_START;}
   {NUMBER_TOKEN} {return NUMBER_TOKEN;}
   {VARIABLE_ID} {return INLINE_MATH_VARIABLE_REFERENCE_ID;}
-  "]" {leftAbsSign=true; inInlineMath=false; beginNextState(); return INLINE_MATH_END;}
+  "]" {exitInlineMath(); beginNextState(); return INLINE_MATH_END;}
 }
 
 [^] {return BAD_CHARACTER;}

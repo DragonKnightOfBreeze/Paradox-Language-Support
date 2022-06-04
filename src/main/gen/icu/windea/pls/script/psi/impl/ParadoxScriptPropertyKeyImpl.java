@@ -11,7 +11,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.core.ParadoxValueType;
-import icu.windea.pls.script.reference.ParadoxScriptPropertyKeyReference;
+import icu.windea.pls.script.reference.ParadoxScriptKeyReference;
 
 public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implements ParadoxScriptPropertyKey {
 
@@ -31,8 +31,8 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
 
   @Override
   @Nullable
-  public ParadoxScriptParameter getParameter() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameter.class);
+  public ParadoxScriptKeyStringTemplate getKeyStringTemplate() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptKeyStringTemplate.class);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
 
   @Override
   @Nullable
-  public ParadoxScriptPropertyKeyReference getReference() {
+  public ParadoxScriptKeyReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 

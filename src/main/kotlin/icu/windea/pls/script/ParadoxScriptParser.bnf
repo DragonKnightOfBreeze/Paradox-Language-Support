@@ -17,7 +17,7 @@
 //regex必须定向到token，而非rule
 //即使idea提示不需要转义，一些字符在regexp中仍然需要转义
 
-//DONE 列表的元素可以是字符串
+//TODO 区分不同游戏类型对应的parser和lexer
 //DONE 分隔符可以是比较运算符
 
 root ::= root_block ?
@@ -27,6 +27,8 @@ root_block ::= root_block_item + {
 }
 private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | property | value | variable
 
+//scripted_variable
+//should outside of definition declaration
 variable ::= variable_name variable_separator variable_value {
   pin=1
   recoverWhile="#auto"
@@ -38,7 +40,6 @@ variable ::= variable_name variable_separator variable_value {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptVariableStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getValueType]
 }
-
 variable_name ::= AT VARIABLE_NAME_ID{
   methods=[getName]
 }
@@ -47,6 +48,7 @@ variable_value ::= number {
   methods=[getValue]
 }
 
+//property related
 property ::= property_key property_separator property_value {
   pin=1
   recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
@@ -59,15 +61,15 @@ property ::= property_key property_separator property_value {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName subtreeChanged]
 }
-//property_key can be parameter
-property_key ::= PROPERTY_KEY_ID | QUOTED_PROPERTY_KEY_ID | parameter {
+property_key ::= key_entry {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
   methods=[getValue setValue getReference getConfigExpression getValueType]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 
-value ::= variable_reference | parameter | boolean | number | string | string_template | color | block | inline_math {
+//(property) value related
+value ::= variable_reference | boolean | number | string | color | block | inline_math {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
   methods=[getIcon getValue getConfigExpression getValueType]
 }
@@ -94,7 +96,7 @@ float ::= FLOAT_TOKEN{
   extends=number
   methods=[getFloatValue getValueType]
 }
-string ::= STRING_TOKEN | QUOTED_STRING_TOKEN {
+string ::= value_entry {
   extends=value
   implements="com.intellij.psi.PsiLiteralValue"
   methods=[getValue setValue getReference getStringValue getValueType]
@@ -119,7 +121,7 @@ private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value | parame
 
 //tag
 //should in definition declaration (scripted_effect / scripted_trigger)
-//resolve from a string, before any scripted variables, (non-tag) strings and properties
+//resolved from a string, before any scripted variables, (non-tag) strings and properties
 
 //parameter
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
@@ -133,6 +135,7 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
 
 //parameter condition
 //should in definition declaration (script_value / scripted_effect / scripted_trigger)
+//currently nested parameter_condition is not supported
 parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_condition_item * RIGHT_BRACKET{
   pin=1
   recoverWhile="#auto"
@@ -148,8 +151,6 @@ parameter_condition_parameter ::= INPUT_PARAMETER_ID {
   implements="icu.windea.pls.script.psi.IParadoxScriptInputParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset]
 }
-//variable should outside of definition declaration
-//nested parameter_condition is not supported
 private parameter_condition_item ::= END_OF_LINE_COMMENT | COMMENT | property | value
 
 //inline math
@@ -211,21 +212,44 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] P
   methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
 }
 
-//loc command
-//should in definition declaration
-//should starts with "\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)
+//key & value entries
+
+//key string (various situations)
+private key_entry ::= key_string_template_entry | key_string_entry
+private key_string_template_entry ::= key_string_template
+private key_string_entry ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN //e.g. KEY
+
+//key string (various situations) (TO CHECK: make it game type specific)
+private value_entry ::= value_string_template_entry | value_link_entry | value_link_value_entry | value_string_entry
+private value_string_template_entry ::= value_string_template
+private value_link_entry ::= link_expression
+private value_link_value_entry ::= link_value_expression
+private value_string_entry ::= STRING_TOKEN | QUOTED_STRING_TOKEN //e.g. VALUE
+
+//key & value entry implementations
 
 //string template
-//can include: string_entry, parameter_entry, etc. (TO IMPLEMENT)
-string_template ::= string_template_entry string_template_entry + {
-  extends=value
-  methods=[getValue]
+//e.g. $PARAM$, $PARAM$_SUFFIX
+//noinspection BnfUnusedRule
+string_template ::= key_string_template | value_string_template
+key_string_template ::= KEY_STRING_SNIPPET ? (parameter KEY_STRING_SNIPPET ?) + {
+  extends=string_template
 }
-string_template_entry ::= literal_string_template_entry | parameter_string_template_entry
-literal_string_template_entry ::= STRING_PART{
-  extends=string_template_entry
-  methods=[getValue getValueType]
+value_string_template ::= VALUE_STRING_SNIPPET ? (parameter VALUE_STRING_SNIPPET ?) + {
+  extends=string_template
 }
-parameter_string_template_entry ::= parameter {
-  extends=string_template_entry
-}
+
+//link expression (ignore case) (TODO)
+//e.g. root.owner
+link_expression ::= link (DOT link) +
+link ::= LINK_TOKEN
+
+//link value expression (TODO)
+//e.g. event_target:last_created_pop
+link_value_expression ::= link_value_prefix link_value
+link_value_prefix ::= LINK_VALUE_PREFIX_TOKEN
+link_value ::= LINK_VALUE_TOKEN
+
+//loc command (TODO)
+//should in definition declaration
+//should starts with "\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)

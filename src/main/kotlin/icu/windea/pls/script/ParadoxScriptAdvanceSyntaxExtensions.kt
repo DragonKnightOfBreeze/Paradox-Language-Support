@@ -1,7 +1,5 @@
 package icu.windea.pls.script
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*

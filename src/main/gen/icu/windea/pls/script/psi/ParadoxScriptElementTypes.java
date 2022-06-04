@@ -23,21 +23,25 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INLINE_MATH_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_VARIABLE_REFERENCE");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
-  IElementType LITERAL_STRING_TEMPLATE_ENTRY = ParadoxScriptElementTypeFactory.getElementType("LITERAL_STRING_TEMPLATE_ENTRY");
+  IElementType KEY_STRING_TEMPLATE = ParadoxScriptElementTypeFactory.getElementType("KEY_STRING_TEMPLATE");
+  IElementType LINK = ParadoxScriptElementTypeFactory.getElementType("LINK");
+  IElementType LINK_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("LINK_EXPRESSION");
+  IElementType LINK_VALUE = ParadoxScriptElementTypeFactory.getElementType("LINK_VALUE");
+  IElementType LINK_VALUE_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("LINK_VALUE_EXPRESSION");
+  IElementType LINK_VALUE_PREFIX = ParadoxScriptElementTypeFactory.getElementType("LINK_VALUE_PREFIX");
   IElementType NUMBER = ParadoxScriptElementTypeFactory.getElementType("NUMBER");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
   IElementType PARAMETER_CONDITION_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_EXPRESSION");
   IElementType PARAMETER_CONDITION_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_PARAMETER");
-  IElementType PARAMETER_STRING_TEMPLATE_ENTRY = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_STRING_TEMPLATE_ENTRY");
   IElementType PROPERTY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType PROPERTY_VALUE = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType ROOT_BLOCK = ParadoxScriptElementTypeFactory.getElementType("ROOT_BLOCK");
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType STRING_TEMPLATE = ParadoxScriptElementTypeFactory.getElementType("STRING_TEMPLATE");
-  IElementType STRING_TEMPLATE_ENTRY = ParadoxScriptElementTypeFactory.getElementType("STRING_TEMPLATE_ENTRY");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
+  IElementType VALUE_STRING_TEMPLATE = ParadoxScriptElementTypeFactory.getElementType("VALUE_STRING_TEMPLATE");
   IElementType VARIABLE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE");
   IElementType VARIABLE_NAME = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_NAME");
   IElementType VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_REFERENCE");
@@ -50,6 +54,7 @@ public interface ParadoxScriptElementTypes {
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMENT = ParadoxScriptElementTypeFactory.getTokenType("COMMENT");
   IElementType DIV_SIGN = ParadoxScriptElementTypeFactory.getTokenType("DIV_SIGN");
+  IElementType DOT = ParadoxScriptElementTypeFactory.getTokenType("DOT");
   IElementType END_OF_LINE_COMMENT = ParadoxScriptElementTypeFactory.getTokenType("END_OF_LINE_COMMENT");
   IElementType EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("EQUAL_SIGN");
   IElementType FLOAT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("FLOAT_TOKEN");
@@ -60,10 +65,14 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_VARIABLE_REFERENCE_ID");
   IElementType INPUT_PARAMETER_ID = ParadoxScriptElementTypeFactory.getTokenType("INPUT_PARAMETER_ID");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
+  IElementType KEY_STRING_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("KEY_STRING_SNIPPET");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
   IElementType LEFT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACE");
   IElementType LEFT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("LEFT_BRACKET");
   IElementType LE_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LE_SIGN");
+  IElementType LINK_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("LINK_TOKEN");
+  IElementType LINK_VALUE_PREFIX_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("LINK_VALUE_PREFIX_TOKEN");
+  IElementType LINK_VALUE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("LINK_VALUE_TOKEN");
   IElementType LP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LP_SIGN");
   IElementType LT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LT_SIGN");
   IElementType MINUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("MINUS_SIGN");
@@ -78,16 +87,16 @@ public interface ParadoxScriptElementTypes {
   IElementType PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_START");
   IElementType PIPE = ParadoxScriptElementTypeFactory.getTokenType("PIPE");
   IElementType PLUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("PLUS_SIGN");
-  IElementType PROPERTY_KEY_ID = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_ID");
-  IElementType QUOTED_PROPERTY_KEY_ID = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_PROPERTY_KEY_ID");
+  IElementType PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
+  IElementType QUOTED_PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_PROPERTY_KEY_TOKEN");
   IElementType QUOTED_STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("QUOTED_STRING_TOKEN");
   IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
   IElementType RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACKET");
   IElementType RP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RP_SIGN");
-  IElementType STRING_PART = ParadoxScriptElementTypeFactory.getTokenType("STRING_PART");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType TIMES_SIGN = ParadoxScriptElementTypeFactory.getTokenType("TIMES_SIGN");
+  IElementType VALUE_STRING_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("VALUE_STRING_SNIPPET");
   IElementType VARIABLE_NAME_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_NAME_ID");
   IElementType VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_REFERENCE_ID");
 
@@ -133,8 +142,23 @@ public interface ParadoxScriptElementTypes {
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);
       }
-      else if (type == LITERAL_STRING_TEMPLATE_ENTRY) {
-        return new ParadoxScriptLiteralStringTemplateEntryImpl(node);
+      else if (type == KEY_STRING_TEMPLATE) {
+        return new ParadoxScriptKeyStringTemplateImpl(node);
+      }
+      else if (type == LINK) {
+        return new ParadoxScriptLinkImpl(node);
+      }
+      else if (type == LINK_EXPRESSION) {
+        return new ParadoxScriptLinkExpressionImpl(node);
+      }
+      else if (type == LINK_VALUE) {
+        return new ParadoxScriptLinkValueImpl(node);
+      }
+      else if (type == LINK_VALUE_EXPRESSION) {
+        return new ParadoxScriptLinkValueExpressionImpl(node);
+      }
+      else if (type == LINK_VALUE_PREFIX) {
+        return new ParadoxScriptLinkValuePrefixImpl(node);
       }
       else if (type == PARAMETER) {
         return new ParadoxScriptParameterImpl(node);
@@ -147,9 +171,6 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == PARAMETER_CONDITION_PARAMETER) {
         return new ParadoxScriptParameterConditionParameterImpl(node);
-      }
-      else if (type == PARAMETER_STRING_TEMPLATE_ENTRY) {
-        return new ParadoxScriptParameterStringTemplateEntryImpl(node);
       }
       else if (type == PROPERTY) {
         return new ParadoxScriptPropertyImpl(node);
@@ -166,8 +187,8 @@ public interface ParadoxScriptElementTypes {
       else if (type == STRING) {
         return new ParadoxScriptStringImpl(node);
       }
-      else if (type == STRING_TEMPLATE) {
-        return new ParadoxScriptStringTemplateImpl(node);
+      else if (type == VALUE_STRING_TEMPLATE) {
+        return new ParadoxScriptValueStringTemplateImpl(node);
       }
       else if (type == VARIABLE) {
         return new ParadoxScriptVariableImpl(node);
