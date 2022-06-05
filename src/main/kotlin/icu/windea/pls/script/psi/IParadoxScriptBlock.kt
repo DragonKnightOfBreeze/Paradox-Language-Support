@@ -10,3 +10,4 @@ interface IParadoxScriptBlock : PsiListLikeElement {
 	val isNotEmpty: Boolean
 	override fun getComponents(): List<PsiElement>
 }
+

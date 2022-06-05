@@ -36,7 +36,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(KEY_STRING_TEMPLATE, STRING_TEMPLATE, VALUE_STRING_TEMPLATE),
     create_token_set_(INLINE_MATH_FACTOR, INLINE_MATH_NUMBER, INLINE_MATH_PARAMETER, INLINE_MATH_VARIABLE_REFERENCE),
     create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
       INLINE_MATH_UNARY_EXPRESSION),
@@ -452,94 +451,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LINK_TOKEN
-  public static boolean link(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "link")) return false;
-    if (!nextTokenIs(b, LINK_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LINK_TOKEN);
-    exit_section_(b, m, LINK, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // link (DOT link) +
-  public static boolean link_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "link_expression")) return false;
-    if (!nextTokenIs(b, LINK_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = link(b, l + 1);
-    r = r && link_expression_1(b, l + 1);
-    exit_section_(b, m, LINK_EXPRESSION, r);
-    return r;
-  }
-
-  // (DOT link) +
-  private static boolean link_expression_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "link_expression_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = link_expression_1_0(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!link_expression_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "link_expression_1", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // DOT link
-  private static boolean link_expression_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "link_expression_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, DOT);
-    r = r && link(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // LINK_VALUE_TOKEN
-  public static boolean link_value(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "link_value")) return false;
-    if (!nextTokenIs(b, LINK_VALUE_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LINK_VALUE_TOKEN);
-    exit_section_(b, m, LINK_VALUE, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // link_value_prefix link_value
-  public static boolean link_value_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "link_value_expression")) return false;
-    if (!nextTokenIs(b, LINK_VALUE_PREFIX_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = link_value_prefix(b, l + 1);
-    r = r && link_value(b, l + 1);
-    exit_section_(b, m, LINK_VALUE_EXPRESSION, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // LINK_VALUE_PREFIX_TOKEN
-  public static boolean link_value_prefix(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "link_value_prefix")) return false;
-    if (!nextTokenIs(b, LINK_VALUE_PREFIX_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LINK_VALUE_PREFIX_TOKEN);
-    exit_section_(b, m, LINK_VALUE_PREFIX, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // int | float
   public static boolean number(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "number")) return false;
@@ -781,18 +692,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_string_template | value_string_template
-  public static boolean string_template(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "string_template")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, STRING_TEMPLATE, "<string template>");
-    r = key_string_template(b, l + 1);
-    if (!r) r = value_string_template(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
   // variable_reference | boolean | number | string | color | block | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
@@ -810,27 +709,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_string_template_entry | value_link_entry | value_link_value_entry | value_string_entry
+  // value_string_template_entry | value_string_entry
   static boolean value_entry(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_entry")) return false;
     boolean r;
     r = value_string_template_entry(b, l + 1);
-    if (!r) r = value_link_entry(b, l + 1);
-    if (!r) r = value_link_value_entry(b, l + 1);
     if (!r) r = value_string_entry(b, l + 1);
     return r;
-  }
-
-  /* ********************************************************** */
-  // link_expression
-  static boolean value_link_entry(PsiBuilder b, int l) {
-    return link_expression(b, l + 1);
-  }
-
-  /* ********************************************************** */
-  // link_value_expression
-  static boolean value_link_value_entry(PsiBuilder b, int l) {
-    return link_value_expression(b, l + 1);
   }
 
   /* ********************************************************** */
@@ -961,8 +846,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
 
   static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, END_OF_LINE_COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN,
-    KEY_STRING_SNIPPET, LEFT_BRACE, LEFT_BRACKET, LINK_TOKEN, LINK_VALUE_PREFIX_TOKEN, PARAMETER_START,
-    PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET);
+    KEY_STRING_SNIPPET, LEFT_BRACE, LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN,
+    QUOTED_STRING_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET);
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_expr_auto_recover_ = block_auto_recover_;

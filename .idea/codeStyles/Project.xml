@@ -1433,6 +1433,7 @@
       </arrangement>
     </codeStyleSettings>
     <codeStyleSettings language="JAVA">
+      <option name="RIGHT_MARGIN" value="240" />
       <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
@@ -1445,7 +1446,6 @@
       <option name="SPACE_BEFORE_CATCH_PARENTHESES" value="false" />
       <option name="SPACE_BEFORE_SWITCH_PARENTHESES" value="false" />
       <option name="SPACE_BEFORE_SYNCHRONIZED_PARENTHESES" value="false" />
-      <option name="CALL_PARAMETERS_WRAP" value="1" />
       <option name="METHOD_PARAMETERS_WRAP" value="1" />
       <option name="RESOURCE_LIST_WRAP" value="1" />
       <option name="RESOURCE_LIST_LPAREN_ON_NEXT_LINE" value="true" />

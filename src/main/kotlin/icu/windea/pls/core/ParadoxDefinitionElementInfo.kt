@@ -22,19 +22,34 @@ class ParadoxDefinitionElementInfo(
 ) {
 	//NOTE 部分属性需要使用懒加载
 	
-	/** 对应的属性配置列表。 */
-	val propertyConfigs: List<CwtPropertyConfig> by lazy {
+	/** 对应的属性/值配置列表。 */
+	val configs: List<CwtKvConfig<*>> by lazy {
 		//基于keyExpression，valueExpression可能不同
-		definitionInfo.definitionConfig?.resolvePropertyConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
+		definitionInfo.definitionConfig?.resolveConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
+	}
+	
+	val propertyConfig: CwtPropertyConfig? by lazy {
+		configs.singleOrNull { it is CwtPropertyConfig }?.cast()
 	}
 	
 	val matchedPropertyConfig: CwtPropertyConfig? by lazy {
 		//NOTE 如果变更了其他definitionProperty导致definition的类型发生变更，valueExpression会过时
-		//需要匹配value
 		if(element !is ParadoxScriptProperty) return@lazy null
-		if(propertyConfigs.isEmpty()) return@lazy null
+		if(configs.isEmpty()) return@lazy null
 		val propertyValue = element.propertyValue ?: return@lazy null
-		propertyConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, propertyValue.value, configGroup) }
+		configs.find { it is CwtPropertyConfig && CwtConfigHandler.matchesValue(it.valueExpression, propertyValue.value, configGroup) }?.cast()
+	}
+	
+	val valueConfig: CwtValueConfig? by lazy {
+		configs.singleOrNull { it is CwtValueConfig }?.cast()
+	}
+	
+	val matchedValueConfig: CwtValueConfig? by lazy {
+		//NOTE 如果变更了其他definitionProperty导致definition的类型发生变更，valueExpression会过时
+		if(element !is ParadoxScriptProperty) return@lazy null
+		if(configs.isEmpty()) return@lazy null
+		val propertyValue = element.propertyValue ?: return@lazy null
+		configs.find { it is CwtValueConfig && CwtConfigHandler.matchesValue(it.valueExpression, propertyValue.value, configGroup) }?.cast()
 	}
 	
 	/** 对应的子属性配置列表。 */

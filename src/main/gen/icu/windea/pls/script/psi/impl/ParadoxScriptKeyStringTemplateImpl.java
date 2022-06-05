@@ -8,15 +8,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import icu.windea.pls.script.psi.IParadoxScriptStringTemplate;
 import icu.windea.pls.script.psi.*;
 
-public class ParadoxScriptKeyStringTemplateImpl extends ParadoxScriptStringTemplateImpl implements ParadoxScriptKeyStringTemplate {
+public class ParadoxScriptKeyStringTemplateImpl extends IParadoxScriptStringTemplate implements ParadoxScriptKeyStringTemplate {
 
-  public ParadoxScriptKeyStringTemplateImpl(@NotNull ASTNode node) {
+  public ParadoxScriptKeyStringTemplateImpl(ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitKeyStringTemplate(this);
   }

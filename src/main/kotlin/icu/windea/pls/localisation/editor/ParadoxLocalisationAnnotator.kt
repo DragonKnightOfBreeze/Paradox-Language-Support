@@ -8,9 +8,10 @@ import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
 
+@Suppress("UNUSED_PARAMETER")
 class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
@@ -41,14 +42,6 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
-		//注明无法解析的情况
-		//NOTE 属性引用可能是变量，因此不注明无法解析的情况
-		//val reference = element.reference?:return
-		//if(reference.resolve() == null){
-		//	holder.newAnnotation(ERROR,message("localisation.annotator.unresolvedProperty",element.name))
-		//		.create()
-		//	return
-		//}
 		//颜色高亮
 		val colorConfig = element.colorConfig
 		if(colorConfig != null) {
@@ -75,7 +68,7 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateColor(colorId: String, project: Project, holder: AnnotationHolder, range: TextRange) {
 		//颜色高亮
-		val attributesKey = ParadoxLocalisationAttributesKeys.getColorKey(colorId, project) ?: return
+		val attributesKey = Keys.getColorKey(colorId, project) ?: return
 		holder.newSilentAnnotation(INFORMATION)
 			.range(range).textAttributes(attributesKey)
 			.create()

@@ -281,7 +281,7 @@ fun ParadoxScriptProperty.getPropertyConfig(): CwtPropertyConfig? {
 	val definitionElementInfo = element.definitionElementInfo ?: return null
 	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
 	return definitionElementInfo.matchedPropertyConfig
-		?: definitionElementInfo.propertyConfigs.singleOrNull()
+		?: definitionElementInfo.propertyConfig
 }
 
 fun ParadoxScriptPropertyKey.getPropertyConfig(): CwtPropertyConfig? {
@@ -289,7 +289,7 @@ fun ParadoxScriptPropertyKey.getPropertyConfig(): CwtPropertyConfig? {
 	val definitionElementInfo = element.definitionElementInfo ?: return null
 	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
 	return definitionElementInfo.matchedPropertyConfig
-		?: definitionElementInfo.propertyConfigs.singleOrNull()
+		?: definitionElementInfo.propertyConfig
 }
 
 fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
@@ -301,7 +301,7 @@ fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 			val property = parent.parent as? ParadoxScriptProperty ?: return null
 			val definitionElementInfo = property.definitionElementInfo ?: return null
 			return definitionElementInfo.matchedPropertyConfig?.valueConfig
-				?: definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig
+				?: definitionElementInfo.propertyConfig?.valueConfig
 		}
 		//如果value是block中的value
 		is ParadoxScriptBlock -> {

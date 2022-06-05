@@ -34,6 +34,4 @@ class ParadoxScriptValueReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		return CwtConfigHandler.multiResolveValue(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
 	}
-	
-	//代码提示功能由ParadoxDefinitionCompletionProvider统一实现
 }

@@ -217,13 +217,14 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] P
 //key string (various situations)
 private key_entry ::= key_string_template_entry | key_string_entry
 private key_string_template_entry ::= key_string_template
-private key_string_entry ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN //e.g. KEY
+private key_string_entry ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
 
 //key string (various situations) (TO CHECK: make it game type specific)
-private value_entry ::= value_string_template_entry | value_link_entry | value_link_value_entry | value_string_entry
+private value_entry ::= value_string_template_entry | value_string_entry
+//private value_entry ::= value_string_template_entry | value_link_entry | value_link_value_entry | value_string_entry
 private value_string_template_entry ::= value_string_template
-private value_link_entry ::= link_expression
-private value_link_value_entry ::= link_value_expression
+//private value_link_entry ::= link_expression
+//private value_link_value_entry ::= link_value_expression
 private value_string_entry ::= STRING_TOKEN | QUOTED_STRING_TOKEN //e.g. VALUE
 
 //key & value entry implementations
@@ -231,25 +232,24 @@ private value_string_entry ::= STRING_TOKEN | QUOTED_STRING_TOKEN //e.g. VALUE
 //string template
 //e.g. $PARAM$, $PARAM$_SUFFIX
 //noinspection BnfUnusedRule
-string_template ::= key_string_template | value_string_template
 key_string_template ::= KEY_STRING_SNIPPET ? (parameter KEY_STRING_SNIPPET ?) + {
-  extends=string_template
+  extends="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
 }
 value_string_template ::= VALUE_STRING_SNIPPET ? (parameter VALUE_STRING_SNIPPET ?) + {
-  extends=string_template
+  extends="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
 }
 
-//link expression (ignore case) (TODO)
-//e.g. root.owner
-link_expression ::= link (DOT link) +
-link ::= LINK_TOKEN
-
-//link value expression (TODO)
-//e.g. event_target:last_created_pop
-link_value_expression ::= link_value_prefix link_value
-link_value_prefix ::= LINK_VALUE_PREFIX_TOKEN
-link_value ::= LINK_VALUE_TOKEN
-
-//loc command (TODO)
-//should in definition declaration
-//should starts with "\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)
+////link expression (ignore case) (TODO)
+////e.g. root.owner
+//link_expression ::= link (DOT link) +
+//link ::= LINK_TOKEN
+//
+////link value expression (TODO)
+////e.g. event_target:last_created_pop
+//link_value_expression ::= link_value_prefix link_value
+//link_value_prefix ::= LINK_VALUE_PREFIX_TOKEN
+//link_value ::= LINK_VALUE_TOKEN
+//
+////loc command (TODO)
+////should in definition declaration
+////should starts with "\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)

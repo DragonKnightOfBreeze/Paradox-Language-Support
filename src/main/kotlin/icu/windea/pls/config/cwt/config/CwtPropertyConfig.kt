@@ -13,15 +13,13 @@ data class CwtPropertyConfig(
 	val intValue: Int? = null,
 	val floatValue: Float? = null,
 	val stringValue: String? = null,
-	val properties: List<CwtPropertyConfig>? = null,
-	val values: List<CwtValueConfig>? = null,
+	override val properties: List<CwtPropertyConfig>? = null,
+	override val values: List<CwtValueConfig>? = null,
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null,
 	val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
 ) : CwtKvConfig<CwtProperty>() {
-	override var parent: CwtPropertyConfig? = null
-	
 	//不显示标注的option和optionValue、以及block中的嵌套规则
 	val propertyConfigExpression = "$key = $value"
 	val keyConfigExpression = key
@@ -39,7 +37,7 @@ data class CwtPropertyConfig(
 		val valuePointer = pointer.containingFile?.let { f -> pointer.element?.value?.createPointer(f) } ?: return null
 		return CwtValueConfig(
 			valuePointer, value, booleanValue, intValue, floatValue, stringValue,
-			values, properties, documentation, options, optionValues
+			properties, values, documentation, options, optionValues
 		).also { it.parent = parent }
 	}
 }

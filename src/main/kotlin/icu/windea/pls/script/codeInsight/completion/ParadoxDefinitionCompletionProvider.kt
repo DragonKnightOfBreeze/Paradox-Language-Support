@@ -40,10 +40,10 @@ object ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParame
 		if(mayBeValueInBlock) {
 			//得到value元素
 			val valueElement = propertyKeyOrStringElement
-			//得到上一级definitionProperty
-			val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
+			//得到上一级block
+			val blockElement = blockOrPropertyValueElement as ParadoxScriptBlock
 			//进行提示
-			CwtConfigHandler.addValueCompletionsInBlock(valueElement, definitionProperty, result)
+			CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, result)
 		}
 		
 		//TODO 补全的scope可能不正确

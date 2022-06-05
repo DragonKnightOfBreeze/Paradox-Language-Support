@@ -11,14 +11,12 @@ data class CwtValueConfig(
 	val intValue: Int? = null,
 	val floatValue: Float? = null,
 	val stringValue: String? = null,
-	val values: List<CwtValueConfig>? = null,
-	val properties: List<CwtPropertyConfig>? = null,
+	override val properties: List<CwtPropertyConfig>? = null,
+	override val values: List<CwtValueConfig>? = null,
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null
 ) : CwtKvConfig<CwtValue>() {
-	override var parent: CwtPropertyConfig? = null
-	
 	//不显示标注的option和optionValue
 	val valueConfigExpression = value
 	

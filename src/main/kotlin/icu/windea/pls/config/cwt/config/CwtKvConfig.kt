@@ -4,10 +4,14 @@ import com.intellij.psi.*
 import icu.windea.pls.config.cwt.expression.*
 
 abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
+	abstract val properties: List<CwtPropertyConfig>?
+	abstract val values: List<CwtValueConfig>?
 	abstract val documentation: String?
 	abstract val options: List<CwtOptionConfig>?
 	abstract val optionValues: List<CwtOptionValueConfig>?
-	abstract var parent: CwtPropertyConfig?
+	
+	var parent: CwtPropertyConfig? = null
+	var aliasName: String? = null //用于规则内联
 	
 	val cardinality by lazy { inferCardinality() }
 	val scope get() = inferScope() //不要缓存，因为parent可能有变动

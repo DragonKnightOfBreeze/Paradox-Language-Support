@@ -5,14 +5,20 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.highlighter.*
-import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys.TAG_KEY
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
+/**
+ * 脚本文件的注解器。
+ * 
+ * * 提供定义的特殊颜色高亮。（基于CWT规则）
+ * * 提供定义元素的特殊颜色高亮。（基于CWT规则）
+ * * 提供标签的特殊颜色高亮。（基于扩展的CWT规则）
+ */
+@Suppress("UNUSED_PARAMETER")
 class ParadoxScriptAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
@@ -31,7 +37,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		holder.newSilentAnnotation(INFORMATION)
 			.range(element.propertyKey)
-			.textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY)
+			.textAttributes(Keys.DEFINITION_KEY)
 			.create()
 	}
 	
@@ -39,11 +45,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		val expression = element.getPropertyConfig()?.keyExpression ?: return
 		val attributesKey = when(expression.type) {
-			CwtDataTypes.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
+			CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+			CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+			CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+			CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+			CwtDataTypes.Enum -> Keys.ENUM_VALUE_REFERENCE_KEY
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION)
@@ -53,25 +59,31 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
 		//特殊处理字符串需要被识别为标签的情况
-		element.resolveTagConfig()?.let { _ -> 
-			//颜色高亮
-			holder.newSilentAnnotation(INFORMATION).textAttributes(TAG_KEY).create()
-		}
+		annotateTag(element, holder)
 		
 		//颜色高亮
 		val valueConfig = element.getValueConfig()
 		val expression = valueConfig?.valueExpression ?: return
 		val attributesKey = when(expression.type) {
-			CwtDataTypes.Localisation -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.SyncedLocalisation -> ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.AbsoluteFilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
-			CwtDataTypes.FilePath -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
-			CwtDataTypes.Icon -> ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
-			CwtDataTypes.TypeExpression -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.TypeExpressionString -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.Enum -> ParadoxScriptAttributesKeys.ENUM_VALUE_REFERENCE_KEY
+			CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+			CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+			CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
+			CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
+			CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
+			CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+			CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+			CwtDataTypes.Enum -> Keys.ENUM_VALUE_REFERENCE_KEY
 			else -> null //TODO
 		} ?: return
 		holder.newSilentAnnotation(INFORMATION).textAttributes(attributesKey).create()
+	}
+	
+	private fun annotateTag(element: ParadoxScriptString, holder: AnnotationHolder): Boolean {
+		//颜色高亮
+		element.resolveTagConfig()?.let { _ ->
+			holder.newSilentAnnotation(INFORMATION).textAttributes(Keys.TAG_KEY).create()
+			return true
+		}
+		return false
 	}
 }

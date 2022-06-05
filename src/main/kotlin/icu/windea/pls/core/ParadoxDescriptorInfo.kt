@@ -1,5 +1,7 @@
 package icu.windea.pls.core
 
+import java.util.*
+
 //see: descriptor.cwt
 
 class ParadoxDescriptorInfo(
@@ -14,4 +16,14 @@ class ParadoxDescriptorInfo(
 ){
 	//如果是模组描述符，返回的游戏版本允许通配符，如："3.3.*"
 	val gameVersion = if(isModeDescriptor) supportedVersion else version
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxDescriptorInfo
+			&& name == other.name && version == other.version && supportedVersion == other.supportedVersion
+			&& remoteFileId == other.remoteFileId && path == other.path
+	}
+	
+	override fun hashCode(): Int {
+		return Objects.hash(name, version, supportedVersion, remoteFileId, path)
+	}
 }

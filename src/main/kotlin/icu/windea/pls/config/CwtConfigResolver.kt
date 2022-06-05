@@ -177,7 +177,7 @@ object CwtConfigResolver {
 		return CwtValueConfig(
 			pointer, value.value,
 			booleanValue, intValue, floatValue, stringValue,
-			values, properties, documentation, options, optionValues
+			properties, values, documentation, options, optionValues
 		)
 	}
 	

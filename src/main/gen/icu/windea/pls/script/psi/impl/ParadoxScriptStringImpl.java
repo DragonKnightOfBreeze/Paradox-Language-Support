@@ -31,18 +31,6 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
 
   @Override
   @Nullable
-  public ParadoxScriptLinkExpression getLinkExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptLinkExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptLinkValueExpression getLinkValueExpression() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptLinkValueExpression.class);
-  }
-
-  @Override
-  @Nullable
   public ParadoxScriptValueStringTemplate getValueStringTemplate() {
     return PsiTreeUtil.getChildOfType(this, ParadoxScriptValueStringTemplate.class);
   }

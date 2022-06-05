@@ -74,7 +74,7 @@ class ParadoxDefinitionInfo(
 	}
 	
 	val definition: List<CwtPropertyConfig> by lazy {
-		configGroup.definitions.get(type)?.getMergeConfigs(subtypes) ?: emptyList()
+		configGroup.definitions.get(type)?.getMergedConfigs(subtypes) ?: emptyList()
 	}
 	
 	val types: List<String> by lazy {

@@ -25,8 +25,8 @@ class CwtConfigGroup(
 	
 	//since: stellaris v3.4
 	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
-	val links: Map<String, CwtLinkConfig>
-	val localisationLinks: Map<String, CwtLinkConfig>
+	val links: Map<@CaseInsensitive String, CwtLinkConfig>
+	val localisationLinks: Map<@CaseInsensitive String, CwtLinkConfig>
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
 	val modifiers: Map<String, CwtModifierConfig>
@@ -53,8 +53,8 @@ class CwtConfigGroup(
 		values = mutableMapOf()
 		enums = mutableMapOf()
 		tags = CollectionFactory.createCaseInsensitiveStringMap()
-		links = mutableMapOf()
-		localisationLinks = mutableMapOf()
+		links = CollectionFactory.createCaseInsensitiveStringMap()
+		localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationCommands = mutableMapOf()
 		modifierCategories = mutableMapOf()
 		modifiers = mutableMapOf()

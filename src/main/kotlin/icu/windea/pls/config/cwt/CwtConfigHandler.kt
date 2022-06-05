@@ -51,42 +51,58 @@ object CwtConfigHandler {
 	}
 	
 	/**
-	 * 内联类型为`single_alias_right`或`alias_match_left`的规则。以便后续的代码提示、引用解析和结构验证。
+	 * 内联规则以便后续的代码提示、引用解析和结构验证。
 	 */
-	fun inlineConfig(key: String, quoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup,
-		result: MutableList<CwtPropertyConfig>): Boolean {
-		val valueExpression = config.valueExpression
-		return when(valueExpression.type) {
-			CwtDataTypes.SingleAliasRight -> {
-				val singleAliasName = valueExpression.value ?: return false
-				val singleAliases = configGroup.singleAliases[singleAliasName] ?: return false
-				for(singleAlias in singleAliases) {
-					val c = singleAlias.config.copy(
-						pointer = config.pointer, key = config.key,
-						options = config.options, optionValues = config.optionValues, documentation = config.documentation
-					)
-					c.parent = config.parent
-					result.add(c)
-				}
-				true
+	fun inlinePropertyConfig(key: String, quoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>) {
+		var aliasNameToSave: String? = null
+		val keyExpression = config.keyExpression
+		when(keyExpression.type) {
+			CwtDataTypes.AliasName -> {
+				aliasNameToSave = keyExpression.value
 			}
-			CwtDataTypes.AliasMatchLeft -> {
-				val aliasName = valueExpression.value ?: return false
-				val aliasGroup = configGroup.aliases[aliasName] ?: return false
-				val aliasSubName = resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?: return false
-				val aliases = aliasGroup[aliasSubName] ?: return false
-				for(alias in aliases) {
-					val c = alias.config.copy(
-						pointer = config.pointer, key = config.key,
-						options = config.options, optionValues = config.optionValues, documentation = config.documentation
-					)
-					c.parent = config.parent
-					result.add(c)
-				}
-				true
-			}
-			else -> false
+			else -> pass()
 		}
+		
+		//内联类型为`single_alias_right`或`alias_match_left`的规则
+		run {
+			val valueExpression = config.valueExpression
+			when(valueExpression.type) {
+				CwtDataTypes.SingleAliasRight -> {
+					val singleAliasName = valueExpression.value ?: return@run
+					val singleAliases = configGroup.singleAliases[singleAliasName] ?: return@run
+					for(singleAlias in singleAliases) {
+						val c = singleAlias.config.copy(
+							pointer = config.pointer, key = config.key,
+							options = config.options, optionValues = config.optionValues, documentation = config.documentation
+						)
+						c.parent = config.parent
+						c.aliasName = aliasNameToSave
+						result.add(c)
+					}
+				}
+				CwtDataTypes.AliasMatchLeft -> {
+					val aliasName = valueExpression.value ?: return@run
+					val aliasGroup = configGroup.aliases[aliasName] ?: return@run
+					val aliasSubName = resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?: return@run
+					val aliases = aliasGroup[aliasSubName] ?: return@run
+					for(alias in aliases) {
+						val c = alias.config.copy(
+							pointer = config.pointer, key = config.key,
+							options = config.options, optionValues = config.optionValues, documentation = config.documentation
+						)
+						c.parent = config.parent
+						c.aliasName = aliasNameToSave
+						result.add(c)
+					}
+				}
+				else -> pass()
+			}
+		}
+		
+		val c = config.copy()
+		c.parent = config.parent
+		c.aliasName = aliasNameToSave
+		result.add(c)
 	}
 	//endregion
 	
@@ -263,12 +279,12 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return false
-				return matchesAliasName(value, quoted, aliasName, configGroup)
+				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return false
-				return matchesAliasName(value, quoted, aliasName, configGroup)
+				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
 			CwtDataTypes.Constant -> {
 				return value.equals(expression.value, true) //忽略大小写
@@ -394,7 +410,7 @@ object CwtConfigHandler {
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return false
-				return matchesAliasName(value, quoted, aliasName, configGroup)
+				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = false)
 			}
 			CwtDataTypes.AliasMatchLeft -> {
 				return false //不在这里处理
@@ -429,26 +445,40 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): Boolean {
-		//TODO 匹配scope
-		val alias = configGroup.aliases[aliasName] ?: return false
-		val aliasSubName = resolveAliasSubNameExpression(name, quoted, alias, configGroup)
-		if(aliasSubName != null) {
-			val expression = CwtKeyExpression.resolve(aliasSubName)
-			if(matchesKey(expression, name, ParadoxValueType.infer(name), quoted, configGroup)) {
-				return true
-			}
+	fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean): Boolean {
+		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
+		if(isKey && (aliasName == "effect" || aliasName == "trigger")) {
+			if(matchesLinkExpression(name, configGroup)) return true
 		}
-		//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
+		
+		//如果aliasName是modifier，则name也可以是modifiers中的modifier
 		if(aliasName == "modifier") {
 			if(matchesModifier(name, configGroup)) return true
 		}
-		return false
+		
+		//TODO 匹配scope
+		val aliasGroup = configGroup.aliases[aliasName] ?: return false
+		val aliasSubName = resolveAliasSubNameExpression(name, quoted, aliasGroup, configGroup) ?: return false
+		val expression = CwtKeyExpression.resolve(aliasSubName)
+		return matchesKey(expression, name, ParadoxValueType.infer(name), quoted, configGroup)
 	}
 	
 	fun matchesModifier(name: String, configGroup: CwtConfigGroup): Boolean {
 		val modifiers = configGroup.modifiers
 		return modifiers.containsKey(name)
+	}
+	
+	fun matchesLinkExpression(nameExpression: String, configGroup: CwtConfigGroup): Boolean {
+		if(nameExpression.contains('.')){
+			return matchesLink(nameExpression, configGroup)
+		} else {
+			return nameExpression.split('.').all { name -> matchesLink(name, configGroup) }
+		}
+	}
+	
+	fun matchesLink(name: String, configGroup: CwtConfigGroup): Boolean {
+		val links = configGroup.links
+		return links.containsKey(name)
 	}
 	//endregion
 	
@@ -479,19 +509,21 @@ object CwtConfigHandler {
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val propertyConfigs = definitionElementInfo.propertyConfigs
-		if(propertyConfigs.isEmpty()) return
+		val configs = definitionElementInfo.configs
+		if(configs.isEmpty()) return
 		
-		for(propertyConfig in propertyConfigs) {
-			completeValue(propertyConfig.valueExpression, keyword, quoted, propertyConfig, configGroup, result, scope)
+		for(config in configs) {
+			if(config is CwtPropertyConfig) {
+				completeValue(config.valueExpression, keyword, quoted, config, configGroup, result, scope)
+			}
 		}
 	}
 	
-	fun addValueCompletionsInBlock(valueElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet) {
+	fun addValueCompletionsInBlock(valueElement: PsiElement, blockElement: ParadoxScriptBlock, result: CompletionResultSet) {
 		val keyword = valueElement.keyword
 		val quoted = valueElement.isQuoted()
-		val project = propertyElement.project
-		val definitionElementInfo = propertyElement.definitionElementInfo ?: return
+		val project = blockElement.project
+		val definitionElementInfo = blockElement.definitionElementInfo ?: return
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
@@ -940,8 +972,19 @@ object CwtConfigHandler {
 	
 	fun completeAliasName(keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String?, isKey: Boolean) {
-		val alias = configGroup.aliases[aliasName] ?: return
-		for(aliasConfigs in alias.values) {
+		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
+		if(isKey && (aliasName == "effect" || aliasName == "trigger")) {
+			completeLink(configGroup, result)
+		}
+		//如果aliasName是modifier，则name也可以是modifiers中的modifier
+		if(aliasName == "modifier") {
+			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
+			val finalScope = config.parent?.scope ?: scope
+			completeModifier(quoted, configGroup, result, finalScope, isKey)
+		}
+		
+		val aliasGroup = configGroup.aliases[aliasName] ?: return
+		for(aliasConfigs in aliasGroup.values) {
 			//aliasConfigs的名字是相同的 
 			val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
@@ -955,21 +998,13 @@ object CwtConfigHandler {
 				completeValue(aliasConfig.valueExpression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
 			}
 		}
-		//如果aliasName是effect或trigger，则aliasSubName也可以是links中的link，或者其嵌套格式（root.owner）
-		//TODO
-		//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
-		if(aliasName == "modifier") {
-			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-			val finalScope = config.parent?.scope ?: scope
-			completeModifier(quoted, configGroup, result, finalScope, isKey)
-		}
 	}
 	
 	fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null, isKey: Boolean) {
 		val modifiers = configGroup.modifiers
 		if(modifiers.isEmpty()) return
 		for(modifierConfig in modifiers.values) {
-			val categoryConfigMap = modifierConfig.categoryConfigMap ?: continue
+			val categoryConfigMap = modifierConfig.categoryConfigMap
 			if(categoryConfigMap.isEmpty()) continue
 			if(scope != null && !categoryConfigMap.values.any { c -> c.supportedScopes.any { s -> matchesScope(scope, s, configGroup) } }) continue
 			val n = modifierConfig.name
@@ -984,6 +1019,26 @@ object CwtConfigHandler {
 				.withTypeText(typeText, true)
 				.withNeededInsertHandler(isKey)
 				.withPriority(PlsPriorities.modifierPriority)
+			result.addElement(lookupElement)
+		}
+	}
+	
+	fun completeLink(configGroup: CwtConfigGroup, result: CompletionResultSet) {
+		val links = configGroup.links
+		if(links.isEmpty()) return
+		for(linkConfig in links.values) {
+			val n = linkConfig.name
+			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
+			val name = n
+			val element = linkConfig.pointer.element ?: continue
+			val icon = service<CwtConfigIconProvider>().resolve(linkConfig)
+			val tailText = " from links"
+			val typeText = linkConfig.pointer.containingFile?.name ?: anonymousString
+			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+				.withTailText(tailText, true)
+				.withTypeText(typeText, true)
+				.withNeededInsertHandler(isKey = true)
+				.withPriority(PlsPriorities.linkPriority)
 			result.addElement(lookupElement)
 		}
 	}
@@ -1042,7 +1097,8 @@ object CwtConfigHandler {
 	
 	//region Resolve Extensions
 	//TODO 基于cwt规则文件的解析方法需要进一步匹配scope
-	inline fun resolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): PsiNamedElement? {
+	inline fun resolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): PsiElement? {
+		//根据对应的expression进行解析
 		val propertyConfig = keyElement.getPropertyConfig() ?: return null
 		val expression = propertyConfig.keyExpression
 		if(!expressionPredicate(expression)) return null
@@ -1050,7 +1106,7 @@ object CwtConfigHandler {
 	}
 	
 	@PublishedApi
-	internal fun doResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): PsiNamedElement? {
+	internal fun doResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): PsiElement? {
 		val project = keyElement.project
 		return when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1099,13 +1155,13 @@ object CwtConfigHandler {
 				val aliasName = expression.value ?: return null
 				val gameType = keyElement.gameType ?: return null
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup)
+				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup, isKey = true)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return null
 				val gameType = keyElement.gameType ?: return null
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup)
+				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup, isKey = true)
 			}
 			CwtDataTypes.Constant -> {
 				propertyConfig.pointer.element
@@ -1116,7 +1172,8 @@ object CwtConfigHandler {
 		}
 	}
 	
-	inline fun multiResolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): List<PsiNamedElement> {
+	inline fun multiResolveKey(keyElement: ParadoxScriptPropertyKey, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): List<PsiElement> {
+		//根据对应的expression进行解析
 		val propertyConfig = keyElement.getPropertyConfig() ?: return emptyList()
 		val expression = propertyConfig.keyExpression
 		if(!expressionPredicate(expression)) return emptyList()
@@ -1124,7 +1181,7 @@ object CwtConfigHandler {
 	}
 	
 	@PublishedApi
-	internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): List<PsiNamedElement> {
+	internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): List<PsiElement> {
 		val project = keyElement.project
 		return when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1173,13 +1230,13 @@ object CwtConfigHandler {
 				val aliasName = expression.value ?: return emptyList()
 				val gameType = keyElement.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
+				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup, isKey = true).toSingletonListOrEmpty()
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return emptyList()
 				val gameType = keyElement.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
+				resolveAliasName(keyElement.value, keyElement.isQuoted(), aliasName, configGroup, isKey = true).toSingletonListOrEmpty()
 			}
 			CwtDataTypes.Constant -> {
 				propertyConfig.pointer.element.toSingletonListOrEmpty()
@@ -1190,17 +1247,16 @@ object CwtConfigHandler {
 		}
 	}
 	
-	inline fun resolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiNamedElement? {
+	inline fun resolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiElement? {
 		//根据对应的expression进行解析
-		//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-		val valueConfig = valueElement.getValueConfig() ?: return fallbackResolveValue(valueElement)
+		val valueConfig = valueElement.getValueConfig() ?: return null
 		val expression = valueConfig.valueExpression
 		if(!expressionPredicate(expression)) return null
 		return doResolveValue(valueElement, expression, valueConfig)
 	}
 	
 	@PublishedApi
-	internal fun doResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): PsiNamedElement? {
+	internal fun doResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): PsiElement? {
 		val project = valueElement.project
 		return when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1281,7 +1337,7 @@ object CwtConfigHandler {
 				val aliasName = expression.value ?: return null
 				val gameType = valueElement.gameType ?: return null
 				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
-				resolveAliasName(valueElement.value, valueElement.isQuoted(), aliasName, configGroup)
+				resolveAliasName(valueElement.value, valueElement.isQuoted(), aliasName, configGroup, isKey = false)
 			}
 			//规则会被内联，不应该被匹配到
 			CwtDataTypes.AliasMatchLeft -> {
@@ -1295,28 +1351,16 @@ object CwtConfigHandler {
 		}
 	}
 	
-	@PublishedApi
-	internal fun fallbackResolveValue(valueElement: ParadoxScriptValue): PsiNamedElement? {
-		//NOTE 目前的版本不做任何处理
-		return null
-		//val name = valueElement.value
-		//val project = valueElement.project
-		//return findDefinition(name, null, project)
-		//	?: findLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
-		//	?: findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true) //仅查找用户的语言区域或任意语言区域的
-	}
-	
-	inline fun multiResolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): List<PsiNamedElement> {
+	inline fun multiResolveValue(valueElement: ParadoxScriptValue, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): List<PsiElement> {
 		//根据对应的expression进行解析
-		//由于目前引用支持不完善，如果expression为null时需要进行回调解析引用
-		val valueConfig = valueElement.getValueConfig() ?: return fallbackMultiResolveValue(valueElement)
+		val valueConfig = valueElement.getValueConfig() ?: return emptyList()
 		val expression = valueConfig.valueExpression
 		if(!expressionPredicate(expression)) return emptyList()
 		return doMultiResolveValue(valueElement, expression, valueConfig)
 	}
 	
 	@PublishedApi
-	internal fun doMultiResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): List<PsiNamedElement> {
+	internal fun doMultiResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): List<PsiElement> {
 		val project = valueElement.project
 		return when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1395,7 +1439,7 @@ object CwtConfigHandler {
 				val aliasName = expression.value ?: return emptyList()
 				val gameType = valueElement.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
-				resolveAliasName(valueElement.value, valueElement.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
+				resolveAliasName(valueElement.value, valueElement.isQuoted(), aliasName, configGroup, isKey = false).toSingletonListOrEmpty()
 			}
 			//规则会被内联，不应该被匹配到
 			CwtDataTypes.AliasMatchLeft -> emptyList()
@@ -1407,55 +1451,57 @@ object CwtConfigHandler {
 		}
 	}
 	
-	@PublishedApi
-	internal fun fallbackMultiResolveValue(valueElement: ParadoxScriptValue): List<PsiNamedElement> {
-		//NOTE 目前的版本不做任何处理
-		return emptyList()
-		//val name = valueElement.value
-		//val project = valueElement.project
-		//return findDefinitions(name, null, project)
-		//	.ifEmpty { findLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的 
-		//	.ifEmpty { findSyncedLocalisations(name, inferParadoxLocale(), project, hasDefault = true) } //仅查找用户的语言区域或任意语言区域的
-	}
-	
-	fun resolveAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): PsiNamedElement? {
+	fun resolveAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean): PsiElement? {
 		val project = configGroup.project
+		
+		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
+		if(isKey && (aliasName == "effect" || aliasName == "trigger")) {
+			val resolvedLink = resolveLink(name, configGroup)
+			if(resolvedLink != null) return resolvedLink
+		}
+		
+		//如果aliasName是modifier，则name也可以是modifiers中的modifier
+		if(aliasName == "modifier") {
+			val resolvedModifier = resolveModifier(name, configGroup)
+			if(resolvedModifier != null) return resolvedModifier
+		}
+		
 		val aliasGroup = configGroup.aliases[aliasName] ?: return null
 		val aliasSubName = resolveAliasSubNameExpression(name, quoted, aliasGroup, configGroup)
 		if(aliasSubName != null) {
 			val expression = CwtKeyExpression.resolve(aliasSubName)
-			val resolved = when(expression.type) {
+			when(expression.type) {
 				CwtDataTypes.Localisation -> {
-					findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+					return findLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 				}
 				CwtDataTypes.SyncedLocalisation -> {
-					findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
+					return findSyncedLocalisation(name, inferParadoxLocale(), project, hasDefault = true)
 				}
 				CwtDataTypes.TypeExpression -> {
 					val typeExpression = expression.value ?: return null
-					findDefinitionByType(name, typeExpression, project)
+					return findDefinitionByType(name, typeExpression, project)
 				}
 				CwtDataTypes.TypeExpressionString -> {
 					val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return null
 					val nameToUse = name.removeSurrounding(prefix, suffix)
 					val typeExpression = expression.value ?: return null
-					findDefinitionByType(nameToUse, typeExpression, project)
+					return findDefinitionByType(nameToUse, typeExpression, project)
 				}
 				CwtDataTypes.Value -> {
 					val valueName = expression.value ?: return null
 					val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return null
-					valueValueConfig.pointer.element.castOrNull<CwtString>()
+					return valueValueConfig.pointer.element.castOrNull<CwtString>()
 				}
 				CwtDataTypes.ValueSet -> {
-					null //TODO
+					return null //TODO
 				}
 				CwtDataTypes.Enum -> {
 					val enumName = expression.value ?: return null
 					val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
-					enumValueConfig.pointer.element.castOrNull<CwtString>()
+					return enumValueConfig.pointer.element.castOrNull<CwtString>()
 				}
 				CwtDataTypes.ComplexEnum -> {
-					null //TODO
+					return null //TODO
 				}
 				CwtDataTypes.Constant -> {
 					//同名的定义有多个，取第一个即可
@@ -1465,31 +1511,39 @@ object CwtConfigHandler {
 						val element = alias?.pointer?.element
 						if(element != null) return element
 					}
-					null
+					return null
 				}
-				else -> null //TODO
+				else -> return null //TODO
 			}
-			if(resolved != null) return resolved
-		}
-		//如果aliasName是modifier，则aliasSubName也可以是modifiers中的modifier
-		if(aliasName == "modifier") {
-			val resolvedModifier = resolveModifier(name, configGroup)
-			if(resolvedModifier != null) return resolvedModifier
 		}
 		return null
 	}
 	
-	fun resolveModifier(name: String, configGroup: CwtConfigGroup): CwtProperty? {
+	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val modifier = configGroup.modifiers[name] ?: return null
 		return modifier.pointer.element
 	}
 	
-	fun resolveLocalisationCommand(name: String, configGroup: CwtConfigGroup): CwtProperty? {
-		//TODO 匹配scope
+	fun resolveLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val localisationCommands = configGroup.localisationCommands
 		if(localisationCommands.isEmpty()) return null
 		val commandConfig = localisationCommands[name] ?: return null
 		return commandConfig.pointer.element
+	}
+	
+	fun resolveLink(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val links = configGroup.links
+		if(links.isEmpty()) return null
+		val linkConfig = links[name] ?: return null
+		return linkConfig.pointer.element
+	}
+	
+	fun resolveLinkValuePrefix(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		return null //TODO
+	}
+	
+	fun resolveLinkValue(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		return null //TODO
 	}
 //endregion
 }
