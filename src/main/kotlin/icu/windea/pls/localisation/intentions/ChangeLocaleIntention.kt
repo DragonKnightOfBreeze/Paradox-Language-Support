@@ -45,7 +45,7 @@ class ChangeLocaleIntention : IntentionAction {
 	) : BaseListPopupStep<ParadoxLocaleConfig>(PlsBundle.message("localisation.intention.changeLocale.title"), *values) {
 		override fun getIconFor(value: ParadoxLocaleConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxLocaleConfig) = value.documentation
+		override fun getTextFor(value: ParadoxLocaleConfig) = value.text
 		
 		override fun getDefaultOptionIndex() = 0
 		

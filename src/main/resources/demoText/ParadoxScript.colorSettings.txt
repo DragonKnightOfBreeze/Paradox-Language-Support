@@ -31,6 +31,11 @@ settings = {
 	key = <localisation-reference>localisation_reference</localisation-reference>
 	key = <localisation-reference>localisation_reference</localisation-reference>
 	key = <synced-localisation-reference>synced_localisation_reference</synced-localisation-reference>
-	key = <enum-value-reference>enum_value_reference</enum-value-reference>
 	key = <path-reference>path_reference</path-reference>
+	key = <value>value</value>
+	key = <enum-value>enum_value</enum-value>
+	<scope-link>from</scope-link> = {
+		some_key = <scope-value-prefix>prefix:</scope-value-prefix><scope-value>value</scope-value>
+		<modifier>some_modifier</modifier> = 1
+	}
 }

@@ -3,6 +3,7 @@ package icu.windea.pls.config.internal
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.script.psi.*
 
@@ -10,6 +11,29 @@ import icu.windea.pls.script.psi.*
  * 内置规则的处理器。
  */
 object InternalConfigHandler {
+	//region System Scope Extensions
+	/**
+	 * 从内置规则文件中得到指定ID的系统作用域设置。
+	 */
+	fun getSystemScope(id: String, project: Project? = null):ParadoxSystemScopeConfig? {
+		return getInternalConfig(project).systemScopeMap[id]
+	}
+	
+	/**
+	 * 从内置规则文件中得到所有系统作用域设置。
+	 */
+	fun getSystemScopeMap(project: Project? = null): Map<@CaseInsensitive String, ParadoxSystemScopeConfig>{
+		return getInternalConfig(project).systemScopeMap
+	}
+	
+	/**
+	 * 从内置规则文件中得到所有系统作用域设置。
+	 */
+	fun getSystemScopes(project: Project? = null): Array<ParadoxSystemScopeConfig>{
+		return getInternalConfig(project).systemScopes
+	}
+	//endregion
+	
 	//region Localisation Locale Extensions
 	/**
 	 * 从内置规则文件中得到指定ID的语言区域设置。
@@ -71,7 +95,7 @@ object InternalConfigHandler {
 				val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
 				if(rgbList.size != 3) return@processProperty true
 				val description = getInternalConfig(project).colorMap[colorId]?.description.orEmpty() //来自内置规则文件
-				val colorConfig = ParadoxColorConfig(colorId, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
+				val colorConfig = ParadoxColorConfig(colorId, description, prop.createPointer(), rgbList[0], rgbList[1], rgbList[2])
 				color = colorConfig
 				true
 			}
@@ -98,7 +122,7 @@ object InternalConfigHandler {
 				val rgbList = prop.valueList.mapNotNull { it.castOrNull<ParadoxScriptInt>()?.intValue }
 				if(rgbList.size != 3) return@processProperty true
 				val description = getInternalConfig(project).colorMap[colorId]?.description.orEmpty() //来自内置规则文件
-				val colorConfig = ParadoxColorConfig(colorId, description, rgbList[0], rgbList[1], rgbList[2], prop.createPointer())
+				val colorConfig = ParadoxColorConfig(colorId, description, prop.createPointer(), rgbList[0], rgbList[1], rgbList[2])
 				configMap[colorId] = colorConfig
 				true
 			}

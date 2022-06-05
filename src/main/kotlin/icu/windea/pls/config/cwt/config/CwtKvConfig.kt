@@ -10,8 +10,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val options: List<CwtOptionConfig>?
 	abstract val optionValues: List<CwtOptionValueConfig>?
 	
-	var parent: CwtPropertyConfig? = null
-	var aliasName: String? = null //用于规则内联
+	var parent: CwtKvConfig<*>? = null
 	
 	val cardinality by lazy { inferCardinality() }
 	val scope get() = inferScope() //不要缓存，因为parent可能有变动
@@ -59,5 +58,15 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options?.let {
 			for(option in it) scopeMap.putIfAbsent(option.key, option.value)
 		}
+	}
+	
+	//深拷贝
+	
+	fun deepCopyProperties(): List<CwtPropertyConfig>? {
+		return properties?.map { p -> p.copy(properties = deepCopyProperties(), values = deepCopyValues()).also { it.parent = this } }
+	}
+	
+	fun deepCopyValues(): List<CwtValueConfig>? {
+		return values?.map { v -> v.copy(properties = deepCopyProperties(), values = deepCopyValues()).also { it.parent = this } }
 	}
 }

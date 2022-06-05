@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ParadoxScriptValueStringTemplate extends PsiElement {
+public interface ParadoxScriptValueStringTemplate extends IParadoxScriptStringTemplate {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

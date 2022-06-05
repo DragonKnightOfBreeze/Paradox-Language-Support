@@ -1,12 +1,7 @@
 package icu.windea.pls.config.internal.config
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.config.internal.*
-import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.util.*
 
@@ -16,17 +11,16 @@ import java.util.*
 class ParadoxColorConfig(
 	override val id: String,
 	override val description: String,
+	override val pointer: SmartPsiElementPointer<out PsiElement>,
 	val r: Int,
 	val g: Int,
-	val b: Int,
-	val pointer: SmartPsiElementPointer<out PsiElement>
-) : IdAware, DescriptionAware, IconAware {
+	val b: Int
+) : InternalConfig {
 	val color: Color = Color(r, g, b)
 	override val icon = ColorIcon(16, color)
 	
-	val rgbExpression = "{ $r $g $b }"
-	val documentation = buildString {
-		append(id).append(" = ").append(rgbExpression)
+	val text = buildString {
+		append(id).append(" = { ").append(r).append(" ").append(g).append(" ").append(b).append(" }")
 		if(description.isNotEmpty()) append(" (").append(description).append(")")
 	}
 	

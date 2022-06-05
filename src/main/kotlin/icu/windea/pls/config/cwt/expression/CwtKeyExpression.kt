@@ -77,10 +77,6 @@ class CwtKeyExpression private constructor(
 					val value = expressionString.substring(6, expressionString.length - 1)
 					CwtKeyExpression(expressionString, CwtDataTypes.Scope, value)
 				}
-				expressionString.surroundsWith("event_target[", "]") -> {
-					val value = expressionString.substring(13, expressionString.length - 1)
-					CwtKeyExpression(expressionString, CwtDataTypes.Scope, value)
-				}
 				expressionString == "scope_field" -> {
 					CwtKeyExpression(expressionString, CwtDataTypes.ScopeField)
 				}

@@ -1,0 +1,17 @@
+# Internal Script Config
+
+### System scopes
+### See wiki: <a href="hhttps://stellaris.paradoxwikis.com/Scopes#System_scopes">System Scopes</a>
+## loc_format = html
+system_scopes = {
+	this = "This"
+	root = "Root"
+	prev = "Prev"
+	prevprev = "Prev Prev"
+	prevprevprev = "Prev Prev Prev"
+	prevprevprevprev = "Prev Prev Prev Prev"
+	from = "From"
+	fromfrom = "From From"
+	fromfromfrom = "From From From"
+	fromfromfromfrom = "From From From From"
+}

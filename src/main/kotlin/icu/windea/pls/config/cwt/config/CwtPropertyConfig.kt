@@ -40,4 +40,42 @@ data class CwtPropertyConfig(
 			properties, values, documentation, options, optionValues
 		).also { it.parent = parent }
 	}
+	
+	//规则内联相关
+	//TODO properties和values需要考虑深拷贝
+	
+	var rawSingleAliasConfig: CwtSingleAliasConfig? = null
+	var rawAliasConfig: CwtAliasConfig? = null
+	
+	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig):CwtPropertyConfig{
+		//内联所有value
+		val other = singleAliasConfig.config
+		val inlined = copy(
+			value = other.value, 
+			booleanValue = other.booleanValue,
+			intValue = other.intValue,
+			floatValue = other.floatValue,
+			stringValue = other.stringValue,
+			properties = other.properties,
+			values = other.values
+		)
+		inlined.rawSingleAliasConfig = singleAliasConfig
+		return inlined
+	}
+	
+	fun inlineFromAliasConfig(aliasConfig:CwtAliasConfig):CwtPropertyConfig{
+		//内联所有value，key保持不变（如：alias_name[trigger]）
+		val other = aliasConfig.config
+		val inlined = copy(
+			value = other.value,
+			booleanValue = other.booleanValue,
+			intValue = other.intValue,
+			floatValue = other.floatValue,
+			stringValue = other.stringValue,
+			properties = other.properties,
+			values = other.values
+		)
+		inlined.rawAliasConfig = aliasConfig
+		return inlined
+	}
 }

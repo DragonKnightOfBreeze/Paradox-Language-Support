@@ -26,7 +26,7 @@ class InternalConfigProvider(
 		private const val internalConfigPath = "/config/internal"
 	}
 	
-	val configGroup: InternalConfigGroup = initConfigGroup()
+	val configGroup: InternalConfigGroup = initConfigGroup() 
 	
 	@Synchronized
 	private fun initConfigGroup(): InternalConfigGroup {

@@ -45,7 +45,7 @@ class ChangeColorIntention : IntentionAction {
 	) : BaseListPopupStep<ParadoxColorConfig>(PlsBundle.message("localisation.intention.changeColor.title"), *values) {
 		override fun getIconFor(value: ParadoxColorConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxColorConfig) = value.documentation
+		override fun getTextFor(value: ParadoxColorConfig) = value.text
 		
 		override fun getDefaultOptionIndex() = 0
 		

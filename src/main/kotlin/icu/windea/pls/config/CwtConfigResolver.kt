@@ -174,11 +174,14 @@ object CwtConfigResolver {
 		}
 		val documentation = documentationLines?.joinToString("\n")
 		
-		return CwtValueConfig(
+		val config = CwtValueConfig(
 			pointer, value.value,
 			booleanValue, intValue, floatValue, stringValue,
 			properties, values, documentation, options, optionValues
 		)
+		values?.forEach { it.parent = config }
+		properties?.forEach { it.parent = config }
+		return config
 	}
 	
 	private fun resolveOption(option: CwtOption, file: CwtFile): CwtOptionConfig? {

@@ -78,10 +78,17 @@ tasks {
 			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
+	//buildSearchableOptions {
+	//	enabled = false
+	//}
 	publishPlugin {
 		token.set(System.getenv("IDEA_TOKEN"))
 	}
 	runIde {
-		jvmArgs = listOf("-Xmx4096m")
+		//添加自定义配置项到systemProperties中（idea.properties中的配置项会被识别为systemProperties）
+		//通过调用java.lang.Boolean.getBoolean()来检查配置项
+		systemProperty("pls.debug", true)
+		//自定义JVM参数
+		jvmArgs("-Xmx4096m")
 	}
 }

@@ -18,6 +18,8 @@
 
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
-    <!--<applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxInternalProjectSettings"/>-->
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxInternalSettings"/>
+    
+    <preloadingActivity implementation="icu.windea.pls.core.ParadoxPreloadActivity"/>
   </extensions>
 </idea-plugin>

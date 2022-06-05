@@ -98,6 +98,10 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 		return length == 0
 	}
 	
+	fun isNotEmpty(): Boolean {
+		return length != 0
+	}
+	
 	override fun iterator(): Iterator<String> {
 		return originalSubPaths.iterator()
 	}

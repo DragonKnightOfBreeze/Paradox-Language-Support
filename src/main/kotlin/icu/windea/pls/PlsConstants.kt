@@ -59,7 +59,8 @@ object PlsFolders {
 object PlsPriorities {
 	const val pinnedPriority = 1000.0
 	const val keywordPriority = 80.0
-	const val linkPriority = 60.0
+	const val systemScopePriority = 60.0
+	const val scopePriority = 60.0
 	const val propertyPriority = 40.0
 	const val modifierPriority = 20.0
 }
@@ -76,4 +77,11 @@ object PlsPaths {
 	val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
 	
 	val unknownPngUrl = "/${unknownPngName}".toClasspathUrl()
+}
+
+object PlsPatterns {
+	val scriptParameterNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
+	val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
+	
+	val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
 }

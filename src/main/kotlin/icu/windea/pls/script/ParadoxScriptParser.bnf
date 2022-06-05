@@ -233,10 +233,10 @@ private value_string_entry ::= STRING_TOKEN | QUOTED_STRING_TOKEN //e.g. VALUE
 //e.g. $PARAM$, $PARAM$_SUFFIX
 //noinspection BnfUnusedRule
 key_string_template ::= KEY_STRING_SNIPPET ? (parameter KEY_STRING_SNIPPET ?) + {
-  extends="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
+  implements="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
 }
 value_string_template ::= VALUE_STRING_SNIPPET ? (parameter VALUE_STRING_SNIPPET ?) + {
-  extends="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
+  implements="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
 }
 
 ////link expression (ignore case) (TODO)

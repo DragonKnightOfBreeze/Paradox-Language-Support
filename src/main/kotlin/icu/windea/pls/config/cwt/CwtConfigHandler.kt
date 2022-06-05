@@ -3,17 +3,18 @@ package icu.windea.pls.config.cwt
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
+import javax.swing.*
 import kotlin.text.removeSurrounding
 
 /**
@@ -54,15 +55,6 @@ object CwtConfigHandler {
 	 * 内联规则以便后续的代码提示、引用解析和结构验证。
 	 */
 	fun inlinePropertyConfig(key: String, quoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>) {
-		var aliasNameToSave: String? = null
-		val keyExpression = config.keyExpression
-		when(keyExpression.type) {
-			CwtDataTypes.AliasName -> {
-				aliasNameToSave = keyExpression.value
-			}
-			else -> pass()
-		}
-		
 		//内联类型为`single_alias_right`或`alias_match_left`的规则
 		run {
 			val valueExpression = config.valueExpression
@@ -71,13 +63,8 @@ object CwtConfigHandler {
 					val singleAliasName = valueExpression.value ?: return@run
 					val singleAliases = configGroup.singleAliases[singleAliasName] ?: return@run
 					for(singleAlias in singleAliases) {
-						val c = singleAlias.config.copy(
-							pointer = config.pointer, key = config.key,
-							options = config.options, optionValues = config.optionValues, documentation = config.documentation
-						)
-						c.parent = config.parent
-						c.aliasName = aliasNameToSave
-						result.add(c)
+						result.add(config.inlineFromSingleAliasConfig(singleAlias))
+						return
 					}
 				}
 				CwtDataTypes.AliasMatchLeft -> {
@@ -86,13 +73,8 @@ object CwtConfigHandler {
 					val aliasSubName = resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?: return@run
 					val aliases = aliasGroup[aliasSubName] ?: return@run
 					for(alias in aliases) {
-						val c = alias.config.copy(
-							pointer = config.pointer, key = config.key,
-							options = config.options, optionValues = config.optionValues, documentation = config.documentation
-						)
-						c.parent = config.parent
-						c.aliasName = aliasNameToSave
-						result.add(c)
+						result.add(config.inlineFromAliasConfig(alias))
+						return
 					}
 				}
 				else -> pass()
@@ -101,7 +83,6 @@ object CwtConfigHandler {
 		
 		val c = config.copy()
 		c.parent = config.parent
-		c.aliasName = aliasNameToSave
 		result.add(c)
 	}
 	//endregion
@@ -469,7 +450,7 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesLinkExpression(nameExpression: String, configGroup: CwtConfigGroup): Boolean {
-		if(nameExpression.contains('.')){
+		if(nameExpression.contains('.')) {
 			return matchesLink(nameExpression, configGroup)
 		} else {
 			return nameExpression.split('.').all { name -> matchesLink(name, configGroup) }
@@ -477,6 +458,9 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesLink(name: String, configGroup: CwtConfigGroup): Boolean {
+		val systemScopes = InternalConfigHandler.getSystemScopeMap(configGroup.project)
+		if(systemScopes.containsKey(name)) return true
+		
 		val links = configGroup.links
 		return links.containsKey(name)
 	}
@@ -568,46 +552,46 @@ object CwtConfigHandler {
 		if(expression.isEmpty()) return
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				processLocalisationVariants(keyword, configGroup.project) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
-					val typeText = localisation.containingFile.name
-					val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
+					val typeFile = localisation.containingFile
+					val lookupElement = LookupElementBuilder.create(localisation, name)
+						.withExpectedIcon(PlsIcons.localisationIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = true)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = true)
 					result.addElement(lookupElement)
 					true
 				}
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				processSyncedLocalisationVariants(keyword, configGroup.project) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
-					val typeText = syncedLocalisation.containingFile.name
-					val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
+					val typeFile = syncedLocalisation.containingFile
+					val lookupElement = LookupElementBuilder.create(syncedLocalisation, name)
+						.withExpectedIcon(PlsIcons.localisationIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = true)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = true)
 					result.addElement(lookupElement)
 					true
 				}
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				processLocalisationVariants(keyword, configGroup.project) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
-					val typeText = localisation.containingFile.name
-					val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
+					val typeFile = localisation.containingFile
+					val lookupElement = LookupElementBuilder.create(localisation, name)
+						.withExpectedIcon(PlsIcons.localisationIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = true)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = true)
 					result.addElement(lookupElement)
 					true
 				}
@@ -616,16 +600,16 @@ object CwtConfigHandler {
 				val typeExpression = expression.value ?: return
 				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 				if(definitions.isEmpty()) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				for(definition in definitions) {
 					val n = definition.definitionInfo?.name ?: continue
 					val name = n.quoteIf(quoted)
-					val typeText = definition.containingFile.name
-					val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
+					val typeFile = definition.containingFile
+					val lookupElement = LookupElementBuilder.create(definition, name)
+						.withExpectedIcon(PlsIcons.definitionIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = true)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = true)
 					result.addElement(lookupElement)
 				}
 			}
@@ -634,17 +618,17 @@ object CwtConfigHandler {
 				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 				if(definitions.isEmpty()) return
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				for(definition in definitions) {
 					val definitionName = definition.definitionInfo?.name ?: continue
 					val n = "$prefix$definitionName$suffix"
 					val name = n.quoteIf(quoted)
-					val typeText = definition.containingFile.name
-					val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
+					val typeFile = definition.containingFile
+					val lookupElement = LookupElementBuilder.create(definition, name)
+						.withExpectedIcon(PlsIcons.definitionIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = true)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = true)
 					result.addElement(lookupElement)
 				}
 			}
@@ -653,7 +637,6 @@ object CwtConfigHandler {
 				val valueConfig = configGroup.values[valueName] ?: return
 				val valueValueConfigs = valueConfig.valueConfigMap.values
 				if(valueValueConfigs.isEmpty()) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				for(valueValueConfig in valueValueConfigs) {
 					if(quoted && valueValueConfig.stringValue == null) continue
@@ -661,11 +644,12 @@ object CwtConfigHandler {
 					//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 					val name = n.quoteIf(quoted)
 					val element = valueValueConfig.pointer.element ?: continue
-					val typeText = valueConfig.pointer.containingFile?.name ?: anonymousString
-					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					val typeFile = valueConfig.pointer.containingFile
+					val lookupElement = LookupElementBuilder.create(element, name)
+						.withExpectedIcon(PlsIcons.valueValueIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = true)
+						.withTypeText(typeFile?.name, typeFile?.icon, true)
+						.withExpectedInsertHandler(isKey = true)
 						.withCaseSensitivity(false) //忽略大小写
 					result.addElement(lookupElement)
 				}
@@ -678,7 +662,6 @@ object CwtConfigHandler {
 				val enumConfig = configGroup.enums[enumName] ?: return
 				val enumValueConfigs = enumConfig.valueConfigMap.values
 				if(enumValueConfigs.isEmpty()) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				for(enumValueConfig in enumValueConfigs) {
 					if(quoted && enumValueConfig.stringValue == null) continue
@@ -686,11 +669,12 @@ object CwtConfigHandler {
 					//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 					val name = n.quoteIf(quoted)
 					val element = enumValueConfig.pointer.element ?: continue
-					val typeText = enumConfig.pointer.containingFile?.name ?: anonymousString
-					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					val typeFile = enumConfig.pointer.containingFile
+					val lookupElement = LookupElementBuilder.create(element, name)
+						.withExpectedIcon(PlsIcons.enumValueIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = true)
+						.withTypeText(typeFile?.name, typeFile?.icon, true)
+						.withExpectedInsertHandler(isKey = true)
 						.withCaseSensitivity(false) //忽略大小写
 					result.addElement(lookupElement)
 				}
@@ -714,11 +698,11 @@ object CwtConfigHandler {
 				//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
 				val name = n.quoteIf(quoted)
 				val element = config.pointer.element ?: return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
-				val tailText = " in ${config.configFileName}"
-				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-					.withTailText(tailText, true)
-					.withNeededInsertHandler(isKey = true)
+				val typeFile = config.pointer.containingFile
+				val lookupElement = LookupElementBuilder.create(element, name)
+					.withExpectedIcon(PlsIcons.propertyIcon, config)
+					.withTypeText(typeFile?.name, typeFile?.icon, true)
+					.withExpectedInsertHandler(isKey = true)
 					.withCaseSensitivity(false) //忽略大小写
 					.withPriority(PlsPriorities.propertyPriority)
 				result.addElement(lookupElement)
@@ -735,46 +719,46 @@ object CwtConfigHandler {
 				result.addAllElements(boolLookupElements)
 			}
 			CwtDataTypes.Localisation -> {
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				processLocalisationVariants(keyword, configGroup.project) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
-					val typeText = localisation.containingFile.name
-					val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
+					val typeFile = localisation.containingFile
+					val lookupElement = LookupElementBuilder.create(localisation, name)
+						.withExpectedIcon(PlsIcons.localisationIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = false)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 					true
 				}
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				processSyncedLocalisationVariants(keyword, configGroup.project) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
-					val typeText = syncedLocalisation.containingFile.name
-					val lookupElement = LookupElementBuilder.create(syncedLocalisation, name).withIcon(icon)
+					val typeFile = syncedLocalisation.containingFile
+					val lookupElement = LookupElementBuilder.create(syncedLocalisation, name)
+						.withExpectedIcon(PlsIcons.localisationIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = false)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 					true
 				}
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				processLocalisationVariants(keyword, configGroup.project) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
-					val typeText = localisation.containingFile.name
-					val lookupElement = LookupElementBuilder.create(localisation, name).withIcon(icon)
+					val typeFile = localisation.containingFile
+					val lookupElement = LookupElementBuilder.create(localisation, name)
+						.withExpectedIcon(PlsIcons.localisationIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = false)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 					true
 				}
@@ -793,13 +777,11 @@ object CwtConfigHandler {
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(configGroup.project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
-					val icon = virtualFile.fileType.icon
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
-					val typeText = virtualFile.name
-					val lookupElement = LookupElementBuilder.create(file, name).withIcon(icon)
+					val lookupElement = LookupElementBuilder.create(file, name) //没有图标
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = false)
+						.withTypeText(file.name, file.icon, true)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
 			}
@@ -816,13 +798,11 @@ object CwtConfigHandler {
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(configGroup.project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
-					val icon = virtualFile.fileType.icon
 					val name = expressionType.extract(expressionValue, filePath) ?: continue
-					val typeText = virtualFile.name
-					val lookupElement = LookupElementBuilder.create(file, name).withIcon(icon)
+					val lookupElement = LookupElementBuilder.create(file, name) //没有图标
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = false)
+						.withTypeText(file.name, file.icon, true)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
 			}
@@ -830,16 +810,16 @@ object CwtConfigHandler {
 				val typeExpression = expression.value ?: return
 				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 				if(definitions.isEmpty()) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				for(definition in definitions) {
 					val n = definition.definitionInfo?.name ?: continue
 					val name = n.quoteIf(quoted)
-					val typeText = definition.containingFile.name
-					val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
+					val typeFile = definition.containingFile
+					val lookupElement = LookupElementBuilder.create(definition, name)
+						.withExpectedIcon(PlsIcons.definitionIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = false)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
 			}
@@ -848,17 +828,17 @@ object CwtConfigHandler {
 				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
 				if(definitions.isEmpty()) return
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
 				for(definition in definitions) {
 					val definitionName = definition.definitionInfo?.name ?: continue
 					val n = "$prefix$definitionName$suffix"
 					val name = n.quoteIf(quoted)
-					val typeText = definition.containingFile.name
-					val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
+					val typeFile = definition.containingFile
+					val lookupElement = LookupElementBuilder.create(definition, name)
+						.withExpectedIcon(PlsIcons.definitionIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
-						.withNeededInsertHandler(isKey = false)
+						.withTypeText(typeFile.name, typeFile.icon, true)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
 			}
@@ -867,20 +847,20 @@ object CwtConfigHandler {
 				val valueConfig = configGroup.values[valueName] ?: return
 				val valueValueConfigs = valueConfig.valueConfigMap.values
 				if(valueValueConfigs.isEmpty()) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
-				val typeText = valueConfig.pointer.containingFile?.name ?: anonymousString
+				val typeFile = valueConfig.pointer.containingFile
 				for(valueValueConfig in valueValueConfigs) {
 					if(quoted && valueValueConfig.stringValue == null) continue
 					val n = valueValueConfig.value
 					//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 					val name = n.quoteIf(quoted)
 					val element = valueValueConfig.pointer.element ?: continue
-					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					val lookupElement = LookupElementBuilder.create(element, name)
+						.withExpectedIcon(PlsIcons.valueValueIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
+						.withTypeText(typeFile?.name, typeFile?.icon, true)
 						.withCaseSensitivity(false) //忽略大小写
-						.withNeededInsertHandler(isKey = false)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
 			}
@@ -892,20 +872,20 @@ object CwtConfigHandler {
 				val enumConfig = configGroup.enums[enumName] ?: return
 				val enumValueConfigs = enumConfig.valueConfigMap.values
 				if(enumValueConfigs.isEmpty()) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
-				val typeText = enumConfig.pointer.containingFile?.name ?: anonymousString
+				val typeFile = enumConfig.pointer.containingFile
 				for(enumValueConfig in enumValueConfigs) {
 					if(quoted && enumValueConfig.stringValue == null) continue
 					val n = enumValueConfig.value
 					//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 					val name = n.quoteIf(quoted)
 					val element = enumValueConfig.pointer.element ?: continue
-					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					val lookupElement = LookupElementBuilder.create(element, name)
+						.withExpectedIcon(PlsIcons.enumValueIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
+						.withTypeText(typeFile?.name, typeFile?.icon, true)
 						.withCaseSensitivity(false) //忽略大小写
-						.withNeededInsertHandler(isKey = false)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
 			}
@@ -917,19 +897,19 @@ object CwtConfigHandler {
 				val scopeGroupConfig = configGroup.scopeGroups[scopeGroupName] ?: return
 				val scopeConfigs = scopeGroupConfig.valueConfigMap.values
 				if(scopeConfigs.isEmpty()) return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
 				val tailText = " by $expression in ${config.configFileName}"
-				val typeText = scopeGroupConfig.pointer.containingFile?.name ?: anonymousString
+				val typeFile = scopeGroupConfig.pointer.containingFile
 				for(scopeConfig in scopeConfigs) {
 					val n = scopeConfig.value
 					//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 					val name = n.quoteIf(quoted)
 					val element = scopeConfig.pointer.element ?: continue
-					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					val lookupElement = LookupElementBuilder.create(element, name)
+						.withExpectedIcon(PlsIcons.scopeTypeIcon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
+						.withTypeText(typeFile?.name, typeFile?.icon, true)
 						.withCaseSensitivity(false) //忽略大小写
-						.withNeededInsertHandler(isKey = false)
+						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
 			}
@@ -957,11 +937,11 @@ object CwtConfigHandler {
 				//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
 				val name = n.quoteIf(quoted)
 				val element = config.pointer.element ?: return
-				val icon = service<CwtConfigIconProvider>().resolve(config, expression.type)
-				val tailText = " in ${config.configFileName}"
-				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-					.withTailText(tailText, true)
-					.withNeededInsertHandler(isKey = false)
+				val typeFile = config.pointer.containingFile
+				val lookupElement = LookupElementBuilder.create(element, name)
+					.withExpectedIcon(PlsIcons.valueIcon, config)
+					.withTypeText(typeFile?.name, typeFile?.icon, true)
+					.withExpectedInsertHandler(isKey = false)
 					.withCaseSensitivity(false) //忽略大小写
 					.withPriority(PlsPriorities.propertyPriority)
 				result.addElement(lookupElement)
@@ -1004,6 +984,7 @@ object CwtConfigHandler {
 		val modifiers = configGroup.modifiers
 		if(modifiers.isEmpty()) return
 		for(modifierConfig in modifiers.values) {
+			//匹配scope
 			val categoryConfigMap = modifierConfig.categoryConfigMap
 			if(categoryConfigMap.isEmpty()) continue
 			if(scope != null && !categoryConfigMap.values.any { c -> c.supportedScopes.any { s -> matchesScope(scope, s, configGroup) } }) continue
@@ -1011,34 +992,50 @@ object CwtConfigHandler {
 			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 			val name = n.quoteIf(quoted)
 			val element = modifierConfig.pointer.element ?: continue
-			val icon = service<CwtConfigIconProvider>().resolve(modifierConfig)
 			val tailText = " from modifiers"
-			val typeText = modifierConfig.pointer.containingFile?.name ?: anonymousString
-			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+			val typeFile = modifierConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.modifierIcon)
 				.withTailText(tailText, true)
-				.withTypeText(typeText, true)
-				.withNeededInsertHandler(isKey)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withExpectedInsertHandler(isKey)
 				.withPriority(PlsPriorities.modifierPriority)
 			result.addElement(lookupElement)
 		}
 	}
 	
 	fun completeLink(configGroup: CwtConfigGroup, result: CompletionResultSet) {
-		val links = configGroup.links
-		if(links.isEmpty()) return
-		for(linkConfig in links.values) {
-			val n = linkConfig.name
-			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
-			val name = n
-			val element = linkConfig.pointer.element ?: continue
-			val icon = service<CwtConfigIconProvider>().resolve(linkConfig)
-			val tailText = " from links"
-			val typeText = linkConfig.pointer.containingFile?.name ?: anonymousString
-			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
+		for(systemScopeConfig in systemScopeConfigs) {
+			val name = systemScopeConfig.id
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = systemScopeConfig.pointer.element ?: continue
+			val tailText = " from system scopes"
+			val typeFile = systemScopeConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.systemScopeIcon)
 				.withTailText(tailText, true)
-				.withTypeText(typeText, true)
-				.withNeededInsertHandler(isKey = true)
-				.withPriority(PlsPriorities.linkPriority)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withExpectedInsertHandler(isKey = true)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsPriorities.systemScopePriority)
+			result.addElement(lookupElement)
+		}
+		
+		val links = configGroup.links
+		for(linkConfig in links.values) {
+			val name = linkConfig.name
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = linkConfig.pointer.element ?: continue
+			val tailText = " from scopes"
+			val typeFile = linkConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.scopeIcon)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withExpectedInsertHandler(isKey = true)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsPriorities.scopePriority)
 			result.addElement(lookupElement)
 		}
 	}
@@ -1056,10 +1053,10 @@ object CwtConfigHandler {
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = config.pointer.element ?: continue
 			//val scopes = localisationCommand
-			val icon = service<CwtConfigIconProvider>().resolve(config)
-			val typeText = config.pointer.containingFile?.name ?: anonymousString
-			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-				.withTypeText(typeText, true)
+			val typeFile = config.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.localisationCommandFieldIcon)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
@@ -1067,6 +1064,25 @@ object CwtConfigHandler {
 	
 	val boolLookupElements = booleanValues.map { value ->
 		LookupElementBuilder.create(value).bold().withPriority(PlsPriorities.keywordPriority)
+	}
+	
+	private fun LookupElementBuilder.withExpectedIcon(icon: Icon, config: CwtConfig<*>? = null): LookupElementBuilder {
+		return withIcon(getExpectedIcon(config, icon))
+	}
+	
+	private fun getExpectedIcon(config: CwtConfig<*>?, icon: Icon): Icon {
+		if(config is CwtKvConfig<*>) {
+			val iconOption = config.options?.find { it.key == "icon" }?.value
+			if(iconOption != null) {
+				when(iconOption) {
+					"tag" -> return PlsIcons.tagIcon
+					"property" -> return PlsIcons.propertyIcon
+					"value" -> return PlsIcons.valueIcon
+					//TO IMPLEMENT
+				}
+			}
+		}
+		return icon
 	}
 	
 	private val separatorChars = charArrayOf('=', '<', '>', '!')
@@ -1089,7 +1105,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	private fun LookupElementBuilder.withNeededInsertHandler(isKey: Boolean): LookupElementBuilder {
+	private fun LookupElementBuilder.withExpectedInsertHandler(isKey: Boolean): LookupElementBuilder {
 		if(isKey) return withInsertHandler(separatorInsertHandler)
 		return this
 	}
@@ -1519,19 +1535,10 @@ object CwtConfigHandler {
 		return null
 	}
 	
-	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val modifier = configGroup.modifiers[name] ?: return null
-		return modifier.pointer.element
-	}
-	
-	fun resolveLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val localisationCommands = configGroup.localisationCommands
-		if(localisationCommands.isEmpty()) return null
-		val commandConfig = localisationCommands[name] ?: return null
-		return commandConfig.pointer.element
-	}
-	
 	fun resolveLink(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project)
+		if(systemScope != null) return systemScope.pointer.element
+		
 		val links = configGroup.links
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null
@@ -1544,6 +1551,18 @@ object CwtConfigHandler {
 	
 	fun resolveLinkValue(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		return null //TODO
+	}
+	
+	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val modifier = configGroup.modifiers[name] ?: return null
+		return modifier.pointer.element
+	}
+	
+	fun resolveLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val localisationCommands = configGroup.localisationCommands
+		if(localisationCommands.isEmpty()) return null
+		val commandConfig = localisationCommands[name] ?: return null
+		return commandConfig.pointer.element
 	}
 //endregion
 }

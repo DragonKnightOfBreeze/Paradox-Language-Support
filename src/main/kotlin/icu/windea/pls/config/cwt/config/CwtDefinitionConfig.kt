@@ -3,10 +3,8 @@ package icu.windea.pls.config.cwt.config
 import com.google.common.cache.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import com.openhtmltopdf.css.constants.ValueConstants
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
@@ -63,19 +61,18 @@ data class CwtDefinitionConfig(
 						//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要略过
 						
 						//如果是顶级的就不要打平，否则要打平，然后还需要根据是否匹配keyExpression进行过滤
-						//TODO 如果任意父路径的aliasName是effect或者trigger，且当前key匹配links中的link，或者其嵌套格式（root.owner），则需要跳过当前key内联子规则
 						//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
 						if(isTop) {
 							isTop = false
 							val nextResult = SmartList<CwtKvConfig<*>>()
 							for(config in result) {
-								when(config) {
-									is CwtPropertyConfig -> {
+								when {
+									config is CwtPropertyConfig -> {
 										if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
 											CwtConfigHandler.inlinePropertyConfig(key, isQuoted, config, configGroup, nextResult)
 										}
 									}
-									is CwtValueConfig -> {
+									config is CwtValueConfig -> {
 										nextResult.add(config)
 									}
 								}
@@ -84,6 +81,11 @@ data class CwtDefinitionConfig(
 						} else {
 							val nextResult = SmartList<CwtKvConfig<*>>()
 							for(r in result) {
+								//如果任意父路径的aliasName是effect或者trigger，且当前key匹配links中的link，或者其嵌套格式（root.owner），则需要跳过当前key
+								if(r is CwtPropertyConfig && r.rawAliasConfig?.name.let { it == "effect" || it == "trigger" }){
+									if(CwtConfigHandler.matchesLinkExpression(key, configGroup)) continue
+								}
+								
 								val propertyConfigs = r.properties
 								if(propertyConfigs != null && propertyConfigs.isNotEmpty()) {
 									for(propertyConfig in propertyConfigs) {

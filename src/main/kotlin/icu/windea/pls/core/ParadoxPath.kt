@@ -1,6 +1,6 @@
 package icu.windea.pls.core
 
-import com.google.common.cache.LoadingCache
+import com.google.common.cache.*
 import icu.windea.pls.*
 
 /**
@@ -33,6 +33,10 @@ class ParadoxPath private constructor(
 	
 	fun isEmpty(): Boolean {
 		return length == 0
+	}
+	
+	fun isNotEmpty(): Boolean {
+		return length != 0
 	}
 	
 	override fun iterator(): Iterator<String> {

@@ -10,6 +10,7 @@ import java.util.*
 
 /**
  * @property elementPath 相对于所属定义的定义元素路径。
+ * @property isValid 对应的PSI元素是否是合法的定义元素（在定义声明内，非定义自身）。
  */
 @Suppress("unused")
 class ParadoxDefinitionElementInfo(
@@ -20,6 +21,8 @@ class ParadoxDefinitionElementInfo(
 	val configGroup: CwtConfigGroup,
 	element: PsiElement //直接传入element
 ) {
+	val isValid = element is ParadoxScriptValue || elementPath.isNotEmpty()
+	
 	//NOTE 部分属性需要使用懒加载
 	
 	/** 对应的属性/值配置列表。 */
@@ -28,8 +31,8 @@ class ParadoxDefinitionElementInfo(
 		definitionInfo.definitionConfig?.resolveConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
-	val propertyConfig: CwtPropertyConfig? by lazy {
-		configs.singleOrNull { it is CwtPropertyConfig }?.cast()
+	val propertyConfigs: List<CwtPropertyConfig> by lazy {
+		configs.filterIsInstance<CwtPropertyConfig>()
 	}
 	
 	val matchedPropertyConfig: CwtPropertyConfig? by lazy {
@@ -40,8 +43,8 @@ class ParadoxDefinitionElementInfo(
 		configs.find { it is CwtPropertyConfig && CwtConfigHandler.matchesValue(it.valueExpression, propertyValue.value, configGroup) }?.cast()
 	}
 	
-	val valueConfig: CwtValueConfig? by lazy {
-		configs.singleOrNull { it is CwtValueConfig }?.cast()
+	val valueConfigs: List<CwtValueConfig> by lazy {
+		configs.filterIsInstance<CwtValueConfig>()
 	}
 	
 	val matchedValueConfig: CwtValueConfig? by lazy {
@@ -91,10 +94,15 @@ class ParadoxDefinitionElementInfo(
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxDefinitionElementInfo
-			&& elementPath == other.elementPath && gameType == other.gameType && definitionInfo == other.definitionInfo
+			&& elementPath == other.elementPath && gameType == other.gameType
 	}
 	
 	override fun hashCode(): Int {
-		return Objects.hash(elementPath, gameType, definitionInfo)
+		return Objects.hash(elementPath, gameType)
 	}
 }
+
+/**
+ * 对应的PSI元素是否是合法的定义元素（在定义声明内，非定义自身）。
+ */
+val ParadoxDefinitionElementInfo?.isValid get() = this?.isValid == true 

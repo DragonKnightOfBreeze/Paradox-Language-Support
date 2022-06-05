@@ -113,7 +113,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		val name = element.name
 		return buildString {
 			buildLocaleDefinition(name)
-			buildLocaleContent(element)
 		}
 	}
 	
@@ -138,20 +137,11 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
-	private fun getColorDoc(element: ParadoxLocalisationColorfulText): String {
-		val name = element.name
+	private fun getColorDoc(element: ParadoxLocalisationColorfulText): String? {
+		val name = element.name ?: return null
 		return buildString {
 			//加上元素定义信息
-			definition {
-				append(PlsDocBundle.message("name.localisation.color")).append(" <b>").append(name).append("</b>")
-			}
-			//加上描述
-			val colorConfig = element.colorConfig
-			if(colorConfig != null) {
-				content {
-					append(colorConfig.documentation) //接受HTML
-				}
-			}
+			buildColorDefinition(name)
 		}
 	}
 	
@@ -189,16 +179,6 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		definition {
 			//加上元素定义信息
 			append(PlsDocBundle.message("name.localisation.locale")).append(" <b>").append(name).append("</b>")
-		}
-	}
-	
-	private fun StringBuilder.buildLocaleContent(element: ParadoxLocalisationLocale) {
-		//加上描述
-		val localeConfig = element.localeConfig
-		if(localeConfig != null) {
-			content {
-				append(localeConfig.documentation) //接受HTML
-			}
 		}
 	}
 	

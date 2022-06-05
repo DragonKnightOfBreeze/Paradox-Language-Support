@@ -1,7 +1,9 @@
 package icu.windea.pls.cwt
 
+import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.*
 import icu.windea.pls.cwt.psi.*
 
 enum class CwtConfigType(
@@ -28,6 +30,7 @@ enum class CwtConfigType(
 	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup"), true),
 	Tag("tag", PlsDocBundle.message("name.cwt.tag"), true),
 	
+	SystemScope("system scope", PlsDocBundle.message("name.cwt.systemScope"), true),
 	LocalisationLocale("localisation locale", PlsDocBundle.message("name.cwt.localisationLocale"), true),
 	LocalisationColor("localisation color", PlsDocBundle.message("name.cwt.localisationColor"), true),
 	LocalisationPredefinedVariable("localisation predefined variable", PlsDocBundle.message("name.cwt.localisationPredefinedVariable"), true);
@@ -37,6 +40,14 @@ enum class CwtConfigType(
 	}
 	
 	companion object {
+		fun resolve(element: PsiElement): CwtConfigType? {
+			return when {
+				element is CwtProperty -> resolve(element)
+				element is CwtValue -> resolve(element)
+				else -> null
+			}
+		}
+		
 		fun resolve(element: CwtProperty): CwtConfigType? {
 			val name = element.name
 			return when {
@@ -60,9 +71,10 @@ enum class CwtConfigType(
 						parentName == "scope_groups" -> ScopeGroup
 						parentName == "tags" -> Tag
 						//from internal config
-						parentName == "locales" -> LocalisationLocale
-						parentName == "colors" -> LocalisationColor
-						parentName == "predefined_variables" -> LocalisationPredefinedVariable
+						parentName == "system_scopes" && parentProperty.containingFile.name == InternalConfigGroup.scriptConfigFileName -> SystemScope
+						parentName == "locales" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationLocale
+						parentName == "colors" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationColor
+						parentName == "predefined_variables" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationPredefinedVariable
 						else -> null
 					}
 				}

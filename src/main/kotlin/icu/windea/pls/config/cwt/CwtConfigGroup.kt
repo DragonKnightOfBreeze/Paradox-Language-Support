@@ -19,12 +19,12 @@ class CwtConfigGroup(
 	val folders: Set<String>
 	val types: Map<String, CwtTypeConfig>
 	val values: Map<String, CwtEnumConfig>
-	
 	//enumValue可以是int、float、bool类型，统一用字符串表示
 	val enums: Map<String, CwtEnumConfig>
 	
 	//since: stellaris v3.4
 	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
+	
 	val links: Map<@CaseInsensitive String, CwtLinkConfig>
 	val localisationLinks: Map<@CaseInsensitive String, CwtLinkConfig>
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>

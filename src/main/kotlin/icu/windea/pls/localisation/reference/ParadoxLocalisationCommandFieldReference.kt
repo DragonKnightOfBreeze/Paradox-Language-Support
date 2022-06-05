@@ -38,7 +38,7 @@ class ParadoxLocalisationCommandFieldReference(
 		return findDefinitionsByType(name, "scripted_loc", project).mapToArray { PsiElementResolveResult(it) }
 	}
 	
-	private fun doResolveLocalisationCommand(name: String, project: Project): CwtProperty? {
+	private fun doResolveLocalisationCommand(name: String, project: Project): PsiElement? {
 		val gameType = element.fileInfo?.gameType ?: return null
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
 		return CwtConfigHandler.resolveLocalisationCommand(name, configGroup)

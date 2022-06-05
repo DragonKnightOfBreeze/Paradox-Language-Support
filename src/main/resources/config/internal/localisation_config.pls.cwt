@@ -1,3 +1,5 @@
+# Internal Localisation Config
+
 ### Localisation locales
 ### See: <code>localisation/languages.yml</code>
 ### See cwt rule: <code>enum[font_languages]</code>

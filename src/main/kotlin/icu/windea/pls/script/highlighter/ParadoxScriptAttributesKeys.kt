@@ -31,7 +31,12 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definitionReference"), DEFINITION_KEY)
 	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)
 	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
-	@JvmField val ENUM_VALUE_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumValueReference"), STATIC_FIELD)
 	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY)
+	@JvmField val VALUE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueValue"), STATIC_FIELD)
+	@JvmField val ENUM_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumValue"), STATIC_FIELD)
+	@JvmField val SCOPE_LINK_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeLink"), IDENTIFIER)
+	@JvmField val SCOPE_VALUE_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValuePrefix"), LABEL)
+	@JvmField val SCOPE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValue"), PARAMETER)
+	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), STATIC_FIELD)
 	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 }

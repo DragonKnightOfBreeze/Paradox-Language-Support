@@ -1,12 +1,11 @@
-package icu.windea.pls.config.cwt.config
+package icu.windea.pls.config.internal.config
 
 import com.intellij.psi.*
 import icu.windea.pls.*
 
-interface CwtConfig<out T : PsiElement> {
-	val pointer: SmartPsiElementPointer<out T>
+interface InternalConfig : IdAware, IconAware, DescriptionAware {
+	val pointer: SmartPsiElementPointer<out PsiElement>
 	
 	val configFileName get() = pointer.containingFile?.name ?: anonymousString
 	val configFileIcon get() = pointer.containingFile?.icon
 }
-

@@ -21,13 +21,13 @@ class ParadoxScriptKeyReference(
 		when {
 			resolved == null -> pass()
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
-			resolved.isWritable -> resolved.setName(newElementName)
+			resolved is PsiNamedElement && resolved.isWritable -> resolved.setName(newElementName)
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
 		return element.setValue(newElementName)
 	}
 	
-	override fun resolve(): PsiNamedElement? {
+	override fun resolve(): PsiElement? {
 		return CwtConfigHandler.resolveKey(element) //根据对应的expression进行解析
 	}
 	

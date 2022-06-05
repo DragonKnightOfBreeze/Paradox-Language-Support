@@ -4,23 +4,17 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 
 /**
- * 本地化语言区域的内置配置。
+ * 系统作用域的内置配置。
  */
-class ParadoxLocaleConfig(
+class ParadoxSystemScopeConfig(
 	override val id: String,
 	override val description: String,
-	val languageTag: String,
 	override val pointer: SmartPsiElementPointer<out PsiElement>
-) : InternalConfig{
-	override val icon get() = PlsIcons.localisationLocaleIcon
-	
-	val text = buildString {
-		append(id)
-		if(description.isNotEmpty()) append(" (").append(description).append(")")
-	}
+): InternalConfig {
+	override val icon get() = PlsIcons.systemScopeIcon
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxLocaleConfig && id == other.id
+		return this === other || other is ParadoxSystemScopeConfig && id == other.id
 	}
 	
 	override fun hashCode(): Int {

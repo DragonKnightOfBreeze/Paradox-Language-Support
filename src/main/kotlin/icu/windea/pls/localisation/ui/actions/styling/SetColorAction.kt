@@ -13,8 +13,8 @@ import icu.windea.pls.config.internal.config.*
 
 class SetColorAction(
 	val colorConfig: ParadoxColorConfig
-) : ToggleAction(colorConfig.documentation, null, colorConfig.icon), DumbAware {
-	private val setColorActionBaseName = colorConfig.documentation
+) : ToggleAction(colorConfig.text, null, colorConfig.icon), DumbAware {
+	private val setColorActionBaseName = colorConfig.text
 	
 	override fun update(event: AnActionEvent) {
 		val editor = event.dataContext.getData(CommonDataKeys.EDITOR) ?: return
