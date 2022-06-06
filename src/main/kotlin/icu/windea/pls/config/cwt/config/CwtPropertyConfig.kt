@@ -31,10 +31,14 @@ data class CwtPropertyConfig(
 	val keyExpression: CwtKeyExpression by lazy { CwtKeyExpression.resolve(key) }
 	val valueExpression: CwtValueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
 	
+	override val resolved: CwtPropertyConfig get() = inlineableConfig?.config ?: this
+	val keyResolved: CwtPropertyConfig get() = inlineableConfig?.castOrNull<CwtAliasConfig>()?.config ?: this
+	
 	val valueConfig by lazy { doGetValueConfig() }
 	
 	private fun doGetValueConfig(): CwtValueConfig? {
-		val valuePointer = pointer.containingFile?.let { f -> pointer.element?.value?.createPointer(f) } ?: return null
+		val resolvedPointer = resolved.pointer
+		val valuePointer = resolvedPointer.containingFile?.let { f -> resolvedPointer.element?.value?.createPointer(f) } ?: return null
 		return CwtValueConfig(
 			valuePointer, value, booleanValue, intValue, floatValue, stringValue,
 			properties, values, documentation, options, optionValues
@@ -44,9 +48,11 @@ data class CwtPropertyConfig(
 	//规则内联相关
 	//TODO properties和values需要考虑深拷贝
 	
-	var rawSingleAliasConfig: CwtSingleAliasConfig? = null
-	var rawAliasConfig: CwtAliasConfig? = null
+	var inlineableConfig: CwtInlineableConfig? = null
 	
+	/**
+	 * 从[singleAliasConfig]内联规则：value改为取[singleAliasConfig]的的value，如果需要拷贝，则进行深拷贝。
+	 */
 	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig):CwtPropertyConfig{
 		//内联所有value
 		val other = singleAliasConfig.config
@@ -59,14 +65,18 @@ data class CwtPropertyConfig(
 			properties = other.properties,
 			values = other.values
 		)
-		inlined.rawSingleAliasConfig = singleAliasConfig
+		inlined.inlineableConfig = singleAliasConfig
 		return inlined
 	}
 	
+	/**
+	 * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
+	 */
 	fun inlineFromAliasConfig(aliasConfig:CwtAliasConfig):CwtPropertyConfig{
-		//内联所有value，key保持不变（如：alias_name[trigger]）
+		//内联所有value，key取aliasSubName（如：alias[effect:if] 中的if）
 		val other = aliasConfig.config
 		val inlined = copy(
+			key = aliasConfig.subName,
 			value = other.value,
 			booleanValue = other.booleanValue,
 			intValue = other.intValue,
@@ -75,7 +85,7 @@ data class CwtPropertyConfig(
 			properties = other.properties,
 			values = other.values
 		)
-		inlined.rawAliasConfig = aliasConfig
+		inlined.inlineableConfig = aliasConfig
 		return inlined
 	}
 }

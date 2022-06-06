@@ -15,7 +15,7 @@ import io.ktor.utils.io.*
 sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
 	object Localisation : ParadoxLocalisationNameIndex() {
 		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-		private const val version = 2
+		private const val version = 3
 		private const val cacheSize = 200 * 1024
 		
 		override fun getKey() = key
@@ -25,7 +25,7 @@ sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 	
 	object SyncedLocalisation : ParadoxLocalisationNameIndex() {
 		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-		private const val version = 2
+		private const val version = 3
 		private const val cacheSize = 2 * 1024
 		
 		override fun getKey() = key

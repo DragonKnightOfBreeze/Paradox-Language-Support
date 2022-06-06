@@ -19,7 +19,7 @@ class ParadoxScriptLinkReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		val gameType = element.gameType ?: return null
+		val gameType = element.fileInfo?.gameType ?: return null
 		val name = rangeInElement.substring(element.text)
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		return CwtConfigHandler.resolveLink(name, configGroup)

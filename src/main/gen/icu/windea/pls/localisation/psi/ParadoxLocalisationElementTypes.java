@@ -36,7 +36,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMENT = new ParadoxLocalisationTokenType("COMMENT");
   IElementType DOT = new ParadoxLocalisationTokenType("DOT");
   IElementType DOUBLE_LEFT_BRACKET = new ParadoxLocalisationTokenType("DOUBLE_LEFT_BRACKET");
-  IElementType END_OF_LINE_COMMENT = new ParadoxLocalisationTokenType("END_OF_LINE_COMMENT");
   IElementType ICON_END = new ParadoxLocalisationTokenType("ICON_END");
   IElementType ICON_FRAME = new ParadoxLocalisationTokenType("ICON_FRAME");
   IElementType ICON_ID = new ParadoxLocalisationTokenType("ICON_ID");

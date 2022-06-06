@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 class ParadoxScriptParserDefinition : ParserDefinition {
 	companion object {
 		val WHITE_SPACES = TokenSet.create(WHITE_SPACE)
-		val COMMENTS = TokenSet.create(COMMENT, END_OF_LINE_COMMENT)
+		val COMMENTS = TokenSet.create(COMMENT)
 		val STRINGS = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val FILE = ParadoxScriptStubElementTypes.FILE
 	}

@@ -74,11 +74,12 @@ class CwtKeyExpression private constructor(
 					CwtKeyExpression(expressionString, CwtDataTypes.ValueSet, value)
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
-					val value = expressionString.substring(6, expressionString.length - 1)
+					//value需要是有效的scope_type
+					val value = expressionString.substring(6, expressionString.length - 1).takeIf { it != "any" }
 					CwtKeyExpression(expressionString, CwtDataTypes.Scope, value)
 				}
 				expressionString == "scope_field" -> {
-					CwtKeyExpression(expressionString, CwtDataTypes.ScopeField)
+					CwtKeyExpression(expressionString, CwtDataTypes.Scope)
 				}
 				expressionString.surroundsWith("alias_keys_field[", "]") -> {
 					val value = expressionString.substring(17, expressionString.length - 1)

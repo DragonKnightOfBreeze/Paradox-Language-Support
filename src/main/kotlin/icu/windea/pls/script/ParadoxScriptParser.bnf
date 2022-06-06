@@ -25,7 +25,9 @@ root_block ::= root_block_item + {
   implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::=  END_OF_LINE_COMMENT | COMMENT | property | value | variable
+private root_block_item ::= COMMENT | property | value | variable{
+  recoverWhile="#auto"
+}
 
 //scripted_variable
 //should outside of definition declaration
@@ -61,7 +63,7 @@ property ::= property_key property_separator property_value {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName subtreeChanged]
 }
-property_key ::= key_entry {
+property_key ::= key_expr {
   implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
   methods=[getValue setValue getReference getConfigExpression getValueType]
 }
@@ -96,7 +98,7 @@ float ::= FLOAT_TOKEN{
   extends=number
   methods=[getFloatValue getValueType]
 }
-string ::= value_entry {
+string ::= value_expr {
   extends=value
   implements="com.intellij.psi.PsiLiteralValue"
   methods=[getValue setValue getReference getStringValue getValueType]
@@ -113,7 +115,55 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
   methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType]
 }
-private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value | parameter_condition | variable
+private block_item ::= COMMENT | property | value | parameter_condition | variable{
+  recoverWhile="#auto"
+}
+
+//key & value entries
+
+//key string (various situations)
+private key_expr ::= key_parameter_expr | key_string_template_expr | key_string_expr
+private key_parameter_expr ::= parameter
+private key_string_template_expr ::= key_string_template
+private key_string_expr ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
+
+//key string (various situations) (TO CHECK: make it game type specific)
+private value_expr ::= value_parameter_expr | value_string_template_expr | value_string_expr
+//private value_expr ::= value_string_template_expr | value_parameter_expr | value_link_expr | value_link_value_expr | value_string_expr
+private value_parameter_expr ::= parameter
+private value_string_template_expr ::= value_string_template
+//private value_link_expr ::= link_expression
+//private value_link_value_expr ::= link_value_expression
+private value_string_expr ::= STRING_TOKEN | QUOTED_STRING_TOKEN //e.g. VALUE
+
+//key & value entry implementations
+
+//string template
+//e.g. $PARAM$, $PARAM$_SUFFIX
+//noinspection BnfUnusedRule
+key_string_template ::= key_string_template_entry + {
+  implements="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
+}
+private key_string_template_entry ::= parameter | KEY_STRING_SNIPPET 
+value_string_template ::= value_string_template_entry + {
+  implements="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
+}
+private value_string_template_entry ::= parameter | VALUE_STRING_SNIPPET
+
+////link expression (ignore case) (TODO)
+////e.g. root.owner
+//link_expression ::= link (DOT link) +
+//link ::= LINK_TOKEN
+//
+////link value expression (TODO)
+////e.g. event_target:last_created_pop
+//link_value_expression ::= link_value_prefix link_value
+//link_value_prefix ::= LINK_VALUE_PREFIX_TOKEN
+//link_value ::= LINK_VALUE_TOKEN
+//
+////loc command (TODO)
+////should in definition declaration
+////should starts with "\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)
 
 //advanced script syntax
 //see: common/scripted_effects/99_advanced_documentation.txt
@@ -128,6 +178,7 @@ private block_item ::= END_OF_LINE_COMMENT | COMMENT | property | value | parame
 //currently cannot be surround with double quotes
 parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_TOKEN)] PARAMETER_END {
   pin=1
+  recoverWhile="#auto"
   extends=value
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue getValueType]
@@ -151,7 +202,7 @@ parameter_condition_parameter ::= INPUT_PARAMETER_ID {
   implements="icu.windea.pls.script.psi.IParadoxScriptInputParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset]
 }
-private parameter_condition_item ::= END_OF_LINE_COMMENT | COMMENT | property | value
+private parameter_condition_item ::= COMMENT | property | value
 
 //inline math
 //should in definition declaration
@@ -211,45 +262,3 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] P
   implements="icu.windea.pls.script.psi.IParadoxScriptParameter"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue]
 }
-
-//key & value entries
-
-//key string (various situations)
-private key_entry ::= key_string_template_entry | key_string_entry
-private key_string_template_entry ::= key_string_template
-private key_string_entry ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
-
-//key string (various situations) (TO CHECK: make it game type specific)
-private value_entry ::= value_string_template_entry | value_string_entry
-//private value_entry ::= value_string_template_entry | value_link_entry | value_link_value_entry | value_string_entry
-private value_string_template_entry ::= value_string_template
-//private value_link_entry ::= link_expression
-//private value_link_value_entry ::= link_value_expression
-private value_string_entry ::= STRING_TOKEN | QUOTED_STRING_TOKEN //e.g. VALUE
-
-//key & value entry implementations
-
-//string template
-//e.g. $PARAM$, $PARAM$_SUFFIX
-//noinspection BnfUnusedRule
-key_string_template ::= KEY_STRING_SNIPPET ? (parameter KEY_STRING_SNIPPET ?) + {
-  implements="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
-}
-value_string_template ::= VALUE_STRING_SNIPPET ? (parameter VALUE_STRING_SNIPPET ?) + {
-  implements="icu.windea.pls.script.psi.IParadoxScriptStringTemplate"
-}
-
-////link expression (ignore case) (TODO)
-////e.g. root.owner
-//link_expression ::= link (DOT link) +
-//link ::= LINK_TOKEN
-//
-////link value expression (TODO)
-////e.g. event_target:last_created_pop
-//link_value_expression ::= link_value_prefix link_value
-//link_value_prefix ::= LINK_VALUE_PREFIX_TOKEN
-//link_value ::= LINK_VALUE_TOKEN
-//
-////loc command (TODO)
-////should in definition declaration
-////should starts with "\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)

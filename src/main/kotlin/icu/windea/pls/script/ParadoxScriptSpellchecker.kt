@@ -21,7 +21,7 @@ class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
 			STRING_TOKEN -> compactTextTokenizer
 			INPUT_PARAMETER_ID -> textTokenizer
 			PARAMETER_ID -> textTokenizer
-			COMMENT, END_OF_LINE_COMMENT -> textTokenizer
+			COMMENT -> textTokenizer
 			else -> emptyTokenizer
 		}
 	}

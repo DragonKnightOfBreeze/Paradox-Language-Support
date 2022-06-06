@@ -20,12 +20,14 @@
 
 root ::= property_list *
 //locale之前可以添加注释，wiki中的说明有误
-property_list ::= COMMENT * locale COMMENT * property_item * {
+property_list ::= COMMENT * locale property_item * {
   pin=2
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getComponents]
 }
-private property_item ::= END_OF_LINE_COMMENT | COMMENT | property
+private property_item ::= COMMENT | property{
+  recoverWhile="#auto"
+}
 
 locale ::= LOCALE_ID COLON {
   pin=1

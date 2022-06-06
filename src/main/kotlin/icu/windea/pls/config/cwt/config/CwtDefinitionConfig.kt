@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
@@ -56,7 +57,8 @@ data class CwtDefinitionConfig(
 				else -> {
 					var result: List<CwtKvConfig<*>> = getMergedConfigs(subtypes)
 					var isTop = true
-					for(key in path.originalSubPaths) {
+					for(originalKey in path.originalSubPaths) {
+						val key = originalKey.unquote()
 						val isQuoted = key.isQuoted()
 						//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要略过
 						
@@ -69,7 +71,7 @@ data class CwtDefinitionConfig(
 								when {
 									config is CwtPropertyConfig -> {
 										if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
-											CwtConfigHandler.inlinePropertyConfig(key, isQuoted, config, configGroup, nextResult)
+											inlinePropertyConfig(key, isQuoted, config, configGroup, nextResult)
 										}
 									}
 									config is CwtValueConfig -> {
@@ -81,16 +83,20 @@ data class CwtDefinitionConfig(
 						} else {
 							val nextResult = SmartList<CwtKvConfig<*>>()
 							for(r in result) {
-								//如果任意父路径的aliasName是effect或者trigger，且当前key匹配links中的link，或者其嵌套格式（root.owner），则需要跳过当前key
-								if(r is CwtPropertyConfig && r.rawAliasConfig?.name.let { it == "effect" || it == "trigger" }){
-									if(CwtConfigHandler.matchesLinkExpression(key, configGroup)) continue
+								//如果这里得到的配置有对应的singleAliasConfig/aliasConfig且aliasName是effect或者trigger
+								//且当前key匹配links中的link，或者其嵌套格式（root.owner），则需要跳过当前key
+								if(r is CwtPropertyConfig && !isQuoted && CwtConfigHandler.supportsScopes(r.inlineableConfig?.name)){
+									if(CwtConfigHandler.matchesLinkExpression(key, configGroup)){
+										nextResult.add(r)
+										continue
+									}
 								}
 								
 								val propertyConfigs = r.properties
 								if(propertyConfigs != null && propertyConfigs.isNotEmpty()) {
 									for(propertyConfig in propertyConfigs) {
 										if(CwtConfigHandler.matchesKey(propertyConfig.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
-											CwtConfigHandler.inlinePropertyConfig(key, isQuoted, propertyConfig, configGroup, nextResult)
+											inlinePropertyConfig(key, isQuoted, propertyConfig, configGroup, nextResult)
 										}
 									}
 								}
@@ -108,6 +114,41 @@ data class CwtDefinitionConfig(
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 内联规则以便后续的代码提示、引用解析和结构验证。
+	 */
+	private fun inlinePropertyConfig(key: String, quoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>) {
+		//内联类型为`single_alias_right`或`alias_match_left`的规则
+		run {
+			val valueExpression = config.valueExpression
+			when(valueExpression.type) {
+				CwtDataTypes.SingleAliasRight -> {
+					val singleAliasName = valueExpression.value ?: return@run
+					val singleAliases = configGroup.singleAliases[singleAliasName] ?: return@run
+					for(singleAlias in singleAliases) {
+						result.add(config.inlineFromSingleAliasConfig(singleAlias))
+						return
+					}
+				}
+				CwtDataTypes.AliasMatchLeft -> {
+					val aliasName = valueExpression.value ?: return@run
+					val aliasGroup = configGroup.aliases[aliasName] ?: return@run
+					val aliasSubName = CwtConfigHandler.resolveAliasSubNameExpression(key, quoted, aliasGroup, configGroup) ?: return@run
+					val aliases = aliasGroup[aliasSubName] ?: return@run
+					for(alias in aliases) {
+						result.add(config.inlineFromAliasConfig(alias))
+						return
+					}
+				}
+				else -> pass()
+			}
+		}
+		
+		val c = config.copy()
+		c.parent = config.parent
+		result.add(c)
 	}
 	
 	/**

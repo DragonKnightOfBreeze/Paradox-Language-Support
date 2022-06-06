@@ -119,26 +119,26 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxScriptParameter): String {
-		return element.parameterId.text
+	fun getName(element: ParadoxScriptParameter): String? {
+		return element.parameterId?.text
 	}
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
-		val nameElement = element.parameterId
-		val newNameElement = ParadoxScriptElementFactory.createParameter(element.project, name).parameterId
+		val nameElement = element.parameterId ?: return element
+		val newNameElement = ParadoxScriptElementFactory.createParameter(element.project, name).parameterId!!
 		nameElement.replace(newNameElement)
 		return element
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptParameter): PsiElement {
+	fun getNameIdentifier(element: ParadoxScriptParameter): PsiElement? {
 		return element.parameterId
 	}
 	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptParameter): Int {
-		return element.nameIdentifier.textOffset
+		return element.textOffset + 1
 	}
 	
 	@JvmStatic
@@ -711,8 +711,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
-		val nameElement = element.parameterId
-		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId
+		val nameElement = element.parameterId 
+		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
 		nameElement.replace(newNameElement)
 		return element
 	}
@@ -785,26 +785,26 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxScriptInlineMathParameter): String {
-		return element.parameterId.text
+	fun getName(element: ParadoxScriptInlineMathParameter): String? {
+		return element.parameterId?.text
 	}
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
-		val nameElement = element.parameterId
-		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId
-		nameElement.replace(newNameElement)
+		val nameElement = element.parameterId ?: return element
+		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
+		nameElement.replace(newNameElement) 
 		return element
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptInlineMathParameter): PsiElement {
+	fun getNameIdentifier(element: ParadoxScriptInlineMathParameter): PsiElement? {
 		return element.parameterId
 	}
 	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptInlineMathParameter): Int {
-		return element.nameIdentifier.textOffset
+		return element.textOffset + 1
 	}
 	
 	@JvmStatic

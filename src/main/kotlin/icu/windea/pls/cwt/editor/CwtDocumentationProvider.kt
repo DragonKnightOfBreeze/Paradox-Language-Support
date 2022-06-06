@@ -2,7 +2,6 @@ package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
@@ -93,7 +92,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				null -> {
 					val propertyElement = getDefinitionProperty(originalElement) ?: return@definition
 					if(propertyElement.valueType != ParadoxValueType.BlockType) return@definition //仅限block
-					val gameType = propertyElement.gameType ?: return@definition
+					val gameType = propertyElement.fileInfo?.gameType ?: return@definition
 					val config = propertyElement.getPropertyConfig() ?: return@definition
 					val scopeMap = CwtConfigHandler.mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)
 					for((sk, sv) in scopeMap) {
@@ -104,7 +103,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				//为alias提供关于scope的额外文档注释（如果有的话）
 				CwtConfigType.Alias -> {
 					//同名的alias支持的scopes应该是一样的
-					val gameType = originalElement?.gameType ?: return@definition
+					val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
 					val configGroup = getCwtConfig(project)[gameType] ?: return@definition
 					val index = name.indexOf(':')
 					if(index == -1) return@definition
@@ -117,7 +116,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 				//为modifier提供关于scope的额外文档注释
 				CwtConfigType.Modifier -> {
-					val gameType = originalElement?.gameType ?: return@definition
+					val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
 					val configGroup = getCwtConfig(project)[gameType] ?: return@definition
 					val categories = element.value?.value ?: return@definition
 					val category = configGroup.modifierCategories[categories]
@@ -127,7 +126,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 				//为localisation_command提供关于scope的额外文档注释
 				CwtConfigType.LocalisationCommand -> {
-					val gameType = originalElement?.gameType ?: return@definition
+					val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
 					val configGroup = getCwtConfig(project)[gameType] ?: return@definition
 					val n = element.name
 					val localisationCommand = configGroup.localisationCommands[n] ?: return@definition

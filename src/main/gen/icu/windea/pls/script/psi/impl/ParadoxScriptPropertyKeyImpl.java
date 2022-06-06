@@ -36,6 +36,12 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
+  @Nullable
+  public ParadoxScriptParameter getParameter() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameter.class);
+  }
+
+  @Override
   @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);

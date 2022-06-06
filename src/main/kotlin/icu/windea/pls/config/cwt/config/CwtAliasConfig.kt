@@ -7,10 +7,10 @@ import icu.windea.pls.cwt.psi.*
 
 data class CwtAliasConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	val name: String,
+	override val name: String,
 	val subName: String,
-	val config: CwtPropertyConfig
-) : CwtConfig<CwtProperty> {
+	override val config: CwtPropertyConfig
+) : CwtInlineableConfig {
 	val keyExpression by lazy { CwtKeyExpression.resolve(subName) }
 	val valueExpression by lazy { CwtValueExpression.resolve(subName) }
 	
@@ -23,4 +23,3 @@ data class CwtAliasConfig(
 		return option.stringValue?.let { setOf(it) } ?: option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
 	}
 }
-

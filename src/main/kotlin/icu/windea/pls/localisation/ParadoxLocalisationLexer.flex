@@ -177,7 +177,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 <WAITING_LOCALE_END>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; }
-  {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT; }
+  {END_OF_LINE_COMMENT} {return COMMENT; }
 }
 <WAITING_PROPERTY_COLON>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
@@ -307,7 +307,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 <WAITING_PROPERTY_END>{
   {EOL} {noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE} {return WHITE_SPACE; } //继续解析
-  {END_OF_LINE_COMMENT} {return END_OF_LINE_COMMENT; }
+  {END_OF_LINE_COMMENT} {return COMMENT; }
   \" {yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);}
 }
 

@@ -98,14 +98,14 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\25\0\1\1\1\2\2\3\1\4\2\5\1\6\2\7"+
-    "\1\10\1\11\1\12\1\13\1\7\1\14\1\15\1\16"+
-    "\2\17\1\7\1\20\1\21\1\22\1\23\1\1\1\24"+
-    "\1\7\1\25\1\26\1\27\1\30\1\31\1\24\1\32"+
-    "\1\33\1\34\1\35\1\36\1\37\1\40\1\1\1\41"+
-    "\1\42\1\43\1\44\1\45\1\7\1\23\1\46\1\47"+
-    "\1\50\1\51\1\52\1\53\3\0\1\54\1\55\1\56"+
-    "\1\57\1\0\1\60\1\61\1\62\1\47\1\50\1\51"+
-    "\1\52\1\53\1\63";
+    "\1\10\1\4\1\11\1\12\1\7\1\13\1\14\1\15"+
+    "\2\16\1\7\1\17\1\20\1\21\1\22\1\1\1\23"+
+    "\1\7\1\24\1\25\1\26\1\27\1\30\1\23\1\31"+
+    "\1\32\1\33\1\34\1\35\1\36\1\37\1\1\1\40"+
+    "\1\41\1\42\1\43\1\44\1\7\1\22\1\45\1\46"+
+    "\1\47\1\50\1\51\1\52\3\0\1\53\1\54\1\55"+
+    "\1\56\1\0\1\57\1\60\1\61\1\46\1\47\1\50"+
+    "\1\51\1\52\1\62";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[93];
@@ -637,193 +637,188 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
             { return TokenType.BAD_CHARACTER;
             } 
             // fall through
-          case 52: break;
+          case 51: break;
           case 2: 
             { noIndent=false; return WHITE_SPACE;
             } 
             // fall through
-          case 53: break;
+          case 52: break;
           case 3: 
             { noIndent=true; return WHITE_SPACE;
             } 
             // fall through
-          case 54: break;
+          case 53: break;
           case 4: 
             { return COMMENT;
             } 
             // fall through
-          case 55: break;
+          case 54: break;
           case 5: 
             { yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID;
             } 
             // fall through
-          case 56: break;
+          case 55: break;
           case 6: 
             { return WHITE_SPACE;
             } 
             // fall through
-          case 57: break;
+          case 56: break;
           case 7: 
             { noIndent=true; yybegin(YYINITIAL); return WHITE_SPACE;
             } 
             // fall through
-          case 58: break;
+          case 57: break;
           case 8: 
             { yybegin(WAITING_LOCALE_END); return COLON;
             } 
             // fall through
-          case 59: break;
+          case 58: break;
           case 9: 
-            { return END_OF_LINE_COMMENT;
-            } 
-            // fall through
-          case 60: break;
-          case 10: 
             { yybegin(WAITING_PROPERTY_NUMBER); return COLON;
             } 
             // fall through
-          case 61: break;
-          case 11: 
+          case 59: break;
+          case 10: 
             { yybegin(WAITING_PROPERTY_VALUE); return WHITE_SPACE;
             } 
             // fall through
-          case 62: break;
-          case 12: 
+          case 60: break;
+          case 11: 
             { yybegin(WAITING_PROPERTY_VALUE); return PROPERTY_NUMBER;
             } 
             // fall through
-          case 63: break;
-          case 13: 
+          case 61: break;
+          case 12: 
             { yybegin(WAITING_RICH_TEXT); return LEFT_QUOTE;
             } 
             // fall through
-          case 64: break;
-          case 14: 
+          case 62: break;
+          case 13: 
             { yypushback(yylength()); yybegin(WAITING_CHECK_RIGHT_QUOTE);
             } 
             // fall through
-          case 65: break;
-          case 15: 
+          case 63: break;
+          case 14: 
             { return STRING_TOKEN;
             } 
             // fall through
-          case 66: break;
-          case 16: 
+          case 64: break;
+          case 15: 
             { propertyReferenceLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);
             } 
             // fall through
-          case 67: break;
-          case 17: 
+          case 65: break;
+          case 16: 
             { yypushback(yylength()); yybegin(WAITING_CHECK_ICON_START);
             } 
             // fall through
-          case 68: break;
-          case 18: 
+          case 66: break;
+          case 17: 
             { commandLocation=0; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);
             } 
             // fall through
-          case 69: break;
-          case 19: 
+          case 67: break;
+          case 18: 
             { yypushback(yylength()); yybegin(WAITING_CHECK_COLORFUL_TEXT_START);
             } 
             // fall through
-          case 70: break;
-          case 20: 
+          case 68: break;
+          case 19: 
             { yybegin(nextStateForText()); return WHITE_SPACE;
             } 
             // fall through
-          case 71: break;
-          case 21: 
+          case 69: break;
+          case 20: 
             { return PROPERTY_REFERENCE_ID;
             } 
             // fall through
-          case 72: break;
-          case 22: 
+          case 70: break;
+          case 21: 
             { yybegin(nextStateForPropertyReference()); return PROPERTY_REFERENCE_END;
             } 
             // fall through
-          case 73: break;
-          case 23: 
+          case 71: break;
+          case 22: 
             { commandLocation=1; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);
             } 
             // fall through
-          case 74: break;
-          case 24: 
+          case 72: break;
+          case 23: 
             { yybegin(WAITING_PROPERTY_REFERENCE_PARAMETER_TOKEN); return PIPE;
             } 
             // fall through
-          case 75: break;
-          case 25: 
+          case 73: break;
+          case 24: 
             { return PROPERTY_REFERENCE_PARAMETER_TOKEN;
             } 
             // fall through
-          case 76: break;
-          case 26: 
+          case 74: break;
+          case 25: 
             { yybegin(WAITING_ICON_ID_FINISHED); return ICON_ID;
             } 
             // fall through
-          case 77: break;
-          case 27: 
+          case 75: break;
+          case 26: 
             { propertyReferenceLocation=1; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);
             } 
             // fall through
-          case 78: break;
-          case 28: 
+          case 76: break;
+          case 27: 
             { yybegin(nextStateForText()); return ICON_END;
             } 
             // fall through
-          case 79: break;
-          case 29: 
+          case 77: break;
+          case 28: 
             { commandLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_COMMAND_START);
             } 
             // fall through
-          case 80: break;
-          case 30: 
+          case 78: break;
+          case 29: 
             { yybegin(WAITING_ICON_FRAME); return PIPE;
             } 
             // fall through
-          case 81: break;
-          case 31: 
+          case 79: break;
+          case 30: 
             { propertyReferenceLocation=2; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);
             } 
             // fall through
-          case 82: break;
-          case 32: 
+          case 80: break;
+          case 31: 
             { yybegin(WAITING_ICON_FRAME_FINISHED); return ICON_FRAME;
             } 
             // fall through
-          case 83: break;
-          case 33: 
+          case 81: break;
+          case 32: 
             { propertyReferenceLocation=3; yypushback(yylength()); yybegin(WAITING_CHECK_PROPERTY_REFERENCE_START);
             } 
             // fall through
-          case 84: break;
-          case 34: 
+          case 82: break;
+          case 33: 
             { yybegin(WAITING_COMMAND_SCOPE_OR_FIELD); return DOT;
             } 
             // fall through
-          case 85: break;
-          case 35: 
+          case 83: break;
+          case 34: 
             { yybegin(nextStateForCommand()); return COMMAND_END;
             } 
             // fall through
-          case 86: break;
-          case 36: 
+          case 84: break;
+          case 35: 
             { yypushback(yylength()); yybegin(WAITING_COLORFUL_TEXT);
             } 
             // fall through
-          case 87: break;
-          case 37: 
+          case 85: break;
+          case 36: 
             { yybegin(WAITING_COLORFUL_TEXT); return WHITE_SPACE;
             } 
             // fall through
-          case 88: break;
-          case 38: 
+          case 86: break;
+          case 37: 
             { yybegin(WAITING_COLORFUL_TEXT); return COLOR_ID;
             } 
             // fall through
-          case 89: break;
-          case 39: 
+          case 87: break;
+          case 38: 
             { //特殊处理
     //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
     //否则认为是常规字符串
@@ -838,8 +833,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
 	}
             } 
             // fall through
-          case 90: break;
-          case 40: 
+          case 88: break;
+          case 39: 
             { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线，则认为代表图标的开始
     //否则认为是常规字符串
@@ -854,8 +849,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 91: break;
-          case 41: 
+          case 89: break;
+          case 40: 
             { //特殊处理
     //除了可以通过连续的两个左方括号转义之外
     //如果匹配到的字符串长度大于1，且最后一个字符为右方括号，则认为代表命令的开始
@@ -871,8 +866,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 92: break;
-          case 42: 
+          case 90: break;
+          case 41: 
             { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
     //否则认为是常规字符串
@@ -888,8 +883,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 93: break;
-          case 43: 
+          case 91: break;
+          case 42: 
             { //特殊处理
       //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
       //否则认为是常规字符串
@@ -904,43 +899,43 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
       }
             } 
             // fall through
-          case 94: break;
-          case 44: 
+          case 92: break;
+          case 43: 
             { return DOUBLE_LEFT_BRACKET;
             } 
             // fall through
-          case 95: break;
-          case 45: 
+          case 93: break;
+          case 44: 
             { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
             } 
             // fall through
-          case 96: break;
-          case 46: 
+          case 94: break;
+          case 45: 
             { return INVALID_ESCAPE_TOKEN;
             } 
             // fall through
-          case 97: break;
-          case 47: 
+          case 95: break;
+          case 46: 
             { return VALID_ESCAPE_TOKEN;
             } 
             // fall through
-          case 98: break;
-          case 48: 
+          case 96: break;
+          case 47: 
             { yypushback(1); return COMMAND_SCOPE_ID;
             } 
             // fall through
-          case 99: break;
-          case 49: 
+          case 97: break;
+          case 48: 
             { yypushback(1); return COMMAND_FIELD_ID;
             } 
             // fall through
-          case 100: break;
-          case 50: 
+          case 98: break;
+          case 49: 
             { decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
             } 
             // fall through
-          case 101: break;
-          case 51: 
+          case 99: break;
+          case 50: 
             { //同一本地化文件中是可以有多个locale的，这是为了兼容localisation/languages.yml
 	//locale应该在之后的冒号和换行符之间没有任何字符或者只有空白字符
     int length = yylength();
@@ -964,7 +959,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     return TokenType.BAD_CHARACTER; //不应该出现
             } 
             // fall through
-          case 102: break;
+          case 100: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

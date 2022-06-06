@@ -19,7 +19,7 @@ class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
 			PROPERTY_REFERENCE_ID -> emptyTokenizer
 			COMMAND_SCOPE, COMMAND_FIELD, ICON_ID -> textTokenizer
 			STRING_TOKEN -> textTokenizer
-			COMMENT, END_OF_LINE_COMMENT -> textTokenizer
+			COMMENT -> textTokenizer
 			else -> emptyTokenizer
 		}
 	}

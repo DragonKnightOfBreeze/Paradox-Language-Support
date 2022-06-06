@@ -13,17 +13,13 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOption
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
-val ParadoxScriptParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
-
-val ParadoxScriptParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
-
 val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(INPUT_PARAMETER_ID)
 
 val ParadoxScriptInlineMathVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE_ID)
 
-val ParadoxScriptInlineMathParameter.parameterId: PsiElement get() = findRequiredChild(PARAMETER_ID)
+val IParadoxScriptParameter.parameterId: PsiElement? get() = findOptionalChild(PARAMETER_ID)
 
-val ParadoxScriptInlineMathParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
+val IParadoxScriptParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
 
 internal fun ParadoxDefinitionProperty.clearDefinitionElementInfo() {
 	this.accept(object : PsiRecursiveElementVisitor() {

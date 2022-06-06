@@ -78,9 +78,9 @@ tasks {
 			freeCompilerArgs = listOf("-Xjvm-default=all")
 		}
 	}
-	//buildSearchableOptions {
-	//	enabled = false
-	//}
+	buildSearchableOptions {
+		enabled = false
+	}
 	publishPlugin {
 		token.set(System.getenv("IDEA_TOKEN"))
 	}

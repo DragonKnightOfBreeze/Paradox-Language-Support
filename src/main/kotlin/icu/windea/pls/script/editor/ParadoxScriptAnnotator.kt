@@ -59,13 +59,15 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 		if(attributesKey != null) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+			return
 		}
 		val references = element.references
 		for(reference in references) {
 			val resolved = reference.resolve() ?: continue
 			val configType = CwtConfigType.resolve(resolved) ?: continue
 			val attributesKey1 =  when{
-				configType == CwtConfigType.Link -> Keys.SCOPE_LINK_KEY
+				configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
+				configType == CwtConfigType.Link -> Keys.SCOPE_KEY
 				configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
 				else -> null
 			}
@@ -106,6 +108,21 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 		if(attributesKey != null) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+			return
+		}
+		val references = element.references
+		for(reference in references) {
+			val resolved = reference.resolve() ?: continue
+			val configType = CwtConfigType.resolve(resolved) ?: continue
+			val attributesKey1 =  when{
+				configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
+				configType == CwtConfigType.Link -> Keys.SCOPE_KEY
+				configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
+				else -> null
+			}
+			if(attributesKey1 != null) {
+				holder.newSilentAnnotation(INFORMATION).range(reference.rangeInElement.shiftRight(element.textRange.startOffset)) .textAttributes(attributesKey1).create()
+			}
 		}
 	}
 	

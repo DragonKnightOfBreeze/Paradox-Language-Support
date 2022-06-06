@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 class CwtParserDefinition : ParserDefinition {
 	companion object {
 		val WHITE_SPACES = TokenSet.create(WHITE_SPACE)
-		val COMMENTS = TokenSet.create(COMMENT) //不包含DOCUMENTATION_TOKEN
+		val COMMENTS = TokenSet.create(COMMENT)
 		val STRINGS = TokenSet.create(STRING_TOKEN)
 		val FILE = IFileElementType("CWT_FILE", CwtLanguage)
 	}

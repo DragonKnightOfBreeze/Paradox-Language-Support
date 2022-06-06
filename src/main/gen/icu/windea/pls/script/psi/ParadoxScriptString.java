@@ -11,6 +11,9 @@ import icu.windea.pls.script.reference.ParadoxScriptValueReference;
 public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue {
 
   @Nullable
+  ParadoxScriptParameter getParameter();
+
+  @Nullable
   ParadoxScriptValueStringTemplate getValueStringTemplate();
 
   @NotNull

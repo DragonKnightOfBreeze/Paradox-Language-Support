@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 
 abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
@@ -11,6 +12,8 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val optionValues: List<CwtOptionValueConfig>?
 	
 	var parent: CwtKvConfig<*>? = null
+	
+	abstract val resolved: CwtKvConfig<*>
 	
 	val cardinality by lazy { inferCardinality() }
 	val scope get() = inferScope() //不要缓存，因为parent可能有变动

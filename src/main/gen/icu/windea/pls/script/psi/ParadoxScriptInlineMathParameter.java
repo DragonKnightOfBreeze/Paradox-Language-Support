@@ -12,13 +12,13 @@ public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMat
   @NotNull
   Icon getIcon(@IconFlags int flags);
 
-  @NotNull
+  @Nullable
   String getName();
 
   @NotNull
   ParadoxScriptInlineMathParameter setName(@NotNull String name);
 
-  @NotNull
+  @Nullable
   PsiElement getNameIdentifier();
 
   int getTextOffset();

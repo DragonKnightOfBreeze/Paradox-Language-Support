@@ -11,7 +11,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 class ParadoxLocalisationParserDefinition : ParserDefinition {
 	companion object {
 		val WHITE_SPACES = TokenSet.create(WHITE_SPACE)
-		val COMMENTS = TokenSet.create(COMMENT, END_OF_LINE_COMMENT)
+		val COMMENTS = TokenSet.create(COMMENT)
 		val STRINGS = TokenSet.create(STRING_TOKEN)
 		val FILE = ParadoxLocalisationStubElementTypes.FILE
 	}

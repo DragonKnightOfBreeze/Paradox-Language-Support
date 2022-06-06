@@ -108,11 +108,12 @@ class CwtValueExpression private constructor(
 					CwtValueExpression(expressionString, CwtDataTypes.ScopeGroup, value)
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
-					val value = expressionString.substring(6, expressionString.length - 1)
+					//value需要是有效的scope_type
+					val value = expressionString.substring(6, expressionString.length - 1).takeIf { it != "any"  }
 					CwtValueExpression(expressionString, CwtDataTypes.Scope, value)
 				}
 				expressionString == "scope_field" -> {
-					CwtValueExpression(expressionString, CwtDataTypes.ScopeField)
+					CwtValueExpression(expressionString, CwtDataTypes.Scope)
 				}
 				expressionString == "variable_field" -> {
 					val value = when {

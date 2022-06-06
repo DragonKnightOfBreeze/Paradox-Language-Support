@@ -5,6 +5,6 @@ import icu.windea.pls.cwt.psi.*
 
 data class CwtSingleAliasConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
-	val name:String,
-	val config: CwtPropertyConfig
-): CwtConfig<CwtProperty>
+	override val name:String,
+	override val config: CwtPropertyConfig
+): CwtInlineableConfig

@@ -150,12 +150,6 @@ fun ParadoxScriptValue.isLonely(): Boolean {
 	return parent is IParadoxScriptBlock
 }
 
-val PsiElement.gameType: ParadoxGameType? get() = doGetGameType(this)
-
-private fun doGetGameType(element: PsiElement): ParadoxGameType? {
-	return element.containingFile.fileInfo?.gameType
-}
-
 val PsiElement.localeConfig: ParadoxLocaleConfig? get() = doGetLocale(this)
 
 private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
@@ -306,7 +300,7 @@ fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 			val definitionElementInfo = property.definitionElementInfo ?: return null
 			//如果无法匹配value，则取唯一的那个
 			return definitionElementInfo.matchedPropertyConfig?.valueConfig
-				?: definitionElementInfo.valueConfigs.singleOrNull()
+				?: definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig
 		}
 		//如果value是block中的value
 		is ParadoxScriptBlock -> {

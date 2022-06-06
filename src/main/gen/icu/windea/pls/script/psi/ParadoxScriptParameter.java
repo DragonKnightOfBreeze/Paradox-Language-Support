@@ -13,13 +13,13 @@ public interface ParadoxScriptParameter extends ParadoxScriptValue, IParadoxScri
   @NotNull
   Icon getIcon(@IconFlags int flags);
 
-  @NotNull
+  @Nullable
   String getName();
 
   @NotNull
   ParadoxScriptParameter setName(@NotNull String name);
 
-  @NotNull
+  @Nullable
   PsiElement getNameIdentifier();
 
   int getTextOffset();

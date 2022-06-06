@@ -16,7 +16,9 @@ root_block ::= root_block_item + {
   implements="icu.windea.pls.cwt.psi.ICwtBlock"
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= comment | property | value
+private root_block_item ::= comment | property | value{
+  recoverWhile="#auto"
+}
 
 private comment ::= documentation_comment | option_comment | COMMENT
 
@@ -29,7 +31,6 @@ documentation_text ::= DOCUMENTATION_TOKEN
 
 option_comment ::= OPTION_START option_comment_item ? {
   pin=1
-  recoverWhile="#auto"
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
 }
@@ -68,7 +69,7 @@ boolean ::= BOOLEAN_TOKEN {
 number ::= int | float {
   extends=value
 }
-int ::= INT_TOKEN {
+int ::= INT_TOKEN{
   extends=number
   methods=[getIntValue]
 }
@@ -88,4 +89,6 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements="icu.windea.pls.cwt.psi.ICwtBlock"
   methods=[getIcon getValue isEmpty isNotEmpty getComponents]
 }
-private block_item ::= comment | property | option | value
+private block_item ::= comment | property | option | value{
+  recoverWhile="#auto"
+}

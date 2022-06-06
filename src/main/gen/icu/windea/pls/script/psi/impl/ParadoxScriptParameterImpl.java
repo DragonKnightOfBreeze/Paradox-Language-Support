@@ -37,7 +37,7 @@ public class ParadoxScriptParameterImpl extends ParadoxScriptValueImpl implement
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
@@ -49,7 +49,7 @@ public class ParadoxScriptParameterImpl extends ParadoxScriptValueImpl implement
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getNameIdentifier() {
     return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
   }

@@ -12,6 +12,9 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptExpression {
   @Nullable
   ParadoxScriptKeyStringTemplate getKeyStringTemplate();
 
+  @Nullable
+  ParadoxScriptParameter getParameter();
+
   @NotNull
   String getValue();
 

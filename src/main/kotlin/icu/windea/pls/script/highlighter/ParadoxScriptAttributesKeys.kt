@@ -34,9 +34,10 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY)
 	@JvmField val VALUE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueValue"), STATIC_FIELD)
 	@JvmField val ENUM_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumValue"), STATIC_FIELD)
-	@JvmField val SCOPE_LINK_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeLink"), IDENTIFIER)
+	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.systemScope"), STATIC_METHOD)
+	@JvmField val SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scope"), INSTANCE_METHOD)
 	@JvmField val SCOPE_VALUE_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValuePrefix"), LABEL)
-	@JvmField val SCOPE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValue"), PARAMETER)
+	@JvmField val SCOPE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValue"), INSTANCE_FIELD)
 	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), STATIC_FIELD)
 	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 }
