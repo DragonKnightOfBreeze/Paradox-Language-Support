@@ -7,7 +7,6 @@ types = {
 		path = "game/interface"
 		skip_root_key = spriteTypes
 		severity = warning
-		# ADDED BY PLS
 		pictures = {
 			textureFile = "#textureFile" # filepath
 			textureFile1 = "#textureFile1" # filepath
@@ -38,7 +37,6 @@ types = {
 		subtype[framed_animated_sprite] = {}
 		## type_key_filter = textSpriteType
 		subtype[text_sprite] = {}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			texture = "#textureFile" # filepath

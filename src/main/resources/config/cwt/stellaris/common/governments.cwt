@@ -7,7 +7,6 @@ types = {
 			## required
 			Description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			## optional
@@ -42,7 +41,6 @@ types = {
 			## cardinality = 0..1
 			is_origin = no
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			## optional

@@ -41,7 +41,6 @@ types = {
 		subtype[spynetwork] = {
 			target = spynetwork
 		}
-		# ADDED BY PLS
 		pictures = {
 			picture = "#picture" # <sprite>
 		}

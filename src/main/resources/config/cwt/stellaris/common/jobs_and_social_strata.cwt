@@ -22,7 +22,6 @@ types = {
 				per_pop_modifier_short = mod_job_$_per_pop_short
 			}
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # filepath[gfx/interface/icons/jobs/job_,.dds]
@@ -41,7 +40,6 @@ types = {
 			## required
 			desc = "pop_cat_$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "gfx/interface/icons/pop_categories/pop_cat_$.dds" # inferred

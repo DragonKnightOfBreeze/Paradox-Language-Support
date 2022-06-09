@@ -33,7 +33,6 @@ types = {
 				"Preference trait description" = "trait_$_preference_desc"
 			}
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # <sprite>

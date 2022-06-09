@@ -10,7 +10,6 @@ types = {
 			## optional
 			description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			picture = "#picture" # <sprite>
 		}

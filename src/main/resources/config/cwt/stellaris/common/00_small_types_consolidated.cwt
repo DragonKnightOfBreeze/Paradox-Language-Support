@@ -85,7 +85,6 @@ types = {
 			## required
 			desc = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # <sprite>
@@ -108,7 +107,6 @@ types = {
 	type[message_type] = {
 		name_field = key
 		path = "game/common/message_types"
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon|#icon_frame" # <sprite>

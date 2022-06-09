@@ -7,7 +7,6 @@ types = {
 			## required
 			Name = "$"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			picture = "#picture" # <sprite>
@@ -19,7 +18,6 @@ types = {
 			## required
 			Name = "$"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			picture = "#picture" # <sprite>
@@ -33,14 +31,13 @@ types = {
 			## required
 			Desc = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			portrait = "portrait" # <sprite>
 		}
 	}
 	type[artifact_action] = {
-		path = "game/common/artifact_actions" # FIXED BY PLS
+		path = "game/common/artifact_actions"
 		localisation = {
 			## required
 			Name = "$"

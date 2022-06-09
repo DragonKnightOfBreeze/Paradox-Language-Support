@@ -1,4 +1,3 @@
-# ADDED BY PLS
 # Used to provide special icon and highlight, other functions like code completion is provided by vanilla CWT rules
 tags = {
 	### See: <code>common/scripted_effects/99_advanced_documentation.txt (Memory Management)</code>

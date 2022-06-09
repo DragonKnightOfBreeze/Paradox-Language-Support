@@ -8,7 +8,6 @@ types = {
 			## required
 			desc = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # icon[gfx/interface/icons/decisions]

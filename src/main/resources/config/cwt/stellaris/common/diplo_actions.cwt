@@ -13,7 +13,6 @@ types = {
 			## optional
 			"Type desc" = "$_TYPE_DESC"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # <sprite>

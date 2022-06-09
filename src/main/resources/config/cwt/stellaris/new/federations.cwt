@@ -26,7 +26,6 @@ types = {
 			## required
 			Description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			## optional
@@ -41,7 +40,6 @@ types = {
 			## required
 			Description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # <sprite>

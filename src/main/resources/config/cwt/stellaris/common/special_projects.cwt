@@ -13,7 +13,6 @@ types = {
 			## optional
 			Description = "$_DESC"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # filepath

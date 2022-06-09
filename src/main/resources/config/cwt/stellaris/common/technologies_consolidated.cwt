@@ -15,7 +15,6 @@ types = {
 			## required
 			Description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # icon[gfx/interface/icons/technologies]
@@ -37,7 +36,6 @@ types = {
 			## required
 			Description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # filepath

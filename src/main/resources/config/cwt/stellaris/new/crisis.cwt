@@ -21,7 +21,6 @@ types = {
 			## required
 			Description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			portrait = "#portrait" # <sprite>

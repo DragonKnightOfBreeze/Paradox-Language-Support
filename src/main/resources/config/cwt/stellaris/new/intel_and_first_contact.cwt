@@ -2,7 +2,6 @@
 types = {
 	type[first_contact_stage] = {
 		path = "game/common/first_contact"
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # <sprite>

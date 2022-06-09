@@ -15,7 +15,6 @@ types = {
 			## required
 			Description = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "gfx/interface/icons/resources/$.dds" # inferred

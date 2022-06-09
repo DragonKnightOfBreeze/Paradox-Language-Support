@@ -8,7 +8,6 @@ types = {
 			## required
 			Desc = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "gfx/interface/icons/ascension_perks/$.dds" # inferred
@@ -24,7 +23,6 @@ types = {
 			## optional
 			Effects = "$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			## optional
@@ -56,7 +54,6 @@ types = {
 				Effects = "$_desc"
 			}
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "gfx/interface/icons/traditions/$.dds" # inferred
@@ -76,7 +73,7 @@ types = {
 
 enums = {
 	complex_enum[tradition_swap] = {
-		path = "game/common/traditions" # FIXED BY PLS
+		path = "game/common/traditions"
 		name = {
 			tradition_swap = {
 				name = enum_name

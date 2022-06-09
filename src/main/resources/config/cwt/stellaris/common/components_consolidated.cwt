@@ -16,7 +16,6 @@ types = {
 			## optional
 			"Station Description" = "station_$_DESC"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon|#icon_frame" # <sprite>
@@ -38,7 +37,6 @@ types = {
 			## required
 			Name = "$"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon|#icon_frame" # <sprite>

@@ -32,7 +32,6 @@ types = {
 				always = no
 			}
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # icon[gfx/interface/icons/deposits]

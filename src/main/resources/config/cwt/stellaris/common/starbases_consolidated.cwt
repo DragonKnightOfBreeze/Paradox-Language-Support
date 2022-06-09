@@ -7,7 +7,6 @@ types = {
 			## required
 			Description = "sm_$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			icon = "#icon" # <sprite>
 		}
@@ -23,7 +22,6 @@ types = {
 			## required
 			Description = "sm_$_desc"
 		}
-		# ADDED BY PLS
 		pictures = {
 			## primary
 			icon = "#icon" # <sprite>
