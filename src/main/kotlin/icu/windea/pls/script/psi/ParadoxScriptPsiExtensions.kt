@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -141,4 +142,10 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 	return null
 }
 
-
+/**
+ * 判断keyExpression是否可能是linkExpression。（如：`root`、`root.owner`）
+ */
+fun ParadoxScriptPropertyKey.mayBeLinkExpression(): Boolean{
+	val propertyConfig = this.getPropertyConfig()  ?: return false
+	return CwtConfigHandler.supportsScopes(propertyConfig)
+}

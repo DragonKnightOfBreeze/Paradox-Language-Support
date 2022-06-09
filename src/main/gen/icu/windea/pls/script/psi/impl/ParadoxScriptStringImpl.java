@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.ParadoxValueType;
 import icu.windea.pls.script.reference.ParadoxScriptValueReference;
 
@@ -57,6 +58,12 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   @Nullable
   public ParadoxScriptValueReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiReference[] getReferences() {
+    return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
   @Override

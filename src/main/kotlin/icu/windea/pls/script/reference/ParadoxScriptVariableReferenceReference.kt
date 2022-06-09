@@ -16,8 +16,7 @@ class ParadoxScriptVariableReferenceReference(
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
-			resolved.isWritable -> resolved.name = newElementName
-			else -> throw IncorrectOperationException() //不允许重命名
+			else -> resolved.name = newElementName
 		}
 		//重命名variableReference
 		return element.setName(newElementName)

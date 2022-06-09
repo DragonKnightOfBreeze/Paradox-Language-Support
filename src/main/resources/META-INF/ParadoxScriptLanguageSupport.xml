@@ -21,6 +21,9 @@
     <lang.syntaxHighlighterFactory
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.highlighter.ParadoxScriptSyntaxHighlighterFactory"/>
+    <psi.referenceContributor
+        language="PARADOX_SCRIPT"
+        implementation="icu.windea.pls.script.reference.ParadoxScriptReferenceContributor"/>
     <colorSettingsPage
         implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher
@@ -160,7 +163,8 @@
                      implementationClass="icu.windea.pls.script.inspections.definition.UnexpectedScriptSyntaxInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingRelatedLocalisation"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.definition.inspection.missingRelatedLocalisation"
+                     bundle="messages.PlsBundle"
+                     key="script.inspection.definition.inspection.missingRelatedLocalisation"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
                      groupPathKey="script.inspection.definition.path"
                      implementationClass="icu.windea.pls.script.inspections.definition.MissingRelatedLocalisationInspection"/>
@@ -201,7 +205,8 @@
       <action id="ParadoxScript.IntroduceGlobalScriptedVariable"
               class="icu.windea.pls.script.refactoring.ParadoxScriptIntroduceGlobalScriptedVariableAction">
         <keyboard-shortcut first-keystroke="control alt g" keymap="$default"/>
-        <add-to-group group-id="IntroduceActionsGroup" anchor="after" relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
+        <add-to-group group-id="IntroduceActionsGroup" anchor="after"
+                      relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
       </action>
     </group>
   </actions>

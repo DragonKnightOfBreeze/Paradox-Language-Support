@@ -11,9 +11,9 @@ import icu.windea.pls.script.psi.*
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
  */
 class ParadoxScriptLinkValuePrefixReference(
-	element: ParadoxScriptString,
+	element: PsiElement,
 	rangeInElement: TextRange
-): PsiReferenceBase<ParadoxScriptString>(element, rangeInElement){
+): PsiReferenceBase<PsiElement>(element, rangeInElement){
 	override fun handleElementRename(newElementName: String): PsiElement {
 		throw IncorrectOperationException() //不允许重命名
 	}

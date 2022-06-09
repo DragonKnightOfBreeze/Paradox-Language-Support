@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供事件ID的前缀的代码补全。基于对应的事件命名空间。
  */
-object ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		//val file = parameters.originalFile
 		//if(file !is ParadoxScriptFile) return

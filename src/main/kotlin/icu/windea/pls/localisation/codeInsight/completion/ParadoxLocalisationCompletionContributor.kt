@@ -9,19 +9,19 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	init {
 		//当用户正在输入一个locale（也有可能是propertyKey）的名字时提示
 		val localePattern = or(psiElement(LOCALE_ID), psiElement(PROPERTY_KEY_ID))
-		extend(CompletionType.BASIC, localePattern, ParadoxLocaleCompletionProvider)
+		extend(CompletionType.BASIC, localePattern, ParadoxLocaleCompletionProvider())
 		
 		//当用户正在输入一个propertyReference的名字时提示
 		val propertyReferencePattern = psiElement(PROPERTY_REFERENCE_ID)
-		extend(null, propertyReferencePattern, ParadoxPropertyReferenceCompletionProvider)
+		extend(null, propertyReferencePattern, ParadoxPropertyReferenceCompletionProvider())
 		
 		//当用户正在输入一个icon的名字时提示
 		val iconPattern = psiElement(ICON_ID)
-		extend(null, iconPattern, ParadoxIconCompletionProvider)
+		extend(null, iconPattern, ParadoxIconCompletionProvider())
 		
 		//当用户正在输入一个commandField的名字时提示
 		val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
-		extend(null, commandFieldPattern, ParadoxCommandFieldCompletionProvider)
+		extend(null, commandFieldPattern, ParadoxCommandFieldCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

@@ -64,8 +64,12 @@ property ::= property_key property_separator property_value {
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName subtreeChanged]
 }
 property_key ::= key_expr {
-  implements="icu.windea.pls.script.psi.ParadoxScriptExpression"
-  methods=[getValue setValue getReference getConfigExpression getValueType]
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptExpression"
+    "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
+  ] 
+  methods=[getValue setValue getReference getReferences getConfigExpression getValueType]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
@@ -100,12 +104,14 @@ float ::= FLOAT_TOKEN{
 }
 string ::= value_expr {
   extends=value
-  implements="com.intellij.psi.PsiLiteralValue"
-  methods=[getValue setValue getReference getStringValue getValueType]
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
+  ]
+  methods=[getValue setValue getReference getReferences getStringValue getValueType]
 }
 color ::= COLOR_TOKEN {
   extends=value
-  implements="com.intellij.psi.PsiLiteralValue"
   methods=[getValue getColor setColor getValueType]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {

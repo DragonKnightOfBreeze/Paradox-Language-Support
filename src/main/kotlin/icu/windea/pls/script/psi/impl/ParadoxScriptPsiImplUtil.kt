@@ -250,14 +250,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxScriptPropertyKey): ParadoxScriptKeyReference? {
-		element.processChild {
-			when(it.elementType){
-				PROPERTY_KEY_TOKEN -> return ParadoxScriptKeyReference(element, it.textRangeInParent)
-				QUOTED_PROPERTY_KEY_TOKEN -> return ParadoxScriptKeyReference(element, it.textRangeInParent)
-				else -> end()
-			}
-		}
-		return null
+		return element.references.firstOrNull().castOrNull()
+	}
+	
+	@JvmStatic
+	fun getReferences(element: ParadoxScriptPropertyKey): Array<out PsiReference> {
+		return PsiReferenceService.getService().getContributedReferences(element)
 	}
 	
 	@JvmStatic
@@ -279,7 +277,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun subtreeChanged(element: ParadoxScriptProperty){
+	fun subtreeChanged(element: ParadoxScriptProperty) {
 		element.clearDefinitionElementInfo() //清除其中的定义元素信息
 	}
 	//endregion
@@ -409,14 +407,12 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getReference(element: ParadoxScriptString): ParadoxScriptValueReference? {
-		element.processChild {
-			when(it.elementType){
-				STRING_TOKEN -> return ParadoxScriptValueReference(element, it.textRangeInParent)
-				QUOTED_STRING_TOKEN -> return ParadoxScriptValueReference(element, it.textRangeInParent)
-				else -> end()
-			}
-		}
-		return null
+		return element.references.firstOrNull().castOrNull()
+	}
+	
+	@JvmStatic
+	fun getReferences(element: ParadoxScriptString): Array<out PsiReference> {
+		return PsiReferenceService.getService().getContributedReferences(element)
 	}
 	
 	@JvmStatic
@@ -711,7 +707,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
-		val nameElement = element.parameterId 
+		val nameElement = element.parameterId
 		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
 		nameElement.replace(newNameElement)
 		return element
@@ -793,7 +789,7 @@ object ParadoxScriptPsiImplUtil {
 	fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
 		val nameElement = element.parameterId ?: return element
 		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
-		nameElement.replace(newNameElement) 
+		nameElement.replace(newNameElement)
 		return element
 	}
 	

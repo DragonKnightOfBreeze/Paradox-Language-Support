@@ -4,10 +4,13 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.ParadoxValueType;
 import icu.windea.pls.script.reference.ParadoxScriptKeyReference;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptExpression {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptExpression, PsiLiteralValue, ContributedReferenceHost {
 
   @Nullable
   ParadoxScriptKeyStringTemplate getKeyStringTemplate();
@@ -23,6 +26,9 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptExpression {
 
   @Nullable
   ParadoxScriptKeyReference getReference();
+
+  @NotNull
+  PsiReference[] getReferences();
 
   @Nullable
   String getConfigExpression();

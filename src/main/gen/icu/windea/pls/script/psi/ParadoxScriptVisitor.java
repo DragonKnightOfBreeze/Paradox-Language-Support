@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -21,7 +22,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitColor(@NotNull ParadoxScriptColor o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
@@ -110,6 +110,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
     visitExpression(o);
+    // visitPsiLiteralValue(o);
+    // visitContributedReferenceHost(o);
   }
 
   public void visitPropertyValue(@NotNull ParadoxScriptPropertyValue o) {
@@ -123,6 +125,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
     // visitPsiLiteralValue(o);
+    // visitContributedReferenceHost(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {

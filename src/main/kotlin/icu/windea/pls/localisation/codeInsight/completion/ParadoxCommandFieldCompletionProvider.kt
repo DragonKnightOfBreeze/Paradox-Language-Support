@@ -12,7 +12,7 @@ import icu.windea.pls.config.cwt.*
  * 提供命令字段名字的代码补全。
  */
 @Suppress("UnstableApiUsage")
-object ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val project = parameters.originalFile.project
 		

@@ -12,7 +12,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 提供语言区域名字的代码补全。
  */
-object ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		//直到所在行开始没有任何空白，直到所在行结束没有除了冒号之外的任何其他字符
 		val position = parameters.position

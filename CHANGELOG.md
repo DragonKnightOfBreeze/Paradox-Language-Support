@@ -12,7 +12,7 @@
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 
-## 0.6 >> 0.6.1
+## 0.6 > 0.6.1
 
 * [X] 更新cwt规则到最新版本（`stellaris v3.4`）（2022/6/9）
 * 代码优化：
@@ -62,10 +62,12 @@
   * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
   * [X] 支持额外的CWT选项：`## color_type = rgb / rgba`，用于以装订线图标的方式显示对应的颜色
   * [X] 仅当对应的数据类型是`bool`时，才会提示`yes`和`no`
-  * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
-  * [ ] 支持基于CWT规则校验脚本结构
+  * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
+  * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
 * ［长期］完善CWT配置支持 *
+  * [X] 支持解析linkExpression（如`from.owner`）
+  * [X] 支持提示linkExpression（如`from.owner`）
 * ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~

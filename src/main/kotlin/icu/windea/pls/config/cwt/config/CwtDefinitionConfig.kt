@@ -83,9 +83,9 @@ data class CwtDefinitionConfig(
 						} else {
 							val nextResult = SmartList<CwtKvConfig<*>>()
 							for(r in result) {
-								//如果这里得到的配置有对应的singleAliasConfig/aliasConfig且aliasName是effect或者trigger
+								//如果这里得到的配置有对应的singleAliasConfig/aliasConfig且支持linkExpression
 								//且当前key匹配links中的link，或者其嵌套格式（root.owner），则需要跳过当前key
-								if(r is CwtPropertyConfig && !isQuoted && CwtConfigHandler.supportsScopes(r.inlineableConfig?.name)){
+								if(r is CwtPropertyConfig && !isQuoted && CwtConfigHandler.supportsScopes(r)){
 									if(CwtConfigHandler.matchesLinkExpression(key, configGroup)){
 										nextResult.add(r)
 										continue

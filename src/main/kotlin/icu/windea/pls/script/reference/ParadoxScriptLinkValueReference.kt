@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptLinkValueReference(
 	element: ParadoxScriptString,
 	rangeInElement: TextRange
-): PsiReferenceBase<ParadoxScriptString>(element, rangeInElement){
+): PsiReferenceBase<PsiElement>(element, rangeInElement){
 	override fun handleElementRename(newElementName: String): PsiElement {
 		throw IncorrectOperationException() //TODO
 	}

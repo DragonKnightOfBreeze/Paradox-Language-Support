@@ -51,17 +51,32 @@ object CwtConfigHandler {
 		return scopeMap
 	}
 	
+	//effect, effect_clause -> scripted_effect
+	//trigger, trigger_clause -> scripted_trigger
+	//modifier_rule -> script_value, etc.
+	
 	fun supportsScopes(aliasName: String?): Boolean {
 		if(aliasName == null) return false
-		//effect -> scripted_effect
-		//trigger -> scripted_trigger
-		//modifier_rule -> script_value, etc.
 		return aliasName == "effect" || aliasName == "trigger" || aliasName == "modifier_rule"
 	}
 	
-	fun supportsModifiers(aliasName: String?): Boolean {
-		if(aliasName == null) return false
-		return aliasName == "modifier"
+	fun supportsScopes(propertyConfig: CwtPropertyConfig): Boolean{
+		var isAlias = true
+		val aliasName =propertyConfig.inlineableConfig?.also { isAlias = it is CwtAliasConfig }?.name
+			?: propertyConfig.keyExpression.takeIf { it.type == CwtDataTypes.AliasName }?.value
+			?: propertyConfig.valueExpression.takeIf { it.type == CwtDataTypes.SingleAliasRight }?.also { isAlias = false }?.value
+		return if(isAlias) {
+			aliasName == "effect" || aliasName == "trigger" || aliasName == "modifier_rule"
+		} else {
+			aliasName == "effect_clause" || aliasName == "trigger_clause"
+		}
+	}
+	
+	//modifier -> (prescripted) modifier
+	
+	fun supportsModifiers(aliasOrSingleAliasName: String?): Boolean {
+		if(aliasOrSingleAliasName == null) return false
+		return aliasOrSingleAliasName == "modifier"
 	}
 	//endregion
 	
@@ -431,9 +446,9 @@ object CwtConfigHandler {
 	
 	fun matchesLinkExpression(nameExpression: String, configGroup: CwtConfigGroup): Boolean {
 		if(nameExpression.contains('.')) {
-			return matchesLink(nameExpression, configGroup)
-		} else {
 			return nameExpression.split('.').all { name -> matchesLink(name, configGroup) }
+		} else {
+			return matchesLink(nameExpression, configGroup)
 		}
 	}
 	
@@ -447,58 +462,66 @@ object CwtConfigHandler {
 	//endregion
 	
 	//region Complete Extensions
-	fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet) {
+	fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet): Boolean  {
 		val keyword = keyElement.keyword
 		val quoted = keyElement.isQuoted()
 		val project = propertyElement.project
-		val definitionElementInfo = propertyElement.definitionElementInfo ?: return
+		val definitionElementInfo = propertyElement.definitionElementInfo ?: return true
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val childPropertyConfigs = definitionElementInfo.childPropertyConfigs
-		if(childPropertyConfigs.isEmpty()) return
-		
+		if(childPropertyConfigs.isEmpty()) return true
+		//如果正在输入linkExpression，且可能的结果可以是linkExpression，则仅提示scope和systemScope
+		if(keyword.contains('.') && childPropertyConfigs.any { supportsScopes(it) }){
+			completeLink(configGroup, result.withPrefixMatcher(keyword.substringAfterLast('.')))
+			return false
+		}
+		//否则加入所有可能的结果，让IDEA自动进行前缀匹配
 		for(propConfig in childPropertyConfigs) {
 			if(shouldComplete(propConfig, definitionElementInfo)) {
 				completeKey(propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
 			}
 		}
+		return true
 	}
 	
-	fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet) {
+	fun addValueCompletions(valueElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet): Boolean {
 		val keyword = valueElement.keyword
 		val quoted = valueElement.isQuoted()
 		val project = propertyElement.project
-		val definitionElementInfo = propertyElement.definitionElementInfo ?: return
+		val definitionElementInfo = propertyElement.definitionElementInfo ?: return true
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val configs = definitionElementInfo.configs
-		if(configs.isEmpty()) return
+		if(configs.isEmpty()) return true
 		
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
 				completeValue(config.valueExpression, keyword, quoted, config, configGroup, result, scope)
 			}
 		}
+		return true
 	}
 	
-	fun addValueCompletionsInBlock(valueElement: PsiElement, blockElement: ParadoxScriptBlock, result: CompletionResultSet) {
+	fun addValueCompletionsInBlock(valueElement: PsiElement, blockElement: ParadoxScriptBlock, result: CompletionResultSet): Boolean {
 		val keyword = valueElement.keyword
 		val quoted = valueElement.isQuoted()
 		val project = blockElement.project
-		val definitionElementInfo = blockElement.definitionElementInfo ?: return
+		val definitionElementInfo = blockElement.definitionElementInfo ?: return true
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val childValueConfigs = definitionElementInfo.childValueConfigs
-		if(childValueConfigs.isEmpty()) return
+		if(childValueConfigs.isEmpty()) return true
 		
 		for(valueConfig in childValueConfigs) {
 			if(shouldComplete(valueConfig, definitionElementInfo)) {
 				completeValue(valueConfig.valueExpression, keyword, quoted, valueConfig, configGroup, result, scope)
 			}
 		}
+		return true
 	}
 	
 	private fun shouldComplete(config: CwtPropertyConfig, definitionElementInfo: ParadoxDefinitionElementInfo): Boolean {

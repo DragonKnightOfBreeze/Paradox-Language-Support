@@ -15,7 +15,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 		
 		//当用户正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement().withElementType(propertyKeyOrStringTokens)
-		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider)
+		extend(null, definitionPattern, ParadoxDefinitionCompletionProvider())
 		
 		//当用户可能在输入一个eventId时提示
 		val eventIdPattern = psiElement().withElementType(stringTokens)
@@ -23,7 +23,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 				.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)
 					.withParent(psiElement(ParadoxScriptBlock::class.java)
 						.withSuperParent(2, psiElement(ParadoxScriptProperty::class.java)))))
-		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider)
+		extend(null, eventIdPattern, ParadoxEventIdCompletionProvider())
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {

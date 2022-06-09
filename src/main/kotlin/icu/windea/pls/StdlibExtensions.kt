@@ -173,14 +173,15 @@ fun String.matchesKeyword(keyword: String): Boolean {
 	//return true
 }
 
-fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): MutableList<Int> {
-	val indices = mutableListOf<Int>()
+fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): List<Int> {
+	var indices: List<Int> = null
 	var lastIndex = indexOf(char, 0, ignoreCase)
 	while(lastIndex != -1) {
+		if(indices = null) indices = SmartList()
 		indices += lastIndex
 		lastIndex = indexOf(char, lastIndex + 1, ignoreCase)
 	}
-	return indices
+	return indices ?: emptyList()
 }
 
 fun <K, V> Map<K, V>.find(predicate: (Map.Entry<K, V>) -> Boolean): V? {

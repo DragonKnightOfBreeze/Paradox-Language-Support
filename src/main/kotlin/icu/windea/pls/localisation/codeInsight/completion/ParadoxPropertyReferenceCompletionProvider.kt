@@ -10,7 +10,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 提供属性引用名字的代码补全。
  */
-object ParadoxPropertyReferenceCompletionProvider: CompletionProvider<CompletionParameters>(){
+class ParadoxPropertyReferenceCompletionProvider: CompletionProvider<CompletionParameters>(){
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 		
