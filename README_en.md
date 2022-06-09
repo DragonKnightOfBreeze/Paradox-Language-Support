@@ -24,6 +24,10 @@ This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtool
 
 For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) .
 
+![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_en.png)
+
+![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_en.png)
+
 # Reference
 
 Tools and plugins:

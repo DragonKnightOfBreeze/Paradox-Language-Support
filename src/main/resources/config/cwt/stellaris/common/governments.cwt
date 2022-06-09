@@ -33,6 +33,7 @@ types = {
 			Name = "$"
 			## required
 			Description = "$_desc"
+			Effect = "#description"
 		}
 		subtype[origin] = {
 			is_origin = yes

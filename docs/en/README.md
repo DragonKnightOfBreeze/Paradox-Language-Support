@@ -16,6 +16,10 @@ This plugin is under developing, some complex functions may not be implemented y
 If you want more perfect script language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), with some modification and extension, but related functions has not been fully implemented yet.
 
+![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_en.png)
+
+![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_en.png)
+
 Introduction:
 
 * Create the descriptor file `descriptor.mod` in the root directory of your Mod to provide language support.

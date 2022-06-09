@@ -13,6 +13,10 @@ IDEA插件：Paradox语言支持。
 如果需要更加完善的脚本语言支持，请考虑使用[VSCode](https://code.visualstudio.com)以及[CWTools](https://github.com/cwtools/cwtools-vscode)插件。
 这个插件与[CWTools](https://github.com/cwtools/cwtools-vscode)共享规则文件（`*.cwt`），经过一定的修改和扩展，但是相关功能尚未完全实现。
 
+![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_zh.png)
+
+![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_zh.png)
+
 说明：
 
 * 在你的模组根文件夹下创建描述符文件`descriptor.mod`，即可提供语言支持。  

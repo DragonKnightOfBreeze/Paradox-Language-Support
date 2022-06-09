@@ -83,9 +83,9 @@ tasks {
 	}
 	jar {
 		//添加CWT配置文件
-		cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
-			from("$rootDir/cwt/$cwtConfigDir").exclude("**/.*").into("config/cwt/$toDir")
-		}
+		//cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
+		//	from("$rootDir/cwt/$cwtConfigDir").exclude("**/.*").into("config/cwt/$toDir")
+		//}
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
 	}
