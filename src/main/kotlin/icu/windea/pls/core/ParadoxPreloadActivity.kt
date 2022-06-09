@@ -15,7 +15,7 @@ class ParadoxPreloadActivity : PreloadingActivity() {
 	private fun setInternalSettings() {
 		val internalSettings = getInternalSettings()
 		PlsProperties.debug.getBooleanProperty()?.let { internalSettings.debug = it }
-		PlsProperties.annotateUnresolvedKeyExpression.getBooleanProperty()?.let { internalSettings.annotateUnresolvedValueExpression = it }
+		PlsProperties.annotateUnresolvedKeyExpression.getBooleanProperty()?.let { internalSettings.annotateUnresolvedKeyExpression = it }
 		PlsProperties.annotateUnresolvedValueExpression.getBooleanProperty()?.let { internalSettings.annotateUnresolvedValueExpression = it }
 	}
 	

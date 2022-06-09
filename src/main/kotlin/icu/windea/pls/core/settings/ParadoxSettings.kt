@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(ParadoxSettingsState())
 
 /**
+ * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。
  * @property defaultGameType 默认游戏类型。
  * @property scriptIgnoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
  * @property preferOverridden 是否优先使用重载后的引用。
