@@ -2,6 +2,11 @@ types = {
 	type[prescripted_country] = {
 		path = "game/prescripted_countries"
 	}
+	localisation = {
+		## primary
+		Name = "EMPIRE_DESIGN_$"
+		Description = "EMPIRE_DESIGN_$_desc"
+	}
 }
 
 prescripted_country = {
