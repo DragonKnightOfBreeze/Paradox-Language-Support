@@ -2,5 +2,12 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-ck2-config" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-ck3-config" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-eu4-config" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-hoi4-config" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-ir-config" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-stellaris-config" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-vic2-config" vcs="Git" />
   </component>
 </project>

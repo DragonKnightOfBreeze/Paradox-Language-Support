@@ -12,9 +12,9 @@
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 
-## 0.6 > 0.6.1
+## 0.6 >> 0.6.1
 
-* [X] 更新cwt规则到最新版本（`stellaris v3.4`）（2022/5/28）
+* [X] 更新cwt规则到最新版本（`stellaris v3.4`）（2022/6/9）
 * 代码优化：
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
@@ -56,7 +56,7 @@
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
 * 内置配置：
   * [X] 添加`predefined_variables`，表示预定义的变量，在本地化文本中使用，实现相关功能：引用解析
-* CWT配置：
+* CWT配置： 
   * [X] 支持额外的CWT选项：`## since = "3.3"`，用于在文档注释中显示开始支持的游戏版本号
   * [X] 支持额外的CWT选项：`## loc_format = html`，用于指定将文档注释渲染为HTML
   * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
@@ -64,6 +64,8 @@
   * [X] 仅当对应的数据类型是`bool`时，才会提示`yes`和`no`
   * [ ] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [ ] 支持基于CWT规则校验脚本结构
+* 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
+* ［长期］完善CWT配置支持 *
 * ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
