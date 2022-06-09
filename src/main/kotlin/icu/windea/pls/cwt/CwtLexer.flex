@@ -60,7 +60,7 @@ INT_TOKEN=[+-]?(0|[1-9][0-9]*)
 FLOAT_TOKEN=[+-]?(0|[1-9][0-9]*)(\.[0-9]+)
 STRING_TOKEN=([^#={}\s\"][^={}\s]*)|(\"([^\"\\\r\n]|\\.)*\")
 TOP_STRING_TOKEN=([^\s])|([^={}\s][^={}\r\n]*[^={}\s]) //顶级的optionValue可以包含空格
-DOCUMENTATION_TOKEN=[^\r\n]+
+DOCUMENTATION_TOKEN=[^\s][^\r\n]*
 
 %%
 <YYINITIAL> {
