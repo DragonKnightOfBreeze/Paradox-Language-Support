@@ -174,11 +174,11 @@ fun String.matchesKeyword(keyword: String): Boolean {
 }
 
 fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): List<Int> {
-	var indices: List<Int> = null
+	var indices: MutableList<Int>? = null
 	var lastIndex = indexOf(char, 0, ignoreCase)
 	while(lastIndex != -1) {
-		if(indices = null) indices = SmartList()
-		indices += lastIndex
+		if(indices == null) indices = SmartList()
+		indices.add(lastIndex)
 		lastIndex = indexOf(char, lastIndex + 1, ignoreCase)
 	}
 	return indices ?: emptyList()
