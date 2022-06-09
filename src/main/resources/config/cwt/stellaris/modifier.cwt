@@ -1,6 +1,0 @@
-
-###Applies the value of the static modifier X right hand side factor
-alias[modifier:<static_modifier>] = float
-
-###Applies the value of a scripted modifier from common/scripted_modifiers
-alias[modifier:<scripted_modifier>] = float

@@ -1,5 +1,0 @@
-types = {
-    type[government] = {
-        path = "game/common/governments"
-    }
-}

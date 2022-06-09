@@ -1,5 +1,0 @@
-## cardinality = 1..inf
-color = {
-	## cardinality = 3..3
-	int[0..255]
-}

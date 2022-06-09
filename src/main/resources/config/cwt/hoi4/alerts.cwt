@@ -1,7 +1,0 @@
-enums = {
-    enum[alert_level] = {
-        high
-        medium
-        low
-    }
-}

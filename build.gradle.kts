@@ -58,36 +58,50 @@ val projectCompiler = javaToolchains.compilerFor {
 
 data class CwtConfigDir(
 	val from: String,
-	val to:String,
+	val to: String,
 	val flatConfigDir: Boolean = false
 )
 
 val cwtConfigDirs = listOf(
-	CwtConfigDir("cwtools-ck2-config","ck2"),
+	CwtConfigDir("cwtools-ck2-config", "ck2"),
 	CwtConfigDir("cwtools-ck3-config", "ck3"),
-	CwtConfigDir("cwtools-eu4-config","eu4"),
-	CwtConfigDir("cwtools-hoi4-config","hoi4"),
-	CwtConfigDir("cwtools-ir-config","ir"),
-	CwtConfigDir("cwtools-stellaris-config","stellaris"),
-	CwtConfigDir("cwtools-vic2-config","vic2"),
+	CwtConfigDir("cwtools-eu4-config", "eu4"),
+	CwtConfigDir("cwtools-hoi4-config", "hoi4"),
+	CwtConfigDir("cwtools-ir-config", "ir"),
+	CwtConfigDir("cwtools-stellaris-config", "stellaris"),
+	CwtConfigDir("cwtools-vic2-config", "vic2"),
 )
 
 tasks {
-	register<Exec>("updateCwtConfig") {
+	register("copyCwtConfigs") {
 		//更新CWT配置文件
-		cwtConfigDirs.forEach { (cwtConfigDir) ->
+		cwtConfigDirs.parallelStream().forEach { (cwtConfigDir) ->
 			runCatching {
-				workingDir("$rootDir/cwt/$cwtConfigDir").commandLine("git", "pull")
+				exec {
+					workingDir("$rootDir/cwt/$cwtConfigDir")
+					commandLine("git", "pull")
+				}
 			}
 		}
 	}
 	jar {
-		//添加CWT配置文件
-		//cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
-		//	from("$rootDir/cwt/$cwtConfigDir").exclude("**/.*").into("config/cwt/$toDir")
-		//}
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
+		//添加CWT配置文件
+		cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
+			from("$rootDir/cwt/$cwtConfigDir") {
+				includeEmptyDirs = false
+				exclude("**/.*")
+				//打平/config子目录中的文件
+				eachFile {
+					val i = path.indexOf("/config", ignoreCase = true)
+					if(i != -1) {
+						path = path.removeRange(i, i + 7)
+					}
+				}
+				into("config/cwt/$toDir")
+			}
+		}
 	}
 	compileJava {
 		javaCompiler.set(projectCompiler)

@@ -1,5 +1,0 @@
-types = {
-    type[dna_data] = {
-        path = "game/common/dna_data"
-    }
-}

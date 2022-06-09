@@ -1,9 +1,0 @@
--A type within a type.
--Province IDs: There seem to be multiple places I can read them from, but the source is a .csv file.
--Dates as a valid entry
--Only =, not < >
--Greater importance of case sensitivity (in localisation at least i.e. it must be "Root", "From")
--The same trigger doing different things in country/province scope
--Trade_node scope (takes all rules from province but there are a couple of things that only work with it)
--variable:new_ruler_culture (you can export cultures to a variable)
--key_filter = enum[stuff] (if easy to add)

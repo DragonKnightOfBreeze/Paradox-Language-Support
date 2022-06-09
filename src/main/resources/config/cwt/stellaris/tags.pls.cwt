@@ -1,9 +1,0 @@
-# Used to provide special icon and highlight, other functions like code completion is provided by vanilla CWT rules
-tags = {
-	### See: <code>common/scripted_effects/99_advanced_documentation.txt (Memory Management)</code>
-	## loc_format = html
-	## since = "3.4"
-	optimize_memory = {
-		supported_types = { scripted_trigger scripted_effect }
-	}
-}

@@ -1,4 +1,0 @@
-list_merge_optimisations = {
-    any_controlled_state = { any_state is_controlled_by }
-    every_controlled_state = { every_state limit is_controlled_by }
-}

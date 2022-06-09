@@ -1,5 +1,0 @@
-types = {
-    type[hook_types] = {
-        path = "game/common/hook_types"
-    }
-}

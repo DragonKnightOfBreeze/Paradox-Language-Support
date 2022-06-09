@@ -1,6 +1,0 @@
-types = {
-    type[gene] = {
-        path = "game/common/genes"
-        skip_root_key = any
-    }
-}
