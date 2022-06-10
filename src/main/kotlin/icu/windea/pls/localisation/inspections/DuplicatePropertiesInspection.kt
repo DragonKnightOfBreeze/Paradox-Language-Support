@@ -46,9 +46,9 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(property) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getFamilyName() = PlsBundle.message("localisation.inspection.duplicateProperties.fix.1")
+		override fun getText() = PlsBundle.message("localisation.inspection.duplicateProperties.quickfix.1")
 		
-		override fun getText() = PlsBundle.message("localisation.inspection.duplicateProperties.fix.1")
+		override fun getFamilyName() = text
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return

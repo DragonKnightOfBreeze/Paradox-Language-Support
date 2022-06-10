@@ -19,6 +19,7 @@ class CwtConfigGroup(
 	val folders: Set<String>
 	val types: Map<String, CwtTypeConfig>
 	val values: Map<String, CwtEnumConfig>
+	
 	//enumValue可以是int、float、bool类型，统一用字符串表示
 	val enums: Map<String, CwtEnumConfig>
 	
@@ -216,6 +217,8 @@ class CwtConfigGroup(
 		modifierCategoryIdMap = initModifierCategoryIdMap()
 		tagMap = initTagMap()
 		
+		bindModifierCategorySupportedScopeNames()
+		bindLocalisationCommandSupportedScopeNames()
 		bindModifierCategories()
 	}
 	
@@ -460,10 +463,10 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
-		val values = propertyConfig.stringValue?.let { setOf(it) }
+		val supportedScopes = propertyConfig.stringValue?.let { setOf(it) }
 			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			?: return null
-		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, values)
+		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, supportedScopes)
 	}
 	
 	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierCategoryConfig? {
@@ -482,7 +485,10 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
-		val categories = propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: return null
+		//string | string[]
+		val categories = propertyConfig.stringValue?.let { setOf(it) }
+			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+			?: return null
 		return CwtModifierConfig(propertyConfig.pointer, name, categories)
 	}
 	
@@ -554,15 +560,27 @@ class CwtConfigGroup(
 	
 	private fun initTagMap(): Map<String, Map<@CaseInsensitive String, CwtTagConfig>> {
 		val tagNameMap: MutableMap<String, MutableMap<String, CwtTagConfig>> = mutableMapOf()
-		for(tagConfig in tags.values) {
-			for(supportedType in tagConfig.supportedTypes) {
-				tagNameMap.getOrPut(supportedType) { CollectionFactory.createCaseInsensitiveStringMap() }.put(tagConfig.name, tagConfig)
+		for(tag in tags.values) {
+			for(supportedType in tag.supportedTypes) {
+				tagNameMap.getOrPut(supportedType) { CollectionFactory.createCaseInsensitiveStringMap() }.put(tag.name, tag)
 			}
 		}
 		return tagNameMap
 	}
 	
 	//绑定CWT配置
+	
+	private fun bindModifierCategorySupportedScopeNames() {
+		for(modifierCategory in modifierCategories.values) {
+			modifierCategory.supportedScopes.mapTo(modifierCategory.supportedScopeNames) { CwtConfigHandler.getScopeName(it, this) }
+		}
+	}
+	
+	private fun bindLocalisationCommandSupportedScopeNames() {
+		for(localisationCommand in localisationCommands.values) {
+			localisationCommand.supportedScopes.mapTo(localisationCommand.supportedScopeNames) { CwtConfigHandler.getScopeName(it, this) }
+		}
+	}
 	
 	private fun bindModifierCategories() {
 		for(modifier in modifiers.values) {
@@ -573,6 +591,8 @@ class CwtConfigGroup(
 			}
 		}
 	}
+	
+	//解析定义和定义元素信息
 	
 	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty,
 		rootKey: String,

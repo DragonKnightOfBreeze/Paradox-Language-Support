@@ -500,14 +500,6 @@ fun <K, V> mapOfKv(key: K, value: V): Map<K, V> {
 	return Collections.singletonMap(key, value)
 }
 
-fun <T> Collection<T>.parallelForEach(action: (T) -> Unit) {
-	return this.parallelStream().forEach(action)
-}
-
-fun <K, V> Map<K, V>.parallelForEach(action: (Map.Entry<K, V>) -> Unit) {
-	return this.entries.parallelStream().forEach(action)
-}
-
 inline fun <reified T> T.toSingletonArray() = arrayOf(this)
 
 inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()

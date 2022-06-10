@@ -57,9 +57,9 @@ class MissingRelatedLocalisationInspection : LocalInspectionTool(){
 		private val keys: Set<String>,
 		element: ParadoxDefinitionProperty
 	): LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction{
-		override fun getFamilyName() = PlsBundle.message("script.inspection.definition.inspection.missingRelatedLocalisation.fix.1")
+		override fun getText() = PlsBundle.message("script.inspection.definition.inspection.missingRelatedLocalisation.quickfix.1")
 		
-		override fun getText() = PlsBundle.message("script.inspection.definition.inspection.missingRelatedLocalisation.fix.1")
+		override fun getFamilyName() = text
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			//TODO

@@ -1,5 +1,6 @@
-package icu.windea.pls.core.quickFix
+package icu.windea.pls.core.quickfix
 
+import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.module.*
@@ -13,10 +14,10 @@ import icu.windea.pls.*
  */
 class ImportGameOrModDirectoryFix(
 	element: PsiElement
-) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-	override fun getFamilyName() = PlsBundle.message("core.quickFix.importGameOrModDirectory")
-	
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), LowPriorityAction {
 	override fun getText() = PlsBundle.message("core.quickFix.importGameOrModDirectory")
+	
+	override fun getFamilyName() = text
 	
 	//https://intellij-support.jetbrains.com/hc/en-us/community/posts/206141379-Showing-Project-Strucuture-dialog-programmatically
 	

@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.quickFix.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.refactoring.*
 import icu.windea.pls.tool.*
@@ -16,7 +16,7 @@ import icu.windea.pls.tool.*
  *
  * 提供快速修复：
  * * 声明本地封装变量（在同一文件中）
- * * TODO 声明全局封装变量（在`common/scripted_variables`目录下的某一文件中）
+ * * 声明全局封装变量（在`common/scripted_variables`目录下的某一文件中）
  * * 导入游戏目录或模组目录
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
@@ -37,7 +37,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 					this += IntroduceGlobalVariableFix(variableName, parentDefinition)
 					this += ImportGameOrModDirectoryFix(element)
 				}
-			}.toTypedArray()
+			}.toTypedArray<LocalQuickFix>()
 			holder.registerProblem(element, PlsBundle.message("script.inspection.unresolvedScriptedVariable.description", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes)
 		}
 	}
@@ -47,9 +47,9 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		private val variableName: String,
 		element: ParadoxScriptProperty
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
-		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.1", variableName)
+		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickfix.1", variableName)
 		
-		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.1", variableName)
+		override fun getFamilyName() = text
 		
 		override fun getPriority() = PriorityAction.Priority.TOP
 		
@@ -76,9 +76,9 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		private val variableName: String,
 		element: ParadoxScriptProperty,
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
-		override fun getFamilyName() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.2", variableName)
+		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickfix.2", variableName)
 		
-		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.fix.2", variableName)
+		override fun getFamilyName() = text
 		
 		override fun getPriority() = PriorityAction.Priority.HIGH
 		

@@ -72,6 +72,8 @@
     <codeInsight.lineMarkerProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
+    <errorQuickFixProvider
+        implementation="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationErrorQuickFixProvider"/>
     <declarationRangeHandler
         key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList"
         implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>

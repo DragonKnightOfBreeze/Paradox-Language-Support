@@ -1083,6 +1083,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
           case 104: break;
           case 46: 
             { if(yycharat(0) == '"'){
+		  pushbackUntilBeforeBlank(1);
 		  return QUOTED_PROPERTY_KEY_TOKEN;
 	  } else {
 	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);
@@ -1122,6 +1123,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
           case 111: break;
           case 53: 
             { if(yycharat(0) == '"'){
+		  pushbackUntilBeforeBlank(1);
  		  return QUOTED_PROPERTY_KEY_TOKEN;
  	  } else {
  	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);

@@ -31,6 +31,14 @@ object CwtConfigHandler {
 		}
 	}
 	
+	fun getScopeName(scopeAlias: String, configGroup: CwtConfigGroup): String {
+		val scopes = configGroup.scopes.values
+		//handle "any" scope 
+		if(scopeAlias.equals("any", true)) return "Any"
+		//a scope may not have aliases, or not defined in scopes.cwt
+		return scopes.find { it.name == scopeAlias || it.aliases.contains(scopeAlias) }?.name ?: scopeAlias.toCapitalizedWords()
+	}
+	
 	private fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 		return propertyConfig.keyExpression.type == CwtDataTypes.AliasName &&
 			propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
@@ -192,7 +200,7 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesKey(expression: CwtKeyExpression, value: String, valueType: ParadoxValueType, quoted: Boolean, configGroup: CwtConfigGroup): Boolean {
-		if(expression.isEmpty()) return false
+		if(expression.isEmpty() && value.isEmpty()) return true //匹配空字符串
 		when(expression.type) {
 			CwtDataTypes.Any -> {
 				return true
@@ -273,7 +281,7 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesValue(expression: CwtValueExpression, value: String, valueType: ParadoxValueType, quoted: Boolean, configGroup: CwtConfigGroup): Boolean {
-		if(expression.isEmpty()) return false
+		if(expression.isEmpty() && value.isEmpty()) return true //匹配空字符串
 		when(expression.type) {
 			CwtDataTypes.Any -> {
 				return true

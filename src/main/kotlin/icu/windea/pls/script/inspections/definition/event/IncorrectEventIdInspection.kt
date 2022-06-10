@@ -69,9 +69,9 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 	//private class RenameEventId(
 	//	element: ParadoxScriptValue
 	//) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-	//	override fun getFamilyName() = PlsBundle.message("script.inspection.internal.mismatchedEventId.quickFix.1")
-	//	
 	//	override fun getText() = PlsBundle.message("script.inspection.internal.mismatchedEventId.quickFix.1")
+	//	
+	//	override fun getFamilyName() = text
 	//	
 	//	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 	//		if(editor == null) return

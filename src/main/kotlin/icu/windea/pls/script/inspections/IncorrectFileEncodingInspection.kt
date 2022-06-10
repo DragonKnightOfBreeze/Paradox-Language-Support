@@ -45,9 +45,9 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		element: PsiElement,
 		private val isNameList: Boolean
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
-		override fun getText() = PlsBundle.message("script.inspection.incorrectFileEncoding.fix.1")
+		override fun getText() = PlsBundle.message("script.inspection.incorrectFileEncoding.quickfix.1")
 		
-		override fun getFamilyName() = PlsBundle.message("script.inspection.incorrectFileEncoding.fix.1")
+		override fun getFamilyName() = text
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val virtualFile = file.virtualFile

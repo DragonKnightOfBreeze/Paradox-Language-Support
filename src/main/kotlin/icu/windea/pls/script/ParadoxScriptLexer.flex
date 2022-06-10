@@ -164,6 +164,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "@" {yybegin(WAITING_VARIABLE_NAME); return AT;}
   {CHECK_PROPERTY_KEY} {
 	  if(yycharat(0) == '"'){
+		  pushbackUntilBeforeBlank(1);
 		  return QUOTED_PROPERTY_KEY_TOKEN;
 	  } else {
 	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);
@@ -243,6 +244,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "[" {inParameterCondition=true; yybegin(WAITING_PARAMETER_CONDITION); return LEFT_BRACKET;}
    {CHECK_PROPERTY_KEY} {
  	  if(yycharat(0) == '"'){
+		  pushbackUntilBeforeBlank(1);
  		  return QUOTED_PROPERTY_KEY_TOKEN;
  	  } else {
  	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);
@@ -356,6 +358,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "@" {yybegin(CHECK_VARIABLE); return AT;}
   {CHECK_PROPERTY_KEY} {
  	  if(yycharat(0) == '"'){
+		  pushbackUntilBeforeBlank(1);
  		  return QUOTED_PROPERTY_KEY_TOKEN;
  	  } else {
  	     enterWildcardKey(); yypushback(yylength()); yybegin(WAITING_WILDCARD_KEY);

@@ -21,7 +21,7 @@ class ChangeLocaleIntention : IntentionAction {
 	
 	override fun getText() = PlsBundle.message("localisation.intention.changeLocale")
 	
-	override fun getFamilyName() = PlsBundle.message("localisation.intention.changeLocale")
+	override fun getFamilyName() = text
 	
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false

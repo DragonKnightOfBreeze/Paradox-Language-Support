@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.inspections
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -19,7 +20,9 @@ class UnsupportedColorInspection : LocalInspectionTool() {
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) return
 			val location = element.colorId ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedColor.description", colorName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedColor.description", colorName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+				ImportGameOrModDirectoryFix(location)
+			)
 		}
 	}
 }

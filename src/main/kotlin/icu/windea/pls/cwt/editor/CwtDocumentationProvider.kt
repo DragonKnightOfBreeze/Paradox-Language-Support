@@ -1,10 +1,9 @@
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
-import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.*
@@ -33,14 +32,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			buildPropertyDefinition(element, originalElement, name)
+			val configType = CwtConfigType.resolve(element)
+			buildPropertyDefinition(element, originalElement, name, configType)
 		}
 	}
 	
 	private fun getStringInfo(element: CwtString, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			buildStringDefinition(element, originalElement, name)
+			val configType = CwtConfigType.resolve(element)
+			buildStringDefinition(element, originalElement, name, configType)
 		}
 	}
 	
@@ -55,28 +56,37 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			buildPropertyDefinition(element, originalElement, name)
+			val configType = CwtConfigType.resolve(element)
+			val project = element.project
+			buildPropertyDefinition(element, originalElement, name, configType)
 			buildDocumentationContent(element)
+			buildSupportedScopesContent(element, originalElement, name, configType, project)
 		}
 	}
 	
 	private fun getStringDoc(element: CwtString, originalElement: PsiElement?): String {
 		return buildString {
 			val name = element.name
-			buildStringDefinition(element, originalElement, name)
+			val configType = CwtConfigType.resolve(element)
+			buildStringDefinition(element, originalElement, name, configType)
 			buildDocumentationContent(element)
 		}
 	}
 	
-	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String) {
+	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?) {
 		definition {
-			val configType = CwtConfigType.resolve(element)
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text)
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			} else {
-				val originalName = if(originalElement is ParadoxScriptPropertyKey) originalElement.value else originalElement.text
-				append(PlsDocBundle.message("name.script.definitionProperty"))
+				val original = originalElement.parent // e.g. PROPERTY_KEY_TOKEN -> PROPERTY_KEY
+				val prefix = when(original){
+					is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
+					is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
+					else -> null
+				}
+				val originalName = originalElement.text.unquote()
+				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
 				if(!name.equals(originalName, true)) {
 					grayed {
@@ -86,67 +96,78 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			
 			//基于规则类型提供额外的定义信息
-			val project = element.project
-			when(configType) {
-				//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
-				null -> {
-					val propertyElement = getDefinitionProperty(originalElement) ?: return@definition
-					if(propertyElement.valueType != ParadoxValueType.BlockType) return@definition //仅限block
-					val gameType = propertyElement.fileInfo?.gameType ?: return@definition
-					val config = propertyElement.getPropertyConfig() ?: return@definition
-					val scopeMap = CwtConfigHandler.mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)
-					for((sk, sv) in scopeMap) {
-						val scopeLink = "${gameType.id}.scopes.$sv"
-						appendBr().append(PlsDocBundle.message("name.cwt.scope")).append(" ").append(sk).append(" = ").appendCwtLink(sv, scopeLink, null)
-					}
-				}
-				//为alias提供关于scope的额外文档注释（如果有的话）
-				CwtConfigType.Alias -> {
-					//同名的alias支持的scopes应该是一样的
-					val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
-					val configGroup = getCwtConfig(project)[gameType] ?: return@definition
-					val index = name.indexOf(':')
-					if(index == -1) return@definition
-					val aliasName = name.substring(0, index)
-					val aliasSubName = name.substring(index + 1)
-					val aliasGroup = configGroup.aliases[aliasName] ?: return@definition
-					val aliases = aliasGroup[aliasSubName] ?: return@definition
-					val supportedScopesText = aliases.firstOrNull()?.supportedScopesText ?: return@definition
-					appendBr().append("supported_scopes = $supportedScopesText")
-				}
-				//为modifier提供关于scope的额外文档注释
-				CwtConfigType.Modifier -> {
-					val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
-					val configGroup = getCwtConfig(project)[gameType] ?: return@definition
-					val categories = element.value?.value ?: return@definition
-					val category = configGroup.modifierCategories[categories]
-						?: configGroup.modifierCategoryIdMap[categories] ?: return@definition
-					val supportedScopesText = category.supportedScopesText
-					appendBr().append("supported_scopes = $supportedScopesText")
-				}
-				//为localisation_command提供关于scope的额外文档注释
-				CwtConfigType.LocalisationCommand -> {
-					val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
-					val configGroup = getCwtConfig(project)[gameType] ?: return@definition
-					val n = element.name
-					val localisationCommand = configGroup.localisationCommands[n] ?: return@definition
-					val supportedScopesText = localisationCommand.supportedScopes
-					appendBr().append("supported_scopes = $supportedScopesText")
-				}
-				else -> pass()
+			//val project = element.project
+			//when(configType) {
+			//	//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
+			//	null -> {
+			//		val propertyElement = getDefinitionProperty(originalElement) ?: return@definition
+			//		if(propertyElement.valueType != ParadoxValueType.BlockType) return@definition //仅限block
+			//		val gameType = propertyElement.fileInfo?.gameType ?: return@definition
+			//		val config = propertyElement.getPropertyConfig() ?: return@definition
+			//		val scopeMap = CwtConfigHandler.mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)
+			//		for((sk, sv) in scopeMap) {
+			//			val scopeLink = "${gameType.id}.scopes.$sv"
+			//			appendBr().append(PlsDocBundle.message("name.cwt.scope")).append(" ").append(sk).append(" = ").appendCwtLink(sv, scopeLink, null)
+			//		}
+			//	}
+			//	//为alias提供supported_scopes的额外文档注释（如果有的话）
+			//	CwtConfigType.Alias -> {
+			//		//同名的alias支持的scopes应该是一样的
+			//		val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
+			//		val configGroup = getCwtConfig(project)[gameType] ?: return@definition
+			//		val index = name.indexOf(':')
+			//		if(index == -1) return@definition
+			//		val aliasName = name.substring(0, index)
+			//		val aliasSubName = name.substring(index + 1)
+			//		val aliasGroup = configGroup.aliases[aliasName] ?: return@definition
+			//		val aliases = aliasGroup[aliasSubName] ?: return@definition
+			//		val supportedScopesText = aliases.firstOrNull()?.supportedScopesText ?: return@definition
+			//		appendBr().append("supported_scopes = $supportedScopesText")
+			//	}
+			//	else -> pass()
+			//}
+		}
+	}
+	
+	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
+		//为alias modifier localisation_command等提供支持的作用域的文档注释
+		var supportedScopeNames: Set<String>? = null
+		when(configType){
+			CwtConfigType.Modifier -> {
+				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
+				val configGroup = getCwtConfig(project)[gameType] ?: return
+				val modifierConfig = configGroup.modifiers[name] ?: return
+				supportedScopeNames = modifierConfig.supportedScopeNames
+			}
+			CwtConfigType.LocalisationCommand -> {
+				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
+				val configGroup = getCwtConfig(project)[gameType] ?: return
+				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
+				supportedScopeNames = localisationCommandConfig.supportedScopeNames
+			}
+			else -> pass()
+		}
+		if(supportedScopeNames != null && supportedScopeNames.isNotEmpty()){
+			content {
+				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNames.joinToString(", ")))
 			}
 		}
 	}
 	
-	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String) {
+	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?) {
 		definition {
-			val configType = CwtConfigType.resolve(element)
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			} else {
-				val originalName = if(originalElement is ParadoxScriptValue) originalElement.value else originalElement.text
-				append(PlsDocBundle.message("name.script.definitionValue"))
+				val original = originalElement.parent // e.g. PROPERTY_KEY_TOKEN -> PROPERTY_KEY
+				val prefix = when(original){
+					is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
+					is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
+					else -> null
+				}
+				val originalName = originalElement.text.unquote()
+				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
 				if(!name.equals(originalName, true)) {
 					grayed {
@@ -196,13 +217,5 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				section(PlsDocBundle.message("title.since"), since)
 			}
 		}
-	}
-	
-	private fun getDefinitionProperty(originalElement: PsiElement?): ParadoxScriptProperty? {
-		if(originalElement == null) return null
-		if(originalElement.language != ParadoxScriptLanguage) return null
-		val parent = originalElement.parent ?: return null
-		val keyElement = parent as? ParadoxScriptPropertyKey ?: parent.parent as? ParadoxScriptPropertyKey ?: return null
-		return keyElement.parent as? ParadoxScriptProperty
 	}
 }

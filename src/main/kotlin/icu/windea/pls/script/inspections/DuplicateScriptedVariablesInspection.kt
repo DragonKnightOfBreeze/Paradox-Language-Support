@@ -47,9 +47,9 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
-		override fun getFamilyName() = PlsBundle.message("script.inspection.duplicateScriptedVariables.fix.1")
+		override fun getText() = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickfix.1")
 		
-		override fun getText() = PlsBundle.message("script.inspection.duplicateScriptedVariables.fix.1")
+		override fun getFamilyName() = text
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			if(editor == null) return

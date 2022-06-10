@@ -5,6 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.system.*
 
 @Suppress("unused")
 class CwtConfigGroups(
@@ -30,12 +31,13 @@ class CwtConfigGroups(
 	init {
 		//初始化各个游戏分组的CWT规则
 		groups = ConcurrentHashMap()
-		//NOTE 这里改为并行执行
-		cwtFileConfigGroups.parallelForEach { (groupName, cwtFileConfigs) ->
-			val gameType = ParadoxGameType.resolve(groupName)
-			if(gameType != null) {
-				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)
-			}
+		cwtFileConfigGroups.forEach { (groupName, cwtFileConfigs) ->
+			measureTimeMillis {
+				val gameType = ParadoxGameType.resolve(groupName)
+				if(gameType != null) {
+					groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)
+				}
+			}.also { println(it) }
 		}
 	}
 }
