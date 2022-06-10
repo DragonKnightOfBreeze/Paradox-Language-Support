@@ -170,6 +170,9 @@ private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 	}
 }
 
+//注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
+//如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
+
 val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserData(PlsKeys.paradoxFileInfoKey)
 
 val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //使用原始文件
@@ -178,6 +181,10 @@ val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 
 fun ParadoxFileInfo.getDescriptorInfo(project: Project): ParadoxDescriptorInfo? {
 	val file = descriptor?.toPsiFile<PsiFile>(project) ?: return null
+	return doGetDescriptorInfo(file)
+}
+
+private fun ParadoxFileInfo.doGetDescriptorInfo(file: PsiFile): ParadoxDescriptorInfo? {
 	return CachedValuesManager.getCachedValue(file, PlsKeys.cachedParadoxDescriptorInfoKey) {
 		//忽略异常
 		val value = runCatching { resolveDescriptorInfo(this, file) }.getOrNull()
