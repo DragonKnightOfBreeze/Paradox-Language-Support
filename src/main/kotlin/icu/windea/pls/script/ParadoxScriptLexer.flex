@@ -327,6 +327,8 @@ ARG_STRING_TOKEN={STRING_TOKEN}
 
 //TODO 这里相关的解析失败时的处理可以考虑优化
 <WAITING_PARAMETER>{
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {PARAMETER_ID} {return PARAMETER_ID;}
@@ -334,6 +336,8 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
 }
 <WAITING_PARAMETER_DEFAULT_VALUE>{
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   {ARG_NUMBER_TOKEN} { yybegin(WAITING_PARAMETER_DEFAULT_VALUE_END); return ARG_NUMBER_TOKEN;}
@@ -341,6 +345,8 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}
 }
 <WAITING_PARAMETER_DEFAULT_VALUE_END>{
+  {BLANK} {onBlank(); return WHITE_SPACE;}
+  {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "$" {beginNextStateForParameter(); return PARAMETER_END;}

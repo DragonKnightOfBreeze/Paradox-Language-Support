@@ -10,6 +10,7 @@ val ParadoxLocalisationLocale.localeId: PsiElement get() = findRequiredChild(LOC
 val ParadoxLocalisationPropertyKey.propertyKeyId: PsiElement get() = findRequiredChild(PROPERTY_KEY_ID)
 
 val ParadoxLocalisationPropertyReference.propertyReferenceId: PsiElement? get() = findOptionalChild(PROPERTY_REFERENCE_ID)
+val ParadoxLocalisationPropertyReference.propertyReferenceParameter: PsiElement? get() = findOptionalChild(PROPERTY_REFERENCE_PARAMETER_TOKEN)
 
 val ParadoxLocalisationIcon.iconId: PsiElement? get() = findOptionalChild(ICON_ID)
 val ParadoxLocalisationIcon.iconIdReference: ParadoxLocalisationPropertyReference?

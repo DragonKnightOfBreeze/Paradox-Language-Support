@@ -43,12 +43,14 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
 		val propertyConfig = element.getPropertyConfig()
 		if(propertyConfig != null) annotateKeyExpression(element, holder, propertyConfig)
-		if(propertyConfig == null && element.definitionElementInfo.isValid) annotateUnresolvedKeyExpression(element, holder)
+		
+		//是定义元素，非定义自身，且是简单的keyExpression
+		if(propertyConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) annotateUnresolvedKeyExpression(element, holder)
 	}
 	
 	private fun annotateKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, propertyConfig: CwtPropertyConfig) {
 		//颜色高亮
-		val expression = propertyConfig.keyExpression 
+		val expression = propertyConfig.keyExpression
 		val attributesKey = when(expression.type) {
 			CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
 			CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
@@ -65,20 +67,20 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		for(reference in references) {
 			val resolved = reference.resolve() ?: continue
 			val configType = CwtConfigType.resolve(resolved) ?: continue
-			val attributesKey1 =  when{
+			val attributesKey1 = when {
 				configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
 				configType == CwtConfigType.Link -> Keys.SCOPE_KEY
 				configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
 				else -> null
 			}
 			if(attributesKey1 != null) {
-				holder.newSilentAnnotation(INFORMATION).range(reference.rangeInElement.shiftRight(element.textRange.startOffset)) .textAttributes(attributesKey1).create()
+				holder.newSilentAnnotation(INFORMATION).range(reference.rangeInElement.shiftRight(element.textRange.startOffset)).textAttributes(attributesKey1).create()
 			}
 		}
 	}
 	
 	private fun annotateUnresolvedKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
-		if(getInternalSettings().annotateUnresolvedKeyExpression){
+		if(getInternalSettings().annotateUnresolvedKeyExpression) {
 			holder.newAnnotation(ERROR, PlsBundle.message("script.internal.unresolvedKeyExpression", element.text)).range(element).create()
 		}
 	}
@@ -89,7 +91,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		
 		val valueConfig = element.getValueConfig()
 		if(valueConfig != null) annotateValueExpression(element, holder, valueConfig)
-		if(valueConfig == null && element.definitionElementInfo.isValid) annotateUnresolvedValueExpression(element, holder)
+		
+		//是定义元素，非定义自身，且是简单的valueExpression
+		if(valueConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) annotateUnresolvedValueExpression(element, holder)
 	}
 	
 	private fun annotateValueExpression(element: ParadoxScriptString, holder: AnnotationHolder, valueConfig: CwtValueConfig) {
@@ -114,20 +118,20 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		for(reference in references) {
 			val resolved = reference.resolve() ?: continue
 			val configType = CwtConfigType.resolve(resolved) ?: continue
-			val attributesKey1 =  when{
+			val attributesKey1 = when {
 				configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
 				configType == CwtConfigType.Link -> Keys.SCOPE_KEY
 				configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
 				else -> null
 			}
 			if(attributesKey1 != null) {
-				holder.newSilentAnnotation(INFORMATION).range(reference.rangeInElement.shiftRight(element.textRange.startOffset)) .textAttributes(attributesKey1).create()
+				holder.newSilentAnnotation(INFORMATION).range(reference.rangeInElement.shiftRight(element.textRange.startOffset)).textAttributes(attributesKey1).create()
 			}
 		}
 	}
 	
 	private fun annotateUnresolvedValueExpression(element: ParadoxScriptString, holder: AnnotationHolder) {
-		if(getInternalSettings().annotateUnresolvedValueExpression){
+		if(getInternalSettings().annotateUnresolvedValueExpression) {
 			holder.newAnnotation(ERROR, PlsBundle.message("script.internal.unresolvedValueExpression", element.text)).range(element).create()
 		}
 	}

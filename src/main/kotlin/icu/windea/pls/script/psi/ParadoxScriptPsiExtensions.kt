@@ -1,6 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.*
@@ -140,6 +141,16 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 		current = current.parent ?: break
 	}
 	return null
+}
+
+fun ParadoxScriptPropertyKey.isSimpleExpression():Boolean{
+	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return false
+	return singleChild.elementType.let { it == PROPERTY_KEY_TOKEN || it == ParadoxScriptElementTypes.QUOTED_PROPERTY_KEY_TOKEN }
+}
+
+fun ParadoxScriptString.isSimpleExpression():Boolean{
+	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return false
+	return singleChild.elementType.let { it == STRING_TOKEN || it == ParadoxScriptElementTypes.QUOTED_STRING_TOKEN }
 }
 
 /**

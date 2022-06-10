@@ -35,12 +35,6 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationPropertyReferenceParameter getPropertyReferenceParameter() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyReferenceParameter.class);
-  }
-
-  @Override
   @NotNull
   public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);

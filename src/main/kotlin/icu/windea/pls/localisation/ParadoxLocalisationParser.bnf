@@ -73,7 +73,7 @@ property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE 
   methods=[getName setName getReference]
 }
 private property_reference_name ::= command | PROPERTY_REFERENCE_ID
-property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
+private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
 
 //icon
 //see: https://stellaris.paradoxwikis.com/Localisation_modding#.C2.A3_Codes

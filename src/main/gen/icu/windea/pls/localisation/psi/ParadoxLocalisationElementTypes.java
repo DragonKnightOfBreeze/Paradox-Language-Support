@@ -20,7 +20,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_KEY = new ParadoxLocalisationElementType("PROPERTY_KEY");
   IElementType PROPERTY_LIST = new ParadoxLocalisationElementType("PROPERTY_LIST");
   IElementType PROPERTY_REFERENCE = new ParadoxLocalisationElementType("PROPERTY_REFERENCE");
-  IElementType PROPERTY_REFERENCE_PARAMETER = new ParadoxLocalisationElementType("PROPERTY_REFERENCE_PARAMETER");
   IElementType PROPERTY_VALUE = new ParadoxLocalisationElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = new ParadoxLocalisationElementType("RICH_TEXT");
   IElementType STRING = new ParadoxLocalisationElementType("STRING");
@@ -92,9 +91,6 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == PROPERTY_REFERENCE) {
         return new ParadoxLocalisationPropertyReferenceImpl(node);
-      }
-      else if (type == PROPERTY_REFERENCE_PARAMETER) {
-        return new ParadoxLocalisationPropertyReferenceParameterImpl(node);
       }
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);

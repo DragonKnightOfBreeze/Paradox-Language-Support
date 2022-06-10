@@ -11,9 +11,6 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
   @Nullable
   ParadoxLocalisationCommand getCommand();
 
-  @Nullable
-  ParadoxLocalisationPropertyReferenceParameter getPropertyReferenceParameter();
-
   @NotNull
   String getName();
 
