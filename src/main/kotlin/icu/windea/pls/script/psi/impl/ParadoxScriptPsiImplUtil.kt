@@ -85,7 +85,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptVariable): Int {
-		return element.nameIdentifier.textOffset
+		return element.node.startOffset + 1
 	}
 	
 	@JvmStatic
@@ -138,7 +138,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptParameter): Int {
-		return element.textOffset + 1
+		return element.node.startOffset + 1
 	}
 	
 	@JvmStatic
@@ -720,7 +720,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptParameterConditionParameter): Int {
-		return element.nameIdentifier.textOffset
+		return element.node.startOffset
 	}
 	//endregion
 	
@@ -800,7 +800,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptInlineMathParameter): Int {
-		return element.textOffset + 1
+		return element.node.startOffset + 1
 	}
 	
 	@JvmStatic

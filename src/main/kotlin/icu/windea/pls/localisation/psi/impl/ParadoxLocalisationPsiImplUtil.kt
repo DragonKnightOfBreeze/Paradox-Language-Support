@@ -85,7 +85,7 @@ object ParadoxLocalisationPsiImplUtil {
 	
 	@JvmStatic
 	fun getTextOffset(element: ParadoxLocalisationProperty): Int{
-		return element.nameIdentifier.textOffset
+		return element.propertyKey.textOffset
 	}
 	
 	@JvmStatic
