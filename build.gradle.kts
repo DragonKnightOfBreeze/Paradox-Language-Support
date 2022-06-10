@@ -73,17 +73,6 @@ val cwtConfigDirs = listOf(
 )
 
 tasks {
-	//register("copyCwtConfigs") {
-	//	//更新CWT配置文件
-	//	cwtConfigDirs.parallelStream().forEach { (cwtConfigDir) ->
-	//		runCatching {
-	//			exec {
-	//				workingDir("$rootDir/cwt/$cwtConfigDir")
-	//				commandLine("git", "pull")
-	//			}
-	//		}
-	//	}
-	//}
 	jar {
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
