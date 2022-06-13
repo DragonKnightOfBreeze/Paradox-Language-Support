@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
@@ -56,13 +57,18 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
 			CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
 			CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
-			else -> null
+			CwtDataTypes.Enum -> {
+				if(expression.value == CwtConfigHandler.paramsEnumName) Keys.INPUT_PARAMETER_KEY //特殊处理表示输入参数的情况
+				else Keys.ENUM_VALUE_KEY
+			}
+			CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+			else -> null //TODO
 		}
 		if(attributesKey != null) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 			return
 		}
+		//TODO 基于TextRange缓存而非解析的引用进行代码高亮
 		val references = element.references
 		for(reference in references) {
 			val resolved = reference.resolve() ?: continue
@@ -108,12 +114,14 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
 			CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
 			CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
+			CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
 			else -> null //TODO
 		}
 		if(attributesKey != null) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 			return
 		}
+		//TODO 基于TextRange缓存而非解析的引用进行代码高亮
 		val references = element.references
 		for(reference in references) {
 			val resolved = reference.resolve() ?: continue

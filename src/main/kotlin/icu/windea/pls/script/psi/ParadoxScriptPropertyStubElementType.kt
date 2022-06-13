@@ -22,7 +22,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	}
 	
 	override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
-		return ParadoxScriptPropertyImpl(stub, this)
+		return SmartParadoxScriptProperty(stub, this)
 	}
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {

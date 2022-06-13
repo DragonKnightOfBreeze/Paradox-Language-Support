@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
 	companion object {
@@ -27,7 +28,12 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	
 	override fun createFile(viewProvider: FileViewProvider) = ParadoxScriptFile(viewProvider)
 	
-	override fun createElement(node: ASTNode) = Factory.createElement(node)
+	override fun createElement(node: ASTNode): PsiElement {
+		return when(node.elementType){
+			PROPERTY -> SmartParadoxScriptProperty(node)
+			else -> Factory.createElement(node)
+		}
+	}
 	
 	override fun createParser(project: Project?) = ParadoxScriptParser()
 	

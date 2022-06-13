@@ -6,7 +6,9 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.util.SmartList
 import icu.windea.pls.*
+import icu.windea.pls.ProcessEntry.end
 import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -15,6 +17,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.impl.*
+import java.util.TreeSet
 import javax.swing.*
 import kotlin.text.removeSurrounding
 
@@ -24,6 +28,8 @@ import kotlin.text.removeSurrounding
  * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
  */
 object CwtConfigHandler {
+	const val paramsEnumName = "scripted_effect_params"
+	
 	//region Common Extensions
 	fun resolveAliasSubNameExpression(key: String, quoted: Boolean, aliasGroup: Map<@CaseInsensitive String, List<CwtAliasConfig>>, configGroup: CwtConfigGroup): String? {
 		if(aliasGroup.keys.contains(key) && CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) return key
@@ -61,6 +67,15 @@ object CwtConfigHandler {
 		mergedScopeMap.put("this", thisScope)
 		return scopeMap
 	}
+	//endregion
+	
+	//region Supports Extensions
+	fun supportsParameters(definition: ParadoxDefinitionProperty): Boolean {
+		if(definition !is ParadoxScriptProperty) return false
+		val definitionInfo = definition.definitionInfo ?: return false
+		val definitionType = definitionInfo.type
+		return definitionType == "scripted_effect" || definitionType == "scripted_trigger"
+	}
 	
 	//effect, effect_clause -> scripted_effect
 	//trigger, trigger_clause -> scripted_trigger
@@ -73,7 +88,7 @@ object CwtConfigHandler {
 	
 	fun supportsScopes(propertyConfig: CwtPropertyConfig): Boolean {
 		if(doSupportsScopes(propertyConfig)) return true
-		propertyConfig.processParentProperty { 
+		propertyConfig.processParentProperty {
 			if(doSupportsScopes(it)) return true
 			true
 		}
@@ -259,6 +274,8 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return false
+				//如果keyExpression需要匹配参数名，即使对应的特定定义声明中不存在对应名字的参数，也总是匹配
+				if(enumName == paramsEnumName) return true
 				val enumValues = configGroup.enums[enumName]?.values ?: return false
 				return value in enumValues
 			}
@@ -502,6 +519,12 @@ object CwtConfigHandler {
 		//否则加入所有可能的结果，让IDEA自动进行前缀匹配
 		for(propConfig in childPropertyConfigs) {
 			if(shouldComplete(propConfig, definitionElementInfo)) {
+				//如果可能正在输入参数名，则基于对应的特定定义声明中存在的参数名进行提示（排除已经输入完毕的，仅当补全key时特殊处理即可）
+				if(propConfig.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == paramsEnumName }) {
+					completeParameters(propertyElement, keyword, quoted, configGroup, result)
+					continue
+				}
+				
 				completeKey(propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
 			}
 		}
@@ -991,6 +1014,8 @@ object CwtConfigHandler {
 	fun completeModifier(quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null, isKey: Boolean) {
 		val modifiers = configGroup.modifiers
 		if(modifiers.isEmpty()) return
+		//批量提示
+		val lookupElements = mutableSetOf<LookupElement>()
 		for(modifierConfig in modifiers.values) {
 			//匹配scope
 			val categoryConfigMap = modifierConfig.categoryConfigMap
@@ -1008,11 +1033,15 @@ object CwtConfigHandler {
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey)
 				.withPriority(PlsPriorities.modifierPriority)
-			result.addElement(lookupElement)
+			lookupElements.add(lookupElement)
 		}
+		result.addAllElements(lookupElements)
 	}
 	
 	fun completeLink(configGroup: CwtConfigGroup, result: CompletionResultSet) {
+		//批量提示
+		val lookupElements = mutableSetOf<LookupElement>()
+		
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
 		for(systemScopeConfig in systemScopeConfigs) {
 			val name = systemScopeConfig.id
@@ -1027,7 +1056,7 @@ object CwtConfigHandler {
 				.withExpectedInsertHandler(isKey = true)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsPriorities.systemScopePriority)
-			result.addElement(lookupElement)
+			lookupElements.add(lookupElement)
 		}
 		
 		val links = configGroup.links
@@ -1044,8 +1073,9 @@ object CwtConfigHandler {
 				.withExpectedInsertHandler(isKey = true)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsPriorities.scopePriority)
-			result.addElement(lookupElement)
+			lookupElements.add(lookupElement)
 		}
+		result.addAllElements(lookupElements)
 	}
 	
 	fun completeLocalisationCommand(configGroup: CwtConfigGroup, result: CompletionResultSet) {
@@ -1060,11 +1090,34 @@ object CwtConfigHandler {
 			val name = config.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
 			val element = config.pointer.element ?: continue
-			//val scopes = localisationCommand
+			val tailText = " from localisation commands"
 			val typeFile = config.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
 				.withExpectedIcon(PlsIcons.localisationCommandFieldIcon)
+				.withTailText(tailText)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
+			lookupElements.add(lookupElement)
+		}
+		result.addAllElements(lookupElements)
+	}
+	
+	private fun completeParameters(propertyElement: ParadoxDefinitionProperty, keyword: String, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+		if(quoted || propertyElement !is ParadoxScriptProperty) return //输入参数不允许用引号括起
+		val definitionName = propertyElement.name
+		val definition = findDefinitionByType(definitionName, "scripted_effect|scripted_trigger", configGroup.project) ?: return
+		//得到所有存在的参数名并排除已经输入完毕的
+		val parameterNames = definition.parameterNames ?: return
+		if(parameterNames.isEmpty()) return
+		val parameterNamesToUse = SmartList(parameterNames)
+		propertyElement.block?.processProperty { parameterNamesToUse.remove(it.name).end() } //这里不需要关心正在输入的参数名
+		//批量提示
+		val lookupElements = mutableSetOf<LookupElement>()
+		for(parameterName in parameterNamesToUse) {
+			val tailText = " from parameters"
+			val lookupElement = LookupElementBuilder.create(parameterName) //目前并不解析参数
+				.withExpectedIcon(PlsIcons.parameterIcon)
+				.withTailText(tailText)
+				.withTypeText(definitionName, definition.icon, true)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
@@ -1176,6 +1229,8 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return null
+				//如果keyExpression需要匹配参数名，目前不进行解析
+				if(enumName == paramsEnumName) return null
 				val name = keyElement.value
 				val gameType = keyElement.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
@@ -1269,6 +1324,8 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return emptyList()
+				//如果keyExpression需要匹配参数名，目前不进行解析
+				if(enumName == paramsEnumName) return emptyList()
 				val name = keyElement.value
 				val gameType = keyElement.fileInfo?.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
