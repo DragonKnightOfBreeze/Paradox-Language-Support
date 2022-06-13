@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
@@ -24,9 +25,11 @@ import kotlin.text.removeSurrounding
  */
 object CwtConfigHandler {
 	//region Common Extensions
-	fun resolveAliasSubNameExpression(key: String, quoted: Boolean, aliasGroup: Map<String, List<CwtAliasConfig>>, configGroup: CwtConfigGroup): String? {
+	fun resolveAliasSubNameExpression(key: String, quoted: Boolean, aliasGroup: Map<@CaseInsensitive String, List<CwtAliasConfig>>, configGroup: CwtConfigGroup): String? {
+		if(aliasGroup.keys.contains(key) && CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) return key
 		return aliasGroup.keys.find {
 			val expression = CwtKeyExpression.resolve(it)
+			if(expression.type == CwtDataTypes.Constant) return@find false
 			matchesKey(expression, key, ParadoxValueType.infer(key), quoted, configGroup)
 		}
 	}
@@ -68,9 +71,18 @@ object CwtConfigHandler {
 		return aliasName == "effect" || aliasName == "trigger" || aliasName == "modifier_rule"
 	}
 	
-	fun supportsScopes(propertyConfig: CwtPropertyConfig): Boolean{
+	fun supportsScopes(propertyConfig: CwtPropertyConfig): Boolean {
+		if(doSupportsScopes(propertyConfig)) return true
+		propertyConfig.processParentProperty { 
+			if(doSupportsScopes(it)) return true
+			true
+		}
+		return false
+	}
+	
+	private fun doSupportsScopes(propertyConfig: CwtPropertyConfig): Boolean {
 		var isAlias = true
-		val aliasName =propertyConfig.inlineableConfig?.also { isAlias = it is CwtAliasConfig }?.name
+		val aliasName = propertyConfig.inlineableConfig?.also { isAlias = it is CwtAliasConfig }?.name
 			?: propertyConfig.keyExpression.takeIf { it.type == CwtDataTypes.AliasName }?.value
 			?: propertyConfig.valueExpression.takeIf { it.type == CwtDataTypes.SingleAliasRight }?.also { isAlias = false }?.value
 		return if(isAlias) {
@@ -257,7 +269,7 @@ object CwtConfigHandler {
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
 				val name = expression.value ?: return false
-				return matchesLink(name, configGroup) //忽略大小写
+				return matchesLinkExpression(name, configGroup) //忽略大小写
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return false
@@ -366,15 +378,16 @@ object CwtConfigHandler {
 				return false //TODO
 			}
 			CwtDataTypes.ScopeGroup -> {
+				//TODO 匹配scope
+				if(quoted) return false //scope不允许用引号括起
 				val scopeGroupName = expression.value ?: return false
-				val scopeGroupValues = configGroup.scopeGroups[scopeGroupName]?.values ?: return false
-				return value in scopeGroupValues
+				return matchesLinkExpression(value, configGroup) //忽略大小写
 			}
 			CwtDataTypes.Scope -> {
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
-				val name = expression.value ?: return false
-				return matchesLink(name, configGroup) //忽略大小写
+				val scopeName = expression.value ?: return false
+				return matchesLinkExpression(value, configGroup) //忽略大小写
 			}
 			CwtDataTypes.VariableField -> {
 				return false //TODO
@@ -452,17 +465,18 @@ object CwtConfigHandler {
 		return modifiers.containsKey(name)
 	}
 	
-	fun matchesLinkExpression(nameExpression: String, configGroup: CwtConfigGroup): Boolean {
+	fun matchesLinkExpression(nameExpression: String, configGroup: CwtConfigGroup, systemScopeOnly: Boolean = false): Boolean {
 		if(nameExpression.contains('.')) {
-			return nameExpression.split('.').all { name -> matchesLink(name, configGroup) }
+			return nameExpression.split('.').all { name -> matchesLink(name, configGroup, systemScopeOnly) }
 		} else {
-			return matchesLink(nameExpression, configGroup)
+			return matchesLink(nameExpression, configGroup, systemScopeOnly)
 		}
 	}
 	
-	fun matchesLink(name: String, configGroup: CwtConfigGroup): Boolean {
+	fun matchesLink(name: String, configGroup: CwtConfigGroup, systemScopeOnly: Boolean = false): Boolean {
 		val systemScopes = InternalConfigHandler.getSystemScopeMap(configGroup.project)
 		if(systemScopes.containsKey(name)) return true
+		if(systemScopeOnly) return false
 		
 		val links = configGroup.links
 		return links.containsKey(name)
@@ -470,7 +484,7 @@ object CwtConfigHandler {
 	//endregion
 	
 	//region Complete Extensions
-	fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet): Boolean  {
+	fun addKeyCompletions(keyElement: PsiElement, propertyElement: ParadoxDefinitionProperty, result: CompletionResultSet): Boolean {
 		val keyword = keyElement.keyword
 		val quoted = keyElement.isQuoted()
 		val project = propertyElement.project
@@ -481,7 +495,7 @@ object CwtConfigHandler {
 		val childPropertyConfigs = definitionElementInfo.childPropertyConfigs
 		if(childPropertyConfigs.isEmpty()) return true
 		//如果正在输入linkExpression，且可能的结果可以是linkExpression，则仅提示scope和systemScope
-		if(keyword.contains('.') && childPropertyConfigs.any { supportsScopes(it) }){
+		if(keyword.contains('.') && childPropertyConfigs.any { supportsScopes(it) }) {
 			completeLink(configGroup, result.withPrefixMatcher(keyword.substringAfterLast('.')))
 			return false
 		}

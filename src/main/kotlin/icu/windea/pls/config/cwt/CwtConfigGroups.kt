@@ -1,11 +1,14 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.system.*
+import java.util.concurrent.*
+import kotlin.collections.Map
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.getValue
+import kotlin.collections.set
 
 @Suppress("unused")
 class CwtConfigGroups(
@@ -31,13 +34,11 @@ class CwtConfigGroups(
 	init {
 		//初始化各个游戏分组的CWT规则
 		groups = ConcurrentHashMap()
-		cwtFileConfigGroups.forEach { (groupName, cwtFileConfigs) ->
-			measureTimeMillis {
-				val gameType = ParadoxGameType.resolve(groupName)
-				if(gameType != null) {
-					groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)
-				}
-			}.also { println(it) }
+		cwtFileConfigGroups.entries.parallelStream().forEach { (groupName, cwtFileConfigs) ->
+			val gameType = ParadoxGameType.resolve(groupName)
+			if(gameType != null) {
+				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)
+			}
 		}
 	}
 }

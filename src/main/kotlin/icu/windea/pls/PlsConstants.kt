@@ -59,7 +59,7 @@ object PlsFolders {
 object PlsPriorities {
 	const val pinnedPriority = 1000.0
 	const val keywordPriority = 80.0
-	const val systemScopePriority = 60.0
+	const val systemScopePriority = 65.0
 	const val scopePriority = 60.0
 	const val propertyPriority = 40.0
 	const val modifierPriority = 20.0

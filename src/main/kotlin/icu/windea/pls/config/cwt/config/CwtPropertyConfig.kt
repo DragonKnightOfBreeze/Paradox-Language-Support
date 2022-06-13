@@ -2,6 +2,7 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
@@ -49,11 +50,12 @@ data class CwtPropertyConfig(
 	//TODO properties和values需要考虑深拷贝
 	
 	var inlineableConfig: CwtInlineableConfig? = null
+	var inlinedScopes: List<@CaseInsensitive String>? = null //注意：比较时要指定忽略大小写
 	
 	/**
 	 * 从[singleAliasConfig]内联规则：value改为取[singleAliasConfig]的的value，如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig):CwtPropertyConfig{
+	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig, inlinedScopes: List<String>? = null):CwtPropertyConfig{
 		//内联所有value
 		val other = singleAliasConfig.config
 		val inlined = copy(
@@ -66,13 +68,14 @@ data class CwtPropertyConfig(
 			values = other.values
 		)
 		inlined.inlineableConfig = singleAliasConfig
+		inlined.inlinedScopes = inlinedScopes
 		return inlined
 	}
 	
 	/**
 	 * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineFromAliasConfig(aliasConfig:CwtAliasConfig):CwtPropertyConfig{
+	fun inlineFromAliasConfig(aliasConfig:CwtAliasConfig, inlinedScopes: List<String>? = null):CwtPropertyConfig{
 		//内联所有value，key取aliasSubName（如：alias[effect:if] 中的if）
 		val other = aliasConfig.config
 		val inlined = copy(
@@ -86,6 +89,7 @@ data class CwtPropertyConfig(
 			values = other.values
 		)
 		inlined.inlineableConfig = aliasConfig
+		inlined.inlinedScopes = inlinedScopes
 		return inlined
 	}
 }

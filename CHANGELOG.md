@@ -69,7 +69,7 @@
   * [X] 支持解析linkExpression（如`from.owner`）
   * [X] 支持提示linkExpression（如`from.owner`）
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
-  * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes） 
+  * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes） *
 * ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
