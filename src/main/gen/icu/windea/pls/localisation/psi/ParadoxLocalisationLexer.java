@@ -102,10 +102,10 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\2\16\1\7\1\17\1\20\1\21\1\22\1\1\1\23"+
     "\1\7\1\24\1\25\1\26\1\27\1\30\1\23\1\31"+
     "\1\32\1\33\1\34\1\35\1\36\1\37\1\1\1\40"+
-    "\1\41\1\42\1\43\1\44\1\7\1\22\1\45\1\46"+
-    "\1\47\1\50\1\51\1\52\3\0\1\53\1\54\1\55"+
-    "\1\56\1\0\1\57\1\60\1\61\1\46\1\47\1\50"+
-    "\1\51\1\52\1\62";
+    "\1\41\1\42\1\43\1\44\1\7\1\22\1\45\1\1"+
+    "\1\46\1\47\1\50\1\51\3\0\1\52\1\53\1\54"+
+    "\1\55\1\0\1\56\1\57\1\60\1\61\1\46\1\47"+
+    "\1\50\1\51\1\62";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[93];
@@ -143,7 +143,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\0\u0237\0\u0237\0\u0237\0\u0237\0\u0237\0\u046e\0\u0489\0\u0237"+
     "\0\u0237\0\u0237\0\u0237\0\u04a4\0\u04a4\0\u04bf\0\u0237\0\u04da"+
     "\0\u04f5\0\u0510\0\u052b\0\u0546\0\u026d\0\u0561\0\u02f4\0\u0237"+
-    "\0\u0237\0\u0237\0\u0237\0\u0489\0\u0237\0\u0237\0\u0237\0\u0237"+
+    "\0\u0237\0\u0237\0\u0237\0\u0489\0\u0237\0\u0237\0\u0237\0\u04da"+
     "\0\u0237\0\u0237\0\u0237\0\u0237\0\u0561";
 
   private static int [] zzUnpackRowMap() {
@@ -216,12 +216,12 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     "\1\0\1\70\20\0\1\76\7\0\1\76\12\0\2\124"+
     "\3\0\1\124\2\0\1\124\1\0\1\125\1\0\1\124"+
     "\2\0\2\124\1\126\1\124\3\0\1\104\1\105\1\37"+
-    "\60\0\1\127\1\0\1\110\1\130\2\0\1\110\1\130"+
-    "\2\110\1\130\22\110\2\131\2\0\27\131\1\132\2\112"+
-    "\1\0\2\132\2\112\3\132\1\112\2\132\1\112\1\132"+
-    "\1\112\1\132\1\112\2\132\2\112\1\132\1\112\2\132"+
-    "\2\133\2\0\27\133\3\114\1\0\1\114\1\134\25\114"+
-    "\1\0\2\116\1\135\27\0";
+    "\60\0\1\127\7\0\1\130\7\0\3\130\1\0\1\130"+
+    "\1\0\3\130\1\0\1\130\2\0\2\131\2\0\27\131"+
+    "\1\132\2\112\1\0\2\132\2\112\3\132\1\112\2\132"+
+    "\1\112\1\132\1\112\1\132\1\112\2\132\2\112\1\132"+
+    "\1\112\2\132\2\133\2\0\27\133\3\114\1\0\1\114"+
+    "\1\134\25\114\1\0\2\116\1\135\27\0";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[1404];
@@ -264,7 +264,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\25\0\1\11\11\1\1\11\1\1\1\11\3\1\2\11"+
     "\3\1\2\11\6\1\3\11\3\1\5\11\2\1\4\11"+
-    "\3\1\1\11\5\1\3\0\4\11\1\0\10\11\1\1";
+    "\3\1\1\11\5\1\3\0\4\11\1\0\3\11\1\1"+
+    "\4\11\1\1";
 
   private static int [] zzUnpackAttribute() {
     int [] result = new int[93];
@@ -359,12 +360,6 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
       else if (propertyReferenceLocation == 2) return WAITING_ICON_FRAME_FINISHED;
       else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
       else return nextStateForText();
-    }
-    
-    private boolean isPropertyReferenceStart(){
-		  if(yylength() <= 1) return false;
-	    char c = yycharat(yylength()-1);
-	    return !Character.isWhitespace(c) && c != '"';
     }
     
     private boolean isIconStart(){
@@ -820,22 +815,6 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
           case 87: break;
           case 38: 
             { //特殊处理
-    //如果匹配到的字符串长度大于1，且最后一个字符不为空白或双引号，则认为代表命令的开始
-    //否则认为是常规字符串
-    boolean isPropertyReferenceStart = isPropertyReferenceStart();
-	yypushback(yylength()-1);
-	if(isPropertyReferenceStart){
-		yybegin(WAITING_PROPERTY_REFERENCE);
-		return PROPERTY_REFERENCE_START;
-	}else{
-		yybegin(nextStateForText());
-		return STRING_TOKEN;
-	}
-            } 
-            // fall through
-          case 88: break;
-          case 39: 
-            { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线，则认为代表图标的开始
     //否则认为是常规字符串
     boolean isIconStart = isIconStart();
@@ -849,8 +828,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 89: break;
-          case 40: 
+          case 88: break;
+          case 39: 
             { //特殊处理
     //除了可以通过连续的两个左方括号转义之外
     //如果匹配到的字符串长度大于1，且最后一个字符为右方括号，则认为代表命令的开始
@@ -866,8 +845,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 90: break;
-          case 41: 
+          case 89: break;
+          case 40: 
             { //特殊处理
     //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
     //否则认为是常规字符串
@@ -883,8 +862,8 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     }
             } 
             // fall through
-          case 91: break;
-          case 42: 
+          case 90: break;
+          case 41: 
             { //特殊处理
       //如果匹配到的字符串长度为1，或者最后一个字符不是双引号，则认为代表本地化富文本的结束
       //否则认为是常规字符串
@@ -899,39 +878,48 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
       }
             } 
             // fall through
+          case 91: break;
+          case 42: 
+            { return DOUBLE_LEFT_BRACKET;
+            } 
+            // fall through
           case 92: break;
           case 43: 
-            { return DOUBLE_LEFT_BRACKET;
+            { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
             } 
             // fall through
           case 93: break;
           case 44: 
-            { decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
+            { return INVALID_ESCAPE_TOKEN;
             } 
             // fall through
           case 94: break;
           case 45: 
-            { return INVALID_ESCAPE_TOKEN;
+            { return VALID_ESCAPE_TOKEN;
             } 
             // fall through
           case 95: break;
           case 46: 
-            { return VALID_ESCAPE_TOKEN;
+            { yypushback(1); return COMMAND_SCOPE_ID;
             } 
             // fall through
           case 96: break;
           case 47: 
-            { yypushback(1); return COMMAND_SCOPE_ID;
+            { yypushback(1); return COMMAND_FIELD_ID;
             } 
             // fall through
           case 97: break;
           case 48: 
-            { yypushback(1); return COMMAND_FIELD_ID;
+            { decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
             } 
             // fall through
           case 98: break;
           case 49: 
-            { decreaseDepth(); decreaseDepth(); yybegin(nextStateForText()); return COLORFUL_TEXT_END;
+            { //特殊处理
+    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID，则认为代表属性引用的开始
+	yypushback(yylength()-1);
+	yybegin(WAITING_PROPERTY_REFERENCE);
+    return PROPERTY_REFERENCE_START;
             } 
             // fall through
           case 99: break;

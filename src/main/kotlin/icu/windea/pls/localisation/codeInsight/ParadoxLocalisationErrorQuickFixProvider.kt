@@ -23,7 +23,6 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
 			(prevType == ICON_ID || prevType == ICON_FRAME) && errorElement.parent is ParadoxLocalisationIcon -> {
 				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("£")) //ICON_END
 			}
-			//NOTE 目前版本下不会被匹配到，"$VALUE"会被直接识别为普通文本
 			prevType == PROPERTY_REFERENCE_ID || prevType == PROPERTY_REFERENCE_PARAMETER_TOKEN && errorElement.parent is ParadoxLocalisationPropertyReference -> {
 				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("$")) //PROPERTY_REFERENCE_END
 			}

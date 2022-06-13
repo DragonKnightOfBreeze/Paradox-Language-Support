@@ -1,8 +1,9 @@
 package icu.windea.pls.localisation.inspections
 
+import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.encoding.*
 import com.intellij.psi.*
@@ -40,7 +41,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	
 	private class ChangeToCorrectFileEncodingFix(
 		element: PsiElement
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
+	) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
 		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileEncoding.quickfix.1")
 		
 		override fun getFamilyName() = text

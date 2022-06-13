@@ -1,11 +1,11 @@
 package icu.windea.pls.script.inspections
 
+import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
-import com.intellij.openapi.vfs.encoding.EncodingUtil
+import com.intellij.openapi.vfs.encoding.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.*
  *
  * 提供快速修复：
  * * 改为正确的文件编码
- * 
+ *
  * 注意：[icu.windea.pls.core.ParadoxFileTypeOverrider]会尝试自动修正文件的BOM。
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
@@ -44,7 +44,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	private class ChangeToCorrectFileEncodingFix(
 		element: PsiElement,
 		private val isNameList: Boolean
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
+	) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
 		override fun getText() = PlsBundle.message("script.inspection.incorrectFileEncoding.quickfix.1")
 		
 		override fun getFamilyName() = text

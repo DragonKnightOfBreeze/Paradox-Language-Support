@@ -24,7 +24,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RICH_TEXT = new ParadoxLocalisationElementType("RICH_TEXT");
   IElementType STRING = new ParadoxLocalisationElementType("STRING");
 
-  IElementType COLON = new ParadoxLocalisationTokenType("COLON");
+  IElementType COLON = new ParadoxLocalisationTokenType(":");
   IElementType COLORFUL_TEXT_END = new ParadoxLocalisationTokenType("COLORFUL_TEXT_END");
   IElementType COLORFUL_TEXT_START = new ParadoxLocalisationTokenType("COLORFUL_TEXT_START");
   IElementType COLOR_ID = new ParadoxLocalisationTokenType("COLOR_ID");
