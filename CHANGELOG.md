@@ -38,6 +38,7 @@
   * [ ] ~~实现代码检查：不期望的脚本语法（多种情况，需要确认）~~（待确定）
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
   * [ ] 实现工具栏动作：生成所有缺失的相关本地化
+  * [X] 实现`ParadoxQualifiedNameProvider`，用于复制路径/引用（Edit > Copy Path/Reference...）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供

@@ -10,7 +10,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 
 //用于兼容markdown锚点
-//TODO 同样需要兼容markdown navigator的markdown锚点
 
 //com.intellij.xml.util.AnchorPathReferenceProvider
 

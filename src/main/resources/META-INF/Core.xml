@@ -21,5 +21,8 @@
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxInternalSettings"/>
     
     <preloadingActivity implementation="icu.windea.pls.core.ParadoxPreloadActivity"/>
+    
+    <pathReferenceProvider implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
+    <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
   </extensions>
 </idea-plugin>

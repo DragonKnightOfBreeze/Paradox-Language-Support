@@ -135,8 +135,6 @@
         implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxRelatedPicturesLineMarkerProvider"/>
     <errorQuickFixProvider
         implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
-    <anchorReferenceProvider
-        implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
