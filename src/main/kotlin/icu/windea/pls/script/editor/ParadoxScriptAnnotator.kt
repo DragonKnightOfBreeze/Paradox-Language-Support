@@ -51,18 +51,17 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, propertyConfig: CwtPropertyConfig) {
 		//颜色高亮
-		val expression = propertyConfig.keyExpression
-		val attributesKey = when(expression.type) {
-			CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.Enum -> {
-				if(expression.value == CwtConfigHandler.paramsEnumName) Keys.INPUT_PARAMETER_KEY //特殊处理表示输入参数的情况
-				else Keys.ENUM_VALUE_KEY
+		val attributesKey = when {
+			CwtConfigHandler.isInputParameter(propertyConfig) -> Keys.INPUT_PARAMETER_KEY
+			else -> when(propertyConfig.keyExpression.type) {
+				CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+				CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+				CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+				CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+				CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
+				CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+				else -> null //TODO
 			}
-			CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
-			else -> null //TODO
 		}
 		if(attributesKey != null) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
@@ -104,8 +103,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateValueExpression(element: ParadoxScriptString, holder: AnnotationHolder, valueConfig: CwtValueConfig) {
 		//颜色高亮
-		val expression = valueConfig.valueExpression
-		val attributesKey = when(expression.type) {
+		val attributesKey = when(valueConfig.valueExpression.type) {
 			CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
 			CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
 			CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
@@ -115,8 +113,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
 			CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
 			CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
-			else -> null //TODO
-		}
+			else -> null
+		} //TODO
 		if(attributesKey != null) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 			return

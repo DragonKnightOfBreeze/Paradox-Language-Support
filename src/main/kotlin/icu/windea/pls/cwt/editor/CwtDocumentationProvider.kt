@@ -79,10 +79,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(configType != null) append(configType.text)
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			} else {
-				val original = originalElement.parent // e.g. PROPERTY_KEY_TOKEN -> PROPERTY_KEY
-				val prefix = when(original){
-					is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
-					is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
+				val prefix = when{
+					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
+					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
 					else -> null
 				}
 				val originalName = originalElement.text.unquote()
@@ -160,10 +159,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			} else {
-				val original = originalElement.parent // e.g. PROPERTY_KEY_TOKEN -> PROPERTY_KEY
-				val prefix = when(original){
-					is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
-					is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
+				val prefix = when {
+					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
+					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
 					else -> null
 				}
 				val originalName = originalElement.text.unquote()

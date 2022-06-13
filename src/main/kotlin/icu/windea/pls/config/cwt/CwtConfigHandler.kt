@@ -28,7 +28,7 @@ import kotlin.text.removeSurrounding
  * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
  */
 object CwtConfigHandler {
-	const val paramsEnumName = "scripted_effect_params"
+	private const val paramsEnumName = "scripted_effect_params"
 	
 	//region Common Extensions
 	fun resolveAliasSubNameExpression(key: String, quoted: Boolean, aliasGroup: Map<@CaseInsensitive String, List<CwtAliasConfig>>, configGroup: CwtConfigGroup): String? {
@@ -55,6 +55,10 @@ object CwtConfigHandler {
 	
 	private fun isSingleAlias(propertyConfig: CwtPropertyConfig): Boolean {
 		return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
+	}
+	
+	fun isInputParameter(propertyConfig: CwtPropertyConfig): Boolean{
+		return propertyConfig.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == paramsEnumName }
 	}
 	
 	private fun matchScope(alias: String, otherAlias: String, configGroup: CwtConfigGroup): Boolean {

@@ -143,20 +143,22 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 	return null
 }
 
+//TODO 使用统一的缓存信息
+
 fun ParadoxScriptPropertyKey.isSimpleExpression():Boolean{
 	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return false
-	return singleChild.elementType.let { it == PROPERTY_KEY_TOKEN || it == ParadoxScriptElementTypes.QUOTED_PROPERTY_KEY_TOKEN }
+	return singleChild.elementType.let { it == PROPERTY_KEY_TOKEN || it == QUOTED_PROPERTY_KEY_TOKEN }
 }
 
 fun ParadoxScriptString.isSimpleExpression():Boolean{
 	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return false
-	return singleChild.elementType.let { it == STRING_TOKEN || it == ParadoxScriptElementTypes.QUOTED_STRING_TOKEN }
+	return singleChild.elementType.let { it == STRING_TOKEN || it == QUOTED_STRING_TOKEN }
 }
 
 /**
  * 判断keyExpression是否可能是linkExpression。（如：`root`、`root.owner`）
  */
-fun ParadoxScriptPropertyKey.mayBeLinkExpression(): Boolean{
+fun ParadoxScriptPropertyKey.isPossibleLinkExpression(): Boolean{
 	val propertyConfig = this.getPropertyConfig()  ?: return false
 	return CwtConfigHandler.supportsScopes(propertyConfig)
 }

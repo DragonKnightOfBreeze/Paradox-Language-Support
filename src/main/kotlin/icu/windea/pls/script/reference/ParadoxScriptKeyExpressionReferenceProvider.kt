@@ -20,7 +20,7 @@ class ParadoxScriptKeyExpressionReferenceProvider : PsiReferenceProvider() {
 					//如果keyExpression可能是一个linkExpression（支持scope，且格式类似X.Y，则需要另外解析为多个scopeReference）
 					val dotIndices = element.text.indicesOf('.')
 					if(dotIndices.isNotEmpty()) {
-						if(element.mayBeLinkExpression()) {
+						if(element.isPossibleLinkExpression()) {
 							val rawTextRangeInParent = element.textRangeInParent
 							return Array(dotIndices.size + 1) { i ->
 								val start = rawTextRangeInParent.startOffset

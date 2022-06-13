@@ -3,6 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -23,6 +24,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return when(element) {
 			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
+			is IParadoxScriptInputParameter -> getInputParameterInfo(element)
 			is IParadoxScriptParameter -> getParameterInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			else -> null
@@ -36,6 +38,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getInputParameterInfo(element: PsiElement): String {
+		val name = if(element is PsiNamedElement) element.name.orEmpty() else element.text.unquote()
+		return buildString {
+			buildInputParameterDefinition(element, name)
+		}
+	}
+	
 	private fun getParameterInfo(element: IParadoxScriptParameter): String {
 		val name = element.name
 		return buildString {
@@ -46,6 +55,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionInfo(element, definitionInfo)
+		val propertyConfig = element.getPropertyConfig()
+		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)){
+			return getInputParameterInfo(element)
+		}
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)
@@ -62,6 +75,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
 			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
+			is IParadoxScriptInputParameter -> getInputParameterDoc(element)
 			is IParadoxScriptParameter -> getParameterDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			else -> null
@@ -76,6 +90,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getInputParameterDoc(element: PsiElement): String {
+		val name = if(element is PsiNamedElement) element.name.orEmpty() else element.text.unquote()
+		return buildString {
+			buildInputParameterDefinition(element, name)
+		}
+	}
+	
 	private fun getParameterDoc(element: IParadoxScriptParameter): String {
 		val name = element.name
 		return buildString {
@@ -86,6 +107,10 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo)
+		val propertyConfig = element.getPropertyConfig()
+		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)){
+			return getInputParameterInfo(element)
+		}
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)
@@ -114,6 +139,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>@").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
+		}
+	}
+	
+	private fun StringBuilder.buildInputParameterDefinition(element: PsiElement, name: String) {
+		definition {
+			//加上文件信息
+			appendFileInfoHeader(element.fileInfo, element.project)
+			//加上定义信息
+			append(PlsDocBundle.message("name.script.inputParameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 		}
 	}
 	
