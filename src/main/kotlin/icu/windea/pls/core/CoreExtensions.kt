@@ -102,11 +102,15 @@ private fun getFileType(file: VirtualFile, project: Project?, gameType: ParadoxG
 	val fileExtension = file.extension?.lowercase() ?: return ParadoxFileType.Other
 	return when {
 		fileName == descriptorFileName -> ParadoxFileType.ParadoxScript
-		fileExtension in scriptFileExtensions && !isIgnored(fileName) && isInFolders(project, gameType, path) -> ParadoxFileType.ParadoxScript
-		fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
+		path.canBeScriptFilePath() && fileExtension in scriptFileExtensions && !isIgnored(fileName) && isInFolders(project, gameType, path) -> ParadoxFileType.ParadoxScript
+		path.canBeLocalisationFilePath() && fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
 		fileExtension in ddsFileExtensions -> ParadoxFileType.Dds
 		else -> ParadoxFileType.Other
 	}
+}
+
+private fun isIgnored(fileName: String): Boolean {
+	return getSettings().finalScriptIgnoredFileNames.contains(fileName)
 }
 
 private fun isInFolders(project: Project?, gameType: ParadoxGameType, path: ParadoxPath): Boolean {
@@ -122,8 +126,4 @@ private fun doIsInFolders(project: Project, gameType: ParadoxGameType, path: Par
 	if(path.parent.isEmpty()) return false
 	val folders = getCwtConfig(project).get(gameType)?.folders
 	return folders.isNullOrEmpty() || folders.any { it.matchesPath(path.parent) }
-}
-
-private fun isIgnored(fileName: String): Boolean {
-	return getSettings().finalScriptIgnoredFileNames.contains(fileName)
 }

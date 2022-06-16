@@ -55,3 +55,19 @@ class ParadoxPath private constructor(
 		return path
 	}
 }
+
+fun ParadoxPath.canBeScriptFilePath(): Boolean {
+	return !canBeLocalisationFilePath()
+}
+
+fun ParadoxPath.canBeLocalisationFilePath(): Boolean {
+	return canBeLocalisationPath() || canBeSyncedLocalisationPath()
+}
+
+fun ParadoxPath.canBeLocalisationPath(): Boolean {
+	return root == "localisation" || root == "localization"
+}
+
+fun ParadoxPath.canBeSyncedLocalisationPath(): Boolean {
+	return root == "localisation_synced" || root == "localization_synced"
+}

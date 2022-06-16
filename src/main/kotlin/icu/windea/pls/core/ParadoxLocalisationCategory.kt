@@ -16,16 +16,16 @@ enum class ParadoxLocalisationCategory(
 	}
 	
 	companion object {
-		fun resolve(id: String): ParadoxLocalisationCategory? {
-			return when {
-				id == "localisation" -> Localisation
-				id == "localisation_synced" -> SyncedLocalisation
-				else -> null
-			}
-		}
-		
 		fun resolve(flag: Boolean): ParadoxLocalisationCategory {
 			return if(flag) Localisation else SyncedLocalisation
+		}
+		
+		fun resolve(path: ParadoxPath): ParadoxLocalisationCategory? {
+			return when {
+				path.canBeLocalisationPath() -> Localisation
+				path.canBeSyncedLocalisationPath() -> SyncedLocalisation
+				else -> null
+			}
 		}
 		
 		fun resolve(file: ParadoxLocalisationFile): ParadoxLocalisationCategory? {
