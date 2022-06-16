@@ -785,13 +785,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // number
+  // boolean | int | float
   public static boolean variable_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_value")) return false;
-    if (!nextTokenIs(b, "<variable value>", FLOAT_TOKEN, INT_TOKEN)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, VARIABLE_VALUE, "<variable value>");
-    r = number(b, l + 1);
+    r = boolean_$(b, l + 1);
+    if (!r) r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

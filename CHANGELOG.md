@@ -51,6 +51,7 @@
   * [ ] 兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_facPtor|ALTERED_STABILITY|-10|`） *
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
   * [X] 获取封装变量名时不再包含作为前缀的"@"
+  * [ ] 封装变量的值也可以是bool类型（`yes`和`no`）
 * 本地化文件语法解析优化：
   * [X] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
   * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`，可以为变量，如`$LEVEL$`）

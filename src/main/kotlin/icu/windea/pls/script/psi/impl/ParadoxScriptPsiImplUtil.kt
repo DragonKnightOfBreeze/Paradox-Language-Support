@@ -626,13 +626,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxScriptVariableValue
-	@JvmStatic
-	fun getValue(element: ParadoxScriptVariableValue): ParadoxScriptNumber {
-		return element.number
-	}
-	//endregion
-	
 	//region ParadoxScriptParameterCondition
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon {

@@ -29,14 +29,8 @@ public class ParadoxScriptVariableValueImpl extends ASTWrapperPsiElement impleme
 
   @Override
   @NotNull
-  public ParadoxScriptNumber getNumber() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptNumber.class));
-  }
-
-  @Override
-  @NotNull
-  public ParadoxScriptNumber getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  public ParadoxScriptValue getValue() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptValue.class));
   }
 
 }

@@ -208,6 +208,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
+  {BOOLEAN_TOKEN} {yybegin(WAITING_PROPERTY_END); return BOOLEAN_TOKEN;}
   {INT_TOKEN} {yybegin(WAITING_VARIABLE_END); return INT_TOKEN;}
   {FLOAT_TOKEN} {yybegin(WAITING_VARIABLE_END); return FLOAT_TOKEN;}
 }

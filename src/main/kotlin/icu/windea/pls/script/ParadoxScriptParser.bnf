@@ -46,9 +46,7 @@ variable_name ::= AT VARIABLE_NAME_ID{
   methods=[getName]
 }
 private variable_separator ::= EQUAL_SIGN
-variable_value ::= number {
-  methods=[getValue]
-}
+variable_value ::= boolean | int | float
 
 //property related
 property ::= property_key property_separator property_value {
