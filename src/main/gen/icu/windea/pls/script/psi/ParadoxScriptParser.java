@@ -370,26 +370,20 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_parameter_expr | key_string_template_expr | key_string_expr
+  // key_parameter_expr | key_string_template_expr | key_literal_expr
   static boolean key_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "key_expr")) return false;
     boolean r;
     r = key_parameter_expr(b, l + 1);
     if (!r) r = key_string_template_expr(b, l + 1);
-    if (!r) r = key_string_expr(b, l + 1);
+    if (!r) r = key_literal_expr(b, l + 1);
     return r;
   }
 
   /* ********************************************************** */
-  // parameter
-  static boolean key_parameter_expr(PsiBuilder b, int l) {
-    return parameter(b, l + 1);
-  }
-
-  /* ********************************************************** */
   // PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
-  static boolean key_string_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_string_expr")) return false;
+  static boolean key_literal_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "key_literal_expr")) return false;
     if (!nextTokenIs(b, "", PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN)) return false;
     boolean r;
     r = consumeToken(b, PROPERTY_KEY_TOKEN);
@@ -398,20 +392,9 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_string_template_entry +
-  public static boolean key_string_template(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "key_string_template")) return false;
-    if (!nextTokenIs(b, "<key string template>", KEY_STRING_SNIPPET, PARAMETER_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, KEY_STRING_TEMPLATE, "<key string template>");
-    r = key_string_template_entry(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!key_string_template_entry(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "key_string_template", c)) break;
-    }
-    exit_section_(b, l, m, r, false, null);
-    return r;
+  // parameter
+  static boolean key_parameter_expr(PsiBuilder b, int l) {
+    return parameter(b, l + 1);
   }
 
   /* ********************************************************** */
@@ -428,9 +411,20 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // key_string_template
+  // key_string_template_entry +
   static boolean key_string_template_expr(PsiBuilder b, int l) {
-    return key_string_template(b, l + 1);
+    if (!recursion_guard_(b, l, "key_string_template_expr")) return false;
+    if (!nextTokenIs(b, "", KEY_STRING_SNIPPET, PARAMETER_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = key_string_template_entry(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!key_string_template_entry(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "key_string_template_expr", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -689,26 +683,20 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_parameter_expr | value_string_template_expr | value_string_expr
+  // value_parameter_expr | value_string_template_expr | value_literal_expr
   static boolean value_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_expr")) return false;
     boolean r;
     r = value_parameter_expr(b, l + 1);
     if (!r) r = value_string_template_expr(b, l + 1);
-    if (!r) r = value_string_expr(b, l + 1);
+    if (!r) r = value_literal_expr(b, l + 1);
     return r;
   }
 
   /* ********************************************************** */
-  // parameter
-  static boolean value_parameter_expr(PsiBuilder b, int l) {
-    return parameter(b, l + 1);
-  }
-
-  /* ********************************************************** */
   // STRING_TOKEN | QUOTED_STRING_TOKEN
-  static boolean value_string_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_string_expr")) return false;
+  static boolean value_literal_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_literal_expr")) return false;
     if (!nextTokenIs(b, "", QUOTED_STRING_TOKEN, STRING_TOKEN)) return false;
     boolean r;
     r = consumeToken(b, STRING_TOKEN);
@@ -717,20 +705,9 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_string_template_entry +
-  public static boolean value_string_template(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_string_template")) return false;
-    if (!nextTokenIs(b, "<value string template>", PARAMETER_START, VALUE_STRING_SNIPPET)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, VALUE_STRING_TEMPLATE, "<value string template>");
-    r = value_string_template_entry(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!value_string_template_entry(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_string_template", c)) break;
-    }
-    exit_section_(b, l, m, r, false, null);
-    return r;
+  // parameter
+  static boolean value_parameter_expr(PsiBuilder b, int l) {
+    return parameter(b, l + 1);
   }
 
   /* ********************************************************** */
@@ -747,9 +724,20 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_string_template
+  // value_string_template_entry +
   static boolean value_string_template_expr(PsiBuilder b, int l) {
-    return value_string_template(b, l + 1);
+    if (!recursion_guard_(b, l, "value_string_template_expr")) return false;
+    if (!nextTokenIs(b, "", PARAMETER_START, VALUE_STRING_SNIPPET)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = value_string_template_entry(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!value_string_template_entry(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_string_template_expr", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

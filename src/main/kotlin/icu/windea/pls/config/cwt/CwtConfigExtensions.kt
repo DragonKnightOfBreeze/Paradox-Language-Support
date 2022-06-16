@@ -7,7 +7,7 @@ import icu.windea.pls.config.cwt.config.*
 internal typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
 internal typealias CwtConfigMaps = MutableMap<String, CwtConfigMap>
 
-inline fun CwtPropertyConfig.processParent(processor: (CwtKvConfig<*>) -> Boolean): Boolean{
+inline fun CwtKvConfig<*>.processParent(processor: (CwtKvConfig<*>) -> Boolean): Boolean{
 	var parent = this.parent
 	while(parent != null){
 		val result = processor(parent)
@@ -17,7 +17,7 @@ inline fun CwtPropertyConfig.processParent(processor: (CwtKvConfig<*>) -> Boolea
 	return true
 }
 
-inline fun CwtPropertyConfig.processParentProperty(processor: (CwtPropertyConfig) -> Boolean):Boolean{
+inline fun CwtKvConfig<*>.processParentProperty(processor: (CwtPropertyConfig) -> Boolean):Boolean{
 	var parent = this.parent
 	while(parent != null){
 		if(parent is CwtPropertyConfig) {

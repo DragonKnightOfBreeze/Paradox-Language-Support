@@ -31,6 +31,8 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 	override fun createElement(node: ASTNode): PsiElement {
 		return when(node.elementType){
 			PROPERTY -> SmartParadoxScriptProperty(node)
+			PROPERTY_KEY -> SmartParadoxScriptPropertyKey(node)
+			STRING -> SmartParadoxScriptString(node)
 			else -> Factory.createElement(node)
 		}
 	}

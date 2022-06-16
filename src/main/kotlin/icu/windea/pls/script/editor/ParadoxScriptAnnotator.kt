@@ -12,6 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
 /**
@@ -51,36 +52,58 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, propertyConfig: CwtPropertyConfig) {
 		//颜色高亮
-		val attributesKey = when {
-			CwtConfigHandler.isInputParameter(propertyConfig) -> Keys.INPUT_PARAMETER_KEY
-			else -> when(propertyConfig.keyExpression.type) {
-				CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
-				CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-				CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
-				CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-				CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
-				CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
-				else -> null //TODO
+		val expressionInfo = element.kvExpressionInfo ?: return
+		when(expressionInfo.type) {
+			ParadoxKvExpressionType.LiteralType -> {
+				val attributesKey = when {
+					CwtConfigHandler.isInputParameter(propertyConfig) -> Keys.INPUT_PARAMETER_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
+					propertyConfig.keyExpression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					else -> {
+						val resolved = element.reference?.resolve()
+						val configType = resolved?.let { CwtConfigType.resolve(it) }
+						when {
+							configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
+							configType == CwtConfigType.Scope -> Keys.SCOPE_KEY
+							configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
+							else -> null
+						}
+					}
+				}
+				if(attributesKey != null) {
+					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+				}
 			}
-		}
-		if(attributesKey != null) {
-			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
-			return
-		}
-		//TODO 基于TextRange缓存而非解析的引用进行代码高亮
-		val references = element.references
-		for(reference in references) {
-			val resolved = reference.resolve() ?: continue
-			val configType = CwtConfigType.resolve(resolved) ?: continue
-			val attributesKey1 = when {
-				configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
-				configType == CwtConfigType.Link -> Keys.SCOPE_KEY
-				configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
-				else -> null
+			ParadoxKvExpressionType.ScopeExpression -> {
+				val references = element.references
+				for(reference in references) {
+					val resolved = reference.resolve()
+					val configType = resolved?.let { CwtConfigType.resolve(it) }
+					val attributesKey = when {
+						configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
+						configType == CwtConfigType.Scope -> Keys.SCOPE_KEY
+						else -> Keys.SCOPE_KEY //unresolved scope, use SCOPE_KEY
+					}
+					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+				}
 			}
-			if(attributesKey1 != null) {
-				holder.newSilentAnnotation(INFORMATION).range(reference.rangeInElement.shiftRight(element.textRange.startOffset)).textAttributes(attributesKey1).create()
+			ParadoxKvExpressionType.ScopeValueExpression -> {
+				expressionInfo.ranges.forEachIndexed { index, textRange -> 
+					when{
+						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
+						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_KEY).create()
+					}
+				}
 			}
+			ParadoxKvExpressionType.ScriptValueExpression -> pass() //unexpected
+			else -> pass()
 		}
 	}
 	
@@ -103,36 +126,73 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateValueExpression(element: ParadoxScriptString, holder: AnnotationHolder, valueConfig: CwtValueConfig) {
 		//颜色高亮
-		val attributesKey = when(valueConfig.valueExpression.type) {
-			CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-			CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
-			CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
-			CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
-			CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-			CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
-			CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
-			else -> null
-		} //TODO
-		if(attributesKey != null) {
-			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
-			return
-		}
-		//TODO 基于TextRange缓存而非解析的引用进行代码高亮
-		val references = element.references
-		for(reference in references) {
-			val resolved = reference.resolve() ?: continue
-			val configType = CwtConfigType.resolve(resolved) ?: continue
-			val attributesKey1 = when {
-				configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
-				configType == CwtConfigType.Link -> Keys.SCOPE_KEY
-				configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
-				else -> null
+		val expressionInfo = element.kvExpressionInfo ?: return
+		when(expressionInfo.type) {
+			ParadoxKvExpressionType.LiteralType -> {
+				val attributesKey = when {
+					valueConfig.valueExpression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
+					valueConfig.valueExpression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					else -> {
+						val resolved = element.reference?.resolve()
+						val configType = resolved?.let { CwtConfigType.resolve(it) }
+						when {
+							configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
+							configType == CwtConfigType.Scope -> Keys.SCOPE_KEY
+							configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
+							else -> null
+						}
+					}
+				}
+				if(attributesKey != null) {
+					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+				}
 			}
-			if(attributesKey1 != null) {
-				holder.newSilentAnnotation(INFORMATION).range(reference.rangeInElement.shiftRight(element.textRange.startOffset)).textAttributes(attributesKey1).create()
+			ParadoxKvExpressionType.ScopeExpression -> {
+				val references = element.references
+				for(reference in references) {
+					val resolved = reference.resolve()
+					val configType = resolved?.let { CwtConfigType.resolve(it) }
+					val attributesKey = when {
+						configType == CwtConfigType.SystemScope -> Keys.SYSTEM_SCOPE_KEY
+						configType == CwtConfigType.Scope -> Keys.SCOPE_KEY
+						else -> Keys.SCOPE_KEY //unresolved scope, use SCOPE_KEY
+					}
+					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+				}
 			}
+			ParadoxKvExpressionType.ScopeValueExpression -> {
+				expressionInfo.ranges.forEachIndexed { index, textRange ->
+					when {
+						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
+						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_KEY).create()
+					}
+				}
+			}
+			ParadoxKvExpressionType.ScriptValueExpression -> {
+				expressionInfo.ranges.forEachIndexed { index, textRange ->
+					when {
+						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCRIPT_VALUE_PREFIX_KEY).create()
+						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCRIPT_VALUE_KEY).create()
+						index % 2 == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.INPUT_PARAMETER_KEY).create()
+						else -> {
+							val isNumber = ParadoxValueType.isFloat(textRange.substring(element.text))
+							val textAttributesKey = if(isNumber) Keys.NUMBER_KEY else Keys.STRING_KEY
+							holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(textAttributesKey).create()
+						}
+					}
+				}
+			}
+			else -> pass()
 		}
 	}
 	

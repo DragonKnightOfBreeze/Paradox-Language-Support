@@ -32,12 +32,6 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
 
   @Override
   @Nullable
-  public ParadoxScriptKeyStringTemplate getKeyStringTemplate() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptKeyStringTemplate.class);
-  }
-
-  @Override
-  @Nullable
   public ParadoxScriptParameter getParameter() {
     return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameter.class);
   }

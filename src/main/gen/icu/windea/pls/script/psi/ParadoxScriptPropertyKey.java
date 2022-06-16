@@ -13,9 +13,6 @@ import icu.windea.pls.script.reference.ParadoxScriptKeyReference;
 public interface ParadoxScriptPropertyKey extends ParadoxScriptExpression, PsiLiteralValue, ContributedReferenceHost {
 
   @Nullable
-  ParadoxScriptKeyStringTemplate getKeyStringTemplate();
-
-  @Nullable
   ParadoxScriptParameter getParameter();
 
   @NotNull

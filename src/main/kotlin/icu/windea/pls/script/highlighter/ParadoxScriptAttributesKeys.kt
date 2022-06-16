@@ -38,6 +38,8 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scope"), INSTANCE_METHOD)
 	@JvmField val SCOPE_VALUE_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValuePrefix"), LABEL)
 	@JvmField val SCOPE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValue"), INSTANCE_FIELD)
+	@JvmField val SCRIPT_VALUE_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scriptValuePrefix"), LABEL)
+	@JvmField val SCRIPT_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scriptValue"), DEFINITION_REFERENCE_KEY)
 	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), STATIC_FIELD)
 	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 }

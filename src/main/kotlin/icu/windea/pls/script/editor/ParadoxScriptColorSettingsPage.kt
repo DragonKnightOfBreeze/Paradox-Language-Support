@@ -40,6 +40,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.scope"), ParadoxScriptAttributesKeys.SCOPE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scopeValuePrefix"), ParadoxScriptAttributesKeys.SCOPE_VALUE_PREFIX_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scopeValue"), ParadoxScriptAttributesKeys.SCOPE_VALUE_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.scriptValuePrefix"), ParadoxScriptAttributesKeys.SCRIPT_VALUE_PREFIX_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.scriptValue"), ParadoxScriptAttributesKeys.SCRIPT_VALUE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.modifier"), ParadoxScriptAttributesKeys.MODIFIER_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY)
 		)

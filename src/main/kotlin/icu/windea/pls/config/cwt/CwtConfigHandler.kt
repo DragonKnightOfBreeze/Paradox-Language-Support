@@ -90,8 +90,8 @@ object CwtConfigHandler {
 		return aliasName == "effect" || aliasName == "trigger" || aliasName == "modifier_rule"
 	}
 	
-	fun supportsScopes(propertyConfig: CwtPropertyConfig): Boolean {
-		if(doSupportsScopes(propertyConfig)) return true
+	fun supportsScopes(propertyConfig: CwtKvConfig<*>): Boolean {
+		if(propertyConfig is CwtPropertyConfig && doSupportsScopes(propertyConfig)) return true
 		propertyConfig.processParentProperty {
 			if(doSupportsScopes(it)) return true
 			true

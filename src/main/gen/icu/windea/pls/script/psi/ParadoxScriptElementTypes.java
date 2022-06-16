@@ -23,7 +23,6 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INLINE_MATH_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_VARIABLE_REFERENCE");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
-  IElementType KEY_STRING_TEMPLATE = ParadoxScriptElementTypeFactory.getElementType("KEY_STRING_TEMPLATE");
   IElementType NUMBER = ParadoxScriptElementTypeFactory.getElementType("NUMBER");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
@@ -35,7 +34,6 @@ public interface ParadoxScriptElementTypes {
   IElementType ROOT_BLOCK = ParadoxScriptElementTypeFactory.getElementType("ROOT_BLOCK");
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
-  IElementType VALUE_STRING_TEMPLATE = ParadoxScriptElementTypeFactory.getElementType("VALUE_STRING_TEMPLATE");
   IElementType VARIABLE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE");
   IElementType VARIABLE_NAME = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_NAME");
   IElementType VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_REFERENCE");
@@ -131,9 +129,6 @@ public interface ParadoxScriptElementTypes {
       else if (type == INT) {
         return new ParadoxScriptIntImpl(node);
       }
-      else if (type == KEY_STRING_TEMPLATE) {
-        return new ParadoxScriptKeyStringTemplateImpl(node);
-      }
       else if (type == PARAMETER) {
         return new ParadoxScriptParameterImpl(node);
       }
@@ -160,9 +155,6 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == STRING) {
         return new ParadoxScriptStringImpl(node);
-      }
-      else if (type == VALUE_STRING_TEMPLATE) {
-        return new ParadoxScriptValueStringTemplateImpl(node);
       }
       else if (type == VARIABLE) {
         return new ParadoxScriptVariableImpl(node);
