@@ -78,7 +78,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					}
 				}
 				if(attributesKey != null) {
-					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+					holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 				}
 			}
 			ParadoxKvExpressionType.ScopeExpression -> {
@@ -91,14 +91,14 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 						configType == CwtConfigType.Scope -> Keys.SCOPE_KEY
 						else -> Keys.SCOPE_KEY //unresolved scope, use SCOPE_KEY
 					}
-					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+					holder.newSilentAnnotation(INFORMATION).range(reference.absoluteRange).textAttributes(attributesKey).create()
 				}
 			}
 			ParadoxKvExpressionType.ScopeValueExpression -> {
 				expressionInfo.ranges.forEachIndexed { index, textRange -> 
 					when{
-						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
-						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_KEY).create()
+						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
+						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_KEY).create()
 					}
 				}
 			}
@@ -154,7 +154,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					}
 				}
 				if(attributesKey != null) {
-					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+					holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 				}
 			}
 			ParadoxKvExpressionType.ScopeExpression -> {
@@ -167,27 +167,27 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 						configType == CwtConfigType.Scope -> Keys.SCOPE_KEY
 						else -> Keys.SCOPE_KEY //unresolved scope, use SCOPE_KEY
 					}
-					holder.newSilentAnnotation(INFORMATION).range(expressionInfo.wholeRange).textAttributes(attributesKey).create()
+					holder.newSilentAnnotation(INFORMATION).range(reference.absoluteRange).textAttributes(attributesKey).create()
 				}
 			}
 			ParadoxKvExpressionType.ScopeValueExpression -> {
 				expressionInfo.ranges.forEachIndexed { index, textRange ->
 					when {
-						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
-						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCOPE_VALUE_KEY).create()
+						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
+						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_KEY).create()
 					}
 				}
 			}
 			ParadoxKvExpressionType.ScriptValueExpression -> {
 				expressionInfo.ranges.forEachIndexed { index, textRange ->
 					when {
-						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCRIPT_VALUE_PREFIX_KEY).create()
-						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.SCRIPT_VALUE_KEY).create()
-						index % 2 == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(Keys.INPUT_PARAMETER_KEY).create()
+						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCRIPT_VALUE_PREFIX_KEY).create()
+						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCRIPT_VALUE_KEY).create()
+						index % 2 == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.INPUT_PARAMETER_KEY).create()
 						else -> {
 							val isNumber = ParadoxValueType.isFloat(textRange.substring(element.text))
 							val textAttributesKey = if(isNumber) Keys.NUMBER_KEY else Keys.STRING_KEY
-							holder.newSilentAnnotation(INFORMATION).range(textRange).textAttributes(textAttributesKey).create()
+							holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(textAttributesKey).create()
 						}
 					}
 				}

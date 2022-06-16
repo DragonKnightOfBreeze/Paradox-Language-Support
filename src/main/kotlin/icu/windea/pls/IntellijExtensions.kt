@@ -185,6 +185,10 @@ fun interface TemplateEditingFinishedListener : TemplateEditingListener {
 }
 //endregion
 
+//region Editor Extensions
+
+//endregion
+
 //region VFS Extensions
 
 ///**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/

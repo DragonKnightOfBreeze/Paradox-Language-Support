@@ -10,7 +10,8 @@ import com.intellij.psi.*
 //com.intellij.codeInsight.daemon.impl.quickfix.InsertMissingTokenFix
 
 class InsertMissingTokenFix(
-	private val token: String
+	private val token: String,
+	private val caretOffset: Int
 ): IntentionActionWithFixAllOption, LowPriorityAction {
 	override fun getText() = IdeBundle.message("quickfix.text.insert.0", token)
 	
@@ -21,6 +22,7 @@ class InsertMissingTokenFix(
 	}
 	
 	override fun invoke(project: Project, editor: Editor, file: PsiFile?) {
+		editor.caretModel.moveToOffset(caretOffset)
 		editor.document.insertString(editor.caretModel.offset, token)
 	}
 	

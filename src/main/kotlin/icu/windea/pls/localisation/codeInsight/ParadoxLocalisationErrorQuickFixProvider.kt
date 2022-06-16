@@ -4,12 +4,9 @@ import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.codeInsight.daemon.impl.analysis.*
 import com.intellij.codeInsight.daemon.impl.quickfix.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.core.quickfix.InsertMissingTokenFix
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyReference
+import icu.windea.pls.localisation.psi.*
 
 /**
  * 快速修复一些语法错误。
@@ -17,14 +14,18 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyReference
 class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
 	override fun registerErrorQuickFix(errorElement: PsiErrorElement, info: HighlightInfo) {
 		if(errorElement.language != ParadoxLocalisationLanguage) return
-		val prevElement = errorElement.prevSibling
-		val prevType = prevElement.elementType
 		when {
-			(prevType == ICON_ID || prevType == ICON_FRAME) && errorElement.parent is ParadoxLocalisationIcon -> {
-				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("£")) //ICON_END
+			errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {
+				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("£", errorElement.textRange.startOffset)) //ICON_END
 			}
-			prevType == PROPERTY_REFERENCE_ID || prevType == PROPERTY_REFERENCE_PARAMETER_TOKEN && errorElement.parent is ParadoxLocalisationPropertyReference -> {
-				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("$")) //PROPERTY_REFERENCE_END
+			errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyReference -> {
+				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("$", errorElement.textRange.startOffset)) //PROPERTY_REFERENCE_END
+			}
+			errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationProperty -> {
+				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("\"", errorElement.textRange.endOffset)) //LEFT_QUOTE
+			}
+			errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationProperty -> {
+				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("\"", errorElement.textRange.startOffset)) //RIGHT_QUOTE
 			}
 		}
 	}
