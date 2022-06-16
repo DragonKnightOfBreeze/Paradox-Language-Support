@@ -1,24 +1,30 @@
 package icu.windea.pls.core.psi
 
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
-import com.intellij.util.containers.CollectionFactory
+import com.intellij.util.containers.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.util.*
+import java.util.TreeSet
 
 object ParadoxFilePathIndex {
 	val name = ID.create<String, Void>("paradox.file.path.index")
 	
-	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean): VirtualFile? {
+	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, selector: ParadoxSelector<VirtualFile>): VirtualFile? {
 		val usedFilePath = filePath.trimEnd('/')
 		var result: VirtualFile? = null
 		if(expressionType == CwtFilePathExpressionTypes.Exact) {
 			val dataKeys = setOf(usedFilePath)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-				result = file
-				false
+				if(selector.select(file)) {
+					result = file
+					false
+				} else {
+					true
+				}
 			}
 		} else {
 			var dataKey: String? = null
@@ -33,20 +39,24 @@ object ParadoxFilePathIndex {
 			if(dataKey == null) return null
 			val dataKeys = setOf(dataKey)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-				result = file
-				false
+				if(selector.select(file)) {
+					result = file
+					false
+				} else {
+					true
+				}
 			}
 		}
-		return result
+		return result ?: selector.defaultValue
 	}
 	
-	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, distinct: Boolean): Set<VirtualFile> {
+	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, distinct: Boolean, selector: ParadoxSelector<VirtualFile>): Set<VirtualFile> {
 		val usedFilePath = filePath.trimEnd('/')
-		val result: MutableSet<VirtualFile> = CollectionFactory.createSmallMemoryFootprintLinkedSet() //优化性能
+		val result: MutableSet<VirtualFile> = TreeSet(selector.comparator())
 		if(expressionType == CwtFilePathExpressionTypes.Exact) {
 			val dataKeys = setOf(usedFilePath)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
-				result.add(file)
+					result.add(file)
 				true
 			}
 		} else {
@@ -61,7 +71,9 @@ object ParadoxFilePathIndex {
 			val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
 				if(keysToDistinct == null || file.fileInfo?.path?.path.let { it != null && keysToDistinct.add(if(ignoreCase) it.lowercase() else it) }) {
-					result.add(file)
+					if(selector.selectAll(file)) {
+						result.add(file)
+					}
 				}
 				true
 			}
@@ -69,14 +81,16 @@ object ParadoxFilePathIndex {
 		return result
 	}
 	
-	fun findAll(project: Project, scope: GlobalSearchScope, ignoreCase: Boolean, distinct: Boolean): Set<VirtualFile> {
-		val result: MutableSet<VirtualFile> = CollectionFactory.createSmallMemoryFootprintLinkedSet() //优化性能
+	fun findAll(project: Project, scope: GlobalSearchScope, ignoreCase: Boolean, distinct: Boolean, selector: ParadoxSelector<VirtualFile>): Set<VirtualFile> {
+		val result: MutableSet<VirtualFile> = TreeSet(selector.comparator())
 		val allKeys = FileBasedIndex.getInstance().getAllKeys(name, project)
 		if(allKeys.isEmpty()) return emptySet()
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 		FileBasedIndex.getInstance().processFilesContainingAnyKey(name, allKeys, scope, null, null) { file ->
 			if(keysToDistinct == null || file.fileInfo?.path?.path.let { it != null && keysToDistinct.add(if(ignoreCase) it.lowercase() else it) }) {
-				result.add(file)
+				if(selector.selectAll(file)) {
+					result.add(file)
+				}
 			}
 			true
 		}

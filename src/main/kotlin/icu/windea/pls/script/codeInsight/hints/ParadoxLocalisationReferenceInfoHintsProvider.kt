@@ -11,7 +11,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.*
 
 /**
  * 本地化引用信息的内嵌提示（对应的本地化的渲染后文本，如果过长则会截断）。

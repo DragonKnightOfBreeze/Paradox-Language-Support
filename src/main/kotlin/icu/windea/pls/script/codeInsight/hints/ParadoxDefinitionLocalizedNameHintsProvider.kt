@@ -9,7 +9,7 @@ import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.*
 
 /**
  * 定义的本地化名字的内嵌提示（最相关的本地化文本）。

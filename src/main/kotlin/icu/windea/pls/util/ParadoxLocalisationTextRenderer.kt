@@ -1,4 +1,4 @@
-package icu.windea.pls.tool
+package icu.windea.pls.util
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.util.*

@@ -9,6 +9,7 @@ import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 
 /**
  * 提供图标名字的代码补全。
@@ -16,7 +17,8 @@ import icu.windea.pls.script.psi.*
 @Suppress("UnstableApiUsage")
 class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val project = parameters.originalFile.project
+		val originalFile = parameters.originalFile
+		val project = originalFile.project
 		
 		//需要避免ProcessCanceledException导致完全不作任何提示
 		
@@ -34,7 +36,7 @@ class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>()
 		}
 		//根据ddsFileName进行提示
 		runBlockingCancellable {
-			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true)
+			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = ParadoxFileSelectors.preferSameRoot(originalFile))
 			if(ddsFiles.isNotEmpty()) {
 				for(ddsFile in ddsFiles) {
 					val name = ddsFile.nameWithoutExtension

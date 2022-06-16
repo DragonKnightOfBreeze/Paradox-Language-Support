@@ -3,7 +3,7 @@ package icu.windea.pls.dds
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.*
 import kotlin.io.path.*
 
 class DdsFileListener: AsyncFileListener {
@@ -17,7 +17,7 @@ class DdsFileListener: AsyncFileListener {
 		return null
 	}
 	
-	//icu.windea.pls.tool.ParadoxDdsUrlResolver.doResolveByFile(com.intellij.openapi.vfs.VirtualFile)
+	//icu.windea.pls.util.ParadoxDdsUrlResolver.doResolveByFile(com.intellij.openapi.vfs.VirtualFile)
 	private fun onContentChanged(file:VirtualFile) {
 		if(file.fileType != DdsFileType) return
 		//如果可以得到相对于游戏或模组根路径的文件路径，则使用绝对根路径+相对路径定位，否则直接使用绝对路径

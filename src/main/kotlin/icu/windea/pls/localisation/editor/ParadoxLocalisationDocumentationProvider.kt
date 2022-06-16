@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {

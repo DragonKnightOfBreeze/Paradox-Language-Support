@@ -7,7 +7,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
@@ -196,6 +196,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
+			
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
 			val localisation = definitionInfo.localisation
 			if(localisation.isNotEmpty()) {

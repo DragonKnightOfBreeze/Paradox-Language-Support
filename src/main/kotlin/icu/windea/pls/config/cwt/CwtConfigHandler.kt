@@ -6,7 +6,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.SmartList
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.ProcessEntry.end
 import icu.windea.pls.annotation.*
@@ -18,7 +18,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
-import java.util.TreeSet
+import icu.windea.pls.util.*
 import javax.swing.*
 import kotlin.text.removeSurrounding
 
@@ -57,7 +57,7 @@ object CwtConfigHandler {
 		return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
 	}
 	
-	fun isInputParameter(propertyConfig: CwtPropertyConfig): Boolean{
+	fun isInputParameter(propertyConfig: CwtPropertyConfig): Boolean {
 		return propertyConfig.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == paramsEnumName }
 	}
 	
@@ -525,11 +525,11 @@ object CwtConfigHandler {
 			if(shouldComplete(propConfig, definitionElementInfo)) {
 				//如果可能正在输入参数名，则基于对应的特定定义声明中存在的参数名进行提示（排除已经输入完毕的，仅当补全key时特殊处理即可）
 				if(propConfig.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == paramsEnumName }) {
-					completeParameters(propertyElement, keyword, quoted, configGroup, result)
+					completeParameters(propertyElement, quoted, configGroup, result)
 					continue
 				}
 				
-				completeKey(propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
+				completeKey(keyElement, propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
 			}
 		}
 		return true
@@ -548,7 +548,7 @@ object CwtConfigHandler {
 		
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
-				completeValue(config.valueExpression, keyword, quoted, config, configGroup, result, scope)
+				completeValue(valueElement, config.valueExpression, keyword, quoted, config, configGroup, result, scope)
 			}
 		}
 		return true
@@ -567,7 +567,7 @@ object CwtConfigHandler {
 		
 		for(valueConfig in childValueConfigs) {
 			if(shouldComplete(valueConfig, definitionElementInfo)) {
-				completeValue(valueConfig.valueExpression, keyword, quoted, valueConfig, configGroup, result, scope)
+				completeValue(valueElement, valueConfig.valueExpression, keyword, quoted, valueConfig, configGroup, result, scope)
 			}
 		}
 		return true
@@ -599,8 +599,8 @@ object CwtConfigHandler {
 		return maxCount == null || actualCount < maxCount
 	}
 	
-	fun completeKey(expression: CwtKeyExpression, keyword: String, quoted: Boolean, config: CwtPropertyConfig,
-		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
+	fun completeKey(context: PsiElement, expression: CwtKeyExpression, keyword: String, quoted: Boolean,
+		config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -741,11 +741,11 @@ object CwtConfigHandler {
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return
-				completeAliasName(keyword, quoted, aliasName, config, configGroup, result, scope, isKey = true)
+				completeAliasName(context, keyword, quoted, aliasName, config, configGroup, result, scope, isKey = true)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return
-				completeAliasName(keyword, quoted, aliasName, config, configGroup, result, scope, isKey = true)
+				completeAliasName(context, keyword, quoted, aliasName, config, configGroup, result, scope, isKey = true)
 			}
 			CwtDataTypes.Constant -> {
 				val n = expression.value ?: return
@@ -765,7 +765,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeValue(expression: CwtValueExpression, keyword: String, quoted: Boolean, config: CwtKvConfig<*>,
+	fun completeValue(context:PsiElement, expression: CwtValueExpression, keyword: String, quoted: Boolean, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
 		when(expression.type) {
@@ -822,9 +822,9 @@ object CwtConfigHandler {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
 				val expressionValue = expression.value
 				val virtualFiles = if(expressionValue == null) {
-					findAllFilesByFilePath(configGroup.project, distinct = true)
+					findAllFilesByFilePath(configGroup.project, distinct = true, selector = ParadoxFileSelectors.preferSameRoot(context))
 				} else {
-					findFilesByFilePath(expressionValue, configGroup.project, expressionType = expressionType, distinct = true)
+					findFilesByFilePath(expressionValue, configGroup.project, expressionType = expressionType, distinct = true, selector = ParadoxFileSelectors.preferSameRoot(context))
 				}
 				if(virtualFiles.isEmpty()) return
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
@@ -843,9 +843,9 @@ object CwtConfigHandler {
 				val expressionType = CwtFilePathExpressionTypes.Icon
 				val expressionValue = expression.value
 				val virtualFiles = if(expressionValue == null) {
-					findAllFilesByFilePath(configGroup.project, distinct = true)
+					findAllFilesByFilePath(configGroup.project, distinct = true, selector = ParadoxFileSelectors.preferSameRoot(context))
 				} else {
-					findFilesByFilePath(expressionValue, configGroup.project, expressionType = expressionType, distinct = true)
+					findFilesByFilePath(expressionValue, configGroup.project, expressionType = expressionType, distinct = true, selector = ParadoxFileSelectors.preferSameRoot(context))
 				}
 				if(virtualFiles.isEmpty()) return
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
@@ -963,7 +963,7 @@ object CwtConfigHandler {
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return
-				completeAliasName(keyword, quoted, aliasName, config, configGroup, result, scope, isKey = false)
+				completeAliasName(context, keyword, quoted, aliasName, config, configGroup, result, scope, isKey = false)
 			}
 			//规则会被内联，不应该被匹配到
 			CwtDataTypes.AliasMatchLeft -> throw InternalError()
@@ -985,7 +985,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeAliasName(keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
+	fun completeAliasName(context: PsiElement, keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String?, isKey: Boolean) {
 		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
 		if(isKey && !quoted && supportsScopes(aliasName)) {
@@ -1008,9 +1008,9 @@ object CwtConfigHandler {
 			val finalScope = config.parent?.scope ?: scope
 			//aliasSubName是一个表达式
 			if(isKey) {
-				completeKey(aliasConfig.keyExpression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
+				completeKey(context, aliasConfig.keyExpression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
 			} else {
-				completeValue(aliasConfig.valueExpression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
+				completeValue(context, aliasConfig.valueExpression, keyword, quoted, aliasConfig.config, configGroup, result, finalScope)
 			}
 		}
 	}
@@ -1105,7 +1105,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	private fun completeParameters(propertyElement: ParadoxDefinitionProperty, keyword: String, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	private fun completeParameters(propertyElement: ParadoxDefinitionProperty, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
 		if(quoted || propertyElement !is ParadoxScriptProperty) return //输入参数不允许用引号括起
 		val definitionName = propertyElement.name
 		val definition = findDefinitionByType(definitionName, "scripted_effect|scripted_trigger", configGroup.project) ?: return
@@ -1401,12 +1401,12 @@ object CwtConfigHandler {
 			CwtDataTypes.FilePath -> {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
 				val filePath = expressionType.resolve(expression.value, valueElement.value)
-				return findFileByFilePath(filePath, project)?.toPsiFile(project)
+				return findFileByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement))?.toPsiFile(project)
 			}
 			CwtDataTypes.Icon -> {
 				val expressionType = CwtFilePathExpressionTypes.Icon
 				val filePath = expressionType.resolve(expression.value, valueElement.value) ?: return null
-				return findFileByFilePath(filePath, project)?.toPsiFile(project)
+				return findFileByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement))?.toPsiFile(project)
 			}
 			CwtDataTypes.TypeExpression -> {
 				val name = valueElement.value
@@ -1507,12 +1507,12 @@ object CwtConfigHandler {
 			CwtDataTypes.FilePath -> {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
 				val filePath = expressionType.resolve(expression.value, valueElement.value)
-				return findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project) }
+				return findFilesByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement)).mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataTypes.Icon -> {
 				val expressionType = CwtFilePathExpressionTypes.Icon
 				val filePath = expressionType.resolve(expression.value, valueElement.value) ?: return emptyList()
-				return findFilesByFilePath(filePath, project).mapNotNull { it.toPsiFile(project) }
+				return findFilesByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement)).mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataTypes.TypeExpression -> {
 				val name = valueElement.value

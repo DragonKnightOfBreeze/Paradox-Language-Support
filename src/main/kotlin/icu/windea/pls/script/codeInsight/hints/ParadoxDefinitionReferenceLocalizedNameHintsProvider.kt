@@ -11,7 +11,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.tool.*
+import icu.windea.pls.util.*
 
 /**
  * 定义引用信息的内嵌提示（对应定义的名字和类型、本地化名字）。
