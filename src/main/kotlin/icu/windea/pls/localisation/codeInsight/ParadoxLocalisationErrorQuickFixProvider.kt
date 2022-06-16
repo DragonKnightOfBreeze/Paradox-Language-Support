@@ -21,10 +21,10 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
 			errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyReference -> {
 				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("$", errorElement.textRange.startOffset)) //PROPERTY_REFERENCE_END
 			}
-			errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationProperty -> {
+			errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
 				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("\"", errorElement.textRange.endOffset)) //LEFT_QUOTE
 			}
-			errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationProperty -> {
+			errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
 				QuickFixAction.registerQuickFixAction(info, InsertMissingTokenFix("\"", errorElement.textRange.startOffset)) //RIGHT_QUOTE
 			}
 		}
