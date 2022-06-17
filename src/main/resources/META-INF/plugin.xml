@@ -28,9 +28,17 @@
       by adding related libraries to the module of your Mod in the <code>Project Structure</code> page.
     </p>
     <p>
-      This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
-      If you want more perfect script language support, please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
-      This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, with some modification and extension, but related functions has not been fully implemented yet.
+      This plugin is under developing, some complex functions may not be implemented yet,
+      some functions, like code validation, code completion, may work incorrectly, and may cause unexpected bugs.
+      The plugin has not yet been fully debugged and validated for Paradox games except Stellaris, 
+      due to the possible necessity to write specific parsers, rule files and so on,
+      when write a mod for other Paradox games, this plugin may cause unexpected bugs.
+      If you want more perfect script language support, or write a mod for Paradox games except Stellaris,  
+      please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
+    </p>
+    <p>
+      This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
+      These rule files are currently build-in provided by this plugin, with some modifications and extensions, and will be automatically synchronized to the latest version when published.
     </p>
     <p>
       For functions and usages of this plugin, please refer to the <a href="https://windea.icu/Paradox-Language-Support/#/en/">Reference documentation</a>.
@@ -50,9 +58,14 @@
       可以通过在<code>项目结构</code>页面中将对应的库添加到你的模组所属的模块，以将游戏目录或第三方模组导入作为依赖。
     </p>
     <p>
-      这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
-      如果需要更加完善的脚本语言支持，请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
-      这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），经过一定的修改和扩展，但是相关功能尚未完全实现。
+      这个插件正在开发中，部分比较复杂的功能可能尚未实现，部分功能如代码检查、代码补全等可能不正确，并且可能发生意外的BUG。
+      这个插件目前尚未对群星以外的P社游戏进行充分的调试和验证，由于可能需要编写特定的解析器、规则文件等，当编写其他P社游戏的模组时，可能会发生意外的BUG。
+      如果需要更加完善的脚本语言支持，或是编写群星以外的P社游戏的模组，
+      请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
+    </p>
+    <p>
+      这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
+      这些规则文件目前由插件内置，经过一定的修改和扩展，当发布时会自动同步到最新版本。
     </p>
     <p>
       关于插件的功能和用法，请参阅<a href="https://windea.icu/Paradox-Language-Support/#/zh/">参考文档</a>。

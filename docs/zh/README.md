@@ -9,9 +9,13 @@ IDEA插件：Paradox语言支持。
 通过在你的模组根文件夹下创建描述符文件`descriptor.mod`以提供语言支持。
 可以通过在`项目结构`页面中将对应的库添加到你的模组所属的模块，以将游戏目录或第三方模组导入作为依赖。
 
-这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且可能会发生意外的BUG。
-如果需要更加完善的脚本语言支持，请考虑使用[VSCode](https://code.visualstudio.com)以及[CWTools](https://github.com/cwtools/cwtools-vscode)插件。
-这个插件与[CWTools](https://github.com/cwtools/cwtools-vscode)共享规则文件（`*.cwt`），经过一定的修改和扩展，但是相关功能尚未完全实现。
+这个插件正在开发中，部分比较复杂的功能可能尚未实现，部分功能如代码检查、代码补全等可能不正确，并且可能发生意外的BUG。
+这个插件目前尚未对群星以外的P社游戏进行充分的调试和验证，由于可能需要编写特定的解析器、规则文件等，当编写其他P社游戏的模组时，可能会发生意外的BUG。
+如果需要更加完善的脚本语言支持，或是编写群星以外的P社游戏的模组，
+请考虑使用 [VSCode](https://code.visualstudio.com) 以及 [CWTools](https://github.com/cwtools/cwtools-vscode) 插件。
+
+这个插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`），但是相关功能尚未完全实现。
+这些规则文件目前由插件内置，经过一定的修改和扩展，当发布时会自动同步到最新版本。
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_zh.png)
 

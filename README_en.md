@@ -18,9 +18,16 @@ Enable language support by create the descriptor file `descriptor.mod` in the ro
 and can import game directory and third party mod as dependencies
 by adding related libraries to the module of your Mod in the `Project Structure` page.
 
-This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs.
-If you want more perfect script language support, please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
-This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), with some modification and extension, but related functions has not been fully implemented yet.
+This plugin is under developing, some complex functions may not be implemented yet,
+some functions, like code validation, code completion, may work incorrectly, and may cause unexpected bugs.
+The plugin has not yet been fully debugged and validated for Paradox games except Stellaris, 
+due to the possible necessity to write specific parsers, rule files and so on,
+when write a mod for other Paradox games, this plugin may cause unexpected bugs.
+If you want more perfect script language support, or write a mod for Paradox games except Stellaris,  
+please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
+
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
+These rule files are currently build-in provided by this plugin, with some modifications and extensions, and will be automatically synchronized to the latest version when published.
 
 For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) .
 
