@@ -127,7 +127,7 @@ ICON_ID=[a-zA-Z0-9\-_\\/]+
 ICON_FRAME=[1-9][0-9]* // positive integer
 COMMAND_SCOPE_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\.
 COMMAND_FIELD_ID_WITH_SUFFIX=[a-zA-Z0-9_:@]+\]
-COLOR_ID=[a-zA-Z]
+COLOR_ID=[a-zA-Z0-9]
 STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 
 %%
