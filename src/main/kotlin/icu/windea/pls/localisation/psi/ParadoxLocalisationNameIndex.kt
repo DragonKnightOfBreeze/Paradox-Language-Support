@@ -1,21 +1,17 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
-import com.intellij.util.*
-import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
-import io.ktor.utils.io.*
 
 //注意这里不能直接访问element.localisationInfo，需要优先通过element.stub获取本地化信息
 
 sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
 	object Localisation : ParadoxLocalisationNameIndex() {
 		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-		private const val version = 4
+		private const val version = indexVersion
 		private const val cacheSize = 200 * 1024
 		
 		override fun getKey() = key
@@ -25,7 +21,7 @@ sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 	
 	object SyncedLocalisation : ParadoxLocalisationNameIndex() {
 		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-		private const val version = 4
+		private const val version = indexVersion
 		private const val cacheSize = 2 * 1024
 		
 		override fun getKey() = key

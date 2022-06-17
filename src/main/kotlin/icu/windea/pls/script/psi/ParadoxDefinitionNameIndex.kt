@@ -10,7 +10,7 @@ import icu.windea.pls.model.*
 
 object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxDefinitionProperty>("paradox.definition.name.index")
-	private const val version = 4
+	private const val version = indexVersion
 	private const val cacheSize = 4 * 1024
 	
 	override fun getKey() = key

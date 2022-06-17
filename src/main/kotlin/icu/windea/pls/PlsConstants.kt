@@ -46,6 +46,8 @@ const val descriptorFileName = "descriptor.mod"
 
 const val defaultScriptedVariableName = "var"
 
+const val indexVersion = 4 //0.6.3
+
 object PlsFolders {
 	const val ellipsis = "..."
 	const val commentFolder = "#..."
