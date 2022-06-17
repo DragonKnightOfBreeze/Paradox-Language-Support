@@ -1,7 +1,7 @@
 package icu.windea.pls.core.library
 
 import com.intellij.openapi.roots.libraries.*
-import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 
 abstract class ParadoxLibraryKind(
 	val gameType: ParadoxGameType

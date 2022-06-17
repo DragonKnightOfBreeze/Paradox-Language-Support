@@ -1,5 +1,6 @@
-package icu.windea.pls.core
+package icu.windea.pls.model
 
+import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.*
 import javax.swing.*
 
@@ -8,7 +9,6 @@ enum class ParadoxGameType(
 	override val description: String,
 	override val icon: Icon
 ) : IdAware, DescriptionAware, IconAware {
-	//TODO 暂时使用统一的库的图标
 	Ck2("ck2", "Crusader Kings II", PlsIcons.libraryIcon),
 	Ck3("ck3", "Crusader Kings III", PlsIcons.libraryIcon),
 	Eu4("eu4", "Europa Universalis IV", PlsIcons.libraryIcon),
@@ -27,6 +27,14 @@ enum class ParadoxGameType(
 		
 		fun resolve(id: String): ParadoxGameType? {
 			return map[id.lowercase()]
+		}
+		
+		fun resolve(markerFile: VirtualFile): ParadoxGameType?{
+			if(markerFile.isDirectory || markerFile.fileType.isBinary) return null //非目录，非二进制文件
+			val markerFileName = markerFile.name
+			if(!markerFileName.startsWith('.')) return null
+			val id = markerFileName.drop(1)
+			return resolve(id)
 		}
 	}
 }

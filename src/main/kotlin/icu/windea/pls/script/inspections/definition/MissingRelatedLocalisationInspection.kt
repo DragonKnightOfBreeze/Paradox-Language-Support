@@ -9,6 +9,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.inspections.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

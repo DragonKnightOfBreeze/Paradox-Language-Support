@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.library.ParadoxLibraryKind.*
+import icu.windea.pls.model.*
 import javax.swing.*
 
 abstract class ParadoxLibraryType(

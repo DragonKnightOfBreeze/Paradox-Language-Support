@@ -6,8 +6,8 @@ import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
 	override fun getType(element: PsiElement): String {

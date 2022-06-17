@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.model
 
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
@@ -29,17 +29,17 @@ enum class ParadoxLocalisationCategory(
 		}
 		
 		fun resolve(file: ParadoxLocalisationFile): ParadoxLocalisationCategory? {
-			val root = file.fileInfo?.path?.root ?: return null
+			val root = file.fileInfo?.path ?: return null
 			return resolve(root)
 		}
 		
 		fun resolve(property: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
-			val root = property.fileInfo?.path?.root ?: return null
+			val root = property.fileInfo?.path ?: return null
 			return resolve(root)
 		}
 		
 		fun resolve(propertyReference: ParadoxLocalisationPropertyReference): ParadoxLocalisationCategory? {
-			val root = propertyReference.fileInfo?.path?.root ?: return null
+			val root = propertyReference.fileInfo?.path ?: return null
 			return resolve(root)
 		}
 	}

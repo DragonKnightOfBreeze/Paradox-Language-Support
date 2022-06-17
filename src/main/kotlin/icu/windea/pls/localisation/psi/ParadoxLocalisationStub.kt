@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 
 interface ParadoxLocalisationStub: StubElement<ParadoxLocalisationProperty> {
 	val name:String?

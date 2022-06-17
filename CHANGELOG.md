@@ -22,8 +22,10 @@
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
   * [X] 绝不把本地化文件夹（如`localisation`）中的文件视为脚本文件，绝不把本地化文件夹之外的文件视为本地化文件
-  * [ ] 文件路径分隔符兼容"/" "\" "\\"混用
-  * [ ] 解析引用时限定相同的游戏类型
+  * [ ] 本地化颜色ID可以是数字 *
+  * [ ] 解析引用时限定相同的游戏类型 *
+  * [ ] 优化文件类型的重载逻辑（使用`ParadoxRootInfo`和`ParadoxFileInfo`保存上下文信息，`ParadoxDescriptorInfo`整合到`ParadoxRootInfo`里面） *
+  * [ ] 文件路径分隔符兼容"/" "\" "\\"混用 *
 * 功能优化：
   * [X] 结构视图-脚本文件：如果存在，显示定义的本地化名字（最相关的本地化文本）（以方便定位需要浏览的定义）
   * [X] 本地化文件：仅允许在正确的位置（`string_token`）插入动态模版
@@ -71,13 +73,14 @@
   * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
   * [X] 支持额外的CWT选项：`## color_type = rgb / rgba`，用于以装订线图标的方式显示对应的颜色
   * [X] 仅当对应的数据类型是`bool`时，才会提示`yes`和`no`
-* ［长期］完善CWT配置支持 *
+* ［长期］完善CWT配置支持
   * [X] 支持解析scopeExpression（如`from.owner`）
   * [X] 支持提示scopeExpression（如`from.owner`）
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
-  * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes） *
+  * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
   * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）（不解析）
+  * [ ] 支持匹配、提示和解析各种特殊的键值表达式（`root.owner` `event_target:xxx`等）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）

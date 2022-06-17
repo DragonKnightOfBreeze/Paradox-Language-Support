@@ -6,8 +6,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.model.*
 
 data class CwtDefinitionConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,

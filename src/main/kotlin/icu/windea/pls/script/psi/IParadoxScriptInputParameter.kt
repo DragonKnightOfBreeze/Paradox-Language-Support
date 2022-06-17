@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 
 /**
  * 脚本输入参数。

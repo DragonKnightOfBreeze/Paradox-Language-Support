@@ -3,9 +3,8 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
-import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 
 //注意这里不能直接访问element.definitionInfo，需要优先通过element.stub获取定义信息
 

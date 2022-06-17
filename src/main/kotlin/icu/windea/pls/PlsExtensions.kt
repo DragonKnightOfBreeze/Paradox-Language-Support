@@ -16,12 +16,12 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
@@ -179,6 +179,7 @@ val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fi
 
 val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 
+//TODO 直接编写另外的解析器解析VirtualFile的内容
 fun ParadoxFileInfo.getDescriptorInfo(project: Project): ParadoxDescriptorInfo? {
 	val file = descriptor?.toPsiFile<PsiFile>(project) ?: return null
 	return doGetDescriptorInfo(file)
@@ -218,13 +219,13 @@ private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: Psi
 				true
 			}
 			val nameToUse = name ?: descriptorFile.parent?.name ?: anonymousString //如果没有name属性，则使用根目录名
-			ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModeDescriptor = true)
+			ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
 		}
 		fileName == launcherSettingsFileName -> {
 			val json = jsonMapper.readValue<Map<String, Any?>>(descriptorFile.virtualFile.inputStream)
 			val name = fileInfo.gameType.description
 			val version = json.get("rawVersion")?.toString()
-			ParadoxDescriptorInfo(name, version, isModeDescriptor = false)
+			ParadoxDescriptorInfo(name, version, isModDescriptor = false)
 		}
 		else -> null
 	}

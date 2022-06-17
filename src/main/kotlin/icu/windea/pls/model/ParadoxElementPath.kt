@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.model
 
 import com.intellij.psi.*
 import icu.windea.pls.*

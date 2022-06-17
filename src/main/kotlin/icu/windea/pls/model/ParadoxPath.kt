@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.model
 
 import com.google.common.cache.*
 import icu.windea.pls.*

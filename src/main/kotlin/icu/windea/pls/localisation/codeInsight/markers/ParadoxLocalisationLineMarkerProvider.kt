@@ -1,13 +1,12 @@
 package icu.windea.pls.localisation.codeInsight.markers
 
 import com.intellij.codeInsight.daemon.*
-import com.intellij.codeInsight.navigation.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.ParadoxLocalisationCategory.*
+import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
 /**
  * 本地化（localisation/localisation_synced）的装订线图标提供器。

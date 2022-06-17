@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
 fun setFileInfoAndGetFileType(
@@ -64,10 +65,8 @@ fun setFileInfoAndGetFileType(
 	//处理得到游戏类型
 	if(gameType == null) {
 		for(rootChild in root.children) {
-			val rootChildName = rootChild.name
-			if(rootChildName.startsWith('.')) {
-				gameType = ParadoxGameType.resolve(rootChildName.drop(1))
-			}
+			gameType = ParadoxGameType.resolve(rootChild)
+			if(gameType != null) break
 		}
 		if(gameType == null) {
 			gameType = getSettings().defaultGameType

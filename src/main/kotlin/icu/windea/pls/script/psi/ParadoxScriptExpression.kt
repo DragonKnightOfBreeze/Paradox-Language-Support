@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 
 /**
  * @property definitionType 定义的类型。基于CWT规则。

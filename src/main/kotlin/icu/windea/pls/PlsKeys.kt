@@ -3,7 +3,7 @@ package icu.windea.pls
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
-import icu.windea.pls.core.*
+import icu.windea.pls.model.*
 
 object PlsKeys {
 	val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")

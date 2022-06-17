@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.slf4j.*
 import java.lang.invoke.*
