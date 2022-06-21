@@ -6,10 +6,11 @@ import com.intellij.psi.util.*
 import icu.windea.pls.model.*
 
 object PlsKeys {
+	val paradoxRootInfoKey = Key<ParadoxRootInfo>("paradoxRootInfo")
+	val paradoxDescriptorInfoKey = Key<ParadoxDescriptorInfo>("paradoxDescriptorInfo")
 	val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
-	val contentVirtualFileKey = Key<VirtualFile>("paradoxContentVirtualFile")
+	val contentFileKey = Key<VirtualFile>("paradoxContentFile")
 	
-	val cachedParadoxDescriptorInfoKey = Key<CachedValue<ParadoxDescriptorInfo>>("cachedParadoxDescriptorInfo")
 	val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
 	val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
 	val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")

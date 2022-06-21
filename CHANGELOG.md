@@ -18,13 +18,13 @@
 * [X] 更新cwt规则到最新版本（`stellaris v3.4`）（发布时始终处于最新版本）
 * [X] 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
 * BUG修复：
-  * [ ] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
+  * [X] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
 * 代码优化：
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
   * [X] 绝不把本地化文件夹（如`localisation`）中的文件视为脚本文件，绝不把本地化文件夹之外的文件视为本地化文件
   * [X] 本地化颜色ID可以是数字
-  * [ ] 优化文件类型的重载逻辑（使用`ParadoxRootInfo`和`ParadoxFileInfo`保存上下文信息，`ParadoxDescriptorInfo`整合到`ParadoxRootInfo`里面） *
+  * [X] 优化文件类型的重载逻辑（使用`ParadoxRootInfo`和`ParadoxFileInfo`保存上下文信息，监听描述符文件和游戏类型标记文件）
   * [ ] 文件路径分隔符兼容"/" "\" "\\"混用 *
   * [ ] 解析引用时限定相同的游戏类型 *
 * 功能优化：
@@ -34,6 +34,7 @@
   * [X] 可以根据扩展的CWT规则显示和设置block所对应的颜色
   * [X] 脚本文件：可以显示类型信息以及导航到类型定义，如果可用 - 支持定义元素，显示其规则表达式以及导航到规则声明
 * 新增功能：
+  * [ ] 当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。 
   * [X] 本地化文件：提供快速更改文本颜色的悬浮工具栏
   * [X] 支持自定义的本地化颜色
   * [X] 脚本文件：本地封装变量（`scripted_variable`）的提取和快速修复（无法解析时）

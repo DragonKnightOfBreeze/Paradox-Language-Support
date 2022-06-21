@@ -51,7 +51,7 @@ object ParadoxFileSelectors {
 	 * 优先查找游戏或模组根目录与[context]相同的文件，按照相对于游戏或模组根路径的路径进行排序，并将相同游戏或模组根目录的排序在前。
 	 */
 	fun preferSameRoot(context: PsiElement): ParadoxFileSelector {
-		val rootPath = context.fileInfo?.root?.path ?: return default()
+		val rootPath = context.fileInfo?.rootFile?.path ?: return default()
 		return ParadoxSameRootFileSelector(rootPath)
 	}
 }

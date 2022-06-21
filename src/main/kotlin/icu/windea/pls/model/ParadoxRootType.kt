@@ -16,3 +16,4 @@ enum class ParadoxRootType(
 		return description
 	}
 }
+

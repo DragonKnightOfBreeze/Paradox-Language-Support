@@ -4,7 +4,6 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -136,7 +135,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptVariable, name: String) {
 		definition {
 			//加上文件信息
-			appendFileInfoHeader(element.fileInfo, element.project)
+			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>@").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
@@ -146,7 +145,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildInputParameterDefinition(element: PsiElement, name: String) {
 		definition {
 			//加上文件信息
-			appendFileInfoHeader(element.fileInfo, element.project)
+			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.inputParameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 		}
@@ -155,7 +154,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildParameterDefinition(element: IParadoxScriptParameter, name: String) {
 		definition {
 			//加上文件信息
-			appendFileInfoHeader(element.fileInfo, element.project)
+			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 		}
@@ -164,7 +163,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildPropertyDefinition(element: ParadoxScriptProperty, name: String) {
 		definition {
 			//加上文件信息
-			appendFileInfoHeader(element.fileInfo, element.project)
+			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.property")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.value?.let { value -> append(" = ").append(value.escapeXml()) }
@@ -179,7 +178,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	) {
 		definition {
 			//加上文件信息
-			appendFileInfoHeader(element.fileInfo, element.project)
+			appendFileInfoHeader(element.fileInfo)
 			//加上定义信息
 			val name = definitionInfo.name
 			val typeLinkText = buildString {

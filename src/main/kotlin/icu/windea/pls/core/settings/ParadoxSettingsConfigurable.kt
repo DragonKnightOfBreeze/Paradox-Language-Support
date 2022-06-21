@@ -2,7 +2,6 @@ package icu.windea.pls.core.settings
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
@@ -12,8 +11,10 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
+import org.jetbrains.kotlin.idea.util.application.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"
@@ -27,7 +28,24 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						toolTipText = PlsBundle.message("settings.generic.defaultGameType.tooltip")
 					}
 					val values = ParadoxGameType.values.toList()
-					comboBox(values).bindItem(settings::defaultGameType.toNullableProperty())
+					comboBox(values)
+						.bindItem({
+							settings.defaultGameType
+						}, {
+							if(it != null) {
+								settings.defaultGameType = it
+							}
+						})
+						.onApply {
+							//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，也要重新解析相关文件
+							runWriteAction {
+								for(rootInfo in ParadoxRootInfo.cache) {
+									if(rootInfo.gameTypeFromMarkerFile == null) {
+										reparseFilesInRoot(rootInfo.rootFile)
+									}
+								}
+							}
+						}
 				}
 				row {
 					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent {
@@ -52,8 +70,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						}, {
 							settings.scriptIgnoredFileNames = it
 							settings.finalScriptIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
-							fireFileTypesChanged()
 						})
+						.onApply {
+							runWriteAction {
+								reparseScriptFiles()
+							}
+						}
 						.horizontalAlign(HorizontalAlign.FILL)
 						.resizableColumn()
 				}
@@ -81,7 +103,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						toolTipText = PlsBundle.message("settings.localisation.primaryLocale.tooltip")
 					}
 					comboBox(settings.locales, listCellRenderer { value, _, _ ->
-						if(value == "") {
+						if(value == "auto") {
 							text = PlsBundle.message("settings.localisation.primaryLocale.auto")
 						} else {
 							text = InternalConfigHandler.getLocale(value)!!.description
@@ -111,9 +133,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					}
 				}
 			}
-			group(PlsBundle.message("settings.generation")){
-				row{
-					label(PlsBundle.message("settings.generation.fileNamePrefix")).applyToComponent { 
+			group(PlsBundle.message("settings.generation")) {
+				row {
+					label(PlsBundle.message("settings.generation.fileNamePrefix")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generation.fileNamePrefix.tooltip")
 					}
 					textField().bindText(settings::generationFileNamePrefix)
@@ -122,17 +144,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 		}
 	}
 	
-	private fun fireFileTypesChanged() {
-		//通知文件类型映射发生变化
-		try {
-			FileTypeManagerEx.getInstanceEx().fireFileTypesChanged()
-		} catch(e: Exception) {
-			logger().warn(e.message)
-		}
-	}
-	
 	@Suppress("UnstableApiUsage")
 	private fun refreshInlayHints() {
+		//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，也要重新解析相关文件
 		//当某些设置变更后，需要刷新内嵌提示
 		//com.intellij.codeInsight.hints.VcsCodeAuthorInlayHintsProviderKt.refreshCodeAuthorInlayHints
 		try {

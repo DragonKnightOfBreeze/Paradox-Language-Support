@@ -1,30 +1,28 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.vfs.*
-import java.nio.file.*
 import java.util.*
 
-/**
- * @param root 游戏或模组根目录
- * @param descriptor 描述符文件（descriptor.mod或launcher-settings.json）
- */
 class ParadoxFileInfo(
 	val name: String,
 	val path: ParadoxPath,
-	val root: VirtualFile?,
-	val descriptor: VirtualFile?,
 	val fileType: ParadoxFileType,
-	val rootType: ParadoxRootType,
-	val gameType: ParadoxGameType
+	val rootInfo: ParadoxRootInfo
 ) {
-	val rootPath: Path? = root?.toNioPath()
+	val rootFile get() = rootInfo.rootFile
+	val descriptorFile get() = rootInfo.descriptorFile
+	val descriptorInfo get() = rootInfo.descriptorInfo
+	val rootType get() = rootInfo.rootType
+	val rootPath get() = rootInfo.rootPath
+	val gameType get() = rootInfo.gameType
+	
+	val isValid get() = rootInfo.isValid 
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxFileInfo
-			&& path == other.path && root?.path == other.root?.path && gameType == other.gameType
+			&& path == other.path && rootInfo == other.rootInfo
 	}
 	
 	override fun hashCode(): Int {
-		return Objects.hash(path, root?.path, gameType)
+		return Objects.hash(path, rootInfo)
 	}
 }

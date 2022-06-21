@@ -3,9 +3,9 @@ package icu.windea.pls.core
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.impl.*
-import icu.windea.pls.*
-import java.util.*
+import icu.windea.pls.localisation.*
+import icu.windea.pls.model.*
+import icu.windea.pls.script.*
 
 /**
  * 文件类型重载器。
@@ -14,25 +14,21 @@ import java.util.*
  */
 @Suppress("UnstableApiUsage")
 class ParadoxFileTypeOverrider : FileTypeOverrider {
-	//仅当从所在目录下找到exe文件或者descriptor.mod文件时
+	//仅当从所在目录下找到launcher-settings.json或者descriptor.mod时
 	//才有可能将所在目录（以及子目录）下的文件识别为Paradox本地化文件和脚本文件
 	
 	override fun getOverriddenFileType(file: VirtualFile): FileType? {
-		if(file is StubVirtualFile || !file.isValid) return null
-		val fileName = file.name
-		val subPaths = LinkedList<String>()
-		subPaths.addFirst(fileName)
-		var currentFile: VirtualFile? = file.parent
-		while(currentFile != null) {
-			val targetFileType = setFileInfoAndGetFileType(file, currentFile, null, subPaths, fileName)
-			if(targetFileType != null){
-				return if(targetFileType != MockLanguageFileType.INSTANCE) targetFileType else null
+		val fileInfo = resolveFileInfo(file)
+		if(fileInfo != null) {
+			val fileType = fileInfo.fileType
+			return when {
+				//模组描述符文件
+				fileType == ParadoxFileType.ParadoxScript -> ParadoxScriptFileType
+				//本地化文件
+				fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
+				//目录或者其他文件（如dds）
+				else -> null
 			}
-			subPaths.addFirst(currentFile.name)
-			currentFile = currentFile.parent
-		}
-		runCatching {
-			file.putUserData(PlsKeys.paradoxFileInfoKey, null)
 		}
 		return null
 	}

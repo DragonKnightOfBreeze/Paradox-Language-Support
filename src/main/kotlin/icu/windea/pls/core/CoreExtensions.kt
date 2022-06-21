@@ -1,128 +1,141 @@
 package icu.windea.pls.core
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
+import com.intellij.openapi.fileTypes.ex.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
+import com.intellij.util.indexing.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.*
+import java.util.*
 
-fun setFileInfoAndGetFileType(
-	file: VirtualFile,
-	root: VirtualFile,
-	project: Project?,
-	subPaths: List<String>,
-	fileName: String
-): FileType? {
-	//只有能够确定根目录类型的文件才会被解析
+fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
+	val rootInfo = rootFile.getUserData(PlsKeys.paradoxRootInfoKey)
+	if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
+		ParadoxRootInfo.cache.add(rootInfo)
+		return rootInfo
+	}
+	ParadoxRootInfo.cache.remove(rootInfo)
+	val resolvedRootInfo = doResolveRootInfo(rootFile, canBeNotAvailable)
+	runCatching {
+		rootFile.putUserData(PlsKeys.paradoxRootInfoKey, resolvedRootInfo)
+	}
+	if(resolvedRootInfo != null) {
+		ParadoxRootInfo.cache.add(resolvedRootInfo)
+	}
+	return resolvedRootInfo
+}
+
+private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean): ParadoxRootInfo? {
+	if(rootFile is StubVirtualFile || !rootFile.isValid) return null
+	if(!rootFile.isDirectory) return null
+	
 	var rootType: ParadoxRootType? = null
-	var gameType: ParadoxGameType? = null
-	var descriptor: VirtualFile? = null
-	if(root !is StubVirtualFile && root.isValid && root.isDirectory) {
-		val rootName = root.nameWithoutExtension //忽略扩展名
-		when {
-			rootName == ParadoxRootType.PdxLauncher.id -> {
-				rootType = ParadoxRootType.PdxLauncher
-				descriptor = root.parent?.findChild(launcherSettingsFileName)
+	var descriptorFile: VirtualFile? = null
+	var markerFile: VirtualFile? = null
+	val rootName = rootFile.nameWithoutExtension //忽略扩展名
+	when {
+		rootName == ParadoxRootType.PdxLauncher.id -> {
+			rootType = ParadoxRootType.PdxLauncher
+			descriptorFile = rootFile.parent?.children?.find {
+				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(launcherSettingsFileName, true)
 			}
-			rootName == ParadoxRootType.PdxOnlineAssets.id -> {
-				rootType = ParadoxRootType.PdxOnlineAssets
-				descriptor = root.parent?.findChild(launcherSettingsFileName)
+			markerFile = descriptorFile
+		}
+		rootName == ParadoxRootType.PdxOnlineAssets.id -> {
+			rootType = ParadoxRootType.PdxOnlineAssets
+			descriptorFile = rootFile.parent?.children?.find {
+				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(launcherSettingsFileName, true)
 			}
-			rootName == ParadoxRootType.TweakerGuiAssets.id -> {
-				rootType = ParadoxRootType.TweakerGuiAssets
-				descriptor = root.parent?.findChild(launcherSettingsFileName)
+			markerFile = descriptorFile
+		}
+		rootName == ParadoxRootType.TweakerGuiAssets.id -> {
+			rootType = ParadoxRootType.TweakerGuiAssets
+			descriptorFile = rootFile.parent?.children?.find {
+				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(launcherSettingsFileName, true)
 			}
-			else -> {
-				for(rootChild in root.children) {
-					val rootChildName = rootChild.name
-					when {
-						rootChildName == launcherSettingsFileName -> {
-							rootType = ParadoxRootType.Game
-							descriptor = rootChild
-							break
-						}
-						rootChildName == descriptorFileName -> {
-							rootType = ParadoxRootType.Mod
-							descriptor = rootChild
-							break
-						}
+			markerFile = descriptorFile
+		}
+		else -> {
+			for(rootChild in rootFile.children) {
+				if(rootChild.isDirectory) continue
+				if(!canBeNotAvailable && !rootChild.isValid) continue
+				val rootChildName = rootChild.name
+				when {
+					rootChildName.equals(launcherSettingsFileName, true) -> {
+						rootType = ParadoxRootType.Game
+						descriptorFile = rootChild
+						markerFile = rootChild
+						break
+					}
+					rootChildName.equals(descriptorFileName, true) -> {
+						rootType = ParadoxRootType.Mod
+						descriptorFile = rootChild
+						if(descriptorFile != null && markerFile != null) break
+					}
+					ParadoxGameType.resolve(rootChild) != null -> {
+						markerFile = rootChild
+						if(descriptorFile != null && markerFile != null) break
 					}
 				}
 			}
 		}
 	}
-	//从launcher-settings.json获取必要信息
-	if(descriptor != null && descriptor.name == launcherSettingsFileName) {
-		//基于其中的gameId的属性的值，得到游戏类型
-		val gameId = jsonMapper.readTree(descriptor.inputStream).get("gameId").textValue()
-		if(gameId != null) {
-			gameType = ParadoxGameType.resolve(gameId)
-		}
-	}
-	//处理得到游戏类型
-	if(gameType == null) {
-		for(rootChild in root.children) {
-			gameType = ParadoxGameType.resolve(rootChild)
-			if(gameType != null) break
-		}
-		if(gameType == null) {
-			gameType = getSettings().defaultGameType
-		}
-	}
-	if(rootType != null) {
-		val path = ParadoxPath.resolve(subPaths)
-		val fileType = getFileType(file, project, gameType, path)
-		
-		//缓存文件信息
-		runCatching {
-			val fileInfo = ParadoxFileInfo(fileName, path, root, descriptor, fileType, rootType, gameType)
-			file.putUserData(PlsKeys.paradoxFileInfoKey, fileInfo)
-		}
-		
-		//只解析特定根目录下的文件
-		return when {
-			//模组描述符文件
-			fileType == ParadoxFileType.ParadoxScript -> ParadoxScriptFileType
-			//本地化文件
-			fileType == ParadoxFileType.ParadoxLocalisation -> ParadoxLocalisationFileType
-			//目录或者其他文件（如dds）
-			else -> MockLanguageFileType.INSTANCE //这里不能直接返回null，否则缓存的文件信息会被清除
-		}
+	if(descriptorFile != null && rootType != null) {
+		return ParadoxRootInfo(rootFile, descriptorFile, markerFile, rootType)
 	}
 	return null
 }
 
-private fun getFileType(file: VirtualFile, project: Project?, gameType: ParadoxGameType, path: ParadoxPath): ParadoxFileType {
-	if(file.isDirectory) return ParadoxFileType.Directory
+fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
+	val resolvedFileInfo = doResolveFileInfo(file)
+	runCatching {
+		file.putUserData(PlsKeys.paradoxFileInfoKey, resolvedFileInfo)
+	}
+	return resolvedFileInfo
+}
+
+fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
+	if(file is StubVirtualFile || !file.isValid) return null
 	val fileName = file.name
-	val fileExtension = file.extension?.lowercase() ?: return ParadoxFileType.Other
-	return when {
-		fileName == descriptorFileName -> ParadoxFileType.ParadoxScript
-		path.canBeScriptFilePath() && fileExtension in scriptFileExtensions && !isIgnored(fileName) && isInFolders(project, gameType, path) -> ParadoxFileType.ParadoxScript
-		path.canBeLocalisationFilePath() && fileExtension in localisationFileExtensions -> ParadoxFileType.ParadoxLocalisation
-		fileExtension in ddsFileExtensions -> ParadoxFileType.Dds
-		else -> ParadoxFileType.Other
+	val subPaths = LinkedList<String>()
+	subPaths.addFirst(fileName)
+	var currentFile: VirtualFile? = file.parent
+	while(currentFile != null) {
+		val rootInfo = resolveRootInfo(currentFile, false)
+		if(rootInfo != null) {
+			val path = ParadoxPath.resolve(subPaths)
+			val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, path)
+			val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootInfo)
+			file.putUserData(PlsKeys.paradoxFileInfoKey, fileInfo)
+			return fileInfo
+		}
+		subPaths.addFirst(currentFile.name)
+		currentFile = currentFile.parent
+	}
+	return null
+}
+
+fun reparseFilesInRoot(rootFile: VirtualFile) {
+	//重新解析指定的根目录中的所有文件，包括非脚本非本地化文件
+	try {
+		FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Root of paradox files $rootFile changed.") { }
+	} catch(e: Exception) {
+		//ignore
+	} finally {
+		//要求重新索引
+		FileBasedIndex.getInstance().requestReindex(rootFile)
 	}
 }
 
-private fun isIgnored(fileName: String): Boolean {
-	return getSettings().finalScriptIgnoredFileNames.contains(fileName)
-}
-
-private fun isInFolders(project: Project?, gameType: ParadoxGameType, path: ParadoxPath): Boolean {
-	//如果存在对应的folders配置，则path要与之匹配，才解析为脚本或本地化文件
-	return when {
-		project != null -> doIsInFolders(project, gameType, path)
-		else -> ProjectManager.getInstance().openProjects.any { doIsInFolders(it, gameType, path) } //任意项目需要重载即可
+fun reparseScriptFiles() {
+	try {
+		FileTypeManagerEx.getInstanceEx().makeFileTypesChange("Ignored file name of paradox script files changed.") { }
+	} catch(e: Exception) {
+		//ignore
+	} finally {
+		//要求重新索引
+		for(rootInfo in ParadoxRootInfo.cache) {
+			FileBasedIndex.getInstance().requestReindex(rootInfo.rootFile)
+		}
 	}
-}
-
-private fun doIsInFolders(project: Project, gameType: ParadoxGameType, path: ParadoxPath): Boolean {
-	//排除除了模组描述符文件以外的在顶级目录的文件
-	if(path.parent.isEmpty()) return false
-	val folders = getCwtConfig(project).get(gameType)?.folders
-	return folders.isNullOrEmpty() || folders.any { it.matchesPath(path.parent) }
 }

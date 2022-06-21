@@ -33,7 +33,7 @@ class ParadoxSettingsState : BaseState() {
 	var scriptRenderRelatedLocalisation by property(true)
 	var scriptRenderRelatedPictures by property(true)
 	
-	var localisationPrimaryLocale by string("")
+	var localisationPrimaryLocale by string("auto")
 	var localisationTruncateLimit by property(30)
 	var localisationRenderLineComment by property(false)
 	var localisationRenderLocalisation by property(true)
@@ -44,7 +44,7 @@ class ParadoxSettingsState : BaseState() {
 	
 	val locales by lazy {
 		buildList {
-			add("")
+			add("auto")
 			addAll(InternalConfigHandler.getLocaleMap().keys)
 		}
 	}

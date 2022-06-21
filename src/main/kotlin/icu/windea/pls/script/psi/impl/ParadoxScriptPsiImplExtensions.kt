@@ -103,11 +103,11 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 				PROPERTY_KEY_TOKEN -> {
 					val text = text
 					val dotIndices = text.indicesOf('.')
-					if(dotIndices.isNotEmpty()){
+					if(dotIndices.isNotEmpty()) {
 						val propertyConfig = getPropertyConfig()
-						if(propertyConfig != null && CwtConfigHandler.supportsScopes(propertyConfig)){
+						if(propertyConfig != null && CwtConfigHandler.supportsScopes(propertyConfig)) {
 							val textRangeInParent = textRangeInParent
-							val ranges =  MutableList(dotIndices.size + 1) { i ->
+							val ranges = MutableList(dotIndices.size + 1) { i ->
 								val start = textRangeInParent.startOffset
 								val end = textRangeInParent.endOffset
 								when {
@@ -129,7 +129,7 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 						return ParadoxKvExpressionInfo(ParadoxKvExpressionType.StringTemplateType, textRangeInParent, children.map { it.textRangeInParent })
 					}
 				}
-				QUOTED_PROPERTY_KEY_TOKEN ->pass()
+				QUOTED_PROPERTY_KEY_TOKEN -> pass()
 				else -> pass()
 			}
 		}
@@ -168,25 +168,26 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	
 	private fun doGetKvExpressionInfo(): ParadoxKvExpressionInfo {
 		val children = children
+		val wholeRange = TextRange.create(0, textLength)
 		if(children.isNotEmpty()) {
-			when(children.first().elementType) {
+			val firstChild = children.first()
+			when(firstChild.elementType) {
 				STRING_TOKEN -> {
-					val text = text
+					val text = firstChild.text
 					val dotIndices = text.indicesOf('.')
-					if(dotIndices.isNotEmpty()){
+					if(dotIndices.isNotEmpty()) {
 						val valueConfig = getValueConfig()
-						if(valueConfig != null && CwtConfigHandler.supportsScopes(valueConfig)){
-							val textRangeInParent = textRangeInParent
-							val ranges =  MutableList(dotIndices.size + 1) { i ->
-								val start = textRangeInParent.startOffset
-								val end = textRangeInParent.endOffset
+						if(valueConfig != null && CwtConfigHandler.supportsScopes(valueConfig)) {
+							val ranges = MutableList(dotIndices.size + 1) { i ->
+								val start = wholeRange.startOffset
+								val end = wholeRange.endOffset
 								when {
 									i == 0 -> TextRange.create(start, start + dotIndices[i])
 									i == dotIndices.size -> TextRange.create(start + dotIndices[i - 1] + 1, end)
 									else -> TextRange.create(start + dotIndices[i - 1] + 1, start + dotIndices[i])
 								}
 							}
-							return ParadoxKvExpressionInfo(ParadoxKvExpressionType.ScopeExpression, textRangeInParent, ranges)
+							return ParadoxKvExpressionInfo(ParadoxKvExpressionType.ScopeExpression, wholeRange, ranges)
 						}
 					}
 					//TODO linkValue
@@ -194,16 +195,16 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 				}
 				PARAMETER, VALUE_STRING_SNIPPET -> {
 					if(children.size == 1) {
-						return ParadoxKvExpressionInfo(ParadoxKvExpressionType.ParameterType, textRangeInParent, listOf(textRangeInParent))
+						return ParadoxKvExpressionInfo(ParadoxKvExpressionType.ParameterType, wholeRange, listOf(wholeRange))
 					} else {
-						return ParadoxKvExpressionInfo(ParadoxKvExpressionType.StringTemplateType, textRangeInParent, children.map { it.textRangeInParent })
+						return ParadoxKvExpressionInfo(ParadoxKvExpressionType.StringTemplateType, wholeRange, children.map { it.textRangeInParent })
 					}
 				}
-				QUOTED_STRING_TOKEN ->pass()
+				QUOTED_STRING_TOKEN -> pass()
 				else -> pass()
 			}
 		}
-		return ParadoxKvExpressionInfo(ParadoxKvExpressionType.LiteralType, textRangeInParent, listOf(textRangeInParent))
+		return ParadoxKvExpressionInfo(ParadoxKvExpressionType.LiteralType, wholeRange, listOf(wholeRange))
 	}
 	
 	override fun subtreeChanged() {

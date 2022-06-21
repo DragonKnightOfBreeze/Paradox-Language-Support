@@ -48,12 +48,11 @@ abstract class ParadoxLibraryType(
 		descriptor.title = PlsBundle.message("library.chooser.title")
 		descriptor.description = PlsBundle.message("library.chooser.description")
 		val root = FileChooser.chooseFile(descriptor, parentComponent, project, contextDirectory) ?: return null
-		setFileInfoAndGetFileType(root, root, project, emptyList(), root.name)
-		val fileInfo = root.fileInfo
-		val descriptorInfo = fileInfo?.getDescriptorInfo(project)
-		if(fileInfo != null && descriptorInfo != null) {
+		val rootInfo = resolveRootInfo(root, false)
+		val descriptorInfo = rootInfo?.descriptorInfo
+		if(rootInfo != null && descriptorInfo != null) {
 			//基于descriptor.mod或launcher-settings.json得到库的名字，由于此文件可能发生变更，不保存库的属性
-			val libraryName = getLibraryName(fileInfo, descriptorInfo)
+			val libraryName = getLibraryName(rootInfo, descriptorInfo)
 			val libraryProperties = ParadoxLibraryProperties.instance
 			return ParadoxNewLibraryConfiguration(libraryName, this, root, libraryProperties)
 		}
@@ -62,9 +61,9 @@ abstract class ParadoxLibraryType(
 		return null
 	}
 	
-	private fun getLibraryName(fileInfo: ParadoxFileInfo, descriptorInfo: ParadoxDescriptorInfo): String {
+	private fun getLibraryName(rootInfo: ParadoxRootInfo, descriptorInfo: ParadoxDescriptorInfo): String {
 		return buildString {
-			val rootType = fileInfo.rootType
+			val rootType = rootInfo.rootType
 			append(libraryNamePrefix).append(" ").append(rootType.description)
 			val version = descriptorInfo.version
 			if(rootType == ParadoxRootType.Mod) append(": ").append(descriptorInfo.name)

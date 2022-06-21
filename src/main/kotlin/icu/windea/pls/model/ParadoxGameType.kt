@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import javax.swing.*
 
@@ -29,12 +29,26 @@ enum class ParadoxGameType(
 			return map[id.lowercase()]
 		}
 		
-		fun resolve(markerFile: VirtualFile): ParadoxGameType?{
-			if(markerFile.isDirectory || markerFile.fileType.isBinary) return null //非目录，非二进制文件
-			val markerFileName = markerFile.name
-			if(!markerFileName.startsWith('.')) return null
-			val id = markerFileName.drop(1)
-			return resolve(id)
+		fun resolve(markerFile: VirtualFile): ParadoxGameType? {
+			try {
+				if(markerFile.isDirectory) return null //非目录
+				val markerFileName = markerFile.name
+				return when {
+					markerFileName == launcherSettingsFileName -> {
+						val gameId = jsonMapper.readTree(markerFile.inputStream).get("gameId").textValue()
+						resolve(gameId)
+					}
+					markerFileName.startsWith('.') -> {
+						val gameId = markerFileName.drop(1)
+						resolve(gameId)
+					}
+					else -> {
+						null
+					}
+				}
+			} catch(e: Exception) {
+				return null
+			}
 		}
 	}
 }

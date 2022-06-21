@@ -1,13 +1,11 @@
 <idea-plugin>
-  <applicationListeners>
-    <listener class="icu.windea.pls.dds.DdsFileListener" topic="com.intellij.openapi.vfs.AsyncFileListener"/>
-  </applicationListeners>
-
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="DDS" implementationClass="icu.windea.pls.dds.DdsFileType" fieldName="INSTANCE" extensions="dds"/>
     <fileLookupInfoProvider implementation="icu.windea.pls.dds.DdsLookupInfoProvider"/>
     <documentationProvider implementation="icu.windea.pls.dds.editor.DdsDocumentationProvider"/>
     <fileEditorProvider implementation="icu.windea.pls.dds.editor.DdsFileEditorProvider"/>
+    
+    <vfs.asyncListener implementation="icu.windea.pls.dds.DdsFileListener"/>
   </extensions>
 
   <actions>

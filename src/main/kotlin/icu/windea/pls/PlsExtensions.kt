@@ -2,7 +2,6 @@
 
 package icu.windea.pls
 
-import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
@@ -31,6 +30,8 @@ import java.util.*
 //region Misc Extensions
 val threadLocalProjectContainer = ThreadLocal<Project?>()
 
+fun getDefaultProject() = ProjectManager.getInstance().defaultProject
+
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
 fun getSettings() = service<ParadoxSettings>().state
@@ -43,11 +44,11 @@ fun getCwtConfig(project: Project) = project.service<CwtConfigProvider>().config
 
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
 	val primaryLocale = getSettings().localisationPrimaryLocale.orEmpty()
-	if(primaryLocale.isNotEmpty()) {
+	if(primaryLocale.isNotEmpty() && primaryLocale != "auto") {
 		val usedLocale = InternalConfigHandler.getLocale(primaryLocale)
 		if(usedLocale != null) return usedLocale
 	}
-	//如果是默认语言区域，则基于OS，如果没有对应的语言区域，则使用英文
+	//则基于OS得到对应的语言区域，或者使用英文
 	val userLanguage = System.getProperty("user.language")
 	return InternalConfigHandler.getLocaleByFlag(userLanguage) ?: InternalConfigHandler.getLocaleByFlag("en")
 }
@@ -128,11 +129,11 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
  * 当前[VirtualFile]的内容文件。（缓存且仍然存在的文件，首个子文件，生成的子文件，或者自身）
  */
 var VirtualFile.contentFile
-	get() = getUserData(PlsKeys.contentVirtualFileKey)?.takeIf { it.exists() }
+	get() = getUserData(PlsKeys.contentFileKey)?.takeIf { it.exists() }
 		?: this.children.firstOrNull()
 		?: ParadoxFileLocator.getGeneratedFileName(this)
 		?: this
-	set(value) = putUserData(PlsKeys.contentVirtualFileKey, value)
+	set(value) = putUserData(PlsKeys.contentFileKey, value)
 //endregion
 
 //region PsiElement Extensions
@@ -173,63 +174,11 @@ private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
-val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserData(PlsKeys.paradoxFileInfoKey)
+val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserDataOnValid(PlsKeys.paradoxFileInfoKey) { it.isValid }
 
 val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //使用原始文件
 
 val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
-
-//TODO 直接编写另外的解析器解析VirtualFile的内容
-fun ParadoxFileInfo.getDescriptorInfo(project: Project): ParadoxDescriptorInfo? {
-	val file = descriptor?.toPsiFile<PsiFile>(project) ?: return null
-	return doGetDescriptorInfo(file)
-}
-
-private fun ParadoxFileInfo.doGetDescriptorInfo(file: PsiFile): ParadoxDescriptorInfo? {
-	return CachedValuesManager.getCachedValue(file, PlsKeys.cachedParadoxDescriptorInfoKey) {
-		//忽略异常
-		val value = runCatching { resolveDescriptorInfo(this, file) }.getOrNull()
-		CachedValueProvider.Result.create(value, file)
-	}
-}
-
-private fun resolveDescriptorInfo(fileInfo: ParadoxFileInfo, descriptorFile: PsiFile): ParadoxDescriptorInfo? {
-	val fileName = descriptorFile.name
-	return when {
-		fileName == descriptorFileName -> {
-			if(descriptorFile !is ParadoxScriptFile) return null
-			val rootBlock = descriptorFile.findOptionalChild<ParadoxScriptRootBlock>() ?: return null
-			var name: String? = null
-			var version: String? = null
-			var picture: String? = null
-			var tags: Set<String>? = null
-			var supportedVersion: String? = null
-			var remoteFileId: String? = null
-			var path: String? = null
-			rootBlock.processProperty { property ->
-				when(property.name) {
-					"name" -> name = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-					"version" -> version = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-					"picture" -> picture = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-					"tags" -> tags = property.findPropertyValue<ParadoxScriptBlock>()?.findValues<ParadoxScriptString>()?.mapTo(mutableSetOf()) { it.stringValue }
-					"supported_version" -> supportedVersion = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-					"remote_file_id" -> remoteFileId = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-					"path" -> path = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-				}
-				true
-			}
-			val nameToUse = name ?: descriptorFile.parent?.name ?: anonymousString //如果没有name属性，则使用根目录名
-			ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
-		}
-		fileName == launcherSettingsFileName -> {
-			val json = jsonMapper.readValue<Map<String, Any?>>(descriptorFile.virtualFile.inputStream)
-			val name = fileInfo.gameType.description
-			val version = json.get("rawVersion")?.toString()
-			ParadoxDescriptorInfo(name, version, isModDescriptor = false)
-		}
-		else -> null
-	}
-}
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
@@ -960,11 +909,11 @@ fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Bool
 	return this
 }
 
-fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Project): StringBuilder {
+fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilder {
 	if(fileInfo != null) {
 		//描述符信息（模组名、版本等）
 		append("[").append(fileInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
-		val descriptorInfo = fileInfo.getDescriptorInfo(project)
+		val descriptorInfo = fileInfo.descriptorInfo
 		if(descriptorInfo != null) {
 			if(fileInfo.rootType == ParadoxRootType.Mod) {
 				append(": ").append(descriptorInfo.name.escapeXml())
@@ -980,16 +929,14 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?, project: Proj
 			//	append(" ").append(PlsDocBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
 			//}
 			//相关链接
-			val rootUri = fileInfo.rootPath?.toUri()?.toString() //通过这种方式获取需要的url
-			if(rootUri != null) {
-				append(" ")
-				appendLink(rootUri, PlsDocBundle.message("name.core.localLinkLabel"))
-				if(remoteFileId != null) {
-					append(" | ")
-					appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
-					append(" | ")
-					appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //链接右边会自带一个特殊图标
-				}
+			val rootUri = fileInfo.rootPath.toUri().toString() //通过这种方式获取需要的url
+			append(" ")
+			appendLink(rootUri, PlsDocBundle.message("name.core.localLinkLabel"))
+			if(remoteFileId != null) {
+				append(" | ")
+				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
+				append(" | ")
+				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //链接右边会自带一个特殊图标
 			}
 		}
 		appendBr()
