@@ -364,12 +364,12 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.FilePath -> {
 				if(!valueType.matchesStringType()) return false
-				val resolvedPath = CwtFilePathExpressionTypes.FilePath.resolve(expression.value, value)
+				val resolvedPath = CwtFilePathExpressionTypes.FilePath.resolve(expression.value, value.normalizePath())
 				return findFileByFilePath(resolvedPath, configGroup.project) != null
 			}
 			CwtDataTypes.Icon -> {
 				if(!valueType.matchesStringType()) return false
-				val resolvedPath = CwtFilePathExpressionTypes.Icon.resolve(expression.value, value) ?: return false
+				val resolvedPath = CwtFilePathExpressionTypes.Icon.resolve(expression.value, value.normalizePath()) ?: return false
 				return findFileByFilePath(resolvedPath, configGroup.project) != null
 			}
 			CwtDataTypes.TypeExpression -> {
@@ -1400,12 +1400,12 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.FilePath -> {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
-				val filePath = expressionType.resolve(expression.value, valueElement.value)
+				val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath())
 				return findFileByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement))?.toPsiFile(project)
 			}
 			CwtDataTypes.Icon -> {
 				val expressionType = CwtFilePathExpressionTypes.Icon
-				val filePath = expressionType.resolve(expression.value, valueElement.value) ?: return null
+				val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath()) ?: return null
 				return findFileByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement))?.toPsiFile(project)
 			}
 			CwtDataTypes.TypeExpression -> {
@@ -1506,12 +1506,12 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.FilePath -> {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
-				val filePath = expressionType.resolve(expression.value, valueElement.value)
+				val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath())
 				return findFilesByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement)).mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataTypes.Icon -> {
 				val expressionType = CwtFilePathExpressionTypes.Icon
-				val filePath = expressionType.resolve(expression.value, valueElement.value) ?: return emptyList()
+				val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath()) ?: return emptyList()
 				return findFilesByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(valueElement)).mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataTypes.TypeExpression -> {

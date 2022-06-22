@@ -6,7 +6,6 @@ import com.google.common.cache.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.io.*
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -16,7 +15,8 @@ import kotlin.math.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {}
+inline fun pass() {
+}
 
 fun Number.format(digits: Int): String {
 	val power = 10.0.pow(abs(digits))
@@ -331,6 +331,26 @@ fun List<String>.matchEntirePath(other: List<String>, ignoreCase: Boolean = true
 		if(path != otherPath) return false
 	}
 	return true
+}
+
+/**
+ * 规范化当前路径。将路径分隔符统一替换成"/"，并去除所有作为前后缀的分隔符。
+ */
+fun String.normalizePath(): String {
+	//目前仅当必要时才调用这个方法
+	val builder = StringBuilder()
+	var separatorFlag = false
+	this.trim('/', '\\').forEach { c ->
+		if(c == '/' || c == '\\'){
+			separatorFlag = true
+		} else if(separatorFlag) {
+			separatorFlag = false
+			builder.append('/').append(c)
+		}else{
+			builder.append(c)
+		}
+	}
+	return builder.toString()
 }
 
 fun Path.exists(): Boolean {
