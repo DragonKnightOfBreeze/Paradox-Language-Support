@@ -130,7 +130,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						checkBox(PlsBundle.message("settings.localisation.doc.renderLocalisation"))
 							.bindSelected(settings::localisationRenderLocalisation)
 							.applyToComponent { toolTipText = PlsBundle.message("settings.localisation.doc.renderLocalisation.tooltip") }
-					}
+					}   
 				}
 			}
 			group(PlsBundle.message("settings.generation")) {

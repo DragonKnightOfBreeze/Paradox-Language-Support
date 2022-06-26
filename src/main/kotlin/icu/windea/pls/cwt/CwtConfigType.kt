@@ -9,15 +9,16 @@ import icu.windea.pls.cwt.psi.*
 enum class CwtConfigType(
 	override val id: String,
 	override val text: String,
-	val isReference: Boolean
+	val isReference: Boolean = false,
+	val localisation: String? = null
 ) : IdAware, TextAware {
-	Type("type", PlsDocBundle.message("name.cwt.type"), false),
-	Subtype("subtype", PlsDocBundle.message("name.cwt.subtype"), false),
-	Enum("enum", PlsDocBundle.message("name.cwt.enum"), false),
-	ComplexEnum("complex enum", PlsDocBundle.message("name.cwt.complexEnum"), false),
-	Value("value", PlsDocBundle.message("name.cwt.value"), false),
-	SingleAlias("single alias", PlsDocBundle.message("name.cwt.singleAlias"), false),
-	Alias("alias", PlsDocBundle.message("name.cwt.alias"), false),
+	Type("type", PlsDocBundle.message("name.cwt.type")),
+	Subtype("subtype", PlsDocBundle.message("name.cwt.subtype")),
+	Enum("enum", PlsDocBundle.message("name.cwt.enum")),
+	ComplexEnum("complex enum", PlsDocBundle.message("name.cwt.complexEnum")),
+	Value("value", PlsDocBundle.message("name.cwt.value")),
+	SingleAlias("single alias", PlsDocBundle.message("name.cwt.singleAlias")),
+	Alias("alias", PlsDocBundle.message("name.cwt.alias")),
 	
 	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), false),
 	ValueValue("value value", PlsDocBundle.message("name.cwt.valueValue"), false),
@@ -26,7 +27,7 @@ enum class CwtConfigType(
 	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink"), true),
 	LocalisationCommand("localisation command", PlsDocBundle.message("name.cwt.localisationCommand"), true),
 	ModifierCategory("modifier category", PlsDocBundle.message("name.cwt.modifierCategory"), true),
-	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true),
+	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true, "mod_$"),
 	Scope("scope", PlsDocBundle.message("name.cwt.scope"), true),
 	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup"), true),
 	Tag("tag", PlsDocBundle.message("name.cwt.tag"), true),

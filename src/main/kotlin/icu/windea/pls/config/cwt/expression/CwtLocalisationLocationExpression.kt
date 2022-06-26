@@ -41,9 +41,14 @@ class CwtLocalisationLocationExpression(
 	
 	//(localisationKey - localisation(s))
 	
+	fun resolvePlaceholder(name: String): String? {
+		if(placeholder == null) return null
+		return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
+	}
+	
 	fun resolve(definitionName: String, definition: ParadoxDefinitionProperty, localeConfig: ParadoxLocaleConfig? = null, project: Project): Pair<String, ParadoxLocalisationProperty?>? {
 		if(placeholder != null) {
-			val key = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
+			val key = resolvePlaceholder(definitionName)!!
 			val localisation = findLocalisation(key, localeConfig, project, hasDefault = true)
 			return key to localisation
 		} else if(propertyName != null) {
@@ -58,10 +63,10 @@ class CwtLocalisationLocationExpression(
 	
 	fun resolveAll(definitionName: String, definition: ParadoxDefinitionProperty, localeConfig: ParadoxLocaleConfig? = null, project: Project): Pair<String, List<ParadoxLocalisationProperty>>? {
 		if(placeholder != null) {
-			val key = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
+			val key = resolvePlaceholder(definitionName)!!
 			val localisations = findLocalisations(key, localeConfig, project, hasDefault = true)
 			return key to localisations
-		} else if(propertyName != null){
+		} else if(propertyName != null) {
 			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
 			val localisations = findLocalisations(key, localeConfig, project, hasDefault = true)

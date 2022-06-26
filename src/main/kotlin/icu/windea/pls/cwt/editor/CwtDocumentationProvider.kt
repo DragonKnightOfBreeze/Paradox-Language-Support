@@ -4,10 +4,12 @@ import com.intellij.lang.documentation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {
@@ -59,6 +61,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
 			buildPropertyDefinition(element, originalElement, name, configType)
+			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
 			buildSupportedScopesContent(element, originalElement, name, configType, project)
 		}
@@ -68,7 +71,9 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
+			val project = element.project
 			buildStringDefinition(element, originalElement, name, configType)
+			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
 		}
 	}
@@ -173,6 +178,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
+		}
+	}
+	
+	private fun StringBuilder.buildLocalisationContent(element: PsiElement, name: String, configType: CwtConfigType?, project: Project){
+		val locationExpression = configType?.localisation?.let { CwtLocalisationLocationExpression.resolve(it) } ?: return
+		val key = locationExpression.resolvePlaceholder(name) ?: return 
+		val localisation = findLocalisation(key, inferParadoxLocale(), project, hasDefault = true) ?: return
+		content {
+			ParadoxLocalisationTextRenderer.renderTo(localisation, this)
 		}
 	}
 	
