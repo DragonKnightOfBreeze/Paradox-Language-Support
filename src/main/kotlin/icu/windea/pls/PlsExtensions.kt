@@ -211,25 +211,25 @@ private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinition
 }
 
 
-fun ParadoxScriptProperty.getPropertyConfig(): CwtPropertyConfig? {
+fun ParadoxScriptProperty.getPropertyConfig(allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
 	val element = this
 	val definitionElementInfo = element.definitionElementInfo ?: return null
-	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
+	if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
 	//如果无法匹配value，则取第一个
 	return definitionElementInfo.matchedPropertyConfig
-		?: definitionElementInfo.propertyConfigs.firstOrNull()
+		?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
 }
 
-fun ParadoxScriptPropertyKey.getPropertyConfig(): CwtPropertyConfig? {
+fun ParadoxScriptPropertyKey.getPropertyConfig(allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
 	val element = this.parent.castOrNull<ParadoxScriptProperty>() ?: return null
 	val definitionElementInfo = element.definitionElementInfo ?: return null
-	if(definitionElementInfo.elementPath.isEmpty()) return null //不允许value直接是定义的value的情况
+	if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
 	//如果无法匹配value，则取第一个
 	return definitionElementInfo.matchedPropertyConfig
-		?: definitionElementInfo.propertyConfigs.firstOrNull()
+		?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
 }
 
-fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
+fun ParadoxScriptValue.getValueConfig(allowDefinitionSelf: Boolean = true, orSingle: Boolean = true): CwtValueConfig? {
 	val element = this
 	val parent = element.parent
 	when(parent) {
@@ -237,9 +237,10 @@ fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 		is ParadoxScriptPropertyValue -> {
 			val property = parent.parent as? ParadoxScriptProperty ?: return null
 			val definitionElementInfo = property.definitionElementInfo ?: return null
+			if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
 			//如果无法匹配value，则取唯一的那个
 			return definitionElementInfo.matchedPropertyConfig?.valueConfig
-				?: definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig
+				?: orSingle.ifTrue { definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig }
 		}
 		//如果value是block中的value
 		is ParadoxScriptBlock -> {
@@ -251,7 +252,7 @@ fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 			val configGroup = getCwtConfig(element.project).getValue(gameType)
 			//如果无法匹配value，则取唯一的那个
 			return childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, element, configGroup) }
-				?: childValueConfigs.singleOrNull()
+				?: orSingle.ifTrue { childValueConfigs.singleOrNull() }
 		}
 		else -> return null
 	}

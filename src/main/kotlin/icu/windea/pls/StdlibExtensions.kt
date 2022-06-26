@@ -18,6 +18,10 @@ import kotlin.math.*
 inline fun pass() {
 }
 
+inline fun <T> Boolean.ifTrue(body: () -> T?): T? = if(this) body() else null
+
+inline fun <T> Boolean.ifFalse(body: () -> T?): T? = if(!this) body() else null
+
 fun Number.format(digits: Int): String {
 	val power = 10.0.pow(abs(digits))
 	return when {
@@ -341,12 +345,12 @@ fun String.normalizePath(): String {
 	val builder = StringBuilder()
 	var separatorFlag = false
 	this.trim('/', '\\').forEach { c ->
-		if(c == '/' || c == '\\'){
+		if(c == '/' || c == '\\') {
 			separatorFlag = true
 		} else if(separatorFlag) {
 			separatorFlag = false
 			builder.append('/').append(c)
-		}else{
+		} else {
 			builder.append(c)
 		}
 	}

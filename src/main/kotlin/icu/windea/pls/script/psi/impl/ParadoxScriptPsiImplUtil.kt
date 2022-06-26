@@ -538,7 +538,7 @@ object ParadoxScriptPsiImplUtil {
 		return runCatching {
 			val parent = element.parent
 			val colorTypeOptionLocation = when {
-				parent is ParadoxScriptPropertyValue -> parent.parent.castOrNull<ParadoxScriptProperty>()?.getPropertyConfig()
+				parent is ParadoxScriptPropertyValue -> parent.parent.castOrNull<ParadoxScriptProperty>()?.getPropertyConfig(allowDefinitionSelf = true)
 				else -> element.getValueConfig()
 			}
 			val colorTypeOption = colorTypeOptionLocation?.options?.find { it.key == "color_type" } ?: return@runCatching null
