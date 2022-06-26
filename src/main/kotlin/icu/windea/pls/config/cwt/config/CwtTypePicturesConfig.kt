@@ -10,7 +10,7 @@ data class CwtTypePicturesConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,
 	val configs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
 ) : CwtConfig<CwtProperty> {
-	private val mergesConfigsCache: Cache<String, List<CwtLocationConfig>> by lazy { createCache() }
+	private val mergesConfigsCache: Cache<String, List<CwtLocationConfig>> by lazy { CacheBuilder.newBuilder().build() }
 	
 	/**
 	 * 得到根据子类型列表进行合并后的配置。

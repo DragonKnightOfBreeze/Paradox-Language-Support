@@ -7,9 +7,9 @@ import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * 不支持的颜色的检查。
+ * 无法解析的颜色的检查。
  */
-class UnsupportedColorInspection : LocalInspectionTool() {
+class UnresolvedColorInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(holder)
 	}
@@ -20,7 +20,7 @@ class UnsupportedColorInspection : LocalInspectionTool() {
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) return
 			val location = element.colorId ?: return
-			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unsupportedColor.description", colorName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+			holder.registerProblem(location, PlsBundle.message("localisation.inspection.unresolvedColor.description", colorName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 				ImportGameOrModDirectoryFix(location)
 			)
 		}

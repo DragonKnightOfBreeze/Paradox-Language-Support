@@ -3,7 +3,6 @@ package icu.windea.pls
 import com.intellij.openapi.util.*
 import javax.swing.*
 
-@Suppress("unused")
 object PlsIcons {
 	@JvmStatic val libraryIcon = loadIcon("/icons/library.svg")
 	

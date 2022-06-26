@@ -19,6 +19,7 @@
 * [X] 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
 * BUG修复：
   * [X] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
+  * [X] 修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
 * 代码优化：
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
@@ -33,6 +34,7 @@
   * [X] 优化代码补全性能：尽可能确保提示本地化图标和属性引用时不会导致`ProcessCanceledException`
   * [X] 可以根据扩展的CWT规则显示和设置block所对应的颜色
   * [X] 脚本文件：可以显示类型信息以及导航到类型定义，如果可用 - 支持定义元素，显示其规则表达式以及导航到规则声明
+  * [X] 解析本地化颜色直接基于`textcolor`类型的定义，在`shared.cwt`中定义，移除内置规则中的`colors`
 * 新增功能：
   * [ ] 当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。 
   * [X] 本地化文件：提供快速更改文本颜色的悬浮工具栏

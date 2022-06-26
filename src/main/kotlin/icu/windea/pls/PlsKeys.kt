@@ -3,16 +3,23 @@ package icu.windea.pls
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.model.*
 
 object PlsKeys {
-	val paradoxRootInfoKey = Key<ParadoxRootInfo>("paradoxRootInfo")
-	val paradoxDescriptorInfoKey = Key<ParadoxDescriptorInfo>("paradoxDescriptorInfo")
-	val paradoxFileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
+	val rootInfoKey = Key<ParadoxRootInfo>("paradoxRootInfo")
+	val descriptorInfoKey = Key<ParadoxDescriptorInfo>("paradoxDescriptorInfo")
+	val fileInfoKey = Key<ParadoxFileInfo>("paradoxFileInfo")
 	val contentFileKey = Key<VirtualFile>("paradoxContentFile")
 	
-	val cachedParadoxDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
-	val cachedParadoxDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
-	val cachedParadoxLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
+	val cachedDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
+	val cachedDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
+	val cachedLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
+	
+	val textColorConfigKey = Key<ParadoxTextColorConfig>("paradoxTextColorConfig")
+	
+	val definitionConfigKeys = setOf<Key<out ParadoxDefinitionConfig>>(
+		textColorConfigKey
+	)
 }
 

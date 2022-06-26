@@ -67,6 +67,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_pathName = null
 		_originalPathName = null
 		_parameterNames = null
+		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) }
 		super.subtreeChanged()
 	}
 }

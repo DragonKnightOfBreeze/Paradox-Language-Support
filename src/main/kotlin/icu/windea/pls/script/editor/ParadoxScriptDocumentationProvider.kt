@@ -124,6 +124,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val localisationTargetMap = mutableMapOf<String, ParadoxLocalisationProperty>()
 			val pictureTargetMap = mutableMapOf<String, Tuple2<PsiFile, Int>>()
 			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, pictureTargetMap)
+			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
 			val sections = mutableMapOf<String, String>()
 			buildRelatedPictureSections(pictureTargetMap, sections)
@@ -238,6 +239,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun StringBuilder.buildExtDocContent(definitionInfo: ParadoxDefinitionInfo) {
+		//加上从PlsExtDocBundle中得到的文档文本
+		val docText = PlsExtDocBundle.message(definitionInfo.name, definitionInfo.type, definitionInfo.gameType)
+		if(docText != null && docText.isNotEmpty()){
+			content { 
+				append(docText)
+			}
+		}
+	}
+	
 	private fun buildRelatedPictureSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
 		//加上DDS图片预览图
 		if(getSettings().scriptRenderRelatedPictures) {
@@ -276,7 +287,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
 		//加上单行注释文本
 		if(getSettings().scriptRenderLineComment) {
-			val docText = getDocTextFromPreviousComment(element)
+			val docText = getLineCommentDocText(element)
 			if(docText != null && docText.isNotEmpty()) {
 				content {
 					append(docText)

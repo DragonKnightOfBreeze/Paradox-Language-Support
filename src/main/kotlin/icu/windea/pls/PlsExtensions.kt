@@ -13,6 +13,8 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.config.definition.*
+import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.psi.*
@@ -28,8 +30,6 @@ import java.lang.Integer.*
 import java.util.*
 
 //region Misc Extensions
-val threadLocalProjectContainer = ThreadLocal<Project?>()
-
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
@@ -53,9 +53,8 @@ fun inferParadoxLocale(): ParadoxLocaleConfig? {
 	return InternalConfigHandler.getLocaleByFlag(userLanguage) ?: InternalConfigHandler.getLocaleByFlag("en")
 }
 
-/**得到指定元素之前的所有直接的注释的文本，作为文档注释，跳过空白。*/
-fun getDocTextFromPreviousComment(element: PsiElement): String? {
-	//我们认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释，但这并非文档注释的全部
+fun getLineCommentDocText(element: PsiElement): String? {
+	//认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
 	var lines: LinkedList<String>? = null
 	var prevElement = element.prevSibling ?: element.parent?.prevSibling
 	while(prevElement != null) {
@@ -74,10 +73,7 @@ fun getDocTextFromPreviousComment(element: PsiElement): String? {
 	return lines?.joinToString("<br>")
 }
 
-/**
- * 判断指定的注释是否可认为是之前的注释。
- */
-fun isPreviousComment(element: PsiElement): Boolean {
+private fun isPreviousComment(element: PsiElement): Boolean {
 	val elementType = element.elementType
 	return elementType == ParadoxLocalisationElementTypes.COMMENT || elementType == ParadoxScriptElementTypes.COMMENT
 }
@@ -90,20 +86,6 @@ fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String
 	return when {
 		expression.startsWith('!') -> subtypes.isEmpty() || expression.drop(1) !in subtypes
 		else -> subtypes.isNotEmpty() && expression in subtypes
-	}
-}
-
-/**
- * 得到event定义的需要匹配的namespace。基于名为"namespace"的顶级脚本属性（忽略大小写）。
- */
-fun getEventNamespace(event: ParadoxDefinitionProperty): String? {
-	var current = event.prevSibling ?: return null
-	while(true) {
-		if(current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
-			val namespace = current.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: return null
-			return namespace.stringValue
-		}
-		current = current.prevSibling ?: return null
 	}
 }
 
@@ -174,7 +156,7 @@ private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
-val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserDataOnValid(PlsKeys.paradoxFileInfoKey) { it.isValid }
+val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserDataOnValid(PlsKeys.fileInfoKey) { it.isValid }
 
 val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //使用原始文件
 
@@ -183,7 +165,7 @@ val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
 private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionInfoKey) {
+	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
 		val value = resolveDefinitionInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
@@ -210,7 +192,7 @@ private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionEl
 	//必须是脚本语言的PsiElement
 	if(element.language != ParadoxScriptLanguage) return null
 	//return resolveDefinitionElementInfo(element)
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxDefinitionElementInfoKey) {
+	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
 		val value = resolveDefinitionElementInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
@@ -278,7 +260,7 @@ fun ParadoxScriptValue.getValueConfig(): CwtValueConfig? {
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)
 
 private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParadoxLocalisationInfoKey) {
+	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
 		val value = resolveLocalisationInfo(element)
 		CachedValueProvider.Result.create(value, element)
 	}
@@ -296,19 +278,23 @@ private fun doGetLocaleConfig(id: String, project: Project): ParadoxLocaleConfig
 	return InternalConfigHandler.getLocale(id, project)
 }
 
-val ParadoxLocalisationPropertyReference.colorConfig: ParadoxColorConfig?
+val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
 	get() {
-		val colorId = this.propertyReferenceParameter?.text?.firstOrNull() //TODO 需要确认
-		if(colorId != null && colorId.isUpperCase()) {
-			return doGetColorConfig(colorId.toString(), project)
-		}
-		return null
+		//大写或小写字母，不限定位置
+		val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
+		val gameType = this.fileInfo?.gameType ?: return null
+		return doGetColorConfig(colorId.toString(), gameType, project)
 	}
 
-val ParadoxLocalisationColorfulText.colorConfig: ParadoxColorConfig? get() = name?.let { doGetColorConfig(it, project) }
+val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
+	get() {
+		val colorId = this.name ?: return null
+		val gameType = this.fileInfo?.gameType ?: return null
+		return doGetColorConfig(colorId, gameType, project)
+	}
 
-private fun doGetColorConfig(id: String, project: Project): ParadoxColorConfig? {
-	return InternalConfigHandler.getColor(id, project)
+private fun doGetColorConfig(id: String, gameType: ParadoxGameType, project: Project): ParadoxTextColorConfig? {
+	return DefinitionConfigHandler.getTextColorConfig(id, gameType, project)
 }
 //endregion
 

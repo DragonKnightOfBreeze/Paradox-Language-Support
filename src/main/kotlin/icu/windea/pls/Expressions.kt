@@ -25,7 +25,7 @@ interface ExpressionResolver<T : Expression> {
 }
 
 abstract class CachedExpressionResolver<T : Expression> : ExpressionResolver<T> {
-	protected val cache: LoadingCache<String, T> by lazy { createCache { doResolve(it) } }
+	protected val cache: LoadingCache<String, T> by lazy { CacheBuilder.newBuilder().buildFrom { doResolve(it) }}
 	
 	override fun resolve(expressionString: String): T {
 		return cache.get(expressionString)

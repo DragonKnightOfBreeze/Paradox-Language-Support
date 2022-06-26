@@ -765,7 +765,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeValue(context:PsiElement, expression: CwtValueExpression, keyword: String, quoted: Boolean, config: CwtKvConfig<*>,
+	fun completeValue(context: PsiElement, expression: CwtValueExpression, keyword: String, quoted: Boolean, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
 		when(expression.type) {
@@ -1679,5 +1679,10 @@ object CwtConfigHandler {
 		val commandConfig = localisationCommands[name] ?: return null
 		return commandConfig.pointer.element
 	}
-//endregion
+	
+	fun resolveLocalisationColor(id: String, configGroup: CwtConfigGroup): PsiElement? {
+		//解析为类型为textcolor的定义
+		return findDefinitionByType(id, "textcolor", configGroup.project)
+	}
+	//endregion
 }

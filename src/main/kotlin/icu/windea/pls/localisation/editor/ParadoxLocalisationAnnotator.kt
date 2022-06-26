@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
+import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
@@ -45,11 +46,10 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		val colorConfig = element.colorConfig
 		if(colorConfig != null) {
-			val colorId = colorConfig.id
 			val location = element.propertyReferenceParameter
 			if(location != null) {
 				val startOffset = location.startOffset
-				annotateColor(colorId, element.project, holder, TextRange(startOffset, startOffset + 1))
+				annotateColor(colorConfig, holder, TextRange(startOffset, startOffset + 1))
 			}
 		}
 	}
@@ -58,17 +58,16 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 		//颜色高亮
 		val colorConfig = element.colorConfig
 		if(colorConfig != null) {
-			val colorId = colorConfig.id
 			val location = element.colorId
 			if(location != null) {
-				annotateColor(colorId, element.project, holder, location.textRange)
+				annotateColor(colorConfig, holder, location.textRange)
 			}
 		}
 	}
 	
-	private fun annotateColor(colorId: String, project: Project, holder: AnnotationHolder, range: TextRange) {
+	private fun annotateColor(colorConfig: ParadoxTextColorConfig, holder: AnnotationHolder, range: TextRange) {
 		//颜色高亮
-		val attributesKey = Keys.getColorKey(colorId, project) ?: return
+		val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
 		holder.newSilentAnnotation(INFORMATION)
 			.range(range).textAttributes(attributesKey)
 			.create()

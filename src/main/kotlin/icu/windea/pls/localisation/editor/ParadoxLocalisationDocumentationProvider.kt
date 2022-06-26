@@ -213,7 +213,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	private fun StringBuilder.buildLineCommentContent(element: PsiElement) {
 		//加上单行注释文本
 		if(getSettings().localisationRenderLineComment) {
-			val docText = getDocTextFromPreviousComment(element)
+			val docText = getLineCommentDocText(element)
 			if(docText != null && docText.isNotEmpty()) {
 				content {
 					append(docText)

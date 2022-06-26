@@ -29,10 +29,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val fileName = event.childName
 				if(!isPossibleDescriptorOrMarkerFile(fileName)) return
 				val rootFile = event.parent
-				val oldRootInfo = rootFile.getUserData(PlsKeys.paradoxRootInfoKey)
+				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null){
 					ParadoxRootInfo.cache.remove(oldRootInfo)
-					rootFile.putUserData(PlsKeys.paradoxRootInfoKey, null)
+					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return
 				if(fileName == rootInfo.descriptorFile.name) {
@@ -51,10 +51,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				if(!isPossibleDescriptorOrMarkerFile(file.name)) return
 				reparseFilesInRoot(event.oldParent)
 				val rootFile = event.newParent
-				val oldRootInfo = rootFile.getUserData(PlsKeys.paradoxRootInfoKey)
+				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null){
 					ParadoxRootInfo.cache.remove(oldRootInfo)
-					rootFile.putUserData(PlsKeys.paradoxRootInfoKey, null)
+					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return
 				if(file == rootInfo.descriptorFile) {
@@ -67,14 +67,14 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val file = event.file
 				if(!isPossibleDescriptorOrMarkerFile(file.name)) return
 				val rootFile = file.parent ?: return
-				val oldFileInfo = rootFile.getUserData(PlsKeys.paradoxRootInfoKey)
+				val oldFileInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldFileInfo != null){
 					ParadoxRootInfo.cache.remove(oldFileInfo)
-					rootFile.putUserData(PlsKeys.paradoxRootInfoKey, null)
+					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return
 				if(file == rootInfo.descriptorFile) {
-					file.putUserData(PlsKeys.paradoxDescriptorInfoKey, null) //清空描述符信息缓存
+					file.putUserData(PlsKeys.descriptorInfoKey, null) //清空描述符信息缓存
 				} else if(file == rootInfo.markerFile && file.name == launcherSettingsFileName) {
 					reparseFilesInRoot(rootFile) //这种情况下也需要重新解析
 				}
@@ -83,10 +83,10 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val file = event.file
 				if(!isPossibleDescriptorOrMarkerFile(file.name)) return
 				val rootFile = file.parent
-				val oldRootInfo = rootFile.getUserData(PlsKeys.paradoxRootInfoKey)
+				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null){
 					ParadoxRootInfo.cache.remove(oldRootInfo)
-					rootFile.putUserData(PlsKeys.paradoxRootInfoKey, null)
+					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return
 				if(file == rootInfo.descriptorFile) {

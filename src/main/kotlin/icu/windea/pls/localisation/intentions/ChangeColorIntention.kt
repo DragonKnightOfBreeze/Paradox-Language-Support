@@ -9,8 +9,8 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.*
-import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.config.definition.*
+import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -34,25 +34,26 @@ class ChangeColorIntention : IntentionAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
-			val colorConfigs = InternalConfigHandler.getColors(project)
-			JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs)).showInBestPositionFor(editor)
+			val gameType = element.fileInfo?.gameType ?: return
+			val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project)
+			JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs.toTypedArray())).showInBestPositionFor(editor)
 		}
 	}
 	
 	private class Popup(
 		private val value: ParadoxLocalisationColorfulText,
-		values: Array<ParadoxColorConfig>
-	) : BaseListPopupStep<ParadoxColorConfig>(PlsBundle.message("localisation.intention.changeColor.title"), *values) {
-		override fun getIconFor(value: ParadoxColorConfig) = value.icon
+		values: Array<ParadoxTextColorConfig>
+	) : BaseListPopupStep<ParadoxTextColorConfig>(PlsBundle.message("localisation.intention.changeColor.title"), *values) {
+		override fun getIconFor(value: ParadoxTextColorConfig) = value.icon
 		
-		override fun getTextFor(value: ParadoxColorConfig) = value.text
+		override fun getTextFor(value: ParadoxTextColorConfig) = value.text
 		
 		override fun getDefaultOptionIndex() = 0
 		
 		override fun isSpeedSearchEnabled(): Boolean = true
 		
-		override fun onChosen(selectedValue: ParadoxColorConfig, finalChoice: Boolean): PopupStep<*>? {
-			runUndoTransparentWriteAction { value.setName(selectedValue.id) }
+		override fun onChosen(selectedValue: ParadoxTextColorConfig, finalChoice: Boolean): PopupStep<*>? {
+			runUndoTransparentWriteAction { value.setName(selectedValue.name) }
 			return PopupStep.FINAL_CHOICE
 		}
 	}

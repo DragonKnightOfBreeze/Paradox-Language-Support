@@ -8,7 +8,6 @@ import icu.windea.pls.*
 import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -41,7 +40,7 @@ class CwtConfigGroup(
 	
 	//同名的alias可以有多个
 	val aliases: Map<String, Map<@CaseInsensitive String, List<CwtAliasConfig>>>
-	val definitions: Map<String, CwtDefinitionConfig>
+	val declarations: Map<String, CwtDeclarationConfig>
 	
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
@@ -65,7 +64,7 @@ class CwtConfigGroup(
 		scopeGroups = mutableMapOf()
 		singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
 		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
-		definitions = mutableMapOf()
+		declarations = mutableMapOf()
 		
 		//目前不检查配置文件的位置和文件名
 		
@@ -207,9 +206,8 @@ class CwtConfigGroup(
 						}
 						
 						//其他情况，放到definition中
-						val definitionName = key
-						val definitionConfig = resolveDefinitionConfig(property, definitionName)
-						definitions[definitionName] = definitionConfig
+						val declarationConfig = resolveDefinitionConfig(property, key)
+						declarations[key] = declarationConfig
 					}
 				}
 			}
@@ -525,7 +523,7 @@ class CwtConfigGroup(
 		return CwtAliasConfig(propertyConfig.pointer, name, subName, propertyConfig)
 	}
 	
-	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDefinitionConfig {
+	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
 		if(propertyConfig.properties != null) {
 			val configs = SmartList<Pair<String?, CwtPropertyConfig>>()
 			for(prop in propertyConfig.properties) {
@@ -542,9 +540,9 @@ class CwtConfigGroup(
 					configs.add(null to prop)
 				}
 			}
-			return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfig, configs)
+			return CwtDeclarationConfig(propertyConfig.pointer, name, propertyConfig, configs)
 		} else {
-			return CwtDefinitionConfig(propertyConfig.pointer, name, propertyConfig, null)
+			return CwtDeclarationConfig(propertyConfig.pointer, name, propertyConfig, null)
 		}
 	}
 	
@@ -649,7 +647,7 @@ class CwtConfigGroup(
 		//判断path_extension是否匹配
 		val pathExtensionConfig = typeConfig.pathExtension //String?
 		if(pathExtensionConfig != null) {
-			if(pathExtensionConfig != path.fileExtension) return false
+			if(pathExtensionConfig != "." + path.fileExtension) return false
 		}
 		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
 		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）

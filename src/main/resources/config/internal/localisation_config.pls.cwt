@@ -54,41 +54,41 @@ locales = {
 	}
 }
 
-### Localisation colors
-### See: <code>interface/fonts.gfx#bitmapfonts.textcolors</code>
-### See cwt rule: <code>complex_enum[textcolors]</code>
-### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes">Color Codes</a>
-## loc_format = html
-colors = {
-	### Purple
-	M = { 163 53 238 }
-	### Brown
-	L = { 195 176 145 }
-	### Green
-	G = { 41 225 38 }
-	### Red
-	R = { 252 86 70 }
-	### Blue
-	B = { 51 167 255 }
-	### Yellow
-	Y = { 247 252 52 }
-	### Orange
-	H = { 251 170 41 }
-	### Light Grey
-	T = { 255 255 255 }
-	### Teal
-	E = { 135 255 207 }
-	### Dark Orange
-	S = { 228 156 42 }
-	### White
-	W = { 255 255 255 }
-	### Light Red
-	P = { 225 110 110 }
-	### Grey
-	g = { 128 128 128 }
-	### Light Blue
-	l = { 51 167 255 }
-}
+# ### Localisation colors
+# ### See: <code>interface/fonts.gfx#bitmapfonts.textcolors</code>
+# ### See cwt rule: <code>complex_enum[textcolors]</code>
+# ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes">Color Codes</a>
+# ## loc_format = html
+# colors = {
+# 	### Purple
+# 	M = { 163 53 238 }
+# 	### Brown
+# 	L = { 195 176 145 }
+# 	### Green
+# 	G = { 41 225 38 }
+# 	### Red
+# 	R = { 252 86 70 }
+# 	### Blue
+# 	B = { 51 167 255 }
+# 	### Yellow
+# 	Y = { 247 252 52 }
+# 	### Orange
+# 	H = { 251 170 41 }
+# 	### Light Grey
+# 	T = { 255 255 255 }
+# 	### Teal
+# 	E = { 135 255 207 }
+# 	### Dark Orange
+# 	S = { 228 156 42 }
+# 	### White
+# 	W = { 255 255 255 }
+# 	### Light Red
+# 	P = { 225 110 110 }
+# 	### Grey
+# 	g = { 128 128 128 }
+# 	### Light Blue
+# 	l = { 51 167 255 }
+# }
 
 ### Predefined variables used in localisation text
 ### See wiki: <a href="https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes">$ Codes</a>

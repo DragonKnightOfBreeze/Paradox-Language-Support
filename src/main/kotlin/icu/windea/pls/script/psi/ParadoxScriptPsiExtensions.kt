@@ -3,7 +3,6 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -28,7 +27,7 @@ internal fun ParadoxDefinitionProperty.clearDefinitionElementInfo() {
 		override fun visitElement(element: PsiElement) {
 			if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
 				if(element is ParadoxScriptProperty || element is ParadoxScriptValue) {
-					element.putUserData(PlsKeys.cachedParadoxDefinitionElementInfoKey, null)
+					element.putUserData(PlsKeys.cachedDefinitionElementInfoKey, null)
 				}
 				super.visitElement(element)
 			}

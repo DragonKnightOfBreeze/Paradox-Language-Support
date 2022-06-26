@@ -2,25 +2,16 @@
 
 package icu.windea.pls
 
-import com.google.common.base.*
 import com.google.common.cache.*
 
 private const val maxCacheSize = 1000L
 
-fun <K : Any, V> createCache(): Cache<K, V> {
-	return CacheBuilder.newBuilder().build()
-}
-
-fun <K : Any, V> createLimitedCache(): Cache<K, V> {
-	return CacheBuilder.newBuilder().maximumSize(maxCacheSize).build()
-}
-
-fun <K : Any, V> createCache(builder: (K) -> V): LoadingCache<K, V> {
-	return CacheBuilder.newBuilder().build(CacheLoader.from(Function { builder(it) }))
-}
-
-fun <K : Any, V> createLimitedCache(builder: (K) -> V): LoadingCache<K, V> {
-	return CacheBuilder.newBuilder().maximumSize(maxCacheSize).build(CacheLoader.from(Function { builder(it) }))
+inline fun <K,V, K1: K, V1:V> CacheBuilder<K,V>.buildFrom(crossinline builder: (K1) -> V1): LoadingCache<K1, V1> {
+	return build(object: CacheLoader<K1,V1>(){
+		override fun load(key: K1): V1 {
+			return builder(key)
+		}
+	})
 }
 
 inline fun <K:Any, V> Cache<K, V>.getOrPut(key: K,crossinline defaultValue: () ->V):V{

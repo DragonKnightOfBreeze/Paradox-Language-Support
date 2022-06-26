@@ -17,7 +17,7 @@ class ParadoxPath private constructor(
 	companion object Resolver {
 		val EmptyPath = ParadoxPath("")
 		
-		private val cache: LoadingCache<String, ParadoxPath> = createCache { path -> ParadoxPath(path) }
+		private val cache: LoadingCache<String, ParadoxPath> = CacheBuilder.newBuilder().buildFrom{ ParadoxPath(it) }
 		
 		fun resolve(path: String) = cache[path]
 		

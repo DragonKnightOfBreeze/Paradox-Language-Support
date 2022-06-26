@@ -74,7 +74,7 @@ class ParadoxDefinitionInfo(
 	}
 	
 	val definition: List<CwtPropertyConfig> by lazy {
-		configGroup.definitions.get(type)?.getMergedConfigs(subtypes) ?: emptyList()
+		configGroup.declarations.get(type)?.getMergedConfigs(subtypes) ?: emptyList()
 	}
 	
 	val types: List<String> by lazy {
@@ -96,7 +96,7 @@ class ParadoxDefinitionInfo(
 	val typeCount get() = types.size
 	val localisationConfig get() = typeConfig.localisation
 	val picturesConfig get() = typeConfig.pictures
-	val definitionConfig get() = configGroup.definitions.get(type)
+	val definitionConfig get() = configGroup.declarations.get(type)
 	val graphRelatedTypes get() = typeConfig.graphRelatedTypes
 	val unique get() = typeConfig.unique
 	val severity get() = typeConfig.severity

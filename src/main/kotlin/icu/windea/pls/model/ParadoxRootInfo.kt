@@ -27,10 +27,10 @@ class ParadoxRootInfo(
 	val isAvailable get() = descriptorFile.isValid && (markerFile?.isValid != false) 
 	
 	private fun doGetDescriptorInfo(): ParadoxDescriptorInfo? {
-		val result = descriptorFile.getUserData(PlsKeys.paradoxDescriptorInfoKey)
+		val result = descriptorFile.getUserData(PlsKeys.descriptorInfoKey)
 		if(result != null) return result
 		val resolved = runCatching { resolveDescriptorInfo(descriptorFile) }.getOrNull()
-		descriptorFile.putUserData(PlsKeys.paradoxDescriptorInfoKey, resolved)
+		descriptorFile.putUserData(PlsKeys.descriptorInfoKey, resolved)
 		return resolved
 	}
 	

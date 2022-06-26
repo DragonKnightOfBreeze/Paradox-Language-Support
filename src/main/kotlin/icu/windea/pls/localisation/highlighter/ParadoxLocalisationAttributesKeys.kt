@@ -1,13 +1,12 @@
 package icu.windea.pls.localisation.highlighter
 
+import com.google.common.cache.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.config.internal.*
 import java.awt.*
 
 @Suppress("DEPRECATION")
@@ -32,27 +31,25 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.localisation"), PROPERTY_KEY_KEY)
 	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.syncedLocalisation"), PROPERTY_KEY_KEY)
 	
-	private val colorKeyCache = createCache<Color, TextAttributesKey> { color ->
+	private val colorKeyCache = CacheBuilder.newBuilder().buildFrom { color: Color ->
 		createTextAttributesKey("${PlsBundle.message("localisation.externalName.color")}_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
 			foregroundColor = color
 		})
 	}
 	
 	@JvmStatic
-	fun getColorKey(id: String, project: Project): TextAttributesKey? {
-		val color = InternalConfigHandler.getColor(id, project)?.color ?: return null
+	fun getColorKey(color: Color): TextAttributesKey? {
 		return colorKeyCache.get(color)
 	}
 	
-	private val colorOnlyKeyCache = createCache<Color, TextAttributesKey> { color ->
+	private val colorOnlyKeyCache = CacheBuilder.newBuilder().buildFrom { color: Color ->
 		createTextAttributesKey("${PlsBundle.message("localisation.externalName.color")}_${color.rgb}", TextAttributes().apply {
 			foregroundColor = color
 		})
 	}
 	
 	@JvmStatic
-	fun getColorOnlyKey(id: String, project: Project): TextAttributesKey? {
-		val color = InternalConfigHandler.getColor(id, project)?.color ?: return null
+	fun getColorOnlyKey(color: Color): TextAttributesKey? {
 		return colorOnlyKeyCache.get(color)
 	}
 }

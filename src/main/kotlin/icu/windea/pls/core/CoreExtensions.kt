@@ -9,7 +9,7 @@ import icu.windea.pls.model.*
 import java.util.*
 
 fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
-	val rootInfo = rootFile.getUserData(PlsKeys.paradoxRootInfoKey)
+	val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 	if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
 		ParadoxRootInfo.cache.add(rootInfo)
 		return rootInfo
@@ -17,7 +17,7 @@ fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): P
 	ParadoxRootInfo.cache.remove(rootInfo)
 	val resolvedRootInfo = doResolveRootInfo(rootFile, canBeNotAvailable)
 	runCatching {
-		rootFile.putUserData(PlsKeys.paradoxRootInfoKey, resolvedRootInfo)
+		rootFile.putUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
 	}
 	if(resolvedRootInfo != null) {
 		ParadoxRootInfo.cache.add(resolvedRootInfo)
@@ -89,7 +89,7 @@ private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean)
 fun resolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
 	val resolvedFileInfo = doResolveFileInfo(file)
 	runCatching {
-		file.putUserData(PlsKeys.paradoxFileInfoKey, resolvedFileInfo)
+		file.putUserData(PlsKeys.fileInfoKey, resolvedFileInfo)
 	}
 	return resolvedFileInfo
 }
@@ -106,7 +106,7 @@ fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
 			val path = ParadoxPath.resolve(subPaths)
 			val fileType = ParadoxFileType.resolve(file, rootInfo.gameType, path)
 			val fileInfo = ParadoxFileInfo(fileName, path, fileType, rootInfo)
-			file.putUserData(PlsKeys.paradoxFileInfoKey, fileInfo)
+			file.putUserData(PlsKeys.fileInfoKey, fileInfo)
 			return fileInfo
 		}
 		subPaths.addFirst(currentFile.name)

@@ -9,16 +9,16 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
-data class CwtDefinitionConfig(
+data class CwtDeclarationConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	val name: String,
 	val propertyConfig: CwtPropertyConfig, //definitionName = ...
 	val configs: List<Pair<String?, CwtPropertyConfig>>? = null, //(subtypeExpression?, propConfig)
 ) : CwtConfig<CwtProperty> {
-	private val mergeConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
-	private val configsCache: Cache<String, List<CwtKvConfig<*>>> by lazy { createCache() }
-	private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { createCache() }
-	private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { createCache() }
+	private val mergeConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().build() }
+	private val configsCache: Cache<String, List<CwtKvConfig<*>>> by lazy { CacheBuilder.newBuilder().build() }
+	private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().build() }
+	private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { CacheBuilder.newBuilder().build() }
 	
 	private val propertyConfigList by lazy { propertyConfig.toSingletonList() }
 	
