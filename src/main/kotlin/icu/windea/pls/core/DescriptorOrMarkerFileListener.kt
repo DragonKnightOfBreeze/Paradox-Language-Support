@@ -31,7 +31,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = event.parent
 				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null){
-					ParadoxRootInfo.cache.remove(oldRootInfo)
+					ParadoxRootInfo.values.remove(oldRootInfo)
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return
@@ -53,7 +53,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = event.newParent
 				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null){
-					ParadoxRootInfo.cache.remove(oldRootInfo)
+					ParadoxRootInfo.values.remove(oldRootInfo)
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return
@@ -69,7 +69,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = file.parent ?: return
 				val oldFileInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldFileInfo != null){
-					ParadoxRootInfo.cache.remove(oldFileInfo)
+					ParadoxRootInfo.values.remove(oldFileInfo)
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return
@@ -85,7 +85,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootFile = file.parent
 				val oldRootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 				if(oldRootInfo != null){
-					ParadoxRootInfo.cache.remove(oldRootInfo)
+					ParadoxRootInfo.values.remove(oldRootInfo)
 					rootFile.putUserData(PlsKeys.rootInfoKey, null)
 				}
 				val rootInfo = resolveRootInfo(rootFile) ?: return

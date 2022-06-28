@@ -74,7 +74,6 @@ class ParadoxRootInfo(
 		}
 	}
 	
-	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
 	}
@@ -84,6 +83,6 @@ class ParadoxRootInfo(
 	}
 	
 	companion object {
-		val cache = mutableSetOf<ParadoxRootInfo>()
+		val values = mutableSetOf<ParadoxRootInfo>()
 	}
 }

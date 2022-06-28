@@ -11,16 +11,16 @@ import java.util.*
 fun resolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean = true): ParadoxRootInfo? {
 	val rootInfo = rootFile.getUserData(PlsKeys.rootInfoKey)
 	if(rootInfo != null && (canBeNotAvailable || rootInfo.isAvailable)) {
-		ParadoxRootInfo.cache.add(rootInfo)
+		ParadoxRootInfo.values.add(rootInfo)
 		return rootInfo
 	}
-	ParadoxRootInfo.cache.remove(rootInfo)
+	ParadoxRootInfo.values.remove(rootInfo)
 	val resolvedRootInfo = doResolveRootInfo(rootFile, canBeNotAvailable)
 	runCatching {
 		rootFile.putUserData(PlsKeys.rootInfoKey, resolvedRootInfo)
 	}
 	if(resolvedRootInfo != null) {
-		ParadoxRootInfo.cache.add(resolvedRootInfo)
+		ParadoxRootInfo.values.add(resolvedRootInfo)
 	}
 	return resolvedRootInfo
 }
@@ -134,7 +134,7 @@ fun reparseScriptFiles() {
 		//ignore
 	} finally {
 		//要求重新索引
-		for(rootInfo in ParadoxRootInfo.cache) {
+		for(rootInfo in ParadoxRootInfo.values) {
 			FileBasedIndex.getInstance().requestReindex(rootInfo.rootFile)
 		}
 	}

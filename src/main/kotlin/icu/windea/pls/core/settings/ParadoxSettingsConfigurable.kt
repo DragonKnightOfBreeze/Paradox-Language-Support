@@ -19,6 +19,23 @@ import icu.windea.pls.script.*
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"
 	
+	//通用设置
+	//  （下拉框）默认游戏类型
+	//  （整数输入框）最大补全大小
+	//  （复选框）偏好重载的引用
+	//脚本语言设置
+	//  （可伸缩输入框）被忽略的文件名
+	//  文档
+	//    （复选框）渲染行注释
+	//    （复选框）渲染相关的本地化
+	//    （复选框）渲染相关的图片
+	//本地化语言设置
+	//  （下拉框）主要语言区域
+	//  （整数输入框）截断长度
+	//  文档
+	//    （复选框）渲染行注释
+	//    （复选框）渲染本地化
+	
 	override fun createPanel(): DialogPanel {
 		val settings = getSettings()
 		return panel {
@@ -27,7 +44,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					label(PlsBundle.message("settings.generic.defaultGameType")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generic.defaultGameType.tooltip")
 					}
-					val values = ParadoxGameType.values.toList()
+					val values = ParadoxGameType.valueList
 					comboBox(values)
 						.bindItem({
 							settings.defaultGameType
@@ -39,7 +56,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.onApply {
 							//不存在模组根目录的游戏类型标记文件，设置中的默认游戏类型被更改时，也要重新解析相关文件
 							runWriteAction {
-								for(rootInfo in ParadoxRootInfo.cache) {
+								for(rootInfo in ParadoxRootInfo.values) {
 									if(rootInfo.gameTypeFromMarkerFile == null) {
 										reparseFilesInRoot(rootInfo.rootFile)
 									}

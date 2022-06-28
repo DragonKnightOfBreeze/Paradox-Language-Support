@@ -1,79 +1,49 @@
 package icu.windea.pls.core.library
 
-import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.roots.libraries.*
 import com.intellij.openapi.roots.libraries.ui.*
-import com.intellij.openapi.ui.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.library.ParadoxLibraryKind.*
 import icu.windea.pls.model.*
 import javax.swing.*
 
-abstract class ParadoxLibraryType(
-	libraryKind: ParadoxLibraryKind
-) : LibraryType<ParadoxLibraryProperties>(libraryKind) {
-	class Ck2LibraryType : ParadoxLibraryType(Ck2LibraryKind)
-	class Ck3LibraryType : ParadoxLibraryType(Ck3LibraryKind)
-	class Eu4LibraryType : ParadoxLibraryType(Eu4LibraryKind)
-	class Hoi4LibraryType : ParadoxLibraryType(Hoi4LibraryKind)
-	class IrLibraryType : ParadoxLibraryType(IrLibraryKind)
-	class StellarisLibraryType : ParadoxLibraryType(StellarisLibraryKind)
-	class Vic2LibraryType : ParadoxLibraryType(Vic2LibraryKind)
+class ParadoxLibraryType : LibraryType<ParadoxLibraryProperties>(ParadoxLibraryKind) {
+	override fun getCreateActionName() = "Paradox"
 	
-	val gameType = libraryKind.gameType
-	
-	private val createActionName = "Paradox/${gameType.description}"
-	private val libraryNamePrefix = "Paradox/${gameType.description}"
-	private val libraryIcon = gameType.icon
-	
-	override fun getCreateActionName() = createActionName
-	
-	override fun getIcon(properties: ParadoxLibraryProperties?) = libraryIcon
+	override fun getIcon(properties: ParadoxLibraryProperties?) = PlsIcons.libraryIcon
 	
 	override fun getExternalRootTypes() = arrayOf(OrderRootType.SOURCES)
 	
-	override fun createLibraryRootsComponentDescriptor(): LibraryRootsComponentDescriptor? {
-		return super.createLibraryRootsComponentDescriptor()
-	}
+	override fun createPropertiesEditor(editorComponent: LibraryEditorComponent<ParadoxLibraryProperties>) = null
 	
 	override fun createNewLibrary(parentComponent: JComponent, contextDirectory: VirtualFile?, project: Project): NewLibraryConfiguration? {
 		//必须是一个文件夹，且必须包含descriptor.mod或launcher-settings.json
-		//TODO 兼容压缩包
-		if(contextDirectory == null) return null
-		val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor()
-		descriptor.title = PlsBundle.message("library.chooser.title")
-		descriptor.description = PlsBundle.message("library.chooser.description")
-		val root = FileChooser.chooseFile(descriptor, parentComponent, project, contextDirectory) ?: return null
-		val rootInfo = resolveRootInfo(root, false)
-		val descriptorInfo = rootInfo?.descriptorInfo
-		if(rootInfo != null && descriptorInfo != null) {
-			//基于descriptor.mod或launcher-settings.json得到库的名字，由于此文件可能发生变更，不保存库的属性
-			val libraryName = getLibraryName(rootInfo, descriptorInfo)
-			val libraryProperties = ParadoxLibraryProperties.instance
-			return ParadoxNewLibraryConfiguration(libraryName, this, root, libraryProperties)
+		//TODO 兼容压缩包s
+		val dialog = ParadoxCreateNewLibraryDialog(project, contextDirectory)
+		if(dialog.showAndGet()) {
+			val rootFile = dialog.rootFile
+			val rootInfo = dialog.rootInfo
+			val descriptorInfo = rootInfo?.descriptorInfo
+			if(rootFile != null && rootInfo != null && descriptorInfo != null) {
+				//基于descriptor.mod或launcher-settings.json得到库的名字，由于此文件可能发生变更，不保存库的属性
+				val libraryName = getLibraryName(rootInfo, descriptorInfo)
+				val libraryProperties = ParadoxLibraryProperties(rootInfo)
+				return ParadoxNewLibraryConfiguration(libraryName, this, rootFile, libraryProperties)
+			}
 		}
-		//不合法的情况要弹出对话框
-		showInvalidLibraryDialog(project)
 		return null
 	}
 	
 	private fun getLibraryName(rootInfo: ParadoxRootInfo, descriptorInfo: ParadoxDescriptorInfo): String {
+		//FIXME 这里的名字和版本基于描述符文件，可能会过时
 		return buildString {
 			val rootType = rootInfo.rootType
-			append(libraryNamePrefix).append(" ").append(rootType.description)
+			append("Paradox/").append(rootInfo.gameType).append(" ").append(rootType.description)
 			val version = descriptorInfo.version
 			if(rootType == ParadoxRootType.Mod) append(": ").append(descriptorInfo.name)
 			if(version != null) append("@").append(version)
 		}
 	}
-	
-	private fun showInvalidLibraryDialog(project: Project) {
-		Messages.showWarningDialog(project, PlsBundle.message("library.dialog.invalidLibraryPath.message"), PlsBundle.message("library.dialog.invalidLibraryPath.title"))
-	}
-	
-	override fun createPropertiesEditor(editorComponent: LibraryEditorComponent<ParadoxLibraryProperties>) = null
 }

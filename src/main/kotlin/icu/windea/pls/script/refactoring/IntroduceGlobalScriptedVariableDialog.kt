@@ -20,12 +20,13 @@ class IntroduceGlobalScriptedVariableDialog(
 	var file = scriptedVariablesFile.contentFile
 	var filePath = file.path
 	
-	private lateinit var panel: DialogPanel
-	
 	init {
 		title = PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.title")
 		init()
 	}
+	
+	//（输入框）输入变量名
+	//（文件选择框）选择目标文件
 	
 	override fun createCenterPanel(): JComponent {
 		return panel {
@@ -45,7 +46,7 @@ class IntroduceGlobalScriptedVariableDialog(
 				val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
 					.withRoots(scriptedVariablesFile)
 					.withTreeRootVisible(true)
-				textFieldWithBrowseButton(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.chooseDestination"), project, descriptor) { it.also { file = it }.path }
+				textFieldWithBrowseButton(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"), project, descriptor) { it.also { file = it }.path }
 					.bindText(dialog::filePath)
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
@@ -54,7 +55,6 @@ class IntroduceGlobalScriptedVariableDialog(
 			}
 		}.apply {
 			withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
-			panel = this
 		}
 	}
 	
@@ -75,7 +75,6 @@ class IntroduceGlobalScriptedVariableDialog(
 	}
 	
 	override fun doOKAction() {
-		panel.apply()
 		scriptedVariablesFile.contentFile = file
 		super.doOKAction()
 	}
