@@ -6,6 +6,8 @@
 
 [Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
 
+[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
+
 IDEA Plugin: Support for Paradox Language.
 
 Provider syntax parsing, code validation, code completion, navigation, documentation, inlay hints,

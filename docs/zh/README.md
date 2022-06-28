@@ -1,5 +1,9 @@
 # 概述
 
+[Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
+
+[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
+
 IDEA插件：Paradox语言支持。
 
 为脚本语言（主要是`*.txt`文件）和本地化语言（`*.yml`文件）
