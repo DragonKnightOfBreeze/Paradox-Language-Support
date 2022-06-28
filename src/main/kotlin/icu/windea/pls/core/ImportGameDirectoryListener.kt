@@ -1,4 +1,4 @@
-package icu.windea.pls.core.library
+package icu.windea.pls.core
 
 import com.intellij.openapi.project.*
 

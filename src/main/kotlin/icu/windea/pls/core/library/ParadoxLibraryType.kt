@@ -20,7 +20,7 @@ class ParadoxLibraryType : LibraryType<ParadoxLibraryProperties>(ParadoxLibraryK
 	
 	override fun createNewLibrary(parentComponent: JComponent, contextDirectory: VirtualFile?, project: Project): NewLibraryConfiguration? {
 		//必须是一个文件夹，且必须包含descriptor.mod或launcher-settings.json
-		//TODO 兼容压缩包s
+		//TODO 兼容压缩包
 		val dialog = ParadoxCreateNewLibraryDialog(project, contextDirectory)
 		if(dialog.showAndGet()) {
 			val rootFile = dialog.rootFile

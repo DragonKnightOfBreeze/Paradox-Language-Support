@@ -7,14 +7,8 @@
     <fileBasedIndex implementation="icu.windea.pls.core.psi.ParadoxFilePathIndexImpl"/>
     <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true"
                  description="Use VFS-based implementation for ParadoxFilePathIndex"/>
-
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck2LibraryType"/>
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Ck3LibraryType"/>
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Eu4LibraryType"/>
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Hoi4LibraryType"/>
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$IrLibraryType"/>
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$StellarisLibraryType"/>
-    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType$Vic2LibraryType"/>
+s
+    <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
 
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
