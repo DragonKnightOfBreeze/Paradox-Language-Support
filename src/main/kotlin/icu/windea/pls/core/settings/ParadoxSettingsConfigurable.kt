@@ -1,6 +1,7 @@
 package icu.windea.pls.core.settings
 
 import com.intellij.codeInsight.hints.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
@@ -14,7 +15,6 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
-import org.jetbrains.kotlin.idea.util.application.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"), "settings.language.pls"), SearchableConfigurable {
 	override fun getId() = "settings.language.pls"
