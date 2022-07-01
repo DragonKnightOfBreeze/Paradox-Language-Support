@@ -122,12 +122,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			//在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
 			val localisationTargetMap = mutableMapOf<String, ParadoxLocalisationProperty>()
-			val pictureTargetMap = mutableMapOf<String, Tuple2<PsiFile, Int>>()
-			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, pictureTargetMap)
+			val imageTargetMap = mutableMapOf<String, Tuple2<PsiFile, Int>>()
+			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, imageTargetMap)
 			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
 			val sections = mutableMapOf<String, String>()
-			buildRelatedPictureSections(pictureTargetMap, sections)
+			buildRelatedImageSections(imageTargetMap, sections)
 			buildRelatedLocalisationSections(localisationTargetMap, sections)
 			buildDefinitionSections(sections)
 		}
@@ -175,7 +175,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		element: ParadoxScriptProperty,
 		definitionInfo: ParadoxDefinitionInfo,
 		localisationTargetMap: MutableMap<String, ParadoxLocalisationProperty>? = null,
-		pictureTargetMap: MutableMap<String, Tuple2<PsiFile, Int>>? = null
+		imageTargetMap: MutableMap<String, Tuple2<PsiFile, Int>>? = null
 	) {
 		definition {
 			//加上文件信息
@@ -218,19 +218,19 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
-			val pictures = definitionInfo.pictures
-			if(pictures.isNotEmpty()) {
+			val images = definitionInfo.images
+			if(images.isNotEmpty()) {
 				val project = element.project
-				val pictureKeys = mutableSetOf<String>()
-				val usedPictureTargetMap = pictureTargetMap ?: mutableMapOf()
-				for((key, locationExpression, required) in pictures) {
-					if(!usedPictureTargetMap.containsKey(key)) {
+				val imageKeys = mutableSetOf<String>()
+				val usedImageTargetMap = imageTargetMap ?: mutableMapOf()
+				for((key, locationExpression, required) in images) {
+					if(!usedImageTargetMap.containsKey(key)) {
 						val (filePath, target, frame) = locationExpression.resolve(definitionInfo.name, element, project) ?: continue //发生意外，直接跳过
-						if(target != null) usedPictureTargetMap.put(key, tupleOf(target, frame))
+						if(target != null) usedImageTargetMap.put(key, tupleOf(target, frame))
 						if(required || target != null) {
-							if(pictureKeys.add(key)) {
+							if(imageKeys.add(key)) {
 								appendBr()
-								append(PlsDocBundle.message("name.script.relatedPicture")).append(" ").append(key).append(" = ").appendFilePathLink(filePath, element, resolved = target != null)
+								append(PlsDocBundle.message("name.script.relatedImage")).append(" ").append(key).append(" = ").appendFilePathLink(filePath, element, resolved = target != null)
 							}
 						}
 					}
@@ -249,9 +249,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun buildRelatedPictureSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
+	private fun buildRelatedImageSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
 		//加上DDS图片预览图
-		if(getSettings().scriptRenderRelatedPictures) {
+		if(getSettings().scriptRenderRelatedImages) {
 			if(map.isNotEmpty()) {
 				for((key, tuple) in map) {
 					val (target, frame) = tuple

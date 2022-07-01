@@ -35,7 +35,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 	
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
 	
-	override fun getIcon() = PlsIcons.paradoxLocalisationFileIcon
+	override fun getIcon() = PlsIcons.ParadoxLocalisationFile
 	
 	override fun getAttributeDescriptors() = attributesDescriptors
 	

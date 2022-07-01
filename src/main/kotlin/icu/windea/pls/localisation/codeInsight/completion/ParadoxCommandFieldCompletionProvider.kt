@@ -42,7 +42,7 @@ class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParam
 		if(definitions.isEmpty()) return
 		for(definition in definitions) {
 			val name = definition.definitionInfo?.name.orEmpty() //不应该为空
-			val icon = PlsIcons.localisationCommandFieldIcon
+			val icon = PlsIcons.LocalisationCommandField
 			val typeText = definition.containingFile.name
 			val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 				.withTailText(tailText, true)

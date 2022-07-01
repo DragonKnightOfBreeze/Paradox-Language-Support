@@ -43,7 +43,7 @@ object CwtPsiImplUtil {
 	//region CwtOption
 	@JvmStatic
 	fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.cwtOptionIcon
+		return PlsIcons.CwtOption
 	}
 	
 	@JvmStatic
@@ -94,7 +94,7 @@ object CwtPsiImplUtil {
 	//region CwtProperty
 	@JvmStatic
 	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.cwtPropertyIcon
+		return PlsIcons.CwtProperty
 	}
 	
 	@JvmStatic
@@ -145,7 +145,7 @@ object CwtPsiImplUtil {
 	//region CwtValue
 	@JvmStatic
 	fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.cwtValueIcon
+		return PlsIcons.CwtValue
 	}
 	
 	@JvmStatic
@@ -205,7 +205,7 @@ object CwtPsiImplUtil {
 	//region CwtBlock
 	@JvmStatic
 	fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.cwtBlockIcon
+		return PlsIcons.CwtBlock
 	}
 	
 	@JvmStatic

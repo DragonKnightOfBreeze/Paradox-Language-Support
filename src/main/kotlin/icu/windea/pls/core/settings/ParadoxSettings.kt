@@ -16,7 +16,7 @@ class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(Par
  * @property maxCompleteSize 本地化在进行代码补全时的最大补全数量。
  * @property scriptRenderLineComment 对于脚本语言，是否需要渲染之前的单行注释文本到文档注释中。
  * @property scriptRenderRelatedLocalisation 对于脚本语言，是否需要为定义渲染相关本地化文本到文档注释中。
- * @property scriptRenderRelatedPictures 对于脚本语言，是否需要为定义渲染相关图片到文档注释中。
+ * @property scriptRenderRelatedImages 对于脚本语言，是否需要为定义渲染相关图片到文档注释中。
  * @property localisationPrimaryLocale 对于本地化语言，默认的语言区域。（用于文档和内嵌提示）
  * @property localisationTruncateLimit 对于本地化语言，当渲染后的本地化文本过长且需要考虑截断时的截断长度。（用于内嵌提示）
  * @property localisationRenderLineComment 对于本地化语言，是否需要渲染之前的单行注释文本到文档注释中。
@@ -31,7 +31,7 @@ class ParadoxSettingsState : BaseState() {
 	var scriptIgnoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
 	var scriptRenderLineComment by property(false)
 	var scriptRenderRelatedLocalisation by property(true)
-	var scriptRenderRelatedPictures by property(true)
+	var scriptRenderRelatedImages by property(true)
 	
 	var localisationPrimaryLocale by string("auto")
 	var localisationTruncateLimit by property(30)

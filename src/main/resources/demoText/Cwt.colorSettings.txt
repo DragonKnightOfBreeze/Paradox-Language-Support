@@ -21,7 +21,7 @@ types = {
 			## required
 			Desc = "$_desc"
 		}
-		pictures = {
+		images = {
 			## primary
 			icon = "#icon" # <sprite>
 		}

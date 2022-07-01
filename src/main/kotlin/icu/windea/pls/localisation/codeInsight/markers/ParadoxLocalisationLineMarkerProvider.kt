@@ -14,7 +14,7 @@ import icu.windea.pls.model.ParadoxLocalisationCategory.*
 class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun getName() = PlsBundle.message("localisation.gutterIcon.localisation")
 	
-	override fun getIcon() = PlsIcons.localisationGutterIcon
+	override fun getIcon() = PlsIcons.Gutter.Localisation
 	
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//何时显示装订线图标：element是localisation/localisation_synced
@@ -22,7 +22,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			val name = element.name
 			val category = element.category ?: return
 			
-			val icon = PlsIcons.localisationGutterIcon
+			val icon = PlsIcons.Gutter.Localisation
 			val tooltip = buildString {
 				append("$category <b>").append(name).append("</b>")
 			}

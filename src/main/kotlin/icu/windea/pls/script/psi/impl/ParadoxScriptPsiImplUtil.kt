@@ -58,7 +58,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptVariable
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptedVariableIcon
+		return PlsIcons.ScriptedVariable
 	}
 	
 	@JvmStatic
@@ -115,7 +115,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptParameter
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptParameterIcon
+		return PlsIcons.ScriptParameter
 	}
 	
 	@JvmStatic
@@ -156,7 +156,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
 		if(element.definitionInfo != null) return PlsIcons.definitionIcon
-		return PlsIcons.scriptPropertyIcon
+		return PlsIcons.ScriptProperty
 	}
 	
 	@JvmStatic
@@ -285,7 +285,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptVariableReference
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptVariableReference, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptedVariableIcon
+		return PlsIcons.ScriptedVariable
 	}
 	
 	@JvmStatic
@@ -318,7 +318,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptValue
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptValueIcon
+		return PlsIcons.ScriptValue
 	}
 	
 	@JvmStatic
@@ -384,8 +384,8 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
 		//特殊处理字符串需要被识别为标签的情况
-		if(element.resolveTagConfig() != null) return PlsIcons.tagIcon
-		return PlsIcons.scriptValueIcon
+		if(element.resolveTagConfig() != null) return PlsIcons.Tag
+		return PlsIcons.ScriptValue
 	}
 	
 	@JvmStatic
@@ -489,7 +489,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptBlock
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptBlockIcon
+		return PlsIcons.ScriptBlock
 	}
 	
 	@JvmStatic
@@ -629,7 +629,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptParameterCondition
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptParameterConditionIcon
+		return PlsIcons.ScriptParameterCondition
 	}
 	
 	@JvmStatic
@@ -690,7 +690,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptParameterConditionParameter
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptParameterIcon
+		return PlsIcons.ScriptParameter
 	}
 	
 	@JvmStatic
@@ -744,7 +744,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptInlineMathVariableReference
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptInlineMathVariableReference, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptedVariableIcon
+		return PlsIcons.ScriptedVariable
 	}
 	
 	@JvmStatic
@@ -770,7 +770,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptInlineMathParameter
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptInlineMathParameter, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.scriptParameterIcon
+		return PlsIcons.ScriptParameter
 	}
 	
 	@JvmStatic

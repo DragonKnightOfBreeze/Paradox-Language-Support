@@ -3,7 +3,6 @@ package icu.windea.pls.util
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -71,7 +70,7 @@ object ParadoxDdsUrlResolver {
 	
 	private fun doResolveByDefinition(definition: ParadoxDefinitionProperty, frame: Int , definitionInfo: ParadoxDefinitionInfo): String? {
 		//兼容definition不是sprite的情况
-		val (_,file,inferredFrame) = definitionInfo.primaryPictureConfigs.mapAndFirst { 
+		val (_,file,inferredFrame) = definitionInfo.primaryImageConfigs.mapAndFirst { 
 			it.location.resolve(definitionInfo.name, definition, definition.project)
 		} ?: return null
 		if(file == null) return null

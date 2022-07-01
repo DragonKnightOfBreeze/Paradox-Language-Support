@@ -39,16 +39,17 @@ class IntroduceGlobalScriptedVariableDialog(
 			val dialog = this@IntroduceGlobalScriptedVariableDialog
 			row {
 				//输入变量名
+				label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
 				textField()
 					.bindText(dialog.variableNameProperty)
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 					.focused()
 					.validationOnApply { validateScriptedVariableName() }
-					.label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName"))
 			}
 			row {
 				//选择目标文件 - 仅允许用户选择同一游戏或模组根目录下的common/scripted_variables目录下的文件
+				label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
 				val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
 					.withRoots(scriptedVariablesFile)
 					.withTreeRootVisible(true)
@@ -57,7 +58,6 @@ class IntroduceGlobalScriptedVariableDialog(
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 					.validationOnApply { validateScriptedVariableFilePath() }
-					.label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile"))
 			}
 		}.apply {
 			withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果

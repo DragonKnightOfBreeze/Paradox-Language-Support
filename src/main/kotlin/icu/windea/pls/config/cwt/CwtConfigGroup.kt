@@ -244,7 +244,7 @@ class CwtConfigGroup(
 		var graphRelatedTypes: Set<String>? = null
 		val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
 		var localisation: CwtTypeLocalisationConfig? = null
-		var pictures: CwtTypePicturesConfig? = null
+		var images: CwtTypeImagesConfig? = null
 		
 		val props = propertyConfig.properties
 		if(props != null && props.isNotEmpty()) {
@@ -291,7 +291,7 @@ class CwtConfigGroup(
 						}
 						localisation = CwtTypeLocalisationConfig(propPointer, configs)
 					}
-					"pictures" -> {
+					"images" -> {
 						val configs: MutableList<Pair<String?, CwtLocationConfig>> = SmartList()
 						val propPointer = prop.pointer
 						val propProps = prop.properties ?: continue
@@ -309,7 +309,7 @@ class CwtConfigGroup(
 								configs.add(null to locationConfig)
 							}
 						}
-						pictures = CwtTypePicturesConfig(propPointer, configs)
+						images = CwtTypeImagesConfig(propPointer, configs)
 					}
 				}
 				
@@ -350,7 +350,7 @@ class CwtConfigGroup(
 			block, path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
 			typeKeyFilter, startsWith, graphRelatedTypes, subtypes,
-			localisation, pictures
+			localisation, images
 		)
 	}
 	

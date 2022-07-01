@@ -13,14 +13,14 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun getName() = PlsBundle.message("script.gutterIcon.definition")
 	
-	override fun getIcon() = PlsIcons.definitionGutterIcon
+	override fun getIcon() = PlsIcons.Gutter.Definition
 	
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//何时显示装订线图标：element是definition
 		if(element !is ParadoxScriptProperty) return
 		val definitionInfo = element.definitionInfo ?: return
 		
-		val icon = PlsIcons.definitionGutterIcon
+		val icon = PlsIcons.Gutter.Definition
 		val tooltip = buildString {
 			val name = definitionInfo.name
 			val typeText = definitionInfo.typeText

@@ -1,6 +1,6 @@
 package icu.windea.pls.dds
 
-import com.intellij.openapi.fileTypes.UserBinaryFileType
+import com.intellij.openapi.fileTypes.*
 import icu.windea.pls.*
 import javax.swing.*
 
@@ -16,6 +16,6 @@ object DdsFileType : UserBinaryFileType() {
 	}
 	
 	override fun getIcon(): Icon {
-		return PlsIcons.ddsFileIcon
+		return PlsIcons.DdsFile
 	}
 }

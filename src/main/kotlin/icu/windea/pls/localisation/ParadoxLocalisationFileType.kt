@@ -10,6 +10,6 @@ object ParadoxLocalisationFileType : LanguageFileType(ParadoxLocalisationLanguag
 	
 	override fun getDefaultExtension() = paradoxLocalisationExtension
 	
-	override fun getIcon() = PlsIcons.paradoxLocalisationFileIcon
+	override fun getIcon() = PlsIcons.ParadoxLocalisationFile
 }
 

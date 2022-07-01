@@ -21,4 +21,19 @@ s
     
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
   </extensions>
+  
+  <actions>
+    <action id="FileChooser.Pls.GotoSteamPath" class="icu.windea.pls.actions.GotoSteamPathAction">
+      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
+    </action>
+    <action id="FileChooser.Pls.GotoSteamGamePath" class="icu.windea.pls.actions.GotoSteamGamePathAction">
+      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
+    </action>
+    <action id="FileChooser.Pls.GotoSteamWorkshopPath" class="icu.windea.pls.actions.GotoSteamWorkshopPathAction">
+      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
+    </action>
+    <action id="FileChooser.Pls.GotoGameModPath" class="icu.windea.pls.actions.GotoGameModPathAction">
+      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
+    </action>
+  </actions>
 </idea-plugin>

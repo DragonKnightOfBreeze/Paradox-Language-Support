@@ -12,7 +12,7 @@ import javax.swing.*
 class ParadoxLibraryType : LibraryType<ParadoxLibraryProperties>(ParadoxLibraryKind) {
 	override fun getCreateActionName() = "Paradox"
 	
-	override fun getIcon(properties: ParadoxLibraryProperties?) = PlsIcons.libraryIcon
+	override fun getIcon(properties: ParadoxLibraryProperties?) = PlsIcons.Library
 	
 	override fun getExternalRootTypes() = arrayOf(OrderRootType.SOURCES)
 	
@@ -29,7 +29,7 @@ class ParadoxLibraryType : LibraryType<ParadoxLibraryProperties>(ParadoxLibraryK
 			if(rootFile != null && rootInfo != null && descriptorInfo != null) {
 				//基于descriptor.mod或launcher-settings.json得到库的名字，由于此文件可能发生变更，不保存库的属性
 				val libraryName = getLibraryName(rootInfo, descriptorInfo)
-				val libraryProperties = ParadoxLibraryProperties(rootInfo)
+				val libraryProperties = ParadoxLibraryProperties
 				return ParadoxNewLibraryConfiguration(libraryName, this, rootFile, libraryProperties)
 			}
 		}
@@ -40,7 +40,7 @@ class ParadoxLibraryType : LibraryType<ParadoxLibraryProperties>(ParadoxLibraryK
 		//FIXME 这里的名字和版本基于描述符文件，可能会过时
 		return buildString {
 			val rootType = rootInfo.rootType
-			append("Paradox/").append(rootInfo.gameType).append(" ").append(rootType.description)
+			append("Paradox/").append(rootInfo.gameType.description).append(" ").append(rootType.description)
 			val version = descriptorInfo.version
 			if(rootType == ParadoxRootType.Mod) append(": ").append(descriptorInfo.name)
 			if(version != null) append("@").append(version)

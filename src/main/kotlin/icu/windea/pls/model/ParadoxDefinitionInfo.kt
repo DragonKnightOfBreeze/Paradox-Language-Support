@@ -61,13 +61,13 @@ class ParadoxDefinitionInfo(
 		result
 	}
 	
-	val pictures: List<ParadoxRelatedPicturesInfo> by lazy {
-		val mergedPicturesConfig = typeConfig.pictures?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-		val result = SmartList<ParadoxRelatedPicturesInfo>()
+	val images: List<ParadoxRelatedImagesInfo> by lazy {
+		val mergedImagesConfig = typeConfig.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
+		val result = SmartList<ParadoxRelatedImagesInfo>()
 		//从已有的cwt规则
-		for(config in mergedPicturesConfig) {
-			val locationExpression = CwtPictureLocationExpression.resolve(config.expression)
-			val info = ParadoxRelatedPicturesInfo(config.key, locationExpression, config.required, config.primary)
+		for(config in mergedImagesConfig) {
+			val locationExpression = CwtImageLocationExpression.resolve(config.expression)
+			val info = ParadoxRelatedImagesInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}
 		result
@@ -89,13 +89,13 @@ class ParadoxDefinitionInfo(
 		localisation.filter { it.primary || it.key.equals("name", true) || it.key.equals("title", true) } //TODO 额外进行一些推断，考虑可配置
 	}
 	
-	val primaryPictureConfigs: List<ParadoxRelatedPicturesInfo> by lazy {
-		pictures.filter { it.primary }
+	val primaryImageConfigs: List<ParadoxRelatedImagesInfo> by lazy {
+		images.filter { it.primary }
 	}
 	
 	val typeCount get() = types.size
 	val localisationConfig get() = typeConfig.localisation
-	val picturesConfig get() = typeConfig.pictures
+	val imagesConfig get() = typeConfig.images
 	val definitionConfig get() = configGroup.declarations.get(type)
 	val graphRelatedTypes get() = typeConfig.graphRelatedTypes
 	val unique get() = typeConfig.unique

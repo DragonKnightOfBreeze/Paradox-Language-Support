@@ -18,38 +18,38 @@ private val validValueTypes = arrayOf(
 /**
  * CWT图片的位置表达式。
  *
- * 用于推断定义的相关图片（relatedPicture）的位置。
+ * 用于推断定义的相关图片（relatedImage）的位置。
  *
  * 示例：`"$"`, `"$_desc"`, `"#icon"`, "#icon|#icon_frame"`
  * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成definitionName）。
  * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串，可以为空字符串）。
  * @property extraPropertyNames 额外的属性名（表达式文本以"#"开始且之后包含"|"时，为"|"之后的按","分割的子字符串）。
  */
-class CwtPictureLocationExpression(
+class CwtImageLocationExpression(
 	expressionString: String,
 	val placeholder: String? = null,
 	val propertyName: String? = null,
 	val extraPropertyNames: List<String>? = null
 ) : AbstractExpression(expressionString), CwtExpression {
-	companion object Resolver : CachedExpressionResolver<CwtPictureLocationExpression>() {
-		val EmptyExpression = CwtPictureLocationExpression("")
+	companion object Resolver : CachedExpressionResolver<CwtImageLocationExpression>() {
+		val EmptyExpression = CwtImageLocationExpression("")
 		
-		override fun doResolve(expressionString: String): CwtPictureLocationExpression {
+		override fun doResolve(expressionString: String): CwtImageLocationExpression {
 			return when {
 				expressionString.isEmpty() -> EmptyExpression
 				expressionString.startsWith('#') -> {
 					val pipeIndex = expressionString.indexOf('|', 1)
 					if(pipeIndex == -1) {
 						val propertyName = expressionString.substring(1)
-						CwtPictureLocationExpression(expressionString, null, propertyName)
+						CwtImageLocationExpression(expressionString, null, propertyName)
 					} else {
 						val propertyName = expressionString.substring(1, pipeIndex)
 						val extraPropertyNames = expressionString.substring(pipeIndex + 1)
 							.splitToSequence(',').mapTo(SmartList()) { it.drop(1) }
-						CwtPictureLocationExpression(expressionString, null, propertyName, extraPropertyNames)
+						CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)
 					}
 				}
-				else -> CwtPictureLocationExpression(expressionString, expressionString, null, null)
+				else -> CwtImageLocationExpression(expressionString, expressionString, null, null)
 			}
 		}
 	}
@@ -93,10 +93,10 @@ class CwtPictureLocationExpression(
 						val resolvedProject = resolved.project
 						val resolvedDefinition = resolved
 						val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-						val primaryPictureConfigs = resolvedDefinitionInfo.primaryPictureConfigs
-						if(primaryPictureConfigs.isEmpty()) return null //没有或者CWT规则不完善
-						return primaryPictureConfigs.mapAndFirst({ it?.second != null }) { primaryPictureConfig ->
-							val locationExpression = primaryPictureConfig.location
+						val primaryImageConfigs = resolvedDefinitionInfo.primaryImageConfigs
+						if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+						return primaryImageConfigs.mapAndFirst({ it?.second != null }) { primaryImageConfig ->
+							val locationExpression = primaryImageConfig.location
 							locationExpression.resolve(definitionName, resolvedDefinition, resolvedProject, frameToUse)
 						}
 					}
@@ -138,12 +138,12 @@ class CwtPictureLocationExpression(
 						val resolvedProject = resolved.project
 						val resolvedDefinition = resolved
 						val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-						val primaryPictureConfigs = resolvedDefinitionInfo.primaryPictureConfigs
-						if(primaryPictureConfigs.isEmpty()) return null //没有或者CWT规则不完善
+						val primaryImageConfigs = resolvedDefinitionInfo.primaryImageConfigs
+						if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
 						var resolvedFilePath: String? = null
 						var resolvedSet: MutableSet<PsiFile>? = null
-						for(primaryPictureConfig in primaryPictureConfigs) {
-							val locationExpression = primaryPictureConfig.location
+						for(primaryImageConfig in primaryImageConfigs) {
+							val locationExpression = primaryImageConfig.location
 							val (filePath, set) = locationExpression.resolveAll(resolvedDefinitionInfo.name, resolvedDefinition, resolvedProject, frameToUse) ?: continue
 							if(resolvedFilePath == null) resolvedFilePath = filePath
 							if(resolvedSet == null) resolvedSet = mutableSetOf()

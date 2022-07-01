@@ -11,7 +11,7 @@ class ParadoxSystemScopeConfig(
 	override val description: String,
 	override val pointer: SmartPsiElementPointer<out PsiElement>
 ): InternalConfig {
-	override val icon get() = PlsIcons.systemScopeIcon
+	override val icon get() = PlsIcons.SystemScope
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxSystemScopeConfig && id == other.id

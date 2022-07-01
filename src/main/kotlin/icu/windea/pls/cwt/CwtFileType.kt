@@ -10,5 +10,5 @@ object CwtFileType : LanguageFileType(CwtLanguage) {
 	
 	override fun getDefaultExtension() = cwtExtension
 	
-	override fun getIcon() = PlsIcons.cwtFileIcon
+	override fun getIcon() = PlsIcons.CwtFile
 }

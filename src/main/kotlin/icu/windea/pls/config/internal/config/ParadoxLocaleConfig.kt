@@ -12,7 +12,7 @@ class ParadoxLocaleConfig(
 	val languageTag: String,
 	override val pointer: SmartPsiElementPointer<out PsiElement>
 ) : InternalConfig{
-	override val icon get() = PlsIcons.localisationLocaleIcon
+	override val icon get() = PlsIcons.LocalisationLocale
 	
 	val text = buildString {
 		append(id)

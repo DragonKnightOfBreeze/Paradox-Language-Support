@@ -21,7 +21,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationPropertyList
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationPropertyList, @IconFlags flags: Int): Icon {
-		return PlsIcons.localisationLocaleIcon
+		return PlsIcons.LocalisationLocale
 	}
 	
 	@JvmStatic
@@ -33,7 +33,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationLocale
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationLocale, @IconFlags flags: Int): Icon {
-		return PlsIcons.localisationLocaleIcon
+		return PlsIcons.LocalisationLocale
 	}
 	
 	@JvmStatic
@@ -59,8 +59,8 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationProperty, @IconFlags flags: Int): Icon {
-		if(element.localisationInfo != null) return PlsIcons.localisationIcon
-		return PlsIcons.localisationPropertyIcon
+		if(element.localisationInfo != null) return PlsIcons.Localisation
+		return PlsIcons.LocalisationProperty
 	}
 	
 	@JvmStatic
@@ -125,7 +125,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationIcon	
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationIcon, @IconFlags flags: Int): Icon {
-		return PlsIcons.localisationIconIcon
+		return PlsIcons.LocalisationIcon
 	}
 	
 	@JvmStatic
@@ -211,7 +211,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationCommandScope
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationCommandScope, @IconFlags flags: Int): Icon {
-		return PlsIcons.localisationCommandScopeIcon
+		return PlsIcons.LocalisationCommandScope
 	}
 	
 	@JvmStatic
@@ -237,7 +237,7 @@ object ParadoxLocalisationPsiImplUtil {
 	//region ParadoxLocalisationCommandField
 	@JvmStatic
 	fun getIcon(element: ParadoxLocalisationCommandField, @IconFlags flags: Int): Icon {
-		return PlsIcons.localisationCommandFieldIcon
+		return PlsIcons.LocalisationCommandField
 	}
 	
 	@JvmStatic

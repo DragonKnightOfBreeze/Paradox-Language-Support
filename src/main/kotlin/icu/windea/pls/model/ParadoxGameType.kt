@@ -5,15 +5,18 @@ import icu.windea.pls.*
 
 enum class ParadoxGameType(
 	override val id: String,
-	override val    description: String
+	override val description: String,
+	val gameId: String
 ) : IdAware, DescriptionAware {
-	Ck2("ck2", "Crusader Kings II"),
-	Ck3("ck3", "Crusader Kings III"),
-	Eu4("eu4", "Europa Universalis IV"),
-	Hoi4("hoi4", "Hearts of Iron IV"),
-	Ir("ir", "Imperator: Rome"),
-	Stellaris("stellaris", "Stellaris"),
-	Vic2("vic2", "Victoria II");
+	Ck2("ck2", "Crusader Kings II", "203770"),
+	Ck3("ck3", "Crusader Kings III", "1158310"),
+	Eu4("eu4", "Europa Universalis IV", "236850"),
+	Hoi4("hoi4", "Hearts of Iron IV", "394360"),
+	Ir("ir", "Imperator: Rome", "859580"),
+	Stellaris("stellaris", "Stellaris", "281990"),
+	Vic2("vic2", "Victoria II", "42960");
+	
+	val gameName: String get() = description
 	
 	override fun toString(): String {
 		return description

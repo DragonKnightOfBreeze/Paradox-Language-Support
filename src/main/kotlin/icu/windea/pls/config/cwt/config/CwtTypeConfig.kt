@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.*
  * @property graphRelatedTypes (option) graph_related_types: graphRelatedType[]
  * @property subtypes (property*) subtype[?]: subtypeInfo
  * @property localisation (property*) localisation: localisationInfo
- * @property pictures (property*) pictures: picturesInfo
+ * @property images (property*) images: imagesInfo
  */
 data class CwtTypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -44,6 +44,6 @@ data class CwtTypeConfig(
 	val graphRelatedTypes: Set<String>? = null,
 	val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
 	val localisation: CwtTypeLocalisationConfig? = null,
-	val pictures: CwtTypePicturesConfig? = null
+	val images: CwtTypeImagesConfig? = null
 
 ) : CwtConfig<CwtProperty>

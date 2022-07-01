@@ -610,7 +610,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val typeFile = localisation.containingFile
 					val lookupElement = LookupElementBuilder.create(localisation, name)
-						.withExpectedIcon(PlsIcons.localisationIcon)
+						.withExpectedIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey = true)
@@ -625,7 +625,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val typeFile = syncedLocalisation.containingFile
 					val lookupElement = LookupElementBuilder.create(syncedLocalisation, name)
-						.withExpectedIcon(PlsIcons.localisationIcon)
+						.withExpectedIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey = true)
@@ -640,7 +640,7 @@ object CwtConfigHandler {
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
 					val lookupElement = LookupElementBuilder.create(localisation, name)
-						.withExpectedIcon(PlsIcons.localisationIcon)
+						.withExpectedIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey = true)
@@ -698,7 +698,7 @@ object CwtConfigHandler {
 					val element = valueValueConfig.pointer.element ?: continue
 					val typeFile = valueConfig.pointer.containingFile
 					val lookupElement = LookupElementBuilder.create(element, name)
-						.withExpectedIcon(PlsIcons.valueValueIcon)
+						.withExpectedIcon(PlsIcons.ValueInValueSet)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile?.name, typeFile?.icon, true)
 						.withExpectedInsertHandler(isKey = true)
@@ -723,7 +723,7 @@ object CwtConfigHandler {
 					val element = enumValueConfig.pointer.element ?: continue
 					val typeFile = enumConfig.pointer.containingFile
 					val lookupElement = LookupElementBuilder.create(element, name)
-						.withExpectedIcon(PlsIcons.enumValueIcon)
+						.withExpectedIcon(PlsIcons.EnumValue)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile?.name, typeFile?.icon, true)
 						.withExpectedInsertHandler(isKey = true)
@@ -754,7 +754,7 @@ object CwtConfigHandler {
 				val element = config.keyResolved.pointer.element ?: return
 				val typeFile = config.keyResolved.pointer.containingFile
 				val lookupElement = LookupElementBuilder.create(element, name)
-					.withExpectedIcon(PlsIcons.propertyIcon, config)
+					.withExpectedIcon(PlsIcons.Property, config)
 					.withTypeText(typeFile?.name, typeFile?.icon, true)
 					.withExpectedInsertHandler(isKey = true)
 					.withCaseSensitivity(false) //忽略大小写
@@ -779,7 +779,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val typeFile = localisation.containingFile
 					val lookupElement = LookupElementBuilder.create(localisation, name)
-						.withExpectedIcon(PlsIcons.localisationIcon)
+						.withExpectedIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey = false)
@@ -794,7 +794,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val typeFile = syncedLocalisation.containingFile
 					val lookupElement = LookupElementBuilder.create(syncedLocalisation, name)
-						.withExpectedIcon(PlsIcons.localisationIcon)
+						.withExpectedIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey = false)
@@ -809,7 +809,7 @@ object CwtConfigHandler {
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
 					val lookupElement = LookupElementBuilder.create(localisation, name)
-						.withExpectedIcon(PlsIcons.localisationIcon)
+						.withExpectedIcon(PlsIcons.Localisation)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey = false)
@@ -910,7 +910,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val element = valueValueConfig.pointer.element ?: continue
 					val lookupElement = LookupElementBuilder.create(element, name)
-						.withExpectedIcon(PlsIcons.valueValueIcon)
+						.withExpectedIcon(PlsIcons.ValueInValueSet)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile?.name, typeFile?.icon, true)
 						.withCaseSensitivity(false) //忽略大小写
@@ -935,7 +935,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val element = enumValueConfig.pointer.element ?: continue
 					val lookupElement = LookupElementBuilder.create(element, name)
-						.withExpectedIcon(PlsIcons.enumValueIcon)
+						.withExpectedIcon(PlsIcons.EnumValue)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile?.name, typeFile?.icon, true)
 						.withCaseSensitivity(false) //忽略大小写
@@ -974,7 +974,7 @@ object CwtConfigHandler {
 				val element = config.resolved.pointer.element ?: return
 				val typeFile = config.resolved.pointer.containingFile
 				val lookupElement = LookupElementBuilder.create(element, name)
-					.withExpectedIcon(PlsIcons.valueIcon, config)
+					.withExpectedIcon(PlsIcons.Value, config)
 					.withTypeText(typeFile?.name, typeFile?.icon, true)
 					.withExpectedInsertHandler(isKey = false)
 					.withCaseSensitivity(false) //忽略大小写
@@ -1032,7 +1032,7 @@ object CwtConfigHandler {
 			val tailText = " from modifiers"
 			val typeFile = modifierConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.withExpectedIcon(PlsIcons.modifierIcon)
+				.withExpectedIcon(PlsIcons.Modifier)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey)
@@ -1054,7 +1054,7 @@ object CwtConfigHandler {
 			val tailText = " from system scopes"
 			val typeFile = systemScopeConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.withExpectedIcon(PlsIcons.systemScopeIcon)
+				.withExpectedIcon(PlsIcons.SystemScope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey = true)
@@ -1071,7 +1071,7 @@ object CwtConfigHandler {
 			val tailText = " from scopes"
 			val typeFile = linkConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.withExpectedIcon(PlsIcons.scopeIcon)
+				.withExpectedIcon(PlsIcons.Scope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey = true)
@@ -1097,7 +1097,7 @@ object CwtConfigHandler {
 			val tailText = " from localisation commands"
 			val typeFile = config.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.withExpectedIcon(PlsIcons.localisationCommandFieldIcon)
+				.withExpectedIcon(PlsIcons.LocalisationCommandField)
 				.withTailText(tailText)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 			lookupElements.add(lookupElement)
@@ -1119,7 +1119,7 @@ object CwtConfigHandler {
 		for(parameterName in parameterNamesToUse) {
 			val tailText = " from parameters"
 			val lookupElement = LookupElementBuilder.create(parameterName) //目前并不解析参数
-				.withExpectedIcon(PlsIcons.parameterIcon)
+				.withExpectedIcon(PlsIcons.Parameter)
 				.withTailText(tailText)
 				.withTypeText(definitionName, definition.icon, true)
 			lookupElements.add(lookupElement)
@@ -1140,9 +1140,9 @@ object CwtConfigHandler {
 			val iconOption = config.options?.find { it.key == "icon" }?.value
 			if(iconOption != null) {
 				when(iconOption) {
-					"tag" -> return PlsIcons.tagIcon
-					"property" -> return PlsIcons.propertyIcon
-					"value" -> return PlsIcons.valueIcon
+					"tag" -> return PlsIcons.Tag
+					"property" -> return PlsIcons.Property
+					"value" -> return PlsIcons.Value
 					//TO IMPLEMENT
 				}
 			}

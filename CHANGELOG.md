@@ -13,7 +13,7 @@
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 
-## 0.6 > 0.6.4
+## 0.6 > 0.6.5
 
 * [X] 更新cwt规则到最新版本（`stellaris v3.4`）（发布时始终处于最新版本）
 * [X] 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
@@ -37,7 +37,8 @@
   * [X] 解析本地化颜色直接基于`textcolor`类型的定义，在`shared.cwt`中定义，移除内置规则中的`colors`
   * [X] 对于修饰符`X`，如果存在本地化`mod_X`，在文档注释中渲染对应的本地化文本
   * [X] 优化导入游戏或模组目录时弹出的对话框
-  * [ ] 优化导入游戏或模组目录时弹出的对话框 - 可以快速填充游戏类型对应的Steam游戏目录或者创意工坊目录
+  * [X] 优化导入游戏或模组目录时弹出的对话框 - 在文件选择器中提供额外的工具栏按钮，可以快速选中Steam游戏目录、Steam创意工坊目录等
+  * [ ] 将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）
 * 新增功能：
   * [ ] 当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。 （需要延迟判断，何时判断？）
   * [X] 本地化文件：提供快速更改文本颜色的悬浮工具栏
@@ -46,7 +47,8 @@
   * [X] 脚本文件：全局封装变量（`scripted_variable`）的提取和快速修复（无法解析时）
   * [X] 实现快速修复：导入游戏目录或模组目录
   * [X] 实现代码检查-本地化文件：不正确的文件名
-  * [ ] 实现代码检查-脚本文件：缺失的相关本地化（可设置包含可选的）
+  * [ ] 实现代码检查-脚本文件：缺失的相关本地化（可设置是否包含可选的本地化、需要检查的语言区域）
+  * [ ] 实现代码检查-脚本文件：缺失的相关图片
   * [ ] ~~实现代码检查-脚本文件：无法解析的路径（对应多种CWT值类型）~~（待确定）
   * [ ] ~~实现代码检查：不期望的脚本语法（多种情况，需要确认）~~（待确定）
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
@@ -60,7 +62,7 @@
   * [X] 兼容`string_template`语法，以及相关功能：代码高亮
   * [X] 兼容`parameter_condition`语法，以及相关功能：代码高亮、代码折叠、格式化、代码风格设置
   * [X] ~~兼容`scripted_loc`语法，以及相关功能：代码高亮、格式化、代码提示、引用解析~~（视为其中一种`string_template`）
-  * [ ] 兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_facPtor|ALTERED_STABILITY|-10|`） *
+  * [ ] ~~兼容更多情况的`string_template`语法，以及相关功能：代码高亮（如：`value:revolt_situation_low_stability_facPtor|ALTERED_STABILITY|-10|`）~~（这类情况不视为`string_template`）
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
   * [X] 获取封装变量名时不再包含作为前缀的"@"
   * [X] 封装变量的值也可以是bool类型（`yes`和`no`）
@@ -80,12 +82,15 @@
   * [X] 支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`
   * [X] 支持额外的CWT选项：`## color_type = rgb / rgba`，用于以装订线图标的方式显示对应的颜色
   * [X] 仅当对应的数据类型是`bool`时，才会提示`yes`和`no`
+  * [X] 支持的额外的CWT规则：`types.type[*].pictures`改为`types.type[*].images`
 * ［长期］完善CWT配置支持
   * [X] 支持解析scopeExpression（如`from.owner`）
+  * [ ] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
   * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）（不解析）
+  * [ ] 编写`ParadoxScriptStringExpression`以及相关代码，用于处理各种特殊的键/值表达式（`root.owner` `event_target:xxx`等）
   * [ ] 支持匹配、提示和解析各种特殊的键/值表达式（`root.owner` `event_target:xxx`等）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ［待确认］不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）

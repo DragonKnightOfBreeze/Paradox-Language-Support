@@ -28,12 +28,19 @@ class ParadoxCreateNewLibraryDialog(
 	
 	private val propertyGraph = PropertyGraph()
 	private val gameTypeProperty = propertyGraph.property(gameType)
+		.apply {
+			afterChange { gameType ->
+				descriptor?.title = PlsBundle.message("library.dialog.createNewLibrary.libraryPath.browseDialogTitle", rootType, gameType)
+			}
+		}
 	private val rootTypeProperty = propertyGraph.property(rootType)
 	private val rootFilePathProperty = propertyGraph.property(contextDirectory?.path.orEmpty())
 	
 	var gameType by gameTypeProperty
 	var rootType by rootTypeProperty
 	var rootFilePath by rootFilePathProperty
+	
+	var descriptor: FileChooserDescriptor? = null
 	
 	init {
 		title = PlsBundle.message("library.dialog.createNewLibrary.title")
@@ -47,22 +54,24 @@ class ParadoxCreateNewLibraryDialog(
 		return panel {
 			val dialog = this@ParadoxCreateNewLibraryDialog
 			row {
-				comboBox(ParadoxGameType.valueList)
-					.bindItem(dialog.gameTypeProperty)
-					.label(PlsBundle.message("library.dialog.createNewLibrary.gameType"))
+				label(PlsBundle.message("library.dialog.createNewLibrary.gameType")).widthGroup("left")
+				comboBox(ParadoxGameType.valueList).bindItem(dialog.gameTypeProperty)
 				
-				comboBox(listOf(ParadoxRootType.Game, ParadoxRootType.Mod))
-					.bindItem(dialog.rootTypeProperty)
-					.label(PlsBundle.message("library.dialog.createNewLibrary.rootType"))
+				label(PlsBundle.message("library.dialog.createNewLibrary.rootType"))
+				comboBox(listOf(ParadoxRootType.Game, ParadoxRootType.Mod)).bindItem(dialog.rootTypeProperty)
 			}
 			row {
+				label(PlsBundle.message("library.dialog.createNewLibrary.libraryPath")).widthGroup("left")
 				val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
-				textFieldWithBrowseButton(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.browseDialogTitle"), project, descriptor) { it.path }
+					.withTitle(PlsBundle.message("library.dialog.createNewLibrary.libraryPath.browseDialogTitle", rootType, gameType))
+					.apply { putUserData(PlsDataKeys.gameTypePropertyKey, gameTypeProperty) }
+					.apply { putUserData(PlsDataKeys.rootTypePropertyKey, rootTypeProperty) }
+					.apply { descriptor = this }
+				textFieldWithBrowseButton(null, project, descriptor) { it.path }
 					.bindText(dialog.rootFilePathProperty)
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 					.validationOnApply { validateLibraryPath() }
-					.label(PlsBundle.message("library.dialog.createNewLibrary.libraryPath"))
 			}
 		}.apply {
 			withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果

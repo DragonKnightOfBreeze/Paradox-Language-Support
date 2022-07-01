@@ -108,9 +108,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.renderRelatedLocalisation.tooltip") }
 					}
 					row {
-						checkBox(PlsBundle.message("settings.script.doc.renderRelatedPictures"))
-							.bindSelected(settings::scriptRenderRelatedPictures)
-							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.renderRelatedPictures.tooltip") }
+						checkBox(PlsBundle.message("settings.script.doc.renderRelatedImages"))
+							.bindSelected(settings::scriptRenderRelatedImages)
+							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.renderRelatedImages.tooltip") }
 					}
 				}
 			}
