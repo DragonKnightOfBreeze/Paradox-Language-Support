@@ -241,11 +241,86 @@ fun Collection<String>.toCommaDelimitedString(): String {
 	return if(input.isEmpty()) "" else input.joinToString(",")
 }
 
+fun String.matchesGlobFileName(pattern: String, ignoreCase: Boolean = false): Boolean {
+	if(pattern.isEmpty()) return false
+	if(pattern == "*") return true
+	return pattern.split(';').any { doMatchGlobFileName(it.trim(), ignoreCase) }
+}
+
+private fun String.doMatchGlobFileName(pattern: String, ignoreCase: Boolean): Boolean {
+	if(pattern.isEmpty()) return false
+	if(pattern == "*") return true
+	val usedPath = this
+	val usedPattern = pattern
+	var flag = false
+	val patternLength = usedPattern.length
+	var patternIndex = 0
+	val pathLength = usedPath.length
+	var pathIndex = 0
+	while(patternIndex < patternLength) {
+		val c = pattern[patternIndex]
+		when {
+			flag -> {
+				patternIndex++
+				val nc = pattern.getOrNull(patternIndex)
+				if(nc == '*') {
+					patternIndex++
+					val nextPatternChar = usedPattern.getOrNull(patternIndex) ?: return true
+					while(true) {
+						if(pathIndex >= pathLength) return true
+						val c1 = usedPath[pathIndex]
+						if(c1.equals(nextPatternChar, ignoreCase)) break
+						pathIndex++
+					}
+					flag = false
+				} else {
+					val nextPatternChar = nc
+					while(true) {
+						if(pathIndex >= pathLength) return true
+						val c1 = usedPath[pathIndex]
+						if(nextPatternChar != null && c1.equals(nextPatternChar, ignoreCase)) break
+						pathIndex++
+					}
+					flag = false
+					continue
+				}
+			}
+			c == '.' -> {
+				if(pathIndex == pathLength - 1) return true
+				pathIndex++
+				if(pathIndex > pathLength) return false
+				patternIndex++
+			}
+			c == '*' -> {
+				flag = true
+			}
+			else -> {
+				val cc = usedPath[pathIndex]
+				if(!cc.equals(c, ignoreCase)) return false
+				if(pathIndex == pathLength - 1) return true
+				pathIndex++
+				if(pathIndex > pathLength) return false
+				patternIndex++
+			}
+		}
+	}
+	return flag
+}
+
 /**
- * 判断当前路径是否匹配另一个ANT路径通配符。使用"."匹配单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
+ * 判断当前路径是否匹配另一个ANT路径通配符。使用"."匹配单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。如果不以"/"开始则仅匹配文件名。
  */
 fun String.matchesAntPath(pattern: String, ignoreCase: Boolean = false): Boolean {
+	if(pattern.isEmpty()) return false
+	if(pattern == "*" || pattern == "**" || pattern == "/**") return true
+	return pattern.split(';').any { doMatchAntPath(it.trim(), ignoreCase) }
+}
+
+private fun String.doMatchAntPath(pattern: String, ignoreCase: Boolean): Boolean {
+	if(pattern.isEmpty()) return false
+	if(pattern == "*" || pattern == "**" || pattern == "/**") return true
 	val usedPath = this.trimEnd('/')
+		.let { if(pattern.startsWith('/')) it else this.substringAfterLast('/') }
 	val usedPattern = pattern.trimEnd('/')
 	var flag = false
 	val patternLength = usedPattern.length

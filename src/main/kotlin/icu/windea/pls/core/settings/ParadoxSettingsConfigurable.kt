@@ -93,6 +93,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 								reparseScriptFiles()
 							}
 						}
+						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
 						.horizontalAlign(HorizontalAlign.FILL)
 						.resizableColumn()
 				}
@@ -116,17 +117,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 			}
 			group(PlsBundle.message("settings.localisation")) {
 				row {
-					label(PlsBundle.message("settings.localisation.primaryLocale")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.localisation.primaryLocale.tooltip")
+					label(PlsBundle.message("settings.localisation.preferredLocale")).applyToComponent {
+						toolTipText = PlsBundle.message("settings.localisation.preferredLocale.tooltip")
 					}
 					comboBox(settings.locales, listCellRenderer { value, _, _ ->
 						if(value == "auto") {
-							text = PlsBundle.message("settings.localisation.primaryLocale.auto")
+							text = PlsBundle.message("settings.localisation.preferredLocale.auto")
 						} else {
 							text = InternalConfigHandler.getLocale(value)!!.description
 						}
 					})
-						.bindItem(settings::localisationPrimaryLocale.toNullableProperty())
+						.bindItem(settings::localisationPreferredLocale.toNullableProperty())
 						.onApply { refreshInlayHints() }
 				}
 				row {

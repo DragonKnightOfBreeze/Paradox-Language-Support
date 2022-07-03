@@ -46,30 +46,30 @@ class CwtLocalisationLocationExpression(
 		return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
 	}
 	
-	fun resolve(definitionName: String, definition: ParadoxDefinitionProperty, localeConfig: ParadoxLocaleConfig? = null, project: Project): Pair<String, ParadoxLocalisationProperty?>? {
+	fun resolve(definitionName: String, definition: ParadoxDefinitionProperty, localeConfig: ParadoxLocaleConfig? = null, project: Project, hasDefault: Boolean = false): Pair<String, ParadoxLocalisationProperty?>? {
 		if(placeholder != null) {
 			val key = resolvePlaceholder(definitionName)!!
-			val localisation = findLocalisation(key, localeConfig, project, hasDefault = true)
+			val localisation = findLocalisation(key, localeConfig, project, hasDefault = hasDefault)
 			return key to localisation
 		} else if(propertyName != null) {
 			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
-			val localisation = findLocalisation(key, localeConfig, project, hasDefault = true)
+			val localisation = findLocalisation(key, localeConfig, project, hasDefault = hasDefault)
 			return key to localisation
 		} else {
 			return null //不应该出现
 		}
 	}
 	
-	fun resolveAll(definitionName: String, definition: ParadoxDefinitionProperty, localeConfig: ParadoxLocaleConfig? = null, project: Project): Pair<String, List<ParadoxLocalisationProperty>>? {
+	fun resolveAll(definitionName: String, definition: ParadoxDefinitionProperty, localeConfig: ParadoxLocaleConfig? = null, project: Project, hasDefault: Boolean = false): Pair<String, List<ParadoxLocalisationProperty>>? {
 		if(placeholder != null) {
 			val key = resolvePlaceholder(definitionName)!!
-			val localisations = findLocalisations(key, localeConfig, project, hasDefault = true)
+			val localisations = findLocalisations(key, localeConfig, project, hasDefault = hasDefault)
 			return key to localisations
 		} else if(propertyName != null) {
 			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
-			val localisations = findLocalisations(key, localeConfig, project, hasDefault = true)
+			val localisations = findLocalisations(key, localeConfig, project, hasDefault = hasDefault)
 			return key to localisations
 		} else {
 			return null //不应该出现

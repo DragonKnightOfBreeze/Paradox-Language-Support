@@ -62,13 +62,13 @@ class ParadoxDefinitionInfo(
 		result
 	}
 	
-	val images: List<ParadoxRelatedImagesInfo> by lazy {
+	val images: List<ParadoxRelatedImageInfo> by lazy {
 		val mergedImagesConfig = typeConfig.images?.getMergedConfigs(subtypes) ?: return@lazy emptyList()
-		val result = SmartList<ParadoxRelatedImagesInfo>()
+		val result = SmartList<ParadoxRelatedImageInfo>()
 		//从已有的cwt规则
 		for(config in mergedImagesConfig) {
 			val locationExpression = CwtImageLocationExpression.resolve(config.expression)
-			val info = ParadoxRelatedImagesInfo(config.key, locationExpression, config.required, config.primary)
+			val info = ParadoxRelatedImageInfo(config.key, locationExpression, config.required, config.primary)
 			result.add(info)
 		}
 		result
@@ -90,7 +90,7 @@ class ParadoxDefinitionInfo(
 		localisation.filter { it.primary || it.inferIsPrimary()}
 	}
 	
-	val primaryImageConfigs: List<ParadoxRelatedImagesInfo> by lazy {
+	val primaryImageConfigs: List<ParadoxRelatedImageInfo> by lazy {
 		images.filter { it.primary || it.inferIsPrimary() }
 	}
 	
@@ -105,7 +105,7 @@ class ParadoxDefinitionInfo(
 	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
-			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, element, inferParadoxLocale(), configGroup.project) ?: continue
+			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, element, inferParadoxLocale(), configGroup.project, hasDefault = true) ?: continue
 			val localisation = resolved.second
 			if(localisation != null) return localisation
 		}
@@ -128,6 +128,6 @@ private fun ParadoxRelatedLocalisationInfo.inferIsPrimary(): Boolean {
 }
 
 @InferMethod
-private fun ParadoxRelatedImagesInfo.inferIsPrimary(): Boolean{
+private fun ParadoxRelatedImageInfo.inferIsPrimary(): Boolean{
 	return name.equals("icon", true)
 }

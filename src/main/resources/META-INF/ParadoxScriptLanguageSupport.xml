@@ -155,45 +155,52 @@
                      bundle="messages.PlsBundle" key="script.inspection.incorrectFileEncoding"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
-    <!--definition-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnexpectedSyntax"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.definition.unexpectedSyntax"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
-                     groupPathKey="script.inspection.definition.path"
-                     implementationClass="icu.windea.pls.script.inspections.definition.UnexpectedScriptSyntaxInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingRelatedLocalisation"
+    <!--advanced-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
-                     key="script.inspection.definition.inspection.missingRelatedLocalisation"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
-                     groupPathKey="script.inspection.definition.path"
-                     implementationClass="icu.windea.pls.script.inspections.definition.MissingRelatedLocalisationInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedFilePath"
+                     key="script.inspection.advanced.inspection.missingLocalisation"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.MissingLocalisationInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingImage"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="script.inspection.definition.inspection.unresolvedFilePath"
-                     groupBundle="messages.PlsBundle" groupKey="script.inspection.definition"
-                     groupPathKey="script.inspection.definition.path"
-                     implementationClass="icu.windea.pls.script.inspections.definition.UnresolvedFilePathInspection"/>
+                     bundle="messages.PlsBundle"
+                     key="script.inspection.advanced.inspection.missingImage"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.MissingImageInspection"/>
+    <!--<localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnexpectedSyntax"-->
+    <!--                 enabledByDefault="true" level="ERROR"-->
+    <!--                 bundle="messages.PlsBundle" key="script.inspection.advanced.unexpectedSyntax"-->
+    <!--                 groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"-->
+    <!--                 groupPathKey="script.inspection.advanced.path"-->
+    <!--                 implementationClass="icu.windea.pls.script.inspections.advanced.UnexpectedScriptSyntaxInspection"/>-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedFilePath"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.inspection.unresolvedFilePath"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.UnresolvedFilePathInspection"/>
     <!--definition > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.event.missingEventNamespace"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.event"
                      groupPathKey="script.inspection.event.path"
-                     implementationClass="icu.windea.pls.script.inspections.definition.event.MissingEventNamespaceInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.advanced.event.MissingEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventNamespace"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.event.incorrectEventNamespace"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.event"
                      groupPathKey="script.inspection.event.path"
-                     implementationClass="icu.windea.pls.script.inspections.definition.event.IncorrectEventNamespaceInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.advanced.event.IncorrectEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.event.incorrectEventId"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.event"
                      groupPathKey="script.inspection.event.path"
-                     implementationClass="icu.windea.pls.script.inspections.definition.event.IncorrectEventIdInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.advanced.event.IncorrectEventIdInspection"/>
   </extensions>
 
   <actions>

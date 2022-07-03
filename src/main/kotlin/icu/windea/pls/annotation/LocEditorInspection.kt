@@ -15,3 +15,4 @@ package icu.windea.pls.annotation
 annotation class LocEditorInspection(
 	val value:String
 )
+

@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections.definition
+package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*

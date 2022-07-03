@@ -56,7 +56,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionInfo(element, definitionInfo)
 		val propertyConfig = element.getPropertyConfig()
-		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)){
+		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)) {
 			return getInputParameterInfo(element)
 		}
 		val name = element.name
@@ -108,7 +108,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo)
 		val propertyConfig = element.getPropertyConfig()
-		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)){
+		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)) {
 			return getInputParameterInfo(element)
 		}
 		val name = element.name
@@ -199,14 +199,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeLinkText)
 			
 			//加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
-			val localisation = definitionInfo.localisation
-			if(localisation.isNotEmpty()) {
+			val localisationInfos = definitionInfo.localisation
+			if(localisationInfos.isNotEmpty()) {
 				val project = element.project
 				val localisationKeys = mutableSetOf<String>()
 				val usedLocalisationTargetMap = localisationTargetMap ?: mutableMapOf()
-				for((key, locationExpression, required) in localisation) {
+				for((key, locationExpression, required) in localisationInfos) {
 					if(!usedLocalisationTargetMap.containsKey(key)) {
-						val (targetKey, target) = locationExpression.resolve(definitionInfo.name, element, inferParadoxLocale(), project) ?: continue //发生意外，直接跳过
+						val (targetKey, target) = locationExpression.resolve(definitionInfo.name, element, inferParadoxLocale(), project, hasDefault = true) ?: continue //发生意外，直接跳过
 						if(target != null) usedLocalisationTargetMap.put(key, target)
 						if(required || target != null) {
 							if(localisationKeys.add(key)) {
@@ -218,12 +218,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
-			val images = definitionInfo.images
-			if(images.isNotEmpty()) {
+			val imagesInfos = definitionInfo.images
+			if(imagesInfos.isNotEmpty()) {
 				val project = element.project
 				val imageKeys = mutableSetOf<String>()
 				val usedImageTargetMap = imageTargetMap ?: mutableMapOf()
-				for((key, locationExpression, required) in images) {
+				for((key, locationExpression, required) in imagesInfos) {
 					if(!usedImageTargetMap.containsKey(key)) {
 						val (filePath, target, frame) = locationExpression.resolve(definitionInfo.name, element, project) ?: continue //发生意外，直接跳过
 						if(target != null) usedImageTargetMap.put(key, tupleOf(target, frame))
@@ -242,8 +242,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildExtDocContent(definitionInfo: ParadoxDefinitionInfo) {
 		//加上从PlsExtDocBundle中得到的文档文本
 		val docText = PlsExtDocBundle.message(definitionInfo.name, definitionInfo.type, definitionInfo.gameType)
-		if(docText != null && docText.isNotEmpty()){
-			content { 
+		if(docText != null && docText.isNotEmpty()) {
+			content {
 				append(docText)
 			}
 		}

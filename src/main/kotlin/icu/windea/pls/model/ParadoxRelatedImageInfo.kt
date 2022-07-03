@@ -2,9 +2,9 @@ package icu.windea.pls.model
 
 import icu.windea.pls.config.cwt.expression.*
 
-data class ParadoxRelatedImagesInfo(
+data class ParadoxRelatedImageInfo(
 	val name: String,
-	val location: CwtImageLocationExpression,
+	val locationExpression: CwtImageLocationExpression,
 	val required: Boolean = false,
 	val primary: Boolean = false
 )

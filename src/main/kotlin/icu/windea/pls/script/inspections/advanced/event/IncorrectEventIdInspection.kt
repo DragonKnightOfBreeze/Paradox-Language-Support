@@ -1,4 +1,4 @@
-package icu.windea.pls.script.inspections.definition.event
+package icu.windea.pls.script.inspections.advanced.event
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*

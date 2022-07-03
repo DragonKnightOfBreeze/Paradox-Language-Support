@@ -57,15 +57,22 @@ object InternalConfigHandler {
 	/**
 	 * 从内置规则文件中得到得到所有语言区域设置。
 	 */
-	fun getLocaleFlagMap(project: Project? = null): Map<String, ParadoxLocaleConfig> {
-		return getInternalConfig(project).localeFlagMap
+	fun getLocales(project: Project? = null): Array<ParadoxLocaleConfig> {
+		return getInternalConfig(project).locales
 	}
 	
 	/**
 	 * 从内置规则文件中得到得到所有语言区域设置。
 	 */
-	fun getLocales(project: Project? = null): Array<ParadoxLocaleConfig> {
-		return getInternalConfig(project).locales
+	fun getLocaleList(project: Project? = null): List<ParadoxLocaleConfig> {
+		return getInternalConfig(project).localeList
+	}
+	
+	/**
+	 * 从内置规则文件中得到得到所有语言区域设置。
+	 */
+	fun getLocaleFlagMap(project: Project? = null): Map<String, ParadoxLocaleConfig> {
+		return getInternalConfig(project).localeFlagMap
 	}
 	//endregion
 	
@@ -80,15 +87,22 @@ object InternalConfigHandler {
 	/**
 	 * 从内置规则文件中得到得到所有预定义变量设置。
 	 */
-	fun getPredefinedVariableMap(project: Project? = null): Map<String, ParadoxPredefinedVariableConfig> {
-		return getInternalConfig(project).predefinedVariableMap
+	fun getPredefinedVariables(project: Project? = null): Array<ParadoxPredefinedVariableConfig> {
+		return getInternalConfig(project).predefinedVariables
 	}
 	
 	/**
 	 * 从内置规则文件中得到得到所有预定义变量设置。
 	 */
-	fun getPredefinedVariables(project: Project? = null): Array<ParadoxPredefinedVariableConfig> {
-		return getInternalConfig(project).predefinedVariables
+	fun getPredefinedVariableList(project: Project? = null): List<ParadoxPredefinedVariableConfig> {
+		return getInternalConfig(project).predefinedVariableList
+	}
+	
+	/**
+	 * 从内置规则文件中得到得到所有预定义变量设置。
+	 */
+	fun getPredefinedVariableMap(project: Project? = null): Map<String, ParadoxPredefinedVariableConfig> {
+		return getInternalConfig(project).predefinedVariableMap
 	}
 	//endregion
 }

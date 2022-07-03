@@ -4,6 +4,14 @@ import org.junit.*
 
 class ExtensionsTest {
 	@Test
+	fun matchesGlobFileNameTest(){
+		Assert.assertTrue("abc".matchesGlobFileName("abc"))
+		Assert.assertTrue("abc".matchesGlobFileName("*"))
+		Assert.assertTrue("abc".matchesGlobFileName("ab."))
+		Assert.assertTrue("abc".matchesGlobFileName("ab*"))
+	}
+	
+	@Test
 	fun matchesAntPathTest(){
 		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/name**", false))
 		Assert.assertTrue("/foo/bar/name".matchesAntPath("/foo/bar/name", false))

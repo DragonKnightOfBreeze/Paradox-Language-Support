@@ -18,9 +18,11 @@ class InternalConfigGroup(
 	val systemScopeMap: Map<@CaseInsensitive String, ParadoxSystemScopeConfig>
 	
 	val locales: Array<ParadoxLocaleConfig>
+	val localeList: List<ParadoxLocaleConfig>
 	val localeMap: Map<String, ParadoxLocaleConfig>
 	val localeFlagMap: Map<String, ParadoxLocaleConfig>
 	val predefinedVariables: Array<ParadoxPredefinedVariableConfig>
+	val predefinedVariableList: List<ParadoxPredefinedVariableConfig>
 	val predefinedVariableMap: Map<String, ParadoxPredefinedVariableConfig>
 	
 	init {
@@ -40,7 +42,6 @@ class InternalConfigGroup(
 		
 		val localisationConfig = configMap.getValue(localisationConfigFileName)
 		var localesConfig: CwtPropertyConfig? = null
-		var colorsConfig: CwtPropertyConfig? = null
 		var predefinedVariableConfig: CwtPropertyConfig? = null
 		for(prop in localisationConfig.properties) {
 			when(prop.key) {
@@ -56,6 +57,7 @@ class InternalConfigGroup(
 			val languageTag = it.properties?.find { p -> p.key == "language_tag" }?.stringValue!!
 			ParadoxLocaleConfig(id, description, languageTag, it.pointer)
 		}
+		localeList = locales.toList()
 		localeMap = locales.associateBy { it.id }
 		localeFlagMap = locales.associateBy { it.languageTag }
 		
@@ -65,6 +67,7 @@ class InternalConfigGroup(
 			val description = prop.documentation.orEmpty()
 			ParadoxPredefinedVariableConfig(id, description, prop.pointer)
 		}
+		predefinedVariableList = predefinedVariables.toList()
 		predefinedVariableMap = predefinedVariables.associateBy { it.id }
 	}
 }
