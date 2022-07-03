@@ -7,6 +7,8 @@
     <fileBasedIndex implementation="icu.windea.pls.core.psi.ParadoxFilePathIndexImpl"/>
     <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true"
                  description="Use VFS-based implementation for ParadoxFilePathIndex"/>
+    <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"
+                 description="Run convert DDS to PNG write action under progress, not to freeze the UI during long operations"/>
 s
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
 

@@ -475,7 +475,7 @@ object ParadoxScriptPsiImplUtil {
 					element.replace(newColor)
 				}
 				val document = PsiDocumentManager.getInstance(project).getDocument(element.containingFile)
-				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.text"), null, document)
+				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
 			}
 		}
 	}
@@ -611,7 +611,7 @@ object ParadoxScriptPsiImplUtil {
 					if(block.isValid) block.reformatted()
 				}
 				val document = PsiDocumentManager.getInstance(project).getDocument(element.containingFile)
-				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.text"), null, document)
+				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
 			}
 		}
 	}

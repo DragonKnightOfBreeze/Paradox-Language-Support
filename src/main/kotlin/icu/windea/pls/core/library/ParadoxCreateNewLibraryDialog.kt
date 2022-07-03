@@ -73,6 +73,9 @@ class ParadoxCreateNewLibraryDialog(
 					.resizableColumn()
 					.validationOnApply { validateLibraryPath() }
 			}
+			row {
+				pathCompletionShortcutComment()
+			}
 		}.apply {
 			withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
 		}

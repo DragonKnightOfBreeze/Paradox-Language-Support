@@ -52,7 +52,7 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(name, value, parentDefinition, project)
 			PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
 			
-			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.text"))
+			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
 			val builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
 			val variableNameId = newVariable.variableName.variableNameId
 			builder.replaceElement(variableNameId, "variableName", TextExpression(variableNameId.text), true)
@@ -72,7 +72,7 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 				}
 			})
 		}
-		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.text"), null, command, file)
+		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
 		return true
 	}
 }

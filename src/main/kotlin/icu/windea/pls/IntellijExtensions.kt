@@ -13,7 +13,6 @@ import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -26,14 +25,11 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
-import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import java.io.*
 import java.util.*
 import javax.swing.*
-import javax.swing.text.*
-import kotlin.reflect.*
 
 //region Misc Extensions
 fun LookupElement.withPriority(priority: Double): LookupElement {
@@ -167,12 +163,6 @@ fun String.escapeBlank(): String {
 		}
 	}
 	return builder?.toString() ?: this
-}
-//endregion
-
-//region UI Extensions
-fun <T : JTextComponent> Cell<T>.bindText(prop: KMutableProperty0<String?>): Cell<T> {
-	return bindText({ prop.get().orEmpty() }, { prop.set(it) })
 }
 //endregion
 

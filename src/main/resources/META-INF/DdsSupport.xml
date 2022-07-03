@@ -11,14 +11,17 @@
   <actions>
     <group id="DdsRootGroup">
       <!--Put actions that need to rewrite here-->
-      <action id="Dds.EditExternally"
-              class="icu.windea.pls.dds.actions.EditExternallyAction"
+      <action id="Dds.EditExternally" class="icu.windea.pls.dds.actions.EditExternallyAction"
               use-shortcut-of="Images.EditExternally">
         <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
       </action>
-      <action id="Dds.EditExternalEditorPath"
-              class="org.intellij.images.actions.EditExternalImageEditorAction"
+      <action id="Dds.EditExternalEditorPath" class="org.intellij.images.actions.EditExternalImageEditorAction" 
               use-shortcut-of="Images.EditExternalEditorPath">
+        <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
+      </action>
+      <action id="Dds.ConvertDdsToPng" class="icu.windea.pls.dds.actions.ConvertDdsToPngAction">
+        <keyboard-shortcut first-keystroke="control alt c" keymap="$default"/>
+        <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
       </action>
       <!--Unnecessary-->
       <!--<add-to-group group-id="Other.KeymapGroup"/>-->
@@ -52,6 +55,7 @@
       <separator/>
       <reference id="Dds.EditExternally"/>
       <reference id="Dds.EditExternalEditorPath"/>
+      <reference id="Dds.ConvertDdsToPng"/>
       <reference id="ExternalToolsGroup"/>
     </group>
   </actions>

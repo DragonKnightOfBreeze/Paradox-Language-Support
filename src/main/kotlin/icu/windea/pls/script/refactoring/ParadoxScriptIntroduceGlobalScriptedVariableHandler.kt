@@ -55,7 +55,7 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 			val document = PsiDocumentManager.getInstance(project).getDocument(targetFile)
 			if(document != null) PsiDocumentManager.getInstance(project).commitDocument(document) //提交文档更改
 		}
-		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.text"), null, command, targetFile)
+		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, targetFile)
 		
 		//回到原来的光标位置
 		editor.caretModel.moveToOffset(position.startOffset)
