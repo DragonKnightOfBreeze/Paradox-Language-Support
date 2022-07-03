@@ -1003,7 +1003,7 @@ object CwtConfigHandler {
 			//aliasConfigs的名字是相同的 
 			val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
-			if(scope != null && !aliasConfig.supportedScopes.any { matchScope(scope, it, configGroup) }) continue
+			if(scope != null && aliasConfig.supportedScopes?.any { matchScope(scope, it, configGroup) } == false) continue
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 			val finalScope = config.parent?.scope ?: scope
 			//aliasSubName是一个表达式

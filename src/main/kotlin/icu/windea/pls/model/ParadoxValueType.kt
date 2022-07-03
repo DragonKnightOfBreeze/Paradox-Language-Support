@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import java.text.*
 
 /**
@@ -34,6 +35,7 @@ enum class ParadoxValueType(
 	}
 	
 	companion object {
+		@InferMethod
 		@JvmStatic
 		fun infer(inputValue: String): ParadoxValueType {
 			return when {

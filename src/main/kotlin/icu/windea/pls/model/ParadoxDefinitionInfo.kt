@@ -2,6 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -86,11 +87,11 @@ class ParadoxDefinitionInfo(
 	}
 	
 	val primaryLocalisationConfigs: List<ParadoxRelatedLocalisationInfo> by lazy {
-		localisation.filter { it.primary || it.key.equals("name", true) || it.key.equals("title", true) } //TODO 额外进行一些推断，考虑可配置
+		localisation.filter { it.primary || it.inferIsPrimary()}
 	}
 	
 	val primaryImageConfigs: List<ParadoxRelatedImagesInfo> by lazy {
-		images.filter { it.primary }
+		images.filter { it.primary || it.inferIsPrimary() }
 	}
 	
 	val typeCount get() = types.size
@@ -119,4 +120,14 @@ class ParadoxDefinitionInfo(
 	override fun hashCode(): Int {
 		return Objects.hash(rootKey, elementPath, gameType)
 	}
+}
+
+@InferMethod
+private fun ParadoxRelatedLocalisationInfo.inferIsPrimary(): Boolean {
+	return name.equals("name", true) || name.equals("title", true)
+}
+
+@InferMethod
+private fun ParadoxRelatedImagesInfo.inferIsPrimary(): Boolean{
+	return name.equals("icon", true)
 }

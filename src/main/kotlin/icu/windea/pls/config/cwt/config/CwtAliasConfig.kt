@@ -14,12 +14,14 @@ data class CwtAliasConfig(
 	val keyExpression by lazy { CwtKeyExpression.resolve(subName) }
 	val valueExpression by lazy { CwtValueExpression.resolve(subName) }
 	
-	val supportedScopes by lazy { inferSupportedScopes() }
-	val supportedScopesText by lazy { supportedScopes.joinToString(" ", "{ ", " }") }
+	//TODO check
 	
-	private fun inferSupportedScopes(): Set<String> {
+	val supportedScopes by lazy { resolveSupportedScopes() }
+	val supportedScopesText by lazy { supportedScopes?.joinToString(" ", "{ ", " }") }
+	
+	private fun resolveSupportedScopes(): Set<String>? {
 		val options = config.options ?: return emptySet()
-		val option = options.find { it.key == "scope" || it.key == "scopes" } ?: return emptySet()
+		val option = options.find { it.key == "scope" || it.key == "scopes" } ?: return null
 		return option.stringValue?.let { setOf(it) } ?: option.optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue } ?: emptySet()
 	}
 }

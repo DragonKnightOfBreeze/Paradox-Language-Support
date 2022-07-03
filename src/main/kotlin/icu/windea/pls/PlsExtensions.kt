@@ -10,6 +10,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -42,6 +43,7 @@ fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDe
 
 fun getCwtConfig(project: Project) = project.service<CwtConfigProvider>().configGroups
 
+@InferMethod
 fun inferParadoxLocale(): ParadoxLocaleConfig? {
 	val primaryLocale = getSettings().localisationPrimaryLocale.orEmpty()
 	if(primaryLocale.isNotEmpty() && primaryLocale != "auto") {
@@ -296,21 +298,6 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
 
 private fun doGetColorConfig(id: String, gameType: ParadoxGameType, project: Project): ParadoxTextColorConfig? {
 	return DefinitionConfigHandler.getTextColorConfig(id, gameType, project)
-}
-//endregion
-
-//region Type Extensions
-fun ParadoxScriptValue.inferValueType(): String? {
-	return when(this) {
-		is ParadoxScriptBoolean -> "boolean"
-		is ParadoxScriptInt -> "int"
-		is ParadoxScriptFloat -> "float"
-		is ParadoxScriptString -> "string"
-		is ParadoxScriptColor -> "color"
-		is ParadoxScriptBlock -> "block"
-		is ParadoxScriptInlineMath -> "code"
-		else -> null
-	}
 }
 
 fun ParadoxScriptValue.isNullLike(): Boolean {
