@@ -13,10 +13,10 @@ intellij {
 	plugins.add("com.intellij.platform.images")
 	
 	//reference
-	plugins.add("markdown")
-	plugins.add("properties")
-	plugins.add("com.intellij.java")
-	plugins.add("org.jetbrains.kotlin")
+	//plugins.add("markdown")
+	//plugins.add("properties")
+	//plugins.add("com.intellij.java")
+	//plugins.add("org.jetbrains.kotlin")
 }
 
 repositories {
