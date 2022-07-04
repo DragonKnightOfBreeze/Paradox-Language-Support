@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
-import com.intellij.util.*
 import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -27,6 +26,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
+import icu.windea.pls.util.selector.*
 import java.lang.Integer.*
 import java.util.*
 
@@ -340,15 +340,15 @@ fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScript
  * @param name 变量的名字，以"@"开始。
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，向上查找。
  */
-fun findScriptedVariablesInFile(name: String, context: PsiElement): List<ParadoxScriptVariable> {
+fun findScriptedVariablesInFile(name: String, context: PsiElement): Set<ParadoxScriptVariable> {
 	//在整个脚本文件中递归向上向前查找，按查找到的顺序排序
-	var result: MutableList<ParadoxScriptVariable>? = null
+	var result: MutableSet<ParadoxScriptVariable>? = null
 	var current = context
 	while(current !is PsiFile) {
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
 			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
-				if(result == null) result = SmartList()
+				if(result == null) result = mutableSetOf()
 				result.add(prevSibling)
 				break
 			}
@@ -356,7 +356,7 @@ fun findScriptedVariablesInFile(name: String, context: PsiElement): List<Paradox
 		}
 		current = current.parent ?: break
 	}
-	if(result == null) return emptyList()
+	if(result == null) return emptySet()
 	return result
 }
 
@@ -364,9 +364,9 @@ fun findScriptedVariablesInFile(name: String, context: PsiElement): List<Paradox
  * 在当前文件中递归查找所有的封装变量（scriptedVariable）。（不一定声明在顶层）
  * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
  */
-fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false): List<ParadoxScriptVariable> {
+fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false): Set<ParadoxScriptVariable> {
 	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
-	var result: MutableList<ParadoxScriptVariable>? = null
+	var result: MutableSet<ParadoxScriptVariable>? = null
 	val namesToDistinct = if(distinct) mutableSetOf<String>() else null
 	var current = context
 	while(current !is PsiFile) {
@@ -374,7 +374,7 @@ fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false)
 		while(prevSibling != null) {
 			if(prevSibling is ParadoxScriptVariable) {
 				if(namesToDistinct == null || namesToDistinct.add(prevSibling.name)) {
-					if(result == null) result = SmartList()
+					if(result == null) result = mutableSetOf()
 					result.add(prevSibling)
 				}
 			}
@@ -382,20 +382,8 @@ fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false)
 		}
 		current = current.parent ?: break
 	}
-	if(result == null) return emptyList()
+	if(result == null) return emptySet()
 	return result
-}
-
-/**
- * 基于封装变量名字索引，根据名字查判断是否存在封装变量（scriptedVariable）。
- * @param name 变量的名字，以"@"开始。
- */
-fun existsScriptedVariable(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): Boolean {
-	return ParadoxScriptedVariableNameIndex.exists(name, project, scope)
 }
 
 /**
@@ -405,9 +393,10 @@ fun existsScriptedVariable(
 fun findScriptedVariable(
 	name: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ParadoxSelector<ParadoxScriptVariable> = nopSelector()
 ): ParadoxScriptVariable? {
-	return ParadoxScriptedVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden)
+	return ParadoxScriptedVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden, selector)
 }
 
 /**
@@ -417,9 +406,10 @@ fun findScriptedVariable(
 fun findScriptedVariables(
 	name: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxScriptVariable> {
-	return ParadoxScriptedVariableNameIndex.findAll(name, project, scope)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ParadoxSelector<ParadoxScriptVariable> = nopSelector()
+): Set<ParadoxScriptVariable> {
+	return ParadoxScriptedVariableNameIndex.findAll(name, project, scope, selector)
 }
 
 /**
@@ -429,22 +419,10 @@ fun findScriptedVariables(
 fun findAllScriptedVariables(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	distinct: Boolean = false
+	distinct: Boolean = false,
+	selector: ParadoxSelector<ParadoxScriptVariable> = nopSelector()
 ): Set<ParadoxScriptVariable> {
-	return ParadoxScriptedVariableNameIndex.findAll(project, scope, distinct)
-}
-
-/**
- * 基于定义名字索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- */
-fun existsDefinition(
-	name: String,
-	typeExpression: String?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): Boolean {
-	return ParadoxDefinitionNameIndex.exists(name, typeExpression, project, scope)
+	return ParadoxScriptedVariableNameIndex.findAll(project, scope, distinct, selector)
 }
 
 /**
@@ -455,9 +433,11 @@ fun findDefinition(
 	name: String,
 	typeExpression: String?,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	preferFirst: Boolean = !getSettings().preferOverridden,
+	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): ParadoxDefinitionProperty? {
-	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
+	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, preferFirst, selector)
 }
 
 /**
@@ -468,9 +448,10 @@ fun findDefinitions(
 	name: String,
 	typeExpression: String?,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionNameIndex.findAll(name, typeExpression, project, scope)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+): Set<ParadoxDefinitionProperty> {
+	return ParadoxDefinitionNameIndex.findAll(name, typeExpression, project, scope, selector)
 }
 
 /**
@@ -482,22 +463,10 @@ fun findAllDefinitions(
 	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	distinct: Boolean = false
+	distinct: Boolean = false,
+	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): Set<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope, distinct)
-}
-
-/**
- * 基于定义类型索引，根据名字、类型表达式判断是否存在脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- */
-fun existsDefinitionByType(
-	name: String,
-	typeExpression: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): Boolean {
-	return ParadoxDefinitionTypeIndex.exists(name, typeExpression, project, scope)
+	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope, distinct, selector)
 }
 
 /**
@@ -508,9 +477,11 @@ fun findDefinitionByType(
 	name: String,
 	typeExpression: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	preferFirst: Boolean = !getSettings().preferOverridden,
+	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): ParadoxDefinitionProperty? {
-	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, !getSettings().preferOverridden)
+	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, preferFirst, selector)
 }
 
 /**
@@ -521,9 +492,10 @@ fun findDefinitionsByType(
 	name: String,
 	typeExpression: String,
 	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-): List<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionTypeIndex.findAll(name, typeExpression, project, scope)
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+): Set<ParadoxDefinitionProperty> {
+	return ParadoxDefinitionTypeIndex.findAll(name, typeExpression, project, scope, selector)
 }
 
 /**
@@ -535,9 +507,10 @@ fun findDefinitionsByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	distinct: Boolean = false
-): List<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope, distinct)
+	distinct: Boolean = false,
+	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+): Set<ParadoxDefinitionProperty> {
+	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope, distinct, selector)
 }
 
 //NOTE 查找定义时不需要预先过滤结果
@@ -555,19 +528,6 @@ fun findDefinitionsByType(
 //}
 
 /**
- * 基于本地化名字索引，根据名字、语言区域判断是否存在本地化（localisation）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
- */
-fun existsLocalisation(
-	name: String,
-	localeConfig: ParadoxLocaleConfig?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-): Boolean {
-	return ParadoxLocalisationNameIndex.Localisation.exists(name, localeConfig, project, scope)
-}
-
-/**
  * 基于本地化名字索引，根据名字、语言区域查找本地化（localisation）。
  * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
  * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
@@ -577,9 +537,11 @@ fun findLocalisation(
 	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false
+	hasDefault: Boolean = false,
+	preferFirst: Boolean = !getSettings().preferOverridden,
+	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.Localisation.findOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
+	return ParadoxLocalisationNameIndex.Localisation.findOne(name, localeConfig, project, scope, hasDefault, preferFirst, selector)
 }
 
 /**
@@ -593,37 +555,25 @@ fun findLocalisations(
 	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false
+	hasDefault: Boolean = false,
+	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.Localisation.findAll(name, localeConfig, project, scope, hasDefault)
+	return ParadoxLocalisationNameIndex.Localisation.findAll(name, localeConfig, project, scope, hasDefault, selector)
 }
 
 /**
- * 基于本地化名字索引，根据推断的语言区域遍历所有的本地化（localisation）。
+ * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation）。对本地化的键去重。
  * @see inferParadoxLocale
  */
 inline fun processLocalisationVariants(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
-	val maxSize = 0
-	//val maxSize = getSettings().maxCompleteSize
-	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize = maxSize, processor = processor)
-}
-
-/**
- * 基于本地化名字索引，根据名字、语言区域判断是否存在同步本地化（localisation_synced）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
- */
-fun existsSyncedLocalisation(
-	name: String,
-	localeConfig: ParadoxLocaleConfig?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-): Boolean {
-	return ParadoxLocalisationNameIndex.SyncedLocalisation.exists(name, localeConfig, project, scope)
+	val maxSize = getSettings().maxCompleteSize
+	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize, selector, processor)
 }
 
 /**
@@ -636,9 +586,11 @@ fun findSyncedLocalisation(
 	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false
+	hasDefault: Boolean = false,
+	preferFirst: Boolean = !getSettings().preferOverridden,
+	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.SyncedLocalisation.findOne(name, localeConfig, project, scope, hasDefault, !getSettings().preferOverridden)
+	return ParadoxLocalisationNameIndex.SyncedLocalisation.findOne(name, localeConfig, project, scope, hasDefault, preferFirst, selector)
 }
 
 /**
@@ -652,24 +604,25 @@ fun findSyncedLocalisations(
 	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false
+	hasDefault: Boolean = false,
+	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.SyncedLocalisation.findAll(name, localeConfig, project, scope, hasDefault)
+	return ParadoxLocalisationNameIndex.SyncedLocalisation.findAll(name, localeConfig, project, scope, hasDefault, selector)
 }
 
 /**
- * 基于同步本地化名字索引，根据推断的语言区域遍历所有的同步本地化（synced_localisation）。
+ * 基于同步本地化名字索引，根据关键字和推断的语言区域遍历所有的同步本地化（synced_localisation）。对本地化的键去重。
  * @see inferParadoxLocale
  */
 inline fun processSyncedLocalisationVariants(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
-	val maxSize = 0
-	//val maxSize = getSettings().maxCompleteSize
-	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize = maxSize, processor = processor)
+	val maxSize = getSettings().maxCompleteSize
+	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize, selector, processor)
 }
 
 
@@ -685,7 +638,7 @@ fun findFileByFilePath(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
 	ignoreCase: Boolean = true,
-	selector: ParadoxFileSelector = ParadoxFileSelectors.default()
+	selector: ParadoxSelector<VirtualFile> = nopSelector()
 ): VirtualFile? {
 	return ParadoxFilePathIndex.findOne(filePath, scope, expressionType, ignoreCase, selector)
 }
@@ -704,7 +657,7 @@ fun findFilesByFilePath(
 	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
 	ignoreCase: Boolean = true,
 	distinct: Boolean = false,
-	selector: ParadoxFileSelector = ParadoxFileSelectors.default()
+	selector: ParadoxSelector<VirtualFile> = nopSelector()
 ): Set<VirtualFile> {
 	return ParadoxFilePathIndex.findAll(filePath, scope, expressionType, ignoreCase, distinct, selector)
 }
@@ -720,7 +673,7 @@ fun findAllFilesByFilePath(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	ignoreCase: Boolean = true,
 	distinct: Boolean = false,
-	selector: ParadoxFileSelector = ParadoxFileSelectors.default()
+	selector: ParadoxSelector<VirtualFile> = nopSelector()
 ): Set<VirtualFile> {
 	return ParadoxFilePathIndex.findAll(project, scope, ignoreCase, distinct, selector)
 }
@@ -782,7 +735,8 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement
 		val lastDotIndex = linkWithoutPrefix.lastIndexOf('.')
 		val type = linkWithoutPrefix.substring(0, lastDotIndex)
 		val name = linkWithoutPrefix.substring(lastDotIndex + 1)
-		findDefinitionByType(name, type, context.project)
+		val selector = definitionSelector().gameTypeFrom(context).preferRootFrom(context)
+		findDefinitionByType(name, type, context.project, selector= selector)
 	}.getOrNull()
 }
 
@@ -799,7 +753,9 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, context: PsiElement):
 	return runCatching {
 		val filePath = linkWithoutPrefix
 		val project = context.project
-		findFileByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(context))?.toPsiFile<PsiFile>(project)
+		val fileInfo = context.fileInfo ?: return@runCatching null
+		val selector = fileSelector().gameType(fileInfo.gameType).preferRoot(fileInfo.rootFile)
+		findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
 	}.getOrNull()
 }
 //endregion
@@ -839,7 +795,7 @@ fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, con
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为定义，则显示链接
-	val isResolved = resolved == true || (resolved == null && existsDefinition(name, null, context.project))
+	val isResolved = resolved == true || (resolved == null && findDefinition(name, null, context.project, preferFirst = true, selector = definitionSelector().gameTypeFrom(context)) != null)
 	if(isResolved) return appendPsiLink("$definitionLinkPrefix.$typeExpression.$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
@@ -849,7 +805,7 @@ fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement, reso
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为本地化，则显示链接
-	val isResolved = resolved == true || (resolved == null && existsLocalisation(name, null, context.project))
+	val isResolved = resolved == true || (resolved == null && findLocalisation(name, null, context.project, preferFirst = true) != null)
 	if(isResolved) return appendPsiLink("$localisationLinkPrefix$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
@@ -857,7 +813,7 @@ fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement, reso
 
 fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果可以定位到绝对路径，则显示链接
-	val isResolved = resolved == true || (resolved == null && findFileByFilePath(filePath, context.project) != null)
+	val isResolved = resolved == true || (resolved == null && findFileByFilePath(filePath, context.project, selector = fileSelector().gameTypeFrom(context)) != null)
 	if(isResolved) return appendPsiLink("$filePathLinkPrefix$filePath", filePath)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(filePath)

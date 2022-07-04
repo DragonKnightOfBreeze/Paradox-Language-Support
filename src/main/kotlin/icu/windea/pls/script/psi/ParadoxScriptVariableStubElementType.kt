@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
@@ -19,7 +20,7 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	}
 	
 	override fun createStub(psi: ParadoxScriptVariable, parentStub: StubElement<*>): ParadoxScriptVariableStub {
-		return ParadoxScriptVariableStubImpl(parentStub, psi.name)
+		return ParadoxScriptVariableStubImpl(parentStub, psi.name, psi.fileInfo?.gameType.orDefault())
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -37,10 +38,12 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	
 	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
+		dataStream.writeName(stub.gameType.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptVariableStub {
 		val name = dataStream.readNameString()
-		return ParadoxScriptVariableStubImpl(parentStub, name)
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }.orDefault()
+		return ParadoxScriptVariableStubImpl(parentStub, name, gameType)
 	}
 }

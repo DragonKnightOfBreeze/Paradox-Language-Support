@@ -43,6 +43,7 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 			dataStream.writeName(stub.name)
 			dataStream.writeName(stub.type)
 			dataStream.writeName(stub.subtypes?.toCommaDelimitedString())
+			dataStream.writeName(stub.gameType.id)
 		}
 		super.serialize(stub, dataStream)
 	}
@@ -51,7 +52,7 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		val name = dataStream.readNameString()
 		val type = dataStream.readNameString()
 		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
-		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }.orDefault()
 		return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
 	}
 	
@@ -62,7 +63,7 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 			val name = definitionInfo?.name
 			val type = definitionInfo?.type
 			val subtypes = definitionInfo?.subtypes
-			val gameType = definitionInfo?.gameType
+			val gameType = definitionInfo?.gameType.orDefault()
 			return ParadoxScriptFileStubImpl(psiFile, name, type, subtypes, gameType)
 		}
 		

@@ -7,9 +7,10 @@ import icu.windea.pls.model.*
 class ParadoxLocalisationStubImpl(
 	parent: StubElement<*>,
 	override val name: String? = null,
-	override val category: ParadoxLocalisationCategory = ParadoxLocalisationCategory.Localisation
+	override val category: ParadoxLocalisationCategory,
+	override val gameType: ParadoxGameType
 ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationStub{
 	override fun toString(): String {
-		return "ParadoxLocalisationStub(key=$name, category=$category)"
+		return "ParadoxLocalisationStub(name=$name, category=$category, gameType=$gameType)"
 	}
 }

@@ -6,7 +6,7 @@ import icu.windea.pls.*
 enum class ParadoxGameType(
 	override val id: String,
 	override val description: String,
-	val gameId: String
+	val gameSteamId: String
 ) : IdAware, DescriptionAware {
 	Ck2("ck2", "Crusader Kings II", "203770"),
 	Ck3("ck3", "Crusader Kings III", "1158310"),
@@ -54,3 +54,5 @@ enum class ParadoxGameType(
 		}
 	}
 }
+
+fun ParadoxGameType?.orDefault() = this ?: getSettings().defaultGameType

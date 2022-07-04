@@ -5,6 +5,8 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
+import icu.windea.pls.util.selector.*
+import java.util.*
 
 //注意这里不能直接访问element.definitionInfo，需要优先通过element.stub获取定义信息
 
@@ -19,51 +21,57 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionPr
 	
 	override fun getCacheSize() = cacheSize
 	
-	fun exists(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope): Boolean {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return false
-		
-		if(typeExpression == null) return existsElement(name, project, scope)
-		val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-		return existsElement(name, project, scope) { element -> expression.matches(element) }
-	}
-	
-	fun findOne(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope, preferFirst: Boolean): ParadoxDefinitionProperty? {
+	fun findOne(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope, preferFirst: Boolean, selector: ParadoxSelector<ParadoxDefinitionProperty>): ParadoxDefinitionProperty? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
-		if(preferFirst) {
-			if(typeExpression == null) return findFirstElement(name, project, scope)
+		return if(preferFirst) {
+			if(typeExpression == null) return findFirstElement(name, project, scope) { selector.select(it) }
 			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-			return findFirstElement(name, project, scope) { element -> expression.matches(element) }
+			findFirstElement(name, project, scope) { expression.matches(it) && selector.select(it) }
 		} else {
-			if(typeExpression == null) return findLastElement(name, project, scope)
+			if(typeExpression == null) return findLastElement(name, project, scope) { selector.select(it) }
 			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-			return findLastElement(name, project, scope) { element -> expression.matches(element) }
-		}
+			findLastElement(name, project, scope) { expression.matches(it) && selector.select(it) }
+		} ?: selector.defaultValue
 	}
 	
-	fun findAll(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope): List<ParadoxDefinitionProperty> {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return emptyList()
-		
-		if(typeExpression == null) return findAllElements(name, project, scope)
-		val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-		return findAllElements(name, project, scope) { element -> expression.matches(element) }
-	}
-	
-	fun findAll(typeExpression: String?, project: Project, scope: GlobalSearchScope, distinct: Boolean): Set<ParadoxDefinitionProperty> {
+	fun findAll(name: String, typeExpression: String?, project: Project, scope: GlobalSearchScope, selector: ParadoxSelector<ParadoxDefinitionProperty>): Set<ParadoxDefinitionProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptySet()
 		
-		val result = mutableSetOf<ParadoxDefinitionProperty>()
-		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
+		val result = TreeSet(selector.comparator())
 		if(typeExpression == null) {
-			findAllElementsByKeys(result, project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true })
+			processAllElements(name, project, scope) {
+				if(selector.selectAll(it)) result.add(it)
+				true
+			}
 		} else {
 			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-			findAllElementsByKeys(result, project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }) { element ->
-				expression.matches(element)
+			processAllElements(name, project, scope) { 
+				if(expression.matches(it) && selector.selectAll(it)) result.add(it)
+				true
+			}
+		}
+		return result
+	}
+	
+	fun findAll(typeExpression: String?, project: Project, scope: GlobalSearchScope, distinct: Boolean, selector: ParadoxSelector<ParadoxDefinitionProperty>): Set<ParadoxDefinitionProperty> {
+		//如果索引未完成
+		if(DumbService.isDumb(project)) return emptySet()
+		
+		val result = TreeSet(selector.comparator())
+		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
+		if(typeExpression == null) {
+			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }){
+				if(selector.selectAll(it)) result.add(it)
+				true
+			}
+		} else {
+			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
+			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }) {
+				if(expression.matches(it) && selector.selectAll(it)) result.add(it)
+				true
 			}
 		}
 		return result

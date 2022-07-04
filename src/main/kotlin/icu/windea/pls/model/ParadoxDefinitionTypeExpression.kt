@@ -80,16 +80,13 @@ class ParadoxDefinitionTypeExpression private constructor(
 		}
 	}
 	
-	inline fun <T> collect(action: (type: String, subtype: String?) -> List<T>): List<T> {
+	inline fun selectAll(action: (type: String, subtype: String?) -> Unit) {
 		if(typeAndSubtypePairs == null) {
-			return action(type, subtype)
+			action(type, subtype)
 		} else {
-			val result = SmartList<T>()
 			for((type, subtype) in typeAndSubtypePairs) {
-				val r = action(type, subtype)
-				result.addAll(r)
+				action(type, subtype)
 			}
-			return result
 		}
 	}
 	

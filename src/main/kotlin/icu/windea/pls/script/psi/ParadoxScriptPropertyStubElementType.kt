@@ -33,7 +33,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val type = definitionInfo?.type
 		val subtypes = definitionInfo?.subtypes
 		val rootKey = definitionInfo?.rootKey
-		val gameType = definitionInfo?.gameType
+		val gameType = definitionInfo?.gameType.orDefault()
 		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, gameType)
 	}
 	
@@ -54,6 +54,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		dataStream.writeName(stub.type)
 		dataStream.writeName(stub.subtypes?.toCommaDelimitedString())
 		dataStream.writeName(stub.rootKey)
+		dataStream.writeName(stub.gameType.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
@@ -61,7 +62,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val type = dataStream.readNameString()
 		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
 		val rootKey = dataStream.readNameString()
-		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }.orDefault()
 		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, gameType)
 	}
 }

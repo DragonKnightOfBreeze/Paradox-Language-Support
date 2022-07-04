@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.selector.*
 
 /**
  * 定义（definition）的装订线图标提供器。
@@ -27,10 +28,11 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
 		}
 		val project = element.project
-		val targets = findDefinitionsByType(definitionInfo.name, definitionInfo.type, project)
+		val selector = definitionSelector().gameType(definitionInfo.gameType).preferRootFrom(element)
+		val targets = findDefinitionsByType(definitionInfo.name, definitionInfo.type, project, selector = selector)
 		if(targets.isEmpty()) return
 		val locationElement = element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId!! }
-		val lineMarkerInfo = createNavigationGutterIconBuilder(icon){ createGotoRelatedItem(targets) }
+		val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
 			.setTooltipText(tooltip)
 			.setPopupTitle(PlsBundle.message("script.gutterIcon.definition.title"))
 			.setTargets(targets)
@@ -40,7 +42,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		result.add(lineMarkerInfo)
 	}
 	
-	private fun createGotoRelatedItem(targets:List<ParadoxDefinitionProperty>): Collection<GotoRelatedItem>{
+	private fun createGotoRelatedItem(targets: Collection<ParadoxDefinitionProperty>): Collection<GotoRelatedItem> {
 		return GotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.definition.group"))
 	}
 }

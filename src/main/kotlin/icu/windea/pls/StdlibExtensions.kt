@@ -527,6 +527,27 @@ inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[th
 //}
 //endregion
 
+//region Compare Extensions
+inline fun <T, R, C: Comparable<C>> compareByNullsLast(
+	crossinline selector: (T) -> R?, 
+	crossinline comparableSelector: (R) -> C, 
+	crossinline pinPredicate: (R) -> Boolean = { false }
+): Comparator<T> {
+	return Comparator { a, b ->
+		val a1 = selector(a)
+		val b1 = selector(b)
+		when {
+			a1 == b1 -> 0
+			a1 == null -> 1
+			b1 == null -> -1
+			pinPredicate(a1) -> -1
+			pinPredicate(b1) -> 1
+			else -> comparableSelector(a1).compareTo(comparableSelector(b1))
+		} 
+	}
+}
+//endregion
+
 //region Collection Extensions
 fun <T> Collection<T>.asList(): List<T> {
 	return if(this is List) this else this.toList()
@@ -570,7 +591,8 @@ inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
 }
 
-inline fun <T, reified R> Set<T>.mapToArray(transform: (T) -> R): Array<R> {
+inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
+	if(this is List) return this.mapToArray(transform)
 	val result = arrayOfNulls<R>(this.size)
 	for((i, e) in this.withIndex()) {
 		result[i] = transform(e)

@@ -5,6 +5,8 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.util.selector.*
+import java.util.*
 
 //注意这里不能直接访问element.localisationInfo，需要优先通过element.stub获取本地化信息
 
@@ -29,61 +31,66 @@ sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 		override fun getCacheSize() = cacheSize
 	}
 	
-	fun exists(name: String, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope): Boolean {
-		//如果索引未完成
-		if(DumbService.isDumb(project)) return false
-		
-		if(localeConfig == null) {
-			return existsElement(name, project, scope)
-		} else {
-			return existsElement(name, project, scope) { element -> localeConfig == element.localeConfig }
-		}
-	}
-	
-	fun findOne(name: String, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean): ParadoxLocalisationProperty? {
+	fun findOne(name: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean, selector: ParadoxSelector<ParadoxLocalisationProperty>): ParadoxLocalisationProperty? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
-		if(localeConfig == null) {
-			if(preferFirst) {
-				return findFirstElement(name, project, scope)
-			} else {
-				return findLastElement(name, project, scope)
-			}
+		return if(preferFirst) {
+			findFirstElement(name, project, scope) { selector.select(it) }
 		} else {
-			if(preferFirst) {
-				return findFirstElement(name, project, scope, hasDefault) { element -> localeConfig == element.localeConfig }
-			} else {
-				return findLastElement(name, project, scope, hasDefault) { element -> localeConfig == element.localeConfig }
-			}
-		}
+			findLastElement(name, project, scope) { selector.select(it) }
+		} ?: selector.defaultValue
 	}
 	
-	fun findAll(name: String, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean): List<ParadoxLocalisationProperty> {
+	//fun findOne(name: String, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean, preferFirst: Boolean,
+	//	selector: ParadoxSelector<ParadoxLocalisationProperty>): ParadoxLocalisationProperty? {
+	//	//如果索引未完成
+	//	if(DumbService.isDumb(project)) return null
+	//	
+	//	return if(localeConfig == null) {
+	//		if(preferFirst) {
+	//			findFirstElement(name, project, scope) { selector.select(it) }
+	//		} else {
+	//			findLastElement(name, project, scope) { selector.select(it) }
+	//		}
+	//	} else {
+	//		if(preferFirst) {
+	//			findFirstElement(name, project, scope, hasDefault) { localeConfig == it.localeConfig && selector.select(it) }
+	//		} else {
+	//			findLastElement(name, project, scope, hasDefault) { localeConfig == it.localeConfig && selector.select(it) }
+	//		}
+	//	} ?: selector.defaultValue
+	//}
+	
+	fun findAll(name: String, localeConfig: ParadoxLocaleConfig?, project: Project, scope: GlobalSearchScope, hasDefault: Boolean,
+		selector: ParadoxSelector<ParadoxLocalisationProperty>): List<ParadoxLocalisationProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptyList()
 		
 		val inferParadoxLocale = if(localeConfig == null) inferParadoxLocale() else null
 		var index = 0
-		return processAllElements(name, project, scope) { element, result ->
-			val elementLocale = element.localeConfig
+		val result = TreeSet(selector.comparator())
+		processAllElements(name, project, scope) {
+			val elementLocale = it.localeConfig
 			if(localeConfig == null) {
 				//需要将用户的语言区域对应的本地化属性放到该组本地化属性的最前面
 				if(inferParadoxLocale == elementLocale) {
-					result.add(index++, element)
+					result.add(index++, it)
 				} else {
-					result.add(element)
+					result.add(it)
 				}
 			} else {
 				if(localeConfig == elementLocale || hasDefault) {
-					result.add(element)
+					result.add(it)
 				}
 			}
 			true
 		}
 	}
 	
-	inline fun processVariants(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int, crossinline processor: ProcessEntry.(element: ParadoxLocalisationProperty) -> Boolean): Boolean {
+	inline fun processVariants(keyword: String, project: Project, scope: GlobalSearchScope, maxSize: Int,
+		selector: ParadoxSelector<ParadoxLocalisationProperty>,
+		crossinline processor: ProcessEntry.(element: ParadoxLocalisationProperty) -> Boolean): Boolean {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return true
 		
@@ -91,9 +98,9 @@ sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 		//需要保证返回结果的名字的唯一性
 		val noKeyword = keyword.isEmpty()
 		val inferredParadoxLocale = inferParadoxLocale()
-		return processFirstElementByKeys(project,scope, hasDefault = true, maxSize = maxSize, 
-			keyPredicate = {key -> noKeyword || key.matchesKeyword(keyword)},
-			predicate = {element -> element.localeConfig == inferredParadoxLocale},
+		return processFirstElementByKeys(project, scope, hasDefault = true, maxSize = maxSize,
+			keyPredicate = { key -> noKeyword || key.matchesKeyword(keyword) },
+			predicate = { element -> element.localeConfig == inferredParadoxLocale && selector.selectAll(element) },
 			processor = processor
 		)
 	}

@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
+import icu.windea.pls.util.selector.*
 
 private val validValueTypes = arrayOf(
 	CwtDataTypes.FilePath,
@@ -66,7 +66,8 @@ class CwtImageLocationExpression(
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
 			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
-			val file = findFileByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(definition))?.toPsiFile<PsiFile>(project)
+			val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
+			val file = findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
 			return tupleOf(filePath, file, frame)
 		} else if(propertyName != null) {
 			//目前只接收类型为string的值
@@ -85,7 +86,8 @@ class CwtImageLocationExpression(
 					//由filePath解析为DDS文件
 					resolved is PsiFile && resolved.fileType == DdsFileType -> {
 						val filePath = resolved.fileInfo?.path?.path ?: return null
-						val file = findFileByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(definition))?.toPsiFile<PsiFile>(project)
+						val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
+						val file = findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
 						return tupleOf(filePath, file, frameToUse)
 					}
 					//由filePath解析为definition，这里也可能是sprite之外的definition
@@ -112,7 +114,8 @@ class CwtImageLocationExpression(
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
 			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
-			val files = findFilesByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(definition)).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
+			val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
+			val files = findFilesByFilePath(filePath, project, selector = selector).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
 			return tupleOf(filePath, files, frame)
 		} else if(propertyName != null && propertyName.isNotEmpty()) {
 			//目前只接收类型为string的值
@@ -130,7 +133,8 @@ class CwtImageLocationExpression(
 					//由filePath解析为DDS文件
 					resolved is PsiFile && resolved.fileType == DdsFileType -> {
 						val filePath = resolved.fileInfo?.path?.path ?: return null
-						val files = findFilesByFilePath(filePath, project, selector = ParadoxFileSelectors.preferSameRoot(definition)).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
+						val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
+						val files = findFilesByFilePath(filePath, project, selector = selector).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
 						return tupleOf(filePath, files, frameToUse)
 					}
 					//由filePath解析为definition，这里也可能是sprite之外的definition

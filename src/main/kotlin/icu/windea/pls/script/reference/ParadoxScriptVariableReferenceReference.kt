@@ -3,9 +3,9 @@ package icu.windea.pls.script.reference
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.selector.*
 
 class ParadoxScriptVariableReferenceReference(
 	element: IParadoxScriptVariableReference,
@@ -27,7 +27,7 @@ class ParadoxScriptVariableReferenceReference(
 		val name = element.name
 		val project = element.project
 		return findScriptedVariableInFile(name, element)
-			?: findScriptedVariable(name, project)
+			?: findScriptedVariable(name, project, selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element))
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
@@ -35,14 +35,15 @@ class ParadoxScriptVariableReferenceReference(
 		val name = element.name
 		val project = element.project
 		return findScriptedVariablesInFile(name, element)
-			.ifEmpty { findScriptedVariables(name, project) }
+			.ifEmpty { findScriptedVariables(name, project, selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element)) }
 			.mapToArray { PsiElementResolveResult(it) }
 	}
 	
 	override fun getVariants(): Array<out Any> {
 		//同时需要同时查找当前文件中的和全局的
 		val project = element.project
-		return (findAllScriptVariablesInFile(element, distinct = true) + findAllScriptedVariables(project, distinct = true))
+		return findAllScriptVariablesInFile(element, distinct = true)
+			.plus(findAllScriptedVariables(project, distinct = true, selector = scriptedVariableSelector().gameTypeFrom(element).preferRootFrom(element)))
 			.distinctBy { it.name } //这里还要进行一次去重
 			.mapToArray {
 				val name = it.name

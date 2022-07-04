@@ -44,3 +44,5 @@ enum class ParadoxLocalisationCategory(
 		}
 	}
 }
+
+fun ParadoxLocalisationCategory?.orDefault() = this ?: ParadoxLocalisationCategory.Localisation

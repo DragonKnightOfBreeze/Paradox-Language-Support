@@ -5,8 +5,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.util.selector.*
 
 /**
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxCommandFieldCompletionProvider
@@ -26,7 +26,8 @@ class ParadoxLocalisationCommandFieldReference(
 		//处理字符串需要被识别为预先定义的localisation_command的情况
 		doResolveLocalisationCommand(name, project)?.let { return it }
 		//解析为类型为scripted_loc的definition
-		return findDefinitionByType(name, "scripted_loc", project)
+		val selector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
+		return findDefinitionByType(name, "scripted_loc", project, selector = selector)
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
@@ -35,7 +36,8 @@ class ParadoxLocalisationCommandFieldReference(
 		//处理字符串需要被识别为预先定义的localisation_command的情况
 		doResolveLocalisationCommand(name, project)?.let { return arrayOf(PsiElementResolveResult(it)) }
 		//解析为类型为scripted_loc的definition
-		return findDefinitionsByType(name, "scripted_loc", project).mapToArray { PsiElementResolveResult(it) }
+		val selector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
+		return findDefinitionsByType(name, "scripted_loc", project, selector = selector).mapToArray { PsiElementResolveResult(it) }
 	}
 	
 	private fun doResolveLocalisationCommand(name: String, project: Project): PsiElement? {

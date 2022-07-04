@@ -3,12 +3,11 @@ package icu.windea.pls.core.psi
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
-import com.intellij.util.containers.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.util.*
-import java.util.TreeSet
+import icu.windea.pls.util.selector.*
+import java.util.*
 
 object ParadoxFilePathIndex {
 	val name = ID.create<String, Void>("paradox.file.path.index")

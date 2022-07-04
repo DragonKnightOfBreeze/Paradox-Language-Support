@@ -35,7 +35,7 @@ class ChangeColorIntention : IntentionAction {
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
 			val gameType = element.fileInfo?.gameType ?: return
-			val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project)
+			val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project, file)
 			JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs.toTypedArray())).showInBestPositionFor(editor)
 		}
 	}

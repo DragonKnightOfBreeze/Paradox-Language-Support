@@ -27,8 +27,8 @@ fun getSteamGamePath(gameName: String): String? {
 	return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }
 }
 
-fun getSteamWorkshopPath(gameId: String): String? {
-	return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\workshop\content\$gameId""" }
+fun getSteamWorkshopPath(gameSteamId: String): String? {
+	return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\workshop\content\$gameSteamId""" }
 }
 
 fun getGameModPath(gameName: String): String? {

@@ -9,7 +9,7 @@ import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
+import icu.windea.pls.util.selector.*
 
 /**
  * 提供图标名字的代码补全。
@@ -36,7 +36,8 @@ class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>()
 		}
 		//根据ddsFileName进行提示
 		runBlockingCancellable {
-			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = ParadoxFileSelectors.preferSameRoot(originalFile))
+			val selector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
+			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = selector)
 			if(ddsFiles.isNotEmpty()) {
 				for(ddsFile in ddsFiles) {
 					val name = ddsFile.nameWithoutExtension

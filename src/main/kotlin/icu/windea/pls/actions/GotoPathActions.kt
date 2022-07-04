@@ -104,7 +104,7 @@ class GotoSteamWorkshopPathAction : GotoPathAction(PlsIcons.Actions.SteamWorksho
 		if(this.targetPath == null || this.gameType != gameType || this.rootType != rootType) {
 			this.gameType = gameType
 			this.rootType = rootType
-			this.targetPath = getSteamWorkshopPath(gameType.gameId)?.toPathOrNull()
+			this.targetPath = getSteamWorkshopPath(gameType.gameSteamId)?.toPathOrNull()
 		}
 		return true
 	}
