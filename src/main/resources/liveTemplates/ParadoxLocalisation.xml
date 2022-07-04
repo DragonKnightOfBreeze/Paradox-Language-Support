@@ -13,13 +13,12 @@
             description="Surround with colorful text markers"
             toReformat="false" toShortenFQNames="true">
     <variable name="CODE"
-              expression="enum(&quot;B&quot;,&quot;E&quot;,&quot;G&quot;,&quot;H&quot;,&quot;L&quot;,&quot;M&quot;,&quot;P&quot;,&quot;R&quot;,&quot;S&quot;,&quot;T&quot;,&quot;W&quot;,&quot;Y&quot;)"
               alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION" value="true"/>
     </context>
   </template>
-  <template name="scommand"
+  <template name="scmd"
             value="[$SELECTION$]"
             description="Surround with command markers"
             toReformat="false" toShortenFQNames="true">
@@ -42,14 +41,13 @@
             description="Insert a colorful text fragment"
             toReformat="false" toShortenFQNames="true">
     <variable name="CODE"
-              expression="enum(&quot;B&quot;,&quot;E&quot;,&quot;G&quot;,&quot;H&quot;,&quot;L&quot;,&quot;M&quot;,&quot;P&quot;,&quot;R&quot;,&quot;S&quot;,&quot;T&quot;,&quot;W&quot;,&quot;Y&quot;)"
               alwaysStopAt="true"/>
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION" value="true"/>
     </context>
   </template>
-  <template name="command"
+  <template name="cmd"
             value="[$TEXT$]$END$"
             description="Insert a command fragment"
             toReformat="false" toShortenFQNames="true">
