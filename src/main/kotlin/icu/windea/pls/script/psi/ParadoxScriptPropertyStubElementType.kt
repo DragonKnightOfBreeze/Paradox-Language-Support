@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
@@ -32,7 +33,8 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val type = definitionInfo?.type
 		val subtypes = definitionInfo?.subtypes
 		val rootKey = definitionInfo?.rootKey
-		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey)
+		val gameType = definitionInfo?.gameType
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -59,6 +61,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val type = dataStream.readNameString()
 		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
 		val rootKey = dataStream.readNameString()
-		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey)
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, gameType)
 	}
 }

@@ -135,25 +135,24 @@ fun ParadoxScriptValue.isLonely(): Boolean {
 	return parent is IParadoxScriptBlock
 }
 
-val PsiElement.localeConfig: ParadoxLocaleConfig? get() = doGetLocale(this)
-
-private fun doGetLocale(element: PsiElement): ParadoxLocaleConfig? {
-	if(element.language == ParadoxLocalisationLanguage) {
-		var current = element
-		while(true) {
-			when {
-				current is ParadoxLocalisationFile -> return current.locale?.localeConfig
-				current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
-				current is ParadoxLocalisationLocale -> return current.localeConfig
-				current is PsiFile -> return inferParadoxLocale() //不应该出现
+val PsiElement.localeConfig: ParadoxLocaleConfig?
+	get() {
+		if(this.language == ParadoxLocalisationLanguage) {
+			var current = this
+			while(true) {
+				when {
+					current is ParadoxLocalisationFile -> return current.locale?.localeConfig
+					current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
+					current is ParadoxLocalisationLocale -> return current.localeConfig
+					current is PsiFile -> return inferParadoxLocale() //不应该出现
+				}
+				current = current.parent ?: break
 			}
-			current = current.parent ?: break
+			return current.containingFile.localeConfig
+		} else {
+			return inferParadoxLocale()
 		}
-		return current.containingFile.localeConfig
-	} else {
-		return inferParadoxLocale()
 	}
-}
 
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
@@ -272,7 +271,8 @@ private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): Paradox
 private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
 	val name = element.name
 	val type = ParadoxLocalisationCategory.resolve(element) ?: return null
-	return ParadoxLocalisationInfo(name, type)
+	val gameType = element.fileInfo?.gameType
+	return ParadoxLocalisationInfo(name, type, gameType)
 }
 
 val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig? get() = doGetLocaleConfig(name, project)

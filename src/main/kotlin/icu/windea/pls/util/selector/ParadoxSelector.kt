@@ -17,7 +17,6 @@ sealed interface ParadoxSelector<T> {
 	fun comparator(): Comparator<T>? = null
 }
 
-
 sealed interface ParadoxFileSelector : ParadoxSelector<VirtualFile>
 
 object ParadoxDefaultFileSelector : ParadoxFileSelector

@@ -6,9 +6,10 @@ import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.Companion.FILE
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.Companion.FILE
 import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
@@ -50,7 +51,8 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		val name = dataStream.readNameString()
 		val type = dataStream.readNameString()
 		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
-		return ParadoxScriptFileStubImpl(null, name, type, subtypes)
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+		return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
 	}
 	
 	class Builder : DefaultStubBuilder() {
@@ -60,7 +62,8 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 			val name = definitionInfo?.name
 			val type = definitionInfo?.type
 			val subtypes = definitionInfo?.subtypes
-			return ParadoxScriptFileStubImpl(psiFile, name, type, subtypes)
+			val gameType = definitionInfo?.gameType
+			return ParadoxScriptFileStubImpl(psiFile, name, type, subtypes, gameType)
 		}
 		
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
