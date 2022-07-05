@@ -4,7 +4,7 @@ import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -74,12 +74,12 @@ object ParadoxLocalisationTextRenderer {
 	}
 	
 	private fun renderIconTo(element: ParadoxLocalisationIcon, builder: StringBuilder) {
-		val resolved = element.reference?.resolve() ?: return
+		val resolved = element.reference?.resolve() 
 		val iconFrame = element.frame
 		val iconUrl = when {
 			resolved is ParadoxDefinitionProperty -> ParadoxDdsUrlResolver.resolveByDefinition(resolved, iconFrame, defaultToUnknown = true)
 			resolved is PsiFile -> ParadoxDdsUrlResolver.resolveByFile(resolved.virtualFile, iconFrame, defaultToUnknown = true)
-			else -> return
+			else -> DdsToPngConverter.getUnknownPngPath()
 		}
 		if(iconUrl.isNotEmpty()) {
 			//找不到图标的话就直接跳过

@@ -11,9 +11,11 @@ import icu.windea.pls.*
 import icu.windea.pls.annotation.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.selector.*
 import javax.swing.*
 import javax.swing.event.*
 
@@ -63,25 +65,30 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			if(localeSet.isEmpty()) return
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			val nameToDistinct = mutableSetOf<String>()
+			val messages = mutableListOf<String>()
 			for(info in localisationInfos) {
 				if(info.required || (info.primary && inspection.forPrimaryRelated) || (!info.primary && inspection.forOptionalRelated)) {
 					for(locale in localeSet) {
 						if(nameToDistinct.contains(info.name + "@" + locale)) continue
-						val resolved = info.locationExpression.resolve(definition.name, definition, locale, project)
+						val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).locale(locale)
+						val resolved = info.locationExpression.resolve(definition.name, definition, project, selector = selector)
 						if(resolved != null) {
 							val (key, loc) = resolved
 							if(loc == null) {
-								//显示为WEAK_WARNING
-								holder.registerProblem(location, getMessage(info, key, locale), ProblemHighlightType.WEAK_WARNING)
+								messages.add(getMessage(info, key, locale))
 							} else {
 								nameToDistinct.add(info.name + "@" + locale)
 							}
 						} else {
-							holder.registerProblem(location, getMessageFromExpression(info, locale), ProblemHighlightType.WEAK_WARNING)
+							messages.add(getMessageFromExpression(info, locale))
 						}
 					}
 				}
 			}
+			//显示为WEAK_WARNING
+			holder.registerProblem(location, messages.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
+				ImportGameOrModDirectoryFix(definition)
+			)
 		}
 		
 		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String, locale: ParadoxLocaleConfig): String {

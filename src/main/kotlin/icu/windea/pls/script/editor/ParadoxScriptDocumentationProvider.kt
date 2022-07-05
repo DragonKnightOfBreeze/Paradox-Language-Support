@@ -8,6 +8,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
+import icu.windea.pls.util.selector.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
@@ -206,7 +207,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val usedLocalisationTargetMap = localisationTargetMap ?: mutableMapOf()
 				for((key, locationExpression, required) in localisationInfos) {
 					if(!usedLocalisationTargetMap.containsKey(key)) {
-						val (targetKey, target) = locationExpression.resolve(definitionInfo.name, element, inferParadoxLocale(), project, hasDefault = true) ?: continue //发生意外，直接跳过
+						val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(inferParadoxLocale())
+						val (targetKey, target) = locationExpression.resolve(definitionInfo.name, element, project, selector = selector) ?: continue //发生意外，直接跳过
 						if(target != null) usedLocalisationTargetMap.put(key, target)
 						if(required || target != null) {
 							if(localisationKeys.add(key)) {

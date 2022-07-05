@@ -8,6 +8,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
 import javax.swing.*
@@ -39,7 +40,9 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = valueElement.value
 					val path = filePath.toPathOrNull() ?: return
 					if(VfsUtil.findFile(path, false) == null) {
-						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.1", path), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.1", path), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+							ImportGameOrModDirectoryFix(valueElement)
+						)
 					}
 				}
 				CwtDataTypes.FilePath -> {
@@ -47,7 +50,9 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath())
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					if(findFileByFilePath(filePath, project, selector = fileSelector().gameTypeFrom(valueElement)) == null) {
-						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.2", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.2", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+							ImportGameOrModDirectoryFix(valueElement)
+						)
 					}
 				}
 				CwtDataTypes.Icon -> {
@@ -55,7 +60,9 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath()) ?: return
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					if(findFileByFilePath(filePath, project, selector = fileSelector().gameTypeFrom(valueElement)) == null) {
-						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.3", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.3", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+							ImportGameOrModDirectoryFix(valueElement)
+						)
 					}
 				}
 				else -> pass()

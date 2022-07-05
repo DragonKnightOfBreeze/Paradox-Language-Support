@@ -6,7 +6,6 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.util.selector.*
-import java.util.*
 
 //注意这里不能直接访问element.definitionInfo，需要优先通过element.stub获取定义信息
 
@@ -21,7 +20,7 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 	
 	override fun getCacheSize() = cacheSize
 	
-	fun findOne(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean, selector: ParadoxSelector<ParadoxDefinitionProperty>): ParadoxDefinitionProperty? {
+	fun findOne(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean, selector: ChainedParadoxSelector<ParadoxDefinitionProperty>): ParadoxDefinitionProperty? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
@@ -35,11 +34,11 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		} ?: selector.defaultValue
 	}
 	
-	fun findAll(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope, selector: ParadoxSelector<ParadoxDefinitionProperty>): Set<ParadoxDefinitionProperty> {
+	fun findAll(name: String, typeExpression: String, project: Project, scope: GlobalSearchScope, selector: ChainedParadoxSelector<ParadoxDefinitionProperty>): Set<ParadoxDefinitionProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptySet()
 		
-		val result = TreeSet(selector.comparator())
+		val result = MutableSet(selector.comparator())
 		val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
 		expression.selectAll { type, subtype ->
 			processAllElements(type, project, scope) {
@@ -50,11 +49,11 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		return result
 	}
 	
-	fun findAll(typeExpression: String, project: Project, scope: GlobalSearchScope, distinct: Boolean, selector: ParadoxSelector<ParadoxDefinitionProperty>): Set<ParadoxDefinitionProperty> {
+	fun findAll(typeExpression: String, project: Project, scope: GlobalSearchScope, distinct: Boolean, selector: ChainedParadoxSelector<ParadoxDefinitionProperty>): Set<ParadoxDefinitionProperty> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptySet()
 		
-		val result = TreeSet(selector.comparator())
+		val result = MutableSet(selector.comparator())
 		val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
 		expression.selectAll { type, subtype ->
 			val namesToDistinct = if(distinct) mutableSetOf<String>() else null

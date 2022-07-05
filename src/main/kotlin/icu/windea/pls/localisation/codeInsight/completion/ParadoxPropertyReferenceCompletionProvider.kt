@@ -6,11 +6,12 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.util.selector.*
 
 /**
  * 提供属性引用名字的代码补全。
  */
-class ParadoxPropertyReferenceCompletionProvider: CompletionProvider<CompletionParameters>(){
+class ParadoxPropertyReferenceCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 		
@@ -22,6 +23,7 @@ class ParadoxPropertyReferenceCompletionProvider: CompletionProvider<CompletionP
 		//不提示predefined_variable
 		
 		//提示localisation或者synced_localisation
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(inferParadoxLocale())
 		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
 			val name = it.name
 			val icon = it.icon
@@ -30,9 +32,9 @@ class ParadoxPropertyReferenceCompletionProvider: CompletionProvider<CompletionP
 			result.addElement(lookupElement)
 			true
 		}
-		when(category){
-			ParadoxLocalisationCategory.Localisation -> processLocalisationVariants(keyword, project, processor = processor)
-			ParadoxLocalisationCategory.SyncedLocalisation -> processSyncedLocalisationVariants(keyword, project, processor = processor)
+		when(category) {
+			ParadoxLocalisationCategory.Localisation -> processLocalisationVariants(keyword, project, selector = selector, processor = processor)
+			ParadoxLocalisationCategory.SyncedLocalisation -> processSyncedLocalisationVariants(keyword, project, selector = selector, processor = processor)
 		}
 	}
 }

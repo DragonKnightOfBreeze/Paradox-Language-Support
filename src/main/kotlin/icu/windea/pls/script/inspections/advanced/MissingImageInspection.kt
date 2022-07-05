@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -42,6 +43,7 @@ class MissingImageInspection: LocalInspectionTool() {
 			if(imageInfos.isEmpty()) return
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			val nameToDistinct = mutableSetOf<String>()
+			val messages = mutableListOf<String>()
 			for(info in imageInfos) {
 				if(nameToDistinct.contains(info.name)) continue
 				if(info.required || (info.primary && inspection.forPrimaryRelated) || (!info.primary && inspection.forOptionalRelated)) {
@@ -50,15 +52,19 @@ class MissingImageInspection: LocalInspectionTool() {
 						val (key, image) = resolved
 						if(image == null) {
 							//显示为WEAK_WARNING
-							holder.registerProblem(location, getMessage(info, key), ProblemHighlightType.WEAK_WARNING)
+							messages.add(getMessage(info, key))
 						} else {
 							nameToDistinct.add(info.name)
 						}
 					} else {
-						holder.registerProblem(location, getMessageFromExpression(info), ProblemHighlightType.WEAK_WARNING)
+						messages.add(getMessageFromExpression(info))
 					}
 				}
 			}
+			//显示为WEAK_WARNING
+			holder.registerProblem(location, messages.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
+				ImportGameOrModDirectoryFix(definition)
+			)
 		}
 		
 		private fun getMessage(info: ParadoxRelatedImageInfo, key: String): String {

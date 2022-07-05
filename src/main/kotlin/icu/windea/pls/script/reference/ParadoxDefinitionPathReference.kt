@@ -9,7 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
 
-class ParadoxDefinitionAnchorReference(
+class ParadoxDefinitionPathReference(
 	element: PsiElement,
 	rangeInElement: TextRange,
 	private val anchor: String,

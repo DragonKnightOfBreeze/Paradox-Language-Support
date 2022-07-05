@@ -4,9 +4,10 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.*
-import icu.windea.pls.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.util.selector.*
 
 class ParadoxLocalisationPropertyReferenceReference(
 	element: ParadoxLocalisationPropertyReference,
@@ -30,16 +31,17 @@ class ParadoxLocalisationPropertyReferenceReference(
 		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return it }
 		
 		//解析成localisation或者synced_localisation
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
 		return when(category) {
-			Localisation -> findLocalisation(name, locale, project, hasDefault = true)
-			SyncedLocalisation -> findSyncedLocalisation(name, locale, project, hasDefault = true)
+			Localisation -> findLocalisation(name, project, selector = selector)
+			SyncedLocalisation -> findSyncedLocalisation(name, project, selector = selector)
 		}
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
-		val localeConfig = file.localeConfig
+		val locale = file.localeConfig
 		val name = element.name
 		val project = element.project
 		
@@ -47,9 +49,10 @@ class ParadoxLocalisationPropertyReferenceReference(
 		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
 		
 		//解析成localisation或者synced_localisation
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
 		return when(category) {
-			Localisation -> findLocalisations(name, localeConfig, project, hasDefault = true) //仅查找对应语言区域的
-			SyncedLocalisation -> findSyncedLocalisations(name, localeConfig, project, hasDefault = true) //仅查找对应语言区域的
+			Localisation -> findLocalisations(name, project, selector = selector) //仅查找对应语言区域的
+			SyncedLocalisation -> findSyncedLocalisations(name, project, selector = selector) //仅查找对应语言区域的
 		}.mapToArray {
 			PsiElementResolveResult(it)
 		}

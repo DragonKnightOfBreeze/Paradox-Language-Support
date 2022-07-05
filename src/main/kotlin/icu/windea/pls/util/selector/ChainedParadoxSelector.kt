@@ -1,9 +1,13 @@
 package icu.windea.pls.util.selector
 
-class ChainedParadoxSelector<T> : ParadoxSelector<T> {
+class ChainedParadoxSelector<T>(
+	private val baseComparator: Comparator<T>? = null
+) : ParadoxSelector<T> {
 	val selectors = mutableListOf<ParadoxSelector<T>>()
 	
-	override var defaultValue: T? = null
+	//TODO 处理defaultValue的链式传递
+	
+	var defaultValue: T? = null
 	
 	override fun select(result: T): Boolean {
 		if(selectors.isEmpty()) return super.select(result)
@@ -23,12 +27,10 @@ class ChainedParadoxSelector<T> : ParadoxSelector<T> {
 	
 	override fun comparator(): Comparator<T>? {
 		if(selectors.isEmpty()) return super.comparator()
-		var comparator: Comparator<T>? = null
-		var isFirst = true
+		var comparator: Comparator<T>? = baseComparator
 		selectors.forEach {
-			if(isFirst) {
+			if(comparator == null) {
 				comparator = it.comparator()
-				isFirst = false
 			} else {
 				comparator = comparator?.thenComparing(it.comparator())
 			}

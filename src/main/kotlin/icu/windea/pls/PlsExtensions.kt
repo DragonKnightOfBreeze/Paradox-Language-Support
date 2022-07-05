@@ -394,7 +394,7 @@ fun findScriptedVariable(
 	name: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ParadoxSelector<ParadoxScriptVariable> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxScriptVariable> = nopSelector()
 ): ParadoxScriptVariable? {
 	return ParadoxScriptedVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden, selector)
 }
@@ -407,7 +407,7 @@ fun findScriptedVariables(
 	name: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ParadoxSelector<ParadoxScriptVariable> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxScriptVariable> = nopSelector()
 ): Set<ParadoxScriptVariable> {
 	return ParadoxScriptedVariableNameIndex.findAll(name, project, scope, selector)
 }
@@ -420,7 +420,7 @@ fun findAllScriptedVariables(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false,
-	selector: ParadoxSelector<ParadoxScriptVariable> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxScriptVariable> = nopSelector()
 ): Set<ParadoxScriptVariable> {
 	return ParadoxScriptedVariableNameIndex.findAll(project, scope, distinct, selector)
 }
@@ -435,7 +435,7 @@ fun findDefinition(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): ParadoxDefinitionProperty? {
 	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, preferFirst, selector)
 }
@@ -449,7 +449,7 @@ fun findDefinitions(
 	typeExpression: String?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): Set<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionNameIndex.findAll(name, typeExpression, project, scope, selector)
 }
@@ -464,7 +464,7 @@ fun findAllDefinitions(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false,
-	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): Set<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope, distinct, selector)
 }
@@ -479,7 +479,7 @@ fun findDefinitionByType(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): ParadoxDefinitionProperty? {
 	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, preferFirst, selector)
 }
@@ -493,7 +493,7 @@ fun findDefinitionsByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): Set<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionTypeIndex.findAll(name, typeExpression, project, scope, selector)
 }
@@ -508,7 +508,7 @@ fun findDefinitionsByType(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false,
-	selector: ParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
 ): Set<ParadoxDefinitionProperty> {
 	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope, distinct, selector)
 }
@@ -528,37 +528,29 @@ fun findDefinitionsByType(
 //}
 
 /**
- * 基于本地化名字索引，根据名字、语言区域查找本地化（localisation）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
- * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
+ * 基于本地化名字索引，根据名字查找本地化（localisation）。
  */
 fun findLocalisation(
 	name: String,
-	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
 	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.Localisation.findOne(name, localeConfig, project, scope, hasDefault, preferFirst, selector)
+	return ParadoxLocalisationNameIndex.Localisation.findOne(name, project, scope, preferFirst, selector)
 }
 
 /**
  * 基于本地化名字索引，根据名字、语言区域查找所有的本地化（localisation）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
- * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
  * @see inferParadoxLocale
  */
 fun findLocalisations(
 	name: String,
-	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.Localisation.findAll(name, localeConfig, project, scope, hasDefault, selector)
+	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
+): Set<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.Localisation.findAll(name, project, scope, selector)
 }
 
 /**
@@ -569,7 +561,7 @@ inline fun processLocalisationVariants(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
+	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
 	val maxSize = getSettings().maxCompleteSize
@@ -577,37 +569,29 @@ inline fun processLocalisationVariants(
 }
 
 /**
- * 基于同步本地化名字索引，根据名字、语言区域查找同步本地化（localisation_synced）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化。
- * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。
+ * 基于同步本地化名字索引，根据名字查找同步本地化（localisation_synced）。
  */
 fun findSyncedLocalisation(
 	name: String,
-	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
 	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
+	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.SyncedLocalisation.findOne(name, localeConfig, project, scope, hasDefault, preferFirst, selector)
+	return ParadoxLocalisationNameIndex.SyncedLocalisation.findOne(name, project, scope, preferFirst, selector)
 }
 
 /**
  * 基于同步本地化名字索引，根据名字、语言区域查找所有的同步本地化（localisation_synced）。
- * @param localeConfig 如果不为`null`，则仅查找对应语言区域的本地化，否则将用户的本地化放到该组的最前面。
- * @param hasDefault 如果没有查找到对应语言区域的本地化，是否需要改为查找任意语言的本地化。默认为`false`。。
  * @see inferParadoxLocale
  */
 fun findSyncedLocalisations(
 	name: String,
-	localeConfig: ParadoxLocaleConfig?,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	hasDefault: Boolean = false,
-	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
-): List<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.SyncedLocalisation.findAll(name, localeConfig, project, scope, hasDefault, selector)
+	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
+): Set<ParadoxLocalisationProperty> {
+	return ParadoxLocalisationNameIndex.SyncedLocalisation.findAll(name, project, scope, selector)
 }
 
 /**
@@ -618,7 +602,7 @@ inline fun processSyncedLocalisationVariants(
 	keyword: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
+	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector(),
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
 	val maxSize = getSettings().maxCompleteSize
@@ -638,7 +622,7 @@ fun findFileByFilePath(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
 	ignoreCase: Boolean = true,
-	selector: ParadoxSelector<VirtualFile> = nopSelector()
+	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
 ): VirtualFile? {
 	return ParadoxFilePathIndex.findOne(filePath, scope, expressionType, ignoreCase, selector)
 }
@@ -657,7 +641,7 @@ fun findFilesByFilePath(
 	expressionType: CwtFilePathExpressionType = CwtFilePathExpressionTypes.Exact,
 	ignoreCase: Boolean = true,
 	distinct: Boolean = false,
-	selector: ParadoxSelector<VirtualFile> = nopSelector()
+	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
 ): Set<VirtualFile> {
 	return ParadoxFilePathIndex.findAll(filePath, scope, expressionType, ignoreCase, distinct, selector)
 }
@@ -673,7 +657,7 @@ fun findAllFilesByFilePath(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	ignoreCase: Boolean = true,
 	distinct: Boolean = false,
-	selector: ParadoxSelector<VirtualFile> = nopSelector()
+	selector: ChainedParadoxSelector<VirtualFile> = nopSelector()
 ): Set<VirtualFile> {
 	return ParadoxFilePathIndex.findAll(project, scope, ignoreCase, distinct, selector)
 }
@@ -736,7 +720,7 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement
 		val type = linkWithoutPrefix.substring(0, lastDotIndex)
 		val name = linkWithoutPrefix.substring(lastDotIndex + 1)
 		val selector = definitionSelector().gameTypeFrom(context).preferRootFrom(context)
-		findDefinitionByType(name, type, context.project, selector= selector)
+		findDefinitionByType(name, type, context.project, selector = selector)
 	}.getOrNull()
 }
 
@@ -745,7 +729,8 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement
 private fun resolveLocalisationLink(linkWithoutPrefix: String, context: PsiElement): ParadoxLocalisationProperty? {
 	return runCatching {
 		val token = linkWithoutPrefix
-		return findLocalisation(token, context.localeConfig, context.project, hasDefault = true)
+		val selector = localisationSelector().gameTypeFrom(context).preferRootFrom(context).preferLocale(context.localeConfig)
+		return findLocalisation(token, context.project, selector = selector)
 	}.getOrNull()
 }
 
@@ -805,7 +790,7 @@ fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement, reso
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为本地化，则显示链接
-	val isResolved = resolved == true || (resolved == null && findLocalisation(name, null, context.project, preferFirst = true) != null)
+	val isResolved = resolved == true || (resolved == null && findLocalisation(name, context.project, preferFirst = true, selector = localisationSelector().gameTypeFrom(context)) != null)
 	if(isResolved) return appendPsiLink("$localisationLinkPrefix$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)

@@ -7,12 +7,11 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.util.selector.*
-import java.util.*
 
 object ParadoxFilePathIndex {
 	val name = ID.create<String, Void>("paradox.file.path.index")
 	
-	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, selector: ParadoxSelector<VirtualFile>): VirtualFile? {
+	fun findOne(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, selector: ChainedParadoxSelector<VirtualFile>): VirtualFile? {
 		val usedFilePath = filePath.trimEnd('/')
 		var result: VirtualFile? = null
 		if(expressionType == CwtFilePathExpressionTypes.Exact) {
@@ -49,9 +48,9 @@ object ParadoxFilePathIndex {
 		return result ?: selector.defaultValue
 	}
 	
-	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, distinct: Boolean, selector: ParadoxSelector<VirtualFile>): Set<VirtualFile> {
+	fun findAll(filePath: String, scope: GlobalSearchScope, expressionType: CwtFilePathExpressionType, ignoreCase: Boolean, distinct: Boolean, selector: ChainedParadoxSelector<VirtualFile>): Set<VirtualFile> {
 		val usedFilePath = filePath.trimEnd('/')
-		val result: MutableSet<VirtualFile> = TreeSet(selector.comparator())
+		val result: MutableSet<VirtualFile> = MutableSet(selector.comparator())
 		if(expressionType == CwtFilePathExpressionTypes.Exact) {
 			val dataKeys = setOf(usedFilePath)
 			FileBasedIndex.getInstance().processFilesContainingAnyKey(name, dataKeys, scope, null, null) { file ->
@@ -80,8 +79,8 @@ object ParadoxFilePathIndex {
 		return result
 	}
 	
-	fun findAll(project: Project, scope: GlobalSearchScope, ignoreCase: Boolean, distinct: Boolean, selector: ParadoxSelector<VirtualFile>): Set<VirtualFile> {
-		val result: MutableSet<VirtualFile> = TreeSet(selector.comparator())
+	fun findAll(project: Project, scope: GlobalSearchScope, ignoreCase: Boolean, distinct: Boolean, selector: ChainedParadoxSelector<VirtualFile>): Set<VirtualFile> {
+		val result: MutableSet<VirtualFile> = MutableSet(selector.comparator())
 		val allKeys = FileBasedIndex.getInstance().getAllKeys(name, project)
 		if(allKeys.isEmpty()) return emptySet()
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null

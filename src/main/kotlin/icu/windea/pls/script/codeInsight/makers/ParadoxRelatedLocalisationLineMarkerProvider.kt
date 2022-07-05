@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.selector.*
 
 /**
  * 定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标提供器。
@@ -31,7 +32,8 @@ class ParadoxRelatedLocalisationLineMarkerProvider : RelatedItemLineMarkerProvid
 		val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
 		var isFirst = true
 		for((key, locationExpression) in localisationInfos) {
-			val (localisationKey, localisations) = locationExpression.resolveAll(definitionInfo.name, element, null, project, hasDefault = true) ?: continue
+			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(inferParadoxLocale())
+			val (localisationKey, localisations) = locationExpression.resolveAll(definitionInfo.name, element, project, selector = selector) ?: continue
 			if(localisations.isNotEmpty()) targets.addAll(localisations)
 			if(localisations.isNotEmpty() && keys.add(key)) {
 				if(isFirst) isFirst = false else tooltipBuilder.appendBr()

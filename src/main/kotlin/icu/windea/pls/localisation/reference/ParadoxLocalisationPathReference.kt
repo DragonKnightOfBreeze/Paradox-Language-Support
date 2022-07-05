@@ -9,8 +9,9 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.util.selector.*
 
-class ParadoxLocalisationAnchorReference(
+class ParadoxLocalisationPathReference(
 	element: PsiElement,
 	rangeInElement: TextRange,
 	private val anchor: String,
@@ -21,9 +22,10 @@ class ParadoxLocalisationAnchorReference(
 		//任意locale都可以
 		val project = element.project
 		val scope = GlobalSearchScope.fileScope(file)
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(inferParadoxLocale())
 		return when(category) {
-			Localisation -> findLocalisation(anchor, inferParadoxLocale(), project, scope, hasDefault = true)
-			SyncedLocalisation -> findSyncedLocalisation(anchor, inferParadoxLocale(), project, scope, hasDefault = true)
+			Localisation -> findLocalisation(anchor, project, scope, selector = selector)
+			SyncedLocalisation -> findSyncedLocalisation(anchor, project, scope, selector = selector)
 		}
 	}
 	

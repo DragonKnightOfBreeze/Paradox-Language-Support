@@ -4,6 +4,7 @@ import com.intellij.openapi.paths.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
 import com.intellij.xml.util.*
+import icu.windea.pls.annotation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.reference.*
 import icu.windea.pls.model.*
@@ -14,6 +15,9 @@ import icu.windea.pls.script.reference.*
 
 //com.intellij.xml.util.AnchorPathReferenceProvider
 
+//TODO 不确定是否有必要，以及这样处理是否合适
+
+@Unstable
 class ParadoxPathReferenceProvider : PathReferenceProvider {
 	override fun createReferences(psiElement: PsiElement, references: MutableList<PsiReference>, soft: Boolean): Boolean {
 		val size = references.size
@@ -31,7 +35,7 @@ class ParadoxPathReferenceProvider : PathReferenceProvider {
 				if(anchorText.isEmpty()) return false //排除空锚点
 				val element = anchorReference.element
 				val rangeInElement = anchorReference.rangeInElement
-				val newReference = ParadoxDefinitionAnchorReference(element, rangeInElement, anchorText, file)
+				val newReference = ParadoxDefinitionPathReference(element, rangeInElement, anchorText, file)
 				references.removeAt(size - 1)
 				references.add(newReference)
 				return true
@@ -45,7 +49,7 @@ class ParadoxPathReferenceProvider : PathReferenceProvider {
 				if(anchorText.isEmpty()) return false //排除空锚点
 				val element = anchorReference.element
 				val rangeInElement = anchorReference.rangeInElement
-				val newReference = ParadoxLocalisationAnchorReference(element, rangeInElement, anchorText, file, category)
+				val newReference = ParadoxLocalisationPathReference(element, rangeInElement, anchorText, file, category)
 				references.removeAt(size - 1)
 				references.add(newReference)
 				return true

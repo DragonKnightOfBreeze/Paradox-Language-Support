@@ -10,6 +10,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
+import icu.windea.pls.util.selector.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {
@@ -84,7 +85,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(configType != null) append(configType.text)
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			} else {
-				val prefix = when{
+				val prefix = when {
 					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
 					originalElement is ParadoxScriptValue || originalElement.parent is ParadoxScriptValue -> PlsDocBundle.message("name.script.definitionValue")
 					else -> null
@@ -136,7 +137,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
 		//为alias modifier localisation_command等提供支持的作用域的文档注释
 		var supportedScopeNames: Set<String>? = null
-		when(configType){
+		when(configType) {
 			CwtConfigType.Modifier -> {
 				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
 				val configGroup = getCwtConfig(project)[gameType] ?: return
@@ -151,7 +152,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			else -> pass()
 		}
-		if(supportedScopeNames != null && supportedScopeNames.isNotEmpty()){
+		if(supportedScopeNames != null && supportedScopeNames.isNotEmpty()) {
 			content {
 				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNames.joinToString(", ")))
 			}
@@ -181,10 +182,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildLocalisationContent(element: PsiElement, name: String, configType: CwtConfigType?, project: Project){
+	private fun StringBuilder.buildLocalisationContent(element: PsiElement, name: String, configType: CwtConfigType?, project: Project) {
 		val locationExpression = configType?.localisation?.let { CwtLocalisationLocationExpression.resolve(it) } ?: return
-		val key = locationExpression.resolvePlaceholder(name) ?: return 
-		val localisation = findLocalisation(key, inferParadoxLocale(), project, hasDefault = true) ?: return
+		val key = locationExpression.resolvePlaceholder(name) ?: return
+		val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(inferParadoxLocale())
+		val localisation = findLocalisation(key, project, selector = selector) ?: return
 		content {
 			ParadoxLocalisationTextRenderer.renderTo(localisation, this)
 		}

@@ -5,7 +5,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.util.selector.*
-import java.util.*
 
 object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptVariable>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.scriptedVariable.name.index")
@@ -18,7 +17,7 @@ object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScript
 	
 	override fun getCacheSize() = cacheSize
 	
-	fun findOne(name: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean, selector: ParadoxSelector<ParadoxScriptVariable>): ParadoxScriptVariable? {
+	fun findOne(name: String, project: Project, scope: GlobalSearchScope, preferFirst: Boolean, selector: ChainedParadoxSelector<ParadoxScriptVariable>): ParadoxScriptVariable? {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return null
 		
@@ -29,11 +28,11 @@ object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScript
 		} ?: selector.defaultValue
 	}
 	
-	fun findAll(name: String, project: Project, scope: GlobalSearchScope, selector: ParadoxSelector<ParadoxScriptVariable>): Set<ParadoxScriptVariable> {
+	fun findAll(name: String, project: Project, scope: GlobalSearchScope, selector: ChainedParadoxSelector<ParadoxScriptVariable>): Set<ParadoxScriptVariable> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptySet()
 		
-		val result = TreeSet(selector.comparator())
+		val result = MutableSet(selector.comparator())
 		processAllElements(name, project, scope) {  
 			if(selector.selectAll(it)) result.add(it)
 			true
@@ -41,11 +40,11 @@ object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScript
 		return result
 	}
 	
-	fun findAll(project: Project, scope: GlobalSearchScope, distinct: Boolean, selector: ParadoxSelector<ParadoxScriptVariable>): Set<ParadoxScriptVariable> {
+	fun findAll(project: Project, scope: GlobalSearchScope, distinct: Boolean, selector: ChainedParadoxSelector<ParadoxScriptVariable>): Set<ParadoxScriptVariable> {
 		//如果索引未完成
 		if(DumbService.isDumb(project)) return emptySet()
 		
-		val result = TreeSet(selector.comparator())
+		val result = MutableSet(selector.comparator())
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 		processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }) {
 			if(selector.selectAll(it)) result.add(it)

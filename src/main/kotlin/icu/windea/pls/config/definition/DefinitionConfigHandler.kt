@@ -1,7 +1,6 @@
 package icu.windea.pls.config.definition
 
 import com.intellij.openapi.project.*
-import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.model.*
@@ -24,14 +23,14 @@ object DefinitionConfigHandler {
 		}
 	}
 	
-	fun getTextColorConfigs(gameType: ParadoxGameType, project: Project, context: PsiElement? = null): List<ParadoxTextColorConfig> {
+	fun getTextColorConfigs(gameType: ParadoxGameType, project: Project, context: Any? = null): List<ParadoxTextColorConfig> {
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(context)
 		val definitions = findDefinitionsByType("textcolor", project, distinct = true, selector = selector)
 		if(definitions.isEmpty()) return emptyList()
 		return definitions.mapNotNull { doGetTextColorConfig(it, it.name, gameType) } //it.name == it.definitionInfo.name
 	}
 	
-	fun getTextColorConfig(name: String, gameType: ParadoxGameType, project: Project, context: PsiElement? = null): ParadoxTextColorConfig? {
+	fun getTextColorConfig(name: String, gameType: ParadoxGameType, project: Project, context: Any? = null): ParadoxTextColorConfig? {
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(context)
 		val definition = findDefinitionByType(name, "textcolor", project, selector = selector) ?: return null
 		return doGetTextColorConfig(definition, name, gameType)

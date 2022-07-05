@@ -1,6 +1,6 @@
 package icu.windea.pls.core.quickfix
 
-import com.intellij.codeInsight.intention.LowPriorityAction
+import com.intellij.codeInsight.intention.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.module.*
@@ -8,6 +8,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.ui.configuration.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+
+//TODO 考虑进一步优化，例如直接打开对应的对话框
 
 /**
  * 导入游戏目录或模组目录的快速修复。
@@ -36,6 +38,4 @@ class ImportGameOrModDirectoryFix(
 	}
 	
 	override fun startInWriteAction() = false
-	
-	override fun availableInBatchMode() = false
 }

@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.selector.*
 import java.util.*
 
 /**
@@ -105,7 +106,8 @@ class ParadoxDefinitionInfo(
 	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
-			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, element, inferParadoxLocale(), configGroup.project, hasDefault = true) ?: continue
+			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(inferParadoxLocale())
+			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, element, configGroup.project, selector = selector) ?: continue
 			val localisation = resolved.second
 			if(localisation != null) return localisation
 		}

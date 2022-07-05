@@ -2,11 +2,15 @@ package icu.windea.pls.util.selector
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
+private val NopParadoxSelector = ChainedParadoxSelector<Nothing>()
+
 @Suppress("UNCHECKED_CAST")
-fun <T> nopSelector() = NopParadoxSelector as ParadoxSelector<T>
+fun <T> nopSelector() = NopParadoxSelector as ChainedParadoxSelector<T>
 
 fun <T> selector() = ChainedParadoxSelector<T>()
 
@@ -16,6 +20,8 @@ fun scriptedVariableSelector() = ChainedParadoxSelector<ParadoxScriptVariable>()
 
 fun definitionSelector() = ChainedParadoxSelector<ParadoxDefinitionProperty>()
 
+fun localisationSelector() = ChainedParadoxSelector<ParadoxLocalisationProperty>()
+	
 
 fun <T> ChainedParadoxSelector<T>.gameType(gameType: ParadoxGameType?) = apply { if(gameType != null) selectors += ParadoxGameTypeSelector(gameType) }
 
@@ -37,3 +43,7 @@ fun <T> ChainedParadoxSelector<T>.preferRoot(rootFile: VirtualFile?) = apply { i
  * @param from [VirtualFile] | [PsiFile] | [PsiElement]
  */
 fun <T> ChainedParadoxSelector<T>.preferRootFrom(from: Any?) = apply { if(from != null) selectors += ParadoxPreferRootFileSelector(from = from) }
+
+fun ChainedParadoxSelector<ParadoxLocalisationProperty>.locale(locale: ParadoxLocaleConfig?) = apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }
+
+fun ChainedParadoxSelector<ParadoxLocalisationProperty>.preferLocale(locale: ParadoxLocaleConfig?) = apply { if(locale != null) selectors += ParadoxPreferLocaleSelector(locale) }

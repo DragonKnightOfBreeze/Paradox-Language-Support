@@ -549,6 +549,10 @@ inline fun <T, R, C: Comparable<C>> compareByNullsLast(
 //endregion
 
 //region Collection Extensions
+fun <T> MutableSet(comparator: Comparator<T>? = null) :MutableSet<T>{
+	return if(comparator == null) mutableSetOf() else TreeSet(comparator)
+}
+
 fun <T> Collection<T>.asList(): List<T> {
 	return if(this is List) this else this.toList()
 }

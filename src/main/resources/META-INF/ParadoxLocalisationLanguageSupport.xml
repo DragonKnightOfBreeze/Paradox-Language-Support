@@ -87,23 +87,33 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
 
     <intentionAction>
-      <className>icu.windea.pls.localisation.intentions.ChangeLocaleIntention</className>
+      <className>icu.windea.pls.localisation.intentions.ChangeLocalisationLocaleIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
     <intentionAction>
-      <className>icu.windea.pls.localisation.intentions.ChangeColorIntention</className>
+      <className>icu.windea.pls.localisation.intentions.ChangeLocalisationColorIntention</className>
+      <category>Paradox localisation</category>
+    </intentionAction>
+
+
+    <intentionAction>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
     <intentionAction>
-      <className>icu.windea.pls.localisation.intentions.CopyRawTextIntention</className>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationForLocaleIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
     <intentionAction>
-      <className>icu.windea.pls.localisation.intentions.CopyPlainTextIntention</className>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
     <intentionAction>
-      <className>icu.windea.pls.localisation.intentions.CopyRichTextIntention</className>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationPlainTextIntention</className>
+      <category>Paradox localisation</category>
+    </intentionAction>
+    <intentionAction>
+      <className>icu.windea.pls.localisation.intentions.CopyLocalisationRichTextIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
 

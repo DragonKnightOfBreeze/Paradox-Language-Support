@@ -4,8 +4,8 @@ import com.intellij.ide.actions.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 
 //用于复制路径/引用（Edit > Copy Path/Reference...）
 
@@ -15,13 +15,13 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * * 如果是本地化：返回本地化的键名
  * * 忽略非定义、非定义元素的脚本属性，以及非本地化的本地化属性
  */
-class ParadoxQualifiedNameProvider: QualifiedNameProvider {
+class ParadoxQualifiedNameProvider : QualifiedNameProvider {
 	override fun adjustElementToCopy(element: PsiElement?): PsiElement? {
 		return null
 	}
 	
 	override fun getQualifiedName(element: PsiElement?): String? {
-		when{
+		when {
 			element is ParadoxScriptProperty -> {
 				val definitionInfo = element.definitionInfo
 				if(definitionInfo != null) return definitionInfo.name

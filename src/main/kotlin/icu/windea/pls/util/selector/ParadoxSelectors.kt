@@ -57,18 +57,51 @@ class ParadoxPreferRootFileSelector<T>(
 	}
 	
 	override fun comparator(): Comparator<T> {
-		return compareByNullsLast({ selectRootFile(it) }, { it.path }, { rootFile == it })
+		return compareBy { if(rootFile == it) 0 else 1 }
 	}
 }
+
+class ParadoxLocaleSelector(
+	private val locale: ParadoxLocaleConfig
+): ParadoxSelector<ParadoxLocalisationProperty>{
+	override fun select(result: ParadoxLocalisationProperty): Boolean {
+		return locale == result.localeConfig
+	}
+	
+	override fun selectAll(result: ParadoxLocalisationProperty): Boolean {
+		return select(result)
+	}
+}
+
+class ParadoxPreferLocaleSelector(
+	private val locale: ParadoxLocaleConfig
+): ParadoxSelector<ParadoxLocalisationProperty>{
+	override fun select(result: ParadoxLocalisationProperty): Boolean {
+		return locale == result.localeConfig
+	}
+	
+	override fun selectAll(result: ParadoxLocalisationProperty): Boolean {
+		return true
+	}
+	
+	override fun selectDefault(result: ParadoxLocalisationProperty): Boolean {
+		return true
+	}
+	
+	override fun comparator(): Comparator<ParadoxLocalisationProperty> {
+		return compareByNullsLast({ it.localeConfig }, { it.id }, { locale == it })
+	}
+}
+
 
 internal tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 	return when {
 		from == null -> null
 		from is VirtualFile -> from.fileInfo?.gameType
 		from is PsiFile -> from.fileInfo?.gameType
-		from is ParadoxScriptVariable -> runCatching { from.stub?.gameType }.getOrElse { from.fileInfo?.gameType }
-		from is ParadoxDefinitionProperty -> runCatching { from.getStub()?.gameType }.getOrElse { from.fileInfo?.gameType }
-		from is ParadoxLocalisationProperty -> runCatching { from.stub?.gameType }.getOrElse { from.fileInfo?.gameType }
+		from is ParadoxScriptVariable -> runCatching { from.stub?.gameType }.getOrNull() ?: from.fileInfo?.gameType
+		from is ParadoxDefinitionProperty -> runCatching { from.getStub()?.gameType }.getOrNull() ?: from.fileInfo?.gameType
+		from is ParadoxLocalisationProperty -> runCatching { from.stub?.gameType }.getOrNull() ?: from.fileInfo?.gameType
 		from is PsiElement -> selectGameType(from.parent)
 		else -> null
 	}
@@ -81,14 +114,5 @@ internal tailrec fun selectRootFile(from: Any?): VirtualFile? {
 		from is PsiFile -> from.fileInfo?.rootFile
 		from is PsiElement -> selectRootFile(from.parent)
 		else -> null
-	}
-}
-
-internal fun selectLocale(from: Any?): ParadoxLocaleConfig? {
-	//默认使用推断的语言区域
-	return when {
-		from == null -> null
-		from is PsiElement -> from.localeConfig
-		else -> inferParadoxLocale()
 	}
 }

@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.util.selector.*
 
 /**
  * 本地化（localisation/localisation_synced）的装订线图标提供器。
@@ -27,9 +28,10 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 				append("$category <b>").append(name).append("</b>")
 			}
 			val project = element.project
+			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(inferParadoxLocale())
 			val targets = when(category) {
-				Localisation -> findLocalisations(name, null, project, hasDefault = true)
-				SyncedLocalisation -> findSyncedLocalisations(name, null, project, hasDefault = true)
+				Localisation -> findLocalisations(name, project, selector = selector)
+				SyncedLocalisation -> findSyncedLocalisations(name, project, selector = selector)
 			}
 			if(targets.isEmpty()) return
 			val locationElement = element.propertyKey.propertyKeyId
@@ -44,7 +46,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		}
 	}
 	
-	private fun createGotoRelatedItem(targets: List<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
+	private fun createGotoRelatedItem(targets: Collection<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
 		return GotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
 	}
 }
