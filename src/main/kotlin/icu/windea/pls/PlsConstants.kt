@@ -1,5 +1,7 @@
 package icu.windea.pls
 
+import com.intellij.openapi.extensions.*
+
 val locationClass = PlsIcons::class.java
 
 const val ddsName = "DDS"
@@ -47,6 +49,8 @@ const val descriptorFileName = "descriptor.mod"
 const val defaultScriptedVariableName = "var"
 
 const val indexVersion = 6 //0.6.6
+
+val translationPluginId = PluginId.getId("cn.yiiguxing.plugin.translate")
 
 object PlsFolders {
 	const val ellipsis = "..."

@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.intentions
 import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.intention.*
+import com.intellij.ide.plugins.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.progress.*
@@ -59,7 +60,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction {
 			val originalElement = file.findElementAt(selectionStart)
 			val element = originalElement?.parentOfType<ParadoxLocalisationProperty>() ?: return
 			listOf(element)
-		}else {
+		} else {
 			val originalStartElement = file.findElementAt(selectionStart) ?: return
 			val originalEndElement = file.findElementAt(selectionEnd) ?: return
 			findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
@@ -68,38 +69,50 @@ class CopyLocalisationForLocaleIntention : IntentionAction {
 		
 		val localeDialog = SelectParadoxLocaleDialog(preferredParadoxLocale())
 		if(!localeDialog.showAndGet()) return
+		
+		//Determines whether the translation plug-in is enabled
+		val isEnabled = PluginManagerCore.isPluginInstalled(translationPluginId) && !PluginManagerCore.isDisabled(translationPluginId))
+		if(!isEnabled) {
+			Notifications.showWarningNotification(
+				PlsBundle.message("translate.notification.pluginNotEnabled.title"), 
+				PlsBundle.message("translate.notification.pluginNotEnabled.description"),
+				project, "pls"
+			)
+		}
+		
 		val targetLocale = localeDialog.locale
 		val targetLang = targetLocale.languageTag.let { runCatching { Lang[it] }.getOrNull() }
 		val textList = elements.map { element ->
-			val sourceLang = element.localeConfig?.languageTag?.let { runCatching { Lang[it] }.getOrNull() }
-			if(sourceLang != null && targetLang != null && sourceLang != targetLang) {
-				val key = element.name
-				val indicatorTitle = PlsBundle.message("translate.indicator.translate.title", key, targetLocale)
-				val progressIndicator = BackgroundableProcessIndicator(project, indicatorTitle, null, "", true)
-				progressIndicator.text = PlsBundle.message("translate.indicator.translate.text1", key)
-				progressIndicator.text2 = PlsBundle.message("translate.indicator.translate.text2", text.processBeforeTranslate() ?: text)
-				progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
-				
-				var resultText = element.text
-				TranslateService.translate(element.text, sourceLang, targetLang, object : TranslateListener {
-					override fun onSuccess(translation: Translation) {
-						if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
-						
-						progressIndicator.processFinish()
-						resultText = translation.translation
-					}
+			if(targetLang == null) return@map element.text
+			val sourceLang = element.localeConfig?.languageTag?.let { runCatching { Lang[it] }.getOrNull() } ?: return@map element.text
+			if(sourceLang == targetLang) return@map element.text
+			if(!isEnabled) return@map element.text
+			
+			val key = element.name
+			val indicatorTitle = PlsBundle.message("translate.indicator.translate.title", key, targetLocale)
+			val progressIndicator = BackgroundableProcessIndicator(project, indicatorTitle, null, "", true)
+			progressIndicator.text = PlsBundle.message("translate.indicator.translate.text1", key)
+			progressIndicator.text2 = PlsBundle.message("translate.indicator.translate.text2", text.processBeforeTranslate() ?: text)
+			progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
+			
+			var resultText = element.text
+			TranslateService.translate(element.text, sourceLang, targetLang, object : TranslateListener {
+				override fun onSuccess(translation: Translation) {
+					if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
 					
-					override fun onError(throwable: Throwable) {
-						if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
-						
-						progressIndicator.processFinish()
-						TranslationNotifications.showTranslationErrorNotification(project, PlsBundle.message("translate.notification.translate.failed.title", key, targetLocale), null, throwable)
-					}
-				})
-				resultText
-			} else {
-				element.text
-			}
+					progressIndicator.processFinish()
+					resultText = translation.translation
+				}
+				
+				override fun onError(throwable: Throwable) {
+					if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
+					
+					progressIndicator.processFinish()
+					TranslationNotifications.showTranslationErrorNotification(project, PlsBundle.message("translate.notification.translate.failed.title", key, targetLocale), null, throwable)
+				}
+			})
+			resultText
+			
 		}
 		val finalText = textList.joinToString("\n")
 		CopyPasteManager.getInstance().setContents(StringSelection(finalText))
