@@ -26,7 +26,7 @@ class SelectParadoxLocaleDialog(
 	override fun createCenterPanel(): JComponent {
 		return panel { 
 			row {
-				comboBox(localesToSelect).bindItem(::locale.toNullableProperty())
+				comboBox(localesToSelect).bindItem(::locale.toNullableProperty()).focused()
 			}
 		}
 	}
