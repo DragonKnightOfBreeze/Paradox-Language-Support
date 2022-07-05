@@ -53,7 +53,8 @@ class CopyLocalisationIntention : IntentionAction {
 			val originalEndElement = file.findElementAt(selectionEnd) ?: return
 			val elements = findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
 			if(elements.isEmpty()) return
-			val text = elements.joinToString("\n") { it.text } //使用原始文本，不加缩进
+			//使用原始文本，不加缩进
+			val text = elements.joinToString("\n") { it.text }
 			CopyPasteManager.getInstance().setContents(StringSelection(text))
 		}
 	}

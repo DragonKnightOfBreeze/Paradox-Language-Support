@@ -11,6 +11,7 @@ intellij {
 	version.set("2022.1")
 	pluginName.set("Paradox Language Support")
 	plugins.add("com.intellij.platform.images")
+	plugins.add("cn.yiiguxing.plugin.translate:3.3.2") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
 	//plugins.add("markdown")
@@ -113,6 +114,9 @@ tasks {
 	}
 	buildSearchableOptions {
 		enabled = false
+	}
+	prepareSandbox {
+		
 	}
 	publishPlugin {
 		token.set(System.getenv("IDEA_TOKEN"))

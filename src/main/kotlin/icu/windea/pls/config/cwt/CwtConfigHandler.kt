@@ -617,7 +617,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processLocalisationVariants(keyword, configGroup.project, selector = selector) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -634,7 +634,7 @@ object CwtConfigHandler {
 			CwtDataTypes.SyncedLocalisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processSyncedLocalisationVariants(keyword, configGroup.project, selector = selector) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -791,7 +791,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processLocalisationVariants(keyword, configGroup.project,selector = selector) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -808,7 +808,7 @@ object CwtConfigHandler {
 			CwtDataTypes.SyncedLocalisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processSyncedLocalisationVariants(keyword, configGroup.project, selector = selector) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -1227,12 +1227,12 @@ object CwtConfigHandler {
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = keyElement.value
-				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(preferredParadoxLocale())
 				return findLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				val name = keyElement.value
-				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(preferredParadoxLocale())
 				return findSyncedLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.TypeExpression -> {
@@ -1326,12 +1326,12 @@ object CwtConfigHandler {
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = keyElement.value
-				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(preferredParadoxLocale())
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				val name = keyElement.value
-				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement).preferLocale(preferredParadoxLocale())
 				return findSyncedLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.TypeExpression -> {
@@ -1414,18 +1414,18 @@ object CwtConfigHandler {
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = valueElement.value
-				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(preferredParadoxLocale())
 				return findLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				val name = valueElement.value
-				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(preferredParadoxLocale())
 				return findSyncedLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(valueElement.isQuoted()) return null
 				val name = valueElement.value
-				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(preferredParadoxLocale())
 				return findLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
@@ -1527,18 +1527,18 @@ object CwtConfigHandler {
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = valueElement.value
-				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(preferredParadoxLocale())
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				val name = valueElement.value
-				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(preferredParadoxLocale())
 				return findSyncedLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(valueElement.isQuoted()) return emptyList()
 				val name = valueElement.value
-				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(inferParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement).preferLocale(preferredParadoxLocale())
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
@@ -1649,11 +1649,11 @@ object CwtConfigHandler {
 			val expression = CwtKeyExpression.resolve(aliasSubName)
 			when(expression.type) {
 				CwtDataTypes.Localisation -> {
-					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(inferParadoxLocale())
+					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 					return findLocalisation(name, project, selector = selector)
 				}
 				CwtDataTypes.SyncedLocalisation -> {
-					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(inferParadoxLocale())
+					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 					return findSyncedLocalisation(name, project, selector = selector)
 				}
 				CwtDataTypes.TypeExpression -> {

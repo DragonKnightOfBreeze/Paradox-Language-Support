@@ -10,6 +10,7 @@
 
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
+  <!--<depends optional="true" config-file="pls-translate.xml">cn.yiiguxing.plugin.translate</depends>-->
   
   <description><![CDATA[
     <p>
@@ -99,10 +100,11 @@
     ]]></change-notes>
 
   <resource-bundle>messages.PlsBundle</resource-bundle>
+  <resource-bundle>messages.PlsDocBundle</resource-bundle>
   
-  <xi:include href="/META-INF/Core.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/DdsSupport.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/CwtLanguageSupport.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/ParadoxScriptLanguageSupport.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/ParadoxLocalisationLanguageSupport.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/dds.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/paradox-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/paradox-localisation.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

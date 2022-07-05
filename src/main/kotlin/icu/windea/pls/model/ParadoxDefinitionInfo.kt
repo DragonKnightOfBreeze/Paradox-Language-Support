@@ -106,7 +106,7 @@ class ParadoxDefinitionInfo(
 	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
-			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(inferParadoxLocale())
+			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, element, configGroup.project, selector = selector) ?: continue
 			val localisation = resolved.second
 			if(localisation != null) return localisation

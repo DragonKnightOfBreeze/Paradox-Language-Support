@@ -23,7 +23,7 @@ class ParadoxPropertyReferenceCompletionProvider : CompletionProvider<Completion
 		//不提示predefined_variable
 		
 		//提示localisation或者synced_localisation
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(inferParadoxLocale())
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
 			val name = it.name
 			val icon = it.icon

@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
-import icu.windea.pls.annotation.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -43,8 +42,7 @@ fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDe
 
 fun getCwtConfig(project: Project) = project.service<CwtConfigProvider>().configGroups
 
-@InferMethod
-fun inferParadoxLocale(): ParadoxLocaleConfig? {
+fun preferredParadoxLocale(): ParadoxLocaleConfig? {
 	val primaryLocale = getSettings().localisationPreferredLocale.orEmpty()
 	if(primaryLocale.isNotEmpty() && primaryLocale != "auto") {
 		val usedLocale = InternalConfigHandler.getLocale(primaryLocale)
@@ -144,13 +142,13 @@ val PsiElement.localeConfig: ParadoxLocaleConfig?
 					current is ParadoxLocalisationFile -> return current.locale?.localeConfig
 					current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
 					current is ParadoxLocalisationLocale -> return current.localeConfig
-					current is PsiFile -> return inferParadoxLocale() //不应该出现
+					current is PsiFile -> return preferredParadoxLocale() //不应该出现
 				}
 				current = current.parent ?: break
 			}
 			return current.containingFile.localeConfig
 		} else {
-			return inferParadoxLocale()
+			return preferredParadoxLocale()
 		}
 	}
 
@@ -542,7 +540,7 @@ fun findLocalisation(
 
 /**
  * 基于本地化名字索引，根据名字、语言区域查找所有的本地化（localisation）。
- * @see inferParadoxLocale
+ * @see preferredParadoxLocale
  */
 fun findLocalisations(
 	name: String,
@@ -555,7 +553,7 @@ fun findLocalisations(
 
 /**
  * 基于本地化名字索引，根据关键字和推断的语言区域遍历所有的本地化（localisation）。对本地化的键去重。
- * @see inferParadoxLocale
+ * @see preferredParadoxLocale
  */
 inline fun processLocalisationVariants(
 	keyword: String,
@@ -583,7 +581,7 @@ fun findSyncedLocalisation(
 
 /**
  * 基于同步本地化名字索引，根据名字、语言区域查找所有的同步本地化（localisation_synced）。
- * @see inferParadoxLocale
+ * @see preferredParadoxLocale
  */
 fun findSyncedLocalisations(
 	name: String,
@@ -596,7 +594,7 @@ fun findSyncedLocalisations(
 
 /**
  * 基于同步本地化名字索引，根据关键字和推断的语言区域遍历所有的同步本地化（synced_localisation）。对本地化的键去重。
- * @see inferParadoxLocale
+ * @see preferredParadoxLocale
  */
 inline fun processSyncedLocalisationVariants(
 	keyword: String,

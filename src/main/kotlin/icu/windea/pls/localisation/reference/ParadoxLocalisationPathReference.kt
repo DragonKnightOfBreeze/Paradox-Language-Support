@@ -22,7 +22,7 @@ class ParadoxLocalisationPathReference(
 		//任意locale都可以
 		val project = element.project
 		val scope = GlobalSearchScope.fileScope(file)
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(inferParadoxLocale())
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 		return when(category) {
 			Localisation -> findLocalisation(anchor, project, scope, selector = selector)
 			SyncedLocalisation -> findSyncedLocalisation(anchor, project, scope, selector = selector)

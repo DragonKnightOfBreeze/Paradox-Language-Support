@@ -185,7 +185,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildLocalisationContent(element: PsiElement, name: String, configType: CwtConfigType?, project: Project) {
 		val locationExpression = configType?.localisation?.let { CwtLocalisationLocationExpression.resolve(it) } ?: return
 		val key = locationExpression.resolvePlaceholder(name) ?: return
-		val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(inferParadoxLocale())
+		val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 		val localisation = findLocalisation(key, project, selector = selector) ?: return
 		content {
 			ParadoxLocalisationTextRenderer.renderTo(localisation, this)
