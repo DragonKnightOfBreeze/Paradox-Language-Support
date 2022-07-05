@@ -45,6 +45,7 @@ Tools and plugins:
 * [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
 * [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 * [vincentzhang96/DDS4J](https://github.com/vincentzhang96/DDS4J)
+* [TranslationPlugin by Yii.Guxing](https://yiiguxing.github.io/TranslationPlugin/index.html)
 
 Wiki:
 
