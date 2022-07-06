@@ -10,6 +10,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.localisation.psi.*
 import java.util.*
 
 fun ParadoxLocaleConfig.toLang(): Lang? {
@@ -27,6 +28,26 @@ fun ParadoxLocaleConfig.toLang(): Lang? {
 	}
 	return null
 }
+
+fun ParadoxLocalisationProperty.toTranslatableStringSnippets(): TranslatableStringSnippets? {
+	try {
+		val propertyValue = this.propertyValue ?: return null
+		val start = textRange.startOffset
+		val end = textRange.endOffset
+		val quoteStart = propertyValue.textRange.startOffset // _"
+		val quoteEnd = propertyValue.textRange.endOffset // "_
+		if(quoteEnd - quoteStart < 2) return null
+		val snippets = mutableListOf<TranslatableStringSnippet>()
+		val text = text
+		snippets.add(TranslatableStringSnippet(text.substring(0, quoteStart + 1 - start)))
+		snippets.add(TranslatableStringSnippet(text.substring(quoteStart + 1 - start, quoteEnd - 1 - start), true))
+		snippets.add(TranslatableStringSnippet(text.substring(quoteEnd - 1 - start)))
+		return TranslatableStringSnippets(snippets)
+	} catch(e: Exception) {
+		return null
+	}
+}
+
 
 //cn.yiiguxing.plugin.translate.trans.TranslationNotifications
 

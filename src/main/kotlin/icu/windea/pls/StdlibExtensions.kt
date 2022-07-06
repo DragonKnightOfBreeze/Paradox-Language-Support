@@ -528,9 +528,9 @@ inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[th
 //endregion
 
 //region Compare Extensions
-inline fun <T, R, C: Comparable<C>> compareByNullsLastAndPin(
-	crossinline selector: (T) -> R?, 
-	crossinline comparableSelector: (R) -> C, 
+inline fun <T, R, C : Comparable<C>> compareByNullsLastAndPin(
+	crossinline selector: (T) -> R?,
+	crossinline comparableSelector: (R) -> C,
 	crossinline pinPredicate: (R) -> Boolean = { false }
 ): Comparator<T> {
 	return Comparator { a, b ->
@@ -543,13 +543,13 @@ inline fun <T, R, C: Comparable<C>> compareByNullsLastAndPin(
 			pinPredicate(a1) -> -1
 			pinPredicate(b1) -> 1
 			else -> comparableSelector(a1).compareTo(comparableSelector(b1))
-		} 
+		}
 	}
 }
 //endregion
 
 //region Collection Extensions
-fun <T> MutableSet(comparator: Comparator<T>? = null) :MutableSet<T>{
+fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
 	return if(comparator == null) mutableSetOf() else TreeSet(comparator)
 }
 
@@ -668,6 +668,36 @@ data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = fa
 }
 
 fun <K, V> Map<K, V>.toReversibleMap(notReversed: Boolean) = ReversibleMap(this, notReversed)
+
+inline fun <T> List<T>.pinned(predicate: (T) -> Boolean): List<T> {
+	if(this.isEmpty() || this.size == 1) return this
+	val result = mutableListOf<T>()
+	var elementToPin: T? = null
+	for(e in this) {
+		if(elementToPin == null && predicate(e)) {
+			elementToPin = e
+		} else {
+			result.add(e)
+		}
+	}
+	if(elementToPin != null) result.add(0, elementToPin)
+	return result
+}
+
+inline fun <T> List<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
+	if(this.isEmpty() || this.size == 1) return this
+	val result = mutableListOf<T>()
+	var elementToPin: T? = null
+	for(e in this) {
+		if(elementToPin == null && predicate(e)) {
+			elementToPin = e
+		} else {
+			result.add(e)
+		}
+	}
+	if(elementToPin != null) result.add(elementToPin)
+	return result
+}
 
 fun <T> Iterable<T>.process(processor: ProcessEntry.(T) -> Boolean): Boolean {
 	for(e in this) {

@@ -3,15 +3,18 @@ package icu.windea.pls.localisation.intentions
 import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.intention.*
+import com.intellij.notification.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.wm.ex.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -67,55 +70,68 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		}
 		if(elements.isEmpty()) return
 		
-		val localeDialog = SelectParadoxLocaleDialog(preferredParadoxLocale())
-		if(!localeDialog.showAndGet()) return
-		
-		val targetLocale = localeDialog.locale
-		val targetLang = targetLocale.toLang()
-		val failedKeys = mutableSetOf<String>()
-		val throwableList = mutableListOf<Throwable>()
-		val textList = elements.map { element ->
-			if(targetLang == null) return@map element.text
-			val sourceLang = element.localeConfig?.toLang() ?: return@map element.text
-			if(sourceLang == targetLang) return@map element.text
-			
-			val key = element.name
-			val indicatorTitle = PlsBundle.message("translation.indicator.translate.title", key, targetLocale)
-			val progressIndicator = BackgroundableProcessIndicator(project, indicatorTitle, null, "", true)
-			progressIndicator.text = PlsBundle.message("translation.indicator.translate.text1", key)
-			progressIndicator.text2 = PlsBundle.message("translation.indicator.translate.text2", text.processBeforeTranslate() ?: text)
-			progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
-			
-			var resultText: String? = null
-			TranslateService.translate(element.text, sourceLang, targetLang, object : TranslateListener {
-				override fun onSuccess(translation: Translation) {
-					if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
-					
-					progressIndicator.processFinish()
-					resultText = translation.translation
-				}
+		val onChosen = { selected: ParadoxLocaleConfig ->
+			val targetLocale = selected
+			val targetLang = targetLocale.toLang()
+			val failedKeys = mutableSetOf<String>()
+			val throwableList = mutableListOf<Throwable>()
+			val textList = elements.map { element ->
+				if(targetLang == null) return@map element.text
+				val sourceLang = element.localeConfig?.toLang() ?: return@map element.text
+				if(sourceLang == targetLang) return@map element.text
 				
-				override fun onError(throwable: Throwable) {
-					if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
-					
-					progressIndicator.processFinish()
-					failedKeys.add(key)
-					throwableList.add(throwable)
+				val key = element.name
+				val indicatorTitle = PlsBundle.message("indicator.translate.title", key, targetLocale)
+				val progressIndicator = BackgroundableProcessIndicator(project, indicatorTitle, null, "", true)
+				progressIndicator.text = PlsBundle.message("indicator.translate.text1", key)
+				progressIndicator.text2 = PlsBundle.message("indicator.translate.text2", text.processBeforeTranslate() ?: text)
+				progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
+				
+				val snippets = element.toTranslatableStringSnippets() ?: return@map element.text
+				snippets.forEach { snippet ->
+					if(!snippet.shouldTranslate) return@forEach
+					TranslateService.translate(snippet.text, sourceLang, targetLang, object : TranslateListener {
+						override fun onSuccess(translation: Translation) {
+							if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
+							
+							progressIndicator.processFinish()
+							translation.translation?.also { snippet.text = it }
+						}
+						
+						override fun onError(throwable: Throwable) {
+							if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
+							
+							progressIndicator.processFinish()
+							failedKeys.add(key)
+							throwableList.add(throwable)
+						}
+					})
 				}
-			})
-			resultText ?: element.text
-		}
-		if(failedKeys.isNotEmpty()) {
-			val failedKeysText = failedKeys.take(3).joinToString { "'$it'" } + if(failedKeys.size > 3) ", ..." else ""
-			TranslationNotifications.showTranslationErrorNotification(project,
-				PlsBundle.message("translation.notification.translate.failed.title"),
-				PlsBundle.message("translation.notification.translate.failed.content", failedKeysText, targetLocale),
-				throwableList
-			)
+				snippets.toString()
+			}
+			if(failedKeys.isNotEmpty()) {
+				val failedKeysText = failedKeys.take(keyTruncateLimit).joinToString { "'<code>$it</code>'" } + if(failedKeys.size > keyTruncateLimit) ", ..." else ""
+				TranslationNotifications.showTranslationErrorNotification(project,
+					PlsBundle.message("notification.translate.failed.title"),
+					PlsBundle.message("notification.translate.failed.content", failedKeysText, targetLocale),
+					throwableList
+				)
+			}
+			
+			val finalText = textList.joinToString("\n")
+			CopyPasteManager.getInstance().setContents(StringSelection(finalText))
+			
+			val keys = elements.mapTo(mutableSetOf()) { it.name }
+			val keysText = keys.take(keyTruncateLimit).joinToString { "'$it'" } + if(keys.size > keyTruncateLimit) ", ..." else ""
+			NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+				PlsBundle.message("notification.copyLocalisationForLocale.success.title"),
+				PlsBundle.message("notification.copyLocalisationForLocale.success.content", keysText, targetLocale),
+				NotificationType.INFORMATION
+			).notify(project)
 		}
 		
-		val finalText = textList.joinToString("\n")
-		CopyPasteManager.getInstance().setContents(StringSelection(finalText))
+		val localePopup = SelectParadoxLocalePopup(preferredParadoxLocale(), onChosen = onChosen)
+		JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
 	}
 	
 	fun checkProcessCanceledAndEditorDisposed(progressIndicator: BackgroundableProcessIndicator, project: Project?, editor: Editor?): Boolean {

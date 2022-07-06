@@ -48,6 +48,8 @@ const val descriptorFileName = "descriptor.mod"
 
 const val defaultScriptedVariableName = "var"
 
+const val keyTruncateLimit = 5
+
 const val indexVersion = 6 //0.6.6
 
 val translationPluginId = PluginId.getId("cn.yiiguxing.plugin.translate")

@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.intentions
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.notification.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
@@ -45,20 +46,29 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 		if(file.language != ParadoxLocalisationLanguage) return
 		val selectionStart = editor.selectionModel.selectionStart
 		val selectionEnd = editor.selectionModel.selectionEnd
+		val keys = mutableSetOf<String>()
 		if(selectionStart == selectionEnd) {
 			val originalElement = file.findElementAt(selectionStart)
 			val element = originalElement?.parentOfType<ParadoxLocalisationProperty>() ?: return
-			val text = element.text //使用原始文本
+			keys.add(element.name)
+			val text = element.text
 			CopyPasteManager.getInstance().setContents(StringSelection(text))
 		} else {
 			val originalStartElement = file.findElementAt(selectionStart) ?: return
 			val originalEndElement = file.findElementAt(selectionEnd) ?: return
 			val elements = findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
 			if(elements.isEmpty()) return
-			//使用原始文本，不加缩进
+			elements.forEach { keys.add(it.name) }
 			val text = elements.joinToString("\n") { it.text }
 			CopyPasteManager.getInstance().setContents(StringSelection(text))
 		}
+		
+		val keysText = keys.take(keyTruncateLimit).joinToString { "'<code>$it</code>'" } + if(keys.size > keyTruncateLimit) ", ..." else ""
+		NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+			PlsBundle.message("notification.copyLocalisation.success.title"),
+			PlsBundle.message("notification.copyLocalisation.success.content", keysText),
+			NotificationType.INFORMATION
+		).notify(project)
 	}
 }
 
