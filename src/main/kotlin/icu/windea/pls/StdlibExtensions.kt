@@ -528,7 +528,7 @@ inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[th
 //endregion
 
 //region Compare Extensions
-inline fun <T, R, C: Comparable<C>> compareByNullsLast(
+inline fun <T, R, C: Comparable<C>> compareByNullsLastAndPin(
 	crossinline selector: (T) -> R?, 
 	crossinline comparableSelector: (R) -> C, 
 	crossinline pinPredicate: (R) -> Boolean = { false }

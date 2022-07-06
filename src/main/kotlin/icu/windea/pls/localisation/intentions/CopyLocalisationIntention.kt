@@ -12,7 +12,7 @@ import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
 /**
- * 复制本地化到剪贴板的意向。（鼠标位置对应的本地化，或者鼠标选取范围涉及到的所有本地化）
+ * 复制本地化到剪贴板的意向。（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */

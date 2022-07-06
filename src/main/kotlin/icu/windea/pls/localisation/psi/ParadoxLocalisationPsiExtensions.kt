@@ -40,8 +40,8 @@ val ParadoxLocalisationCommandField.commandFieldId: PsiElement? get() = findOpti
 
 
 fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): Boolean {
-	val startElement = start.findParentInFile { it.parent is ParadoxLocalisationPropertyList }
-	val endElement = end.findParentInFile { it.parent is ParadoxLocalisationPropertyList }
+	val startElement = start.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
+	val endElement = end.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
 	when {
 		startElement == null && endElement == null -> return false
 		startElement == null && endElement != null -> {
@@ -69,8 +69,8 @@ fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): Boolea
 }
 
 fun findLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): List<ParadoxLocalisationProperty> {
-	val startElement = start.findParentInFile { it.parent is ParadoxLocalisationPropertyList }
-	val endElement = end.findParentInFile { it.parent is ParadoxLocalisationPropertyList }
+	val startElement = start.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
+	val endElement = end.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
 	when {
 		startElement == null && endElement == null -> return emptyList()
 		startElement == null && endElement != null -> {

@@ -5,8 +5,10 @@
 * **Function Introduce**
   * [Paradox Script Language Support](script-language-support.md)
   * [Paradox Localisation Language Support](localisation-language-support.md)
-  * [Import Cwt Rules](import-cwt-rules.md)
+  * [CWT Language Support](cwt-language-support.md)
+  * [DDS Image Support](dds-image-support.md)
   * [Import Game and Mod Directories](import-game-and-mod-directories.md)
   * [Plugin Settings](plugin-settings.md)
+  * [插件集成](plugin-integration.md)
 * **FAQ**
   * Wait For Feedback

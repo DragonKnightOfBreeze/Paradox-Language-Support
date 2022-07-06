@@ -3,28 +3,25 @@ package icu.windea.pls.localisation.intentions
 import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.intention.*
-import com.intellij.ide.plugins.*
-import com.intellij.notification.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.updateSettings.impl.pluginsAdvertisement.*
 import com.intellij.openapi.wm.ex.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.xml.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.translation.*
 import java.awt.datatransfer.*
 
 //https://github.com/YiiGuxing/TranslationPlugin/blob/master/src/main/kotlin/cn/yiiguxing/plugin/translate/action/TranslateAndReplaceAction.kt
 
 /**
- * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译到指定的语言区域的意向。（鼠标位置对应的本地化，或者鼠标选取范围涉及到的所有本地化）
+ * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译到指定的语言区域的意向。（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
@@ -73,26 +70,14 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		val localeDialog = SelectParadoxLocaleDialog(preferredParadoxLocale())
 		if(!localeDialog.showAndGet()) return
 		
-		//check whether the translation plugin is installed and enabled 
-		val isEnabled = PluginManagerCore.isPluginInstalled(translationPluginId) && !PluginManagerCore.isDisabled(translationPluginId)
-		if(!isEnabled) {
-			NotificationGroupManager.getInstance().getNotificationGroup("pls")
-				.createNotification(PlsBundle.message("translation.notification.pluginNotEnabled.title"),
-					XmlStringUtil.wrapInHtml(PlsBundle.message("translation.notification.pluginNotEnabled.content")),
-					NotificationType.WARNING)
-				.addAction(NotificationAction.create(PlsBundle.message("translation.notification.pluginNotEnabled.action.1")) { _, notification -> 
-					installAndEnable(project, setOf(translationPluginId)) { notification.expire() }
-				})
-				.notify(project)
-		}
-		
 		val targetLocale = localeDialog.locale
-		val targetLang = targetLocale.languageTag.let { runCatching { Lang[it] }.getOrNull() }
+		val targetLang = targetLocale.toLang()
+		val failedKeys = mutableSetOf<String>()
+		val throwableList = mutableListOf<Throwable>()
 		val textList = elements.map { element ->
 			if(targetLang == null) return@map element.text
-			val sourceLang = element.localeConfig?.languageTag?.let { runCatching { Lang[it] }.getOrNull() } ?: return@map element.text
+			val sourceLang = element.localeConfig?.toLang() ?: return@map element.text
 			if(sourceLang == targetLang) return@map element.text
-			if(!isEnabled) return@map element.text
 			
 			val key = element.name
 			val indicatorTitle = PlsBundle.message("translation.indicator.translate.title", key, targetLocale)
@@ -101,7 +86,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 			progressIndicator.text2 = PlsBundle.message("translation.indicator.translate.text2", text.processBeforeTranslate() ?: text)
 			progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
 			
-			var resultText = element.text
+			var resultText: String? = null
 			TranslateService.translate(element.text, sourceLang, targetLang, object : TranslateListener {
 				override fun onSuccess(translation: Translation) {
 					if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
@@ -114,12 +99,21 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 					if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
 					
 					progressIndicator.processFinish()
-					TranslationNotifications.showTranslationErrorNotification(project, PlsBundle.message("translation.notification.translate.failed.title", key, targetLocale), null, throwable)
+					failedKeys.add(key)
+					throwableList.add(throwable)
 				}
 			})
-			resultText
-			
+			resultText ?: element.text
 		}
+		if(failedKeys.isNotEmpty()) {
+			val failedKeysText = failedKeys.take(3).joinToString { "'$it'" } + if(failedKeys.size > 3) ", ..." else ""
+			TranslationNotifications.showTranslationErrorNotification(project,
+				PlsBundle.message("translation.notification.translate.failed.title"),
+				PlsBundle.message("translation.notification.translate.failed.content", failedKeysText, targetLocale),
+				throwableList
+			)
+		}
+		
 		val finalText = textList.joinToString("\n")
 		CopyPasteManager.getInstance().setContents(StringSelection(finalText))
 	}

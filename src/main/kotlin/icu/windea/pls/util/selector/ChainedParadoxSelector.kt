@@ -5,7 +5,8 @@ class ChainedParadoxSelector<T>(
 ) : ParadoxSelector<T> {
 	val selectors = mutableListOf<ParadoxSelector<T>>()
 	
-	//TODO 处理defaultValue的链式传递
+	//TODO 处理默认值的链式传递
+	//TODO 处理置顶逻辑
 	
 	var defaultValue: T? = null
 	

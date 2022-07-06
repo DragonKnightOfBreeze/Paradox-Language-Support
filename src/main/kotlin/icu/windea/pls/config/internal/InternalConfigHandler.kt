@@ -41,17 +41,10 @@ object InternalConfigHandler {
 	}
 	
 	/**
-	 * 从内置规则文件中得到指定FLAG的语言区域设置。
+	 * 从内置规则文件中得到指定CODE的语言区域设置。如`zh-CN`。
 	 */
-	fun getLocaleByFlag(flag: String, project: Project? = null): ParadoxLocaleConfig? {
-		return getInternalConfig(project).localeFlagMap[flag]
-	}
-	
-	/**
-	 * 从内置规则文件中得到得到所有语言区域设置。
-	 */
-	fun getLocaleMap(project: Project? = null): Map<String, ParadoxLocaleConfig> {
-		return getInternalConfig(project).localeMap
+	fun getLocaleByCode(code: String, project: Project? = null): ParadoxLocaleConfig? {
+		return getInternalConfig(project).localeMapByCode[code]
 	}
 	
 	/**
@@ -71,8 +64,8 @@ object InternalConfigHandler {
 	/**
 	 * 从内置规则文件中得到得到所有语言区域设置。
 	 */
-	fun getLocaleFlagMap(project: Project? = null): Map<String, ParadoxLocaleConfig> {
-		return getInternalConfig(project).localeFlagMap
+	fun getLocaleMap(project: Project? = null): Map<String, ParadoxLocaleConfig> {
+		return getInternalConfig(project).localeMap
 	}
 	//endregion
 	

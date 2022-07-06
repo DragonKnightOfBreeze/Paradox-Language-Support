@@ -31,6 +31,8 @@ please consider using [VSCode](https://code.visualstudio.com) with [CWTools](htt
 This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
 These rule files are currently build-in provided by this plugin, with some modifications and extensions, and will be automatically synchronized to the latest version when published.
 
+By also install [Translation](https://github.com/YiiGuxing/TranslationPlugin), this plugin will provide [additional functions](https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md)。
+
 For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) .
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_en.png)

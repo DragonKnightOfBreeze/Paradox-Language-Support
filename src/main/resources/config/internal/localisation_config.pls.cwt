@@ -10,47 +10,47 @@
 locales = {
 	### Default
 	l_default = {
-		language_tag = ""
+		codes = {}
 	}
 	### English
 	l_english = {
-		language_tag = "en"
+		codes = { "en" }
 	}
 	### Brazilian Portuguese
 	l_braz_por = {
-		language_tag = "pt"
+		codes = { "pt" }
 	}
 	### German
 	l_german = {
-		language_tag = "de"
+		codes = { "de" }
 	}
 	### French
 	l_french = {
-		language_tag = "fr"
+		codes = { "fr" }
 	}
 	### Spanish
 	l_spanish = {
-		language_tag = "es"
+		codes = { "es" }
 	}
 	### Polish
 	l_polish = {
-		language_tag = "pl"
+		codes = { "pl" }
 	}
 	### Russian
 	l_russian = {
-		language_tag = "ru"
+		codes = { "ru" }
 	}
 	### Simple Chinese
 	l_simp_chinese = {
-		language_tag = "zh"
+		codes = { "zh-CN" "zh" }
 	}
 	### Japanese
 	l_japanese = { # Since: stellaris v3.4
-		language_tag = "ja"
+		codes = { "ja" }
 	}
 	### Korean
 	l_korean = { # Since: stellaris v3.4
-		language_tag = "ko"
+		codes = { "ko" }
 	}
 }
 

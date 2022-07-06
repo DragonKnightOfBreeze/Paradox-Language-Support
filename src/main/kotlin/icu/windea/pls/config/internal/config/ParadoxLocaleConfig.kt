@@ -9,7 +9,7 @@ import icu.windea.pls.*
 class ParadoxLocaleConfig(
 	override val id: String,
 	override val description: String,
-	val languageTag: String,
+	val codes: List<String>,
 	override val pointer: SmartPsiElementPointer<out PsiElement>
 ) : InternalConfig{
 	override val icon get() = PlsIcons.LocalisationLocale

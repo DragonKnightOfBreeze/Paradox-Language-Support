@@ -25,6 +25,8 @@ IDEA插件：Paradox语言支持。
 这个插件与 [CWTools](https://github.com/cwtools/cwtools-vscode) 共享规则文件（`*.cwt`），但是相关功能尚未完全实现。
 这些规则文件目前由插件内置，经过一定的修改和扩展，当发布时会自动同步到最新版本。
 
+同时安装[Translation](https://github.com/YiiGuxing/TranslationPlugin)时，这个插件将会提供[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
+
 关于插件的功能和用法，请参阅 [参考文档](https://windea.icu/Paradox-Language-Support/#/zh/) 。
 
 ![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_zh.png)

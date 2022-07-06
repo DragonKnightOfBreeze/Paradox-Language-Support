@@ -48,9 +48,9 @@ fun preferredParadoxLocale(): ParadoxLocaleConfig? {
 		val usedLocale = InternalConfigHandler.getLocale(primaryLocale)
 		if(usedLocale != null) return usedLocale
 	}
-	//则基于OS得到对应的语言区域，或者使用英文
+	//基于OS得到对应的语言区域，或者使用英文
 	val userLanguage = System.getProperty("user.language")
-	return InternalConfigHandler.getLocaleByFlag(userLanguage) ?: InternalConfigHandler.getLocaleByFlag("en")
+	return InternalConfigHandler.getLocaleByCode(userLanguage) ?: InternalConfigHandler.getLocaleByCode("en")
 }
 
 fun getLineCommentDocText(element: PsiElement): String? {

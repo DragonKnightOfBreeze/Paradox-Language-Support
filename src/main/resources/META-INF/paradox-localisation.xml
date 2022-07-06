@@ -101,10 +101,6 @@
       <category>Paradox localisation</category>
     </intentionAction>
     <intentionAction>
-      <className>icu.windea.pls.localisation.intentions.CopyLocalisationForLocaleIntention</className>
-      <category>Paradox localisation</category>
-    </intentionAction>
-    <intentionAction>
       <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextIntention</className>
       <category>Paradox localisation</category>
     </intentionAction>
