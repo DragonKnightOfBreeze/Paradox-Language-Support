@@ -226,34 +226,28 @@ fun VirtualFile.hasBom(bom: ByteArray): Boolean {
 }
 
 /** （物理层面上）为虚拟文件添加BOM。 */
+@Throws(IOException::class)
 fun VirtualFile.addBom(bom: ByteArray, wait: Boolean = true) {
-	try {
-		this.bom = bom
-		val bytes = this.contentsToByteArray()
-		val contentWithAddedBom = ArrayUtil.mergeArrays(bom, bytes)
-		if(wait) {
-			WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithAddedBom) }
-		} else {
-			WriteAction.run<IOException> { this.setBinaryContent(contentWithAddedBom) }
-		}
-	} catch(ex: IOException) {
-		logger().warn("Unexpected exception occurred on attempt to add BOM from file $this", ex)
+	this.bom = bom
+	val bytes = this.contentsToByteArray()
+	val contentWithAddedBom = ArrayUtil.mergeArrays(bom, bytes)
+	if(wait) {
+		WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithAddedBom) }
+	} else {
+		WriteAction.run<IOException> { this.setBinaryContent(contentWithAddedBom) }
 	}
 }
 
 /** （物理层面上）为虚拟文件移除BOM。 */
+@Throws(IOException::class)
 fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 	this.bom = null
-	try {
-		val bytes = this.contentsToByteArray()
-		val contentWithStrippedBom = Arrays.copyOfRange(bytes, bom.size, bytes.size)
-		if(wait) {
-			WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithStrippedBom) }
-		} else {
-			WriteAction.run<IOException> { this.setBinaryContent(contentWithStrippedBom) }
-		}
-	} catch(ex: IOException) {
-		logger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", ex)
+	val bytes = this.contentsToByteArray()
+	val contentWithStrippedBom = Arrays.copyOfRange(bytes, bom.size, bytes.size)
+	if(wait) {
+		WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithStrippedBom) }
+	} else {
+		WriteAction.run<IOException> { this.setBinaryContent(contentWithStrippedBom) }
 	}
 }
 

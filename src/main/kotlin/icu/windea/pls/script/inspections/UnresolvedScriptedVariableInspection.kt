@@ -46,12 +46,12 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	private class IntroduceLocalVariableFix(
 		private val variableName: String,
 		element: ParadoxScriptProperty
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
+	) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
+		override fun getPriority() = PriorityAction.Priority.TOP
+		
 		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickfix.1", variableName)
 		
 		override fun getFamilyName() = text
-		
-		override fun getPriority() = PriorityAction.Priority.TOP
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			//声明对应名字的封装变量，默认值给0
@@ -75,12 +75,12 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	private class IntroduceGlobalVariableFix(
 		private val variableName: String,
 		element: ParadoxScriptProperty,
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
+	) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
+		override fun getPriority() = PriorityAction.Priority.HIGH
+		
 		override fun getText() = PlsBundle.message("script.inspection.unresolvedScriptedVariable.quickfix.2", variableName)
 		
 		override fun getFamilyName() = text
-		
-		override fun getPriority() = PriorityAction.Priority.HIGH
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			//打开对话框

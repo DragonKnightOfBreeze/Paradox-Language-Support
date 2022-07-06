@@ -2,6 +2,7 @@ package icu.windea.pls.script.inspections
 
 import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
@@ -54,9 +55,17 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 			val isUtf8 = virtualFile.charset == Charsets.UTF_8
 			val hasBom = virtualFile.hasBom(utf8Bom)
 			if(isNameList && !hasBom) {
-				virtualFile.addBom(utf8Bom)
+				try {
+					virtualFile.addBom(utf8Bom)
+				} catch(e: Exception) {
+					thisLogger().warn("Unexpected exception occurred on attempt to add BOM from file $this", e)
+				}
 			} else if(!isNameList && hasBom) {
-				virtualFile.removeBom(utf8Bom)
+				try {
+					virtualFile.removeBom(utf8Bom)
+				} catch(e: Exception) {
+					thisLogger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", e)
+				}
 			}
 			if(!isUtf8) virtualFile.charset = Charsets.UTF_8
 			val fileDocumentManager = FileDocumentManager.getInstance()

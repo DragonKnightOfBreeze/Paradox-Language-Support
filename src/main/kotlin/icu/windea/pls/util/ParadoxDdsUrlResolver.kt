@@ -1,12 +1,12 @@
 package icu.windea.pls.util
 
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import org.slf4j.*
 import java.lang.invoke.*
 import kotlin.io.path.*
 
@@ -15,7 +15,7 @@ import kotlin.io.path.*
  */
 @Suppress("unused")
 object ParadoxDdsUrlResolver {
-	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+	private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 	
 	/**
 	 * 基于定义进行解析。定义类型可以不为sprite。返回对应的PNG图片的绝对路径。

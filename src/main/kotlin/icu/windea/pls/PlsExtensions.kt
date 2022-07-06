@@ -749,6 +749,11 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 	return this
 }
 
+fun StringBuilder.appendExternalLinkIcon():StringBuilder{
+	append("<icon src='ide/external_link_arrow.svg'>")
+	return this
+}
+
 fun StringBuilder.appendUnresolvedLink(label: String): StringBuilder {
 	append(label.escapeXml()) //直接显示对应的标签文本
 	return this
@@ -847,9 +852,9 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 			appendLink(rootUri, PlsDocBundle.message("name.core.localLinkLabel"))
 			if(remoteFileId != null) {
 				append(" | ")
-				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
+				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel")).appendExternalLinkIcon()
 				append(" | ")
-				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //链接右边会自带一个特殊图标
+				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //自带外部链接图标
 			}
 		}
 		appendBr()

@@ -2,13 +2,13 @@ package icu.windea.pls.config.internal
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.psi.*
-import org.slf4j.*
 import java.lang.invoke.*
 
 /**
@@ -21,7 +21,7 @@ class InternalConfigProvider(
 	private val project: Project
 ) {
 	companion object {
-		private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+		private val logger =  Logger.getInstance(MethodHandles.lookup().lookupClass())
 		
 		private const val internalConfigPath = "/config/internal"
 	}

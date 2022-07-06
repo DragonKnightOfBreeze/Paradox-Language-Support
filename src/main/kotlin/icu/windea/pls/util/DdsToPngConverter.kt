@@ -2,8 +2,8 @@ package icu.windea.pls.util
 
 import co.phoenixlab.dds.*
 import com.google.common.cache.*
+import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
-import org.slf4j.*
 import java.lang.invoke.*
 import java.nio.file.*
 import kotlin.io.path.*
@@ -15,7 +15,7 @@ import kotlin.io.path.*
  */
 @Suppress("unused")
 object DdsToPngConverter {
-	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+	private val logger =  Logger.getInstance(MethodHandles.lookup().lookupClass())
 	
 	private val ddsImageDecoder: DdsImageDecoder by lazy { DdsImageDecoder() }
 	private val ddsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().build() } //ddsAbsPath - pngAbsPath

@@ -56,7 +56,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 	private class RenameFileFix(
 		element: ParadoxLocalisationLocale,
 		private val expectedFileName: String
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
+	) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
 		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileName.quickfix.1", expectedFileName)
 		
 		override fun getFamilyName() = text
@@ -79,12 +79,12 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 	private class RenameLocaleFix(
 		element: ParadoxLocalisationLocale,
 		private val expectedLocaleId: String
-	) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
+	) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
+		override fun getPriority() = PriorityAction.Priority.TOP //高优先级，如果可用
+		
 		override fun getText() = PlsBundle.message("localisation.inspection.incorrectFileName.quickfix.2", expectedLocaleId)
 		
 		override fun getFamilyName() = text
-		
-		override fun getPriority() = PriorityAction.Priority.TOP //高优先级，如果可用
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val locale = startElement.castOrNull<ParadoxLocalisationLocale>() ?: return

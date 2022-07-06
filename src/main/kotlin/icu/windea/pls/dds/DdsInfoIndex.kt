@@ -1,19 +1,19 @@
 package icu.windea.pls.dds
 
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.util.*
 import org.intellij.images.util.*
-import org.slf4j.*
 import java.io.*
 import java.lang.invoke.*
 
 //org.intellij.images.index.ImageInfoIndex
 
 object DdsInfoIndex {
-	private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+	private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 	
 	private val valueExternalizer: DataExternalizer<DdsInfo> = object : DataExternalizer<DdsInfo> {
 		override fun save(storage: DataOutput, info: DdsInfo) {

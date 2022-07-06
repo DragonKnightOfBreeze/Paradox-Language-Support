@@ -4,14 +4,17 @@ import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.intention.*
 import com.intellij.ide.plugins.*
+import com.intellij.notification.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.updateSettings.impl.pluginsAdvertisement.*
 import com.intellij.openapi.wm.ex.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.xml.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.localisation.*
@@ -21,13 +24,13 @@ import java.awt.datatransfer.*
 //https://github.com/YiiGuxing/TranslationPlugin/blob/master/src/main/kotlin/cn/yiiguxing/plugin/translate/action/TranslateAndReplaceAction.kt
 
 /**
- * 复制本地化到剪贴板并在复制之前转化语言区域的意向。（鼠标位置对应的本地化，或者鼠标选取范围涉及到的所有本地化）
+ * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译到指定的语言区域的意向。（鼠标位置对应的本地化，或者鼠标选取范围涉及到的所有本地化）
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
- *
- * 可以配置是否需要尝试翻译本地化文本。
  */
-class CopyLocalisationForLocaleIntention : IntentionAction {
+class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
+	override fun getPriority() = PriorityAction.Priority.HIGH
+	
 	override fun startInWriteAction() = false
 	
 	override fun getText() = PlsBundle.message("localisation.intention.copyLocalisationForLocale")
@@ -49,7 +52,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction {
 		}
 	}
 	
-	//在翻译之前，要讲特殊标记用<>包围起来，这样翻译后就可以保留特殊标记（期望如此）
+	//在翻译之前，要将特殊标记用<>包围起来，这样翻译后就可以保留特殊标记（期望如此）
 	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
@@ -70,14 +73,17 @@ class CopyLocalisationForLocaleIntention : IntentionAction {
 		val localeDialog = SelectParadoxLocaleDialog(preferredParadoxLocale())
 		if(!localeDialog.showAndGet()) return
 		
-		//Determines whether the translation plug-in is enabled
-		val isEnabled = PluginManagerCore.isPluginInstalled(translationPluginId) && !PluginManagerCore.isDisabled(translationPluginId))
+		//check whether the translation plugin is installed and enabled 
+		val isEnabled = PluginManagerCore.isPluginInstalled(translationPluginId) && !PluginManagerCore.isDisabled(translationPluginId)
 		if(!isEnabled) {
-			Notifications.showWarningNotification(
-				PlsBundle.message("translate.notification.pluginNotEnabled.title"), 
-				PlsBundle.message("translate.notification.pluginNotEnabled.description"),
-				project, "pls"
-			)
+			NotificationGroupManager.getInstance().getNotificationGroup("pls")
+				.createNotification(PlsBundle.message("translation.notification.pluginNotEnabled.title"),
+					XmlStringUtil.wrapInHtml(PlsBundle.message("translation.notification.pluginNotEnabled.content")),
+					NotificationType.WARNING)
+				.addAction(NotificationAction.create(PlsBundle.message("translation.notification.pluginNotEnabled.action.1")) { _, notification -> 
+					installAndEnable(project, setOf(translationPluginId)) { notification.expire() }
+				})
+				.notify(project)
 		}
 		
 		val targetLocale = localeDialog.locale
@@ -89,10 +95,10 @@ class CopyLocalisationForLocaleIntention : IntentionAction {
 			if(!isEnabled) return@map element.text
 			
 			val key = element.name
-			val indicatorTitle = PlsBundle.message("translate.indicator.translate.title", key, targetLocale)
+			val indicatorTitle = PlsBundle.message("translation.indicator.translate.title", key, targetLocale)
 			val progressIndicator = BackgroundableProcessIndicator(project, indicatorTitle, null, "", true)
-			progressIndicator.text = PlsBundle.message("translate.indicator.translate.text1", key)
-			progressIndicator.text2 = PlsBundle.message("translate.indicator.translate.text2", text.processBeforeTranslate() ?: text)
+			progressIndicator.text = PlsBundle.message("translation.indicator.translate.text1", key)
+			progressIndicator.text2 = PlsBundle.message("translation.indicator.translate.text2", text.processBeforeTranslate() ?: text)
 			progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
 			
 			var resultText = element.text
@@ -108,7 +114,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction {
 					if(checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
 					
 					progressIndicator.processFinish()
-					TranslationNotifications.showTranslationErrorNotification(project, PlsBundle.message("translate.notification.translate.failed.title", key, targetLocale), null, throwable)
+					TranslationNotifications.showTranslationErrorNotification(project, PlsBundle.message("translation.notification.translate.failed.title", key, targetLocale), null, throwable)
 				}
 			})
 			resultText

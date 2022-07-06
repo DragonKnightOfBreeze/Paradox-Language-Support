@@ -17,7 +17,9 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 更改颜色的意向。
  */
-class ChangeLocalisationColorIntention : IntentionAction {
+class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
+	override fun getPriority() = PriorityAction.Priority.HIGH
+	
 	override fun startInWriteAction() = false
 	
 	override fun getText() = PlsBundle.message("localisation.intention.changeLocalisationColor")

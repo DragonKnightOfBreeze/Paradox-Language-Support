@@ -2,6 +2,7 @@ package icu.windea.pls.core.settings
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
@@ -184,7 +185,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 			}
 		} catch(e: Exception) {
-			logger().warn(e.message)
+			thisLogger().warn(e.message)
 		}
 	}
 }

@@ -17,7 +17,9 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 更改语言区域的意向。
  */
-class ChangeLocalisationLocaleIntention : IntentionAction {
+class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
+	override fun getPriority() = PriorityAction.Priority.HIGH
+	
 	override fun startInWriteAction() = false
 	
 	override fun getText() = PlsBundle.message("localisation.intention.changeLocalisationLocale")

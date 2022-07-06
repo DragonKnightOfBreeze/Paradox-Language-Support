@@ -2,20 +2,7 @@
 
 package icu.windea.pls
 
-import com.google.common.cache.*
-import org.slf4j.*
-
-private val loggerCache: LoadingCache<Class<*>, Logger> by lazy { CacheBuilder.newBuilder().buildFrom { LoggerFactory.getLogger(it) } }
-
-fun Any.logger(): Logger = loggerCache.get(this.javaClass)
-
-inline fun Logger.trace(lazyMessage: () -> String) {
-	this.trace(lazyMessage())
-}
-
-inline fun Logger.trace(e: Throwable, lazyMessage: () -> String) {
-	this.trace(lazyMessage(), e)
-}
+import com.intellij.openapi.diagnostic.*
 
 inline fun Logger.debug(lazyMessage: () -> String) {
 	this.debug(lazyMessage())
