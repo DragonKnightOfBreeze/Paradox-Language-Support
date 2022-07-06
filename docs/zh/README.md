@@ -23,9 +23,9 @@ IDEA插件：Paradox语言支持。
 
 同时安装[Translation](https://github.com/YiiGuxing/TranslationPlugin)时，这个插件将会提供[额外的功能](https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.md)。
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_zh.png)
+![](../assets/images/script_file_preview_zh.png)
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_zh.png)
+![](../assets/images/localisation_file_preview_zh.png)
 
 说明：
 

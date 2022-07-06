@@ -29,9 +29,9 @@ These rule files are currently build-in provided by this plugin, with some modif
 
 By also install [Translation](https://github.com/YiiGuxing/TranslationPlugin), this plugin will provide [additional functions](https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md)。
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/script_file_preview_en.png)
+![](../assets/images/script_file_preview_en.png)
 
-![](https://windea.icu/Paradox-Language-Support/assets/images/localisation_file_preview_en.png)
+![](../assets/images/localisation_file_preview_en.png)
 
 Introduction:
 
