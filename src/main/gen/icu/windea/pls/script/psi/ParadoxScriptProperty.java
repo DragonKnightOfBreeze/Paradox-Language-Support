@@ -7,7 +7,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import icu.windea.pls.model.ParadoxValueType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptExpression, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptPsiExpression, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();

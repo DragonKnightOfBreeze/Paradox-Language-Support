@@ -3,7 +3,7 @@ package icu.windea.pls.script.psi
 import icu.windea.pls.model.*
 import icu.windea.pls.script.reference.*
 
-interface IParadoxScriptVariableReference : ParadoxScriptExpression {
+interface IParadoxScriptVariableReference : ParadoxScriptPsiExpression {
 	val name: String
 	
 	fun setName(name: String): IParadoxScriptVariableReference

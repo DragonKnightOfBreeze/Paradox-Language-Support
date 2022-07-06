@@ -5,7 +5,7 @@ import org.jetbrains.annotations.*;
 import icu.windea.pls.model.ParadoxValueType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptValue extends ParadoxScriptExpression {
+public interface ParadoxScriptValue extends ParadoxScriptPsiExpression {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

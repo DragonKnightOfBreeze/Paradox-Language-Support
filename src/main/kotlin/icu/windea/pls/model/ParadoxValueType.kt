@@ -6,7 +6,7 @@ import java.text.*
 
 /**
  * 值的类型。
- * @see icu.windea.pls.script.psi.ParadoxScriptExpression
+ * @see icu.windea.pls.script.psi.ParadoxScriptPsiExpression
  */
 enum class ParadoxValueType(
 	override val id: String,

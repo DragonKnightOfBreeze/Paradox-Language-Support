@@ -5,7 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiLiteralValue;
 import icu.windea.pls.model.ParadoxValueType;
 
-public interface ParadoxScriptInlineMathNumber extends ParadoxScriptInlineMathFactor, PsiLiteralValue, ParadoxScriptExpression {
+public interface ParadoxScriptInlineMathNumber extends ParadoxScriptInlineMathFactor, PsiLiteralValue, ParadoxScriptPsiExpression {
 
   @NotNull
   String getValue();

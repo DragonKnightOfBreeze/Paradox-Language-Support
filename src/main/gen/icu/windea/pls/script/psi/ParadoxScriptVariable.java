@@ -7,7 +7,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import icu.windea.pls.model.ParadoxValueType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, ParadoxScriptExpression, StubBasedPsiElement<ParadoxScriptVariableStub> {
+public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, ParadoxScriptPsiExpression, StubBasedPsiElement<ParadoxScriptVariableStub> {
 
   @NotNull
   ParadoxScriptVariableName getVariableName();
