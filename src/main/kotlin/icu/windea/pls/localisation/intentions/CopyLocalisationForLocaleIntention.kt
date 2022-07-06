@@ -52,8 +52,6 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		}
 	}
 	
-	//在翻译之前，要将特殊标记用<>包围起来，这样翻译后就可以保留特殊标记（期望如此）
-	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
 		if(file.language != ParadoxLocalisationLanguage) return
