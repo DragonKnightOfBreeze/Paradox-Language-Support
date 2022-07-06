@@ -9,6 +9,6 @@
   * [DDS Image Support](dds-image-support.md)
   * [Import Game and Mod Directories](import-game-and-mod-directories.md)
   * [Plugin Settings](plugin-settings.md)
-  * [插件集成](plugin-integration.md)
+  * [Plugin Integration](plugin-integration.md)
 * **FAQ**
   * Wait For Feedback
