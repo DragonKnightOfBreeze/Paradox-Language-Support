@@ -85,10 +85,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 					}
 				}
 			}
-			//显示为WEAK_WARNING
-			holder.registerProblem(location, messages.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
-				ImportGameOrModDirectoryFix(definition)
-			)
+			if(messages.isNotEmpty()) {
+				//显示为WEAK_WARNING
+				holder.registerProblem(location, messages.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
+					ImportGameOrModDirectoryFix(definition)
+				)
+			}
 		}
 		
 		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String, locale: ParadoxLocaleConfig): String {

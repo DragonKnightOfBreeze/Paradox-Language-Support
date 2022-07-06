@@ -9,7 +9,7 @@ class SelectParadoxLocalePopup(
 	locale: ParadoxLocaleConfig? = null,
 	existingLocales: List<ParadoxLocaleConfig> = emptyList(),
 	localesToSelect: List<ParadoxLocaleConfig> = getLocalesToSelect(existingLocales, locale),
-	private val onChosen: (selected: ParadoxLocaleConfig) -> Unit = {}
+	private val onChosen: (selected: ParadoxLocaleConfig) -> Unit //必须传入，否则没有意义
 ) : BaseListPopupStep<ParadoxLocaleConfig>(PlsBundle.message("ui.popup.selectParadoxLocale.title"), localesToSelect) {
 	var locale: ParadoxLocaleConfig? = null //初始为null
 	
