@@ -14,13 +14,7 @@ class ParadoxScriptStructureViewModel(
 	psiFile: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, psiFile), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
 	companion object {
-		private val defaultSuitableClasses = arrayOf(
-			ParadoxScriptFile::class.java,
-			ParadoxScriptVariable::class.java,
-			ParadoxScriptProperty::class.java,
-			ParadoxScriptValue::class.java,
-			ParadoxScriptParameterCondition::class.java,
-		)
+		private val defaultGroupers = emptyArray<Grouper>()
 		private val defaultSorters = arrayOf(Sorter.ALPHA_SORTER)
 		private val defaultFilters = arrayOf(VariablesFilter)
 	}
@@ -44,6 +38,9 @@ class ParadoxScriptStructureViewModel(
 		}
 		return null
 	}
+	
+	//指定可用的分组器，可自定义
+	override fun getGroupers() = defaultGroupers
 	
 	//指定可用的排序器，可自定义
 	override fun getSorters() = defaultSorters

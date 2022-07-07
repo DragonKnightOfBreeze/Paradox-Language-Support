@@ -16,7 +16,7 @@ intellij {
 	//reference
 	//plugins.add("markdown")
 	//plugins.add("properties")
-	//plugins.add("com.intellij.java")
+	plugins.add("com.intellij.java")
 	//plugins.add("org.jetbrains.kotlin")
 }
 
