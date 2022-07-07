@@ -52,7 +52,6 @@ class ParadoxCreateNewLibraryDialog(
 	
 	override fun createCenterPanel(): JComponent {
 		return panel {
-			val dialog = this@ParadoxCreateNewLibraryDialog
 			row {
 				label(PlsBundle.message("library.dialog.createNewLibrary.gameType")).widthGroup("left")
 				comboBox(ParadoxGameType.valueList).bindItem(dialog.gameTypeProperty)

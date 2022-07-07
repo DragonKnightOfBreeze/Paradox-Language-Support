@@ -548,6 +548,10 @@ inline fun <T, R, C : Comparable<C>> compareByNullsLastAndPin(
 fun String.toUUID(): UUID {
 	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
 }
+
+fun String.toUuidString(): String{
+	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
+}
 //endregion
 
 //region Collection Extensions

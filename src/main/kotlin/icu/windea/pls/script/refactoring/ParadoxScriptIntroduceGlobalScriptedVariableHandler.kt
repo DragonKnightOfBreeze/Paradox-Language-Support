@@ -5,11 +5,13 @@ import com.intellij.openapi.command.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.util.*
 
 /**
@@ -21,7 +23,7 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 		val offset = editor.caretModel.offset
 		val position = file.findElementAt(offset) ?: return false
 		val positionType = position.elementType
-		if(positionType != ParadoxScriptElementTypes.INT_TOKEN && positionType != ParadoxScriptElementTypes.FLOAT_TOKEN) return false
+		if(positionType.canBeScriptedVariableValue()) return false
 		return position.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() != null
 	}
 	
@@ -31,8 +33,9 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 		val offset = editor.caretModel.offset
 		val position = file.findElementAt(offset) ?: return false
 		val positionType = position.elementType
-		if(positionType != ParadoxScriptElementTypes.INT_TOKEN && positionType != ParadoxScriptElementTypes.FLOAT_TOKEN) return false
+		if(positionType.canBeScriptedVariableValue()) return false
 		val name = defaultScriptedVariableName
+		val value = position.text
 		
 		//将光标移到int_token或float_token的开始并选中
 		editor.caretModel.moveToOffset(position.startOffset)
@@ -49,18 +52,24 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 			val newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
 			position.parent.replace(newVariableReference)
 			
+			val document = PsiDocumentManager.getInstance(project).getDocument(file)
+			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
+			
 			//在指定的文件中声明对应的封装变量
-			val value = position.text
 			ParadoxScriptIntroducer.introduceGlobalScriptedVariable(name, value, targetFile, project)
-			val document = PsiDocumentManager.getInstance(project).getDocument(targetFile)
-			if(document != null) PsiDocumentManager.getInstance(project).commitDocument(document) //提交文档更改
+			val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
+			if(targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改
+			
+			//回到原来的光标位置
+			editor.caretModel.moveToOffset(position.startOffset)
+			editor.selectionModel.removeSelection()
+			editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
 		}
-		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, targetFile)
-		
-		//回到原来的光标位置
-		editor.caretModel.moveToOffset(position.startOffset)
-		editor.selectionModel.removeSelection()
-		editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+		WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, file, targetFile)
 		return true
+	}
+	
+	private fun IElementType?.canBeScriptedVariableValue(): Boolean {
+		return this != INT_TOKEN && this != FLOAT_TOKEN
 	}
 }

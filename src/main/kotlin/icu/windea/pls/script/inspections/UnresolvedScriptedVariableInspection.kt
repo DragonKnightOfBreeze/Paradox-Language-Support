@@ -94,7 +94,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 			val newVariable = ParadoxScriptIntroducer.introduceGlobalScriptedVariable(variableName, "0", targetFile, project)
 			
 			val document = PsiDocumentManager.getInstance(project).getDocument(targetFile)
-			if(document != null) PsiDocumentManager.getInstance(project).commitDocument(document) //提交文档更改
+			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
 			if(editor != null) {
 				//光标移到variableValue的结束位置并选中
 				val textRange = newVariable.variableValue!!.textRange

@@ -15,11 +15,11 @@
               use-shortcut-of="Images.EditExternally">
         <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
       </action>
-      <!--Do not show always-->
-      <!--<action id="Dds.EditExternalEditorPath" class="org.intellij.images.actions.EditExternalImageEditorAction" -->
-      <!--        use-shortcut-of="Images.EditExternalEditorPath">-->
-      <!--  <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>-->
-      <!--</action>-->
+      <action id="Dds.EditExternalEditorPath" class="org.intellij.images.actions.EditExternalImageEditorAction" 
+              use-shortcut-of="Images.EditExternalEditorPath">
+        <!--Do not show always-->
+        <!--<add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>-->
+      </action>
       <action id="Dds.ConvertDdsToPng" class="icu.windea.pls.dds.actions.ConvertDdsToPngAction">
         <keyboard-shortcut first-keystroke="control alt p" keymap="$default"/>
         <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>

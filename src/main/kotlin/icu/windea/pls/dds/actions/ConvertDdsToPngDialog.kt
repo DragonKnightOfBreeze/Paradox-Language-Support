@@ -28,7 +28,7 @@ class ConvertDdsToPngDialog(
 ) : DialogWrapper(project, true) {
 	companion object {
 		private const val MAX_PATH_LENGTH = 70
-		private const val RECENT_KEYS = "ConvertDdsToPng.RECENT_KEYS"
+		private const val RECENT_KEYS = "Pls.ConvertDdsToPng.RECENT_KEYS"
 	}
 	
 	val newName: String? get() = newNameField?.text?.trim()
@@ -36,15 +36,10 @@ class ConvertDdsToPngDialog(
 	
 	var newNameField: EditorTextField? = null
 	var targetDirectoryField: TextFieldWithHistoryWithBrowseButton? = null
-	val targetDirectoryComponent get() = targetDirectoryField!!.childComponent
 	
 	init {
 		title = PlsBundle.message("dds.dialog.convertDdsToPng.title")
 		init()
-	}
-	
-	override fun getPreferredFocusedComponent(): JComponent? {
-		return newNameField
 	}
 	
 	//（信息标签）
@@ -71,6 +66,7 @@ class ConvertDdsToPngDialog(
 					cell(initNewNameField())
 						.horizontalAlign(HorizontalAlign.FILL)
 						.resizableColumn()
+						.focused()
 				}
 			}
 			row {
@@ -87,7 +83,7 @@ class ConvertDdsToPngDialog(
 	
 	private fun initNewNameField(): EditorTextField {
 		val newName = defaultNewName.orEmpty()
-		val newNameField = EditorTextField().also { this.newNameField = it }
+		val newNameField = EditorTextField()
 		newNameField.text = newName
 		newNameField.editor.let { editor ->
 			if(editor != null) {
@@ -105,10 +101,10 @@ class ConvertDdsToPngDialog(
 		val targetDirectoryField = TextFieldWithHistoryWithBrowseButton().also { this.targetDirectoryField = it }
 		targetDirectoryField.setTextFieldPreferredWidth(MAX_PATH_LENGTH)
 		val recentEntries = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS)
-		val targetDirectoryComponent = targetDirectoryComponent
+		val targetDirectoryComponent = targetDirectoryField.childComponent
 		val targetPath = defaultTargetDirectory.virtualFile.presentableUrl
-		targetDirectoryComponent.text = targetPath
 		if(recentEntries != null) targetDirectoryComponent.history = recentEntries
+		targetDirectoryComponent.text = targetPath
 		val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
 		targetDirectoryField.addBrowseFolderListener(
 			PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory.title"),
@@ -131,11 +127,13 @@ class ConvertDdsToPngDialog(
 			}
 		}
 		targetDirectoryField?.let {
-			val targetDirectoryName = targetDirectoryComponent.text
+			val targetDirectoryName = targetDirectoryField!!.childComponent.text
 			if(targetDirectoryName.isEmpty()) {
 				Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory.error"), PlsBundle.message("error.title"))
 				return
 			}
+			
+			RecentsManager.getInstance(project).registerRecentEntry(RECENT_KEYS, targetDirectoryName)
 			
 			CommandProcessor.getInstance().executeCommand(project, {
 				ApplicationManager.getApplication().runWriteAction {
@@ -147,7 +145,7 @@ class ConvertDdsToPngDialog(
 					}
 				}
 			}, PlsBundle.message("create.directory"), null)
-			if(targetDirectory == null){
+			if(targetDirectory == null) {
 				Messages.showErrorDialog(project, PlsBundle.message("cannot.create.directory"), PlsBundle.message("error.title"))
 				return
 			}
