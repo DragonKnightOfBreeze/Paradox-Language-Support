@@ -500,10 +500,6 @@ fun String.toIntRangeOrNull(): IntRange? = runCatching { split("..", limit = 2).
 
 fun String.toFloatRangeOrNull(): FloatRange? = runCatching { split("..", limit = 2).let { (a, b) -> a.toFloat()..b.toFloat() } }.getOrNull()
 
-fun String.toUUID(): UUID {
-	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
-}
-
 fun URL.toFile() = File(this.toURI())
 
 fun URL.toPath() = Paths.get(this.toURI())
@@ -545,6 +541,12 @@ inline fun <T, R, C : Comparable<C>> compareByNullsLastAndPin(
 			else -> comparableSelector(a1).compareTo(comparableSelector(b1))
 		}
 	}
+}
+//endregion
+
+//region String Encode & Decode Extensions
+fun String.toUUID(): UUID {
+	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
 }
 //endregion
 
@@ -741,7 +743,7 @@ fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, thi
 
 typealias FloatRange = ClosedRange<Float>
 
-public inline operator fun FloatRange.contains(element: Float?): Boolean {
+operator fun FloatRange.contains(element: Float?): Boolean {
 	return element != null && contains(element)
 }
 //endregion

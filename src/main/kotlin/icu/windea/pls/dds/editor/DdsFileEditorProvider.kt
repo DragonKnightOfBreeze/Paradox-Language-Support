@@ -12,7 +12,7 @@ import icu.windea.pls.dds.*
  */
 class DdsFileEditorProvider : FileEditorProvider, DumbAware {
 	override fun accept(project: Project, file: VirtualFile): Boolean {
-		return file.isDdsFileType()
+		return file.fileType == DdsFileType
 	}
 	
 	override fun createEditor(project: Project, file: VirtualFile): FileEditor {

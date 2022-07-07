@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import javax.swing.*
@@ -68,11 +69,15 @@ class ConvertDdsToPngDialog(
 				row {
 					label(PlsBundle.message("dds.dialog.convertDdsToPng.newName")).widthGroup("left")
 					cell(initNewNameField())
+						.horizontalAlign(HorizontalAlign.FILL)
+						.resizableColumn()
 				}
 			}
 			row {
 				label(PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory")).widthGroup("left")
 				cell(initTargetDirectoryField())
+					.horizontalAlign(HorizontalAlign.FILL)
+					.resizableColumn()
 			}
 			row{
 				pathCompletionShortcutComment()

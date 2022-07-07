@@ -132,7 +132,7 @@ class DdsEditorImpl(
 		if(file == event.file) {
 			// Change document
 			file.refresh(true, false) {
-				if(file.isDdsFileType()) {
+				if(file.fileType == DdsFileType) {
 					setValue(file)
 				} else {
 					setValue(null)

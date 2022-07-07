@@ -71,8 +71,8 @@ internal class EditExternallyAction : DumbAwareAction() {
 	
 	override fun update(e: AnActionEvent) {
 		val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-		val enabled = file != null && file.isDdsFileType()
-		if (ActionPlaces.isPopupPlace(e.place)) {
+		val enabled = file != null && file.fileType == DdsFileType
+		if(ActionPlaces.isPopupPlace(e.place)) {
 			e.presentation.isVisible = enabled
 		}
 		e.presentation.isEnabled = enabled

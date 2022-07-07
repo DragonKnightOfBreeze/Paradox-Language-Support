@@ -106,7 +106,6 @@
     ]]></change-notes>
 
   <resource-bundle>messages.PlsBundle</resource-bundle>
-  <resource-bundle>messages.PlsDocBundle</resource-bundle>
   
   <xi:include href="/META-INF/core.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
