@@ -159,7 +159,7 @@ val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserDataOnValid(PlsKe
 
 val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //使用原始文件
 
-val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile.fileInfo
+val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile?.fileInfo
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 

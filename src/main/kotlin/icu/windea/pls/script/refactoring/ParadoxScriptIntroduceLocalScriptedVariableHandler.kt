@@ -35,8 +35,8 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 		if(positionType != INT_TOKEN && positionType != FLOAT_TOKEN) return false
 		val name = defaultScriptedVariableName
 		
-		//将光标移到int_token或float_token的开始并选中
-		editor.caretModel.moveToOffset(position.startOffset)
+		//将光标移到所在PSI元素的结束位置并选中
+		editor.caretModel.moveToOffset(position.endOffset)
 		editor.selectionModel.setSelection(position.startOffset, position.endOffset)
 		
 		//要求对应的int_token或float_token在定义声明内
@@ -48,8 +48,8 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 			val variableReferenceId = newVariableReference.variableReferenceId
 			
 			//声明对应名字的封装变量，以内联模版的方式编辑变量名
-			val value = position.text
-			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(name, value, parentDefinition, project)
+			val variableValue = position.text
+			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
 			PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
 			
 			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))

@@ -12,22 +12,30 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import javax.swing.*
 
 class IntroduceGlobalScriptedVariableDialog(
 	private val project: Project,
 	private val scriptedVariablesFile: VirtualFile,
+	variableName: String,
+	variableValue: String? = null,
+	private val suggestedVariableNames: List<String>? = null
 ) : DialogWrapper(project, true) {
 	companion object {
 		private const val MAX_PATH_LENGTH = 70
 		private const val RECENT_KEYS = "Pls.IntroduceGlobalScriptedVariable.RECENT_KEYS"
 	}
 	
+	private val setVariableValue = variableValue != null
+	
 	private val propertyGraph = PropertyGraph()
-	private val variableNameProperty = propertyGraph.property(defaultScriptedVariableName)
+	private val variableNameProperty = propertyGraph.property(variableName)
+	private val variableValueProperty = propertyGraph.property(variableValue.orEmpty())
 	
 	var variableName by variableNameProperty
+	var variableValue by variableValueProperty
 	var file = scriptedVariablesFile
 	var filePath = file.path
 	
@@ -39,6 +47,7 @@ class IntroduceGlobalScriptedVariableDialog(
 	}
 	
 	//（输入框）输入变量名
+	//（输入框）输入变量值
 	//（文件选择框）选择目标文件
 	
 	override fun createCenterPanel(): JComponent {
@@ -52,6 +61,18 @@ class IntroduceGlobalScriptedVariableDialog(
 					.resizableColumn()
 					.focused()
 					.validationOnApply { validateScriptedVariableName() }
+			}
+			if(setVariableValue) {
+				row {
+					//输入变量值
+					label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
+					textField()
+						.bindText(dialog.variableValueProperty)
+						.horizontalAlign(HorizontalAlign.FILL)
+						.resizableColumn()
+						.focused()
+						.validationOnApply { validateScriptedVariableValue() }
+				}
 			}
 			row {
 				//选择目标文件 - 仅允许用户选择同一游戏或模组根目录下的common/scripted_variables目录下的文件
@@ -91,6 +112,15 @@ class IntroduceGlobalScriptedVariableDialog(
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
 		} else if(!PlsPatterns.scriptedVariableNameRegex.matches(variableName)) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
+		}
+		return null
+	}
+	
+	private fun ValidationInfoBuilder.validateScriptedVariableValue(): ValidationInfo? {
+		if(variableValue.isEmpty()) {
+			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.0"))
+		} else if(!ParadoxValueType.infer(variableValue).canBeScriptedVariableValue()) {
+			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.1"))
 		}
 		return null
 	}

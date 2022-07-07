@@ -15,7 +15,7 @@ object ParadoxScriptIntroducer {
 		val newLine = ParadoxScriptElementFactory.createLine(project)
 		newVariable = parent.addAfter(newVariable, anchor).cast()
 		if(anchor != null) parent.addBefore(newLine, newVariable) else parent.addAfter(newLine, newVariable)
-		return newVariable.reformatted().cast()
+		return newVariable
 	}
 	
 	private fun ParadoxScriptProperty.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
@@ -38,7 +38,7 @@ object ParadoxScriptIntroducer {
 		val newLine = ParadoxScriptElementFactory.createLine(project)
 		newVariable = parent.addAfter(newVariable, anchor).cast()
 		if(anchor != null) parent.addBefore(newLine, newVariable)
-		return newVariable.reformatted().cast()
+		return newVariable
 	}
 	
 	private fun ParadoxScriptFile.findParentAndAnchorToIntroduceGlobalScriptedVariable(): Pair<PsiElement, PsiElement?>{

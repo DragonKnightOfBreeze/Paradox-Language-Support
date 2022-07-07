@@ -2,9 +2,11 @@ package icu.windea.pls.script.inspections
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.command.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.psi.*
@@ -54,22 +56,27 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		override fun getFamilyName() = text
 		
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-			//声明对应名字的封装变量，默认值给0
-			val parentDefinition = startElement.cast<ParadoxScriptProperty>()
-			val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinition, project)
-			
-			val document = PsiDocumentManager.getInstance(project).getDocument(file)
-			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
-			if(editor != null) {
-				//光标移到variableValue的结束位置并选中
-				val textRange = newVariable.variableValue!!.textRange
-				editor.selectionModel.setSelection(textRange.startOffset, textRange.endOffset)
-				editor.caretModel.moveToOffset(textRange.endOffset)
-				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+			val command = Runnable {
+				//声明对应名字的封装变量，默认值给0
+				val parentDefinition = startElement.cast<ParadoxScriptProperty>()
+				val newVariable = ParadoxScriptIntroducer.introduceLocalScriptedVariable(variableName, "0", parentDefinition, project)
+				
+				val document = PsiDocumentManager.getInstance(project).getDocument(file)
+				if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
+				if(editor != null) {
+					//光标移到newVariableValue的结束位置并选中
+					val newVariableValue = newVariable.variableValue ?: return@Runnable
+					editor.caretModel.moveToOffset(newVariableValue.endOffset)
+					editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
+					editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+				}
 			}
+			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
 		}
 		
 		override fun availableInBatchMode() = false
+		
+		override fun startInWriteAction() = false
 	}
 	
 	private class IntroduceGlobalVariableFix(
@@ -86,25 +93,27 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 			//打开对话框
 			val virtualFile = file.virtualFile ?: return
 			val scriptedVariablesDirectory = ParadoxFileLocator.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
-			val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory)
+			val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, variableName, "0")
 			if(!dialog.showAndGet()) return //取消
 			
 			//声明对应名字的封装变量，默认值给0并选中
+			val variableNameToUse = dialog.variableName
+			val variableValue = dialog.variableValue
 			val targetFile = dialog.file.toPsiFile<ParadoxScriptFile>(project) ?: return //不期望的结果
-			val newVariable = ParadoxScriptIntroducer.introduceGlobalScriptedVariable(variableName, "0", targetFile, project)
-			
-			val document = PsiDocumentManager.getInstance(project).getDocument(targetFile)
-			if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
-			if(editor != null) {
-				//光标移到variableValue的结束位置并选中
-				val textRange = newVariable.variableValue!!.textRange
-				editor.selectionModel.setSelection(textRange.startOffset, textRange.endOffset)
-				editor.caretModel.moveToOffset(textRange.endOffset)
-				editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+			val command = Runnable {
+				ParadoxScriptIntroducer.introduceGlobalScriptedVariable(variableNameToUse, variableValue, targetFile, project)
+				
+				val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
+				if(targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改
+				
+				//不移动光标
 			}
+			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, file, targetFile)
 		}
 		
 		override fun availableInBatchMode() = false
+		
+		override fun startInWriteAction() = false
 	}
 }
 
