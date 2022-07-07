@@ -16,11 +16,11 @@ import com.intellij.refactoring.util.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
+import icu.windea.pls.dds.*
 import icu.windea.pls.util.*
 import java.io.*
 import java.util.concurrent.atomic.*
 import java.util.function.Consumer
-import kotlin.collections.isNullOrEmpty
 
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler
 
@@ -33,8 +33,8 @@ class ConvertDdsToPngAction : DumbAwareAction() {
 		val editor = e.getData(CommonDataKeys.EDITOR)
 		val enabled = when {
 			project == null -> false
-			editor != null -> PsiDocumentManager.getInstance(project).getPsiFile(editor.document) != null
-			else -> e.getData(LangDataKeys.PSI_ELEMENT_ARRAY)?.any { it is PsiFile } == true
+			editor != null -> e.getData(LangDataKeys.VIRTUAL_FILE)?.let { it.fileType == DdsFileType } == true
+			else -> e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.any { it.fileType == DdsFileType } == true
 		}
 		e.presentation.isEnabledAndVisible = enabled
 	}
@@ -43,12 +43,12 @@ class ConvertDdsToPngAction : DumbAwareAction() {
 		val project = e.project ?: return
 		val editor = e.getData(CommonDataKeys.EDITOR)
 		val files = if(editor != null) {
-			val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) ?: return
+			val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { it.fileType == DdsFileType }?.toPsiFile<PsiFile>(project) ?: return
 			listOf(file)
 		} else {
-			e.getData(LangDataKeys.PSI_ELEMENT_ARRAY)?.filterIsInstance<PsiFile>()
+			e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { it.fileType == DdsFileType }?.mapNotNull { it.toPsiFile<PsiFile>(project) } ?: return
 		}
-		if(files.isNullOrEmpty()) return
+		if(files.isEmpty()) return
 		convert(files, project)
 	}
 	
@@ -93,7 +93,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
 	private fun saveToDirectory(files: List<PsiFile>, newName: String?, targetDirectory: PsiDirectory, choice: IntArray?, title: String, added: MutableList<PsiFile>) {
 		val existingFiles = MultiMap<PsiDirectory, PsiFile>()
 		val app = ApplicationManagerEx.getApplicationEx()
-		if(Registry.`is`("run.convert.dds.to.png.under.progress")){
+		if(Registry.`is`("run.convert.dds.to.png.under.progress")) {
 			val thrown = AtomicReference<Throwable>()
 			val action = Consumer { pi: ProgressIndicator? ->
 				try {

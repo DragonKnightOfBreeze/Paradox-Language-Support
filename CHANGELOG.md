@@ -78,8 +78,6 @@
   * [X] 支持本地化语言`l_japanese`和`l_korean`
   * [ ] 兼容作为format的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
-* 覆盖与重载处理：
-  * [X] 实现和应用优先查找游戏或模组根目录与指定的上下文相同的文件的选择器`ParadoxSameRootFileSelector`
 * 内置配置：
   * [X] 添加`predefined_variables`，表示预定义的变量，在本地化文本中使用，实现相关功能：引用解析
 * CWT配置：
