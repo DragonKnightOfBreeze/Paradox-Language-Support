@@ -40,7 +40,8 @@
   * [X] 优化导入游戏或模组目录时弹出的对话框
   * [X] 优化导入游戏或模组目录时弹出的对话框 - 在文件选择器中提供额外的工具栏按钮，可以快速选中Steam游戏目录、Steam创意工坊目录等
   * [X] 优化动态模版，移除硬编码的颜色码枚举（尽管仍然不够直观，或许应该考虑顶部工具类 / 悬浮工具栏？）
-  * [ ] 集成[Translation](https://github.com/YiiGuxing/TranslationPlugin)插件，用于翻译本地化文本
+  * [X] 集成[Translation](https://github.com/YiiGuxing/TranslationPlugin)插件，用于翻译本地化文本
+  * [ ] **翻译本地化文本时保留各种特殊标记**（可能原理上无法实现？）
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * [ ] 将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）
 * 新增功能：
@@ -60,6 +61,7 @@
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
   * [ ] 实现工具栏动作：生成所有缺失的相关本地化
   * [X] 实现`ParadoxQualifiedNameProvider`，用于复制路径/引用（Edit > Copy Path/Reference...）
+  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他文件作比较（拥有相同的相对于游戏或模组目录的路径，不限文件类型，如果存在）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
