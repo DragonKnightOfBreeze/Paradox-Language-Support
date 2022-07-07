@@ -981,15 +981,15 @@ object CwtConfigHandler {
 			CwtDataTypes.IntVariableField -> pass() //TODO
 			CwtDataTypes.ValueField -> pass() //TODO
 			CwtDataTypes.IntValueField -> pass() //TODO
-			//规则会被内联，不应该被匹配到
-			CwtDataTypes.SingleAliasRight -> throw InternalError()
+			//意味着aliasSubName是嵌入值，如modifier的名字
+			CwtDataTypes.SingleAliasRight -> pass()
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return
 				completeAliasName(context, keyword, quoted, aliasName, config, configGroup, result, scope, isKey = false)
 			}
-			//规则会被内联，不应该被匹配到
-			CwtDataTypes.AliasMatchLeft -> throw InternalError()
+			//意味着aliasSubName是嵌入值，如modifier的名字
+			CwtDataTypes.AliasMatchLeft -> pass()
 			CwtDataTypes.Constant -> {
 				val n = expression.value ?: return
 				//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
@@ -1494,8 +1494,8 @@ object CwtConfigHandler {
 				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
 				return resolveLink(name, configGroup)
 			}
-			//规则会被内联，不应该被匹配到
-			CwtDataTypes.SingleAliasRight -> throw InternalError()
+			//意味着aliasSubName是嵌入值，如modifier的名字
+			CwtDataTypes.SingleAliasRight -> return null
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return null
@@ -1503,8 +1503,8 @@ object CwtConfigHandler {
 				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
 				return resolveAliasName(valueElement, valueElement.value, valueElement.isQuoted(), aliasName, configGroup, isKey = false)
 			}
-			//规则会被内联，不应该被匹配到
-			CwtDataTypes.AliasMatchLeft -> throw InternalError()
+			//意味着aliasSubName是嵌入值，如modifier的名字
+			CwtDataTypes.AliasMatchLeft -> return null
 			CwtDataTypes.Constant -> {
 				return valueConfig.resolved.pointer.element.castOrNull<CwtString>()
 			}
@@ -1607,8 +1607,8 @@ object CwtConfigHandler {
 				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
 				return resolveLink(name, configGroup).toSingletonListOrEmpty()
 			}
-			//规则会被内联，不应该被匹配到
-			CwtDataTypes.SingleAliasRight -> throw InternalError()
+			//意味着aliasSubName是嵌入值，如modifier的名字
+			CwtDataTypes.SingleAliasRight -> return emptyList()
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return emptyList()
@@ -1616,8 +1616,8 @@ object CwtConfigHandler {
 				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
 				return resolveAliasName(valueElement, valueElement.value, valueElement.isQuoted(), aliasName, configGroup, isKey = false).toSingletonListOrEmpty()
 			}
-			//规则会被内联，不应该被匹配到
-			CwtDataTypes.AliasMatchLeft -> throw InternalError()
+			//意味着aliasSubName是嵌入值，如modifier的名字
+			CwtDataTypes.AliasMatchLeft -> return emptyList()
 			CwtDataTypes.Constant -> {
 				return valueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
 			}

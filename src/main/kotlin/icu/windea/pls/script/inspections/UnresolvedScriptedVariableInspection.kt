@@ -108,7 +108,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 				
 				//不移动光标
 			}
-			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, file, targetFile)
+			WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, targetFile)
 		}
 		
 		override fun availableInBatchMode() = false
