@@ -10,7 +10,7 @@ PLS will provide bellow additional functions:
 When the cursor is over a definition name, localized key or CWT expression (property key & value),
 can translate documentation content by click `Translate Documentation` in right-click menu.
 
-
+![](../assets/images/plugin-integration/translate-documentation.gif)
 
 ### Intention: Copy localisation(s) to the clipboard for locale...
 

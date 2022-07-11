@@ -8,7 +8,7 @@
 
 当光标位于定义的名字、本地化的键以及CWT规则表达式上时，可以通过点击右键菜单中的`Translate Documentation`翻译文档内容。
 
-
+![](../assets/images/plugin-integration/translate-documentation.gif)
 
 ### 意向：复制本地化到剪贴板并将本地化文本翻译为指定语言区域
 
