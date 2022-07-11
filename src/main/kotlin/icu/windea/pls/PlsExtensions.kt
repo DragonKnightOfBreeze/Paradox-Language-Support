@@ -750,7 +750,7 @@ fun StringBuilder.appendIf(condition: Boolean, text: String): StringBuilder {
 }
 
 fun StringBuilder.appendExternalLinkIcon():StringBuilder{
-	append("<icon src='ide/external_link_arrow.svg'>")
+	append("<icon src='ide/external_link_arrow.svg'/>")
 	return this
 }
 
@@ -829,6 +829,7 @@ fun StringBuilder.appendImgTag(url: String, width: Int, height: Int, local: Bool
 
 fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilder {
 	if(fileInfo != null) {
+		append("<span>")
 		//描述符信息（模组名、版本等）
 		append("[").append(fileInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
 		val descriptorInfo = fileInfo.descriptorInfo
@@ -852,11 +853,13 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 			appendLink(rootUri, PlsDocBundle.message("name.core.localLinkLabel"))
 			if(remoteFileId != null) {
 				append(" | ")
-				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel")).appendExternalLinkIcon()
+				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
+				appendExternalLinkIcon() //FIXME 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 等待修复
 				append(" | ")
 				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //自带外部链接图标
 			}
 		}
+		append("</span>")
 		appendBr()
 		//文件信息（相对于游戏或模组根目录的路径）
 		append("[").append(fileInfo.path).append("]")

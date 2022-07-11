@@ -5,9 +5,14 @@
 When [Translation](https://github.com/YiiGuxing/TranslationPlugin) plugin is also installed and enabled,
 PLS will provide bellow additional functions:
 
-### Intention
+### Translate documentation
 
-**Copy localisation(s) to the clipboard for locale...**
+When the cursor is over a definition name, localized key or CWT expression (property key & value),
+can translate documentation content by click `Translate Documentation` in right-click menu.
+
+
+
+### Intention: Copy localisation(s) to the clipboard for locale...
 
 When the cursor selection scope involves localization(s),
 this intention can copy all involved localization(s) to the clipboard,
