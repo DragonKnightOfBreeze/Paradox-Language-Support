@@ -52,6 +52,9 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		}
 	}
 	
+	//TODO 采用文档翻译 （将需要翻译的文本中的特殊标记用<span translate="no"></span>包围起来，然后再进行翻译）
+	//cn.yiiguxing.plugin.translate.trans.google.GoogleTranslator.translateDocumentation
+	
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
 		if(file.language != ParadoxLocalisationLanguage) return
@@ -82,7 +85,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 				val indicatorTitle = PlsBundle.message("indicator.translate.title", key, targetLocale)
 				val progressIndicator = BackgroundableProcessIndicator(project, indicatorTitle, null, "", true)
 				progressIndicator.text = PlsBundle.message("indicator.translate.text1", key)
-				progressIndicator.text2 = PlsBundle.message("indicator.translate.text2", text.processBeforeTranslate() ?: text)
+				progressIndicator.text2 = PlsBundle.message("indicator.translate.text2", text) //不过滤任何字符
 				progressIndicator.addStateDelegate(ProcessIndicatorDelegate(progressIndicator))
 				
 				val snippets = element.toTranslatableStringSnippets() ?: return@map element.text
