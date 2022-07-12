@@ -1,4 +1,6 @@
-# 概述
+# 简介
+
+## 概述
 
 [Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
 
@@ -39,7 +41,7 @@ IDEA插件：Paradox语言支持。
 * 如果需要添加游戏目录以及第三方模组作为依赖，如同Java和Kotlin一样，将它们作为库添加到你的模组对应的项目模块即可。
 * 如果遇到某些有关索引的IDE问题，请尝试重新构建索引。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
 
-# 参考
+## 参考
 
 工具和插件：
 

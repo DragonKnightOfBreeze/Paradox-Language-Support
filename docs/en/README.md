@@ -1,4 +1,6 @@
-# Summary
+# Introduce
+
+## Summary
 
 [Github](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
 
@@ -45,7 +47,7 @@ Tips:
 * If you want to add game directory and third party mod as dependencies, just add them as libraries to the project module of your mod, like what Java and Kotlin does.
 * If you have met some IDE problems about indices, please try to rebuild indices. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
 
-# Reference
+## Reference
 
 Tools and plugins:
 
