@@ -1,9 +1,9 @@
 # Internal Script Config
 
-# NOTE: below rules are from vanilla Stellaris script/localisation files, for other games, it may be incorrect.
+# NOTE: below rules are from vanilla Stellaris files or Stellaris wiki, for other games, it may be incorrect.
 
 ### System scopes
-### See wiki: <a href="hhttps://stellaris.paradoxwikis.com/Scopes#System_scopes">System Scopes</a>
+### See wiki: <a href="https://stellaris.paradoxwikis.com/Scopes#System_scopes">System Scopes</a>
 ## loc_format = html
 system_scopes = {
 	this = "This"

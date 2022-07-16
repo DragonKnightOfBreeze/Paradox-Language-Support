@@ -53,6 +53,9 @@
     <annotator
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
+    <codeInsight.parameterInfo
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.editor.ParadoxScriptParameterInfoHandler"/>
     <!--Try to keep correct inlay hint order-->
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"

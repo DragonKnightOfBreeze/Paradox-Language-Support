@@ -535,7 +535,7 @@ object CwtConfigHandler {
 		for(propConfig in childPropertyConfigs) {
 			if(shouldComplete(propConfig, definitionElementInfo)) {
 				//如果可能正在输入参数名，则基于对应的特定定义声明中存在的参数名进行提示（排除已经输入完毕的，仅当补全key时特殊处理即可）
-				if(propConfig.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == paramsEnumName }) {
+				if(isInputParameter(propConfig)) {
 					completeParameters(propertyElement, quoted, configGroup, result)
 					continue
 				}
