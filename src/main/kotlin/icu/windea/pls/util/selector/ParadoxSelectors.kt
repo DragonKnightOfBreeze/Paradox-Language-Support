@@ -55,6 +55,10 @@ class ParadoxPreferRootFileSelector<T>(
 	override fun selectDefault(result: T): Boolean {
 		return true
 	}
+	
+	override fun comparator(): Comparator<T> {
+		return complexCompareBy({ it }, { null }, { rootFile == it })
+	}
 }
 
 class ParadoxLocaleSelector(
@@ -85,7 +89,7 @@ class ParadoxPreferLocaleSelector(
 	}
 	
 	override fun comparator(): Comparator<ParadoxLocalisationProperty> {
-		return compareByNullsLastAndPin({ it.localeConfig }, { it.id }, { locale == it })
+		return complexCompareBy({ it.localeConfig }, { it.id }, { locale == it })
 	}
 }
 

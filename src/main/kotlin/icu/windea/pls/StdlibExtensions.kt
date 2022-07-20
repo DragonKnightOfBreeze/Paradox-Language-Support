@@ -478,6 +478,14 @@ fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no")
 
 fun String.toIntOrDefault(defaultValue: Int) = runCatching { toInt() }.getOrDefault(defaultValue)
 
+fun String.toUUID(): UUID {
+	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
+}
+
+fun String.toUuidString(): String{
+	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
+}
+
 fun String.toFile() = File(this)
 
 fun String.toFileOrNull() = runCatching { File(this) }.getOrNull()
@@ -524,9 +532,14 @@ inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[th
 //endregion
 
 //region Compare Extensions
-inline fun <T, R, C : Comparable<C>> compareByNullsLastAndPin(
+/**
+ * 通过[selector]得到需要的结果之后，
+ * 首先按照[comparableSelector]的结果进行排序（如果结果是null，则保持原有的先后顺序），
+ * 然后按照[pinPredicate]的结果置顶匹配的元素（如果存在多个匹配的元素，则保持原有的先后顺序）。
+ */
+inline fun <T, R, C : Comparable<C>> complexCompareBy(
 	crossinline selector: (T) -> R?,
-	crossinline comparableSelector: (R) -> C,
+	crossinline comparableSelector: (R) -> C? = { null },
 	crossinline pinPredicate: (R) -> Boolean = { false }
 ): Comparator<T> {
 	return Comparator { a, b ->
@@ -536,21 +549,15 @@ inline fun <T, R, C : Comparable<C>> compareByNullsLastAndPin(
 			a1 == b1 -> 0
 			a1 == null -> 1
 			b1 == null -> -1
-			pinPredicate(a1) -> -1
 			pinPredicate(b1) -> 1
-			else -> comparableSelector(a1).compareTo(comparableSelector(b1))
+			pinPredicate(a1) -> -1
+			else -> {
+				val a2  = comparableSelector(a1) ?: return@Comparator 1
+				val b2 = comparableSelector(b1) ?: return@Comparator 1
+				a2.compareTo(b2)
+			}
 		}
 	}
-}
-//endregion
-
-//region String Encode & Decode Extensions
-fun String.toUUID(): UUID {
-	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
-}
-
-fun String.toUuidString(): String{
-	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
 }
 //endregion
 
