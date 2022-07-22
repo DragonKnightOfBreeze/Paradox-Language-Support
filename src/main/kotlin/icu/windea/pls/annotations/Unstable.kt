@@ -1,4 +1,4 @@
-package icu.windea.pls.annotation
+package icu.windea.pls.annotations
 
 
 @MustBeDocumented

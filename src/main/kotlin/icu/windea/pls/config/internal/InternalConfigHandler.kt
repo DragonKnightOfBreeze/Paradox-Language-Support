@@ -2,7 +2,7 @@ package icu.windea.pls.config.internal
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.annotation.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.config.internal.config.*
 
 /**

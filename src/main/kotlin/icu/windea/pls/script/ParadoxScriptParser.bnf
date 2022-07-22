@@ -37,7 +37,7 @@ variable ::= variable_name variable_separator variable_value {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
-    "icu.windea.pls.script.psi.ParadoxScriptPsiExpression"
+    "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptVariableStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getValueType]
@@ -55,17 +55,16 @@ property ::= property_key property_separator property_value {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
-    "icu.windea.pls.script.psi.ParadoxScriptPsiExpression"
+    "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName subtreeChanged]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock 
+    getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterNames]
 }
 property_key ::= key_expr {
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptPsiExpression"
-    "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.ContributedReferenceHost"
+    "icu.windea.pls.script.expression.ParadoxScriptExpression"
   ] 
   methods=[getValue setValue getReference getReferences getConfigExpression getValueType]
 }
@@ -74,7 +73,7 @@ property_value ::= value
 
 //(property) value related
 value ::= variable_reference | boolean | number | string | color | block | inline_math {
-  implements="icu.windea.pls.script.psi.ParadoxScriptPsiExpression"
+  implements="icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   methods=[getIcon getValue getConfigExpression getValueType]
 }
 variable_reference ::= AT VARIABLE_REFERENCE_ID {
@@ -103,8 +102,7 @@ float ::= FLOAT_TOKEN{
 string ::= value_expr {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.ContributedReferenceHost"
+    "icu.windea.pls.script.expression.ParadoxScriptExpression"
   ]
   methods=[getValue setValue getReference getReferences getStringValue getValueType]
 }
@@ -226,7 +224,7 @@ inline_math_number ::= NUMBER_TOKEN { //int | float
   extends=inline_math_factor
   implements=[
     "com.intellij.psi.PsiLiteralValue"
-    "icu.windea.pls.script.psi.ParadoxScriptPsiExpression"
+    "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
   methods=[getValue getValueType]
 }

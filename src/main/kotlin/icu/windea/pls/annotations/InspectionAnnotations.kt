@@ -1,4 +1,4 @@
-package icu.windea.pls.annotation
+package icu.windea.pls.annotations
 
 /**
  * 注明此检查对应某个原版游戏文件中标出的关于LocEditor的检查。

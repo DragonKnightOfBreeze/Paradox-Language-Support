@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
@@ -52,7 +53,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, propertyConfig: CwtPropertyConfig) {
 		//颜色高亮
-		val expressionInfo = element.kvExpressionInfo ?: return
+		val expressionInfo = element.expressionInfo ?: return
 		when(expressionInfo.type) {
 			ParadoxKvExpressionType.LiteralType -> {
 				val attributesKey = when {
@@ -126,7 +127,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateValueExpression(element: ParadoxScriptString, holder: AnnotationHolder, valueConfig: CwtValueConfig) {
 		//颜色高亮
-		val expressionInfo = element.kvExpressionInfo ?: return
+		val expressionInfo = element.expressionInfo ?: return
 		when(expressionInfo.type) {
 			ParadoxKvExpressionType.LiteralType -> {
 				val attributesKey = when {

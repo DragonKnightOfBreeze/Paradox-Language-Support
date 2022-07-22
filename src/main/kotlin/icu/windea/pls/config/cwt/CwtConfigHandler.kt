@@ -9,7 +9,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.ProcessEntry.end
-import icu.windea.pls.annotation.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
@@ -78,7 +78,9 @@ object CwtConfigHandler {
 		if(definition !is ParadoxScriptProperty) return false
 		val definitionInfo = definition.definitionInfo ?: return false
 		val definitionType = definitionInfo.type
-		return definitionType == "scripted_effect" || definitionType == "scripted_trigger"
+		return definitionType.let {
+			it == "scripted_effect" || it == "scripted_trigger" || it == "scripted_modifier" || it == "script_value"
+		}
 	}
 	
 	//effect, effect_clause -> scripted_effect
@@ -87,7 +89,7 @@ object CwtConfigHandler {
 	
 	fun supportsScopes(aliasName: String?): Boolean {
 		if(aliasName == null) return false
-		return aliasName == "effect" || aliasName == "trigger" || aliasName == "modifier_rule"
+		return aliasName.let { it == "effect" || it == "trigger" || it == "modifier_rule" }
 	}
 	
 	fun supportsScopes(propertyConfig: CwtKvConfig<*>): Boolean {
@@ -105,9 +107,9 @@ object CwtConfigHandler {
 			?: propertyConfig.keyExpression.takeIf { it.type == CwtDataTypes.AliasName }?.value
 			?: propertyConfig.valueExpression.takeIf { it.type == CwtDataTypes.SingleAliasRight }?.also { isAlias = false }?.value
 		return if(isAlias) {
-			aliasName == "effect" || aliasName == "trigger" || aliasName == "modifier_rule"
+			aliasName.let { it == "effect" || it == "trigger" || it == "modifier_rule" }
 		} else {
-			aliasName == "effect_clause" || aliasName == "trigger_clause"
+			aliasName.let{  it == "effect_clause" || it == "trigger_clause" }
 		}
 	}
 	
@@ -391,7 +393,7 @@ object CwtConfigHandler {
 				if(!valueType.matchesStringType()) return false
 				val typeExpression = expression.value ?: return false
 				val selector = definitionSelector().gameType(configGroup.gameType)
-				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true ,selector = selector) != null
+				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
 			}
 			CwtDataTypes.Value -> {
 				val valueName = expression.value ?: return false
@@ -792,7 +794,7 @@ object CwtConfigHandler {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
 				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
-				processLocalisationVariants(keyword, configGroup.project,selector = selector) { localisation ->
+				processLocalisationVariants(keyword, configGroup.project, selector = selector) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
 					val typeFile = localisation.containingFile

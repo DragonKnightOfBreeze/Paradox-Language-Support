@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
-import icu.windea.pls.annotation.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.model.*

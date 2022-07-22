@@ -1,12 +1,12 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.*
-import icu.windea.pls.annotation.*
+import icu.windea.pls.annotations.*
 import java.text.*
 
 /**
  * 值的类型。
- * @see icu.windea.pls.script.psi.ParadoxScriptPsiExpression
+ * @see icu.windea.pls.script.psi.ParadoxScriptTypedElement
  */
 enum class ParadoxValueType(
 	override val id: String,

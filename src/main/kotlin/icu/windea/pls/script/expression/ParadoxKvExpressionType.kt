@@ -1,4 +1,4 @@
-package icu.windea.pls.model
+package icu.windea.pls.script.expression
 
 /**
  * 脚本文件中keyExpression或valueExpression的类型。

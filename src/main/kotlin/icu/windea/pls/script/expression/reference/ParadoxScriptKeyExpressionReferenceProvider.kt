@@ -1,9 +1,9 @@
-package icu.windea.pls.script.reference
+package icu.windea.pls.script.expression.reference
 
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
 
@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.impl.*
 class ParadoxScriptKeyExpressionReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
 		if(element !is ParadoxScriptPropertyKey) return PsiReference.EMPTY_ARRAY
-		val expressionInfo = element.kvExpressionInfo ?: return PsiReference.EMPTY_ARRAY
+		val expressionInfo = element.expressionInfo ?: return PsiReference.EMPTY_ARRAY
 		return when(expressionInfo.type){
 			ParadoxKvExpressionType.LiteralType -> arrayOf(ParadoxScriptKeyReference(element, expressionInfo.wholeRange))
 			ParadoxKvExpressionType.ParameterType -> PsiReference.EMPTY_ARRAY

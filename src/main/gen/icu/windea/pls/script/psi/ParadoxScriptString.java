@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiLiteralValue;
-import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.psi.PsiElement;
+import icu.windea.pls.script.expression.ParadoxScriptExpression;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.model.ParadoxValueType;
-import icu.windea.pls.script.reference.ParadoxScriptValueReference;
+import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
 
-public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue, ContributedReferenceHost {
-
+public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpression {
   @Nullable
   ParadoxScriptParameter getParameter();
 

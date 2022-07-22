@@ -1,4 +1,4 @@
-package icu.windea.pls.model
+package icu.windea.pls.script.expression
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.script.psi.*

@@ -4,7 +4,7 @@ import com.intellij.openapi.paths.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
 import com.intellij.xml.util.*
-import icu.windea.pls.annotation.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.reference.*
 import icu.windea.pls.model.*

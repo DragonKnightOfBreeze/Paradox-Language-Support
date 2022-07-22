@@ -2,12 +2,12 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.lang.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -41,24 +41,8 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	override val originalPathName: String
 		get() = _originalPathName ?: super.originalPathName.also { _originalPathName = it }
 	
-	internal fun getParameterNames(): Set<String>? {
-		return _parameterNames ?: doGetParameterNames().also { _parameterNames = it }
-	}
-	
-	private fun doGetParameterNames(): Set<String>? {
-		if(!CwtConfigHandler.supportsParameters(this)) return null
-		val result = sortedSetOf<String>() //按名字进行排序
-		acceptChildren(object : PsiRecursiveElementVisitor() {
-			override fun visitElement(element: PsiElement) {
-				if(element is IParadoxScriptParameter) {
-					result.add(element.name)
-					return
-				}
-				super.visitElement(element)
-			}
-		})
-		return result
-	}
+	override val parameterNames: Set<String>?
+		get() = _parameterNames ?: super.parameterNames.also { _parameterNames = it }
 	
 	override fun subtreeChanged() {
 		_name = null
@@ -67,15 +51,11 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_pathName = null
 		_originalPathName = null
 		_parameterNames = null
-		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) }
+		clearDefinitionElementInfo() //清除其中的定义元素信息
+		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) } //清除基于定义结构的配置信息
 		super.subtreeChanged()
 	}
 }
-
-/**
- * 得到特定定义声明（scripted_effect/scripted_trigger）中所有被引用的参数的名字。
- */
-val ParadoxDefinitionProperty.parameterNames: Set<String>? get() = if(this is SmartParadoxScriptProperty) this.getParameterNames() else null
 //endregion
 
 //region ParadoxScriptPropertyKey
@@ -84,7 +64,7 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxValueType? = null
-	@Volatile private var _kvExpressionInfo: ParadoxKvExpressionInfo? = null
+	@Volatile private var _expressionInfo: ParadoxKvExpressionInfo? = null
 	
 	override fun getValue(): String {
 		return _value ?: super.getValue().also { _value = it }
@@ -93,11 +73,11 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	override val valueType: ParadoxValueType
 		get() = _valueType ?: super.valueType.also { _valueType = it }
 	
-	internal fun getKvExpressionInfo(): ParadoxKvExpressionInfo {
-		return _kvExpressionInfo ?: doGetKvExpressionInfo().also { _kvExpressionInfo = it }
+	internal fun getExpressionInfo(): ParadoxKvExpressionInfo {
+		return _expressionInfo ?: doGetExpressionInfo().also { _expressionInfo = it }
 	}
 	
-	private fun doGetKvExpressionInfo(): ParadoxKvExpressionInfo {
+	private fun doGetExpressionInfo(): ParadoxKvExpressionInfo {
 		val children = children
 		if(children.isNotEmpty()) {
 			when(children.first().elementType) {
@@ -140,12 +120,12 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	override fun subtreeChanged() {
 		_value = null
 		_valueType = null
-		_kvExpressionInfo = null
+		_expressionInfo = null
 		super.subtreeChanged()
 	}
 }
 
-val ParadoxScriptPropertyKey.kvExpressionInfo: ParadoxKvExpressionInfo? get() = if(this is SmartParadoxScriptPropertyKey) this.getKvExpressionInfo() else null
+val ParadoxScriptPropertyKey.expressionInfo: ParadoxKvExpressionInfo? get() = if(this is SmartParadoxScriptPropertyKey) this.getExpressionInfo() else null
 //endregion
 
 //region ParadoxScriptString
@@ -154,7 +134,7 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxValueType? = null
-	@Volatile private var _kvExpressionInfo: ParadoxKvExpressionInfo? = null
+	@Volatile private var _expressionInfo: ParadoxKvExpressionInfo? = null
 	
 	override fun getValue(): String {
 		return _value ?: super.getValue().also { _value = it }
@@ -163,8 +143,8 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	override val valueType: ParadoxValueType
 		get() = _valueType ?: super.valueType.also { _valueType = it }
 	
-	internal fun getKvExpressionInfo(): ParadoxKvExpressionInfo {
-		return _kvExpressionInfo ?: doGetKvExpressionInfo().also { _kvExpressionInfo = it }
+	internal fun getExpressionInfo(): ParadoxKvExpressionInfo {
+		return _expressionInfo ?: doGetKvExpressionInfo().also { _expressionInfo = it }
 	}
 	
 	private fun doGetKvExpressionInfo(): ParadoxKvExpressionInfo {
@@ -211,10 +191,10 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	override fun subtreeChanged() {
 		_value = null
 		_valueType = null
-		_kvExpressionInfo = null
+		_expressionInfo = null
 		super.subtreeChanged()
 	}
 }
 
-val ParadoxScriptString.kvExpressionInfo: ParadoxKvExpressionInfo? get() = if(this is SmartParadoxScriptString) this.getKvExpressionInfo() else null
+val ParadoxScriptString.expressionInfo: ParadoxKvExpressionInfo? get() = if(this is SmartParadoxScriptString) this.getExpressionInfo() else null
 //endregion

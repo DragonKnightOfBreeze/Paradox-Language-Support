@@ -8,7 +8,7 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
-import icu.windea.pls.annotation.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.quickfix.*

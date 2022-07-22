@@ -5,7 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.script.psi.*
 
-//region tag
+//region Tag
 fun ParadoxScriptString.resolveTagConfig(): CwtTagConfig? {
 	val tagConfigs = resolveTagConfigs() ?: return null
 	return doResolveTagConfig(tagConfigs)

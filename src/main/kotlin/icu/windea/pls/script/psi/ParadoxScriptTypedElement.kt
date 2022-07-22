@@ -9,7 +9,7 @@ import icu.windea.pls.model.*
  * @property valueType 值的类型。基于PSI元素的类型。
  * @see icu.windea.pls.model.ParadoxValueType
  */
-interface ParadoxScriptPsiExpression : PsiElement {
+interface ParadoxScriptTypedElement : PsiElement {
 	val definitionType: String? get() = null
 	val configExpression: String? get() = null
 	val valueType: ParadoxValueType? get() = null

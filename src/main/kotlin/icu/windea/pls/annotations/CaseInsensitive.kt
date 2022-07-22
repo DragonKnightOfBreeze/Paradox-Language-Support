@@ -1,4 +1,4 @@
-package icu.windea.pls.annotation
+package icu.windea.pls.annotations
 
 /**
  * 注明此字符串类型大小写不敏感。

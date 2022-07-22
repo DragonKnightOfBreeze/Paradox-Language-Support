@@ -2,7 +2,7 @@ package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
-import icu.windea.pls.annotation.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.script.psi.*
 
 //TODO 0.7
