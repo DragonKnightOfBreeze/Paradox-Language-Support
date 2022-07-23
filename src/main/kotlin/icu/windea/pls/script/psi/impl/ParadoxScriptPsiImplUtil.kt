@@ -144,7 +144,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptParameter): String {
-		return PlsFolders.parameterFolder
+		return element.text
 	}
 	
 	@JvmStatic

@@ -190,6 +190,7 @@ private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionEl
 	//icu.windea.pls.script.psi.ParadoxScriptPsiExtensionsKt.clearDefinitionElementInfo
 	//必须是脚本语言的PsiElement
 	if(element.language != ParadoxScriptLanguage) return null
+	if(element.parent == null) return null //防止意外
 	//return resolveDefinitionElementInfo(element)
 	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
 		val value = resolveDefinitionElementInfo(element)

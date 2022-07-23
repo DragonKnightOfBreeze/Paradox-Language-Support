@@ -6,6 +6,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
@@ -700,8 +701,9 @@ object CwtConfigHandler {
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return
 				//提示参数名（仅限key）
-				if(enumName == paramsEnumName && context is ParadoxScriptProperty) {
-					completeParameters(context, config, quoted, configGroup, result)
+				if(enumName == paramsEnumName) {
+					val propertyElement = context.findParentDefinitionProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
+					completeParameters(propertyElement, config, quoted, configGroup, result)
 					return
 				}
 				val enumConfig = configGroup.enums[enumName] ?: return
@@ -1105,11 +1107,13 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	private fun completeParameters(propertyElement: ParadoxScriptProperty, propConfig: CwtPropertyConfig, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	private fun completeParameters(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
 		if(quoted) return //输入参数不允许用引号括起
 		val definitionName = propertyElement.name
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(propertyElement)
-		val definitionType = propConfig.parent?.castOrNull<CwtPropertyConfig>()?.keyExpression?.value ?: return //不期望的结果
+		val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
+			?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
+			?.takeIf { it.type == CwtDataTypes.TypeExpression } ?.value ?: return //不期望的结果
 		val definition = findDefinitionByType(definitionName, definitionType, configGroup.project, selector = selector) ?: return
 		val parameterMap = definition.parameterMap
 		if(parameterMap.isEmpty()) return
@@ -1124,6 +1128,7 @@ object CwtConfigHandler {
 				.withExpectedIcon(PlsIcons.Parameter)
 				.withTailText(tailText)
 				.withTypeText(definitionName, definition.icon, true)
+				.withExpectedInsertHandler(isKey = true)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
@@ -1242,12 +1247,13 @@ object CwtConfigHandler {
 				val name = keyElement.value
 				//解析为参数名
 				if(enumName == paramsEnumName) {
-					val definitionName = keyElement.parent?.castOrNull<ParadoxScriptProperty>()?.name ?: return null
-					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()?.keyExpression
-						?.extraValue?.castOrNull<String>()?.let { it.substring(1, it.length -1) } ?: return null
+					val definitionName = keyElement.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return null
+					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
+						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
+						?.takeIf { it.type == CwtDataTypes.TypeExpression } ?.value ?: return null
 					val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
 					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
-					return definitions.firstNotNullOf { it.parameterMap[name]?.firstOrNull()?.element }
+					return definitions.firstNotNullOfOrNull { it.parameterMap[name]?.firstOrNull()?.element }
 				}
 				val gameType = keyElement.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
@@ -1348,9 +1354,10 @@ object CwtConfigHandler {
 				val name = keyElement.value
 				//解析为参数名
 				if(enumName == paramsEnumName) {
-					val definitionName = keyElement.parent?.castOrNull<ParadoxScriptProperty>()?.name ?: return emptyList()
-					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()?.keyExpression
-						?.extraValue?.castOrNull<String>()?.let { it.substring(1, it.length -1) } ?: return emptyList()
+					val definitionName = keyElement.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return emptyList()
+					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
+						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
+						?.takeIf { it.type == CwtDataTypes.TypeExpression } ?.value ?: return emptyList()
 					val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
 					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
 					return definitions.flatMap { it.parameterMap[name].orEmpty() }.mapNotNull { it.element }

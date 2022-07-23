@@ -48,7 +48,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(propertyConfig != null) annotateKeyExpression(element, holder, propertyConfig)
 		
 		//是定义元素，非定义自身，且是简单的keyExpression
-		if(propertyConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) annotateUnresolvedKeyExpression(element, holder)
+		if(propertyConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) {
+			annotateUnresolvedKeyExpression(element, holder)
+		}
 	}
 	
 	private fun annotateKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, propertyConfig: CwtPropertyConfig) {
@@ -127,7 +129,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(valueConfig != null) annotateValueExpression(element, holder, valueConfig)
 		
 		//是定义元素，非定义自身，且是简单的valueExpression
-		if(valueConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) annotateUnresolvedValueExpression(element, holder)
+		if(valueConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) {
+			annotateUnresolvedValueExpression(element, holder)
+		}
 	}
 	
 	private fun annotateValueExpression(element: ParadoxScriptString, holder: AnnotationHolder, valueConfig: CwtValueConfig) {

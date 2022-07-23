@@ -64,9 +64,12 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			properties = other.properties,
-			values = other.values
+			properties = other.deepCopyProperties(),
+			values = other.deepCopyValues()
 		)
+		inlined.parent = parent
+		inlined.properties?.forEach { it.parent = inlined }
+		inlined.values?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = singleAliasConfig
 		inlined.inlinedScopes = inlinedScopes
 		return inlined
@@ -85,9 +88,12 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			properties = other.properties,
-			values = other.values
+			properties = other.deepCopyProperties(),
+			values = other.deepCopyValues()
 		)
+		inlined.parent = parent
+		inlined.properties?.forEach { it.parent = inlined }
+		inlined.values?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = aliasConfig
 		inlined.inlinedScopes = inlinedScopes
 		return inlined

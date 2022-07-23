@@ -67,10 +67,10 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	//深拷贝
 	
 	fun deepCopyProperties(): List<CwtPropertyConfig>? {
-		return properties?.map { p -> p.copy(properties = deepCopyProperties(), values = deepCopyValues()).also { it.parent = this } }
+		return properties?.map { p -> p.copy(properties = p.deepCopyProperties(), values = p.deepCopyValues()).also { it.parent = this } }
 	}
 	
 	fun deepCopyValues(): List<CwtValueConfig>? {
-		return values?.map { v -> v.copy(properties = deepCopyProperties(), values = deepCopyValues()).also { it.parent = this } }
+		return values?.map { v -> v.copy(properties = v.deepCopyProperties(), values = v.deepCopyValues()).also { it.parent = this } }
 	}
 }
