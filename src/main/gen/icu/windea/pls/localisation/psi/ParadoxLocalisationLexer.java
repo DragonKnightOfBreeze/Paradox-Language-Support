@@ -944,7 +944,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
  	    }
  	    i--;
     }
-    return TokenType.BAD_CHARACTER; //不应该出现
+    return TokenType.BAD_CHARACTER; //不期望的结果
             } 
             // fall through
           case 100: break;

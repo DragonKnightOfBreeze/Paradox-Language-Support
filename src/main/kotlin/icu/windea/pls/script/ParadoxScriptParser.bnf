@@ -60,7 +60,7 @@ property ::= property_key property_separator property_value {
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock 
-    getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterNames]
+    getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterMap]
 }
 property_key ::= key_expr {
   implements=[

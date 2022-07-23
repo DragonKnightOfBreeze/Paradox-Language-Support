@@ -3,7 +3,6 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -56,10 +55,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionInfo(element, definitionInfo)
-		val propertyConfig = element.getPropertyConfig()
-		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)) {
-			return getInputParameterInfo(element)
-		}
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)
@@ -108,10 +103,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo)
-		val propertyConfig = element.getPropertyConfig()
-		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)) {
-			return getInputParameterInfo(element)
-		}
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)

@@ -36,7 +36,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
-			buildPropertyDefinition(element, originalElement, name, configType)
+			buildPropertyDefinition(element, originalElement, name, configType, false)
 		}
 	}
 	
@@ -44,7 +44,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
-			buildStringDefinition(element, originalElement, name, configType)
+			buildStringDefinition(element, originalElement, name, configType, false)
 		}
 	}
 	
@@ -61,7 +61,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			buildPropertyDefinition(element, originalElement, name, configType)
+			buildPropertyDefinition(element, originalElement, name, configType, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
 			buildSupportedScopesContent(element, originalElement, name, configType, project)
@@ -73,13 +73,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			buildStringDefinition(element, originalElement, name, configType)
+			buildStringDefinition(element, originalElement, name, configType, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
 		}
 	}
 	
-	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?) {
+	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail:Boolean) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text)
@@ -93,7 +93,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(!name.equals(originalName, true)) {
+				if(showDetail && !name.equals(originalName, true)) {
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}
@@ -159,7 +159,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?) {
+	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail: Boolean) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
@@ -173,7 +173,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(!name.equals(originalName, true)) {
+				if(showDetail && !name.equals(originalName, true)) {
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}

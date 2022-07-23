@@ -24,7 +24,7 @@ import icu.windea.pls.localisation.psi.*
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-		if(file !is ParadoxLocalisationFile) return null //不应该出现
+		if(file !is ParadoxLocalisationFile) return null //不期望的结果
 		val virtualFile = file.virtualFile ?: return null
 		val charset = virtualFile.charset
 		val hasBom = virtualFile.hasBom(utf8Bom)

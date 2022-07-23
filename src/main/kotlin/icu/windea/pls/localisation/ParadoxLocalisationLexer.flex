@@ -158,7 +158,7 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
  	    }
  	    i--;
     }
-    return TokenType.BAD_CHARACTER; //不应该出现
+    return TokenType.BAD_CHARACTER; //不期望的结果
   }
   //{LOCALE_ID} {yybegin(WAITING_LOCALE_COLON); return LOCALE_ID; }
   {PROPERTY_KEY_ID} {yybegin(WAITING_PROPERTY_COLON); return PROPERTY_KEY_ID; }

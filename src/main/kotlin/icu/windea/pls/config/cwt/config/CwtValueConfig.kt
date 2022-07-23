@@ -23,7 +23,7 @@ data class CwtValueConfig(
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
-	val valueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
+	val valueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 	
 	override val resolved: CwtValueConfig get() = this
 }

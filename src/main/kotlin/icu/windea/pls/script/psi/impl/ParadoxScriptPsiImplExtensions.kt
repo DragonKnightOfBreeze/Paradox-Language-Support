@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.lang.*
 import com.intellij.openapi.util.*
+import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -22,7 +23,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	@Volatile private var _valueType: ParadoxValueType? = null
 	@Volatile private var _pathName: String? = null
 	@Volatile private var _originalPathName: String? = null
-	@Volatile private var _parameterNames: Set<String>? = null
+	@Volatile private var _parameterMap: Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>>? = null
 	
 	override fun getName(): String {
 		return _name ?: super.getName().also { _name = it }
@@ -41,8 +42,8 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	override val originalPathName: String
 		get() = _originalPathName ?: super.originalPathName.also { _originalPathName = it }
 	
-	override val parameterNames: Set<String>?
-		get() = _parameterNames ?: super.parameterNames.also { _parameterNames = it }
+	override val parameterMap: Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>>?
+		get() = _parameterMap ?: super.parameterMap.also { _parameterMap = it }
 	
 	override fun subtreeChanged() {
 		_name = null
@@ -50,7 +51,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_valueType = null
 		_pathName = null
 		_originalPathName = null
-		_parameterNames = null
+		_parameterMap = null
 		clearDefinitionElementInfo() //清除其中的定义元素信息
 		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) } //清除基于定义结构的配置信息
 		super.subtreeChanged()

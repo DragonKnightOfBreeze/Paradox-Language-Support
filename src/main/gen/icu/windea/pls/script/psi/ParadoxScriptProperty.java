@@ -6,7 +6,9 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.SmartPsiElementPointer;
 import icu.windea.pls.model.ParadoxValueType;
+import java.util.Map;
 import java.util.Set;
 import javax.swing.Icon;
 
@@ -56,6 +58,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   String getOriginalPathName();
 
   @Nullable
-  Set<String> getParameterNames();
+  Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> getParameterMap();
 
 }

@@ -142,7 +142,7 @@ val PsiElement.localeConfig: ParadoxLocaleConfig?
 					current is ParadoxLocalisationFile -> return current.locale?.localeConfig
 					current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
 					current is ParadoxLocalisationLocale -> return current.localeConfig
-					current is PsiFile -> return preferredParadoxLocale() //不应该出现
+					current is PsiFile -> return preferredParadoxLocale() //不期望的结果
 				}
 				current = current.parent ?: break
 			}

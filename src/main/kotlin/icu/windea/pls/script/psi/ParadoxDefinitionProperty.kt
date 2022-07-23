@@ -27,9 +27,6 @@ interface ParadoxDefinitionProperty : PsiNamedElement, NavigatablePsiElement {
 			return buildList { block?.processValue(includeConditional = true) { add(it) } }
 		}
 	
-	/**
-	 * 得到特定定义声明（scripted_effect/scripted_trigger等）中所有被引用的参数的名字。
-	 */
-	val parameterNames: Set<String>? get() = null
+	val parameterMap: Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> get() = emptyMap()
 }
 

@@ -56,17 +56,22 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val expressionInfo = element.expressionInfo ?: return
 		when(expressionInfo.type) {
 			ParadoxKvExpressionType.LiteralType -> {
+				val expression = propertyConfig.keyExpression
 				val attributesKey = when {
-					CwtConfigHandler.isInputParameter(propertyConfig) -> Keys.INPUT_PARAMETER_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
+					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
+					expression.type == CwtDataTypes.Enum -> {
+						when{
+							expression.value == CwtConfigHandler.paramsEnumName -> Keys.INPUT_PARAMETER_KEY
+							else -> Keys.ENUM_VALUE_KEY 
+						}
+					}
+					expression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
 					else -> {
 						val resolved = element.reference?.resolve()
 						val configType = resolved?.let { CwtConfigType.resolve(it) }
@@ -130,19 +135,20 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val expressionInfo = element.expressionInfo ?: return
 		when(expressionInfo.type) {
 			ParadoxKvExpressionType.LiteralType -> {
+				val expression = valueConfig.valueExpression
 				val attributesKey = when {
-					valueConfig.valueExpression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
+					expression.type == CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
+					expression.type == CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
+					expression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
+					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
+					expression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
 					else -> {
 						val resolved = element.reference?.resolve()
 						val configType = resolved?.let { CwtConfigType.resolve(it) }

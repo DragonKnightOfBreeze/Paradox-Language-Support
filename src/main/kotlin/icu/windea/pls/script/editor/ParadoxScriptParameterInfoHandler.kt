@@ -4,14 +4,14 @@ import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.util.selector.*
 
 //com.intellij.codeInsight.hint.api.impls.XmlParameterInfoHandler
 
 /**
- * 显示`scripted_effect/scripted_trigger`等的参数信息。
+ * 显示定义的参数信息（如果支持）。
  */
 class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProperty, Set<String>> {
 	private fun findProperty(context: ParameterInfoContext): ParadoxScriptProperty? {
@@ -19,8 +19,8 @@ class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProp
 		val element = context.file.findElementAt(context.offset) ?: return null
 		return element.parents(true).filterIsInstance<ParadoxScriptProperty>().find {prop ->
 			prop.definitionElementInfo?.takeIf { it.isValid }?.propertyConfigs?.any { propConfig -> 
-				propConfig.properties?.any { 
-					CwtConfigHandler.isInputParameter(it)
+				propConfig.properties?.any {prop ->  
+					prop.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName }
 				} ?: false
 			} ?: false
 		}?.takeIf { result ->
@@ -32,10 +32,14 @@ class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProp
 	override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptProperty? {
 		val result = findProperty(context) ?: return null
 		val definitionName = result.name
+		val definitionType = result.getPropertyConfig()?.keyExpression?.value ?: return null
 		val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)
-		val definitions = findDefinitionsByType(definitionName, "scripted_effect|scripted_trigger", context.project, selector = selector)
-		val parameterNamesSet = definitions.mapTo(mutableSetOf()) { it.parameterNames }
-		if(parameterNamesSet.isEmpty() || parameterNamesSet.first().isNullOrEmpty()) return null
+		//合并所有可能的参数名
+		val definitions = findDefinitionsByType(definitionName, definitionType, context.project, selector = selector)
+		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition -> 
+			definition.parameterMap.keys.takeIf { it.isNotEmpty() } 
+		}
+		if(parameterNamesSet.isEmpty()) return null
 		context.itemsToShow = parameterNamesSet.toTypedArray()
 		return result
 	}

@@ -10,6 +10,7 @@ import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
 
 public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpression {
+
   @Nullable
   ParadoxScriptParameter getParameter();
 

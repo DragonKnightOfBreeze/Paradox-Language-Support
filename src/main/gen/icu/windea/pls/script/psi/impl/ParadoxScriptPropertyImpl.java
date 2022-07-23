@@ -11,7 +11,9 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.SmartPsiElementPointer;
 import icu.windea.pls.model.ParadoxValueType;
+import java.util.Map;
 import java.util.Set;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
@@ -126,8 +128,8 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
 
   @Override
   @Nullable
-  public Set<String> getParameterNames() {
-    return ParadoxScriptPsiImplUtil.getParameterNames(this);
+  public Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> getParameterMap() {
+    return ParadoxScriptPsiImplUtil.getParameterMap(this);
   }
 
 }

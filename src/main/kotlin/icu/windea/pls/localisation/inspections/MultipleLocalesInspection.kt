@@ -18,7 +18,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 	@JvmField var ignoredFileNames = "languages.yml"
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-		if(file !is ParadoxLocalisationFile) return null //不应该出现
+		if(file !is ParadoxLocalisationFile) return null //不期望的结果
 		if(file.name.matchesGlobFileName(ignoredFileNames, true)) return null //忽略
 		if(file.propertyLists.size <= 1) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)

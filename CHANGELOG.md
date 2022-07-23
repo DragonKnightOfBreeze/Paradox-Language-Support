@@ -93,11 +93,12 @@
   * [X] 支持的额外的CWT规则：`types.type[*].pictures`改为`types.type[*].images`
 * ［长期］完善CWT配置支持
   * [X] 支持解析scopeExpression（如`from.owner`）
-  * [ ] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
+  * [X] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
   * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
-  * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）（不解析）
+  * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
+  * [X] 优化：支持匹配、提示和解析参数，以及显示参数信息 （当可用时）
   * [ ] 编写`ParadoxScriptStringExpression`以及相关代码，用于处理各种特殊的键/值表达式（`root.owner` `event_target:xxx`等）
   * [ ] 支持匹配、提示和解析各种特殊的键/值表达式（`root.owner` `event_target:xxx`等）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）

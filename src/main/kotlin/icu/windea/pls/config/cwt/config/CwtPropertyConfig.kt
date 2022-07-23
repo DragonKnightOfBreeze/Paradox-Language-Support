@@ -29,8 +29,8 @@ data class CwtPropertyConfig(
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
-	val keyExpression: CwtKeyExpression by lazy { CwtKeyExpression.resolve(key) }
-	val valueExpression: CwtValueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
+	val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
+	val valueExpression: CwtValueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
 	
 	override val resolved: CwtPropertyConfig get() = inlineableConfig?.config ?: this
 	val keyResolved: CwtPropertyConfig get() = inlineableConfig?.castOrNull<CwtAliasConfig>()?.config ?: this

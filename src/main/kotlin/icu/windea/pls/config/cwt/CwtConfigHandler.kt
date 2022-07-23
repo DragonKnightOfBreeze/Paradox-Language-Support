@@ -6,9 +6,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.ProcessEntry.end
 import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -17,7 +15,6 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.util.selector.*
 import javax.swing.*
 import kotlin.text.removeSurrounding
@@ -28,9 +25,10 @@ import kotlin.text.removeSurrounding
  * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
  */
 object CwtConfigHandler {
-	private const val paramsEnumName = "scripted_effect_params"
+	const val paramsEnumName = "scripted_effect_params"
+	const val modifierAliasName = "modifier"
 	
-	//region Common Extensions
+	//region Misc Extensions
 	fun resolveAliasSubNameExpression(key: String, quoted: Boolean, aliasGroup: Map<@CaseInsensitive String, List<CwtAliasConfig>>, configGroup: CwtConfigGroup): String? {
 		if(aliasGroup.keys.contains(key) && CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) return key
 		return aliasGroup.keys.find {
@@ -57,10 +55,6 @@ object CwtConfigHandler {
 		return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
 	}
 	
-	fun isInputParameter(propertyConfig: CwtPropertyConfig): Boolean {
-		return propertyConfig.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == paramsEnumName }
-	}
-	
 	private fun matchScope(alias: String, otherAlias: String, configGroup: CwtConfigGroup): Boolean {
 		return alias == otherAlias || configGroup.scopeAliasMap[alias]?.aliases?.contains(otherAlias) ?: false
 	}
@@ -70,17 +64,6 @@ object CwtConfigHandler {
 		val mergedScopeMap = scopeMap.toMutableMap()
 		mergedScopeMap.put("this", thisScope)
 		return scopeMap
-	}
-	//endregion
-	
-	//region Supports Extensions
-	fun supportsParameters(definition: ParadoxDefinitionProperty): Boolean {
-		if(definition !is ParadoxScriptProperty) return false
-		val definitionInfo = definition.definitionInfo ?: return false
-		val definitionType = definitionInfo.type
-		return definitionType.let {
-			it == "scripted_effect" || it == "scripted_trigger" || it == "scripted_modifier" || it == "script_value"
-		}
 	}
 	
 	//effect, effect_clause -> scripted_effect
@@ -109,15 +92,8 @@ object CwtConfigHandler {
 		return if(isAlias) {
 			aliasName.let { it == "effect" || it == "trigger" || it == "modifier_rule" }
 		} else {
-			aliasName.let{  it == "effect_clause" || it == "trigger_clause" }
+			aliasName.let { it == "effect_clause" || it == "trigger_clause" }
 		}
-	}
-	
-	//modifier -> (prescripted) modifier
-	
-	fun supportsModifiers(aliasOrSingleAliasName: String?): Boolean {
-		if(aliasOrSingleAliasName == null) return false
-		return aliasOrSingleAliasName == "modifier"
 	}
 	//endregion
 	
@@ -285,7 +261,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return false
-				//如果keyExpression需要匹配参数名，即使对应的特定定义声明中不存在对应名字的参数，也总是匹配
+				//匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
 				if(enumName == paramsEnumName) return true
 				val enumValues = configGroup.enums[enumName]?.values ?: return false
 				return value in enumValues
@@ -483,7 +459,7 @@ object CwtConfigHandler {
 		}
 		
 		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(supportsModifiers(aliasName)) {
+		if(aliasName == modifierAliasName) {
 			if(matchesModifier(name, configGroup)) return true
 		}
 		
@@ -536,12 +512,6 @@ object CwtConfigHandler {
 		//否则加入所有可能的结果，让IDEA自动进行前缀匹配
 		for(propConfig in childPropertyConfigs) {
 			if(shouldComplete(propConfig, definitionElementInfo)) {
-				//如果可能正在输入参数名，则基于对应的特定定义声明中存在的参数名进行提示（排除已经输入完毕的，仅当补全key时特殊处理即可）
-				if(isInputParameter(propConfig)) {
-					completeParameters(propertyElement, quoted, configGroup, result)
-					continue
-				}
-				
 				completeKey(keyElement, propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
 			}
 		}
@@ -729,6 +699,11 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return
+				//提示参数名（仅限key）
+				if(enumName == paramsEnumName && context is ParadoxScriptProperty) {
+					completeParameters(context, config, quoted, configGroup, result)
+					return
+				}
 				val enumConfig = configGroup.enums[enumName] ?: return
 				val enumValueConfigs = enumConfig.valueConfigMap.values
 				if(enumValueConfigs.isEmpty()) return
@@ -1017,7 +992,7 @@ object CwtConfigHandler {
 			completeLink(configGroup, result)
 		}
 		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(supportsModifiers(aliasName)) {
+		if(aliasName == modifierAliasName) {
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 			val finalScope = config.parent?.scope ?: scope
 			completeModifier(quoted, configGroup, result, finalScope, isKey)
@@ -1130,21 +1105,22 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	private fun completeParameters(propertyElement: ParadoxDefinitionProperty, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
-		if(quoted || propertyElement !is ParadoxScriptProperty) return //输入参数不允许用引号括起
+	private fun completeParameters(propertyElement: ParadoxScriptProperty, propConfig: CwtPropertyConfig, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+		if(quoted) return //输入参数不允许用引号括起
 		val definitionName = propertyElement.name
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(propertyElement)
-		val definition = findDefinitionByType(definitionName, "scripted_effect|scripted_trigger", configGroup.project, selector = selector) ?: return
-		//得到所有存在的参数名并排除已经输入完毕的
-		val parameterNames = definition.parameterNames ?: return
-		if(parameterNames.isEmpty()) return
-		val parameterNamesToUse = SmartList(parameterNames)
-		propertyElement.block?.processProperty { parameterNamesToUse.remove(it.name).end() } //这里不需要关心正在输入的参数名
+		val definitionType = propConfig.parent?.castOrNull<CwtPropertyConfig>()?.keyExpression?.value ?: return //不期望的结果
+		val definition = findDefinitionByType(definitionName, definitionType, configGroup.project, selector = selector) ?: return
+		val parameterMap = definition.parameterMap
+		if(parameterMap.isEmpty()) return
+		val existParameterNames = mutableSetOf<String>()
+		propertyElement.block?.processProperty { existParameterNames.add(it.text) } //输入参数不允许用引号括起
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
-		for(parameterName in parameterNamesToUse) {
+		for((parameterName, parameters) in parameterMap) {
+			if(parameterName in existParameterNames || parameters.isEmpty()) continue //排除已输入的
 			val tailText = " from parameters"
-			val lookupElement = LookupElementBuilder.create(parameterName) //目前并不解析参数
+			val lookupElement = LookupElementBuilder.create(parameters.first(), parameterName)
 				.withExpectedIcon(PlsIcons.Parameter)
 				.withTailText(tailText)
 				.withTypeText(definitionName, definition.icon, true)
@@ -1153,15 +1129,15 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	val boolLookupElements = booleanValues.map { value ->
+	private val boolLookupElements = booleanValues.map { value ->
 		LookupElementBuilder.create(value).bold().withPriority(PlsPriorities.keywordPriority)
 	}
 	
 	private fun LookupElementBuilder.withExpectedIcon(icon: Icon, config: CwtConfig<*>? = null): LookupElementBuilder {
-		return withIcon(getExpectedIcon(config, icon))
+		return withIcon(getExpectedIcon(icon, config))
 	}
 	
-	private fun getExpectedIcon(config: CwtConfig<*>?, icon: Icon): Icon {
+	private fun getExpectedIcon(icon: Icon, config: CwtConfig<*>?): Icon {
 		if(config is CwtKvConfig<*>) {
 			val iconOption = config.options?.find { it.key == "icon" }?.value
 			if(iconOption != null) {
@@ -1263,9 +1239,16 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return null
-				//如果keyExpression需要匹配参数名，目前不进行解析
-				if(enumName == paramsEnumName) return null
 				val name = keyElement.value
+				//解析为参数名
+				if(enumName == paramsEnumName) {
+					val definitionName = keyElement.parent?.castOrNull<ParadoxScriptProperty>()?.name ?: return null
+					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()?.keyExpression
+						?.extraValue?.castOrNull<String>()?.let { it.substring(1, it.length -1) } ?: return null
+					val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
+					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
+					return definitions.firstNotNullOf { it.parameterMap[name]?.firstOrNull()?.element }
+				}
 				val gameType = keyElement.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
@@ -1362,9 +1345,16 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return emptyList()
-				//如果keyExpression需要匹配参数名，目前不进行解析
-				if(enumName == paramsEnumName) return emptyList()
 				val name = keyElement.value
+				//解析为参数名
+				if(enumName == paramsEnumName) {
+					val definitionName = keyElement.parent?.castOrNull<ParadoxScriptProperty>()?.name ?: return emptyList()
+					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()?.keyExpression
+						?.extraValue?.castOrNull<String>()?.let { it.substring(1, it.length -1) } ?: return emptyList()
+					val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
+					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
+					return definitions.flatMap { it.parameterMap[name].orEmpty() }.mapNotNull { it.element }
+				}
 				val gameType = keyElement.fileInfo?.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return emptyList()
@@ -1638,7 +1628,7 @@ object CwtConfigHandler {
 		}
 		
 		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(supportsModifiers(aliasName)) {
+		if(aliasName == modifierAliasName) {
 			val resolvedModifier = resolveModifier(name, configGroup)
 			if(resolvedModifier != null) return resolvedModifier
 		}

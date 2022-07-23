@@ -16,6 +16,7 @@ object CwtConfigResolver {
 		if(rootBlock.isEmpty) return CwtFileConfig.EmptyConfig
 		val properties = SmartList<CwtPropertyConfig>()
 		val values = SmartList<CwtValueConfig>()
+		val fileConfig = CwtFileConfig(file.createPointer(), properties, values)
 		rootBlock.processChild {
 			when {
 				it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
@@ -23,7 +24,7 @@ object CwtConfigResolver {
 				else -> end()
 			}
 		}
-		return CwtFileConfig(file.createPointer(), properties, values)
+		return fileConfig
 	}
 	
 	private fun resolveProperty(property: CwtProperty, file: CwtFile): CwtPropertyConfig? {

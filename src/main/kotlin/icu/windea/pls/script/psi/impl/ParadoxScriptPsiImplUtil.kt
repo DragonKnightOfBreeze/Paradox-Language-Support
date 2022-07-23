@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.reference.*
@@ -13,7 +12,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.reference.*
 import org.apache.commons.imaging.color.*
-import org.jetbrains.annotations.Unmodifiable
 import java.awt.*
 import javax.swing.*
 
@@ -238,13 +236,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getParameterNames(element: ParadoxScriptProperty): Set<String>? {
-		if(!CwtConfigHandler.supportsParameters(element)) return null
-		val result = sortedSetOf<String>() //按名字进行排序
+	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>>? {
+		val file = element.containingFile
+		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<IParadoxScriptParameter>>>() //按名字进行排序
 		element.acceptChildren(object : PsiRecursiveElementVisitor() {
 			override fun visitElement(e: PsiElement) {
 				if(e is IParadoxScriptParameter) {
-					result.add(e.name)
+					result.getOrPut(e.name) { mutableSetOf() }.add(e.createPointer(file))
 					return
 				}
 				super.visitElement(e)
