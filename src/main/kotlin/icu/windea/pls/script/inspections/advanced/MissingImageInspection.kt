@@ -43,7 +43,7 @@ class MissingImageInspection: LocalInspectionTool() {
 			if(imageInfos.isEmpty()) return
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			val nameToDistinct = mutableSetOf<String>()
-			val messages = mutableListOf<String>()
+			val nameMessageMap = mutableMapOf<String, String>()
 			for(info in imageInfos) {
 				if(nameToDistinct.contains(info.name)) continue
 				if(info.required || (info.primary && inspection.forPrimaryRelated) || (!info.primary && inspection.forOptionalRelated)) {
@@ -52,18 +52,19 @@ class MissingImageInspection: LocalInspectionTool() {
 						val (key, image) = resolved
 						if(image == null) {
 							//显示为WEAK_WARNING
-							messages.add(getMessage(info, key))
+							nameMessageMap.put(info.name, getMessage(info, key))
 						} else {
+							nameMessageMap.remove(info.name)
 							nameToDistinct.add(info.name)
 						}
 					} else {
-						messages.add(getMessageFromExpression(info))
+						nameMessageMap.put(info.name, getMessageFromExpression(info))
 					}
 				}
 			}
-			if(messages.isNotEmpty()) {
+			if(nameMessageMap.isNotEmpty()) {
 				//显示为WEAK_WARNING
-				holder.registerProblem(location, messages.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
+				holder.registerProblem(location, nameMessageMap.values.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
 					ImportGameOrModDirectoryFix(definition)
 				)
 			}

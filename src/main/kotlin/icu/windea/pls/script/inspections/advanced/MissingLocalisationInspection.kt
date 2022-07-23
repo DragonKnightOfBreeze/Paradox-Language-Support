@@ -65,7 +65,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			if(localeSet.isEmpty()) return
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			val nameToDistinct = mutableSetOf<String>()
-			val messages = mutableListOf<String>()
+			val nameMessageMap = mutableMapOf<String, String>()
 			for(info in localisationInfos) {
 				if(info.required || (info.primary && inspection.forPrimaryRelated) || (!info.primary && inspection.forOptionalRelated)) {
 					for(locale in localeSet) {
@@ -75,19 +75,20 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 						if(resolved != null) {
 							val (key, loc) = resolved
 							if(loc == null) {
-								messages.add(getMessage(info, key, locale))
+								nameMessageMap.put(info.name + "@" + locale, getMessage(info, key, locale))
 							} else {
+								nameMessageMap.remove(info.name + "@" + locale)
 								nameToDistinct.add(info.name + "@" + locale)
 							}
 						} else {
-							messages.add(getMessageFromExpression(info, locale))
+							nameMessageMap.put(info.name + "@" + locale, getMessageFromExpression(info, locale))
 						}
 					}
 				}
 			}
-			if(messages.isNotEmpty()) {
+			if(nameMessageMap.isNotEmpty()) {
 				//显示为WEAK_WARNING
-				holder.registerProblem(location, messages.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
+				holder.registerProblem(location, nameMessageMap.values.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
 					ImportGameOrModDirectoryFix(definition)
 				)
 			}
