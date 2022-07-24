@@ -4,7 +4,6 @@ import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -44,8 +43,6 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
-		val elementType = element.elementType ?: return false
-		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
 		if(element is ParadoxScriptPropertyKey) {
 			val resolved = CwtConfigHandler.resolveKey(element) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxLocalisationProperty) {

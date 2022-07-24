@@ -4,11 +4,9 @@ import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -28,8 +26,6 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
-		val elementType = element.elementType ?: return false
-		if(elementType == ParadoxScriptElementTypes.ROOT_BLOCK) return true
 		if(element is ParadoxScriptProperty) {
 			val definitionInfo = element.definitionInfo
 			if(definitionInfo != null) {

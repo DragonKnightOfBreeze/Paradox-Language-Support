@@ -26,7 +26,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
+			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement)
 			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
 			is IParadoxScriptInputParameter -> getInputParameterInfo(element)
 			is IParadoxScriptParameter -> {
@@ -41,7 +41,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val config = element.getConfig()
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetInfo(element, config)
-					else -> null
+					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
 				}
 			}
 			else -> null
@@ -92,7 +92,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
+			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement)
 			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
 			is IParadoxScriptInputParameter -> getInputParameterDoc(element)
 			is IParadoxScriptParameter -> {
@@ -107,7 +107,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val config = element.getConfig()
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetDoc(element, config)
-					else -> null
+					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
 				}
 			}
 			else -> null
@@ -328,9 +328,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上分组信息
 			val valueSetName = config.expression.value
 			if(valueSetName != null && valueSetName.isNotEmpty()) {
-				grayed {
-					append(" in ").append(valueSetName.escapeXmlOrAnonymous())
-				}
+				append(": ").append(valueSetName)
 			}
 		}
 	}

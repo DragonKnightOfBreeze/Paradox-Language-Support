@@ -84,6 +84,11 @@
         id="ParadoxLocalisationReferenceInfoHintsProvider"
         order="after ParadoxDefinitionReferenceLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_SCRIPT"
+        id="ParadoxValueInValueSetInfoHintsProvider"
+        order="last"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueInValueSetInfoHintsProvider"/>
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>

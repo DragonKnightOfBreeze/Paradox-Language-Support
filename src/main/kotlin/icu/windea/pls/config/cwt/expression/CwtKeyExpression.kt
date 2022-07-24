@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
 import icu.windea.pls.config.cwt.expression.CwtKvExpressionPriorities as Priorities
 
@@ -17,11 +18,11 @@ class CwtKeyExpression private constructor(
 	override val extraValue: Any? = null
 ) : AbstractExpression(expressionString), CwtKvExpression {
 	companion object Resolver : CachedExpressionResolver<CwtKeyExpression>() {
-		val EmptyExpression = CwtKeyExpression("", Types.Constant, Priorities.constantPriority, "")
+		val EmptyStringExpression = CwtKeyExpression("", Types.Constant,Priorities.constantPriority, "")
 		
 		override fun doResolve(expressionString: String): CwtKeyExpression {
 			return when {
-				expressionString.isEmpty() -> EmptyExpression
+				expressionString.isEmpty() -> EmptyStringExpression
 				expressionString == "any" -> {
 					CwtKeyExpression(expressionString, Types.Any, Priorities.fallbackPriority)
 				}
@@ -62,7 +63,8 @@ class CwtKeyExpression private constructor(
 				}
 				expressionString.surroundsWith("enum[", "]") -> {
 					val value = expressionString.substring(5, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.Enum, Priorities.enumPriority, value)
+					val priority = if(value == CwtConfigHandler.paramsEnumName) Priorities.parametersPriority else Priorities.enumPriority
+					CwtKeyExpression(expressionString, Types.Enum, priority, value)
 				}
 				expressionString.surroundsWith("complex_enum[", "]") -> {
 					val value = expressionString.substring(13, expressionString.length - 1)

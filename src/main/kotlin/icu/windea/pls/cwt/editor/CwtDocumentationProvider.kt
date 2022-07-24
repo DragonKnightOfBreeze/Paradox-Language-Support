@@ -80,17 +80,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail:Boolean) {
+	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail: Boolean) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text)
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
-				if(configType?.hasType == true){
+				//加上类型信息
+				if(configType?.hasType == true) {
 					val typeName = element.parentOfType<CwtProperty>()?.name
 					if(typeName != null && typeName.isNotEmpty()) {
-						grayed {
-							append(" in ").append(typeName.escapeXmlOrAnonymous())
-						}
+						append(": ").append(typeName)
 					}
 				}
 			} else {
@@ -173,12 +172,11 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
-				if(configType?.hasType == true){
+				//加上类型信息
+				if(configType?.hasType == true) {
 					val typeName = element.parentOfType<CwtProperty>()?.name
 					if(typeName != null && typeName.isNotEmpty()) {
-						grayed {
-							append(" in ").append(typeName.escapeXmlOrAnonymous())
-						}
+						append(": ").append(typeName)
 					}
 				}
 			} else {

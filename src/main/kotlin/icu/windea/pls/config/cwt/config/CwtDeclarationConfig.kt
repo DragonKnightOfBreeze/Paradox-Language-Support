@@ -105,7 +105,7 @@ data class CwtDeclarationConfig(
 					if(result is MutableList) result.sortByDescending { it.expression.priority }
 					result
 				}
-			}.sortedByDescending { it.expression.priority } //需要按照优先级重新排序
+			}
 		}
 	}
 	

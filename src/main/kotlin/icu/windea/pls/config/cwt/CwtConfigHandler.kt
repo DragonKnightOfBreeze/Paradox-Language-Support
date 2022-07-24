@@ -325,6 +325,9 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
+		//当valueElement是scriptBlock时，expression必须是emptyExpression
+		if(valueElement is IParadoxScriptBlock) return expression == CwtValueExpression.EmptyExpression
+		
 		return matchesValue(expression, valueElement.value, valueElement.valueType, valueElement.isQuoted(), configGroup)
 	}
 	

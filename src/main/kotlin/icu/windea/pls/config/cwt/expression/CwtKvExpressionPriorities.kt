@@ -18,6 +18,7 @@ object CwtKvExpressionPriorities {
 	const val syncedLocalisationReferencePriority = 70
 	const val complexEnumPriority = 60
 	const val valuePriority = 50
+	const val parametersPriority = 1
 	const val scalarPriority = 0
 	const val fallbackPriority = -1
 }
