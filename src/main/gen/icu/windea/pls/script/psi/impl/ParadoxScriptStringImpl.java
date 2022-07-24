@@ -36,9 +36,9 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
   }
 
   @Override
-  @Nullable
-  public ParadoxScriptParameter getParameter() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameter.class);
+  @NotNull
+  public List<ParadoxScriptParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
   }
 
   @Override
@@ -51,6 +51,12 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
   @NotNull
   public ParadoxScriptString setValue(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setValue(this, name);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNameIdentifier() {
+    return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override

@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.psi.*
 
 data class CwtDeclarationConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -48,7 +49,9 @@ data class CwtDeclarationConfig(
 	 * 根据路径解析对应的属性/值配置列表。
 	 */
 	fun resolveConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtKvConfig<*>> {
-		//TODO path可以对应property或者value
+		//如果路径中可能待遇参数，则不进行解析
+		if(path.isNotEmpty() && path.any { it.isParameterAwareExpression() }) return emptyList()
+		
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return configsCache.getOrPut(cacheKey) {
 			when {
@@ -65,11 +68,6 @@ data class CwtDeclarationConfig(
 						
 						//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要跳过当前的key
 						//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
-						//如果key中含有参数，则直接跳过当前key （TODO 一般用于表示scope，也许有例外情况，这时考虑同时打平propertyConfigs和valueConfigs）
-						if(!isQuoted && key.indicesOf('$').size >= 2) {
-							index = nextIndex
-							continue
-						}
 						
 						val nextResult = SmartList<CwtKvConfig<*>>()
 						for(config in result) {
@@ -166,6 +164,9 @@ data class CwtDeclarationConfig(
 	 * 根据路径解析对应的子属性配置列表。（过滤重复的）
 	 */
 	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
+		//如果路径中可能待遇参数，则不进行解析
+		if(path.isNotEmpty() && path.any { it.isParameterAwareExpression() }) return emptyList()
+		
 		//parentPath可以对应property或者value
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return childPropertyConfigsCache.getOrPut(cacheKey) {
@@ -190,6 +191,9 @@ data class CwtDeclarationConfig(
 	 * 根据路径解析对应的子值配置列表。（过滤重复的）
 	 */
 	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtValueConfig> {
+		//如果路径中可能待遇参数，则不进行解析
+		if(path.isNotEmpty() && path.any { it.isParameterAwareExpression() }) return emptyList()
+		
 		//parentPath可以对应property或者value
 		val cacheKey = "${subtypes.joinToString(",")}$path"
 		return childValueConfigsCache.getOrPut(cacheKey) {

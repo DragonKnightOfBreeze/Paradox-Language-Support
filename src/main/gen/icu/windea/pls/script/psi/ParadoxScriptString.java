@@ -11,14 +11,17 @@ import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
 
 public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpression, StubBasedPsiElement<ParadoxScriptValueStub> {
 
-  @Nullable
-  ParadoxScriptParameter getParameter();
+  @NotNull
+  List<ParadoxScriptParameter> getParameterList();
 
   @NotNull
   String getValue();
 
   @NotNull
   ParadoxScriptString setValue(@NotNull String name);
+
+  @Nullable
+  PsiElement getNameIdentifier();
 
   @Nullable
   ParadoxScriptValueReference getReference();

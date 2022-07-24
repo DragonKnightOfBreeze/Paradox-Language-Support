@@ -61,14 +61,14 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDepth getBlock 
+  methods=[getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterMap]
 }
 property_key ::= key_expr {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
   ] 
-  methods=[getValue setValue getReference getReferences getConfigExpression getValueType]
+  methods=[getValue setValue getNameIdentifier getReference getReferences getConfigExpression getValueType]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value {
@@ -111,7 +111,7 @@ string ::= value_expr {
     "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpression"
   ]
-  methods=[getValue setValue getReference getReferences getStringValue getValueType getConfigExpression]
+  methods=[getValue setValue getNameIdentifier getReference getReferences getStringValue getValueType getConfigExpression]
 }
 color ::= COLOR_TOKEN {
   implements=[
@@ -135,22 +135,13 @@ private block_item ::= COMMENT | property | value | parameter_condition | variab
 //key & value expressions
 
 //key expressions  (various situations)
-private key_expr ::= key_parameter_expr | key_string_template_expr | key_literal_expr
-private key_parameter_expr ::= parameter
-private key_string_template_expr ::= key_string_template_entry + 
-private key_string_template_entry ::= parameter | KEY_STRING_SNIPPET 
+private key_expr ::= key_parameter_aware_expr | key_literal_expr
+private key_parameter_aware_expr ::= (parameter | KEY_STRING_SNIPPET) +
 private key_literal_expr ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
-//private key_link_expr ::= link_expression //resolve to key_literal_expr
-//private key_link_value_expr ::= link_value_expression //resolve to key_literal_expr
 
 //value expressions (various situations)
-private value_expr ::= value_parameter_expr | value_string_template_expr | value_literal_expr
-//private value_expr ::= value_string_template_expr | value_parameter_expr | value_link_expr | value_link_value_expr | value_string_expr
-private value_parameter_expr ::= parameter
-private value_string_template_expr ::= value_string_template_entry +
-private value_string_template_entry ::= parameter | VALUE_STRING_SNIPPET
-//private value_link_expr ::= link_expression //resolve to value_literal_expr
-//private value_link_value_expr ::= link_value_expression //resolve to value_literal_expr
+private value_expr ::= value_parameter_aware_expr | value_literal_expr
+private value_parameter_aware_expr ::= (parameter | VALUE_STRING_SNIPPET) +
 private value_literal_expr ::= STRING_TOKEN | QUOTED_STRING_TOKEN
 
 //advanced script syntax

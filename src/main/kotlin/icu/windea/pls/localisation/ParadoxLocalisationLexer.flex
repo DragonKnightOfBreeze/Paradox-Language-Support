@@ -78,8 +78,13 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
       else return nextStateForText();
     }
     
+	private boolean isPropertyReferenceStart(){
+		if(yylength() <= 1) return false;
+		return true;
+	}
+	
     private boolean isIconStart(){
-		  if(yylength() != 2) return false;
+		if(yylength() <= 1) return false;
 	    char c = yycharat(1);
 	    return isExactLetter(c) || isExactDigit(c) || c == '_';
     }
@@ -90,7 +95,7 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
     }
     
     private boolean isColorfulTextStart(){
-		  if(yylength() != 2) return false;
+		  if(yylength() <= 1) return false;
 	    return isExactLetter(yycharat(1));
     }
     
@@ -109,7 +114,7 @@ COMMENT=#[^\r\n]*
 END_OF_LINE_COMMENT=#[^\"\r\n]* //行尾注释不能包含双引号，否则会有解析冲突
 
 CHECK_LOCALE_ID=[a-z_]+:\s*[\r\n]
-CHECK_PROPERTY_REFERENCE_START=\${PROPERTY_REFERENCE_ID}
+CHECK_PROPERTY_REFERENCE_START=\$([a-zA-Z0-9_.\-']?|{CHECK_COMMAND_START})
 CHECK_ICON_START=£.?
 CHECK_COMMAND_START=\[[.a-zA-Z0-9_:@\s&&[^\r\n]]*.?
 CHECK_COLORFUL_TEXT_START=§.?
@@ -308,10 +313,16 @@ STRING_TOKEN=[^\"$£§\[\r\n\\]+ //双引号实际上不需要转义
 <WAITING_CHECK_PROPERTY_REFERENCE_START>{
   {CHECK_PROPERTY_REFERENCE_START} {
     //特殊处理
-    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID，则认为代表属性引用的开始
+    //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_ID或者command，则认为代表属性引用的开始
+    boolean isPropertyReferenceStart = isPropertyReferenceStart();
 	yypushback(yylength()-1);
-	yybegin(WAITING_PROPERTY_REFERENCE);
-    return PROPERTY_REFERENCE_START;
+	if(isPropertyReferenceStart){
+		yybegin(WAITING_PROPERTY_REFERENCE);
+        return PROPERTY_REFERENCE_START;
+	} else {
+        yybegin(nextStateForText());
+        return STRING_TOKEN;
+    }
   }
 }
 

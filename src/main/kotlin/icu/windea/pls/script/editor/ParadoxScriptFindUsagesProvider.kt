@@ -6,6 +6,7 @@ import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -36,6 +37,16 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.definition") else definitionInfo.name
 				} else {
 					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.property") else element.name
+				}
+			}
+			is ParadoxScriptExpression -> {
+				when(element.getConfig()?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
+						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.valueInValueSet") else element.name
+					}
+					else -> {
+						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.expression") else element.name
+					}
 				}
 			}
 			else -> null

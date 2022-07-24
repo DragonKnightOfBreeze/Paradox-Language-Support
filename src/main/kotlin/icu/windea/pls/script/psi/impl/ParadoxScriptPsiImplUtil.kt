@@ -46,7 +46,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getValueList(element: ParadoxScriptRootBlock): List<ParadoxScriptValue>{
+	fun getValueList(element: ParadoxScriptRootBlock): List<ParadoxScriptValue> {
 		return element.filterChildOfType()
 	}
 	
@@ -196,12 +196,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptProperty): PsiElement? {
-		return element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId }
-	}
-	
-	@JvmStatic
-	fun getTextOffset(element: ParadoxScriptProperty): Int {
-		return element.propertyKey.textOffset
+		return if(element.propertyKey.isSimpleScriptExpression()) element.firstChild  else null
 	}
 	
 	@JvmStatic
@@ -281,6 +276,11 @@ object ParadoxScriptPsiImplUtil {
 		val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, value)
 		element.replace(newElement)
 		return element
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: ParadoxScriptPropertyKey): PsiElement? {
+		return if(element.isSimpleScriptExpression()) element.firstChild  else null
 	}
 	
 	@JvmStatic
@@ -438,6 +438,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getNameIdentifier(element: ParadoxScriptString): PsiElement? {
+		return if(element.isSimpleScriptExpression()) element.firstChild else null
+	}
+	
+	@JvmStatic
 	fun getStringValue(element: ParadoxScriptString): String {
 		return element.value
 	}
@@ -560,7 +565,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	
 	@JvmStatic
-	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue>{
+	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
 		return element.filterChildOfType()
 	}
 	
@@ -720,7 +725,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getValueList(element: ParadoxScriptParameterCondition): List<ParadoxScriptValue>{
+	fun getValueList(element: ParadoxScriptParameterCondition): List<ParadoxScriptValue> {
 		return element.filterChildOfType()
 	}
 	

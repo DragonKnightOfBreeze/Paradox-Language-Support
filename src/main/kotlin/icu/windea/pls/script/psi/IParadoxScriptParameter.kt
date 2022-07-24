@@ -6,7 +6,7 @@ import icu.windea.pls.model.*
 /**
  * 脚本参数。
  */
-interface IParadoxScriptParameter : PsiNamedElement, PsiNameIdentifierOwner, ParadoxScriptTypedElement {
+interface IParadoxScriptParameter : ParadoxScriptNamedElement, PsiNameIdentifierOwner, ParadoxScriptTypedElement {
 	override fun getName(): String
 	
 	val defaultValue: String? get() = null

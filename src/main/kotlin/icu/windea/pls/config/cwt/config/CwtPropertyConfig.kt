@@ -31,6 +31,7 @@ data class CwtPropertyConfig(
 	
 	val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
 	val valueExpression: CwtValueExpression = CwtValueExpression.resolve(stringValue.orEmpty())
+	override val expression: CwtKeyExpression get() = keyExpression
 	
 	override val resolved: CwtPropertyConfig get() = inlineableConfig?.config ?: this
 	val keyResolved: CwtPropertyConfig get() = inlineableConfig?.castOrNull<CwtAliasConfig>()?.config ?: this

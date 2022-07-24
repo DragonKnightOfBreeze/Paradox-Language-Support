@@ -10,6 +10,8 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val options: List<CwtOptionConfig>?
 	abstract val optionValues: List<CwtOptionValueConfig>?
 	
+	abstract val expression: CwtKvExpression
+	
 	var parent: CwtKvConfig<*>? = null
 	
 	abstract val resolved: CwtKvConfig<*>

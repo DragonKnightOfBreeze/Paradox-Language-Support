@@ -10,14 +10,17 @@ import icu.windea.pls.script.expression.reference.ParadoxScriptKeyReference;
 
 public interface ParadoxScriptPropertyKey extends ParadoxScriptExpression {
 
-  @Nullable
-  ParadoxScriptParameter getParameter();
+  @NotNull
+  List<ParadoxScriptParameter> getParameterList();
 
   @NotNull
   String getValue();
 
   @NotNull
   ParadoxScriptPropertyKey setValue(@NotNull String value);
+
+  @Nullable
+  PsiElement getNameIdentifier();
 
   @Nullable
   ParadoxScriptKeyReference getReference();

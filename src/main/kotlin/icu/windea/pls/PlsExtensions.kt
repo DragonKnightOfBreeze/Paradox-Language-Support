@@ -220,6 +220,14 @@ fun ParadoxScriptProperty.getPropertyConfig(allowDefinitionSelf: Boolean = false
 		?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
 }
 
+fun ParadoxScriptExpression.getConfig(): CwtKvConfig<*>? {
+	return when(this){
+		is ParadoxScriptPropertyKey -> getPropertyConfig()
+		is ParadoxScriptString -> getValueConfig()
+		else -> null
+	}
+}
+
 fun ParadoxScriptPropertyKey.getPropertyConfig(allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
 	val element = this.parent.castOrNull<ParadoxScriptProperty>() ?: return null
 	val definitionElementInfo = element.definitionElementInfo ?: return null

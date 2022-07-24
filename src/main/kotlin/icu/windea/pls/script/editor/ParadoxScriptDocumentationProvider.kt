@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -35,6 +36,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			is ParadoxScriptProperty -> getPropertyInfo(element)
+			is ParadoxScriptExpression -> {
+				when(element.getConfig()?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetInfo(element)
+					else -> null
+				}
+			}
 			else -> null
 		}
 	}
@@ -75,6 +82,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getValueInValueSetInfo(element: ParadoxScriptExpression): String {
+		return buildString { 
+			buildValueInValueSetDefinition(element)
+		}
+	}
+	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
@@ -88,6 +101,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			is ParadoxScriptProperty -> getPropertyDoc(element)
+			is ParadoxScriptExpression -> {
+				when(element.getConfig()?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetDoc(element)
+					else -> null
+				}
+			}
 			else -> null
 		}
 	}
@@ -138,6 +157,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildDefinitionSections(sections)
 		}
 	}
+	
+	private fun getValueInValueSetDoc(element: ParadoxScriptExpression): String {
+		return buildString {
+			buildValueInValueSetDefinition(element)
+		}
+	}
+	
 	
 	private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptVariable, name: String) {
 		definition {
@@ -288,6 +314,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			for((key, value) in sections) {
 				section(key, value)
 			}
+		}
+	}
+	
+	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpression){
+		definition { 
+			//不加上文件信息
+			//加上定义信息
+			append(PlsDocBundle.message("name.cwt.valueInValueSet")).append(" <b>").append(element.value.escapeXmlOrAnonymous()).append("</b>")
 		}
 	}
 	
