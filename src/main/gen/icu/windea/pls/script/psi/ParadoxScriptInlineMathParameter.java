@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.script.reference.ParadoxParameterReference;
 import javax.swing.Icon;
 
 public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMathFactor, IParadoxScriptParameter {
@@ -25,5 +26,8 @@ public interface ParadoxScriptInlineMathParameter extends ParadoxScriptInlineMat
 
   @Nullable
   String getDefaultValue();
+
+  @Nullable
+  ParadoxParameterReference getReference();
 
 }

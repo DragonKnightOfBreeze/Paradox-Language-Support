@@ -151,6 +151,12 @@ object ParadoxScriptPsiImplUtil {
 	fun getDefaultValue(element: ParadoxScriptParameter): String? {
 		return element.defaultValueToken?.text
 	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxScriptParameter): ParadoxParameterReference? {
+		val nameElement = element.parameterId ?: return null
+		return ParadoxParameterReference(element, nameElement.textRangeInParent)
+	}
 	//endregion
 	
 	//region ParadoxScriptProperty
@@ -727,6 +733,12 @@ object ParadoxScriptPsiImplUtil {
 	fun getTextOffset(element: ParadoxScriptParameterConditionParameter): Int {
 		return element.node.startOffset
 	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxParameterReference {
+		val nameElement = element.parameterId
+		return ParadoxParameterReference(element, nameElement.textRangeInParent)
+	}
 	//endregion
 	
 	//region ParadoxScriptInlineMath
@@ -811,6 +823,12 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getDefaultValue(element: ParadoxScriptInlineMathParameter): String? {
 		return element.defaultValueToken?.text
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterReference? {
+		val nameElement = element.parameterId ?: return null
+		return ParadoxParameterReference(element, nameElement.textRangeInParent)
 	}
 	//endregion
 }

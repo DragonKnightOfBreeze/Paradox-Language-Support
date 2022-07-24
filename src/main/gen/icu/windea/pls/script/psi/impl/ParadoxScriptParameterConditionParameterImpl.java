@@ -11,6 +11,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.script.reference.ParadoxParameterReference;
 import javax.swing.Icon;
 
 public class ParadoxScriptParameterConditionParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptParameterConditionParameter {
@@ -56,6 +57,12 @@ public class ParadoxScriptParameterConditionParameterImpl extends ASTWrapperPsiE
   @Override
   public int getTextOffset() {
     return ParadoxScriptPsiImplUtil.getTextOffset(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxParameterReference getReference() {
+    return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
 }

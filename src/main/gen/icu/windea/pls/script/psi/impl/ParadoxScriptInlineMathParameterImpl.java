@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.script.reference.ParadoxParameterReference;
 import javax.swing.Icon;
 
 public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMathFactorImpl implements ParadoxScriptInlineMathParameter {
@@ -62,6 +63,12 @@ public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMat
   @Nullable
   public String getDefaultValue() {
     return ParadoxScriptPsiImplUtil.getDefaultValue(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxParameterReference getReference() {
+    return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
 }
