@@ -85,7 +85,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getValueInValueSetInfo(element: ParadoxScriptExpression, config: CwtKvConfig<*>): String {
-		return buildString { 
+		return buildString {
 			buildValueInValueSetDefinition(element, config)
 		}
 	}
@@ -154,6 +154,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, imageTargetMap)
 			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
+			buildParametersContent(element, definitionInfo)
 			val sections = mutableMapOf<String, String>()
 			buildRelatedImageSections(imageTargetMap, sections)
 			buildRelatedLocalisationSections(localisationTargetMap, sections)
@@ -285,6 +286,20 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun StringBuilder.buildParametersContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		//如果定义支持参数且拥有参数，则在文档中显示
+		if(getSettings().scriptShowParameters) {
+			if(definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters) {
+				val parameterMap = element.parameterMap
+				if(parameterMap.isNotEmpty()) {
+					content {
+						append(PlsDocBundle.message("content.parameters", parameterMap.keys.joinToString()))
+					}
+				}
+			}
+		}
+	}
+	
 	private fun buildRelatedImageSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
 		//加上DDS图片预览图
 		if(getSettings().scriptRenderRelatedImages) {
@@ -320,8 +335,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpression, config: CwtKvConfig<*>){
-		definition { 
+	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpression, config: CwtKvConfig<*>) {
+		definition {
 			//不加上文件信息
 			//加上定义信息
 			append(PlsDocBundle.message("name.cwt.valueInValueSet")).append(" <b>").append(element.value.escapeXmlOrAnonymous()).append("</b>")
