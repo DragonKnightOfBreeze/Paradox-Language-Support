@@ -21,7 +21,7 @@ enum class CwtConfigType(
 	Alias("alias", PlsDocBundle.message("name.cwt.alias")),
 	
 	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), false),
-	ValueValue("value value", PlsDocBundle.message("name.cwt.valueValue"), false),
+	ValueInValueSet("value in value set", PlsDocBundle.message("name.cwt.valueInValueSet"), false),
 	
 	Link("link", PlsDocBundle.message("name.cwt.link"), true),
 	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink"), true),
@@ -90,7 +90,7 @@ enum class CwtConfigType(
 			val parentParentName = parentParentProperty?.name
 			return when {
 				parentName.surroundsWith("enum[", "]") -> EnumValue
-				parentName.surroundsWith("value[", "]") -> ValueValue
+				parentName.surroundsWith("value[", "]") -> ValueInValueSet
 				parentParentName == "scope_groups" -> Scope
 				else -> null
 			}

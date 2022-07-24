@@ -476,7 +476,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean): Boolean {
+	private fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean): Boolean {
 		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
 		if(isKey && !quoted && supportsScopes(aliasName)) {
 			if(matchesLinkExpression(name, configGroup)) return true
@@ -609,6 +609,7 @@ object CwtConfigHandler {
 	fun completeKey(context: PsiElement, expression: CwtKeyExpression, keyword: String, quoted: Boolean,
 		config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
+		if(!keyword.isSimpleScriptExpression()) return //排除带参数或者为复杂表达式的情况
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
@@ -808,6 +809,7 @@ object CwtConfigHandler {
 	fun completeValue(context: PsiElement, expression: CwtValueExpression, keyword: String, quoted: Boolean, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
+		if(!keyword.isSimpleScriptExpression()) return //排除带参数或者为复杂表达式的情况
 		when(expression.type) {
 			CwtDataTypes.Bool -> {
 				result.addAllElements(boolLookupElements)
@@ -985,7 +987,7 @@ object CwtConfigHandler {
 						val lookupElement = LookupElementBuilder.create(element, name)
 							.withExpectedIcon(PlsIcons.ValueInValueSet)
 							.withTailText(tailText, true)
-							.withExpectedInsertHandler(isKey = true)
+							.withExpectedInsertHandler(isKey = false)
 							.withCaseSensitivity(false) //忽略大小写
 						result.addElement(lookupElement)
 					}
@@ -1054,7 +1056,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeAliasName(context: PsiElement, keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
+	private fun completeAliasName(context: PsiElement, keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String?, isKey: Boolean) {
 		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
 		if(isKey && !quoted && supportsScopes(aliasName)) {
@@ -1262,6 +1264,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): PsiElement? {
+		if(!keyElement.isSimpleScriptExpression()) return null //排除带参数或者为复杂表达式的情况
+		
 		//由于这里规则可能被内联，如果必要，需要判断是否可以基于inlineableConfig解析
 		propertyConfig.inlineableConfig?.let { inlineableConfig ->
 			if(inlineableConfig is CwtAliasConfig) {
@@ -1319,7 +1323,7 @@ object CwtConfigHandler {
 			CwtDataTypes.ComplexEnum -> {
 				return propertyConfig.keyResolved.pointer.element //TODO
 			}
-			CwtDataTypes.Value, CwtDataTypes.ValueSet -> { //ValueSet和Value一样处理
+			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return null
 				val valueName = keyElement.value
 				val gameType = keyElement.fileInfo?.gameType ?: return null
@@ -1337,6 +1341,9 @@ object CwtConfigHandler {
 					if(resolved != null) return resolved
 				}
 				return null
+			}
+			CwtDataTypes.ValueSet -> {
+				return keyElement //自身
 			}
 			CwtDataTypes.Scope -> {
 				//TODO 匹配scope
@@ -1377,6 +1384,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): Collection<PsiElement> {
+		if(!keyElement.isSimpleScriptExpression()) return emptyList() //排除带参数或者为复杂表达式的情况
+		
 		//由于这里规则可能被内联，如果必要，需要判断是否可以基于inlineableConfig解析
 		propertyConfig.inlineableConfig?.let { inlineableConfig ->
 			if(inlineableConfig is CwtAliasConfig) {
@@ -1434,7 +1443,7 @@ object CwtConfigHandler {
 			CwtDataTypes.ComplexEnum -> {
 				return propertyConfig.keyResolved.pointer.element.toSingletonListOrEmpty() //TODO
 			}
-			CwtDataTypes.Value, CwtDataTypes.ValueSet -> { //ValueSet和Value一样处理
+			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return emptyList()
 				val valueName = keyElement.value
 				val gameType = keyElement.fileInfo?.gameType ?: return emptyList()
@@ -1452,6 +1461,9 @@ object CwtConfigHandler {
 					if(resolved != null) return resolved.toSingletonList()
 				}
 				return emptyList()
+			}
+			CwtDataTypes.ValueSet -> {
+				return keyElement.toSingletonList() //自身
 			}
 			CwtDataTypes.Scope -> {
 				//TODO 匹配scope
@@ -1492,6 +1504,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): PsiElement? {
+		if(valueElement !is ParadoxScriptString || !valueElement.isSimpleScriptExpression()) return null //排除带参数或者为复杂表达式的情况
+		
 		val project = valueElement.project
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1551,7 +1565,7 @@ object CwtConfigHandler {
 			CwtDataTypes.ComplexEnum -> {
 				return valueConfig.resolved.pointer.element.castOrNull<CwtString>() //TODO
 			}
-			CwtDataTypes.Value, CwtDataTypes.ValueSet -> { //ValueSet和Value一样处理
+			CwtDataTypes.Value-> {
 				val valueSetName = expression.value ?: return null
 				val valueName = valueElement.value
 				val gameType = valueElement.fileInfo?.gameType ?: return null
@@ -1569,6 +1583,9 @@ object CwtConfigHandler {
 					if(resolved != null) return resolved
 				}
 				return null
+			}
+			CwtDataTypes.ValueSet -> {
+				return valueElement //自身
 			}
 			CwtDataTypes.ScopeGroup -> {
 				//TODO 匹配scope
@@ -1613,6 +1630,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doMultiResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): Collection<PsiElement> {
+		if(valueElement !is ParadoxScriptString || !valueElement.isSimpleScriptExpression()) return emptyList() //排除带参数或者为复杂表达式的情况
+		
 		val project = valueElement.project
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1672,7 +1691,7 @@ object CwtConfigHandler {
 			CwtDataTypes.ComplexEnum -> {
 				return emptyList() //TODO
 			}
-			CwtDataTypes.Value, CwtDataTypes.ValueSet -> { //ValueSet和Value一样处理
+			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return emptyList()
 				val valueName = valueElement.value
 				val gameType = valueElement.fileInfo?.gameType ?: return emptyList()
@@ -1690,6 +1709,9 @@ object CwtConfigHandler {
 					if(resolved != null) return resolved.toSingletonList()
 				}
 				return emptyList()
+			}
+			CwtDataTypes.ValueSet -> {
+				return valueElement.toSingletonList() //自身
 			}
 			CwtDataTypes.ScopeGroup -> {
 				//TODO 匹配scope
@@ -1724,7 +1746,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun resolveAliasName(context: PsiElement, name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean, injectedOnly: Boolean = false): PsiElement? {
+	private fun resolveAliasName(context: PsiElement, name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean, injectedOnly: Boolean = false): PsiElement? {
 		val project = configGroup.project
 		
 		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
@@ -1774,7 +1796,7 @@ object CwtConfigHandler {
 				CwtDataTypes.ComplexEnum -> {
 					return null //TODO
 				}
-				CwtDataTypes.Value, CwtDataTypes.ValueSet -> { //ValueSet和Value一样处理
+				CwtDataTypes.Value-> {
 					if(context !is ParadoxScriptExpression) return null
 					val valueSetName = expression.value ?: return null
 					val valueName = context.value
@@ -1792,6 +1814,9 @@ object CwtConfigHandler {
 						if(resolved != null) return resolved
 					}
 					return null
+				}
+				CwtDataTypes.ValueSet -> {
+					return context //自身
 				}
 				CwtDataTypes.Constant -> {
 					//同名的定义有多个，取第一个即可

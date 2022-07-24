@@ -35,10 +35,12 @@ object ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueSt
 	
 	override fun shouldCreateStub(node: ASTNode?): Boolean {
 		val psi = node?.psi?.castOrNull<ParadoxScriptString>() ?: return false
-		val config = psi.getValueConfig() //FIXME SOF!!!
+		val config = psi.getValueConfig()
 		return when {
 			config == null -> false
-			config.valueExpression.type == CwtDataTypes.ValueSet -> true
+			config.valueExpression.type == CwtDataTypes.ValueSet -> {
+				psi.isSimpleScriptExpression() //不带参数，不为复杂表达式
+			}
 			else -> false
 		}
 	}

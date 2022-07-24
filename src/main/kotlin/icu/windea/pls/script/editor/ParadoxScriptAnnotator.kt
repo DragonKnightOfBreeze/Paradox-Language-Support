@@ -48,7 +48,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(propertyConfig != null) annotateKeyExpression(element, holder, propertyConfig)
 		
 		//是定义元素，非定义自身，且是简单的keyExpression
-		if(propertyConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) {
+		if(propertyConfig == null && element.isSimpleScriptExpression() && element.definitionElementInfo.isValid) {
 			annotateUnresolvedKeyExpression(element, holder)
 		}
 	}
@@ -129,7 +129,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(valueConfig != null) annotateValueExpression(element, holder, valueConfig)
 		
 		//是定义元素，非定义自身，且是简单的valueExpression
-		if(valueConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) {
+		if(valueConfig == null && element.isSimpleScriptExpression() && element.definitionElementInfo.isValid) {
 			annotateUnresolvedValueExpression(element, holder)
 		}
 	}
