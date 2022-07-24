@@ -21,7 +21,7 @@
 * BUG修复：
   * [X] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
   * [X] 修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
-  * [ ] 修复：对声明的查找使用的结果不完整（定义，本地化，参数）
+  * [ ] 修复：对声明的查找使用的结果不完整（定义，本地化，~~参数~~）
 * 代码优化：
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
