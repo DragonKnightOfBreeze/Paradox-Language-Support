@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -37,8 +38,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			is ParadoxScriptExpression -> {
-				when(element.getConfig()?.expression?.type) {
-					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetInfo(element)
+				val config = element.getConfig()
+				when(config?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetInfo(element, config)
 					else -> null
 				}
 			}
@@ -82,9 +84,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getValueInValueSetInfo(element: ParadoxScriptExpression): String {
+	private fun getValueInValueSetInfo(element: ParadoxScriptExpression, config: CwtKvConfig<*>): String {
 		return buildString { 
-			buildValueInValueSetDefinition(element)
+			buildValueInValueSetDefinition(element, config)
 		}
 	}
 	
@@ -102,8 +104,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			is ParadoxScriptExpression -> {
-				when(element.getConfig()?.expression?.type) {
-					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetDoc(element)
+				val config = element.getConfig()
+				when(config?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetDoc(element, config)
 					else -> null
 				}
 			}
@@ -158,9 +161,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getValueInValueSetDoc(element: ParadoxScriptExpression): String {
+	private fun getValueInValueSetDoc(element: ParadoxScriptExpression, config: CwtKvConfig<*>): String {
 		return buildString {
-			buildValueInValueSetDefinition(element)
+			buildValueInValueSetDefinition(element, config)
 		}
 	}
 	
@@ -317,11 +320,18 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpression){
+	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpression, config: CwtKvConfig<*>){
 		definition { 
 			//不加上文件信息
 			//加上定义信息
 			append(PlsDocBundle.message("name.cwt.valueInValueSet")).append(" <b>").append(element.value.escapeXmlOrAnonymous()).append("</b>")
+			//加上分组信息
+			val valueSetName = config.expression.value
+			if(valueSetName != null && valueSetName.isNotEmpty()) {
+				grayed {
+					append(" in ").append(valueSetName.escapeXmlOrAnonymous())
+				}
+			}
 		}
 	}
 	

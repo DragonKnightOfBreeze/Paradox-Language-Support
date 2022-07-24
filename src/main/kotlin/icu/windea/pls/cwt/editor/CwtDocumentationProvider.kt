@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.editor
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
@@ -84,6 +85,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text)
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				if(configType?.hasType == true){
+					val typeName = element.parentOfType<CwtProperty>()?.name
+					if(typeName != null && typeName.isNotEmpty()) {
+						grayed {
+							append(" in ").append(typeName.escapeXmlOrAnonymous())
+						}
+					}
+				}
 			} else {
 				val prefix = when {
 					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
@@ -164,6 +173,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				if(configType?.hasType == true){
+					val typeName = element.parentOfType<CwtProperty>()?.name
+					if(typeName != null && typeName.isNotEmpty()) {
+						grayed {
+							append(" in ").append(typeName.escapeXmlOrAnonymous())
+						}
+					}
+				}
 			} else {
 				val prefix = when {
 					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
