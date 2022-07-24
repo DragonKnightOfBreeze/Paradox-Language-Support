@@ -47,7 +47,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionPr
 			}
 		} else {
 			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-			processAllElements(name, project, scope) { 
+			processAllElements(name, project, scope) {
 				if(expression.matches(it) && selector.selectAll(it)) result.add(it)
 				true
 			}
@@ -62,14 +62,20 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		val result = MutableSet(selector.comparator())
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 		if(typeExpression == null) {
-			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }){
-				if(selector.selectAll(it)) result.add(it)
+			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.contains(key) != true }) { key, it ->
+				if(selector.selectAll(it)) {
+					result.add(it)
+					keysToDistinct?.add(key)
+				}
 				true
 			}
 		} else {
 			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }) {
-				if(expression.matches(it) && selector.selectAll(it)) result.add(it)
+			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.contains(key) != true }) {key, it ->
+				if(expression.matches(it) && selector.selectAll(it)) {
+					result.add(it)
+					keysToDistinct?.add(key)
+				}
 				true
 			}
 		}

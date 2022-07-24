@@ -50,7 +50,7 @@ const val defaultScriptedVariableName = "var"
 
 const val keyTruncateLimit = 5
 
-const val indexVersion = 6 //0.6.6
+const val indexVersion = 7 //0.6.7
 
 val translationPluginId = PluginId.getId("cn.yiiguxing.plugin.translate")
 

@@ -37,7 +37,7 @@ object PlsIcons {
 	@JvmStatic val Value = loadIcon("/icons/value.svg")
 	@JvmStatic val Parameter = loadIcon("/icons/parameter.svg")
 	@JvmStatic val Variable = loadIcon("/icons/variable.svg")
-	@JvmStatic val ValueInValueSet = loadIcon("/icons/valueValue.svg")
+	@JvmStatic val ValueInValueSet = loadIcon("/icons/valueInValueSet.svg")
 	@JvmStatic val EnumValue = loadIcon("/icons/enumValue.svg")
 	@JvmStatic val ScopeType = loadIcon("/icons/scopeType.svg")
 	@JvmStatic val Scope = loadIcon("/icons/scope.svg")

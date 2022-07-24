@@ -57,7 +57,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @NotNull
   String getOriginalPathName();
 
-  @Nullable
+  @NotNull
   Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> getParameterMap();
 
 }

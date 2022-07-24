@@ -8,19 +8,19 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.reference.ParadoxScriptVariableReferenceReference;
 import javax.swing.Icon;
 
-public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl implements ParadoxScriptVariableReference {
+public class ParadoxScriptVariableReferenceImpl extends ASTWrapperPsiElement implements ParadoxScriptVariableReference {
 
   public ParadoxScriptVariableReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitVariableReference(this);
   }

@@ -35,7 +35,7 @@ class ParadoxScriptGotoDeclarationHandler : GotoDeclarationHandlerBase() {
 				val element = sourceElement?.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return null
 				return CwtConfigHandler.multiResolveKey(element) {
 					it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName
-				}.takeIf { it.isNotEmpty() }?.toTypedArray()
+				}.takeIfNotEmpty()?.toTypedArray()
 			}
 			else -> null
 		}

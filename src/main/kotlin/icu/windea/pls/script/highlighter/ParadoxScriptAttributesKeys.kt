@@ -1,5 +1,6 @@
 package icu.windea.pls.script.highlighter
 
+import com.intellij.ide.highlighter.custom.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
@@ -32,14 +33,14 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)
 	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
 	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY)
-	@JvmField val VALUE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueValue"), STATIC_FIELD)
 	@JvmField val ENUM_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumValue"), STATIC_FIELD)
+	@JvmField val VALUE_IN_VALUE_SET_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueInValueSet"), LOCAL_VARIABLE)
 	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.systemScope"), STATIC_METHOD)
 	@JvmField val SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scope"), INSTANCE_METHOD)
 	@JvmField val SCOPE_VALUE_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValuePrefix"), LABEL)
 	@JvmField val SCOPE_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeValue"), INSTANCE_FIELD)
 	@JvmField val SCRIPT_VALUE_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scriptValuePrefix"), LABEL)
-	@JvmField val SCRIPT_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scriptValue"), DEFINITION_REFERENCE_KEY)
-	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), STATIC_FIELD)
+	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), CustomHighlighterColors.CUSTOM_KEYWORD3_ATTRIBUTES)
+	@JvmField val SCRIPT_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scriptValue"), CustomHighlighterColors.CUSTOM_KEYWORD4_ATTRIBUTES)
 	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 }

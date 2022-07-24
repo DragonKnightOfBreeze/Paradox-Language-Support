@@ -29,20 +29,62 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
+  public List<ParadoxScriptBlock> getBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptBlock.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptBoolean> getBooleanList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptBoolean.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptColor> getColorList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptColor.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptFloat> getFloatList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptFloat.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptInlineMath> getInlineMathList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineMath.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptInt> getIntList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInt.class);
+  }
+
+  @Override
+  @NotNull
   public List<ParadoxScriptProperty> getPropertyList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
   }
 
   @Override
   @NotNull
-  public List<ParadoxScriptValue> getValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+  public List<ParadoxScriptString> getStringList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptString.class);
   }
 
   @Override
   @NotNull
   public List<ParadoxScriptVariable> getVariableList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptVariableReference> getVariableReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariableReference.class);
   }
 
   @Override
@@ -59,6 +101,12 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
   @Override
   public boolean isNotEmpty() {
     return ParadoxScriptPsiImplUtil.isNotEmpty(this);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptValue> getValueList() {
+    return ParadoxScriptPsiImplUtil.getValueList(this);
   }
 
   @Override

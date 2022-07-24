@@ -564,7 +564,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 	scope: GlobalSearchScope,
 	cancelable: Boolean = true,
 	crossinline keyPredicate: (key: String) -> Boolean = { true },
-	crossinline action: (element: T) -> Boolean
+	crossinline action: (key: String, element: T) -> Boolean
 ): Boolean {
 	if(DumbService.isDumb(project)) return true
 	
@@ -573,7 +573,7 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processAllElemen
 		if(keyPredicate(key)) {
 			StubIndex.getInstance().processElements(this.key, key, project, scope, T::class.java) { element ->
 				if(cancelable) ProgressManager.checkCanceled()
-				action(element)
+				action(key, element)
 			}
 		}
 		true

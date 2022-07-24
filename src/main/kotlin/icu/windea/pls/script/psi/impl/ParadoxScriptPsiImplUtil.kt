@@ -46,6 +46,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getValueList(element: ParadoxScriptRootBlock): List<ParadoxScriptValue>{
+		return element.filterChildOfType()
+	}
+	
+	@JvmStatic
 	fun getComponents(element: ParadoxScriptRootBlock): List<PsiElement> {
 		//允许混合value和property
 		return element.filterChildOfType { isRootBlockComponent(it) }
@@ -110,6 +115,13 @@ object ParadoxScriptPsiImplUtil {
 	fun getName(element: ParadoxScriptVariableName): String {
 		// 不包含作为前缀的"@"
 		return element.variableNameId.text
+	}
+	//endregion
+	
+	//region ParadoxScriptVariableValue
+	@JvmStatic
+	fun getValue(element: ParadoxScriptVariableValue): ParadoxScriptValue {
+		return element.findRequiredChild()
 	}
 	//endregion
 	
@@ -242,7 +254,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>>? {
+	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> {
 		val file = element.containingFile
 		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<IParadoxScriptParameter>>>() //按名字进行排序
 		element.acceptChildren(object : PsiRecursiveElementVisitor() {
@@ -297,6 +309,13 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return ParadoxValueType.UnknownType
+	}
+	//endregion
+	
+	//region ParadoxScriptPropertyValue
+	@JvmStatic
+	fun getValue(element: ParadoxScriptPropertyValue): ParadoxScriptValue {
+		return element.findRequiredChild()
 	}
 	//endregion
 	
@@ -539,6 +558,12 @@ object ParadoxScriptPsiImplUtil {
 		return false
 	}
 	
+	
+	@JvmStatic
+	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue>{
+		return element.filterChildOfType()
+	}
+	
 	@JvmStatic
 	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
 		//允许混合value和property
@@ -692,6 +717,11 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return false
+	}
+	
+	@JvmStatic
+	fun getValueList(element: ParadoxScriptParameterCondition): List<ParadoxScriptValue>{
+		return element.filterChildOfType()
 	}
 	
 	@JvmStatic

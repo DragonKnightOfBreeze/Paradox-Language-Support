@@ -21,7 +21,9 @@ fun scriptedVariableSelector() = ChainedParadoxSelector<ParadoxScriptVariable>()
 fun definitionSelector() = ChainedParadoxSelector<ParadoxDefinitionProperty>()
 
 fun localisationSelector() = ChainedParadoxSelector<ParadoxLocalisationProperty>()
-	
+
+fun valueInValueSetSelector() = ChainedParadoxSelector<ParadoxScriptString>()
+
 
 fun <T> ChainedParadoxSelector<T>.gameType(gameType: ParadoxGameType?) = apply { if(gameType != null) selectors += ParadoxGameTypeSelector(gameType) }
 

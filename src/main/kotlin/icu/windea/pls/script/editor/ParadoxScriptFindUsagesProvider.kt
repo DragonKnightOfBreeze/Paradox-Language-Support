@@ -23,8 +23,12 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
-			is ParadoxScriptVariable -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.variable") else element.name
-			is IParadoxScriptParameter -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.parameter") else element.name
+			is ParadoxScriptVariable -> {
+				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.variable") else element.name
+			}
+			is IParadoxScriptParameter -> {
+				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.parameter") else element.name
+			}
 			is ParadoxScriptProperty -> {
 				//如果是定义，需要特殊处理
 				val definitionInfo = element.definitionInfo

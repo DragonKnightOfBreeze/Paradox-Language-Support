@@ -46,8 +46,11 @@ object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScript
 		
 		val result = MutableSet(selector.comparator())
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
-		processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.add(key) ?: true }) {
-			if(selector.selectAll(it)) result.add(it)
+		processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.contains(key) != true }) { key , it ->
+			if(selector.selectAll(it)) {
+				result.add(it)
+				keysToDistinct?.add(key)
+			}
 			true
 		}
 		return result

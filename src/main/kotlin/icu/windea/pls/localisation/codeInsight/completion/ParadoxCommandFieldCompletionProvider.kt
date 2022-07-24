@@ -4,9 +4,11 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.util.selector.*
 
 /**
  * 提供命令字段名字的代码补全。
@@ -14,7 +16,8 @@ import icu.windea.pls.config.cwt.*
 @Suppress("UnstableApiUsage")
 class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val project = parameters.originalFile.project
+		val originalFile = parameters.originalFile
+		val project = originalFile.project
 		
 		//需要避免ProcessCanceledException导致完全不作任何提示
 		
@@ -22,7 +25,7 @@ class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParam
 			doCompleteLocalisationCommand(parameters, project, result)
 		}
 		runBlockingCancellable {
-			doCompleteScriptedLoc(project, result)
+			doCompleteScriptedLoc(originalFile, project, result)
 		}
 		
 		//TODO 补全的scope可能不正确
@@ -35,10 +38,11 @@ class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParam
 		CwtConfigHandler.completeLocalisationCommand(configGroup, result)
 	}
 	
-	private fun doCompleteScriptedLoc(project: Project, result: CompletionResultSet) {
+	private fun doCompleteScriptedLoc(file: PsiFile, project: Project, result: CompletionResultSet) {
 		//提示类型为scripted_loc的definition
 		val tailText = " from scripted_loc"
-		val definitions = findDefinitionsByType("scripted_loc", project, distinct = true)
+		val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
+		val definitions = findAllDefinitionsByType("scripted_loc", project, distinct = true, selector = selector)
 		if(definitions.isEmpty()) return
 		for(definition in definitions) {
 			val name = definition.definitionInfo?.name.orEmpty() //不应该为空

@@ -30,7 +30,11 @@ class ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<
 	class Builder: DefaultStubBuilder(){
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
 			//仅包括propertyList和property
-			return node.elementType != PROPERTY_LIST && node.elementType != PROPERTY
+			return when{
+				node.elementType == PROPERTY_LIST -> false
+				node.elementType == PROPERTY -> false
+				else -> true
+			}
 		}
 	}
 }

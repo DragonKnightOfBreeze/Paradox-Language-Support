@@ -42,7 +42,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	override val originalPathName: String
 		get() = _originalPathName ?: super.originalPathName.also { _originalPathName = it }
 	
-	override val parameterMap: Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>>?
+	override val parameterMap: Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>>
 		get() = _parameterMap ?: super.parameterMap.also { _parameterMap = it }
 	
 	override fun subtreeChanged() {
@@ -133,13 +133,14 @@ val ParadoxScriptPropertyKey.expressionInfo: ParadoxKvExpressionInfo? get() = if
 class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	constructor(node: ASTNode) : super(node)
 	
+	constructor(stub: ParadoxScriptValueStub, type: IStubElementType<*, *>) : super(stub, type)
+	
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxValueType? = null
 	@Volatile private var _expressionInfo: ParadoxKvExpressionInfo? = null
 	
-	override fun getValue(): String {
-		return _value ?: super.getValue().also { _value = it }
-	}
+	override val value: String
+		get() = _value ?: super.value.also { _value = it }
 	
 	override val valueType: ParadoxValueType
 		get() = _valueType ?: super.valueType.also { _valueType = it }

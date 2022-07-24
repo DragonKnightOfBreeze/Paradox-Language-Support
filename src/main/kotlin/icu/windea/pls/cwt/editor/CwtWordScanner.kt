@@ -10,8 +10,4 @@ class CwtWordScanner: DefaultWordsScanner(
 	TokenSet.create(PROPERTY_KEY_TOKEN,OPTION_KEY_TOKEN),
 	TokenSet.create(COMMENT, DOCUMENTATION_TOKEN),
 	TokenSet.create(STRING_TOKEN)
-){
-	init {
-		setMayHaveFileRefsInLiterals(false)
-	}
-}
+)

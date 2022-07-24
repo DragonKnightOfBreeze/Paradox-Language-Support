@@ -23,9 +23,10 @@ class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>()
 		//需要避免ProcessCanceledException导致完全不作任何提示
 		
 		val map = CollectionFactory.createSmallMemoryFootprintLinkedMap<String, PsiElement>() //优化性能
+		val definitionSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
 		//根据spriteName进行提示
 		runBlockingCancellable {
-			val sprites = findDefinitionsByType("sprite|spriteType", project, distinct = true)
+			val sprites = findAllDefinitionsByType("sprite|spriteType", project, distinct = true, selector = definitionSelector)
 			if(sprites.isNotEmpty()) {
 				for(sprite in sprites) {
 					val spriteName = sprite.definitionInfo?.name
@@ -36,8 +37,8 @@ class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>()
 		}
 		//根据ddsFileName进行提示
 		runBlockingCancellable {
-			val selector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
-			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = selector)
+			val fileSelector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
+			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = fileSelector)
 			if(ddsFiles.isNotEmpty()) {
 				for(ddsFile in ddsFiles) {
 					val name = ddsFile.nameWithoutExtension
@@ -49,7 +50,7 @@ class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>()
 		//作为生成的图标处理（解析为其他类型的定义）
 		runBlockingCancellable {
 			//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
-			val jobDefinitions = findAllDefinitions("job", project, distinct = true)
+			val jobDefinitions = findAllDefinitions("job", project, distinct = true, selector = definitionSelector)
 			if(jobDefinitions.isNotEmpty()) {
 				for(jobDefinition in jobDefinitions) {
 					val jobName = jobDefinition.definitionInfo?.name ?: continue

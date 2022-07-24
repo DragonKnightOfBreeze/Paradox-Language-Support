@@ -58,7 +58,10 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 		expression.selectAll { type, subtype ->
 			val namesToDistinct = if(distinct) mutableSetOf<String>() else null
 			processAllElements(type, project, scope) {
-				if(matches(it, subtype, namesToDistinct) && selector.selectAll(it)) result.add(it)
+				if(matches(it, subtype, namesToDistinct) && selector.selectAll(it)) {
+					result.add(it)
+					namesToDistinct?.add(getName(it).orEmpty())
+				}
 				true
 			}
 		}
@@ -82,10 +85,10 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 	private fun matches(element: ParadoxDefinitionProperty, name: String, subtype: String?): Boolean {
 		val stub = element.getStub()
 		val definitionInfo = if(stub == null) element.definitionInfo else null
-		val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
+		val targetName = getName(stub, definitionInfo) ?: return false
 		if(targetName != name) return false
 		if(subtype != null) {
-			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+			val targetSubtypes = getSubtypes(stub, definitionInfo) ?: return false
 			if(subtype !in targetSubtypes) return false
 		}
 		return true
@@ -94,26 +97,26 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 	private fun matches(element: ParadoxDefinitionProperty, subtype: String?, namesToDistinct: MutableSet<String>? = null): Boolean {
 		val stub = element.getStub()
 		val definitionInfo = if(stub == null) element.definitionInfo else null
-		val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
-		if(namesToDistinct != null && !namesToDistinct.add(targetName)) return false
+		val targetName = getName(stub, definitionInfo) ?: return false
+		if(namesToDistinct?.contains(targetName) == true) return false
 		if(subtype != null) {
-			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+			val targetSubtypes = getSubtypes(stub, definitionInfo) ?: return false
 			if(subtype !in targetSubtypes) return false
 		}
 		return true
 	}
 	
-	//private fun matchesAndDistinct(element: ParadoxDefinitionProperty, keyword: String, subtype: String?, names: MutableSet<String>): Boolean {
-	//	val stub = element.stub
-	//	val definitionInfo = if(stub == null) element.definitionInfo else null
-	//	val targetName = runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name ?: return false
-	//	if(!names.add(targetName)) return false
-	//	if(!targetName.matchesKeyword(keyword)) return false
-	//	if(subtype != null) {
-	//		val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
-	//		if(subtype !in targetSubtypes) return false
-	//	}
-	//	return true
-	//}
+	private fun getName(element: ParadoxDefinitionProperty): String? {
+		return runCatching { element.getStub()?.name }.getOrNull() ?: element.definitionInfo?.name
+	}
+	
+	private fun getName(stub: ParadoxDefinitionPropertyStub<out ParadoxDefinitionProperty>?, definitionInfo: ParadoxDefinitionInfo?): String? {
+		return runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name
+	}
+	
+	private fun getSubtypes(stub: ParadoxDefinitionPropertyStub<out ParadoxDefinitionProperty>?, definitionInfo: ParadoxDefinitionInfo?): List<String>? {
+		return runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes
+	}
+	
 }
 

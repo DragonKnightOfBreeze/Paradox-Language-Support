@@ -25,7 +25,7 @@ object DefinitionConfigHandler {
 	
 	fun getTextColorConfigs(gameType: ParadoxGameType, project: Project, context: Any? = null): List<ParadoxTextColorConfig> {
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(context)
-		val definitions = findDefinitionsByType("textcolor", project, distinct = true, selector = selector)
+		val definitions = findAllDefinitionsByType("textcolor", project, distinct = true, selector = selector)
 		if(definitions.isEmpty()) return emptyList()
 		return definitions.mapNotNull { doGetTextColorConfig(it, it.name, gameType) } //it.name == it.definitionInfo.name
 	}

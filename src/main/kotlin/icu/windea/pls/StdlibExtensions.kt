@@ -15,8 +15,7 @@ import kotlin.math.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {
-}
+inline fun pass() {}
 
 inline fun <T> Boolean.ifTrue(body: () -> T?): T? = if(this) body() else null
 
@@ -31,6 +30,12 @@ fun Number.format(digits: Int): String {
 			.let { if(it.lastIndexOf('.') == -1) "$it.0" else it }
 	}
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun String.takeIfNotEmpty() = this.takeIf { it.isNotEmpty() }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> Collection<T>?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
 
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
 	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
@@ -213,7 +218,7 @@ fun String.toCommaDelimitedStringMutableList(): MutableList<String> {
 	return if(input.isEmpty()) {
 		mutableListOf()
 	} else {
-		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIf { s -> s.isNotEmpty() } }
+		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIfNotEmpty() }
 	}
 }
 
@@ -222,7 +227,7 @@ fun String.toCommaDelimitedStringList(): List<String> {
 	return if(input.isEmpty()) {
 		emptyList()
 	} else {
-		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIf { s -> s.isNotEmpty() } }
+		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIfNotEmpty() }
 	}
 }
 
@@ -232,7 +237,7 @@ fun String.toCommaDelimitedStringSet(ignoreCase: Boolean = false): Set<String> {
 		emptySet()
 	} else {
 		val set = if(ignoreCase) CollectionFactory.createCaseInsensitiveStringSet() else mutableSetOf()
-		input.splitToSequence(',').mapNotNullTo(set) { it.trim().takeIf { s -> s.isNotEmpty() } }
+		input.splitToSequence(',').mapNotNullTo(set) { it.trim().takeIfNotEmpty() }
 	}
 }
 

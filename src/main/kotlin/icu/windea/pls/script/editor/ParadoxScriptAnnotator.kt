@@ -65,8 +65,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					expression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
 					expression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
 					expression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-					expression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
-					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
 					expression.type == CwtDataTypes.Enum -> {
 						when{
 							expression.value == CwtConfigHandler.paramsEnumName -> Keys.INPUT_PARAMETER_KEY
@@ -74,6 +72,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 						}
 					}
 					expression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.Value -> Keys.VALUE_IN_VALUE_SET_KEY
+					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_IN_VALUE_SET_KEY
 					else -> {
 						val resolved = element.reference?.resolve()
 						val configType = resolved?.let { CwtConfigType.resolve(it) }
@@ -149,10 +149,10 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					expression.type == CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
 					expression.type == CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
 					expression.type == CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
-					expression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
-					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
 					expression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
 					expression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.Value -> Keys.VALUE_IN_VALUE_SET_KEY
+					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_IN_VALUE_SET_KEY
 					else -> {
 						val resolved = element.reference?.resolve()
 						val configType = resolved?.let { CwtConfigType.resolve(it) }

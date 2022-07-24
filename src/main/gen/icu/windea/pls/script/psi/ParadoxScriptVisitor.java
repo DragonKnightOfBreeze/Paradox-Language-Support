@@ -4,7 +4,6 @@ package icu.windea.pls.script.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.script.expression.ParadoxScriptExpression;
 import com.intellij.psi.PsiLiteralValue;
 import com.intellij.psi.PsiListLikeElement;
 
@@ -25,7 +24,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
-    visitNumber(o);
+    visitValue(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
@@ -73,12 +72,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
-    visitNumber(o);
-  }
-
-  public void visitNumber(@NotNull ParadoxScriptNumber o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
   }
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {
@@ -121,10 +115,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitExpression(o);
   }
 
-  public void visitValue(@NotNull ParadoxScriptValue o) {
-    visitTypedElement(o);
-  }
-
   public void visitVariable(@NotNull ParadoxScriptVariable o) {
     visitNamedElement(o);
     // visitTypedElement(o);
@@ -147,10 +137,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitExpression(@NotNull ParadoxScriptExpression o) {
-    visitPsiElement(o);
-  }
-
   public void visitIParadoxScriptBlock(@NotNull IParadoxScriptBlock o) {
     visitElement(o);
   }
@@ -159,11 +145,15 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitExpression(@NotNull ParadoxScriptExpression o) {
+    visitPsiElement(o);
+  }
+
   public void visitNamedElement(@NotNull ParadoxScriptNamedElement o) {
     visitPsiElement(o);
   }
 
-  public void visitTypedElement(@NotNull ParadoxScriptTypedElement o) {
+  public void visitValue(@NotNull ParadoxScriptValue o) {
     visitPsiElement(o);
   }
 

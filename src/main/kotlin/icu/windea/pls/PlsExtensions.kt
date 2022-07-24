@@ -201,7 +201,7 @@ private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionEl
 private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
 	//这里输入的element本身可以是定义，这时elementPath会是空字符串
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
-	val definition = elementPath.rootPointer?.element ?: return null
+	val definition = elementPath.rootElement ?: return null
 	val definitionInfo = definition.definitionInfo ?: return null
 	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
 	val gameType = definitionInfo.gameType
@@ -502,7 +502,7 @@ fun findDefinitionsByType(
  * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  * @param distinct 是否需要对同一基本类型而相同名字的定义进行去重。默认为`false`。
  */
-fun findDefinitionsByType(
+fun findAllDefinitionsByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
@@ -606,6 +606,37 @@ inline fun processSyncedLocalisationVariants(
 ): Boolean {
 	val maxSize = getSettings().maxCompleteSize
 	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize, selector, processor)
+}
+
+
+fun findValueInValueSet(
+	name: String,
+	valueSetName: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
+): ParadoxScriptString? {
+	return ParadoxValueInValueSetIndex.findOne(name, valueSetName, project, scope, selector)
+}
+
+fun findValuesInValueSet(
+	name: String,
+	valueSetName: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
+): Set<ParadoxScriptString> {
+	return ParadoxValueInValueSetIndex.findAll(name, valueSetName, project, scope, selector)
+}
+
+fun findAllValuesInValueSet(
+	valueSetName: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	distinct: Boolean = false,
+	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
+): Set<ParadoxScriptString> {
+	return ParadoxValueInValueSetIndex.findAll(valueSetName, project, scope, distinct, selector)
 }
 
 

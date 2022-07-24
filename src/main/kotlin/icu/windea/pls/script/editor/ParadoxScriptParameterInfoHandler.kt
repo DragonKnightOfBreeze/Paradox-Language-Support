@@ -37,7 +37,7 @@ class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProp
 		//合并所有可能的参数名
 		val definitions = findDefinitionsByType(definitionName, definitionType, context.project, selector = selector)
 		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition -> 
-			definition.parameterMap.keys.takeIf { it.isNotEmpty() } 
+			definition.parameterMap.keys.takeIfNotEmpty()
 		}
 		if(parameterNamesSet.isEmpty()) return null
 		context.itemsToShow = parameterNamesSet.toTypedArray()
