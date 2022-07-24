@@ -21,7 +21,7 @@ object ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueSt
 	}
 	
 	override fun createStub(psi: ParadoxScriptString, parentStub: StubElement<out PsiElement>): ParadoxScriptValueStub {
-		val config = psi.getValueConfig()
+		val config = psi.getValueConfig() //FIXME SOF!!!
 		return when {
 			config == null -> throw InternalError() //不期望的结果
 			config.valueExpression.type == CwtDataTypes.ValueSet -> {

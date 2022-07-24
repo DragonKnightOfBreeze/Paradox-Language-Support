@@ -47,8 +47,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val propertyConfig = element.getPropertyConfig()
 		if(propertyConfig != null) annotateKeyExpression(element, holder, propertyConfig)
 		
-		//是定义元素，非定义自身，且是简单的keyExpression
-		if(propertyConfig == null && element.isSimpleScriptExpression() && element.definitionElementInfo.isValid) {
+		//是定义元素，非定义自身，且路径中不带参数
+		if(propertyConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 			annotateUnresolvedKeyExpression(element, holder)
 		}
 	}
@@ -66,9 +66,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					expression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
 					expression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
 					expression.type == CwtDataTypes.Enum -> {
-						when{
+						when {
 							expression.value == CwtConfigHandler.paramsEnumName -> Keys.INPUT_PARAMETER_KEY
-							else -> Keys.ENUM_VALUE_KEY 
+							else -> Keys.ENUM_VALUE_KEY
 						}
 					}
 					expression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
@@ -103,8 +103,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				}
 			}
 			ParadoxKvExpressionType.ScopeValueExpression -> {
-				expressionInfo.ranges.forEachIndexed { index, textRange -> 
-					when{
+				expressionInfo.ranges.forEachIndexed { index, textRange ->
+					when {
 						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
 						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_KEY).create()
 					}
@@ -128,8 +128,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val valueConfig = element.getValueConfig()
 		if(valueConfig != null) annotateValueExpression(element, holder, valueConfig)
 		
-		//是定义元素，非定义自身，且是简单的valueExpression
-		if(valueConfig == null && element.isSimpleScriptExpression() && element.definitionElementInfo.isValid) {
+		//是定义元素，非定义自身，且路径中不带参数
+		if(valueConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 			annotateUnresolvedValueExpression(element, holder)
 		}
 	}

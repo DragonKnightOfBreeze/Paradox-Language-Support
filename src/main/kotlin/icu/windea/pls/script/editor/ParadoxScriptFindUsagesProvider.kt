@@ -42,10 +42,10 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			is ParadoxScriptExpression -> {
 				when(element.getConfig()?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.valueInValueSet") else element.name
+						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.valueInValueSet") else element.value
 					}
 					else -> {
-						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.expression") else element.name
+						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.expression") else element.value
 					}
 				}
 			}

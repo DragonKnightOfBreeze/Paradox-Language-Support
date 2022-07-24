@@ -8,7 +8,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
 
 data class CwtDeclarationConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -50,7 +49,7 @@ data class CwtDeclarationConfig(
 	 */
 	fun resolveConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtKvConfig<*>> {
 		//如果路径中可能待遇参数，则不进行解析
-		if(path.isNotEmpty() && path.any { it.isParameterAwareExpression() }) return emptyList()
+		if(path.isParameterAware) return emptyList()
 		
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return configsCache.getOrPut(cacheKey) {
@@ -102,9 +101,11 @@ data class CwtDeclarationConfig(
 						result = nextResult
 						index = nextIndex
 					}
+					//需要按优先级重新排序
+					if(result is MutableList) result.sortByDescending { it.expression.priority }
 					result
 				}
-			}
+			}.sortedByDescending { it.expression.priority } //需要按照优先级重新排序
 		}
 	}
 	
@@ -165,7 +166,7 @@ data class CwtDeclarationConfig(
 	 */
 	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		//如果路径中可能待遇参数，则不进行解析
-		if(path.isNotEmpty() && path.any { it.isParameterAwareExpression() }) return emptyList()
+		if(path.isParameterAware) return emptyList()
 		
 		//parentPath可以对应property或者value
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
@@ -183,8 +184,8 @@ data class CwtDeclarationConfig(
 					}
 					result
 				}
-			}
-		}.distinctBy { it.key }
+			}.distinctBy { it.key }.sortedByDescending { it.expression.priority } //需要按照优先级重新排序
+		}
 	}
 	
 	/**
@@ -192,7 +193,7 @@ data class CwtDeclarationConfig(
 	 */
 	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtValueConfig> {
 		//如果路径中可能待遇参数，则不进行解析
-		if(path.isNotEmpty() && path.any { it.isParameterAwareExpression() }) return emptyList()
+		if(path.isParameterAware) return emptyList()
 		
 		//parentPath可以对应property或者value
 		val cacheKey = "${subtypes.joinToString(",")}$path"
@@ -210,8 +211,8 @@ data class CwtDeclarationConfig(
 					}
 					result
 				}
-			}
-		}.distinctBy { it.value }
+			}.distinctBy { it.value }.sortedByDescending { it.expression.priority } //需要按照优先级重新排序
+		}
 	}
 }
 

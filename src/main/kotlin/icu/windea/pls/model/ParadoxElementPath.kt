@@ -87,6 +87,11 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 	val path = subPaths.joinToString("/")
 	val length = originalSubPaths.size
 	
+	/**
+	 * 路径中是否带有参数（即使无法解析或者语法错误）。
+	 */
+	val isParameterAware = length != 0 && originalSubPaths.any { it.isParameterAwareExpression() }
+	
 	fun isEmpty(): Boolean {
 		return length == 0
 	}

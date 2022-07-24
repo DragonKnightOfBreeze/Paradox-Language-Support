@@ -223,17 +223,21 @@ object CwtConfigHandler {
 				return valueType.matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloatOrNull()) ?: true
 			}
 			CwtDataTypes.Scalar -> {
-				return valueType.matchesStringType()
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true
 			}
 			CwtDataTypes.Localisation -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val selector = localisationSelector().gameType(configGroup.gameType)
 				//return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
 				return true
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val selector = localisationSelector().gameType(configGroup.gameType)
 				//return findSyncedLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
@@ -241,14 +245,16 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return true
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val selector = localisationSelector().gameType(configGroup.gameType)
 				//return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
 				return true
 			}
 			CwtDataTypes.TypeExpression -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val typeExpression = expression.value ?: return false
 				//val selector = definitionSelector().gameType(configGroup.gameType)
@@ -256,7 +262,8 @@ object CwtConfigHandler {
 				return true
 			}
 			CwtDataTypes.TypeExpressionString -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val typeExpression = expression.value ?: return false
 				//val selector = definitionSelector().gameType(configGroup.gameType)
@@ -264,6 +271,8 @@ object CwtConfigHandler {
 				return true
 			}
 			CwtDataTypes.Enum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val enumName = expression.value ?: return false
 				//匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
 				if(enumName == paramsEnumName) return true
@@ -271,29 +280,40 @@ object CwtConfigHandler {
 				return value in enumValues
 			}
 			CwtDataTypes.ComplexEnum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.Value -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//val valueSetName = expression.value ?: return false
 				//val valueValues = configGroup.values[valueSetName]?.values ?: return false
 				//return value in valueValues
-				return valueType.matchesStringType() //任意字符串
+				return true //任意不带参数，不为复杂表达式的字符串
 			}
 			CwtDataTypes.ValueSet -> {
-				return valueType.matchesStringType() //任意字符串
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true //任意不带参数，不为复杂表达式的字符串
 			}
 			CwtDataTypes.Scope -> {
+				if(value.isParameterAwareExpression()) return true
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
 				val name = expression.value ?: return false
 				return matchesLinkExpression(name, configGroup) //忽略大小写
 			}
 			CwtDataTypes.AliasName -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
@@ -326,7 +346,9 @@ object CwtConfigHandler {
 				return valueType.matchesFloatType() || ParadoxValueType.infer(value).matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloatOrNull()) ?: true
 			}
 			CwtDataTypes.Scalar -> {
-				return valueType.matchesStringType()
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true
 			}
 			CwtDataTypes.ColorField -> {
 				return valueType.matchesColorType() && expression.value?.let { value.startsWith(it) } ?: true
@@ -340,14 +362,16 @@ object CwtConfigHandler {
 				return ParadoxValueType.isDateField(value)
 			}
 			CwtDataTypes.Localisation -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val selector = localisationSelector().gameType(configGroup.gameType)
 				//return findLocalisation(value, configGroup.project, selector = selector) != null
 				return true
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val selector = localisationSelector().gameType(configGroup.gameType)
 				//return findSyncedLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
@@ -355,31 +379,33 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return true
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val selector = localisationSelector().gameType(configGroup.gameType)
 				//return findLocalisation(value, configGroup.project, selector = selector) != null
 				return true
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
 				val path = value.toPathOrNull() ?: return false
 				return VfsUtil.findFile(path, true) != null
 			}
 			CwtDataTypes.FilePath -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
 				val resolvedPath = CwtFilePathExpressionTypes.FilePath.resolve(expression.value, value.normalizePath())
 				val selector = fileSelector().gameType(configGroup.gameType)
 				return findFileByFilePath(resolvedPath, configGroup.project, selector = selector) != null
 			}
 			CwtDataTypes.Icon -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
 				val resolvedPath = CwtFilePathExpressionTypes.Icon.resolve(expression.value, value.normalizePath()) ?: return false
 				val selector = fileSelector().gameType(configGroup.gameType)
 				return findFileByFilePath(resolvedPath, configGroup.project, selector = selector) != null
 			}
 			CwtDataTypes.TypeExpression -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val typeExpression = expression.value ?: return false
 				//val selector = definitionSelector().gameType(configGroup.gameType)
@@ -387,7 +413,8 @@ object CwtConfigHandler {
 				return true
 			}
 			CwtDataTypes.TypeExpressionString -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//不要在这里访问索引
 				//val typeExpression = expression.value ?: return false
 				//val selector = definitionSelector().gameType(configGroup.gameType)
@@ -395,55 +422,77 @@ object CwtConfigHandler {
 				return true
 			}
 			CwtDataTypes.Enum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val enumName = expression.value ?: return false
 				val enumValues = configGroup.enums[enumName]?.values ?: return false
 				return value in enumValues
 			}
 			CwtDataTypes.ComplexEnum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.Value -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				//val valueSetName = expression.value ?: return false
 				//val valueValues = configGroup.values[valueSetName]?.values ?: return false
 				//return value in valueValues
-				return !quoted && valueType.matchesStringType() //任意没有用引号括起的字符串
+				return true //任意不带参数，不为复杂表达式的字符串
 			}
 			CwtDataTypes.ValueSet -> {
-				return !quoted && valueType.matchesStringType() //任意没有用引号括起的字符串
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true //任意不带参数，不为复杂表达式的字符串
 			}
 			CwtDataTypes.ScopeGroup -> {
+				if(value.isParameterAwareExpression()) return true
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
 				val scopeGroupName = expression.value ?: return false
 				return matchesLinkExpression(value, configGroup) //忽略大小写
 			}
 			CwtDataTypes.Scope -> {
+				if(value.isParameterAwareExpression()) return true
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
 				val scopeName = expression.value ?: return false
 				return matchesLinkExpression(value, configGroup) //忽略大小写
 			}
 			CwtDataTypes.VariableField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.IntVariableField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.ValueField -> {
+				if(value.isParameterAwareExpression()) return true
 				return false //TODO
 			}
 			CwtDataTypes.IntValueField -> {
+				if(value.isParameterAwareExpression()) return true
 				return false //TODO
 			}
 			CwtDataTypes.SingleAliasRight -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //不在这里处理
 			}
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = false)
 			}
 			CwtDataTypes.AliasMatchLeft -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //不在这里处理
 			}
 			CwtDataTypes.Constant -> {

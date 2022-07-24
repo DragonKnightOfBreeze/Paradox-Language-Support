@@ -47,6 +47,8 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 		return when {
 			leftType == AT && (rightType == VARIABLE_NAME_ID || rightType == VARIABLE_REFERENCE_ID) -> MUST_NOT
 			leftType == PARAMETER_START || rightType == PARAMETER_END -> MUST_NOT
+			leftType == KEY_STRING_SNIPPET || rightType == KEY_STRING_SNIPPET -> MUST_NOT
+			leftType == VALUE_STRING_SNIPPET || rightType == VALUE_STRING_SNIPPET -> MUST_NOT
 			leftType == PIPE || rightType == PIPE -> MUST_NOT
 			else -> MAY
 		}

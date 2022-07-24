@@ -10,7 +10,7 @@ interface ParadoxScriptExpression : ParadoxScriptNamedElement, ParadoxScriptType
 	
 	fun setValue(value: String): ParadoxScriptExpression
 	
-	override fun getName(): String? = value
+	override fun getName(): String = value
 	
 	override fun setName(name: String) = setValue(name)
 }

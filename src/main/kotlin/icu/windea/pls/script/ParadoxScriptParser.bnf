@@ -136,12 +136,12 @@ private block_item ::= COMMENT | property | value | parameter_condition | variab
 
 //key expressions  (various situations)
 private key_expr ::= key_parameter_aware_expr | key_literal_expr
-private key_parameter_aware_expr ::= (parameter | KEY_STRING_SNIPPET) +
+private key_parameter_aware_expr ::= KEY_STRING_SNIPPET? parameter (KEY_STRING_SNIPPET parameter)* KEY_STRING_SNIPPET?
 private key_literal_expr ::= PROPERTY_KEY_TOKEN | QUOTED_PROPERTY_KEY_TOKEN
 
 //value expressions (various situations)
 private value_expr ::= value_parameter_aware_expr | value_literal_expr
-private value_parameter_aware_expr ::= (parameter | VALUE_STRING_SNIPPET) +
+private value_parameter_aware_expr ::= VALUE_STRING_SNIPPET? parameter (VALUE_STRING_SNIPPET parameter)* VALUE_STRING_SNIPPET?
 private value_literal_expr ::= STRING_TOKEN | QUOTED_STRING_TOKEN
 
 //advanced script syntax

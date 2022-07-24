@@ -894,7 +894,7 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 			if(remoteFileId != null) {
 				append(" | ")
 				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
-				appendExternalLinkIcon() //FIXME 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 等待修复
+				appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
 				append(" | ")
 				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //自带外部链接图标
 			}

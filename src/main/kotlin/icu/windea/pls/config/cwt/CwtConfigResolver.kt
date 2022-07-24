@@ -95,15 +95,15 @@ object CwtConfigResolver {
 				else -> break
 			}
 		}
-		
 		val documentation = documentationLines?.joinToString("\n")
+		
 		val config = CwtPropertyConfig(
 			pointer, key, property.propertyValue,
 			booleanValue, intValue, floatValue, stringValue, properties, values,
 			documentation, options, optionValues, separatorType
 		)
-		values?.forEach { it.parent = config }
 		properties?.forEach { it.parent = config }
+		values?.forEach { it.parent = config }
 		return config
 	}
 	
@@ -180,8 +180,8 @@ object CwtConfigResolver {
 			booleanValue, intValue, floatValue, stringValue,
 			properties, values, documentation, options, optionValues
 		)
-		values?.forEach { it.parent = config }
 		properties?.forEach { it.parent = config }
+		values?.forEach { it.parent = config }
 		return config
 	}
 	
