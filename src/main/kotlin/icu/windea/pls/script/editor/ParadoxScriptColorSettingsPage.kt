@@ -34,15 +34,15 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.localisationReference"), ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.syncedLocalisationReference"), ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.pathReference"), ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.valueValue"), ParadoxScriptAttributesKeys.VALUE_VALUE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.enumValue"), ParadoxScriptAttributesKeys.ENUM_VALUE_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.valueInValueSet"), ParadoxScriptAttributesKeys.VALUE_IN_VALUE_SET_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.systemScope"), ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scope"), ParadoxScriptAttributesKeys.SCOPE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scopeValuePrefix"), ParadoxScriptAttributesKeys.SCOPE_VALUE_PREFIX_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scopeValue"), ParadoxScriptAttributesKeys.SCOPE_VALUE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.scriptValuePrefix"), ParadoxScriptAttributesKeys.SCRIPT_VALUE_PREFIX_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.scriptValue"), ParadoxScriptAttributesKeys.SCRIPT_VALUE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.modifier"), ParadoxScriptAttributesKeys.MODIFIER_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.scriptValue"), ParadoxScriptAttributesKeys.SCRIPT_VALUE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY)
 		)
 	}
@@ -53,8 +53,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 		"localisation-reference" to ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY,
 		"synced-localisation-reference" to ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY,
 		"path-reference" to ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY,
-		"value" to ParadoxScriptAttributesKeys.VALUE_VALUE_KEY,
 		"enum-value" to ParadoxScriptAttributesKeys.ENUM_VALUE_KEY,
+		"value" to ParadoxScriptAttributesKeys.VALUE_IN_VALUE_SET_KEY,
 		"system-scope" to ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY,
 		"scope" to ParadoxScriptAttributesKeys.SCOPE_KEY,
 		"scope-value-prefix" to ParadoxScriptAttributesKeys.SCOPE_VALUE_PREFIX_KEY,

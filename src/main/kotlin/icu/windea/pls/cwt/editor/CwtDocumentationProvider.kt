@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.editor
 import com.intellij.lang.documentation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
@@ -36,7 +37,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
-			buildPropertyDefinition(element, originalElement, name, configType)
+			buildPropertyDefinition(element, originalElement, name, configType, false)
 		}
 	}
 	
@@ -44,7 +45,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
-			buildStringDefinition(element, originalElement, name, configType)
+			buildStringDefinition(element, originalElement, name, configType, false)
 		}
 	}
 	
@@ -61,7 +62,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			buildPropertyDefinition(element, originalElement, name, configType)
+			buildPropertyDefinition(element, originalElement, name, configType, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
 			buildSupportedScopesContent(element, originalElement, name, configType, project)
@@ -73,17 +74,24 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			buildStringDefinition(element, originalElement, name, configType)
+			buildStringDefinition(element, originalElement, name, configType, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
 		}
 	}
 	
-	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?) {
+	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail: Boolean) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text)
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				//加上类型信息
+				if(configType?.hasType == true) {
+					val typeName = element.parentOfType<CwtProperty>()?.name
+					if(typeName != null && typeName.isNotEmpty()) {
+						append(": ").append(typeName)
+					}
+				}
 			} else {
 				val prefix = when {
 					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
@@ -93,7 +101,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(!name.equals(originalName, true)) {
+				if(showDetail && !name.equals(originalName, true)) {
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}
@@ -159,11 +167,18 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?) {
+	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail: Boolean) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				//加上类型信息
+				if(configType?.hasType == true) {
+					val typeName = element.parentOfType<CwtProperty>()?.name
+					if(typeName != null && typeName.isNotEmpty()) {
+						append(": ").append(typeName)
+					}
+				}
 			} else {
 				val prefix = when {
 					originalElement is ParadoxScriptPropertyKey || originalElement.parent is ParadoxScriptPropertyKey -> PlsDocBundle.message("name.script.definitionProperty")
@@ -173,7 +188,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(!name.equals(originalName, true)) {
+				if(showDetail && !name.equals(originalName, true)) {
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}

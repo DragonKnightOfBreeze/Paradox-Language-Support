@@ -3,6 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -143,12 +144,27 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 }
 
 
-fun ParadoxScriptPropertyKey.isSimpleExpression():Boolean{
-	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return false
-	return singleChild.elementType.let { it == PROPERTY_KEY_TOKEN || it == QUOTED_PROPERTY_KEY_TOKEN }
+fun ParadoxScriptExpression.isSimpleScriptExpression(): Boolean {
+	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return true
+	return when(this) {
+		is ParadoxScriptPropertyKey -> singleChild.elementType.let {
+			(it == PROPERTY_KEY_TOKEN && !singleChild.textContains('$') && !singleChild.textContains(':')) || it == QUOTED_PROPERTY_KEY_TOKEN
+		}
+		is ParadoxScriptString -> singleChild.elementType.let {
+			(it == STRING_TOKEN && !singleChild.textContains('$') && !singleChild.textContains(':')) || it == QUOTED_STRING_TOKEN
+		}
+		else -> false
+	}
 }
 
-fun ParadoxScriptString.isSimpleExpression():Boolean{
-	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return false
-	return singleChild.elementType.let { it == STRING_TOKEN || it == QUOTED_STRING_TOKEN }
+fun ParadoxScriptExpression.isParameterAwareExpression(): Boolean {
+	return this.findChildOfType<ParadoxScriptParameter>() != null
+}
+
+fun String.isSimpleScriptExpression(): Boolean {
+	return this.isQuoted() || (ParadoxValueType.infer(this) == ParadoxValueType.StringType && this.all { it != '$' && it != ':' })
+}
+
+fun String.isParameterAwareExpression(): Boolean {
+	return !this.isQuoted() && this.any { it == '$' }
 }

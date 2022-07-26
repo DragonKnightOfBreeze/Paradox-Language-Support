@@ -40,11 +40,21 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.property") else element.name
 				}
 			}
-			is ParadoxLocalisationLocale -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.locale") else element.name
-			is ParadoxLocalisationIcon -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.icon") else element.name
-			is ParadoxLocalisationCommandScope -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandScope") else element.name
-			is ParadoxLocalisationCommandField -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandField") else element.name
-			is ParadoxLocalisationColorfulText -> if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.colorfulText") else element.name
+			is ParadoxLocalisationLocale -> {
+				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.locale") else element.name
+			}
+			is ParadoxLocalisationIcon -> {
+				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.icon") else element.name
+			}
+			is ParadoxLocalisationCommandScope -> {
+				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandScope") else element.name
+			}
+			is ParadoxLocalisationCommandField -> {
+				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandField") else element.name
+			}
+			is ParadoxLocalisationColorfulText -> {
+				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.colorfulText") else element.name
+			}
 			else -> null
 		}
 	}

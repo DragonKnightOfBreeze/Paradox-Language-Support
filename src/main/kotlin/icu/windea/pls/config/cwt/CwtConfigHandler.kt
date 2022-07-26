@@ -6,9 +6,8 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.ProcessEntry.end
 import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
@@ -17,7 +16,6 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.util.selector.*
 import javax.swing.*
 import kotlin.text.removeSurrounding
@@ -28,9 +26,10 @@ import kotlin.text.removeSurrounding
  * 提供基于CWT规则实现的匹配、校验、代码提示、引用解析等功能。
  */
 object CwtConfigHandler {
-	private const val paramsEnumName = "scripted_effect_params"
+	const val paramsEnumName = "scripted_effect_params"
+	const val modifierAliasName = "modifier"
 	
-	//region Common Extensions
+	//region Misc Extensions
 	fun resolveAliasSubNameExpression(key: String, quoted: Boolean, aliasGroup: Map<@CaseInsensitive String, List<CwtAliasConfig>>, configGroup: CwtConfigGroup): String? {
 		if(aliasGroup.keys.contains(key) && CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) return key
 		return aliasGroup.keys.find {
@@ -57,10 +56,6 @@ object CwtConfigHandler {
 		return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
 	}
 	
-	fun isInputParameter(propertyConfig: CwtPropertyConfig): Boolean {
-		return propertyConfig.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == paramsEnumName }
-	}
-	
 	private fun matchScope(alias: String, otherAlias: String, configGroup: CwtConfigGroup): Boolean {
 		return alias == otherAlias || configGroup.scopeAliasMap[alias]?.aliases?.contains(otherAlias) ?: false
 	}
@@ -70,17 +65,6 @@ object CwtConfigHandler {
 		val mergedScopeMap = scopeMap.toMutableMap()
 		mergedScopeMap.put("this", thisScope)
 		return scopeMap
-	}
-	//endregion
-	
-	//region Supports Extensions
-	fun supportsParameters(definition: ParadoxDefinitionProperty): Boolean {
-		if(definition !is ParadoxScriptProperty) return false
-		val definitionInfo = definition.definitionInfo ?: return false
-		val definitionType = definitionInfo.type
-		return definitionType.let {
-			it == "scripted_effect" || it == "scripted_trigger" || it == "scripted_modifier" || it == "script_value"
-		}
 	}
 	
 	//effect, effect_clause -> scripted_effect
@@ -109,21 +93,15 @@ object CwtConfigHandler {
 		return if(isAlias) {
 			aliasName.let { it == "effect" || it == "trigger" || it == "modifier_rule" }
 		} else {
-			aliasName.let{  it == "effect_clause" || it == "trigger_clause" }
+			aliasName.let { it == "effect_clause" || it == "trigger_clause" }
 		}
-	}
-	
-	//modifier -> (prescripted) modifier
-	
-	fun supportsModifiers(aliasOrSingleAliasName: String?): Boolean {
-		if(aliasOrSingleAliasName == null) return false
-		return aliasOrSingleAliasName == "modifier"
 	}
 	//endregion
 	
 	//region Matches Extensions
+	//NOTE 在这里的匹配方法中不要访问索引，避免SOF
 	//TODO 基于cwt规则文件的匹配方法需要进一步匹配scope
-	//TODO 兼容variableReference inlineMath parameter  
+	//TODO 兼容variableReference inlineMath parameter 
 	
 	fun matchesDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 		when {
@@ -245,66 +223,97 @@ object CwtConfigHandler {
 				return valueType.matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloatOrNull()) ?: true
 			}
 			CwtDataTypes.Scalar -> {
-				return valueType.matchesStringType()
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true
 			}
 			CwtDataTypes.Localisation -> {
-				if(!valueType.matchesStringType()) return false
-				val selector = localisationSelector().gameType(configGroup.gameType)
-				return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val selector = localisationSelector().gameType(configGroup.gameType)
+				//return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				if(!valueType.matchesStringType()) return false
-				val selector = localisationSelector().gameType(configGroup.gameType)
-				return findSyncedLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val selector = localisationSelector().gameType(configGroup.gameType)
+				//return findSyncedLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return true
-				if(!valueType.matchesStringType()) return false
-				val selector = localisationSelector().gameType(configGroup.gameType)
-				return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val selector = localisationSelector().gameType(configGroup.gameType)
+				//return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.TypeExpression -> {
-				if(!valueType.matchesStringType()) return false
-				val typeExpression = expression.value ?: return false
-				val selector = definitionSelector().gameType(configGroup.gameType)
-				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val typeExpression = expression.value ?: return false
+				//val selector = definitionSelector().gameType(configGroup.gameType)
+				//return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.TypeExpressionString -> {
-				if(!valueType.matchesStringType()) return false
-				val typeExpression = expression.value ?: return false
-				val selector = definitionSelector().gameType(configGroup.gameType)
-				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
-			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return false
-				val valueValues = configGroup.values[valueName]?.values ?: return false
-				return value in valueValues
-			}
-			CwtDataTypes.ValueSet -> {
-				return false //TODO
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val typeExpression = expression.value ?: return false
+				//val selector = definitionSelector().gameType(configGroup.gameType)
+				//return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.Enum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val enumName = expression.value ?: return false
-				//如果keyExpression需要匹配参数名，即使对应的特定定义声明中不存在对应名字的参数，也总是匹配
+				//匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
 				if(enumName == paramsEnumName) return true
 				val enumValues = configGroup.enums[enumName]?.values ?: return false
 				return value in enumValues
 			}
 			CwtDataTypes.ComplexEnum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
+			CwtDataTypes.Value -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//val valueSetName = expression.value ?: return false
+				//val valueValues = configGroup.values[valueSetName]?.values ?: return false
+				//return value in valueValues
+				return true //任意不带参数，不为复杂表达式的字符串
+			}
+			CwtDataTypes.ValueSet -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true //任意不带参数，不为复杂表达式的字符串
+			}
 			CwtDataTypes.Scope -> {
+				if(value.isParameterAwareExpression()) return true
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
 				val name = expression.value ?: return false
 				return matchesLinkExpression(name, configGroup) //忽略大小写
 			}
 			CwtDataTypes.AliasName -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
@@ -316,6 +325,9 @@ object CwtConfigHandler {
 	}
 	
 	fun matchesValue(expression: CwtValueExpression, valueElement: ParadoxScriptValue, configGroup: CwtConfigGroup): Boolean {
+		//当valueElement是scriptBlock时，expression必须是emptyExpression
+		if(valueElement is IParadoxScriptBlock) return expression == CwtValueExpression.EmptyExpression
+		
 		return matchesValue(expression, valueElement.value, valueElement.valueType, valueElement.isQuoted(), configGroup)
 	}
 	
@@ -337,7 +349,9 @@ object CwtConfigHandler {
 				return valueType.matchesFloatType() || ParadoxValueType.infer(value).matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloatOrNull()) ?: true
 			}
 			CwtDataTypes.Scalar -> {
-				return valueType.matchesStringType()
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true
 			}
 			CwtDataTypes.ColorField -> {
 				return valueType.matchesColorType() && expression.value?.let { value.startsWith(it) } ?: true
@@ -351,99 +365,137 @@ object CwtConfigHandler {
 				return ParadoxValueType.isDateField(value)
 			}
 			CwtDataTypes.Localisation -> {
-				if(!valueType.matchesStringType()) return false
-				val selector = localisationSelector().gameType(configGroup.gameType)
-				return findLocalisation(value, configGroup.project, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val selector = localisationSelector().gameType(configGroup.gameType)
+				//return findLocalisation(value, configGroup.project, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				if(!valueType.matchesStringType()) return false
-				val selector = localisationSelector().gameType(configGroup.gameType)
-				return findSyncedLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val selector = localisationSelector().gameType(configGroup.gameType)
+				//return findSyncedLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return true
-				if(!valueType.matchesStringType()) return false
-				val selector = localisationSelector().gameType(configGroup.gameType)
-				return findLocalisation(value, configGroup.project, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val selector = localisationSelector().gameType(configGroup.gameType)
+				//return findLocalisation(value, configGroup.project, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
 				val path = value.toPathOrNull() ?: return false
 				return VfsUtil.findFile(path, true) != null
 			}
 			CwtDataTypes.FilePath -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
 				val resolvedPath = CwtFilePathExpressionTypes.FilePath.resolve(expression.value, value.normalizePath())
 				val selector = fileSelector().gameType(configGroup.gameType)
 				return findFileByFilePath(resolvedPath, configGroup.project, selector = selector) != null
 			}
 			CwtDataTypes.Icon -> {
-				if(!valueType.matchesStringType()) return false
+				if(value.isParameterAwareExpression()) return true
 				val resolvedPath = CwtFilePathExpressionTypes.Icon.resolve(expression.value, value.normalizePath()) ?: return false
 				val selector = fileSelector().gameType(configGroup.gameType)
 				return findFileByFilePath(resolvedPath, configGroup.project, selector = selector) != null
 			}
 			CwtDataTypes.TypeExpression -> {
-				if(!valueType.matchesStringType()) return false
-				val typeExpression = expression.value ?: return false
-				val selector = definitionSelector().gameType(configGroup.gameType)
-				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val typeExpression = expression.value ?: return false
+				//val selector = definitionSelector().gameType(configGroup.gameType)
+				//return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.TypeExpressionString -> {
-				if(!valueType.matchesStringType()) return false
-				val typeExpression = expression.value ?: return false
-				val selector = definitionSelector().gameType(configGroup.gameType)
-				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
-			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return false
-				val valueValues = configGroup.values[valueName]?.values ?: return false
-				return value in valueValues
-			}
-			CwtDataTypes.ValueSet -> {
-				return false //TODO
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//不要在这里访问索引
+				//val typeExpression = expression.value ?: return false
+				//val selector = definitionSelector().gameType(configGroup.gameType)
+				//return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
+				return true
 			}
 			CwtDataTypes.Enum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val enumName = expression.value ?: return false
 				val enumValues = configGroup.enums[enumName]?.values ?: return false
 				return value in enumValues
 			}
 			CwtDataTypes.ComplexEnum -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
+			CwtDataTypes.Value -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				//val valueSetName = expression.value ?: return false
+				//val valueValues = configGroup.values[valueSetName]?.values ?: return false
+				//return value in valueValues
+				return true //任意不带参数，不为复杂表达式的字符串
+			}
+			CwtDataTypes.ValueSet -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
+				return true //任意不带参数，不为复杂表达式的字符串
+			}
 			CwtDataTypes.ScopeGroup -> {
+				if(value.isParameterAwareExpression()) return true
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
 				val scopeGroupName = expression.value ?: return false
 				return matchesLinkExpression(value, configGroup) //忽略大小写
 			}
 			CwtDataTypes.Scope -> {
+				if(value.isParameterAwareExpression()) return true
 				//TODO 匹配scope
 				if(quoted) return false //scope不允许用引号括起
 				val scopeName = expression.value ?: return false
 				return matchesLinkExpression(value, configGroup) //忽略大小写
 			}
 			CwtDataTypes.VariableField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.IntVariableField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.ValueField -> {
+				if(value.isParameterAwareExpression()) return true
 				return false //TODO
 			}
 			CwtDataTypes.IntValueField -> {
+				if(value.isParameterAwareExpression()) return true
 				return false //TODO
 			}
 			CwtDataTypes.SingleAliasRight -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //不在这里处理
 			}
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = false)
 			}
 			CwtDataTypes.AliasMatchLeft -> {
+				if(value.isParameterAwareExpression()) return true
+				if(!value.isSimpleScriptExpression()) return false
 				return false //不在这里处理
 			}
 			CwtDataTypes.Constant -> {
@@ -476,14 +528,14 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean): Boolean {
+	private fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean): Boolean {
 		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
 		if(isKey && !quoted && supportsScopes(aliasName)) {
 			if(matchesLinkExpression(name, configGroup)) return true
 		}
 		
 		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(supportsModifiers(aliasName)) {
+		if(aliasName == modifierAliasName) {
 			if(matchesModifier(name, configGroup)) return true
 		}
 		
@@ -536,12 +588,6 @@ object CwtConfigHandler {
 		//否则加入所有可能的结果，让IDEA自动进行前缀匹配
 		for(propConfig in childPropertyConfigs) {
 			if(shouldComplete(propConfig, definitionElementInfo)) {
-				//如果可能正在输入参数名，则基于对应的特定定义声明中存在的参数名进行提示（排除已经输入完毕的，仅当补全key时特殊处理即可）
-				if(isInputParameter(propConfig)) {
-					completeParameters(propertyElement, quoted, configGroup, result)
-					continue
-				}
-				
 				completeKey(keyElement, propConfig.keyExpression, keyword, quoted, propConfig, configGroup, result, scope)
 			}
 		}
@@ -615,11 +661,12 @@ object CwtConfigHandler {
 	fun completeKey(context: PsiElement, expression: CwtKeyExpression, keyword: String, quoted: Boolean,
 		config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
+		if(!keyword.isSimpleScriptExpression()) return //排除带参数或者为复杂表达式的情况
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processLocalisationVariants(keyword, configGroup.project, selector = selector) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -636,7 +683,7 @@ object CwtConfigHandler {
 			CwtDataTypes.SyncedLocalisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processSyncedLocalisationVariants(keyword, configGroup.project, selector = selector) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -668,7 +715,8 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpression -> {
 				val typeExpression = expression.value ?: return
-				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
+				val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(context)
+				val definitions = findAllDefinitionsByType(typeExpression, configGroup.project, distinct = true, selector = selector) //不预先过滤结果
 				if(definitions.isEmpty()) return
 				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
 				for(definition in definitions) {
@@ -685,7 +733,8 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val typeExpression = expression.value ?: return
-				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
+				val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(context)
+				val definitions = findAllDefinitionsByType(typeExpression, configGroup.project, distinct = true, selector = selector) //不预先过滤结果
 				if(definitions.isEmpty()) return
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return
 				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
@@ -702,33 +751,14 @@ object CwtConfigHandler {
 					result.addElement(lookupElement)
 				}
 			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return
-				val valueConfig = configGroup.values[valueName] ?: return
-				val valueValueConfigs = valueConfig.valueConfigMap.values
-				if(valueValueConfigs.isEmpty()) return
-				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
-				for(valueValueConfig in valueValueConfigs) {
-					if(quoted && valueValueConfig.stringValue == null) continue
-					val n = valueValueConfig.value
-					//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
-					val name = n.quoteIf(quoted)
-					val element = valueValueConfig.pointer.element ?: continue
-					val typeFile = valueConfig.pointer.containingFile
-					val lookupElement = LookupElementBuilder.create(element, name)
-						.withExpectedIcon(PlsIcons.ValueInValueSet)
-						.withTailText(tailText, true)
-						.withTypeText(typeFile?.name, typeFile?.icon, true)
-						.withExpectedInsertHandler(isKey = true)
-						.withCaseSensitivity(false) //忽略大小写
-					result.addElement(lookupElement)
-				}
-			}
-			CwtDataTypes.ValueSet -> {
-				//TODO
-			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return
+				//提示参数名（仅限key）
+				if(enumName == paramsEnumName) {
+					val propertyElement = context.findParentDefinitionProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
+					completeParameters(propertyElement, config, quoted, configGroup, result)
+					return
+				}
 				val enumConfig = configGroup.enums[enumName] ?: return
 				val enumValueConfigs = enumConfig.valueConfigMap.values
 				if(enumValueConfigs.isEmpty()) return
@@ -751,6 +781,51 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ComplexEnum -> {
 				//TODO
+			}
+			CwtDataTypes.Value -> {
+				val valueSetName = expression.value ?: return
+				val tailText = " by $expression in ${config.keyResolved.pointer.containingFile?.name ?: anonymousString}"
+				//提示来自脚本文件的value
+				run {
+					val selector = valueInValueSetSelector().gameType(configGroup.gameType)
+					val valuesInValueSet = findAllValuesInValueSet(valueSetName, configGroup.project, distinct = true, selector = selector)
+					for(valueInValueSet in valuesInValueSet) {
+						val n = runCatching { valueInValueSet.stub?.castOrNull<ParadoxValueInValueSetStub>()?.name }.getOrNull() ?: valueInValueSet.value
+						val name = n.quoteIf(quoted)
+						val element = valueInValueSet
+						//不显示typeText
+						val lookupElement = LookupElementBuilder.create(element, name)
+							.withExpectedIcon(PlsIcons.ValueInValueSet)
+							.withTailText(tailText, true)
+							.withExpectedInsertHandler(isKey = true)
+							.withCaseSensitivity(false) //忽略大小写
+						result.addElement(lookupElement)
+					}
+				}
+				//提示预定义的value
+				run {
+					val valueConfig = configGroup.values[valueSetName] ?: return@run
+					val valueInValueSetConfigs = valueConfig.valueConfigMap.values
+					if(valueInValueSetConfigs.isEmpty()) return@run
+					for(valueInValueSetConfig in valueInValueSetConfigs) {
+						if(quoted && valueInValueSetConfig.stringValue == null) continue
+						val n = valueInValueSetConfig.value
+						//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
+						val name = n.quoteIf(quoted)
+						val element = valueInValueSetConfig.pointer.element ?: continue
+						val typeFile = valueConfig.pointer.containingFile
+						val lookupElement = LookupElementBuilder.create(element, name)
+							.withExpectedIcon(PlsIcons.ValueInValueSet)
+							.withTailText(tailText, true)
+							.withTypeText(typeFile?.name, typeFile?.icon, true)
+							.withExpectedInsertHandler(isKey = true)
+							.withCaseSensitivity(false) //忽略大小写
+						result.addElement(lookupElement)
+					}
+				}
+			}
+			CwtDataTypes.ValueSet -> {
+				return //不需要进行提示
 			}
 			CwtDataTypes.Scope -> {
 				//TODO 匹配scope
@@ -786,6 +861,7 @@ object CwtConfigHandler {
 	fun completeValue(context: PsiElement, expression: CwtValueExpression, keyword: String, quoted: Boolean, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String? = null) {
 		if(expression.isEmpty()) return
+		if(!keyword.isSimpleScriptExpression()) return //排除带参数或者为复杂表达式的情况
 		when(expression.type) {
 			CwtDataTypes.Bool -> {
 				result.addAllElements(boolLookupElements)
@@ -793,7 +869,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processLocalisationVariants(keyword, configGroup.project, selector = selector) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -810,7 +886,7 @@ object CwtConfigHandler {
 			CwtDataTypes.SyncedLocalisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
-				val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(context).preferLocale(preferredParadoxLocale())
 				processSyncedLocalisationVariants(keyword, configGroup.project, selector = selector) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
 					val name = n.quoteIf(quoted)
@@ -887,7 +963,8 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpression -> {
 				val typeExpression = expression.value ?: return
-				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
+				val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(context)
+				val definitions = findAllDefinitionsByType(typeExpression, configGroup.project, distinct = true, selector = selector) //不预先过滤结果
 				if(definitions.isEmpty()) return
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
 				for(definition in definitions) {
@@ -904,7 +981,8 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val typeExpression = expression.value ?: return
-				val definitions = findDefinitionsByType(typeExpression, configGroup.project, distinct = true) //不预先过滤结果
+				val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(context)
+				val definitions = findAllDefinitionsByType(typeExpression, configGroup.project, distinct = true, selector = selector) //不预先过滤结果
 				if(definitions.isEmpty()) return
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
@@ -920,31 +998,6 @@ object CwtConfigHandler {
 						.withExpectedInsertHandler(isKey = false)
 					result.addElement(lookupElement)
 				}
-			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return
-				val valueConfig = configGroup.values[valueName] ?: return
-				val valueValueConfigs = valueConfig.valueConfigMap.values
-				if(valueValueConfigs.isEmpty()) return
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
-				val typeFile = valueConfig.pointer.containingFile
-				for(valueValueConfig in valueValueConfigs) {
-					if(quoted && valueValueConfig.stringValue == null) continue
-					val n = valueValueConfig.value
-					//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
-					val name = n.quoteIf(quoted)
-					val element = valueValueConfig.pointer.element ?: continue
-					val lookupElement = LookupElementBuilder.create(element, name)
-						.withExpectedIcon(PlsIcons.ValueInValueSet)
-						.withTailText(tailText, true)
-						.withTypeText(typeFile?.name, typeFile?.icon, true)
-						.withCaseSensitivity(false) //忽略大小写
-						.withExpectedInsertHandler(isKey = false)
-					result.addElement(lookupElement)
-				}
-			}
-			CwtDataTypes.ValueSet -> {
-				//TODO
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return
@@ -970,6 +1023,51 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ComplexEnum -> {
 				//TODO
+			}
+			CwtDataTypes.Value -> {
+				val valueSetName = expression.value ?: return
+				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				//提示来自脚本文件的value
+				run {
+					val selector = valueInValueSetSelector().gameType(configGroup.gameType)
+					val valuesInValueSet = findAllValuesInValueSet(valueSetName, configGroup.project, distinct = true, selector = selector)
+					for(valueInValueSet in valuesInValueSet) {
+						val n = runCatching { valueInValueSet.stub?.castOrNull<ParadoxValueInValueSetStub>()?.name }.getOrNull() ?: valueInValueSet.value
+						val name = n.quoteIf(quoted)
+						val element = valueInValueSet
+						//不显示typeText
+						val lookupElement = LookupElementBuilder.create(element, name)
+							.withExpectedIcon(PlsIcons.ValueInValueSet)
+							.withTailText(tailText, true)
+							.withExpectedInsertHandler(isKey = false)
+							.withCaseSensitivity(false) //忽略大小写
+						result.addElement(lookupElement)
+					}
+				}
+				//提示预定义的value
+				run {
+					val valueConfig = configGroup.values[valueSetName] ?: return@run
+					val valueInValueSetConfigs = valueConfig.valueConfigMap.values
+					if(valueInValueSetConfigs.isEmpty()) return@run
+					for(valueInValueSetConfig in valueInValueSetConfigs) {
+						if(quoted && valueInValueSetConfig.stringValue == null) continue
+						val n = valueInValueSetConfig.value
+						//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
+						val name = n.quoteIf(quoted)
+						val element = valueInValueSetConfig.pointer.element ?: continue
+						val typeFile = valueConfig.pointer.containingFile
+						val lookupElement = LookupElementBuilder.create(element, name)
+							.withExpectedIcon(PlsIcons.ValueInValueSet)
+							.withTailText(tailText, true)
+							.withTypeText(typeFile?.name, typeFile?.icon, true)
+							.withExpectedInsertHandler(isKey = true)
+							.withCaseSensitivity(false) //忽略大小写
+						result.addElement(lookupElement)
+					}
+				}
+			}
+			CwtDataTypes.ValueSet -> {
+				return //不需要进行提示
 			}
 			CwtDataTypes.ScopeGroup -> {
 				//TODO 匹配scope
@@ -1010,14 +1108,14 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun completeAliasName(context: PsiElement, keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
+	private fun completeAliasName(context: PsiElement, keyword: String, quoted: Boolean, aliasName: String, config: CwtKvConfig<*>,
 		configGroup: CwtConfigGroup, result: CompletionResultSet, scope: String?, isKey: Boolean) {
 		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
 		if(isKey && !quoted && supportsScopes(aliasName)) {
 			completeLink(configGroup, result)
 		}
 		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(supportsModifiers(aliasName)) {
+		if(aliasName == modifierAliasName) {
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 			val finalScope = config.parent?.scope ?: scope
 			completeModifier(quoted, configGroup, result, finalScope, isKey)
@@ -1130,38 +1228,42 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	private fun completeParameters(propertyElement: ParadoxDefinitionProperty, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
-		if(quoted || propertyElement !is ParadoxScriptProperty) return //输入参数不允许用引号括起
+	private fun completeParameters(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+		if(quoted) return //输入参数不允许用引号括起
 		val definitionName = propertyElement.name
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(propertyElement)
-		val definition = findDefinitionByType(definitionName, "scripted_effect|scripted_trigger", configGroup.project, selector = selector) ?: return
-		//得到所有存在的参数名并排除已经输入完毕的
-		val parameterNames = definition.parameterNames ?: return
-		if(parameterNames.isEmpty()) return
-		val parameterNamesToUse = SmartList(parameterNames)
-		propertyElement.block?.processProperty { parameterNamesToUse.remove(it.name).end() } //这里不需要关心正在输入的参数名
+		val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
+			?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
+			?.takeIf { it.type == CwtDataTypes.TypeExpression } ?.value ?: return //不期望的结果
+		val definition = findDefinitionByType(definitionName, definitionType, configGroup.project, selector = selector) ?: return
+		val parameterMap = definition.parameterMap
+		if(parameterMap.isEmpty()) return
+		val existParameterNames = mutableSetOf<String>()
+		propertyElement.block?.processProperty { existParameterNames.add(it.text) } //输入参数不允许用引号括起
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
-		for(parameterName in parameterNamesToUse) {
+		for((parameterName, parameters) in parameterMap) {
+			if(parameterName in existParameterNames || parameters.isEmpty()) continue //排除已输入的
 			val tailText = " from parameters"
-			val lookupElement = LookupElementBuilder.create(parameterName) //目前并不解析参数
+			val lookupElement = LookupElementBuilder.create(parameters.first(), parameterName)
 				.withExpectedIcon(PlsIcons.Parameter)
 				.withTailText(tailText)
 				.withTypeText(definitionName, definition.icon, true)
+				.withExpectedInsertHandler(isKey = true)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
 	}
 	
-	val boolLookupElements = booleanValues.map { value ->
+	private val boolLookupElements = booleanValues.map { value ->
 		LookupElementBuilder.create(value).bold().withPriority(PlsPriorities.keywordPriority)
 	}
 	
 	private fun LookupElementBuilder.withExpectedIcon(icon: Icon, config: CwtConfig<*>? = null): LookupElementBuilder {
-		return withIcon(getExpectedIcon(config, icon))
+		return withIcon(getExpectedIcon(icon, config))
 	}
 	
-	private fun getExpectedIcon(config: CwtConfig<*>?, icon: Icon): Icon {
+	private fun getExpectedIcon(icon: Icon, config: CwtConfig<*>?): Icon {
 		if(config is CwtKvConfig<*>) {
 			val iconOption = config.options?.find { it.key == "icon" }?.value
 			if(iconOption != null) {
@@ -1214,6 +1316,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): PsiElement? {
+		if(!keyElement.isSimpleScriptExpression()) return null //排除带参数或者为复杂表达式的情况
+		
 		//由于这里规则可能被内联，如果必要，需要判断是否可以基于inlineableConfig解析
 		propertyConfig.inlineableConfig?.let { inlineableConfig ->
 			if(inlineableConfig is CwtAliasConfig) {
@@ -1250,22 +1354,19 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
 				return findDefinitionByType(name, typeExpression, project, selector = selector)
 			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return null
-				val name = keyElement.value
-				val gameType = keyElement.fileInfo?.gameType ?: return null
-				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-				val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return null
-				return valueValueConfig.pointer.element.castOrNull<CwtString>()
-			}
-			CwtDataTypes.ValueSet -> {
-				return propertyConfig.keyResolved.pointer.element //TODO
-			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return null
-				//如果keyExpression需要匹配参数名，目前不进行解析
-				if(enumName == paramsEnumName) return null
 				val name = keyElement.value
+				//解析为参数名
+				if(enumName == paramsEnumName) {
+					val definitionName = keyElement.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return null
+					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
+						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
+						?.takeIf { it.type == CwtDataTypes.TypeExpression } ?.value ?: return null
+					val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
+					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
+					return definitions.firstNotNullOfOrNull { it.parameterMap[name]?.firstOrNull()?.element }
+				}
 				val gameType = keyElement.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
@@ -1273,6 +1374,28 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ComplexEnum -> {
 				return propertyConfig.keyResolved.pointer.element //TODO
+			}
+			CwtDataTypes.Value -> {
+				val valueSetName = expression.value ?: return null
+				val valueName = keyElement.value
+				val gameType = keyElement.fileInfo?.gameType ?: return null
+				//尝试解析为来自脚本文件的value
+				run {
+					val selector = valueInValueSetSelector().gameType(gameType)
+					val resolved = findValueInValueSet(valueName, valueSetName, project, selector = selector)
+					if(resolved != null) return resolved
+				}
+				//尝试解析为预定义的value
+				run {
+					val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
+					val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+					val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtString>()
+					if(resolved != null) return resolved
+				}
+				return null
+			}
+			CwtDataTypes.ValueSet -> {
+				return keyElement //自身
 			}
 			CwtDataTypes.Scope -> {
 				//TODO 匹配scope
@@ -1313,6 +1436,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doMultiResolveKey(keyElement: ParadoxScriptPropertyKey, expression: CwtKeyExpression, propertyConfig: CwtPropertyConfig): Collection<PsiElement> {
+		if(!keyElement.isSimpleScriptExpression()) return emptyList() //排除带参数或者为复杂表达式的情况
+		
 		//由于这里规则可能被内联，如果必要，需要判断是否可以基于inlineableConfig解析
 		propertyConfig.inlineableConfig?.let { inlineableConfig ->
 			if(inlineableConfig is CwtAliasConfig) {
@@ -1349,22 +1474,19 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
 				return findDefinitionsByType(name, typeExpression, project, selector = selector)
 			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return emptyList()
-				val name = keyElement.value
-				val gameType = keyElement.fileInfo?.gameType ?: return emptyList()
-				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
-				val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return emptyList()
-				return valueValueConfig.pointer.element.castOrNull<CwtString>().toSingletonListOrEmpty()
-			}
-			CwtDataTypes.ValueSet -> {
-				return propertyConfig.keyResolved.pointer.element.toSingletonListOrEmpty() //TODO
-			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return emptyList()
-				//如果keyExpression需要匹配参数名，目前不进行解析
-				if(enumName == paramsEnumName) return emptyList()
 				val name = keyElement.value
+				//解析为参数名
+				if(enumName == paramsEnumName) {
+					val definitionName = keyElement.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return emptyList()
+					val definitionType = propertyConfig.parent?.castOrNull<CwtPropertyConfig>()
+						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
+						?.takeIf { it.type == CwtDataTypes.TypeExpression } ?.value ?: return emptyList()
+					val selector = definitionSelector().gameTypeFrom(keyElement).preferRootFrom(keyElement)
+					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
+					return definitions.flatMap { it.parameterMap[name].orEmpty() }.mapNotNull { it.element }
+				}
 				val gameType = keyElement.fileInfo?.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return emptyList()
@@ -1372,6 +1494,28 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ComplexEnum -> {
 				return propertyConfig.keyResolved.pointer.element.toSingletonListOrEmpty() //TODO
+			}
+			CwtDataTypes.Value -> {
+				val valueSetName = expression.value ?: return emptyList()
+				val valueName = keyElement.value
+				val gameType = keyElement.fileInfo?.gameType ?: return emptyList()
+				//尝试解析为来自脚本文件的value
+				run {
+					val selector = valueInValueSetSelector().gameType(gameType)
+					val resolved = findValuesInValueSet(valueName, valueSetName, project, selector = selector)
+					if(resolved.isNotEmpty()) return resolved
+				}
+				//尝试解析为预定义的value
+				run {
+					val configGroup = getCwtConfig(keyElement.project).getValue(gameType)
+					val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+					val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtString>()
+					if(resolved != null) return resolved.toSingletonList()
+				}
+				return emptyList()
+			}
+			CwtDataTypes.ValueSet -> {
+				return keyElement.toSingletonList() //自身
 			}
 			CwtDataTypes.Scope -> {
 				//TODO 匹配scope
@@ -1412,6 +1556,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): PsiElement? {
+		if(valueElement !is ParadoxScriptString || !valueElement.isSimpleScriptExpression()) return null //排除带参数或者为复杂表达式的情况
+		
 		val project = valueElement.project
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1460,17 +1606,6 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement)
 				return findDefinitionByType(name, typeExpression, project, selector = selector)
 			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return null
-				val name = valueElement.value
-				val gameType = valueElement.fileInfo?.gameType ?: return null
-				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
-				val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return null
-				return valueValueConfig.pointer.element.castOrNull<CwtString>()
-			}
-			CwtDataTypes.ValueSet -> {
-				return valueConfig.resolved.pointer.element.castOrNull<CwtString>() //TODO
-			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return null
 				val name = valueElement.value
@@ -1481,6 +1616,28 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ComplexEnum -> {
 				return valueConfig.resolved.pointer.element.castOrNull<CwtString>() //TODO
+			}
+			CwtDataTypes.Value-> {
+				val valueSetName = expression.value ?: return null
+				val valueName = valueElement.value
+				val gameType = valueElement.fileInfo?.gameType ?: return null
+				//尝试解析为来自脚本文件的value
+				run {
+					val selector = valueInValueSetSelector().gameType(gameType)
+					val resolved = findValueInValueSet(valueName, valueSetName, project, selector = selector)
+					if(resolved != null) return resolved
+				}
+				//尝试解析为预定义的value
+				run {
+					val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
+					val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+					val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtString>()
+					if(resolved != null) return resolved
+				}
+				return null
+			}
+			CwtDataTypes.ValueSet -> {
+				return valueElement //自身
 			}
 			CwtDataTypes.ScopeGroup -> {
 				//TODO 匹配scope
@@ -1525,6 +1682,8 @@ object CwtConfigHandler {
 	
 	@PublishedApi
 	internal fun doMultiResolveValue(valueElement: ParadoxScriptValue, expression: CwtValueExpression, valueConfig: CwtValueConfig): Collection<PsiElement> {
+		if(valueElement !is ParadoxScriptString || !valueElement.isSimpleScriptExpression()) return emptyList() //排除带参数或者为复杂表达式的情况
+		
 		val project = valueElement.project
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1573,17 +1732,6 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameTypeFrom(valueElement).preferRootFrom(valueElement)
 				return findDefinitionsByType(name, typeExpression, project, selector = selector)
 			}
-			CwtDataTypes.Value -> {
-				val valueName = expression.value ?: return emptyList()
-				val name = valueElement.value
-				val gameType = valueElement.fileInfo?.gameType ?: return emptyList()
-				val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
-				val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return emptyList()
-				return valueValueConfig.pointer.element.castOrNull<CwtString>()?.toSingletonList() ?: return emptyList()
-			}
-			CwtDataTypes.ValueSet -> {
-				return emptyList() //TODO
-			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return emptyList()
 				val name = valueElement.value
@@ -1594,6 +1742,28 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ComplexEnum -> {
 				return emptyList() //TODO
+			}
+			CwtDataTypes.Value -> {
+				val valueSetName = expression.value ?: return emptyList()
+				val valueName = valueElement.value
+				val gameType = valueElement.fileInfo?.gameType ?: return emptyList()
+				//尝试解析为来自脚本文件的value
+				run {
+					val selector = valueInValueSetSelector().gameType(gameType)
+					val resolved = findValuesInValueSet(valueName, valueSetName, project, selector = selector)
+					if(resolved.isNotEmpty()) return resolved
+				}
+				//尝试解析为预定义的value
+				run {
+					val configGroup = getCwtConfig(valueElement.project).getValue(gameType)
+					val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+					val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtString>()
+					if(resolved != null) return resolved.toSingletonList()
+				}
+				return emptyList()
+			}
+			CwtDataTypes.ValueSet -> {
+				return valueElement.toSingletonList() //自身
 			}
 			CwtDataTypes.ScopeGroup -> {
 				//TODO 匹配scope
@@ -1628,7 +1798,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun resolveAliasName(context: PsiElement, name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean, injectedOnly: Boolean = false): PsiElement? {
+	private fun resolveAliasName(context: PsiElement, name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean, injectedOnly: Boolean = false): PsiElement? {
 		val project = configGroup.project
 		
 		//如果aliasName是effect或trigger，则name也可以是links中的link，或者其嵌套格式（root.owner）
@@ -1638,7 +1808,7 @@ object CwtConfigHandler {
 		}
 		
 		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(supportsModifiers(aliasName)) {
+		if(aliasName == modifierAliasName) {
 			val resolvedModifier = resolveModifier(name, configGroup)
 			if(resolvedModifier != null) return resolvedModifier
 		}
@@ -1670,14 +1840,6 @@ object CwtConfigHandler {
 					val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(context)
 					return findDefinitionByType(nameToUse, typeExpression, project, selector = selector)
 				}
-				CwtDataTypes.Value -> {
-					val valueName = expression.value ?: return null
-					val valueValueConfig = configGroup.values.get(valueName)?.valueConfigMap?.get(name) ?: return null
-					return valueValueConfig.pointer.element.castOrNull<CwtString>()
-				}
-				CwtDataTypes.ValueSet -> {
-					return null //TODO
-				}
 				CwtDataTypes.Enum -> {
 					val enumName = expression.value ?: return null
 					val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
@@ -1685,6 +1847,28 @@ object CwtConfigHandler {
 				}
 				CwtDataTypes.ComplexEnum -> {
 					return null //TODO
+				}
+				CwtDataTypes.Value-> {
+					if(context !is ParadoxScriptExpression) return null
+					val valueSetName = expression.value ?: return null
+					val valueName = context.value
+					val gameType = configGroup.gameType
+					//尝试解析为来自脚本文件的value
+					run {
+						val selector = valueInValueSetSelector().gameType(gameType)
+						val resolved = findValueInValueSet(valueName, valueSetName, project, selector = selector)
+						if(resolved != null) return resolved
+					}
+					//尝试解析为预定义的value
+					run {
+						val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+						val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtString>()
+						if(resolved != null) return resolved
+					}
+					return null
+				}
+				CwtDataTypes.ValueSet -> {
+					return context //自身
 				}
 				CwtDataTypes.Constant -> {
 					//同名的定义有多个，取第一个即可

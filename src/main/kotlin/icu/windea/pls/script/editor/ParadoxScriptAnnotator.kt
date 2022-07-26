@@ -47,8 +47,10 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val propertyConfig = element.getPropertyConfig()
 		if(propertyConfig != null) annotateKeyExpression(element, holder, propertyConfig)
 		
-		//是定义元素，非定义自身，且是简单的keyExpression
-		if(propertyConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) annotateUnresolvedKeyExpression(element, holder)
+		//是定义元素，非定义自身，且路径中不带参数
+		if(propertyConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
+			annotateUnresolvedKeyExpression(element, holder)
+		}
 	}
 	
 	private fun annotateKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, propertyConfig: CwtPropertyConfig) {
@@ -56,17 +58,22 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val expressionInfo = element.expressionInfo ?: return
 		when(expressionInfo.type) {
 			ParadoxKvExpressionType.LiteralType -> {
+				val expression = propertyConfig.keyExpression
 				val attributesKey = when {
-					CwtConfigHandler.isInputParameter(propertyConfig) -> Keys.INPUT_PARAMETER_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
-					propertyConfig.keyExpression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.Enum -> {
+						when {
+							expression.value == CwtConfigHandler.paramsEnumName -> Keys.INPUT_PARAMETER_KEY
+							else -> Keys.ENUM_VALUE_KEY
+						}
+					}
+					expression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.Value -> Keys.VALUE_IN_VALUE_SET_KEY
+					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_IN_VALUE_SET_KEY
 					else -> {
 						val resolved = element.reference?.resolve()
 						val configType = resolved?.let { CwtConfigType.resolve(it) }
@@ -96,8 +103,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				}
 			}
 			ParadoxKvExpressionType.ScopeValueExpression -> {
-				expressionInfo.ranges.forEachIndexed { index, textRange -> 
-					when{
+				expressionInfo.ranges.forEachIndexed { index, textRange ->
+					when {
 						index == 0 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_PREFIX_KEY).create()
 						index == 1 -> holder.newSilentAnnotation(INFORMATION).range(textRange.shiftRight(element.textRange.startOffset)).textAttributes(Keys.SCOPE_VALUE_KEY).create()
 					}
@@ -121,8 +128,10 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val valueConfig = element.getValueConfig()
 		if(valueConfig != null) annotateValueExpression(element, holder, valueConfig)
 		
-		//是定义元素，非定义自身，且是简单的valueExpression
-		if(valueConfig == null && element.isSimpleExpression() && element.definitionElementInfo.isValid) annotateUnresolvedValueExpression(element, holder)
+		//是定义元素，非定义自身，且路径中不带参数
+		if(valueConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
+			annotateUnresolvedValueExpression(element, holder)
+		}
 	}
 	
 	private fun annotateValueExpression(element: ParadoxScriptString, holder: AnnotationHolder, valueConfig: CwtValueConfig) {
@@ -130,19 +139,20 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val expressionInfo = element.expressionInfo ?: return
 		when(expressionInfo.type) {
 			ParadoxKvExpressionType.LiteralType -> {
+				val expression = valueConfig.valueExpression
 				val attributesKey = when {
-					valueConfig.valueExpression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Value -> Keys.VALUE_VALUE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.ValueSet -> Keys.VALUE_VALUE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
-					valueConfig.valueExpression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.InlineLocalisation && !element.isQuoted() -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.Localisation -> Keys.LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.SyncedLocalisation -> Keys.SYNCED_LOCALISATION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpression -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.TypeExpressionString -> Keys.DEFINITION_REFERENCE_KEY
+					expression.type == CwtDataTypes.AbsoluteFilePath -> Keys.PATH_REFERENCE_KEY
+					expression.type == CwtDataTypes.FilePath -> Keys.PATH_REFERENCE_KEY
+					expression.type == CwtDataTypes.Icon -> Keys.PATH_REFERENCE_KEY
+					expression.type == CwtDataTypes.Enum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.ComplexEnum -> Keys.ENUM_VALUE_KEY
+					expression.type == CwtDataTypes.Value -> Keys.VALUE_IN_VALUE_SET_KEY
+					expression.type == CwtDataTypes.ValueSet -> Keys.VALUE_IN_VALUE_SET_KEY
 					else -> {
 						val resolved = element.reference?.resolve()
 						val configType = resolved?.let { CwtConfigType.resolve(it) }

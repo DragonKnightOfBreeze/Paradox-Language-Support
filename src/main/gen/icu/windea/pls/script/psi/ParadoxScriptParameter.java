@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.script.reference.ParadoxParameterReference;
 import javax.swing.Icon;
 
 public interface ParadoxScriptParameter extends ParadoxScriptValue, IParadoxScriptParameter {
@@ -32,5 +33,8 @@ public interface ParadoxScriptParameter extends ParadoxScriptValue, IParadoxScri
 
   @NotNull
   ParadoxValueType getValueType();
+
+  @Nullable
+  ParadoxParameterReference getReference();
 
 }

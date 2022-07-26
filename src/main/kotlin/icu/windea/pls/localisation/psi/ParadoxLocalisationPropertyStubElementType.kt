@@ -35,7 +35,7 @@ class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocal
 	
 	override fun indexStub(stub: ParadoxLocalisationStub, sink: IndexSink) {
 		//根据分类索引localisation和localisation_synced的name
-		stub.name?.let { name ->
+		stub.name?.takeIfNotEmpty()?.let { name ->
 			when(stub.category) {
 				ParadoxLocalisationCategory.Localisation -> sink.occurrence(ParadoxLocalisationNameIndex.Localisation.key, name)
 				ParadoxLocalisationCategory.SyncedLocalisation -> sink.occurrence(ParadoxLocalisationNameIndex.SyncedLocalisation.key, name)

@@ -12,16 +12,37 @@ import javax.swing.Icon;
 public interface ParadoxScriptBlock extends ParadoxScriptValue, IParadoxScriptBlock {
 
   @NotNull
+  List<ParadoxScriptBlock> getBlockList();
+
+  @NotNull
+  List<ParadoxScriptBoolean> getBooleanList();
+
+  @NotNull
+  List<ParadoxScriptColor> getColorList();
+
+  @NotNull
+  List<ParadoxScriptFloat> getFloatList();
+
+  @NotNull
+  List<ParadoxScriptInlineMath> getInlineMathList();
+
+  @NotNull
+  List<ParadoxScriptInt> getIntList();
+
+  @NotNull
   List<ParadoxScriptParameterCondition> getParameterConditionList();
 
   @NotNull
   List<ParadoxScriptProperty> getPropertyList();
 
   @NotNull
-  List<ParadoxScriptValue> getValueList();
+  List<ParadoxScriptString> getStringList();
 
   @NotNull
   List<ParadoxScriptVariable> getVariableList();
+
+  @NotNull
+  List<ParadoxScriptVariableReference> getVariableReferenceList();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -32,6 +53,9 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, IParadoxScriptBl
   boolean isEmpty();
 
   boolean isNotEmpty();
+
+  @NotNull
+  List<ParadoxScriptValue> getValueList();
 
   @NotNull
   List<PsiElement> getComponents();

@@ -31,9 +31,9 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  @Nullable
-  public ParadoxScriptParameter getParameter() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptParameter.class);
+  @NotNull
+  public List<ParadoxScriptParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
   }
 
   @Override
@@ -46,6 +46,12 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   @NotNull
   public ParadoxScriptPropertyKey setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNameIdentifier() {
+    return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override

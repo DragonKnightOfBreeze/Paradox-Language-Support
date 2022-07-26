@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.reference.*
@@ -13,7 +12,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.reference.*
 import org.apache.commons.imaging.color.*
-import org.jetbrains.annotations.Unmodifiable
 import java.awt.*
 import javax.swing.*
 
@@ -45,6 +43,11 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return false
+	}
+	
+	@JvmStatic
+	fun getValueList(element: ParadoxScriptRootBlock): List<ParadoxScriptValue> {
+		return element.filterChildOfType()
 	}
 	
 	@JvmStatic
@@ -115,6 +118,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
+	//region ParadoxScriptVariableValue
+	@JvmStatic
+	fun getValue(element: ParadoxScriptVariableValue): ParadoxScriptValue {
+		return element.findRequiredChild()
+	}
+	//endregion
+	
 	//region ParadoxScriptParameter
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
@@ -146,12 +156,18 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptParameter): String {
-		return PlsFolders.parameterFolder
+		return element.text
 	}
 	
 	@JvmStatic
 	fun getDefaultValue(element: ParadoxScriptParameter): String? {
 		return element.defaultValueToken?.text
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxScriptParameter): ParadoxParameterReference? {
+		val nameElement = element.parameterId ?: return null
+		return ParadoxParameterReference(element, nameElement.textRangeInParent)
 	}
 	//endregion
 	
@@ -180,12 +196,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptProperty): PsiElement? {
-		return element.propertyKey.let { it.propertyKeyId ?: it.quotedPropertyKeyId }
-	}
-	
-	@JvmStatic
-	fun getTextOffset(element: ParadoxScriptProperty): Int {
-		return element.propertyKey.textOffset
+		return if(element.propertyKey.isSimpleScriptExpression()) element.firstChild  else null
 	}
 	
 	@JvmStatic
@@ -238,13 +249,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getParameterNames(element: ParadoxScriptProperty): Set<String>? {
-		if(!CwtConfigHandler.supportsParameters(element)) return null
-		val result = sortedSetOf<String>() //按名字进行排序
+	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> {
+		val file = element.containingFile
+		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<IParadoxScriptParameter>>>() //按名字进行排序
 		element.acceptChildren(object : PsiRecursiveElementVisitor() {
 			override fun visitElement(e: PsiElement) {
 				if(e is IParadoxScriptParameter) {
-					result.add(e.name)
+					result.getOrPut(e.name) { mutableSetOf() }.add(e.createPointer(file))
 					return
 				}
 				super.visitElement(e)
@@ -265,6 +276,11 @@ object ParadoxScriptPsiImplUtil {
 		val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, value)
 		element.replace(newElement)
 		return element
+	}
+	
+	@JvmStatic
+	fun getNameIdentifier(element: ParadoxScriptPropertyKey): PsiElement? {
+		return if(element.isSimpleScriptExpression()) element.firstChild  else null
 	}
 	
 	@JvmStatic
@@ -293,6 +309,13 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return ParadoxValueType.UnknownType
+	}
+	//endregion
+	
+	//region ParadoxScriptPropertyValue
+	@JvmStatic
+	fun getValue(element: ParadoxScriptPropertyValue): ParadoxScriptValue {
+		return element.findRequiredChild()
 	}
 	//endregion
 	
@@ -415,6 +438,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getNameIdentifier(element: ParadoxScriptString): PsiElement? {
+		return if(element.isSimpleScriptExpression()) element.firstChild else null
+	}
+	
+	@JvmStatic
 	fun getStringValue(element: ParadoxScriptString): String {
 		return element.value
 	}
@@ -533,6 +561,12 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return false
+	}
+	
+	
+	@JvmStatic
+	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
+		return element.filterChildOfType()
 	}
 	
 	@JvmStatic
@@ -691,6 +725,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getValueList(element: ParadoxScriptParameterCondition): List<ParadoxScriptValue> {
+		return element.filterChildOfType()
+	}
+	
+	@JvmStatic
 	fun getComponents(element: ParadoxScriptParameterCondition): List<PsiElement> {
 		//允许混合value和property
 		return element.filterChildOfType { isParameterConditionComponent(it) }
@@ -728,6 +767,12 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptParameterConditionParameter): Int {
 		return element.node.startOffset
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxParameterReference {
+		val nameElement = element.parameterId
+		return ParadoxParameterReference(element, nameElement.textRangeInParent)
 	}
 	//endregion
 	
@@ -813,6 +858,12 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getDefaultValue(element: ParadoxScriptInlineMathParameter): String? {
 		return element.defaultValueToken?.text
+	}
+	
+	@JvmStatic
+	fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterReference? {
+		val nameElement = element.parameterId ?: return null
+		return ParadoxParameterReference(element, nameElement.textRangeInParent)
 	}
 	//endregion
 }

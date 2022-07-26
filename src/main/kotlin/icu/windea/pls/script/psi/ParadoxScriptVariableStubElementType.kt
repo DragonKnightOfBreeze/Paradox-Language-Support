@@ -24,7 +24,7 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//仅当是scripted_variable才创建索引
+		//仅当是全局的scripted_variable时才创建索引
 		if(node.treeParent.elementType != ParadoxScriptElementTypes.ROOT_BLOCK) return false
 		val file = node.psi.containingFile
 		val path = file.fileInfo?.path?.path ?: return false
@@ -33,7 +33,7 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	
 	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {
 		//索引scripted_variable的name
-		stub.name?.let { name -> sink.occurrence(ParadoxScriptedVariableNameIndex.key, name) }
+		stub.name?.takeIfNotEmpty()?.let { name -> sink.occurrence(ParadoxScriptedVariableNameIndex.key, name) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {

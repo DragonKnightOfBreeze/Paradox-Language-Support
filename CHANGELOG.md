@@ -21,6 +21,7 @@
 * BUG修复：
   * [X] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
   * [X] 修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
+  * [ ] 修复：对声明的查找使用的结果不完整（定义，本地化，~~参数~~）
 * 代码优化：
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
@@ -41,6 +42,7 @@
   * [X] 优化导入游戏或模组目录时弹出的对话框 - 在文件选择器中提供额外的工具栏按钮，可以快速选中Steam游戏目录、Steam创意工坊目录等
   * [X] 优化动态模版，移除硬编码的颜色码枚举（尽管仍然不够直观，或许应该考虑顶部工具类 / 悬浮工具栏？）
   * [X] 初步集成[Translation](https://github.com/YiiGuxing/TranslationPlugin)插件，用于翻译本地化文本
+  * [X] 如果定义支持参数且拥有参数，则在文档中显示
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * [ ] 将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）
 * 新增功能：
@@ -64,6 +66,8 @@
   * [X] 实现`ParadoxQualifiedNameProvider`，用于复制路径/引用（Edit > Copy Path/Reference...）
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
   * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他文件作比较（拥有相同的相对于游戏或模组目录的路径，不限文件类型，如果存在）
+* 完善内前提示：
+  * [X] 脚本文件：值集中的值的内嵌提示（值的类型即值集的名字）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
@@ -93,11 +97,13 @@
   * [X] 支持的额外的CWT规则：`types.type[*].pictures`改为`types.type[*].images`
 * ［长期］完善CWT配置支持
   * [X] 支持解析scopeExpression（如`from.owner`）
-  * [ ] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
+  * [X] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
+  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
   * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
-  * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）（不解析）
+  * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
+  * [X] 优化：支持匹配、提示和解析参数，以及显示参数信息 （当可用时）
   * [ ] 编写`ParadoxScriptStringExpression`以及相关代码，用于处理各种特殊的键/值表达式（`root.owner` `event_target:xxx`等）
   * [ ] 支持匹配、提示和解析各种特殊的键/值表达式（`root.owner` `event_target:xxx`等）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
@@ -129,9 +135,9 @@
   * [X] 脚本文件：显示变量的名字和额外信息（变量的值）
   * [X] 脚本文件：显示定义的额外信息（定义的名字和类型），覆盖属性的，并使用定义的图标
   * [X] 脚本文件：对于本身是定义的脚本文件，也显示定义的额外信息（定义的名字和类型）
-  * [X] 本地化文件：显示语言区域的ID和描述，作为属性和本地化的父节点
-  * [X] 本地化文件：显示属性的键名
-  * [X] 本地化文件：显示本地化的键名，覆盖属性的
+  * [X] 脚本文件：显示语言区域的ID和描述，作为属性和本地化的父节点
+  * [X] 脚本文件：显示属性的键名
+  * [X] 脚本文件：显示本地化的键名，覆盖属性的
 * [X] 支持显示上下文信息
   * [X] 定义元素的上下文信息（如：`definitionKey = {`）
   * [X] 本地化（属性）的上下文信息（如：`l_english:`）

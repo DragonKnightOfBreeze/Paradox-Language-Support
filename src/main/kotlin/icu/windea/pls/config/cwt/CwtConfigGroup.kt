@@ -48,6 +48,9 @@ class CwtConfigGroup(
 	//since: stellaris v3.4
 	val tagMap: Map<String, Map<@CaseInsensitive String, CwtTagConfig>> //definitionType - tagName - tagConfig
 	
+	//支持参数的定义类型
+	val definitionTypesSupportParameters: Set<String>
+	
 	init {
 		folders = mutableSetOf()
 		types = mutableMapOf()
@@ -200,6 +203,7 @@ class CwtConfigGroup(
 						if(aliasNamePair != null) {
 							val (aliasName, aliasSubName) = aliasNamePair
 							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
+							
 							val map = aliases.getOrPut(aliasName) { CollectionFactory.createCaseInsensitiveStringMap() } //忽略大小写
 							val list = map.getOrPut(aliasSubName) { SmartList() }
 							list.add(aliasConfig)
@@ -215,6 +219,7 @@ class CwtConfigGroup(
 		
 		modifierCategoryIdMap = initModifierCategoryIdMap()
 		tagMap = initTagMap()
+		definitionTypesSupportParameters = initDefinitionTypesSupportParameters()
 		
 		bindModifierCategorySupportedScopeNames()
 		bindLocalisationCommandSupportedScopeNames()
@@ -549,22 +554,38 @@ class CwtConfigGroup(
 	//初始化基于解析的CWT配置的额外配置
 	
 	private fun initModifierCategoryIdMap(): Map<String, CwtModifierCategoryConfig> {
-		val modifierCategoryIdMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
+		val result: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 		for(modifierCategory in modifierCategories.values) {
 			val internalId = modifierCategory.internalId ?: continue
-			modifierCategoryIdMap[internalId] = modifierCategory
+			result[internalId] = modifierCategory
 		}
-		return modifierCategoryIdMap
+		return result
 	}
 	
 	private fun initTagMap(): Map<String, Map<@CaseInsensitive String, CwtTagConfig>> {
-		val tagNameMap: MutableMap<String, MutableMap<String, CwtTagConfig>> = mutableMapOf()
+		val result: MutableMap<String, MutableMap<String, CwtTagConfig>> = mutableMapOf()
 		for(tag in tags.values) {
 			for(supportedType in tag.supportedTypes) {
-				tagNameMap.getOrPut(supportedType) { CollectionFactory.createCaseInsensitiveStringMap() }.put(tag.name, tag)
+				result.getOrPut(supportedType) { CollectionFactory.createCaseInsensitiveStringMap() }.put(tag.name, tag)
 			}
 		}
-		return tagNameMap
+		return result
+	}
+	
+	private fun initDefinitionTypesSupportParameters(): MutableSet<String> {
+		val result = mutableSetOf<String>()
+		for(aliasGroup in aliases.values) {
+			for(aliasList in aliasGroup.values) {
+				for(aliasConfig in aliasList) {
+					val props = aliasConfig.config.properties ?: continue
+					if(props.isEmpty()) continue
+					if(props.none { it.keyExpression.let { e -> e.type == CwtDataTypes.Enum && e.value == CwtConfigHandler.paramsEnumName } }) continue
+					val definitionType = aliasConfig.keyExpression.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: continue
+					result.add(definitionType)
+				}
+			}
+		}
+		return result
 	}
 	
 	//绑定CWT配置

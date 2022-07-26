@@ -11,8 +11,8 @@ data class CwtAliasConfig(
 	val subName: String,
 	override val config: CwtPropertyConfig
 ) : CwtInlineableConfig {
-	val keyExpression by lazy { CwtKeyExpression.resolve(subName) }
-	val valueExpression by lazy { CwtValueExpression.resolve(subName) }
+	val keyExpression = CwtKeyExpression.resolve(subName)
+	val valueExpression = CwtValueExpression.resolve(subName)
 	
 	//TODO check
 	

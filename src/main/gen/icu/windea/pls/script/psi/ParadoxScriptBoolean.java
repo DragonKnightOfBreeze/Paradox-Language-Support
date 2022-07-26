@@ -9,6 +9,9 @@ import icu.windea.pls.model.ParadoxValueType;
 
 public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValue {
 
+  @NotNull
+  String getValue();
+
   boolean getBooleanValue();
 
   @NotNull

@@ -8,16 +8,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.model.ParadoxValueType;
 
-public class ParadoxScriptFloatImpl extends ParadoxScriptNumberImpl implements ParadoxScriptFloat {
+public class ParadoxScriptFloatImpl extends ASTWrapperPsiElement implements ParadoxScriptFloat {
 
   public ParadoxScriptFloatImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitFloat(this);
   }

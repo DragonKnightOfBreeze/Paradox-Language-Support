@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
-import java.util.LinkedList
+import java.util.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -19,8 +19,7 @@ import java.util.LinkedList
 @Suppress("unused")
 class ParadoxElementPath<ROOT : PsiElement> private constructor(
 	val originalSubPaths: List<String>, //注意：这里传入的子路径需要保留可能的括起的双引号
-	//val pointer: SmartPsiElementPointer<PsiElement>? = null //不能加上，会导致递归循环
-	val rootPointer: SmartPsiElementPointer<out ROOT>? = null
+	val rootElement: ROOT? //不能使用SmartPointer，容易导致SOF
 ) : Iterable<String> {
 	companion object Resolver {
 		/**
@@ -28,7 +27,7 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 		 */
 		fun resolveFromFile(element: ParadoxDefinitionProperty, maxDepth: Int = -1): ParadoxElementPath<ParadoxScriptFile>? {
 			if(element is ParadoxScriptFile) {
-				return ParadoxElementPath(emptyList(), element.createPointer(element))
+				return ParadoxElementPath(emptyList(), element)
 			}
 			var current: PsiElement = element
 			var depth = 0
@@ -49,8 +48,7 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 				current = current.parent ?: break
 			}
 			val file = current as ParadoxScriptFile
-			val rootPointer = file.createPointer(file)
-			return ParadoxElementPath(originalSubPaths, rootPointer)
+			return ParadoxElementPath(originalSubPaths, file)
 		}
 		
 		/**
@@ -58,14 +56,10 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 		 */
 		fun <E : PsiElement> resolveFromDefinition(element: E): ParadoxElementPath<ParadoxDefinitionProperty>? {
 			var current: PsiElement = element
-			var file: ParadoxScriptFile? = null
 			var depth = 0
 			val subPaths = LinkedList<String>()
 			var definition: ParadoxDefinitionProperty? = null
 			while(current !is PsiDirectory) { //这里的上限应当是null或PsiDirectory，不能是PsiFile，因为它也可能是定义
-				if(current is ParadoxScriptFile) {
-					file = current
-				}
 				when {
 					current is ParadoxDefinitionProperty -> {
 						val definitionInfo = current.definitionInfo
@@ -84,8 +78,7 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 				current = current.parent ?: break
 			}
 			if(definition == null) return null //如果未找到所属的definition，则直接返回null
-			val rootPointer = definition.createPointer(file ?: definition.containingFile)
-			return ParadoxElementPath(subPaths, rootPointer)
+			return ParadoxElementPath(subPaths, definition)
 		}
 	}
 	
@@ -93,6 +86,11 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 	val subPaths = originalSubPaths.map { it.unquote() }
 	val path = subPaths.joinToString("/")
 	val length = originalSubPaths.size
+	
+	/**
+	 * 路径中是否带有参数（即使无法解析或者语法错误）。
+	 */
+	val isParameterAware = length != 0 && originalSubPaths.any { it.isParameterAwareExpression() }
 	
 	fun isEmpty(): Boolean {
 		return length == 0

@@ -98,7 +98,7 @@ class ParadoxDefinitionInfo(
 	val typeCount get() = types.size
 	val localisationConfig get() = typeConfig.localisation
 	val imagesConfig get() = typeConfig.images
-	val definitionConfig get() = configGroup.declarations.get(type)
+	val declarationConfig get() = configGroup.declarations.get(type)
 	val graphRelatedTypes get() = typeConfig.graphRelatedTypes
 	val unique get() = typeConfig.unique
 	val severity get() = typeConfig.severity

@@ -1,7 +1,5 @@
 package icu.windea.pls
 
-import com.intellij.openapi.extensions.*
-
 val locationClass = PlsIcons::class.java
 
 const val ddsName = "DDS"
@@ -50,9 +48,7 @@ const val defaultScriptedVariableName = "var"
 
 const val keyTruncateLimit = 5
 
-const val indexVersion = 6 //0.6.6
-
-val translationPluginId = PluginId.getId("cn.yiiguxing.plugin.translate")
+const val indexVersion = 7 //0.6.7
 
 object PlsFolders {
 	const val ellipsis = "..."

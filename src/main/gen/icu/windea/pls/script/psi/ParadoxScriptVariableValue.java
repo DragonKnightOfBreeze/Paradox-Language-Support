@@ -7,6 +7,15 @@ import com.intellij.psi.PsiElement;
 
 public interface ParadoxScriptVariableValue extends PsiElement {
 
+  @Nullable
+  ParadoxScriptBoolean getBoolean();
+
+  @Nullable
+  ParadoxScriptFloat getFloat();
+
+  @Nullable
+  ParadoxScriptInt getInt();
+
   @NotNull
   ParadoxScriptValue getValue();
 

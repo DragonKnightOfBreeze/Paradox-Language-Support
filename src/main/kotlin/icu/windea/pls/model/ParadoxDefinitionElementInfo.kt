@@ -28,7 +28,7 @@ class ParadoxDefinitionElementInfo(
 	/** 对应的属性/值配置列表。 */
 	val configs: List<CwtKvConfig<*>> by lazy {
 		//基于keyExpression，valueExpression可能不同
-		definitionInfo.definitionConfig?.resolveConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
+		definitionInfo.declarationConfig?.resolveConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
 	val propertyConfigs: List<CwtPropertyConfig> by lazy {
@@ -58,13 +58,13 @@ class ParadoxDefinitionElementInfo(
 	/** 对应的子属性配置列表。 */
 	val childPropertyConfigs: List<CwtPropertyConfig> by lazy {
 		//基于上一级keyExpression，keyExpression一定唯一
-		definitionInfo.definitionConfig?.resolveChildPropertyConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
+		definitionInfo.declarationConfig?.resolveChildPropertyConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
 	/** 对应的子值配置列表。 */
 	val childValueConfigs: List<CwtValueConfig> by lazy {
 		//基于上一级keyExpression，valueExpression一定唯一
-		definitionInfo.definitionConfig?.resolveChildValuesConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
+		definitionInfo.declarationConfig?.resolveChildValuesConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
 	/** 子属性基于配置的出现次数。 */
@@ -101,8 +101,3 @@ class ParadoxDefinitionElementInfo(
 		return Objects.hash(elementPath, gameType)
 	}
 }
-
-/**
- * 对应的PSI元素是否是合法的定义元素（在定义声明内，非定义自身）。
- */
-val ParadoxDefinitionElementInfo?.isValid get() = this?.isValid == true 

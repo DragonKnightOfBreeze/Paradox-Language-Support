@@ -142,7 +142,7 @@ val PsiElement.localeConfig: ParadoxLocaleConfig?
 					current is ParadoxLocalisationFile -> return current.locale?.localeConfig
 					current is ParadoxLocalisationPropertyList -> return current.locale.localeConfig
 					current is ParadoxLocalisationLocale -> return current.localeConfig
-					current is PsiFile -> return preferredParadoxLocale() //不应该出现
+					current is PsiFile -> return preferredParadoxLocale() //不期望的结果
 				}
 				current = current.parent ?: break
 			}
@@ -190,6 +190,7 @@ private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionEl
 	//icu.windea.pls.script.psi.ParadoxScriptPsiExtensionsKt.clearDefinitionElementInfo
 	//必须是脚本语言的PsiElement
 	if(element.language != ParadoxScriptLanguage) return null
+	if(element.parent == null) return null //防止意外
 	//return resolveDefinitionElementInfo(element)
 	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
 		val value = resolveDefinitionElementInfo(element)
@@ -200,7 +201,7 @@ private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionEl
 private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
 	//这里输入的element本身可以是定义，这时elementPath会是空字符串
 	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
-	val definition = elementPath.rootPointer?.element ?: return null
+	val definition = elementPath.rootElement ?: return null
 	val definitionInfo = definition.definitionInfo ?: return null
 	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
 	val gameType = definitionInfo.gameType
@@ -217,6 +218,14 @@ fun ParadoxScriptProperty.getPropertyConfig(allowDefinitionSelf: Boolean = false
 	//如果无法匹配value，则取第一个
 	return definitionElementInfo.matchedPropertyConfig
 		?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
+}
+
+fun ParadoxScriptExpression.getConfig(): CwtKvConfig<*>? {
+	return when(this){
+		is ParadoxScriptPropertyKey -> getPropertyConfig()
+		is ParadoxScriptString -> getValueConfig()
+		else -> null
+	}
 }
 
 fun ParadoxScriptPropertyKey.getPropertyConfig(allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
@@ -501,7 +510,7 @@ fun findDefinitionsByType(
  * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
  * @param distinct 是否需要对同一基本类型而相同名字的定义进行去重。默认为`false`。
  */
-fun findDefinitionsByType(
+fun findAllDefinitionsByType(
 	typeExpression: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
@@ -605,6 +614,37 @@ inline fun processSyncedLocalisationVariants(
 ): Boolean {
 	val maxSize = getSettings().maxCompleteSize
 	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize, selector, processor)
+}
+
+
+fun findValueInValueSet(
+	name: String,
+	valueSetName: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
+): ParadoxScriptString? {
+	return ParadoxValueInValueSetIndex.findOne(name, valueSetName, project, scope, selector)
+}
+
+fun findValuesInValueSet(
+	name: String,
+	valueSetName: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
+): Set<ParadoxScriptString> {
+	return ParadoxValueInValueSetIndex.findAll(name, valueSetName, project, scope, selector)
+}
+
+fun findAllValuesInValueSet(
+	valueSetName: String,
+	project: Project,
+	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
+	distinct: Boolean = false,
+	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
+): Set<ParadoxScriptString> {
+	return ParadoxValueInValueSetIndex.findAll(valueSetName, project, scope, distinct, selector)
 }
 
 
@@ -854,7 +894,7 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 			if(remoteFileId != null) {
 				append(" | ")
 				appendLink(getSteamWorkshopLinkOnSteam(remoteFileId), PlsDocBundle.message("name.core.steamLinkLabel"))
-				appendExternalLinkIcon() //FIXME 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 等待修复
+				appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
 				append(" | ")
 				appendLink(getSteamWorkshopLink(remoteFileId), PlsDocBundle.message("name.core.steamWebsiteLinkLabel")) //自带外部链接图标
 			}

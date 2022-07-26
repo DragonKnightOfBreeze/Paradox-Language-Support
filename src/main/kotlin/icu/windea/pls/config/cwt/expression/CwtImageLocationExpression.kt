@@ -106,7 +106,7 @@ class CwtImageLocationExpression(
 				}
 			}
 		} else {
-			return null //不应该出现
+			return null //不期望的结果
 		}
 	}
 	
@@ -160,7 +160,7 @@ class CwtImageLocationExpression(
 				}
 			}
 		} else {
-			return null //不应该出现
+			return null //不期望的结果
 		}
 	}
 }

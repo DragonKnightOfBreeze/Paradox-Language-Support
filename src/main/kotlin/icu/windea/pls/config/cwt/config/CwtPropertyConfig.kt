@@ -29,8 +29,9 @@ data class CwtPropertyConfig(
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	
-	val keyExpression: CwtKeyExpression by lazy { CwtKeyExpression.resolve(key) }
-	val valueExpression: CwtValueExpression by lazy { CwtValueExpression.resolve(stringValue.orEmpty()) }
+	val keyExpression: CwtKeyExpression = CwtKeyExpression.resolve(key)
+	val valueExpression: CwtValueExpression = if(stringValue == null) CwtValueExpression.EmptyExpression else CwtValueExpression.resolve(stringValue)
+	override val expression: CwtKeyExpression get() = keyExpression
 	
 	override val resolved: CwtPropertyConfig get() = inlineableConfig?.config ?: this
 	val keyResolved: CwtPropertyConfig get() = inlineableConfig?.castOrNull<CwtAliasConfig>()?.config ?: this
@@ -64,9 +65,12 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			properties = other.properties,
-			values = other.values
+			properties = other.deepCopyProperties(),
+			values = other.deepCopyValues()
 		)
+		inlined.parent = parent
+		inlined.properties?.forEach { it.parent = inlined }
+		inlined.values?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = singleAliasConfig
 		inlined.inlinedScopes = inlinedScopes
 		return inlined
@@ -85,9 +89,12 @@ data class CwtPropertyConfig(
 			intValue = other.intValue,
 			floatValue = other.floatValue,
 			stringValue = other.stringValue,
-			properties = other.properties,
-			values = other.values
+			properties = other.deepCopyProperties(),
+			values = other.deepCopyValues()
 		)
+		inlined.parent = parent
+		inlined.properties?.forEach { it.parent = inlined }
+		inlined.values?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = aliasConfig
 		inlined.inlinedScopes = inlinedScopes
 		return inlined

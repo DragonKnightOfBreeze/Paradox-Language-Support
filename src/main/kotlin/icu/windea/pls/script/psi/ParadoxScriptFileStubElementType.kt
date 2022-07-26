@@ -9,7 +9,6 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptStubElementTypes.Companion.FILE
 import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
@@ -32,8 +31,8 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 	
 	override fun indexStub(stub: PsiFileStub<*>, sink: IndexSink) {
 		if(stub is ParadoxScriptFileStub) {
-			stub.name?.let { name -> sink.occurrence(ParadoxDefinitionNameIndex.key, name) }
-			stub.type?.let { type -> sink.occurrence(ParadoxDefinitionTypeIndex.key, type) }
+			stub.name?.takeIfNotEmpty()?.let { name -> sink.occurrence(ParadoxDefinitionNameIndex.key, name) }
+			stub.type?.takeIfNotEmpty()?.let { type -> sink.occurrence(ParadoxDefinitionTypeIndex.key, type) }
 		}
 		super.indexStub(stub, sink)
 	}
@@ -68,17 +67,13 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		}
 		
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-			//仅包括variable和property
+			//需要包括scripted_variable, property, value (valueInValueSet)
 			val type = node.elementType
-			val parentType = parent.elementType
 			return when {
-				parentType == FILE && type != ROOT_BLOCK -> true
-				parentType == FILE -> false
-				type == PROPERTY -> false
-				type == VARIABLE -> false
-				parentType == PROPERTY || parentType == PROPERTY_VALUE -> false
-				parentType == ROOT_BLOCK || parentType == BLOCK -> true
-				else -> true
+				type == VARIABLE -> true
+				type == PARAMETER || type == PARAMETER_CONDITION -> true
+				type == INLINE_MATH || type == INLINE_MATH_PARAMETER -> true
+				else -> false
 			}
 		}
 	}

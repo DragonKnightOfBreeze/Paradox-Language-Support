@@ -2,11 +2,14 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.util.*
 import icu.windea.pls.util.selector.*
 
@@ -23,11 +26,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement) //防止意外情况
+			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement)
 			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
 			is IParadoxScriptInputParameter -> getInputParameterInfo(element)
-			is IParadoxScriptParameter -> getParameterInfo(element)
+			is IParadoxScriptParameter -> {
+				if(originalElement != null && originalElement.elementType != PARAMETER_ID) {
+					getInputParameterInfo(originalElement)
+				} else {
+					getParameterInfo(element)
+				}
+			}
 			is ParadoxScriptProperty -> getPropertyInfo(element)
+			is ParadoxScriptExpression -> {
+				val config = element.getConfig()
+				when(config?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetInfo(element, config)
+					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
+				}
+			}
 			else -> null
 		}
 	}
@@ -40,7 +56,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getInputParameterInfo(element: PsiElement): String {
-		val name = if(element is PsiNamedElement) element.name.orEmpty() else element.text.unquote()
+		val name = element.text
 		return buildString {
 			buildInputParameterDefinition(element, name)
 		}
@@ -56,10 +72,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionInfo(element, definitionInfo)
-		val propertyConfig = element.getPropertyConfig()
-		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)) {
-			return getInputParameterInfo(element)
-		}
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)
@@ -72,13 +84,32 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getValueInValueSetInfo(element: ParadoxScriptExpression, config: CwtKvConfig<*>): String {
+		return buildString {
+			buildValueInValueSetDefinition(element, config)
+		}
+	}
+	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement) //防止意外情况
+			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement)
 			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
 			is IParadoxScriptInputParameter -> getInputParameterDoc(element)
-			is IParadoxScriptParameter -> getParameterDoc(element)
+			is IParadoxScriptParameter -> {
+				if(originalElement != null && originalElement.elementType != PARAMETER_ID) {
+					getInputParameterDoc(originalElement)
+				} else {
+					getParameterDoc(element)
+				}
+			}
 			is ParadoxScriptProperty -> getPropertyDoc(element)
+			is ParadoxScriptExpression -> {
+				val config = element.getConfig()
+				when(config?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetDoc(element, config)
+					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
+				}
+			}
 			else -> null
 		}
 	}
@@ -92,7 +123,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun getInputParameterDoc(element: PsiElement): String {
-		val name = if(element is PsiNamedElement) element.name.orEmpty() else element.text.unquote()
+		val name = element.text
 		return buildString {
 			buildInputParameterDefinition(element, name)
 		}
@@ -108,10 +139,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo)
-		val propertyConfig = element.getPropertyConfig()
-		if(propertyConfig != null && CwtConfigHandler.isInputParameter(propertyConfig)) {
-			return getInputParameterInfo(element)
-		}
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)
@@ -127,12 +154,20 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			buildDefinitionDefinition(element, definitionInfo, localisationTargetMap, imageTargetMap)
 			buildExtDocContent(definitionInfo)
 			buildLineCommentContent(element)
+			buildParametersContent(element, definitionInfo)
 			val sections = mutableMapOf<String, String>()
 			buildRelatedImageSections(imageTargetMap, sections)
 			buildRelatedLocalisationSections(localisationTargetMap, sections)
 			buildDefinitionSections(sections)
 		}
 	}
+	
+	private fun getValueInValueSetDoc(element: ParadoxScriptExpression, config: CwtKvConfig<*>): String {
+		return buildString {
+			buildValueInValueSetDefinition(element, config)
+		}
+	}
+	
 	
 	private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptVariable, name: String) {
 		definition {
@@ -251,6 +286,20 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun StringBuilder.buildParametersContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+		//如果定义支持参数且拥有参数，则在文档中显示
+		if(getSettings().scriptShowParameters) {
+			if(definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters) {
+				val parameterMap = element.parameterMap
+				if(parameterMap.isNotEmpty()) {
+					content {
+						append(PlsDocBundle.message("content.parameters", parameterMap.keys.joinToString()))
+					}
+				}
+			}
+		}
+	}
+	
 	private fun buildRelatedImageSections(map: MutableMap<String, Tuple2<PsiFile, Int>>, sections: MutableMap<String, String>) {
 		//加上DDS图片预览图
 		if(getSettings().scriptRenderRelatedImages) {
@@ -282,6 +331,19 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		sections {
 			for((key, value) in sections) {
 				section(key, value)
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpression, config: CwtKvConfig<*>) {
+		definition {
+			//不加上文件信息
+			//加上定义信息
+			append(PlsDocBundle.message("name.cwt.valueInValueSet")).append(" <b>").append(element.value.escapeXmlOrAnonymous()).append("</b>")
+			//加上分组信息
+			val valueSetName = config.expression.value
+			if(valueSetName != null && valueSetName.isNotEmpty()) {
+				append(": ").append(valueSetName)
 			}
 		}
 	}

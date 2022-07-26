@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
+import com.intellij.lang.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -11,6 +12,10 @@ import javax.swing.*
 @Suppress("UnstableApiUsage")
 abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
 	override val previewText: String? get() = null
+	
+	override fun isLanguageSupported(language: Language): Boolean {
+		return language == ParadoxScriptLanguage
+	}
 	
 	override fun createConfigurable(settings: T): ImmediateConfigurable {
 		return object : ImmediateConfigurable {

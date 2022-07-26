@@ -20,7 +20,7 @@ import icu.windea.pls.localisation.psi.*
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-		if(file !is ParadoxLocalisationFile) return null //不应该出现
+		if(file !is ParadoxLocalisationFile) return null //不期望的结果
 		val fileRoot = file.fileInfo?.path?.root ?: return null
 		if(fileRoot != "localisation" && fileRoot != "localization") return null //仅对于localisation
 		//仅对于存在且仅存在一个locale的本地化文件

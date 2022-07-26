@@ -7,3 +7,4 @@ interface ParadoxScriptVariableStub : StubElement<ParadoxScriptVariable> {
 	val name: String?
 	val gameType: ParadoxGameType
 }
+

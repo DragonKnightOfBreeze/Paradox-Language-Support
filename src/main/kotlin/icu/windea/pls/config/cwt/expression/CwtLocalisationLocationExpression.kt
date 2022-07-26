@@ -57,7 +57,7 @@ class CwtLocalisationLocationExpression(
 			val localisation = findLocalisation(key, project, selector = selector)
 			return key to localisation
 		} else {
-			return null //不应该出现
+			return null //不期望的结果
 		}
 	}
 	
@@ -72,7 +72,7 @@ class CwtLocalisationLocationExpression(
 			val localisations = findLocalisations(key, project, selector = selector)
 			return key to localisations
 		} else {
-			return null //不应该出现
+			return null //不期望的结果
 		}
 	}
 }

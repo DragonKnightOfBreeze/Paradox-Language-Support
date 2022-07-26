@@ -14,6 +14,7 @@
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
+    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxValueInValueSetIndex"/>
 
     <spellchecker.support
         language="PARADOX_SCRIPT"
@@ -48,8 +49,8 @@
     <lang.findUsagesProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
-    <elementDescriptionProvider
-        implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
+    <!--<gotoDeclarationHandler implementation="icu.windea.pls.script.editor.ParadoxScriptGotoDeclarationHandler"/>-->
     <annotator
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
@@ -83,6 +84,11 @@
         id="ParadoxLocalisationReferenceInfoHintsProvider"
         order="after ParadoxDefinitionReferenceLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_SCRIPT"
+        id="ParadoxValueInValueSetInfoHintsProvider"
+        order="last"
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueInValueSetInfoHintsProvider"/>
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>

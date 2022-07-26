@@ -21,7 +21,7 @@ class ParadoxScriptBlock(
 		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN)
 		private val inlineMathOperatorTokens = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
 		private val shouldIndentParentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION)
-		private val shouldIndentTypes = TokenSet.create(VARIABLE, PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, PARAMETER_CONDITION, COMMENT)
+		private val shouldIndentTypes = TokenSet.create(VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, PARAMETER_CONDITION, COMMENT)
 		private val shouldChildIndentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION, PARAMETER_CONDITION_EXPRESSION)
 		
 		private fun createWrap(): Wrap? {

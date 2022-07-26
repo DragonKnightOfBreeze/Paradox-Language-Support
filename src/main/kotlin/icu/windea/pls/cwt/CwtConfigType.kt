@@ -10,6 +10,7 @@ enum class CwtConfigType(
 	override val id: String,
 	override val text: String,
 	val isReference: Boolean = false,
+	val hasType: Boolean = false,
 	val localisation: String? = null
 ) : IdAware, TextAware {
 	Type("type", PlsDocBundle.message("name.cwt.type")),
@@ -20,14 +21,14 @@ enum class CwtConfigType(
 	SingleAlias("single alias", PlsDocBundle.message("name.cwt.singleAlias")),
 	Alias("alias", PlsDocBundle.message("name.cwt.alias")),
 	
-	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), false),
-	ValueValue("value value", PlsDocBundle.message("name.cwt.valueValue"), false),
+	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), false, true),
+	ValueInValueSet("value in value set", PlsDocBundle.message("name.cwt.valueInValueSet"), false, true),
 	
 	Link("link", PlsDocBundle.message("name.cwt.link"), true),
 	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink"), true),
 	LocalisationCommand("localisation command", PlsDocBundle.message("name.cwt.localisationCommand"), true),
 	ModifierCategory("modifier category", PlsDocBundle.message("name.cwt.modifierCategory"), true),
-	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true, "mod_$"),
+	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true, localisation = "mod_$"),
 	Scope("scope", PlsDocBundle.message("name.cwt.scope"), true),
 	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup"), true),
 	Tag("tag", PlsDocBundle.message("name.cwt.tag"), true),
@@ -90,7 +91,7 @@ enum class CwtConfigType(
 			val parentParentName = parentParentProperty?.name
 			return when {
 				parentName.surroundsWith("enum[", "]") -> EnumValue
-				parentName.surroundsWith("value[", "]") -> ValueValue
+				parentName.surroundsWith("value[", "]") -> ValueInValueSet
 				parentParentName == "scope_groups" -> Scope
 				else -> null
 			}

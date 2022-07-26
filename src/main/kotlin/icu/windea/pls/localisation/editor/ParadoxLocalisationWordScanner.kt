@@ -10,8 +10,4 @@ class ParadoxLocalisationWordScanner : DefaultWordsScanner(
 	TokenSet.create(PROPERTY_KEY_ID, PROPERTY_REFERENCE_ID, ICON_ID, COMMAND_SCOPE, COMMAND_FIELD),
 	TokenSet.create(COMMENT),
 	TokenSet.create(STRING_TOKEN)
-) {
-	init {
-		setMayHaveFileRefsInLiterals(false)
-	}
-}
+)
