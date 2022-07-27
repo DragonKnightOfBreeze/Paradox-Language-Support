@@ -144,7 +144,7 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 }
 
 
-fun ParadoxScriptExpression.isSimpleScriptExpression(): Boolean {
+fun ParadoxScriptExpressionElement.isSimpleScriptExpression(): Boolean {
 	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return true
 	return when(this) {
 		is ParadoxScriptPropertyKey -> singleChild.elementType.let {
@@ -157,7 +157,7 @@ fun ParadoxScriptExpression.isSimpleScriptExpression(): Boolean {
 	}
 }
 
-fun ParadoxScriptExpression.isParameterAwareExpression(): Boolean {
+fun ParadoxScriptExpressionElement.isParameterAwareExpression(): Boolean {
 	return this.findChildOfType<ParadoxScriptParameter>() != null
 }
 

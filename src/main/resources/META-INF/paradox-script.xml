@@ -58,6 +58,10 @@
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptParameterInfoHandler"/>
     <!--Try to keep correct inlay hint order-->
+    <!--<codeInsight.inlayProvider-->
+    <!--    language="PARADOX_SCRIPT"-->
+    <!--    id="ParadoxScriptedVariableReferenceInfoHintsProvider"-->
+    <!--    implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>-->
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
         id="ParadoxDefinitionInfoHintsProvider"
@@ -68,11 +72,7 @@
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxScriptedVariableReferenceInfoHintsProvider" order="after ParadoxDefinitionLocalizedNameHintsProvider"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>
-    <codeInsight.inlayProvider
-        language="PARADOX_SCRIPT"
-        id="ParadoxDefinitionReferenceInfoHintsProvider" order="after ParadoxScriptedVariableReferenceInfoHintsProvider"
+        id="ParadoxDefinitionReferenceInfoHintsProvider" order="after ParadoxDefinitionLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"

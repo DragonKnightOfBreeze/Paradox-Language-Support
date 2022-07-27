@@ -8,7 +8,7 @@ import com.intellij.psi.PsiReference;
 import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.expression.reference.ParadoxScriptKeyReference;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptExpression {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

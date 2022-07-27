@@ -28,10 +28,10 @@ class ParadoxScriptKeyReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		return CwtConfigHandler.resolveKey(element) //根据对应的expression进行解析
+		return CwtConfigHandler.resolveKey(element, null) //根据对应的expression进行解析
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		return CwtConfigHandler.multiResolveKey(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
+		return CwtConfigHandler.multiResolveKey(element, null).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
 	}
 }

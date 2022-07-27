@@ -81,7 +81,7 @@ class CwtImageLocationExpression(
 				} ?: 0
 			}
 			while(true) {
-				val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
+				val resolved = CwtConfigHandler.resolveValue(value, null) { it.type in validValueTypes } ?: return null
 				when {
 					//由filePath解析为DDS文件
 					resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -128,7 +128,7 @@ class CwtImageLocationExpression(
 				} ?: 0
 			}
 			while(true) {
-				val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
+				val resolved = CwtConfigHandler.resolveValue(value, null) { it.type in validValueTypes } ?: return null
 				when {
 					//由filePath解析为DDS文件
 					resolved is PsiFile && resolved.fileType == DdsFileType -> {

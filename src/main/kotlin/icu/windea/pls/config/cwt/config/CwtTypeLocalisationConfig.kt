@@ -8,6 +8,7 @@ import icu.windea.pls.cwt.psi.*
 
 data class CwtTypeLocalisationConfig(
 	override val pointer: SmartPsiElementPointer<out CwtProperty>,
+	override val info: CwtConfigInfo,
 	val configs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
 ) : CwtConfig<CwtProperty> {
 	private val mergesConfigsCache: Cache<String, List<CwtLocationConfig>> by lazy { CacheBuilder.newBuilder().build() }

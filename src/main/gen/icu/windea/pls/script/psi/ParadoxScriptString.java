@@ -9,7 +9,7 @@ import com.intellij.psi.PsiReference;
 import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
 
-public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpression, StubBasedPsiElement<ParadoxScriptValueStub> {
+public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptValueStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

@@ -8,6 +8,7 @@ import icu.windea.pls.cwt.psi.*
  */
 data class CwtLocalisationCommandConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val info: CwtConfigInfo,
 	val name: String,
 	val supportedScopes: Set<String>
 ) : CwtConfig<CwtProperty>{

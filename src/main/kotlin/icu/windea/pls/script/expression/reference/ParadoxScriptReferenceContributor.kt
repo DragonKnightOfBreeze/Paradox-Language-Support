@@ -6,7 +6,6 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptReferenceContributor : PsiReferenceContributor() {
 	override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-		registrar.registerReferenceProvider(psiElement(ParadoxScriptPropertyKey::class.java), ParadoxScriptKeyExpressionReferenceProvider())
-		registrar.registerReferenceProvider(psiElement(ParadoxScriptString::class.java), ParadoxScriptValueExpressionReferenceProvider())
+		registrar.registerReferenceProvider(psiElement(ParadoxScriptExpressionElement::class.java), ParadoxScriptExpressionElementReferenceProvider())
 	}
 }

@@ -15,6 +15,7 @@ import icu.windea.pls.cwt.psi.*
  */
 data class CwtSubtypeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val info: CwtConfigInfo,
 	val name: String,
 	val config: CwtPropertyConfig,
 	val typeKeyFilter: ReversibleSet<@CaseInsensitive String>? = null,

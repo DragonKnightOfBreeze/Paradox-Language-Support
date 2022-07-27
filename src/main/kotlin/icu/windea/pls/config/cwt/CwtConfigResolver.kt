@@ -19,15 +19,15 @@ object CwtConfigResolver {
 		val fileConfig = CwtFileConfig(file.createPointer(), properties, values)
 		rootBlock.processChild {
 			when {
-				it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
-				it is CwtValue -> resolveValue(it, file).addTo(values).end()
+				it is CwtProperty -> resolveProperty(it, file, fileConfig).addTo(properties).end()
+				it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
 				else -> end()
 			}
 		}
 		return fileConfig
 	}
 	
-	private fun resolveProperty(property: CwtProperty, file: CwtFile): CwtPropertyConfig? {
+	private fun resolveProperty(property: CwtProperty, file: CwtFile, fileConfig: CwtFileConfig): CwtPropertyConfig? {
 		val pointer = property.createPointer(file)
 		val key = property.propertyName
 		val propValue = property.value ?: return null
@@ -56,8 +56,8 @@ object CwtConfigResolver {
 					values = SmartList()
 					propValue.processChild {
 						when {
-							it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
-							it is CwtValue -> resolveValue(it, file).addTo(values).end()
+							it is CwtProperty -> resolveProperty(it, file, fileConfig).addTo(properties).end()
+							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
 							else -> end()
 						}
 					}
@@ -80,13 +80,13 @@ object CwtConfigResolver {
 					val option = current.option
 					if(option != null) {
 						if(options == null) options = LinkedList()
-						val resolvedOption = resolveOption(option, file)
+						val resolvedOption = resolveOption(option, file, fileConfig)
 						if(resolvedOption != null) options.addFirst(resolvedOption)
 					} else {
 						val optionValue = current.value
 						if(optionValue != null) {
 							if(optionValues == null) optionValues = LinkedList()
-							val resolvedOptionValue = resolveOptionValue(optionValue, file)
+							val resolvedOptionValue = resolveOptionValue(optionValue, file, fileConfig)
 							optionValues.addFirst(resolvedOptionValue)
 						}
 					}
@@ -98,7 +98,7 @@ object CwtConfigResolver {
 		val documentation = documentationLines?.joinToString("\n")
 		
 		val config = CwtPropertyConfig(
-			pointer, key, property.propertyValue,
+			pointer, fileConfig.info, key, property.propertyValue,
 			booleanValue, intValue, floatValue, stringValue, properties, values,
 			documentation, options, optionValues, separatorType
 		)
@@ -107,7 +107,7 @@ object CwtConfigResolver {
 		return config
 	}
 	
-	private fun resolveValue(value: CwtValue, file: CwtFile): CwtValueConfig {
+	private fun resolveValue(value: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtValueConfig {
 		val pointer = value.createPointer(file)
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
@@ -134,8 +134,8 @@ object CwtConfigResolver {
 					values = SmartList()
 					value.processChild {
 						when {
-							it is CwtProperty -> resolveProperty(it, file).addTo(properties).end()
-							it is CwtValue -> resolveValue(it, file).addTo(values).end()
+							it is CwtProperty -> resolveProperty(it, file, fileConfig).addTo(properties).end()
+							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
 							else -> end()
 						}
 					}
@@ -158,13 +158,13 @@ object CwtConfigResolver {
 					val option = current.option
 					if(option != null) {
 						if(options == null) options = LinkedList()
-						val resolvedOption = resolveOption(option, file)
+						val resolvedOption = resolveOption(option, file, fileConfig)
 						if(resolvedOption != null) options.addFirst(resolvedOption)
 					} else {
 						val optionValue = current.value
 						if(optionValue != null) {
 							if(optionValues == null) optionValues = LinkedList()
-							val resolvedOptionValue = resolveOptionValue(optionValue, file)
+							val resolvedOptionValue = resolveOptionValue(optionValue, file, fileConfig)
 							optionValues.addFirst(resolvedOptionValue)
 						}
 					}
@@ -176,7 +176,7 @@ object CwtConfigResolver {
 		val documentation = documentationLines?.joinToString("\n")
 		
 		val config = CwtValueConfig(
-			pointer, value.value,
+			pointer, fileConfig.info, value.value,
 			booleanValue, intValue, floatValue, stringValue,
 			properties, values, documentation, options, optionValues
 		)
@@ -185,7 +185,7 @@ object CwtConfigResolver {
 		return config
 	}
 	
-	private fun resolveOption(option: CwtOption, file: CwtFile): CwtOptionConfig? {
+	private fun resolveOption(option: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {
 		val key = option.optionName
 		val optionValue = option.value ?: return null
 		var booleanValue: Boolean? = null
@@ -210,8 +210,8 @@ object CwtConfigResolver {
 					optionValues = SmartList()
 					optionValue.processChild {
 						when {
-							it is CwtOption -> resolveOption(it, file).addTo(options).end()
-							it is CwtValue -> resolveOptionValue(it, file).addTo(optionValues).end()
+							it is CwtOption -> resolveOption(it, file, fileConfig).addTo(options).end()
+							it is CwtValue -> resolveOptionValue(it, file, fileConfig).addTo(optionValues).end()
 							else -> end()
 						}
 					}
@@ -219,12 +219,12 @@ object CwtConfigResolver {
 			}
 		}
 		return CwtOptionConfig(
-			emptyPointer(), key, optionValue.value,
+			emptyPointer(), fileConfig.info, key, optionValue.value,
 			booleanValue, intValue, floatValue, stringValue, options, optionValues, separatorType
 		)
 	}
 	
-	private fun resolveOptionValue(option: CwtValue, file: CwtFile): CwtOptionValueConfig {
+	private fun resolveOptionValue(option: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
 		var booleanValue: Boolean? = null
 		var intValue: Int? = null
 		var floatValue: Float? = null
@@ -255,8 +255,8 @@ object CwtConfigResolver {
 						optionValues = SmartList()
 						option.processChild {
 							when {
-								it is CwtOption -> resolveOption(it, file).addTo(options).end()
-								it is CwtValue -> resolveOptionValue(it, file).addTo(optionValues).end()
+								it is CwtOption -> resolveOption(it, file, fileConfig).addTo(options).end()
+								it is CwtValue -> resolveOptionValue(it, file, fileConfig).addTo(optionValues).end()
 								else -> end()
 							}
 						}
@@ -265,7 +265,7 @@ object CwtConfigResolver {
 			}
 		}
 		return CwtOptionValueConfig(
-			emptyPointer(), option.value,
+			emptyPointer(), fileConfig.info, option.value,
 			booleanValue, intValue, floatValue, stringValue, options, optionValues
 		)
 	}

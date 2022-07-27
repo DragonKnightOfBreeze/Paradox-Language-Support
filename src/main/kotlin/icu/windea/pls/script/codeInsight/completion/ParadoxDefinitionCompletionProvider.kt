@@ -24,6 +24,14 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		//目前版本的补全的scope可能不正确
 		result.addLookupAdvertisement(PlsBundle.message("scope.of.completions.may.be.incorrect"))
 		
+		val quoted = propertyKeyOrStringElement.isQuoted()
+		val caretOffset = parameters.offset - propertyKeyOrStringElement.textRange.startOffset
+		val keyword = propertyKeyOrStringElement.getKeyword(caretOffset)
+		
+		context.put(ParadoxDefinitionCompletionKeys.quotedKey, quoted)
+		context.put(ParadoxDefinitionCompletionKeys.caretOffsetKey, caretOffset)
+		context.put(ParadoxDefinitionCompletionKeys.keywordKey, keyword)
+		
 		var continueComplete: Boolean
 		if(mayBeKey) {
 			//得到key元素
@@ -31,7 +39,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到上一级definitionProperty（跳过可能正在填写的definitionProperty）
 			val definitionProperty = keyElement.findParentDefinitionProperty(fromParentBlock = true) ?: return
 			//进行提示
-			continueComplete = CwtConfigHandler.addKeyCompletions(keyElement, definitionProperty, result)
+			continueComplete = CwtConfigHandler.addKeyCompletions(keyElement, definitionProperty, result, context)
 			if(!continueComplete) return
 		}
 		if(mayBeValue) {
@@ -40,7 +48,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到上一级definitionProperty
 			val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
 			//进行提示
-			continueComplete = CwtConfigHandler.addValueCompletions(valueElement, definitionProperty, result)
+			continueComplete = CwtConfigHandler.addValueCompletions(valueElement, definitionProperty, result, context)
 			if(!continueComplete) return
 		}
 		if(mayBeValueInBlock) {
@@ -49,7 +57,7 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			//得到上一级block
 			val blockElement = blockOrPropertyValueElement as ParadoxScriptBlock
 			//进行提示
-			continueComplete = CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, result)
+			continueComplete = CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, result, context)
 			if(!continueComplete) return
 		}
 	}

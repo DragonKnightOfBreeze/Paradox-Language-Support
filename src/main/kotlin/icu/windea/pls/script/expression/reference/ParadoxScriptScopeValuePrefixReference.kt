@@ -5,12 +5,11 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.script.psi.*
 
 /**
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
  */
-class ParadoxScriptLinkValuePrefixReference(
+class ParadoxScriptScopeValuePrefixReference(
 	element: PsiElement,
 	rangeInElement: TextRange
 ): PsiReferenceBase<PsiElement>(element, rangeInElement){

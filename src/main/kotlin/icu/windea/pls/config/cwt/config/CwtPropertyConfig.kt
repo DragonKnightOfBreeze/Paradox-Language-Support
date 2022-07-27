@@ -2,12 +2,12 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtPropertyConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val info: CwtConfigInfo,
 	val key: String,
 	val value: String,
 	val booleanValue: Boolean? = null,
@@ -42,7 +42,7 @@ data class CwtPropertyConfig(
 		val resolvedPointer = resolved.pointer
 		val valuePointer = resolvedPointer.containingFile?.let { f -> resolvedPointer.element?.value?.createPointer(f) } ?: return null
 		return CwtValueConfig(
-			valuePointer, value, booleanValue, intValue, floatValue, stringValue,
+			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
 			properties, values, documentation, options, optionValues
 		).also { it.parent = parent }
 	}
@@ -51,12 +51,11 @@ data class CwtPropertyConfig(
 	//TODO properties和values需要考虑深拷贝
 	
 	var inlineableConfig: CwtInlineableConfig? = null
-	var inlinedScopes: List<@CaseInsensitive String>? = null //注意：比较时要指定忽略大小写
 	
 	/**
 	 * 从[singleAliasConfig]内联规则：value改为取[singleAliasConfig]的的value，如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig, inlinedScopes: List<String>? = null):CwtPropertyConfig{
+	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig):CwtPropertyConfig{
 		//内联所有value
 		val other = singleAliasConfig.config
 		val inlined = copy(
@@ -72,14 +71,13 @@ data class CwtPropertyConfig(
 		inlined.properties?.forEach { it.parent = inlined }
 		inlined.values?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = singleAliasConfig
-		inlined.inlinedScopes = inlinedScopes
 		return inlined
 	}
 	
 	/**
 	 * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineFromAliasConfig(aliasConfig:CwtAliasConfig, inlinedScopes: List<String>? = null):CwtPropertyConfig{
+	fun inlineFromAliasConfig(aliasConfig:CwtAliasConfig):CwtPropertyConfig{
 		//内联所有value，key取aliasSubName（如：alias[effect:if] 中的if）
 		val other = aliasConfig.config
 		val inlined = copy(
@@ -96,7 +94,6 @@ data class CwtPropertyConfig(
 		inlined.properties?.forEach { it.parent = inlined }
 		inlined.values?.forEach { it.parent = inlined }
 		inlined.inlineableConfig = aliasConfig
-		inlined.inlinedScopes = inlinedScopes
 		return inlined
 	}
 }

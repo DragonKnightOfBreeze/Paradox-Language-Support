@@ -39,7 +39,8 @@ class CwtConfigGroup(
 	val singleAliases: Map<String, List<CwtSingleAliasConfig>>
 	
 	//同名的alias可以有多个
-	val aliases: Map<String, Map<@CaseInsensitive String, List<CwtAliasConfig>>>
+	val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
+	
 	val declarations: Map<String, CwtDeclarationConfig>
 	
 	//目前版本的CWT配置已经不再使用
@@ -48,6 +49,8 @@ class CwtConfigGroup(
 	//since: stellaris v3.4
 	val tagMap: Map<String, Map<@CaseInsensitive String, CwtTagConfig>> //definitionType - tagName - tagConfig
 	
+	//非常量字符串的别名的组名的映射
+	val aliasGroupKeysNoConst: Map<String, Set<String>>
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 	
@@ -66,12 +69,14 @@ class CwtConfigGroup(
 		scopeAliasMap = mutableMapOf()
 		scopeGroups = mutableMapOf()
 		singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
-		aliases = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
+		aliasGroups = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
 		declarations = mutableMapOf()
 		
 		//目前不检查配置文件的位置和文件名
 		
 		for((filePath, fileConfig) in cwtFileConfigs) {
+			fileConfig.info.configGroup = this
+			
 			//如果存在folders.cwt，则将其中的相对路径列表添加到folders中 
 			if(filePath == "folders.cwt") {
 				resolveFoldersCwt(fileConfig, folders)
@@ -203,8 +208,7 @@ class CwtConfigGroup(
 						if(aliasNamePair != null) {
 							val (aliasName, aliasSubName) = aliasNamePair
 							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
-							
-							val map = aliases.getOrPut(aliasName) { CollectionFactory.createCaseInsensitiveStringMap() } //忽略大小写
+							val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() } 
 							val list = map.getOrPut(aliasSubName) { SmartList() }
 							list.add(aliasConfig)
 						}
@@ -217,6 +221,10 @@ class CwtConfigGroup(
 			}
 		}
 		
+		aliasGroupKeysNoConst = aliasGroups.mapValues { (_, v) ->
+			v.keys.filter { CwtKeyExpression.resolve(it).type != CwtDataTypes.Constant }
+				.sortedByDescending { CwtKeyExpression.resolve(it).priority }.toSet()
+		} 
 		modifierCategoryIdMap = initModifierCategoryIdMap()
 		tagMap = initTagMap()
 		definitionTypesSupportParameters = initDefinitionTypesSupportParameters()
@@ -294,7 +302,7 @@ class CwtConfigGroup(
 								configs.add(null to locationConfig)
 							}
 						}
-						localisation = CwtTypeLocalisationConfig(propPointer, configs)
+						localisation = CwtTypeLocalisationConfig(propPointer, propertyConfig.info, configs)
 					}
 					"images" -> {
 						val configs: MutableList<Pair<String?, CwtLocationConfig>> = SmartList()
@@ -314,7 +322,7 @@ class CwtConfigGroup(
 								configs.add(null to locationConfig)
 							}
 						}
-						images = CwtTypeImagesConfig(propPointer, configs)
+						images = CwtTypeImagesConfig(propPointer, propertyConfig.info, configs)
 					}
 				}
 				
@@ -351,7 +359,7 @@ class CwtConfigGroup(
 		}
 		
 		return CwtTypeConfig(
-			propertyConfig.pointer, name,
+			propertyConfig.pointer, propertyConfig.info, name,
 			block, path, pathStrict, pathFile, pathExtension,
 			nameField, nameFromFile, typePerFile, unique, severity, skipRootKey,
 			typeKeyFilter, startsWith, graphRelatedTypes, subtypes,
@@ -392,7 +400,7 @@ class CwtConfigGroup(
 			}
 		}
 		return CwtSubtypeConfig(
-			propertyConfig.pointer, name, propertyConfig,
+			propertyConfig.pointer, propertyConfig.info, name, propertyConfig,
 			typeKeyFilter, pushScope, startsWith, displayName, abbreviation, onlyIfNot
 		)
 	}
@@ -412,20 +420,23 @@ class CwtConfigGroup(
 				}
 			}
 		}
-		return CwtLocationConfig(propertyConfig.pointer, name, expression, required, primary)
+		return CwtLocationConfig(propertyConfig.pointer, propertyConfig.info, name, expression, required, primary)
 	}
 	
 	private fun resolveEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtEnumConfig? {
-		val propertyConfigPointer = propertyConfig.pointer
+		val pointer = propertyConfig.pointer
+		val info = propertyConfig.info
 		val propertyConfigValues = propertyConfig.values ?: return null
-		if(propertyConfigValues.isEmpty()) return CwtEnumConfig(propertyConfigPointer, name, emptySet(), emptyMap())
+		if(propertyConfigValues.isEmpty()) {
+			return CwtEnumConfig(pointer, info, name, emptySet(), emptyMap())
+		}
 		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
 		for(propertyConfigValue in propertyConfigValues) {
 			values.add(propertyConfigValue.value)
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
-		return CwtEnumConfig(propertyConfigPointer, name, values, valueConfigMap)
+		return CwtEnumConfig(pointer, info, name, values, valueConfigMap)
 	}
 	
 	private fun resolveTagConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTagConfig? {
@@ -438,7 +449,7 @@ class CwtConfigGroup(
 			}
 		}
 		if(supportedTypes == null) return null //排除
-		return CwtTagConfig(propertyConfig.pointer, name, since, supportedTypes)
+		return CwtTagConfig(propertyConfig.pointer, propertyConfig.info, name, since, supportedTypes)
 	}
 	
 	private fun resolveLinkConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLinkConfig? {
@@ -463,14 +474,14 @@ class CwtConfigGroup(
 		}
 		if(inputScopes == null) inputScopes = emptySet()
 		if(outputScope == null) return null //排除
-		return CwtLinkConfig(propertyConfig.pointer, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
+		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
 		val supportedScopes = propertyConfig.stringValue?.let { setOf(it) }
 			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			?: return null
-		return CwtLocalisationCommandConfig(propertyConfig.pointer, name, supportedScopes)
+		return CwtLocalisationCommandConfig(propertyConfig.pointer, propertyConfig.info, name, supportedScopes)
 	}
 	
 	private fun resolveModifierCategoryConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierCategoryConfig? {
@@ -485,7 +496,7 @@ class CwtConfigGroup(
 			}
 		}
 		if(supportedScopes == null) supportedScopes = emptySet()
-		return CwtModifierCategoryConfig(propertyConfig.pointer, name, internalId, supportedScopes)
+		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	
 	private fun resolveModifierConfig(propertyConfig: CwtPropertyConfig, name: String): CwtModifierConfig? {
@@ -493,7 +504,7 @@ class CwtConfigGroup(
 		val categories = propertyConfig.stringValue?.let { setOf(it) }
 			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			?: return null
-		return CwtModifierConfig(propertyConfig.pointer, name, categories)
+		return CwtModifierConfig(propertyConfig.pointer, propertyConfig.info, name, categories)
 	}
 	
 	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
@@ -504,28 +515,29 @@ class CwtConfigGroup(
 			if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 		}
 		if(aliases == null) aliases = emptySet()
-		return CwtScopeConfig(propertyConfig.pointer, name, aliases)
+		return CwtScopeConfig(propertyConfig.pointer, propertyConfig.info, name, aliases)
 	}
 	
 	private fun resolveScopeGroupConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeGroupConfig? {
-		val propertyConfigPointer = propertyConfig.pointer
+		val pointer = propertyConfig.pointer
+		val info = propertyConfig.info
 		val propertyConfigValues = propertyConfig.values ?: return null
-		if(propertyConfigValues.isEmpty()) return CwtScopeGroupConfig(propertyConfigPointer, name, emptySet(), emptyMap())
+		if(propertyConfigValues.isEmpty()) return CwtScopeGroupConfig(pointer, info, name, emptySet(), emptyMap())
 		val values = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 		val valueConfigMap = CollectionFactory.createCaseInsensitiveStringMap<CwtValueConfig>() //忽略大小写
 		for(propertyConfigValue in propertyConfigValues) {
 			values.add(propertyConfigValue.value)
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
-		return CwtScopeGroupConfig(propertyConfigPointer, name, values, valueConfigMap)
+		return CwtScopeGroupConfig(pointer, info, name, values, valueConfigMap)
 	}
 	
 	private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSingleAliasConfig {
-		return CwtSingleAliasConfig(propertyConfig.pointer, name, propertyConfig)
+		return CwtSingleAliasConfig(propertyConfig.pointer,propertyConfig.info, name, propertyConfig)
 	}
 	
 	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
-		return CwtAliasConfig(propertyConfig.pointer, name, subName, propertyConfig)
+		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, name, subName, propertyConfig)
 	}
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
@@ -545,9 +557,9 @@ class CwtConfigGroup(
 					configs.add(null to prop)
 				}
 			}
-			return CwtDeclarationConfig(propertyConfig.pointer, name, propertyConfig, configs)
+			return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig, configs)
 		} else {
-			return CwtDeclarationConfig(propertyConfig.pointer, name, propertyConfig, null)
+			return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig, null)
 		}
 	}
 	
@@ -574,7 +586,7 @@ class CwtConfigGroup(
 	
 	private fun initDefinitionTypesSupportParameters(): MutableSet<String> {
 		val result = mutableSetOf<String>()
-		for(aliasGroup in aliases.values) {
+		for(aliasGroup in aliasGroups.values) {
 			for(aliasList in aliasGroup.values) {
 				for(aliasConfig in aliasList) {
 					val props = aliasConfig.config.properties ?: continue

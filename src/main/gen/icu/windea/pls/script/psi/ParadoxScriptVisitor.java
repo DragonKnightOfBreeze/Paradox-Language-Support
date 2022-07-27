@@ -4,7 +4,6 @@ package icu.windea.pls.script.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -145,7 +144,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitExpression(@NotNull ParadoxScriptExpression o) {
+  public void visitExpression(@NotNull ParadoxScriptExpressionElement o) {
     visitPsiElement(o);
   }
 

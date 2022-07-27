@@ -27,7 +27,8 @@ object CwtDataTypes {
 	object ComplexEnum : CwtKeyDataType, CwtValueDataType
 	object Value : CwtKeyDataType, CwtValueDataType
 	object ValueSet : CwtKeyDataType, CwtValueDataType
-	object ScopeGroup : CwtValueDataType
+	object ScopeField : CwtKeyDataType, CwtValueDataType
+	object ScopeGroup : CwtKeyDataType, CwtValueDataType
 	object Scope : CwtKeyDataType, CwtValueDataType
 	object VariableField : CwtValueDataType
 	object IntVariableField : CwtValueDataType

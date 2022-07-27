@@ -42,7 +42,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptPropertyKey) {
-			val resolved = CwtConfigHandler.resolveKey(element) { it.type in keyExpressionTypes }
+			val resolved = CwtConfigHandler.resolveKey(element, file) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {
@@ -53,7 +53,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 				}
 			}
 		} else if(element is ParadoxScriptString) {
-			val resolved = CwtConfigHandler.resolveValue(element) { it.type in valueExpressionTypes }
+			val resolved = CwtConfigHandler.resolveValue(element, file) { it.type in valueExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {
 				val definitionInfo = resolved.definitionInfo
 				if(definitionInfo != null) {

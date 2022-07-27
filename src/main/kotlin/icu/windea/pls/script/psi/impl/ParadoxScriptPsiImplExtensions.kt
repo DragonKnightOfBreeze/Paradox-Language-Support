@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -83,24 +82,6 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 		if(children.isNotEmpty()) {
 			when(children.first().elementType) {
 				PROPERTY_KEY_TOKEN -> {
-					val text = text
-					val dotIndices = text.indicesOf('.')
-					if(dotIndices.isNotEmpty()) {
-						val propertyConfig = getPropertyConfig()
-						if(propertyConfig != null && CwtConfigHandler.supportsScopes(propertyConfig)) {
-							val textRangeInParent = textRangeInParent
-							val ranges = MutableList(dotIndices.size + 1) { i ->
-								val start = textRangeInParent.startOffset
-								val end = textRangeInParent.endOffset
-								when {
-									i == 0 -> TextRange.create(start, start + dotIndices[i])
-									i == dotIndices.size -> TextRange.create(start + dotIndices[i - 1] + 1, end)
-									else -> TextRange.create(start + dotIndices[i - 1] + 1, start + dotIndices[i])
-								}
-							}
-							return ParadoxKvExpressionInfo(ParadoxKvExpressionType.ScopeExpression, textRangeInParent, ranges)
-						}
-					}
 					//TODO linkValue
 					//TODO scriptValue
 				}
@@ -156,25 +137,7 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 			val firstChild = children.first()
 			when(firstChild.elementType) {
 				STRING_TOKEN -> {
-					val text = firstChild.text
-					val dotIndices = text.indicesOf('.')
-					if(dotIndices.isNotEmpty()) {
-						val valueConfig = getValueConfig()
-						if(valueConfig != null && CwtConfigHandler.supportsScopes(valueConfig)) {
-							val ranges = MutableList(dotIndices.size + 1) { i ->
-								val start = wholeRange.startOffset
-								val end = wholeRange.endOffset
-								when {
-									i == 0 -> TextRange.create(start, start + dotIndices[i])
-									i == dotIndices.size -> TextRange.create(start + dotIndices[i - 1] + 1, end)
-									else -> TextRange.create(start + dotIndices[i - 1] + 1, start + dotIndices[i])
-								}
-							}
-							return ParadoxKvExpressionInfo(ParadoxKvExpressionType.ScopeExpression, wholeRange, ranges)
-						}
-					}
-					//TODO linkValue
-					//TODO scriptValue
+					
 				}
 				PARAMETER, VALUE_STRING_SNIPPET -> {
 					if(children.size == 1) {

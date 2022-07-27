@@ -11,6 +11,7 @@ import icu.windea.pls.model.*
 
 data class CwtDeclarationConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
+	override val info: CwtConfigInfo,
 	val name: String,
 	val propertyConfig: CwtPropertyConfig, //definitionName = ...
 	val configs: List<Pair<String?, CwtPropertyConfig>>? = null, //(subtypeExpression?, propConfig)
@@ -115,42 +116,24 @@ data class CwtDeclarationConfig(
 	@Suppress("NAME_SHADOWING")
 	private fun inlineConfig(key: String, isQuoted:Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>, index: Int, path: ParadoxElementPath<*>): Int {
 		//内联类型为`single_alias_right`或`alias_match_left`的规则
-		//直到不是linkExpression（匹配links中的link，或者其嵌套格式（root.owner））为止，跳过下一个key
-		//如果这里得到的配置有对应的singleAliasConfig/aliasConfig且支持linkExpression
-		//且当前key匹配links中的link，或者其嵌套格式（root.owner），则需要跳过当前key
-		var key = key
-		var isQuoted = isQuoted
-		var index = index
 		run {
-			var inlinedScopes: MutableList<String>? = null
-			if(CwtConfigHandler.supportsScopes(config)) {
-				while(index < path.length) {
-					val originalKey = path.originalSubPaths[index]
-					key = originalKey.unquote()
-					isQuoted = originalKey.isQuoted()
-					if(isQuoted || !CwtConfigHandler.matchesLinkExpression(key, configGroup)) break
-					if(inlinedScopes == null) inlinedScopes = SmartList()
-					inlinedScopes.addAll(key.split('.'))
-					index++
-				}
-			}
 			val valueExpression = config.valueExpression
 			when(valueExpression.type) {
 				CwtDataTypes.SingleAliasRight -> {
 					val singleAliasName = valueExpression.value ?: return@run
 					val singleAliases = configGroup.singleAliases[singleAliasName] ?: return@run
 					for(singleAlias in singleAliases) {
-						result.add(config.inlineFromSingleAliasConfig(singleAlias, inlinedScopes))
+						result.add(config.inlineFromSingleAliasConfig(singleAlias))
 					}
 					return index + 1
 				}
 				CwtDataTypes.AliasMatchLeft -> {
 					val aliasName = valueExpression.value ?: return@run
-					val aliasGroup = configGroup.aliases[aliasName] ?: return@run
-					val aliasSubName = CwtConfigHandler.resolveAliasSubNameExpression(key, isQuoted, aliasGroup, configGroup) ?: return@run
+					val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
+					val aliasSubName = CwtConfigHandler.getAliasSubName(key, isQuoted, aliasName, configGroup) ?: return@run
 					val aliases = aliasGroup[aliasSubName] ?: return@run
 					for(alias in aliases) {
-						result.add(config.inlineFromAliasConfig(alias, inlinedScopes))
+						result.add(config.inlineFromAliasConfig(alias))
 					}
 					return index + 1
 				}

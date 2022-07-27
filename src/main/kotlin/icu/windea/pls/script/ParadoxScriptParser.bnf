@@ -66,7 +66,7 @@ property ::= property_key property_separator property_value {
 }
 property_key ::= key_expr {
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptExpression"
+    "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ] 
   methods=[getValue setValue getNameIdentifier getReference getReferences getConfigExpression getValueType]
 }
@@ -109,7 +109,7 @@ string ::= value_expr {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptValueStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptValue"
-    "icu.windea.pls.script.psi.ParadoxScriptExpression"
+    "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ]
   methods=[getValue setValue getNameIdentifier getReference getReferences getStringValue getValueType getConfigExpression]
 }

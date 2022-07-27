@@ -17,11 +17,11 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  */
 @Deprecated("UNUSED")
 class ParadoxScriptGotoDeclarationHandler : GotoDeclarationHandlerBase() {
-	override fun getGotoDeclarationTarget(sourceElement: PsiElement?, editor: Editor?): PsiElement? {
+	override fun getGotoDeclarationTarget(sourceElement: PsiElement?, editor: Editor): PsiElement? {
 		return when {
 			sourceElement.elementType == PROPERTY_KEY_TOKEN -> {
 				val element = sourceElement?.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return null
-				return CwtConfigHandler.resolveKey(element) {
+				return CwtConfigHandler.resolveKey(element, null) {
 					it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName
 				}
 			}
@@ -33,7 +33,7 @@ class ParadoxScriptGotoDeclarationHandler : GotoDeclarationHandlerBase() {
 		return when {
 			sourceElement.elementType == PROPERTY_KEY_TOKEN -> {
 				val element = sourceElement?.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return null
-				return CwtConfigHandler.multiResolveKey(element) {
+				return CwtConfigHandler.multiResolveKey(element, null) {
 					it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName
 				}.takeIfNotEmpty()?.toTypedArray()
 			}

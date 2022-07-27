@@ -120,7 +120,7 @@ var VirtualFile.contentFile
 
 //region PsiElement Extensions
 fun PsiElement.isQuoted(): Boolean {
-	return firstLeafOrSelf.text.startsWith('"') //判断第一个叶子节点或本身的文本是否以引号开头
+	return firstLeafOrSelf.text.startsWith('"') || lastLeafOrSelf.text.endsWith('"')
 }
 
 fun CwtValue.isLonely(): Boolean {
@@ -220,7 +220,7 @@ fun ParadoxScriptProperty.getPropertyConfig(allowDefinitionSelf: Boolean = false
 		?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
 }
 
-fun ParadoxScriptExpression.getConfig(): CwtKvConfig<*>? {
+fun ParadoxScriptExpressionElement.getConfig(): CwtKvConfig<*>? {
 	return when(this){
 		is ParadoxScriptPropertyKey -> getPropertyConfig()
 		is ParadoxScriptString -> getValueConfig()
@@ -710,7 +710,7 @@ private const val definitionLinkPrefix = "def#"
 private const val localisationLinkPrefix = "loc#"
 private const val filePathLinkPrefix = "#"
 
-fun resolveLink(link: String, context: PsiElement): PsiElement? {
+fun resolveScope(link: String, context: PsiElement): PsiElement? {
 	return when {
 		link.startsWith(cwtLinkPrefix) -> resolveCwtLink(link.drop(cwtLinkPrefix.length), context)
 		link.startsWith(definitionLinkPrefix) -> resolveDefinitionLink(link.drop(definitionLinkPrefix.length), context)

@@ -433,13 +433,22 @@ val PsiElement.firstLeafOrSelf: PsiElement
 		return firstChild?.firstLeafOrSelf ?: this
 	}
 
+val PsiElement.lastLeafOrSelf: PsiElement
+	get() {
+		val lastChild = lastChild
+		return lastChild?.lastLeafOrSelf ?: this
+	}
+
 val PsiElement.icon
 	get() = getIcon(0)
 
-val PsiElement.keyword
-	get() = text.trim('"').let { s ->
-		runCatching { s.dropLast(dummyIdentifierLength) }.getOrElse { s }
+fun PsiElement.getKeyword(offset: Int): String {
+	return text.unquote().let { s -> 
+		runCatching { 
+			s.substring(0, offset) + s.substring(offset + dummyIdentifierLength)
+		}.getOrElse { s }
 	}
+}
 
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 	override fun getElement() = null

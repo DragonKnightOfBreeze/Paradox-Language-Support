@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.*
 /**
  * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
  */
-class ParadoxScriptLinkValueReference(
+class ParadoxScriptScopeValueReference(
 	element: ParadoxScriptString,
 	rangeInElement: TextRange
 ): PsiReferenceBase<PsiElement>(element, rangeInElement){

@@ -12,4 +12,7 @@ data class CwtFileConfig(
 	companion object {
 		val EmptyConfig = CwtFileConfig(emptyPointer(), emptyList(), emptyList())
 	}
+	
+	override val info = CwtConfigInfo()
 }
+

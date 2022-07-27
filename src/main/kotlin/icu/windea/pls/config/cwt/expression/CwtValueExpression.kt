@@ -109,17 +109,17 @@ class CwtValueExpression private constructor(
 					val value = expressionString.substring(13, expressionString.length - 1)
 					CwtValueExpression(expressionString, Types.ComplexEnum, Priorities.complexEnumPriority,value)
 				}
-				expressionString.surroundsWith("scope_group[", "]") -> {
-					val value = expressionString.substring(12, expressionString.length - 1)
-					CwtValueExpression(expressionString, Types.ScopeGroup, Priorities.rangedScopePriority, value)
+				expressionString == "scope_field" -> {
+					CwtValueExpression(expressionString, Types.ScopeField, Priorities.scopePriority)
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
 					//value需要是有效的scope_type
 					val value = expressionString.substring(6, expressionString.length - 1).takeIf { it != "any" }
 					CwtValueExpression(expressionString, Types.Scope, Priorities.rangedScopePriority, value)
 				}
-				expressionString == "scope_field" -> {
-					CwtValueExpression(expressionString, Types.Scope, Priorities.rangedScopePriority)
+				expressionString.surroundsWith("scope_group[", "]") -> {
+					val value = expressionString.substring(12, expressionString.length - 1)
+					CwtValueExpression(expressionString, Types.ScopeGroup, Priorities.rangedScopePriority, value)
 				}
 				expressionString == "variable_field" -> {
 					CwtValueExpression(expressionString, Types.VariableField, Priorities.variableFieldPriority)

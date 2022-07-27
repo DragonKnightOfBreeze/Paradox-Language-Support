@@ -15,7 +15,8 @@ class ParadoxPropertyReferenceCompletionProvider : CompletionProvider<Completion
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
 		
-		val keyword = parameters.position.keyword
+		val caretOffset = parameters.offset - parameters.position.textRange.startOffset
+		val keyword = parameters.position.getKeyword(caretOffset)
 		val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
 		val category = ParadoxLocalisationCategory.resolve(file) ?: return
 		val project = parameters.originalFile.project

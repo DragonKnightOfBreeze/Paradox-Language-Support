@@ -21,7 +21,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
 		if(link == null || context == null) return null
-		return resolveLink(link, context)
+		return resolveScope(link, context)
 	}
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
@@ -37,7 +37,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			is ParadoxScriptProperty -> getPropertyInfo(element)
-			is ParadoxScriptExpression -> {
+			is ParadoxScriptExpressionElement -> {
 				val config = element.getConfig()
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetInfo(element, config)
@@ -84,7 +84,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getValueInValueSetInfo(element: ParadoxScriptExpression, config: CwtKvConfig<*>): String {
+	private fun getValueInValueSetInfo(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
 		return buildString {
 			buildValueInValueSetDefinition(element, config)
 		}
@@ -103,7 +103,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			is ParadoxScriptProperty -> getPropertyDoc(element)
-			is ParadoxScriptExpression -> {
+			is ParadoxScriptExpressionElement -> {
 				val config = element.getConfig()
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetDoc(element, config)
@@ -162,7 +162,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getValueInValueSetDoc(element: ParadoxScriptExpression, config: CwtKvConfig<*>): String {
+	private fun getValueInValueSetDoc(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
 		return buildString {
 			buildValueInValueSetDefinition(element, config)
 		}
@@ -335,7 +335,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpression, config: CwtKvConfig<*>) {
+	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>) {
 		definition {
 			//不加上文件信息
 			//加上定义信息

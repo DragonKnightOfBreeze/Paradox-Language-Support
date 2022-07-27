@@ -2917,8 +2917,6 @@
       <option name="CALL_PARAMETERS_WRAP" value="1" />
       <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
       <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="false" />
-      <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
-      <option name="METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE" value="false" />
       <option name="METHOD_ANNOTATION_WRAP" value="1" />
       <option name="FIELD_ANNOTATION_WRAP" value="1" />
       <option name="WRAP_ON_TYPING" value="0" />

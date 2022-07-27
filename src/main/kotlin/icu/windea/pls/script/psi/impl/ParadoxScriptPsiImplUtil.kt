@@ -432,7 +432,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setValue(element: ParadoxScriptString, name: String): ParadoxScriptString {
-		val newElement = ParadoxScriptElementFactory.createString(element.project, name.quote())
+		val newElement = ParadoxScriptElementFactory.createString(element.project, name)
 		element.replace(newElement)
 		return element
 	}
