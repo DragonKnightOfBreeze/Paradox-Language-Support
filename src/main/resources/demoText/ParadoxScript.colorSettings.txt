@@ -36,7 +36,7 @@ settings = {
 	key = <value>value_in_value_set</value>
 	<scope>root</scope> = {
 		<system-scope>owner</system-scope> = {
-			some_key = <scope-value-prefix>prefix:</scope-value-prefix><scope-value>value</scope-value>
+			some_key = <scope-field-prefix>prefix:</scope-field-prefix><value>value</value>
 			<modifier>some_modifier</modifier> = 1
 		}
 	}

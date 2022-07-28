@@ -38,7 +38,7 @@ class IncorrectScopeExpressionInspection :LocalInspectionTool(){
 					} else {
 						val value = element.value
 						val expression = ParadoxScriptScopeExpression.resolve(value, configGroup)
-						if(expression != null){
+						if(expression.isEmpty()){
 							for(error in expression.errors) {
 								holder.registerScriptExpressionError(element, error)
 							}

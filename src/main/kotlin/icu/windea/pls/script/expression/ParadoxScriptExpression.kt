@@ -13,21 +13,25 @@ sealed class ParadoxScriptExpression(
 	val infos: List<ParadoxScriptExpressionInfo>,
 	val errors: List<ParadoxScriptExpressionError>
 ) : AbstractExpression(expressionString) {
-	//var mayNotMatch: Boolean = false
-	//
-	//fun mayNotMatch() = apply { mayNotMatch = true }
+	protected var empty = false
+	
+	fun isEmpty() = empty
+}
+
+fun <T: ParadoxScriptExpression> T.ifEmpty(other: () -> T): T {
+	return if(this.isEmpty()) other() else this
 }
 
 abstract class ParadoxScriptExpressionResolver<T : ParadoxScriptExpression> {
-	protected val cache: MutableMap<String, T?> by lazy { ConcurrentHashMap() }
+	protected val cache: MutableMap<String, T> by lazy { ConcurrentHashMap() }
 	
-	open fun resolve(expression: String, configGroup: CwtConfigGroup): T? {
+	open fun resolve(expression: String, configGroup: CwtConfigGroup): T {
 		return cache.getOrPut(configGroup.gameType.id + " " + expression) {
 			doResolve(expression, configGroup)
 		}
 	}
 	
-	protected abstract fun doResolve(expressionString: String, configGroup: CwtConfigGroup): T?
+	protected abstract fun doResolve(expressionString: String, configGroup: CwtConfigGroup): T
 }
 
 sealed class ParadoxScriptScopeExpression(
@@ -37,9 +41,9 @@ sealed class ParadoxScriptScopeExpression(
 	errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
 	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeExpression>() {
-		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeExpression? {
-			return ParadoxScriptScopeLinkExpression.resolve(expressionString, configGroup)
-				?: ParadoxScriptScopeFieldExpression.resolve(expressionString, configGroup)
+		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeExpression {
+			return ParadoxScriptScopeFieldExpression.resolve(expressionString, configGroup)
+				.ifEmpty { ParadoxScriptScopeLinkExpression.resolve(expressionString, configGroup) }
 		}
 	}
 }
@@ -51,8 +55,10 @@ class ParadoxScriptScopeLinkExpression(
 	errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptScopeExpression(expressionString, configGroup, infos, errors) {
 	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeLinkExpression>() {
-		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeLinkExpression? {
-			if(expressionString.isEmpty() || expressionString.contains(':')) return null
+		val EmptyExpression by lazy { ParadoxScriptScopeLinkExpression("", MockCwtConfigGroup).apply { empty = true } }
+		
+		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeLinkExpression {
+			if(expressionString.isEmpty()) return EmptyExpression
 			
 			val wholeRange = TextRange.create(0, expressionString.length)
 			val dotIndices = expressionString.indicesOf('.')
@@ -113,10 +119,12 @@ class ParadoxScriptScopeFieldExpression(
 	errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptScopeExpression(expressionString, configGroup, infos, errors) {
 	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeFieldExpression>() {
-		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeFieldExpression? {
-			if(expressionString.isEmpty()) return null
+		val EmptyExpression by lazy { ParadoxScriptScopeFieldExpression("", MockCwtConfigGroup).apply{ empty = true } }
+		
+		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeFieldExpression {
+			if(expressionString.isEmpty()) return EmptyExpression
 			
-			return null //TODO
+			return EmptyExpression //TODO
 		}
 	}
 }

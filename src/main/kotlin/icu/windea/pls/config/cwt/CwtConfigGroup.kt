@@ -11,7 +11,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-//val MockCwtConfigGroup by lazy { CwtConfigGroup(ParadoxGameType.Stellaris, getDefaultProject(), emptyMap()) }
+val MockCwtConfigGroup by lazy { CwtConfigGroup(ParadoxGameType.Stellaris, getDefaultProject(), emptyMap()) }
 
 class CwtConfigGroup(
 	val gameType: ParadoxGameType,

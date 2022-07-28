@@ -124,7 +124,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				if(!element.isQuoted()) {
-					val scopeExpression = ParadoxScriptScopeLinkExpression.resolve(element.value, propertyConfig.info.configGroup)
+					val scopeExpression = ParadoxScriptScopeExpression.resolve(element.value, propertyConfig.info.configGroup)
+					if(scopeExpression.isEmpty()) return
 					for(info in scopeExpression.infos) {
 						val attributesKey = info.getAttributesKey()
 						if(attributesKey != null){
