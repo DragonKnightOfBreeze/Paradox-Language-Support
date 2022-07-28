@@ -20,6 +20,8 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		val text  = element.text
 		val textRange = TextRange.create(0, text.length)
+		//排除可能包含参数的情况
+		if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
 		if(!text.isQuoted()) {
 			val config = element.getConfig()
 			if(config != null){
@@ -32,7 +34,6 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					else -> pass() //TODO
 				}
 			}
-			
 		}
 		return when{
 			element is ParadoxScriptPropertyKey -> arrayOf(ParadoxScriptKeyReference(element, textRange))

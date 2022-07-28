@@ -66,6 +66,7 @@ object PlsPriorities {
 	const val systemScopePriority = 65.0
 	const val scopePriority = 60.0
 	const val propertyPriority = 40.0
+	const val valuePriority = 40.0
 	const val modifierPriority = 20.0
 }
 

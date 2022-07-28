@@ -14,8 +14,11 @@ sealed class ParadoxScriptExpression(
 	val errors: List<ParadoxScriptExpressionError>
 ) : AbstractExpression(expressionString) {
 	protected var empty = false
+	protected var matched = false
 	
 	fun isEmpty() = empty
+	
+	fun isMatched() = matched
 }
 
 fun <T: ParadoxScriptExpression> T.ifEmpty(other: () -> T): T {
@@ -64,6 +67,7 @@ class ParadoxScriptScopeLinkExpression(
 			val dotIndices = expressionString.indicesOf('.')
 			if(dotIndices.isNotEmpty()) {
 				var isMalformed = false
+				var isMatched = false
 				val infos = SmartList<ParadoxScriptScopeExpressionInfo>()
 				val errors = SmartList<ParadoxScriptExpressionError>()
 				for(i in 0..dotIndices.size) {
@@ -90,9 +94,11 @@ class ParadoxScriptScopeLinkExpression(
 					if(resolved == null) {
 						val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeLink.error.2", text), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 						errors.add(error)
+					} else if(!isMalformed) {
+						isMatched = true
 					}
 				}
-				return ParadoxScriptScopeLinkExpression(expressionString, configGroup, infos, errors)
+				return ParadoxScriptScopeLinkExpression(expressionString, configGroup, infos, errors).apply { matched = isMatched }
 			} else {
 				if(expressionString.isExactSnakeCase()) {
 					val resolved = CwtConfigHandler.resolveScope(expressionString, configGroup)
@@ -101,7 +107,8 @@ class ParadoxScriptScopeLinkExpression(
 						val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeLink.error.2", expressionString), wholeRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 						listOf(error)
 					} else emptyList()
-					return ParadoxScriptScopeLinkExpression(expressionString, configGroup, listOf(info), errors)
+					val isMatched = resolved != null
+					return ParadoxScriptScopeLinkExpression(expressionString, configGroup, listOf(info), errors).apply { matched = isMatched }
 				} else {
 					//格式不正确
 					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeLink.error.1", expressionString), wholeRange)

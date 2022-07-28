@@ -39,12 +39,12 @@ class IncorrectScopeExpressionInspection :LocalInspectionTool(){
 						val value = element.value
 						val expression = ParadoxScriptScopeExpression.resolve(value, configGroup)
 						if(expression.isEmpty()){
+							//无法解析
+							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scope.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+						} else {
 							for(error in expression.errors) {
 								holder.registerScriptExpressionError(element, error)
 							}
-						} else {
-							//无法解析
-							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scope.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 						}
 					}
 				}

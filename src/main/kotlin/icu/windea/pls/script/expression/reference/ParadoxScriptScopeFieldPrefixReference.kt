@@ -21,6 +21,6 @@ class ParadoxScriptScopeFieldPrefixReference(
 		val gameType = element.fileInfo?.gameType ?: return null
 		val name = rangeInElement.substring(element.text)
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
-		return CwtConfigHandler.resolveLinkValuePrefix(name, configGroup)
+		return CwtConfigHandler.resolveScopeFieldPrefix(name, configGroup)
 	}
 }
