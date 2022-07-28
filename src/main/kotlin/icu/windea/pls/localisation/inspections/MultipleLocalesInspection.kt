@@ -22,7 +22,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 		if(file.name.matchesGlobFileName(ignoredFileNames, true)) return null //忽略
 		if(file.propertyLists.size <= 1) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		holder.registerProblem(file, PlsBundle.message("localisation.inspection.multipleLocales.description"), ProblemHighlightType.WARNING)
+		holder.registerProblem(file, PlsBundle.message("localisation.inspection.multipleLocales.description"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 		return holder.resultsArray
 	}
 	

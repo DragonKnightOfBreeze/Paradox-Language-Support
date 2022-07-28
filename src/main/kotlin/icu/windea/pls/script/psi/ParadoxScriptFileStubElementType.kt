@@ -70,7 +70,7 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 			//需要包括scripted_variable, property, value (valueInValueSet)
 			val type = node.elementType
 			return when {
-				type == VARIABLE -> true
+				type == VARIABLE -> false
 				type == PARAMETER || type == PARAMETER_CONDITION -> true
 				type == INLINE_MATH || type == INLINE_MATH_PARAMETER -> true
 				else -> false

@@ -98,7 +98,9 @@
 * ［长期］完善CWT配置支持
   * [X] 支持解析scopeExpression（如`from.owner`）
   * [X] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
-  * [ ] 支持值类型：`scope` `scope_field` `scope_group`，以及相关功能：匹配、代码提示、引用解析（暂不精确匹配scope）
+  * [ ] 支持值类型：`scope` `scope_field` `scope_group`，以及相关功能：匹配、代码提示、引用解析、代码检查（暂不精确匹配scope）
+  * [ ] 支持值类型：`value_field`，以及相关功能：匹配、代码提示、引用解析（暂不精确匹配scope）
+  * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
   * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）

@@ -191,7 +191,14 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnresolvedFilePathInspection"/>
-    <!--definition > event-->
+    <!--advanced > expression-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectScopeExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.expression"
+                     groupPathKey="script.inspection.expression.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectScopeExpressionInspection"/>
+    <!--advanced > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.event.missingEventNamespace"

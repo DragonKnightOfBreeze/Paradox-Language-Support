@@ -16,13 +16,14 @@ import icu.windea.pls.cwt.psi.*
 data class CwtLinkConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
-	val name:String,
-	val desc:String? = null,
-	val fromData:Boolean = false,
-	val type:String? = null,
+	val name: String,
+	val desc: String? = null,
+	val fromData: Boolean = false,
+	val type: String? = null,
 	val dataSource: CwtValueExpression? = null,
-	val prefix:String? = null,
-	val inputScopes:Set<String>,
-	val outputScope:String,
-): CwtConfig<CwtProperty>
-
+	val prefix: String? = null,
+	val inputScopes: Set<String>,
+	val outputScope: String,
+) : CwtConfig<CwtProperty> {
+	val typeExpression = type?.let { type -> CwtValueExpression.resolve(type) }
+}

@@ -11,6 +11,8 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
+//val MockCwtConfigGroup by lazy { CwtConfigGroup(ParadoxGameType.Stellaris, getDefaultProject(), emptyMap()) }
+
 class CwtConfigGroup(
 	val gameType: ParadoxGameType,
 	val project: Project,
@@ -26,8 +28,11 @@ class CwtConfigGroup(
 	//since: stellaris v3.4
 	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
 	
-	val links: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksNotData: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsScope: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsValue: Map<@CaseInsensitive String, CwtLinkConfig>
 	val localisationLinks: Map<@CaseInsensitive String, CwtLinkConfig>
+	
 	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
 	val modifiers: Map<String, CwtModifierConfig>
@@ -49,8 +54,10 @@ class CwtConfigGroup(
 	//since: stellaris v3.4
 	val tagMap: Map<String, Map<@CaseInsensitive String, CwtTagConfig>> //definitionType - tagName - tagConfig
 	
+	//常量字符串的别名的组名的映射
+	val aliasKeysGroupConst: Map<String, Set<@CaseInsensitive String>>
 	//非常量字符串的别名的组名的映射
-	val aliasGroupKeysNoConst: Map<String, Set<String>>
+	val aliasKeysGroupNoConst: Map<String, Set<String>>
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 	
@@ -60,7 +67,9 @@ class CwtConfigGroup(
 		values = mutableMapOf()
 		enums = mutableMapOf()
 		tags = CollectionFactory.createCaseInsensitiveStringMap()
-		links = CollectionFactory.createCaseInsensitiveStringMap()
+		linksNotData = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationCommands = mutableMapOf()
 		modifierCategories = mutableMapOf()
@@ -134,7 +143,22 @@ class CwtConfigGroup(
 						for(prop in props) {
 							val linkName = prop.key
 							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
-							links[linkName] = linkConfig
+							if(linkConfig.fromData){
+								when(linkConfig.type) {
+									"scope" -> {
+										linksAsScope[linkName] = linkConfig
+									}
+									"value" -> {
+										linksAsValue[linkName] = linkConfig
+									}
+									"both" -> {
+										linksAsScope[linkName] = linkConfig
+										linksAsValue[linkName] = linkConfig
+									}
+								}
+							} else {
+								linksNotData[linkName] = linkConfig
+							}
 						}
 					}
 					//找到配置文件中的顶级的key为"localisation_links"的属性，然后解析它的子属性，添加到localisationLinks中
@@ -221,10 +245,26 @@ class CwtConfigGroup(
 			}
 		}
 		
-		aliasGroupKeysNoConst = aliasGroups.mapValues { (_, v) ->
-			v.keys.filter { CwtKeyExpression.resolve(it).type != CwtDataTypes.Constant }
-				.sortedByDescending { CwtKeyExpression.resolve(it).priority }.toSet()
+		val aliasKeysGroupConst = mutableMapOf<String, Set<String>>()
+		val aliasKeysGroupNoConst = mutableMapOf<String, Set<String>>()
+		for((k, v) in aliasGroups) {
+			var keysConst: MutableSet<String>? = null
+			var keysNoConst: MutableSet<String>? = null
+			for(key in v.keys) {
+				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant){
+					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringSet()
+					keysConst.add(key)
+				} else {
+					if(keysNoConst == null) keysNoConst = mutableSetOf<String>()
+					keysNoConst.add(key)
+				}
+			}
+			aliasKeysGroupConst.put(k, keysConst.orEmpty())
+			aliasKeysGroupNoConst.put(k, keysNoConst?.sortedByDescending { CwtKeyExpression.resolve(it).priority }?.toSet().orEmpty())
 		} 
+		this.aliasKeysGroupConst = aliasKeysGroupConst
+		this.aliasKeysGroupNoConst = aliasKeysGroupNoConst
+		
 		modifierCategoryIdMap = initModifierCategoryIdMap()
 		tagMap = initTagMap()
 		definitionTypesSupportParameters = initDefinitionTypesSupportParameters()
@@ -463,7 +503,7 @@ class CwtConfigGroup(
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
-				"desc" -> desc = prop.stringValue
+				"desc" -> desc = prop.stringValue?.takeIf { !it.isExactSnakeCase() } //排除占位码
 				"from_data" -> fromData = prop.booleanValue ?: false
 				"type" -> type = prop.stringValue
 				"data_source" -> dataSource = prop.valueExpression

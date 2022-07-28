@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -65,6 +66,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			buildPropertyDefinition(element, originalElement, name, configType, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
+			buildTypeBasedContent(element, originalElement, name, configType, project)
 			buildSupportedScopesContent(element, originalElement, name, configType, project)
 		}
 	}
@@ -139,31 +141,6 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			//	}
 			//	else -> pass()
 			//}
-		}
-	}
-	
-	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
-		//为alias modifier localisation_command等提供支持的作用域的文档注释
-		var supportedScopeNames: Set<String>? = null
-		when(configType) {
-			CwtConfigType.Modifier -> {
-				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
-				val configGroup = getCwtConfig(project)[gameType] ?: return
-				val modifierConfig = configGroup.modifiers[name] ?: return
-				supportedScopeNames = modifierConfig.supportedScopeNames
-			}
-			CwtConfigType.LocalisationCommand -> {
-				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
-				val configGroup = getCwtConfig(project)[gameType] ?: return
-				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
-				supportedScopeNames = localisationCommandConfig.supportedScopeNames
-			}
-			else -> pass()
-		}
-		if(supportedScopeNames != null && supportedScopeNames.isNotEmpty()) {
-			content {
-				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNames.joinToString(", ")))
-			}
 		}
 	}
 	
@@ -244,6 +221,55 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		if(since != null) {
 			sections {
 				section(PlsDocBundle.message("title.since"), since)
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildTypeBasedContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
+		when(configType) {
+			//为scope（link）显示名字、描述、输入作用域、输出作用域
+			CwtConfigType.Link -> {
+				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
+				val configGroup = getCwtConfig(project)[gameType] ?: return
+				val linkConfig = configGroup.linksNotData[name] ?: return
+				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
+				val descToUse = linkConfig.desc
+				val inputScopeNamesToUse = linkConfig.inputScopes.joinToString { CwtConfigHandler.getScopeName(it, configGroup) }
+				val outputScopeNameToUse = linkConfig.outputScope.let { CwtConfigHandler.getScopeName(it, configGroup) }
+				content {
+					append(nameToUse).appendBr()
+					if(descToUse != null && descToUse.isNotEmpty()) append(descToUse).appendBr()
+					appendBr()
+					append(PlsDocBundle.message("content.inputScopes", inputScopeNamesToUse)).appendBr()
+					append(PlsDocBundle.message("content.outputScope", outputScopeNameToUse))
+				}
+			}
+			else -> pass()
+		}
+	}
+	
+	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
+		//为alias modifier localisation_command等提供支持的作用域的文档注释
+		var supportedScopeNames: Set<String>? = null
+		when(configType) {
+			CwtConfigType.Modifier -> {
+				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
+				val configGroup = getCwtConfig(project)[gameType] ?: return
+				val modifierConfig = configGroup.modifiers[name] ?: return
+				supportedScopeNames = modifierConfig.supportedScopeNames
+			}
+			CwtConfigType.LocalisationCommand -> {
+				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
+				val configGroup = getCwtConfig(project)[gameType] ?: return
+				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
+				supportedScopeNames = localisationCommandConfig.supportedScopeNames
+			}
+			else -> pass()
+		}
+		if(supportedScopeNames != null && supportedScopeNames.isNotEmpty()) {
+			val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ")
+			content {
+				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNamesToUse))
 			}
 		}
 	}

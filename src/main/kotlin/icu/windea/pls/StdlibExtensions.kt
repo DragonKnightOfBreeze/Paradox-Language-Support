@@ -15,7 +15,8 @@ import kotlin.math.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {}
+inline fun pass() {
+}
 
 inline fun <T> Boolean.ifTrue(body: () -> T?): T? = if(this) body() else null
 
@@ -96,12 +97,16 @@ fun String.containsBlankLine(): Boolean {
 	return false
 }
 
+fun Char.isExactLetter(): Boolean {
+	return this in 'a'..'z' || this in 'A'..'Z'
+}
+
 fun Char.isExactDigit(): Boolean {
 	return this in '0'..'9'
 }
 
-fun Char.isExactLetter(): Boolean {
-	return this in 'a'..'z' || this in 'A'..'Z'
+fun String.isExactSnakeCase(): Boolean {
+	return this.all { it == '_' || it.isExactLetter() || it.isExactDigit() }
 }
 
 fun String.isQuoted(): Boolean {
@@ -112,7 +117,7 @@ fun String.quote(): String {
 	if(this.isEmpty() || this == "\"") return "\"\""
 	val start = startsWith('"')
 	val end = endsWith('"')
-	return when{
+	return when {
 		start && end -> this
 		start -> "$this\""
 		end -> "\"$this"
@@ -128,7 +133,7 @@ fun String.quoteIfNecessary(): String {
 	return if(containsBlank()) quote() else this //如果包含空白的话要使用引号括起
 }
 
-fun String.unquote() :String{
+fun String.unquote(): String {
 	if(this.isEmpty() || this == "\"") return ""
 	var startIndex = 0
 	var endIndex = length
@@ -510,7 +515,7 @@ fun String.toUUID(): UUID {
 	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
 }
 
-fun String.toUuidString(): String{
+fun String.toUuidString(): String {
 	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
 }
 
@@ -564,7 +569,7 @@ inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[th
  * 通过[selector]得到需要的结果之后，
  * 首先按照[comparableSelector]的结果进行排序（如果结果是null，则保持原有的先后顺序），
  * 然后按照[pinPredicate]的结果置顶匹配的元素（如果存在多个匹配的元素，则保持原有的先后顺序）。
- * 
+ *
  * 基于返回比较器的[SortedSet]的被认为包含一切元素。
  */
 inline fun <T, R, C : Comparable<C>> complexCompareBy(
@@ -582,7 +587,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
 			pinPredicate(b1) -> 1
 			pinPredicate(a1) -> -1
 			else -> {
-				val a2  = comparableSelector(a1) ?: return@Comparator 1
+				val a2 = comparableSelector(a1) ?: return@Comparator 1
 				val b2 = comparableSelector(b1) ?: return@Comparator 1
 				a2.compareTo(b2)
 			}
@@ -594,7 +599,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
  * 通过[selector]得到需要的结果之后，
  * 首先按照[comparableSelector]的结果进行降序（如果结果是null，则保持原有的先后顺序），
  * 然后按照[pinPredicate]的结果置顶匹配的元素（如果存在多个匹配的元素，则保持原有的先后顺序）。
- * 
+ *
  * 基于返回比较器的[SortedSet]的被认为包含一切元素。
  */
 inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
@@ -612,7 +617,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
 			pinPredicate(b1) -> 1
 			pinPredicate(a1) -> -1
 			else -> {
-				val a2  = comparableSelector(a1) ?: return@Comparator 1
+				val a2 = comparableSelector(a1) ?: return@Comparator 1
 				val b2 = comparableSelector(b1) ?: return@Comparator 1
 				-a2.compareTo(b2)
 			}

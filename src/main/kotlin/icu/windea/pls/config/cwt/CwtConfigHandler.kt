@@ -42,21 +42,22 @@ object CwtConfigHandler {
 	
 	//region Misc Methods
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): String? {
-		val isConstKey = configGroup.aliasGroups[aliasName]?.containsKey(key)
+		val isConstKey = configGroup.aliasKeysGroupConst[aliasName]?.contains(key) //不区分大小写
 		if(isConstKey == true) return key
-		val keys = configGroup.aliasGroupKeysNoConst[aliasName] ?: return null
+		val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
 		return keys.find {
 			val expression = CwtKeyExpression.resolve(it)
 			matchesKey(expression, key, ParadoxValueType.infer(key), quoted, configGroup)
 		}
 	}
 	
-	fun getScopeName(scopeAlias: String, configGroup: CwtConfigGroup): String {
+	fun getScopeName(scopeNameOrAlias: String, configGroup: CwtConfigGroup): String {
 		val scopes = configGroup.scopes.values
-		//handle "any" scope 
-		if(scopeAlias.equals("any", true)) return "Any"
+		//handle "any" and "all" scope 
+		if(scopeNameOrAlias.equals("any", true)) return "Any"
+		if(scopeNameOrAlias.equals("all", true)) return "All"
 		//a scope may not have aliases, or not defined in scopes.cwt
-		return scopes.find { it.name == scopeAlias || it.aliases.contains(scopeAlias) }?.name ?: scopeAlias.toCapitalizedWords()
+		return scopes.find { it.name == scopeNameOrAlias || it.aliases.contains(scopeNameOrAlias) }?.name ?: scopeNameOrAlias.toCapitalizedWords()
 	}
 	
 	private fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
@@ -540,7 +541,7 @@ object CwtConfigHandler {
 		if(systemScopes.containsKey(name)) return true
 		if(systemScopeOnly) return false
 		
-		val links = configGroup.links
+		val links = configGroup.linksNotData
 		return links.containsKey(name)
 	}
 	
@@ -1160,7 +1161,7 @@ object CwtConfigHandler {
 				.withPriority(PlsPriorities.systemScopePriority)
 			lookupElements.add(lookupElement)
 		}
-		val links = configGroup.links
+		val links = configGroup.linksNotData
 		for(linkConfig in links.values) {
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1855,7 +1856,7 @@ object CwtConfigHandler {
 		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project)
 		if(systemScope != null) return systemScope.pointer.element
 		
-		val links = configGroup.links
+		val links = configGroup.linksNotData
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null
 		return linkConfig.pointer.element
