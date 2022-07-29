@@ -5,6 +5,7 @@ import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -52,6 +53,6 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	}
 	
 	private fun createGotoRelatedItem(targets: Set<PsiElement>): Collection<GotoRelatedItem> {
-		return GotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.relatedImages.group"))
+		return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.relatedImages.group"))
 	}
 }

@@ -26,7 +26,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariableName -> getQuickNavigateInfo(element.parent, originalElement)
 			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
 			is IParadoxScriptInputParameter -> getInputParameterInfo(element)
 			is IParadoxScriptParameter -> {
@@ -92,7 +91,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariableName -> generateDoc(element.parent, originalElement)
 			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
 			is IParadoxScriptInputParameter -> getInputParameterDoc(element)
 			is IParadoxScriptParameter -> {

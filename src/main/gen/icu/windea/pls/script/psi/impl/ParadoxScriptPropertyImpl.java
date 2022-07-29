@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.SmartPsiElementPointer;
 import icu.windea.pls.model.ParadoxValueType;
@@ -125,6 +126,12 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @NotNull
   public Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> getParameterMap() {
     return ParadoxScriptPsiImplUtil.getParameterMap(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
+import com.intellij.navigation.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -8,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.reference.*
+import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.reference.*
@@ -107,6 +109,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getValueType(element: ParadoxScriptVariable): ParadoxValueType? {
 		return element.variableValue?.value?.valueType
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: ParadoxScriptVariable): ItemPresentation {
+		return ParadoxScriptVariablePresentation(element)
 	}
 	//endregion
 	
@@ -262,6 +269,11 @@ object ParadoxScriptPsiImplUtil {
 			}
 		})
 		return result
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation {
+		return ParadoxScriptPropertyPresentation(element)
 	}
 	//endregion
 	

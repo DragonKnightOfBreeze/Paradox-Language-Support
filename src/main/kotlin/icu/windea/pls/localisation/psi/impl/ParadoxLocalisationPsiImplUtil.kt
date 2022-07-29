@@ -1,10 +1,12 @@
 package icu.windea.pls.localisation.psi.impl
 
+import com.intellij.navigation.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.reference.*
@@ -98,6 +100,11 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getValue(element: ParadoxLocalisationProperty): String? {
 		return element.propertyValue?.text?.unquote()
+	}
+	
+	@JvmStatic
+	fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation {
+		return ParadoxLocalisationPropertyPresentation(element)
 	}
 	//endregion
 	

@@ -6,9 +6,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 
-/**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
- */
 class ParadoxScriptScopeFieldPrefixReference(
 	element: PsiElement,
 	rangeInElement: TextRange

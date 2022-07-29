@@ -21,7 +21,7 @@ sealed class ParadoxScriptExpressionInfo(
 class ParadoxScriptScopeExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	val resolved: PsiElement?
+	private val resolved: PsiElement?
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getReference(element: ParadoxScriptExpressionElement): PsiReference {
 		return ParadoxScriptScopeReference(element, textRange, resolved)

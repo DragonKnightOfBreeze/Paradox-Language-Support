@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.SmartPsiElementPointer;
 import icu.windea.pls.model.ParadoxValueType;
@@ -57,5 +58,8 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   @NotNull
   Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> getParameterMap();
+
+  @NotNull
+  ItemPresentation getPresentation();
 
 }

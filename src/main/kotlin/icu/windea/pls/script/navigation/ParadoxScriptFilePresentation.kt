@@ -5,4 +5,4 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFilePresentation(
 	element: ParadoxScriptFile
-) : ItemPresentationBase<ParadoxScriptFile>(element)
+) : ParadoxItemPresentation<ParadoxScriptFile>(element)

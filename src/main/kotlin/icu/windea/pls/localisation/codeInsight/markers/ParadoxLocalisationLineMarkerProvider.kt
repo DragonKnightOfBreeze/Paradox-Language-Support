@@ -5,6 +5,7 @@ import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.util.selector.*
@@ -47,6 +48,6 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	}
 	
 	private fun createGotoRelatedItem(targets: Collection<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
-		return GotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
+		return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
 	}
 }

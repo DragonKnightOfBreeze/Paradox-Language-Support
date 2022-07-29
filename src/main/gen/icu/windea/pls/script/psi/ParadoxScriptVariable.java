@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.model.ParadoxValueType;
 import javax.swing.Icon;
@@ -39,5 +40,8 @@ public interface ParadoxScriptVariable extends ParadoxScriptNamedElement, Parado
 
   @Nullable
   ParadoxValueType getValueType();
+
+  @NotNull
+  ItemPresentation getPresentation();
 
 }

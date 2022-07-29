@@ -53,9 +53,6 @@
         implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>
-    <itemPresentationProvider
-        forClass="com.intellij.psi.NavigatablePsiElement"
-        implementationClass="icu.windea.pls.localisation.navigation.ParadoxLocalisationPresentationProvider"/>
     <navbar implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationNavBar"/>
     <lang.psiStructureViewFactory
         language="PARADOX_LOCALISATION"

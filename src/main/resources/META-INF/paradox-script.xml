@@ -96,9 +96,6 @@
         implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
-    <itemPresentationProvider
-        forClass="com.intellij.psi.NavigatablePsiElement"
-        implementationClass="icu.windea.pls.script.navigation.ParadoxScriptPresentationProvider"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxDefinitionChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>

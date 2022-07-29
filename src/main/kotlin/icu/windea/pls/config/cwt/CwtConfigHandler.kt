@@ -741,10 +741,10 @@ object CwtConfigHandler {
 				return //不需要进行提示
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope -> {
-				completeScope(result)
+				completeScopeExpression(result)
 			}
 			CwtDataTypes.ScopeGroup -> {
-				completeScope(result)
+				completeScopeExpression(result)
 			}
 			CwtDataTypes.VariableField -> pass() //TODO
 			CwtDataTypes.IntVariableField -> pass() //TODO
@@ -781,7 +781,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	private fun ProcessingContext.completeAliasName(contextElement: PsiElement, aliasName: String, config: CwtKvConfig<*>, result: CompletionResultSet, scope: String?) {
+	fun ProcessingContext.completeAliasName(contextElement: PsiElement, aliasName: String, config: CwtKvConfig<*>, result: CompletionResultSet, scope: String?) {
 		//如果aliasName是modifier，则name也可以是modifiers中的modifier
 		if(aliasName == modifierAliasName) {
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
@@ -833,11 +833,16 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun ProcessingContext.completeScope(result: CompletionResultSet) {
+	fun ProcessingContext.completeScopeExpression(result: CompletionResultSet) {
 		//批量提示
-		//TODO 不匹配scope以灰色显示
+		//TODO 不匹配scope的以灰色显示
 		val keywordToUse = keyword.take(caretOffset).substringAfterLast('.')
 		
+		val lookupElements = getScopeVariants()
+		result.withPrefixMatcher(keywordToUse).addAllElements(lookupElements)
+	}
+	
+	private fun ProcessingContext.getScopeVariants(): MutableSet<LookupElement> {
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
 		for(systemScopeConfig in systemScopeConfigs) {
@@ -871,7 +876,7 @@ object CwtConfigHandler {
 				.withPriority(PlsPriorities.scopePriority)
 			lookupElements.add(lookupElement)
 		}
-		result.withPrefixMatcher(keywordToUse).addAllElements(lookupElements)
+		return lookupElements
 	}
 	
 	fun completeLocalisationCommand(configGroup: CwtConfigGroup, result: CompletionResultSet) {
@@ -880,6 +885,11 @@ object CwtConfigHandler {
 		val localisationCommands = configGroup.localisationCommands
 		if(localisationCommands.isEmpty()) return
 		//批量提示
+		val lookupElements = getLocalisationCommandVariants(localisationCommands)
+		result.addAllElements(lookupElements)
+	}
+	
+	private fun getLocalisationCommandVariants(localisationCommands: Map<String, CwtLocalisationCommandConfig>): MutableSet<LookupElement> {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(localisationCommand in localisationCommands) {
 			val config = localisationCommand.value
@@ -894,7 +904,7 @@ object CwtConfigHandler {
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 			lookupElements.add(lookupElement)
 		}
-		result.addAllElements(lookupElements)
+		return lookupElements
 	}
 	
 	fun completeParameters(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {

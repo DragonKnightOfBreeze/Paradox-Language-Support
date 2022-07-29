@@ -1,8 +1,10 @@
 package icu.windea.pls.localisation.psi
 
 import com.intellij.extapi.psi.*
+import com.intellij.navigation.*
 import com.intellij.psi.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.navigation.*
 
 class ParadoxLocalisationFile(
 	viewProvider: FileViewProvider
@@ -34,5 +36,9 @@ class ParadoxLocalisationFile(
 		} else {
 			return name.substring(0, prefixIndex) + localeId + ".yml" 
 		}
+	}
+	
+	override fun getPresentation(): ItemPresentation {
+		return ParadoxLocalisationFilePresentation(this)
 	}
 }

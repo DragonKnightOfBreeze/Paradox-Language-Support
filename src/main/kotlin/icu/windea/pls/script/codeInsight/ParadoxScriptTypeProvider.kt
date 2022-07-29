@@ -46,10 +46,11 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 	 */
 	override fun getInformationHint(element: ParadoxScriptTypedElement): String {
 		//优先显示最相关的类型
-		return element.definitionType
+		val typeToShow = (element.definitionType
 			?: element.configExpression
 			?: element.valueType?.text
-			?: ParadoxValueType.UnknownType.text
+			?: ParadoxValueType.UnknownType.text)
+		return typeToShow.escapeXml()
 	}
 	
 	override fun hasAdvancedInformation(): Boolean {

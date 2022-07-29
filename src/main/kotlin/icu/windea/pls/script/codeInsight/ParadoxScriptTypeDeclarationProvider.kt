@@ -3,7 +3,6 @@ package icu.windea.pls.script.codeInsight
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -33,7 +32,18 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 				}
 				return null
 			}
-			else -> return null
+			//symbol已被解析，不能这样做
+			//symbol is ParadoxScriptExpressionElement -> {
+			//	val config = symbol.getConfig()
+			//	if(config != null) {
+			//		return config.pointer.element?.toSingletonArray()
+			//	} else {
+			//		if(symbol is ParadoxScriptPropertyKey) {
+			//			return getSymbolTypeDeclarations(symbol.parent)
+			//		}
+			//	}
+			//}
 		}
+		return null
 	}
 }

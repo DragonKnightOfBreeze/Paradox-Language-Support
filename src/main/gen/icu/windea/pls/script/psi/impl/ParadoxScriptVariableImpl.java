@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptVariableStub;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.model.ParadoxValueType;
 import javax.swing.Icon;
@@ -92,6 +93,12 @@ public class ParadoxScriptVariableImpl extends ParadoxScriptStubElementImpl<Para
   @Nullable
   public ParadoxValueType getValueType() {
     return ParadoxScriptPsiImplUtil.getValueType(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
 }

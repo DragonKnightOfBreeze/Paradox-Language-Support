@@ -40,7 +40,7 @@ variable ::= variable_name variable_separator variable_value {
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptVariableStub"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getValueType]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getValueType getPresentation]
 }
 variable_name ::= AT VARIABLE_NAME_ID{
   methods=[getName]
@@ -61,8 +61,10 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
-  methods=[getIcon getName setName getNameIdentifier getValue getDepth getBlock 
-    getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterMap]
+  methods=[
+    getIcon getName setName getNameIdentifier getValue getDepth getBlock 
+    getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterMap getPresentation
+  ]
 }
 property_key ::= key_expr {
   implements=[

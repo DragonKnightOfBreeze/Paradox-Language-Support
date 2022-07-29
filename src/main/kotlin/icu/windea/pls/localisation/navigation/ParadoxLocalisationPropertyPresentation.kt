@@ -5,4 +5,4 @@ import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationPropertyPresentation(
 	element: ParadoxLocalisationProperty
-): ItemPresentationBase<ParadoxLocalisationProperty>(element)
+): ParadoxItemPresentation<ParadoxLocalisationProperty>(element)

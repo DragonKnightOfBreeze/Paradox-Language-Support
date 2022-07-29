@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import javax.swing.*
 
 @Suppress("UNCHECKED_CAST")
-abstract class ItemPresentationBase<T : PsiElement>(
+abstract class ParadoxItemPresentation<T : PsiElement>(
 	element: T
 ) : ItemPresentation, LocationPresentation {
 	private val anchor = TreeAnchorizer.getService().createAnchor(element)
@@ -31,7 +31,7 @@ abstract class ItemPresentationBase<T : PsiElement>(
 	//com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolContainerText
 	
 	override fun getLocationString(): String? {
-		//默认使用虚拟文件的路径
+		//默认使用虚拟文件的绝对路径
 		val element = element
 		return element?.containingFile?.virtualFile?.path
 	}

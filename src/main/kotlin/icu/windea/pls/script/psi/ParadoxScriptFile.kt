@@ -1,9 +1,11 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.extapi.psi.*
+import com.intellij.navigation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.navigation.*
 
 class ParadoxScriptFile(
 	viewProvider: FileViewProvider
@@ -22,6 +24,10 @@ class ParadoxScriptFile(
 	
 	override fun subtreeChanged() {
 		clearDefinitionElementInfo() //清除其中的定义元素信息
+	}
+	
+	override fun getPresentation(): ItemPresentation {
+		return ParadoxScriptFilePresentation(this)
 	}
 }
 

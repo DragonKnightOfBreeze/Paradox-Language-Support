@@ -8,9 +8,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
-/**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
- */
 class ParadoxScriptKeyReference(
 	element: ParadoxScriptPropertyKey,
 	rangeInElement: TextRange
@@ -21,7 +18,7 @@ class ParadoxScriptKeyReference(
 		when {
 			resolved == null -> pass()
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
-			resolved is PsiNamedElement-> resolved.setName(newElementName)
+			resolved is PsiNamedElement -> resolved.setName(newElementName)
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
 		return element.setValue(newElementName)
@@ -33,5 +30,12 @@ class ParadoxScriptKeyReference(
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		return CwtConfigHandler.multiResolveKey(element, null).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
+	}
+	
+	/**
+	 * 由[icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider]提供代码补全。
+	 */
+	override fun getVariants(): Array<Any> {
+		return ArrayUtilRt.EMPTY_OBJECT_ARRAY
 	}
 }
