@@ -21,6 +21,7 @@ import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
+import java.awt.*
 import javax.swing.*
 import kotlin.text.removeSurrounding
 
@@ -43,8 +44,8 @@ object CwtConfigHandler {
 	
 	//region Misc Methods
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): String? {
-		val isConstKey = configGroup.aliasKeysGroupConst[aliasName]?.contains(key) //不区分大小写
-		if(isConstKey == true) return key
+		val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
+		if(constKey != null) return constKey
 		val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
 		return keys.find {
 			val expression = CwtKeyExpression.resolve(it)
@@ -218,11 +219,11 @@ object CwtConfigHandler {
 				return valueType.matchesBooleanType()
 			}
 			CwtDataTypes.Int -> {
-				//注意：用括号括起的整数也匹配这个规则
+				//注意：用括号括起的整数（作为scalar）也匹配这个规则
 				return valueType.matchesIntType() || ParadoxValueType.infer(value).matchesIntType() && expression.extraValue?.cast<IntRange>()?.contains(value.toIntOrNull()) ?: true
 			}
 			CwtDataTypes.Float -> {
-				//注意：用括号括起的浮点数也匹配这个规则
+				//注意：用括号括起的浮点数（作为scalar）也匹配这个规则
 				return valueType.matchesFloatType() || ParadoxValueType.infer(value).matchesFloatType() && expression.extraValue?.cast<FloatRange>()?.contains(value.toFloatOrNull()) ?: true
 			}
 			CwtDataTypes.Scalar -> {
@@ -355,6 +356,11 @@ object CwtConfigHandler {
 				if(value.isParameterAwareExpression()) return true
 				return false //TODO
 			}
+			CwtDataTypes.Modifier -> {
+				//匹配预定义的modifier
+				if(value.isParameterAwareExpression()) return true
+				return matchesModifier(value, configGroup)
+			}
 			CwtDataTypes.SingleAliasRight -> {
 				if(value.isParameterAwareExpression()) return true
 				if(!value.isSimpleScriptExpression()) return false
@@ -407,11 +413,6 @@ object CwtConfigHandler {
 	}
 	
 	private fun matchesAliasName(name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, isKey: Boolean): Boolean {
-		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(aliasName == modifierAliasName) {
-			if(matchesModifier(name, configGroup)) return true
-		}
-		
 		//TODO 匹配scope
 		val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
 		val aliasSubName = getAliasSubName(name, quoted, aliasName, configGroup) ?: return false
@@ -716,7 +717,7 @@ object CwtConfigHandler {
 					}
 				}
 				//提示预定义的value
-				this@CwtConfigHandler.run {
+				run {
 					val valueConfig = configGroup.values[valueSetName] ?: return@run
 					val valueInValueSetConfigs = valueConfig.valueConfigMap.values
 					if(valueInValueSetConfigs.isEmpty()) return@run
@@ -750,6 +751,12 @@ object CwtConfigHandler {
 			CwtDataTypes.IntVariableField -> pass() //TODO
 			CwtDataTypes.ValueField -> pass() //TODO
 			CwtDataTypes.IntValueField -> pass() //TODO
+			CwtDataTypes.Modifier -> {
+				//提示预定义的modifier
+				//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
+				val nextScope = config.parent?.scope ?: scope
+				completeModifier(result, nextScope)
+			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.SingleAliasRight -> pass()
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
@@ -782,13 +789,6 @@ object CwtConfigHandler {
 	}
 	
 	fun ProcessingContext.completeAliasName(contextElement: PsiElement, aliasName: String, config: CwtKvConfig<*>, result: CompletionResultSet, scope: String?) {
-		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(aliasName == modifierAliasName) {
-			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-			val nextScope = config.parent?.scope ?: scope
-			completeModifier(result, nextScope)
-		}
-		
 		val aliasGroup = configGroup.aliasGroups[aliasName] ?: return
 		for(aliasConfigs in aliasGroup.values) {
 			//aliasConfigs的名字是相同的 
@@ -796,7 +796,7 @@ object CwtConfigHandler {
 			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
 			if(scope != null && aliasConfig.supportedScopes?.any { matchScope(scope, it, configGroup) } == false) continue
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-			val nextScope = config.parent?.scope ?: scope
+			val nextScope = config.parent ?.scope ?: scope
 			//aliasSubName是一个表达式
 			if(isKey) {
 				completeKey(contextElement, aliasConfig.keyExpression, aliasConfig.config, result, nextScope)
@@ -814,8 +814,9 @@ object CwtConfigHandler {
 		for(modifierConfig in modifiers.values) {
 			//匹配scope
 			val categoryConfigMap = modifierConfig.categoryConfigMap
-			if(categoryConfigMap.isEmpty()) continue
-			if(scope != null && !categoryConfigMap.values.any { c -> c.supportedScopes.any { s -> matchScope(scope, s, configGroup) } }) continue
+			val scopeMatched = scope == null || categoryConfigMap.values.any { c ->
+				c.supportedScopes.any { s -> matchScope(scope, s, configGroup) }
+			}
 			val n = modifierConfig.name
 			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 			val name = n.quoteIf(quoted)
@@ -823,11 +824,12 @@ object CwtConfigHandler {
 			val tailText = " from modifiers"
 			val typeFile = modifierConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
+				.apply { if(!scopeMatched) withItemTextForeground(Color.GRAY) }
 				.withExpectedIcon(PlsIcons.Modifier)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey)
-				.withPriority(PlsPriorities.modifierPriority)
+				.withPriority(PlsPriorities.modifierPriority, scopeMatched)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
@@ -1009,7 +1011,7 @@ object CwtConfigHandler {
 	fun multiResolveValue(valueElement: ParadoxScriptString, file: PsiFile?, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): Collection<PsiElement> {
 		return multiResolveScriptExpression(valueElement, file, false) { it is CwtValueExpression && expressionPredicate(it) }
 	}
-
+	
 	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, isKey: Boolean? = null, expressionPredicate: (CwtKvExpression) -> Boolean = { true }): PsiElement? {
 		//根据对应的expression进行解析
 		val config = element.getConfig() ?: return null
@@ -1025,19 +1027,6 @@ object CwtConfigHandler {
 		//排除带参数的情况
 		if(element.isParameterAwareExpression()) return null
 		val project = element.project
-		
-		if(isKey == true && config is CwtPropertyConfig) {
-			//由于这里规则可能被内联，如果必要，需要判断是否可以基于inlineableConfig解析
-			config.inlineableConfig?.let { inlineableConfig ->
-				if(inlineableConfig is CwtAliasConfig) {
-					val aliasName = inlineableConfig.name
-					val gameType = file.fileInfo?.gameType ?: return null
-					val configGroup = getCwtConfig(project).getValue(gameType)
-					resolveAliasName(element, file, element.value, element.isQuoted(), aliasName, configGroup, injectedOnly = true)
-						?.let { return it }
-				}
-			}
-		}
 		
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1139,6 +1128,12 @@ object CwtConfigHandler {
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				return null //不在这里处理，参见：ParadoxScriptScopeLinkExpression
 			}
+			CwtDataTypes.Modifier -> {
+				val name = element.value
+				val gameType = file.fileInfo?.gameType ?: return null
+				val configGroup = getCwtConfig(project).getValue(gameType)
+				return resolveModifier(name, configGroup)
+			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.SingleAliasRight -> return null
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
@@ -1181,19 +1176,6 @@ object CwtConfigHandler {
 		
 		if(element !is ParadoxScriptString || !element.isSimpleScriptExpression()) return emptyList() //排除带参数或者为复杂表达式的情况
 		val project = file.project
-		
-		if(isKey == true && config is CwtPropertyConfig) {
-			//由于这里规则可能被内联，如果必要，需要判断是否可以基于inlineableConfig解析
-			config.inlineableConfig?.let { inlineableConfig ->
-				if(inlineableConfig is CwtAliasConfig) {
-					val aliasName = inlineableConfig.name
-					val gameType = file.fileInfo?.gameType ?: return emptyList()
-					val configGroup = getCwtConfig(project).getValue(gameType)
-					resolveAliasName(element, file, element.value, element.isQuoted(), aliasName, configGroup, injectedOnly = true)
-						?.let { return it.toSingletonList() }
-				}
-			}
-		}
 		
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
@@ -1288,6 +1270,12 @@ object CwtConfigHandler {
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				return emptyList() //不在这里处理，参见：ParadoxScriptScopeLinkExpression
 			}
+			CwtDataTypes.Modifier -> {
+				val name = element.value
+				val gameType = file.fileInfo?.gameType ?: return emptyList()
+				val configGroup = getCwtConfig(project).getValue(gameType)
+				return resolveModifier(name, configGroup).toSingletonListOrEmpty()
+			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.SingleAliasRight -> return emptyList()
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
@@ -1316,17 +1304,8 @@ object CwtConfigHandler {
 		}
 	}
 	
-	private fun resolveAliasName(contextElement: PsiElement, file: PsiFile, name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, injectedOnly: Boolean = false): PsiElement? {
+	private fun resolveAliasName(contextElement: PsiElement, file: PsiFile, name: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): PsiElement? {
 		val project = configGroup.project
-		
-		//如果aliasName是modifier，则name也可以是modifiers中的modifier
-		if(aliasName == modifierAliasName) {
-			val resolvedModifier = resolveModifier(name, configGroup)
-			if(resolvedModifier != null) return resolvedModifier
-		}
-		
-		if(injectedOnly) return null
-		
 		val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
 		val aliasSubName = getAliasSubName(name, quoted, aliasName, configGroup)
 		if(aliasSubName != null) {
@@ -1387,7 +1366,8 @@ object CwtConfigHandler {
 				}
 				CwtDataTypes.Constant -> {
 					//同名的定义有多个，取第一个即可
-					val aliases = aliasGroup[aliasSubName]
+					val aliasSubNameIgnoreCase = configGroup.aliasKeysGroupConst.get(aliasName)?.get(aliasSubName)
+					val aliases = aliasGroup[aliasSubNameIgnoreCase] //需要忽略大小写
 					if(aliases != null) {
 						val alias = aliases.firstOrNull()
 						val element = alias?.pointer?.element

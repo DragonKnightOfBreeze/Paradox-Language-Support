@@ -8,7 +8,7 @@ interface ParadoxSelector<T> {
 	
 	fun selectAll(result: T): Boolean = true
 	
-	fun selectDefault(result: T): Boolean = false
+	fun selectDefault(result: T): Boolean = true
 	
 	fun comparator(): Comparator<T>? = null
 }

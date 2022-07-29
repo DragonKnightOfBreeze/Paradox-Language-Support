@@ -90,6 +90,10 @@ class CwtKeyExpression private constructor(
 					val value = expressionString.substring(12, expressionString.length - 1)
 					CwtKeyExpression(expressionString, Types.ScopeGroup, Priorities.rangedScopePriority, value)
 				}
+				//EXTENDED BY PLS
+				expressionString == "\$modifier" -> {
+					CwtKeyExpression(expressionString, Types.Modifier, Priorities.modifierPriority)
+				}
 				expressionString.surroundsWith("alias_keys_field[", "]") -> {
 					val value = expressionString.substring(17, expressionString.length - 1)
 					CwtKeyExpression(expressionString, Types.AliasKeysField, Priorities.aliasPriority, value)

@@ -68,6 +68,8 @@ object PlsPriorities {
 	const val propertyPriority = 40.0
 	const val valuePriority = 40.0
 	const val modifierPriority = 20.0
+	
+	const val scopeMismatchOffset = -500 
 }
 
 object PlsPaths {

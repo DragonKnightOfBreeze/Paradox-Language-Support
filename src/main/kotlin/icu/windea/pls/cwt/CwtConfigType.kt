@@ -21,8 +21,8 @@ enum class CwtConfigType(
 	SingleAlias("single alias", PlsDocBundle.message("name.cwt.singleAlias")),
 	Alias("alias", PlsDocBundle.message("name.cwt.alias")),
 	
-	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), false, true),
-	ValueInValueSet("value in value set", PlsDocBundle.message("name.cwt.valueInValueSet"), false, true),
+	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), true, true),
+	ValueInValueSet("value in value set", PlsDocBundle.message("name.cwt.valueInValueSet"), true, true),
 	
 	Link("link", PlsDocBundle.message("name.cwt.link"), true),
 	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink"), true),

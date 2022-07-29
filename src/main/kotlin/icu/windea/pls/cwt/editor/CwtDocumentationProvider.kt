@@ -89,7 +89,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
 				if(configType?.hasType == true) {
-					val typeName = element.parentOfType<CwtProperty>()?.name
+					val typeName = element.parentOfType<CwtProperty>()?.name?.substringIn('[', ']')?.takeIfNotEmpty()
 					if(typeName != null && typeName.isNotEmpty()) {
 						append(": ").append(typeName)
 					}
@@ -103,7 +103,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(showDetail && !name.equals(originalName, true)) {
+				if(showDetail && name != originalName) { //这里不忽略大小写
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}
@@ -151,7 +151,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
 				if(configType?.hasType == true) {
-					val typeName = element.parentOfType<CwtProperty>()?.name
+					val typeName = element.parentOfType<CwtProperty>()?.name?.substringIn('[', ']')?.takeIfNotEmpty()
 					if(typeName != null && typeName.isNotEmpty()) {
 						append(": ").append(typeName)
 					}
@@ -165,7 +165,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val originalName = originalElement.text.unquote()
 				if(prefix != null) append(prefix)
 				append(" <b>").append(originalName.escapeXmlOrAnonymous()).append("</b>")
-				if(showDetail && !name.equals(originalName, true)) {
+				if(showDetail && name != originalName) { //这里不忽略大小写
 					grayed {
 						append(" by ").append(name.escapeXmlOrAnonymous())
 					}
@@ -250,6 +250,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
 		//为alias modifier localisation_command等提供支持的作用域的文档注释
+		//仅为脚本文件中的引用提供
 		var supportedScopeNames: Set<String>? = null
 		when(configType) {
 			CwtConfigType.Modifier -> {

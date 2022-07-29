@@ -32,8 +32,9 @@ import java.util.*
 import javax.swing.*
 
 //region Misc Extensions
-fun LookupElement.withPriority(priority: Double): LookupElement {
-	return PrioritizedLookupElement.withPriority(this, priority)
+fun LookupElement.withPriority(priority: Double, scopeMatched: Boolean = true): LookupElement {
+	val finalPriority = if(scopeMatched) priority else priority + PlsPriorities.scopeMismatchOffset
+	return PrioritizedLookupElement.withPriority(this, finalPriority)
 }
 
 fun LookupElement.withExplicitProximity(explicitProximity: Int): LookupElement {

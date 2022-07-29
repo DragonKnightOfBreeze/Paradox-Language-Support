@@ -78,6 +78,50 @@ fun String.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence): 
 	return if(surroundsWith(prefix, suffix)) substring(prefix.length, length - suffix.length) else null
 }
 
+/**
+ * 根据指定的前后缀，得到首个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.substringIn(prefix: Char, suffix: Char, missingDelimiterValue: String = this): String {
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex + 1, suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到首个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.substringIn(prefix: String, suffix: String, missingDelimiterValue: String = this): String {
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex + prefix.length, suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到最后一个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.substringInLast(prefix: Char, suffix: Char, missingDelimiterValue: String = this): String {
+	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex + 1, suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到最后一个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.substringInLast(prefix: String, suffix: String, missingDelimiterValue: String = this): String {
+	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex + prefix.length, suffixIndex)
+}
+
 fun String.containsBlank(): Boolean {
 	return any { it.isWhitespace() }
 }

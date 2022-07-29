@@ -55,7 +55,7 @@ class CwtConfigGroup(
 	val tagMap: Map<String, Map<@CaseInsensitive String, CwtTagConfig>> //definitionType - tagName - tagConfig
 	
 	//常量字符串的别名的组名的映射
-	val aliasKeysGroupConst: Map<String, Set<@CaseInsensitive String>>
+	val aliasKeysGroupConst: Map<String, Map<@CaseInsensitive String, String>>
 	//非常量字符串的别名的组名的映射
 	val aliasKeysGroupNoConst: Map<String, Set<String>>
 	//支持参数的定义类型
@@ -245,17 +245,17 @@ class CwtConfigGroup(
 			}
 		}
 		
-		val aliasKeysGroupConst = mutableMapOf<String, Set<String>>()
+		val aliasKeysGroupConst = mutableMapOf<String, Map<String, String>>()
 		val aliasKeysGroupNoConst = mutableMapOf<String, Set<String>>()
 		for((k, v) in aliasGroups) {
-			var keysConst: MutableSet<String>? = null
+			var keysConst: MutableMap<String, String>? = null
 			var keysNoConst: MutableSet<String>? = null
 			for(key in v.keys) {
 				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant){
-					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringSet()
-					keysConst.add(key)
+					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringMap()
+					keysConst.put(key, key)
 				} else {
-					if(keysNoConst == null) keysNoConst = mutableSetOf<String>()
+					if(keysNoConst == null) keysNoConst = mutableSetOf()
 					keysNoConst.add(key)
 				}
 			}

@@ -4,6 +4,7 @@ object CwtKvExpressionPriorities {
 	const val constantPriority = 300
 	const val rangedConstantPriority = 301
 	const val enumPriority = 200
+	const val modifierPriority = 195
 	const val scopePriority = 190
 	const val rangedScopePriority = 191
 	const val variableFieldPriority = 180

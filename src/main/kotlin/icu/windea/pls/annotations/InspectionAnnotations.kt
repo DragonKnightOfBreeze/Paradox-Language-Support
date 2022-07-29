@@ -24,3 +24,4 @@ annotation class CwtInspection(
 	val value: String
 
 )
+

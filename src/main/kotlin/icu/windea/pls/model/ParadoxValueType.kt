@@ -26,7 +26,7 @@ enum class ParadoxValueType(
 	
 	fun matchesBooleanType() = this == BooleanType
 	fun matchesIntType() = this == UnknownType || this == IntType || this == ParameterType || this == InlineMathType
-	fun matchesFloatType() = this == UnknownType || this == FloatType || this == ParameterType || this == InlineMathType
+	fun matchesFloatType() = this == UnknownType || this == IntType || this == FloatType || this == ParameterType || this == InlineMathType
 	fun matchesStringType() = this == UnknownType || this == StringType || this == ParameterType
 	fun matchesColorType() = this == ColorType
 	

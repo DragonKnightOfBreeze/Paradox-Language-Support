@@ -34,6 +34,7 @@ object CwtDataTypes {
 	object IntVariableField : CwtValueDataType
 	object ValueField : CwtValueDataType
 	object IntValueField : CwtValueDataType
+	object Modifier: CwtKeyDataType //EXTENDED BY PLS
 	object SingleAliasRight : CwtValueDataType
 	object AliasName : CwtKeyDataType
 	object AliasKeysField : CwtKeyDataType, CwtValueDataType

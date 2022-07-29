@@ -32,6 +32,9 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 				}
 				return null
 			}
+			symbol is ParadoxScriptPropertyKey -> {
+				return getSymbolTypeDeclarations(symbol.parent)
+			}
 			//symbol已被解析，不能这样做
 			//symbol is ParadoxScriptExpressionElement -> {
 			//	val config = symbol.getConfig()
