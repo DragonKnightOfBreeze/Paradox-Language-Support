@@ -27,6 +27,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
+import icu.windea.pls.cwt.psi.*
 import java.io.*
 import java.util.*
 import javax.swing.*
@@ -479,7 +480,37 @@ fun PsiElement.reformatted(canChangeWhiteSpacesOnly: Boolean = false): PsiElemen
 	CodeStyleManager.getInstance(it.project).reformat(it, canChangeWhiteSpacesOnly)
 }
 
-fun PsiElement.isSpaceOrSingleLineBreak() = this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1
+fun PsiElement.isSpaceOrSingleLineBreak(): Boolean {
+	return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1
+}
+
+inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
+	var current: PsiElement? = element ?: return null
+	while(current != null && current !is PsiFile) {
+		if(predicate(current)) return current
+		if(current is PsiComment) return current.siblings().find { it is CwtProperty }
+			?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
+		current = current.parent
+	}
+	return null
+}
+
+inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicate: (PsiElement) -> Boolean): Int{
+	//找到直到没有空行为止的最后一个注释，返回它的开始位移，或者输入元素的开始位移
+	val target: PsiElement = if(element.prevSibling == null && findUpPredicate(element)) element.parent else element
+	var current: PsiElement? = target
+	var comment: PsiComment? = null
+	while(current != null){
+		current = current.prevSibling ?: break
+		when {
+			current is PsiWhiteSpace && current.isSpaceOrSingleLineBreak() -> continue
+			current is PsiComment -> comment = current
+			else -> break
+		}
+	}
+	if(comment != null) return comment.textRange.startOffset
+	return target.textRange.startOffset
+} 
 //endregion
 
 //region Index Extensions

@@ -4,7 +4,6 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.util.treeView.smartTree.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
@@ -25,14 +24,7 @@ class CwtStructureViewModel(
 	}
 	
 	override fun findAcceptableElement(element: PsiElement?): Any? {
-		var current = element
-		while(current != null && current !is PsiFile) {
-			if(isSuitable(current)) return current
-			if(current is PsiComment) return current.siblings().find { it is CwtProperty }
-				?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
-			current = current.parent
-		}
-		return null
+		return findAcceptableElementIncludeComment(element) { isSuitable(it) }
 	}
 	
 	//指定可用的排序器，可自定义

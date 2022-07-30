@@ -32,6 +32,9 @@
     <lang.findUsagesProvider
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
+    <lang.implementationTextSelectioner
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.editor.CwtImplementationTextSelectioner"/>
     <elementDescriptionProvider implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <lang.commenter
         language="CWT"

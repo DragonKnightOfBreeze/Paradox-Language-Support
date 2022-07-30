@@ -49,6 +49,9 @@
     <lang.findUsagesProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
+    <lang.implementationTextSelectioner
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.editor.ParadoxScriptImplementationTextSelectioner"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <!--<gotoDeclarationHandler implementation="icu.windea.pls.script.editor.ParadoxScriptGotoDeclarationHandler"/>-->
     <annotator
