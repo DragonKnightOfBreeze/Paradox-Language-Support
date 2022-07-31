@@ -22,10 +22,6 @@ class ParadoxScriptFile(
 	
 	override val block get() = findOptionalChild<ParadoxScriptRootBlock>()
 	
-	override fun subtreeChanged() {
-		clearDefinitionElementInfo() //清除其中的定义元素信息
-	}
-	
 	override fun getPresentation(): ItemPresentation {
 		return ParadoxScriptFilePresentation(this)
 	}

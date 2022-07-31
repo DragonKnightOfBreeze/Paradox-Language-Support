@@ -47,7 +47,6 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_pathName = null
 		_originalPathName = null
 		_parameterMap = null
-		clearDefinitionElementInfo() //清除其中的定义元素信息
 		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) } //清除基于定义结构的配置信息
 		super.subtreeChanged()
 	}

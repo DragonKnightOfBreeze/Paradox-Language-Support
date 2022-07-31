@@ -23,19 +23,6 @@ val IParadoxScriptParameter.parameterId: PsiElement? get() = findOptionalChild(P
 
 val IParadoxScriptParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
 
-internal fun ParadoxDefinitionProperty.clearDefinitionElementInfo() {
-	this.accept(object : PsiRecursiveElementVisitor() {
-		override fun visitElement(element: PsiElement) {
-			if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
-				if(element is ParadoxScriptProperty || element is ParadoxScriptValue) {
-					element.putUserData(PlsKeys.cachedDefinitionElementInfoKey, null)
-				}
-				super.visitElement(element)
-			}
-		}
-	})
-}
-
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。

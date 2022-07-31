@@ -16,6 +16,7 @@ import icu.windea.pls.config.definition.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
@@ -163,17 +164,22 @@ val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile?.fileInfo
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doGetDefinitionInfo(this)
 
+//NOTE 这个缓存依赖于element和file（fileInfo）
 private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+	val file = element.containingFile.virtualFile
 	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
-		val value = resolveDefinitionInfo(element)
-		CachedValueProvider.Result.create(value, element)
+		//当重新获取definitionInfo时，需要刷新definition中的所有definitionElementInfo
+		clearDefinitionElementInfo(element)
+		val value = resolveDefinitionInfo(element, file)
+		val tracker = ParadoxGameTypeModificationTracker.from(file)
+		CachedValueProvider.Result.create(value, element, file, tracker)
 	}
 }
 
-private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, file: VirtualFile): ParadoxDefinitionInfo? {
 	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
 	val propertyPath = ParadoxElementPath.resolveFromFile(element, 4) ?: return null
-	val fileInfo = element.fileInfo ?: return null
+	val fileInfo = file.fileInfo ?: return null
 	val path = fileInfo.path
 	val gameType = fileInfo.gameType
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
@@ -182,10 +188,24 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDe
 	return configGroup.resolveDefinitionInfo(element, rootKey, path, propertyPath)
 }
 
+private fun clearDefinitionElementInfo(element: ParadoxDefinitionProperty) {
+	element.accept(object : PsiRecursiveElementVisitor() {
+		override fun visitElement(element: PsiElement) {
+			if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
+				if(element is ParadoxScriptProperty || element is ParadoxScriptValue) {
+					element.putUserData(PlsKeys.cachedDefinitionElementInfoKey, null)
+				}
+				super.visitElement(element)
+			}
+		}
+	})
+}
+
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
 val ParadoxScriptPropertyKey.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this.parent)
 val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo? get() = doGetDefinitionElementInfo(this)
 
+//NOTE 此缓存依赖于element，当definition被更改时会移除所有子节点上的此缓存
 private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
 	//icu.windea.pls.script.psi.ParadoxScriptPsiExtensionsKt.clearDefinitionElementInfo
 	//必须是脚本语言的PsiElement
@@ -268,17 +288,20 @@ fun ParadoxScriptValue.getValueConfig(allowDefinitionSelf: Boolean = true, orSin
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo? get() = doGetLocalisationInfo(this)
 
+//NOTE 此缓存依赖于element和file（fileInfo）
 private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+	val file = element.containingFile.virtualFile
 	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
-		val value = resolveLocalisationInfo(element)
-		CachedValueProvider.Result.create(value, element)
+		val value = resolveLocalisationInfo(element, file)
+		val tracker = ParadoxGameTypeModificationTracker.from(file)
+		CachedValueProvider.Result.create(value, element, file, tracker)
 	}
 }
 
-private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty, file: VirtualFile): ParadoxLocalisationInfo? {
 	val name = element.name
-	val type = ParadoxLocalisationCategory.resolve(element) ?: return null
-	val gameType = element.fileInfo?.gameType
+	val type = ParadoxLocalisationCategory.resolve(file) ?: return null
+	val gameType = file.fileInfo?.gameType
 	return ParadoxLocalisationInfo(name, type, gameType)
 }
 

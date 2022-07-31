@@ -124,6 +124,8 @@ fun reparseFilesInRoot(rootFile: VirtualFile) {
 	} finally {
 		//要求重新索引
 		FileBasedIndex.getInstance().requestReindex(rootFile)
+		//要求重建缓存（CachedValue）
+		ParadoxGameTypeModificationTracker.fromRoot(rootFile).increment()
 	}
 }
 

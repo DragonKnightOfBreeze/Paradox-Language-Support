@@ -1,5 +1,6 @@
 package icu.windea.pls.model
 
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
@@ -26,6 +27,11 @@ enum class ParadoxLocalisationCategory(
 				path.canBeSyncedLocalisationPath() -> SyncedLocalisation
 				else -> null
 			}
+		}
+		
+		fun resolve(file: VirtualFile): ParadoxLocalisationCategory? {
+			val root = file.fileInfo?.path ?: return null
+			return resolve(root)
 		}
 		
 		fun resolve(file: ParadoxLocalisationFile): ParadoxLocalisationCategory? {
