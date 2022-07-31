@@ -91,7 +91,7 @@
         language="PARADOX_SCRIPT"
         id="ParadoxValueInValueSetInfoHintsProvider"
         order="last"
-        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueInValueSetInfoHintsProvider"/>
+        implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueInValueSetInfoHintsProvider"/>x
     <lang.formatter
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
@@ -107,6 +107,7 @@
     <lang.psiStructureViewFactory
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
     <lang.refactoringSupport
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptRefactoringSupportProvider"/>

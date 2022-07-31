@@ -32,6 +32,12 @@ import java.io.*
 import java.util.*
 import javax.swing.*
 
+//region JRT Extensions
+fun String.compareToIgnoreCase(other: String): Int {
+	return String.CASE_INSENSITIVE_ORDER.compare(this, other)
+}
+//endregion
+
 //region Misc Extensions
 fun LookupElement.withPriority(priority: Double, scopeMatched: Boolean = true): LookupElement {
 	val finalPriority = if(scopeMatched) priority else priority + PlsPriorities.scopeMismatchOffset

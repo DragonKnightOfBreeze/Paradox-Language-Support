@@ -32,6 +32,9 @@ private property_item ::= COMMENT | property{
 locale ::= LOCALE_ID COLON {
   pin=1
   recoverWhile="#auto"
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
   methods=[getIcon getName setName getReference]
 }
 

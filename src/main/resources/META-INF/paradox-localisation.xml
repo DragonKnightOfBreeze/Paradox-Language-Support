@@ -60,6 +60,7 @@
     <lang.psiStructureViewFactory
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.localisation.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
     <lang.refactoringSupport
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.refactoring.ParadoxLocalisationRefactoringSupportProvider"/>
