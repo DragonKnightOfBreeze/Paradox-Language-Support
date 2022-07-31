@@ -45,7 +45,8 @@
   * [X] 初步集成[Translation](https://github.com/YiiGuxing/TranslationPlugin)插件，用于翻译本地化文本
   * [X] 如果定义支持参数且拥有参数，则在文档中显示
   * [X] 优化：`Navigate > Related Symbol...`显示的弹出框中，使用所属文件的绝对路径+模组名（如果有）+模组版本（如果有）表示位置信息
-  * [X] 优化：`View > Quick Definition...`显示的文本中也包含定义的相关注释
+  * [X] 优化：`View > Quick Definition`显示的文本中也包含定义的相关注释
+  * [X] 完善快速类型定义功能（`View > Quick Type Definition`）
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * ~~将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）~~
 * 新增功能：

@@ -70,7 +70,7 @@ property_key ::= key_expr {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ] 
-  methods=[getValue setValue getNameIdentifier getReference getReferences getConfigExpression getValueType]
+  methods=[getName setName getValue setValue getNameIdentifier getReference getReferences getConfigExpression getValueType]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value {
@@ -113,7 +113,7 @@ string ::= value_expr {
     "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ]
-  methods=[getValue setValue getNameIdentifier getReference getReferences getStringValue getValueType getConfigExpression]
+  methods=[getName setName getValue setValue getNameIdentifier getReference getReferences getStringValue getValueType getConfigExpression]
 }
 color ::= COLOR_TOKEN {
   implements=[

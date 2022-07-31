@@ -38,6 +38,18 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
 
   @Override
   @NotNull
+  public String getName() {
+    return ParadoxScriptPsiImplUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public ParadoxScriptPropertyKey setName(@NotNull String value) {
+    return ParadoxScriptPsiImplUtil.setName(this, value);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }

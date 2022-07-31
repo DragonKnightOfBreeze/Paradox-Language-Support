@@ -15,6 +15,12 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptEx
   List<ParadoxScriptParameter> getParameterList();
 
   @NotNull
+  String getName();
+
+  @NotNull
+  ParadoxScriptString setName(@NotNull String value);
+
+  @NotNull
   String getValue();
 
   @NotNull

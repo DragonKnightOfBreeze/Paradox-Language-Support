@@ -7,7 +7,7 @@ interface ParadoxScriptExpressionElement : ParadoxScriptNamedElement, ParadoxScr
 	
 	fun setValue(value: String): ParadoxScriptExpressionElement
 	
-	override fun getName(): String = value
+	override fun getName(): String //注意这里不能使用默认方法，因为PsiElementBase存在默认的实现
 	
-	override fun setName(name: String) = setValue(name)
+	override fun setName(name: String): ParadoxScriptExpressionElement //注意这里不能使用默认方法，因为PsiElementBase存在默认的实现
 }

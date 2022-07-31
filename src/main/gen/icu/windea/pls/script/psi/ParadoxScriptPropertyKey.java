@@ -14,6 +14,12 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement
   List<ParadoxScriptParameter> getParameterList();
 
   @NotNull
+  String getName();
+
+  @NotNull
+  ParadoxScriptPropertyKey setName(@NotNull String value);
+
+  @NotNull
   String getValue();
 
   @NotNull
