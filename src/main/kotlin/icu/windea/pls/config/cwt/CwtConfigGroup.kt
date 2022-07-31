@@ -506,14 +506,12 @@ class CwtConfigGroup(
 				"desc" -> desc = prop.stringValue?.takeIf { !it.isExactSnakeCase() } //排除占位码
 				"from_data" -> fromData = prop.booleanValue ?: false
 				"type" -> type = prop.stringValue
-				"data_source" -> dataSource = prop.valueExpression
+				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能data（可重复）
 				"prefix" -> prefix = prop.stringValue
 				"input_scopes" -> inputScopes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 				"output_scope" -> outputScope = prop.stringValue
 			}
 		}
-		if(inputScopes == null) inputScopes = emptySet()
-		if(outputScope == null) return null //排除
 		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
 	}
 	

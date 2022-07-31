@@ -6,6 +6,7 @@ import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -23,6 +24,8 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
 import java.awt.*
 import javax.swing.*
+import kotlin.collections.component1
+import kotlin.collections.component2
 import kotlin.text.removeSurrounding
 
 /**
@@ -997,87 +1000,89 @@ object CwtConfigHandler {
 	//region Resolve Methods
 	//TODO 基于cwt规则文件的解析方法需要进一步匹配scope
 	fun resolveKey(keyElement: ParadoxScriptPropertyKey, file: PsiFile?, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): PsiElement? {
-		return resolveScriptExpression(keyElement, file, true) { it is CwtKeyExpression && expressionPredicate(it) }
+		return resolveScriptExpression(keyElement, file, isKey = true) { it is CwtKeyExpression && expressionPredicate(it) }
 	}
 	
 	fun multiResolveKey(keyElement: ParadoxScriptPropertyKey, file: PsiFile?, expressionPredicate: (CwtKeyExpression) -> Boolean = { true }): Collection<PsiElement> {
-		return multiResolveScriptExpression(keyElement, file, true) { it is CwtKeyExpression && expressionPredicate(it) }
+		return multiResolveScriptExpression(keyElement, file, isKey = true) { it is CwtKeyExpression && expressionPredicate(it) }
 	}
 	
 	fun resolveValue(valueElement: ParadoxScriptString, file: PsiFile?, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): PsiElement? {
-		return resolveScriptExpression(valueElement, file, false) { it is CwtValueExpression && expressionPredicate(it) }
+		return resolveScriptExpression(valueElement, file, isKey = false) { it is CwtValueExpression && expressionPredicate(it) }
 	}
 	
 	fun multiResolveValue(valueElement: ParadoxScriptString, file: PsiFile?, expressionPredicate: (CwtValueExpression) -> Boolean = { true }): Collection<PsiElement> {
-		return multiResolveScriptExpression(valueElement, file, false) { it is CwtValueExpression && expressionPredicate(it) }
+		return multiResolveScriptExpression(valueElement, file, isKey = false) { it is CwtValueExpression && expressionPredicate(it) }
 	}
 	
-	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, isKey: Boolean? = null, expressionPredicate: (CwtKvExpression) -> Boolean = { true }): PsiElement? {
+	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, rangeInElement: TextRange? = null, isKey: Boolean? = null, expressionPredicate: (CwtKvExpression) -> Boolean = { true }): PsiElement? {
 		//根据对应的expression进行解析
 		val config = element.getConfig() ?: return null
 		val expression = config.expression
 		if(!expressionPredicate(expression)) return null
-		return doResolveScriptExpression(element, file, expression, config, isKey)
+		return doResolveScriptExpression(element, file, expression, config, rangeInElement, isKey)
 	}
 	
 	@PublishedApi
-	internal fun doResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, expression: CwtKvExpression, config: CwtKvConfig<*>, isKey: Boolean?): PsiElement? {
+	internal fun doResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, expression: CwtKvExpression,config: CwtKvConfig<*>, rangeInElement: TextRange?, isKey: Boolean?): PsiElement? {
 		val file by lazy { file ?: element.containingFile }
 		
 		//排除带参数的情况
 		if(element.isParameterAwareExpression()) return null
 		val project = element.project
 		
+		val text = rangeInElement?.substring(element.value) ?: element.value
+		
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
-				val name = element.value
+				val name = text
 				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 				return findLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				val name = element.value
+				val name = text
 				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 				return findSyncedLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(element.isQuoted()) return null
-				val name = element.value
+				val name = text
 				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 				return findLocalisation(name, project, selector = selector)
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
-				val filePath = element.value
+				val filePath = text
 				val path = filePath.toPathOrNull() ?: return null
 				return VfsUtil.findFile(path, true)?.toPsiFile(project)
 			}
 			CwtDataTypes.FilePath -> {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
-				val filePath = expressionType.resolve(expression.value, element.value.normalizePath())
+				val filePath = expressionType.resolve(expression.value, text.normalizePath())
 				val selector = fileSelector().gameTypeFrom(file).preferRootFrom(file)
 				return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
 			}
 			CwtDataTypes.Icon -> {
 				val expressionType = CwtFilePathExpressionTypes.Icon
-				val filePath = expressionType.resolve(expression.value, element.value.normalizePath()) ?: return null
+				val filePath = expressionType.resolve(expression.value, text.normalizePath()) ?: return null
 				val selector = fileSelector().gameTypeFrom(file).preferRootFrom(file)
 				return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
 			}
 			CwtDataTypes.TypeExpression -> {
-				val name = element.value
+				val name = text
 				val typeExpression = expression.value ?: return null
 				val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
 				return findDefinitionByType(name, typeExpression, project, selector = selector)
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return null
-				val name = element.value.removeSurrounding(prefix, suffix)
+				val name = text.removeSurrounding(prefix, suffix)
 				val typeExpression = expression.value ?: return null
 				val selector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
 				return findDefinitionByType(name, typeExpression, project, selector = selector)
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return null
-				val name = element.value
+				val name = text
 				//解析为参数名
 				if(isKey == true && enumName == paramsEnumName && config is CwtPropertyConfig) {
 					val definitionName = element.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return null
@@ -1098,7 +1103,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return null
-				val valueName = element.value
+				val valueName = text
 				val gameType = file.fileInfo?.gameType ?: return null
 				//尝试解析为来自脚本文件的value
 				run {
@@ -1120,7 +1125,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ScopeGroup -> {
 				//TODO 匹配scope
-				val name = element.value
+				val name = text
 				val gameType = file.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveScope(name, configGroup)
@@ -1129,7 +1134,7 @@ object CwtConfigHandler {
 				return null //不在这里处理，参见：ParadoxScriptScopeLinkExpression
 			}
 			CwtDataTypes.Modifier -> {
-				val name = element.value
+				val name = text
 				val gameType = file.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveModifier(name, configGroup)
@@ -1141,13 +1146,13 @@ object CwtConfigHandler {
 				val aliasName = expression.value ?: return null
 				val gameType = file.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
-				return resolveAliasName(element, file, element.value, element.isQuoted(), aliasName, configGroup)
+				return resolveAliasName(element, file, text, element.isQuoted(), aliasName, configGroup)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return null
 				val gameType = file.fileInfo?.gameType ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
-				return resolveAliasName(element, file, element.value, element.isQuoted(), aliasName, configGroup)
+				return resolveAliasName(element, file, text, element.isQuoted(), aliasName, configGroup)
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> return null
@@ -1162,71 +1167,73 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, isKey: Boolean? = null, expressionPredicate: (CwtKvExpression) -> Boolean = { true }): Collection<PsiElement> {
+	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, rangeInElement: TextRange? = null, isKey: Boolean? = null, expressionPredicate: (CwtKvExpression) -> Boolean = { true }): Collection<PsiElement> {
 		//根据对应的expression进行解析
 		val config = element.getConfig() ?: return emptyList()
 		val expression = config.expression
 		if(!expressionPredicate(expression)) return emptyList()
-		return doMultiResolveScriptExpression(element, file, expression, config, isKey)
+		return doMultiResolveScriptExpression(element, file, expression, config, rangeInElement, isKey)
 	}
 	
 	@PublishedApi
-	internal fun doMultiResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, expression: CwtKvExpression, config: CwtKvConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+	internal fun doMultiResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, expression: CwtKvExpression, config: CwtKvConfig<*>, rangeInElement: TextRange?, isKey: Boolean?): Collection<PsiElement> {
 		val file by lazy { file ?: element.containingFile }
 		
 		if(element !is ParadoxScriptString || !element.isSimpleScriptExpression()) return emptyList() //排除带参数或者为复杂表达式的情况
 		val project = file.project
 		
+		val text = rangeInElement?.substring(element.value) ?: element.value
+		
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
-				val name = element.value
+				val name = text
 				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.SyncedLocalisation -> {
-				val name = element.value
+				val name = text
 				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 				return findSyncedLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(element.isQuoted()) return emptyList()
-				val name = element.value
+				val name = text
 				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
-				val filePath = element.value
+				val filePath = text
 				val path = filePath.toPathOrNull() ?: return emptyList()
 				return VfsUtil.findFile(path, true)?.toPsiFile<PsiFile>(project).toSingletonListOrEmpty()
 			}
 			CwtDataTypes.FilePath -> {
 				val expressionType = CwtFilePathExpressionTypes.FilePath
-				val filePath = expressionType.resolve(expression.value, element.value.normalizePath())
+				val filePath = expressionType.resolve(expression.value, text.normalizePath())
 				val selector = fileSelector().gameTypeFrom(file).preferRootFrom(file)
 				return findFilesByFilePath(filePath, project, selector = selector).mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataTypes.Icon -> {
 				val expressionType = CwtFilePathExpressionTypes.Icon
-				val filePath = expressionType.resolve(expression.value, element.value.normalizePath()) ?: return emptyList()
+				val filePath = expressionType.resolve(expression.value, text.normalizePath()) ?: return emptyList()
 				val selector = fileSelector().gameTypeFrom(file).preferRootFrom(file)
 				return findFilesByFilePath(filePath, project, selector = selector).mapNotNull { it.toPsiFile(project) }
 			}
 			CwtDataTypes.TypeExpression -> {
-				val name = element.value
+				val name = text
 				val typeExpression = expression.value ?: return emptyList()
 				val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
 				return findDefinitionsByType(name, typeExpression, project, selector = selector)
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return emptyList()
-				val name = element.value.removeSurrounding(prefix, suffix)
+				val name = text.removeSurrounding(prefix, suffix)
 				val typeExpression = expression.value ?: return emptyList()
 				val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
 				return findDefinitionsByType(name, typeExpression, project, selector = selector)
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = expression.value ?: return emptyList()
-				val name = element.value
+				val name = text
 				//解析为参数名
 				if(enumName == paramsEnumName && config is CwtPropertyConfig) {
 					val definitionName = element.parent?.parentOfType<ParadoxScriptProperty>()?.name ?: return emptyList()
@@ -1247,7 +1254,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return emptyList()
-				val valueName = element.value
+				val valueName = text
 				val gameType = file.fileInfo?.gameType ?: return emptyList()
 				//尝试解析为来自脚本文件的value
 				run {
@@ -1271,7 +1278,7 @@ object CwtConfigHandler {
 				return emptyList() //不在这里处理，参见：ParadoxScriptScopeLinkExpression
 			}
 			CwtDataTypes.Modifier -> {
-				val name = element.value
+				val name = text
 				val gameType = file.fileInfo?.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveModifier(name, configGroup).toSingletonListOrEmpty()
@@ -1283,13 +1290,13 @@ object CwtConfigHandler {
 				val aliasName = expression.value ?: return emptyList()
 				val gameType = file.fileInfo?.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(project).getValue(gameType)
-				return resolveAliasName(element, file, element.value, element.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
+				return resolveAliasName(element, file, text, element.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return emptyList()
 				val gameType = file.fileInfo?.gameType ?: return emptyList()
 				val configGroup = getCwtConfig(project).getValue(gameType)
-				return resolveAliasName(element, file, element.value, element.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
+				return resolveAliasName(element, file, text, element.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
 			}
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> return emptyList()

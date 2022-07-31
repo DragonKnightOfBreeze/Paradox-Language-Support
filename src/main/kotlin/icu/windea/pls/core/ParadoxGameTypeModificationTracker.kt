@@ -25,12 +25,14 @@ class ParadoxGameTypeModificationTracker : ModificationTracker {
 			.weakKeys().buildFrom { ParadoxGameTypeModificationTracker() }
 		private val mock = ParadoxGameTypeModificationTracker()
 		
-		fun from(file: VirtualFile): ParadoxGameTypeModificationTracker {
+		fun from(file: VirtualFile?): ParadoxGameTypeModificationTracker {
+			if(file == null) return mock
 			val root = file.fileInfo?.rootFile ?: return mock
 			return fromRoot(root)
 		}
 		
-		fun fromRoot(root: VirtualFile): ParadoxGameTypeModificationTracker {
+		fun fromRoot(root: VirtualFile?): ParadoxGameTypeModificationTracker {
+			if(root == null) return mock
 			return cache.get(root)
 		}
 	}

@@ -3,6 +3,7 @@
 package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -166,13 +167,14 @@ val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo? get() = doG
 
 //NOTE 这个缓存依赖于element和file（fileInfo）
 private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	val file = element.containingFile.virtualFile
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
-		//当重新获取definitionInfo时，需要刷新definition中的所有definitionElementInfo
-		clearDefinitionElementInfo(element)
-		val value = resolveDefinitionInfo(element, file)
-		val tracker = ParadoxGameTypeModificationTracker.from(file)
-		CachedValueProvider.Result.create(value, element, file, tracker)
+	return runReadAction {
+		val file = element.containingFile.virtualFile
+		CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
+			clearDefinitionElementInfo(element)
+			val value = resolveDefinitionInfo(element, file)
+			val tracker = ParadoxGameTypeModificationTracker.from(file)
+			CachedValueProvider.Result.create(value, element, file, tracker)
+		}
 	}
 }
 
@@ -189,6 +191,7 @@ private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty, file: Virt
 }
 
 private fun clearDefinitionElementInfo(element: ParadoxDefinitionProperty) {
+	//当重新获取definitionInfo时，需要刷新definition中的所有definitionElementInfo
 	element.accept(object : PsiRecursiveElementVisitor() {
 		override fun visitElement(element: PsiElement) {
 			if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
@@ -207,14 +210,14 @@ val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo? get(
 
 //NOTE 此缓存依赖于element，当definition被更改时会移除所有子节点上的此缓存
 private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
-	//icu.windea.pls.script.psi.ParadoxScriptPsiExtensionsKt.clearDefinitionElementInfo
-	//必须是脚本语言的PsiElement
-	if(element.language != ParadoxScriptLanguage) return null
-	if(element.parent == null) return null //防止意外
-	//return resolveDefinitionElementInfo(element)
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
-		val value = resolveDefinitionElementInfo(element)
-		CachedValueProvider.Result.create(value, element)
+	return runReadAction {
+		//必须是脚本语言的PsiElement
+		if(element.language != ParadoxScriptLanguage) return@runReadAction null
+		//return resolveDefinitionElementInfo(element)
+		CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
+			val value = resolveDefinitionElementInfo(element)
+			CachedValueProvider.Result.create(value, element)
+		}
 	}
 }
 
@@ -290,11 +293,13 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo? get()
 
 //NOTE 此缓存依赖于element和file（fileInfo）
 private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-	val file = element.containingFile.virtualFile
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
-		val value = resolveLocalisationInfo(element, file)
-		val tracker = ParadoxGameTypeModificationTracker.from(file)
-		CachedValueProvider.Result.create(value, element, file, tracker)
+	return runReadAction {
+		val file = element.containingFile.virtualFile
+		CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
+			val value = resolveLocalisationInfo(element, file)
+			val tracker = ParadoxGameTypeModificationTracker.from(file)
+			CachedValueProvider.Result.create(value, element, file, tracker)
+		}
 	}
 }
 

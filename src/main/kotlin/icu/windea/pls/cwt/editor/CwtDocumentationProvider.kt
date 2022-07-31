@@ -234,14 +234,19 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val linkConfig = configGroup.linksNotData[name] ?: return
 				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
-				val inputScopeNamesToUse = linkConfig.inputScopes.joinToString { CwtConfigHandler.getScopeName(it, configGroup) }
-				val outputScopeNameToUse = linkConfig.outputScope.let { CwtConfigHandler.getScopeName(it, configGroup) }
+				val inputScopeNamesToUse = linkConfig.inputScopes?.joinToString { CwtConfigHandler.getScopeName(it, configGroup) }
+				val outputScopeNameToUse = linkConfig.outputScope?.let { CwtConfigHandler.getScopeName(it, configGroup) }
+				if(inputScopeNamesToUse == null && outputScopeNameToUse == null) return
 				content {
 					append(nameToUse).appendBr()
 					if(descToUse != null && descToUse.isNotEmpty()) append(descToUse).appendBr()
 					appendBr()
-					append(PlsDocBundle.message("content.inputScopes", inputScopeNamesToUse)).appendBr()
-					append(PlsDocBundle.message("content.outputScope", outputScopeNameToUse))
+					if(!inputScopeNamesToUse.isNullOrEmpty()) {
+						append(PlsDocBundle.message("content.inputScopes", inputScopeNamesToUse)).appendBr()
+					}
+					if(outputScopeNameToUse != null) {
+						append(PlsDocBundle.message("content.outputScope", outputScopeNameToUse))
+					}
 				}
 			}
 			else -> pass()

@@ -79,16 +79,16 @@ class CwtKeyExpression private constructor(
 					CwtKeyExpression(expressionString, Types.ValueSet, Priorities.valuePriority, value)
 				}
 				expressionString == "scope_field" -> {
-					CwtKeyExpression(expressionString, Types.ScopeField, Priorities.scopePriority)
+					CwtKeyExpression(expressionString, Types.ScopeField, Priorities.scopeFieldPriority)
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
 					//value需要是有效的scope_type
 					val value = expressionString.substring(6, expressionString.length - 1).takeIf { it != "any" }
-					CwtKeyExpression(expressionString, Types.Scope, Priorities.rangedScopePriority, value)
+					CwtKeyExpression(expressionString, Types.Scope, Priorities.rangedScopeFieldPriority, value)
 				}
 				expressionString.surroundsWith("scope_group[", "]") -> {
 					val value = expressionString.substring(12, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.ScopeGroup, Priorities.rangedScopePriority, value)
+					CwtKeyExpression(expressionString, Types.ScopeGroup, Priorities.rangedScopeFieldPriority, value)
 				}
 				//EXTENDED BY PLS
 				expressionString == "\$modifier" -> {

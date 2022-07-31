@@ -3,10 +3,10 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.model.*
@@ -44,7 +44,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
 		val propertyConfig = element.getPropertyConfig()
-		if(propertyConfig != null) annotateExpression(element, propertyConfig, holder)
+		if(propertyConfig != null) annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig.info.configGroup, holder)
 		
 		//是定义元素，非定义自身，且路径中不带参数
 		if(propertyConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
@@ -57,7 +57,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(annotateTag(element, holder)) return
 		
 		val valueConfig = element.getValueConfig()
-		if(valueConfig != null) annotateExpression(element, valueConfig, holder)
+		if(valueConfig != null) annotateExpression(element, element.textRange, valueConfig.expression, valueConfig.info.configGroup, holder)
 		
 		//是定义元素，非定义自身，且路径中不带参数
 		if(valueConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
@@ -65,58 +65,57 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun annotateExpression(element: ParadoxScriptExpressionElement, propertyConfig: CwtKvConfig<*>, holder: AnnotationHolder) {
+	private fun annotateExpression(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, configGroup: CwtConfigGroup, holder: AnnotationHolder) {
 		//颜色高亮
-		val expression = propertyConfig.expression
 		when(expression.type) {
 			CwtDataTypes.InlineLocalisation -> {
 				if(element.isQuoted()) {
 					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
-					holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 				}
 			}
 			CwtDataTypes.Localisation -> {
 				val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				val attributesKey = Keys.SYNCED_LOCALISATION_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.TypeExpression -> {
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val attributesKey = Keys.DEFINITION_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
 				val attributesKey = Keys.PATH_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.FilePath -> {
 				val attributesKey = Keys.PATH_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Icon -> {
 				val attributesKey = Keys.PATH_REFERENCE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Enum -> {
 				val attributesKey = when {
 					expression.value == CwtConfigHandler.paramsEnumName -> Keys.INPUT_PARAMETER_KEY
 					else -> Keys.ENUM_VALUE_KEY
 				}
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.ComplexEnum -> {
 				val attributesKey = Keys.ENUM_VALUE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value -> {
 				val attributesKey = Keys.VALUE_IN_VALUE_SET_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.ValueSet -> {
 				val attributesKey = Keys.VALUE_IN_VALUE_SET_KEY
@@ -124,26 +123,37 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				if(!element.isQuoted()) {
-					val scopeExpression = ParadoxScriptScopeExpression.resolve(element.value, propertyConfig.info.configGroup)
+					val scopeExpression = ParadoxScriptScopeExpression.resolve(element.value, configGroup)
 					if(scopeExpression.isEmpty()) return
 					for(info in scopeExpression.infos) {
+						val attributesKeyExpressions = info.getAttributesKeyExpressions(element)
+						if(attributesKeyExpressions.isNotEmpty()) {
+							//使用第一个匹配的expression的高亮
+							val infoRange = info.textRange.shiftRight(range.startOffset)
+							annotateExpression(element, infoRange, attributesKeyExpressions.first(), configGroup, holder)
+							continue
+						} 
 						val attributesKey = info.getAttributesKey()
 						if(attributesKey != null){
-							val range = info.textRange.shiftRight(element.textRange.startOffset)
-							holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
+							val infoRange = info.textRange.shiftRight(range.startOffset)
+							holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
 						}
 					}
 				}
 			}
+			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
+				//TODO
+			}
 			else -> {
-				val resolved = element.reference?.resolve()
+				//特殊处理是modifier的情况
+				val resolved = element.references.singleOrNull()?.resolve()
 				val configType = resolved?.let { CwtConfigType.resolve(it) }
 				val attributesKey = when {
 					configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
 					else -> null
 				}
 				if(attributesKey != null) {
-					holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 				}
 			}
 		}

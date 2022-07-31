@@ -628,8 +628,8 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
 			a1 == b1 -> 0
 			a1 == null -> 1
 			b1 == null -> -1
-			pinPredicate(b1) -> 1
-			pinPredicate(a1) -> -1
+			pinPredicate(b1) -> -1
+			pinPredicate(a1) -> 1
 			else -> {
 				val a2 = comparableSelector(a1) ?: return@Comparator 1
 				val b2 = comparableSelector(b1) ?: return@Comparator 1

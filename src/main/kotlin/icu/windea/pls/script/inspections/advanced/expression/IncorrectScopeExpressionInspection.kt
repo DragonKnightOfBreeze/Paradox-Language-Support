@@ -9,10 +9,10 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 不正确的作用域表达式的检查。
- * 
+ *
  * 作用域表达式（scopeExpression）分为连接表达式（scopeLinkExpression）和字段表达式（scopeFieldExpression）。
  */
-class IncorrectScopeExpressionInspection :LocalInspectionTool(){
+class IncorrectScopeExpressionInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val project = file.project
@@ -31,19 +31,26 @@ class IncorrectScopeExpressionInspection :LocalInspectionTool(){
 			private fun visitElementExpression(element: ParadoxScriptExpressionElement) {
 				val config = element.getConfig() ?: return
 				val type = config.expression.type
-				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup){
-					if(element.isQuoted()){
-						defaultLevel
+				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
+					if(element.isQuoted()) {
+						//不允许用括号括起
 						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scope.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 					} else {
 						val value = element.value
 						val expression = ParadoxScriptScopeExpression.resolve(value, configGroup)
-						if(expression.isEmpty()){
+						if(expression.isEmpty()) {
 							//无法解析
 							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scope.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 						} else {
 							for(error in expression.errors) {
 								holder.registerScriptExpressionError(element, error)
+							}
+							//注册无法解析的异常
+							for(info in expression.infos) {
+								if(info.isUnresolved(element)) {
+									val error = info.getUnresolvedError()
+									if(error != null) holder.registerScriptExpressionError(element, error)
+								}
 							}
 						}
 					}

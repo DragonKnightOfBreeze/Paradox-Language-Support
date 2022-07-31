@@ -104,9 +104,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		
 		private fun getMessageFromExpression(info: ParadoxRelatedLocalisationInfo, locale: ParadoxLocaleConfig): String {
 			return when {
-				info.required -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.1", info.locationExpression, locale)
-				info.primary -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.2", info.locationExpression, locale)
-				else -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.3", info.locationExpression, locale)
+				info.required -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.1.1", info.locationExpression, locale)
+				info.primary -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.2.1", info.locationExpression, locale)
+				else -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.3.1", info.locationExpression, locale)
 			}
 		}
 	}
