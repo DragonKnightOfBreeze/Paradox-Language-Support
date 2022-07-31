@@ -40,7 +40,9 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 				}
 			}
 			is ParadoxScriptExpressionElement -> {
-				when(element.getConfig()?.expression?.type) {
+				val expression = element.getConfig()?.expression
+					?: return getElementDescription(element.parent, location) //可能是定义
+				when(expression.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
 						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.valueInValueSet") else element.value
 					}

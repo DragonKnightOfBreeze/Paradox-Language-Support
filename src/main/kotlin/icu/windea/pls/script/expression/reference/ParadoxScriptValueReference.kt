@@ -24,6 +24,13 @@ class ParadoxScriptValueReference(
 		return element.setValue(newElementName)
 	}
 	
+	override fun isReferenceTo(element: PsiElement): Boolean {
+		//必要的处理
+		val resolved = resolve()
+		val manager = getElement().manager
+		return manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))
+	}
+	
 	override fun resolve(): PsiElement? {
 		return CwtConfigHandler.resolveValue(element, null) //根据对应的expression进行解析
 	}

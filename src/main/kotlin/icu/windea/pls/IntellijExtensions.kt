@@ -451,8 +451,8 @@ val PsiElement.icon
 	get() = getIcon(0)
 
 fun PsiElement.getKeyword(offset: Int): String {
-	return text.unquote().let { s -> 
-		runCatching { 
+	return text.unquote().let { s ->
+		runCatching {
 			s.substring(0, offset) + s.substring(offset + dummyIdentifierLength)
 		}.getOrElse { s }
 	}
@@ -501,12 +501,12 @@ inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: 
 	return null
 }
 
-inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicate: (PsiElement) -> Boolean): Int{
+inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicate: (PsiElement) -> Boolean): Int {
 	//找到直到没有空行为止的最后一个注释，返回它的开始位移，或者输入元素的开始位移
 	val target: PsiElement = if(element.prevSibling == null && findUpPredicate(element)) element.parent else element
 	var current: PsiElement? = target
 	var comment: PsiComment? = null
-	while(current != null){
+	while(current != null) {
 		current = current.prevSibling ?: break
 		when {
 			current is PsiWhiteSpace && current.isSpaceOrSingleLineBreak() -> continue
@@ -516,7 +516,7 @@ inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicat
 	}
 	if(comment != null) return comment.textRange.startOffset
 	return target.textRange.startOffset
-} 
+}
 //endregion
 
 //region Index Extensions
