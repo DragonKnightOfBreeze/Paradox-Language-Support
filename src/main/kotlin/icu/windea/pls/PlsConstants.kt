@@ -44,6 +44,8 @@ val ddsFileExtensions = arrayOf("dds")
 const val launcherSettingsFileName = "launcher-settings.json"
 const val descriptorFileName = "descriptor.mod"
 
+const val maxMayBeDefinitionDepth = 4
+
 const val defaultScriptedVariableName = "var"
 
 const val keyTruncateLimit = 5
@@ -63,6 +65,7 @@ object PlsFolders {
 object PlsPriorities {
 	const val pinnedPriority = 1000.0
 	const val keywordPriority = 80.0
+	const val scopeFieldPrefixPriority = 70.0
 	const val systemScopePriority = 65.0
 	const val scopePriority = 60.0
 	const val propertyPriority = 40.0

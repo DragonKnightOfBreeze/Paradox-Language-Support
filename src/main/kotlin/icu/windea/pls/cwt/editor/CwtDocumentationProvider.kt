@@ -235,7 +235,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val linkConfig = configGroup.linksNotData[name] ?: return
 				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
-				val inputScopeNames = linkConfig.inputScopeNames
+				val inputScopeNames = linkConfig.inputScopeNames.joinToString()
 				val outputScopeName = linkConfig.outputScopeName
 				content {
 					append(nameToUse).appendBr()

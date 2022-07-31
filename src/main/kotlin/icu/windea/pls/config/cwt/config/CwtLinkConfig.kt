@@ -17,6 +17,7 @@ import icu.windea.pls.cwt.psi.*
 data class CwtLinkConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
+	val config: CwtPropertyConfig,
 	val name: String,
 	val desc: String? = null,
 	val fromData: Boolean = false,
@@ -33,7 +34,7 @@ data class CwtLinkConfig(
 		if(inputAnyScope) {
 			setOf("Any")
 		} else {
-			inputScopes?.map { CwtConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
+			inputScopes?.mapTo(mutableSetOf()) { CwtConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
 		}
 	}
 	val outputScopeName by lazy {

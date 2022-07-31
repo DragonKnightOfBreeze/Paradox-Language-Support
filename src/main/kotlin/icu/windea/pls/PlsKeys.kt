@@ -13,8 +13,9 @@ object PlsKeys {
 	val contentFileKey = Key<VirtualFile>("paradoxContentFile")
 	
 	val cachedDefinitionInfoKey = Key<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
-	val cachedDefinitionElementInfoKey = Key<CachedValue<ParadoxDefinitionElementInfo>>("cachedParadoxDefinitionElementInfo")
 	val cachedLocalisationInfoKey = Key<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
+	
+	val definitionElementInfoKey = Key<ParadoxDefinitionElementInfo>("paradoxDefinitionElementInfo")
 	
 	val textColorConfigKey = Key<ParadoxTextColorConfig>("paradoxTextColorConfig")
 	

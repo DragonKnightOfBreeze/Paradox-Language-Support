@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.*
 /**
  * 跟踪游戏类型的更改
  */
+@Deprecated("")
 class ParadoxGameTypeModificationTracker : ModificationTracker {
 	private val count = AtomicLong()
 	

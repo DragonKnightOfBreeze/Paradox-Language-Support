@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.impl.*
 //或者：重写com.intellij.psi.stubs.DefaultStubBuilder.StubBuildingWalkingVisitor.createStub，尝试从更多信息中获取
 //要求：必须能够获取paradoxPath和paradoxPropertyPath！即使psiFile在内存中也要缓存信息
 
-object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
+class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
 	"PROPERTY",
 	ParadoxScriptLanguage
 ) {

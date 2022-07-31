@@ -13,8 +13,9 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val propertyKeyOrStringElement = parameters.position.parent
-		val blockOrPropertyValueElement = propertyKeyOrStringElement.parentOfTypes(ParadoxScriptPropertyValue::class, ParadoxScriptBlock::class)
+		val propertyKeyOrStringElement = parameters.position.parent ?: return
+		val blockOrPropertyValueElement = propertyKeyOrStringElement.parentOfTypes(ParadoxScriptPropertyValue::class, ParadoxScriptBlock::class) ?: return
+		
 		val mayBeKey = propertyKeyOrStringElement is ParadoxScriptPropertyKey || blockOrPropertyValueElement is ParadoxScriptBlock
 		val mayBeValue = propertyKeyOrStringElement is ParadoxScriptString && blockOrPropertyValueElement is ParadoxScriptPropertyValue
 		val mayBeValueInBlock = propertyKeyOrStringElement is ParadoxScriptString && blockOrPropertyValueElement is ParadoxScriptBlock
@@ -25,14 +26,15 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		result.addLookupAdvertisement(PlsBundle.message("scope.of.completions.may.be.incorrect"))
 		
 		val quoted = propertyKeyOrStringElement.isQuoted()
-		val caretOffset = parameters.offset - propertyKeyOrStringElement.textRange.startOffset
-		val keyword = propertyKeyOrStringElement.getKeyword(caretOffset)
+		val offsetInParent = parameters.offset - propertyKeyOrStringElement.textRange.startOffset
+		val keyword = propertyKeyOrStringElement.getKeyword(offsetInParent)
 		
+		context.put(ParadoxDefinitionCompletionKeys.contextElementKey, propertyKeyOrStringElement)
 		context.put(ParadoxDefinitionCompletionKeys.quotedKey, quoted)
-		context.put(ParadoxDefinitionCompletionKeys.caretOffsetKey, caretOffset)
+		context.put(ParadoxDefinitionCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(ParadoxDefinitionCompletionKeys.keywordKey, keyword)
 		
-		var continueComplete: Boolean
+		var continueComplete = true
 		if(mayBeKey) {
 			//得到key元素
 			val keyElement = propertyKeyOrStringElement
@@ -40,25 +42,22 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 			val definitionProperty = keyElement.findParentDefinitionProperty(fromParentBlock = true) ?: return
 			//进行提示
 			continueComplete = CwtConfigHandler.addKeyCompletions(keyElement, definitionProperty, result, context)
-			if(!continueComplete) return
 		}
-		if(mayBeValue) {
+		if(continueComplete && mayBeValue) {
 			//得到value元素
 			val valueElement = propertyKeyOrStringElement
 			//得到上一级definitionProperty
 			val definitionProperty = valueElement.findParentDefinitionProperty() ?: return
 			//进行提示
 			continueComplete = CwtConfigHandler.addValueCompletions(valueElement, definitionProperty, result, context)
-			if(!continueComplete) return
 		}
-		if(mayBeValueInBlock) {
+		if(continueComplete && mayBeValueInBlock) {
 			//得到value元素
 			val valueElement = propertyKeyOrStringElement
 			//得到上一级block
 			val blockElement = blockOrPropertyValueElement as ParadoxScriptBlock
 			//进行提示
-			continueComplete = CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, result, context)
-			if(!continueComplete) return
+			CwtConfigHandler.addValueCompletionsInBlock(valueElement, blockElement, result, context)
 		}
 	}
 }

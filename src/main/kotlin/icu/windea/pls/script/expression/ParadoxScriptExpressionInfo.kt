@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -70,7 +71,8 @@ class ParadoxScriptScopeExpressionInfo(
 class ParadoxScriptScopeFieldPrefixExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	directlyResolvedList: List<PsiElement>?
+	directlyResolvedList: List<PsiElement>?,
+	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptScopeFieldPrefixReference {
 		return ParadoxScriptScopeFieldPrefixReference(element, textRange, directlyResolvedList)
@@ -84,20 +86,20 @@ class ParadoxScriptScopeFieldPrefixExpressionInfo(
 class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	val dataSources: List<CwtValueExpression>
+	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptScopeFieldDataSourceReference {
-		return ParadoxScriptScopeFieldDataSourceReference(element, textRange, dataSources)
+		return ParadoxScriptScopeFieldDataSourceReference(element, textRange, linkConfigs)
 	}
 	
 	override fun isUnresolved(element: ParadoxScriptExpressionElement): Boolean {
 		//特殊处理可能是value的情况
-		if(dataSources.any { it.type == CwtDataTypes.Value }) return false
+		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return false
 		return super.isUnresolved(element)
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
-		val dataSourcesText = dataSources.joinToString { "'$it'" }
+		val dataSourcesText = linkConfigs.joinToString { "'${it.dataSource}'" }
 		return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.unresolvedDs", text, dataSourcesText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 	}
 	
@@ -107,6 +109,6 @@ class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 			.map { it.expression }
 		if(result.isNotEmpty()) return result
 		//特殊处理可能是value的情况
-		return dataSources.filter { it.type == CwtDataTypes.Value }
+		return linkConfigs.mapNotNull { it.dataSource }.filter { it.type == CwtDataTypes.Value }
 	}
 }

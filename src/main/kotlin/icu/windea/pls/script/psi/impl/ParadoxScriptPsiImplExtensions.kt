@@ -47,8 +47,13 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		_pathName = null
 		_originalPathName = null
 		_parameterMap = null
-		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) } //清除基于定义结构的配置信息
+		clearCachedData()
 		super.subtreeChanged()
+	}
+	
+	private fun clearCachedData() {
+		//清除基于定义结构的配置信息
+		PlsKeys.definitionConfigKeys.forEach { putUserData(it, null) }
 	}
 }
 //endregion
@@ -70,7 +75,25 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	override fun subtreeChanged() {
 		_value = null
 		_valueType = null
+		clearCachedData()
 		super.subtreeChanged()
+	}
+	
+	private fun clearCachedData() {
+		//当key更改时，需要刷新key所在property以及下面的所有对应的definitionInfo和definitionElementInfo
+		parent.accept(object : PsiRecursiveElementVisitor() {
+			override fun visitElement(element: PsiElement) {
+				if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
+					if(element is ParadoxScriptProperty) {
+						element.putUserData(PlsKeys.cachedDefinitionInfoKey, null)
+					}
+					if(element is ParadoxScriptProperty || element is ParadoxScriptValue) {
+						element.putUserData(PlsKeys.definitionElementInfoKey, null)
+					}
+					super.visitElement(element)
+				}
+			}
+		})
 	}
 }
 //endregion
@@ -93,7 +116,13 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	override fun subtreeChanged() {
 		_value = null
 		_valueType = null
+		clearCachedData()
 		super.subtreeChanged()
+	}
+	
+	private fun clearCachedData() {
+		//当value更改时，需要刷新value对应的definitionElementInfo
+		putUserData(PlsKeys.definitionElementInfoKey, null)
 	}
 }
 //endregion

@@ -38,8 +38,9 @@ object CwtConfigHandler {
 	const val modifierAliasName = "modifier"
 	
 	//region Internal Extensions
+	val ProcessingContext.contextElement get() = get(ParadoxDefinitionCompletionKeys.contextElementKey)
 	val ProcessingContext.quoted get() = get(ParadoxDefinitionCompletionKeys.quotedKey)
-	val ProcessingContext.caretOffset get() = get(ParadoxDefinitionCompletionKeys.caretOffsetKey)
+	val ProcessingContext.offsetInParent get() = get(ParadoxDefinitionCompletionKeys.offsetInParentKey)
 	val ProcessingContext.keyword get() = get(ParadoxDefinitionCompletionKeys.keywordKey)
 	val ProcessingContext.isKey get() = get(ParadoxDefinitionCompletionKeys.isKeyKey)
 	val ProcessingContext.configGroup get() = get(ParadoxDefinitionCompletionKeys.configGroupKey)
@@ -530,7 +531,7 @@ object CwtConfigHandler {
 	
 	fun ProcessingContext.completeScriptExpression(contextElement: PsiElement, expression: CwtKvExpression, config: CwtKvConfig<*>, result: CompletionResultSet, scope: String?) {
 		if(expression.isEmpty()) return
-		if(!keyword.isSimpleScriptExpression()) return //排除带参数或者为复杂表达式的情况
+		if(keyword.isParameterAwareExpression()) return //排除带参数或者的情况
 		when(expression.type) {
 			CwtDataTypes.Bool -> {
 				result.addAllElements(boolLookupElements)
@@ -799,7 +800,7 @@ object CwtConfigHandler {
 			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
 			if(scope != null && aliasConfig.supportedScopes?.any { matchScope(scope, it, configGroup) } == false) continue
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
-			val nextScope = config.parent ?.scope ?: scope
+			val nextScope = config.parent?.scope ?: scope
 			//aliasSubName是一个表达式
 			if(isKey) {
 				completeKey(contextElement, aliasConfig.keyExpression, aliasConfig.config, result, nextScope)
@@ -839,21 +840,20 @@ object CwtConfigHandler {
 	}
 	
 	fun ProcessingContext.completeScopeExpression(result: CompletionResultSet) {
-		//TODO 按照当前位置的代码补全
-		
-		//批量提示
+		//按照当前位置的代码补全
 		//TODO 不匹配scope的以灰色显示
 		val scopeExpression = ParadoxScriptScopeExpression.resolve(keyword, configGroup)
-		val info = scopeExpression.infos.find { it.textRange.contains(caretOffset) }
-		val keywordToUse = keyword.take(caretOffset).substringAfterLast('.')
+		scopeExpression.complete(result, this)
+		//val info = scopeExpression.infos.find { it.textRange.contains(caretOffset) }
+		//val keywordToUse = keyword.take(caretOffset).substringAfterLast('.')
 		
-		val lookupElements = getScopeVariants()
-		val resultToUse = result.withPrefixMatcher(keywordToUse)
-		resultToUse.restartCompletionOnAnyPrefixChange() //要求重新匹配
-		resultToUse.addAllElements(lookupElements)
+		//val lookupElements = getScopeVariants()
+		//val resultToUse = result.withPrefixMatcher(keywordToUse)
+		//resultToUse.restartCompletionOnAnyPrefixChange() //要求重新匹配
+		//resultToUse.addAllElements(lookupElements)
 	}
 	
-	private fun ProcessingContext.getScopeVariants(): MutableSet<LookupElement> {
+	fun ProcessingContext.getScopeVariants(): MutableSet<LookupElement> {
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
 		for(systemScopeConfig in systemScopeConfigs) {
@@ -885,6 +885,26 @@ object CwtConfigHandler {
 				.withExpectedInsertHandler(isKey)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsPriorities.scopePriority)
+			lookupElements.add(lookupElement)
+		}
+		return lookupElements
+	}
+	
+	fun ProcessingContext.getScopeFieldPrefixVariants(): MutableSet<LookupElement> {
+		val lookupElements = mutableSetOf<LookupElement>()
+		val links = configGroup.linksAsScope
+		for(linkConfig in links.values) {
+			val name = linkConfig.prefix ?: continue
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = linkConfig.pointer.element ?: continue
+			val tailText = " from scope link ${linkConfig.name}"
+			val typeFile = linkConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withBoldness(true)
+				.withExpectedIcon(PlsIcons.Scope)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withPriority(PlsPriorities.scopeFieldPrefixPriority)
 			lookupElements.add(lookupElement)
 		}
 		return lookupElements
@@ -1030,7 +1050,7 @@ object CwtConfigHandler {
 	}
 	
 	@PublishedApi
-	internal fun doResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, expression: CwtKvExpression,config: CwtKvConfig<*>, rangeInElement: TextRange?, isKey: Boolean?): PsiElement? {
+	internal fun doResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, expression: CwtKvExpression, config: CwtKvConfig<*>, rangeInElement: TextRange?, isKey: Boolean?): PsiElement? {
 		val file by lazy { file ?: element.containingFile }
 		
 		//排除带参数的情况

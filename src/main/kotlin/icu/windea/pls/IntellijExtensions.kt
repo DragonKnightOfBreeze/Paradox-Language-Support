@@ -432,7 +432,7 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = t
 
 val PsiElement.virtualFile: VirtualFile?
 	get() {
-		return PsiUtilCore.getVirtualFile(this)
+		return PsiUtilCore.getVirtualFile(this.containingFile.originalFile)
 	}
 
 val PsiElement.firstLeafOrSelf: PsiElement

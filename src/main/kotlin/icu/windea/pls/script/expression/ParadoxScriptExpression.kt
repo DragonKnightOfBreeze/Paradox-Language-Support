@@ -1,9 +1,16 @@
 package icu.windea.pls.script.expression
 
+import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeScriptExpression
+import icu.windea.pls.config.cwt.CwtConfigHandler.contextElement
+import icu.windea.pls.config.cwt.CwtConfigHandler.getScopeFieldPrefixVariants
+import icu.windea.pls.config.cwt.CwtConfigHandler.getScopeVariants
+import icu.windea.pls.config.cwt.CwtConfigHandler.offsetInParent
+import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
 /**
@@ -28,6 +35,15 @@ sealed class ParadoxScriptExpression(
 	fun isValid() = empty || valid
 	
 	fun isMatched() = matched
+	
+	fun complete(result: CompletionResultSet, context: ProcessingContext) {
+		val offsetInParent = context.offsetInParent
+		if(offsetInParent < 0 || offsetInParent > expressionString.length) return
+		
+		context.doComplete(result)
+	}
+	
+	protected abstract fun ProcessingContext.doComplete(result: CompletionResultSet)
 }
 
 abstract class ParadoxScriptExpressionResolver<T : ParadoxScriptExpression> {
@@ -96,41 +112,39 @@ class ParadoxScriptScopeExpression(
 				}
 				//尝试将最后一段文本解析为scopeField
 				if(index == textRanges.lastIndex) {
-					val linkConfigs = configGroup.linksAsScope.values
-					val matchedLinkConfigs = linkConfigs.filter { it.prefix != null && expressionString.startsWith(it.prefix) }
+					val matchedLinkConfigs = configGroup.linksAsScope.values
+						.filter { it.prefix != null && expressionString.startsWith(it.prefix) && it.dataSource != null }
+						.sortedByDescending { it.dataSource!!.priority } //需要按照优先级重新排序
 					if(matchedLinkConfigs.isNotEmpty()) {
 						//匹配某一前缀
 						val prefix = matchedLinkConfigs.first().prefix!!
 						val prefixRange = TextRange.create(textRange.startOffset, textRange.startOffset + prefix.length)
 						val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
-						val prefixInfo = ParadoxScriptScopeFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList)
+						val prefixInfo = ParadoxScriptScopeFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList, matchedLinkConfigs)
 						infos.add(prefixInfo)
-						val dataSources = matchedLinkConfigs.mapNotNull { it.dataSource }
-							.sortedByDescending { it.priority } //需要按照优先级重新排序
-						if(dataSources.isEmpty()) return EmptyExpression //CWT规则错误
 						val dataSourceText = expressionString.drop(prefix.length)
 						if(dataSourceText.isEmpty()) {
 							//缺少dataSource
-							val dataSourcesText = dataSources.joinToString { "'$it'" }
+							val dataSourcesText = matchedLinkConfigs.joinToString { "'${it.dataSource}'" }
 							val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.missingDs", dataSourcesText), textRange)
 							errors.add(error)
 							isMatched = true //认为匹配
 						} else {
 							val dataSourceRange = TextRange.create(textRange.startOffset + prefix.length, textRange.endOffset)
-							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(dataSourceText, dataSourceRange, dataSources)
+							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(dataSourceText, dataSourceRange, matchedLinkConfigs)
 							infos.add(dataSourceInfo)
 							isMatched = true //认为匹配
 						}
 					} else {
 						//没有前缀
-						val dataSources = linkConfigs.filter { it.prefix == null }.mapNotNull { it.dataSource }
-						if(dataSources.isEmpty()) {
+						val linkConfigs = configGroup.linksAsScope.values.filter { it.prefix == null && it.dataSource != null }
+						if(linkConfigs.isEmpty()) {
 							//无法解析的scope，或者要求有前缀
-							val possiblePrefixList = linkConfigs.mapNotNull { it.prefix }
+							val possiblePrefixList = configGroup.linksAsScope.values.mapNotNull { it.prefix }
 							val info = ParadoxScriptScopeExpressionInfo(text, textRange, null, possiblePrefixList)
 							infos.add(info)
 						} else {
-							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(expressionString, textRange, dataSources)
+							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(expressionString, textRange, linkConfigs)
 							infos.add(dataSourceInfo)
 							isMatched = true //也认为匹配，实际上这里无法判断
 						}
@@ -145,6 +159,37 @@ class ParadoxScriptScopeExpression(
 		
 		private fun String.isValidSubExpression(): Boolean {
 			return all { it == '_' || it == ':' || it.isExactLetter() || it.isExactDigit() }
+		}
+	}
+	
+	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
+		val length = expressionString.length
+		val offsetInParent = offsetInParent
+		val start = expressionString.lastIndexOf('.').let { if(it == -1) 0 else it }
+		val end = expressionString.indexOf('.', offsetInParent).let { if(it == -1) length else it }
+		val isLast = end == length
+		val prefixInfo = infos.find { it is ParadoxScriptScopeFieldPrefixExpressionInfo }
+		val prefix = prefixInfo?.text
+		val keywordToUse = expressionString.substring(start + (prefix?.length ?: 0), end)
+		val resultToUse = result.withPrefixMatcher(keywordToUse)
+		if(isLast) {
+			resultToUse.restartCompletionOnAnyPrefixChange() //要求重新匹配
+		}
+		//加上scope
+		resultToUse.addAllElements(getScopeVariants())
+		if(isLast) {
+			if(prefix == null) {
+				//加上scopeFieldPrefix
+				resultToUse.addAllElements(getScopeFieldPrefixVariants())
+			} else {
+				val linkConfigs = prefixInfo.castOrNull<ParadoxScriptScopeFieldPrefixExpressionInfo>()?.linkConfigs
+				val contextElement = contextElement
+				if(!linkConfigs.isNullOrEmpty() && (contextElement is ParadoxScriptExpressionElement)) {
+					for(linkConfig in linkConfigs) {
+						completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, result, null) //TODO 传递scope
+					}
+				}
+			}
 		}
 	}
 }

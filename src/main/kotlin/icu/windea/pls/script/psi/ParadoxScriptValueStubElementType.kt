@@ -8,7 +8,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStub, ParadoxScriptString>(
+class ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStub, ParadoxScriptString>(
 	"STRING",
 	ParadoxScriptLanguage
 ) {
@@ -34,8 +34,6 @@ object ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueSt
 	}
 	
 	override fun shouldCreateStub(node: ASTNode?): Boolean {
-		return false
-		
 		//val psi = node?.psi?.castOrNull<ParadoxScriptString>() ?: return false
 		//val config = psi.getValueConfig() //FIXME SOF!!!
 		//return when {
@@ -45,6 +43,8 @@ object ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueSt
 		//	}
 		//	else -> false
 		//}
+		
+		return false
 	}
 	
 	override fun indexStub(stub: ParadoxScriptValueStub, sink: IndexSink) {

@@ -509,12 +509,12 @@ class CwtConfigGroup(
 				"type" -> type = prop.stringValue
 				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能data（可重复），但是目前只有一处
 				"prefix" -> prefix = prop.stringValue
-				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) } 
+				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) }
 					?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 				"output_scope" -> outputScope = prop.stringValue
 			}
 		}
-		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
+		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig {
@@ -570,11 +570,11 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSingleAliasConfig {
-		return CwtSingleAliasConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
+		return CwtSingleAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name)
 	}
 	
 	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
-		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, name, subName, propertyConfig)
+		return CwtAliasConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, subName)
 	}
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
@@ -641,7 +641,7 @@ class CwtConfigGroup(
 	
 	private fun bindModifierCategorySupportedScopeNames() {
 		for(modifierCategory in modifierCategories.values) {
-			if(modifierCategory.supportAnyScope){
+			if(modifierCategory.supportAnyScope) {
 				modifierCategory.supportedScopeNames.add("Any")
 			} else {
 				modifierCategory.supportedScopes?.mapTo(modifierCategory.supportedScopeNames) { CwtConfigHandler.getScopeName(it, this) }
