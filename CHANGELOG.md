@@ -108,7 +108,7 @@
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
   * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
-  * [ ] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
+  * [X] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
   * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
   * [X] 优化：支持匹配、提示和解析参数，以及显示参数信息 （当可用时）

@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -10,7 +11,15 @@ data class CwtLocalisationCommandConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
 	val name: String,
-	val supportedScopes: Set<String>
-) : CwtConfig<CwtProperty>{
-	val supportedScopeNames: MutableSet<String> = mutableSetOf()
+	val supportedScopes: Set<String>?
+) : CwtConfig<CwtProperty> {
+	val supportAnyScope = supportedScopes.isNullOrEmpty() || supportedScopes.singleOrNull().let { it == "all" }
+	
+	val supportedScopeNames: Set<String> by lazy {
+		if(supportAnyScope) {
+			setOf("Any")
+		} else {
+			supportedScopes?.mapTo(mutableSetOf()) { CwtConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
+		}
+	}
 }

@@ -755,6 +755,10 @@ fun <T> T.toSingletonList(): List<T> = Collections.singletonList(this)
 
 fun <T : Any> T?.toSingletonListOrEmpty(): List<T> = if(this == null) Collections.emptyList() else Collections.singletonList(this)
 
+fun <T> T.toSingletonSet(): Set<T> = Collections.singleton(this)
+
+fun <T : Any> T?.toSingletonSetOrEmpty(): Set<T> = if(this == null) Collections.emptySet() else Collections.singleton(this)
+
 data class ReversibleList<T>(val list: List<T>, val notReversed: Boolean) : List<T> by list {
 	override fun contains(element: T): Boolean {
 		return if(notReversed) list.contains(element) else !list.contains(element)

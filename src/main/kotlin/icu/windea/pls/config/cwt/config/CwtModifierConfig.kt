@@ -14,7 +14,12 @@ data class CwtModifierConfig(
 ) : CwtConfig<CwtProperty> {
 	val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 	
-	val supportedScopeNames: Set<String> by lazy { 
-		categoryConfigMap.values.flatMapTo(mutableSetOf()) { it.supportedScopeNames }
+	val supportedScopeNames: Set<String> by lazy {
+		val categoryConfigs = categoryConfigMap.values
+		if(categoryConfigs.any { it.supportAnyScope }) {
+			setOf("Any")
+		} else {
+			categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopeNames }
+		}
 	}
 }

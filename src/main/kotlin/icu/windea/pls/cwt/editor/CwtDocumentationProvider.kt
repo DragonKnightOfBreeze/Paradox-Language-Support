@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -234,19 +235,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val linkConfig = configGroup.linksNotData[name] ?: return
 				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
-				val inputScopeNamesToUse = linkConfig.inputScopes?.joinToString { CwtConfigHandler.getScopeName(it, configGroup) }
-				val outputScopeNameToUse = linkConfig.outputScope?.let { CwtConfigHandler.getScopeName(it, configGroup) }
-				if(inputScopeNamesToUse == null && outputScopeNameToUse == null) return
+				val inputScopeNames = linkConfig.inputScopeNames
+				val outputScopeName = linkConfig.outputScopeName
 				content {
 					append(nameToUse).appendBr()
 					if(descToUse != null && descToUse.isNotEmpty()) append(descToUse).appendBr()
 					appendBr()
-					if(!inputScopeNamesToUse.isNullOrEmpty()) {
-						append(PlsDocBundle.message("content.inputScopes", inputScopeNamesToUse)).appendBr()
-					}
-					if(outputScopeNameToUse != null) {
-						append(PlsDocBundle.message("content.outputScope", outputScopeNameToUse))
-					}
+					append(PlsDocBundle.message("content.inputScopes", inputScopeNames)).appendBr()
+					append(PlsDocBundle.message("content.outputScope", outputScopeName))
 				}
 			}
 			else -> pass()
@@ -270,9 +266,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
 				supportedScopeNames = localisationCommandConfig.supportedScopeNames
 			}
+			CwtConfigType.Alias -> {
+				//TODO 有些alias的supported_scopes信息并没有同步到最新版本的CWT规则文件中，需要另外写日志解析器进行解析
+				val expressionElement = originalElement?.parent?.castOrNull<ParadoxScriptExpressionElement>() ?: return
+				val aliasConfig = expressionElement.getConfig()?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+				supportedScopeNames = aliasConfig.supportedScopeNames
+			}
 			else -> pass()
 		}
-		if(supportedScopeNames != null && supportedScopeNames.isNotEmpty()) {
+		if(!supportedScopeNames.isNullOrEmpty()) {
 			val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ")
 			content {
 				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNamesToUse))

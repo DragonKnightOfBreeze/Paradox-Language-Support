@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.psi.*
 
@@ -25,5 +26,23 @@ data class CwtLinkConfig(
 	val inputScopes: Set<String>?,
 	val outputScope: String?,
 ) : CwtConfig<CwtProperty> {
+	val inputAnyScope = inputScopes.isNullOrEmpty() || inputScopes.singleOrNull().let { it == "any" || it == "all" }
+	val outputAnyScope = outputScope == null || outputScope == "any"
+	
+	val inputScopeNames by lazy {
+		if(inputAnyScope) {
+			setOf("Any")
+		} else {
+			inputScopes?.map { CwtConfigHandler.getScopeName(it, info.configGroup) }.orEmpty()
+		}
+	}
+	val outputScopeName by lazy {
+		if(outputAnyScope) {
+			"Any"
+		} else {
+			CwtConfigHandler.getScopeName(outputScope ?: "any", info.configGroup)
+		}
+	}
+	
 	//val typeExpression = type?.let { type -> CwtValueExpression.resolve(type) }
 }

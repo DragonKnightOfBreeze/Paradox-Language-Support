@@ -56,8 +56,10 @@ class CwtConfigGroup(
 	
 	//常量字符串的别名的组名的映射
 	val aliasKeysGroupConst: Map<String, Map<@CaseInsensitive String, String>>
+	
 	//非常量字符串的别名的组名的映射
 	val aliasKeysGroupNoConst: Map<String, Set<String>>
+	
 	//支持参数的定义类型
 	val definitionTypesSupportParameters: Set<String>
 	
@@ -143,7 +145,7 @@ class CwtConfigGroup(
 						for(prop in props) {
 							val linkName = prop.key
 							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
-							if(linkConfig.fromData){
+							if(linkConfig.fromData) {
 								when(linkConfig.type) {
 									"scope" -> {
 										linksAsScope[linkName] = linkConfig
@@ -175,7 +177,7 @@ class CwtConfigGroup(
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val commandName = prop.key
-							val commandConfig = resolveLocalisationCommandConfig(prop, commandName) ?: continue
+							val commandConfig = resolveLocalisationCommandConfig(prop, commandName)
 							localisationCommands[commandName] = commandConfig
 						}
 					}
@@ -232,7 +234,7 @@ class CwtConfigGroup(
 						if(aliasNamePair != null) {
 							val (aliasName, aliasSubName) = aliasNamePair
 							val aliasConfig = resolveAliasConfig(property, aliasName, aliasSubName)
-							val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() } 
+							val map = aliasGroups.getOrPut(aliasName) { mutableMapOf() }
 							val list = map.getOrPut(aliasSubName) { SmartList() }
 							list.add(aliasConfig)
 						}
@@ -251,7 +253,7 @@ class CwtConfigGroup(
 			var keysConst: MutableMap<String, String>? = null
 			var keysNoConst: MutableSet<String>? = null
 			for(key in v.keys) {
-				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant){
+				if(CwtKeyExpression.resolve(key).type == CwtDataTypes.Constant) {
 					if(keysConst == null) keysConst = CollectionFactory.createCaseInsensitiveStringMap()
 					keysConst.put(key, key)
 				} else {
@@ -261,7 +263,7 @@ class CwtConfigGroup(
 			}
 			aliasKeysGroupConst.put(k, keysConst.orEmpty())
 			aliasKeysGroupNoConst.put(k, keysNoConst?.sortedByDescending { CwtKeyExpression.resolve(it).priority }?.toSet().orEmpty())
-		} 
+		}
 		this.aliasKeysGroupConst = aliasKeysGroupConst
 		this.aliasKeysGroupNoConst = aliasKeysGroupNoConst
 		
@@ -270,7 +272,6 @@ class CwtConfigGroup(
 		definitionTypesSupportParameters = initDefinitionTypesSupportParameters()
 		
 		bindModifierCategorySupportedScopeNames()
-		bindLocalisationCommandSupportedScopeNames()
 		bindModifierCategories()
 	}
 	
@@ -506,19 +507,18 @@ class CwtConfigGroup(
 				"desc" -> desc = prop.stringValue?.takeIf { !it.isExactSnakeCase() } //排除占位码
 				"from_data" -> fromData = prop.booleanValue ?: false
 				"type" -> type = prop.stringValue
-				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能data（可重复）
+				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能data（可重复），但是目前只有一处
 				"prefix" -> prefix = prop.stringValue
-				"input_scopes" -> inputScopes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) } 
+					?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 				"output_scope" -> outputScope = prop.stringValue
 			}
 		}
 		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
 	}
 	
-	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig? {
-		val supportedScopes = propertyConfig.stringValue?.let { setOf(it) }
-			?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-			?: return null
+	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig {
+		val supportedScopes = propertyConfig.stringValue?.let { setOf(it) } ?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 		return CwtLocalisationCommandConfig(propertyConfig.pointer, propertyConfig.info, name, supportedScopes)
 	}
 	
@@ -530,10 +530,9 @@ class CwtConfigGroup(
 		for(prop in props) {
 			when(prop.key) {
 				"internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
-				"supported_scopes" -> supportedScopes = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+				"supported_scopes" -> supportedScopes = prop.stringValue?.let { setOf(it) } ?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 			}
 		}
-		if(supportedScopes == null) supportedScopes = emptySet()
 		return CwtModifierCategoryConfig(propertyConfig.pointer, propertyConfig.info, name, internalId, supportedScopes)
 	}
 	
@@ -571,7 +570,7 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveSingleAliasConfig(propertyConfig: CwtPropertyConfig, name: String): CwtSingleAliasConfig {
-		return CwtSingleAliasConfig(propertyConfig.pointer,propertyConfig.info, name, propertyConfig)
+		return CwtSingleAliasConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
 	}
 	
 	private fun resolveAliasConfig(propertyConfig: CwtPropertyConfig, name: String, subName: String): CwtAliasConfig {
@@ -642,13 +641,11 @@ class CwtConfigGroup(
 	
 	private fun bindModifierCategorySupportedScopeNames() {
 		for(modifierCategory in modifierCategories.values) {
-			modifierCategory.supportedScopes.mapTo(modifierCategory.supportedScopeNames) { CwtConfigHandler.getScopeName(it, this) }
-		}
-	}
-	
-	private fun bindLocalisationCommandSupportedScopeNames() {
-		for(localisationCommand in localisationCommands.values) {
-			localisationCommand.supportedScopes.mapTo(localisationCommand.supportedScopeNames) { CwtConfigHandler.getScopeName(it, this) }
+			if(modifierCategory.supportAnyScope){
+				modifierCategory.supportedScopeNames.add("Any")
+			} else {
+				modifierCategory.supportedScopes?.mapTo(modifierCategory.supportedScopeNames) { CwtConfigHandler.getScopeName(it, this) }
+			}
 		}
 	}
 	
@@ -664,7 +661,8 @@ class CwtConfigGroup(
 	
 	//解析定义和定义元素信息
 	
-	fun resolveDefinitionInfo(element: ParadoxDefinitionProperty,
+	fun resolveDefinitionInfo(
+		element: ParadoxDefinitionProperty,
 		rootKey: String,
 		path: ParadoxPath,
 		elementPath: ParadoxElementPath<ParadoxScriptFile>

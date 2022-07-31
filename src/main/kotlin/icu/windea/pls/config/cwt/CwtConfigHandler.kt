@@ -818,7 +818,7 @@ object CwtConfigHandler {
 			//匹配scope
 			val categoryConfigMap = modifierConfig.categoryConfigMap
 			val scopeMatched = scope == null || categoryConfigMap.values.any { c ->
-				c.supportedScopes.any { s -> matchScope(scope, s, configGroup) }
+				c.supportAnyScope || c.supportedScopes?.any { s -> matchScope(scope, s, configGroup) } == true
 			}
 			val n = modifierConfig.name
 			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -839,12 +839,18 @@ object CwtConfigHandler {
 	}
 	
 	fun ProcessingContext.completeScopeExpression(result: CompletionResultSet) {
+		//TODO 按照当前位置的代码补全
+		
 		//批量提示
 		//TODO 不匹配scope的以灰色显示
+		val scopeExpression = ParadoxScriptScopeExpression.resolve(keyword, configGroup)
+		val info = scopeExpression.infos.find { it.textRange.contains(caretOffset) }
 		val keywordToUse = keyword.take(caretOffset).substringAfterLast('.')
 		
 		val lookupElements = getScopeVariants()
-		result.withPrefixMatcher(keywordToUse).addAllElements(lookupElements)
+		val resultToUse = result.withPrefixMatcher(keywordToUse)
+		resultToUse.restartCompletionOnAnyPrefixChange() //要求重新匹配
+		resultToUse.addAllElements(lookupElements)
 	}
 	
 	private fun ProcessingContext.getScopeVariants(): MutableSet<LookupElement> {
@@ -1396,10 +1402,6 @@ object CwtConfigHandler {
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null
 		return linkConfig.pointer.element
-	}
-	
-	fun resolveScopeFieldPrefix(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		return null //TODO
 	}
 	
 	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {
