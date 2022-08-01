@@ -430,11 +430,6 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = t
 //	return lastSeen.psi
 //}
 
-val PsiElement.virtualFile: VirtualFile?
-	get() {
-		return PsiUtilCore.getVirtualFile(this.containingFile.originalFile)
-	}
-
 val PsiElement.firstLeafOrSelf: PsiElement
 	get() {
 		val firstChild = firstChild

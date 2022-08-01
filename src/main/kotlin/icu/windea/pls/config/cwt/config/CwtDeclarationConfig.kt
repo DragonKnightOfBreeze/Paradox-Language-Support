@@ -167,7 +167,7 @@ data class CwtDeclarationConfig(
 					}
 					result
 				}
-			}.distinctBy { it.key }.sortedByDescending { it.expression.priority } //需要按照优先级重新排序
+			}
 		}
 	}
 	
@@ -194,7 +194,7 @@ data class CwtDeclarationConfig(
 					}
 					result
 				}
-			}.distinctBy { it.value }.sortedByDescending { it.expression.priority } //需要按照优先级重新排序
+			}
 		}
 	}
 }

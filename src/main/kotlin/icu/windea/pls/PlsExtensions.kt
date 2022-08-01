@@ -157,7 +157,7 @@ val PsiElement.localeConfig: ParadoxLocaleConfig?
 
 val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserDataOnValid(PlsKeys.fileInfoKey) { it.isValid }
 
-val PsiFile.fileInfo: ParadoxFileInfo? get() = this.virtualFile?.fileInfo //使用原始文件
+val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //需要使用原始文件
 
 val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile?.fileInfo
 
@@ -279,7 +279,7 @@ private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): Paradox
 
 private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
 	val name = element.name
-	val file = element.containingFile.virtualFile ?: return null
+	val file = element.containingFile.originalFile.virtualFile ?: return null
 	val type = ParadoxLocalisationCategory.resolve(file) ?: return null
 	val gameType = file.fileInfo?.gameType
 	return ParadoxLocalisationInfo(name, type, gameType)

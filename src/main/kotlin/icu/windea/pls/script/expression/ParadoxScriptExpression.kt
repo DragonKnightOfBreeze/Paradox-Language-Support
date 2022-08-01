@@ -143,6 +143,7 @@ class ParadoxScriptScopeExpression(
 							val possiblePrefixList = configGroup.linksAsScope.values.mapNotNull { it.prefix }
 							val info = ParadoxScriptScopeExpressionInfo(text, textRange, null, possiblePrefixList)
 							infos.add(info)
+							isMatched = true //也认为匹配，实际上这里无法判断
 						} else {
 							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(expressionString, textRange, linkConfigs)
 							infos.add(dataSourceInfo)
@@ -163,18 +164,16 @@ class ParadoxScriptScopeExpression(
 	}
 	
 	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
+		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
 		val length = expressionString.length
 		val offsetInParent = offsetInParent
-		val start = expressionString.lastIndexOf('.').let { if(it == -1) 0 else it }
+		val start = expressionString.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
 		val end = expressionString.indexOf('.', offsetInParent).let { if(it == -1) length else it }
 		val isLast = end == length
 		val prefixInfo = infos.find { it is ParadoxScriptScopeFieldPrefixExpressionInfo }
 		val prefix = prefixInfo?.text
 		val keywordToUse = expressionString.substring(start + (prefix?.length ?: 0), end)
 		val resultToUse = result.withPrefixMatcher(keywordToUse)
-		if(isLast) {
-			resultToUse.restartCompletionOnAnyPrefixChange() //要求重新匹配
-		}
 		//加上scope
 		resultToUse.addAllElements(getScopeVariants())
 		if(isLast) {
@@ -182,6 +181,7 @@ class ParadoxScriptScopeExpression(
 				//加上scopeFieldPrefix
 				resultToUse.addAllElements(getScopeFieldPrefixVariants())
 			} else {
+				//加上scopeFieldDataSource
 				val linkConfigs = prefixInfo.castOrNull<ParadoxScriptScopeFieldPrefixExpressionInfo>()?.linkConfigs
 				val contextElement = contextElement
 				if(!linkConfigs.isNullOrEmpty() && (contextElement is ParadoxScriptExpressionElement)) {
@@ -191,5 +191,7 @@ class ParadoxScriptScopeExpression(
 				}
 			}
 		}
+		
+		resultToUse.restartCompletionOnAnyPrefixChange() //要求重新匹配
 	}
 }

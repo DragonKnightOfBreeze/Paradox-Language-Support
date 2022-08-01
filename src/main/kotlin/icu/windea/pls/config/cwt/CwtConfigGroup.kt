@@ -33,7 +33,7 @@ class CwtConfigGroup(
 	val linksAsValue: Map<@CaseInsensitive String, CwtLinkConfig>
 	val localisationLinks: Map<@CaseInsensitive String, CwtLinkConfig>
 	
-	val localisationCommands: Map<String, CwtLocalisationCommandConfig>
+	val localisationCommands: Map<@CaseInsensitive String, CwtLocalisationCommandConfig>
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
 	val modifiers: Map<String, CwtModifierConfig>
 	val scopes: Map<String, CwtScopeConfig>
@@ -73,7 +73,7 @@ class CwtConfigGroup(
 		linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
 		localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
-		localisationCommands = mutableMapOf()
+		localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
 		modifierCategories = mutableMapOf()
 		modifiers = mutableMapOf()
 		scopes = mutableMapOf()

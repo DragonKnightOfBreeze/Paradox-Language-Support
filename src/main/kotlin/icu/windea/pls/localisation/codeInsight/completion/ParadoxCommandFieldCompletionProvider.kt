@@ -51,6 +51,7 @@ class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParam
 			val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withTypeText(typeText, true)
+				.withCaseSensitivity(false) //忽略大小写
 			result.addElement(lookupElement)
 		}
 	}

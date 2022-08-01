@@ -181,7 +181,7 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptProperty
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
-		if(element.definitionInfo != null) return PlsIcons.definitionIcon
+		if(element.definitionInfo != null) return PlsIcons.Definition
 		return PlsIcons.ScriptProperty
 	}
 	

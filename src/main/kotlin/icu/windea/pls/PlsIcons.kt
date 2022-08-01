@@ -29,7 +29,7 @@ object PlsIcons {
 	@JvmStatic val LocalisationCommandScope = loadIcon("/icons/localisationCommandScope.svg")
 	@JvmStatic val LocalisationCommandField = loadIcon("/icons/localisationCommandField.svg")
 	
-	@JvmStatic val definitionIcon = loadIcon("/icons/definition.svg")
+	@JvmStatic val Definition = loadIcon("/icons/definition.svg")
 	@JvmStatic val RelatedLocalisation = loadIcon("/icons/relatedLocalisation.svg")
 	@JvmStatic val Localisation = loadIcon("/icons/localisation.svg")
 	@JvmStatic val ScriptedVariable = loadIcon("/icons/scriptedVariable.svg")
@@ -42,6 +42,7 @@ object PlsIcons {
 	@JvmStatic val ScopeType = loadIcon("/icons/scopeType.svg")
 	@JvmStatic val Scope = loadIcon("/icons/scope.svg")
 	@JvmStatic val SystemScope = loadIcon("/icons/systemScope.svg")
+	@JvmStatic val ScopeFieldPrefix = loadIcon("/icons/scopeFieldPrefix.svg")
 	@JvmStatic val Modifier = loadIcon("/icons/modifier.svg")
 	@JvmStatic val Alias = loadIcon("/icons/alias.svg")
 	@JvmStatic val Tag = loadIcon("icons/tag.svg")

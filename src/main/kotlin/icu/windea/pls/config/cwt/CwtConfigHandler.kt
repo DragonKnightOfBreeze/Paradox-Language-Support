@@ -642,7 +642,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val typeFile = definition.containingFile
 					val lookupElement = LookupElementBuilder.create(definition, name)
-						.withExpectedIcon(PlsIcons.definitionIcon)
+						.withExpectedIcon(PlsIcons.Definition)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
@@ -662,7 +662,7 @@ object CwtConfigHandler {
 					val name = n.quoteIf(quoted)
 					val typeFile = definition.containingFile
 					val lookupElement = LookupElementBuilder.create(definition, name)
-						.withExpectedIcon(PlsIcons.definitionIcon)
+						.withExpectedIcon(PlsIcons.Definition)
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
@@ -900,8 +900,8 @@ object CwtConfigHandler {
 			val tailText = " from scope link ${linkConfig.name}"
 			val typeFile = linkConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.ScopeFieldPrefix)
 				.withBoldness(true)
-				.withExpectedIcon(PlsIcons.Scope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withPriority(PlsPriorities.scopeFieldPrefixPriority)
@@ -933,6 +933,7 @@ object CwtConfigHandler {
 				.withExpectedIcon(PlsIcons.LocalisationCommandField)
 				.withTailText(tailText)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withCaseSensitivity(false) //忽略大小写
 			lookupElements.add(lookupElement)
 		}
 		return lookupElements
