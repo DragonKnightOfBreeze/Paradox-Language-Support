@@ -19,6 +19,10 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		val iconPattern = psiElement(ICON_ID)
 		extend(null, iconPattern, ParadoxIconCompletionProvider())
 		
+		//当用户可能正在输入一个commandScope时提示
+		val commandScopePattern = or(psiElement(COMMAND_SCOPE_ID), psiElement(COMMAND_FIELD_ID))
+		extend(null, commandScopePattern, ParadoxCommandScopeCompletionProvider())
+		
 		//当用户正在输入一个commandField的名字时提示
 		val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
 		extend(null, commandFieldPattern, ParadoxCommandFieldCompletionProvider())

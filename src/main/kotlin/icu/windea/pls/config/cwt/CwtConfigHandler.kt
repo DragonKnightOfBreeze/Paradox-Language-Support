@@ -12,6 +12,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.CwtConfigHandler.isKey
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
@@ -910,17 +911,53 @@ object CwtConfigHandler {
 		return lookupElements
 	}
 	
-	fun completeLocalisationCommand(configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	fun completeLocalisationCommandScope(configGroup: CwtConfigGroup, result: CompletionResultSet) {
+		//TODO 匹配scope
+		//val keyword = commandScope.keyword
+		val localisationLinks = configGroup.localisationLinks
+		if(localisationLinks.isEmpty()) return
+		//批量提示
+		val lookupElements = mutableSetOf<LookupElement>()
+		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
+		for(systemScopeConfig in systemScopeConfigs) {
+			val name = systemScopeConfig.id
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = systemScopeConfig.pointer.element ?: continue
+			val tailText = " from system scopes"
+			val typeFile = systemScopeConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.SystemScope)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withExpectedInsertHandler(isKey)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsPriorities.systemScopePriority)
+			lookupElements.add(lookupElement)
+		}
+		for(localisationLink in localisationLinks) {
+			val config = localisationLink.value
+			val name = config.name
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = config.pointer.element ?: continue
+			val tailText = " from localisation scopes"
+			val typeFile = config.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.LocalisationCommandScope)
+				.withTailText(tailText)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsPriorities.scopePriority)
+			lookupElements.add(lookupElement)
+		}
+		result.addAllElements(lookupElements)
+	}
+	
+	fun completeLocalisationCommandField(configGroup: CwtConfigGroup, result: CompletionResultSet) {
 		//TODO 匹配scope
 		//val keyword = commandField.keyword
 		val localisationCommands = configGroup.localisationCommands
 		if(localisationCommands.isEmpty()) return
 		//批量提示
-		val lookupElements = getLocalisationCommandVariants(localisationCommands)
-		result.addAllElements(lookupElements)
-	}
-	
-	private fun getLocalisationCommandVariants(localisationCommands: Map<String, CwtLocalisationCommandConfig>): MutableSet<LookupElement> {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(localisationCommand in localisationCommands) {
 			val config = localisationCommand.value
@@ -934,9 +971,10 @@ object CwtConfigHandler {
 				.withTailText(tailText)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsPriorities.localisationCommandPriority)
 			lookupElements.add(lookupElement)
 		}
-		return lookupElements
+		result.addAllElements(lookupElements)
 	}
 	
 	fun completeParameters(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
@@ -1428,6 +1466,16 @@ object CwtConfigHandler {
 	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val modifier = configGroup.modifiers[name] ?: return null
 		return modifier.pointer.element
+	}
+	
+	fun resolveLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project)
+		if(systemScope != null) return systemScope.pointer.element
+		
+		val links = configGroup.localisationLinks
+		if(links.isEmpty()) return null
+		val linkConfig = links[name] ?: return null
+		return linkConfig.pointer.element
 	}
 	
 	fun resolveLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {

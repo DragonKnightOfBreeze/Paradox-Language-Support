@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.reference
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.localisation.psi.*
@@ -16,9 +17,10 @@ class ParadoxLocalisationCommandFieldReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//TODO
-		return element.setName(newElementName)
+		throw IncorrectOperationException() //不允许重命名
 	}
+	
+	//TODO
 	
 	override fun resolve(): PsiElement? {
 		val name = element.name

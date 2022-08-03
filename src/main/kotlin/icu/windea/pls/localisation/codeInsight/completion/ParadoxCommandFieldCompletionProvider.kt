@@ -2,9 +2,6 @@ package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
@@ -16,29 +13,14 @@ import icu.windea.pls.util.selector.*
 @Suppress("UnstableApiUsage")
 class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val originalFile = parameters.originalFile
-		val project = originalFile.project
+		val file = parameters.originalFile
+		val project = file.project
 		
-		//需要避免ProcessCanceledException导致完全不作任何提示
-		
-		runBlockingCancellable {
-			doCompleteLocalisationCommand(parameters, project, result)
-		}
-		runBlockingCancellable {
-			doCompleteScriptedLoc(originalFile, project, result)
-		}
-		
-		//TODO 补全的scope可能不正确
-		result.addLookupAdvertisement(PlsBundle.message("scope.of.completions.may.be.incorrect"))
-	}
-	
-	private fun doCompleteLocalisationCommand(parameters: CompletionParameters, project: Project, result: CompletionResultSet) {
-		val gameType = parameters.originalFile.fileInfo?.gameType ?: return
+		//提示command
+		val gameType = file.fileInfo?.gameType ?: return
 		val configGroup = getCwtConfig(project).get(gameType) ?: return
-		CwtConfigHandler.completeLocalisationCommand(configGroup, result)
-	}
-	
-	private fun doCompleteScriptedLoc(file: PsiFile, project: Project, result: CompletionResultSet) {
+		CwtConfigHandler.completeLocalisationCommandField(configGroup, result)
+		
 		//提示类型为scripted_loc的definition
 		val tailText = " from scripted_loc"
 		val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
@@ -56,3 +38,4 @@ class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParam
 		}
 	}
 }
+
