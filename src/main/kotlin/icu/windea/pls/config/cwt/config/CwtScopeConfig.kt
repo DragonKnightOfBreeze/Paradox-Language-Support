@@ -1,6 +1,7 @@
 package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -10,5 +11,5 @@ data class CwtScopeConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
 	val name: String,
-	val aliases: Set<String>
+	val aliases: Set<@CaseInsensitive String>
 ) : CwtConfig<CwtProperty>

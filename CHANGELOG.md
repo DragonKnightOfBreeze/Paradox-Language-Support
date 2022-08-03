@@ -47,7 +47,6 @@
   * [X] 优化：`Navigate > Related Symbol...`显示的弹出框中，使用所属文件的绝对路径+模组名（如果有）+模组版本（如果有）表示位置信息
   * [X] 优化：`View > Quick Definition`显示的文本中也包含定义的相关注释
   * [X] 完善快速类型定义功能（`View > Quick Type Definition`）
-  * [X] 本地化文件：支持提示和解析本地化命令作用域（commandScope）
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * ~~将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）~~
 * 新增功能：
@@ -113,6 +112,8 @@
   * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
   * [X] 优化：支持匹配、提示和解析参数，以及显示参数信息 （当可用时）
+  * [X] 本地化文件：支持提示和解析本地化命令作用域（commandScope）
+  * [ ] 优化：提示modifier时排除不匹配supported_scopes的，提示scope时排除不匹配input_scopes和output_scope的
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ~~不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）~~（没有必要提供）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）

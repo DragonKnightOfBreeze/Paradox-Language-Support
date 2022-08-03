@@ -51,9 +51,6 @@ abstract class GotoPathAction(private val icon: Icon) : FileChooserAction(), Lig
 			fileChooser.select(file, if(expand) Runnable { fileChooser.expand(file, null) } else null)
 		}
 	}
-	
-	val AnActionEvent.gameTypeProperty get() = getData(PlsDataKeys.gameTypePropertyKey)
-	val AnActionEvent.rootTypeProperty get() = getData(PlsDataKeys.rootTypePropertyKey)
 }
 
 @Suppress("ComponentNotRegistered")

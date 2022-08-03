@@ -5,11 +5,9 @@ import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeScopeFieldPrefix
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScriptExpression
-import icu.windea.pls.config.cwt.CwtConfigHandler.contextElement
-import icu.windea.pls.config.cwt.CwtConfigHandler.getScopeFieldPrefixVariants
-import icu.windea.pls.config.cwt.CwtConfigHandler.getScopeVariants
-import icu.windea.pls.config.cwt.CwtConfigHandler.offsetInParent
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
@@ -173,13 +171,17 @@ class ParadoxScriptScopeExpression(
 		val prefixInfo = infos.find { it is ParadoxScriptScopeFieldPrefixExpressionInfo }
 		val prefix = prefixInfo?.text
 		val keywordToUse = expressionString.substring(start + (prefix?.length ?: 0), end)
+		
+		val prevScope = if(start == 0) null else expressionString.substring(0, start - 1).substringAfterLast('.')
+		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
+		
 		val resultToUse = result.withPrefixMatcher(keywordToUse)
 		//加上scope
-		resultToUse.addAllElements(getScopeVariants())
+		completeScope(resultToUse)
 		if(isLast) {
 			if(prefix == null) {
 				//加上scopeFieldPrefix
-				resultToUse.addAllElements(getScopeFieldPrefixVariants())
+				completeScopeFieldPrefix(resultToUse)
 			} else {
 				//加上scopeFieldDataSource
 				val linkConfigs = prefixInfo.castOrNull<ParadoxScriptScopeFieldPrefixExpressionInfo>()?.linkConfigs

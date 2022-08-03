@@ -12,18 +12,15 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.CwtConfigHandler.isKey
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.codeInsight.completion.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
-import java.awt.*
 import javax.swing.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -36,16 +33,7 @@ import kotlin.text.removeSurrounding
  */
 object CwtConfigHandler {
 	const val paramsEnumName = "scripted_effect_params"
-	const val modifierAliasName = "modifier"
-	
-	//region Internal Extensions
-	val ProcessingContext.contextElement get() = get(ParadoxDefinitionCompletionKeys.contextElementKey)
-	val ProcessingContext.quoted get() = get(ParadoxDefinitionCompletionKeys.quotedKey)
-	val ProcessingContext.offsetInParent get() = get(ParadoxDefinitionCompletionKeys.offsetInParentKey)
-	val ProcessingContext.keyword get() = get(ParadoxDefinitionCompletionKeys.keywordKey)
-	val ProcessingContext.isKey get() = get(ParadoxDefinitionCompletionKeys.isKeyKey)
-	val ProcessingContext.configGroup get() = get(ParadoxDefinitionCompletionKeys.configGroupKey)
-	//endregion
+	//const val modifierAliasName = "modifier"
 	
 	//region Misc Methods
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): String? {
@@ -59,12 +47,22 @@ object CwtConfigHandler {
 	}
 	
 	fun getScopeName(scopeNameOrAlias: String, configGroup: CwtConfigGroup): String {
-		val scopes = configGroup.scopes.values
 		//handle "any" and "all" scope 
 		if(scopeNameOrAlias.equals("any", true)) return "Any"
 		if(scopeNameOrAlias.equals("all", true)) return "All"
 		//a scope may not have aliases, or not defined in scopes.cwt
-		return scopes.find { it.name == scopeNameOrAlias || it.aliases.contains(scopeNameOrAlias) }?.name ?: scopeNameOrAlias.toCapitalizedWords()
+		return configGroup.scopes[scopeNameOrAlias]?.name
+			?: configGroup.scopeAliasMap[scopeNameOrAlias]?.name
+			?: scopeNameOrAlias.toCapitalizedWords()
+	}
+	
+	fun matchScope(scope: String?, scopes: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
+		if(scope == null || scope.equals("any", true) || scope.equals("all", true)) return true
+		if(scopes.isNullOrEmpty()) return true
+		return scopes.any { s ->
+			if(s.equals("any", true) || s.equals("all", true)) return@any true
+			scope.equals(s, true) || configGroup.scopeAliasMap[scope]?.aliases?.contains(s) ?: false
+		}
 	}
 	
 	private fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
@@ -76,16 +74,12 @@ object CwtConfigHandler {
 		return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
 	}
 	
-	private fun matchScope(alias: String, otherAlias: String, configGroup: CwtConfigGroup): Boolean {
-		return alias == otherAlias || configGroup.scopeAliasMap[alias]?.aliases?.contains(otherAlias) ?: false
-	}
-	
-	fun mergeScope(scopeMap: MutableMap<String, String>, thisScope: String?): MutableMap<String, String> {
-		if(thisScope == null) return scopeMap
-		val mergedScopeMap = scopeMap.toMutableMap()
-		mergedScopeMap.put("this", thisScope)
-		return scopeMap
-	}
+	//fun mergeScope(scopeMap: MutableMap<String, String>, thisScope: String?): MutableMap<String, String> {
+	//	if(thisScope == null) return scopeMap
+	//	val mergedScopeMap = scopeMap.toMutableMap()
+	//	mergedScopeMap.put("this", thisScope)
+	//	return scopeMap
+	//}
 	//endregion
 	
 	//region Matches Methods
@@ -445,8 +439,8 @@ object CwtConfigHandler {
 		val childPropertyConfigs = definitionElementInfo.childPropertyConfigs
 		if(childPropertyConfigs.isEmpty()) return true
 		
-		context.put(ParadoxDefinitionCompletionKeys.isKeyKey, true)
-		context.put(ParadoxDefinitionCompletionKeys.configGroupKey, configGroup)
+		context.put(PlsCompletionKeys.isKeyKey, true)
+		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
 		for(propConfig in childPropertyConfigs) {
 			if(shouldComplete(propConfig, definitionElementInfo)) {
@@ -465,8 +459,8 @@ object CwtConfigHandler {
 		val configs = definitionElementInfo.configs
 		if(configs.isEmpty()) return true
 		
-		context.put(ParadoxDefinitionCompletionKeys.isKeyKey, false)
-		context.put(ParadoxDefinitionCompletionKeys.configGroupKey, configGroup)
+		context.put(PlsCompletionKeys.isKeyKey, false)
+		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
 		for(config in configs) {
 			if(config is CwtPropertyConfig) {
@@ -485,8 +479,8 @@ object CwtConfigHandler {
 		val childValueConfigs = definitionElementInfo.childValueConfigs
 		if(childValueConfigs.isEmpty()) return true
 		
-		context.put(ParadoxDefinitionCompletionKeys.isKeyKey, false)
-		context.put(ParadoxDefinitionCompletionKeys.configGroupKey, configGroup)
+		context.put(PlsCompletionKeys.isKeyKey, false)
+		context.put(PlsCompletionKeys.configGroupKey, configGroup)
 		
 		for(valueConfig in childValueConfigs) {
 			if(shouldComplete(valueConfig, definitionElementInfo)) {
@@ -675,7 +669,7 @@ object CwtConfigHandler {
 				//提示参数名（仅限key）
 				if(isKey && enumName == paramsEnumName && config is CwtPropertyConfig) {
 					val propertyElement = contextElement.findParentDefinitionProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return
-					completeParameters(propertyElement, config, quoted, configGroup, result)
+					completeParameters(propertyElement, config, result)
 					return
 				}
 				val enumConfig = configGroup.enums[enumName] ?: return
@@ -799,7 +793,8 @@ object CwtConfigHandler {
 			//aliasConfigs的名字是相同的 
 			val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
-			if(scope != null && aliasConfig.supportedScopes?.any { matchScope(scope, it, configGroup) } == false) continue
+			val scopeMatched = matchScope(scope, aliasConfig.supportedScopes, configGroup)
+			if(scopeMatched) continue
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 			val nextScope = config.parent?.scope ?: scope
 			//aliasSubName是一个表达式
@@ -820,8 +815,9 @@ object CwtConfigHandler {
 			//匹配scope
 			val categoryConfigMap = modifierConfig.categoryConfigMap
 			val scopeMatched = scope == null || categoryConfigMap.values.any { c ->
-				c.supportAnyScope || c.supportedScopes?.any { s -> matchScope(scope, s, configGroup) } == true
+				matchScope(scope, c.supportedScopes, configGroup)
 			}
+			if(!scopeMatched) continue //排除不匹配supported_scopes的modifier
 			val n = modifierConfig.name
 			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 			val name = n.quoteIf(quoted)
@@ -829,12 +825,13 @@ object CwtConfigHandler {
 			val tailText = " from modifiers"
 			val typeFile = modifierConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.apply { if(!scopeMatched) withItemTextForeground(Color.GRAY) }
+				//.apply { if(!scopeMatched) withItemTextForeground(Color.GRAY) }
 				.withExpectedIcon(PlsIcons.Modifier)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey)
-				.withPriority(PlsPriorities.modifierPriority, scopeMatched)
+				.withPriority(PlsPriorities.modifierPriority)
+				//.withPriority(PlsPriorities.modifierPriority, scopeMatched)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
@@ -842,21 +839,17 @@ object CwtConfigHandler {
 	
 	fun ProcessingContext.completeScopeExpression(result: CompletionResultSet) {
 		//按照当前位置的代码补全
-		//TODO 不匹配scope的以灰色显示
 		val scopeExpression = ParadoxScriptScopeExpression.resolve(keyword, configGroup)
 		scopeExpression.complete(result, this)
-		//val info = scopeExpression.infos.find { it.textRange.contains(caretOffset) }
-		//val keywordToUse = keyword.take(caretOffset).substringAfterLast('.')
-		
-		//val lookupElements = getScopeVariants()
-		//val resultToUse = result.withPrefixMatcher(keywordToUse)
-		//resultToUse.restartCompletionOnAnyPrefixChange() //要求重新匹配
-		//resultToUse.addAllElements(lookupElements)
 	}
 	
-	fun ProcessingContext.getScopeVariants(): MutableSet<LookupElement> {
+	fun ProcessingContext.completeScope(result: CompletionResultSet) {
+		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
+		val links = configGroup.linksNotData
+		val outputScope = prevScope?.let { prevScope -> links[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope } 
+		
 		for(systemScopeConfig in systemScopeConfigs) {
 			val name = systemScopeConfig.id
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -872,10 +865,11 @@ object CwtConfigHandler {
 				.withPriority(PlsPriorities.systemScopePriority)
 			lookupElements.add(lookupElement)
 		}
-		val links = configGroup.linksNotData
 		for(linkConfig in links.values) {
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val scopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
+			if(!scopeMatched) continue //排除不匹配input_scopes的link
 			val element = linkConfig.pointer.element ?: continue
 			val tailText = " from scopes"
 			val typeFile = linkConfig.pointer.containingFile
@@ -888,12 +882,13 @@ object CwtConfigHandler {
 				.withPriority(PlsPriorities.scopePriority)
 			lookupElements.add(lookupElement)
 		}
-		return lookupElements
+		result.addAllElements(lookupElements)
 	}
 	
-	fun ProcessingContext.getScopeFieldPrefixVariants(): MutableSet<LookupElement> {
+	fun ProcessingContext.completeScopeFieldPrefix(result: CompletionResultSet) {
 		val lookupElements = mutableSetOf<LookupElement>()
 		val links = configGroup.linksAsScope
+		
 		for(linkConfig in links.values) {
 			val name = linkConfig.prefix ?: continue
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -908,17 +903,16 @@ object CwtConfigHandler {
 				.withPriority(PlsPriorities.scopeFieldPrefixPriority)
 			lookupElements.add(lookupElement)
 		}
-		return lookupElements
+		result.addAllElements(lookupElements)
 	}
 	
-	fun completeLocalisationCommandScope(configGroup: CwtConfigGroup, result: CompletionResultSet) {
-		//TODO 匹配scope
-		//val keyword = commandScope.keyword
-		val localisationLinks = configGroup.localisationLinks
-		if(localisationLinks.isEmpty()) return
-		//批量提示
+	fun ProcessingContext.completeLocalisationCommandScope(configGroup: CwtConfigGroup, result: CompletionResultSet) {
+		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
+		val localisationLinks = configGroup.localisationLinks
+		val outputScope = prevScope?.let { prevScope -> localisationLinks[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		
 		for(systemScopeConfig in systemScopeConfigs) {
 			val name = systemScopeConfig.id
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -929,18 +923,18 @@ object CwtConfigHandler {
 				.withExpectedIcon(PlsIcons.SystemScope)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withExpectedInsertHandler(isKey)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsPriorities.systemScopePriority)
 			lookupElements.add(lookupElement)
 		}
-		for(localisationLink in localisationLinks) {
-			val config = localisationLink.value
-			val name = config.name
+		for(linkConfig in localisationLinks.values) {
+			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val element = config.pointer.element ?: continue
+			val scopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
+			if(!scopeMatched) continue //排除不匹配input_scopes的link
+			val element = linkConfig.pointer.element ?: continue
 			val tailText = " from localisation scopes"
-			val typeFile = config.pointer.containingFile
+			val typeFile = linkConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
 				.withExpectedIcon(PlsIcons.LocalisationCommandScope)
 				.withTailText(tailText)
@@ -952,11 +946,9 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeLocalisationCommandField(configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	fun ProcessingContext.completeLocalisationCommandField(configGroup: CwtConfigGroup, result: CompletionResultSet) {
 		//TODO 匹配scope
-		//val keyword = commandField.keyword
 		val localisationCommands = configGroup.localisationCommands
-		if(localisationCommands.isEmpty()) return
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(localisationCommand in localisationCommands) {
@@ -977,7 +969,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun completeParameters(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, quoted: Boolean, configGroup: CwtConfigGroup, result: CompletionResultSet) {
+	fun ProcessingContext.completeParameters(propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, result: CompletionResultSet) {
 		if(quoted) return //输入参数不允许用引号括起
 		val definitionName = propertyElement.name
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(propertyElement)

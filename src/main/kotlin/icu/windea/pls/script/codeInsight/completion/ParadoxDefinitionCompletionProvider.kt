@@ -29,10 +29,10 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		val offsetInParent = parameters.offset - propertyKeyOrStringElement.textRange.startOffset
 		val keyword = propertyKeyOrStringElement.getKeyword(offsetInParent)
 		
-		context.put(ParadoxDefinitionCompletionKeys.contextElementKey, propertyKeyOrStringElement)
-		context.put(ParadoxDefinitionCompletionKeys.quotedKey, quoted)
-		context.put(ParadoxDefinitionCompletionKeys.offsetInParentKey, offsetInParent)
-		context.put(ParadoxDefinitionCompletionKeys.keywordKey, keyword)
+		context.put(PlsCompletionKeys.contextElementKey, propertyKeyOrStringElement)
+		context.put(PlsCompletionKeys.quotedKey, quoted)
+		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
+		context.put(PlsCompletionKeys.keywordKey, keyword)
 		
 		val resultToUse = result.withPrefixMatcher(keyword)
 		

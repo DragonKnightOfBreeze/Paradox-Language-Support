@@ -36,8 +36,8 @@ class CwtConfigGroup(
 	val localisationCommands: Map<@CaseInsensitive String, CwtLocalisationCommandConfig>
 	val modifierCategories: Map<String, CwtModifierCategoryConfig>
 	val modifiers: Map<String, CwtModifierConfig>
-	val scopes: Map<String, CwtScopeConfig>
-	val scopeAliasMap: Map<String, CwtScopeConfig>
+	val scopes: Map<@CaseInsensitive String, CwtScopeConfig>
+	val scopeAliasMap: Map<@CaseInsensitive String, CwtScopeConfig>
 	val scopeGroups: Map<String, CwtScopeGroupConfig>
 	
 	//同名的single_alias可以有多个
@@ -76,8 +76,8 @@ class CwtConfigGroup(
 		localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
 		modifierCategories = mutableMapOf()
 		modifiers = mutableMapOf()
-		scopes = mutableMapOf()
-		scopeAliasMap = mutableMapOf()
+		scopes = CollectionFactory.createCaseInsensitiveStringMap()
+		scopeAliasMap = CollectionFactory.createCaseInsensitiveStringMap()
 		scopeGroups = mutableMapOf()
 		singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
 		aliasGroups = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
@@ -549,7 +549,7 @@ class CwtConfigGroup(
 		val props = propertyConfig.properties
 		if(props == null || props.isEmpty()) return null
 		for(prop in props) {
-			if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+			if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(CollectionFactory.createCaseInsensitiveStringSet()) { it.stringValue }
 		}
 		if(aliases == null) aliases = emptySet()
 		return CwtScopeConfig(propertyConfig.pointer, propertyConfig.info, name, aliases)

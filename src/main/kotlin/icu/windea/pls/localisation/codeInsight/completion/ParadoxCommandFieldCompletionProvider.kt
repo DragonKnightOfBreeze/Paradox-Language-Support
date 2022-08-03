@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandField
 import icu.windea.pls.util.selector.*
 
 /**
@@ -13,13 +13,18 @@ import icu.windea.pls.util.selector.*
 @Suppress("UnstableApiUsage")
 class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+		val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
+		val keyword = parameters.position.getKeyword(offsetInParent)
 		val file = parameters.originalFile
 		val project = file.project
-		
-		//提示command
 		val gameType = file.fileInfo?.gameType ?: return
 		val configGroup = getCwtConfig(project).get(gameType) ?: return
-		CwtConfigHandler.completeLocalisationCommandField(configGroup, result)
+		
+		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
+		context.put(PlsCompletionKeys.keywordKey, keyword)
+		
+		//提示command
+		context.completeLocalisationCommandField(configGroup, result)
 		
 		//提示类型为scripted_loc的definition
 		val tailText = " from scripted_loc"

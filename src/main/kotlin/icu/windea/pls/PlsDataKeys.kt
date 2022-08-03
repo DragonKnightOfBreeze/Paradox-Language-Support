@@ -8,3 +8,6 @@ object PlsDataKeys {
 	val gameTypePropertyKey = DataKey.create<GraphProperty<ParadoxGameType>>("PARADOX_GAME_TYPE_PROPERTY")
 	val rootTypePropertyKey = DataKey.create<GraphProperty<ParadoxRootType>>("PARADOX_ROOT_TYPE_PROPERTY")
 }
+
+val AnActionEvent.gameTypeProperty get() = getData(PlsDataKeys.gameTypePropertyKey)
+val AnActionEvent.rootTypeProperty get() = getData(PlsDataKeys.rootTypePropertyKey)
