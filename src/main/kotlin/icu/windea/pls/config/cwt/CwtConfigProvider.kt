@@ -70,6 +70,7 @@ class CwtConfigProvider(
 				}
 			}
 		}
+		//共享的配置会覆盖特定游戏类型的配置
 		for(configMap in configMaps.values) {
 			configMap.putAll(sharedConfigMap)
 		}

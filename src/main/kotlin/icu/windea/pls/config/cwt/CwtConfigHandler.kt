@@ -56,14 +56,19 @@ object CwtConfigHandler {
 			?: scopeNameOrAlias.toCapitalizedWords()
 	}
 	
-	fun matchScope(scope: String?, scopes: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
+	fun matchScope(scope: String?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
 		if(scope == null || scope.equals("any", true) || scope.equals("all", true)) return true
-		if(scopes.isNullOrEmpty()) return true
-		return scopes.any { s ->
+		if(scopesToMatch.isNullOrEmpty()) return true
+		return scopesToMatch.any { s ->
 			if(s.equals("any", true) || s.equals("all", true)) return@any true
 			scope.equals(s, true) || configGroup.scopeAliasMap[scope]?.aliases?.contains(s) ?: false
 		}
 	}
+	
+	//fun matchScope(scopes: Collection<String>?, scopesToMatch: Collection<String>?, configGroup: CwtConfigGroup): Boolean {
+	//	if(scopes.isNullOrEmpty()) return true
+	//	return scopes.any { scope -> matchScope(scope, scopesToMatch, configGroup) }
+	//}
 	
 	private fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
 		return propertyConfig.keyExpression.type == CwtDataTypes.AliasName &&
@@ -740,11 +745,18 @@ object CwtConfigHandler {
 			CwtDataTypes.ValueSet -> {
 				return //不需要进行提示
 			}
-			CwtDataTypes.ScopeField, CwtDataTypes.Scope -> {
+			CwtDataTypes.ScopeField -> {
 				completeScopeExpression(result)
 			}
-			CwtDataTypes.ScopeGroup -> {
+			CwtDataTypes.Scope -> {
+				put(PlsCompletionKeys.scopeNameKey, expression.value)
 				completeScopeExpression(result)
+				put(PlsCompletionKeys.scopeNameKey, null)
+			}
+			CwtDataTypes.ScopeGroup -> {
+				put(PlsCompletionKeys.scopeGroupNameKey, expression.value)
+				completeScopeExpression(result)
+				put(PlsCompletionKeys.scopeGroupNameKey, null)
 			}
 			CwtDataTypes.VariableField -> pass() //TODO
 			CwtDataTypes.IntVariableField -> pass() //TODO
@@ -793,8 +805,7 @@ object CwtConfigHandler {
 			//aliasConfigs的名字是相同的 
 			val aliasConfig = aliasConfigs.firstOrNull() ?: continue
 			//TODO alias的scope需要匹配（推断得到的scope为null时，总是提示）
-			val scopeMatched = matchScope(scope, aliasConfig.supportedScopes, configGroup)
-			if(scopeMatched) continue
+			if(matchScope(scope, aliasConfig.supportedScopes, configGroup)) continue
 			//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
 			val nextScope = config.parent?.scope ?: scope
 			//aliasSubName是一个表达式
@@ -812,12 +823,9 @@ object CwtConfigHandler {
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(modifierConfig in modifiers.values) {
-			//匹配scope
-			val categoryConfigMap = modifierConfig.categoryConfigMap
-			val scopeMatched = scope == null || categoryConfigMap.values.any { c ->
-				matchScope(scope, c.supportedScopes, configGroup)
-			}
-			if(!scopeMatched) continue //排除不匹配supported_scopes的modifier
+			//排除不匹配modifier的supported_scopes的情况
+			if(!(scope == null || modifierConfig.categoryConfigMap.values.any { c -> matchScope(scope, c.supportedScopes, configGroup) })) continue
+			
 			val n = modifierConfig.name
 			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 			val name = n.quoteIf(quoted)
@@ -845,10 +853,11 @@ object CwtConfigHandler {
 	
 	fun ProcessingContext.completeScope(result: CompletionResultSet) {
 		//TODO 进一步匹配scope
+		val keyword = keyword
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopeMap().values
-		val links = configGroup.linksNotData
-		val outputScope = prevScope?.let { prevScope -> links[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope } 
+		val linkConfigs = configGroup.linksNotData
+		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		
 		for(systemScopeConfig in systemScopeConfigs) {
 			val name = systemScopeConfig.id
@@ -865,11 +874,12 @@ object CwtConfigHandler {
 				.withPriority(PlsPriorities.systemScopePriority)
 			lookupElements.add(lookupElement)
 		}
-		for(linkConfig in links.values) {
+		for(linkConfig in linkConfigs.values) {
+			//排除input_scopes不匹配前一个scope的output_scope的情况
+			if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
+			
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val scopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
-			if(!scopeMatched) continue //排除不匹配input_scopes的link
 			val element = linkConfig.pointer.element ?: continue
 			val tailText = " from scopes"
 			val typeFile = linkConfig.pointer.containingFile
@@ -882,28 +892,70 @@ object CwtConfigHandler {
 				.withPriority(PlsPriorities.scopePriority)
 			lookupElements.add(lookupElement)
 		}
-		result.addAllElements(lookupElements)
+		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
 	}
 	
-	fun ProcessingContext.completeScopeFieldPrefix(result: CompletionResultSet) {
-		val lookupElements = mutableSetOf<LookupElement>()
-		val links = configGroup.linksAsScope
+	fun ProcessingContext.completeScopeFieldPrefixOrDataSource(result: CompletionResultSet) {
+		//TODO 进一步匹配scope
+		val keyword = keyword
+		val linkConfigs = configGroup.linksAsScope
+		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		//NOTE 合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，但是提示时不作限制
+		//val scopesToMatch = scopeName?.let { setOf(it) }
+		//	?: scopeGroupName?.let { configGroup.scopeGroups[it]?.values }
+		//	?: emptySet()
 		
-		for(linkConfig in links.values) {
-			val name = linkConfig.prefix ?: continue
-			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val element = linkConfig.pointer.element ?: continue
-			val tailText = " from scope link ${linkConfig.name}"
-			val typeFile = linkConfig.pointer.containingFile
-			val lookupElement = LookupElementBuilder.create(element, name)
-				.withExpectedIcon(PlsIcons.ScopeFieldPrefix)
-				.withBoldness(true)
-				.withTailText(tailText, true)
-				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withPriority(PlsPriorities.scopeFieldPrefixPriority)
-			lookupElements.add(lookupElement)
+		val prefixLinkConfigs = linkConfigs.values
+			.filter { it.prefix != null && it.dataSource != null }
+		val prefixLinkConfigsToUse = prefixLinkConfigs.filter { keyword.startsWith(it.prefix!!) }
+		if(prefixLinkConfigsToUse.isNotEmpty()){
+			//有前缀，基于匹配前缀的dataSource进行提示
+			val prefix = prefixLinkConfigs.single().prefix!!
+			val resultToUse = result.withPrefixMatcher(keyword.drop(prefix.length))
+			for(linkConfig in prefixLinkConfigsToUse) {
+				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
+				////排除不匹配CWT表达式指定的output_scope的情况
+				//if(!matchScope(linkConfig.outputScope, scopesToMatch, configGroup)) continue
+				
+				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, null) //TODO 传递scope
+			}
+		} else {
+			//没有前缀，提示所有可能的前缀，并给予所有没有前缀的dataSource进行提示
+			val resultToUse = result.withPrefixMatcher(keyword)
+			val lookupElements = mutableSetOf<LookupElement>()
+			for(linkConfig in prefixLinkConfigs) {
+				//排除input_scopes不匹配前一个scope的output_scope的情况
+				if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
+				////排除不匹配CWT表达式指定的output_scope的情况
+				//if(!matchScope(linkConfig.outputScope, scopesToMatch, configGroup)) continue 
+				
+				val name = linkConfig.prefix ?: continue
+				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+				val element = linkConfig.pointer.element ?: continue
+				val tailText = " from scope link ${linkConfig.name}"
+				val typeFile = linkConfig.pointer.containingFile
+				val lookupElement = LookupElementBuilder.create(element, name)
+					.withExpectedIcon(PlsIcons.ScopeFieldPrefix)
+					.withBoldness(true)
+					.withTailText(tailText, true)
+					.withTypeText(typeFile?.name, typeFile?.icon, true)
+					.withPriority(PlsPriorities.scopeFieldPrefixPriority)
+				lookupElements.add(lookupElement)
+			}
+			resultToUse.addAllElements(lookupElements)
+			val linkConfigsNoPrefix = linkConfigs.values
+				.filter { it.prefix == null && it.dataSource != null }
+			if(linkConfigsNoPrefix.isNotEmpty()) {
+				for(linkConfig in linkConfigsNoPrefix) {
+					//排除input_scopes不匹配前一个scope的output_scope的情况
+					if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
+					////排除不匹配CWT表达式指定的output_scope的情况
+					//if(!matchScope(linkConfig.outputScope, scopesToMatch, configGroup)) continue
+					
+					completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, null) //TODO 传递scope
+				}
+			}
 		}
-		result.addAllElements(lookupElements)
 	}
 	
 	fun ProcessingContext.completeLocalisationCommandScope(configGroup: CwtConfigGroup, result: CompletionResultSet) {
@@ -928,10 +980,11 @@ object CwtConfigHandler {
 			lookupElements.add(lookupElement)
 		}
 		for(linkConfig in localisationLinks.values) {
+			//排除input_scopes不匹配前一个scope的output_scope的情况
+			if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
+			
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
-			val scopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
-			if(!scopeMatched) continue //排除不匹配input_scopes的link
 			val element = linkConfig.pointer.element ?: continue
 			val tailText = " from localisation scopes"
 			val typeFile = linkConfig.pointer.containingFile

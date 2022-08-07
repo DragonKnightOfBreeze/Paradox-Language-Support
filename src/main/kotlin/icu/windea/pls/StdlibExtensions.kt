@@ -690,6 +690,16 @@ fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
 	return result
 }
 
+inline fun <reified R> Iterable<*>.findIsInstance(): R?{
+	return findIsInstance(R::class.java)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <R> Iterable<*>.findIsInstance(klass: Class<R>): R? {
+	for(element in this) if(klass.isInstance(element)) return element as R
+	return null
+}
+
 inline fun <T, R : Any, C : MutableCollection<in R>> Iterable<T>.mapNotNullTo(destination: C, transform: (T) -> R?): C {
 	for(item in this) {
 		val result = transform(item)

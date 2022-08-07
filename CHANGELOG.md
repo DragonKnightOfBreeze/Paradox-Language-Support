@@ -114,7 +114,8 @@
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
   * [X] 优化：支持匹配、提示和解析参数，以及显示参数信息 （当可用时）
   * [X] 本地化文件：支持提示和解析本地化命令作用域（commandScope）
-  * [X] 优化：提示modifier时排除不匹配supported_scopes的，提示scope时排除不匹配input_scopes和output_scope的
+  * [X] 优化：提示modifier时排除不匹配supported_scopes的，提示scope时排除其input_scopes不匹配上一个scope的output_scope的
+  * [X] 优化：提示scopeFieldPrefix和scopeFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ~~不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）~~（没有必要提供）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）

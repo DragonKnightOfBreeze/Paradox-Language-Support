@@ -64,24 +64,24 @@ class CwtConfigGroup(
 	val definitionTypesSupportParameters: Set<String>
 	
 	init {
-		folders = mutableSetOf()
-		types = mutableMapOf()
-		values = mutableMapOf()
-		enums = mutableMapOf()
-		tags = CollectionFactory.createCaseInsensitiveStringMap()
-		linksNotData = CollectionFactory.createCaseInsensitiveStringMap()
-		linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
-		linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
-		localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
-		localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
-		modifierCategories = mutableMapOf()
-		modifiers = mutableMapOf()
-		scopes = CollectionFactory.createCaseInsensitiveStringMap()
-		scopeAliasMap = CollectionFactory.createCaseInsensitiveStringMap()
-		scopeGroups = mutableMapOf()
-		singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
-		aliasGroups = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
-		declarations = mutableMapOf()
+		this.folders = mutableSetOf()
+		this.types = mutableMapOf()
+		this.values = mutableMapOf()
+		this.enums = mutableMapOf()
+		this.tags = CollectionFactory.createCaseInsensitiveStringMap()
+		this.linksNotData = CollectionFactory.createCaseInsensitiveStringMap()
+		this.linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
+		this.linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
+		this.localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
+		this.localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
+		this.modifierCategories = mutableMapOf()
+		this.modifiers = mutableMapOf()
+		this.scopes = CollectionFactory.createCaseInsensitiveStringMap()
+		this.scopeAliasMap = CollectionFactory.createCaseInsensitiveStringMap()
+		this.scopeGroups = mutableMapOf()
+		this.singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
+		this.aliasGroups = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
+		this.declarations = mutableMapOf()
 		
 		//目前不检查配置文件的位置和文件名
 		
@@ -267,9 +267,9 @@ class CwtConfigGroup(
 		this.aliasKeysGroupConst = aliasKeysGroupConst
 		this.aliasKeysGroupNoConst = aliasKeysGroupNoConst
 		
-		modifierCategoryIdMap = initModifierCategoryIdMap()
-		tagMap = initTagMap()
-		definitionTypesSupportParameters = initDefinitionTypesSupportParameters()
+		this.modifierCategoryIdMap = initModifierCategoryIdMap()
+		this.tagMap = initTagMap()
+		this.definitionTypesSupportParameters = initDefinitionTypesSupportParameters()
 		
 		bindModifierCategorySupportedScopeNames()
 		bindModifierCategories()

@@ -39,17 +39,17 @@ class ParadoxScriptScopeExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolved: PsiElement?,
-	private val possiblePrefixList: List<String>? = null
+	private val possiblePrefixSet: MutableSet<String>? = null
 ) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptScopeReference {
 		return ParadoxScriptScopeReference(element, textRange, directlyResolved)
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
-		if(possiblePrefixList.isNullOrEmpty()){
+		if(possiblePrefixSet.isNullOrEmpty()){
 			return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.unresolvedScope", text), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		} else {
-			val possiblePrefixListText = possiblePrefixList.take(3).joinToString(limit = 3) { "'$it'" } 
+			val possiblePrefixListText = possiblePrefixSet.take(3).joinToString(limit = 3) { "'$it'" } 
 			return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.unresolvedScope.1", text, possiblePrefixListText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		}
 	}
@@ -88,8 +88,10 @@ class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	textRange: TextRange,
 	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange) {
+	val sortedLinkConfigs = linkConfigs.sortedByDescending { it.dataSource!!.priority } //需要按照优先级重新排序
+	
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptScopeFieldDataSourceReference {
-		return ParadoxScriptScopeFieldDataSourceReference(element, textRange, linkConfigs)
+		return ParadoxScriptScopeFieldDataSourceReference(element, textRange, sortedLinkConfigs)
 	}
 	
 	override fun isUnresolved(element: ParadoxScriptExpressionElement): Boolean {

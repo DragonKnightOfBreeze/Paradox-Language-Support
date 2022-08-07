@@ -6,13 +6,15 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 
 object PlsCompletionKeys {
-	val contextElementKey = Key.create<PsiElement>("paradoxDefinitionCompletion.contextElement")
-	val quotedKey = Key.create<Boolean>("paradoxDefinitionCompletion.quoted")
-	val offsetInParentKey = Key.create<Int>("paradoxDefinitionCompletion.offsetInParent")
-	val keywordKey = Key.create<String>("paradoxDefinitionCompletion.keyword")
-	val isKeyKey = Key.create<Boolean>("paradoxDefinitionCompletion.isKey")
-	val configGroupKey = Key.create<CwtConfigGroup>("paradoxDefinitionCompletion.configGroup")
-	val prevScopeKey = Key.create<String>("paradoxDefinitionCompletion.prevScope")
+	val contextElementKey = Key.create<PsiElement>("paradoxCompletion.contextElement")
+	val quotedKey = Key.create<Boolean>("paradoxCompletion.quoted")
+	val offsetInParentKey = Key.create<Int>("paradoxCompletion.offsetInParent")
+	val keywordKey = Key.create<String>("paradoxCompletion.keyword")
+	val isKeyKey = Key.create<Boolean>("paradoxCompletion.isKey")
+	val configGroupKey = Key.create<CwtConfigGroup>("paradoxCompletion.configGroup")
+	val prevScopeKey = Key.create<String>("paradoxCompletion.prevScope")
+	val scopeNameKey = Key.create<String>("paradoxCompletion.scopeName")
+	val scopeGroupNameKey = Key.create<String>("paradoxCompletion.scopeGroupName")
 }
 
 val ProcessingContext.contextElement get() = get(PlsCompletionKeys.contextElementKey)
@@ -22,3 +24,5 @@ val ProcessingContext.keyword get() = get(PlsCompletionKeys.keywordKey)
 val ProcessingContext.isKey get() = get(PlsCompletionKeys.isKeyKey)
 val ProcessingContext.configGroup get() = get(PlsCompletionKeys.configGroupKey)
 val ProcessingContext.prevScope get() = get(PlsCompletionKeys.prevScopeKey)
+val ProcessingContext.scopeName get() = get(PlsCompletionKeys.scopeNameKey)
+val ProcessingContext.scopeGroupName get() = get(PlsCompletionKeys.scopeGroupNameKey)
