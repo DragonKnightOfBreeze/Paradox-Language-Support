@@ -36,7 +36,7 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 			return originalElement?.parentOfType<ParadoxLocalisationProperty>() != null
 		} else {
 			val originalStartElement = file.findElementAt(selectionStart) ?: return false
-			val originalEndElement = file.findElementAt(selectionEnd) ?: return false
+			val originalEndElement = file.findElementAt(selectionEnd)
 			return hasLocalisationPropertiesBetween(originalStartElement, originalEndElement)
 		}
 	}
@@ -55,7 +55,7 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 			CopyPasteManager.getInstance().setContents(StringSelection(text))
 		} else {
 			val originalStartElement = file.findElementAt(selectionStart) ?: return
-			val originalEndElement = file.findElementAt(selectionEnd) ?: return
+			val originalEndElement = file.findElementAt(selectionEnd)
 			val elements = findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
 			if(elements.isEmpty()) return
 			elements.forEach { keys.add(it.name) }

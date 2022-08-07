@@ -14,15 +14,16 @@
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
 
-## 0.6 > 0.6.6
+## 0.6 > 0.6.7
 
 * [X] 更新cwt规则到最新版本（`stellaris v3.4`）（发布时始终处于最新版本）
 * [X] 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
 * BUG修复：
   * [X] 修复：[.${gameType} file is ignored #3](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/3)
   * [X] 修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
+  * [X] 修复：[Bugs in translation #6](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/6)
   * [X] 修复：对声明的查找使用的结果不完整（定义，本地化，参数等）
-  * [ ] 尝试修复：访问缓存（CachedValue）时导致的PsiInvalidElementAccessException
+  * [X] 尝试修复：访问缓存（CachedValue）时导致的PsiInvalidElementAccessException（限制太多，暂时避免使用）
 * 代码优化：
   * [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
   * [X] 检查代码：同一代码块（block）中允许同时存在属性和值，且可以同时被CWT规则校验
@@ -113,7 +114,7 @@
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
   * [X] 优化：支持匹配、提示和解析参数，以及显示参数信息 （当可用时）
   * [X] 本地化文件：支持提示和解析本地化命令作用域（commandScope）
-  * [ ] 优化：提示modifier时排除不匹配supported_scopes的，提示scope时排除不匹配input_scopes和output_scope的
+  * [X] 优化：提示modifier时排除不匹配supported_scopes的，提示scope时排除不匹配input_scopes和output_scope的
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ~~不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）~~（没有必要提供）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）

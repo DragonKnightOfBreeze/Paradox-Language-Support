@@ -47,7 +47,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 			originalElement?.parentOfType<ParadoxLocalisationProperty>() != null
 		} else {
 			val originalStartElement = file.findElementAt(selectionStart) ?: return false
-			val originalEndElement = file.findElementAt(selectionEnd) ?: return false
+			val originalEndElement = file.findElementAt(selectionEnd)
 			hasLocalisationPropertiesBetween(originalStartElement, originalEndElement)
 		}
 	}
@@ -66,7 +66,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 			listOf(element)
 		} else {
 			val originalStartElement = file.findElementAt(selectionStart) ?: return
-			val originalEndElement = file.findElementAt(selectionEnd) ?: return
+			val originalEndElement = file.findElementAt(selectionEnd)
 			findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
 		}
 		if(elements.isEmpty()) return

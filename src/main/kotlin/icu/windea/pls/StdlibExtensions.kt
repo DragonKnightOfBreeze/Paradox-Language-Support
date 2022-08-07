@@ -795,8 +795,7 @@ data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = fa
 
 fun <K, V> Map<K, V>.toReversibleMap(notReversed: Boolean) = ReversibleMap(this, notReversed)
 
-inline fun <T> List<T>.pinned(predicate: (T) -> Boolean): List<T> {
-	if(this.isEmpty() || this.size == 1) return this
+inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
 	val result = mutableListOf<T>()
 	var elementToPin: T? = null
 	for(e in this) {
@@ -810,8 +809,7 @@ inline fun <T> List<T>.pinned(predicate: (T) -> Boolean): List<T> {
 	return result
 }
 
-inline fun <T> List<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
-	if(this.isEmpty() || this.size == 1) return this
+inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
 	val result = mutableListOf<T>()
 	var elementToPin: T? = null
 	for(e in this) {

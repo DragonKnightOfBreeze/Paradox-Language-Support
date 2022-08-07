@@ -13,21 +13,21 @@ object InternalConfigHandler {
 	/**
 	 * 从内置规则文件中得到指定ID的系统作用域设置。
 	 */
-	fun getSystemScope(id: String, project: Project? = null):ParadoxSystemScopeConfig? {
+	fun getSystemScope(id: String, project: Project? = null): ParadoxSystemScopeConfig? {
 		return getInternalConfig(project).systemScopeMap[id]
 	}
 	
 	/**
 	 * 从内置规则文件中得到所有系统作用域设置。
 	 */
-	fun getSystemScopeMap(project: Project? = null): Map<@CaseInsensitive String, ParadoxSystemScopeConfig>{
+	fun getSystemScopeMap(project: Project? = null): Map<@CaseInsensitive String, ParadoxSystemScopeConfig> {
 		return getInternalConfig(project).systemScopeMap
 	}
 	
 	/**
 	 * 从内置规则文件中得到所有系统作用域设置。
 	 */
-	fun getSystemScopes(project: Project? = null): Array<ParadoxSystemScopeConfig>{
+	fun getSystemScopes(project: Project? = null): Array<ParadoxSystemScopeConfig> {
 		return getInternalConfig(project).systemScopes
 	}
 	//endregion
@@ -57,15 +57,8 @@ object InternalConfigHandler {
 	/**
 	 * 从内置规则文件中得到得到所有语言区域设置。
 	 */
-	fun getLocaleList(project: Project? = null): List<ParadoxLocaleConfig> {
-		return getInternalConfig(project).localeList
-	}
-	
-	/**
-	 * 从内置规则文件中得到得到所有语言区域设置。
-	 */
-	fun getLocaleMap(project: Project? = null): Map<String, ParadoxLocaleConfig> {
-		return getInternalConfig(project).localeMap
+	fun getLocaleMap(project: Project? = null, includeDefault: Boolean = true): Map<String, ParadoxLocaleConfig> {
+		return if(includeDefault) getInternalConfig(project).localeMap else getInternalConfig(project).localeMapNotDefault
 	}
 	//endregion
 	
@@ -82,13 +75,6 @@ object InternalConfigHandler {
 	 */
 	fun getPredefinedVariables(project: Project? = null): Array<ParadoxPredefinedVariableConfig> {
 		return getInternalConfig(project).predefinedVariables
-	}
-	
-	/**
-	 * 从内置规则文件中得到得到所有预定义变量设置。
-	 */
-	fun getPredefinedVariableList(project: Project? = null): List<ParadoxPredefinedVariableConfig> {
-		return getInternalConfig(project).predefinedVariableList
 	}
 	
 	/**

@@ -8,8 +8,8 @@ internal fun getLocalesToSelect(existingLocales: List<ParadoxLocaleConfig>, loca
 	//置顶偏好的语言区域
 	val preferredLocale = preferredParadoxLocale()
 	return if(existingLocales.isEmpty()) {
-		InternalConfigHandler.getLocaleList().pinned { it == preferredLocale }
+		InternalConfigHandler.getLocaleMap(includeDefault = false).values.pinned { it == preferredLocale }
 	} else {
-		InternalConfigHandler.getLocaleMap().values.filter { it == locale || it !in existingLocales }.pinned { it == preferredLocale }
+		InternalConfigHandler.getLocaleMap(includeDefault = false).values.filter { it == locale || it !in existingLocales }.pinned { it == preferredLocale }
 	}
 }

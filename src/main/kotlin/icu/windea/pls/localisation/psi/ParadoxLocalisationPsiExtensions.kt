@@ -39,9 +39,9 @@ val ParadoxLocalisationCommandScope.commandScopeId: PsiElement get() = findRequi
 val ParadoxLocalisationCommandField.commandFieldId: PsiElement? get() = findOptionalChild(COMMAND_FIELD_ID)
 
 
-fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): Boolean {
+fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): Boolean {
 	val startElement = start.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
-	val endElement = end.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
+	val endElement = end?.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
 	when {
 		startElement == null && endElement == null -> return false
 		startElement == null && endElement != null -> {
@@ -68,9 +68,9 @@ fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): Boolea
 	return false
 }
 
-fun findLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): List<ParadoxLocalisationProperty> {
+fun findLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): List<ParadoxLocalisationProperty> {
 	val startElement = start.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
-	val endElement = end.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
+	val endElement = end?.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
 	when {
 		startElement == null && endElement == null -> return emptyList()
 		startElement == null && endElement != null -> {
@@ -80,6 +80,7 @@ fun findLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): List<
 				if(it is ParadoxLocalisationProperty) result.add(it)
 				it != endElement
 			}
+			return result
 		}
 		startElement != null && endElement == null -> {
 			val listElement = startElement.parent
@@ -88,6 +89,7 @@ fun findLocalisationPropertiesBetween(start: PsiElement, end: PsiElement): List<
 				if(it is ParadoxLocalisationProperty) result.add(it)
 				it != startElement
 			}
+			return result
 		}
 		startElement != null && endElement != null -> {
 			val result = mutableListOf<ParadoxLocalisationProperty>()

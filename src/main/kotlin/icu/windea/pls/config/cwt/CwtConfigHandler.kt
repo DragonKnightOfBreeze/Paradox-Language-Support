@@ -846,7 +846,7 @@ object CwtConfigHandler {
 	fun ProcessingContext.completeScope(result: CompletionResultSet) {
 		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
-		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
+		val systemScopeConfigs = InternalConfigHandler.getSystemScopeMap().values
 		val links = configGroup.linksNotData
 		val outputScope = prevScope?.let { prevScope -> links[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope } 
 		
@@ -909,7 +909,7 @@ object CwtConfigHandler {
 	fun ProcessingContext.completeLocalisationCommandScope(configGroup: CwtConfigGroup, result: CompletionResultSet) {
 		//TODO 进一步匹配scope
 		val lookupElements = mutableSetOf<LookupElement>()
-		val systemScopeConfigs = InternalConfigHandler.getSystemScopes()
+		val systemScopeConfigs = InternalConfigHandler.getSystemScopeMap().values
 		val localisationLinks = configGroup.localisationLinks
 		val outputScope = prevScope?.let { prevScope -> localisationLinks[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		

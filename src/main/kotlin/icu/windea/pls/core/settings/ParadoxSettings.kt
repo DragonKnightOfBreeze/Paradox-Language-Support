@@ -47,7 +47,7 @@ class ParadoxSettingsState : BaseState() {
 	val locales by lazy {
 		buildList {
 			add("auto")
-			addAll(InternalConfigHandler.getLocaleMap().keys)
+			addAll(InternalConfigHandler.getLocaleMap(includeDefault = false).keys)
 		}
 	}
 }

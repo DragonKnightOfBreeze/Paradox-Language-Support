@@ -18,11 +18,10 @@ class InternalConfigGroup(
 	val systemScopeMap: Map<@CaseInsensitive String, ParadoxSystemScopeConfig>
 	
 	val locales: Array<ParadoxLocaleConfig>
-	val localeList: List<ParadoxLocaleConfig>
 	val localeMap: Map<String, ParadoxLocaleConfig>
+	val localeMapNotDefault: Map<String, ParadoxLocaleConfig>
 	val localeMapByCode: Map<String, ParadoxLocaleConfig>
 	val predefinedVariables: Array<ParadoxPredefinedVariableConfig>
-	val predefinedVariableList: List<ParadoxPredefinedVariableConfig>
 	val predefinedVariableMap: Map<String, ParadoxPredefinedVariableConfig>
 	
 	init {
@@ -57,8 +56,8 @@ class InternalConfigGroup(
 			val codes = it.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
 			ParadoxLocaleConfig(id, description, codes, it.pointer)
 		}
-		localeList = locales.toList()
 		localeMap = locales.associateBy { it.id }
+		localeMapNotDefault = localeMap.filterKeys { it == "l_default" } 
 		localeMapByCode = buildMap { locales.forEach { locale -> locale.codes.forEach { code -> put(code, locale) } } }
 		
 		//初始化predefinedVariable数据
@@ -67,7 +66,6 @@ class InternalConfigGroup(
 			val description = prop.documentation.orEmpty()
 			ParadoxPredefinedVariableConfig(id, description, prop.pointer)
 		}
-		predefinedVariableList = predefinedVariables.toList()
 		predefinedVariableMap = predefinedVariables.associateBy { it.id }
 	}
 }
