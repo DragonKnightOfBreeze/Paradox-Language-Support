@@ -193,12 +193,18 @@
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnresolvedFilePathInspection"/>
     <!--advanced > expression-->
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeExpression"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectScopeExpression"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectScopeFieldExpression"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.expression"
                      groupPathKey="script.inspection.expression.path"
-                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectScopeExpressionInspection"/>
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectScopeFieldExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueFieldExpression"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.expression.incorrectValueFieldExpression"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.expression"
+                     groupPathKey="script.inspection.expression.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.expression.IncorrectValueFieldExpressionInspection"/>
     <!--advanced > event-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
                      enabledByDefault="true" level="WARNING"

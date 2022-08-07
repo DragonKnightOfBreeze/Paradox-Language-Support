@@ -8,11 +8,9 @@ import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 不正确的作用域表达式的检查。
- *
- * 作用域表达式（scopeExpression）分为连接表达式（scopeLinkExpression）和字段表达式（scopeFieldExpression）。
+ * 不正确的作用域值表达式的检查。
  */
-class IncorrectScopeExpressionInspection : LocalInspectionTool() {
+class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val project = file.project
@@ -34,13 +32,13 @@ class IncorrectScopeExpressionInspection : LocalInspectionTool() {
 				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
 					if(element.isQuoted()) {
 						//不允许用括号括起
-						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scope.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scopeField.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 					} else {
 						val value = element.value
-						val expression = ParadoxScriptScopeExpression.resolve(value, configGroup)
+						val expression = ParadoxScriptScopeFieldExpression.resolve(value, configGroup)
 						if(expression.isEmpty()) {
 							//无法解析
-							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scope.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scopeField.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 						} else {
 							for(error in expression.errors) {
 								holder.registerScriptExpressionError(element, error)

@@ -55,11 +55,11 @@ abstract class ParadoxScriptExpressionResolver<T : ParadoxScriptExpression> {
 }
 
 /**
- * 作用域表达式。用于表示一个作用域。
+ * 作用域字段表达式。
  *
  * 一些例子：`root` `root.owner` `event_target:xxx` `root.event_target:xxx`
  */
-class ParadoxScriptScopeExpression(
+class ParadoxScriptScopeFieldExpression(
 	expressionString: String,
 	configGroup: CwtConfigGroup,
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
@@ -68,10 +68,10 @@ class ParadoxScriptScopeExpression(
 	//TODO 参考CWT规则，作用域本身的别名（如：`root`）也可以包含点号
 	//NOTE 参考CWT规则，可能没有前缀，前缀后的文本需要机遇data_source对应的表达式（如：`value_set[event_target]`）进行解析
 	
-	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeExpression>() {
-		val EmptyExpression by lazy { ParadoxScriptScopeExpression("", MockCwtConfigGroup).apply { empty = true } }
+	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeFieldExpression>() {
+		val EmptyExpression by lazy { ParadoxScriptScopeFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
 		
-		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeExpression {
+		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeFieldExpression {
 			if(expressionString.isEmpty()) return EmptyExpression
 			val length = expressionString.length
 			
@@ -93,7 +93,7 @@ class ParadoxScriptScopeExpression(
 				if(text.isEmpty() || !text.isValidSubExpression()) {
 					//如果表达式格式不正确
 					isValid = false
-					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.malformed", expressionString), wholeRange)
+					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.malformed", expressionString), wholeRange)
 					errors.add(0, error)
 					break
 				}
@@ -109,7 +109,7 @@ class ParadoxScriptScopeExpression(
 				//尝试将最后一段文本解析为scopeField
 				if(index == textRanges.lastIndex) {
 					val matchedLinkConfigs = configGroup.linksAsScope.values
-						.filter { it.prefix != null && it.dataSource != null && expressionString.startsWith(it.prefix) }
+						.filter { it.prefix != null && it.dataSource != null && text.startsWith(it.prefix) }
 					if(matchedLinkConfigs.isNotEmpty()) {
 						//匹配某一前缀
 						val prefix = matchedLinkConfigs.first().prefix!!
@@ -117,11 +117,11 @@ class ParadoxScriptScopeExpression(
 						val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
 						val prefixInfo = ParadoxScriptScopeFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList, matchedLinkConfigs)
 						infos.add(prefixInfo)
-						val dataSourceText = expressionString.drop(prefix.length)
+						val dataSourceText = text.drop(prefix.length)
 						if(dataSourceText.isEmpty()) {
 							//缺少dataSource
 							val dataSourcesText = matchedLinkConfigs.joinToString { "'${it.dataSource}'" }
-							val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.missingDs", dataSourcesText), textRange)
+							val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.missingDs", dataSourcesText), textRange)
 							errors.add(error)
 							isMatched = true //认为匹配
 						} else {
@@ -140,7 +140,7 @@ class ParadoxScriptScopeExpression(
 							infos.add(info)
 							isMatched = true //也认为匹配，实际上这里无法判断
 						} else {
-							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(expressionString, textRange, linkConfigs)
+							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(text, textRange, linkConfigs)
 							infos.add(dataSourceInfo)
 							isMatched = true //也认为匹配，实际上这里无法判断
 						}
@@ -148,7 +148,7 @@ class ParadoxScriptScopeExpression(
 				}
 			}
 			
-			return ParadoxScriptScopeExpression(expressionString, configGroup, infos, errors)
+			return ParadoxScriptScopeFieldExpression(expressionString, configGroup, infos, errors)
 				.apply { valid = isValid }
 				.apply { matched = isMatched }
 		}
@@ -184,5 +184,30 @@ class ParadoxScriptScopeExpression(
 		put(PlsCompletionKeys.prevScopeKey, null)
 		
 		result.restartCompletionOnAnyPrefixChange() //要求重新匹配
+	}
+}
+
+/**
+ * 值字段表达式。
+ * 
+ * 一些例子：`trigger:xxx` `root.trigger:xxx` `value:xxx|PN|PV|`
+ */
+class ParadoxScriptValueFieldExpression(
+	expressionString: String,
+	configGroup: CwtConfigGroup,
+	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
+	errors: List<ParadoxScriptExpressionError> = emptyList()
+): ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
+	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptValueFieldExpression>() {
+		val EmptyExpression by lazy { ParadoxScriptValueFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
+		
+		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptValueFieldExpression {
+			//TODO()
+			return EmptyExpression
+		}
+	}
+	
+	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
+		//TODO("Not yet implemented")
 	}
 }

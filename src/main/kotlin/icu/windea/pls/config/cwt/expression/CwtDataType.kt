@@ -28,12 +28,12 @@ object CwtDataTypes {
 	object Value : CwtKeyDataType, CwtValueDataType
 	object ValueSet : CwtKeyDataType, CwtValueDataType
 	object ScopeField : CwtKeyDataType, CwtValueDataType
-	object ScopeGroup : CwtKeyDataType, CwtValueDataType
 	object Scope : CwtKeyDataType, CwtValueDataType
-	object VariableField : CwtValueDataType
-	object IntVariableField : CwtValueDataType
+	object ScopeGroup : CwtKeyDataType, CwtValueDataType
 	object ValueField : CwtValueDataType
 	object IntValueField : CwtValueDataType
+	object VariableField : CwtValueDataType
+	object IntVariableField : CwtValueDataType
 	object Modifier: CwtKeyDataType //EXTENDED BY PLS
 	object SingleAliasRight : CwtValueDataType
 	object AliasName : CwtKeyDataType

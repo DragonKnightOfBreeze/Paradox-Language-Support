@@ -122,20 +122,6 @@ class CwtValueExpression private constructor(
 					val value = expressionString.substring(12, expressionString.length - 1)
 					CwtValueExpression(expressionString, Types.ScopeGroup, Priorities.rangedScopeFieldPriority, value)
 				}
-				expressionString == "variable_field" -> {
-					CwtValueExpression(expressionString, Types.VariableField, Priorities.variableFieldPriority)
-				}
-				expressionString.surroundsWith("variable_field[", "]") -> {
-					val value = expressionString.substring(15, expressionString.length - 1)
-					CwtValueExpression(expressionString, Types.VariableField, Priorities.rangedVariableFieldPriority, value)
-				}
-				expressionString == "int_variable_field" -> {
-					CwtValueExpression(expressionString, Types.IntVariableField, Priorities.variableFieldPriority)
-				}
-				expressionString.surroundsWith("int_variable_field[", "]") -> {
-					val value = expressionString.substring(19, expressionString.length - 1)
-					CwtValueExpression(expressionString, Types.IntVariableField, Priorities.rangedVariableFieldPriority, value)
-				}
 				expressionString == "value_field" -> {
 					CwtValueExpression(expressionString, Types.ValueField, Priorities.valueFieldPriority)
 				}
@@ -149,6 +135,20 @@ class CwtValueExpression private constructor(
 				expressionString.surroundsWith("int_value_field[", "]") -> {
 					val value = expressionString.substring(16, expressionString.length - 1)
 					CwtValueExpression(expressionString, Types.IntValueField, Priorities.rangedValueFieldPriority, value)
+				}
+				expressionString == "variable_field" -> {
+					CwtValueExpression(expressionString, Types.VariableField, Priorities.variableFieldPriority)
+				}
+				expressionString.surroundsWith("variable_field[", "]") -> {
+					val value = expressionString.substring(15, expressionString.length - 1)
+					CwtValueExpression(expressionString, Types.VariableField, Priorities.rangedVariableFieldPriority, value)
+				}
+				expressionString == "int_variable_field" -> {
+					CwtValueExpression(expressionString, Types.IntVariableField, Priorities.variableFieldPriority)
+				}
+				expressionString.surroundsWith("int_variable_field[", "]") -> {
+					val value = expressionString.substring(19, expressionString.length - 1)
+					CwtValueExpression(expressionString, Types.IntVariableField, Priorities.rangedVariableFieldPriority, value)
 				}
 				expressionString.surroundsWith("single_alias_right[", "]") -> {
 					val value = expressionString.substring(19, expressionString.length - 1)

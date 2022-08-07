@@ -27,9 +27,14 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 			if(config != null){
 				when(config.expression.type){
 					CwtDataTypes.Scope, CwtDataTypes.ScopeField, CwtDataTypes.ScopeGroup -> {
-						val scopeLinkExpression = ParadoxScriptScopeExpression.resolve(text, configGroup)
-						if(scopeLinkExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return scopeLinkExpression.infos.mapToArray { it.getReference(element) }
+						val scopeFieldExpression = ParadoxScriptScopeFieldExpression.resolve(text, configGroup)
+						if(scopeFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
+						return scopeFieldExpression.infos.mapToArray { it.getReference(element) }
+					}
+					CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
+						val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(text, configGroup)
+						if(valueFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
+						return valueFieldExpression.infos.mapToArray { it.getReference(element) }
 					}
 					else -> pass() //TODO
 				}

@@ -123,9 +123,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				if(!element.isQuoted()) {
-					val scopeExpression = ParadoxScriptScopeExpression.resolve(element.value, configGroup)
-					if(scopeExpression.isEmpty()) return
-					for(info in scopeExpression.infos) {
+					val scopeFieldExpression = ParadoxScriptScopeFieldExpression.resolve(element.value, configGroup)
+					if(scopeFieldExpression.isEmpty()) return
+					for(info in scopeFieldExpression.infos) {
 						val attributesKeyExpressions = info.getAttributesKeyExpressions(element)
 						if(attributesKeyExpressions.isNotEmpty()) {
 							//使用第一个匹配的expression的高亮
@@ -142,7 +142,24 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				}
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				//TODO
+				if(!element.isQuoted()){
+					val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(element.value, configGroup)
+					if(valueFieldExpression.isEmpty()) return
+					for(info in valueFieldExpression.infos) {
+						val attributesKeyExpressions = info.getAttributesKeyExpressions(element)
+						if(attributesKeyExpressions.isNotEmpty()) {
+							//使用第一个匹配的expression的高亮
+							val infoRange = info.textRange.shiftRight(range.startOffset)
+							annotateExpression(element, infoRange, attributesKeyExpressions.first(), configGroup, holder)
+							continue
+						}
+						val attributesKey = info.getAttributesKey()
+						if(attributesKey != null){
+							val infoRange = info.textRange.shiftRight(range.startOffset)
+							holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
+						}
+					}
+				}
 			}
 			else -> {
 				//特殊处理是modifier的情况

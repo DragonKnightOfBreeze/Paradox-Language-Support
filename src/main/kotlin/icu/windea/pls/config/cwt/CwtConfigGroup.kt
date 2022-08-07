@@ -510,7 +510,7 @@ class CwtConfigGroup(
 				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能data（可重复），但是目前只有一处
 				"prefix" -> prefix = prop.stringValue
 				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) }
-					?: propertyConfig.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+					?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 				"output_scope" -> outputScope = prop.stringValue
 			}
 		}

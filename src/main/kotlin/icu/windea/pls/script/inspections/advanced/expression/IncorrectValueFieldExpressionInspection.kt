@@ -1,0 +1,57 @@
+package icu.windea.pls.script.inspections.advanced.expression
+
+import com.intellij.codeInspection.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.script.expression.*
+import icu.windea.pls.script.psi.*
+
+class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
+	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+		if(file !is ParadoxScriptFile) return null
+		val project = file.project
+		val fileInfo = file.fileInfo ?: return null
+		val gameType = fileInfo.gameType
+		val configGroup = getCwtConfig(project).getValue(gameType)
+		val holder = ProblemsHolder(manager, file, isOnTheFly)
+		file.acceptChildren(object : PsiRecursiveElementVisitor() {
+			override fun visitElement(e: PsiElement) {
+				if(e is ParadoxScriptExpressionElement) {
+					visitElementExpression(e)
+				}
+				super.visitElement(e)
+			}
+			
+			private fun visitElementExpression(element: ParadoxScriptExpressionElement) {
+				val config = element.getConfig() ?: return
+				val type = config.expression.type
+				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
+					if(element.isQuoted()) {
+						//不允许用括号括起
+						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.valueField.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+					} else {
+						val value = element.value
+						val expression = ParadoxScriptValueFieldExpression.resolve(value, configGroup)
+						if(expression.isEmpty()) {
+							//无法解析
+							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.valueField.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+						} else {
+							for(error in expression.errors) {
+								holder.registerScriptExpressionError(element, error)
+							}
+							//注册无法解析的异常
+							for(info in expression.infos) {
+								if(info.isUnresolved(element)) {
+									val error = info.getUnresolvedError()
+									if(error != null) holder.registerScriptExpressionError(element, error)
+								}
+							}
+						}
+					}
+				}
+			}
+		})
+		return holder.resultsArray
+	}
+}

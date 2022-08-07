@@ -240,7 +240,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				content {
 					append(nameToUse).appendBr()
 					if(descToUse != null && descToUse.isNotEmpty()) append(descToUse).appendBr()
-					appendBr()
+				}
+				content {
 					append(PlsDocBundle.message("content.inputScopes", inputScopeNames)).appendBr()
 					append(PlsDocBundle.message("content.outputScope", outputScopeName))
 				}

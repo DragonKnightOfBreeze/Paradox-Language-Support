@@ -101,13 +101,60 @@ class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
-		val dataSourcesText = linkConfigs.joinToString { "'${it.dataSource}'" }
-		return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.unresolvedDs", text, dataSourcesText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+		val dataSourcesText = linkConfigs.joinToString { "'${it.dataSource!!.value!!}'" }
+		return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.unresolvedDs", text, dataSourcesText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 	}
 	
 	override fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement): List<CwtValueExpression> {
 		val result = getReference(element).multiResolve(false)
 			.filterIsInstance<ParadoxScriptScopeFieldDataSourceResolveResult>()
+			.map { it.expression }
+		if(result.isNotEmpty()) return result
+		//特殊处理可能是value的情况
+		return linkConfigs.mapNotNull { it.dataSource }.filter { it.type == CwtDataTypes.Value }
+	}
+}
+
+class ParadoxScriptValueFieldPrefixExpressionInfo(
+	text: String,
+	textRange: TextRange,
+	directlyResolvedList: List<PsiElement>?,
+	val linkConfigs: List<CwtLinkConfig>
+) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
+	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptValueFieldPrefixReference {
+		return ParadoxScriptValueFieldPrefixReference(element, textRange, directlyResolvedList)
+	}
+	
+	override fun getAttributesKey(): TextAttributesKey {
+		return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX_KEY
+	}
+}
+
+class ParadoxScriptValueFieldDataSourceExpressionInfo(
+	text: String,
+	textRange: TextRange,
+	val linkConfigs: List<CwtLinkConfig>
+) : ParadoxScriptExpressionInfo(text, textRange) {
+	val sortedLinkConfigs = linkConfigs.sortedByDescending { it.dataSource!!.priority } //需要按照优先级重新排序
+	
+	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptValueFieldDataSourceReference {
+		return ParadoxScriptValueFieldDataSourceReference(element, textRange, sortedLinkConfigs)
+	}
+	
+	override fun isUnresolved(element: ParadoxScriptExpressionElement): Boolean {
+		//特殊处理可能是value的情况
+		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return false
+		return super.isUnresolved(element)
+	}
+	
+	override fun getUnresolvedError(): ParadoxScriptExpressionError {
+		val dataSourcesText = linkConfigs.joinToString { "'${it.dataSource!!.value!!}'" }
+		return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.valueField.unresolvedDs", text, dataSourcesText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+	}
+	
+	override fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement): List<CwtValueExpression> {
+		val result = getReference(element).multiResolve(false)
+			.filterIsInstance<ParadoxScriptValueFieldDataSourceResolveResult>()
 			.map { it.expression }
 		if(result.isNotEmpty()) return result
 		//特殊处理可能是value的情况

@@ -331,16 +331,26 @@ object CwtConfigHandler {
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope -> {
 				if(quoted) return false //不允许用引号括起
 				if(value.isParameterAwareExpression()) return true
-				//TODO 匹配scope
-				val scopeName = expression.value?.takeIf { it != "any" }
-				return matchesScopeExpression(value, configGroup)
+				return matchesScopeFieldExpression(value, configGroup)
 			}
 			CwtDataTypes.ScopeGroup -> {
 				if(quoted) return false //不允许用引号括起
 				if(value.isParameterAwareExpression()) return true
-				//TODO 匹配scope
-				val scopeGroupName = expression.value ?: return false
-				return matchesScopeExpression(value, configGroup)
+				return matchesScopeFieldExpression(value, configGroup)
+			}
+			CwtDataTypes.ValueField -> {
+				if(value.isParameterAwareExpression()) return true
+				//也可以是整数，注意：用括号括起的整数（作为scalar）也匹配这个规则
+				if(valueType.matchesIntType() || ParadoxValueType.infer(value).matchesIntType()) return true
+				if(quoted) return false //接下来的匹配不允许用引号括起
+				return matchesValueFieldExpression(value, configGroup)
+			}
+			CwtDataTypes.IntValueField -> {
+				if(value.isParameterAwareExpression()) return true
+				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
+				if(valueType.matchesFloatType() || ParadoxValueType.infer(value).matchesFloatType()) return true
+				if(quoted) return false //接下来的匹配不允许用引号括起
+				return matchesValueFieldExpression(value, configGroup, isInt = true)
 			}
 			CwtDataTypes.VariableField -> {
 				if(value.isParameterAwareExpression()) return true
@@ -350,14 +360,6 @@ object CwtConfigHandler {
 			CwtDataTypes.IntVariableField -> {
 				if(value.isParameterAwareExpression()) return true
 				if(!value.isSimpleScriptExpression()) return false
-				return false //TODO
-			}
-			CwtDataTypes.ValueField -> {
-				if(value.isParameterAwareExpression()) return true
-				return false //TODO
-			}
-			CwtDataTypes.IntValueField -> {
-				if(value.isParameterAwareExpression()) return true
 				return false //TODO
 			}
 			CwtDataTypes.Modifier -> {
@@ -429,8 +431,12 @@ object CwtConfigHandler {
 		return modifiers.containsKey(name)
 	}
 	
-	fun matchesScopeExpression(expression: String, configGroup: CwtConfigGroup): Boolean {
-		return ParadoxScriptScopeExpression.resolve(expression, configGroup).isMatched()
+	fun matchesScopeFieldExpression(expression: String, configGroup: CwtConfigGroup): Boolean {
+		return ParadoxScriptScopeFieldExpression.resolve(expression, configGroup).isMatched()
+	}
+	
+	fun matchesValueFieldExpression(expression: String, configGroup: CwtConfigGroup, isInt:Boolean = false): Boolean {
+		return ParadoxScriptValueFieldExpression.resolve(expression, configGroup).isMatched()
 	}
 	//endregion
 	
@@ -746,22 +752,26 @@ object CwtConfigHandler {
 				return //不需要进行提示
 			}
 			CwtDataTypes.ScopeField -> {
-				completeScopeExpression(result)
+				completeScopeFieldExpression(result)
 			}
 			CwtDataTypes.Scope -> {
 				put(PlsCompletionKeys.scopeNameKey, expression.value)
-				completeScopeExpression(result)
+				completeScopeFieldExpression(result)
 				put(PlsCompletionKeys.scopeNameKey, null)
 			}
 			CwtDataTypes.ScopeGroup -> {
 				put(PlsCompletionKeys.scopeGroupNameKey, expression.value)
-				completeScopeExpression(result)
+				completeScopeFieldExpression(result)
 				put(PlsCompletionKeys.scopeGroupNameKey, null)
+			}
+			CwtDataTypes.ValueField -> {
+				completeValueFieldExpression(result)
+			}
+			CwtDataTypes.IntValueField -> {
+				completeValueFieldExpression(result, isInt = true)
 			}
 			CwtDataTypes.VariableField -> pass() //TODO
 			CwtDataTypes.IntVariableField -> pass() //TODO
-			CwtDataTypes.ValueField -> pass() //TODO
-			CwtDataTypes.IntValueField -> pass() //TODO
 			CwtDataTypes.Modifier -> {
 				//提示预定义的modifier
 				//TODO 需要推断scope并向下传递，注意首先需要取config.parent.scope
@@ -845,10 +855,16 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun ProcessingContext.completeScopeExpression(result: CompletionResultSet) {
-		//按照当前位置的代码补全
-		val scopeExpression = ParadoxScriptScopeExpression.resolve(keyword, configGroup)
-		scopeExpression.complete(result, this)
+	fun ProcessingContext.completeScopeFieldExpression(result: CompletionResultSet) {
+		//基于当前位置的代码补全
+		val expression = ParadoxScriptScopeFieldExpression.resolve(keyword, configGroup)
+		expression.complete(result, this)
+	}
+	
+	fun ProcessingContext.completeValueFieldExpression(result: CompletionResultSet, isInt: Boolean = false) {
+		//基于当前位置的代码补全
+		val expression = ParadoxScriptValueFieldExpression.resolve(keyword, configGroup)
+		expression.complete(result, this)
 	}
 	
 	fun ProcessingContext.completeScope(result: CompletionResultSet) {
@@ -910,7 +926,7 @@ object CwtConfigHandler {
 		val prefixLinkConfigsToUse = prefixLinkConfigs.filter { keyword.startsWith(it.prefix!!) }
 		if(prefixLinkConfigsToUse.isNotEmpty()){
 			//有前缀，基于匹配前缀的dataSource进行提示
-			val prefix = prefixLinkConfigs.single().prefix!!
+			val prefix = prefixLinkConfigs.first().prefix!!
 			val resultToUse = result.withPrefixMatcher(keyword.drop(prefix.length))
 			for(linkConfig in prefixLinkConfigsToUse) {
 				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
