@@ -10,7 +10,7 @@ data class CwtModifierConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
 	val name: String,
-	val categories: Set<String>
+	val categories: Set<String> //name or internal id
 ) : CwtConfig<CwtProperty> {
 	val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 	

@@ -67,7 +67,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			buildPropertyDefinition(element, originalElement, name, configType, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
-			buildTypeBasedContent(element, originalElement, name, configType, project)
+			buildScopeContent(element, originalElement, name, configType, project)
 			buildSupportedScopesContent(element, originalElement, name, configType, project)
 		}
 	}
@@ -226,9 +226,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildTypeBasedContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
+	private fun StringBuilder.buildScopeContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
 		when(configType) {
-			//为scope（link）显示名字、描述、输入作用域、输出作用域
+			//为link提示名字、描述、输入作用域、输出作用域的文档注释
+			//仅为脚本文件中的引用提供
 			CwtConfigType.Link -> {
 				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
 				val configGroup = getCwtConfig(project)[gameType] ?: return
@@ -251,14 +252,16 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
-		//为alias modifier localisation_command等提供支持的作用域的文档注释
+		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
 		//仅为脚本文件中的引用提供
+		var categoryNames: Set<String>? = null
 		var supportedScopeNames: Set<String>? = null
 		when(configType) {
 			CwtConfigType.Modifier -> {
 				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
 				val configGroup = getCwtConfig(project)[gameType] ?: return
 				val modifierConfig = configGroup.modifiers[name] ?: return
+				categoryNames = modifierConfig.categoryConfigMap.keys
 				supportedScopeNames = modifierConfig.supportedScopeNames
 			}
 			CwtConfigType.LocalisationCommand -> {
@@ -275,9 +278,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			else -> pass()
 		}
-		if(!supportedScopeNames.isNullOrEmpty()) {
-			val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ")
-			content {
+		content {
+			if(!categoryNames.isNullOrEmpty()) {
+				val categoryNamesToUse = categoryNames.joinToString(", ")
+				append(PlsDocBundle.message("content.categories", categoryNamesToUse))
+			}
+			if(!supportedScopeNames.isNullOrEmpty()) {
+				val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ")
 				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNamesToUse))
 			}
 		}

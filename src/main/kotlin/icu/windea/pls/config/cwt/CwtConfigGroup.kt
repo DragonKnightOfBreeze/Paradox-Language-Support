@@ -658,7 +658,7 @@ class CwtConfigGroup(
 			//category可能是modifierCategory的name，也可能是modifierCategory的internalId
 			for(category in modifier.categories) {
 				val categoryConfig = modifierCategories[category] ?: modifierCategoryIdMap[category] ?: continue
-				modifier.categoryConfigMap[category] = categoryConfig
+				modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
 			}
 		}
 	}
