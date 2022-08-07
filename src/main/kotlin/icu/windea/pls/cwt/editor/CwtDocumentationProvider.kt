@@ -233,7 +233,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			CwtConfigType.Link -> {
 				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
 				val configGroup = getCwtConfig(project)[gameType] ?: return
-				val linkConfig = configGroup.linksNotData[name] ?: return
+				val linkConfig = configGroup.linksAsScopeNotData[name] ?: return
 				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
 				val inputScopeNames = linkConfig.inputScopeNames.joinToString()

@@ -115,6 +115,39 @@ class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	}
 }
 
+class ParadoxScriptValueOfValueFieldExpressionInfo(
+	text: String,
+	textRange: TextRange,
+	directlyResolved: PsiElement?,
+	private val possiblePrefixSet: MutableSet<String>? = null
+) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
+	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptValueOfValueFieldReference {
+		return ParadoxScriptValueOfValueFieldReference(element, textRange, directlyResolved)
+	}
+	
+	override fun getUnresolvedError(): ParadoxScriptExpressionError {
+		if(possiblePrefixSet.isNullOrEmpty()){
+			return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.value.unresolvedValue", text), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+		} else {
+			val possiblePrefixListText = possiblePrefixSet.take(3).joinToString(limit = 3) { "'$it'" }
+			return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.value.unresolvedValue.1", text, possiblePrefixListText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+		}
+	}
+	
+	override fun getAttributesKey(): TextAttributesKey {
+		return when {
+			directlyResolved is CwtProperty -> {
+				when(CwtConfigType.resolve(directlyResolved)) {
+					CwtConfigType.SystemScope -> ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
+					CwtConfigType.Scope -> ParadoxScriptAttributesKeys.SCOPE_KEY
+					else -> ParadoxScriptAttributesKeys.SCOPE_KEY
+				}
+			}
+			else -> ParadoxScriptAttributesKeys.SCOPE_KEY
+		}
+	}
+}
+
 class ParadoxScriptValueFieldPrefixExpressionInfo(
 	text: String,
 	textRange: TextRange,

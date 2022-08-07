@@ -910,7 +910,7 @@ object CwtConfigHandler {
 		val keyword = keyword
 		val lookupElements = mutableSetOf<LookupElement>()
 		val systemScopeConfigs = InternalConfigHandler.getSystemScopeMap().values
-		val linkConfigs = configGroup.linksNotData
+		val linkConfigs = configGroup.linksAsScopeNotData
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
 		
 		for(systemScopeConfig in systemScopeConfigs) {
@@ -978,7 +978,7 @@ object CwtConfigHandler {
 				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
 			}
 		} else {
-			//没有前缀，提示所有可能的前缀，并给予所有没有前缀的dataSource进行提示
+			//没有前缀，提示所有可能的前缀
 			val resultToUse = result.withPrefixMatcher(keyword)
 			val lookupElements = mutableSetOf<LookupElement>()
 			for(linkConfig in prefixLinkConfigs) {
@@ -1004,6 +1004,8 @@ object CwtConfigHandler {
 				lookupElements.add(lookupElement)
 			}
 			resultToUse.addAllElements(lookupElements)
+			
+			//基于所有没有前缀的dataSource进行提示
 			val linkConfigsNoPrefix = linkConfigs.values
 				.filter { it.prefix == null && it.dataSource != null }
 			if(linkConfigsNoPrefix.isNotEmpty()) {
@@ -1019,6 +1021,92 @@ object CwtConfigHandler {
 					completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
 				}
 			}
+		}
+	}
+	
+	fun ProcessingContext.completeValueOfValueField(result: CompletionResultSet) {
+		//TODO 进一步匹配scope
+		val keyword = keyword
+		val lookupElements = mutableSetOf<LookupElement>()
+		val linkConfigs = configGroup.linksAsValueNotData
+		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		
+		for(linkConfig in linkConfigs.values) {
+			//排除input_scopes不匹配前一个scope的output_scope的情况
+			val isScopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
+			if(!isScopeMatched) continue
+			
+			val name = linkConfig.name
+			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+			val element = linkConfig.pointer.element ?: continue
+			val tailText = " from values"
+			val typeFile = linkConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name)
+				.withExpectedIcon(PlsIcons.ValueOfValueField)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.withExpectedInsertHandler(isKey)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsPriorities.valueOfValueFieldPriority)
+			lookupElements.add(lookupElement)
+		}
+		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
+	}
+	
+	fun ProcessingContext.completeValueFieldPrefixOrDataSource(result: CompletionResultSet) {
+		//TODO 进一步匹配scope
+		val keyword = keyword
+		val linkConfigs = configGroup.linksAsValue
+		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，进行智能提示时不提示不匹配的项
+		val expectedScopes = scopeName?.let { setOf(it) }
+			?: scopeGroupName?.let { configGroup.scopeGroups[it]?.values }
+			?: emptySet()
+		
+		val prefixLinkConfigs = linkConfigs.values
+			.filter { it.prefix != null && it.dataSource != null }
+		val prefixLinkConfigsToUse = prefixLinkConfigs.filter { keyword.startsWith(it.prefix!!) }
+		if(prefixLinkConfigsToUse.isNotEmpty()){
+			//有前缀，基于匹配前缀的dataSource进行提示
+			val prefix = prefixLinkConfigs.first().prefix!!
+			val resultToUse = result.withPrefixMatcher(keyword.drop(prefix.length))
+			for(linkConfig in prefixLinkConfigsToUse) {
+				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
+				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
+				if(completionType == CompletionType.SMART) {
+					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
+					if(!isExpectedScopeMatched) continue
+				}
+				
+				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
+			}
+		} else {
+			//没有前缀，提示所有可能的前缀
+			val resultToUse = result.withPrefixMatcher(keyword)
+			val lookupElements = mutableSetOf<LookupElement>()
+			for(linkConfig in prefixLinkConfigs) {
+				//排除input_scopes不匹配前一个scope的output_scope的情况
+				if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
+				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
+				if(completionType == CompletionType.SMART) {
+					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
+					if(!isExpectedScopeMatched) continue
+				}
+				
+				val name = linkConfig.prefix ?: continue
+				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
+				val element = linkConfig.pointer.element ?: continue
+				val tailText = " from value link ${linkConfig.name}"
+				val typeFile = linkConfig.pointer.containingFile
+				val lookupElement = LookupElementBuilder.create(element, name)
+					.withExpectedIcon(PlsIcons.ValueFieldPrefix)
+					.withBoldness(true)
+					.withTailText(tailText, true)
+					.withTypeText(typeFile?.name, typeFile?.icon, true)
+					.withPriority(PlsPriorities.scopeFieldPrefixPriority)
+				lookupElements.add(lookupElement)
+			}
+			resultToUse.addAllElements(lookupElements)
 		}
 	}
 	
@@ -1560,7 +1648,14 @@ object CwtConfigHandler {
 		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project)
 		if(systemScope != null) return systemScope.pointer.element
 		
-		val links = configGroup.linksNotData
+		val links = configGroup.linksAsScopeNotData
+		if(links.isEmpty()) return null
+		val linkConfig = links[name] ?: return null
+		return linkConfig.pointer.element
+	}
+	
+	fun resolveValueOfValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val links = configGroup.linksAsValueNotData
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null
 		return linkConfig.pointer.element

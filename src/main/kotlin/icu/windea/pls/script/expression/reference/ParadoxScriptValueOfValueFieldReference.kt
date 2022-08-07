@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptScopeReference(
+class ParadoxScriptValueOfValueFieldReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	private val resolved: PsiElement?
@@ -20,8 +20,7 @@ class ParadoxScriptScopeReference(
 		//val name = rangeInElement.substring(element.text)
 		//val gameType = element.fileInfo?.gameType ?: return null
 		//val configGroup = getCwtConfig(element.project).getValue(gameType)
-		//return CwtConfigHandler.resolveScope(name, configGroup)
+		//return CwtConfigHandler.resolveValueOfValueField(name, configGroup)
 		return null
 	}
 }
-

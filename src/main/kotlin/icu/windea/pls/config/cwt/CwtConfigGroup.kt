@@ -28,9 +28,11 @@ class CwtConfigGroup(
 	//since: stellaris v3.4
 	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
 	
-	val linksNotData: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsScopeNotData: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsScope: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsValueNotData: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValue: Map<@CaseInsensitive String, CwtLinkConfig>
+	
 	val localisationLinks: Map<@CaseInsensitive String, CwtLinkConfig>
 	
 	val localisationCommands: Map<@CaseInsensitive String, CwtLocalisationCommandConfig>
@@ -69,8 +71,9 @@ class CwtConfigGroup(
 		this.values = mutableMapOf()
 		this.enums = mutableMapOf()
 		this.tags = CollectionFactory.createCaseInsensitiveStringMap()
-		this.linksNotData = CollectionFactory.createCaseInsensitiveStringMap()
+		this.linksAsScopeNotData = CollectionFactory.createCaseInsensitiveStringMap()
 		this.linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
+		this.linksAsValueNotData = CollectionFactory.createCaseInsensitiveStringMap()
 		this.linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
 		this.localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
 		this.localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
@@ -145,21 +148,17 @@ class CwtConfigGroup(
 						for(prop in props) {
 							val linkName = prop.key
 							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
-							if(linkConfig.fromData) {
-								when(linkConfig.type) {
-									"scope" -> {
-										linksAsScope[linkName] = linkConfig
-									}
-									"value" -> {
-										linksAsValue[linkName] = linkConfig
-									}
-									"both" -> {
-										linksAsScope[linkName] = linkConfig
-										linksAsValue[linkName] = linkConfig
-									}
+							when(linkConfig.type) {
+								"scope" -> {
+									(if(linkConfig.fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
 								}
-							} else {
-								linksNotData[linkName] = linkConfig
+								"value" -> {
+									(if(linkConfig.fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
+								}
+								"both" -> {
+									(if(linkConfig.fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
+									(if(linkConfig.fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
+								}
 							}
 						}
 					}
