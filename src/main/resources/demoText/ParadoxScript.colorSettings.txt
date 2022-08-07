@@ -25,18 +25,18 @@ settings = {
 	inline_math = @[2 + ($MAX$ - 1 + var1)]
 }
 
-<definition><k>definition_name</k></definition> = {
+<definition>definition_name</definition> = {
 	<tag>tag_name</tag>
 	key = <definition-reference>definition_reference</definition-reference>
-	key = <localisation-reference>localisation_reference</localisation-reference>
 	key = <localisation-reference>localisation_reference</localisation-reference>
 	key = <synced-localisation-reference>synced_localisation_reference</synced-localisation-reference>
 	key = <path-reference>path_reference</path-reference>
 	key = <enum-value>enum_value</enum-value>
 	key = <value>value_in_value_set</value>
-	<scope>root</scope> = {
-		<system-scope>owner</system-scope> = {
-			some_key = <scope-field-prefix>prefix:</scope-field-prefix><value>value</value>
+	<system-scope>root</system-scope> = {
+		<scope>owner</scope> = {
+			some_scope_field = <scope-field-prefix>prefix:</scope-field-prefix><value>value</value>
+			some_value_field = <value-field-prefix>prefix:</value-field-prefix><value>value</value>
 			<modifier>some_modifier</modifier> = 1
 		}
 	}

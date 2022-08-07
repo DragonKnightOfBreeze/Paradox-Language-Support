@@ -39,7 +39,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
-			buildPropertyDefinition(element, originalElement, name, configType, false)
+			val project = element.project
+			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
+				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false)
 		}
 	}
 	
@@ -47,7 +50,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
-			buildStringDefinition(element, originalElement, name, configType, false)
+			val project = element.project
+			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
+				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			buildStringDefinition(element, originalElement, name, configType, configGroup, false)
 		}
 	}
 	
@@ -64,11 +70,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			buildPropertyDefinition(element, originalElement, name, configType, true)
+			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
+				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
-			buildScopeContent(element, originalElement, name, configType, project)
-			buildSupportedScopesContent(element, originalElement, name, configType, project)
+			buildScopeContent(element, originalElement, name, configType, configGroup)
+			buildSupportedScopesContent(element, originalElement, name, configType, configGroup)
 		}
 	}
 	
@@ -77,17 +85,19 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			buildStringDefinition(element, originalElement, name, configType, true)
+			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
+				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			buildStringDefinition(element, originalElement, name, configType, configGroup, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
 		}
 	}
 	
-	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail: Boolean) {
+	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
-				if(configType != null) append(configType.text)
-				append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+				if(configType != null) append(configType.text).append(" ")
+				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
 				if(configType?.hasType == true) {
 					val typeName = element.parentOfType<CwtProperty>()?.name?.substringIn('[', ']')?.takeIfNotEmpty()
@@ -110,42 +120,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
-			
-			//基于规则类型提供额外的定义信息
-			//val project = element.project
-			//when(configType) {
-			//	//为definitionProperty提供关于scope的额外文档注释（附加scope的psiLink）
-			//	null -> {
-			//		val propertyElement = getDefinitionProperty(originalElement) ?: return@definition
-			//		if(propertyElement.valueType != ParadoxValueType.BlockType) return@definition //仅限block
-			//		val gameType = propertyElement.fileInfo?.gameType ?: return@definition
-			//		val config = propertyElement.getPropertyConfig() ?: return@definition
-			//		val scopeMap = CwtConfigHandler.mergeScope(config.scopeMap, propertyElement.definitionElementInfo?.scope)
-			//		for((sk, sv) in scopeMap) {
-			//			val scopeLink = "${gameType.id}.scopes.$sv"
-			//			appendBr().append(PlsDocBundle.message("name.cwt.scope")).append(" ").append(sk).append(" = ").appendCwtLink(sv, scopeLink, null)
-			//		}
-			//	}
-			//	//为alias提供supported_scopes的额外文档注释（如果有的话）
-			//	CwtConfigType.Alias -> {
-			//		//同名的alias支持的scopes应该是一样的
-			//		val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return@definition
-			//		val configGroup = getCwtConfig(project)[gameType] ?: return@definition
-			//		val index = name.indexOf(':')
-			//		if(index == -1) return@definition
-			//		val aliasName = name.substring(0, index)
-			//		val aliasSubName = name.substring(index + 1)
-			//		val aliasGroup = configGroup.aliases[aliasName] ?: return@definition
-			//		val aliases = aliasGroup[aliasSubName] ?: return@definition
-			//		val supportedScopesText = aliases.firstOrNull()?.supportedScopesText ?: return@definition
-			//		appendBr().append("supported_scopes = $supportedScopesText")
-			//	}
-			//	else -> pass()
-			//}
 		}
 	}
 	
-	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, showDetail: Boolean) {
+	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
@@ -226,14 +204,13 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildScopeContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
+	private fun StringBuilder.buildScopeContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
 		when(configType) {
 			//为link提示名字、描述、输入作用域、输出作用域的文档注释
 			//仅为脚本文件中的引用提供
 			CwtConfigType.Link -> {
-				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
-				val configGroup = getCwtConfig(project)[gameType] ?: return
-				val linkConfig = configGroup.linksAsScopeNotData[name] ?: return
+				if(configGroup == null) return
+				val linkConfig = configGroup.links[name] ?: return
 				val nameToUse = CwtConfigHandler.getScopeName(name, configGroup)
 				val descToUse = linkConfig.desc
 				val inputScopeNames = linkConfig.inputScopeNames.joinToString()
@@ -251,22 +228,20 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, project: Project) {
+	private fun StringBuilder.buildSupportedScopesContent(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
 		//为alias modifier localisation_command等提供分类、支持的作用域的文档注释
 		//仅为脚本文件中的引用提供
 		var categoryNames: Set<String>? = null
 		var supportedScopeNames: Set<String>? = null
 		when(configType) {
 			CwtConfigType.Modifier -> {
-				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
-				val configGroup = getCwtConfig(project)[gameType] ?: return
+				if(configGroup == null) return
 				val modifierConfig = configGroup.modifiers[name] ?: return
 				categoryNames = modifierConfig.categoryConfigMap.keys
 				supportedScopeNames = modifierConfig.supportedScopeNames
 			}
 			CwtConfigType.LocalisationCommand -> {
-				val gameType = originalElement?.let { it.fileInfo?.gameType } ?: return
-				val configGroup = getCwtConfig(project)[gameType] ?: return
+				if(configGroup == null) return
 				val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
 				supportedScopeNames = localisationCommandConfig.supportedScopeNames
 			}

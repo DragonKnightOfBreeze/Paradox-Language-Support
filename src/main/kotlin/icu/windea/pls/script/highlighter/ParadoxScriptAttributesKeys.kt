@@ -1,6 +1,6 @@
 package icu.windea.pls.script.highlighter
 
-import com.intellij.ide.highlighter.custom.*
+import com.intellij.ide.highlighter.custom.CustomHighlighterColors.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
@@ -37,9 +37,8 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val VALUE_IN_VALUE_SET_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueInValueSet"), LOCAL_VARIABLE)
 	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.systemScope"), STATIC_METHOD)
 	@JvmField val SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scope"), INSTANCE_METHOD)
-	@JvmField val SCOPE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeFieldPrefix"), LABEL)
-	@JvmField val VALUE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueFieldPrefix"), LABEL)
-	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), CustomHighlighterColors.CUSTOM_KEYWORD3_ATTRIBUTES)
-	@JvmField val SCRIPT_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scriptValue"), CustomHighlighterColors.CUSTOM_KEYWORD4_ATTRIBUTES)
+	@JvmField val SCOPE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeFieldPrefix"), CUSTOM_KEYWORD1_ATTRIBUTES)
+	@JvmField val VALUE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueFieldPrefix"), CUSTOM_KEYWORD2_ATTRIBUTES)
+	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), CUSTOM_KEYWORD3_ATTRIBUTES)
 	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 }

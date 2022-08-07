@@ -50,8 +50,6 @@ const val defaultScriptedVariableName = "var"
 
 const val keyTruncateLimit = 5
 
-const val indexVersion = 7 //0.6.7
-
 object PlsFolders {
 	const val ellipsis = "..."
 	const val commentFolder = "#..."
@@ -60,21 +58,6 @@ object PlsFolders {
 	const val blockFolder = "{...}"
 	fun parameterConditionFolder(expression: String) = "[[$expression]...]"
 	const val inlineMathFolder = "@[...]"
-}
-
-object PlsPriorities {
-	const val pinnedPriority = 1000.0
-	const val keywordPriority = 80.0
-	const val scopeFieldPrefixPriority = 70.0
-	const val systemScopePriority = 65.0
-	const val scopePriority = 60.0
-	const val valueOfValueFieldPriority = 60.0
-	const val localisationCommandPriority = 50.0
-	const val propertyPriority = 40.0
-	const val valuePriority = 40.0
-	const val modifierPriority = 20.0
-	
-	const val scopeMismatchOffset = -500 
 }
 
 object PlsPaths {

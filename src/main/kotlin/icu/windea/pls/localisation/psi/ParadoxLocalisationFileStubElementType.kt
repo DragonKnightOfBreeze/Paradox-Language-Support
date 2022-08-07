@@ -14,6 +14,10 @@ class ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<
 		return "paradoxLocalisation.file"
 	}
 	
+	override fun getStubVersion(): Int {
+		return 1 //0.6.7
+	}
+	
 	override fun getBuilder(): StubBuilder {
 		return Builder()
 	}

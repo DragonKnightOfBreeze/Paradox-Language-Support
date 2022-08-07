@@ -9,7 +9,7 @@ import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScopeFieldPrefixOrDataSource
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
-import java.util.concurrent.*
+import icu.windea.pls.core.codeInsight.completion.*
 
 /**
  * 脚本表达式。
@@ -45,15 +45,7 @@ sealed class ParadoxScriptExpression(
 }
 
 abstract class ParadoxScriptExpressionResolver<T : ParadoxScriptExpression> {
-	protected val cache: MutableMap<String, T> by lazy { ConcurrentHashMap() }
-	
-	open fun resolve(expression: String, configGroup: CwtConfigGroup): T {
-		return cache.getOrPut(configGroup.gameType.id + " " + expression) {
-			doResolve(expression, configGroup)
-		}
-	}
-	
-	protected abstract fun doResolve(expressionString: String, configGroup: CwtConfigGroup): T
+	abstract fun resolve(expressionString: String, configGroup: CwtConfigGroup): T
 }
 
 /**
@@ -73,7 +65,7 @@ class ParadoxScriptScopeFieldExpression(
 	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeFieldExpression>() {
 		val EmptyExpression by lazy { ParadoxScriptScopeFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
 		
-		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeFieldExpression {
+		override fun resolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeFieldExpression {
 			if(expressionString.isEmpty()) return EmptyExpression
 			val length = expressionString.length
 			
@@ -162,7 +154,7 @@ class ParadoxScriptScopeFieldExpression(
 		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
 		val length = expressionString.length
 		val offsetInParent = offsetInParent
-		val start = expressionString.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
+		val start = expressionString.take(offsetInParent).lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
 		val end = expressionString.indexOf('.', offsetInParent).let { if(it == -1) length else it }
 		val isLast = end == length
 		
@@ -173,7 +165,7 @@ class ParadoxScriptScopeFieldExpression(
 		val keywordToUse = expressionString.substring(start, end)
 		put(PlsCompletionKeys.keywordKey, keywordToUse)
 		
-		if(isLast){
+		if(isLast) {
 			completeScope(result)
 			completeScopeFieldPrefixOrDataSource(result)
 		} else {
@@ -189,7 +181,7 @@ class ParadoxScriptScopeFieldExpression(
 
 /**
  * 值字段表达式。
- * 
+ *
  * 一些例子：`trigger:xxx` `root.trigger:xxx` `value:xxx|PN|PV|`
  */
 class ParadoxScriptValueFieldExpression(
@@ -197,11 +189,11 @@ class ParadoxScriptValueFieldExpression(
 	configGroup: CwtConfigGroup,
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
 	errors: List<ParadoxScriptExpressionError> = emptyList()
-): ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
+) : ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
 	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptValueFieldExpression>() {
 		val EmptyExpression by lazy { ParadoxScriptValueFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
 		
-		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptValueFieldExpression {
+		override fun resolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptValueFieldExpression {
 			if(expressionString.isEmpty()) return EmptyExpression
 			val length = expressionString.length
 			
@@ -227,27 +219,25 @@ class ParadoxScriptValueFieldExpression(
 					errors.add(0, error)
 					break
 				}
-				if(index != textRanges.lastIndex) {
-					val resolved = CwtConfigHandler.resolveScope(text, configGroup)
-					//可以解析，继续
-					if(resolved != null) {
-						val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved)
-						infos.add(info)
-						isMatched = true //可解析 -> 可匹配 
-						continue
-					}
-				} else {
-					val resolved = CwtConfigHandler.resolveValueOfValueField(text, configGroup)
-					//可以解析，继续
-					if(resolved != null) {
-						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, resolved)
-						infos.add(info)
-						isMatched = true //可解析 -> 可匹配 
-						continue
-					}
+				val resolved = CwtConfigHandler.resolveScope(text, configGroup)
+				//可以解析，继续
+				if(resolved != null) {
+					val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved)
+					infos.add(info)
+					isMatched = true //可解析 -> 可匹配 
+					continue
 				}
 				if(index == textRanges.lastIndex) {
-					val matchedLinkConfigs = configGroup.linksAsScope.values
+					val resolvedValue = CwtConfigHandler.resolveValueOfValueField(text, configGroup)
+					//可以解析，继续
+					if(resolvedValue != null) {
+						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, resolvedValue)
+						infos.add(info)
+						isMatched = true //可解析 -> 可匹配 
+						continue
+					}
+					
+					val matchedLinkConfigs = configGroup.linksAsValue.values
 						.filter { it.prefix != null && it.dataSource != null && text.startsWith(it.prefix) }
 					if(matchedLinkConfigs.isNotEmpty()) {
 						//匹配某一前缀
@@ -271,11 +261,13 @@ class ParadoxScriptValueFieldExpression(
 						}
 					} else {
 						//没有前缀
-						//无法解析的scope，或者要求有前缀
-						val possiblePrefixSet = configGroup.linksAsScope.values.mapNotNullTo(mutableSetOf()) { it.prefix }
-						val info = ParadoxScriptScopeExpressionInfo(text, textRange, null, possiblePrefixSet)
+						//无法解析的value，或者要求有前缀
+						val possiblePrefixSet = configGroup.linksAsValue.values.mapNotNullTo(mutableSetOf()) { it.prefix }
+						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, null, possiblePrefixSet)
 						infos.add(info)
 						isMatched = true //也认为匹配，实际上这里无法判断
+						
+						//这里认为必须要有前缀
 					}
 				}
 			}
@@ -286,7 +278,7 @@ class ParadoxScriptValueFieldExpression(
 		}
 		
 		private fun String.isValidSubExpression(): Boolean {
-			return all { it == '_' || it == ':' || it.isExactLetter() || it.isExactDigit() }
+			return all { it == '_' || it == ':' || it == '|' || it.isExactLetter() || it.isExactDigit() }
 		}
 	}
 	
@@ -305,7 +297,8 @@ class ParadoxScriptValueFieldExpression(
 		val keywordToUse = expressionString.substring(start, end)
 		put(PlsCompletionKeys.keywordKey, keywordToUse)
 		
-		if(isLast){
+		if(isLast) {
+			completeScope(result)
 			completeValueOfValueField(result)
 			completeValueFieldPrefixOrDataSource(result)
 		} else {

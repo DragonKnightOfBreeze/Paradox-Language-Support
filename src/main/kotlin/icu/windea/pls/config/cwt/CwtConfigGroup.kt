@@ -28,6 +28,7 @@ class CwtConfigGroup(
 	//since: stellaris v3.4
 	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
 	
+	val links: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsScopeNotData: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsScope: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValueNotData: Map<@CaseInsensitive String, CwtLinkConfig>
@@ -71,6 +72,7 @@ class CwtConfigGroup(
 		this.values = mutableMapOf()
 		this.enums = mutableMapOf()
 		this.tags = CollectionFactory.createCaseInsensitiveStringMap()
+		this.links = CollectionFactory.createCaseInsensitiveStringMap()
 		this.linksAsScopeNotData = CollectionFactory.createCaseInsensitiveStringMap()
 		this.linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
 		this.linksAsValueNotData = CollectionFactory.createCaseInsensitiveStringMap()
@@ -148,8 +150,9 @@ class CwtConfigGroup(
 						for(prop in props) {
 							val linkName = prop.key
 							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
+							links[linkName] = linkConfig
 							when(linkConfig.type) {
-								"scope" -> {
+								null, "scope" -> {
 									(if(linkConfig.fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
 								}
 								"value" -> {

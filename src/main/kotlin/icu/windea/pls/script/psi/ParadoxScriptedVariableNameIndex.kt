@@ -8,7 +8,7 @@ import icu.windea.pls.util.selector.*
 
 object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptVariable>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.scriptedVariable.name.index")
-	private const val version = indexVersion
+	private const val version = 7 //0.6.7
 	private const val cacheSize = 2 * 1024
 	
 	override fun getKey() = key
@@ -33,7 +33,7 @@ object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScript
 		if(DumbService.isDumb(project)) return emptySet()
 		
 		val result = MutableSet(selector.comparator())
-		processAllElements(name, project, scope) {  
+		processAllElements(name, project, scope) {
 			if(selector.selectAll(it)) result.add(it)
 			true
 		}
@@ -46,7 +46,7 @@ object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScript
 		
 		val result = MutableSet(selector.comparator())
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
-		processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.contains(key) != true }) { key , it ->
+		processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.contains(key) != true }) { key, it ->
 			if(selector.selectAll(it)) {
 				result.add(it)
 				keysToDistinct?.add(key)

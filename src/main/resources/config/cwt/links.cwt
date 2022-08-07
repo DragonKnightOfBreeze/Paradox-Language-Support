@@ -1,4 +1,7 @@
 links = {
+	any = {
+		type = both
+	}
 	event_target = {
 		desc =  "Event target."
 		from_data = yes

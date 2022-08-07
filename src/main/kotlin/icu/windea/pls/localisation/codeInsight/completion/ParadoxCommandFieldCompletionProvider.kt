@@ -5,6 +5,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandField
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.util.selector.*
 
 /**

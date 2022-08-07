@@ -16,6 +16,10 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 		return "paradoxScript.file"
 	}
 	
+	override fun getStubVersion(): Int {
+		return 1 //0.6.7
+	}
+	
 	override fun getBuilder(): StubBuilder {
 		return Builder()
 	}

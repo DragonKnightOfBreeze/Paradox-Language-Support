@@ -27,6 +27,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.cwt.psi.*
 import java.io.*
 import java.util.*
@@ -40,7 +41,7 @@ fun String.compareToIgnoreCase(other: String): Int {
 
 //region Misc Extensions
 fun LookupElement.withPriority(priority: Double, scopeMatched: Boolean = true): LookupElement {
-	val finalPriority = if(scopeMatched) priority else priority + PlsPriorities.scopeMismatchOffset
+	val finalPriority = if(scopeMatched) priority else priority + PlsCompletonPriorities.scopeMismatchOffset
 	return PrioritizedLookupElement.withPriority(this, finalPriority)
 }
 

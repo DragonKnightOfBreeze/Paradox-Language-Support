@@ -22,7 +22,7 @@ sealed class ParadoxScriptExpressionInfo(
 	abstract fun getReference(element: ParadoxScriptExpressionElement): PsiReference
 	
 	open fun isUnresolved(element: ParadoxScriptExpressionElement): Boolean {
-		if(directlyResolved == null) return true
+		if(directlyResolved != null) return false
 		val reference = getReference(element)
 		if(reference is PsiPolyVariantReference) return reference.multiResolve(false).isEmpty()
 		return reference.resolve() == null

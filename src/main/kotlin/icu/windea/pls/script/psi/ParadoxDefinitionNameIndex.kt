@@ -11,7 +11,7 @@ import icu.windea.pls.util.selector.*
 
 object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionProperty>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxDefinitionProperty>("paradox.definition.name.index")
-	private const val version = indexVersion
+	private const val version = 7 //0.6.7
 	private const val cacheSize = 4 * 1024
 	
 	override fun getKey() = key
@@ -71,7 +71,7 @@ object ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionPr
 			}
 		} else {
 			val expression = ParadoxDefinitionTypeExpression.resolve(typeExpression)
-			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.contains(key) != true }) {key, it ->
+			processAllElementsByKeys(project, scope, keyPredicate = { key -> keysToDistinct?.contains(key) != true }) { key, it ->
 				if(expression.matches(it) && selector.selectAll(it)) {
 					result.add(it)
 					keysToDistinct?.add(key)

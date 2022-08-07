@@ -8,7 +8,7 @@ import icu.windea.pls.util.selector.*
 
 object ParadoxValueInValueSetIndex : StringStubIndexExtension<ParadoxScriptString>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptString>("paradox.valueInValueSet.index")
-	private const val version = indexVersion
+	private const val version = 7 //0.6.7
 	private const val cacheSize = 2 * 1024
 	
 	override fun getKey() = key
@@ -43,7 +43,7 @@ object ParadoxValueInValueSetIndex : StringStubIndexExtension<ParadoxScriptStrin
 		val result = MutableSet(selector.comparator())
 		val keysToDistinct = if(distinct) mutableSetOf<String>() else null
 		processAllElements(valueSetName, project, scope) {
-			val valueName = getName(it) ?: return@processAllElements true 
+			val valueName = getName(it) ?: return@processAllElements true
 			if((keysToDistinct?.contains(valueName) != true) && selector.selectAll(it)) {
 				result.add(it)
 				keysToDistinct?.add(valueName)

@@ -6,6 +6,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
 /**
