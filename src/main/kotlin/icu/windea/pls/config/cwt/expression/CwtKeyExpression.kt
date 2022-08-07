@@ -66,10 +66,6 @@ class CwtKeyExpression private constructor(
 					val priority = if(value == CwtConfigHandler.paramsEnumName) Priorities.parametersPriority else Priorities.enumPriority
 					CwtKeyExpression(expressionString, Types.Enum, priority, value)
 				}
-				expressionString.surroundsWith("complex_enum[", "]") -> {
-					val value = expressionString.substring(13, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.ComplexEnum, Priorities.complexEnumPriority, value)
-				}
 				expressionString.surroundsWith("value[", "]") -> {
 					val value = expressionString.substring(6, expressionString.length - 1)
 					CwtKeyExpression(expressionString, Types.Value, Priorities.valuePriority, value)

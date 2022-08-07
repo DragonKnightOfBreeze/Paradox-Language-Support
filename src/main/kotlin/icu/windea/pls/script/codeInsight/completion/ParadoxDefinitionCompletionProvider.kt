@@ -22,13 +22,11 @@ class ParadoxDefinitionCompletionProvider : CompletionProvider<CompletionParamet
 		
 		ProgressManager.checkCanceled()
 		
-		//目前版本的补全的scope可能不正确
-		result.addLookupAdvertisement(PlsBundle.message("scope.of.completions.may.be.incorrect"))
-		
 		val quoted = propertyKeyOrStringElement.isQuoted()
 		val offsetInParent = parameters.offset - propertyKeyOrStringElement.textRange.startOffset
 		val keyword = propertyKeyOrStringElement.getKeyword(offsetInParent)
 		
+		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)
 		context.put(PlsCompletionKeys.contextElementKey, propertyKeyOrStringElement)
 		context.put(PlsCompletionKeys.quotedKey, quoted)
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)

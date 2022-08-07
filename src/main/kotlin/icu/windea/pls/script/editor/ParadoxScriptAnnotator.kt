@@ -103,14 +103,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Enum -> {
+				//TODO 支持complex_enum
 				val attributesKey = when {
 					expression.value == CwtConfigHandler.paramsEnumName -> Keys.INPUT_PARAMETER_KEY
 					else -> Keys.ENUM_VALUE_KEY
 				}
-				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-			}
-			CwtDataTypes.ComplexEnum -> {
-				val attributesKey = Keys.ENUM_VALUE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value -> {

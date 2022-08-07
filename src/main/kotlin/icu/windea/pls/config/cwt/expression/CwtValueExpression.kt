@@ -106,10 +106,6 @@ class CwtValueExpression private constructor(
 					val priority = if(value == CwtConfigHandler.paramsEnumName) Priorities.parametersPriority else Priorities.enumPriority
 					CwtValueExpression(expressionString, Types.Enum, priority, value)
 				}
-				expressionString.surroundsWith("complex_enum[", "]") -> {
-					val value = expressionString.substring(13, expressionString.length - 1)
-					CwtValueExpression(expressionString, Types.ComplexEnum, Priorities.complexEnumPriority,value)
-				}
 				expressionString == "scope_field" -> {
 					CwtValueExpression(expressionString, Types.ScopeField, Priorities.scopeFieldPriority)
 				}

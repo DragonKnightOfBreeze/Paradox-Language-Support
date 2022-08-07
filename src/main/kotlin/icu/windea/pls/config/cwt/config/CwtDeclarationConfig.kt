@@ -102,8 +102,15 @@ data class CwtDeclarationConfig(
 						result = nextResult
 						index = nextIndex
 					}
-					//需要按优先级重新排序
-					if(result is MutableList) result.sortByDescending { it.expression.priority }
+					if(result.isNotEmpty()) {
+						//如果存在可以精确匹配的规则，则仅返回这些可以精确匹配的规则（对于property来说是keyExpression，杜宇string来说是valueExpression）
+						if(path.isNotEmpty()) {
+							result = result.filter { CwtConfigHandler.matchesExactly(it.expression, path.last(), configGroup) }
+								.ifEmpty { result }
+						}
+						//需要按优先级重新排序
+						result = result.sortedByDescending { it.expression.priority }
+					}
 					result
 				}
 			}
@@ -114,7 +121,7 @@ data class CwtDeclarationConfig(
 	 * 内联规则以便后续的代码提示、引用解析和结构验证。
 	 */
 	@Suppress("NAME_SHADOWING")
-	private fun inlineConfig(key: String, isQuoted:Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>, index: Int, path: ParadoxElementPath<*>): Int {
+	private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>, index: Int, path: ParadoxElementPath<*>): Int {
 		//内联类型为`single_alias_right`或`alias_match_left`的规则
 		run {
 			val valueExpression = config.valueExpression

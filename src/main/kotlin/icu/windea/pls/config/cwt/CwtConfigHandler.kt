@@ -302,6 +302,7 @@ object CwtConfigHandler {
 				//return true
 			}
 			CwtDataTypes.Enum -> {
+				//TODO 支持complex_enum
 				if(value.isParameterAwareExpression()) return true
 				if(!value.isSimpleScriptExpression()) return false
 				val enumName = expression.value ?: return false
@@ -309,11 +310,6 @@ object CwtConfigHandler {
 				if(isKey == true && enumName == paramsEnumName) return true
 				val enumValues = configGroup.enums[enumName]?.values ?: return false
 				return value in enumValues
-			}
-			CwtDataTypes.ComplexEnum -> {
-				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
-				return false //TODO
 			}
 			CwtDataTypes.Value -> {
 				if(value.isParameterAwareExpression()) return true
@@ -341,16 +337,16 @@ object CwtConfigHandler {
 			CwtDataTypes.ValueField -> {
 				if(value.isParameterAwareExpression()) return true
 				//也可以是整数，注意：用括号括起的整数（作为scalar）也匹配这个规则
-				if(valueType.matchesIntType() || ParadoxValueType.infer(value).matchesIntType()) return true
+				if(valueType.matchesFloatType() || ParadoxValueType.infer(value).matchesFloatType()) return true
 				if(quoted) return false //接下来的匹配不允许用引号括起
 				return matchesValueFieldExpression(value, configGroup)
 			}
 			CwtDataTypes.IntValueField -> {
 				if(value.isParameterAwareExpression()) return true
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-				if(valueType.matchesFloatType() || ParadoxValueType.infer(value).matchesFloatType()) return true
+				if(valueType.matchesIntType() || ParadoxValueType.infer(value).matchesIntType()) return true
 				if(quoted) return false //接下来的匹配不允许用引号括起
-				return matchesValueFieldExpression(value, configGroup, isInt = true)
+				return matchesValueFieldExpression(value, configGroup)
 			}
 			CwtDataTypes.VariableField -> {
 				if(value.isParameterAwareExpression()) return true
@@ -435,8 +431,51 @@ object CwtConfigHandler {
 		return ParadoxScriptScopeFieldExpression.resolve(expression, configGroup).isMatched()
 	}
 	
-	fun matchesValueFieldExpression(expression: String, configGroup: CwtConfigGroup, isInt:Boolean = false): Boolean {
+	fun matchesValueFieldExpression(expression: String, configGroup: CwtConfigGroup): Boolean {
 		return ParadoxScriptValueFieldExpression.resolve(expression, configGroup).isMatched()
+	}
+	
+	/**
+	 * 当已经匹配时，是否可认为精确匹配。如果精确匹配，需要考虑忽略余下的非精确匹配的表达式。
+	 */
+	fun matchesExactly(expression: CwtKvExpression, value: String, configGroup: CwtConfigGroup): Boolean {
+		//对于整数和数字，已匹配的情况下认为精确匹配
+		if(ParadoxValueType.infer(value).matchesFloatType()) return true
+		return when(expression.type) {
+			CwtDataTypes.Any -> false
+			CwtDataTypes.Bool -> true
+			CwtDataTypes.Int -> true
+			CwtDataTypes.Float -> true
+			CwtDataTypes.Scalar -> false
+			CwtDataTypes.ColorField -> true
+			CwtDataTypes.PercentageField -> true
+			CwtDataTypes.DateField -> true
+			CwtDataTypes.Localisation -> false
+			CwtDataTypes.SyncedLocalisation -> false
+			CwtDataTypes.InlineLocalisation -> false
+			CwtDataTypes.AbsoluteFilePath -> false
+			CwtDataTypes.FilePath -> false
+			CwtDataTypes.Icon -> false
+			CwtDataTypes.TypeExpression -> false
+			CwtDataTypes.TypeExpressionString -> false
+			CwtDataTypes.Enum -> configGroup.enums.containsKey(expression.value!!)
+			CwtDataTypes.Value -> configGroup.enums.containsKey(expression.value!!)
+			CwtDataTypes.ValueSet -> false
+			CwtDataTypes.ScopeField -> false
+			CwtDataTypes.Scope -> false
+			CwtDataTypes.ScopeGroup -> false
+			CwtDataTypes.ValueField -> false
+			CwtDataTypes.IntValueField -> false
+			CwtDataTypes.VariableField -> false
+			CwtDataTypes.IntVariableField -> false
+			CwtDataTypes.Modifier -> configGroup.modifiers.containsKey(value)
+			CwtDataTypes.SingleAliasRight -> false
+			CwtDataTypes.AliasName -> false
+			CwtDataTypes.AliasKeysField -> false
+			CwtDataTypes.Constant -> true
+			CwtDataTypes.Other -> false
+			CwtDataTypes.AliasMatchLeft -> false
+		}
 	}
 	//endregion
 	
@@ -676,6 +715,7 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.Enum -> {
+				//TODO 支持complex_enum
 				val enumName = expression.value ?: return
 				//提示参数名（仅限key）
 				if(isKey && enumName == paramsEnumName && config is CwtPropertyConfig) {
@@ -702,9 +742,6 @@ object CwtConfigHandler {
 						.withExpectedInsertHandler(isKey)
 					result.addElement(lookupElement)
 				}
-			}
-			CwtDataTypes.ComplexEnum -> {
-				//TODO
 			}
 			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return
@@ -834,7 +871,8 @@ object CwtConfigHandler {
 		val lookupElements = mutableSetOf<LookupElement>()
 		for(modifierConfig in modifiers.values) {
 			//排除不匹配modifier的supported_scopes的情况
-			if(!(scope == null || modifierConfig.categoryConfigMap.values.any { c -> matchScope(scope, c.supportedScopes, configGroup) })) continue
+			val isScopeMatched = scope == null || modifierConfig.categoryConfigMap.values.any { c -> matchScope(scope, c.supportedScopes, configGroup) }
+			if(!isScopeMatched) continue
 			
 			val n = modifierConfig.name
 			//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -892,7 +930,8 @@ object CwtConfigHandler {
 		}
 		for(linkConfig in linkConfigs.values) {
 			//排除input_scopes不匹配前一个scope的output_scope的情况
-			if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
+			val isScopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
+			if(!isScopeMatched) continue
 			
 			val name = linkConfig.name
 			//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -916,10 +955,10 @@ object CwtConfigHandler {
 		val keyword = keyword
 		val linkConfigs = configGroup.linksAsScope
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//NOTE 合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，但是提示时不作限制
-		//val scopesToMatch = scopeName?.let { setOf(it) }
-		//	?: scopeGroupName?.let { configGroup.scopeGroups[it]?.values }
-		//	?: emptySet()
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，进行智能提示时不提示不匹配的项
+		val expectedScopes = scopeName?.let { setOf(it) }
+			?: scopeGroupName?.let { configGroup.scopeGroups[it]?.values }
+			?: emptySet()
 		
 		val prefixLinkConfigs = linkConfigs.values
 			.filter { it.prefix != null && it.dataSource != null }
@@ -930,10 +969,13 @@ object CwtConfigHandler {
 			val resultToUse = result.withPrefixMatcher(keyword.drop(prefix.length))
 			for(linkConfig in prefixLinkConfigsToUse) {
 				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-				////排除不匹配CWT表达式指定的output_scope的情况
-				//if(!matchScope(linkConfig.outputScope, scopesToMatch, configGroup)) continue
+				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
+				if(completionType == CompletionType.SMART) {
+					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
+					if(!isExpectedScopeMatched) continue
+				}
 				
-				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, null) //TODO 传递scope
+				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
 			}
 		} else {
 			//没有前缀，提示所有可能的前缀，并给予所有没有前缀的dataSource进行提示
@@ -942,8 +984,11 @@ object CwtConfigHandler {
 			for(linkConfig in prefixLinkConfigs) {
 				//排除input_scopes不匹配前一个scope的output_scope的情况
 				if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
-				////排除不匹配CWT表达式指定的output_scope的情况
-				//if(!matchScope(linkConfig.outputScope, scopesToMatch, configGroup)) continue 
+				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
+				if(completionType == CompletionType.SMART) {
+					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
+					if(!isExpectedScopeMatched) continue
+				}
 				
 				val name = linkConfig.prefix ?: continue
 				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -965,10 +1010,13 @@ object CwtConfigHandler {
 				for(linkConfig in linkConfigsNoPrefix) {
 					//排除input_scopes不匹配前一个scope的output_scope的情况
 					if(!matchScope(outputScope, linkConfig.inputScopes, configGroup)) continue
-					////排除不匹配CWT表达式指定的output_scope的情况
-					//if(!matchScope(linkConfig.outputScope, scopesToMatch, configGroup)) continue
+					//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
+					if(completionType == CompletionType.SMART) {
+						val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
+						if(!isExpectedScopeMatched) continue
+					}
 					
-					completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, null) //TODO 传递scope
+					completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
 				}
 			}
 		}
@@ -1207,6 +1255,7 @@ object CwtConfigHandler {
 				return findDefinitionByType(name, typeExpression, project, selector = selector)
 			}
 			CwtDataTypes.Enum -> {
+				//TODO 支持complex_enum
 				val enumName = expression.value ?: return null
 				val name = text
 				//解析为参数名
@@ -1223,9 +1272,6 @@ object CwtConfigHandler {
 				val configGroup = getCwtConfig(element.project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>()
-			}
-			CwtDataTypes.ComplexEnum -> {
-				return config.resolved.pointer.element.castOrNull<CwtNamedElement>() //TODO
 			}
 			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return null
@@ -1358,6 +1404,7 @@ object CwtConfigHandler {
 				return findDefinitionsByType(name, typeExpression, project, selector = selector)
 			}
 			CwtDataTypes.Enum -> {
+				//TODO 支持complex_enum
 				val enumName = expression.value ?: return emptyList()
 				val name = text
 				//解析为参数名
@@ -1374,9 +1421,6 @@ object CwtConfigHandler {
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return emptyList()
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>().toSingletonListOrEmpty()
-			}
-			CwtDataTypes.ComplexEnum -> {
-				return emptyList() //TODO
 			}
 			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return emptyList()
@@ -1465,12 +1509,10 @@ object CwtConfigHandler {
 					return findDefinitionByType(nameToUse, typeExpression, project, selector = selector)
 				}
 				CwtDataTypes.Enum -> {
+					//TODO 支持complex_enum
 					val enumName = expression.value ?: return null
 					val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
 					return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>()
-				}
-				CwtDataTypes.ComplexEnum -> {
-					return null //TODO
 				}
 				CwtDataTypes.Value -> {
 					if(contextElement !is ParadoxScriptExpressionElement) return null

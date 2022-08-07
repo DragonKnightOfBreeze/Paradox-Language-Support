@@ -24,7 +24,6 @@ object CwtDataTypes {
 	object TypeExpression : CwtKeyDataType, CwtValueDataType
 	object TypeExpressionString : CwtKeyDataType, CwtValueDataType
 	object Enum : CwtKeyDataType, CwtValueDataType
-	object ComplexEnum : CwtKeyDataType, CwtValueDataType
 	object Value : CwtKeyDataType, CwtValueDataType
 	object ValueSet : CwtKeyDataType, CwtValueDataType
 	object ScopeField : CwtKeyDataType, CwtValueDataType

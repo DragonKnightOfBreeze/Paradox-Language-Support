@@ -261,8 +261,12 @@ class CwtConfigGroup(
 					keysNoConst.add(key)
 				}
 			}
-			aliasKeysGroupConst.put(k, keysConst.orEmpty())
-			aliasKeysGroupNoConst.put(k, keysNoConst?.sortedByDescending { CwtKeyExpression.resolve(it).priority }?.toSet().orEmpty())
+			if(keysConst != null && keysConst.isNotEmpty()){
+				aliasKeysGroupConst.put(k, keysConst)
+			}
+			if(keysNoConst != null && keysNoConst.isNotEmpty()){
+				aliasKeysGroupNoConst.put(k, keysNoConst.sortedByDescending { CwtKeyExpression.resolve(it).priority }.toSet())
+			}
 		}
 		this.aliasKeysGroupConst = aliasKeysGroupConst
 		this.aliasKeysGroupNoConst = aliasKeysGroupNoConst
