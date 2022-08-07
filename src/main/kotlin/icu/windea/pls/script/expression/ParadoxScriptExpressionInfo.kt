@@ -39,7 +39,7 @@ class ParadoxScriptScopeExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolved: PsiElement?,
-	private val possiblePrefixSet: MutableSet<String>? = null
+	private val possiblePrefixSet: Set<String>? = null
 ) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptScopeReference {
 		return ParadoxScriptScopeReference(element, textRange, directlyResolved)
@@ -119,7 +119,7 @@ class ParadoxScriptValueOfValueFieldExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolved: PsiElement?,
-	private val possiblePrefixSet: MutableSet<String>? = null
+	private val possiblePrefixSet: Set<String>? = null
 ) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptValueOfValueFieldReference {
 		return ParadoxScriptValueOfValueFieldReference(element, textRange, directlyResolved)

@@ -119,7 +119,7 @@
   * [X] 优化：提示scopeFieldPrefix和scopeFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [X] 优化：提示valueFieldPrefix和valueFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [X] 优化：`scope_field`支持`event_target:revolt_situation.owner`的写法
-  * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到MismatchScopeInspection）
+  * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ~~不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）~~（没有必要提供）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）

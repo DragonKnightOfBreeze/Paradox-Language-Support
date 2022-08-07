@@ -958,10 +958,7 @@ object CwtConfigHandler {
 		val keyword = keyword
 		val linkConfigs = configGroup.linksAsScope
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，进行智能提示时不提示不匹配的项
-		val expectedScopes = scopeName?.let { setOf(it) }
-			?: scopeGroupName?.let { configGroup.scopeGroups[it]?.values }
-			?: emptySet()
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，但进行提示时不匹配
 		
 		val prefixLinkConfigs = linkConfigs.values
 			.filter { it.prefix != null && it.dataSource != null }
@@ -974,11 +971,6 @@ object CwtConfigHandler {
 			val resultToUse = result.withPrefixMatcher(keywordToUse)
 			for(linkConfig in prefixLinkConfigsToUse) {
 				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
-				if(completionType == CompletionType.SMART) {
-					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
-					if(!isExpectedScopeMatched) continue
-				}
 				
 				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
 			}
@@ -991,11 +983,6 @@ object CwtConfigHandler {
 				//排除input_scopes不匹配前一个scope的output_scope的情况
 				val isScopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
-				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
-				if(completionType == CompletionType.SMART) {
-					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
-					if(!isExpectedScopeMatched) continue
-				}
 				
 				val name = linkConfig.prefix ?: continue
 				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -1020,11 +1007,6 @@ object CwtConfigHandler {
 					//排除input_scopes不匹配前一个scope的output_scope的情况
 					val isScopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
 					if(!isScopeMatched) continue
-					//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
-					if(completionType == CompletionType.SMART) {
-						val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
-						if(!isExpectedScopeMatched) continue
-					}
 					
 					completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
 				}
@@ -1066,10 +1048,7 @@ object CwtConfigHandler {
 		val keyword = keyword
 		val linkConfigs = configGroup.linksAsValue
 		val outputScope = prevScope?.let { prevScope -> linkConfigs[prevScope]?.takeUnless { it.outputAnyScope }?.outputScope }
-		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，进行智能提示时不提示不匹配的项
-		val expectedScopes = scopeName?.let { setOf(it) }
-			?: scopeGroupName?.let { configGroup.scopeGroups[it]?.values }
-			?: emptySet()
+		//合法的表达式需要匹配scopeName或者scopeGroupName，来自scope[xxx]或者scope_group[xxx]中的xxx，但进行提示时不匹配
 		
 		val prefixLinkConfigs = linkConfigs.values
 			.filter { it.prefix != null && it.dataSource != null }
@@ -1082,11 +1061,6 @@ object CwtConfigHandler {
 			val resultToUse = result.withPrefixMatcher(keywordToUse)
 			for(linkConfig in prefixLinkConfigsToUse) {
 				//基于前缀进行提示，即使前缀的input_scopes不匹配前一个scope的output_scope
-				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
-				if(completionType == CompletionType.SMART) {
-					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
-					if(!isExpectedScopeMatched) continue
-				}
 				
 				completeScriptExpression(contextElement, linkConfig.dataSource!!, linkConfig.config, resultToUse, outputScope)
 			}
@@ -1099,11 +1073,6 @@ object CwtConfigHandler {
 				//排除input_scopes不匹配前一个scope的output_scope的情况
 				val isScopeMatched = matchScope(outputScope, linkConfig.inputScopes, configGroup)
 				if(!isScopeMatched) continue
-				//进行智能提示时，排除不匹配CWT表达式指定的output_scope的情况
-				if(completionType == CompletionType.SMART) {
-					val isExpectedScopeMatched = matchScope(linkConfig.outputScope, expectedScopes, configGroup)
-					if(!isExpectedScopeMatched) continue
-				}
 				
 				val name = linkConfig.prefix ?: continue
 				//if(!name.matchesKeyword(keyword)) continue //不预先过滤结果
