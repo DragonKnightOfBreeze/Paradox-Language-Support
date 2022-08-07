@@ -82,60 +82,58 @@ class ParadoxScriptScopeFieldExpression(
 				endIndex = expressionString.indexOf('.', startIndex).let { if(it != -1) it else length }
 				textRanges.add(TextRange.create(startIndex, endIndex))
 			}
-			for((index, textRange) in textRanges.withIndex()) {
+			for(textRange in textRanges) {
 				val text = textRange.substring(expressionString)
 				if(text.isEmpty() || !text.isValidSubExpression()) {
 					//如果表达式格式不正确
 					isValid = false
 					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.malformed", expressionString), wholeRange)
-					errors.add(0, error)
+					errors.clear()
+					errors.add(error)
 					break
 				}
 				val resolved = CwtConfigHandler.resolveScope(text, configGroup)
 				//可以解析，继续
 				if(resolved != null) {
-					val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved)
+					val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved, configGroup.linksAsScopePrefixes)
 					infos.add(info)
 					isMatched = true //可解析 -> 可匹配 
 					continue
 				}
-				if(index == textRanges.lastIndex) {
-					val matchedLinkConfigs = configGroup.linksAsScope.values
-						.filter { it.prefix != null && it.dataSource != null && text.startsWith(it.prefix) }
-					if(matchedLinkConfigs.isNotEmpty()) {
-						//匹配某一前缀
-						val prefix = matchedLinkConfigs.first().prefix!!
-						val prefixRange = TextRange.create(textRange.startOffset, textRange.startOffset + prefix.length)
-						val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
-						val prefixInfo = ParadoxScriptScopeFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList, matchedLinkConfigs)
-						infos.add(prefixInfo)
-						val dataSourceText = text.drop(prefix.length)
-						if(dataSourceText.isEmpty()) {
-							//缺少dataSource
-							val dataSourcesText = matchedLinkConfigs.joinToString { "'${it.dataSource}'" }
-							val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.missingDs", dataSourcesText), textRange)
-							errors.add(error)
-							isMatched = true //认为匹配
-						} else {
-							val dataSourceRange = TextRange.create(textRange.startOffset + prefix.length, textRange.endOffset)
-							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(dataSourceText, dataSourceRange, matchedLinkConfigs)
-							infos.add(dataSourceInfo)
-							isMatched = true //认为匹配
-						}
+				val matchedLinkConfigs = configGroup.linksAsScope.values
+					.filter { it.prefix != null && it.dataSource != null && text.startsWith(it.prefix) }
+				if(matchedLinkConfigs.isNotEmpty()) {
+					//匹配某一前缀
+					val prefix = matchedLinkConfigs.first().prefix!!
+					val prefixRange = TextRange.create(textRange.startOffset, textRange.startOffset + prefix.length)
+					val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
+					val prefixInfo = ParadoxScriptScopeFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList, matchedLinkConfigs)
+					infos.add(prefixInfo)
+					val dataSourceText = text.drop(prefix.length)
+					if(dataSourceText.isEmpty()) {
+						//缺少dataSource
+						val dataSourcesText = matchedLinkConfigs.joinToString { "'${it.dataSource}'" }
+						val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.missingDs", dataSourcesText), textRange)
+						errors.add(error)
+						isMatched = true //认为匹配
 					} else {
-						//没有前缀
-						val linkConfigs = configGroup.linksAsScope.values.filter { it.prefix == null && it.dataSource != null }
-						if(linkConfigs.isEmpty()) {
-							//无法解析的scope，或者要求有前缀
-							val possiblePrefixSet = configGroup.linksAsScope.values.mapNotNullTo(mutableSetOf()) { it.prefix }
-							val info = ParadoxScriptScopeExpressionInfo(text, textRange, null, possiblePrefixSet)
-							infos.add(info)
-							isMatched = true //也认为匹配，实际上这里无法判断
-						} else {
-							val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(text, textRange, linkConfigs)
-							infos.add(dataSourceInfo)
-							isMatched = true //也认为匹配，实际上这里无法判断
-						}
+						val dataSourceRange = TextRange.create(textRange.startOffset + prefix.length, textRange.endOffset)
+						val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(dataSourceText, dataSourceRange, matchedLinkConfigs)
+						infos.add(dataSourceInfo)
+						isMatched = true //认为匹配
+					}
+				} else {
+					//没有前缀
+					val linkConfigsNoPrefix = configGroup.linksAsScopeNoPrefix.values
+					if(linkConfigsNoPrefix.isEmpty()) {
+						//无法解析的scope，或者要求有前缀
+						val info = ParadoxScriptScopeExpressionInfo(text, textRange, null, configGroup.linksAsScopePrefixes)
+						infos.add(info)
+						isMatched = true //也认为匹配，实际上这里无法判断
+					} else {
+						val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(text, textRange, linkConfigsNoPrefix)
+						infos.add(dataSourceInfo)
+						isMatched = true //也认为匹配，实际上这里无法判断
 					}
 				}
 			}
@@ -216,22 +214,21 @@ class ParadoxScriptValueFieldExpression(
 					//如果表达式格式不正确
 					isValid = false
 					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.valueField.malformed", expressionString), wholeRange)
-					errors.add(0, error)
+					errors.clear()
+					errors.add(error)
 					break
 				}
-				val resolved = CwtConfigHandler.resolveScope(text, configGroup)
-				//可以解析，继续
-				if(resolved != null) {
-					val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved)
+				//可以解析，或者不是最后一个，继续
+				if(index != textRanges.lastIndex){
+					val resolved = CwtConfigHandler.resolveScope(text, configGroup)
+					val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved, configGroup.linksAsScopePrefixes)
 					infos.add(info)
-					isMatched = true //可解析 -> 可匹配 
-					continue
-				}
-				if(index == textRanges.lastIndex) {
-					val resolvedValue = CwtConfigHandler.resolveValueOfValueField(text, configGroup)
+					isMatched = true //可解析 -> 可匹配 / 也认为匹配，实际上这里无法判断
+				} else {
+					val resolved = CwtConfigHandler.resolveValueOfValueField(text, configGroup)
 					//可以解析，继续
-					if(resolvedValue != null) {
-						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, resolvedValue)
+					if(resolved != null) {
+						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, resolved)
 						infos.add(info)
 						isMatched = true //可解析 -> 可匹配 
 						continue
@@ -262,8 +259,7 @@ class ParadoxScriptValueFieldExpression(
 					} else {
 						//没有前缀
 						//无法解析的value，或者要求有前缀
-						val possiblePrefixSet = configGroup.linksAsValue.values.mapNotNullTo(mutableSetOf()) { it.prefix }
-						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, null, possiblePrefixSet)
+						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, null, configGroup.linksAsValuePrefixes)
 						infos.add(info)
 						isMatched = true //也认为匹配，实际上这里无法判断
 						

@@ -31,6 +31,7 @@ class CwtConfigGroup(
 	val links: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsScopeNotData: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsScope: Map<@CaseInsensitive String, CwtLinkConfig>
+	val linksAsScopeNoPrefix: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValueNotData: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsValue: Map<@CaseInsensitive String, CwtLinkConfig>
 	
@@ -67,26 +68,27 @@ class CwtConfigGroup(
 	val definitionTypesSupportParameters: Set<String>
 	
 	init {
-		this.folders = mutableSetOf()
-		this.types = mutableMapOf()
-		this.values = mutableMapOf()
-		this.enums = mutableMapOf()
-		this.tags = CollectionFactory.createCaseInsensitiveStringMap()
-		this.links = CollectionFactory.createCaseInsensitiveStringMap()
-		this.linksAsScopeNotData = CollectionFactory.createCaseInsensitiveStringMap()
-		this.linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
-		this.linksAsValueNotData = CollectionFactory.createCaseInsensitiveStringMap()
-		this.linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
-		this.localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
-		this.localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
-		this.modifierCategories = mutableMapOf()
-		this.modifiers = mutableMapOf()
-		this.scopes = CollectionFactory.createCaseInsensitiveStringMap()
-		this.scopeAliasMap = CollectionFactory.createCaseInsensitiveStringMap()
-		this.scopeGroups = mutableMapOf()
-		this.singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
-		this.aliasGroups = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
-		this.declarations = mutableMapOf()
+		folders = mutableSetOf()
+		types = mutableMapOf()
+		values = mutableMapOf()
+		enums = mutableMapOf()
+		tags = CollectionFactory.createCaseInsensitiveStringMap()
+		links = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsScopeNotData = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsScopeNoPrefix = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsValueNotData = CollectionFactory.createCaseInsensitiveStringMap()
+		linksAsValue = CollectionFactory.createCaseInsensitiveStringMap()
+		localisationLinks = CollectionFactory.createCaseInsensitiveStringMap()
+		localisationCommands = CollectionFactory.createCaseInsensitiveStringMap()
+		modifierCategories = mutableMapOf()
+		modifiers = mutableMapOf()
+		scopes = CollectionFactory.createCaseInsensitiveStringMap()
+		scopeAliasMap = CollectionFactory.createCaseInsensitiveStringMap()
+		scopeGroups = mutableMapOf()
+		singleAliases = mutableMapOf<String, MutableList<CwtSingleAliasConfig>>()
+		aliasGroups = mutableMapOf<String, MutableMap<String, MutableList<CwtAliasConfig>>>()
+		declarations = mutableMapOf()
 		
 		//目前不检查配置文件的位置和文件名
 		
@@ -154,6 +156,10 @@ class CwtConfigGroup(
 							when(linkConfig.type) {
 								null, "scope" -> {
 									(if(linkConfig.fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
+									//要求data_source存在
+									if(linkConfig.fromData && linkConfig.prefix == null && linkConfig.dataSource != null) {
+										linksAsScopeNoPrefix[linkName] = linkConfig
+									}
 								}
 								"value" -> {
 									(if(linkConfig.fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
@@ -161,6 +167,10 @@ class CwtConfigGroup(
 								"both" -> {
 									(if(linkConfig.fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
 									(if(linkConfig.fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
+									//要求data_source存在
+									if(linkConfig.fromData && linkConfig.prefix == null && linkConfig.dataSource != null) {
+										linksAsScopeNoPrefix[linkName] = linkConfig
+									}
 								}
 							}
 						}
@@ -280,6 +290,9 @@ class CwtConfigGroup(
 		bindModifierCategorySupportedScopeNames()
 		bindModifierCategories()
 	}
+	
+	val linksAsScopePrefixes: Set<String> = linksAsScope.mapNotNullTo(mutableSetOf()){ it.key }
+	val linksAsValuePrefixes: Set<String> = linksAsValue.mapNotNullTo(mutableSetOf()){ it.key }
 	
 	//解析CWT配置
 	

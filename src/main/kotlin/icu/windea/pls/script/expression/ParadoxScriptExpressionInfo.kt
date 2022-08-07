@@ -72,7 +72,7 @@ class ParadoxScriptScopeFieldPrefixExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolvedList: List<PsiElement>?,
-	val linkConfigs: List<CwtLinkConfig>
+	val linkConfigs: Collection<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptScopeFieldPrefixReference {
 		return ParadoxScriptScopeFieldPrefixReference(element, textRange, directlyResolvedList)
@@ -86,7 +86,7 @@ class ParadoxScriptScopeFieldPrefixExpressionInfo(
 class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	val linkConfigs: List<CwtLinkConfig>
+	val linkConfigs: Collection<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	val sortedLinkConfigs = linkConfigs.sortedByDescending { it.dataSource!!.priority } //需要按照优先级重新排序
 	
@@ -152,7 +152,7 @@ class ParadoxScriptValueFieldPrefixExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolvedList: List<PsiElement>?,
-	val linkConfigs: List<CwtLinkConfig>
+	val linkConfigs: Collection<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
 	override fun getReference(element: ParadoxScriptExpressionElement): ParadoxScriptValueFieldPrefixReference {
 		return ParadoxScriptValueFieldPrefixReference(element, textRange, directlyResolvedList)
@@ -166,7 +166,7 @@ class ParadoxScriptValueFieldPrefixExpressionInfo(
 class ParadoxScriptValueFieldDataSourceExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	val linkConfigs: List<CwtLinkConfig>
+	val linkConfigs: Collection<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	val sortedLinkConfigs = linkConfigs.sortedByDescending { it.dataSource!!.priority } //需要按照优先级重新排序
 	
