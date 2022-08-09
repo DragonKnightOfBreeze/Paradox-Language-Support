@@ -2,12 +2,17 @@ package icu.windea.pls.script.inspections.advanced.expression
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
+import javax.swing.*
 
 class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
+	@JvmField var reportsUnresolvedDs = true
+	@JvmField var reportsUnusedSvParam = false
+	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val project = file.project
@@ -41,10 +46,23 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 								holder.registerScriptExpressionError(element, error)
 							}
 							//注册无法解析的异常
-							for(info in expression.infos) {
-								if(info.isUnresolved(element)) {
-									val error = info.getUnresolvedError()
-									if(error != null) holder.registerScriptExpressionError(element, error)
+							if(expression.infos.isNotEmpty()){
+								for(info in expression.infos) {
+									if(info is ParadoxScriptSvParameterExpressionInfo){
+										if(reportsUnusedSvParam){
+											if(info.isUnresolved(element)) {
+												val error = info.getUnresolvedError()
+												holder.registerScriptExpressionError(element, error)
+											}
+										}
+										continue
+									}
+									if(reportsUnresolvedDs) {
+										if(info.isUnresolved(element)) {
+											val error = info.getUnresolvedError()
+											if(error != null) holder.registerScriptExpressionError(element, error)
+										}
+									}
 								}
 							}
 						}
@@ -53,5 +71,21 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 			}
 		})
 		return holder.resultsArray
+	}
+	
+	
+	override fun createOptionsPanel(): JComponent {
+		return panel {
+			row {
+				checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
+					.bindSelected(::reportsUnresolvedDs)
+					.actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
+			}
+			row {
+				checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnusedSvParam"))
+					.bindSelected(::reportsUnusedSvParam)
+					.actionListener { _, component -> reportsUnusedSvParam = component.isSelected }
+			}
+		}
 	}
 }

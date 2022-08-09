@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
 
-class ParadoxScriptVariableReferenceReference(
+class ParadoxScriptedVariableReference(
 	element: IParadoxScriptVariableReference,
 	rangeInElement: TextRange
 ) : PsiReferenceBase<IParadoxScriptVariableReference>(element, rangeInElement), PsiPolyVariantReference {

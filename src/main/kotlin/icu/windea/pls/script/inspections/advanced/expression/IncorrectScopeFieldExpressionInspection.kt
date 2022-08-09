@@ -2,15 +2,21 @@ package icu.windea.pls.script.inspections.advanced.expression
 
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
+import javax.swing.*
 
 /**
  * 不正确的作用域值表达式的检查。
+ *
+ * @property reportsUnresolvedDs 是否报告无法解析的DS引用。
  */
 class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
+	@JvmField var reportsUnresolvedDs = true
+	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val project = file.project
@@ -44,10 +50,14 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 								holder.registerScriptExpressionError(element, error)
 							}
 							//注册无法解析的异常
-							for(info in expression.infos) {
-								if(info.isUnresolved(element)) {
-									val error = info.getUnresolvedError()
-									if(error != null) holder.registerScriptExpressionError(element, error)
+							if(expression.infos.isNotEmpty()){
+								for(info in expression.infos) {
+									if(reportsUnresolvedDs) {
+										if(info.isUnresolved(element)) {
+											val error = info.getUnresolvedError()
+											if(error != null) holder.registerScriptExpressionError(element, error)
+										}
+									}
 								}
 							}
 						}
@@ -56,5 +66,15 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 			}
 		})
 		return holder.resultsArray
+	}
+	
+	override fun createOptionsPanel(): JComponent {
+		return panel {
+			row {
+				checkBox(PlsBundle.message("script.inspection.expression.incorrectScopeFieldExpression.option.reportsUnresolvedDs"))
+					.bindSelected(::reportsUnresolvedDs)
+					.actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
+			}
+		}
 	}
 }

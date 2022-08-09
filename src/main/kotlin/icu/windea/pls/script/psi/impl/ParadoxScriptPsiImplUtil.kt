@@ -363,9 +363,9 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptVariableReferenceReference {
+	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptedVariableReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
-		return ParadoxScriptVariableReferenceReference(element, rangeInElement)
+		return ParadoxScriptedVariableReference(element, rangeInElement)
 	}
 	
 	@JvmStatic
@@ -853,9 +853,9 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptInlineMathVariableReference): ParadoxScriptVariableReferenceReference {
+	fun getReference(element: ParadoxScriptInlineMathVariableReference): ParadoxScriptedVariableReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
-		return ParadoxScriptVariableReferenceReference(element, rangeInElement)
+		return ParadoxScriptedVariableReference(element, rangeInElement)
 	}
 	//endregion
 	

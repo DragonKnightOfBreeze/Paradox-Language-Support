@@ -4,8 +4,6 @@ package icu.windea.pls
 
 import com.google.common.cache.*
 
-private const val maxCacheSize = 1000L
-
 inline fun <K,V, K1: K, V1:V> CacheBuilder<K,V>.buildFrom(crossinline builder: (K1) -> V1): LoadingCache<K1, V1> {
 	return build(object: CacheLoader<K1,V1>(){
 		override fun load(key: K1): V1 {

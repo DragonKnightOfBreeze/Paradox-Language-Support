@@ -29,12 +29,12 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					CwtDataTypes.Scope, CwtDataTypes.ScopeField, CwtDataTypes.ScopeGroup -> {
 						val scopeFieldExpression = ParadoxScriptScopeFieldExpression.resolve(text, configGroup)
 						if(scopeFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return scopeFieldExpression.infos.mapToArray { it.getReference(element) }
+						return scopeFieldExpression.infos.mapNotNull { it.getReference(element) }.toTypedArray()
 					}
 					CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
 						val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(text, configGroup)
 						if(valueFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return valueFieldExpression.infos.mapToArray { it.getReference(element) }
+						return valueFieldExpression.infos.mapNotNull { it.getReference(element) }.toTypedArray()
 					}
 					else -> pass() //TODO
 				}

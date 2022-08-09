@@ -30,7 +30,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is IParadoxScriptInputParameter -> getInputParameterInfo(element)
 			is IParadoxScriptParameter -> {
 				if(originalElement != null && originalElement.elementType != PARAMETER_ID) {
-					getInputParameterInfo(originalElement)
+					getInputParameterInfo(element)
 				} else {
 					getParameterInfo(element)
 				}
@@ -54,10 +54,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getInputParameterInfo(element: PsiElement): String {
-		val name = element.text
+	private fun getInputParameterInfo(element: ParadoxScriptNamedElement): String {
 		return buildString {
-			buildInputParameterDefinition(element, name)
+			buildInputParameterDefinition(element, element.name.orEmpty())
 		}
 	}
 	
@@ -95,7 +94,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is IParadoxScriptInputParameter -> getInputParameterDoc(element)
 			is IParadoxScriptParameter -> {
 				if(originalElement != null && originalElement.elementType != PARAMETER_ID) {
-					getInputParameterDoc(originalElement)
+					getInputParameterDoc(element)
 				} else {
 					getParameterDoc(element)
 				}
@@ -120,10 +119,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getInputParameterDoc(element: PsiElement): String {
-		val name = element.text
+	private fun getInputParameterDoc(element: ParadoxScriptNamedElement): String {
 		return buildString {
-			buildInputParameterDefinition(element, name)
+			buildInputParameterDefinition(element, element.name.orEmpty())
 		}
 	}
 	

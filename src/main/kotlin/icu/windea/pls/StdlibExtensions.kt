@@ -254,9 +254,9 @@ fun String.matchesKeyword(keyword: String): Boolean {
 	//return true
 }
 
-fun CharSequence.indicesOf(char: Char, ignoreCase: Boolean = false): List<Int> {
+fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false): List<Int> {
 	var indices: MutableList<Int>? = null
-	var lastIndex = indexOf(char, 0, ignoreCase)
+	var lastIndex = indexOf(char, startIndex, ignoreCase)
 	while(lastIndex != -1) {
 		if(indices == null) indices = SmartList()
 		indices.add(lastIndex)
@@ -690,7 +690,7 @@ fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
 	return result
 }
 
-inline fun <reified R> Iterable<*>.findIsInstance(): R?{
+inline fun <reified R> Iterable<*>.findIsInstance(): R? {
 	return findIsInstance(R::class.java)
 }
 
