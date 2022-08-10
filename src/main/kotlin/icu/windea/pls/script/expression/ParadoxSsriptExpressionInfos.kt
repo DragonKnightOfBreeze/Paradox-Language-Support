@@ -14,16 +14,17 @@ import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
+import icu.windea.pls.util.selector.*
 
 sealed class ParadoxScriptTokenExpressionInfo(
 	text: String,
 	textRange: TextRange
-): ParadoxScriptExpressionInfo(text, textRange)
+) : ParadoxScriptExpressionInfo(text, textRange)
 
 class ParadoxScriptOperatorExpressionInfo(
 	text: String,
 	textRange: TextRange
-): ParadoxScriptTokenExpressionInfo(text, textRange){
+) : ParadoxScriptTokenExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
 		return ParadoxScriptAttributesKeys.OPERATOR_KEY
 	}
@@ -32,7 +33,7 @@ class ParadoxScriptOperatorExpressionInfo(
 class ParadoxScriptMarkerExpressionInfo(
 	text: String,
 	textRange: TextRange
-): ParadoxScriptTokenExpressionInfo(text, textRange){
+) : ParadoxScriptTokenExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
 		return ParadoxScriptAttributesKeys.MARKER_KEY
 	}
@@ -49,7 +50,7 @@ class ParadoxScriptScopeExpressionInfo(
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
-		if(possiblePrefixSet.isNullOrEmpty()){
+		if(possiblePrefixSet.isNullOrEmpty()) {
 			return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scope.unresolvedScope", text), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		} else {
 			val possiblePrefixListText = possiblePrefixSet.take(3).joinToString(limit = 3) { "'$it'" }
@@ -128,7 +129,7 @@ class ParadoxScriptValueOfValueFieldExpressionInfo(
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
-		if(possiblePrefixSet.isNullOrEmpty()){
+		if(possiblePrefixSet.isNullOrEmpty()) {
 			return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.value.unresolvedValue", text), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 		} else {
 			val possiblePrefixListText = possiblePrefixSet.take(3).joinToString(limit = 3) { "'$it'" }
@@ -200,13 +201,20 @@ class ParadoxScriptSvParameterExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	val svName: String
-): ParadoxScriptExpressionInfo(text, textRange){
+) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
 		return ParadoxScriptAttributesKeys.INPUT_PARAMETER_KEY
 	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement): PsiReference {
 		return ParadoxParameterReference(element, textRange, svName)
+	}
+	
+	override fun isUnresolved(element: ParadoxScriptExpressionElement): Boolean {
+		//排除SV无法被解析的情况
+		val selector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
+		if(findDefinition(svName, "script_value", element.project, preferFirst = true, selector = selector) == null) return false
+		return super.isUnresolved(element)
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
@@ -217,7 +225,7 @@ class ParadoxScriptSvParameterExpressionInfo(
 class ParadoxScriptSvParameterValueExpressionInfo(
 	text: String,
 	textRange: TextRange
-): ParadoxScriptExpressionInfo(text, textRange){
+) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
 		return if(ParadoxValueType.infer(text).matchesFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
 	}

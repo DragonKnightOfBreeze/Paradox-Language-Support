@@ -447,11 +447,7 @@ val PsiElement.icon
 	get() = getIcon(0)
 
 fun PsiElement.getKeyword(offset: Int): String {
-	return text.unquote().let { s ->
-		runCatching {
-			s.substring(0, offset) + s.substring(offset + dummyIdentifierLength)
-		}.getOrElse { s }
-	}
+	return text.unquote().substring(0, offset)
 }
 
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {

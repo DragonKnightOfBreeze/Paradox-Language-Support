@@ -29,7 +29,9 @@ class ParadoxPropertyReferenceCompletionProvider : CompletionProvider<Completion
 			val name = it.name
 			val icon = it.icon
 			val typeText = it.containingFile.name
-			val lookupElement = LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
+			val lookupElement = LookupElementBuilder.create(it, name)
+				.withIcon(icon)
+				.withTypeText(typeText, true)
 			result.addElement(lookupElement)
 			true
 		}

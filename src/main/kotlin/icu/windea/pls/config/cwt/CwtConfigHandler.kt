@@ -1168,7 +1168,7 @@ object CwtConfigHandler {
 		val parameterMap = definition.parameterMap
 		if(parameterMap.isEmpty()) return
 		val existParameterNames = mutableSetOf<String>()
-		propertyElement.block?.processProperty { existParameterNames.add(it.text) } //输入参数不允许用引号括起
+		propertyElement.block?.processProperty { existParameterNames.add(it.text) }
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		for((parameterName, parameters) in parameterMap) {
@@ -1178,10 +1178,35 @@ object CwtConfigHandler {
 				.withExpectedIcon(PlsIcons.Parameter)
 				.withTailText(tailText)
 				.withTypeText(definitionName, definition.icon, true)
-				.withExpectedInsertHandler(true)
+				.withExpectedInsertHandler(isKey)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
+	}
+	
+	fun ProcessingContext.completeScriptValueParameters(svName:String, parameterNames: Set<String>, result: CompletionResultSet) {
+		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
+		val svList = findDefinitionsByType(svName, "script_value", configGroup.project, selector = selector)
+		if(svList.isEmpty()) return
+		val existParameterNames = mutableSetOf<String>()
+		existParameterNames.addAll(parameterNames)
+		//批量提示
+		val lookupElements = mutableSetOf<LookupElement>()
+		for(sv in svList) {
+			val parameterMap = sv.parameterMap
+			if(parameterMap.isEmpty()) continue
+			for((parameterName, parameters) in parameterMap) {
+				if(parameterName in existParameterNames || parameters.isEmpty()) continue //排除已输入的
+				val tailText = " from parameters"
+				val lookupElement = LookupElementBuilder.create(parameters.first(), parameterName)
+					.withExpectedIcon(PlsIcons.Parameter)
+					.withTailText(tailText)
+					.withTypeText(svName, sv.icon, true)
+					.withExpectedInsertHandler(false)
+				lookupElements.add(lookupElement)
+			}
+		}
+		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
 	}
 	
 	private val boolLookupElements = booleanValues.map { value ->
@@ -1209,34 +1234,30 @@ object CwtConfigHandler {
 	
 	private val separatorChars = charArrayOf('=', '<', '>', '!')
 	
-	private fun LookupElementBuilder.withExpectedInsertHandler(isKey: Boolean, suffix: String = ""): LookupElementBuilder {
-		if(isKey || suffix.isNotEmpty()) return withInsertHandler(getExpectedInsertHandler(isKey, suffix))
+	private fun LookupElementBuilder.withExpectedInsertHandler(isKey: Boolean): LookupElementBuilder {
+		if(isKey) return withInsertHandler(getExpectedInsertHandler(isKey))
 		return this
 	}
 	
-	private fun getExpectedInsertHandler(isKey: Boolean, suffix: String = ""): InsertHandler<LookupElement> {
+	private fun getExpectedInsertHandler(isKey: Boolean): InsertHandler<LookupElement> {
 		return InsertHandler { context, _ ->
 			//如果后面没有分隔符，则要加上等号，并且根据代码格式设置来判断是否加上等号周围的空格
 			val editor = context.editor
 			val document = editor.document
 			val chars = document.charsSequence
 			val charsLength = chars.length
-			val oldOffset = editor.selectionModel.selectionEnd
-			var offset = oldOffset
-			while(offset < charsLength && chars[offset].isWhitespace()) {
-				offset++
-			}
-			if(offset < charsLength) {
-				val toInsert = StringBuilder()
-				if(suffix.isNotEmpty()) {
-					toInsert.append(suffix)
+			val caretOffset = editor.caretModel.offset
+			if(isKey){
+				//得到光标之后的分隔符的位置
+				var offset = caretOffset
+				while(offset < charsLength && chars[offset].isWhitespace()) {
+					offset++
 				}
-				if(isKey && chars[offset] !in separatorChars) {
+				if(offset == charsLength || chars[offset] !in separatorChars) {
 					val customSettings = CodeStyle.getCustomSettings(context.file, ParadoxScriptCodeStyleSettings::class.java)
 					val separator = if(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) " = " else "="
-					toInsert.append(separator)
+					EditorModificationUtil.insertStringAtCaret(editor, separator)
 				}
-				EditorModificationUtil.insertStringAtCaret(editor, toInsert.toString())
 			}
 		}
 	}

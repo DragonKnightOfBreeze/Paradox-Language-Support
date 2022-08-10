@@ -291,8 +291,8 @@ class CwtConfigGroup(
 		bindModifierCategories()
 	}
 	
-	val linksAsScopePrefixes: Set<String> = linksAsScope.mapNotNullTo(mutableSetOf()){ it.key }
-	val linksAsValuePrefixes: Set<String> = linksAsValue.mapNotNullTo(mutableSetOf()){ it.key }
+	val linksAsScopePrefixes: Set<String> = linksAsScope.mapNotNullTo(mutableSetOf()){ it.value.prefix }
+	val linksAsValuePrefixes: Set<String> = linksAsValue.mapNotNullTo(mutableSetOf()){ it.value.prefix }
 	
 	//解析CWT配置
 	
