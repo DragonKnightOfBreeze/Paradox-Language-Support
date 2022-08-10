@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeScriptValueParameters
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
 import icu.windea.pls.core.codeInsight.completion.*
@@ -35,31 +36,32 @@ class ParadoxScriptValueFieldExpression(
 			val errors = SmartList<ParadoxScriptExpressionError>()
 			val textRanges = SmartList<TextRange>()
 			//这里需要找到DS的结束位置
-			val textToIterateLength = when {
-				expressionString.startsWith("value:") -> expressionString.substringAfter("value:").indexOf("|")
-				expressionString.contains(".value:") -> expressionString.substringAfter(".value:").indexOf("|")
+			val expressionStringToCheckLength = when {
+				expressionString.startsWith("value:") -> expressionString.indexOf("|", 6)
+				expressionString.contains(".value:") -> expressionString.indexOf("|", 7)
 				else -> -1
 			}.let { if(it != -1) it else expressionString.length }
-			val textToIterate = expressionString.substring(0, textToIterateLength)
+			val expressonStringToCheck = expressionString.substring(0, expressionStringToCheckLength)
 			var startIndex: Int
 			var endIndex: Int = -1
-			while(endIndex < textToIterate.length) {
+			while(endIndex < expressonStringToCheck.length) {
 				startIndex = endIndex + 1
-				endIndex = textToIterate.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
+				endIndex = expressonStringToCheck.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
 				textRanges.add(TextRange.create(startIndex, endIndex))
 			}
 			//加入"."的expressionInfo
-			for(pipeIndex in textToIterate.indicesOf('.')) {
+			for(pipeIndex in expressonStringToCheck.indicesOf('.')) {
 				infos.add(ParadoxScriptOperatorExpressionInfo(".", TextRange.create(pipeIndex, pipeIndex + 1)))
 			}
 			for((index, textRange) in textRanges.withIndex()) {
 				val text = textRange.substring(expressionString)
+				val textToCheck = text
 					.let { if(it.startsWith("value:")) it.substringBefore('|') else it }
-				if(text.isParameterAwareExpression()) {
+				if(textToCheck.isParameterAwareExpression()) {
 					//如果子表达式可能带有参数，则跳过继续解析
 					continue
 				}
-				if(text.isEmpty() || !text.isValidSubExpression()) {
+				if(textToCheck.isEmpty() || !textToCheck.isValidSubExpression()) {
 					//如果表达式格式不正确
 					isValid = false
 					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.valueField.malformed", expressionString), wholeRange)
@@ -69,22 +71,22 @@ class ParadoxScriptValueFieldExpression(
 				}
 				//可以解析，或者不是最后一个，继续
 				if(index != textRanges.lastIndex) {
-					val resolved = CwtConfigHandler.resolveScope(text, configGroup)
-					val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved, configGroup.linksAsScopePrefixes)
+					val resolved = CwtConfigHandler.resolveScope(textToCheck, configGroup)
+					val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, resolved, configGroup.linksAsScopePrefixes)
 					infos.add(info)
 					isMatched = true //可解析 -> 可匹配 / 也认为匹配，实际上这里无法判断
 				} else {
-					val resolved = CwtConfigHandler.resolveValueOfValueField(text, configGroup)
+					val resolved = CwtConfigHandler.resolveValueOfValueField(textToCheck, configGroup)
 					//可以解析，继续
 					if(resolved != null) {
-						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, resolved)
+						val info = ParadoxScriptValueOfValueFieldExpressionInfo(textToCheck, textRange, resolved)
 						infos.add(info)
 						isMatched = true //可解析 -> 可匹配 
 						continue
 					}
 					
 					val matchedLinkConfigs = configGroup.linksAsValue.values
-						.filter { it.prefix != null && it.dataSource != null && text.startsWith(it.prefix) }
+						.filter { it.prefix != null && it.dataSource != null && textToCheck.startsWith(it.prefix) }
 					if(matchedLinkConfigs.isNotEmpty()) {
 						//匹配某一前缀
 						val prefix = matchedLinkConfigs.first().prefix!!
@@ -93,7 +95,7 @@ class ParadoxScriptValueFieldExpression(
 						val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
 						val prefixInfo = ParadoxScriptValueFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList)
 						infos.add(prefixInfo)
-						val textWithoutPrefix = text.drop(prefix.length)
+						val textWithoutPrefix = textToCheck.drop(prefix.length)
 						if(textWithoutPrefix.isEmpty()) {
 							//缺少dataSource
 							val dataSourcesText = matchedLinkConfigs.joinToString { "'${it.dataSource}'" }
@@ -125,17 +127,18 @@ class ParadoxScriptValueFieldExpression(
 									endIndexSv = expressionString.indexOf('|', startIndexSv).let { if(it != -1) it else textRange.endOffset }
 									if(endIndexSv == textRange.endOffset) {
 										//末尾的管道符
-										continue
-									} else if(startIndexSv == endIndexSv) {
-										//连续的管道符
-										continuousPipe = true
-										continue
+										break
 									}
 									textRangesSv.add(TextRange.create(startIndexSv, endIndexSv))
 								}
 								var flag = false
 								for(textRangeSv in textRangesSv) {
 									flag = !flag
+									if(textRangeSv.isEmpty) {
+										//连续的管道符 
+										continuousPipe = true
+										continue
+									}
 									val textSv = textRangeSv.substring(expressionString)
 									if(textSv.isParameterAwareExpression()) {
 										//如果子表达式可能带有参数，则跳过继续解析
@@ -163,7 +166,7 @@ class ParadoxScriptValueFieldExpression(
 					} else {
 						//没有前缀
 						//无法解析的value，或者要求有前缀
-						val info = ParadoxScriptValueOfValueFieldExpressionInfo(text, textRange, null, configGroup.linksAsValuePrefixes)
+						val info = ParadoxScriptValueOfValueFieldExpressionInfo(textToCheck, textRange, null, configGroup.linksAsValuePrefixes)
 						infos.add(info)
 						isMatched = true //也认为匹配，实际上这里无法判断
 						
@@ -184,18 +187,60 @@ class ParadoxScriptValueFieldExpression(
 	
 	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
 		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
-		//TODO 兼容带参数的SV表达式
+		//要求重新匹配
+		result.restartCompletionOnAnyPrefixChange()
+		
 		val offsetInParent = offsetInParent
-		val start = expressionString.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
-		val end = expressionString.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
+		//这里需要找到DS的结束位置
+		val expressionStringToCheckLength = when {
+			expressionString.startsWith("value:") -> expressionString.substringAfter("value:").indexOf("|")
+			expressionString.contains(".value:") -> expressionString.substringAfter(".value:").indexOf("|")
+			else -> -1
+		}.let { if(it != -1) it else expressionString.length }
+		val expressionStringToCheck = expressionString.substring(0, expressionStringToCheckLength)
+		val start = expressionStringToCheck.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
+		val end = expressionStringToCheck.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
 		val isLast = end == expressionString.length
+		
+		val text = expressionString.substring(start, end)
+		val pipeIndex = if(isLast && text.startsWith("value:")) text.indexOf('|') else -1
+		val textToCheck = if(pipeIndex == -1) text else text.substring(0, pipeIndex)
+		//兼容带参数的SV表达式
+		if(pipeIndex != -1 && pipeIndex < offsetInParent - start) {
+			//在必要时提示参数名
+			val svName = textToCheck.removePrefix("value:")
+			val offsetIndex = offsetInParent - start
+			var paramNameKeyword: String? = null
+			val paramNames = mutableSetOf<String>()
+			var startIndexSv: Int
+			var endIndexSv: Int = pipeIndex
+			var flag = false
+			while(endIndexSv != text.length) {
+				flag = !flag
+				startIndexSv = endIndexSv + 1
+				endIndexSv = text.indexOf('|', startIndexSv).let { if(it != -1) it else text.length }
+				if(flag) {
+					if(offsetIndex in startIndexSv..endIndexSv) {
+						paramNameKeyword = text.substring(startIndexSv, offsetIndex)
+					}
+					val paramName = text.substring(startIndexSv, endIndexSv)
+					if(paramName.isNotEmpty()) paramNames.add(paramName)
+				}
+			}
+			if(paramNameKeyword != null) {
+				put(PlsCompletionKeys.keywordKey, paramNameKeyword)
+				//开始提示
+				completeScriptValueParameters(svName, paramNames, result)
+				put(PlsCompletionKeys.keywordKey, expressionString)
+			}
+			return
+		}
+		
+		val keywordToUse = expressionString.substring(start, offsetInParent)
+		put(PlsCompletionKeys.keywordKey, keywordToUse)
 		
 		val prevScope = if(start == 0) null else expressionString.substring(0, start - 1).substringAfterLast('.')
 		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
-		
-		val keyword = keyword
-		val keywordToUse = expressionString.substring(start, end)
-		put(PlsCompletionKeys.keywordKey, keywordToUse)
 		
 		if(isLast) {
 			completeScope(result)
@@ -205,9 +250,7 @@ class ParadoxScriptValueFieldExpression(
 			completeScope(result)
 		}
 		
-		put(PlsCompletionKeys.keywordKey, keyword)
+		put(PlsCompletionKeys.keywordKey, expressionString)
 		put(PlsCompletionKeys.prevScopeKey, null)
-		
-		result.restartCompletionOnAnyPrefixChange() //要求重新匹配
 	}
 }

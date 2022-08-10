@@ -64,8 +64,9 @@
   * [X] 实现代码检查-脚本文件：缺失的相关图片
   * [X] 实现意向：复制本地化（复制的文本格式为：`KEY:0 "TEXT"`）
   * [X] 兼容通过翻译插件翻译定义、本地化、CWT属性或值的文档
-  * [X] 脚本文件：对于effect/trigger等的参数名提示
+  * [X] 脚本文件：对于effect/trigger等的参数名的参数提示
   * [X] 提供定义和本地化语言区域的文件结构支持（`Navigate > File Structure`）
+  * [ ] 脚本文件：对于SV表达式中的SV参数名的参数提示
   * [ ] ~~实现代码检查：不期望的脚本语法（多种情况，需要确认）~~（待确定）
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
   * [ ] 实现工具栏动作：生成所有缺失的相关本地化
@@ -105,8 +106,8 @@
   * [X] 支持解析scopeExpression（如`from.owner`）
   * [X] 支持额外的值类型：`value`和`value_set`，以及相关功能：匹配、代码提示、引用解析、索引（多对多）
   * [X] 支持值类型：`scope` `scope_field` `scope_group`，以及相关功能：匹配、代码提示、引用解析、代码检查（暂不精确匹配scope）
-  * [ ] 支持值类型：`value_field`，以及相关功能：匹配、代码提示、引用解析（暂不精确匹配scope，不要求值类型（float/int）必须匹配）
-  * [ ] 支持值类型：`value_field`的特殊SV语法（`value:xxx|PN|PV|`）以及相关功能
+  * [X] 支持值类型：`value_field`，以及相关功能：匹配、代码提示、引用解析（暂不精确匹配scope，不要求值类型（float/int）必须匹配）
+  * [X] 支持值类型：`value_field`的特殊SV语法（`value:xxx|PN|PV|`）以及相关功能
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
   * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件

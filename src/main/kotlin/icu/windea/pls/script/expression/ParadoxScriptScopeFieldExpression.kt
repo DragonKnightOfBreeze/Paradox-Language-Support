@@ -6,7 +6,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeScopeFieldPrefixOrDataSource
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 
@@ -36,25 +37,26 @@ class ParadoxScriptScopeFieldExpression(
 			val infos = SmartList<ParadoxScriptExpressionInfo>()
 			val errors = SmartList<ParadoxScriptExpressionError>()
 			val textRanges = SmartList<TextRange>()
-			val textToIterate = expressionString
+			val expressonStringToCheck = expressionString
 			var startIndex: Int
 			var endIndex: Int = -1
-			while(endIndex < textToIterate.length) {
+			while(endIndex < expressonStringToCheck.length) {
 				startIndex = endIndex + 1
-				endIndex = textToIterate.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
+				endIndex = expressonStringToCheck.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
 				textRanges.add(TextRange.create(startIndex, endIndex))
 			}
 			//加入"."的expressionInfo
-			for(pipeIndex in textToIterate.indicesOf('.')) {
+			for(pipeIndex in expressonStringToCheck.indicesOf('.')) {
 				infos.add(ParadoxScriptOperatorExpressionInfo(".", TextRange.create(pipeIndex, pipeIndex + 1)))
 			}
 			for(textRange in textRanges) {
 				val text = textRange.substring(expressionString)
-				if(text.isParameterAwareExpression()) {
+				val textToCheck = text
+				if(textToCheck.isParameterAwareExpression()) {
 					//如果子表达式可能带有参数，则直接结束解析
 					break
 				}
-				if(text.isEmpty() || !text.isValidSubExpression()) {
+				if(textToCheck.isEmpty() || !textToCheck.isValidSubExpression()) {
 					//如果表达式格式不正确
 					isValid = false
 					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.malformed", expressionString), wholeRange)
@@ -62,16 +64,16 @@ class ParadoxScriptScopeFieldExpression(
 					errors.add(error)
 					break
 				}
-				val resolved = CwtConfigHandler.resolveScope(text, configGroup)
+				val resolved = CwtConfigHandler.resolveScope(textToCheck, configGroup)
 				//可以解析，继续
 				if(resolved != null) {
-					val info = ParadoxScriptScopeExpressionInfo(text, textRange, resolved, configGroup.linksAsScopePrefixes)
+					val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, resolved, configGroup.linksAsScopePrefixes)
 					infos.add(info)
 					isMatched = true //可解析 -> 可匹配 
 					continue
 				}
 				val matchedLinkConfigs = configGroup.linksAsScope.values
-					.filter { it.prefix != null && it.dataSource != null && text.startsWith(it.prefix) }
+					.filter { it.prefix != null && it.dataSource != null && textToCheck.startsWith(it.prefix) }
 				if(matchedLinkConfigs.isNotEmpty()) {
 					//匹配某一前缀
 					val prefix = matchedLinkConfigs.first().prefix!!
@@ -79,7 +81,7 @@ class ParadoxScriptScopeFieldExpression(
 					val directlyResolvedList = matchedLinkConfigs.mapNotNull { it.pointer.element }
 					val prefixInfo = ParadoxScriptScopeFieldPrefixExpressionInfo(prefix, prefixRange, directlyResolvedList)
 					infos.add(prefixInfo)
-					val dataSourceText = text.drop(prefix.length)
+					val dataSourceText = textToCheck.drop(prefix.length)
 					if(dataSourceText.isEmpty()) {
 						//缺少dataSource
 						val dataSourcesText = matchedLinkConfigs.joinToString { "'${it.dataSource}'" }
@@ -97,11 +99,11 @@ class ParadoxScriptScopeFieldExpression(
 					val linkConfigsNoPrefix = configGroup.linksAsScopeNoPrefix.values
 					if(linkConfigsNoPrefix.isEmpty()) {
 						//无法解析的scope，或者要求有前缀
-						val info = ParadoxScriptScopeExpressionInfo(text, textRange, null, configGroup.linksAsScopePrefixes)
+						val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, null, configGroup.linksAsScopePrefixes)
 						infos.add(info)
 						isMatched = true //也认为匹配，实际上这里无法判断
 					} else {
-						val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(text, textRange, linkConfigsNoPrefix)
+						val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(textToCheck, textRange, linkConfigsNoPrefix)
 						infos.add(dataSourceInfo)
 						isMatched = true //也认为匹配，实际上这里无法判断
 					}
@@ -120,28 +122,30 @@ class ParadoxScriptScopeFieldExpression(
 	
 	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
 		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
+		//要求重新匹配
+		result.restartCompletionOnAnyPrefixChange()
+		
 		val offsetInParent = offsetInParent
-		val start = expressionString.take(offsetInParent).lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
-		val end = expressionString.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
+		val expressionStringToCheck = expressionString
+		val start = expressionStringToCheck.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
+		val end = expressionStringToCheck.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
 		val isLast = end == expressionString.length
+		
+		val keywordToUse = expressionString.substring(start, offsetInParent)
+		put(PlsCompletionKeys.keywordKey, keywordToUse)
 		
 		val prevScope = if(start == 0) null else expressionString.substring(0, start - 1).substringAfterLast('.')
 		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
 		
-		val keyword = keyword
-		val keywordToUse = expressionString.substring(start, end)
-		put(PlsCompletionKeys.keywordKey, keywordToUse)
-		
 		if(isLast) {
 			completeScope(result)
-			completeScopeFieldPrefixOrDataSource(result)
+			completeValueOfValueField(result)
+			completeValueFieldPrefixOrDataSource(result)
 		} else {
 			completeScope(result)
 		}
 		
-		put(PlsCompletionKeys.keywordKey, keyword)
+		put(PlsCompletionKeys.keywordKey, expressionString)
 		put(PlsCompletionKeys.prevScopeKey, null)
-		
-		result.restartCompletionOnAnyPrefixChange() //要求重新匹配
 	}
 }

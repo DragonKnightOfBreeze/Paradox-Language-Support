@@ -235,23 +235,20 @@ private val keywordDelimiters = charArrayOf('.', '_')
 fun String.matchesKeyword(keyword: String): Boolean {
 	//IDEA低层如何匹配关键词：
 	//com.intellij.codeInsight.completion.PrefixMatcher.prefixMatches(java.lang.String)
-	//这里如何匹配关键词：包含，忽略大小写
-	return keyword.isEmpty() || contains(keyword, true)
 	
-	////这里如何匹配关键词：部分包含，被跳过的子字符串必须以'.','_'结尾，忽略大小写
-	//if(keyword.isEmpty()) return true
-	//var index = -1
-	//var lastIndex = -2
-	//for(c in keyword) {
-	//	index = indexOf(c,index+1,ignoreCase)
-	//	when {
-	//		index == -1 -> return false
-	//		c !in keywordDelimiters && index != 0 && lastIndex != index-1 
-	//		    && this[index-1] !in keywordDelimiters -> return false
-	//	}
-	//	lastIndex = index
-	//}
-	//return true
+	//这里如何匹配关键词：按顺序包含所有字符，被跳过的子字符串必须以'.','_'结尾，忽略大小写
+	if(keyword.isEmpty()) return true
+	var index = -1
+	var lastIndex = -2
+	for(c in keyword) {
+		index = indexOf(c,index+1,true)
+		when {
+			index == -1 -> return false
+			c !in keywordDelimiters && index != 0 && lastIndex != index-1 && this[index-1] !in keywordDelimiters -> return false
+		}
+		lastIndex = index
+	}
+	return true
 }
 
 fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false): List<Int> {
