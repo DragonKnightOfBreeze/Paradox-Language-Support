@@ -203,7 +203,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptProperty): PsiElement? {
-		return if(element.propertyKey.isSimpleScriptExpression()) element.firstChild  else null
+		return if(!element.propertyKey.isParameterAwareExpression()) element.firstChild  else null
 	}
 	
 	@JvmStatic
@@ -302,7 +302,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptPropertyKey): PsiElement? {
-		return if(element.isSimpleScriptExpression()) element.firstChild  else null
+		return if(!element.isParameterAwareExpression()) element.firstChild  else null
 	}
 	
 	@JvmStatic
@@ -472,7 +472,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptString): PsiElement? {
-		return if(element.isSimpleScriptExpression()) element.firstChild else null
+		return if(!element.isParameterAwareExpression()) element.firstChild else null
 	}
 	
 	@JvmStatic

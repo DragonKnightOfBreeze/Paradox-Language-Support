@@ -18,8 +18,8 @@ object DdsToPngConverter {
 	private val logger =  Logger.getInstance(MethodHandles.lookup().lookupClass())
 	
 	private val ddsImageDecoder: DdsImageDecoder by lazy { DdsImageDecoder() }
-	private val ddsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().build() } //ddsAbsPath - pngAbsPath
-	private val externalDdsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().build() } //ddsAbsPath - pngAbsPath
+	private val ddsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().buildCache() } //ddsAbsPath - pngAbsPath
+	private val externalDdsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().buildCache() } //ddsAbsPath - pngAbsPath
 	
 	/**
 	 * 将DDS文件转化为PNG文件，返回PNG文件的绝对路径。如果发生异常，则返回null。

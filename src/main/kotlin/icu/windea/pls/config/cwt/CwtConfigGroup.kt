@@ -597,26 +597,7 @@ class CwtConfigGroup(
 	}
 	
 	private fun resolveDefinitionConfig(propertyConfig: CwtPropertyConfig, name: String): CwtDeclarationConfig {
-		if(propertyConfig.properties != null) {
-			val configs = SmartList<Pair<String?, CwtPropertyConfig>>()
-			for(prop in propertyConfig.properties) {
-				//这里需要进行合并
-				val subtypeName = prop.key.removeSurroundingOrNull("subtype[", "]")
-				if(subtypeName != null) {
-					val propProps = prop.properties
-					if(propProps != null) {
-						for(propProp in propProps) {
-							configs.add(subtypeName to propProp)
-						}
-					}
-				} else {
-					configs.add(null to prop)
-				}
-			}
-			return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig, configs)
-		} else {
-			return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig, null)
-		}
+		return CwtDeclarationConfig(propertyConfig.pointer, propertyConfig.info, name, propertyConfig)
 	}
 	
 	//初始化基于解析的CWT配置的额外配置

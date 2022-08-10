@@ -2,6 +2,9 @@ links = {
 	any = {
 		type = both
 	}
+	random = {
+		type = scope
+	}
 	event_target = {
 		desc =  "Event target."
 		from_data = yes

@@ -3,7 +3,6 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -135,21 +134,17 @@ fun ParadoxScriptExpressionElement.isSimpleScriptExpression(): Boolean {
 	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return true
 	return when(this) {
 		is ParadoxScriptPropertyKey -> singleChild.elementType.let {
-			(it == PROPERTY_KEY_TOKEN && !singleChild.textContains('$') && !singleChild.textContains(':')) || it == QUOTED_PROPERTY_KEY_TOKEN
+			(it == PROPERTY_KEY_TOKEN && !singleChild.textContains('$')) || it == QUOTED_PROPERTY_KEY_TOKEN
 		}
 		is ParadoxScriptString -> singleChild.elementType.let {
-			(it == STRING_TOKEN && !singleChild.textContains('$') && !singleChild.textContains(':')) || it == QUOTED_STRING_TOKEN
+			(it == STRING_TOKEN && !singleChild.textContains('$')) || it == QUOTED_STRING_TOKEN
 		}
 		else -> false
 	}
 }
 
 fun ParadoxScriptExpressionElement.isParameterAwareExpression(): Boolean {
-	return this.findChildOfType<ParadoxScriptParameter>() != null
-}
-
-fun String.isSimpleScriptExpression(): Boolean {
-	return this.isQuoted() || (ParadoxValueType.infer(this) == ParadoxValueType.StringType && this.all { it != '$' && it != ':' })
+	return !this.isQuoted() && this.textContains('$')
 }
 
 fun String.isParameterAwareExpression(): Boolean {

@@ -14,34 +14,34 @@ data class CwtDeclarationConfig(
 	override val info: CwtConfigInfo,
 	val name: String,
 	val propertyConfig: CwtPropertyConfig, //definitionName = ...
-	val configs: List<Pair<String?, CwtPropertyConfig>>? = null, //(subtypeExpression?, propConfig)
 ) : CwtConfig<CwtProperty> {
-	private val mergeConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().build() }
-	private val configsCache: Cache<String, List<CwtKvConfig<*>>> by lazy { CacheBuilder.newBuilder().build() }
-	private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().build() }
-	private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { CacheBuilder.newBuilder().build() }
+	private val mergeConfigsCache: Cache<String, List<CwtKvConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val configsCache: Cache<String, List<CwtKvConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
 	
 	private val propertyConfigList by lazy { propertyConfig.toSingletonList() }
 	
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
 	 */
-	fun getMergedConfigs(subtypes: List<String>): List<CwtPropertyConfig> {
-		return when {
-			configs == null -> propertyConfigList //定义的值不为代码块的情况
-			configs.isEmpty() -> emptyList()
-			else -> {
-				val cacheKey = subtypes.joinToString(",")
-				mergeConfigsCache.getOrPut(cacheKey) {
-					val result = SmartList<CwtPropertyConfig>()
-					for((subtypeExpression, propConfig) in configs) {
-						if(subtypeExpression == null || matchesDefinitionSubtypeExpression(subtypeExpression, subtypes)) {
-							result.add(propConfig)
-						}
-					}
-					result
-				}
+	fun getMergedConfigs(subtypes: List<String>): List<CwtKvConfig<*>> {
+		val properties = propertyConfig.properties
+		val values = propertyConfig.values
+		
+		//定义的值不为代码块的情况
+		if(properties == null && values == null) return propertyConfigList
+		
+		val cacheKey = subtypes.joinToString(",")
+		return mergeConfigsCache.getOrPut(cacheKey) {
+			val mergedConfigs = SmartList<CwtKvConfig<*>>()
+			if(properties != null && properties.isNotEmpty()) {
+				properties.forEach { mergedConfigs.addAll(it.deepMergeBySubtypes(subtypes)) }
 			}
+			if(values != null && values.isNotEmpty()) {
+				values.forEach { mergedConfigs.addAll(it.deepMergeBySubtypes(subtypes)) }
+			}
+			mergedConfigs
 		}
 	}
 	
@@ -61,9 +61,11 @@ data class CwtDeclarationConfig(
 					var result: List<CwtKvConfig<*>> = getMergedConfigs(subtypes)
 					var index = 0
 					while(index < path.length) {
-						val originalKey = path.originalSubPaths[index]
+						val originalSubPath = path.originalSubPaths[index]
+						val originalKey = originalSubPath.removePrefix("#")
 						val key = originalKey.unquote()
 						val isQuoted = key.isQuoted()
+						val isValue = originalSubPath.startsWith("#")
 						var nextIndex = index + 1
 						
 						//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要跳过当前的key
@@ -74,17 +76,19 @@ data class CwtDeclarationConfig(
 							if(index == 0) {
 								when {
 									config is CwtPropertyConfig -> {
+										if(isValue) continue
 										if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
 											nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index, path)
 										}
 									}
 									config is CwtValueConfig -> {
+										if(!isValue) continue
 										nextResult.add(config)
 									}
 								}
 							} else {
 								val propertyConfigs = config.properties
-								if(propertyConfigs != null && propertyConfigs.isNotEmpty()) {
+								if(!isValue && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
 									for(propertyConfig in propertyConfigs) {
 										if(CwtConfigHandler.matchesKey(propertyConfig.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
 											nextIndex = inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, path)
@@ -92,26 +96,20 @@ data class CwtDeclarationConfig(
 									}
 								}
 								val valueConfigs = config.values
-								if(valueConfigs != null && valueConfigs.isNotEmpty()) {
+								if(isValue && valueConfigs != null && valueConfigs.isNotEmpty()) {
 									for(valueConfig in valueConfigs) {
 										nextResult.add(valueConfig)
 									}
 								}
 							}
 						}
-						result = nextResult
+						//如果存在可以精确匹配的规则，则仅返回这些可以精确匹配的规则（对于property来说是keyExpression，对于string来说是valueExpression）
+						result = nextResult.filter { CwtConfigHandler.matchesExactly(it.expression, path.last(), configGroup) }
+							.ifEmpty { nextResult }
 						index = nextIndex
 					}
-					if(result.isNotEmpty()) {
-						//如果存在可以精确匹配的规则，则仅返回这些可以精确匹配的规则（对于property来说是keyExpression，杜宇string来说是valueExpression）
-						if(path.isNotEmpty()) {
-							result = result.filter { CwtConfigHandler.matchesExactly(it.expression, path.last(), configGroup) }
-								.ifEmpty { result }
-						}
-						//需要按优先级重新排序
-						result = result.sortedByDescending { it.expression.priority }
-					}
-					result
+					//需要按优先级重新排序
+					result.sortedByDescending { it.expression.priority }
 				}
 			}
 		}
@@ -163,7 +161,7 @@ data class CwtDeclarationConfig(
 		return childPropertyConfigsCache.getOrPut(cacheKey) {
 			when {
 				//这里的属性路径可以为空，这时得到的就是顶级属性列表（定义的代码块类型的值中的属性列表）
-				path.isEmpty() -> getMergedConfigs(subtypes)
+				path.isEmpty() -> getMergedConfigs(subtypes).filterIsInstance<CwtPropertyConfig>()
 				else -> {
 					//打平propertyConfigs中的每一个properties
 					val propertyConfigs = resolveConfigs(subtypes, path, configGroup)
@@ -190,7 +188,7 @@ data class CwtDeclarationConfig(
 		return childValueConfigsCache.getOrPut(cacheKey) {
 			when {
 				//这里的属性路径可以为空，这时得到的就是顶级值列表（定义的代码块类型的值中的值列表）
-				path.isEmpty() -> propertyConfig.values ?: emptyList()
+				path.isEmpty() -> getMergedConfigs(subtypes).filterIsInstance<CwtValueConfig>()
 				else -> {
 					//打平propertyConfigs中的每一个values
 					val propertyConfigs = resolveConfigs(subtypes, path, configGroup)

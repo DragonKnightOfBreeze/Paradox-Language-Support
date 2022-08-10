@@ -37,8 +37,8 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val VALUE_IN_VALUE_SET_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueInValueSet"), LOCAL_VARIABLE)
 	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.systemScope"), STATIC_METHOD)
 	@JvmField val SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scope"), INSTANCE_METHOD)
-	@JvmField val SCOPE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeFieldPrefix"), CUSTOM_KEYWORD1_ATTRIBUTES)
-	@JvmField val VALUE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueFieldPrefix"), CUSTOM_KEYWORD2_ATTRIBUTES)
-	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), CUSTOM_KEYWORD3_ATTRIBUTES)
+	@JvmField val SCOPE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeFieldPrefix"), CUSTOM_KEYWORD3_ATTRIBUTES)
+	@JvmField val VALUE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueFieldPrefix"), CUSTOM_KEYWORD4_ATTRIBUTES)
+	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), PREDEFINED_SYMBOL)
 	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 }

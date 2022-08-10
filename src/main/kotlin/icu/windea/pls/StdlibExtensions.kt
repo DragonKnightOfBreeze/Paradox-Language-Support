@@ -587,7 +587,7 @@ fun URL.toFile() = File(this.toURI())
 fun URL.toPath() = Paths.get(this.toURI())
 
 @PublishedApi
-internal val enumValuesCache: LoadingCache<Class<*>, Array<*>> by lazy { CacheBuilder.newBuilder().buildFrom { it.enumConstants } }
+internal val enumValuesCache: LoadingCache<Class<*>, Array<*>> by lazy { CacheBuilder.newBuilder().buildCache { it.enumConstants } }
 
 /**
  * 得到共享的指定枚举类型的所有枚举常量组成的数组。

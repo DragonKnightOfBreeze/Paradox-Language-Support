@@ -23,7 +23,7 @@ class ParadoxGameTypeModificationTracker : ModificationTracker {
 	
 	companion object {
 		private val cache: LoadingCache<VirtualFile, ParadoxGameTypeModificationTracker> = CacheBuilder.newBuilder()
-			.weakKeys().buildFrom { ParadoxGameTypeModificationTracker() }
+			.weakKeys().buildCache { ParadoxGameTypeModificationTracker() }
 		private val mock = ParadoxGameTypeModificationTracker()
 		
 		fun from(file: VirtualFile?): ParadoxGameTypeModificationTracker {

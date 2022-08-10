@@ -13,8 +13,7 @@ import java.util.*
  * * `foo` - 对应所属文件或定义中名为"foo"的属性。
  * * `foo/bar` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性
  * * `foo/"bar"` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性（属性名在脚本中用引号括起）
- * * `-` - 对应所属文件或定义的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
- * * `foo/-` 对应文所属文件或定义中名为"foo"的属性的值（代码块）中的（任意索引位置的）值（代码块或非代码块）
+ * * `#foo` - 对应值"foo"
  */
 @Suppress("unused")
 class ParadoxElementPath<ROOT : PsiElement> private constructor(
@@ -39,7 +38,7 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 						depth++
 					}
 					current is ParadoxScriptValue && current.isLonely() -> {
-						originalSubPaths.addFirst("-")
+						originalSubPaths.addFirst("#" + current.text)
 						depth++
 					}
 				}
@@ -71,7 +70,7 @@ class ParadoxElementPath<ROOT : PsiElement> private constructor(
 						depth++
 					}
 					current is ParadoxScriptValue && current.isLonely() -> {
-						subPaths.addFirst("-")
+						subPaths.addFirst("#" + current.text)
 						depth++
 					}
 				}

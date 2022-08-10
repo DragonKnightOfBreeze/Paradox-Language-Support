@@ -233,7 +233,6 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Scalar -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				return true
 			}
 			CwtDataTypes.ColorField -> {
@@ -249,14 +248,12 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Localisation -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val selector = localisationSelector().gameType(configGroup.gameType)
 				return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
 				//return true
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val selector = localisationSelector().gameType(configGroup.gameType)
 				return findSyncedLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
 				//return true
@@ -264,7 +261,6 @@ object CwtConfigHandler {
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return true
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val selector = localisationSelector().gameType(configGroup.gameType)
 				return findLocalisation(value, configGroup.project, preferFirst = true, selector = selector) != null
 				//return true
@@ -288,7 +284,6 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpression -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val typeExpression = expression.value ?: return false
 				val selector = definitionSelector().gameType(configGroup.gameType)
 				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
@@ -296,7 +291,6 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val typeExpression = expression.value ?: return false
 				val selector = definitionSelector().gameType(configGroup.gameType)
 				return findDefinitionByType(value, typeExpression, configGroup.project, preferFirst = true, selector = selector) != null
@@ -305,7 +299,6 @@ object CwtConfigHandler {
 			CwtDataTypes.Enum -> {
 				//TODO 支持complex_enum
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val enumName = expression.value ?: return false
 				//匹配参数名（即使对应的定义声明中不存在对应名字的参数，也总是匹配）
 				if(isKey == true && enumName == paramsEnumName) return true
@@ -314,7 +307,6 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Value -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				//val valueSetName = expression.value ?: return false
 				//val valueValues = configGroup.values[valueSetName]?.values ?: return false
 				//return value in valueValues
@@ -322,7 +314,6 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ValueSet -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				return true //任意不带参数，不为复杂表达式的字符串
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope -> {
@@ -351,12 +342,10 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.VariableField -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.IntVariableField -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				return false //TODO
 			}
 			CwtDataTypes.Modifier -> {
@@ -366,25 +355,21 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.SingleAliasRight -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				return false //不在这里处理
 			}
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
 			CwtDataTypes.AliasName -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				val aliasName = expression.value ?: return false
 				return matchesAliasName(value, quoted, aliasName, configGroup, isKey = true)
 			}
 			CwtDataTypes.AliasMatchLeft -> {
 				if(value.isParameterAwareExpression()) return true
-				if(!value.isSimpleScriptExpression()) return false
 				return false //不在这里处理
 			}
 			CwtDataTypes.Constant -> {
@@ -748,7 +733,7 @@ object CwtConfigHandler {
 				val valueSetName = expression.value ?: return
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
 				//提示来自脚本文件的value
-				this@CwtConfigHandler.run {
+				run {
 					val selector = valueInValueSetSelector().gameType(configGroup.gameType)
 					val valuesInValueSet = findAllValuesInValueSet(valueSetName, configGroup.project, distinct = true, selector = selector)
 					for(valueInValueSet in valuesInValueSet) {
@@ -757,7 +742,7 @@ object CwtConfigHandler {
 						val element = valueInValueSet
 						//不显示typeText
 						val lookupElement = LookupElementBuilder.create(element, name)
-							.withExpectedIcon(PlsIcons.ValueInValueSet)
+							.withExpectedIcon(PlsIcons.DynamicValueInValueSet)
 							.withTailText(tailText, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写
@@ -1443,7 +1428,7 @@ object CwtConfigHandler {
 	internal fun doMultiResolveScriptExpression(element: ParadoxScriptExpressionElement, file: PsiFile?, expression: CwtKvExpression, config: CwtKvConfig<*>, rangeInElement: TextRange?, isKey: Boolean?): Collection<PsiElement> {
 		val file by lazy { file ?: element.containingFile }
 		
-		if(element !is ParadoxScriptString || !element.isSimpleScriptExpression()) return emptyList() //排除带参数或者为复杂表达式的情况
+		if(element !is ParadoxScriptString || element.isParameterAwareExpression()) return emptyList() //排除带参数的情况
 		val project = file.project
 		
 		val text = rangeInElement?.substring(element.value) ?: element.value

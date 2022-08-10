@@ -67,9 +67,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getPropertyInfo(element: ParadoxScriptProperty): String {
+	private fun getPropertyInfo(element: ParadoxScriptProperty): String? {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionInfo(element, definitionInfo)
+		val definitionElementInfo = element.definitionElementInfo
+		if(definitionElementInfo != null) return null //不为无法解析的属性元素提供文档
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)
@@ -132,9 +134,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getPropertyDoc(element: ParadoxScriptProperty): String {
+	private fun getPropertyDoc(element: ParadoxScriptProperty): String? {
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return getDefinitionDoc(element, definitionInfo)
+		val definitionElementInfo = element.definitionElementInfo
+		if(definitionElementInfo != null) return null //不为无法解析的属性元素提供文档
 		val name = element.name
 		return buildString {
 			buildPropertyDefinition(element, name)
