@@ -41,16 +41,16 @@ class ParadoxScriptValueFieldExpression(
 				expressionString.contains(".value:") -> expressionString.indexOf("|", 7)
 				else -> -1
 			}.let { if(it != -1) it else expressionString.length }
-			val expressonStringToCheck = expressionString.substring(0, expressionStringToCheckLength)
+			val expressionStringToCheck = expressionString.substring(0, expressionStringToCheckLength)
 			var startIndex: Int
 			var endIndex: Int = -1
-			while(endIndex < expressonStringToCheck.length) {
+			while(endIndex < expressionStringToCheck.length) {
 				startIndex = endIndex + 1
-				endIndex = expressonStringToCheck.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
+				endIndex = expressionStringToCheck.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
 				textRanges.add(TextRange.create(startIndex, endIndex))
 			}
 			//加入"."的expressionInfo
-			for(pipeIndex in expressonStringToCheck.indicesOf('.')) {
+			for(pipeIndex in expressionStringToCheck.indicesOf('.')) {
 				infos.add(ParadoxScriptOperatorExpressionInfo(".", TextRange.create(pipeIndex, pipeIndex + 1)))
 			}
 			for((index, textRange) in textRanges.withIndex()) {
@@ -184,6 +184,10 @@ class ParadoxScriptValueFieldExpression(
 			return all { it == '_' || it == ':' || it == '|' || it.isExactLetter() || it.isExactDigit() }
 		}
 	}
+	
+	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
+	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
+	val scriptValueParametersStartIndex = if(dataSourceInfo == null) -1 else expressionString.indexOf('|', dataSourceInfo.textRange.endOffset)
 	
 	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
 		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况

@@ -72,12 +72,12 @@ class CwtImageLocationExpression(
 		} else if(propertyName != null) {
 			//目前只接收类型为string的值
 			//propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
-			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames == null || extraPropertyNames.isEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
 			while(true) {
@@ -119,12 +119,12 @@ class CwtImageLocationExpression(
 			return tupleOf(filePath, files, frame)
 		} else if(propertyName != null && propertyName.isNotEmpty()) {
 			//目前只接收类型为string的值
-			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames == null || extraPropertyNames.isEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
 			while(true) {

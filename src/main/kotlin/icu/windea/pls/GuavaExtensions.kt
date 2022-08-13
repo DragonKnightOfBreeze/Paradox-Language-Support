@@ -3,6 +3,7 @@
 package icu.windea.pls
 
 import com.google.common.cache.*
+import java.util.concurrent.*
 
 private const val debugMode = false
 
@@ -24,7 +25,11 @@ inline fun <K, V, K1 : K, V1 : V> CacheBuilder<K, V>.buildCache(crossinline buil
 }
 
 inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: () -> V): V {
-	return get(key) { defaultValue() }
+	try {
+		return get(key) { defaultValue() }
+	} catch(e: ExecutionException) {
+		throw e.cause ?: e
+	}
 }
 
 operator fun <K : Any, V> Cache<K, V>.get(key: K): V? {

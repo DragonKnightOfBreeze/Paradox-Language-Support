@@ -60,6 +60,9 @@
     <codeInsight.parameterInfo
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptParameterInfoHandler"/>
+    <codeInsight.parameterInfo
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.editor.ParadoxScriptValueExpressionParameterInfoHandler"/>
     <!--Try to keep correct inlay hint order-->
     <!--<codeInsight.inlayProvider-->
     <!--    language="PARADOX_SCRIPT"-->

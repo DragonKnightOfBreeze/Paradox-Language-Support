@@ -120,6 +120,9 @@ class ParadoxScriptScopeFieldExpression(
 		}
 	}
 	
+	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
+	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
+	
 	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
 		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
 		//要求重新匹配

@@ -14,49 +14,55 @@ import icu.windea.pls.util.selector.*
  * 显示定义的参数信息（如果支持）。
  */
 class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProperty, Set<String>> {
-	private fun findProperty(context: ParameterInfoContext): ParadoxScriptProperty? {
-		//向上找第一个scriptProperty，直到其作为子节点的scriptProperty可以匹配enum[scripted_effect_params]
+	//向上找第一个scriptProperty，直到其作为子节点的scriptProperty可以匹配enum[scripted_effect_params]
+	
+	private fun findTargetElement(context: ParameterInfoContext): ParadoxScriptProperty? {
 		val element = context.file.findElementAt(context.offset) ?: return null
-		return element.parents(true).filterIsInstance<ParadoxScriptProperty>().find {prop ->
-			prop.definitionElementInfo?.takeIf { it.isValid }?.propertyConfigs?.any { propConfig -> 
-				propConfig.properties?.any {prop ->  
-					prop.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName }
+		return element
+			.parents(true)
+			.filterIsInstance<ParadoxScriptProperty>()
+			.find { prop ->
+				prop.definitionElementInfo?.takeIf { it.isValid }?.propertyConfigs?.any { propConfig ->
+					propConfig.properties?.any { prop ->
+						prop.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName }
+					} ?: false
 				} ?: false
-			} ?: false
-		}?.takeIf { result ->
-			//光标位置必须位于block中
-			result.propertyValue?.textRange?.let { r -> context.offset > r.startOffset && context.offset < r.endOffset } ?: false
-		}
+			}
+			?.takeIf { result ->
+				//光标位置必须位于block中
+				result.propertyValue?.textRange?.let { r -> context.offset > r.startOffset && context.offset < r.endOffset } ?: false
+			}
 	}
 	
 	override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptProperty? {
-		val result = findProperty(context) ?: return null
-		val definitionName = result.name
-		val definitionType = result.getPropertyConfig()?.keyExpression?.value ?: return null
-		val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)
+		val targetElement = findTargetElement(context) ?: return null
+		val definitionName = targetElement.name
+		val definitionType = targetElement.getPropertyConfig()?.keyExpression?.value ?: return null
 		//合并所有可能的参数名
+		val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)
 		val definitions = findDefinitionsByType(definitionName, definitionType, context.project, selector = selector)
-		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition -> 
-			definition.parameterMap.keys.takeIfNotEmpty()
+		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition ->
+			definition.parameterMap.keys.ifEmpty { setOf(PlsDocBundle.message("noParameters")) }
 		}
 		if(parameterNamesSet.isEmpty()) return null
 		context.itemsToShow = parameterNamesSet.toTypedArray()
-		return result
+		return targetElement
 	}
 	
 	override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): ParadoxScriptProperty? {
-		val result = findProperty(context) ?: return null
+		val targetElement = findTargetElement(context) ?: return null
 		val current = context.parameterOwner
-		if(current == null || current === result) return result
-		return null
+		if(current != null && current !== targetElement) return null
+		return targetElement
 	}
 	
 	override fun updateUI(p: Set<String>, context: ParameterInfoUIContext) {
 		//PARAM1, PARAM2, ...
 		//不高亮特定的参数
-		val text = p.joinToString()
-		val startOffset = text.length
-		val endOffset = text.length
+		val paramNames = p
+		val text = paramNames.joinToString()
+		val startOffset = 0
+		val endOffset = 0
 		context.setupUIComponentPresentation(text, startOffset, endOffset, false, false, false, context.defaultParameterColor)
 	}
 	

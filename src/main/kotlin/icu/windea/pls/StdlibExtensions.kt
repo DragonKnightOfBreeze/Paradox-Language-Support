@@ -36,7 +36,7 @@ fun Number.format(digits: Int): String {
 inline fun String.takeIfNotEmpty() = this.takeIf { it.isNotEmpty() }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T> Collection<T>?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
+inline fun <T, C: Collection<T>> C?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
 
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
 	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
@@ -693,6 +693,16 @@ inline fun <reified R> Iterable<*>.findIsInstance(): R? {
 
 @Suppress("UNCHECKED_CAST")
 fun <R> Iterable<*>.findIsInstance(klass: Class<R>): R? {
+	for(element in this) if(klass.isInstance(element)) return element as R
+	return null
+}
+
+inline fun <reified R> Sequence<*>.findIsInstance(): R? {
+	return findIsInstance(R::class.java)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <R> Sequence<*>.findIsInstance(klass: Class<R>): R? {
 	for(element in this) if(klass.isInstance(element)) return element as R
 	return null
 }

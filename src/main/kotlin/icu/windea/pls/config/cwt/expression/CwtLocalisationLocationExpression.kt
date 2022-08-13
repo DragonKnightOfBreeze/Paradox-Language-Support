@@ -52,7 +52,7 @@ class CwtLocalisationLocationExpression(
 			val localisation = findLocalisation(key, project, selector = selector)
 			return key to localisation
 		} else if(propertyName != null) {
-			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
 			val localisation = findLocalisation(key, project, selector = selector)
 			return key to localisation
@@ -67,7 +67,7 @@ class CwtLocalisationLocationExpression(
 			val localisations = findLocalisations(key, project, selector = selector)
 			return key to localisations
 		} else if(propertyName != null) {
-			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
 			val localisations = findLocalisations(key, project, selector = selector)
 			return key to localisations

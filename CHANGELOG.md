@@ -51,7 +51,7 @@
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * ~~将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）~~
 * 新增功能：
-  * [ ] ~~当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。~~ （需要延迟判断，何时判断？）
+  * ~~当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。~~ （需要延迟判断，何时判断？）
   * [X] 本地化文件：提供快速更改文本颜色的悬浮工具栏
   * [X] 支持自定义的本地化颜色
   * [X] 脚本文件：本地封装变量（`scripted_variable`）的提取和快速修复（无法解析时）
@@ -66,7 +66,7 @@
   * [X] 兼容通过翻译插件翻译定义、本地化、CWT属性或值的文档
   * [X] 脚本文件：对于effect/trigger等的参数名的参数提示
   * [X] 提供定义和本地化语言区域的文件结构支持（`Navigate > File Structure`）
-  * [ ] 脚本文件：对于SV表达式中的SV参数名的参数提示
+  * [X] 脚本文件：对于SV表达式中的SV参数名的参数提示
   * [ ] ~~实现代码检查：不期望的脚本语法（多种情况，需要确认）~~（待确定）
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
   * [ ] 实现工具栏动作：生成所有缺失的相关本地化
@@ -108,9 +108,6 @@
   * [X] 支持值类型：`scope` `scope_field` `scope_group`，以及相关功能：匹配、代码提示、引用解析、代码检查（暂不精确匹配scope）
   * [X] 支持值类型：`value_field`，以及相关功能：匹配、代码提示、引用解析（暂不精确匹配scope，不要求值类型（float/int）必须匹配）
   * [X] 支持值类型：`value_field`的特殊SV语法（`value:xxx|PN|PV|`）以及相关功能
-  * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
-  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
-  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [X] 支持在文档注释中提示alias modifier localisation_command的所有支持的作用域的名字（supported scopes）
   * [X] 优化获取和应用定义元素（属性和值）的CWT规则的代码逻辑（基于CWT规则和elementPath，用于实现代码提示、代码检查等）
   * [X] 支持匹配和提示参数名（`some_effect = { PARAM = xxx }`中的`PARAM`）
@@ -120,6 +117,9 @@
   * [X] 优化：提示scopeFieldPrefix和scopeFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [X] 优化：提示valueFieldPrefix和valueFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [X] 优化：`scope_field`支持`event_target:revolt_situation.owner`的写法
+  * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
+  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
+  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ~~不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）~~（没有必要提供）
