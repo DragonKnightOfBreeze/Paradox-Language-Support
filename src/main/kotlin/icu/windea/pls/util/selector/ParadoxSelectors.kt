@@ -66,7 +66,7 @@ class ParadoxPreferRootFileSelector<T>(
 	}
 	
 	override fun comparator(): Comparator<T> {
-		return complexCompareBy({ it }, { null }, { rootFile == it })
+		return complexCompareBy({ it }, { null }, { rootFile == selectRootFile(it) })
 	}
 }
 
@@ -102,7 +102,7 @@ class ParadoxPreferLocaleSelector(
 	}
 	
 	override fun comparator(): Comparator<ParadoxLocalisationProperty> {
-		return complexCompareBy({ it.localeConfig }, { it.id }, { locale == it })
+		return complexCompareBy({ it.localeConfig }, { it.id }, { locale == it }) //同时也按照localeId来进行排序
 	}
 }
 
@@ -144,12 +144,12 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
 	crossinline selector: (T) -> R?,
 	crossinline comparableSelector: (R) -> C? = { null },
 	crossinline pinPredicate: (R) -> Boolean = { false }
-): java.util.Comparator<T> {
+): Comparator<T> {
 	return Comparator { a, b ->
 		val a1 = selector(a)
 		val b1 = selector(b)
 		when {
-			a1 == b1 -> 0
+			a1 == b1 -> 1
 			a1 == null -> 1
 			b1 == null -> -1
 			pinPredicate(b1) -> 1
@@ -179,7 +179,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
 		val a1 = selector(a)
 		val b1 = selector(b)
 		when {
-			a1 == b1 -> 0
+			a1 == b1 -> 1
 			a1 == null -> 1
 			b1 == null -> -1
 			pinPredicate(b1) -> 1

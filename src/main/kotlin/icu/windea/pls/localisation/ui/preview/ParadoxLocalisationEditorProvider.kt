@@ -54,6 +54,6 @@ class ParadoxLocalisationEditorProvider : AsyncFileEditorProvider, DumbAware {
 	}
 	
 	override fun getPolicy(): FileEditorPolicy {
-		return FileEditorPolicy.HIDE_DEFAULT_EDITOR
+		return FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR
 	}
 }
