@@ -1,7 +1,32 @@
 <html>
 <body>
   <p>
-    Reports invalid value field expressions.
+    Reports incorrect value field expressions.
+  </p>
+  <p><b>Example:</b></p>
+  <pre>
+# value field with the prefix 'trigger:' and the trigger data source 'some_trigger'
+trigger:some_trigger
+# value field with scope link
+root.owner.trigger:some_trigger
+# script value expression with parameters
+value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
+    
+# ERROR: malformed value field expression
+root..owner.trigger:some_trigger
+# ERROR: unresolved data source
+# Will not report if it's data type is value_set (that is, the matched CWT config is 'value_set[xxx]')
+trigger:some_trigger
+# ERROR: malformed script value expression 
+value:some_sv|||
+# WARN: parameter is set, but never used
+value:some_sv|UNUSED_PARAM|VALUE|
+  </pre>
+  <!-- tooltip end -->
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
+    currently.
   </p>
 </body>
 </html>

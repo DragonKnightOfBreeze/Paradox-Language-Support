@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.*
 //TODO 0.7
 
 /**
- * 不期望的脚本语法的检查。
+ * 不正确的脚本语法的检查。
  *
  * 包括以下几种情况：
  * * 不期望的封装变量引用（必须位于定义之内）
@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
  * * 同一scripted_effect/scripted_trigger定义中存在多个内联数字表达式
  */
 @Unstable
-class UnexpectedScriptSyntaxInspection : LocalInspectionTool() {
+class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(holder)
 	}

@@ -169,6 +169,18 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection"
                      implementationClass="icu.windea.pls.script.inspections.IncorrectFileEncodingInspection"/>
     <!--advanced-->
+    <!--<localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptSyntax"-->
+    <!--                 enabledByDefault="true" level="ERROR"-->
+    <!--                 bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptSyntax"-->
+    <!--                 groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"-->
+    <!--                 groupPathKey="script.inspection.advanced.path"-->
+    <!--                 implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScriptSyntaxInspection/>-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptStructure"
+                     enabledByDefault="false" level="ERROR"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.incorrectScriptStructure"
+                     groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
+                     groupPathKey="script.inspection.advanced.path"
+                     implementationClass="icu.windea.pls.script.inspections.advanced.IncorrectScriptStructureInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
@@ -183,12 +195,6 @@
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.MissingImageInspection"/>
-    <!--<localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnexpectedSyntax"-->
-    <!--                 enabledByDefault="true" level="ERROR"-->
-    <!--                 bundle="messages.PlsBundle" key="script.inspection.advanced.unexpectedSyntax"-->
-    <!--                 groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"-->
-    <!--                 groupPathKey="script.inspection.advanced.path"-->
-    <!--                 implementationClass="icu.windea.pls.script.inspections.advanced.UnexpectedScriptSyntaxInspection"/>-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedFilePath"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="script.inspection.advanced.inspection.unresolvedFilePath"

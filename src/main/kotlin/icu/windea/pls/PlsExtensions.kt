@@ -36,8 +36,6 @@ fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.ope
 
 fun getSettings() = service<ParadoxSettings>().state
 
-fun getInternalSettings() = service<ParadoxInternalSettings>().state
-
 fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).service<InternalConfigProvider>().configGroup
 
 fun getCwtConfig(project: Project) = project.service<CwtConfigProvider>().configGroups
@@ -188,6 +186,8 @@ val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInf
 val ParadoxScriptPropertyKey.definitionElementInfo: ParadoxDefinitionElementInfo?
 	get() = doGetDefinitionElementInfo(this)
 val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo?
+	get() = doGetDefinitionElementInfo(this)
+val ParadoxScriptExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
 	get() = doGetDefinitionElementInfo(this)
 
 private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {

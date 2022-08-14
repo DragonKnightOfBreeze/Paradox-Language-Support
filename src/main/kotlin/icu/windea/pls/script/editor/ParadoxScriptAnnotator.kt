@@ -45,11 +45,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
 		val propertyConfig = element.getPropertyConfig()
 		if(propertyConfig != null) annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig.info.configGroup, holder)
-		
-		//是定义元素，非定义自身，且路径中不带参数
-		if(propertyConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-			annotateUnresolvedKeyExpression(element, holder)
-		}
 	}
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
@@ -58,11 +53,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		
 		val valueConfig = element.getValueConfig()
 		if(valueConfig != null) annotateExpression(element, element.textRange, valueConfig.expression, valueConfig.info.configGroup, holder)
-		
-		//是定义元素，非定义自身，且路径中不带参数
-		if(valueConfig == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-			annotateUnresolvedValueExpression(element, holder)
-		}
 	}
 	
 	private fun annotateExpression(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, configGroup: CwtConfigGroup, holder: AnnotationHolder) {
@@ -179,17 +169,4 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
 		return true
 	}
-	
-	private fun annotateUnresolvedKeyExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
-		if(getInternalSettings().annotateUnresolvedKeyExpression) {
-			holder.newAnnotation(ERROR, PlsBundle.message("script.internal.unresolvedKeyExpression", element.text)).range(element).create()
-		}
-	}
-	
-	private fun annotateUnresolvedValueExpression(element: ParadoxScriptString, holder: AnnotationHolder) {
-		if(getInternalSettings().annotateUnresolvedValueExpression) {
-			holder.newAnnotation(ERROR, PlsBundle.message("script.internal.unresolvedValueExpression", element.text)).range(element).create()
-		}
-	}
-	
 }

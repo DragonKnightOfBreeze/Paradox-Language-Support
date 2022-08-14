@@ -1,7 +1,34 @@
 <html>
 <body>
   <p>
-    Reports invalid scope field expressions.
+    Reports incorrect scope field expressions.
+  </p>
+  <p><b>Example:</b></p>
+  <pre>
+# system scope
+root
+# scope
+owner
+# scope link
+root.owner
+# scope field with the prefix 'event_target:' and the event target data source 'some_target' from script files 
+event_target:some_target
+# scope field with scope link
+root.owner.event_target:some_target
+
+# ERROR: malformed scope field expression
+root..owner
+# ERROR: unresolved scope or prefix mismatch
+rot
+# ERROR: unresolved data source
+# Will not report if it's data type is value_set (that is, the matched CWT config is 'value_set[xxx]')
+event:target:some_unknown_target
+  </pre>
+  <!-- tooltip end -->
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
+    currently.
   </p>
 </body>
 </html>

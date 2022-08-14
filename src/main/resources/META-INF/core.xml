@@ -9,14 +9,13 @@
                  description="Use VFS-based implementation for ParadoxFilePathIndex"/>
     <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"
                  description="Run convert DDS to PNG write action under progress, not to freeze the UI during long operations"/>
-s
+
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
 
     <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
-    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxInternalSettings"/>
     
-    <preloadingActivity implementation="icu.windea.pls.core.ParadoxPreloadActivity"/>
+    <!--<preloadingActivity implementation="icu.windea.pls.core.ParadoxPreloadActivity"/>-->
     
     <pathReferenceProvider implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
@@ -24,6 +23,8 @@ s
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
+    
+    <definitionsScopedSearch implementation="icu.windea.pls.core.ParadoxDefinitionSearch"/>
   </extensions>
   
   <actions>
