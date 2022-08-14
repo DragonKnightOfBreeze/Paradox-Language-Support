@@ -10,9 +10,36 @@
 ## TODO
 
 * [ ] 完善在线参考文档
-* [ ] ［待确认］自动将模组目录识别为模块目录并绑定游戏类型和依赖的游戏目录和模组的设置
 * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
 * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
+* 功能优化：
+  * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
+* 新增功能：
+  * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
+  * [ ] 实现工具栏动作：生成所有缺失的相关本地化
+  * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
+  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他文件作比较（拥有相同的相对于游戏或模组目录的路径，不限文件类型，如果存在）
+  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他定义/本地化作比较
+* 完善内嵌提示：
+  * [ ] ［搁置］定义和定义元素的作用域的内嵌提示（需要研究）
+* 脚本文件语法解析优化：
+  * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
+* 本地化文件语法解析优化：
+  * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
+  * [ ] 将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等
+* ［长期］完善CWT配置支持
+  * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
+  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
+  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
+  * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
+  * [ ] 优化：更好地兼容嵌套的定义
+  * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
+  
+## 0.7
+
+### 0.7.0
+
+TODO
 
 ## 0.6 > 0.6.7
 
@@ -48,7 +75,6 @@
   * [X] 优化：`Navigate > Related Symbol...`显示的弹出框中，使用所属文件的绝对路径+模组名（如果有）+模组版本（如果有）表示位置信息
   * [X] 优化：`View > Quick Definition`显示的文本中也包含定义的相关注释
   * [X] 完善快速类型定义功能（`View > Quick Type Definition`）
-  * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * ~~将游戏类型和游戏/模组目录依赖的配置保存到游戏或模组根目录下的特定配置文件（暂定为`.pls.settings.json`）中，将游戏/模组目录依赖视为合成库（参见`AdditionalLibraryRootsProvider`）~~
 * 新增功能：
   * ~~当用户新打开的项目中被识别包含模组文件夹时，如果没有将对应的游戏目录作为依赖添加到对应的项目/模块，弹出右下角通知要求用户添加，如同CWTools一样。~~ （需要延迟判断，何时判断？）
@@ -69,15 +95,9 @@
   * [X] 脚本文件：对于SV表达式中的SV参数名的参数提示
   * [X] 实现代码检查-脚本文件；不正确的脚本结构
   * [X] 实现查找实现功能 - 可导航到所有同名的封装变量/定义/本地化
-  * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
-  * [ ] 实现工具栏动作：生成所有缺失的相关本地化
   * [X] 实现`ParadoxQualifiedNameProvider`，用于复制路径/引用（Edit > Copy Path/Reference...）
-  * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
-  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他文件作比较（拥有相同的相对于游戏或模组目录的路径，不限文件类型，如果存在）
-  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他定义/本地化作比较
 * 完善内嵌提示：
   * [X] 脚本文件：值集中的值的内嵌提示（值的类型即值集的名字，`xxx = value_set[event_target]`中的`event_target`）
-  * [ ] ［搁置］定义和定义元素的作用域的内嵌提示（需要研究）
 * 脚本文件语法解析优化：
   * 兼容`common/scripted_effects/99_advanced_documentation.txt`中提到的高级语法
   * [X] 对于`stellaris v3.4`开始新增的`tag`（`optimize_memory`），提供特殊图标和代码高亮，代码提示和验证功能另外由CWT规则提供
@@ -87,13 +107,11 @@
   * [X] 兼容`parameter_condition`语法，以及相关功能：代码高亮、代码折叠、格式化、代码风格设置
   * [X] 获取封装变量名时不再包含作为前缀的"@"
   * [X] 封装变量的值也可以是bool类型（`yes`和`no`）
-  * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
 * 本地化文件语法解析优化：
   * [X] 删除`sequentialNumber`，作为一种特殊的`propertyReference`（如`$VALUE$`）（`stellaris v3.4`开始其语法由`%O%`改成了`$O$`）
   * [X] 支持`iconFrame`（`£leader_skill|3£`中的`3`，可以为变量，如`$LEVEL$`）
   * [X] 支持本地化语言`l_japanese`和`l_korean`
   * [ ] 兼容作为format的本地化中的`<some_part>`语法，其中`some_part`对应特定类型的定义（需要修改原始的CWT规则）
-  * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
 * 内置配置：
   * [X] 添加`predefined_variables`，表示预定义的变量，在本地化文本中使用，实现相关功能：引用解析
 * CWT配置：
@@ -118,11 +136,6 @@
   * [X] 优化：提示scopeFieldPrefix和scopeFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [X] 优化：提示valueFieldPrefix和valueFieldDataSource时排除其input_scopes不匹配上一个scope的output_scope的
   * [X] 优化：`scope_field`支持`event_target:revolt_situation.owner`的写法
-  * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
-  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
-  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
-  * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
-  * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
 * ~~不再内置CWT配置文件，改为需要以库的方式添加到项目和模块中（Cwt Config，CWT配置）~~（没有必要提供）
   * 可以通过内置的Github链接从网络下载需要的CWT配置文件（使用Git克隆远程仓库，然后保存到本地）
   * 包括官方Github链接~~和镜像Github链接（https://github.com.cnpmjs.org）~~
