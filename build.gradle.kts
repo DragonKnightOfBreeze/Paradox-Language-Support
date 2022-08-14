@@ -1,14 +1,14 @@
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.6.0"
-	id("org.jetbrains.intellij") version "1.5.2"
+	id("org.jetbrains.kotlin.jvm") version "1.7.0"
+	id("org.jetbrains.intellij") version "1.8.0"
 	id("org.jetbrains.grammarkit") version "2021.2.2"
 }
 
 group = "icu.windea"
-version = "0.6.6"
+version = "0.7.0"
 
 intellij {
-	version.set("2022.1")
+	version.set("2022.2")
 	pluginName.set("Paradox Language Support")
 	plugins.add("com.intellij.platform.images")
 	plugins.add("cn.yiiguxing.plugin.translate:3.3.2") //https://github.com/YiiGuxing/TranslationPlugin
@@ -16,7 +16,7 @@ intellij {
 	//reference
 	//plugins.add("markdown")
 	//plugins.add("properties")
-	plugins.add("com.intellij.java")
+	//plugins.add("com.intellij.java")
 	//plugins.add("org.jetbrains.kotlin")
 }
 

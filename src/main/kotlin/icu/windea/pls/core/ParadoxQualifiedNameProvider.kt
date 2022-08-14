@@ -17,11 +17,11 @@ import icu.windea.pls.script.psi.*
  * * 忽略非定义、非定义元素的脚本属性，以及非本地化的本地化属性
  */
 class ParadoxQualifiedNameProvider : QualifiedNameProvider {
-	override fun adjustElementToCopy(element: PsiElement?): PsiElement? {
+	override fun adjustElementToCopy(element: PsiElement): PsiElement? {
 		return null
 	}
 	
-	override fun getQualifiedName(element: PsiElement?): String? {
+	override fun getQualifiedName(element: PsiElement): String? {
 		when {
 			element is ParadoxScriptVariable -> return element.name
 			element is ParadoxScriptProperty -> {
@@ -38,7 +38,7 @@ class ParadoxQualifiedNameProvider : QualifiedNameProvider {
 		}
 	}
 	
-	override fun qualifiedNameToElement(fqn: String?, project: Project?): PsiElement? {
+	override fun qualifiedNameToElement(fqn: String, project: Project): PsiElement? {
 		return null //不处理
 	}
 }
