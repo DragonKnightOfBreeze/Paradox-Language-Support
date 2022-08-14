@@ -49,9 +49,6 @@
     <lang.findUsagesProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
-    <lang.implementationTextSelectioner
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.editor.ParadoxScriptImplementationTextSelectioner"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <!--<gotoDeclarationHandler implementation="icu.windea.pls.script.editor.ParadoxScriptGotoDeclarationHandler"/>-->
     <annotator
@@ -63,6 +60,30 @@
     <codeInsight.parameterInfo
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptValueExpressionParameterInfoHandler"/>
+    <codeInsight.typeInfo
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
+    <typeDeclarationProvider
+        implementation="icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider"/>
+    <declarationRangeHandler
+        key="icu.windea.pls.script.psi.ParadoxScriptProperty"
+        implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
+    <lang.implementationTextSelectioner
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
+    <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
+    <completion.contributor
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
+    <codeInsight.lineMarkerProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedLocalisationLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedImagesLineMarkerProvider"/>
     <!--Try to keep correct inlay hint order-->
     <!--<codeInsight.inlayProvider-->
     <!--    language="PARADOX_SCRIPT"-->
@@ -105,6 +126,8 @@
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxDefinitionChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.script.navigation.ParadoxScriptedVariableImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.script.navigation.ParadoxDefinitionImplementationsSearch"/>
     <projectViewNodeDecorator
         implementation="icu.windea.pls.script.projectView.ParadoxScriptProjectViewNodeDecorator"/>
     <lang.psiStructureViewFactory
@@ -127,28 +150,6 @@
     <refactoring.inlineHandler
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
-    <completion.contributor
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
-    <codeInsight.typeInfo
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptTypeProvider"/>
-    <typeDeclarationProvider
-        implementation="icu.windea.pls.script.codeInsight.ParadoxScriptTypeDeclarationProvider"/>
-    <declarationRangeHandler
-        key="icu.windea.pls.script.psi.ParadoxScriptProperty"
-        implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
-    <codeInsight.lineMarkerProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxDefinitionLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxRelatedLocalisationLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.script.codeInsight.makers.ParadoxRelatedImagesLineMarkerProvider"/>
-    <errorQuickFixProvider
-        implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>

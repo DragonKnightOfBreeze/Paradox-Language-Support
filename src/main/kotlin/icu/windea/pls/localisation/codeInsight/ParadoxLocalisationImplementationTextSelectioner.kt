@@ -1,8 +1,9 @@
-package icu.windea.pls.localisation.editor
+package icu.windea.pls.localisation.codeInsight
 
 import com.intellij.codeInsight.hint.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -13,7 +14,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxLocalisationImplementationTextSelectioner: ImplementationTextSelectioner {
 	override fun getTextStartOffset(element: PsiElement): Int {
 		return when {
-			element is ParadoxScriptProperty -> {
+			element is ParadoxLocalisationProperty -> {
 				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
 			}
 			else -> {

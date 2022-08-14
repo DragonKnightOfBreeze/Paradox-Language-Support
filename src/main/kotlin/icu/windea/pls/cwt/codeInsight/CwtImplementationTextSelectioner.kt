@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.editor
+package icu.windea.pls.cwt.codeInsight
 
 import com.intellij.codeInsight.hint.*
 import com.intellij.psi.*

@@ -32,15 +32,15 @@
     <lang.findUsagesProvider
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
-    <lang.implementationTextSelectioner
-        language="CWT"
-        implementationClass="icu.windea.pls.cwt.editor.CwtImplementationTextSelectioner"/>
     <elementDescriptionProvider implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <lang.commenter
         language="CWT"
         implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
     <breadcrumbsInfoProvider
         implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
+    <lang.implementationTextSelectioner
+        language="CWT"
+        implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
     <lang.formatter
         language="CWT"
         implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>

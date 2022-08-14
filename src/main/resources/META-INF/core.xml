@@ -23,8 +23,6 @@
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
-    
-    <definitionsScopedSearch implementation="icu.windea.pls.core.ParadoxDefinitionSearch"/>
   </extensions>
   
   <actions>

@@ -487,7 +487,7 @@ com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion pre
 	at icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex.findAll(ParadoxDefinitionTypeIndex.kt:185)
 	at icu.windea.pls.PlsExtensionsKt.findDefinitionsByType(PlsExtensions.kt:634)
 	at icu.windea.pls.PlsExtensionsKt.findDefinitionsByType$default(PlsExtensions.kt:628)
-	at icu.windea.pls.script.codeInsight.makers.ParadoxDefinitionLineMarkerProvider.collectNavigationMarkers(ParadoxDefinitionLineMarkerProvider.kt:30)
+	at icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionLineMarkerProvider.collectNavigationMarkers(ParadoxDefinitionLineMarkerProvider.kt:30)
 	at com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider.collectNavigationMarkers(RelatedItemLineMarkerProvider.java:31)
 	at com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider.collectSlowLineMarkers(RelatedItemLineMarkerProvider.java:23)
 	at com.intellij.codeInsight.daemon.impl.LineMarkersPass.queryProviders(LineMarkersPass.java:201)
