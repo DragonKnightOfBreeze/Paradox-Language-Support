@@ -21,10 +21,14 @@ root..owner
 # ERROR: unresolved scope or prefix mismatch
 rot
 # ERROR: unresolved data source
-# Will not report if it's data type is value_set (that is, the matched CWT config is 'value_set[xxx]')
+# Will not report if it's CWT data type is value_set
 event:target:some_unknown_target
   </pre>
   <!-- tooltip end -->
+  <p>
+    A scope field expression is a script key/value expression with CWT data type
+    <code>scope_field/scope/scope_group</code>.
+  </p>
   <p>
     Based on plugin's built-in
     <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>

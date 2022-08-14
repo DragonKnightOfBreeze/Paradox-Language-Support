@@ -15,7 +15,7 @@ value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
 # ERROR: malformed value field expression
 root..owner.trigger:some_trigger
 # ERROR: unresolved data source
-# Will not report if it's data type is value_set (that is, the matched CWT config is 'value_set[xxx]')
+# Will not report if it's CWT data type is value_set
 trigger:some_trigger
 # ERROR: malformed script value expression 
 value:some_sv|||
@@ -23,6 +23,10 @@ value:some_sv|||
 value:some_sv|UNUSED_PARAM|VALUE|
   </pre>
   <!-- tooltip end -->
+  <p>
+    A value field expression is a script key/value expression with CWT data type
+    <code>value_field/int_value_field</code>.
+  </p>
   <p>
     Based on plugin's built-in
     <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
