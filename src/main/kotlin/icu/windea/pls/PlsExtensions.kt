@@ -708,10 +708,10 @@ fun findAllFilesByFilePath(
 
 //com.jetbrains.python.documentation.PyDocumentationLink
 
-private const val cwtLinkPrefix = "cwt#"
-private const val definitionLinkPrefix = "def#"
-private const val localisationLinkPrefix = "loc#"
-private const val filePathLinkPrefix = "#"
+private const val cwtLinkPrefix = "#cwt/"
+private const val definitionLinkPrefix = "#definition/"
+private const val localisationLinkPrefix = "#localisation/"
+private const val filePathLinkPrefix = "#file-path/"
 
 fun resolveScope(link: String, context: PsiElement): PsiElement? {
 	return when {
@@ -723,12 +723,11 @@ fun resolveScope(link: String, context: PsiElement): PsiElement? {
 	}
 }
 
-//stellaris.types.building
-//stellaris.types.civic_or_origin.civic
+//#cwt/stellaris/types/civic_or_origin/civic
 private fun resolveCwtLink(linkWithoutPrefix: String, context: PsiElement): CwtProperty? {
 	return runCatching {
 		val project = context.project
-		val tokens = linkWithoutPrefix.split('.')
+		val tokens = linkWithoutPrefix.split('/')
 		val gameType = tokens[0]
 		val configType = tokens[1]
 		when(configType) {
@@ -752,12 +751,10 @@ private fun resolveCwtLink(linkWithoutPrefix: String, context: PsiElement): CwtP
 	}.getOrNull()
 }
 
-//ethos.ethic_authoritarian
-//job.head_researcher
-//civic_or_origin.origin.origin_default
+//#definition/civic_or_origin.origin/origin_default
 private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement): ParadoxDefinitionProperty? {
 	return runCatching {
-		val lastDotIndex = linkWithoutPrefix.lastIndexOf('.')
+		val lastDotIndex = linkWithoutPrefix.lastIndexOf('/')
 		val type = linkWithoutPrefix.substring(0, lastDotIndex)
 		val name = linkWithoutPrefix.substring(lastDotIndex + 1)
 		val selector = definitionSelector().gameTypeFrom(context).preferRootFrom(context)
@@ -765,8 +762,7 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement
 	}.getOrNull()
 }
 
-//NAME
-//KEY
+//#localisation/KEY
 private fun resolveLocalisationLink(linkWithoutPrefix: String, context: PsiElement): ParadoxLocalisationProperty? {
 	return runCatching {
 		val token = linkWithoutPrefix
@@ -827,7 +823,7 @@ fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, con
 	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为定义，则显示链接
 	val isResolved = resolved == true || (resolved == null && findDefinition(name, null, context.project, preferFirst = true, selector = definitionSelector().gameTypeFrom(context)) != null)
-	if(isResolved) return appendPsiLink("$definitionLinkPrefix.$typeExpression.$name", name)
+	if(isResolved) return appendPsiLink("$definitionLinkPrefix$typeExpression/$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
 }

@@ -1,0 +1,32 @@
+# @type:stellaris/civic_or_origin.civic
+civic_shared_burden = {
+	description = civic_tooltip_shared_burden_effects
+	swap_type = {
+		name = civic_communist_society
+		description = "civic_tooltip_communist_society_effects"
+		trigger = {
+			has_ascension_perk = ap_future_society
+		}
+	}
+	potential = {
+		ethics = {
+			NOT = {
+				value = ethic_gestalt_consciousness
+			}
+		}
+		authority = {
+			NOT = {
+				value = auth_corporate
+			}
+		}
+		civics = {
+			NOR = {
+				value = civic_galactic_sovereign_megacorp
+				value = civic_family_business
+				value = civic_world_cooperative
+				
+			}
+		}
+	}
+	# ...
+}
