@@ -6,8 +6,8 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.util.selector.*
 
-object ParadoxValueInValueSetIndex : StringStubIndexExtension<ParadoxScriptString>() {
-	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptString>("paradox.valueInValueSet.index")
+object ParadoxValueSetValueIndex : StringStubIndexExtension<ParadoxScriptString>() {
+	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptString>("paradox.valueSetValue.index")
 	private const val version = 7 //0.6.7
 	private const val cacheSize = 2 * 1024
 	
@@ -59,6 +59,6 @@ object ParadoxValueInValueSetIndex : StringStubIndexExtension<ParadoxScriptStrin
 	}
 	
 	private fun getName(it: ParadoxScriptString): String? {
-		return it.stub?.castOrNull<ParadoxValueInValueSetStub>()?.name?.takeIfNotEmpty()
+		return it.stub?.castOrNull<ParadoxValueSetValueStub>()?.name?.takeIfNotEmpty()
 	}
 }

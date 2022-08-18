@@ -734,15 +734,15 @@ object CwtConfigHandler {
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
 				//提示来自脚本文件的value
 				run {
-					val selector = valueInValueSetSelector().gameType(configGroup.gameType)
-					val valuesInValueSet = findAllValuesInValueSet(valueSetName, configGroup.project, distinct = true, selector = selector)
-					for(valueInValueSet in valuesInValueSet) {
-						val n = runCatching { valueInValueSet.stub?.castOrNull<ParadoxValueInValueSetStub>()?.name }.getOrNull() ?: valueInValueSet.value
+					val selector = valueSetValueSelector().gameType(configGroup.gameType)
+					val valuesInValueSet = findAllValueSetValues(valueSetName, configGroup.project, distinct = true, selector = selector)
+					for(valueSetValue in valuesInValueSet) {
+						val n = runCatching { valueSetValue.stub?.castOrNull<ParadoxValueSetValueStub>()?.name }.getOrNull() ?: valueSetValue.value
 						val name = n.quoteIf(quoted)
-						val element = valueInValueSet
+						val element = valueSetValue
 						//不显示typeText
 						val lookupElement = LookupElementBuilder.create(element, name)
-							.withExpectedIcon(PlsIcons.DynamicValueInValueSet)
+							.withExpectedIcon(PlsIcons.ValueSetValue)
 							.withTailText(tailText, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写
@@ -752,17 +752,17 @@ object CwtConfigHandler {
 				//提示预定义的value
 				run {
 					val valueConfig = configGroup.values[valueSetName] ?: return@run
-					val valueInValueSetConfigs = valueConfig.valueConfigMap.values
-					if(valueInValueSetConfigs.isEmpty()) return@run
-					for(valueInValueSetConfig in valueInValueSetConfigs) {
-						if(quoted && valueInValueSetConfig.stringValue == null) continue
-						val n = valueInValueSetConfig.value
+					val valueSetValueConfigs = valueConfig.valueConfigMap.values
+					if(valueSetValueConfigs.isEmpty()) return@run
+					for(valueSetValueConfig in valueSetValueConfigs) {
+						if(quoted && valueSetValueConfig.stringValue == null) continue
+						val n = valueSetValueConfig.value
 						//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 						val name = n.quoteIf(quoted)
-						val element = valueInValueSetConfig.pointer.element ?: continue
+						val element = valueSetValueConfig.pointer.element ?: continue
 						val typeFile = valueConfig.pointer.containingFile
 						val lookupElement = LookupElementBuilder.create(element, name)
-							.withExpectedIcon(PlsIcons.ValueInValueSet)
+							.withExpectedIcon(PlsIcons.HardCodedValueSetValue)
 							.withTailText(tailText, true)
 							.withTypeText(typeFile?.name, typeFile?.icon, true)
 							.withExpectedInsertHandler(isKey)
@@ -1355,15 +1355,15 @@ object CwtConfigHandler {
 				val gameType = file.fileInfo?.gameType ?: return null
 				//尝试解析为来自脚本文件的value
 				run {
-					val selector = valueInValueSetSelector().gameType(gameType)
-					val resolved = findValueInValueSet(valueName, valueSetName, project, selector = selector)
+					val selector = valueSetValueSelector().gameType(gameType)
+					val resolved = findValueSetValue(valueName, valueSetName, project, selector = selector)
 					if(resolved != null) return resolved
 				}
 				//尝试解析为预定义的value
 				run {
 					val configGroup = getCwtConfig(project).getValue(gameType)
-					val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
-					val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtNamedElement>()
+					val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+					val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
 					if(resolved != null) return resolved
 				}
 				return null
@@ -1505,15 +1505,15 @@ object CwtConfigHandler {
 				val gameType = file.fileInfo?.gameType ?: return emptyList()
 				//尝试解析为来自脚本文件的value
 				run {
-					val selector = valueInValueSetSelector().gameType(gameType)
-					val resolved = findValuesInValueSet(valueName, valueSetName, project, selector = selector)
+					val selector = valueSetValueSelector().gameType(gameType)
+					val resolved = findValueSetValues(valueName, valueSetName, project, selector = selector)
 					if(resolved.isNotEmpty()) return resolved
 				}
 				//尝试解析为预定义的value
 				run {
 					val configGroup = getCwtConfig(project).getValue(gameType)
-					val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
-					val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtNamedElement>()
+					val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+					val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
 					if(resolved != null) return resolved.toSingletonList()
 				}
 				return emptyList()
@@ -1598,14 +1598,14 @@ object CwtConfigHandler {
 					val gameType = configGroup.gameType
 					//尝试解析为来自脚本文件的value
 					run {
-						val selector = valueInValueSetSelector().gameType(gameType)
-						val resolved = findValueInValueSet(valueName, valueSetName, project, selector = selector)
+						val selector = valueSetValueSelector().gameType(gameType)
+						val resolved = findValueSetValue(valueName, valueSetName, project, selector = selector)
 						if(resolved != null) return resolved
 					}
 					//尝试解析为预定义的value
 					run {
-						val valueInValueSetConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
-						val resolved = valueInValueSetConfig.pointer.element.castOrNull<CwtNamedElement>()
+						val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(valueName) ?: return@run
+						val resolved = valueSetValueConfig.pointer.element.castOrNull<CwtNamedElement>()
 						if(resolved != null) return resolved
 					}
 					return null

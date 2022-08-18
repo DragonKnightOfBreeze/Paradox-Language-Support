@@ -46,7 +46,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 				}
 				when(expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.valueInValueSet") else element.value
+						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.valueSetValue") else element.value
 					}
 					else -> {
 						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.expression") else element.value

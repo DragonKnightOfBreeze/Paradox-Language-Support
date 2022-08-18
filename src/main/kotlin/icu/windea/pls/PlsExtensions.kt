@@ -620,34 +620,34 @@ inline fun processSyncedLocalisationVariants(
 }
 
 
-fun findValueInValueSet(
+fun findValueSetValue(
 	name: String,
 	valueSetName: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
 ): ParadoxScriptString? {
-	return ParadoxValueInValueSetIndex.findOne(name, valueSetName, project, scope, selector)
+	return ParadoxValueSetValueIndex.findOne(name, valueSetName, project, scope, selector)
 }
 
-fun findValuesInValueSet(
+fun findValueSetValues(
 	name: String,
 	valueSetName: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
 ): Set<ParadoxScriptString> {
-	return ParadoxValueInValueSetIndex.findAll(name, valueSetName, project, scope, selector)
+	return ParadoxValueSetValueIndex.findAll(name, valueSetName, project, scope, selector)
 }
 
-fun findAllValuesInValueSet(
+fun findAllValueSetValues(
 	valueSetName: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false,
 	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
 ): Set<ParadoxScriptString> {
-	return ParadoxValueInValueSetIndex.findAll(valueSetName, project, scope, distinct, selector)
+	return ParadoxValueSetValueIndex.findAll(valueSetName, project, scope, distinct, selector)
 }
 
 

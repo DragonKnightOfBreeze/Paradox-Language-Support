@@ -617,7 +617,7 @@ com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion pre
 	at icu.windea.pls.PlsExtensionsKt.getValueConfig(PlsExtensions.kt:273)
 	at icu.windea.pls.PlsExtensionsKt.getValueConfig$default(PlsExtensions.kt:263)
 	at icu.windea.pls.PlsExtensionsKt.getConfig(PlsExtensions.kt:249)
-	at icu.windea.pls.script.codeInsight.hints.ParadoxValueInValueSetInfoHintsProvider.collect(ParadoxValueInValueSetInfoHintsProvider.kt:30)
+	at icu.windea.pls.script.codeInsight.hints.ParadoxValueSetValueInfoHintsProvider.collect(ParadoxValueSetValueInfoHintsProvider.kt:30)
 	at icu.windea.pls.script.codeInsight.hints.ParadoxScriptHintsProvider$getCollectorFor$1.collect(ParadoxScriptHintsProvider.kt:33)
 	at com.intellij.codeInsight.hints.CollectorWithSettings.collectHints(InlayHintsUtils.kt:91)
 	at com.intellij.codeInsight.hints.InlayHintsPass$doCollectInformation$1.process(InlayHintsPass.kt:47)

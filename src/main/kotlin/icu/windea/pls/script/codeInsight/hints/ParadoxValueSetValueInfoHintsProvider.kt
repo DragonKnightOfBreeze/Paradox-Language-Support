@@ -13,13 +13,13 @@ import icu.windea.pls.script.psi.*
  * 值集中的值的内嵌提示（值的类型即值集的名字）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxValueInValueSetInfoHintsProvider  : ParadoxScriptHintsProvider<NoSettings>() {
+class ParadoxValueSetValueInfoHintsProvider  : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
-		private val settingsKey = SettingsKey<NoSettings>("ParadoxValueInValueSetInfoHintsSettingsKey")
+		private val settingsKey = SettingsKey<NoSettings>("ParadoxValueSetValueInfoHintsSettingsKey")
 	}
 	
-	override val name: String get() = PlsBundle.message("script.hints.valueInValueSetInfo")
-	override val description: String get() = PlsBundle.message("script.hints.valueInValueSetInfo.description")
+	override val name: String get() = PlsBundle.message("script.hints.valueSetValueInfo")
+	override val description: String get() = PlsBundle.message("script.hints.valueSetValueInfo.description")
 	override val key: SettingsKey<NoSettings> get() = settingsKey
 	
 	override fun createSettings() = NoSettings()

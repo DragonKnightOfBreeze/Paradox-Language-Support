@@ -71,7 +71,7 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 		}
 		
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-			//需要包括scripted_variable, property, value (valueInValueSet)
+			//需要包括scripted_variable, property, value (valueSetValue)
 			val type = node.elementType
 			return when {
 				type == VARIABLE -> false

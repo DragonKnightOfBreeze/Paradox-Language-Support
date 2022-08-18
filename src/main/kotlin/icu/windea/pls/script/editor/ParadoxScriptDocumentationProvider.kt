@@ -39,7 +39,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxScriptExpressionElement -> {
 				val config = element.getConfig()
 				when(config?.expression?.type) {
-					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetInfo(element, config)
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueInfo(element, config)
 					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
 				}
 			}
@@ -84,9 +84,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getValueInValueSetInfo(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
+	private fun getValueSetValueInfo(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
 		return buildString {
-			buildValueInValueSetDefinition(element, config)
+			buildValueSetValueDefinition(element, config)
 		}
 	}
 	
@@ -105,7 +105,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxScriptExpressionElement -> {
 				val config = element.getConfig()
 				when(config?.expression?.type) {
-					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueInValueSetDoc(element, config)
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueDoc(element, config)
 					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
 				}
 			}
@@ -162,9 +162,9 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getValueInValueSetDoc(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
+	private fun getValueSetValueDoc(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
 		return buildString {
-			buildValueInValueSetDefinition(element, config)
+			buildValueSetValueDefinition(element, config)
 		}
 	}
 	
@@ -335,11 +335,11 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueInValueSetDefinition(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>) {
+	private fun StringBuilder.buildValueSetValueDefinition(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>) {
 		definition {
 			//不加上文件信息
 			//加上定义信息
-			append(PlsDocBundle.message("name.cwt.valueInValueSet")).append(" <b>").append(element.value.escapeXmlOrAnonymous()).append("</b>")
+			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(element.value.escapeXmlOrAnonymous()).append("</b>")
 			//加上分组信息
 			val valueSetName = config.expression.value
 			if(valueSetName != null && valueSetName.isNotEmpty()) {

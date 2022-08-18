@@ -101,11 +101,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Value -> {
-				val attributesKey = Keys.VALUE_IN_VALUE_SET_KEY
+				val attributesKey = Keys.VALUE_SET_VALUE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.ValueSet -> {
-				val attributesKey = Keys.VALUE_IN_VALUE_SET_KEY
+				val attributesKey = Keys.VALUE_SET_VALUE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {

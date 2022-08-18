@@ -34,7 +34,7 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
 	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY)
 	@JvmField val ENUM_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumValue"), STATIC_FIELD)
-	@JvmField val VALUE_IN_VALUE_SET_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueInValueSet"), LOCAL_VARIABLE)
+	@JvmField val VALUE_SET_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueSetValue"), LOCAL_VARIABLE)
 	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.systemScope"), STATIC_METHOD)
 	@JvmField val SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scope"), INSTANCE_METHOD)
 	@JvmField val SCOPE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeFieldPrefix"), CUSTOM_KEYWORD3_ATTRIBUTES)

@@ -1,6 +1,6 @@
 package icu.windea.pls.script.psi
 
-interface ParadoxValueInValueSetStub : ParadoxScriptValueStub {
+interface ParadoxValueSetValueStub : ParadoxScriptValueStub {
 	val name: String
 	val valueSetName: String
 	//TODO 保存作用域信息

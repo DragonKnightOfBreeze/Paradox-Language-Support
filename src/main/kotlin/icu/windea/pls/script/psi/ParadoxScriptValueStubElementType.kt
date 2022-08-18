@@ -27,7 +27,7 @@ class ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStu
 			config.valueExpression.type == CwtDataTypes.ValueSet -> {
 				val name = psi.value
 				val valueSetName = config.valueExpression.value.orEmpty()
-				ParadoxValueInValueSetStubImpl(parentStub, name, valueSetName)
+				ParadoxValueSetValueStubImpl(parentStub, name, valueSetName)
 			}
 			else -> throw InternalError() //不期望的结果
 		}
@@ -49,8 +49,8 @@ class ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStu
 	
 	override fun indexStub(stub: ParadoxScriptValueStub, sink: IndexSink) {
 		when{
-			stub is ParadoxValueInValueSetStub -> {
-				stub.valueSetName.takeIfNotEmpty()?.let { valueSetName -> sink.occurrence(ParadoxValueInValueSetIndex.key, valueSetName) }
+			stub is ParadoxValueSetValueStub -> {
+				stub.valueSetName.takeIfNotEmpty()?.let { valueSetName -> sink.occurrence(ParadoxValueSetValueIndex.key, valueSetName) }
 			}
 			else -> throw InternalError() //不期望的结果
 		}
@@ -58,7 +58,7 @@ class ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStu
 	
 	override fun serialize(stub: ParadoxScriptValueStub, dataStream: StubOutputStream) {
 		when {
-			stub is ParadoxValueInValueSetStub -> {
+			stub is ParadoxValueSetValueStub -> {
 				dataStream.writeByte(stub.flag.toInt())
 				dataStream.writeName(stub.name)
 				dataStream.writeName(stub.valueSetName)
@@ -70,10 +70,10 @@ class ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStu
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptValueStub {
 		val flag = dataStream.readByte()
 		when(flag){
-			ParadoxValueInValueSetStub.FLAG -> {
+			ParadoxValueSetValueStub.FLAG -> {
 				val name = dataStream.readNameString().orEmpty()
 				val valueSetName = dataStream.readNameString().orEmpty()
-				return ParadoxValueInValueSetStubImpl(parentStub, name, valueSetName)
+				return ParadoxValueSetValueStubImpl(parentStub, name, valueSetName)
 			}
 			else -> throw InternalError() //不期望的结果
 		}
