@@ -1,0 +1,4 @@
+l_simp_chinese:
+ civic_shared_burden:1 "§H§Y先进社会主义§!§!"
+ civic_shared_burden_desc:1 "§Y主题理念§!\n以先进的哲学、经济学理论为基础，这个文明在实践中摸索出了一套在星际时代行之有效的无产阶级当家作主的政治模式。"
+ civic_tooltip_shared_burden_effects:3 " - £building£ §Y首都建筑§!会替换部分 £job_politician£ §Y$job_politician$§!岗位为 £job_labour_hero£ §Y$job_labour_hero$§!，产出少量的£minerals£ 矿物，£food£ 食物，£energy£ 能量币和£unity£ 凝聚力\n - £job_labour_hero£ §Y$job_labour_hero$§!额外产出§Y0.5§!£unity£ 凝聚力与§Y0.25§!£physics_research£ £engineering_research£ £society_research£ 研究点数\n - §Y$pop_cat_worker$§!阶级额外产出§Y0.25§!£unity£ 凝聚力，同时根据不同的职业分别产出§Y0.25§!£physics_research£ 物理学研究、£engineering_research£ 工程学研究或£society_research£ 社会学研究，并额外消耗§Y0.15§!£consumer_goods£ 消费品\n - 可采用§Y$living_standard_utopian$§!生活标准，无论其所属§Y阶层§!，在该标准下所有£pop£ 人口拥有丰富的£consumer_goods£ §Y$consumer_goods$§!维护费并享有同等§Y政治权力§!。\n"

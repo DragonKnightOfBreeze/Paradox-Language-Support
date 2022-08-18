@@ -22,10 +22,6 @@ class ParadoxGameTypeSelector<T>(
 	override fun selectAll(result: T): Boolean {
 		return select(result)
 	}
-	
-	override fun selectDefault(result: T): Boolean {
-		return select(result)
-	}
 }
 
 class ParadoxRootFileSelector<T>(
@@ -39,10 +35,6 @@ class ParadoxRootFileSelector<T>(
 	}
 	
 	override fun selectAll(result: T): Boolean {
-		return select(result)
-	}
-	
-	override fun selectDefault(result: T): Boolean {
 		return select(result)
 	}
 }
@@ -61,10 +53,6 @@ class ParadoxPreferRootFileSelector<T>(
 		return true
 	}
 	
-	override fun selectDefault(result: T): Boolean {
-		return true
-	}
-	
 	override fun comparator(): Comparator<T> {
 		return complexCompareBy({ it }, { null }, { rootFile == selectRootFile(it) })
 	}
@@ -80,10 +68,6 @@ class ParadoxLocaleSelector(
 	override fun selectAll(result: ParadoxLocalisationProperty): Boolean {
 		return select(result)
 	}
-	
-	override fun selectDefault(result: ParadoxLocalisationProperty): Boolean {
-		return select(result)
-	}
 }
 
 class ParadoxPreferLocaleSelector(
@@ -94,10 +78,6 @@ class ParadoxPreferLocaleSelector(
 	}
 	
 	override fun selectAll(result: ParadoxLocalisationProperty): Boolean {
-		return true
-	}
-	
-	override fun selectDefault(result: ParadoxLocalisationProperty): Boolean {
 		return true
 	}
 	

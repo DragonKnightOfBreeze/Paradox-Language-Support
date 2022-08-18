@@ -5,25 +5,35 @@ class ChainedParadoxSelector<T>(
 ) : ParadoxSelector<T> {
 	val selectors = mutableListOf<ParadoxSelector<T>>()
 	
-	//TODO 处理默认值的链式传递
-	//TODO 处理置顶逻辑
-	
 	var defaultValue: T? = null
+	var defaultValuePriority = 0
 	
 	override fun select(result: T): Boolean {
 		if(selectors.isEmpty()) return super.select(result)
-		if(defaultValue == null && selectDefault(result)) defaultValue = result
-		return selectors.all { it.select(result) }
+		var finalSelectResult = true
+		var finalSelectDefaultResult = true
+		var finalDefaultValuePriority = 0
+		for(selector in selectors) {
+			val selectResult = selector.select(result)
+			finalSelectResult = finalSelectResult && selectResult
+			if(selectResult) finalDefaultValuePriority++
+			finalSelectDefaultResult = finalSelectDefaultResult && (selectResult || selector.selectAll(result))
+		}
+		if(finalSelectDefaultResult && defaultValuePriority < finalDefaultValuePriority){
+			defaultValue = result
+			defaultValuePriority = finalDefaultValuePriority
+		}
+		return finalSelectResult
 	}
 	
 	override fun selectAll(result: T): Boolean {
 		if(selectors.isEmpty()) return super.selectAll(result)
-		return selectors.all { it.selectAll(result) }
-	}
-	
-	override fun selectDefault(result: T): Boolean {
-		if(selectors.isEmpty()) return super.selectDefault(result)
-		return selectors.all { it.selectDefault(result) }
+		var finalSelectAllResult = true
+		for(selector in selectors) {
+			val selectAllResult = selector.selectAll(result)
+			finalSelectAllResult = finalSelectAllResult && selectAllResult
+		}
+		return finalSelectAllResult
 	}
 	
 	override fun comparator(): Comparator<T>? {
