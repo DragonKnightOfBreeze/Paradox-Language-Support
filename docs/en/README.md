@@ -8,28 +8,31 @@
 
 IDEA Plugin: Support for Paradox Language.
 
-Provider syntax parsing, code validation, code completion, navigation, documentation, inlay hints,
-localisation text rendering, DDS image rendering and many other functions for
-paradox script language (mainly `*.txt` files) and paradox localisation language (`*.yml` files).
-Also provider such functions for cwt language (`*.cwt` files),
-and some convenient functions for DDS image files.
+Supports Paradox script language (mainly `*.txt` files) and localisation language (`*.yml` files),
+provide functions such as syntax parsing, navigation, documentation, code validation, reference resolving,
+inlay hints, localisation text rendering and DDS image rendering.
 
-Enable language support by create the descriptor file `descriptor.mod` in the root directory of your Mod,
-and can import game directory and third party mod as dependencies
-by adding related libraries to the module of your Mod in the `Project Structure` page.
+Supports cwt language (`*.cwt` files),
+provide functions such as syntax parsing, navigation and documentation.
 
-This plugin is under developing, some complex functions may not be implemented yet,
-some functions, like code validation, code completion, may work incorrectly, and may cause unexpected bugs.
-The plugin has not yet been fully debugged and validated for Paradox games except Stellaris,
-due to the possible necessity to write specific parsers, rule files and so on,
-when write a mod for other Paradox games, this plugin may cause unexpected bugs.
-If you want more perfect script language support, or write a mod for Paradox games except Stellaris,  
-please consider using [VSCode](https://code.visualstudio.com) with [CWTools](https://github.com/cwtools/cwtools-vscode) plugin.
+Supports DDS image viewing in IDE, and provide necessary editor functions, as common image support by IDE.
 
-This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode), but related functions has not been fully implemented yet.
-These rule files are currently build-in provided by this plugin, with some modifications and extensions, and will be automatically synchronized to the latest version when published.
+By creating the descriptor file `descriptor.mod` in the root directory of your Mod,
+can recognize inside matched files as script files or localization files.
 
-By also install [Translation](https://github.com/YiiGuxing/TranslationPlugin), this plugin will provide [additional functions](https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md)。
+By adding a game directory or third party mod directory as a library to the project or module of your mod
+in the `Project Structure` page, can import it as a dependency of your mod.
+
+This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs during use.
+If you need some functions that this plugin is not implemented or not implemented perfectly,  
+please consider using [VSCode](https://code.visualstudio.com) with its plugin [CWTools](https://github.com/cwtools/cwtools-vscode).
+
+This plugin shares rule files (`*.cwt`) with [CWTools](https://github.com/cwtools/cwtools-vscode),
+These rule files are build-in provided by this plugin, with some modifications and extensions,
+and will be synchronized to the latest version when a new version of this plugin is published.
+
+By also install [Translation](https://github.com/YiiGuxing/TranslationPlugin),
+this plugin will provide [additional functions](https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md)。
 
 ![](../assets/images/script_file_preview_en.png)
 

@@ -57,7 +57,7 @@ class InternalConfigGroup(
 			ParadoxLocaleConfig(id, description, codes, it.pointer)
 		}
 		localeMap = locales.associateBy { it.id }
-		localeMapNotDefault = localeMap.filterKeys { it == "l_default" } 
+		localeMapNotDefault = localeMap.filterKeys { it != "l_default" } 
 		localeMapByCode = buildMap { locales.forEach { locale -> locale.codes.forEach { code -> put(code, locale) } } }
 		
 		//初始化predefinedVariable数据

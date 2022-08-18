@@ -11,68 +11,84 @@
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
   <depends optional="true" config-file="icu.windea.pls-translation.xml">cn.yiiguxing.plugin.translate</depends>
-  
+
   <description><![CDATA[
     <p>
       Support for Paradox Language.
     </p>
     <p>
-      Provider syntax parsing, code validation, code completion, navigation, documentation, inlay hints,
-      localisation text rendering, DDS image rendering and many other functions for
-      paradox script language (mainly <code>*.txt</code> files) and paradox localisation language (<code>*.yml</code> files).
-      Also provider such functions for cwt language (<code>*.cwt</code> files),
-      and some convenient functions for DDS image files.
+      Supports Paradox script language (mainly
+      <code>*.txt</code> files) and localisation language (<code>*.yml</code> files),
+      provide functions such as syntax parsing, navigation, documentation, code validation, reference resolving,
+      inlay hints, localisation text rendering and DDS image rendering.
     </p>
     <p>
-      Enable language support by create the descriptor file <code>descriptor.mod</code> in the root directory of your Mod,
-      and can import game directory and third party mod as dependencies
-      by adding related libraries to the module of your Mod in the <code>Project Structure</code> page.
+      Supports cwt language (<code>*.cwt</code> files),
+      provide functions such as syntax parsing, navigation and documentation.
     </p>
     <p>
-      This plugin is under developing, some complex functions may not be implemented yet,
-      some functions, like code validation, code completion, may work incorrectly, and may cause unexpected bugs.
-      The plugin has not yet been fully debugged and validated for Paradox games except Stellaris, 
-      due to the possible necessity to write specific parsers, rule files and so on,
-      when write a mod for other Paradox games, this plugin may cause unexpected bugs.
-      If you want more perfect script language support, or write a mod for Paradox games except Stellaris,  
-      please consider using <a href="https://code.visualstudio.com">VSCode</a> with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> plugin.
+      Supports DDS image viewing in IDE, and provide necessary editor functions, as common image support by IDE.
     </p>
     <p>
-      This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>, but related functions has not been fully implemented yet.
-      These rule files are currently build-in provided by this plugin, with some modifications and extensions, and will be automatically synchronized to the latest version when published.
+      By creating the descriptor file <code>descriptor.mod</code> in the root directory of your Mod,
+      can recognize inside matched files as script files or localization files.
     </p>
     <p>
-      By also install <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a>, this plugin will provide <a href="https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md">additional functions<a>.  
+      By adding a game directory or third party mod directory as a library to the project or module of your mod
+      in the <code>Project Structure</code> page, can import it as a dependency of your mod.
     </p>
     <p>
-      For functions and usages of this plugin, please refer to the <a href="https://windea.icu/Paradox-Language-Support/#/en/">Reference documentation</a>.
+      This plugin is under developing, some complex functions may not be implemented yet, and may cause unexpected bugs during use.
+      If you need some functions that this plugin is not implemented or not implemented perfectly,
+      please consider using <a href="https://code.visualstudio.com">VSCode</a> with its plugin <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>.
     </p>
-    
+    <p>
+      This plugin shares rule files (<code>*.cwt</code>) with <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>,
+      These rule files are build-in provided by this plugin, with some modifications and extensions,
+      and will be synchronized to the latest version when a new version of this plugin is published.
+    </p>
+    <p>
+      By also install <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a>,
+      will provide <a href="https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md">additional functions<a>.
+    </p>
+    <p>
+      For functions and usages of this plugin, please refer to the
+      <a href="https://windea.icu/Paradox-Language-Support/#/en/">Reference documentation</a>.
+    </p>
+
     <br>
 
     <p>
       Paradox语言支持。
-    <p>
-      为脚本语言（主要是<code>*.txt</code>文件）和本地化语言（<code>*.yml</code>文件）
-      提供语法解析、代码检查、代码补全、导航、文档注释、内嵌提示、本地化文本渲染、DDS图片渲染以及其他诸多功能。
-      也为CWT语言提供必要的上述功能，为DDS图片文件提供一些方便的功能。
     </p>
     <p>
-      通过在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>以提供语言支持。
-      可以通过在<code>项目结构</code>页面中将对应的库添加到你的模组所属的模块，以将游戏目录或第三方模组导入作为依赖。
+      支持Paradox脚本语言（以<code>*.txt</code>文件为主）和本地化语言（<code>*.yml</code>文件），
+      提供语法解析、导航、文档、代码检查、代码补全、引用解析、内嵌提示、本地化文本渲染、DDS图片渲染等功能。
     </p>
     <p>
-      这个插件正在开发中，部分比较复杂的功能可能尚未实现，部分功能如代码检查、代码补全等可能不正确，并且可能发生意外的BUG。
-      这个插件目前尚未对群星以外的P社游戏进行充分的调试和验证，由于可能需要编写特定的解析器、规则文件等，当编写其他P社游戏的模组时，可能会发生意外的BUG。
-      如果需要更加完善的脚本语言支持，或是编写群星以外的P社游戏的模组，
-      请考虑使用<a href="https://code.visualstudio.com">VSCode</a>以及<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>插件。
+      支持CWT语言（<code>*.cwt</code>文件），
+      提供语法解析、导航、文档等功能。
     </p>
     <p>
-      这个插件与<a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>共享规则文件（<code>*.cwt</code>），但是相关功能尚未完全实现。
-      这些规则文件目前由插件内置，经过一定的修改和扩展，当发布时会自动同步到最新版本。
+      支持直接在IDE中查看DDS图片，并且提供必要的编辑器功能，如同IDE对普通图片的支持一样。
+    </p>
+    通过在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>，以将其中匹配的文件识别为脚本文件或本地化文件。
+    <p>
+      通过在<code>项目结构</code>页面中将游戏目录或者第三方模组目录作为库添加到所属的项目或模块，以将其导入作为你的模组的依赖。
     </p>
     <p>
-      同时安装<a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a>时，这个插件将会提供一些<a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.m">额外的功能</a>。    
+      这个插件正在开发中，部分比较复杂的功能可能尚未实现，并且使用过程中可能会发生意外的BUG。
+      如果需要使用这个插件尚未实现或者尚不完善的功能，
+      请考虑使用 <a href="https://code.visualstudio.com">VSCode</a> 及其插件
+      <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a>。
+    </p>
+    <p>
+      这个插件与 <a href="https://github.com/cwtools/cwtools-vscode">CWTools</a> 共享规则文件（<code>*.cwt</code>），
+      这些规则文件目前由插件内置，经过一定的修改和扩展。当插件发布新版本时，规则文件也会同步到最新版本。
+    </p>
+    <p>
+      同时安装<a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a>时，
+      将会提供一些<a href="https://windea.icu/Paradox-Language-Support/#/zh/plugin-integration.m">额外的功能</a>。
     </p>
     <p>
       关于插件的功能和用法，请参阅<a href="https://windea.icu/Paradox-Language-Support/#/zh/">参考文档</a>。
@@ -106,7 +122,7 @@
     ]]></change-notes>
 
   <resource-bundle>messages.PlsBundle</resource-bundle>
-  
+
   <xi:include href="/META-INF/core.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/dds.xml" xpointer="xpointer(/idea-plugin/*)"/>
