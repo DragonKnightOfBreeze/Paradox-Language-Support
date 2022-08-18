@@ -49,7 +49,7 @@ class ParadoxLocalisationPropertyReferenceReference(
 		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
 		
 		//解析成localisation或者synced_localisation
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file) //不指定偏好的语言区域
 		return when(category) {
 			Localisation -> findLocalisations(name, project, selector = selector) //仅查找对应语言区域的
 			SyncedLocalisation -> findSyncedLocalisations(name, project, selector = selector) //仅查找对应语言区域的

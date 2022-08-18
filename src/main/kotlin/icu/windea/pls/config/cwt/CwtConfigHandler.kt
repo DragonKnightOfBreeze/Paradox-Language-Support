@@ -1436,18 +1436,18 @@ object CwtConfigHandler {
 		when(expression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = text
-				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file) //不指定偏好的语言区域
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				val name = text
-				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file) //不指定偏好的语言区域
 				return findSyncedLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.InlineLocalisation -> {
 				if(element.isQuoted()) return emptyList()
 				val name = text
-				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+				val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file) //不指定偏好的语言区域
 				return findLocalisations(name, project, selector = selector) //仅查找用户的语言区域或任意语言区域的
 			}
 			CwtDataTypes.AbsoluteFilePath -> {
@@ -1566,11 +1566,11 @@ object CwtConfigHandler {
 			val expression = CwtKeyExpression.resolve(aliasSubName)
 			when(expression.type) {
 				CwtDataTypes.Localisation -> {
-					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(file) //不指定偏好的语言区域
 					return findLocalisation(name, project, selector = selector)
 				}
 				CwtDataTypes.SyncedLocalisation -> {
-					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(file).preferLocale(preferredParadoxLocale())
+					val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(file) //不指定偏好的语言区域
 					return findSyncedLocalisation(name, project, selector = selector)
 				}
 				CwtDataTypes.TypeExpression -> {
