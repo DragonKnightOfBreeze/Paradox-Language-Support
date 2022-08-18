@@ -37,7 +37,7 @@ class ChainedParadoxSelector<T>(
 			}
 		}
 		//最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
-		return comparator?.thenComparator { a, b ->
+		return comparator?.thenComparing { a, b ->
 			if(a == b) 0 else 1
 		}
 	}
