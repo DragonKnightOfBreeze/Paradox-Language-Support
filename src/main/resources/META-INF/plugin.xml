@@ -49,7 +49,7 @@
     </p>
     <p>
       By also install <a href="https://github.com/YiiGuxing/TranslationPlugin">Translation</a>,
-      will provide <a href="https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md">additional functions<a>.
+      will provide some <a href="https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md">additional functions<a>.
     </p>
     <p>
       For functions and usages of this plugin, please refer to the
@@ -72,7 +72,9 @@
     <p>
       支持直接在IDE中查看DDS图片，并且提供必要的编辑器功能，如同IDE对普通图片的支持一样。
     </p>
-    通过在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>，以将其中匹配的文件识别为脚本文件或本地化文件。
+    <p>
+      通过在你的模组根文件夹下创建描述符文件<code>descriptor.mod</code>，以将其中匹配的文件识别为脚本文件或本地化文件。
+    </p>
     <p>
       通过在<code>项目结构</code>页面中将游戏目录或者第三方模组目录作为库添加到所属的项目或模块，以将其导入作为你的模组的依赖。
     </p>

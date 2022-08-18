@@ -1,4 +1,4 @@
-# @type:stellaris/civic_or_origin.civic
+# @type:stellaris/civic_or_origin
 prosperity = {
 	election_header = "GFX_faction_header_yellow"
 	guiding_ethic = ethic_pacifist

@@ -482,6 +482,10 @@ fun PsiElement.isSpaceOrSingleLineBreak(): Boolean {
 	return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1
 }
 
+fun PsiElement.isSingleLineBreak(): Boolean {
+	return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
+}
+
 inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
 	var current: PsiElement? = element ?: return null
 	while(current != null && current !is PsiFile) {
@@ -508,6 +512,26 @@ inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicat
 	}
 	if(comment != null) return comment.textRange.startOffset
 	return target.textRange.startOffset
+}
+
+fun getLineCommentDocText(element: PsiElement): String? {
+	//认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
+	var lines: LinkedList<String>? = null
+	var prevElement = element.prevSibling ?: element.parent?.prevSibling
+	while(prevElement != null) {
+		val text = prevElement.text
+		if(prevElement !is PsiWhiteSpace) {
+			if(prevElement !is PsiComment) break
+			val docText = text.trimStart('#').trim().escapeXml()
+			if(lines == null) lines = LinkedList()
+			lines.addFirst(docText)
+		} else {
+			if(text.containsBlankLine()) break
+		}
+		// 兼容comment在rootBlock之外的特殊情况
+		prevElement = prevElement.prevSibling
+	}
+	return lines?.joinToString("<br>")
 }
 //endregion
 

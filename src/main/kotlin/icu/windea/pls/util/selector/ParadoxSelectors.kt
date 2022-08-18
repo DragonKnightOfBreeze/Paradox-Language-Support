@@ -93,7 +93,7 @@ internal tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 		from is VirtualFile -> from.fileInfo?.gameType
 		from is PsiFile -> from.fileInfo?.gameType
 		from is ParadoxScriptVariable -> runCatching { from.stub?.gameType }.getOrNull() ?: from.fileInfo?.gameType
-		from is ParadoxDefinitionProperty -> runCatching { from.getStub()?.gameType }.getOrNull() ?: from.fileInfo?.gameType
+		from is ParadoxDefinitionProperty -> runCatching { from.getStub()?.gameType }.getOrNull() ?: from.definitionInfo?.gameType ?: from.fileInfo?.gameType
 		from is ParadoxLocalisationProperty -> runCatching { from.stub?.gameType }.getOrNull() ?: from.fileInfo?.gameType
 		from is PsiElement -> selectGameType(from.parent)
 		else -> null

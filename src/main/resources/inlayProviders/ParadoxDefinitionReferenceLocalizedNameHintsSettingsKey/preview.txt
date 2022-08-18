@@ -1,4 +1,4 @@
-# @type:stellaris/civic_or_origin.civic
+# @type:stellaris/civic_or_origin
 civic_shared_burden = {
 	description = civic_tooltip_shared_burden_effects
 	swap_type = {

@@ -34,7 +34,7 @@ These rule files are build-in provided by this plugin, with some modifications a
 and will be synchronized to the latest version when a new version of this plugin is published.
 
 By also install [Translation](https://github.com/YiiGuxing/TranslationPlugin),
-this plugin will provide [additional functions](https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md)。
+will provide some [additional functions](https://windea.icu/Paradox-Language-Support/#/end/plugin-integration.md)。
 
 For functions and usages of this plugin, please refer to the [Reference documentation](https://windea.icu/Paradox-Language-Support/#/en/) .
 

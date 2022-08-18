@@ -21,7 +21,8 @@ class ParadoxDefinitionInfo(
 	val elementPath: ParadoxElementPath<ParadoxScriptFile>,
 	val gameType: ParadoxGameType,
 	val configGroup: CwtConfigGroup,
-	element: ParadoxDefinitionProperty //直接传入element
+	element: ParadoxDefinitionProperty, //直接传入element
+	val fromTypeComment: Boolean = false
 ) {
 	val type: String = typeConfig.name
 	

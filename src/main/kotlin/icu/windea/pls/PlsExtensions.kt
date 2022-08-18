@@ -16,6 +16,7 @@ import icu.windea.pls.config.definition.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
@@ -27,7 +28,6 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import icu.windea.pls.util.selector.*
 import java.lang.Integer.*
-import java.util.*
 
 //region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
@@ -49,31 +49,6 @@ fun preferredParadoxLocale(): ParadoxLocaleConfig? {
 	//基于OS得到对应的语言区域，或者使用英文
 	val userLanguage = System.getProperty("user.language")
 	return InternalConfigHandler.getLocaleByCode(userLanguage) ?: InternalConfigHandler.getLocaleByCode("en")
-}
-
-fun getLineCommentDocText(element: PsiElement): String? {
-	//认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
-	var lines: LinkedList<String>? = null
-	var prevElement = element.prevSibling ?: element.parent?.prevSibling
-	while(prevElement != null) {
-		val text = prevElement.text
-		if(prevElement !is PsiWhiteSpace) {
-			if(!isPreviousComment(prevElement)) break
-			val docText = text.trimStart('#').trim().escapeXml()
-			if(lines == null) lines = LinkedList()
-			lines.addFirst(docText)
-		} else {
-			if(text.containsBlankLine()) break
-		}
-		// 兼容comment在rootBlock之外的特殊情况
-		prevElement = prevElement.prevSibling
-	}
-	return lines?.joinToString("<br>")
-}
-
-private fun isPreviousComment(element: PsiElement): Boolean {
-	val elementType = element.elementType
-	return elementType == ParadoxLocalisationElementTypes.COMMENT || elementType == ParadoxScriptElementTypes.COMMENT
 }
 
 /**
@@ -170,15 +145,30 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 }
 
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
-	val propertyPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
-	val fileInfo = element.fileInfo ?: return null
+	//当无法获取fileInfo时，尝试基于上一行的特殊注释进行解析
+	val fileInfo = element.fileInfo 
+		?: return resolveDefinitionInfoByMagicComment(element)
+	val rootKey = element.pathName //如果是文件名，不要包含扩展名
 	val path = fileInfo.path
+	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
+	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 	val gameType = fileInfo.gameType
+	val project = element.project
+	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
+	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)
+}
+
+private fun resolveDefinitionInfoByMagicComment(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+	//上一个PSI元素必须是空白，并且包含且仅包含一个换行，这意味着上一个注释在上一行
+	val prevSibling = element.prevSibling ?: element.parent?.prevSibling
+	val prevBlank = prevSibling?.takeIf { it.isSingleLineBreak() } ?: return null
+	val comment = prevBlank.prevSibling as? PsiComment ?: return null
+	val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(comment) ?: return null
+	val elementPath = ParadoxElementPath.resolveFromFile(element) ?: return null
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, rootKey, path, propertyPath)
+	return configGroup.resolveDefinitionInfoByTypeComment(element, type, rootKey, elementPath)
 }
 
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?
@@ -711,7 +701,7 @@ fun findAllFilesByFilePath(
 private const val cwtLinkPrefix = "#cwt/"
 private const val definitionLinkPrefix = "#definition/"
 private const val localisationLinkPrefix = "#localisation/"
-private const val filePathLinkPrefix = "#file-path/"
+private const val filePathLinkPrefix = "#path/"
 
 fun resolveScope(link: String, context: PsiElement): PsiElement? {
 	return when {

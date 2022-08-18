@@ -676,6 +676,16 @@ class CwtConfigGroup(
 		return null
 	}
 	
+	fun resolveDefinitionInfoByTypeComment(
+		element: ParadoxDefinitionProperty,
+		type: String,
+		rootKey: String,
+		elementPath: ParadoxElementPath<ParadoxScriptFile>
+	): ParadoxDefinitionInfo? {
+		val typeConfig = types[type] ?: return null
+		return ParadoxDefinitionInfo(rootKey, typeConfig, elementPath, gameType, this, element, fromTypeComment = true)
+	}
+	
 	fun resolveDefinitionElementInfo(
 		elementPath: ParadoxElementPath<ParadoxDefinitionProperty>,
 		scope: String?,
