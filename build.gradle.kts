@@ -14,10 +14,10 @@ intellij {
 	plugins.add("cn.yiiguxing.plugin.translate:3.3.2") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
-	//plugins.add("markdown")
-	//plugins.add("properties")
-	//plugins.add("com.intellij.java")
-	//plugins.add("org.jetbrains.kotlin")
+	plugins.add("markdown")
+	plugins.add("properties")
+	plugins.add("com.intellij.java")
+	plugins.add("org.jetbrains.kotlin")
 }
 
 repositories {

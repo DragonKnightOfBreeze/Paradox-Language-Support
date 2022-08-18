@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
  * 值集中的值的内嵌提示（值的类型即值集的名字）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxValueSetValueInfoHintsProvider  : ParadoxScriptHintsProvider<NoSettings>() {
+class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey = SettingsKey<NoSettings>("ParadoxValueSetValueInfoHintsSettingsKey")
 	}
@@ -28,7 +28,7 @@ class ParadoxValueSetValueInfoHintsProvider  : ParadoxScriptHintsProvider<NoSett
 		if(element is ParadoxScriptExpressionElement && element is StubBasedPsiElement<*>) {
 			//基于stub
 			val config = element.getConfig() ?: return true
-			if(config.expression.type.let { it == CwtDataTypes.Value || it == CwtDataTypes.ValueSet }){
+			if(config.expression.type.let { it == CwtDataTypes.Value || it == CwtDataTypes.ValueSet }) {
 				val valueSetName = config.expression.value ?: return true
 				val presentation = collectDefinition(valueSetName)
 				val finalPresentation = presentation.toFinalPresentation(this, file, element.project)

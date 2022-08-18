@@ -46,6 +46,7 @@
 * 功能优化：
   * [X] multiResolve本地化时不指定偏好的语言区域
   * [X] 优化paradoxSelector
+  * [X] 补充内嵌注释的预览文本
 
 ### 0.7.0
 
