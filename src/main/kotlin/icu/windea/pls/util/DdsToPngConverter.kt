@@ -36,7 +36,7 @@ object DdsToPngConverter {
 			}
 			return pngAbsPath.absolutePathString()
 		} catch(e: Exception) {
-			logger.warn(e) { "Convert dds image to png image failed. (dds absolute path: $ddsAbsPath, dds relative path: $ddsRelPath, frame: $frame)" }
+			logger.warn("Convert dds image to png image failed. (dds absolute path: $ddsAbsPath, dds relative path: $ddsRelPath, frame: $frame)", e)
 			return null
 		}
 	}

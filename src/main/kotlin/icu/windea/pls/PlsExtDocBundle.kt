@@ -4,9 +4,10 @@ import com.intellij.*
 import icu.windea.pls.model.*
 import org.jetbrains.annotations.*
 
-private const val bundleName = "messages.PlsExtDocBundle"
+@NonNls
+private const val BUNDLE = "messages.PlsExtDocBundle"
 
-object PlsExtDocBundle : DynamicBundle(bundleName) {
+object PlsExtDocBundle : DynamicBundle(BUNDLE) {
 	@Nls
 	@JvmStatic
 	fun message(name: String, definitionType: String, gameType: ParadoxGameType? = null): String? {

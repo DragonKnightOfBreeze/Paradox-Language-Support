@@ -9,9 +9,9 @@ import java.text.*
  * @see icu.windea.pls.script.psi.ParadoxScriptTypedElement
  */
 enum class ParadoxValueType(
-	override val id: String,
-	override val text: String
-) : IdAware, TextAware {
+	val id: String,
+	val text: String
+) {
 	UnknownType("unknown", "(unknown)"),
 	BooleanType("boolean", "boolean"),
 	IntType("int", "int"),

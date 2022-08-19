@@ -1,7 +1,7 @@
 package icu.windea.pls.config.internal.config
 
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icons.*
 
 /**
  * 本地化语言区域的内置配置。

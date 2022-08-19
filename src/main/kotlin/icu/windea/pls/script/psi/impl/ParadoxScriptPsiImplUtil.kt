@@ -5,6 +5,7 @@ import com.intellij.openapi.command.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
@@ -232,7 +233,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getDefinitionType(element: ParadoxScriptProperty): String? {
-		return element.definitionInfo?.typeText
+		return element.definitionInfo?.typesText
 	}
 	
 	@JvmStatic

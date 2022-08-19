@@ -22,8 +22,40 @@ class ParadoxScriptScopeFieldExpression(
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
 	errors: List<ParadoxScriptExpressionError> = emptyList()
 ) : ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
+	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
+	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
+	
+	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
+		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
+		//要求重新匹配
+		result.restartCompletionOnAnyPrefixChange()
+		
+		val offsetInParent = offsetInParent
+		val expressionStringToCheck = expressionString
+		val start = expressionStringToCheck.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
+		val end = expressionStringToCheck.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
+		val isLast = end == expressionString.length
+		
+		val keywordToUse = expressionString.substring(start, offsetInParent)
+		put(PlsCompletionKeys.keywordKey, keywordToUse)
+		
+		val prevScope = if(start == 0) null else expressionString.substring(0, start - 1).substringAfterLast('.')
+		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
+		
+		if(isLast) {
+			completeScope(result)
+			completeValueOfValueField(result)
+			completeValueFieldPrefixOrDataSource(result)
+		} else {
+			completeScope(result)
+		}
+		
+		put(PlsCompletionKeys.keywordKey, expressionString)
+		put(PlsCompletionKeys.prevScopeKey, null)
+	}
+	
 	//TODO 参考CWT规则，作用域本身的别名（如：`root`）也可以包含点号
-	//NOTE 参考CWT规则，可能没有前缀，前缀后的文本需要机遇data_source对应的表达式（如：`value_set[event_target]`）进行解析
+	//NOTE 参考CWT规则，可能没有前缀，前缀后的文本需要基于data_source对应的表达式（如：`value_set[event_target]`）进行解析
 	
 	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeFieldExpression>() {
 		val EmptyExpression by lazy { ParadoxScriptScopeFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
@@ -37,16 +69,16 @@ class ParadoxScriptScopeFieldExpression(
 			val infos = SmartList<ParadoxScriptExpressionInfo>()
 			val errors = SmartList<ParadoxScriptExpressionError>()
 			val textRanges = SmartList<TextRange>()
-			val expressonStringToCheck = expressionString
+			val expressionStringToCheck = expressionString
 			var startIndex: Int
 			var endIndex: Int = -1
-			while(endIndex < expressonStringToCheck.length) {
+			while(endIndex < expressionStringToCheck.length) {
 				startIndex = endIndex + 1
-				endIndex = expressonStringToCheck.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
+				endIndex = expressionStringToCheck.indexOf('.', startIndex).let { if(it != -1) it else expressionString.length }
 				textRanges.add(TextRange.create(startIndex, endIndex))
 			}
 			//加入"."的expressionInfo
-			for(pipeIndex in expressonStringToCheck.indicesOf('.')) {
+			for(pipeIndex in expressionStringToCheck.indicesOf('.')) {
 				infos.add(ParadoxScriptOperatorExpressionInfo(".", TextRange.create(pipeIndex, pipeIndex + 1)))
 			}
 			for(textRange in textRanges) {
@@ -118,37 +150,5 @@ class ParadoxScriptScopeFieldExpression(
 		private fun String.isValidSubExpression(): Boolean {
 			return all { it == '_' || it == ':' || it.isExactLetter() || it.isExactDigit() }
 		}
-	}
-	
-	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
-	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
-	
-	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
-		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
-		//要求重新匹配
-		result.restartCompletionOnAnyPrefixChange()
-		
-		val offsetInParent = offsetInParent
-		val expressionStringToCheck = expressionString
-		val start = expressionStringToCheck.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
-		val end = expressionStringToCheck.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
-		val isLast = end == expressionString.length
-		
-		val keywordToUse = expressionString.substring(start, offsetInParent)
-		put(PlsCompletionKeys.keywordKey, keywordToUse)
-		
-		val prevScope = if(start == 0) null else expressionString.substring(0, start - 1).substringAfterLast('.')
-		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
-		
-		if(isLast) {
-			completeScope(result)
-			completeValueOfValueField(result)
-			completeValueFieldPrefixOrDataSource(result)
-		} else {
-			completeScope(result)
-		}
-		
-		put(PlsCompletionKeys.keywordKey, expressionString)
-		put(PlsCompletionKeys.prevScopeKey, null)
 	}
 }

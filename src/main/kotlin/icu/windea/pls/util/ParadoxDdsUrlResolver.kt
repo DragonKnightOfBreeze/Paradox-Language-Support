@@ -30,7 +30,7 @@ object ParadoxDdsUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn(e) { "Resolve dds url failed. (definition name: ${definition.name})" }
+			logger.warn("Resolve dds url failed. (definition name: ${definition.name})", e)
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}
@@ -47,7 +47,7 @@ object ParadoxDdsUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn(e) { "Resolve dds url failed. (dds file path: ${file.path})" }
+			logger.warn("Resolve dds url failed. (dds file path: ${file.path})", e)
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}
@@ -63,7 +63,7 @@ object ParadoxDdsUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn(e) { "Resolve dds url failed. (dds file path: ${filePath})" }
+			logger.warn("Resolve dds url failed. (dds file path: ${filePath})", e)
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}

@@ -3,18 +3,19 @@ package icu.windea.pls
 import com.intellij.*
 import org.jetbrains.annotations.*
 
-private const val bundleName = "messages.PlsDocBundle"
+@NonNls
+private const val BUNDLE = "messages.PlsDocBundle"
 
-object PlsDocBundle : DynamicBundle(bundleName) {
+object PlsDocBundle : DynamicBundle(BUNDLE) {
 	@Nls
 	@JvmStatic
-	fun message(@NonNls @PropertyKey(resourceBundle = bundleName) key: String, vararg params: Any): String {
+	fun message(@NonNls @PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): String {
 		return getMessage(key, *params)
 	}
 	
 	@Nls
 	@JvmStatic
-	fun lazyMessage(@PropertyKey(resourceBundle = bundleName) key: String, vararg params: Any): () -> String {
+	fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): () -> String {
 		return { getMessage(key, *params) }
 	}
 }

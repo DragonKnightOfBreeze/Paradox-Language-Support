@@ -1,6 +1,7 @@
 package icu.windea.pls.script
 
 import com.intellij.openapi.fileTypes.*
+import icons.*
 import icu.windea.pls.*
 
 object ParadoxScriptFileType : LanguageFileType(ParadoxScriptLanguage) {

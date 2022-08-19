@@ -18,7 +18,7 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 			symbol is ParadoxScriptProperty -> {
 				val definitionInfo = symbol.definitionInfo
 				if(definitionInfo != null) {
-					if(definitionInfo.typeCount == 1) {
+					if(definitionInfo.types.size == 1) {
 						return definitionInfo.typeConfig.pointer.element?.toSingletonArray()
 					} else {
 						//这里的element可能是null，以防万一，处理是null的情况

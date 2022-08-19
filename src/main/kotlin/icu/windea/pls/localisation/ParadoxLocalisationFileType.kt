@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation
 
 import com.intellij.openapi.fileTypes.*
+import icons.*
 import icu.windea.pls.*
 
 object ParadoxLocalisationFileType : LanguageFileType(ParadoxLocalisationLanguage) {

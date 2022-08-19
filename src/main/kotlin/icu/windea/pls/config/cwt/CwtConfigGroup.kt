@@ -670,7 +670,7 @@ class CwtConfigGroup(
 		for(typeConfig in types.values) {
 			if(matchesType(typeConfig, element, rootKey, path, elementPath)) {
 				//需要懒加载
-				return ParadoxDefinitionInfo(rootKey, typeConfig, elementPath, gameType, this, element)
+				return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, this, element)
 			}
 		}
 		return null
@@ -679,11 +679,10 @@ class CwtConfigGroup(
 	fun resolveDefinitionInfoByTypeComment(
 		element: ParadoxDefinitionProperty,
 		type: String,
-		rootKey: String,
-		elementPath: ParadoxElementPath<ParadoxScriptFile>
+		rootKey: String
 	): ParadoxDefinitionInfo? {
 		val typeConfig = types[type] ?: return null
-		return ParadoxDefinitionInfo(rootKey, typeConfig, elementPath, gameType, this, element, fromTypeComment = true)
+		return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, this, element, fromMagicComment = true)
 	}
 	
 	fun resolveDefinitionElementInfo(

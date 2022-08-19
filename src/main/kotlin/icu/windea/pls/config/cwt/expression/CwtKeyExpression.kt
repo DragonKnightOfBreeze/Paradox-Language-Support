@@ -2,6 +2,7 @@ package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
 import icu.windea.pls.config.cwt.expression.CwtKvExpressionPriorities as Priorities
 

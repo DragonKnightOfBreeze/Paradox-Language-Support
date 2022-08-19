@@ -1,11 +1,14 @@
 package icu.windea.pls.config.internal.config
 
 import com.intellij.psi.*
-import icu.windea.pls.*
+import javax.swing.*
 
-interface InternalConfig : IdAware, IconAware, DescriptionAware {
+interface InternalConfig {
 	val pointer: SmartPsiElementPointer<out PsiElement>
+	val id: String
+	val description: String
+	val icon: Icon
 	
-	val configFileName get() = pointer.containingFile?.name ?: anonymousString
-	val configFileIcon get() = pointer.containingFile?.icon
+	//val configFileName get() = pointer.containingFile?.name ?: anonymousString
+	//val configFileIcon get() = pointer.containingFile?.icon
 }

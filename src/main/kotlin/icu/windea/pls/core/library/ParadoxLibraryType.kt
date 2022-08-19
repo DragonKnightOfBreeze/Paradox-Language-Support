@@ -5,7 +5,7 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.roots.libraries.*
 import com.intellij.openapi.roots.libraries.ui.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
+import icons.*
 import icu.windea.pls.model.*
 import javax.swing.*
 

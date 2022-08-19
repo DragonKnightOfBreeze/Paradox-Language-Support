@@ -37,16 +37,16 @@ class ParadoxScriptFile(
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
 					if(element is ParadoxScriptProperty) {
-						if(element.getUserData(PlsKeys.cachedDefinitionInfoKey)?.value?.fromTypeComment == true) {
+						if(element.getUserData(PlsKeys.cachedDefinitionInfoKey)?.value?.fromMagicComment == true) {
 							element.putUserData(PlsKeys.cachedDefinitionInfoKey, null)
 						}
 					}
 					if(element is ParadoxScriptProperty) {
-						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.fromTypeComment == true) {
+						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.fromMagicComment == true) {
 							element.putUserData(PlsKeys.definitionElementInfoKey, null)
 						}
 					} else if(element is ParadoxScriptValue) {
-						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.fromTypeComment == true) {
+						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.fromMagicComment == true) {
 							element.putUserData(PlsKeys.definitionElementInfoKey, null)
 						}
 					}

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.localisation.psi.*

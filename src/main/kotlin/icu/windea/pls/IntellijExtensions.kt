@@ -27,6 +27,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
+import com.intellij.util.xmlb.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.cwt.psi.*
 import java.io.*
@@ -677,6 +678,38 @@ inline fun <reified T : PsiElement> StringStubIndexExtension<T>.processFirstElem
 			}
 		}
 		true
+	}
+}
+//endregion
+
+//region Xml Converters
+class RegexIgnoreCaseConverter : Converter<Regex>() {
+	override fun fromString(value: String): Regex {
+		return value.toRegex(RegexOption.IGNORE_CASE)
+	}
+	
+	override fun toString(t: Regex): String {
+		return t.pattern
+	}
+}
+
+class CommaDelimitedStringListConverter : Converter<List<String>>() {
+	override fun fromString(value: String): List<String> {
+		return value.toCommaDelimitedStringList()
+	}
+	
+	override fun toString(value: List<String>): String {
+		return value.toCommaDelimitedString()
+	}
+}
+
+class CommaDelimitedStringSetIgnoreCaseConverter : Converter<Set<String>>() {
+	override fun fromString(value: String): Set<String> {
+		return value.toCommaDelimitedStringSet(ignoreCase = true)
+	}
+	
+	override fun toString(value: Set<String>): String {
+		return value.toCommaDelimitedString()
 	}
 }
 //endregion

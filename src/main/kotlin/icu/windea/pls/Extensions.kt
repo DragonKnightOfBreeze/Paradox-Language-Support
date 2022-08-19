@@ -4,6 +4,7 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -28,6 +29,10 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import icu.windea.pls.util.selector.*
 import java.lang.Integer.*
+
+//region Global Caches
+val threadLocalTextEditorContainer = ThreadLocal<TextEditor?>()
+//endregion
 
 //region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
@@ -168,7 +173,7 @@ private fun resolveDefinitionInfoByMagicComment(element: ParadoxDefinitionProper
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfoByTypeComment(element, type, rootKey, elementPath)
+	return configGroup.resolveDefinitionInfoByTypeComment(element, type, rootKey)
 }
 
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?

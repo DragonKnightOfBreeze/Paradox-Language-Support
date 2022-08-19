@@ -4,9 +4,9 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 
 enum class ParadoxFileType(
-	override val id: String,
-	override val description: String
-) : IdAware, DescriptionAware {
+	val id: String,
+	val description: String
+)  {
 	Directory("directory", "Directory"),
 	ParadoxScript("paradoxScript", "Paradox Script File"),
 	ParadoxLocalisation("paradoxLocalisation", "Paradox Localisation File"),

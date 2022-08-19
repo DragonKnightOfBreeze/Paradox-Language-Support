@@ -5,10 +5,10 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
-	override val id: String,
-	override val text: String,
+	val id: String,
+	val text: String,
 	val flag: Boolean
-) : IdAware, TextAware {
+) {
 	Localisation("localisation", PlsDocBundle.message("name.localisation.localisation"), true),
 	SyncedLocalisation("localisation_synced", PlsDocBundle.message("name.localisation.localisationSynced"), false);
 	

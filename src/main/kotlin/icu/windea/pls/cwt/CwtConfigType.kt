@@ -7,12 +7,12 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.cwt.psi.*
 
 enum class CwtConfigType(
-	override val id: String,
-	override val text: String,
+	val id: String,
+	val text: String,
 	val isReference: Boolean = false,
 	val hasType: Boolean = false,
 	val localisation: String? = null
-) : IdAware, TextAware {
+) {
 	Type("type", PlsDocBundle.message("name.cwt.type")),
 	Subtype("subtype", PlsDocBundle.message("name.cwt.subtype")),
 	Enum("enum", PlsDocBundle.message("name.cwt.enum")),

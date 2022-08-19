@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.script.psi.*
@@ -25,7 +26,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		val icon = PlsIcons.Gutter.Definition
 		val tooltip = buildString {
 			val name = definitionInfo.name
-			val typeText = definitionInfo.typeText
+			val typeText = definitionInfo.typesText
 			append(PlsDocBundle.message("name.script.definition")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>: ").append(typeText)
 		}
 		val project = element.project

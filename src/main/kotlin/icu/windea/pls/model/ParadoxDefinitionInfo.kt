@@ -9,20 +9,17 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
-import java.util.*
 
 /**
- * @property elementPath 相对于所属文件的属性路径。
+ * @property fromMagicComment 此定义信息是否来自特殊注释。
  */
-@Suppress("unused")
 class ParadoxDefinitionInfo(
 	val rootKey: String,
 	val typeConfig: CwtTypeConfig,
-	val elementPath: ParadoxElementPath<ParadoxScriptFile>,
 	val gameType: ParadoxGameType,
 	val configGroup: CwtConfigGroup,
 	element: ParadoxDefinitionProperty, //直接传入element
-	val fromTypeComment: Boolean = false
+	val fromMagicComment: Boolean = false
 ) {
 	val type: String = typeConfig.name
 	
@@ -39,6 +36,10 @@ class ParadoxDefinitionInfo(
 		rootKey
 	}
 	
+	val subtypes: List<String> by lazy {
+		subtypeConfigs.map { it.name }
+	}
+	
 	val subtypeConfigs: List<CwtSubtypeConfig> by lazy {
 		val subtypesConfig = typeConfig.subtypes
 		val result = SmartList<CwtSubtypeConfig>()
@@ -48,8 +49,12 @@ class ParadoxDefinitionInfo(
 		result
 	}
 	
-	val subtypes: List<String> by lazy {
-		subtypeConfigs.map { it.name }
+	val types: List<String> by lazy {
+		mutableListOf(type).apply { addAll(subtypes) }
+	}
+	
+	val typesText: String by lazy {
+		types.joinToString(", ")
 	}
 	
 	val localisation: List<ParadoxRelatedLocalisationInfo> by lazy {
@@ -76,33 +81,23 @@ class ParadoxDefinitionInfo(
 		result
 	}
 	
-	val definition: List<CwtKvConfig<*>> by lazy {
+	val declaration: List<CwtKvConfig<*>> by lazy {
 		configGroup.declarations.get(type)?.getMergedConfigs(subtypes) ?: emptyList()
 	}
 	
-	val types: List<String> by lazy {
-		mutableListOf(type).apply { addAll(subtypes) }
-	}
-	
-	val typeText: String by lazy {
-		types.joinToString(", ")
-	}
-	
 	val primaryLocalisationConfigs: List<ParadoxRelatedLocalisationInfo> by lazy {
-		localisation.filter { it.primary || it.inferIsPrimary()}
+		localisation.filter { it.primary || it.inferIsPrimary() }
 	}
 	
 	val primaryImageConfigs: List<ParadoxRelatedImageInfo> by lazy {
 		images.filter { it.primary || it.inferIsPrimary() }
 	}
 	
-	val typeCount get() = types.size
 	val localisationConfig get() = typeConfig.localisation
+	
 	val imagesConfig get() = typeConfig.images
+	
 	val declarationConfig get() = configGroup.declarations.get(type)
-	val graphRelatedTypes get() = typeConfig.graphRelatedTypes
-	val unique get() = typeConfig.unique
-	val severity get() = typeConfig.severity
 	
 	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
@@ -114,15 +109,6 @@ class ParadoxDefinitionInfo(
 		}
 		return null
 	}
-	
-	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxDefinitionInfo
-			&& rootKey == other.rootKey && elementPath == other.elementPath && gameType == other.gameType
-	}
-	
-	override fun hashCode(): Int {
-		return Objects.hash(rootKey, elementPath, gameType)
-	}
 }
 
 @InferMethod
@@ -131,6 +117,6 @@ private fun ParadoxRelatedLocalisationInfo.inferIsPrimary(): Boolean {
 }
 
 @InferMethod
-private fun ParadoxRelatedImageInfo.inferIsPrimary(): Boolean{
+private fun ParadoxRelatedImageInfo.inferIsPrimary(): Boolean {
 	return name.equals("icon", true)
 }

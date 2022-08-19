@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
+import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*

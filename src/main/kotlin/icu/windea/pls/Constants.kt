@@ -1,5 +1,14 @@
 package icu.windea.pls
 
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.observable.properties.*
+import com.intellij.openapi.util.*
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.util.*
+import icons.*
+import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.model.*
+
 val locationClass = PlsIcons::class.java
 
 const val ddsName = "DDS"
@@ -80,3 +89,31 @@ object PlsPatterns {
 	
 	val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
 }
+
+object PlsKeys {
+	val rootInfoKey = Key.create<ParadoxRootInfo>("paradoxRootInfo")
+	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradoxDescriptorInfo")
+	val fileInfoKey = Key.create<ParadoxFileInfo>("paradoxFileInfo")
+	val contentFileKey = Key.create<VirtualFile>("paradoxContentFile")
+	
+	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
+	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
+	
+	val definitionElementInfoKey = Key.create<ParadoxDefinitionElementInfo>("paradoxDefinitionElementInfo")
+	
+	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradoxTextColorConfig")
+	
+	val definitionConfigKeys = setOf<Key<out ParadoxDefinitionConfig>>(
+		textColorConfigKey
+	)
+	
+	val magicCommentTextKey = Key.create<String>("paradoxMagicCommentText")
+}
+
+object PlsDataKeys {
+	val gameTypePropertyKey = DataKey.create<GraphProperty<ParadoxGameType>>("PARADOX_GAME_TYPE_PROPERTY")
+	val rootTypePropertyKey = DataKey.create<GraphProperty<ParadoxRootType>>("PARADOX_ROOT_TYPE_PROPERTY")
+}
+
+val AnActionEvent.gameTypeProperty get() = getData(PlsDataKeys.gameTypePropertyKey)
+val AnActionEvent.rootTypeProperty get() = getData(PlsDataKeys.rootTypePropertyKey)

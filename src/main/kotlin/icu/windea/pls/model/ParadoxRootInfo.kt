@@ -24,7 +24,7 @@ class ParadoxRootInfo(
 	val descriptorInfo: ParadoxDescriptorInfo? get() = doGetDescriptorInfo()
 	
 	val isValid get() = rootFile.isValid
-	val isAvailable get() = descriptorFile.isValid && (markerFile?.isValid != false) 
+	val isAvailable get() = descriptorFile.isValid && (markerFile?.isValid != false)
 	
 	private fun doGetDescriptorInfo(): ParadoxDescriptorInfo? {
 		val result = descriptorFile.getUserData(PlsKeys.descriptorInfoKey)
@@ -64,12 +64,14 @@ class ParadoxRootInfo(
 				val nameToUse = name ?: descriptorFile.parent?.name ?: anonymousString //如果没有name属性，则使用根目录名
 				ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
 			}
+			
 			fileName == launcherSettingsFileName -> {
 				val json = jsonMapper.readValue<Map<String, Any?>>(descriptorFile.inputStream)
 				val name = gameType.description
 				val version = json.get("rawVersion")?.toString()
 				ParadoxDescriptorInfo(name, version, isModDescriptor = false)
 			}
+			
 			else -> null
 		}
 	}

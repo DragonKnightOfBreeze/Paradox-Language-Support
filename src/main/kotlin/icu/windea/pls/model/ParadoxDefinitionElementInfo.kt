@@ -6,13 +6,11 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
-import java.util.*
 
 /**
  * @property elementPath 相对于所属定义的定义元素路径。
  * @property isValid 对应的PSI元素是否是合法的定义元素（在定义声明内，非定义自身）。
  */
-@Suppress("unused")
 class ParadoxDefinitionElementInfo(
 	val elementPath: ParadoxElementPath<ParadoxDefinitionProperty>,
 	val scope: String? = null,
@@ -90,14 +88,5 @@ class ParadoxDefinitionElementInfo(
 		values.groupAndCountBy { value ->
 			childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
 		}
-	}
-	
-	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxDefinitionElementInfo
-			&& elementPath == other.elementPath && gameType == other.gameType
-	}
-	
-	override fun hashCode(): Int {
-		return Objects.hash(elementPath, gameType)
 	}
 }
