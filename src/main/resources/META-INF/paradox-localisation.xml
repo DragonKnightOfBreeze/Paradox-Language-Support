@@ -80,8 +80,8 @@
         implementation="icu.windea.pls.localisation.refactoring.ParadoxLocalisationPropertyRenameInputValidator"/>
 
     <!--floating toolbar-->
-    <!--<fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationTextEditorProvider"/>-->
-    <fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationEditorProvider"/>
+    <fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationTextEditorProvider"/>
+    <!--<fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationEditorProvider"/>-->
     <advancedSetting id="paradoxLocalisation.hide.floating.toolbar" default="false" groupKey="settings"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>

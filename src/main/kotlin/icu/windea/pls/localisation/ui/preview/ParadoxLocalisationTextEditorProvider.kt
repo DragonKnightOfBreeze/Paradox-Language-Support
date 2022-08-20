@@ -37,4 +37,8 @@ class ParadoxLocalisationTextEditorProvider: PsiAwareTextEditorProvider() {
 		}
 		return actualEditor
 	}
+	
+	override fun getPolicy(): FileEditorPolicy {
+		return FileEditorPolicy.HIDE_OTHER_EDITORS
+	}
 }

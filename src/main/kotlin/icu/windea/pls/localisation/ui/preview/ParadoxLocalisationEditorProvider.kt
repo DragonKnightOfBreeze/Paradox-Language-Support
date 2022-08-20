@@ -7,8 +7,7 @@ import org.jdom.*
 
 //org.intellij.plugins.markdown.ui.split.SplitTextEditorProvider
 
-//这是必要的，否则FloatingToolbar会不起效（实际使用的editor和被注册监听器的editor不是同一个），以后也可以考虑扩展
-
+@Deprecated("UNUSED") //以后可能会实现预览视图
 class ParadoxLocalisationEditorProvider : AsyncFileEditorProvider, DumbAware {
 	val textEditorProvider = ParadoxLocalisationTextEditorProvider()
 	
@@ -54,6 +53,6 @@ class ParadoxLocalisationEditorProvider : AsyncFileEditorProvider, DumbAware {
 	}
 	
 	override fun getPolicy(): FileEditorPolicy {
-		return FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR
+		return FileEditorPolicy.HIDE_DEFAULT_EDITOR
 	}
 }
