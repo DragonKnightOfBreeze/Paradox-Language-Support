@@ -8,6 +8,7 @@ object PlsIcons {
 	
 	@JvmField val DdsFile = loadIcon("/icons/ddsFile.svg")
 	
+	@JvmField val DescriptorFile = loadIcon("icons/descriptorFile.svg")
 	@JvmField val CwtFile = loadIcon("/icons/cwtFile.svg")
 	@JvmField val ParadoxScriptFile = loadIcon("/icons/paradoxScriptFile.svg")
 	@JvmField val ParadoxLocalisationFile = loadIcon("/icons/paradoxLocalisationFile.svg")

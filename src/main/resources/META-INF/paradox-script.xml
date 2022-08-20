@@ -151,6 +151,8 @@
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
 
+    <fileIconProvider implementation="icu.windea.pls.core.ParadoxFileIconProvider"/>
+    
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
 
