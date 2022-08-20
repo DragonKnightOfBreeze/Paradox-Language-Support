@@ -9,7 +9,7 @@ class ParadoxScriptFileStubImpl(
 	override val name: String?,
 	override val type: String?,
 	override val subtypes: List<String>?,
-	override val gameType: ParadoxGameType
+	override val gameType: ParadoxGameType?
 ) : PsiFileStubImpl<ParadoxScriptFile>(file), ParadoxScriptFileStub {
 	override fun toString(): String {
 		return "ParadoxScriptFileStub(name=$name, type=$type, subtypes=$subtypes, gameType=$gameType)"

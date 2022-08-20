@@ -14,13 +14,13 @@ import icu.windea.pls.script.psi.impl.*
 //或者：重写com.intellij.psi.stubs.DefaultStubBuilder.StubBuildingWalkingVisitor.createStub，尝试从更多信息中获取
 //要求：必须能够获取paradoxPath和paradoxPropertyPath！即使psiFile在内存中也要缓存信息
 
-class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
+object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
 	"PROPERTY",
 	ParadoxScriptLanguage
 ) {
-	override fun getExternalId(): String {
-		return "paradoxScript.property"
-	}
+	private const val externalId = "paradoxScript.property"
+	
+	override fun getExternalId() = externalId
 	
 	override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
 		return SmartParadoxScriptProperty(stub, this)
@@ -28,19 +28,19 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 	
 	override fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub {
 		//这里使用scriptProperty.definitionInfo.name而非scriptProperty.name
-		val definitionInfo = psi.definitionInfo
+		val definitionInfo = psi.definitionInfo?.takeUnless { it.fromMagicComment }
 		val name = definitionInfo?.name
 		val type = definitionInfo?.type
 		val subtypes = definitionInfo?.subtypes
 		val rootKey = definitionInfo?.rootKey
-		val gameType = definitionInfo?.gameType.orDefault()
+		val gameType = definitionInfo?.gameType
 		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		//仅当是definition时才会创建索引
 		val element = node.psi as? ParadoxDefinitionProperty ?: return false
-		return element.definitionInfo != null
+		return element.definitionInfo?.takeUnless { it.fromMagicComment } != null
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
@@ -54,7 +54,7 @@ class ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptPrope
 		dataStream.writeName(stub.type)
 		dataStream.writeName(stub.subtypes?.toCommaDelimitedString())
 		dataStream.writeName(stub.rootKey)
-		dataStream.writeName(stub.gameType.id)
+		dataStream.writeName(stub.gameType?.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyStub {

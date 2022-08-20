@@ -7,20 +7,22 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptVariable>(
+object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptVariable>(
 	"VARIABLE",
 	ParadoxScriptLanguage
 ) {
-	override fun getExternalId(): String {
-		return "paradoxScript.variable"
-	}
+	private const val externalId = "paradoxScript.variable"
+	
+	override fun getExternalId() = externalId
 	
 	override fun createPsi(stub: ParadoxScriptVariableStub): ParadoxScriptVariable {
 		return ParadoxScriptVariableImpl(stub, this)
 	}
 	
 	override fun createStub(psi: ParadoxScriptVariable, parentStub: StubElement<*>): ParadoxScriptVariableStub {
-		return ParadoxScriptVariableStubImpl(parentStub, psi.name, psi.fileInfo?.gameType.orDefault())
+		val name = psi.name
+		val gameType = psi.fileInfo?.rootInfo?.gameType
+		return ParadoxScriptVariableStubImpl(parentStub, name, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -38,7 +40,7 @@ class ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVaria
 	
 	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
-		dataStream.writeName(stub.gameType.id)
+		dataStream.writeName(stub.gameType?.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptVariableStub {

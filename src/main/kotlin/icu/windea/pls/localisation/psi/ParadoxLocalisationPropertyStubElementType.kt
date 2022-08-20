@@ -7,13 +7,13 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
 import icu.windea.pls.model.*
 
-class ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocalisationStub, ParadoxLocalisationProperty>(
+object ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLocalisationStub, ParadoxLocalisationProperty>(
 	"PROPERTY",
 	ParadoxLocalisationLanguage
 ) {
-	override fun getExternalId(): String {
-		return "paradoxLocalisation.property"
-	}
+	private const val externalId = "paradoxLocalisation.property"
+	
+	override fun getExternalId() = externalId
 	
 	override fun createPsi(stub: ParadoxLocalisationStub): ParadoxLocalisationProperty {
 		return ParadoxLocalisationPropertyImpl(stub, this)

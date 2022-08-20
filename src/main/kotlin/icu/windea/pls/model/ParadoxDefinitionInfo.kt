@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.selector.*
 
 /**
- * @property fromMagicComment 此定义信息是否来自特殊注释。
+ * @property fromMagicComment 此定义信息是否来自特殊注释。如果是，不加入索引。
  */
 class ParadoxDefinitionInfo(
 	val rootKey: String,
@@ -19,8 +19,9 @@ class ParadoxDefinitionInfo(
 	val gameType: ParadoxGameType,
 	val configGroup: CwtConfigGroup,
 	element: ParadoxDefinitionProperty, //直接传入element
-	val fromMagicComment: Boolean = false
 ) {
+	var fromMagicComment: Boolean = false
+	
 	val type: String = typeConfig.name
 	
 	//NOTE 部分属性需要使用懒加载

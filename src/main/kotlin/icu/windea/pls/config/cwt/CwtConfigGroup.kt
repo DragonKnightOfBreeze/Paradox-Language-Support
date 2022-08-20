@@ -682,7 +682,26 @@ class CwtConfigGroup(
 		rootKey: String
 	): ParadoxDefinitionInfo? {
 		val typeConfig = types[type] ?: return null
-		return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, this, element, fromMagicComment = true)
+		//仍然要求匹配rootKey
+		if(matchesTypeByTypeComment(typeConfig, rootKey)) {
+			return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, this, element)
+		}
+		return null
+	}
+	
+	private fun matchesTypeByTypeComment(typeConfig: CwtTypeConfig, rootKey: String): Boolean {
+		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
+		val startsWithConfig = typeConfig.startsWith
+		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
+			if(!rootKey.startsWith(startsWithConfig, true)) return false
+		}
+		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+		val typeKeyFilterConfig = typeConfig.typeKeyFilter
+		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
+			val filterResult = typeKeyFilterConfig.contains(rootKey)
+			if(!filterResult) return false
+		}
+		return true
 	}
 	
 	fun resolveDefinitionElementInfo(

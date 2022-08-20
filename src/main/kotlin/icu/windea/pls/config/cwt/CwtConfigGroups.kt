@@ -2,13 +2,10 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import java.util.concurrent.*
-import kotlin.collections.Map
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.getValue
 import kotlin.collections.set
 
 @Suppress("unused")
@@ -17,6 +14,17 @@ class CwtConfigGroups(
 	cwtFileConfigGroups: Map<String, Map<String, CwtFileConfig>>
 ) {
 	val groups: Map<String, CwtConfigGroup>
+	
+	init {
+		//初始化各个游戏分组的CWT规则
+		groups = ConcurrentHashMap()
+		for((groupName, cwtFileConfigs) in cwtFileConfigGroups.entries) {
+			val gameType = ParadoxGameType.resolve(groupName)
+			if(gameType != null) {
+				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)
+			}
+		}
+	}
 	
 	val ck2 get() = getValue(ParadoxGameType.Ck2)
 	val ck3 get() = getValue(ParadoxGameType.Ck3)
@@ -31,15 +39,4 @@ class CwtConfigGroups(
 	
 	operator fun get(key: ParadoxGameType) = groups.get(key.id)
 	fun getValue(key: ParadoxGameType) = groups.getValue(key.id)
-	
-	init {
-		//初始化各个游戏分组的CWT规则
-		groups = ConcurrentHashMap()
-		cwtFileConfigGroups.entries.parallelStream().forEach { (groupName, cwtFileConfigs) ->
-			val gameType = ParadoxGameType.resolve(groupName)
-			if(gameType != null) {
-				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)
-			}
-		}
-	}
 }

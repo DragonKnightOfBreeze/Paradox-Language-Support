@@ -8,13 +8,13 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-class ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStub, ParadoxScriptString>(
+object ParadoxScriptValueStubElementType : IStubElementType<ParadoxScriptValueStub, ParadoxScriptString>(
 	"STRING",
 	ParadoxScriptLanguage
 ) {
-	override fun getExternalId(): String {
-		return "paradoxScript.value"
-	}
+	private const val externalId = "paradoxScript.value"
+	
+	override fun getExternalId() = externalId
 	
 	override fun createPsi(stub: ParadoxScriptValueStub): ParadoxScriptString {
 		return SmartParadoxScriptString(stub, this)

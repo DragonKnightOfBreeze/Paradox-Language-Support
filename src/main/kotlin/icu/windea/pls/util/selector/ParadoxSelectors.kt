@@ -1,12 +1,12 @@
 package icu.windea.pls.util.selector
 
 import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.selector.ParadoxSelectorHandler.selectGameType
+import icu.windea.pls.util.selector.ParadoxSelectorHandler.selectRootFile
 import java.util.*
 
 class ParadoxGameTypeSelector<T>(
@@ -86,31 +86,6 @@ class ParadoxPreferLocaleSelector(
 	}
 }
 
-
-internal tailrec fun selectGameType(from: Any?): ParadoxGameType? {
-	return when {
-		from == null -> null
-		from is VirtualFile -> from.fileInfo?.gameType
-		from is PsiFile -> from.fileInfo?.gameType
-		from is ParadoxScriptVariable -> runCatching { from.stub?.gameType }.getOrNull() ?: from.fileInfo?.gameType
-		from is ParadoxDefinitionProperty -> runCatching { from.getStub()?.gameType }.getOrNull() ?: from.definitionInfo?.gameType ?: from.fileInfo?.gameType
-		from is ParadoxLocalisationProperty -> runCatching { from.stub?.gameType }.getOrNull() ?: from.fileInfo?.gameType
-		from is PsiElement -> selectGameType(from.parent)
-		else -> null
-	}
-}
-
-internal tailrec fun selectRootFile(from: Any?): VirtualFile? {
-	return when {
-		from == null -> null
-		from is VirtualFile -> from.fileInfo?.rootFile
-		from is PsiFile -> from.fileInfo?.rootFile
-		from is PsiElement -> selectRootFile(from.parent)
-		else -> null
-	}
-}
-
-
 //以下排序方法仅适用于ParadoxSelector，其他用途需要确认是否正确生效
 
 /**
@@ -154,7 +129,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
 	crossinline selector: (T) -> R?,
 	crossinline comparableSelector: (R) -> C? = { null },
 	crossinline pinPredicate: (R) -> Boolean = { false }
-): java.util.Comparator<T> {
+): Comparator<T> {
 	return Comparator<T> { a, b ->
 		val a1 = selector(a)
 		val b1 = selector(b)

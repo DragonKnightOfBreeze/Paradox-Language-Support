@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.util.selector.*
 import javax.swing.*
 
 class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
@@ -16,9 +17,7 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val project = file.project
-		val fileInfo = file.fileInfo ?: return null
-		val gameType = fileInfo.gameType
-		val configGroup = getCwtConfig(project).getValue(gameType)
+		val gameType = ParadoxSelectorHandler.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.acceptChildren(object : PsiRecursiveElementVisitor() {
 			override fun visitElement(e: PsiElement) {
@@ -37,6 +36,8 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.valueField.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 					} else {
 						val value = element.value
+						val gameTypeToUse = gameType ?: ParadoxSelectorHandler.selectGameType(element) ?: return
+						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
 						val expression = ParadoxScriptValueFieldExpression.resolve(value, configGroup)
 						if(expression.isEmpty()) {
 							//无法解析

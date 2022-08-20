@@ -98,7 +98,7 @@ var VirtualFile.contentFile
 
 //region PsiElement Extensions
 fun PsiElement.isQuoted(): Boolean {
-	return firstLeafOrSelf.text.startsWith('"') || lastLeafOrSelf.text.endsWith('"')
+	return firstLeafOrSelf().text.startsWith('"') || lastLeafOrSelf().text.endsWith('"')
 }
 
 fun CwtValue.isLonely(): Boolean {
@@ -151,29 +151,33 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	//当无法获取fileInfo时，尝试基于上一行的特殊注释进行解析
-	val fileInfo = element.fileInfo 
-		?: return resolveDefinitionInfoByMagicComment(element)
+	val file = element.containingFile
+	val fileInfo = file.fileInfo
+		?: return resolveDefinitionInfoByDefinitionTypeComment(element)
+	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
 	val path = fileInfo.path
-	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
-	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
-	val gameType = fileInfo.gameType
+	val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)
 }
 
-private fun resolveDefinitionInfoByMagicComment(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	//上一个PSI元素必须是空白，并且包含且仅包含一个换行，这意味着上一个注释在上一行
-	val prevSibling = element.prevSibling ?: element.parent?.prevSibling
-	val prevBlank = prevSibling?.takeIf { it.isSingleLineBreak() } ?: return null
-	val comment = prevBlank.prevSibling as? PsiComment ?: return null
-	val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(comment) ?: return null
-	val elementPath = ParadoxElementPath.resolveFromFile(element) ?: return null
+private fun resolveDefinitionInfoByDefinitionTypeComment(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+	val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(element) ?: return null
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
 	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfoByTypeComment(element, type, rootKey)
+	return configGroup.resolveDefinitionInfoByTypeComment(element, type, rootKey)?.apply { fromMagicComment = true }
+}
+
+private fun resolveDefinitionInfoByFilePathComment(element: ParadoxDefinitionProperty, file: PsiFile): ParadoxDefinitionInfo? {
+	val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
+	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
+	val rootKey = element.pathName //如果是文件名，不要包含扩展名
+	val project = file.project
+	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
+	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)?.apply { fromMagicComment = true }
 }
 
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?
@@ -258,6 +262,7 @@ fun ParadoxScriptValue.getValueConfig(allowDefinitionSelf: Boolean = true, orSin
 			return childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, element, configGroup) }
 				?: orSingle.ifTrue { childValueConfigs.singleOrNull() }
 		}
+		
 		else -> return null
 	}
 }
@@ -276,7 +281,7 @@ private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): Parad
 	val name = element.name
 	val file = element.containingFile.originalFile.virtualFile ?: return null
 	val type = ParadoxLocalisationCategory.resolve(file) ?: return null
-	val gameType = file.fileInfo?.gameType
+	val gameType = file.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
 	return ParadoxLocalisationInfo(name, type, gameType)
 }
 
@@ -290,14 +295,16 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
 	get() {
 		//大写或小写字母，不限定位置
 		val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
-		val gameType = this.fileInfo?.gameType ?: return null
+		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
+			?: return null
 		return doGetColorConfig(colorId.toString(), gameType, project)
 	}
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
 	get() {
 		val colorId = this.name ?: return null
-		val gameType = this.fileInfo?.gameType ?: return null
+		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType 
+			?: return null
 		return doGetColorConfig(colorId, gameType, project)
 	}
 
@@ -733,14 +740,17 @@ private fun resolveCwtLink(linkWithoutPrefix: String, context: PsiElement): CwtP
 					name == null -> null
 					subtypeName == null -> getCwtConfig(project).getValue(gameType).types.getValue(name)
 						.pointer.element
+					
 					else -> getCwtConfig(project).getValue(gameType).types.getValue(name)
 						.subtypes.getValue(subtypeName).pointer.element
 				}
 			}
+			
 			"scopes" -> {
 				val name = tokens.getOrNull(2) ?: return null
 				return getCwtConfig(project).getValue(gameType).scopeAliasMap.getValue(name).pointer.element
 			}
+			
 			else -> null
 		}
 	}.getOrNull()
@@ -771,7 +781,7 @@ private fun resolveFilePathLink(linkWithoutPrefix: String, context: PsiElement):
 		val filePath = linkWithoutPrefix
 		val project = context.project
 		val fileInfo = context.fileInfo ?: return@runCatching null
-		val selector = fileSelector().gameType(fileInfo.gameType).preferRoot(fileInfo.rootFile)
+		val selector = fileSelector().gameType(fileInfo.rootInfo.gameType).preferRoot(fileInfo.rootFile)
 		findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
 	}.getOrNull()
 }
@@ -865,7 +875,7 @@ fun StringBuilder.appendFileInfoHeader(fileInfo: ParadoxFileInfo?): StringBuilde
 	if(fileInfo != null) {
 		append("<span>")
 		//描述符信息（模组名、版本等）
-		append("[").append(fileInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
+		append("[").append(fileInfo.rootInfo.gameType.description).append(" ").append(fileInfo.rootType.description)
 		val descriptorInfo = fileInfo.descriptorInfo
 		if(descriptorInfo != null) {
 			if(fileInfo.rootType == ParadoxRootType.Mod) {

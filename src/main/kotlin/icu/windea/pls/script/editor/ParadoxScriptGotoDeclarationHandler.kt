@@ -21,7 +21,7 @@ class ParadoxScriptGotoDeclarationHandler : GotoDeclarationHandlerBase() {
 		return when {
 			sourceElement.elementType == PROPERTY_KEY_TOKEN -> {
 				val element = sourceElement?.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return null
-				return CwtConfigHandler.resolveKey(element, null) {
+				return CwtConfigHandler.resolveKey(element) {
 					it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName
 				}
 			}
@@ -33,7 +33,7 @@ class ParadoxScriptGotoDeclarationHandler : GotoDeclarationHandlerBase() {
 		return when {
 			sourceElement.elementType == PROPERTY_KEY_TOKEN -> {
 				val element = sourceElement?.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return null
-				return CwtConfigHandler.multiResolveKey(element, null) {
+				return CwtConfigHandler.multiResolveKey(element) {
 					it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName
 				}.takeIfNotEmpty()?.toTypedArray()
 			}

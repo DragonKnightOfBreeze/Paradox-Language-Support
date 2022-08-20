@@ -40,8 +40,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
-				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false)
 		}
 	}
@@ -51,8 +51,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
-				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, false)
 		}
 	}
@@ -70,8 +70,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
-				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)
@@ -85,8 +85,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val configGroup = originalElement?.takeIf { it.language == ParadoxScriptLanguage }
-				?.fileInfo?.gameType?.let { getCwtConfig(project).getValue(it) }
+			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, true)
 			buildLocalisationContent(element, name, configType, project)
 			buildDocumentationContent(element)

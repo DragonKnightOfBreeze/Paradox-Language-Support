@@ -11,14 +11,13 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
-class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
-	override fun getExternalId(): String {
-		return "paradoxScript.file"
-	}
+object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
+	private const val externalId = "paradoxScript.file"
+	private const val stubVersion = 1 //0.7.1
 	
-	override fun getStubVersion(): Int {
-		return 1 //0.6.7
-	}
+	override fun getExternalId() = externalId
+	
+	override fun getStubVersion() = stubVersion
 	
 	override fun getBuilder(): StubBuilder {
 		return Builder()
@@ -46,7 +45,7 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 			dataStream.writeName(stub.name)
 			dataStream.writeName(stub.type)
 			dataStream.writeName(stub.subtypes?.toCommaDelimitedString())
-			dataStream.writeName(stub.gameType.id)
+			dataStream.writeName(stub.gameType?.id)
 		}
 		super.serialize(stub, dataStream)
 	}
@@ -55,18 +54,18 @@ class ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(Pa
 		val name = dataStream.readNameString()
 		val type = dataStream.readNameString()
 		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
-		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }.orDefault()
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
 		return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
 	}
 	
 	class Builder : DefaultStubBuilder() {
 		override fun createStubForFile(file: PsiFile): StubElement<*> {
 			val psiFile = file as? ParadoxScriptFile ?: return super.createStubForFile(file)
-			val definitionInfo = psiFile.definitionInfo
+			val definitionInfo = psiFile.definitionInfo?.takeUnless { it.fromMagicComment }
 			val name = definitionInfo?.name
 			val type = definitionInfo?.type
 			val subtypes = definitionInfo?.subtypes
-			val gameType = definitionInfo?.gameType.orDefault()
+			val gameType = definitionInfo?.gameType
 			return ParadoxScriptFileStubImpl(psiFile, name, type, subtypes, gameType)
 		}
 		

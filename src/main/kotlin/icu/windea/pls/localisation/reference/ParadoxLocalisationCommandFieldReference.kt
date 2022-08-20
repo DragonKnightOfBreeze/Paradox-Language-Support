@@ -43,7 +43,7 @@ class ParadoxLocalisationCommandFieldReference(
 	}
 	
 	private fun doResolveLocalisationCommand(name: String, project: Project): PsiElement? {
-		val gameType = element.fileInfo?.gameType ?: return null
+		val gameType = element.fileInfo?.rootInfo?.gameType ?: return null
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
 		return CwtConfigHandler.resolveLocalisationCommand(name, configGroup)
 	}

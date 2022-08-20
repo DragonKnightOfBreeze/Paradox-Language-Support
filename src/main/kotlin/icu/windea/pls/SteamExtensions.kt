@@ -5,7 +5,7 @@ package icu.windea.pls
 
 //游戏安装目录：steamapps/common
 //其子目录是游戏名
-//创意工坊安装目录：steamapps/c/content
+//创意工坊安装目录：steamapps/common/content
 //其子目录是游戏的steamid
 
 //游戏模组安装目录：~\Documents\Paradox Interactive\{gameName}\mod
@@ -24,10 +24,12 @@ fun getSteamPath(): String? {
 }
 
 fun getSteamGamePath(gameName: String): String? {
+	//待优化，可以放在不同库目录下
 	return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }
 }
 
 fun getSteamWorkshopPath(gameSteamId: String): String? {
+	//待优化，可以放在不同库目录下
 	return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\workshop\content\$gameSteamId""" }
 }
 

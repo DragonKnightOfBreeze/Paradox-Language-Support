@@ -11,14 +11,13 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 提供命令字段作用域的代码补全。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxCommandScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
 		val keyword = parameters.position.getKeyword(offsetInParent)
 		val file = parameters.originalFile
 		val project = file.project
-		val gameType = file.fileInfo?.gameType ?: return
+		val gameType = file.fileInfo?.rootInfo?.gameType ?: return
 		val configGroup = getCwtConfig(project).get(gameType) ?: return
 		
 		context.put(PlsCompletionKeys.completionTypeKey, parameters.completionType)

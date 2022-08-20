@@ -22,6 +22,4 @@ annotation class CwtInspection(
 	//e.g.
 	//CWT100
 	val value: String
-
 )
-

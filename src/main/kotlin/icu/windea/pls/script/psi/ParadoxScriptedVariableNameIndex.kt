@@ -4,11 +4,12 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.util.selector.*
 
 object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptVariable>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.scriptedVariable.name.index")
-	private const val version = 7 //0.6.7
+	private const val version = 8 //0.7.1
 	private const val cacheSize = 2 * 1024
 	
 	override fun getKey() = key

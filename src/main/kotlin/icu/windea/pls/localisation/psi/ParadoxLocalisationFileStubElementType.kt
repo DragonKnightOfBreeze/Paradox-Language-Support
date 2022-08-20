@@ -9,14 +9,13 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-class ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage){
-	override fun getExternalId(): String {
-		return "paradoxLocalisation.file"
-	}
+object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage){
+	private const val externalId = "paradoxLocalisation.file"
+	private const val stubVersion = 1 //0.7.1
 	
-	override fun getStubVersion(): Int {
-		return 1 //0.6.7
-	}
+	override fun getExternalId() = externalId
+	
+	override fun getStubVersion() = stubVersion
 	
 	override fun getBuilder(): StubBuilder {
 		return Builder()

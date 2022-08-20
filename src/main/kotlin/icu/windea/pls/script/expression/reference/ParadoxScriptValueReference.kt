@@ -32,11 +32,11 @@ class ParadoxScriptValueReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		return CwtConfigHandler.resolveValue(element, null) //根据对应的expression进行解析
+		return CwtConfigHandler.resolveValue(element) //根据对应的expression进行解析
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		return CwtConfigHandler.multiResolveValue(element, null).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
+		return CwtConfigHandler.multiResolveValue(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
 	}
 	
 	/**

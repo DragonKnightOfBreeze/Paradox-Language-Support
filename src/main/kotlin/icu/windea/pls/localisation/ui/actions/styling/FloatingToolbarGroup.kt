@@ -16,7 +16,7 @@ private fun doGetChildren(): List<AnAction> {
 	val textEditor = threadLocalTextEditorContainer.get() ?: return emptyList()
 	val project = textEditor.editor.project ?: return emptyList()
 	val file = textEditor.file
-	val gameType = file.fileInfo?.gameType ?: return emptyList()
+	val gameType = file.fileInfo?.rootInfo?.gameType ?: return emptyList()
 	val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project, file)
 	if(colorConfigs.isEmpty()) return emptyList()
 	return colorConfigs.map { setColorActionCache.get(it) }

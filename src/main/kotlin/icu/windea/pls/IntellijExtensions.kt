@@ -42,7 +42,7 @@ fun String.compareToIgnoreCase(other: String): Int {
 
 //region Misc Extensions
 fun LookupElement.withPriority(priority: Double, scopeMatched: Boolean = true): LookupElement {
-	val finalPriority = if(scopeMatched) priority else priority + PlsCompletonPriorities.scopeMismatchOffset
+	val finalPriority = if(scopeMatched) priority else priority + PlsCompletionPriorities.scopeMismatchOffset
 	return PrioritizedLookupElement.withPriority(this, finalPriority)
 }
 
@@ -432,17 +432,19 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = t
 //	return lastSeen.psi
 //}
 
-val PsiElement.firstLeafOrSelf: PsiElement
-	get() {
-		val firstChild = firstChild
-		return firstChild?.firstLeafOrSelf ?: this
+fun PsiElement.firstLeafOrSelf(): PsiElement {
+	var current = firstChild ?: return this
+	while(true){
+		current = current.firstChild ?: return current
 	}
+}
 
-val PsiElement.lastLeafOrSelf: PsiElement
-	get() {
-		val lastChild = lastChild
-		return lastChild?.lastLeafOrSelf ?: this
+fun PsiElement.lastLeafOrSelf(): PsiElement {
+	var current = lastChild ?: return this
+	while(true){
+		current = current.lastChild ?: return current
 	}
+}
 
 val PsiElement.icon
 	get() = getIcon(0)

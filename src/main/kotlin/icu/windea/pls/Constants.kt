@@ -53,6 +53,7 @@ val ddsFileExtensions = arrayOf("dds")
 const val launcherSettingsFileName = "launcher-settings.json"
 const val descriptorFileName = "descriptor.mod"
 
+//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
 const val maxMayBeDefinitionDepth = 4
 
 const val defaultScriptedVariableName = "var"
@@ -106,8 +107,6 @@ object PlsKeys {
 	val definitionConfigKeys = setOf<Key<out ParadoxDefinitionConfig>>(
 		textColorConfigKey
 	)
-	
-	val magicCommentTextKey = Key.create<String>("paradoxMagicCommentText")
 }
 
 object PlsDataKeys {

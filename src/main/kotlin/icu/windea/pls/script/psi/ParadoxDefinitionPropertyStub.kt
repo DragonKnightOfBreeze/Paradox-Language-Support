@@ -8,5 +8,5 @@ interface ParadoxDefinitionPropertyStub<T : ParadoxDefinitionProperty> : StubEle
 	val type: String?
 	val subtypes: List<String>?
 	val rootKey: String?
-	val gameType: ParadoxGameType
+	val gameType: ParadoxGameType?
 }

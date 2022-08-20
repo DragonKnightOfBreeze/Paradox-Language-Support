@@ -1,6 +1,6 @@
 package icu.windea.pls.core.codeInsight.completion
 
-object PlsCompletonPriorities {
+object PlsCompletionPriorities {
 	const val pinnedPriority = 1000.0
 	const val keywordPriority = 100.0
 	const val scopeFieldPrefixPriority = 90.0
