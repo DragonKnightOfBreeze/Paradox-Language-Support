@@ -8,23 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.ParadoxScriptValueStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
-import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<ParadoxScriptValueStub> implements ParadoxScriptString {
-
-  public ParadoxScriptStringImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
 
   public ParadoxScriptStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitString(this);
   }
@@ -93,12 +88,6 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
   @NotNull
   public ParadoxValueType getValueType() {
     return ParadoxScriptPsiImplUtil.getValueType(this);
-  }
-
-  @Override
-  @Nullable
-  public String getConfigExpression() {
-    return ParadoxScriptPsiImplUtil.getConfigExpression(this);
   }
 
 }

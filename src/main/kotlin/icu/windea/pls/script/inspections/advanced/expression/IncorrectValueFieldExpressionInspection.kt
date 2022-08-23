@@ -1,13 +1,14 @@
 package icu.windea.pls.script.inspections.advanced.expression
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
 import javax.swing.*
 
 class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
@@ -19,15 +20,9 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 		val project = file.project
 		val gameType = ParadoxSelectorHandler.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.acceptChildren(object : PsiRecursiveElementVisitor() {
-			override fun visitElement(e: PsiElement) {
-				if(e is ParadoxScriptExpressionElement) {
-					visitElementExpression(e)
-				}
-				super.visitElement(e)
-			}
-			
-			private fun visitElementExpression(element: ParadoxScriptExpressionElement) {
+		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+				ProgressManager.checkCanceled()
 				val config = element.getConfig() ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
@@ -69,6 +64,7 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 						}
 					}
 				}
+				super.visitExpressionElement(element)
 			}
 		})
 		return holder.resultsArray

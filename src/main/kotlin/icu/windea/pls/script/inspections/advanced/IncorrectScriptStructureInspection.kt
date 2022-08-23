@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -23,33 +24,29 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.acceptChildren(object : PsiRecursiveElementVisitor() {
-			override fun visitElement(e: PsiElement) {
-				when {
-					e is ParadoxScriptPropertyKey && forPropertyKey -> {
-						visitKey(e)
+		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+			override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
+				ProgressManager.checkCanceled()
+				if(forPropertyKey){
+					val config = element.getPropertyConfig()
+					//是定义元素，非定义自身，且路径中不带参数
+					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedKey", element.text))
 					}
-					e is ParadoxScriptValue && (if(e.isLonely()) forValue else forPropertyValue) -> {
-						visitValue(e)
-					} 
 				}
-				super.visitElement(e)
+				super.visitPropertyKey(element)
 			}
 			
-			private fun visitKey(element: ParadoxScriptPropertyKey) {
-				val config = element.getPropertyConfig()
-				//是定义元素，非定义自身，且路径中不带参数
-				if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-					holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedKey", element.text))
+			override fun visitValue(element: ParadoxScriptValue) {
+				ProgressManager.checkCanceled()
+				if(if(element.isLonely()) forValue else forPropertyValue){
+					val config = element.getValueConfig()
+					//是定义元素，非定义自身，且路径中不带参数
+					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedValue", element.text))
+					}
 				}
-			}
-			
-			private fun visitValue(element: ParadoxScriptValue) {
-				val config = element.getValueConfig()
-				//是定义元素，非定义自身，且路径中不带参数
-				if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-					holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedValue", element.text))
-				}
+				super.visitValue(element)
 			}
 		})
 		return holder.resultsArray

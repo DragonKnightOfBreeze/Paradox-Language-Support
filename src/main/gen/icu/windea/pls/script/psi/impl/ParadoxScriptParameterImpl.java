@@ -11,7 +11,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.reference.ParadoxParameterReference;
 import javax.swing.Icon;
 
@@ -70,12 +69,6 @@ public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements 
   @Nullable
   public String getDefaultValue() {
     return ParadoxScriptPsiImplUtil.getDefaultValue(this);
-  }
-
-  @Override
-  @NotNull
-  public ParadoxValueType getValueType() {
-    return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
   @Override

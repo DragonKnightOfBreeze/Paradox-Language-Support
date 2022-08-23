@@ -7,7 +7,8 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandField
 import icu.windea.pls.core.codeInsight.completion.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.selector.*
 
 /**
  * 提供命令字段名字的代码补全。

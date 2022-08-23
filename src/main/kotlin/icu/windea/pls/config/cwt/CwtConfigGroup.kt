@@ -676,7 +676,7 @@ class CwtConfigGroup(
 		return null
 	}
 	
-	fun resolveDefinitionInfoByTypeComment(
+	fun resolveDefinitionInfoByKnownType(
 		element: ParadoxDefinitionProperty,
 		type: String,
 		rootKey: String

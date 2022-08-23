@@ -4,9 +4,10 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 
 /**
  * 提供属性引用名字的代码补全。

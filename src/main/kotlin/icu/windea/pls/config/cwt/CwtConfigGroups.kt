@@ -18,7 +18,7 @@ class CwtConfigGroups(
 	init {
 		//初始化各个游戏分组的CWT规则
 		groups = ConcurrentHashMap()
-		for((groupName, cwtFileConfigs) in cwtFileConfigGroups.entries) {
+		for((groupName, cwtFileConfigs) in cwtFileConfigGroups) {
 			val gameType = ParadoxGameType.resolve(groupName)
 			if(gameType != null) {
 				groups[groupName] = CwtConfigGroup(gameType, project, cwtFileConfigs)

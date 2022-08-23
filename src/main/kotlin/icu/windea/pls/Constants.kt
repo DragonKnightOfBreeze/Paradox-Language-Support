@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
 import icons.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.model.*
 
@@ -107,6 +108,8 @@ object PlsKeys {
 	val definitionConfigKeys = setOf<Key<out ParadoxDefinitionConfig>>(
 		textColorConfigKey
 	)
+	
+	val cwtConfigKey = Key.create<CwtKvConfig<*>>("cwtConfig")
 }
 
 object PlsDataKeys {

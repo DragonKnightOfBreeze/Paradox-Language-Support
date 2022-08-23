@@ -19,6 +19,7 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
@@ -27,7 +28,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
-import icu.windea.pls.util.selector.*
 import java.lang.Integer.*
 
 //region Global Caches
@@ -150,34 +150,47 @@ private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefi
 }
 
 private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	//当无法获取fileInfo时，尝试基于上一行的特殊注释进行解析
+	//首先尝试直接基于stub进行解析
+	val stub = element.getStub()
+	if(stub != null) {
+		val gameType = stub.gameType
+		val type = stub.type
+		val rootKey = stub.rootKey
+		if(gameType != null && type != null && rootKey != null) {
+			val configGroup = getCwtConfig(element.project).getValue(gameType) //这里需要指定project
+			return configGroup.resolveDefinitionInfoByKnownType(element, type, rootKey)
+				?.apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
+		}
+	}
+	//当无法获取fileInfo时，尝试基于上一行的特殊注释（指定游戏类型和定义类型）、脚本文件开始的特殊注释（指定游戏类型、文件路径）进行解析
 	val file = element.containingFile
+	val project = file.project
 	val fileInfo = file.fileInfo
-		?: return resolveDefinitionInfoByDefinitionTypeComment(element)
+		?: return resolveDefinitionInfoByTypeComment(element, project)
+			?: resolveDefinitionInfoByPathComment(element, file, project)
 	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
 	val path = fileInfo.path
 	val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
-	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)
 }
 
-private fun resolveDefinitionInfoByDefinitionTypeComment(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+private fun resolveDefinitionInfoByTypeComment(element: ParadoxDefinitionProperty, project: Project): ParadoxDefinitionInfo? {
 	val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(element) ?: return null
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
-	val project = element.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfoByTypeComment(element, type, rootKey)?.apply { fromMagicComment = true }
+	return configGroup.resolveDefinitionInfoByKnownType(element, type, rootKey)
+		?.apply { sourceType = ParadoxDefinitionInfo.SourceType.TypeComment }
 }
 
-private fun resolveDefinitionInfoByFilePathComment(element: ParadoxDefinitionProperty, file: PsiFile): ParadoxDefinitionInfo? {
+private fun resolveDefinitionInfoByPathComment(element: ParadoxDefinitionProperty, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
 	val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
 	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 	val rootKey = element.pathName //如果是文件名，不要包含扩展名
-	val project = file.project
 	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)?.apply { fromMagicComment = true }
+	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)
+		?.apply { sourceType = ParadoxDefinitionInfo.SourceType.PathComment }
 }
 
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?
@@ -619,37 +632,6 @@ inline fun processSyncedLocalisationVariants(
 ): Boolean {
 	val maxSize = getSettings().maxCompleteSize
 	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize, selector, processor)
-}
-
-
-fun findValueSetValue(
-	name: String,
-	valueSetName: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-): ParadoxScriptString? {
-	return ParadoxValueSetValueIndex.findOne(name, valueSetName, project, scope, selector)
-}
-
-fun findValueSetValues(
-	name: String,
-	valueSetName: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-): Set<ParadoxScriptString> {
-	return ParadoxValueSetValueIndex.findAll(name, valueSetName, project, scope, selector)
-}
-
-fun findAllValueSetValues(
-	valueSetName: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	distinct: Boolean = false,
-	selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
-): Set<ParadoxScriptString> {
-	return ParadoxValueSetValueIndex.findAll(valueSetName, project, scope, distinct, selector)
 }
 
 

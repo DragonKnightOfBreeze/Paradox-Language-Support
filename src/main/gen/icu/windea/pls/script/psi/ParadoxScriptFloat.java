@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.model.ParadoxValueType;
 
-public interface ParadoxScriptFloat extends ParadoxScriptValue {
+public interface ParadoxScriptFloat extends ParadoxScriptNumber {
 
   float getFloatValue();
 

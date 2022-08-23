@@ -1,13 +1,24 @@
-package icu.windea.pls.util.selector
+package icu.windea.pls.core.selector
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.selector.ParadoxSelectorHandler.selectGameType
+import icu.windea.pls.core.selector.ParadoxSelectorHandler.selectRootFile
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.util.selector.ParadoxSelectorHandler.selectGameType
-import icu.windea.pls.util.selector.ParadoxSelectorHandler.selectRootFile
 import java.util.*
+
+class ParadoxDistinctSelector<T, K>(
+	private val selector: (T) -> K
+): ParadoxSelector<T>{
+	val keys = mutableSetOf<K>()
+	
+	override fun selectAll(result: T): Boolean {
+		return keys.add(selector(result))
+	}
+}
+
 
 class ParadoxGameTypeSelector<T>(
 	gameType: ParadoxGameType? = null,
@@ -60,7 +71,7 @@ class ParadoxPreferRootFileSelector<T>(
 
 class ParadoxLocaleSelector(
 	private val locale: ParadoxLocaleConfig
-): ParadoxSelector<ParadoxLocalisationProperty>{
+): ParadoxSelector<ParadoxLocalisationProperty> {
 	override fun select(result: ParadoxLocalisationProperty): Boolean {
 		return locale == result.localeConfig
 	}
@@ -72,7 +83,7 @@ class ParadoxLocaleSelector(
 
 class ParadoxPreferLocaleSelector(
 	private val locale: ParadoxLocaleConfig
-): ParadoxSelector<ParadoxLocalisationProperty>{
+): ParadoxSelector<ParadoxLocalisationProperty> {
 	override fun select(result: ParadoxLocalisationProperty): Boolean {
 		return locale == result.localeConfig
 	}

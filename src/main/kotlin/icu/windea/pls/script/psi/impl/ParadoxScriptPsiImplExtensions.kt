@@ -81,7 +81,7 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	
 	private fun clearCachedData() {
 		//当key更改时，需要刷新key所在property以及下面的所有对应的definitionInfo和definitionElementInfo
-		parent.accept(object : PsiRecursiveElementVisitor() {
+		parent.accept(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
 					if(element is ParadoxScriptProperty) {
@@ -102,13 +102,12 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	constructor(node: ASTNode) : super(node)
 	
-	constructor(stub: ParadoxScriptValueStub, type: IStubElementType<*, *>) : super(stub, type)
-	
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxValueType? = null
 	
-	override val value: String
-		get() = _value ?: super.value.also { _value = it }
+	override fun getValue(): String {
+		return _value ?: super.getValue().also { _value = it }
+	}
 	
 	override val valueType: ParadoxValueType
 		get() = _valueType ?: super.valueType.also { _valueType = it }

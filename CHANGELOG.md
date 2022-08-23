@@ -30,16 +30,26 @@
 * 本地化文件语法解析优化：
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
   * [ ] 将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等
-* ［长期］完善CWT配置支持
+* ［长期］完善CWT配置支持：
   * [ ] 支持`complex_enum` 
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
-  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
   * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
   
-## 0.7
+### 0.7.3
+
+* BUG修复：
+  * [ ] 修复valueSetValue索引在索引时会被IDE认为栈溢出的问题，改为基于`ParadoxValueSetValuesSearch`和索引进行查找
+* 新增功能：
+  * [ ] 新增动作：导航到相关本地化和导航到相关图片（对于定义，在导航和右键菜单中，在导航到相关符号/Go to related symbol下面）
+* ［长期］完善CWT配置支持：
+  * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息（支持valueSetValueExpression，如`val@root.owner`）
+
+### 0.7.2
+
+* BUG修复
 
 ### 0.7.1
 
@@ -57,7 +67,7 @@
     * 特殊注释不能包含任何其他非空白文本，合法的特殊注释文本示例：`@type:stellaris/civic_or_origin`
     * 定义的rootKey仍然需要匹配
 
-### 0.7.2
+### 0.7.1
 
 * BUG修复
 

@@ -4,12 +4,11 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
 
-public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptValueStub> {
+public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpressionElement {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
@@ -40,8 +39,5 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptEx
 
   @NotNull
   ParadoxValueType getValueType();
-
-  @Nullable
-  String getConfigExpression();
 
 }

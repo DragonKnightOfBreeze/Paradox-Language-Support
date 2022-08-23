@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.model.ParadoxValueType;
 import java.awt.Color;
 
-public class ParadoxScriptColorImpl extends ASTWrapperPsiElement implements ParadoxScriptColor {
+public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements ParadoxScriptColor {
 
   public ParadoxScriptColorImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitColor(this);
   }

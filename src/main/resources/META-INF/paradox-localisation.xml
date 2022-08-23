@@ -68,7 +68,7 @@
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>
     <navbar implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationNavBar"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationImplementationsSearch"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.core.search.impl.ParadoxLocalisationImplementationsSearch"/>
     <lang.psiStructureViewFactory
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>

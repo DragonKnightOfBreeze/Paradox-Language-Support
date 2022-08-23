@@ -43,8 +43,8 @@ property ::= property_key COLON property_number? property_value {
   recoverWhile="#auto" 
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes.getPropertyType"
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
-  implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationStub"
+  implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getCategory getValue getPresentation]
 }
 //https://stellaris.paradoxwikis.com/Localisation_modding

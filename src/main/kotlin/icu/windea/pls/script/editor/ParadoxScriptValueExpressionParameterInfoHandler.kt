@@ -3,9 +3,10 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.parameterInfo.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 
 /**
  * 显示SV表达式的参数信息（如果有）。

@@ -12,10 +12,11 @@ import icu.windea.pls.annotations.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 import javax.swing.*
 import javax.swing.event.*
 

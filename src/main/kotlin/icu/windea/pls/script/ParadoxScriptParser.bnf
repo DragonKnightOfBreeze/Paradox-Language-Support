@@ -22,8 +22,10 @@
 
 root ::= root_block ?
 root_block ::= root_block_item + {
-  implements="icu.windea.pls.script.psi.IParadoxScriptBlock"
-  methods=[getValue isEmpty isNotEmpty getValueList getComponents]
+  implements=[
+    "icu.windea.pls.script.psi.IParadoxScriptBlock"
+  ]
+  methods=[getValue isEmpty isNotEmpty getComponents]
 }
 private root_block_item ::= COMMENT | property | value | variable{
   recoverWhile="#auto"
@@ -46,21 +48,19 @@ variable_name ::= AT VARIABLE_NAME_ID{
   methods=[getName]
 }
 private variable_separator ::= EQUAL_SIGN
-variable_value ::= boolean | int | float {
-  methods=[getValue]
-}
+variable_value ::= boolean | int | float
 
 //property related
 property ::= property_key property_separator property_value {
   pin=1
   recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
     "icu.windea.pls.script.psi.ParadoxDefinitionProperty"
   ]
-  stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   methods=[
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterMap getPresentation
@@ -73,62 +73,61 @@ property_key ::= key_expr {
   methods=[getName setName getValue setValue getNameIdentifier getReference getReferences getConfigExpression getValueType]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
-property_value ::= value {
-  methods=[getValue]
-}
+property_value ::= value
 
 //(property) value related
-private value ::= variable_reference | boolean | number | string | color | block | inline_math
+value ::= variable_reference | boolean | number | string | color | block | inline_math{
+  implements="icu.windea.pls.script.psi.ParadoxScriptTypedElement"
+  methods=[getIcon getValue getConfigExpression getValueType]
+}
 variable_reference ::= AT VARIABLE_REFERENCE_ID {
+  extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.IParadoxScriptVariableReference"
   ]
   methods=[getIcon getName setName getReference getValueType]
 }
 boolean ::= BOOLEAN_TOKEN {
+  extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue getBooleanValue getValueType]
+  methods=[getBooleanValue getValueType]
 }
-private number ::= int | float
-int ::= INT_TOKEN {
+number ::= int | float{
+  extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
+    "com.intellij.psi.PsiLiteralValue"
   ]
+  methods=[getValueType]
+}
+int ::= INT_TOKEN {
+  extends=number
   methods=[getIntValue getValueType]
 }
 float ::= FLOAT_TOKEN{
-  implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
-  ]
+  extends=number
   methods=[getFloatValue getValueType]
 }
 string ::= value_expr {
-  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
-  stubClass="icu.windea.pls.script.psi.ParadoxScriptValueStub"
+  extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ]
-  methods=[getName setName getValue setValue getNameIdentifier getReference getReferences getStringValue getValueType getConfigExpression]
+  methods=[getName setName getValue setValue getNameIdentifier getReference getReferences getStringValue getValueType]
 }
 color ::= COLOR_TOKEN {
-  implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
-  ]
+  extends=value
   methods=[getValue getColor setColor getValueType]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   recoverWhile="#auto"
+  extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.IParadoxScriptBlock"
   ]
-  methods=[getIcon getValue isEmpty isNotEmpty getValueList getComponents getColor setColor getValueType]
+  methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType]
 }
 private block_item ::= COMMENT | property | value | parameter_condition | variable{
   recoverWhile="#auto"
@@ -161,7 +160,6 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   pin=1
   recoverWhile="#auto"
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.IParadoxScriptParameter"
   ]
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue getValueType getReference]
@@ -174,7 +172,7 @@ parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_conditio
   pin=1
   recoverWhile="#auto"
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getIcon getExpression isEmpty isNotEmpty getValueList getComponents]
+  methods=[getIcon getExpression isEmpty isNotEmpty getComponents]
 }
 private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET{
   pin=1
@@ -197,9 +195,7 @@ private parameter_condition_item ::= COMMENT | property | value
 inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END{
   pin=1
   recoverWhile="#auto"
-  implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptValue"
-  ]
+  extends=value
   methods=[getValue getValueType]
 }
 private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *

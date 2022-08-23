@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
@@ -14,7 +15,7 @@ import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 
 sealed class ParadoxScriptTokenExpressionInfo(
 	text: String,

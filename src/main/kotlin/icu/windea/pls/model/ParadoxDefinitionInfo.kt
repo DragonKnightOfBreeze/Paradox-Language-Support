@@ -6,11 +6,14 @@ import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
+import java.util.*
 
 /**
+ * @property sourceType 此定义信息来自哪种解析方式。
  * @property fromMagicComment 此定义信息是否来自特殊注释。如果是，不加入索引。
  */
 class ParadoxDefinitionInfo(
@@ -20,7 +23,10 @@ class ParadoxDefinitionInfo(
 	val configGroup: CwtConfigGroup,
 	element: ParadoxDefinitionProperty, //直接传入element
 ) {
-	var fromMagicComment: Boolean = false
+	enum class SourceType { Default, Stub, PathComment, TypeComment }
+	
+	var sourceType: SourceType = SourceType.Default
+	val fromMagicComment: Boolean get() = sourceType == SourceType.PathComment || sourceType == SourceType.TypeComment
 	
 	val type: String = typeConfig.name
 	
@@ -109,6 +115,15 @@ class ParadoxDefinitionInfo(
 			if(localisation != null) return localisation
 		}
 		return null
+	}
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxDefinitionInfo
+			&& name == other.name && typesText == other.typesText && gameType == other.gameType
+	}
+	
+	override fun hashCode(): Int {
+		return Objects.hash(name, typesText, gameType)
 	}
 }
 

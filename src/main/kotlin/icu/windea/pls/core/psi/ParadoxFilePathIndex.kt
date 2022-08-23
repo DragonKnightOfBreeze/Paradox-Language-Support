@@ -6,7 +6,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 
 object ParadoxFilePathIndex {
 	val name = ID.create<String, Void>("paradox.file.path.index")

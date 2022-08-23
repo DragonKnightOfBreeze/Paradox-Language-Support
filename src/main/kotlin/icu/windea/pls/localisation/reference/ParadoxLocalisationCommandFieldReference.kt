@@ -6,8 +6,9 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 
 /**
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxCommandFieldCompletionProvider

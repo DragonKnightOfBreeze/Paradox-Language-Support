@@ -5,11 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.model.ParadoxValueType;
 import icu.windea.pls.script.reference.ParadoxParameterReference;
 import javax.swing.Icon;
 
-public interface ParadoxScriptParameter extends ParadoxScriptValue, IParadoxScriptParameter {
+public interface ParadoxScriptParameter extends IParadoxScriptParameter {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -31,8 +30,9 @@ public interface ParadoxScriptParameter extends ParadoxScriptValue, IParadoxScri
   @Nullable
   String getDefaultValue();
 
-  @NotNull
-  ParadoxValueType getValueType();
+  //WARNING: getValueType(...) is skipped
+  //matching getValueType(ParadoxScriptParameter, ...)
+  //methods are not found in ParadoxScriptPsiImplUtil
 
   @Nullable
   ParadoxParameterReference getReference();

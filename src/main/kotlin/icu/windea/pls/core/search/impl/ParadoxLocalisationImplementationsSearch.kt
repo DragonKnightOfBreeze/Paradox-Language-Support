@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.navigation
+package icu.windea.pls.core.search.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.psi.*
@@ -6,9 +6,9 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.util.selector.*
 
 /**
  * 本地化的实现的查询。加入所有作用域内的包括不同语言区域在内的同名本地化。

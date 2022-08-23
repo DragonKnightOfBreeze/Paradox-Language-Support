@@ -19,8 +19,7 @@ class ParadoxFileInfo(
 	val isValid get() = rootInfo.isValid 
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || other is ParadoxFileInfo
-			&& path == other.path && rootInfo == other.rootInfo
+		return this === other || other is ParadoxFileInfo && path == other.path && rootInfo == other.rootInfo
 	}
 	
 	override fun hashCode(): Int {

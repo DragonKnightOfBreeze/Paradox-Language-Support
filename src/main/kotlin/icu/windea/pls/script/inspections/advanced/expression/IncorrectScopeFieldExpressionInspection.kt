@@ -1,13 +1,15 @@
 package icu.windea.pls.script.inspections.advanced.expression
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 import javax.swing.*
 
 /**
@@ -23,8 +25,9 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 		val project = file.project
 		val gameType = ParadoxSelectorHandler.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.acceptChildren(object : PsiRecursiveElementVisitor() {
+		file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(e: PsiElement) {
+				ProgressManager.checkCanceled()
 				if(e is ParadoxScriptExpressionElement) {
 					visitElementExpression(e)
 				}

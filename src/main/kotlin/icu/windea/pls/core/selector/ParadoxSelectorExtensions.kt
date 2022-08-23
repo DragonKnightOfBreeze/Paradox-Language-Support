@@ -1,4 +1,4 @@
-package icu.windea.pls.util.selector
+package icu.windea.pls.core.selector
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -22,7 +22,10 @@ fun definitionSelector() = ChainedParadoxSelector<ParadoxDefinitionProperty>()
 
 fun localisationSelector() = ChainedParadoxSelector<ParadoxLocalisationProperty>()
 
-fun valueSetValueSelector() = ChainedParadoxSelector<ParadoxScriptString>()
+fun valueSetValueSelector() = ChainedParadoxSelector<ParadoxScriptExpressionElement>()
+
+
+fun <T, K> ChainedParadoxSelector<T>.distinctBy(selector: (T) -> K) = apply { selectors += ParadoxDistinctSelector(selector) }
 
 
 fun <T> ChainedParadoxSelector<T>.gameType(gameType: ParadoxGameType?) = apply { if(gameType != null) selectors += ParadoxGameTypeSelector(gameType) }

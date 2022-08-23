@@ -2,11 +2,9 @@ package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.util.SmartList
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptValue
 
 class CwtPropertyTreeElement(
 	element: CwtProperty

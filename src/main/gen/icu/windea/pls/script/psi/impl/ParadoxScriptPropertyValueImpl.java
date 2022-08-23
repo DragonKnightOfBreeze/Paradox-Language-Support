@@ -28,57 +28,9 @@ public class ParadoxScriptPropertyValueImpl extends ASTWrapperPsiElement impleme
   }
 
   @Override
-  @Nullable
-  public ParadoxScriptBlock getBlock() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptBlock.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptBoolean getBoolean() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptBoolean.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptColor getColor() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptColor.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptFloat getFloat() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptFloat.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInlineMath getInlineMath() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMath.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptInt getInt() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInt.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptString getString() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptString.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptVariableReference getVariableReference() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptVariableReference.class);
-  }
-
-  @Override
   @NotNull
   public ParadoxScriptValue getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptValue.class));
   }
 
 }

@@ -2,11 +2,13 @@ package icu.windea.pls.script.psi.impl
 
 import com.intellij.navigation.*
 import com.intellij.openapi.command.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.reference.*
@@ -20,6 +22,25 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
+	//region ParadoxFile
+	@JvmStatic
+	fun getValueSetValueMap(file: ParadoxScriptFile): Map<String, Set<SmartPsiElementPointer<ParadoxScriptExpressionElement>>> {
+		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxScriptExpressionElement>>>() //按名字进行排序
+		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+				ProgressManager.checkCanceled()
+				val config = element.getConfig() ?: return
+				val dataType = config.expression.type
+				if(dataType != CwtDataTypes.Value && dataType != CwtDataTypes.ValueSet) return
+				val valueSetName = config.expression.value ?: return
+				result.getOrPut(valueSetName) { mutableSetOf() }.add(element.createPointer(file))
+				//不需要继续向下遍历
+			}
+		})
+		return result
+	}
+	//endregion
+	
 	//region ParadoxScriptRootBlock
 	@JvmStatic
 	fun getValue(element: ParadoxScriptRootBlock): String {
@@ -46,11 +67,6 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return false
-	}
-	
-	@JvmStatic
-	fun getValueList(element: ParadoxScriptRootBlock): List<ParadoxScriptValue> {
-		return element.filterChildOfType()
 	}
 	
 	@JvmStatic
@@ -123,13 +139,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getName(element: ParadoxScriptVariableName): String {
 		// 不包含作为前缀的"@"
 		return element.variableNameId.text
-	}
-	//endregion
-	
-	//region ParadoxScriptVariableValue
-	@JvmStatic
-	fun getValue(element: ParadoxScriptVariableValue): ParadoxScriptValue {
-		return element.findRequiredChild()
 	}
 	//endregion
 	
@@ -260,13 +269,11 @@ object ParadoxScriptPsiImplUtil {
 	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> {
 		val file = element.containingFile
 		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<IParadoxScriptParameter>>>() //按名字进行排序
-		element.acceptChildren(object : PsiRecursiveElementVisitor() {
-			override fun visitElement(e: PsiElement) {
-				if(e is IParadoxScriptParameter) {
-					result.getOrPut(e.name) { mutableSetOf() }.add(e.createPointer(file))
-					return
-				}
-				super.visitElement(e)
+		element.acceptChildren(object : ParadoxScriptRecursiveElementWalkingVisitor() {
+			override fun visitIParadoxScriptParameter(e: IParadoxScriptParameter) {
+				ProgressManager.checkCanceled()
+				result.getOrPut(e.name) { mutableSetOf() }.add(e.createPointer(file))
+				//不需要继续向下遍历
 			}
 		})
 		return result
@@ -332,13 +339,6 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return ParadoxValueType.UnknownType
-	}
-	//endregion
-	
-	//region ParadoxScriptPropertyValue
-	@JvmStatic
-	fun getValue(element: ParadoxScriptPropertyValue): ParadoxScriptValue {
-		return element.findRequiredChild()
 	}
 	//endregion
 	
@@ -597,12 +597,6 @@ object ParadoxScriptPsiImplUtil {
 		return false
 	}
 	
-	
-	@JvmStatic
-	fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
-		return element.filterChildOfType()
-	}
-	
 	@JvmStatic
 	fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
 		//允许混合value和property
@@ -688,11 +682,12 @@ object ParadoxScriptPsiImplUtil {
 			}
 			val newBlock = ParadoxScriptElementFactory.createValue(project, newText) as? ParadoxScriptBlock
 			if(newBlock != null) {
+				val documentManager = PsiDocumentManager.getInstance(project)
+				val document = documentManager.getDocument(element.containingFile)?:return
 				val command = Runnable {
-					val block = element.replace(newBlock)
-					if(block.isValid) block.reformatted()
+					element.replace(newBlock)
 				}
-				val document = PsiDocumentManager.getInstance(project).getDocument(element.containingFile)
+				documentManager.doPostponedOperationsAndUnblockDocument(document)
 				CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
 			}
 		}
@@ -756,11 +751,6 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return false
-	}
-	
-	@JvmStatic
-	fun getValueList(element: ParadoxScriptParameterCondition): List<ParadoxScriptValue> {
-		return element.filterChildOfType()
 	}
 	
 	@JvmStatic

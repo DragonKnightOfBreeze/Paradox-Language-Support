@@ -1,4 +1,8 @@
 <idea-plugin>
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxValueSetValuesSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+  </extensionPoints>
+  
   <extensions defaultExtensionNs="com.intellij">
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
@@ -23,6 +27,10 @@
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
+  </extensions>
+  
+  <extensions defaultExtensionNs="icu.windea.pls">
+    <paradoxValueSetValuesSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValuesSearcher"/>
   </extensions>
   
   <actions>

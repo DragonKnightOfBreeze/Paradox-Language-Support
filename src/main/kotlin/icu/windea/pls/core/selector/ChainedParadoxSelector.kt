@@ -1,4 +1,4 @@
-package icu.windea.pls.util.selector
+package icu.windea.pls.core.selector
 
 class ChainedParadoxSelector<T>(
 	private val baseComparator: Comparator<T>? = null

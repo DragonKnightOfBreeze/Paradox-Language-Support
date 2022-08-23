@@ -5,9 +5,10 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 
 /**
  * @see ParadoxScriptKeyReference

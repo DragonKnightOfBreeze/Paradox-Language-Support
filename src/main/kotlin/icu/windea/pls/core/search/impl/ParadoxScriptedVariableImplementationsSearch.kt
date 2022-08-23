@@ -1,4 +1,4 @@
-package icu.windea.pls.script.navigation
+package icu.windea.pls.core.search.impl
 
 import com.intellij.openapi.application.*
 import com.intellij.psi.*
@@ -6,8 +6,8 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
 
 /**
  * 封装变量的实现的查询。加入所有作用域内的同名封装变量。

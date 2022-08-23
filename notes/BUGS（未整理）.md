@@ -1,6 +1,6 @@
 # BUGS（未整理）
 
-## #1
+## #1［未复现］
 
 ```
 com.intellij.diagnostic.PluginException: Cyclic service initialization: ServiceAdapter(descriptor=ServiceDescriptor(interface='null', serviceImplementation='icu.windea.pls.config.cwt.CwtConfigProvider', testServiceImplementation='null', headlessImplementation='null', overrides=false, configurationSchemaKey='null', preload=TRUE, client=null), pluginDescriptor=PluginDescriptor(name=Paradox Language Support, id=icu.windea.pls, descriptorPath=plugin.xml, path=~\AppData\Roaming\JetBrains\IntelliJIdea2022.1\plugins\Paradox-Language-Support-0.5.4.jar, version=0.5.4, package=null, isBundled=false))
@@ -517,7 +517,7 @@ com.intellij.openapi.util.StackOverflowPreventedException: Endless recursion pre
 
 ```
 
-## #5
+## #5［已解决］
 
 SOF
 

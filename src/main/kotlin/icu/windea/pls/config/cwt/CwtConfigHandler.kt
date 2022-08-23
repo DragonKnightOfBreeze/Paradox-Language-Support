@@ -15,12 +15,13 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
 import javax.swing.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -305,6 +306,7 @@ object CwtConfigHandler {
 				return value in enumValues
 			}
 			CwtDataTypes.Value -> {
+				if(quoted) return false //不允许用引号括起
 				if(value.isParameterAwareExpression()) return true
 				//val valueSetName = expression.value ?: return false
 				//val valueValues = configGroup.values[valueSetName]?.values ?: return false
@@ -312,6 +314,7 @@ object CwtConfigHandler {
 				return true //任意不带参数，不为复杂表达式的字符串
 			}
 			CwtDataTypes.ValueSet -> {
+				if(quoted) return false //不允许用引号括起
 				if(value.isParameterAwareExpression()) return true
 				return true //任意不带参数，不为复杂表达式的字符串
 			}
@@ -728,15 +731,16 @@ object CwtConfigHandler {
 				}
 			}
 			CwtDataTypes.Value -> {
+				if(quoted) return
 				val valueSetName = expression.value ?: return
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
 				//提示来自脚本文件的value
 				run {
-					val selector = valueSetValueSelector().gameType(configGroup.gameType)
-					val valueSetValues = findAllValueSetValues(valueSetName, configGroup.project, distinct = true, selector = selector)
+					val selector = valueSetValueSelector().gameType(configGroup.gameType).distinctBy { it.value.substringBefore('@') }
+					val valueSetValues = ParadoxValueSetValuesSearch.search(valueSetName, configGroup.project, selector = selector)
 					for(valueSetValue in valueSetValues) {
-						val n = runCatching { valueSetValue.stub?.castOrNull<ParadoxValueSetValueStub>()?.name }.getOrNull() ?: valueSetValue.value
-						val name = n.quoteIf(quoted)
+						//去除后面的作用域信息
+						val name = valueSetValue.value.substringBefore('@')
 						val element = valueSetValue
 						//不显示typeText
 						val lookupElement = LookupElementBuilder.create(element, name)
@@ -1353,7 +1357,7 @@ object CwtConfigHandler {
 				//尝试解析为来自脚本文件的value
 				run {
 					val selector = valueSetValueSelector().gameType(gameType)
-					val resolved = findValueSetValue(valueName, valueSetName, project, selector = selector)
+					val resolved = ParadoxValueSetValuesSearch.search(valueName, valueSetName, project, selector = selector).find()
 					if(resolved != null) return resolved
 				}
 				//尝试解析为预定义的value
@@ -1501,7 +1505,7 @@ object CwtConfigHandler {
 				//尝试解析为来自脚本文件的value
 				run {
 					val selector = valueSetValueSelector().gameType(gameType)
-					val resolved = findValueSetValues(valueName, valueSetName, project, selector = selector)
+					val resolved = ParadoxValueSetValuesSearch.search(valueSetName, project, selector = selector).findAll()
 					if(resolved.isNotEmpty()) return resolved
 				}
 				//尝试解析为预定义的value
@@ -1594,7 +1598,7 @@ object CwtConfigHandler {
 					//尝试解析为来自脚本文件的value
 					run {
 						val selector = valueSetValueSelector().gameType(gameType)
-						val resolved = findValueSetValue(valueName, valueSetName, project, selector = selector)
+						val resolved = ParadoxValueSetValuesSearch.search(valueName, valueSetName, project, selector = selector).find()
 						if(resolved != null) return resolved
 					}
 					//尝试解析为预定义的value

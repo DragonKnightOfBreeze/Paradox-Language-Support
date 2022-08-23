@@ -4,8 +4,9 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.selector.*
+import icu.windea.pls.core.selector.*
 
 /**
  * @property svName 如果对应SV表达式中的参数引用，则为SV的名字。
