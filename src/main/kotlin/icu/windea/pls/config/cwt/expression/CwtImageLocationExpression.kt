@@ -9,7 +9,6 @@ import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 
 private val validValueTypes = arrayOf(
 	CwtDataTypes.FilePath,
@@ -77,7 +76,7 @@ class CwtImageLocationExpression(
 			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val frameToUse = when {
 				frame != 0 -> frame
-				extraPropertyNames == null || extraPropertyNames.isEmpty() -> 0
+				extraPropertyNames.isNullOrEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
 					definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
@@ -119,12 +118,12 @@ class CwtImageLocationExpression(
 			val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
 			val files = findFilesByFilePath(filePath, project, selector = selector).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
 			return tupleOf(filePath, files, frame)
-		} else if(propertyName != null && propertyName.isNotEmpty()) {
+		} else if(!propertyName.isNullOrEmpty()) {
 			//目前只接收类型为string的值
 			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val frameToUse = when {
 				frame != 0 -> frame
-				extraPropertyNames == null || extraPropertyNames.isEmpty() -> 0
+				extraPropertyNames.isNullOrEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
 					definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0

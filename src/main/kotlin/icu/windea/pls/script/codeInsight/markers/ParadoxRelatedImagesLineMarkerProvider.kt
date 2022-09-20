@@ -21,8 +21,8 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		//何时显示装订线图标：element是definition，且definitionInfo.images不为空，且计算得到的keys不为空
 		if(element !is ParadoxScriptProperty) return
 		val definitionInfo = element.definitionInfo ?: return
-		val imagesConfig = definitionInfo.images
-		if(imagesConfig.isEmpty()) return
+		val imageInfos = definitionInfo.images
+		if(imageInfos.isEmpty()) return
 		
 		//显示在提示中 & 可导航：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括没有对应的图片的项，按解析顺序排序
 		val icon = PlsIcons.Gutter.RelatedImages
@@ -31,7 +31,7 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		val keys = mutableSetOf<String>()
 		val targets = mutableSetOf<PsiElement>() //这里需要考虑基于引用相等去重
 		var isFirst = true
-		for((key, locationExpression) in imagesConfig) {
+		for((key, locationExpression) in imageInfos) {
 			val (filePath, files) = locationExpression.resolveAll(definitionInfo.name, element, project) ?: continue
 			if(files.isNotEmpty()) targets.addAll(files)
 			if(files.isNotEmpty() && keys.add(key)) {

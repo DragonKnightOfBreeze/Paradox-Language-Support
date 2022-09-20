@@ -1,4 +1,6 @@
 <idea-plugin>
+  <resource-bundle>messages.PlsBundle</resource-bundle>
+  
   <extensions defaultExtensionNs="com.intellij">
     <fileType
         language="PARADOX_SCRIPT"
@@ -249,6 +251,20 @@
         <keyboard-shortcut first-keystroke="control alt g" keymap="$default"/>
         <add-to-group group-id="IntroduceActionsGroup" anchor="after"
                       relative-to-action="ParadoxScript.IntroduceLocalScriptedVariable"/>
+      </action>
+    </group>
+    <group id="ParadoxScript.GotoGroup">
+      <action id="ParadoxScript.GotoRelatedLocalisation" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedLocalisationAction">
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+        <add-to-group group-id="GoToCodeGroup" relative-to-action="GotoRelated" anchor="after"/>
+        <add-to-group group-id="GoToTargetEx" relative-to-action="GotoSymbol" anchor="after"/>
+      </action>
+      <action id="ParadoxScript.GotoRelatedImage" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedImageAction">
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+        <add-to-group group-id="GoToCodeGroup" relative-to-action="GotoRelated" anchor="after"/>
+        <add-to-group group-id="GoToTargetEx" relative-to-action="GotoSymbol" anchor="after"/>
       </action>
     </group>
   </actions>
