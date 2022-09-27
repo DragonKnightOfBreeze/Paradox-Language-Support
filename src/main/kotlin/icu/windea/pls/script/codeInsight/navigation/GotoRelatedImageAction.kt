@@ -24,7 +24,7 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 		presentation.isVisible = file is ParadoxScriptFile
 		if(!presentation.isVisible) return
 		val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset)
-		val definition = element.findParentDefinition() //鼠标位置可以在rootKey上，也可以在声明中
+		val definition = element.findParentDefinition() //鼠标位置可以在rootKey上，也可以在定义声明中
 		presentation.isEnabled = definition != null
 	}
 }
