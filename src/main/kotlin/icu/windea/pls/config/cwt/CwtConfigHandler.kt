@@ -1,3 +1,5 @@
+@file:Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER")
+
 package icu.windea.pls.config.cwt
 
 import com.intellij.application.options.*
@@ -95,13 +97,13 @@ object CwtConfigHandler {
 	fun matchesDefinitionProperty(propertyElement: ParadoxDefinitionProperty, propertyConfig: CwtPropertyConfig, configGroup: CwtConfigGroup): Boolean {
 		when {
 			//匹配属性列表
-			propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {
+			!propertyConfig.properties.isNullOrEmpty() -> {
 				val propConfigs = propertyConfig.properties
 				val props = propertyElement.propertyList
 				if(!matchesProperties(props, propConfigs, configGroup)) return false //继续匹配
 			}
 			//匹配值列表
-			propertyConfig.values != null && propertyConfig.values.isNotEmpty() -> {
+			!propertyConfig.values.isNullOrEmpty() -> {
 				val valueConfigs = propertyConfig.values
 				val values = propertyElement.valueList
 				if(!matchesValues(values, valueConfigs, configGroup)) return false //继续匹配
@@ -134,13 +136,13 @@ object CwtConfigHandler {
 					return matchesAlias(propertyConfig, propertyElement, configGroup)
 				}
 				//匹配属性列表
-				propertyConfig.properties != null && propertyConfig.properties.isNotEmpty() -> {
+				!propertyConfig.properties.isNullOrEmpty() -> {
 					val propConfigs = propertyConfig.properties
 					val props = propertyElement.propertyList
 					if(!matchesProperties(props, propConfigs, configGroup)) return false //继续匹配
 				}
 				//匹配值列表
-				propertyConfig.values != null && propertyConfig.values.isNotEmpty() -> {
+				!propertyConfig.values.isNullOrEmpty() -> {
 					val valueConfigs = propertyConfig.values
 					val values = propertyElement.valueList
 					if(!matchesValues(values, valueConfigs, configGroup)) return false //继续匹配

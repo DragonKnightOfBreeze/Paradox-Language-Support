@@ -144,53 +144,9 @@ val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo?
 
 private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
-		val value = resolveDefinitionInfo(element)
+		val value = ParadoxDefinitionInfoHandler.resolve(element)
 		CachedValueProvider.Result.create(value, element)
 	}
-}
-
-private fun resolveDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	//首先尝试直接基于stub进行解析
-	val stub = element.getStub()
-	if(stub != null) {
-		val gameType = stub.gameType
-		val type = stub.type
-		val rootKey = stub.rootKey
-		if(gameType != null && type != null && rootKey != null) {
-			val configGroup = getCwtConfig(element.project).getValue(gameType) //这里需要指定project
-			return configGroup.resolveDefinitionInfoByKnownType(element, type, rootKey)
-				?.apply { sourceType = ParadoxDefinitionInfo.SourceType.Stub }
-		}
-	}
-	//当无法获取fileInfo时，尝试基于上一行的特殊注释（指定游戏类型和定义类型）、脚本文件开始的特殊注释（指定游戏类型、文件路径）进行解析
-	val file = element.containingFile
-	val project = file.project
-	val fileInfo = file.fileInfo
-		?: return resolveDefinitionInfoByTypeComment(element, project)
-			?: resolveDefinitionInfoByPathComment(element, file, project)
-	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
-	val rootKey = element.pathName //如果是文件名，不要包含扩展名
-	val path = fileInfo.path
-	val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
-	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)
-}
-
-private fun resolveDefinitionInfoByTypeComment(element: ParadoxDefinitionProperty, project: Project): ParadoxDefinitionInfo? {
-	val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(element) ?: return null
-	val rootKey = element.pathName //如果是文件名，不要包含扩展名
-	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfoByKnownType(element, type, rootKey)
-		?.apply { sourceType = ParadoxDefinitionInfo.SourceType.TypeComment }
-}
-
-private fun resolveDefinitionInfoByPathComment(element: ParadoxDefinitionProperty, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
-	val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
-	val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
-	val rootKey = element.pathName //如果是文件名，不要包含扩展名
-	val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-	return configGroup.resolveDefinitionInfo(element, rootKey, path, elementPath)
-		?.apply { sourceType = ParadoxDefinitionInfo.SourceType.PathComment }
 }
 
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?
@@ -207,20 +163,8 @@ private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionEl
 	val targetElement = if(element is ParadoxScriptPropertyKey) element.parent ?: return null else element
 	if(targetElement.language != ParadoxScriptLanguage) return null
 	return targetElement.getOrPutUserData(PlsKeys.definitionElementInfoKey) {
-		resolveDefinitionElementInfo(targetElement)
+		ParadoxDefinitionElementInfoHandler.resolveDownUp(targetElement)
 	}
-}
-
-private fun resolveDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
-	//这里输入的element本身可以是定义，这时elementPath会是空字符串
-	val elementPath = ParadoxElementPath.resolveFromDefinition(element) ?: return null
-	val definition = elementPath.rootElement ?: return null
-	val definitionInfo = definition.definitionInfo ?: return null
-	val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
-	val gameType = definitionInfo.gameType
-	val project = element.project
-	val configGroup = getCwtConfig(project).getValue(gameType)
-	return configGroup.resolveDefinitionElementInfo(elementPath, scope, definitionInfo, element)
 }
 
 

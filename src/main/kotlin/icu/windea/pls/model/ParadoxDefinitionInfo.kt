@@ -6,10 +6,10 @@ import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 import java.util.*
 
 /**
@@ -51,7 +51,7 @@ class ParadoxDefinitionInfo(
 		val subtypesConfig = typeConfig.subtypes
 		val result = SmartList<CwtSubtypeConfig>()
 		for(subtypeConfig in subtypesConfig.values) {
-			if(configGroup.matchesSubtype(subtypeConfig, element, rootKey, result)) result.add(subtypeConfig)
+			if(ParadoxDefinitionInfoHandler.matchesSubtype(configGroup, subtypeConfig, element, rootKey, result)) result.add(subtypeConfig)
 		}
 		result
 	}

@@ -6,7 +6,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 处理一些特殊注释，实现相关功能。
+ * 用于处理一些特殊注释，实现相关功能。
  */
 object ParadoxMagicCommentHandler {
 	/**

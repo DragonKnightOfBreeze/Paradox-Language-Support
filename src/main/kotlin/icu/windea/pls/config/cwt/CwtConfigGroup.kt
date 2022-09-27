@@ -1,7 +1,6 @@
 package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
-import com.intellij.psi.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
@@ -9,9 +8,7 @@ import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
-
-val MockCwtConfigGroup by lazy { CwtConfigGroup(ParadoxGameType.Stellaris, getDefaultProject(), emptyMap()) }
+import kotlin.collections.isNullOrEmpty
 
 class CwtConfigGroup(
 	val gameType: ParadoxGameType,
@@ -109,7 +106,7 @@ class CwtConfigGroup(
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val typeName = prop.key.removeSurroundingOrNull("type[", "]")
-							if(typeName != null && typeName.isNotEmpty()) {
+							if(!typeName.isNullOrEmpty()) {
 								val typeConfig = resolveTypeConfig(prop, typeName)
 								types[typeName] = typeConfig
 							}
@@ -120,7 +117,7 @@ class CwtConfigGroup(
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val valueName = prop.key.removeSurroundingOrNull("value[", "]")
-							if(valueName != null && valueName.isNotEmpty()) {
+							if(!valueName.isNullOrEmpty()) {
 								val valueConfig = resolveEnumConfig(prop, valueName) ?: continue
 								values[valueName] = valueConfig
 							}
@@ -131,7 +128,7 @@ class CwtConfigGroup(
 						val props = property.properties ?: continue
 						for(prop in props) {
 							val enumName = prop.key.removeSurroundingOrNull("enum[", "]")
-							if(enumName != null && enumName.isNotEmpty()) {
+							if(!enumName.isNullOrEmpty()) {
 								val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
 								enums[enumName] = enumConfig
 							}
@@ -273,10 +270,10 @@ class CwtConfigGroup(
 					keysNoConst.add(key)
 				}
 			}
-			if(keysConst != null && keysConst.isNotEmpty()){
+			if(!keysConst.isNullOrEmpty()){
 				aliasKeysGroupConst.put(k, keysConst)
 			}
-			if(keysNoConst != null && keysNoConst.isNotEmpty()){
+			if(!keysNoConst.isNullOrEmpty()){
 				aliasKeysGroupNoConst.put(k, keysNoConst.sortedByDescending { CwtKeyExpression.resolve(it).priority }.toSet())
 			}
 		}
@@ -320,7 +317,7 @@ class CwtConfigGroup(
 		var images: CwtTypeImagesConfig? = null
 		
 		val props = propertyConfig.properties
-		if(props != null && props.isNotEmpty()) {
+		if(!props.isNullOrEmpty()) {
 			for(prop in props) {
 				val key = prop.key
 				when(key) {
@@ -395,7 +392,7 @@ class CwtConfigGroup(
 		}
 		
 		val options = propertyConfig.options
-		if(options != null && options.isNotEmpty()) {
+		if(!options.isNullOrEmpty()) {
 			for(option in options) {
 				val key = option.key
 				when(key) {
@@ -406,7 +403,7 @@ class CwtConfigGroup(
 						if(value == null && values == null) continue
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
-						if(values != null && values.isNotEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
+						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
@@ -436,7 +433,7 @@ class CwtConfigGroup(
 		var onlyIfNot: Set<String>? = null
 		
 		val options = propertyConfig.options
-		if(options != null && options.isNotEmpty()) {
+		if(!options.isNullOrEmpty()) {
 			for(option in options) {
 				val key = option.key
 				when(key) {
@@ -447,7 +444,7 @@ class CwtConfigGroup(
 						if(value == null && values == null) continue
 						val set = CollectionFactory.createCaseInsensitiveStringSet() //忽略大小写
 						if(value != null) set.add(value)
-						if(values != null && values.isNotEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
+						if(!values.isNullOrEmpty()) values.forEach { v -> v.stringValue?.let { sv -> set.add(sv) } }
 						val notReversed = option.separatorType == CwtSeparatorType.EQUAL
 						typeKeyFilter = set.toReversibleSet(notReversed)
 					}
@@ -470,7 +467,7 @@ class CwtConfigGroup(
 		var required = false
 		var primary = false
 		val optionValues = propertyConfig.optionValues
-		if(optionValues != null && optionValues.isNotEmpty()) {
+		if(!optionValues.isNullOrEmpty()) {
 			for(optionValue in optionValues) {
 				val value = optionValue.stringValue ?: continue
 				when(value) {
@@ -501,7 +498,7 @@ class CwtConfigGroup(
 	
 	private fun resolveTagConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTagConfig? {
 		val props = propertyConfig.properties ?: return null
-		val since = propertyConfig.options?.find { it -> it.key == "since" }?.stringValue
+		val since = propertyConfig.options?.find { it.key == "since" }?.stringValue
 		var supportedTypes: Set<String>? = null
 		for(prop in props) {
 			when(prop.key) {
@@ -545,7 +542,7 @@ class CwtConfigGroup(
 		var internalId: String? = null
 		var supportedScopes: Set<String>? = null
 		val props = propertyConfig.properties
-		if(props == null || props.isEmpty()) return null
+		if(props.isNullOrEmpty()) return null
 		for(prop in props) {
 			when(prop.key) {
 				"internal_id" -> internalId = prop.value //目前版本的CWT配置已经不再有这个属性
@@ -566,7 +563,7 @@ class CwtConfigGroup(
 	private fun resolveScopeConfig(propertyConfig: CwtPropertyConfig, name: String): CwtScopeConfig? {
 		var aliases: Set<String>? = null
 		val props = propertyConfig.properties
-		if(props == null || props.isEmpty()) return null
+		if(props.isNullOrEmpty()) return null
 		for(prop in props) {
 			if(prop.key == "aliases") aliases = prop.values?.mapNotNullTo(CollectionFactory.createCaseInsensitiveStringSet()) { it.stringValue }
 		}
@@ -657,149 +654,5 @@ class CwtConfigGroup(
 				modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
 			}
 		}
-	}
-	
-	//解析定义和定义元素信息
-	
-	fun resolveDefinitionInfo(
-		element: ParadoxDefinitionProperty,
-		rootKey: String,
-		path: ParadoxPath,
-		elementPath: ParadoxElementPath<ParadoxScriptFile>
-	): ParadoxDefinitionInfo? {
-		for(typeConfig in types.values) {
-			if(matchesType(typeConfig, element, rootKey, path, elementPath)) {
-				//需要懒加载
-				return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, this, element)
-			}
-		}
-		return null
-	}
-	
-	fun resolveDefinitionInfoByKnownType(
-		element: ParadoxDefinitionProperty,
-		type: String,
-		rootKey: String
-	): ParadoxDefinitionInfo? {
-		val typeConfig = types[type] ?: return null
-		//仍然要求匹配rootKey
-		if(matchesTypeByTypeComment(typeConfig, rootKey)) {
-			return ParadoxDefinitionInfo(rootKey, typeConfig, gameType, this, element)
-		}
-		return null
-	}
-	
-	private fun matchesTypeByTypeComment(typeConfig: CwtTypeConfig, rootKey: String): Boolean {
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
-		val startsWithConfig = typeConfig.startsWith
-		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!rootKey.startsWith(startsWithConfig, true)) return false
-		}
-		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
-		val typeKeyFilterConfig = typeConfig.typeKeyFilter
-		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
-			val filterResult = typeKeyFilterConfig.contains(rootKey)
-			if(!filterResult) return false
-		}
-		return true
-	}
-	
-	fun resolveDefinitionElementInfo(
-		elementPath: ParadoxElementPath<ParadoxDefinitionProperty>,
-		scope: String?,
-		definitionInfo: ParadoxDefinitionInfo,
-		element: PsiElement
-	): ParadoxDefinitionElementInfo {
-		return ParadoxDefinitionElementInfo(elementPath, scope, gameType, definitionInfo, this, element)
-	}
-	
-	fun matchesType(typeConfig: CwtTypeConfig, element: ParadoxDefinitionProperty, rootKey: String, path: ParadoxPath, elementPath: ParadoxElementPath<ParadoxScriptFile>): Boolean {
-		//判断element.value是否需要是block
-		val blockConfig = typeConfig.block
-		val elementBlock = element.block
-		if(blockConfig) {
-			if(elementBlock == null) return false
-		}
-		//判断element是否需要是scriptFile还是scriptProperty
-		//TODO nameFromFile和typePerFile有什么区别？
-		val nameFromFileConfig = typeConfig.nameFromFile || typeConfig.typePerFile
-		if(nameFromFileConfig) {
-			if(element !is ParadoxScriptFile) return false
-		} else {
-			if(element !is ParadoxScriptProperty) return false
-		}
-		//判断path是否匹配
-		val pathConfig = typeConfig.path ?: return false
-		val pathStrictConfig = typeConfig.pathStrict
-		if(pathStrictConfig) {
-			if(pathConfig != path.parent) return false
-		} else {
-			if(!pathConfig.matchesPath(path.parent)) return false
-		}
-		//判断path_name是否匹配
-		val pathFileConfig = typeConfig.pathFile //String?
-		if(pathFileConfig != null) {
-			if(pathFileConfig != path.fileName) return false
-		}
-		//判断path_extension是否匹配
-		val pathExtensionConfig = typeConfig.pathExtension //String?
-		if(pathExtensionConfig != null) {
-			if(pathExtensionConfig != "." + path.fileExtension) return false
-		}
-		//如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
-		//skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
-		//skip_root_key可以重复（其中之一匹配即可）
-		val skipRootKeyConfig = typeConfig.skipRootKey
-		if(skipRootKeyConfig == null || skipRootKeyConfig.isEmpty()) {
-			if(elementPath.length > 1) return false
-		} else {
-			var skipResult = false
-			for(keys in skipRootKeyConfig) {
-				if(keys.matchEntirePath(elementPath.subPaths, matchesParent = true)) {
-					skipResult = true
-					break
-				}
-			}
-			if(!skipResult) return false
-		}
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
-		val startsWithConfig = typeConfig.startsWith
-		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!rootKey.startsWith(startsWithConfig, true)) return false
-		}
-		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
-		val typeKeyFilterConfig = typeConfig.typeKeyFilter
-		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
-			val filterResult = typeKeyFilterConfig.contains(rootKey)
-			if(!filterResult) return false
-		}
-		//到这里再次处理block为false的情况
-		if(!blockConfig) {
-			return elementBlock == null
-		}
-		return true
-	}
-	
-	fun matchesSubtype(subtypeConfig: CwtSubtypeConfig, element: ParadoxDefinitionProperty, rootKey: String, result: MutableList<CwtSubtypeConfig>): Boolean {
-		//如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
-		val onlyIfNotConfig = subtypeConfig.onlyIfNot
-		if(onlyIfNotConfig != null && onlyIfNotConfig.isNotEmpty()) {
-			val matchesAny = result.any { it.name in onlyIfNotConfig }
-			if(matchesAny) return false
-		}
-		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
-		val startsWithConfig = subtypeConfig.startsWith
-		if(startsWithConfig != null && startsWithConfig.isNotEmpty()) {
-			if(!rootKey.startsWith(startsWithConfig, true)) return false
-		}
-		//如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
-		val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
-		if(typeKeyFilterConfig != null && typeKeyFilterConfig.isNotEmpty()) {
-			val filterResult = typeKeyFilterConfig.contains(rootKey)
-			if(!filterResult) return false
-		}
-		//根据config对property进行内容匹配
-		val elementConfig = subtypeConfig.config
-		return CwtConfigHandler.matchesDefinitionProperty(element, elementConfig, this)
 	}
 }
