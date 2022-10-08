@@ -24,11 +24,16 @@ class ParadoxPath private constructor(
 		fun resolve(subPaths: List<String>) = cache[subPaths.joinToString("/")]
 	}
 	
-	val subPaths = path.split("/")
-	val parent = path.substringBeforeLast("/", "")
-	val root = path.substringBefore("/", "")
+	val subPaths = path.split('/')
+	
+	val parent = path.substringBeforeLast('/', "")
+	
+	val root = path.substringBefore('/', "")
+	
 	val fileName = subPaths.lastOrNull().orEmpty()
+	
 	val fileExtension = fileName.substringAfterLast('.', "")
+	
 	val length = subPaths.size
 	
 	fun isEmpty(): Boolean {

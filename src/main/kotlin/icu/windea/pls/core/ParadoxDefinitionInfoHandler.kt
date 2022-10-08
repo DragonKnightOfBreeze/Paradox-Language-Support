@@ -33,7 +33,7 @@ object ParadoxDefinitionInfoHandler {
 		val fileInfo = file.fileInfo
 			?: return resolveByTypeComment(element, project)
 				?: resolveByPathComment(element, file, project)
-		val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
+		val (elementPath, _) = ParadoxElementPathHandler.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val path = fileInfo.path
 		val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
@@ -51,10 +51,10 @@ object ParadoxDefinitionInfoHandler {
 	
 	private fun resolveByPathComment(element: ParadoxDefinitionProperty, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
 		val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
-		val elementPath = ParadoxElementPath.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
+		val (elementPath, _) = ParadoxElementPathHandler.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-		return ParadoxDefinitionInfoHandler.doResolve(configGroup, element, rootKey, path, elementPath)
+		return doResolve(configGroup, element, rootKey, path, elementPath)
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.PathComment }
 	}
 	
@@ -63,7 +63,7 @@ object ParadoxDefinitionInfoHandler {
 		element: ParadoxDefinitionProperty,
 		rootKey: String,
 		path: ParadoxPath,
-		elementPath: ParadoxElementPath<ParadoxScriptFile>
+		elementPath: ParadoxElementPath
 	): ParadoxDefinitionInfo? {
 		for(typeConfig in configGroup.types.values) {
 			if(matchesType(configGroup, typeConfig, element, rootKey, path, elementPath)) {
@@ -94,7 +94,7 @@ object ParadoxDefinitionInfoHandler {
 		element: ParadoxDefinitionProperty,
 		rootKey: String,
 		path: ParadoxPath,
-		elementPath: ParadoxElementPath<ParadoxScriptFile>
+		elementPath: ParadoxElementPath
 	): Boolean {
 		//判断element.value是否需要是block
 		val blockConfig = typeConfig.block
