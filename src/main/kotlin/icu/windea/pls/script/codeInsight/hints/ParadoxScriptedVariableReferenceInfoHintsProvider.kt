@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
  * 封装变量引用信息的内嵌提示（变量的值）。
  */
 @Suppress("UnstableApiUsage")
-@Deprecated("")
+@Deprecated("UNNECESSARY")
 class ParadoxScriptedVariableReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
 	companion object {
 		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxVariableReferenceInfoHintsSettingsKey")

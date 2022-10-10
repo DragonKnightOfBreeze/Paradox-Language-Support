@@ -49,7 +49,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 					val presentation = collectDefinition(definitionInfo)
 					val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
 					val endOffset = element.endOffset
-					sink.addInlineElement(endOffset, false, finalPresentation, false)
+					sink.addInlineElement(endOffset, true, finalPresentation, false)
 				}
 			}
 		} else if(element is ParadoxScriptString) {

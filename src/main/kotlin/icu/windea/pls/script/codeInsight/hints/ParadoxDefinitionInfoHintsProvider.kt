@@ -32,7 +32,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings
 				val presentation = collectDefinition(definitionInfo)
 				val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
 				val endOffset = element.propertyKey.endOffset
-				sink.addInlineElement(endOffset, false, finalPresentation, false)
+				sink.addInlineElement(endOffset, true, finalPresentation, false)
 			}
 		}
 		return true
