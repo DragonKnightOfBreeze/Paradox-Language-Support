@@ -31,7 +31,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 			if(config.expression.type.let { it == CwtDataTypes.Value || it == CwtDataTypes.ValueSet }) {
 				val valueSetName = config.expression.value ?: return true
 				val presentation = collectDefinition(valueSetName)
-				val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
+				val finalPresentation = presentation.toFinalPresentation(this, file, file.project)
 				val endOffset = element.endOffset
 				sink.addInlineElement(endOffset, true, finalPresentation, false)
 			}

@@ -30,7 +30,7 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<N
 			val definitionInfo = element.definitionInfo
 			if(definitionInfo != null) {
 				val presentation = collectDefinition(element, definitionInfo, editor) ?: return true
-				val finalPresentation = presentation.toFinalPresentation(this, file, element.project)
+				val finalPresentation = presentation.toFinalPresentation(this, file, file.project)
 				val endOffset = element.propertyKey.endOffset
 				sink.addInlineElement(endOffset, true, finalPresentation, false)
 			}

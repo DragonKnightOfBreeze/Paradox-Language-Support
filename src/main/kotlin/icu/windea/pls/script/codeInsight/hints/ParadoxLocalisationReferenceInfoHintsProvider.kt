@@ -49,7 +49,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
 					val presentation = collectLocalisation(resolved, editor)
-					val finalPresentation = presentation?.toFinalPresentation(this, file, element.project) ?: return true
+					val finalPresentation = presentation?.toFinalPresentation(this, file, file.project) ?: return true
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, true, finalPresentation, false)
 				}
@@ -60,7 +60,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
 					val presentation = collectLocalisation(resolved, editor)
-					val finalPresentation = presentation?.toFinalPresentation(this, file, element.project) ?: return true
+					val finalPresentation = presentation?.toFinalPresentation(this, file, file.project) ?: return true
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, false, finalPresentation, false)
 				}
