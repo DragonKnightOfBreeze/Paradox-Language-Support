@@ -47,7 +47,7 @@ class MissingImageInspection: LocalInspectionTool() {
 			for(info in imageInfos) {
 				if(nameToDistinct.contains(info.name)) continue
 				if(info.required || (info.primary && inspection.forPrimaryRelated) || (!info.primary && inspection.forOptionalRelated)) {
-					val resolved = info.locationExpression.resolve(definition.name, definition, project)
+					val resolved = info.locationExpression.resolve(definitionInfo.name, definition, project)
 					if(resolved != null) {
 						val (key, image) = resolved
 						if(image == null) {

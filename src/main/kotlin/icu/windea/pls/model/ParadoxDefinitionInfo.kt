@@ -13,6 +13,8 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
+ * @property name 定义的名字。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
+ * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
  * @property sourceType 此定义信息来自哪种解析方式。
  * @property fromMagicComment 此定义信息是否来自特殊注释。如果是，不加入索引。
  */

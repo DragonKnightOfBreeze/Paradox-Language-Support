@@ -30,7 +30,7 @@ object ParadoxDdsUrlResolver {
 			return url
 		} catch(e: Exception) {
 			//如果出现异常，那么返回默认图标
-			logger.warn("Resolve dds url failed. (definition name: ${definition.name})", e)
+			logger.warn("Resolve dds url failed. (definition name: ${definitionInfo.name})", e)
 			return getDefaultUrl(defaultToUnknown)
 		}
 	}

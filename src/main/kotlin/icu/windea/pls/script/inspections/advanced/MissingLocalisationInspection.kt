@@ -73,7 +73,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 					for(locale in localeSet) {
 						if(nameToDistinct.contains(info.name + "@" + locale)) continue
 						val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).locale(locale)
-						val resolved = info.locationExpression.resolve(definition.name, definition, project, selector = selector)
+						val resolved = info.locationExpression.resolve(definitionInfo.name, definition, project, selector = selector)
 						if(resolved != null) {
 							val (key, loc) = resolved
 							if(loc == null) {
@@ -147,7 +147,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	) : AddEditDeleteListPanel<ParadoxLocaleConfig>(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.locales"), locales) {
 		init {
 			minimumSize = InspectionOptionsPanel.getMinimumListSize()
-			preferredSize = JBUI.size(150, 130)
+			preferredSize = JBUI.size(150, 110) //2行选项的高度
 			myListModel.addListDataListener(object : ListDataListener {
 				override fun intervalAdded(e: ListDataEvent?) {
 					saveChanges()

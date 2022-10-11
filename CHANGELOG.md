@@ -45,9 +45,9 @@
   * [ ] 基于由上至下而非由下至上的路径解析得到需要的定义元素信息，用于索引、引用解析、代码提示等 *
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
 * BUG修复：
-  * [ ] 规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可。 
+  * [ ] 规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可。
+  * [X] 修复本地化位置表达式（如`$_desc`）时把占位符`$`解析成定义的rootKey而非定义的name的问题
   * [ ] 修复valueSetValue索引在索引时会被IDE认为栈溢出的问题，改为基于`ParadoxValueSetValuesSearch`和索引进行查找
-  * [ ] 修复解析嵌套的定义的本地化位置表达式（如`$_desc`）时把占位符`$`解析成定义的rootKey而非定义的name的问题
 * 新增功能：
   * [x] 新增动作：导航到相关本地化和导航到相关图片（对于定义，在导航和右键菜单中，在动作：导航到相关符号/Go to related symbol下面）
 * 功能变更：

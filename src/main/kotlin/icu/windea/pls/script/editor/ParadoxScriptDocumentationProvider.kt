@@ -222,13 +222,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			val typeLinkText = buildString {
 				val gameType = definitionInfo.gameType
 				val typeConfig = definitionInfo.typeConfig
-				val typeLink = "${gameType.id}.types.${typeConfig.name}"
+				val typeLink = "${gameType.id}/types/${typeConfig.name}"
 				appendCwtLink(typeConfig.name, typeLink, typeConfig.pointer.element)
 				val subtypeConfigs = definitionInfo.subtypeConfigs
 				if(subtypeConfigs.isNotEmpty()) {
 					for(subtypeConfig in subtypeConfigs) {
 						append(", ")
-						val subtypeLink = "$typeLink.${subtypeConfig.name}"
+						val subtypeLink = "$typeLink/${subtypeConfig.name}"
 						appendCwtLink(subtypeConfig.name, subtypeLink, subtypeConfig.pointer.element)
 					}
 				}
