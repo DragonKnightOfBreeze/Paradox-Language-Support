@@ -3,6 +3,8 @@ package icu.windea.pls.script.codeInsight.hints
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import com.intellij.util.*
@@ -38,9 +40,16 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 	override val description: String get() = PlsBundle.message("script.hints.definitionReferenceInfo.description")
 	override val key: SettingsKey<NoSettings> get() = settingsKey
 	
+	override val previewText: String get() = ParadoxScriptHintsPreviewProvider.civicPreview
+	
+	override fun createFile(project: Project, fileType: FileType, document: Document): PsiFile {
+		return super.createFile(project, fileType, document)
+			.also { file -> ParadoxScriptHintsPreviewProvider.handleCivicPreviewFile(file) }
+	}
+	
 	override fun createSettings() = NoSettings()
 	
-	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
+	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptPropertyKey) {
 			val resolved = CwtConfigHandler.resolveKey(element) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxDefinitionProperty) {

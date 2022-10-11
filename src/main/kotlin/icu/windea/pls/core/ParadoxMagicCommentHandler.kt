@@ -28,9 +28,9 @@ object ParadoxMagicCommentHandler {
 	
 	fun resolveFilePathComment(commentText: String): Pair<ParadoxGameType, ParadoxPath>? {
 		val expression = commentText.removePrefixOrNull("@path:") ?: return null
-		val gameTypeText = expression.substringBefore('/')
+		val gameTypeText = expression.substringBefore(':')
 		val gameType = ParadoxGameType.resolve(gameTypeText) ?: return null //这里直接返回null
-		val pathText = expression.substringAfter('/')
+		val pathText = expression.substringAfter(':')
 		val path = ParadoxPath.resolve(pathText)
 		return gameType to path
 	}
@@ -52,9 +52,9 @@ object ParadoxMagicCommentHandler {
 	
 	fun resolveDefinitionTypeComment(commentText: String): Pair<ParadoxGameType, String>? {
 		val expression = commentText.removePrefixOrNull("@type:") ?: return null
-		val gameTypeText = expression.substringBefore('/')
+		val gameTypeText = expression.substringBefore(':')
 		val gameType = ParadoxGameType.resolve(gameTypeText) ?: return null //这里直接返回null
-		val typeText = expression.substringAfter('/')
+		val typeText = expression.substringAfter(':')
 		return gameType to typeText
 	}
 }

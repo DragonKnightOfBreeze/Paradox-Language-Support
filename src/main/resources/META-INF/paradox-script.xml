@@ -85,37 +85,26 @@
     <codeInsight.lineMarkerProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxRelatedImagesLineMarkerProvider"/>
-    <!--Try to keep correct inlay hint order-->
     <!--<codeInsight.inlayProvider-->
     <!--    language="PARADOX_SCRIPT"-->
-    <!--    id="ParadoxScriptedVariableReferenceInfoHintsProvider"-->
     <!--    implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableReferenceInfoHintsProvider"/>-->
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxDefinitionInfoHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionInfoHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxDefinitionLocalizedNameHintsProvider" order="after ParadoxDefinitionInfoHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxDefinitionReferenceInfoHintsProvider" order="after ParadoxDefinitionLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxDefinitionReferenceLocalizedNameHintsProvider"
-        order="after ParadoxDefinitionReferenceInfoHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxLocalisationReferenceInfoHintsProvider"
-        order="after ParadoxDefinitionReferenceLocalizedNameHintsProvider"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
     <codeInsight.inlayProvider
         language="PARADOX_SCRIPT"
-        id="ParadoxValueSetValueInfoHintsProvider"
-        order="last"
         implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxValueSetValueInfoHintsProvider"/>x
     <lang.formatter
         language="PARADOX_SCRIPT"

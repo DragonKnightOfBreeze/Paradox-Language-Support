@@ -1,0 +1,20 @@
+cb_galactic_revolution = {
+	show_in_diplomacy = yes
+	show_notification = no
+	potential = {
+		OR = {
+		    has_valid_civic = civic_shared_burden
+			AND = {
+				has_valid_civic = civic_socialistic
+				NOR = {
+					has_ethic = ethic_xenophobe
+					has_ethic = ethic_fanatic_xenophobe
+				}
+			}
+		}
+		has_policy_flag = continuous_revolution
+	}
+	is_valid = {
+		has_policy_flag = continuous_revolution
+	}
+}

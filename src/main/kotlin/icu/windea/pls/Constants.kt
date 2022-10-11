@@ -103,6 +103,8 @@ object PlsKeys {
 	
 	val definitionElementInfoKey = Key.create<ParadoxDefinitionElementInfo>("paradoxDefinitionElementInfo")
 	
+	val injectedInfoKey = Key.create<List<String>>("paradoxInjectedInfo")
+	
 	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradoxTextColorConfig")
 	
 	val definitionConfigKeys = setOf<Key<out ParadoxDefinitionConfig>>(

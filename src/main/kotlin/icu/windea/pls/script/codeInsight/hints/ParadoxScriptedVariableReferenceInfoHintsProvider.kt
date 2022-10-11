@@ -24,7 +24,7 @@ class ParadoxScriptedVariableReferenceInfoHintsProvider : ParadoxScriptHintsProv
 	
 	override fun createSettings() = NoSettings()
 	
-	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, sink: InlayHintsSink): Boolean {
+	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptVariableReference) {
 			val referenceValue = element.referenceValue ?: return true //不检查值的类型
 			val presentation = collectValue(referenceValue) ?: return true

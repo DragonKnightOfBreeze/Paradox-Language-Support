@@ -41,14 +41,6 @@ object ParadoxDefinitionInfoHandler {
 		return doResolve(configGroup, element, rootKey, path, elementPath)
 	}
 	
-	private fun resolveByTypeComment(element: ParadoxDefinitionProperty, project: Project): ParadoxDefinitionInfo? {
-		val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(element) ?: return null
-		val rootKey = element.pathName //如果是文件名，不要包含扩展名
-		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
-		return doResolveWithKnownType(configGroup, element, type, rootKey)
-			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.TypeComment }
-	}
-	
 	private fun resolveByPathComment(element: ParadoxDefinitionProperty, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
 		val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
 		val (elementPath, _) = ParadoxElementPathHandler.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
@@ -56,6 +48,14 @@ object ParadoxDefinitionInfoHandler {
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 		return doResolve(configGroup, element, rootKey, path, elementPath)
 			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.PathComment }
+	}
+	
+	private fun resolveByTypeComment(element: ParadoxDefinitionProperty, project: Project): ParadoxDefinitionInfo? {
+		val (gameType, type) = ParadoxMagicCommentHandler.resolveDefinitionTypeComment(element) ?: return null
+		val rootKey = element.pathName //如果是文件名，不要包含扩展名
+		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
+		return doResolveWithKnownType(configGroup, element, type, rootKey)
+			?.apply { sourceType = ParadoxDefinitionInfo.SourceType.TypeComment }
 	}
 	
 	private fun doResolve(
