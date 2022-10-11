@@ -107,6 +107,8 @@ class ParadoxDefinitionInfo(
 	
 	val declarationConfig get() = configGroup.declarations.get(type)
 	
+	val project get() = configGroup.project
+	
 	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		for(primaryLocalisationConfig in primaryLocalisationConfigs) {

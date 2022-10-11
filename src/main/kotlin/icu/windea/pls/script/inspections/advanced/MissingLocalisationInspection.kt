@@ -60,55 +60,65 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		}
 		
 		private fun visitDefinition(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo) {
-			val project = definition.project
+			val project = definitionInfo.project
 			val localisationInfos = definitionInfo.localisation
 			if(localisationInfos.isEmpty()) return
 			val localeSet = inspection.localeSet
 			if(localeSet.isEmpty()) return
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			val nameToDistinct = mutableSetOf<String>()
-			val nameMessageMap = mutableMapOf<String, String>()
+			val infoMap = mutableMapOf<String, Tuple3<ParadoxRelatedLocalisationInfo, String?, ParadoxLocaleConfig>>()
+			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
+			val hasPrimaryLocales = mutableSetOf<ParadoxLocaleConfig>()
 			for(info in localisationInfos) {
-				if(info.required || (info.primary && inspection.forPrimaryRelated) || (!info.primary && inspection.forOptionalRelated)) {
+				if(info.required || if(info.primary) inspection.forPrimaryRelated else inspection.forOptionalRelated) {
 					for(locale in localeSet) {
 						if(nameToDistinct.contains(info.name + "@" + locale)) continue
+						if(info.primary && hasPrimaryLocales.contains(locale)) continue
+						//多个位置表达式无法解析时，使用第一个
 						val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).locale(locale)
 						val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector = selector)
 						if(resolved != null) {
 							val (key, loc) = resolved
 							if(loc == null) {
-								nameMessageMap.put(info.name + "@" + locale, getMessage(info, key, locale))
+								infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, key, locale))
 							} else {
-								nameMessageMap.remove(info.name + "@" + locale)
+								infoMap.remove(info.name + "@" + locale)
 								nameToDistinct.add(info.name + "@" + locale)
+								if(info.primary) hasPrimaryLocales.add(locale)
 							}
-						} else {
-							nameMessageMap.put(info.name + "@" + locale, getMessageFromExpression(info, locale))
+						} else if(info.locationExpression.placeholder == null) {
+							//从定义的属性推断，例如，#name
+							infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, null, locale))
 						}
 					}
 				}
 			}
-			if(nameMessageMap.isNotEmpty()) {
-				//显示为WEAK_WARNING
-				holder.registerProblem(location, nameMessageMap.values.joinToString("\n"), ProblemHighlightType.WEAK_WARNING,
-					ImportGameOrModDirectoryFix(definition)
-				)
+			if(infoMap.isNotEmpty()) {
+				//显示为WEAK_WARNING，且缺失多个时，每个算作一个问题
+				for((info, key, locale) in infoMap.values) {
+					val message = getMessage(info, key, locale)
+					holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING,
+						ImportGameOrModDirectoryFix(definition)
+					)
+				}
 			}
 		}
 		
-		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String, locale: ParadoxLocaleConfig): String {
-			return when {
-				info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1", key, locale)
-				info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2", key, locale)
-				else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3", key, locale)
-			}
-		}
-		
-		private fun getMessageFromExpression(info: ParadoxRelatedLocalisationInfo, locale: ParadoxLocaleConfig): String {
-			return when {
-				info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.1", info.locationExpression, locale)
-				info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.1", info.locationExpression, locale)
-				else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.1", info.locationExpression, locale)
+		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String?, locale: ParadoxLocaleConfig): String {
+			return if(key != null) {
+				when {
+					info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1", key, locale)
+					info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2", key, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3", key, locale)
+				}
+			} else {
+				val expression = info.locationExpression
+				when {
+					info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.1", expression, locale)
+					info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.1", expression, locale)
+					else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.1", expression, locale)
+				}
 			}
 		}
 	}

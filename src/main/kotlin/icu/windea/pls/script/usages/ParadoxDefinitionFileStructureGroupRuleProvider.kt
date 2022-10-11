@@ -50,7 +50,7 @@ class DefinitionUsageGroup(
 ) : UsageGroup {
 	private val _name = definitionInfo.name
 	private val _icon = definition.icon
-	private val _project = definition.project
+	private val _project = definitionInfo.project
 	private val _pointer = definition.createPointer()
 	
 	override fun getIcon(): Icon? {
