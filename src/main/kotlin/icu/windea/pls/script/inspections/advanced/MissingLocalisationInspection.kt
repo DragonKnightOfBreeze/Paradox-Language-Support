@@ -73,7 +73,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 					for(locale in localeSet) {
 						if(nameToDistinct.contains(info.name + "@" + locale)) continue
 						val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).locale(locale)
-						val resolved = info.locationExpression.resolve(definitionInfo.name, definition, project, selector = selector)
+						val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector = selector)
 						if(resolved != null) {
 							val (key, loc) = resolved
 							if(loc == null) {

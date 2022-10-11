@@ -9,14 +9,14 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
- * @property name 定义的名字。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
+ * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
  * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
  * @property sourceType 此定义信息来自哪种解析方式。
- * @property fromMagicComment 此定义信息是否来自特殊注释。如果是，不加入索引。
  */
 class ParadoxDefinitionInfo(
 	val rootKey: String,
@@ -28,17 +28,16 @@ class ParadoxDefinitionInfo(
 	enum class SourceType { Default, Stub, PathComment, TypeComment }
 	
 	var sourceType: SourceType = SourceType.Default
-	val fromMagicComment: Boolean get() = sourceType == SourceType.PathComment || sourceType == SourceType.TypeComment
 	
 	val type: String = typeConfig.name
 	
 	//NOTE 部分属性需要使用懒加载
 	
 	val name: String by lazy {
-		//如果name_from_file = yes，则返回文件名（不包含扩展）
+		//name_from_file = yes -> 返回文件名（不包含扩展名）
 		val nameFromFileConfig = typeConfig.nameFromFile
 		if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
-		//如果name_field = <any>，则返回对应名字的property的value
+		//name_field = xxx -> 返回对应名字（xxx）的property的value，如果不存在则返回空字符串
 		val nameFieldConfig = typeConfig.nameField
 		if(nameFieldConfig != null) return@lazy element.findTargetElement(nameFieldConfig, true)?.value.orEmpty()
 		//否则直接返回rootKey
@@ -112,7 +111,7 @@ class ParadoxDefinitionInfo(
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
 		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
 			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-			val resolved = primaryLocalisationConfig.locationExpression.resolve(name, element, configGroup.project, selector = selector) ?: continue
+			val resolved = primaryLocalisationConfig.locationExpression.resolve(element, this, configGroup.project, selector = selector) ?: continue
 			val localisation = resolved.second
 			if(localisation != null) return localisation
 		}
@@ -128,6 +127,16 @@ class ParadoxDefinitionInfo(
 		return Objects.hash(name, typesText, gameType)
 	}
 }
+
+/**
+ * 定义是否需要进行索引。
+ */
+val ParadoxDefinitionInfo.shouldIndex: Boolean get() = sourceType == SourceType.PathComment || sourceType == SourceType.TypeComment
+
+/**
+ * 对应的定义是否是匿名的。
+ */
+val ParadoxDefinitionInfo.isAnonymous: Boolean get() = name.isEmpty()
 
 @InferMethod
 private fun ParadoxRelatedLocalisationInfo.inferIsPrimary(): Boolean {

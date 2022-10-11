@@ -71,7 +71,7 @@ object ParadoxDdsUrlResolver {
 	private fun doResolveByDefinition(definition: ParadoxDefinitionProperty, frame: Int , definitionInfo: ParadoxDefinitionInfo): String? {
 		//兼容definition不是sprite的情况
 		val (_,file,inferredFrame) = definitionInfo.primaryImageConfigs.mapAndFirst { 
-			it.locationExpression.resolve(definitionInfo.name, definition, definition.project)
+			it.locationExpression.resolve(definition, definitionInfo, definition.project)
 		} ?: return null
 		if(file == null) return null
 		val frameToUse = if(frame == 0) inferredFrame else frame

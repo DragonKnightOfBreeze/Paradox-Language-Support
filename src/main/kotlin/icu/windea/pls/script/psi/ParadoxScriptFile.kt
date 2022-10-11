@@ -5,6 +5,7 @@ import com.intellij.navigation.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.impl.*
@@ -52,16 +53,16 @@ class ParadoxScriptFile(
 			override fun visitElement(element: PsiElement) {
 				if(element is ParadoxScriptProperty || element is ParadoxScriptValue || element is ParadoxScriptPropertyValue) {
 					if(element is ParadoxScriptProperty) {
-						if(element.getUserData(PlsKeys.cachedDefinitionInfoKey)?.value?.fromMagicComment == true) {
+						if(element.getUserData(PlsKeys.cachedDefinitionInfoKey)?.value?.shouldIndex == true) {
 							element.putUserData(PlsKeys.cachedDefinitionInfoKey, null)
 						}
 					}
 					if(element is ParadoxScriptProperty) {
-						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.fromMagicComment == true) {
+						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.shouldIndex == true) {
 							element.putUserData(PlsKeys.definitionElementInfoKey, null)
 						}
 					} else if(element is ParadoxScriptValue) {
-						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.fromMagicComment == true) {
+						if(element.getUserData(PlsKeys.definitionElementInfoKey)?.definitionInfo?.shouldIndex == true) {
 							element.putUserData(PlsKeys.definitionElementInfoKey, null)
 						}
 					}

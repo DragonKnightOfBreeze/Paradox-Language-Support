@@ -12,7 +12,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.util.*
-import icu.windea.pls.core.selector.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {
@@ -244,7 +243,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				for((key, locationExpression, required) in localisationInfos) {
 					if(!usedLocalisationTargetMap.containsKey(key)) {
 						val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-						val (targetKey, target) = locationExpression.resolve(definitionInfo.name, element, project, selector = selector) ?: continue //发生意外，直接跳过
+						val (targetKey, target) = locationExpression.resolve(element, definitionInfo, project, selector = selector) ?: continue //发生意外，直接跳过
 						if(target != null) usedLocalisationTargetMap.put(key, target)
 						if(required || target != null) {
 							if(localisationKeys.add(key)) {
@@ -263,7 +262,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val usedImageTargetMap = imageTargetMap ?: mutableMapOf()
 				for((key, locationExpression, required) in imagesInfos) {
 					if(!usedImageTargetMap.containsKey(key)) {
-						val (filePath, target, frame) = locationExpression.resolve(definitionInfo.name, element, project) ?: continue //发生意外，直接跳过
+						val (filePath, target, frame) = locationExpression.resolve(element, definitionInfo, project) ?: continue //发生意外，直接跳过
 						if(target != null) usedImageTargetMap.put(key, tupleOf(target, frame))
 						if(required || target != null) {
 							if(imageKeys.add(key)) {

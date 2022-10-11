@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.dds.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 private val validValueTypes = arrayOf(
@@ -21,8 +22,8 @@ private val validValueTypes = arrayOf(
  *
  * 用于推断定义的相关图片（relatedImage）的位置。
  *
- * 示例：`"$"`, `"$_desc"`, `"#icon"`, "#icon|#icon_frame"`
- * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成definitionName）。
+ * 示例：`"gfx/interface/icons/modifiers/mod_$.dds"`, `"#icon"`, "#icon|#icon_frame"`
+ * @property placeholder 占位符（表达式文本包含"$"时，为整个字符串，"$"会在解析时替换成定义的名字，，如果定义是匿名的，则忽略此表达式）。
  * @property propertyName 属性名（表达式文本以"#"开始时，为"#"之后和可能的"|"之前的子字符串，可以为空字符串）。
  * @property extraPropertyNames 额外的属性名（表达式文本以"#"开始且之后包含"|"时，为"|"之后的按","分割的子字符串）。
  */
@@ -61,12 +62,20 @@ class CwtImageLocationExpression(
 	
 	operator fun component3() = extraPropertyNames
 	
+	fun resolvePlaceholder(name: String): String? {
+		if(placeholder == null) return null
+		return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
+	}
+	
 	//(key, file(s), frame)
 	
-	fun resolve(definitionName: String, definition: ParadoxDefinitionProperty, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
+	fun resolve(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo , project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
 		if(placeholder != null) {
+			//如果定义是匿名的，则直接忽略
+			if(definitionInfo.isAnonymous) return null
+			
 			//假定这里的filePath以.dds结尾
-			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
+			val filePath = resolvePlaceholder(definitionInfo.name)!!
 			val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
 			val file = findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
 			return tupleOf(filePath, file, frame)
@@ -100,7 +109,7 @@ class CwtImageLocationExpression(
 						if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
 						return primaryImageConfigs.mapAndFirst({ it?.second != null }) { primaryImageConfig ->
 							val locationExpression = primaryImageConfig.locationExpression
-							locationExpression.resolve(definitionName, resolvedDefinition, resolvedProject, frameToUse)
+							locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse)
 						}
 					}
 					else -> return null //解析失败或不支持
