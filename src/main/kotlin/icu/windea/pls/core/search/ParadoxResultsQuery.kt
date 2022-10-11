@@ -7,8 +7,8 @@ import icu.windea.pls.core.selector.*
 /**
  * 可对查询结果进行进一步的处理。
  * * 进一步的过滤、排序和去重。
- * * 处理查找单个和查找所有的路基有所不同的情况。
- * * 处理存在默认值的情况。
+ * * 可处理查找单个和查找所有的路基有所不同的情况。
+ * * 可处理存在默认值的情况。
  * @see ParadoxSearchParameters
  * @see ParadoxSelector
  * @see ChainedParadoxSelector

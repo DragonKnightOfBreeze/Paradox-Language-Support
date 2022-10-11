@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 import icu.windea.pls.script.psi.impl.*;
 
 public interface ParadoxScriptElementTypes {
@@ -23,7 +23,6 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INLINE_MATH_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_VARIABLE_REFERENCE");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
-  IElementType NUMBER = ParadoxScriptElementTypeFactory.getElementType("NUMBER");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
   IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
   IElementType PARAMETER_CONDITION_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_EXPRESSION");

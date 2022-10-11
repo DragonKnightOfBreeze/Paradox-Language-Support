@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.lang.PsiBuilder.*;
+import com.intellij.psi.tree.*;
+
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -40,8 +37,8 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
       INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
-      INLINE_MATH, INT, NUMBER, STRING,
-      VALUE, VARIABLE_REFERENCE),
+      INLINE_MATH, INT, STRING, VALUE,
+      VARIABLE_REFERENCE),
   };
 
   /* ********************************************************** */
@@ -442,19 +439,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // int | float
-  public static boolean number(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "number")) return false;
-    if (!nextTokenIs(b, "<number>", FLOAT_TOKEN, INT_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, NUMBER, "<number>");
-    r = int_$(b, l + 1);
-    if (!r) r = float_$(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
   // PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_TOKEN)] PARAMETER_END
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
@@ -680,14 +664,15 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // variable_reference | boolean | number | string | color | block | inline_math
+  // variable_reference | boolean | int | float | string | color | block | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, VALUE, "<value>");
     r = variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
-    if (!r) r = number(b, l + 1);
+    if (!r) r = int_$(b, l + 1);
+    if (!r) r = float_$(b, l + 1);
     if (!r) r = string(b, l + 1);
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);

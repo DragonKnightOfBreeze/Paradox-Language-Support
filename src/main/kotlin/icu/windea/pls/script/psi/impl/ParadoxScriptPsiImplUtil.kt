@@ -23,22 +23,22 @@ import javax.swing.*
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
 	//region ParadoxFile
-	@JvmStatic
-	fun getValueSetValueMap(file: ParadoxScriptFile): Map<String, Set<SmartPsiElementPointer<ParadoxScriptExpressionElement>>> {
-		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxScriptExpressionElement>>>() //按名字进行排序
-		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
-			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
-				ProgressManager.checkCanceled()
-				val config = element.getConfig() ?: return
-				val dataType = config.expression.type
-				if(dataType != CwtDataTypes.Value && dataType != CwtDataTypes.ValueSet) return
-				val valueSetName = config.expression.value ?: return
-				result.getOrPut(valueSetName) { mutableSetOf() }.add(element.createPointer(file))
-				//不需要继续向下遍历
-			}
-		})
-		return result
-	}
+	//@JvmStatic
+	//fun getValueSetValueMap(file: ParadoxScriptFile): Map<String, Set<SmartPsiElementPointer<ParadoxScriptExpressionElement>>> {
+	//	val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxScriptExpressionElement>>>() //按名字进行排序
+	//	file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+	//		override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+	//			ProgressManager.checkCanceled()
+	//			val config = element.getConfig() ?: return
+	//			val dataType = config.expression.type
+	//			if(dataType != CwtDataTypes.Value && dataType != CwtDataTypes.ValueSet) return
+	//			val valueSetName = config.expression.value ?: return
+	//			result.getOrPut(valueSetName) { mutableSetOf() }.add(element.createPointer(file))
+	//			//不需要继续向下遍历
+	//		}
+	//	})
+	//	return result
+	//}
 	//endregion
 	
 	//region ParadoxScriptRootBlock

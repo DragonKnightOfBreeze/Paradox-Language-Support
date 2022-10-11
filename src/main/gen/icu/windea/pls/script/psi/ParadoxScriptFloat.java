@@ -1,12 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import icu.windea.pls.core.model.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.model.ParadoxValueType;
 
-public interface ParadoxScriptFloat extends ParadoxScriptNumber {
+public interface ParadoxScriptFloat extends ParadoxScriptValue, ParadoxScriptNumber {
+
+  @NotNull
+  String getValue();
 
   float getFloatValue();
 

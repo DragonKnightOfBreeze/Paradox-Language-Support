@@ -1,11 +1,8 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
+import com.intellij.psi.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
-import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
@@ -24,7 +21,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
-    visitNumber(o);
+    visitValue(o);
+    // visitNumber(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
@@ -72,12 +70,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
-    visitNumber(o);
-  }
-
-  public void visitNumber(@NotNull ParadoxScriptNumber o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
+    // visitNumber(o);
   }
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {
