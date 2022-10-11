@@ -8,7 +8,7 @@ import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.definition.config.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 
 val locationClass = PlsIcons::class.java
 

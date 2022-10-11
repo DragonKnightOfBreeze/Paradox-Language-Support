@@ -1,9 +1,9 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.handler
 
 import com.intellij.lang.LighterASTNode
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 

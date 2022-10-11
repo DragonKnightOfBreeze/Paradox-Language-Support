@@ -4,8 +4,9 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

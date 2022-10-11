@@ -3,7 +3,7 @@ package icu.windea.pls.config.definition.config
 import com.intellij.psi.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 

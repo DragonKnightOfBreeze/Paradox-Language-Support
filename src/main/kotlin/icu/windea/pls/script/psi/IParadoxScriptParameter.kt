@@ -2,7 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.navigation.*
 import com.intellij.psi.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.navigation.*
 
 /**

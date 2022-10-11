@@ -3,7 +3,7 @@ package icu.windea.pls.core
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.encoding.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 
 /**
  * UTF8 BOM选项提供器。

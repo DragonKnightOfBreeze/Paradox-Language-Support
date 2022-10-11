@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
@@ -70,12 +70,13 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		}
 		
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-			//需要包括scripted_variable, property, value (valueSetValue)
+			//需要包括scripted_variable, property, string (作为：valueSetValue)
 			val type = node.elementType
 			return when {
 				type == VARIABLE -> false
 				type == PARAMETER || type == PARAMETER_CONDITION -> true
 				type == INLINE_MATH || type == INLINE_MATH_PARAMETER -> true
+				type == BOOLEAN || type == INT || type == FLOAT || type == COLOR -> true
 				else -> false
 			}
 		}

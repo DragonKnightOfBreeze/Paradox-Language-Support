@@ -10,10 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.psi.PsiReference;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
 import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
+import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
+
+  public ParadoxScriptStringImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
 
   public ParadoxScriptStringImpl(@NotNull ASTNode node) {
     super(node);

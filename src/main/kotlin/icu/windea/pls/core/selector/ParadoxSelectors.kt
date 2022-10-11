@@ -3,10 +3,11 @@ package icu.windea.pls.core.selector
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.ParadoxSelectorHandler.selectGameType
 import icu.windea.pls.core.selector.ParadoxSelectorHandler.selectRootFile
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import java.util.*
 
 class ParadoxDistinctSelector<T, K>(

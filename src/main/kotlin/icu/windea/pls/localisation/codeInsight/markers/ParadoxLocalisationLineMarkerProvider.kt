@@ -9,7 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.selector.*
 
 /**

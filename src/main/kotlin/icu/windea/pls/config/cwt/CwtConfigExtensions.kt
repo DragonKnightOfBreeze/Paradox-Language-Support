@@ -4,7 +4,7 @@ package icu.windea.pls.config.cwt
 
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 
 internal typealias CwtConfigMap = MutableMap<String, CwtFileConfig>
 internal typealias CwtConfigMaps = MutableMap<String, CwtConfigMap>

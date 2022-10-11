@@ -3,7 +3,7 @@ package icu.windea.pls.core
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 
 /**
  * 监听描述符文件或者游戏类型标记文件。

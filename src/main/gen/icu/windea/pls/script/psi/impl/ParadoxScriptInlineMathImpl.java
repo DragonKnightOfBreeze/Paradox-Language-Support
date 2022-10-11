@@ -9,9 +9,14 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
+import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implements ParadoxScriptInlineMath {
+
+  public ParadoxScriptInlineMathImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
 
   public ParadoxScriptInlineMathImpl(@NotNull ASTNode node) {
     super(node);

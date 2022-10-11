@@ -1,9 +1,10 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.handler
 
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 
 /**
  * 用于处理本地化信息。

@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptVariableStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 

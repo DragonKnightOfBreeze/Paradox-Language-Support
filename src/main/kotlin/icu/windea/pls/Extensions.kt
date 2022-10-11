@@ -18,13 +18,15 @@ import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*

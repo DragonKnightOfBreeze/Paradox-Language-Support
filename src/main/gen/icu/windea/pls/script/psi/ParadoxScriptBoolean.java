@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
 
 public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValue {
 

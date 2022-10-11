@@ -4,7 +4,7 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
 //region ParadoxScriptProperty

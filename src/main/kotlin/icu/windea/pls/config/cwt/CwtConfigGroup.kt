@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import kotlin.collections.isNullOrEmpty
 
 class CwtConfigGroup(

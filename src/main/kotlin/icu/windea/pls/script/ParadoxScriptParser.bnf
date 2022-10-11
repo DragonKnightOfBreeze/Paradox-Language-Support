@@ -77,6 +77,8 @@ property_value ::= value
 
 //(property) value related
 value ::= variable_reference | boolean | number | string | color | block | inline_math{
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  stubClass="icu.windea.pls.script.psi.ParadoxScriptValueStub"
   implements="icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   methods=[getIcon getValue getConfigExpression getValueType]
 }

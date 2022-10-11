@@ -2,7 +2,7 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import java.util.concurrent.*
 import kotlin.collections.component1
 import kotlin.collections.component2

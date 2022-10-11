@@ -5,7 +5,7 @@ import com.intellij.navigation.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.impl.*

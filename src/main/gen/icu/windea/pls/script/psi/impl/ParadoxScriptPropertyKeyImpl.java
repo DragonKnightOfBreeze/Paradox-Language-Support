@@ -11,7 +11,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.psi.PsiReference;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
 import icu.windea.pls.script.expression.reference.ParadoxScriptKeyReference;
 
 public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implements ParadoxScriptPropertyKey {

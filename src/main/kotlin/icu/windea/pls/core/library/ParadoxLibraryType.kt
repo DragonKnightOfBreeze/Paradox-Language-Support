@@ -6,7 +6,7 @@ import com.intellij.openapi.roots.libraries.*
 import com.intellij.openapi.roots.libraries.ui.*
 import com.intellij.openapi.vfs.*
 import icons.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import javax.swing.*
 
 class ParadoxLibraryType : LibraryType<ParadoxLibraryProperties>(ParadoxLibraryKind) {

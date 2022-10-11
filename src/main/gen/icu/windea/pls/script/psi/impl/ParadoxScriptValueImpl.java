@@ -8,13 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import icu.windea.pls.script.psi.ParadoxScriptValueStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
 import javax.swing.Icon;
+import com.intellij.psi.stubs.IStubElementType;
 
-public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
+public abstract class ParadoxScriptValueImpl extends ParadoxScriptStubElementImpl<ParadoxScriptValueStub> implements ParadoxScriptValue {
+
+  public ParadoxScriptValueImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
 
   public ParadoxScriptValueImpl(@NotNull ASTNode node) {
     super(node);

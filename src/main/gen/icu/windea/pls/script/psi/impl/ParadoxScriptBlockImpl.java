@@ -10,11 +10,16 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
 import java.awt.Color;
 import javax.swing.Icon;
+import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements ParadoxScriptBlock {
+
+  public ParadoxScriptBlockImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
 
   public ParadoxScriptBlockImpl(@NotNull ASTNode node) {
     super(node);
@@ -40,19 +45,19 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   @NotNull
   public List<ParadoxScriptProperty> getPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
+    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
   }
 
   @Override
   @NotNull
   public List<ParadoxScriptValue> getValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }
 
   @Override
   @NotNull
   public List<ParadoxScriptVariable> getVariableList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
+    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
   }
 
   @Override

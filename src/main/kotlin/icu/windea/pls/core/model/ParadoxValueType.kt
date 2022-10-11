@@ -1,4 +1,4 @@
-package icu.windea.pls.model
+package icu.windea.pls.core.model
 
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*

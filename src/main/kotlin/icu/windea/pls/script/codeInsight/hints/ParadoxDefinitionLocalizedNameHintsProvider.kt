@@ -8,7 +8,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 

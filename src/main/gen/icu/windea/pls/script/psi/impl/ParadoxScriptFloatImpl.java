@@ -9,9 +9,14 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
+import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptFloatImpl extends ParadoxScriptNumberImpl implements ParadoxScriptFloat {
+
+  public ParadoxScriptFloatImpl(@NotNull T stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
 
   public ParadoxScriptFloatImpl(@NotNull ASTNode node) {
     super(node);

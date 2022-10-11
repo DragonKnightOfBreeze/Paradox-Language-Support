@@ -4,11 +4,12 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.model.ParadoxValueType;
+import icu.windea.pls.core.model.ParadoxValueType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
+public interface ParadoxScriptValue extends ParadoxScriptTypedElement, StubBasedPsiElement<ParadoxScriptValueStub> {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
