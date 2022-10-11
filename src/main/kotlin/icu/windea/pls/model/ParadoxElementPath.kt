@@ -1,10 +1,8 @@
 package icu.windea.pls.model
 
 import com.google.common.cache.*
-import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
-import java.util.*
 
 /**
  * 定义或定义属性相对于所属文件或定义的路径。保留大小写。
@@ -19,7 +17,6 @@ import java.util.*
  * @property originalPath 保留括起的双引号的使用"/"分割的路径。
  * @property path 不保留括起的双引号的使用"/"分割的路径。
  */
-@Suppress("unused")
 class ParadoxElementPath private constructor(
 	val originalPath: String
 ) : Iterable<String> {

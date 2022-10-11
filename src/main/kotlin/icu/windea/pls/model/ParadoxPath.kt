@@ -10,7 +10,6 @@ import icu.windea.pls.*
  * * `common/buildings/00_capital_buildings.txt`
  * * `localisation/simp_chinese/l_simp_chinese.yml`
  */
-@Suppress("unused")
 class ParadoxPath private constructor(
 	val path: String
 ) : Iterable<String> {
