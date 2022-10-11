@@ -98,17 +98,17 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		
 		private fun getMessage(info: ParadoxRelatedLocalisationInfo, key: String, locale: ParadoxLocaleConfig): String {
 			return when {
-				info.required -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.1", key, locale)
-				info.primary -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.2", key, locale)
-				else -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.3", key, locale)
+				info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1", key, locale)
+				info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2", key, locale)
+				else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3", key, locale)
 			}
 		}
 		
 		private fun getMessageFromExpression(info: ParadoxRelatedLocalisationInfo, locale: ParadoxLocaleConfig): String {
 			return when {
-				info.required -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.1.1", info.locationExpression, locale)
-				info.primary -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.2.1", info.locationExpression, locale)
-				else -> PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.description.3.1", info.locationExpression, locale)
+				info.required -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.1.1", info.locationExpression, locale)
+				info.primary -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.2.1", info.locationExpression, locale)
+				else -> PlsBundle.message("script.inspection.advanced.missingLocalisation.description.3.1", info.locationExpression, locale)
 			}
 		}
 	}
@@ -121,18 +121,18 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 					.resizableColumn()
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.option.forPreferredLocale"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPreferredLocale"))
 					.bindSelected(::forPrimaryLocale)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.option.forPrimaryLocale.tooltip") }
+					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPrimaryLocale.tooltip") }
 					.actionListener { _, component -> forPrimaryLocale = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.option.checkPrimaryRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkPrimaryRelated"))
 					.bindSelected(::forPrimaryRelated)
 					.actionListener { _, component -> forPrimaryRelated = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.option.checkOptionalRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkOptionalRelated"))
 					.bindSelected(::forOptionalRelated)
 					.actionListener { _, component -> forOptionalRelated = component.isSelected }
 			}
@@ -144,7 +144,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	
 	private inner class LocaleTableModel(
 		locales: List<ParadoxLocaleConfig>
-	) : AddEditDeleteListPanel<ParadoxLocaleConfig>(PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.option.locales"), locales) {
+	) : AddEditDeleteListPanel<ParadoxLocaleConfig>(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.locales"), locales) {
 		init {
 			minimumSize = InspectionOptionsPanel.getMinimumListSize()
 			preferredSize = JBUI.size(150, 130)

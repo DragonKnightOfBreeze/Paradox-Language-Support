@@ -177,20 +177,20 @@
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
-                     key="script.inspection.advanced.inspection.missingLocalisation"
+                     key="script.inspection.advanced.missingLocalisation"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.MissingLocalisationInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingImage"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
-                     key="script.inspection.advanced.inspection.missingImage"
+                     key="script.inspection.advanced.missingImage"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.MissingImageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedFilePath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="script.inspection.advanced.inspection.unresolvedFilePath"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.unresolvedFilePath"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnresolvedFilePathInspection"/>

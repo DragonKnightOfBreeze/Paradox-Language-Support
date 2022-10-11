@@ -41,7 +41,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = valueElement.value
 					val path = filePath.toPathOrNull() ?: return
 					if(VfsUtil.findFile(path, false) == null) {
-						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.1", path), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.unresolvedFilePath.description.1", path), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 							ImportGameOrModDirectoryFix(valueElement)
 						)
 					}
@@ -51,7 +51,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath())
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					if(findFileByFilePath(filePath, project, selector = fileSelector().gameTypeFrom(valueElement)) == null) {
-						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.2", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.unresolvedFilePath.description.2", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 							ImportGameOrModDirectoryFix(valueElement)
 						)
 					}
@@ -61,7 +61,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 					val filePath = expressionType.resolve(expression.value, valueElement.value.normalizePath()) ?: return
 					if(filePath.matchesAntPath(inspection.ignoredFilePaths, true)) return
 					if(findFileByFilePath(filePath, project, selector = fileSelector().gameTypeFrom(valueElement)) == null) {
-						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.description.3", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
+						holder.registerProblem(location, PlsBundle.message("script.inspection.advanced.unresolvedFilePath.description.3", filePath), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
 							ImportGameOrModDirectoryFix(valueElement)
 						)
 					}
@@ -74,7 +74,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				label(PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.option.ignoredFilePaths"))
+				label(PlsBundle.message("script.inspection.advanced.unresolvedFilePath.option.ignoredFilePaths"))
 			}
 			row {
 				textField().bindText(::ignoredFilePaths)
@@ -85,7 +85,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 							if(text != ignoredFilePaths) ignoredFilePaths = text
 						}
 					}
-					.comment(PlsBundle.message("script.inspection.advanced.inspection.unresolvedFilePath.option.ignoredFilePaths.comment"))
+					.comment(PlsBundle.message("script.inspection.advanced.unresolvedFilePath.option.ignoredFilePaths.comment"))
 					.horizontalAlign(HorizontalAlign.FILL)
 					.resizableColumn()
 			}

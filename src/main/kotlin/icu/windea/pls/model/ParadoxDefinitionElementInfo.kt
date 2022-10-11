@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
  * @property isValid 对应的PSI元素是否是合法的定义元素（在定义声明内，非定义自身）。
  */
 class ParadoxDefinitionElementInfo(
-	val elementPath: ParadoxElementPath<ParadoxDefinitionProperty>,
+	val elementPath: ParadoxElementPath,
 	val scope: String? = null,
 	val gameType: ParadoxGameType,
 	val definitionInfo: ParadoxDefinitionInfo,

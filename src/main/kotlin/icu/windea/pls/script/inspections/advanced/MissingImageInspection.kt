@@ -72,17 +72,17 @@ class MissingImageInspection: LocalInspectionTool() {
 		
 		private fun getMessage(info: ParadoxRelatedImageInfo, key: String): String {
 			return when{
-				info.required -> PlsBundle.message("script.inspection.advanced.inspection.missingImage.description.1", key)
-				info.primary -> PlsBundle.message("script.inspection.advanced.inspection.missingImage.description.2", key)
-				else -> PlsBundle.message("script.inspection.advanced.inspection.missingImage.description.3", key)
+				info.required -> PlsBundle.message("script.inspection.advanced.missingImage.description.1", key)
+				info.primary -> PlsBundle.message("script.inspection.advanced.missingImage.description.2", key)
+				else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3", key)
 			}
 		}
 		
 		private fun getMessageFromExpression(info: ParadoxRelatedImageInfo): String {
 			return when{
-				info.required -> PlsBundle.message("script.inspection.advanced.inspection.missingImage.description.1.1", info.locationExpression)
-				info.primary -> PlsBundle.message("script.inspection.advanced.inspection.missingImage.description.2.1", info.locationExpression)
-				else -> PlsBundle.message("script.inspection.advanced.inspection.missingImage.description.3.1", info.locationExpression)
+				info.required -> PlsBundle.message("script.inspection.advanced.missingImage.description.1.1", info.locationExpression)
+				info.primary -> PlsBundle.message("script.inspection.advanced.missingImage.description.2.1", info.locationExpression)
+				else -> PlsBundle.message("script.inspection.advanced.missingImage.description.3.1", info.locationExpression)
 			}
 		}
 	}
@@ -90,12 +90,12 @@ class MissingImageInspection: LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.inspection.missingImage.option.checkPrimaryRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkPrimaryRelated"))
 					.bindSelected(::forPrimaryRelated)
 					.actionListener { _, component -> forPrimaryRelated = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.inspection.missingImage.option.checkOptionalRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkOptionalRelated"))
 					.bindSelected(::forOptionalRelated)
 					.actionListener { _, component -> forOptionalRelated = component.isSelected }
 			}

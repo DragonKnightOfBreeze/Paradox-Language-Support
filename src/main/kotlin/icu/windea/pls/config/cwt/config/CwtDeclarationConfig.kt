@@ -48,7 +48,7 @@ data class CwtDeclarationConfig(
 	/**
 	 * 根据路径解析对应的属性/值配置列表。
 	 */
-	fun resolveConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtKvConfig<*>> {
+	fun resolveConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup): List<CwtKvConfig<*>> {
 		//如果路径中可能待遇参数，则不进行解析
 		if(path.isParameterAware) return emptyList()
 		
@@ -118,8 +118,7 @@ data class CwtDeclarationConfig(
 	/**
 	 * 内联规则以便后续的代码提示、引用解析和结构验证。
 	 */
-	@Suppress("NAME_SHADOWING")
-	private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>, index: Int, path: ParadoxElementPath<*>): Int {
+	private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>, index: Int, path: ParadoxElementPath): Int {
 		//内联类型为`single_alias_right`或`alias_match_left`的规则
 		run {
 			val valueExpression = config.valueExpression
@@ -152,7 +151,7 @@ data class CwtDeclarationConfig(
 	/**
 	 * 根据路径解析对应的子属性配置列表。（过滤重复的）
 	 */
-	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
+	fun resolveChildPropertyConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup): List<CwtPropertyConfig> {
 		//如果路径中可能待遇参数，则不进行解析
 		if(path.isParameterAware) return emptyList()
 		
@@ -179,7 +178,7 @@ data class CwtDeclarationConfig(
 	/**
 	 * 根据路径解析对应的子值配置列表。（过滤重复的）
 	 */
-	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath<*>, configGroup: CwtConfigGroup): List<CwtValueConfig> {
+	fun resolveChildValuesConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup): List<CwtValueConfig> {
 		//如果路径中可能待遇参数，则不进行解析
 		if(path.isParameterAware) return emptyList()
 		
