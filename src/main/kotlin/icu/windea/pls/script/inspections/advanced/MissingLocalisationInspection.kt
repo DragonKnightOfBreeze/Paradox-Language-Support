@@ -157,7 +157,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	) : AddEditDeleteListPanel<ParadoxLocaleConfig>(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.locales"), locales) {
 		init {
 			minimumSize = InspectionOptionsPanel.getMinimumListSize()
-			preferredSize = JBUI.size(150, 110) //2行选项的高度
+			preferredSize = JBUI.size(150, 110) //3行选项的高度
 			myListModel.addListDataListener(object : ListDataListener {
 				override fun intervalAdded(e: ListDataEvent?) {
 					saveChanges()
