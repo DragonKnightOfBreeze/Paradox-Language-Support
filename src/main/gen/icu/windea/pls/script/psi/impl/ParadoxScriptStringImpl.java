@@ -1,22 +1,20 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.psi.util.*;
+import icu.windea.pls.core.model.*;
+import icu.windea.pls.script.expression.reference.*;
 import icu.windea.pls.script.psi.*;
-import com.intellij.psi.PsiReference;
-import icu.windea.pls.core.model.ParadoxValueType;
-import icu.windea.pls.script.expression.reference.ParadoxScriptValueReference;
-import com.intellij.psi.stubs.IStubElementType;
+import org.jetbrains.annotations.*;
 
-public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements ParadoxScriptString {
+import java.util.*;
 
-  public ParadoxScriptStringImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
+public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<ParadoxScriptStringStub> implements ParadoxScriptString {
+
+  public ParadoxScriptStringImpl(@NotNull ParadoxScriptStringStub stub, @Nullable IStubElementType<?, ?> type) {
     super(stub, type);
   }
 
@@ -24,7 +22,6 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
     visitor.visitString(this);
   }
@@ -93,6 +90,18 @@ public class ParadoxScriptStringImpl extends ParadoxScriptValueImpl implements P
   @NotNull
   public ParadoxValueType getValueType() {
     return ParadoxScriptPsiImplUtil.getValueType(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxScriptString getString() {
+    return ParadoxScriptPsiImplUtil.getString(this);
+  }
+
+  @Override
+  @Nullable
+  public String getConfigExpression() {
+    return ParadoxScriptPsiImplUtil.getConfigExpression(this);
   }
 
 }

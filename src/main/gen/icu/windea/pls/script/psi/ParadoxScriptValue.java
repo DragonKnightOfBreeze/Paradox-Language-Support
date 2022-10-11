@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import icu.windea.pls.core.model.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.core.model.ParadoxValueType;
-import javax.swing.Icon;
 
-public interface ParadoxScriptValue extends ParadoxScriptTypedElement, StubBasedPsiElement<ParadoxScriptValueStub> {
+import javax.swing.*;
+
+public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
+
+  @Nullable
+  ParadoxScriptString getString();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

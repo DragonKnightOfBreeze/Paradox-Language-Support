@@ -37,8 +37,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     create_token_set_(INLINE_MATH_ABS_EXPRESSION, INLINE_MATH_BI_EXPRESSION, INLINE_MATH_EXPRESSION, INLINE_MATH_PAR_EXPRESSION,
       INLINE_MATH_UNARY_EXPRESSION),
     create_token_set_(BLOCK, BOOLEAN, COLOR, FLOAT,
-      INLINE_MATH, INT, STRING, VALUE,
-      VARIABLE_REFERENCE),
+      INLINE_MATH, INT, VALUE, VARIABLE_REFERENCE),
   };
 
   /* ********************************************************** */

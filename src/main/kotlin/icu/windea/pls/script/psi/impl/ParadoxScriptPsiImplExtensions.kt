@@ -100,6 +100,8 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 
 //region ParadoxScriptString
 class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
+	constructor(stub: ParadoxScriptStringStub, type: IStubElementType<*,*>): super(stub, type)
+	
 	constructor(node: ASTNode) : super(node)
 	
 	@Volatile private var _value: String? = null

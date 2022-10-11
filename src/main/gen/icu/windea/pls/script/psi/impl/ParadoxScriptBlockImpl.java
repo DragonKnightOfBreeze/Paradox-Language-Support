@@ -1,25 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import icu.windea.pls.core.model.*;
 import icu.windea.pls.script.psi.*;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.core.model.ParadoxValueType;
-import java.awt.Color;
-import javax.swing.Icon;
-import com.intellij.psi.stubs.IStubElementType;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements ParadoxScriptBlock {
-
-  public ParadoxScriptBlockImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
 
   public ParadoxScriptBlockImpl(@NotNull ASTNode node) {
     super(node);
@@ -45,19 +38,19 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   @NotNull
   public List<ParadoxScriptProperty> getPropertyList() {
-    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
   }
 
   @Override
   @NotNull
   public List<ParadoxScriptValue> getValueList() {
-    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }
 
   @Override
   @NotNull
   public List<ParadoxScriptVariable> getVariableList() {
-    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptVariable.class);
   }
 
   @Override

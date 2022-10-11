@@ -3,16 +3,11 @@ package icu.windea.pls.script.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.psi.*;
-import com.intellij.psi.stubs.*;
 import icu.windea.pls.core.model.*;
 import icu.windea.pls.script.psi.*;
 import org.jetbrains.annotations.*;
 
 public class ParadoxScriptFloatImpl extends ParadoxScriptValueImpl implements ParadoxScriptFloat {
-
-  public ParadoxScriptFloatImpl(@NotNull ParadoxScriptValueStub stub, @Nullable IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
 
   public ParadoxScriptFloatImpl(@NotNull ASTNode node) {
     super(node);

@@ -3,6 +3,6 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.stubs.*
 import icu.windea.pls.core.model.*
 
-interface ParadoxScriptValueStub : StubElement<ParadoxScriptValue> {
+interface ParadoxScriptStringStub : StubElement<ParadoxScriptString> {
 	val valueSetValueInfo: ParadoxValueSetValueInfo?
 }
