@@ -1,11 +1,13 @@
 package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
+import com.intellij.codeInspection.ui.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
+import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*
@@ -16,7 +18,6 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.ui.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 import javax.swing.*
 import javax.swing.event.*
 
@@ -139,10 +140,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		}
 	}
 	
+	//com.intellij.codeInspection.suspiciousNameCombination.SuspiciousNameCombinationInspection.NameGroupsPanel
+	
 	private inner class LocaleTableModel(
 		locales: List<ParadoxLocaleConfig>
 	) : AddEditDeleteListPanel<ParadoxLocaleConfig>(PlsBundle.message("script.inspection.advanced.inspection.missingLocalisation.option.locales"), locales) {
 		init {
+			minimumSize = InspectionOptionsPanel.getMinimumListSize()
+			preferredSize = JBUI.size(150, 130)
 			myListModel.addListDataListener(object : ListDataListener {
 				override fun intervalAdded(e: ListDataEvent?) {
 					saveChanges()
