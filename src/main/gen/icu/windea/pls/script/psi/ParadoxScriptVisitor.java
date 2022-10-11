@@ -22,7 +22,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
     visitValue(o);
-    // visitNumber(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
@@ -71,7 +71,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
     visitValue(o);
-    // visitNumber(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {

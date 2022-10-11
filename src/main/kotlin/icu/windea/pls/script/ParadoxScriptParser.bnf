@@ -99,14 +99,14 @@ boolean ::= BOOLEAN_TOKEN {
 int ::= INT_TOKEN {
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptNumber"
+    "com.intellij.psi.PsiLiteralValue"
   ]
   methods=[getValue getIntValue getValueType]
 }
 float ::= FLOAT_TOKEN{
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptNumber"
+    "com.intellij.psi.PsiLiteralValue"
   ]
   methods=[getValue getFloatValue getValueType]
 }

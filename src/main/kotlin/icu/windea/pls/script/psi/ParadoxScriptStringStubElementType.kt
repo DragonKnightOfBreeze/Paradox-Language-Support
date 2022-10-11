@@ -2,26 +2,24 @@ package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptValueStubElementType: IStubElementType<ParadoxScriptValueStub, ParadoxScriptValue>(
-	"VALUE",
+object ParadoxScriptStringStubElementType: IStubElementType<ParadoxScriptValueStub, ParadoxScriptString>(
+	"STRING",
 	ParadoxScriptLanguage
 ) {
-	private const val externalId = "paradoxScript.value"
+	private const val externalId = "paradoxScript.string"
 	
 	override fun getExternalId() = externalId
 	
-	override fun createPsi(stub: ParadoxScriptValueStub): ParadoxScriptValue {
+	override fun createPsi(stub: ParadoxScriptValueStub): ParadoxScriptString {
 		return ParadoxScriptStringImpl(stub, this)
 	}
 	
-	override fun createStub(psi: ParadoxScriptValue, parentStub: StubElement<*>): ParadoxScriptValueStub {
-		if(psi !is ParadoxScriptString) throw InternalError()
+	override fun createStub(psi: ParadoxScriptString, parentStub: StubElement<*>): ParadoxScriptValueStub {
 		val valueSetInfo = ParadoxValueSetValueInfoHandler.resolve(psi, parentStub) ?: throw InternalError()
 		return ParadoxScriptValueStubImpl(parentStub, valueSetInfo)
 	}

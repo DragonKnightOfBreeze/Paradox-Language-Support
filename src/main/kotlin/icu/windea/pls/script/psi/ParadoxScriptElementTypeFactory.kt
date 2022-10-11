@@ -11,6 +11,7 @@ object ParadoxScriptElementTypeFactory {
 		return when(debugName) {
 			"VARIABLE" -> ParadoxScriptStubElementTypes.VARIABLE
 			"PROPERTY" -> ParadoxScriptStubElementTypes.PROPERTY
+			"STRING" -> ParadoxScriptStubElementTypes.STRING
 			else -> ParadoxScriptElementType(debugName)
 		}
 	}

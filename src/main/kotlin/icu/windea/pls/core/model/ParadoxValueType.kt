@@ -16,7 +16,6 @@ enum class ParadoxValueType(
 	BooleanType("boolean", "boolean"),
 	IntType("int", "int"),
 	FloatType("float", "float"),
-	NumberType("number", "number"), //int | float
 	StringType("string", "string"),
 	ColorType("color", "color"),
 	BlockType("block", "block"),
@@ -30,7 +29,7 @@ enum class ParadoxValueType(
 	fun matchesStringType() = this == UnknownType || this == StringType || this == ParameterType
 	fun matchesColorType() = this == ColorType
 	
-	fun canBeScriptedVariableValue() = this == BooleanType || this == IntType || this == FloatType || this == NumberType
+	fun canBeScriptedVariableValue() = this == BooleanType || this == IntType || this == FloatType
 	
 	override fun toString(): String {
 		return text

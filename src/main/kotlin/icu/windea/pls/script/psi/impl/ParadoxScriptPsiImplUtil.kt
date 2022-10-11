@@ -409,13 +409,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxScriptNumber
-	@JvmStatic
-	fun getValueType(element: ParadoxScriptNumber): ParadoxValueType {
-		return ParadoxValueType.NumberType
-	}
-	//endregion
-	
 	//region ParadoxScriptInt
 	@JvmStatic
 	fun getIntValue(element: ParadoxScriptInt): Int {

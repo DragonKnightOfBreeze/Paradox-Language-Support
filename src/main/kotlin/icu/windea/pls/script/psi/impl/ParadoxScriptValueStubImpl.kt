@@ -7,8 +7,9 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptValueStubImpl(
 	parent: StubElement<*>,
 	override val valueSetValueInfo: ParadoxValueSetValueInfo?
-) : StubBase<ParadoxScriptValue>(parent, ParadoxScriptStubElementTypes.VALUE), ParadoxScriptValueStub {
+) : StubBase<ParadoxScriptValue>(parent, ParadoxScriptStubElementTypes.STRING), ParadoxScriptValueStub {
 	override fun toString(): String {
+		val a = 1.1
 		return "ParadoxScriptValueStub(valueSetInfo=$valueSetValueInfo)"
 	}
 }

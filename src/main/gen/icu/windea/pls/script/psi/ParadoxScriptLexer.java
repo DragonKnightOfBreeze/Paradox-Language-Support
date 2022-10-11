@@ -2,9 +2,10 @@
 
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.*;
 
-import static com.intellij.psi.TokenType.*;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 
