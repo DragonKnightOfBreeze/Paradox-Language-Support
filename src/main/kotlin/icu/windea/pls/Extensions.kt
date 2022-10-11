@@ -140,33 +140,19 @@ val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fi
 val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile?.fileInfo
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo?
-	get() = doGetDefinitionInfo(this)
-
-private fun doGetDefinitionInfo(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
-		val value = ParadoxDefinitionInfoHandler.resolve(element)
-		CachedValueProvider.Result.create(value, element)
-	}
-}
+	get() = ParadoxDefinitionInfoHandler.get(this)
 
 val ParadoxDefinitionProperty.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = doGetDefinitionElementInfo(this)
+	get() = ParadoxDefinitionElementInfoHandler.get(this)
 val ParadoxScriptPropertyKey.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = doGetDefinitionElementInfo(this)
+	get() = ParadoxDefinitionElementInfoHandler.get(this)
 val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = doGetDefinitionElementInfo(this)
+	get() = ParadoxDefinitionElementInfoHandler.get(this)
 val ParadoxScriptExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
-	get() = doGetDefinitionElementInfo(this)
+	get() = ParadoxDefinitionElementInfoHandler.get(this)
 
-private fun doGetDefinitionElementInfo(element: PsiElement): ParadoxDefinitionElementInfo? {
-	//必须是脚本语言的PsiElement
-	val targetElement = if(element is ParadoxScriptPropertyKey) element.parent ?: return null else element
-	if(targetElement.language != ParadoxScriptLanguage) return null
-	return targetElement.getOrPutUserData(PlsKeys.definitionElementInfoKey) {
-		ParadoxDefinitionElementInfoHandler.resolveDownUp(targetElement)
-	}
-}
-
+val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
+	get() = ParadoxLocalisationInfoHandler.get(this)
 
 fun ParadoxScriptProperty.getPropertyConfig(allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
 	val element = this
@@ -222,24 +208,6 @@ fun ParadoxScriptValue.getValueConfig(allowDefinitionSelf: Boolean = true, orSin
 		
 		else -> return null
 	}
-}
-
-val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
-	get() = doGetLocalisationInfo(this)
-
-private fun doGetLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-	return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfoKey) {
-		val value = resolveLocalisationInfo(element)
-		CachedValueProvider.Result.create(value, element)
-	}
-}
-
-private fun resolveLocalisationInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-	val name = element.name
-	val file = element.containingFile.originalFile.virtualFile ?: return null
-	val type = ParadoxLocalisationCategory.resolve(file) ?: return null
-	val gameType = file.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
-	return ParadoxLocalisationInfo(name, type, gameType)
 }
 
 val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig? get() = doGetLocaleConfig(name, project)

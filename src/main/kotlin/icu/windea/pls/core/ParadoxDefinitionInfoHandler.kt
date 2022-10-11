@@ -4,6 +4,7 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
@@ -14,6 +15,15 @@ import icu.windea.pls.script.psi.*
  * 用于处理定义信息。
  */
 object ParadoxDefinitionInfoHandler {
+	@JvmStatic
+	fun get(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
+		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfoKey) {
+			val value = resolve(element)
+			CachedValueProvider.Result.create(value, element)
+		}
+	}
+	
+	@JvmStatic
 	fun resolve(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 		//首先尝试直接基于stub进行解析
 		val stub = element.getStub()
@@ -88,6 +98,7 @@ object ParadoxDefinitionInfoHandler {
 		return null
 	}
 	
+	@JvmStatic
 	fun matchesType(
 		configGroup: CwtConfigGroup,
 		typeConfig: CwtTypeConfig,
@@ -162,6 +173,7 @@ object ParadoxDefinitionInfoHandler {
 		return true
 	}
 	
+	@JvmStatic
 	fun matchesTypeWithKnownType(
 		typeConfig: CwtTypeConfig,
 		rootKey: String
@@ -180,6 +192,7 @@ object ParadoxDefinitionInfoHandler {
 		return true
 	}
 	
+	@JvmStatic
 	fun matchesSubtype(
 		configGroup: CwtConfigGroup,
 		subtypeConfig: CwtSubtypeConfig,

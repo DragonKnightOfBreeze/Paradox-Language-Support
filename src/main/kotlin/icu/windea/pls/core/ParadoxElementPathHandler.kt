@@ -13,6 +13,7 @@ object ParadoxElementPathHandler {
 	/**
 	 * 解析指定定义相对于所属文件的属性路径。
 	 */
+	@JvmStatic
 	fun resolveFromFile(element: ParadoxDefinitionProperty, maxDepth: Int = -1): Pair<ParadoxElementPath, ParadoxScriptFile>? {
 		if(element is ParadoxScriptFile) {
 			return ParadoxElementPath.EmptyPath to element
@@ -42,6 +43,7 @@ object ParadoxElementPathHandler {
 	/**
 	 * 解析指定元素相对于所属定义的属性路径。
 	 */
+	@JvmStatic
 	fun resolveFromDefinition(element: PsiElement): Tuple2<ParadoxElementPath, ParadoxDefinitionProperty>? {
 		var current: PsiElement = element
 		var depth = 0

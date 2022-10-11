@@ -15,6 +15,7 @@ object ParadoxMagicCommentHandler {
 	 * * 示例：`@type:stellaris/civic_or_origin`
 	 * * 仅当PLS无法得到此脚本文件的文件信息，从而进一步解析其中的定义时才允许这样处理
 	 */
+	@JvmStatic
 	fun resolveFilePathComment(file: PsiFile): Pair<ParadoxGameType, ParadoxPath>? {
 		//必须在文件的第一行，即，第一个PSI元素，之前不能有空白
 		var current = file.firstChild ?: return null
@@ -26,6 +27,7 @@ object ParadoxMagicCommentHandler {
 		return resolveFilePathComment(commentText)
 	}
 	
+	@JvmStatic
 	fun resolveFilePathComment(commentText: String): Pair<ParadoxGameType, ParadoxPath>? {
 		val expression = commentText.removePrefixOrNull("@path:") ?: return null
 		val gameTypeText = expression.substringBefore(':')
@@ -41,6 +43,7 @@ object ParadoxMagicCommentHandler {
 	 * * 示例：`@type:stellaris/civic_or_origin`
 	 * * 仅当PLS无法得到此脚本文件的文件信息，从而进一步解析其中的定义时才允许这样处理
 	 */
+	@JvmStatic
 	fun resolveDefinitionTypeComment(element: ParadoxDefinitionProperty): Pair<ParadoxGameType, String>? {
 		//上一个PSI元素必须是空白，并且包含且仅包含一个换行，这意味着上一个注释在上一行
 		val comment = (element.prevSibling ?: element.parent?.prevSibling)
@@ -50,6 +53,7 @@ object ParadoxMagicCommentHandler {
 		return resolveDefinitionTypeComment(commentText)
 	}
 	
+	@JvmStatic
 	fun resolveDefinitionTypeComment(commentText: String): Pair<ParadoxGameType, String>? {
 		val expression = commentText.removePrefixOrNull("@type:") ?: return null
 		val gameTypeText = expression.substringBefore(':')
