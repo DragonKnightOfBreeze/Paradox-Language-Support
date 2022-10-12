@@ -93,13 +93,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
     visitNamedElement(o);
     // visitTypedElement(o);
-    // visitConfigAwareElement(o);
     // visitParadoxDefinitionProperty(o);
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
     visitExpressionElement(o);
-    // visitConfigAwareElement(o);
   }
 
   public void visitPropertyValue(@NotNull ParadoxScriptPropertyValue o) {
@@ -117,7 +115,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
     visitTypedElement(o);
-    // visitConfigAwareElement(o);
   }
 
   public void visitVariable(@NotNull ParadoxScriptVariable o) {

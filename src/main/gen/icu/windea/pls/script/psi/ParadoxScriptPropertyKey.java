@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement, ParadoxScriptConfigAwareElement {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
