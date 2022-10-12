@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package icu.windea.pls.core.handler
 
 import com.intellij.lang.*
