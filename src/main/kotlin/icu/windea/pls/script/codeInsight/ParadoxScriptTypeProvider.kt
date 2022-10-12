@@ -65,11 +65,11 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 			element.definitionType?.let { type ->
 				add(makeHtmlRow(PlsDocBundle.message("title.definitionType"), type))
 			}
-			element.configExpression?.let { configExpression ->
-				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
-			}
 			element.valueType?.let { valueType ->
 				add(makeHtmlRow(PlsDocBundle.message("title.valueType"), valueType.text))
+			}
+			element.configExpression?.let { configExpression ->
+				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))
 			}
 		}
 		return HtmlChunk.tag("table").children(children).toString()

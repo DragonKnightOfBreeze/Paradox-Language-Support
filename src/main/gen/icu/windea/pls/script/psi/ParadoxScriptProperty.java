@@ -1,19 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import icu.windea.pls.core.model.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import com.intellij.psi.SmartPsiElementPointer;
-import icu.windea.pls.core.model.ParadoxValueType;
-import java.util.Map;
-import java.util.Set;
-import javax.swing.Icon;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+import javax.swing.*;
+import java.util.*;
+
+public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, ParadoxScriptConfigAwareElement, ParadoxDefinitionProperty, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();
@@ -45,10 +41,10 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   String getDefinitionType();
 
   @Nullable
-  String getConfigExpression();
+  ParadoxValueType getValueType();
 
   @Nullable
-  ParadoxValueType getValueType();
+  String getConfigExpression();
 
   @Nullable
   String getPathName();

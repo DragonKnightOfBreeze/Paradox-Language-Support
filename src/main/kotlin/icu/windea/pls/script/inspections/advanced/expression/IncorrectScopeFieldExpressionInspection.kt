@@ -6,10 +6,10 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 import javax.swing.*
 
 /**
@@ -35,7 +35,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 			}
 			
 			private fun visitElementExpression(element: ParadoxScriptExpressionElement) {
-				val config = element.getConfig() ?: return
+				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
 					if(element.isQuoted()) {
@@ -54,7 +54,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 								holder.registerScriptExpressionError(element, error)
 							}
 							//注册无法解析的异常
-							if(expression.infos.isNotEmpty()){
+							if(expression.infos.isNotEmpty()) {
 								for(info in expression.infos) {
 									if(reportsUnresolvedDs) {
 										if(info.isUnresolved(element)) {

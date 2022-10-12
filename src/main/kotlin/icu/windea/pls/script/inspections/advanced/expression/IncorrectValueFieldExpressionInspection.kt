@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -23,7 +24,7 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
 			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
-				val config = element.getConfig() ?: return
+				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.ValueField || type == CwtDataTypes.IntValueField) {
 					if(element.isQuoted()) {
@@ -42,10 +43,10 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 								holder.registerScriptExpressionError(element, error)
 							}
 							//注册无法解析的异常
-							if(expression.infos.isNotEmpty()){
+							if(expression.infos.isNotEmpty()) {
 								for(info in expression.infos) {
-									if(info is ParadoxScriptSvParameterExpressionInfo){
-										if(reportsUnusedSvParam){
+									if(info is ParadoxScriptSvParameterExpressionInfo) {
+										if(reportsUnusedSvParam) {
 											if(info.isUnresolved(element)) {
 												val error = info.getUnresolvedError()
 												holder.registerScriptExpressionError(element, error)

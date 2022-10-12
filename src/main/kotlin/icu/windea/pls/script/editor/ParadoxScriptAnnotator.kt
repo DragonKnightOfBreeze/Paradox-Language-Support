@@ -8,9 +8,9 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -44,7 +44,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
-		val propertyConfig = element.getPropertyConfig()
+		val propertyConfig = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
 		if(propertyConfig != null) annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig.info.configGroup, holder)
 	}
 	
@@ -52,7 +52,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		//特殊处理字符串需要被识别为标签的情况
 		if(annotateTag(element, holder)) return
 		
-		val valueConfig = element.getValueConfig()
+		val valueConfig = ParadoxCwtConfigHandler.resolveValueConfig(element)
 		if(valueConfig != null) annotateExpression(element, element.textRange, valueConfig.expression, valueConfig.info.configGroup, holder)
 	}
 	

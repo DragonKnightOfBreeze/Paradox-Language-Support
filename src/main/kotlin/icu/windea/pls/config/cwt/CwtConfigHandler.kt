@@ -17,11 +17,11 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -1274,7 +1274,7 @@ object CwtConfigHandler {
 	
 	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, isKey: Boolean? = null, expressionPredicate: (CwtKvExpression) -> Boolean = { true }): PsiElement? {
 		//根据对应的expression进行解析
-		val config = element.getConfig() ?: return null
+		val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return null
 		val expression = config.expression
 		if(!expressionPredicate(expression)) return null
 		return resolveScriptExpression(element, expression, config, isKey = isKey)
@@ -1422,7 +1422,7 @@ object CwtConfigHandler {
 	
 	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange? = null, isKey: Boolean? = null, expressionPredicate: (CwtKvExpression) -> Boolean = { true }): Collection<PsiElement> {
 		//根据对应的expression进行解析
-		val config = element.getConfig() ?: return emptyList()
+		val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return emptyList()
 		val expression = config.expression
 		if(!expressionPredicate(expression)) return emptyList()
 		return doMultiResolveScriptExpression(element, expression, config, rangeInElement, isKey)

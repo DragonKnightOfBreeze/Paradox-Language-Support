@@ -63,22 +63,31 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
-    getDefinitionType getConfigExpression getValueType getPathName getOriginalPathName getParameterMap getPresentation
+    getDefinitionType getValueType getConfigExpression
+    getPathName getOriginalPathName getParameterMap getPresentation
   ]
 }
 property_key ::= key_expr {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ] 
-  methods=[getName setName getValue setValue getNameIdentifier getReference getReferences getConfigExpression getValueType]
+  methods=[
+    getName setName getValue setValue getNameIdentifier getReference getReferences
+    getValueType getConfigExpression
+  ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 
 //(property) value related
 value ::= variable_reference | boolean | int | float | string | color | block | inline_math{
-  implements="icu.windea.pls.script.psi.ParadoxScriptTypedElement"
-  methods=[getIcon getValue getConfigExpression getValueType]
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
+  ]
+  methods=[
+    getIcon getValue
+    getValueType getConfigExpression
+  ]
 }
 variable_reference ::= AT VARIABLE_REFERENCE_ID {
   extends=value

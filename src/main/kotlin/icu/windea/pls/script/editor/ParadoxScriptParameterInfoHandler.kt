@@ -5,9 +5,9 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 
 //com.intellij.codeInsight.hint.api.impls.XmlParameterInfoHandler
 
@@ -38,7 +38,8 @@ class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProp
 	override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptProperty? {
 		val targetElement = findTargetElement(context) ?: return null
 		val definitionName = targetElement.name
-		val definitionType = targetElement.getPropertyConfig()?.keyExpression?.value ?: return null
+		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(targetElement) ?: return null
+		val definitionType = config.keyExpression.value ?: return null
 		//合并所有可能的参数名
 		val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)
 		val definitions = findDefinitionsByType(definitionName, definitionType, context.project, selector = selector)

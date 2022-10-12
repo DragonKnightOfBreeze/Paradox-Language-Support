@@ -5,10 +5,10 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 
 /**
  * @see ParadoxScriptKeyReference
@@ -25,9 +25,9 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		//排除可能包含参数的情况
 		if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
 		if(!text.isQuoted()) {
-			val config = element.getConfig()
-			if(config != null){
-				when(config.expression.type){
+			val config = ParadoxCwtConfigHandler.resolveConfig(element)
+			if(config != null) {
+				when(config.expression.type) {
 					CwtDataTypes.Scope, CwtDataTypes.ScopeField, CwtDataTypes.ScopeGroup -> {
 						val scopeFieldExpression = ParadoxScriptScopeFieldExpression.resolve(text, configGroup)
 						if(scopeFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY

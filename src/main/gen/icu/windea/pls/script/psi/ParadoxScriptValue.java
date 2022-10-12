@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
+public interface ParadoxScriptValue extends ParadoxScriptTypedElement, ParadoxScriptConfigAwareElement {
 
   @Nullable
   ParadoxScriptString getString();
@@ -17,10 +17,10 @@ public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
   @NotNull
   String getValue();
 
-  @Nullable
-  String getConfigExpression();
-
   @NotNull
   ParadoxValueType getValueType();
+
+  @Nullable
+  String getConfigExpression();
 
 }

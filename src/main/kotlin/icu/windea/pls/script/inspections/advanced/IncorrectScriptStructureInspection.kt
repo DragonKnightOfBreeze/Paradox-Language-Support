@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -27,8 +28,8 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
 			override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
 				ProgressManager.checkCanceled()
-				if(forPropertyKey){
-					val config = element.getPropertyConfig()
+				if(forPropertyKey) {
+					val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedKey", element.text))
@@ -39,8 +40,8 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 			
 			override fun visitValue(element: ParadoxScriptValue) {
 				ProgressManager.checkCanceled()
-				if(if(element.isLonely()) forValue else forPropertyValue){
-					val config = element.getValueConfig()
+				if(if(element.isLonely()) forValue else forPropertyValue) {
+					val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedValue", element.text))

@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -40,8 +41,9 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 				}
 			}
 			is ParadoxScriptExpressionElement -> {
-				val expression = element.getConfig()?.expression
-				if(expression == null && element is ParadoxScriptPropertyKey){
+				val config = ParadoxCwtConfigHandler.resolveConfig(element)
+				val expression = config?.expression
+				if(expression == null && element is ParadoxScriptPropertyKey) {
 					return getElementDescription(element.parent, location) //可能是定义
 				}
 				when(expression?.type) {

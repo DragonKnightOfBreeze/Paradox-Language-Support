@@ -3,10 +3,10 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.parameterInfo.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 
 /**
  * 显示SV表达式的参数信息（如果有）。
@@ -21,7 +21,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		
 		val text = targetElement.text
 		if(!text.contains("value:") || !text.contains('|')) return null //快速判断
-		val config = targetElement.getConfig() ?: return null
+		val config = ParadoxCwtConfigHandler.resolveConfig(targetElement) ?: return null
 		val dataType = config.expression.type
 		if(dataType != CwtDataTypes.ValueField && dataType != CwtDataTypes.IntValueField) return null
 		val configGroup = config.info.configGroup
@@ -53,7 +53,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		
 		val text = targetElement.text
 		if(!text.contains("value:") || !text.contains('|')) return null //快速判断
-		val config = targetElement.getConfig() ?: return null
+		val config = ParadoxCwtConfigHandler.resolveConfig(targetElement) ?: return null
 		val dataType = config.expression.type
 		if(dataType != CwtDataTypes.ValueField && dataType != CwtDataTypes.IntValueField) return null
 		val configGroup = config.info.configGroup

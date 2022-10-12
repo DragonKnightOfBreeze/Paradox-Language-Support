@@ -21,11 +21,6 @@ data class CwtPropertyConfig(
 	override val optionValues: List<CwtOptionValueConfig>? = null,
 	val separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
 ) : CwtKvConfig<CwtProperty>() {
-	//不显示标注的option和optionValue、以及block中的嵌套规则
-	val propertyConfigExpression = "$key = $value"
-	val keyConfigExpression = key
-	val valueConfigExpression = value
-	
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	

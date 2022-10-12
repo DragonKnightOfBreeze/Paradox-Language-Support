@@ -26,7 +26,6 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
@@ -136,9 +135,7 @@ val PsiElement.localeConfig: ParadoxLocaleConfig?
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
 val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserDataOnValid(PlsKeys.fileInfoKey) { it.isValid }
-
 val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //需要使用原始文件
-
 val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile?.fileInfo
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo?
@@ -156,67 +153,7 @@ val ParadoxScriptExpressionElement.definitionElementInfo: ParadoxDefinitionEleme
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 	get() = ParadoxLocalisationInfoHandler.get(this)
 
-fun ParadoxScriptProperty.getPropertyConfig(allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
-	val element = this
-	val definitionElementInfo = element.definitionElementInfo ?: return null
-	if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
-	//如果无法匹配value，则取第一个
-	return definitionElementInfo.matchedPropertyConfig
-		?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
-}
-
-fun ParadoxScriptExpressionElement.getConfig(): CwtKvConfig<*>? {
-	return when(this) {
-		is ParadoxScriptPropertyKey -> getPropertyConfig()
-		is ParadoxScriptString -> getValueConfig()
-		else -> null
-	}
-}
-
-fun ParadoxScriptPropertyKey.getPropertyConfig(allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
-	val element = this.parent.castOrNull<ParadoxScriptProperty>() ?: return null
-	val definitionElementInfo = element.definitionElementInfo ?: return null
-	if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
-	//如果无法匹配value，则取第一个
-	return definitionElementInfo.matchedPropertyConfig
-		?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
-}
-
-fun ParadoxScriptValue.getValueConfig(allowDefinitionSelf: Boolean = true, orSingle: Boolean = true): CwtValueConfig? {
-	val element = this
-	val parent = element.parent
-	when(parent) {
-		//如果value是property的value
-		is ParadoxScriptPropertyValue -> {
-			val property = parent.parent as? ParadoxScriptProperty ?: return null
-			val definitionElementInfo = property.definitionElementInfo ?: return null
-			if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
-			//如果无法匹配value，则取唯一的那个
-			return definitionElementInfo.matchedPropertyConfig?.valueConfig
-				?: orSingle.ifTrue { definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig }
-		}
-		//如果value是block中的value
-		is ParadoxScriptBlock -> {
-			val property = parent.parent?.parent as? ParadoxScriptProperty ?: return null
-			val definitionElementInfo = property.definitionElementInfo ?: return null
-			val childValueConfigs = definitionElementInfo.childValueConfigs
-			if(childValueConfigs.isEmpty()) return null
-			val gameType = definitionElementInfo.gameType
-			val configGroup = getCwtConfig(element.project).getValue(gameType)
-			//如果无法匹配value，则取唯一的那个
-			return childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, element, configGroup) }
-				?: orSingle.ifTrue { childValueConfigs.singleOrNull() }
-		}
-		
-		else -> return null
-	}
-}
-
-val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig? get() = doGetLocaleConfig(name, project)
-
-private fun doGetLocaleConfig(id: String, project: Project): ParadoxLocaleConfig? {
-	return InternalConfigHandler.getLocale(id, project)
-}
+val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig? get() = InternalConfigHandler.getLocale(name, project)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
 	get() {
@@ -224,7 +161,7 @@ val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
 		val colorId = this.propertyReferenceParameter?.text?.find { it.isExactLetter() } ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType
 			?: return null
-		return doGetColorConfig(colorId.toString(), gameType, project)
+		return DefinitionConfigHandler.getTextColorConfig(colorId.toString(), gameType, project)
 	}
 
 val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
@@ -232,12 +169,8 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorConfig?
 		val colorId = this.name ?: return null
 		val gameType = this.fileInfo?.rootInfo?.gameType //这里还是基于fileInfo获取gameType 
 			?: return null
-		return doGetColorConfig(colorId, gameType, project)
+		return DefinitionConfigHandler.getTextColorConfig(colorId, gameType, project)
 	}
-
-private fun doGetColorConfig(id: String, gameType: ParadoxGameType, project: Project): ParadoxTextColorConfig? {
-	return DefinitionConfigHandler.getTextColorConfig(id, gameType, project)
-}
 
 fun ParadoxScriptValue.isNullLike(): Boolean {
 	return when {

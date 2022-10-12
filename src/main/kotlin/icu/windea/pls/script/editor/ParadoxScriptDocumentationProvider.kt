@@ -6,10 +6,10 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.util.*
@@ -38,7 +38,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			is ParadoxScriptExpressionElement -> {
-				val config = element.getConfig()
+				val config = ParadoxCwtConfigHandler.resolveConfig(element)
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueInfo(element, config)
 					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
@@ -104,7 +104,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			is ParadoxScriptExpressionElement -> {
-				val config = element.getConfig()
+				val config = ParadoxCwtConfigHandler.resolveConfig(element)
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueDoc(element, config)
 					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null

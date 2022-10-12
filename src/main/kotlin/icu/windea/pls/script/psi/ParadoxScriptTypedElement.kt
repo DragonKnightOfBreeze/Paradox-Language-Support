@@ -5,12 +5,12 @@ import icu.windea.pls.core.model.*
 
 /**
  * @property definitionType 定义的类型。基于CWT规则。
- * @property configExpression 定义元素对应的规则表达式。基于CWT规则。
  * @property valueType 值的类型。基于PSI元素的类型。
- * @see icu.windea.pls.model.ParadoxValueType
+ * @property configExpression 定义元素对应的规则表达式。基于CWT规则。
+ * @see icu.windea.pls.core.model.ParadoxValueType
  */
 interface ParadoxScriptTypedElement : PsiElement {
 	val definitionType: String? get() = null
-	val configExpression: String? get() = null
 	val valueType: ParadoxValueType? get() = null
+	val configExpression: String? get() = null
 }

@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -29,7 +30,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptExpressionElement && element is StubBasedPsiElement<*>) {
 			//基于stub
-			val config = element.getConfig() ?: return true
+			val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return true
 			if(config.expression.type.let { it == CwtDataTypes.Value || it == CwtDataTypes.ValueSet }) {
 				val valueSetName = config.expression.value ?: return true
 				val presentation = collectDefinition(valueSetName)
