@@ -11,30 +11,19 @@ import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 /**
- * 以下几种情况一个引用可能对应多个声明：
+ * 以下几种情况并没有真正意义上的声明，将所有的引用直接作为声明：
  *
- * * 参数（`$PARAM$`）
+ * * 参数（`$PARAM$`中的`PARAM`）
+ * * 值集中的值（`set_global_flag = xxx`中的`xxx`）
  */
-@Deprecated("UNUSED")
-class ParadoxScriptGotoDeclarationHandler : GotoDeclarationHandlerBase() {
-	override fun getGotoDeclarationTarget(sourceElement: PsiElement?, editor: Editor): PsiElement? {
-		return when {
-			sourceElement.elementType == PROPERTY_KEY_TOKEN -> {
-				val element = sourceElement?.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return null
-				return CwtConfigHandler.resolveKey(element) {
-					it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName
-				}
-			}
-			else -> null
-		}
-	}
-	
+class ParadoxScriptGotoDeclarationHandler : GotoDeclarationHandler {
 	override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement>? {
+		val elementType = sourceElement.elementType
 		return when {
-			sourceElement.elementType == PROPERTY_KEY_TOKEN -> {
-				val element = sourceElement?.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return null
-				return CwtConfigHandler.multiResolveKey(element) {
-					it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName
+			elementType == STRING_TOKEN -> {
+				val element = sourceElement?.parent?.castOrNull<ParadoxScriptString>() ?: return null
+				return CwtConfigHandler.multiResolveValue(element) {
+					it.type == CwtDataTypes.Value || it.type == CwtDataTypes.ValueSet
 				}.takeIfNotEmpty()?.toTypedArray()
 			}
 			else -> null

@@ -15,7 +15,7 @@ object ParadoxValueSetValueInfoHandler {
 		//TODO 避免SOF
 		if(element !is ParadoxScriptString) return null
 		val config = ParadoxCwtConfigHandler.resolveValueConfig(element) ?: return null
-		if(config.expression.type != CwtDataTypes.ValueSet) return null
+		if(config.expression.type != CwtDataTypes.Value && config.expression.type != CwtDataTypes.ValueSet) return null
 		val name = element.value
 		val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
 		return ParadoxValueSetValueInfo(name, valueSetName)

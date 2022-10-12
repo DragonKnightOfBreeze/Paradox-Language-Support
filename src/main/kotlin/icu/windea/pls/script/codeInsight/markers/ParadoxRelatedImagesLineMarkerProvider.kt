@@ -34,7 +34,7 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		var isFirst = true
 		runReadAction {
 			for((key, locationExpression) in imageInfos) {
-				val (filePath, files) = locationExpression.resolveAll(definitionInfo.name, element, project) ?: continue
+				val (filePath, files) = locationExpression.resolveAll(element, definitionInfo, project) ?: continue
 				if(files.isNotEmpty()) targets.addAll(files)
 				if(files.isNotEmpty() && keys.add(key)) {
 					if(isFirst) isFirst = false else tooltipBuilder.appendBr()

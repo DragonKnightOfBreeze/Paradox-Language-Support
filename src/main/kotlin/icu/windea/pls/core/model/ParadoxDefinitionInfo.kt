@@ -40,7 +40,7 @@ class ParadoxDefinitionInfo(
 		if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
 		//name_field = xxx -> 返回对应名字（xxx）的property的value，如果不存在则返回空字符串
 		val nameFieldConfig = typeConfig.nameField
-		if(nameFieldConfig != null) return@lazy element.findTargetElement(nameFieldConfig, true)?.value.orEmpty()
+		if(nameFieldConfig != null) return@lazy element.findProperty(nameFieldConfig, true)?.value.orEmpty()
 		//否则直接返回rootKey
 		rootKey
 	}

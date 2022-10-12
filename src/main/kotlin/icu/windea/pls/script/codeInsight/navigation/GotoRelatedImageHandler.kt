@@ -31,7 +31,7 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 		val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
 			runReadAction {
 				for((_, locationExpression) in imageInfos) {
-					val (_, files) = locationExpression.resolveAll(definitionInfo.name, definition, project) ?: continue
+					val (_, files) = locationExpression.resolveAll(definition, definitionInfo, project) ?: continue
 					if(files.isNotEmpty()) targets.addAll(files)
 				}
 			}

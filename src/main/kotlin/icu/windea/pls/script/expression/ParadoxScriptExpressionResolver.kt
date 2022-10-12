@@ -1,6 +1,7 @@
 package icu.windea.pls.script.expression
 
 import com.google.common.cache.*
+import com.intellij.openapi.application.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 
@@ -10,7 +11,9 @@ abstract class ParadoxScriptExpressionResolver<T : ParadoxScriptExpression> {
 	
 	fun resolve(expressionString: String, configGroup: CwtConfigGroup): T {
 		return cache.getOrPut(configGroup.gameType.id + " " + expressionString) {
-			doResolve(expressionString, configGroup)
+			runReadAction {
+				doResolve(expressionString, configGroup)
+			}
 		}
 	}
 	

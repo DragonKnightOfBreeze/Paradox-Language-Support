@@ -741,9 +741,11 @@ object CwtConfigHandler {
 				run {
 					val selector = valueSetValueSelector().gameType(configGroup.gameType).distinctBy { it.value.substringBefore('@') }
 					val valueSetValues = ParadoxValueSetValuesSearch.search(valueSetName, configGroup.project, selector = selector)
+					val namesToDistinct = mutableSetOf<String>()
 					for(valueSetValue in valueSetValues) {
 						//去除后面的作用域信息
 						val name = valueSetValue.value.substringBefore('@')
+						if(!namesToDistinct.add(name)) continue //去重
 						val element = valueSetValue
 						//不显示typeText
 						val lookupElement = LookupElementBuilder.create(element, name)
@@ -1425,11 +1427,10 @@ object CwtConfigHandler {
 		val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return emptyList()
 		val expression = config.expression
 		if(!expressionPredicate(expression)) return emptyList()
-		return doMultiResolveScriptExpression(element, expression, config, rangeInElement, isKey)
+		return multiResolveScriptExpression(element, expression, config, rangeInElement, isKey)
 	}
 	
-	@PublishedApi
-	internal fun doMultiResolveScriptExpression(element: ParadoxScriptExpressionElement, expression: CwtKvExpression, config: CwtKvConfig<*>, rangeInElement: TextRange?, isKey: Boolean?): Collection<PsiElement> {
+	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, expression: CwtKvExpression, config: CwtKvConfig<*>, rangeInElement: TextRange?, isKey: Boolean?): Collection<PsiElement> {
 		if(element !is ParadoxScriptString || element.isParameterAwareExpression()) return emptyList() //排除带参数的情况
 		val project = element.project
 		
@@ -1508,7 +1509,7 @@ object CwtConfigHandler {
 				//尝试解析为来自脚本文件的value
 				run {
 					val selector = valueSetValueSelector().gameType(gameType)
-					val resolved = ParadoxValueSetValuesSearch.search(valueSetName, project, selector = selector).findAll()
+					val resolved = ParadoxValueSetValuesSearch.search(valueName, valueSetName, project, selector = selector).findAll()
 					if(resolved.isNotEmpty()) return resolved
 				}
 				//尝试解析为预定义的value
@@ -1521,6 +1522,15 @@ object CwtConfigHandler {
 				return emptyList()
 			}
 			CwtDataTypes.ValueSet -> {
+				val valueSetName = expression.value ?: return emptyList()
+				val valueName = text
+				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return emptyList()
+				//尝试解析为来自脚本文件的value
+				run {
+					val selector = valueSetValueSelector().gameType(gameType)
+					val resolved = ParadoxValueSetValuesSearch.search(valueName, valueSetName, project, selector = selector).findAll()
+					if(resolved.isNotEmpty()) return resolved
+				}
 				return element.toSingletonList() //自身
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {

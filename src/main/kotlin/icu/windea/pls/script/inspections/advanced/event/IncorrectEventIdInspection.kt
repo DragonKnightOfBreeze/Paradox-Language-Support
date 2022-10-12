@@ -44,7 +44,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 			if(namespace.isEmpty()) continue
 			if(events.isEmpty()) continue
 			for(event in events) {
-				val eventIdProperty = event.findTargetElement("id") ?: continue //没有事件ID，另行检查
+				val eventIdProperty = event.findProperty("id") ?: continue //没有事件ID，另行检查
 				val eventIdPropertyValue = eventIdProperty.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
 				val eventId = eventIdPropertyValue.stringValue
 				if(isIncorrectEventId(eventId, namespace)) {

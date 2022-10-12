@@ -2,7 +2,6 @@ package icu.windea.pls.config.cwt.expression
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.annotations.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
@@ -49,7 +48,6 @@ class CwtLocalisationLocationExpression(
 	
 	//(localisationKey - localisation(s))
 	
-	@RunInReadAction
 	fun resolve(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): Pair<String, ParadoxLocalisationProperty?>? {
 		if(placeholder != null) {
 			//如果定义是匿名的，则直接忽略
@@ -59,7 +57,7 @@ class CwtLocalisationLocationExpression(
 			val localisation = findLocalisation(key, project, selector = selector)
 			return key to localisation
 		} else if(propertyName != null) {
-			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
 			val localisation = findLocalisation(key, project, selector = selector)
 			return key to localisation
@@ -74,7 +72,7 @@ class CwtLocalisationLocationExpression(
 			val localisations = findLocalisations(key, project, selector = selector)
 			return key to localisations
 		} else if(propertyName != null) {
-			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
 			val key = value.stringValue
 			val localisations = findLocalisations(key, project, selector = selector)
 			return key to localisations

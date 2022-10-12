@@ -16,6 +16,7 @@
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
+    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxValueSetValueIndex"/>
 
     <spellchecker.support
         language="PARADOX_SCRIPT"
@@ -51,7 +52,7 @@
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
-    <!--<gotoDeclarationHandler implementation="icu.windea.pls.script.editor.ParadoxScriptGotoDeclarationHandler"/>-->
+    <gotoDeclarationHandler implementation="icu.windea.pls.script.editor.ParadoxScriptGotoDeclarationHandler"/>
     <annotator
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>

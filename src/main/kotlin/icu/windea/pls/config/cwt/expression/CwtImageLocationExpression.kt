@@ -4,7 +4,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
@@ -70,7 +69,6 @@ class CwtImageLocationExpression(
 	
 	//(key, file(s), frame)
 	
-	@RunInReadAction
 	fun resolve(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
 		if(placeholder != null) {
 			//如果定义是匿名的，则直接忽略
@@ -84,93 +82,92 @@ class CwtImageLocationExpression(
 		} else if(propertyName != null) {
 			//目前只接收类型为string的值
 			//propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
-			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val resolvedName = value.value
+			if(definitionInfo.name.equals(resolvedName, true)) return null //防止出现SOF
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames.isNullOrEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			while(true) {
-				val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
-				when {
-					//由filePath解析为DDS文件
-					resolved is PsiFile && resolved.fileType == DdsFileType -> {
-						val filePath = resolved.fileInfo?.path?.path ?: return null
-						val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
-						val file = findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
-						return tupleOf(filePath, file, frameToUse)
-					}
-					//由filePath解析为definition，这里也可能是sprite之外的definition
-					resolved is ParadoxDefinitionProperty -> {
-						val resolvedProject = resolved.project
-						val resolvedDefinition = resolved
-						val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-						val primaryImageConfigs = resolvedDefinitionInfo.primaryImageConfigs
-						if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-						return primaryImageConfigs.mapAndFirst({ it?.second != null }) { primaryImageConfig ->
-							val locationExpression = primaryImageConfig.locationExpression
-							locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse)
-						}
-					}
-					else -> return null //解析失败或不支持
+			val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
+			when {
+				//由filePath解析为DDS文件
+				resolved is PsiFile && resolved.fileType == DdsFileType -> {
+					val filePath = resolved.fileInfo?.path?.path ?: return null
+					val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
+					val file = findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
+					return tupleOf(filePath, file, frameToUse)
 				}
+				//由filePath解析为definition，这里也可能是sprite之外的definition
+				resolved is ParadoxDefinitionProperty -> {
+					val resolvedProject = resolved.project
+					val resolvedDefinition = resolved
+					val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
+					val primaryImageConfigs = resolvedDefinitionInfo.primaryImageConfigs
+					if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+					return primaryImageConfigs.mapAndFirst({ it?.second != null }) { primaryImageConfig ->
+						val locationExpression = primaryImageConfig.locationExpression
+						locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse)
+					}
+				}
+				else -> return null //解析失败或不支持
 			}
 		} else {
 			return null //不期望的结果
 		}
 	}
 	
-	@RunInReadAction
-	fun resolveAll(definitionName: String, definition: ParadoxDefinitionProperty, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
+	fun resolveAll(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾
-			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionName) else append(c) }
+			val filePath = buildString { for(c in placeholder) if(c == '$') append(definitionInfo.name) else append(c) }
 			val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
 			val files = findFilesByFilePath(filePath, project, selector = selector).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
 			return tupleOf(filePath, files, frame)
 		} else if(!propertyName.isNullOrEmpty()) {
 			//目前只接收类型为string的值
-			val value = definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val value = definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptString>() ?: return null
+			val resolvedName = value.value
+			if(definitionInfo.name.equals(resolvedName, true)) return null //防止出现SOF
 			val frameToUse = when {
 				frame != 0 -> frame
 				extraPropertyNames.isNullOrEmpty() -> 0
 				else -> extraPropertyNames.mapAndFirst { propertyName ->
-					definition.findTargetElement(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
+					definition.findProperty(propertyName)?.findPropertyValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			while(true) {
-				val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
-				when {
-					//由filePath解析为DDS文件
-					resolved is PsiFile && resolved.fileType == DdsFileType -> {
-						val filePath = resolved.fileInfo?.path?.path ?: return null
-						val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
-						val files = findFilesByFilePath(filePath, project, selector = selector).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
-						return tupleOf(filePath, files, frameToUse)
-					}
-					//由filePath解析为definition，这里也可能是sprite之外的definition
-					resolved is ParadoxDefinitionProperty -> {
-						val resolvedProject = resolved.project
-						val resolvedDefinition = resolved
-						val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-						val primaryImageConfigs = resolvedDefinitionInfo.primaryImageConfigs
-						if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-						var resolvedFilePath: String? = null
-						var resolvedSet: MutableSet<PsiFile>? = null
-						for(primaryImageConfig in primaryImageConfigs) {
-							val locationExpression = primaryImageConfig.locationExpression
-							val (filePath, set) = locationExpression.resolveAll(resolvedDefinitionInfo.name, resolvedDefinition, resolvedProject, frameToUse) ?: continue
-							if(resolvedFilePath == null) resolvedFilePath = filePath
-							if(resolvedSet == null) resolvedSet = mutableSetOf()
-							resolvedSet.addAll(set)
-						}
-						if(resolvedFilePath == null) return null
-						return tupleOf(resolvedFilePath, resolvedSet ?: emptySet(), frameToUse)
-					}
-					else -> return null //解析失败或不支持
+			val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
+			when {
+				//由filePath解析为DDS文件
+				resolved is PsiFile && resolved.fileType == DdsFileType -> {
+					val filePath = resolved.fileInfo?.path?.path ?: return null
+					val selector = fileSelector().gameTypeFrom(definition).preferRootFrom(definition)
+					val files = findFilesByFilePath(filePath, project, selector = selector).mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
+					return tupleOf(filePath, files, frameToUse)
 				}
+				//由filePath解析为definition，这里也可能是sprite之外的definition
+				resolved is ParadoxDefinitionProperty -> {
+					val resolvedProject = resolved.project
+					val resolvedDefinition = resolved
+					val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
+					val primaryImageConfigs = resolvedDefinitionInfo.primaryImageConfigs
+					if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+					var resolvedFilePath: String? = null
+					var resolvedSet: MutableSet<PsiFile>? = null
+					for(primaryImageConfig in primaryImageConfigs) {
+						val locationExpression = primaryImageConfig.locationExpression
+						val (filePath, set) = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, resolvedProject, frameToUse) ?: continue
+						if(resolvedFilePath == null) resolvedFilePath = filePath
+						if(resolvedSet == null) resolvedSet = mutableSetOf()
+						resolvedSet.addAll(set)
+					}
+					if(resolvedFilePath == null) return null
+					return tupleOf(resolvedFilePath, resolvedSet ?: emptySet(), frameToUse)
+				}
+				else -> return null //解析失败或不支持
 			}
 		} else {
 			return null //不期望的结果
