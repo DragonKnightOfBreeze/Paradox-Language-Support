@@ -39,7 +39,7 @@ object CwtConfigHandler {
 	const val paramsEnumName = "scripted_effect_params"
 	//const val modifierAliasName = "modifier"
 	
-	//region Misc Methods
+	//region Util Methods
 	fun getAliasSubName(key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup): String? {
 		val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
 		if(constKey != null) return constKey

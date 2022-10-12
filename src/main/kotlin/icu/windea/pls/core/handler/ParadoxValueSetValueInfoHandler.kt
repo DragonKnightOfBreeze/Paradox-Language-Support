@@ -18,7 +18,7 @@ object ParadoxValueSetValueInfoHandler {
 		if(element !is ParadoxScriptString) return null
 		val config = resolveConfigs(element, CwtValueConfig::class.java) {
 			val dataType = it.type
-			dataType != CwtDataTypes.TypeExpression	
+			dataType != CwtDataTypes.TypeExpression	 //TODO
 		}.firstOrNull() ?: return null
 		if(config.expression.type != CwtDataTypes.Value && config.expression.type != CwtDataTypes.ValueSet) return null
 		val name = element.value

@@ -10,9 +10,3 @@ interface CwtKvExpression : CwtExpression {
 	val value: String?
 	val extraValue: Any?
 }
-
-/**
- * 是否可能会使用到IDE索引。
- */
-val CwtKvExpression.useIndex 
-	get() = type == 
