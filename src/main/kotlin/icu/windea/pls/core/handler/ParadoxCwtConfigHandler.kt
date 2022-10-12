@@ -1,8 +1,10 @@
 package icu.windea.pls.core.handler
 
+import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxCwtConfigHandler {
@@ -16,53 +18,107 @@ object ParadoxCwtConfigHandler {
 	}
 	
 	@JvmStatic
-	fun resolvePropertyConfig(element: ParadoxScriptProperty, allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
-		val key = element.propertyKey
-		return resolvePropertyConfig(key, allowDefinitionSelf, orFirst)
+	fun resolvePropertyConfig(element: ParadoxScriptProperty, allowDefinitionSelf: Boolean = false, hasDefault: Boolean = true): CwtPropertyConfig? {
+		return resolveConfigs(element, CwtPropertyConfig::class.java, allowDefinitionSelf, hasDefault).firstOrNull()
 	}
 	
 	@JvmStatic
-	fun resolveValueConfig(element: ParadoxScriptProperty, allowDefinitionSelf: Boolean = true, orSingle: Boolean = true): CwtValueConfig? {
-		val value = element.propertyValue?.value ?: return null
-		return resolveValueConfig(value, allowDefinitionSelf, orSingle)
+	fun resolvePropertyConfig(element: ParadoxScriptPropertyKey, allowDefinitionSelf: Boolean = false, hasDefault: Boolean = true): CwtPropertyConfig? {
+		return resolveConfigs(element, CwtPropertyConfig::class.java, allowDefinitionSelf, hasDefault).firstOrNull()
 	}
 	
 	@JvmStatic
-	fun resolvePropertyConfig(element: ParadoxScriptPropertyKey, allowDefinitionSelf: Boolean = false, orFirst: Boolean = true): CwtPropertyConfig? {
-		val definitionElementInfo = element.definitionElementInfo ?: return null
-		if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
-		//如果无法匹配value，则取第一个
-		return definitionElementInfo.matchedPropertyConfig
-			?: orFirst.ifTrue { definitionElementInfo.propertyConfigs.firstOrNull() }
+	fun resolveValueConfig(element: ParadoxScriptValue, allowDefinitionSelf: Boolean = true, hasDefault: Boolean = true): CwtValueConfig? {
+		return resolveConfigs(element, CwtValueConfig::class.java, allowDefinitionSelf, hasDefault).firstOrNull()
 	}
 	
+	@Suppress("UNCHECKED_CAST")
 	@JvmStatic
-	fun resolveValueConfig(element: ParadoxScriptValue, allowDefinitionSelf: Boolean = true, orSingle: Boolean = true): CwtValueConfig? {
-		val parent = element.parent
-		when(parent) {
-			//如果value是property的value
-			is ParadoxScriptPropertyValue -> {
-				val property = parent.parent as? ParadoxScriptProperty ?: return null
-				val definitionElementInfo = property.definitionElementInfo ?: return null
-				if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return null
-				//如果无法匹配value，则取唯一的那个
-				return definitionElementInfo.matchedPropertyConfig?.valueConfig
-					?: orSingle.ifTrue { definitionElementInfo.propertyConfigs.singleOrNull()?.valueConfig }
+	fun <T : CwtConfig<*>> resolveConfigs(
+		element: PsiElement,
+		configType: Class<T>,
+		allowDefinitionSelf: Boolean = true,
+		hasDefault: Boolean = true,
+		valueExpressionPredicate: ((CwtValueExpression) -> Boolean)? = null
+	): List<T> {
+		return when(configType) {
+			CwtPropertyConfig::class.java -> {
+				val valueElement = when {
+					element is ParadoxScriptProperty -> element.propertyValue?.value
+					element is ParadoxScriptPropertyKey -> element.parent.cast<ParadoxScriptProperty>().propertyValue?.value
+					else -> return emptyList()
+				}
+				val definitionElementInfo = ParadoxDefinitionElementInfoHandler.get(element) ?: return emptyList()
+				if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
+				//如果无法匹配value，则取第一个
+				val propertyConfigs = definitionElementInfo.propertyConfigs
+				val configGroup = definitionElementInfo.configGroup
+				buildList {
+					for(propertyConfig in propertyConfigs) {
+						//不完整的属性 - 不匹配值
+						if(valueElement == null) {
+							add(propertyConfig)
+							continue
+						}
+						val valueExpression = propertyConfig.valueExpression
+						if(valueExpressionPredicate != null && !valueExpressionPredicate(valueExpression)) continue
+						if(CwtConfigHandler.matchesValue(valueExpression, valueElement, configGroup)) {
+							add(propertyConfig)
+						}
+					}
+					if(hasDefault && isEmpty()) {
+						propertyConfigs.firstOrNull()?.let { add(it) }
+					}
+				} as List<T>
 			}
-			//如果value是block中的value
-			is ParadoxScriptBlock -> {
-				val property = parent.parent?.parent as? ParadoxScriptProperty ?: return null
-				val definitionElementInfo = property.definitionElementInfo ?: return null
-				val childValueConfigs = definitionElementInfo.childValueConfigs
-				if(childValueConfigs.isEmpty()) return null
-				val gameType = definitionElementInfo.gameType
-				val configGroup = getCwtConfig(element.project).getValue(gameType)
-				//如果无法匹配value，则取唯一的那个
-				return childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, element, configGroup) }
-					?: orSingle.ifTrue { childValueConfigs.singleOrNull() }
+			CwtValueConfig::class.java -> {
+				val valueElement = element as? ParadoxScriptValue ?: return emptyList()
+				val parent = element.parent
+				when(parent) {
+					//如果value是property的value
+					is ParadoxScriptPropertyValue -> {
+						val property = parent.parent as? ParadoxScriptProperty ?: return emptyList()
+						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
+						if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
+						val propertyConfigs = definitionElementInfo.propertyConfigs
+						val configGroup = definitionElementInfo.configGroup
+						buildList {
+							for(propertyConfig in propertyConfigs) {
+								val valueExpression = propertyConfig.valueExpression
+								if(valueExpressionPredicate != null && !valueExpressionPredicate(valueExpression)) continue
+								if(CwtConfigHandler.matchesValue(valueExpression, valueElement, configGroup)){
+									add(propertyConfig.valueConfig)
+								}
+							}
+							if(hasDefault && isEmpty()) {
+								propertyConfigs.singleOrNull()?.valueConfig?.let { add(it) }
+							}
+						} as List<T>
+					}
+					//如果value是block中的value
+					is ParadoxScriptBlock -> {
+						val property = parent.parent?.parent as? ParadoxScriptProperty ?: return emptyList()
+						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
+						val childValueConfigs = definitionElementInfo.childValueConfigs
+						if(childValueConfigs.isEmpty()) return emptyList()
+						val configGroup = definitionElementInfo.configGroup
+						buildList {
+							for(childValueConfig in childValueConfigs) {
+								val valueExpression = childValueConfig.valueExpression
+								if(valueExpressionPredicate != null && !valueExpressionPredicate(valueExpression)) continue
+								if(CwtConfigHandler.matchesValue(valueExpression, element, configGroup)){
+									add(childValueConfig)
+								}
+								if(hasDefault && isEmpty()){
+									childValueConfigs.singleOrNull()?.let { add(it) }
+								}
+							}
+						} as List<T>
+					}
+					else -> return emptyList()
+				}
 			}
-			
-			else -> return null
+			else -> emptyList()
 		}
 	}
 }
