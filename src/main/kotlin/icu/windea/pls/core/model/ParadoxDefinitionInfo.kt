@@ -1,5 +1,6 @@
 package icu.windea.pls.core.model
 
+import com.intellij.openapi.application.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*
@@ -7,9 +8,9 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -111,13 +112,15 @@ class ParadoxDefinitionInfo(
 	
 	fun resolvePrimaryLocalisation(element: ParadoxDefinitionProperty): ParadoxLocalisationProperty? {
 		if(primaryLocalisationConfigs.isEmpty()) return null //没有或者CWT规则不完善
-		for(primaryLocalisationConfig in primaryLocalisationConfigs) {
-			val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-			val resolved = primaryLocalisationConfig.locationExpression.resolve(element, this, configGroup.project, selector = selector) ?: continue
-			val localisation = resolved.second
-			if(localisation != null) return localisation
+		return runReadAction {
+			for(primaryLocalisationConfig in primaryLocalisationConfigs) {
+				val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+				val resolved = primaryLocalisationConfig.locationExpression.resolve(element, this, configGroup.project, selector = selector) ?: continue
+				val localisation = resolved.second
+				if(localisation != null)  return@runReadAction localisation
+			}
+			null
 		}
-		return null
 	}
 	
 	override fun equals(other: Any?): Boolean {

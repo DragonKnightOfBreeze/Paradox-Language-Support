@@ -1,12 +1,12 @@
 package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.application.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -47,24 +47,26 @@ class MissingImageInspection : LocalInspectionTool() {
 			val infoMap = mutableMapOf<String, Tuple2<ParadoxRelatedImageInfo, String?>>()
 			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
 			var hasPrimary = false
-			for(info in imageInfos) {
-				if(nameToDistinct.contains(info.name)) continue
-				if(info.primary && hasPrimary) continue
-				//多个位置表达式无法解析时，使用第一个
-				if(info.required || if(info.primary) inspection.forPrimaryRelated else inspection.forOptionalRelated) {
-					val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
-					if(resolved != null) {
-						val (key, image) = resolved
-						if(image == null) {
-							infoMap.putIfAbsent(info.name, tupleOf(info, key))
-						} else {
-							infoMap.remove(info.name)
-							nameToDistinct.add(info.name)
-							if(info.primary) hasPrimary = true
+			runReadAction {
+				for(info in imageInfos) {
+					if(nameToDistinct.contains(info.name)) continue
+					if(info.primary && hasPrimary) continue
+					//多个位置表达式无法解析时，使用第一个
+					if(info.required || if(info.primary) inspection.forPrimaryRelated else inspection.forOptionalRelated) {
+						val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
+						if(resolved != null) {
+							val (key, image) = resolved
+							if(image == null) {
+								infoMap.putIfAbsent(info.name, tupleOf(info, key))
+							} else {
+								infoMap.remove(info.name)
+								nameToDistinct.add(info.name)
+								if(info.primary) hasPrimary = true
+							}
+						} else if(info.locationExpression.placeholder == null) {
+							//从定义的属性推断，例如，#name
+							infoMap.putIfAbsent(info.name, tupleOf(info, null))
 						}
-					} else if(info.locationExpression.placeholder == null) {
-						//从定义的属性推断，例如，#name
-						infoMap.putIfAbsent(info.name, tupleOf(info, null))
 					}
 				}
 			}

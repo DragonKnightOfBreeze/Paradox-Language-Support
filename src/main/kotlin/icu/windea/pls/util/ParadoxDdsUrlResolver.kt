@@ -1,12 +1,12 @@
 package icu.windea.pls.util
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 import kotlin.io.path.*
@@ -71,9 +71,11 @@ object ParadoxDdsUrlResolver {
 	
 	private fun doResolveByDefinition(definition: ParadoxDefinitionProperty, frame: Int , definitionInfo: ParadoxDefinitionInfo): String? {
 		//兼容definition不是sprite的情况
-		val (_,file,inferredFrame) = definitionInfo.primaryImageConfigs.mapAndFirst { 
-			it.locationExpression.resolve(definition, definitionInfo, definitionInfo.project)
-		} ?: return null
+		val (_,file,inferredFrame) = runReadAction {
+			definitionInfo.primaryImageConfigs.mapAndFirst {
+				it.locationExpression.resolve(definition, definitionInfo, definitionInfo.project)
+			}
+		}  ?: return null
 		if(file == null) return null
 		val frameToUse = if(frame == 0) inferredFrame else frame
 		return doResolveByFile(file.virtualFile, frameToUse)

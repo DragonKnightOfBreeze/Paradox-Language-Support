@@ -10,7 +10,7 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
+public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
 
   public ParadoxScriptValueImpl(@NotNull ASTNode node) {
     super(node);

@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.markers
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.navigation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icons.*
@@ -31,12 +32,14 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		val keys = mutableSetOf<String>()
 		val targets = mutableSetOf<PsiElement>() //这里需要考虑基于引用相等去重
 		var isFirst = true
-		for((key, locationExpression) in imageInfos) {
-			val (filePath, files) = locationExpression.resolveAll(definitionInfo.name, element, project) ?: continue
-			if(files.isNotEmpty()) targets.addAll(files)
-			if(files.isNotEmpty() && keys.add(key)) {
-				if(isFirst) isFirst = false else tooltipBuilder.appendBr()
-				tooltipBuilder.append(PlsDocBundle.message("name.script.relatedImage")).append(" ").append(key).append(" = ").append(filePath)
+		runReadAction {
+			for((key, locationExpression) in imageInfos) {
+				val (filePath, files) = locationExpression.resolveAll(definitionInfo.name, element, project) ?: continue
+				if(files.isNotEmpty()) targets.addAll(files)
+				if(files.isNotEmpty() && keys.add(key)) {
+					if(isFirst) isFirst = false else tooltipBuilder.appendBr()
+					tooltipBuilder.append(PlsDocBundle.message("name.script.relatedImage")).append(" ").append(key).append(" = ").append(filePath)
+				}
 			}
 		}
 		if(keys.isEmpty()) return

@@ -1,6 +1,7 @@
 package icu.windea.pls.script.editor
 
 import com.intellij.lang.documentation.*
+import com.intellij.openapi.application.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -241,15 +242,18 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val project = element.project
 				val localisationKeys = mutableSetOf<String>()
 				val usedLocalisationTargetMap = localisationTargetMap ?: mutableMapOf()
-				for((key, locationExpression, required) in localisationInfos) {
-					if(!usedLocalisationTargetMap.containsKey(key)) {
-						val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-						val (targetKey, target) = locationExpression.resolve(element, definitionInfo, project, selector = selector) ?: continue //发生意外，直接跳过
-						if(target != null) usedLocalisationTargetMap.put(key, target)
-						if(required || target != null) {
-							if(localisationKeys.add(key)) {
-								appendBr()
-								append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ").append(key).append(" = ").appendLocalisationLink(targetKey, element, resolved = target != null)
+				runReadAction {
+					for((key, locationExpression, required) in localisationInfos) {
+						if(!usedLocalisationTargetMap.containsKey(key)) {
+							val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+							val (targetKey, target) = locationExpression.resolve(element, definitionInfo, project, selector = selector) ?: continue //发生意外，直接跳过
+							if(target != null) usedLocalisationTargetMap.put(key, target)
+							if(required || target != null) {
+								if(localisationKeys.add(key)) {
+									appendBr()
+									append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
+									append(key).append(" = ").appendLocalisationLink(targetKey, element, resolved = target != null)
+								}
 							}
 						}
 					}
@@ -261,14 +265,17 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val project = element.project
 				val imageKeys = mutableSetOf<String>()
 				val usedImageTargetMap = imageTargetMap ?: mutableMapOf()
-				for((key, locationExpression, required) in imagesInfos) {
-					if(!usedImageTargetMap.containsKey(key)) {
-						val (filePath, target, frame) = locationExpression.resolve(element, definitionInfo, project) ?: continue //发生意外，直接跳过
-						if(target != null) usedImageTargetMap.put(key, tupleOf(target, frame))
-						if(required || target != null) {
-							if(imageKeys.add(key)) {
-								appendBr()
-								append(PlsDocBundle.message("name.script.relatedImage")).append(" ").append(key).append(" = ").appendFilePathLink(filePath, element, resolved = target != null)
+				runReadAction {
+					for((key, locationExpression, required) in imagesInfos) {
+						if(!usedImageTargetMap.containsKey(key)) {
+							val (filePath, target, frame) = locationExpression.resolve(element, definitionInfo, project) ?: continue //发生意外，直接跳过
+							if(target != null) usedImageTargetMap.put(key, tupleOf(target, frame))
+							if(required || target != null) {
+								if(imageKeys.add(key)) {
+									appendBr()
+									append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
+									append(key).append(" = ").appendFilePathLink(filePath, element, resolved = target != null)
+								}
 							}
 						}
 					}

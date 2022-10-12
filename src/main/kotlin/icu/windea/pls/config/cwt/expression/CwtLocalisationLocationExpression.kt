@@ -2,11 +2,11 @@ package icu.windea.pls.config.cwt.expression
 
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -49,6 +49,7 @@ class CwtLocalisationLocationExpression(
 	
 	//(localisationKey - localisation(s))
 	
+	@RunInReadAction
 	fun resolve(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): Pair<String, ParadoxLocalisationProperty?>? {
 		if(placeholder != null) {
 			//如果定义是匿名的，则直接忽略

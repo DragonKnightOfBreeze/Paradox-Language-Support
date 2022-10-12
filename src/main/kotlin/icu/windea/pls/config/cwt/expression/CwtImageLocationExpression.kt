@@ -4,12 +4,12 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
 private val validValueTypes = arrayOf(
@@ -70,6 +70,7 @@ class CwtImageLocationExpression(
 	
 	//(key, file(s), frame)
 	
+	@RunInReadAction
 	fun resolve(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, project: Project, frame: Int = 0): Tuple3<String, PsiFile?, Int>? {
 		if(placeholder != null) {
 			//如果定义是匿名的，则直接忽略
@@ -121,6 +122,7 @@ class CwtImageLocationExpression(
 		}
 	}
 	
+	@RunInReadAction
 	fun resolveAll(definitionName: String, definition: ParadoxDefinitionProperty, project: Project, frame: Int = 0): Tuple3<String, Set<PsiFile>, Int>? {
 		if(placeholder != null) {
 			//假定这里的filePath以.dds结尾

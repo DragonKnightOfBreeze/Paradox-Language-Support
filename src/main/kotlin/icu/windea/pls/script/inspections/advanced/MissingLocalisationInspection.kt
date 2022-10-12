@@ -2,6 +2,7 @@ package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.codeInspection.ui.*
+import com.intellij.openapi.application.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
@@ -17,7 +18,6 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.ui.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 import javax.swing.event.*
@@ -71,26 +71,28 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val infoMap = mutableMapOf<String, Tuple3<ParadoxRelatedLocalisationInfo, String?, ParadoxLocaleConfig>>()
 			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
 			val hasPrimaryLocales = mutableSetOf<ParadoxLocaleConfig>()
-			for(info in localisationInfos) {
-				if(info.required || if(info.primary) inspection.forPrimaryRelated else inspection.forOptionalRelated) {
-					for(locale in localeSet) {
-						if(nameToDistinct.contains(info.name + "@" + locale)) continue
-						if(info.primary && hasPrimaryLocales.contains(locale)) continue
-						//多个位置表达式无法解析时，使用第一个
-						val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).locale(locale)
-						val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector = selector)
-						if(resolved != null) {
-							val (key, loc) = resolved
-							if(loc == null) {
-								infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, key, locale))
-							} else {
-								infoMap.remove(info.name + "@" + locale)
-								nameToDistinct.add(info.name + "@" + locale)
-								if(info.primary) hasPrimaryLocales.add(locale)
+			runReadAction {
+				for(info in localisationInfos) {
+					if(info.required || if(info.primary) inspection.forPrimaryRelated else inspection.forOptionalRelated) {
+						for(locale in localeSet) {
+							if(nameToDistinct.contains(info.name + "@" + locale)) continue
+							if(info.primary && hasPrimaryLocales.contains(locale)) continue
+							//多个位置表达式无法解析时，使用第一个
+							val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).locale(locale)
+							val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector = selector)
+							if(resolved != null) {
+								val (key, loc) = resolved
+								if(loc == null) {
+									infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, key, locale))
+								} else {
+									infoMap.remove(info.name + "@" + locale)
+									nameToDistinct.add(info.name + "@" + locale)
+									if(info.primary) hasPrimaryLocales.add(locale)
+								}
+							} else if(info.locationExpression.placeholder == null) {
+								//从定义的属性推断，例如，#name
+								infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, null, locale))
 							}
-						} else if(info.locationExpression.placeholder == null) {
-							//从定义的属性推断，例如，#name
-							infoMap.putIfAbsent(info.name + "@" + locale, tupleOf(info, null, locale))
 						}
 					}
 				}

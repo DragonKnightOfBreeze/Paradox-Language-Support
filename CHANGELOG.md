@@ -48,6 +48,7 @@
   * [X] 进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可
   * [X] 修复解析本地化位置表达式（如`$_desc`）时把占位符`$`解析成定义的rootKey而非定义的名字的问题
   * [X] 解析本地化位置表达式（如`$_desc`）时如果存在占位符`$`但对应的定义是匿名的，则应直接忽略，返回空结果
+  * [X] 修复`CwtConfigResolver`中的NPE
   * [ ] 修复valueSetValue索引在索引时会被IDE认为栈溢出的问题，改为基于`ParadoxValueSetValuesSearch`和索引进行查找
 * 新增功能：
   * [x] 新增动作：导航到相关本地化和导航到相关图片（对于定义，在导航和右键菜单中，在动作：导航到相关符号/Go to related symbol下面）
