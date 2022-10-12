@@ -19,7 +19,7 @@ object CwtConfigResolver {
 		val fileConfig = CwtFileConfig(file.createPointer(), properties, values)
 		rootBlock.processChild {
 			when {
-				it is CwtProperty -> resolveProperty(it, file, fileConfig).addTo(properties).end()
+				it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).end()
 				it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
 				else -> end()
 			}
@@ -56,7 +56,7 @@ object CwtConfigResolver {
 					values = SmartList()
 					propValue.processChild {
 						when {
-							it is CwtProperty -> resolveProperty(it, file, fileConfig).addTo(properties).end()
+							it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).end()
 							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
 							else -> end()
 						}
@@ -134,7 +134,7 @@ object CwtConfigResolver {
 					values = SmartList()
 					value.processChild {
 						when {
-							it is CwtProperty -> resolveProperty(it, file, fileConfig).addTo(properties).end()
+							it is CwtProperty -> resolveProperty(it, file, fileConfig)?.addTo(properties).end()
 							it is CwtValue -> resolveValue(it, file, fileConfig).addTo(values).end()
 							else -> end()
 						}
@@ -210,7 +210,7 @@ object CwtConfigResolver {
 					optionValues = SmartList()
 					optionValue.processChild {
 						when {
-							it is CwtOption -> resolveOption(it, file, fileConfig).addTo(options).end()
+							it is CwtOption -> resolveOption(it, file, fileConfig)?.addTo(options).end()
 							it is CwtValue -> resolveOptionValue(it, file, fileConfig).addTo(optionValues).end()
 							else -> end()
 						}
@@ -255,7 +255,7 @@ object CwtConfigResolver {
 						optionValues = SmartList()
 						option.processChild {
 							when {
-								it is CwtOption -> resolveOption(it, file, fileConfig).addTo(options).end()
+								it is CwtOption -> resolveOption(it, file, fileConfig)?.addTo(options).end()
 								it is CwtValue -> resolveOptionValue(it, file, fileConfig).addTo(optionValues).end()
 								else -> end()
 							}
