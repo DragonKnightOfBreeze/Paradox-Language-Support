@@ -400,11 +400,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getValueType(element: ParadoxScriptValue): ParadoxValueType {
 		return ParadoxValueType.UnknownType
 	}
-	
-	@JvmStatic
-	fun getString(element: ParadoxScriptValue): ParadoxScriptString? {
-		return element.findOptionalChild()
-	}
 	//endregion
 	
 	//region ParadoxScriptBoolean

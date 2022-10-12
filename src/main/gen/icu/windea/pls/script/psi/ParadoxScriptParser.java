@@ -1,15 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.lang.*;
+import com.intellij.lang.PsiBuilder.*;
+import com.intellij.psi.tree.*;
+
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ParadoxScriptParser implements PsiParser, LightPsiParser {
@@ -659,14 +656,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   public static boolean string(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "string")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
+    Marker m = enter_section_(b, l, _UPPER_, STRING, "<string>");
     r = value_expr(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // variable_reference | boolean | int | float | string | color | block | inline_math
+  // variable_reference | boolean | int | number | string | color | block | inline_math
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -674,7 +671,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     r = variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
-    if (!r) r = float_$(b, l + 1);
+    if (!r) r = consumeToken(b, NUMBER);
     if (!r) r = string(b, l + 1);
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
@@ -813,21 +810,21 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET,
-    LEFT_BRACE, LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN,
-    RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET);
+    COLOR_TOKEN, COMMENT, INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET, LEFT_BRACE,
+    LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
+    RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET, NUMBER);
   static final Parser block_item_auto_recover_ = block_auto_recover_;
   static final Parser inline_math_auto_recover_ = block_auto_recover_;
   static final Parser parameter_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, EQUAL_SIGN, FLOAT_TOKEN, GE_SIGN, GT_SIGN,
-    INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET, LEFT_BRACE, LEFT_BRACKET, LE_SIGN,
-    LT_SIGN, NOT_EQUAL_SIGN, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN,
-    RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET);
+    COLOR_TOKEN, COMMENT, EQUAL_SIGN, GE_SIGN, GT_SIGN, INLINE_MATH_START,
+    INT_TOKEN, KEY_STRING_SNIPPET, LEFT_BRACE, LEFT_BRACKET, LE_SIGN, LT_SIGN,
+    NOT_EQUAL_SIGN, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, RIGHT_BRACE,
+    RIGHT_BRACKET, STRING_TOKEN, VALUE_STRING_SNIPPET, NUMBER);
   static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
   static final Parser parameter_condition_expr_auto_recover_ = block_auto_recover_;
   static final Parser property_auto_recover_ = block_auto_recover_;
   static final Parser root_block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET,
-    LEFT_BRACE, PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, STRING_TOKEN, VALUE_STRING_SNIPPET);
+    COLOR_TOKEN, COMMENT, INLINE_MATH_START, INT_TOKEN, KEY_STRING_SNIPPET, LEFT_BRACE,
+    PARAMETER_START, PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, QUOTED_STRING_TOKEN, STRING_TOKEN, VALUE_STRING_SNIPPET, NUMBER);
   static final Parser variable_auto_recover_ = block_auto_recover_;
 }

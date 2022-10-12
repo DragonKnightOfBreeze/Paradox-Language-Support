@@ -4,7 +4,6 @@ package icu.windea.pls.script.psi.impl;
 import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
 import com.intellij.psi.*;
-import com.intellij.psi.util.*;
 import icu.windea.pls.core.model.*;
 import icu.windea.pls.script.psi.*;
 import org.jetbrains.annotations.*;
@@ -25,12 +24,6 @@ public class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements Para
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxScriptVisitor) accept((ParadoxScriptVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxScriptString getString() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptString.class);
   }
 
   @Override

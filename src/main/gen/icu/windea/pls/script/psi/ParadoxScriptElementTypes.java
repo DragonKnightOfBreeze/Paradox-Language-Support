@@ -67,6 +67,7 @@ public interface ParadoxScriptElementTypes {
   IElementType NESTED_RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("NESTED_RIGHT_BRACKET");
   IElementType NOT_EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("NOT_EQUAL_SIGN");
   IElementType NOT_SIGN = ParadoxScriptElementTypeFactory.getTokenType("NOT_SIGN");
+  IElementType NUMBER = ParadoxScriptElementTypeFactory.getTokenType("number");
   IElementType NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("NUMBER_TOKEN");
   IElementType PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_END");
   IElementType PARAMETER_ID = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_ID");

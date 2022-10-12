@@ -41,9 +41,6 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptEx
   ParadoxValueType getValueType();
 
   @Nullable
-  ParadoxScriptString getString();
-
-  @Nullable
   String getConfigExpression();
 
 }

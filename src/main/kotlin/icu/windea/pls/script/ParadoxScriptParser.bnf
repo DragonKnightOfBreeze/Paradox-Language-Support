@@ -80,7 +80,7 @@ private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIG
 property_value ::= value
 
 //(property) value related
-value ::= variable_reference | boolean | int | float | string | color | block | inline_math{
+value ::= variable_reference | boolean | int | number | string | color | block | inline_math {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
@@ -110,23 +110,24 @@ int ::= INT_TOKEN {
   ]
   methods=[getValue getIntValue getValueType]
 }
-float ::= FLOAT_TOKEN{
+float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
   methods=[getValue getFloatValue getValueType]
 }
-string ::= value_expr {
+upper string ::= value_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptStringStub"
-  extends=value
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptValue"
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ]
-  methods=[getName setName getValue setValue getNameIdentifier getReference getReferences getStringValue getValueType
-    getString getConfigExpression]
+  methods=[
+    getName setName getValue setValue getNameIdentifier getReference getReferences getStringValue
+    getValueType getConfigExpression
+  ]
 }
 color ::= COLOR_TOKEN {
   extends=value

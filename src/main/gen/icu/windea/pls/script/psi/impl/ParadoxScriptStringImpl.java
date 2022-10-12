@@ -94,12 +94,6 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
 
   @Override
   @Nullable
-  public ParadoxScriptString getString() {
-    return ParadoxScriptPsiImplUtil.getString(this);
-  }
-
-  @Override
-  @Nullable
   public String getConfigExpression() {
     return ParadoxScriptPsiImplUtil.getConfigExpression(this);
   }

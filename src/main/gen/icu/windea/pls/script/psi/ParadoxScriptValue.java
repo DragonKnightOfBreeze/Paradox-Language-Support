@@ -8,9 +8,6 @@ import javax.swing.*;
 
 public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
 
-  @Nullable
-  ParadoxScriptString getString();
-
   @NotNull
   Icon getIcon(@IconFlags int flags);
 
