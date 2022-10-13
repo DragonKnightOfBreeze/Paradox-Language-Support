@@ -50,6 +50,7 @@
   * [X] 修复`CwtConfigResolver`中的NPE
   * [X] 修复`CwtImageLocationExpression`中的SOF
   * [X] 修复valueSetValue索引在索引时会被IDE认为栈溢出的问题，改为基于`ParadoxValueSetValuesSearch`和索引进行查找
+  * [X] 脚本文件 - 基于注解器的语法高亮，不高亮带有参数的表达式
 * 新增功能：
   * [x] 新增动作：导航到相关本地化和导航到相关图片（对于定义，在导航和右键菜单中，在动作：导航到相关符号/Go to related symbol下面）
 * 功能变更：

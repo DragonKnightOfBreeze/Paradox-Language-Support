@@ -44,11 +44,17 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
+		//不高亮带有参数的情况
+		if(element.isParameterAwareExpression()) return
+		
 		val propertyConfig = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
 		if(propertyConfig != null) annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig.info.configGroup, holder)
 	}
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
+		//不高亮带有参数的情况
+		if(element.isParameterAwareExpression()) return
+		
 		//特殊处理字符串需要被识别为标签的情况
 		if(annotateTag(element, holder)) return
 		
