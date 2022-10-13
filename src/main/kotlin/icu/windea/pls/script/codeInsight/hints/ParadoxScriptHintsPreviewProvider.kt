@@ -1,6 +1,6 @@
 package icu.windea.pls.script.codeInsight.hints
 
-import com.intellij.psi.PsiFile
+import com.intellij.psi.*
 import icu.windea.pls.*
 
 object ParadoxScriptHintsPreviewProvider {
@@ -33,7 +33,7 @@ object ParadoxScriptHintsPreviewProvider {
 	
 	fun handleCivicPreviewFile(file: PsiFile){
 		val injectedInfo = listOf(
-			""
+			"" //TODO
 		)
 		file.putUserData(PlsKeys.injectedInfoKey, injectedInfo)
 	}
