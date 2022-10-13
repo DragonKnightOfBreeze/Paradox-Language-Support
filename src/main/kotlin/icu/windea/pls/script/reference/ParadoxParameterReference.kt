@@ -32,6 +32,7 @@ class ParadoxParameterReference(
 	}
 	
 	override fun getVariants(): Array<out Any> {
+		//直接在这里进行参数补全 - 如果参数在所属定义声明内部
 		return CwtConfigHandler.getParameterVariants(element, rangeInElement)
 	}
 }
