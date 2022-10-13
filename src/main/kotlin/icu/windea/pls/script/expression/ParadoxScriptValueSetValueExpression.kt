@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 
 /**
- * 值集的值表达式。
+ * 值集中的值的表达式。
  * 
  * 一些例子：`some_flag` `some_flag@root` `some_flag@root.owner`
  */
