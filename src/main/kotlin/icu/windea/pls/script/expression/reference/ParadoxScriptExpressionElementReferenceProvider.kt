@@ -10,11 +10,6 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 
-/**
- * @see ParadoxScriptKeyReference
- * @see ParadoxScriptValueReference
- * @see ParadoxScriptScopeReference
- */
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
 		if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
@@ -31,12 +26,17 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					CwtDataTypes.Scope, CwtDataTypes.ScopeField, CwtDataTypes.ScopeGroup -> {
 						val scopeFieldExpression = ParadoxScriptScopeFieldExpression.resolve(text, configGroup)
 						if(scopeFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return scopeFieldExpression.infos.mapNotNull { it.getReference(element) }.toTypedArray()
+						return scopeFieldExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
 					}
 					CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
 						val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(text, configGroup)
 						if(valueFieldExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
-						return valueFieldExpression.infos.mapNotNull { it.getReference(element) }.toTypedArray()
+						return valueFieldExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
+					}
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
+						val valueSetValueExpression = ParadoxScriptValueSetValueExpression.resolve(text, configGroup)
+						if(valueSetValueExpression.isEmpty()) return PsiReference.EMPTY_ARRAY
+						return valueSetValueExpression.infos.mapNotNull { it.getReference(element, config) }.toTypedArray()
 					}
 					else -> pass() //TODO
 				}

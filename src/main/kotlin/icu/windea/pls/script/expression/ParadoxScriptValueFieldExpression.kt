@@ -27,75 +27,6 @@ class ParadoxScriptValueFieldExpression(
 	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
 	val scriptValueParametersStartIndex = if(dataSourceInfo == null) -1 else expressionString.indexOf('|', dataSourceInfo.textRange.endOffset)
 	
-	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
-		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
-		//要求重新匹配
-		result.restartCompletionOnAnyPrefixChange()
-		
-		val offsetInParent = offsetInParent
-		//这里需要找到DS的结束位置
-		val expressionStringToCheckLength = when {
-			expressionString.startsWith("value:") -> expressionString.substringAfter("value:").indexOf("|")
-			expressionString.contains(".value:") -> expressionString.substringAfter(".value:").indexOf("|")
-			else -> -1
-		}.let { if(it != -1) it else expressionString.length }
-		val expressionStringToCheck = expressionString.substring(0, expressionStringToCheckLength)
-		val start = expressionStringToCheck.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
-		val end = expressionStringToCheck.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
-		val isLast = end == expressionString.length
-		
-		val text = expressionString.substring(start, end)
-		val pipeIndex = if(isLast && text.startsWith("value:")) text.indexOf('|') else -1
-		val textToCheck = if(pipeIndex == -1) text else text.substring(0, pipeIndex)
-		//兼容带参数的SV表达式
-		if(pipeIndex != -1 && pipeIndex < offsetInParent - start) {
-			//在必要时提示参数名
-			val svName = textToCheck.removePrefix("value:")
-			val offsetIndex = offsetInParent - start
-			var paramNameKeyword: String? = null
-			val paramNames = mutableSetOf<String>()
-			var startIndexSv: Int
-			var endIndexSv: Int = pipeIndex
-			var flag = false
-			while(endIndexSv != text.length) {
-				flag = !flag
-				startIndexSv = endIndexSv + 1
-				endIndexSv = text.indexOf('|', startIndexSv).let { if(it != -1) it else text.length }
-				if(flag) {
-					if(offsetIndex in startIndexSv..endIndexSv) {
-						paramNameKeyword = text.substring(startIndexSv, offsetIndex)
-					}
-					val paramName = text.substring(startIndexSv, endIndexSv)
-					if(paramName.isNotEmpty()) paramNames.add(paramName)
-				}
-			}
-			if(paramNameKeyword != null) {
-				put(PlsCompletionKeys.keywordKey, paramNameKeyword)
-				//开始提示
-				completeScriptValueParameters(svName, paramNames, result)
-				put(PlsCompletionKeys.keywordKey, expressionString)
-			}
-			return
-		}
-		
-		val keywordToUse = expressionString.substring(start, offsetInParent)
-		put(PlsCompletionKeys.keywordKey, keywordToUse)
-		
-		val prevScope = if(start == 0) null else expressionString.substring(0, start - 1).substringAfterLast('.')
-		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
-		
-		if(isLast) {
-			completeScope(result)
-			completeValueOfValueField(result)
-			completeValueFieldPrefixOrDataSource(result)
-		} else {
-			completeScope(result)
-		}
-		
-		put(PlsCompletionKeys.keywordKey, expressionString)
-		put(PlsCompletionKeys.prevScopeKey, null)
-	}
-	
 	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptValueFieldExpression>() {
 		val EmptyExpression by lazy { ParadoxScriptValueFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
 		
@@ -256,5 +187,74 @@ class ParadoxScriptValueFieldExpression(
 		private fun String.isValidSubExpression(): Boolean {
 			return all { it == '_' || it == ':' || it == '|' || it.isExactLetter() || it.isExactDigit() }
 		}
+	}
+	
+	override fun ProcessingContext.doComplete(result: CompletionResultSet) {
+		//基于点号进行代码提示，因此允许最终会导致表达式不合法的情况
+		//要求重新匹配
+		result.restartCompletionOnAnyPrefixChange()
+		
+		val offsetInParent = offsetInParent
+		//这里需要找到DS的结束位置
+		val expressionStringToCheckLength = when {
+			expressionString.startsWith("value:") -> expressionString.substringAfter("value:").indexOf("|")
+			expressionString.contains(".value:") -> expressionString.substringAfter(".value:").indexOf("|")
+			else -> -1
+		}.let { if(it != -1) it else expressionString.length }
+		val expressionStringToCheck = expressionString.substring(0, expressionStringToCheckLength)
+		val start = expressionStringToCheck.lastIndexOf('.').let { if(it == -1) 0 else it + 1 }
+		val end = expressionStringToCheck.indexOf('.', offsetInParent).let { if(it == -1) expressionString.length else it }
+		val isLast = end == expressionString.length
+		
+		val text = expressionString.substring(start, end)
+		val pipeIndex = if(isLast && text.startsWith("value:")) text.indexOf('|') else -1
+		val textToCheck = if(pipeIndex == -1) text else text.substring(0, pipeIndex)
+		//兼容带参数的SV表达式
+		if(pipeIndex != -1 && pipeIndex < offsetInParent - start) {
+			//在必要时提示参数名
+			val svName = textToCheck.removePrefix("value:")
+			val offsetIndex = offsetInParent - start
+			var paramNameKeyword: String? = null
+			val paramNames = mutableSetOf<String>()
+			var startIndexSv: Int
+			var endIndexSv: Int = pipeIndex
+			var flag = false
+			while(endIndexSv != text.length) {
+				flag = !flag
+				startIndexSv = endIndexSv + 1
+				endIndexSv = text.indexOf('|', startIndexSv).let { if(it != -1) it else text.length }
+				if(flag) {
+					if(offsetIndex in startIndexSv..endIndexSv) {
+						paramNameKeyword = text.substring(startIndexSv, offsetIndex)
+					}
+					val paramName = text.substring(startIndexSv, endIndexSv)
+					if(paramName.isNotEmpty()) paramNames.add(paramName)
+				}
+			}
+			if(paramNameKeyword != null) {
+				put(PlsCompletionKeys.keywordKey, paramNameKeyword)
+				//开始提示
+				completeScriptValueParameters(svName, paramNames, result)
+				put(PlsCompletionKeys.keywordKey, expressionString)
+			}
+			return
+		}
+		
+		val keywordToUse = expressionString.substring(start, offsetInParent)
+		put(PlsCompletionKeys.keywordKey, keywordToUse)
+		
+		val prevScope = if(start == 0) null else expressionString.substring(0, start - 1).substringAfterLast('.')
+		if(prevScope != null) put(PlsCompletionKeys.prevScopeKey, prevScope)
+		
+		if(isLast) {
+			completeScope(result)
+			completeValueOfValueField(result)
+			completeValueFieldPrefixOrDataSource(result)
+		} else {
+			completeScope(result)
+		}
+		
+		put(PlsCompletionKeys.keywordKey, expressionString)
+		put(PlsCompletionKeys.prevScopeKey, null)
 	}
 }

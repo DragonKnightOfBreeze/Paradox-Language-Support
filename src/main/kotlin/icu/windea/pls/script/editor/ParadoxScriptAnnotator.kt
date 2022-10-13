@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
@@ -48,7 +49,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(element.isParameterAwareExpression()) return
 		
 		val propertyConfig = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
-		if(propertyConfig != null) annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig.info.configGroup, holder)
+		if(propertyConfig != null) annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig, holder)
 	}
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
@@ -59,11 +60,12 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(annotateTag(element, holder)) return
 		
 		val valueConfig = ParadoxCwtConfigHandler.resolveValueConfig(element)
-		if(valueConfig != null) annotateExpression(element, element.textRange, valueConfig.expression, valueConfig.info.configGroup, holder)
+		if(valueConfig != null) annotateExpression(element, element.textRange, valueConfig.expression, valueConfig, holder)
 	}
 	
-	private fun annotateExpression(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, configGroup: CwtConfigGroup, holder: AnnotationHolder) {
+	private fun annotateExpression(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, config: CwtKvConfig<*>, holder: AnnotationHolder) {
 		//颜色高亮
+		val configGroup = config.info.configGroup
 		when(expression.type) {
 			CwtDataTypes.InlineLocalisation -> {
 				if(element.isQuoted()) {
@@ -120,11 +122,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					val scopeFieldExpression = ParadoxScriptScopeFieldExpression.resolve(element.value, configGroup)
 					if(scopeFieldExpression.isEmpty()) return
 					for(info in scopeFieldExpression.infos) {
-						val attributesKeyExpressions = info.getAttributesKeyExpressions(element)
+						val attributesKeyExpressions = info.getAttributesKeyExpressions(element, config)
 						if(attributesKeyExpressions.isNotEmpty()) {
 							//使用第一个匹配的expression的高亮
 							val infoRange = info.textRange.shiftRight(range.startOffset)
-							annotateExpression(element, infoRange, attributesKeyExpressions.first(), configGroup, holder)
+							annotateExpression(element, infoRange, attributesKeyExpressions.first(), config, holder)
 							continue
 						} 
 						val attributesKey = info.getAttributesKey()
@@ -140,11 +142,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(element.value, configGroup)
 					if(valueFieldExpression.isEmpty()) return
 					for(info in valueFieldExpression.infos) {
-						val attributesKeyExpressions = info.getAttributesKeyExpressions(element)
+						val attributesKeyExpressions = info.getAttributesKeyExpressions(element, config)
 						if(attributesKeyExpressions.isNotEmpty()) {
 							//使用第一个匹配的expression的高亮
 							val infoRange = info.textRange.shiftRight(range.startOffset)
-							annotateExpression(element, infoRange, attributesKeyExpressions.first(), configGroup, holder)
+							annotateExpression(element, infoRange, attributesKeyExpressions.first(), config, holder)
 							continue
 						}
 						val attributesKey = info.getAttributesKey()

@@ -21,6 +21,7 @@ class ParadoxScriptValueReference(
 			resolved is PsiNamedElement -> resolved.setName(newElementName)
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
+		//重命名引用指向的元素
 		return element.setValue(newElementName)
 	}
 	

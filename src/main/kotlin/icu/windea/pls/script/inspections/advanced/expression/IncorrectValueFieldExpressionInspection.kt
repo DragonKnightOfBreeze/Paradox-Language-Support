@@ -47,7 +47,7 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 								for(info in expression.infos) {
 									if(info is ParadoxScriptSvParameterExpressionInfo) {
 										if(reportsUnusedSvParam) {
-											if(info.isUnresolved(element)) {
+											if(info.isUnresolved(element, config)) {
 												val error = info.getUnresolvedError()
 												holder.registerScriptExpressionError(element, error)
 											}
@@ -55,7 +55,7 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 										continue
 									}
 									if(reportsUnresolvedDs) {
-										if(info.isUnresolved(element)) {
+										if(info.isUnresolved(element, config)) {
 											val error = info.getUnresolvedError()
 											if(error != null) holder.registerScriptExpressionError(element, error)
 										}

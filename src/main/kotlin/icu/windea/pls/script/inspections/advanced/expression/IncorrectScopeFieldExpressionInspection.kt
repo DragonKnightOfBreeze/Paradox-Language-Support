@@ -57,7 +57,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 							if(expression.infos.isNotEmpty()) {
 								for(info in expression.infos) {
 									if(reportsUnresolvedDs) {
-										if(info.isUnresolved(element)) {
+										if(info.isUnresolved(element, config)) {
 											val error = info.getUnresolvedError()
 											if(error != null) holder.registerScriptExpressionError(element, error)
 										}

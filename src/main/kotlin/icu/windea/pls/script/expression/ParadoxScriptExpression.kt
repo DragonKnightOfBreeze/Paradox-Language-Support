@@ -20,8 +20,8 @@ sealed class ParadoxScriptExpression(
 	val errors: List<ParadoxScriptExpressionError>
 ) : AbstractExpression(expressionString) {
 	protected var empty = false
-	protected var valid = false
-	protected var matched = false
+	protected var valid = true
+	protected var matched = true
 	
 	fun isEmpty() = empty
 	

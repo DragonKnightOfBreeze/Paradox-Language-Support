@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptScopeFieldPrefixReference(
@@ -29,7 +30,16 @@ class ParadoxScriptScopeFieldDataSourceReference(
 	private val linkConfigs: List<CwtLinkConfig>
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
-		throw IncorrectOperationException() //不允许重命名（尽管有些类型如定义实际上可以重命名）
+		//尝试重命名关联的definition、localisation、syncedLocalisation等
+		val resolved = resolve()
+		when {
+			resolved == null -> pass()
+			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
+			resolved is PsiNamedElement -> resolved.setName(newElementName)
+			else -> throw IncorrectOperationException() //不允许重命名
+		}
+		//重命名引用指向的元素（仅修改对应范围的文本，认为整个文本没有用引号括起）
+		return element.setValue(rangeInElement.replace(element.value, newElementName))
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 
 object PlsCompletionKeys {
 	val completionTypeKey = Key.create<CompletionType>("paradoxCompletion.completionType")
@@ -19,6 +20,7 @@ object PlsCompletionKeys {
 	val scopeNameKey = Key.create<String>("paradoxCompletion.scopeName")
 	val scopeGroupNameKey = Key.create<String>("paradoxCompletion.scopeGroupName")
 	val isIntKey = Key.create<Boolean>("paradoxCompletion.isInt")
+	val valueSetName = Key.create<String>("paradoxCompletion.valueSetName")
 }
 
 val ProcessingContext.completionType get() = get(PlsCompletionKeys.completionTypeKey)
@@ -33,3 +35,4 @@ val ProcessingContext.isExpectedScopeMatched get() = get(PlsCompletionKeys.isExp
 val ProcessingContext.scopeName get() = get(PlsCompletionKeys.scopeNameKey)
 val ProcessingContext.scopeGroupName get() = get(PlsCompletionKeys.scopeGroupNameKey)
 val ProcessingContext.isInt get() = get(PlsCompletionKeys.isIntKey) ?: false
+val ProcessingContext.valueSetName get() = get(PlsCompletionKeys.valueSetName)
