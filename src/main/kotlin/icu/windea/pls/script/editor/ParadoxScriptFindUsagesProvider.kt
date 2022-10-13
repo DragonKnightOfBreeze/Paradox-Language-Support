@@ -6,8 +6,6 @@ import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -28,7 +26,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			is ParadoxScriptVariable -> {
 				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.variable") else element.name
 			}
-			is IParadoxScriptParameter -> {
+			is ParadoxParameter -> {
 				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.parameter") else element.name
 			}
 			is ParadoxScriptProperty -> {
@@ -38,21 +36,6 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.definition") else definitionInfo.name
 				} else {
 					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.property") else element.name
-				}
-			}
-			is ParadoxScriptExpressionElement -> {
-				val config = ParadoxCwtConfigHandler.resolveConfig(element)
-				val expression = config?.expression
-				if(expression == null && element is ParadoxScriptPropertyKey) {
-					return getElementDescription(element.parent, location) //可能是定义
-				}
-				when(expression?.type) {
-					CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
-						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.valueSetValue") else element.value
-					}
-					else -> {
-						if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.expression") else element.value
-					}
 				}
 			}
 			else -> null

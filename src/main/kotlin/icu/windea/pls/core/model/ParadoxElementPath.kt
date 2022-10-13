@@ -25,9 +25,15 @@ class ParadoxElementPath private constructor(
 		
 		private val cache: LoadingCache<String, ParadoxElementPath> = CacheBuilder.newBuilder().buildCache { ParadoxElementPath(it) }
 		
-		fun resolve(path: String) = cache[path]
+		fun resolve(path: String): ParadoxElementPath {
+			if(path.isEmpty()) return EmptyPath
+			return cache[path]
+		}
 		
-		fun resolve(originalSubPaths: List<String>) = cache[originalSubPaths.joinToString("/")]
+		fun resolve(originalSubPaths: List<String>): ParadoxElementPath {
+			if(originalSubPaths.isEmpty()) return EmptyPath
+			return cache[originalSubPaths.joinToString("/")]
+		}
 	}
 	
 	val originalSubPaths: List<String> = originalPath.split('/')

@@ -750,8 +750,9 @@ object CwtConfigHandler {
 					val selector = valueSetValueSelector().gameType(gameType).distinctBy { it.value.substringBefore('@') }
 					val valueSetValues = ParadoxValueSetValuesSearch.search(valueSetName, configGroup.project, selector = selector)
 					val namesToDistinct = mutableSetOf<String>()
-					namesToDistinct.add(keyword.substringBefore('@')) //需要排除正在输入的，测试发现这也会被加入索引
 					for(valueSetValue in valueSetValues) {
+						//排除当前或者当前正在输入的那个
+						if(valueSetValue == contextElement) return
 						//去除后面的作用域信息
 						val name = valueSetValue.value.substringBefore('@')
 						if(!namesToDistinct.add(name)) continue //去重
@@ -772,9 +773,8 @@ object CwtConfigHandler {
 					if(valueSetValueConfigs.isEmpty()) return@run
 					for(valueSetValueConfig in valueSetValueConfigs) {
 						if(quoted && valueSetValueConfig.stringValue == null) continue
-						val n = valueSetValueConfig.value
 						//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
-						val name = n.quoteIf(quoted)
+						val name = valueSetValueConfig.value
 						val element = valueSetValueConfig.pointer.element ?: continue
 						val typeFile = valueConfig.pointer.containingFile
 						val lookupElement = LookupElementBuilder.create(element, name)
@@ -891,7 +891,7 @@ object CwtConfigHandler {
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey)
 				.withPriority(PlsCompletionPriorities.modifierPriority)
-				//.withPriority(PlsCompletionPriorities.modifierPriority, scopeMatched)
+			//.withPriority(PlsCompletionPriorities.modifierPriority, scopeMatched)
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
@@ -964,7 +964,7 @@ object CwtConfigHandler {
 		val prefixLinkConfigs = linkConfigs.values
 			.filter { it.prefix != null && it.dataSource != null }
 		val prefixLinkConfigsToUse = prefixLinkConfigs.filter { keyword.startsWith(it.prefix!!) }
-		if(prefixLinkConfigsToUse.isNotEmpty()){
+		if(prefixLinkConfigsToUse.isNotEmpty()) {
 			//有前缀，基于匹配前缀的dataSource进行提示
 			val prefix = prefixLinkConfigsToUse.first().prefix!!
 			val keywordToUse = keyword.drop(prefix.length)
@@ -1054,7 +1054,7 @@ object CwtConfigHandler {
 		val prefixLinkConfigs = linkConfigs.values
 			.filter { it.prefix != null && it.dataSource != null }
 		val prefixLinkConfigsToUse = prefixLinkConfigs.filter { keyword.startsWith(it.prefix!!) }
-		if(prefixLinkConfigsToUse.isNotEmpty()){
+		if(prefixLinkConfigsToUse.isNotEmpty()) {
 			//有前缀，基于匹配前缀的dataSource进行提示
 			val prefix = prefixLinkConfigsToUse.first().prefix!!
 			val keywordToUse = keyword.drop(prefix.length)
@@ -1177,9 +1177,10 @@ object CwtConfigHandler {
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		for((parameterName, parameters) in parameterMap) {
-			if(parameterName in existParameterNames || parameters.isEmpty()) continue //排除已输入的
+			if(parameterName in existParameterNames) continue //排除已输入的
+			val parameter = parameters.firstOrNull() ?: continue
 			val tailText = " from parameters"
-			val lookupElement = LookupElementBuilder.create(parameters.first(), parameterName)
+			val lookupElement = LookupElementBuilder.create(parameter, parameterName)
 				.withExpectedIcon(PlsIcons.Parameter)
 				.withTailText(tailText)
 				.withTypeText(definitionName, definition.icon, true)
@@ -1189,7 +1190,7 @@ object CwtConfigHandler {
 		result.addAllElements(lookupElements)
 	}
 	
-	fun ProcessingContext.completeScriptValueParameters(svName:String, parameterNames: Set<String>, result: CompletionResultSet) {
+	fun ProcessingContext.completeScriptValueParameters(svName: String, parameterNames: Set<String>, result: CompletionResultSet) {
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
 		val svList = findDefinitionsByType(svName, "script_value", configGroup.project, selector = selector)
 		if(svList.isEmpty()) return
@@ -1201,9 +1202,10 @@ object CwtConfigHandler {
 			val parameterMap = sv.parameterMap
 			if(parameterMap.isEmpty()) continue
 			for((parameterName, parameters) in parameterMap) {
-				if(parameterName in existParameterNames || parameters.isEmpty()) continue //排除已输入的
+				if(parameterName in existParameterNames) continue //排除已输入的
+				val parameter = parameters.firstOrNull() ?: continue
 				val tailText = " from parameters"
-				val lookupElement = LookupElementBuilder.create(parameters.first(), parameterName)
+				val lookupElement = LookupElementBuilder.create(parameter, parameterName)
 					.withExpectedIcon(PlsIcons.Parameter)
 					.withTailText(tailText)
 					.withTypeText(svName, sv.icon, true)
@@ -1212,6 +1214,27 @@ object CwtConfigHandler {
 			}
 		}
 		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
+	}
+	
+	fun getParameterVariants(element: PsiElement, rangeInElement: TextRange): Array<LookupElement> {
+		val name = rangeInElement.substring(element.text)
+		//向上找到definition
+		val definition = element.findParentDefinition() ?: return LookupElement.EMPTY_ARRAY
+		val definitionInfo = definition.definitionInfo ?: return LookupElement.EMPTY_ARRAY
+		val parameterMap = definition.parameterMap
+		if(parameterMap.isEmpty()) return LookupElement.EMPTY_ARRAY
+		val lookupElements = mutableListOf<LookupElement>()
+		for((parameterName, parameters) in parameterMap) {
+			//排除当前或者当前正在输入的那个
+			val parameter = parameters.find { it != element } ?: continue
+			val tailText = " from parameters"
+			val lookupElement = LookupElementBuilder.create(parameter, parameterName)
+				.withExpectedIcon(PlsIcons.Parameter)
+				.withTailText(tailText)
+				.withTypeText(definitionInfo.name, definition.icon, true)
+			lookupElements.add(lookupElement)
+		}
+		return lookupElements.toTypedArray()
 	}
 	
 	private val boolLookupElements = booleanValues.map { value ->
@@ -1252,7 +1275,7 @@ object CwtConfigHandler {
 			val chars = document.charsSequence
 			val charsLength = chars.length
 			val caretOffset = editor.caretModel.offset
-			if(isKey){
+			if(isKey) {
 				//得到光标之后的分隔符的位置
 				var offset = caretOffset
 				while(offset < charsLength && chars[offset].isWhitespace()) {
@@ -1359,9 +1382,7 @@ object CwtConfigHandler {
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return null
-					val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
-					return definitions.firstNotNullOfOrNull { it.parameterMap[name]?.firstOrNull()?.element }
+					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType)
 				}
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>()
@@ -1476,9 +1497,7 @@ object CwtConfigHandler {
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return emptyList()
-					val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
-					return definitions.flatMap { it.parameterMap[name].orEmpty() }.mapNotNull { it.element }
+					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType).toSingletonList()
 				}
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return emptyList()
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>().toSingletonListOrEmpty()
@@ -1612,8 +1631,10 @@ object CwtConfigHandler {
 		return linkConfig.pointer.element
 	}
 	
-	fun resolveValueSetValue(name: String, valueSetName: String, configGroup: CwtConfigGroup, write: Boolean): PsiElement {
-		if(!write) {
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, config: CwtKvConfig<*>): PsiElement? {
+		val valueSetName = config.expression.value ?: return null
+		val configGroup = config.info.configGroup
+		if(config.expression.type != CwtDataTypes.ValueSet) {
 			//首先尝试解析为预定义的value
 			run {
 				val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
@@ -1621,7 +1642,7 @@ object CwtConfigHandler {
 				if(resolved != null) return resolved
 			}
 		}
-		return ParadoxValueSetValueElement(name, valueSetName, configGroup.project, configGroup.gameType)
+		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, configGroup.gameType)
 	}
 	
 	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {

@@ -2,13 +2,14 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.util.*
 
@@ -26,16 +27,22 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
-			is IParadoxScriptInputParameter -> getInputParameterInfo(element)
-			is IParadoxScriptParameter -> {
-				if(originalElement != null && originalElement.elementType != PARAMETER_ID) {
-					getInputParameterInfo(element)
-				} else {
-					getParameterInfo(element)
+			is ParadoxScriptProperty -> getPropertyInfo(element)
+			//进行代码提示时，这里是有效的代码
+			is ParadoxInputParameter -> getParameterInfo(element)
+			is ParadoxParameter -> getParameterInfo(element)
+			//使用FakeElement时，这里是有效的代码
+			is ParadoxParameterElement -> getParameterInfo(element)
+			//进行代码提示时，这里是有效的代码
+			is ParadoxScriptExpressionElement -> {
+				if(originalElement != null) return null
+				val config = ParadoxCwtConfigHandler.resolveConfig(element)
+				when(config?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueInfo(element, config)
+					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, null) else null
 				}
 			}
-			is ParadoxScriptProperty -> getPropertyInfo(element)
-			//使用FakeElement时，这里才是有效的代码
+			//使用FakeElement时，这里是有效的代码
 			is ParadoxValueSetValueElement -> {
 				getValueSetValueInfo(element)
 			}
@@ -47,19 +54,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		val name = element.name
 		return buildString {
 			buildScriptedVariableDefinition(element, name)
-		}
-	}
-	
-	private fun getInputParameterInfo(element: ParadoxScriptNamedElement): String {
-		return buildString {
-			buildInputParameterDefinition(element, element.name.orEmpty())
-		}
-	}
-	
-	private fun getParameterInfo(element: IParadoxScriptParameter): String {
-		val name = element.name
-		return buildString {
-			buildParameterDefinition(element, name)
 		}
 	}
 	
@@ -80,32 +74,55 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getParameterInfo(element: ParadoxInputParameter): String {
+		return buildString {
+			buildParameterDefinition(element.name)
+		}
+	}
+	
+	private fun getParameterInfo(element: ParadoxParameter): String {
+		return buildString {
+			buildParameterDefinition(element.name)
+		}
+	}
+	
+	private fun getParameterInfo(element: ParadoxParameterElement): String {
+		return buildString {
+			buildParameterDefinition(element.name)
+		}
+	}
+	
+	private fun getValueSetValueInfo(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
+		return buildString {
+			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty())
+		}
+	}
+	
 	private fun getValueSetValueInfo(element: ParadoxValueSetValueElement): String {
 		return buildString {
-			buildValueSetValueDefinition(element)
+			buildValueSetValueDefinition(element.name, element.valueSetName)
 		}
 	}
 	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
 		return when(element) {
 			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
-			is IParadoxScriptInputParameter -> getInputParameterDoc(element)
-			is IParadoxScriptParameter -> {
-				if(originalElement != null && originalElement.elementType != PARAMETER_ID) {
-					getInputParameterDoc(element)
-				} else {
-					getParameterDoc(element)
+			is ParadoxScriptProperty -> getPropertyDoc(element)
+			//进行代码提示时，这里是有效的代码
+			is ParadoxInputParameter -> getParameterDoc(element)
+			is ParadoxParameter -> getParameterDoc(element)
+			//使用FakeElement时，这里是有效的代码
+			is ParadoxParameterElement -> getParameterDoc(element)
+			//进行代码提示时，这里是有效的代码
+			is ParadoxScriptExpressionElement -> {
+				if(originalElement != null) return null
+				val config = ParadoxCwtConfigHandler.resolveConfig(element)
+				when(config?.expression?.type) {
+					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueDoc(element, config)
+					else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, null) else null
 				}
 			}
-			is ParadoxScriptProperty -> getPropertyDoc(element)
-			//is ParadoxScriptExpressionElement -> {
-			//	val config = ParadoxCwtConfigHandler.resolveConfig(element)
-			//	when(config?.expression?.type) {
-			//		CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueDoc(element, config)
-			//		else -> if(element is ParadoxScriptPropertyKey) generateDoc(element.parent, originalElement) else null
-			//	}
-			//}
-			//使用FakeElement时，这里才是有效的代码
+			//使用FakeElement时，这里是有效的代码
 			is ParadoxValueSetValueElement -> {
 				getValueSetValueDoc(element)
 			}
@@ -118,19 +135,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		return buildString {
 			buildScriptedVariableDefinition(element, name)
 			buildLineCommentContent(element)
-		}
-	}
-	
-	private fun getInputParameterDoc(element: ParadoxScriptNamedElement): String {
-		return buildString {
-			buildInputParameterDefinition(element, element.name.orEmpty())
-		}
-	}
-	
-	private fun getParameterDoc(element: IParadoxScriptParameter): String {
-		val name = element.name
-		return buildString {
-			buildParameterDefinition(element, name)
 		}
 	}
 	
@@ -162,9 +166,33 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun getParameterDoc(element: ParadoxInputParameter): String {
+		return buildString {
+			buildParameterDefinition(element.name)
+		}
+	}
+	
+	private fun getParameterDoc(element: ParadoxParameter): String {
+		return buildString {
+			buildParameterDefinition(element.name)
+		}
+	}
+	
+	private fun getParameterDoc(element: ParadoxParameterElement): String {
+		return buildString {
+			buildParameterDefinition(element.name)
+		}
+	}
+	
+	private fun getValueSetValueDoc(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
+		return buildString {
+			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty())
+		}
+	}
+	
 	private fun getValueSetValueDoc(element: ParadoxValueSetValueElement): String {
 		return buildString {
-			buildValueSetValueDefinition(element)
+			buildValueSetValueDefinition(element.name, element.valueSetName)
 		}
 	}
 	
@@ -176,24 +204,6 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			//加上定义信息
 			append(PlsDocBundle.message("name.script.scriptedVariable")).append(" <b>@").append(name.escapeXmlOrAnonymous()).append("</b>")
 			element.unquotedValue?.let { unquotedValue -> append(" = ").append(unquotedValue.escapeXml()) }
-		}
-	}
-	
-	private fun StringBuilder.buildInputParameterDefinition(element: PsiElement, name: String) {
-		definition {
-			//加上文件信息
-			appendFileInfoHeader(element.fileInfo)
-			//加上定义信息
-			append(PlsDocBundle.message("name.script.inputParameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
-		}
-	}
-	
-	private fun StringBuilder.buildParameterDefinition(element: IParadoxScriptParameter, name: String) {
-		definition {
-			//加上文件信息
-			appendFileInfoHeader(element.fileInfo)
-			//加上定义信息
-			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 		}
 	}
 	
@@ -337,14 +347,20 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueSetValueDefinition(element: ParadoxValueSetValueElement) {
+	private fun StringBuilder.buildParameterDefinition(name: String) {
 		definition {
 			//不加上文件信息
 			//加上名字
-			val name = element.name
+			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+		}
+	}
+	
+	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetName: String) {
+		definition {
+			//不加上文件信息
+			//加上名字
 			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			//加上分组信息
-			val valueSetName = element.valueSetName
 			if(valueSetName.isNotEmpty()) append(": ").append(valueSetName)
 		}
 	}

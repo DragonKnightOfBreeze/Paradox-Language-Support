@@ -3,10 +3,12 @@ package icu.windea.pls.script.psi
 import icu.windea.pls.core.model.*
 
 /**
- * 脚本输入参数。
+ * 定义的输入参数。
  */
-interface IParadoxScriptInputParameter : ParadoxScriptNamedElement, ParadoxScriptTypedElement {
-	override fun getName(): String
+interface ParadoxInputParameter: ParadoxScriptTypedElement {
+	val name: String
+	
+	fun setName(name: String): ParadoxInputParameter
 	
 	override val valueType: ParadoxValueType get() = ParadoxValueType.ParameterType
 }

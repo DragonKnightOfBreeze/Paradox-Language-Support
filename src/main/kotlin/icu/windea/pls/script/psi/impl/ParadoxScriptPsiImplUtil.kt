@@ -8,8 +8,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icons.*
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
@@ -269,11 +267,11 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> {
+	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> {
 		val file = element.containingFile
-		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<IParadoxScriptParameter>>>() //按名字进行排序
+		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxParameter>>>() //按名字进行排序
 		element.acceptChildren(object : ParadoxScriptRecursiveElementWalkingVisitor() {
-			override fun visitIParadoxScriptParameter(e: IParadoxScriptParameter) {
+			override fun visitIParadoxScriptParameter(e: ParadoxParameter) {
 				ProgressManager.checkCanceled()
 				result.getOrPut(e.name) { mutableSetOf() }.add(e.createPointer(file))
 				//不需要继续向下遍历
@@ -723,7 +721,7 @@ object ParadoxScriptPsiImplUtil {
 					builderToUse.append("!")
 					true
 				}
-				it is ParadoxScriptParameterConditionParameter -> {
+				it is ParadoxParameterConditionParameter -> {
 					val builderToUse = builder ?: StringBuilder().apply { builder = this }
 					builderToUse.append(it.name)
 					false
@@ -767,19 +765,19 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxScriptParameterConditionParameter
+	//region ParadoxParameterConditionParameter
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
+	fun getIcon(element: ParadoxParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.ScriptParameter
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxScriptParameterConditionParameter): String {
+	fun getName(element: ParadoxParameterConditionParameter): String {
 		return element.parameterId.text
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
+	fun setName(element: ParadoxParameterConditionParameter, name: String): ParadoxParameterConditionParameter {
 		val nameElement = element.parameterId
 		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
 		nameElement.replace(newNameElement)
@@ -787,17 +785,17 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptParameterConditionParameter): PsiElement {
+	fun getNameIdentifier(element: ParadoxParameterConditionParameter): PsiElement {
 		return element.parameterId
 	}
 	
 	@JvmStatic
-	fun getTextOffset(element: ParadoxScriptParameterConditionParameter): Int {
+	fun getTextOffset(element: ParadoxParameterConditionParameter): Int {
 		return element.node.startOffset
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxParameterReference {
+	fun getReference(element: ParadoxParameterConditionParameter): ParadoxParameterReference {
 		val nameElement = element.parameterId
 		return ParadoxParameterReference(element, nameElement.textRangeInParent)
 	}

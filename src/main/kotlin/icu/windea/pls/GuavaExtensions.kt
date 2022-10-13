@@ -3,11 +3,12 @@
 package icu.windea.pls
 
 import com.google.common.cache.*
+import com.google.common.util.concurrent.*
 import java.util.concurrent.*
 
 private const val debugMode = false
 
-fun <K,V> CacheBuilder<K,V>.withDebugMode(): CacheBuilder<K, V> {
+fun <K, V> CacheBuilder<K, V>.withDebugMode(): CacheBuilder<K, V> {
 	if(debugMode) return maximumSize(0)
 	return this
 }
@@ -29,6 +30,8 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (
 		return get(key) { defaultValue() }
 	} catch(e: ExecutionException) {
 		throw e.cause ?: e
+	} catch(e: UncheckedExecutionException) {
+		throw e.cause ?: e
 	}
 }
 
@@ -36,6 +39,8 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (T
 	try {
 		return get(key) { defaultValue() }
 	} catch(e: ExecutionException) {
+		return defaultValueOnException(e.cause ?: e)
+	} catch(e: UncheckedExecutionException) {
 		return defaultValueOnException(e.cause ?: e)
 	}
 }

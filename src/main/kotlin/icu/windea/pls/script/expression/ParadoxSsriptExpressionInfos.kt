@@ -5,10 +5,10 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.expression.reference.*
@@ -200,26 +200,22 @@ class ParadoxScriptValueFieldDataSourceExpressionInfo(
 class ParadoxScriptSvParameterExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	val svName: String
+	val svName: String,
+	val configGroup: CwtConfigGroup
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
 		return ParadoxScriptAttributesKeys.INPUT_PARAMETER_KEY
 	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): PsiReference {
-		return ParadoxParameterReference(element, textRange, svName)
+		return ParadoxOuterParameterReference(element, textRange, svName, "script_value", configGroup)
 	}
 	
 	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): Boolean {
-		//排除SV无法被解析的情况
-		val selector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
-		if(findDefinition(svName, "script_value", element.project, preferFirst = true, selector = selector) == null) return false
-		return super.isUnresolved(element, config)
+		return false
 	}
 	
-	override fun getUnresolvedError(): ParadoxScriptExpressionError {
-		return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.sv.parameterNotUsed", text), textRange, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
-	}
+	//TODO unused SV parameter -> put to ParameterNotUsedInspection
 }
 
 class ParadoxScriptSvParameterValueExpressionInfo(
@@ -246,4 +242,6 @@ class ParadoxScriptValueSetValueExpressionInfo(
 	override fun getAttributesKey(): TextAttributesKey {
 		return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 	}
+	
+	//TODO unused value set value -> put to ValueSetValueNotUsedInspection
 }
