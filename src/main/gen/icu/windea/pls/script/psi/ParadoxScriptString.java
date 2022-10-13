@@ -6,12 +6,16 @@ import icu.windea.pls.core.model.*;
 import icu.windea.pls.script.expression.reference.*;
 import org.jetbrains.annotations.*;
 
+import javax.swing.*;
 import java.util.*;
 
 public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptStringStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
+
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
   @NotNull
   String getName();

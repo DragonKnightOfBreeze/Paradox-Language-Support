@@ -739,9 +739,11 @@ object CwtConfigHandler {
 				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
 				//提示来自脚本文件的value
 				run {
+					//FIXME 提示过慢
 					val selector = valueSetValueSelector().gameType(configGroup.gameType).distinctBy { it.value.substringBefore('@') }
 					val valueSetValues = ParadoxValueSetValuesSearch.search(valueSetName, configGroup.project, selector = selector)
 					val namesToDistinct = mutableSetOf<String>()
+					namesToDistinct.add(keyword.substringBefore('@')) //需要排除正在输入的，测试发现这也会被加入索引
 					for(valueSetValue in valueSetValues) {
 						//去除后面的作用域信息
 						val name = valueSetValue.value.substringBefore('@')

@@ -125,6 +125,7 @@ upper string ::= value_expr {
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ]
   methods=[
+    getIcon
     getName setName getValue setValue getNameIdentifier getReference getReferences getStringValue
     getValueType getConfigExpression
   ]

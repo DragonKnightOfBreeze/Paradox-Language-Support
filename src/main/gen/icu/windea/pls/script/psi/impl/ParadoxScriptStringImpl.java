@@ -10,6 +10,7 @@ import icu.windea.pls.script.expression.reference.*;
 import icu.windea.pls.script.psi.*;
 import org.jetbrains.annotations.*;
 
+import javax.swing.*;
 import java.util.*;
 
 public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<ParadoxScriptStringStub> implements ParadoxScriptString {
@@ -36,6 +37,12 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
   @NotNull
   public List<ParadoxScriptParameter> getParameterList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
+    return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
