@@ -26,7 +26,9 @@ class ParadoxValueSetValuesSearcher : QueryExecutor<PsiElement, ParadoxValueSetV
 	}
 	
 	private fun getName(it: ParadoxScriptString): String? {
-		return it.stub?.valueSetValueInfo?.name?.takeIfNotEmpty()
+		val name = runCatching { it.stub }.getOrNull()?.valueSetValueInfo?.name
+			?: it.value.substringBefore('@')
+		return name.takeIfNotEmpty()
 	}
 	
 	//override fun execute(queryParameters: ParadoxValueSetValuesSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {

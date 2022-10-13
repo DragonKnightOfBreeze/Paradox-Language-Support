@@ -5,4 +5,5 @@ import icu.windea.pls.core.model.*
 
 interface ParadoxScriptStringStub : StubElement<ParadoxScriptString> {
 	val valueSetValueInfo: ParadoxValueSetValueInfo?
+	val gameType: ParadoxGameType?
 }

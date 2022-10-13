@@ -14,8 +14,8 @@ import icu.windea.pls.script.psi.*
 object ParadoxValueSetValueInfoHandler {
 	@JvmStatic
 	fun resolve(element: ParadoxScriptValue, parentStub: StubElement<*>? = null): ParadoxValueSetValueInfo? {
-		//TODO 避免SOF
-		if(element !is ParadoxScriptString) return null
+		if(element !is ParadoxScriptString) return null //仅限string
+		if(element.isParameterAwareExpression() || element.isQuoted()) return null //快速判断
 		val config = resolveConfigs(element, CwtValueConfig::class.java) {
 			val dataType = it.type
 			dataType != CwtDataTypes.TypeExpression	 //TODO
@@ -24,12 +24,5 @@ object ParadoxValueSetValueInfoHandler {
 		val name = element.value
 		val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
 		return ParadoxValueSetValueInfo(name, valueSetName)
-	}
-	
-	@JvmStatic
-	fun resolve(node: ASTNode): ParadoxValueSetValueInfo? {
-		val psi = node.psi
-		if(psi !is ParadoxScriptString) return null
-		return resolve(psi)
 	}
 }

@@ -6,7 +6,6 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
-import icu.windea.pls.core.model.*
 
 //注意这里不能直接访问element.definitionInfo，需要优先通过element.stub获取定义信息
 
@@ -84,7 +83,7 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 	//以下匹配方法只能定义在ParadoxDefinitionTypeExpression之外
 	
 	private fun matches(element: ParadoxDefinitionProperty, name: String, subtype: String?): Boolean {
-		val stub = element.getStub()
+		val stub = runCatching { element.getStub() }.getOrNull()
 		val definitionInfo = if(stub == null) element.definitionInfo else null
 		val targetName = getName(stub, definitionInfo) ?: return false
 		if(targetName != name) return false
@@ -96,7 +95,7 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 	}
 	
 	private fun matches(element: ParadoxDefinitionProperty, subtype: String?, namesToDistinct: MutableSet<String>? = null): Boolean {
-		val stub = element.getStub()
+		val stub = runCatching { element.getStub() }.getOrNull()
 		val definitionInfo = if(stub == null) element.definitionInfo else null
 		val targetName = getName(stub, definitionInfo) ?: return false
 		if(namesToDistinct?.contains(targetName) == true) return false
@@ -108,15 +107,15 @@ object ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionPr
 	}
 	
 	private fun getName(element: ParadoxDefinitionProperty): String? {
-		return runCatching { element.getStub()?.name }.getOrNull() ?: element.definitionInfo?.name
+		return runCatching { element.getStub() }.getOrNull()?.name ?: element.definitionInfo?.name
 	}
 	
 	private fun getName(stub: ParadoxDefinitionPropertyStub<out ParadoxDefinitionProperty>?, definitionInfo: ParadoxDefinitionInfo?): String? {
-		return runCatching { stub?.name }.getOrNull() ?: definitionInfo?.name
+		return stub?.name ?: definitionInfo?.name
 	}
 	
 	private fun getSubtypes(stub: ParadoxDefinitionPropertyStub<out ParadoxDefinitionProperty>?, definitionInfo: ParadoxDefinitionInfo?): List<String>? {
-		return runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes
+		return stub?.subtypes ?: definitionInfo?.subtypes
 	}
 	
 }

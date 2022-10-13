@@ -6,10 +6,10 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptStringStubImpl(
 	parent: StubElement<*>,
-	override val valueSetValueInfo: ParadoxValueSetValueInfo?
+	override val valueSetValueInfo: ParadoxValueSetValueInfo?,
+	override val gameType: ParadoxGameType?
 ) : StubBase<ParadoxScriptString>(parent, ParadoxScriptStubElementTypes.STRING), ParadoxScriptStringStub {
 	override fun toString(): String {
-		val a = 1.1
-		return "ParadoxScriptStringStub(valueSetInfo=$valueSetValueInfo)"
+		return "ParadoxScriptStringStub(valueSetInfo=$valueSetValueInfo,gameType=$gameType)"
 	}
 }

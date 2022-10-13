@@ -26,7 +26,7 @@ object ParadoxDefinitionInfoHandler {
 	@JvmStatic
 	fun resolve(element: ParadoxDefinitionProperty): ParadoxDefinitionInfo? {
 		//首先尝试直接基于stub进行解析
-		val stub = element.getStub()
+		val stub = runCatching { element.getStub() }.getOrNull()
 		if(stub != null) {
 			val gameType = stub.gameType
 			val type = stub.type

@@ -1350,7 +1350,7 @@ object CwtConfigHandler {
 					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
 					return definitions.firstNotNullOfOrNull { it.parameterMap[name]?.firstOrNull()?.element }
 				}
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return null
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 				val configGroup = getCwtConfig(element.project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>()
@@ -1358,7 +1358,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return null
 				val valueName = text
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return null
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 				//尝试解析为来自脚本文件的value
 				run {
 					val selector = valueSetValueSelector().gameType(gameType)
@@ -1380,7 +1380,7 @@ object CwtConfigHandler {
 			CwtDataTypes.ScopeGroup -> {
 				//TODO 匹配scope
 				val name = text
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return null
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveScope(name, configGroup)
 			}
@@ -1389,7 +1389,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Modifier -> {
 				val name = text
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return null
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveModifier(name, configGroup)
 			}
@@ -1398,13 +1398,13 @@ object CwtConfigHandler {
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return null
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return null
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveAliasName(element, text, element.isQuoted(), aliasName, configGroup)
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return null
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return null
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveAliasName(element, text, element.isQuoted(), aliasName, configGroup)
 			}
@@ -1497,7 +1497,7 @@ object CwtConfigHandler {
 					val definitions = findDefinitionsByType(definitionName, definitionType, project, selector = selector)
 					return definitions.flatMap { it.parameterMap[name].orEmpty() }.mapNotNull { it.element }
 				}
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return emptyList()
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return emptyList()
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return emptyList()
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>().toSingletonListOrEmpty()
@@ -1505,7 +1505,7 @@ object CwtConfigHandler {
 			CwtDataTypes.Value -> {
 				val valueSetName = expression.value ?: return emptyList()
 				val valueName = text
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return emptyList()
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return emptyList()
 				//尝试解析为来自脚本文件的value
 				run {
 					val selector = valueSetValueSelector().gameType(gameType)
@@ -1524,7 +1524,7 @@ object CwtConfigHandler {
 			CwtDataTypes.ValueSet -> {
 				val valueSetName = expression.value ?: return emptyList()
 				val valueName = text
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return emptyList()
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return emptyList()
 				//尝试解析为来自脚本文件的value
 				run {
 					val selector = valueSetValueSelector().gameType(gameType)
@@ -1538,7 +1538,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Modifier -> {
 				val name = text
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return emptyList()
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return emptyList()
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveModifier(name, configGroup).toSingletonListOrEmpty()
 			}
@@ -1547,13 +1547,13 @@ object CwtConfigHandler {
 			//TODO 规则alias_keys_field应该等同于规则alias_name，需要进一步确认
 			CwtDataTypes.AliasKeysField -> {
 				val aliasName = expression.value ?: return emptyList()
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return emptyList()
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return emptyList()
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveAliasName(element, text, element.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
 			}
 			CwtDataTypes.AliasName -> {
 				val aliasName = expression.value ?: return emptyList()
-				val gameType = ParadoxSelectorHandler.selectGameType(element) ?: return emptyList()
+				val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return emptyList()
 				val configGroup = getCwtConfig(project).getValue(gameType)
 				return resolveAliasName(element, text, element.isQuoted(), aliasName, configGroup).toSingletonListOrEmpty()
 			}

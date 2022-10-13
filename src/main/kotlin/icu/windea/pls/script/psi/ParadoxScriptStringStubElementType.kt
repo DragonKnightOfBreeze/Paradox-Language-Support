@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
+import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
@@ -20,13 +21,15 @@ object ParadoxScriptStringStubElementType: IStubElementType<ParadoxScriptStringS
 	}
 	
 	override fun createStub(psi: ParadoxScriptString, parentStub: StubElement<*>): ParadoxScriptStringStub {
-		val valueSetInfo = ParadoxValueSetValueInfoHandler.resolve(psi, parentStub) ?: throw InternalError()
-		return ParadoxScriptStringStubImpl(parentStub, valueSetInfo)
+		val valueSetInfo = ParadoxValueSetValueInfoHandler.resolve(psi, parentStub)
+		val gameType = psi.fileInfo?.rootInfo?.gameType
+		return ParadoxScriptStringStubImpl(parentStub, valueSetInfo, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
 		if(node.elementType != ParadoxScriptElementTypes.STRING) return false
-		return ParadoxValueSetValueInfoHandler.resolve(node) != null
+		//总是创建stub（通过匹配的CWT规则进行判断可能会导致SOF）
+		return true
 	}
 	
 	override fun indexStub(stub: ParadoxScriptStringStub, sink: IndexSink) {
@@ -36,6 +39,7 @@ object ParadoxScriptStringStubElementType: IStubElementType<ParadoxScriptStringS
 	override fun serialize(stub: ParadoxScriptStringStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.valueSetValueInfo?.name)
 		dataStream.writeName(stub.valueSetValueInfo?.valueSetName)
+		dataStream.writeName(stub.gameType?.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptStringStub {
@@ -44,6 +48,7 @@ object ParadoxScriptStringStubElementType: IStubElementType<ParadoxScriptStringS
 			val valueSetName = dataStream.readNameString()
 			if(name == null || valueSetName == null) null else ParadoxValueSetValueInfo(name, valueSetName)
 		}
-		return ParadoxScriptStringStubImpl(parentStub, valueSetInfo)
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
+		return ParadoxScriptStringStubImpl(parentStub, valueSetInfo, gameType)
 	}
 }

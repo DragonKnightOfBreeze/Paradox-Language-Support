@@ -32,6 +32,14 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, crossinline defaultValue: (
 	}
 }
 
+inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (Throwable) -> V, crossinline defaultValue: () -> V): V {
+	try {
+		return get(key) { defaultValue() }
+	} catch(e: ExecutionException) {
+		return defaultValueOnException(e.cause ?: e)
+	}
+}
+
 operator fun <K : Any, V> Cache<K, V>.get(key: K): V? {
 	return getIfPresent(key)
 }

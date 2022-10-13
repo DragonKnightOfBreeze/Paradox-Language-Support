@@ -14,7 +14,6 @@ import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.selector.*
 
 /**
  * 更改颜色的意向。
@@ -41,7 +40,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
 		val element = originalElement.parent
 		if(element is ParadoxLocalisationColorfulText) {
-			val gameType = ParadoxSelectorHandler.selectGameType(file) ?: return
+			val gameType = ParadoxSelectorUtils.selectGameType(file) ?: return
 			val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project, file)
 			JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs.toTypedArray())).showInBestPositionFor(editor)
 		}

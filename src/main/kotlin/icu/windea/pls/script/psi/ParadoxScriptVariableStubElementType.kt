@@ -26,7 +26,7 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//仅当是全局的scripted_variable时才创建索引
+		//仅当是全局的scripted_variable时才创建stub
 		if(node.treeParent.elementType != ParadoxScriptElementTypes.ROOT_BLOCK) return false
 		val file = node.psi.containingFile
 		val path = file.fileInfo?.path?.path ?: return false
@@ -45,7 +45,7 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptVariableStub {
 		val name = dataStream.readNameString()
-		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }.orDefault()
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
 		return ParadoxScriptVariableStubImpl(parentStub, name, gameType)
 	}
 }

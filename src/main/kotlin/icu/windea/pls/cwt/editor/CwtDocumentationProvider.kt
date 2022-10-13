@@ -41,7 +41,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false)
 		}
@@ -52,7 +52,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, false)
 		}
@@ -71,7 +71,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true)
 			buildLocalisationContent(element, name, configType, project)
@@ -86,7 +86,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val name = element.name
 			val configType = CwtConfigType.resolve(element)
 			val project = element.project
-			val gameType = ParadoxSelectorHandler.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
+			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, true)
 			buildLocalisationContent(element, name, configType, project)

@@ -92,9 +92,9 @@ class ParadoxDefinitionTypeExpression private constructor(
 	}
 	
 	fun matches(element: ParadoxDefinitionProperty): Boolean {
-		val stub = element.getStub()
+		val stub = runCatching { element.getStub() }.getOrNull()
 		val definitionInfo = if(stub == null) element.definitionInfo else null
-		val targetType = runCatching { stub?.type }.getOrNull() ?: definitionInfo?.type ?: return false
+		val targetType = stub?.type ?: definitionInfo?.type ?: return false
 		if(typeAndSubtypePairs == null) {
 			return matchesByTypeAndSubtype(targetType, stub, definitionInfo, type, subtype)
 		} else {
@@ -107,7 +107,7 @@ class ParadoxDefinitionTypeExpression private constructor(
 	private fun matchesByTypeAndSubtype(targetType: String, stub: ParadoxDefinitionPropertyStub<*>?, definitionInfo: ParadoxDefinitionInfo?, type: String, subtype: String?): Boolean {
 		if(type != targetType) return false
 		if(subtype != null) {
-			val targetSubtypes = runCatching { stub?.subtypes }.getOrNull() ?: definitionInfo?.subtypes ?: return false
+			val targetSubtypes = stub?.subtypes ?: definitionInfo?.subtypes ?: return false
 			if(subtype !in targetSubtypes) return false
 		}
 		return true

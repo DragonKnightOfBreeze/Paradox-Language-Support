@@ -23,7 +23,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val project = file.project
-		val gameType = ParadoxSelectorHandler.selectGameType(file)
+		val gameType = ParadoxSelectorUtils.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
 			override fun visitElement(e: PsiElement) {
@@ -43,7 +43,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 						holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scopeField.quoted"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 					} else {
 						val value = element.value
-						val gameTypeToUse = gameType ?: ParadoxSelectorHandler.selectGameType(element) ?: return
+						val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
 						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
 						val expression = ParadoxScriptScopeFieldExpression.resolve(value, configGroup)
 						if(expression.isEmpty()) {

@@ -6,23 +6,24 @@ import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
-object ParadoxSelectorHandler {
+object ParadoxSelectorUtils {
 	tailrec fun selectGameType(from: Any?): ParadoxGameType? {
 		return when {
 			from == null -> null
 			from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
 			from is PsiFile -> from.fileInfo?.rootInfo?.gameType
 				?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
-			from is ParadoxScriptVariable -> runCatching { from.stub?.gameType }.getOrNull()
+			from is ParadoxScriptVariable -> runCatching { from.stub }.getOrNull()?.gameType
 				?: selectGameType(from.parent)
-			from is ParadoxDefinitionProperty -> runCatching { from.getStub()?.gameType }.getOrNull()
+			from is ParadoxDefinitionProperty -> runCatching { from.getStub() }.getOrNull()?.gameType
 				?: from.definitionInfo?.gameType
 				?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
 				?: selectGameType(from.parent)
 			from is ParadoxLocalisationProperty -> runCatching { from.stub?.gameType }.getOrNull()
+				?: selectGameType(from.parent)
+			from is ParadoxScriptString -> runCatching { from.stub?.gameType }.getOrNull()
 				?: selectGameType(from.parent)
 			from is PsiElement -> selectGameType(from.parent)
 			else -> null

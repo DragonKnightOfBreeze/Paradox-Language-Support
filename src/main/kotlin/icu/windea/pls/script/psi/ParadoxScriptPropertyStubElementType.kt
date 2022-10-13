@@ -38,7 +38,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//仅当是definition时才会创建索引
+		//仅当是definition时才会创建stub
 		val element = node.psi as? ParadoxDefinitionProperty ?: return false
 		return element.definitionInfo?.takeUnless { it.shouldIndex } != null
 	}
@@ -62,7 +62,7 @@ object ParadoxScriptPropertyStubElementType : IStubElementType<ParadoxScriptProp
 		val type = dataStream.readNameString()
 		val subtypes = dataStream.readNameString()?.toCommaDelimitedStringList()
 		val rootKey = dataStream.readNameString()
-		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }.orDefault()
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
 		return ParadoxScriptPropertyStubImpl(parentStub, name, type, subtypes, rootKey, gameType)
 	}
 }
