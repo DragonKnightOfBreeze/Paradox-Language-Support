@@ -8,7 +8,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.core.model.*
 
 data class CwtDeclarationConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -53,8 +52,9 @@ data class CwtDeclarationConfig(
 		//如果路径中可能待遇参数，则不进行解析
 		if(path.isParameterAware) return emptyList()
 		
+		//FIX 这里可能出现ProcessCanceledException，暂时直接返回空列表
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
-		return configsCache.getOrPut(cacheKey) {
+		return configsCache.getOrPut(cacheKey, { emptyList() }) {
 			when {
 				//这里的属性路径可以为空，这时得到的属性列表即是定义本身组成的单例列表
 				path.isEmpty() -> propertyConfigList

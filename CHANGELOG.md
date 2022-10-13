@@ -38,7 +38,10 @@
   * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
   * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息（支持valueSetValueExpression，如`val@root.owner`）
-  
+不保证复现的问题：
+  * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`识别为scope_expression而非参数名，为什么？
+  * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
+
 ### 0.7.3
 
 * 功能优化：
