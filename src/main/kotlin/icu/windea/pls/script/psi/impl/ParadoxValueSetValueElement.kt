@@ -1,6 +1,6 @@
 package icu.windea.pls.script.psi.impl
 
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
 import icons.*
@@ -13,7 +13,7 @@ import javax.swing.*
  */
 class ParadoxValueSetValueElement(
 	private val text: String,
-	private val valueSetName: String,
+	val valueSetName: String,
 	private val project: Project,
 	val gameType: ParadoxGameType
 ): RenameableFakePsiElement(null), ParadoxScriptNamedElement {
