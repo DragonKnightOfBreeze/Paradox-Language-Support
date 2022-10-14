@@ -42,8 +42,6 @@
 不保证复现的问题：
   * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
-疑难问题：
-  * [ ] 无法从项目文件中的声明导航到库（如游戏目录）中的引用（所谓的库需要导出，但是没有找到合适的入口）
 
 ### 0.7.3
 
@@ -60,6 +58,7 @@
   * [X] 修复`CwtImageLocationExpression`中的SOF
   * [X] 修复valueSetValue索引在索引时会被IDE认为栈溢出的问题，改为基于`ParadoxValueSetValuesSearch`和索引进行查找
   * [X] 脚本文件 - 基于注解器的语法高亮，不高亮带有参数的表达式
+  * [X] 修复无法从项目文件中的声明导航到库中的引用的问题（默认情况下，对应的库需要导出）
 * 新增功能：
   * [x] 新增动作：导航到相关本地化和导航到相关图片（对于定义，在导航和右键菜单中，在动作：导航到相关符号/Go to related symbol下面）
 * 功能变更：

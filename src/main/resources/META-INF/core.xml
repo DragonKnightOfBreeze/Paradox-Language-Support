@@ -4,6 +4,12 @@
   </extensionPoints>
   
   <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
+    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
+
+    <projectService serviceInterface="com.intellij.psi.impl.ResolveScopeManager"
+                    serviceImplementation="icu.windea.pls.core.ParadoxResolveScopeManager" overrides="true"/>
+    
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
@@ -15,15 +21,11 @@
                  description="Run convert DDS to PNG write action under progress, not to freeze the UI during long operations"/>
 
     <library.type implementation="icu.windea.pls.core.library.ParadoxLibraryType"/>
-
-    <applicationConfigurable id="settings.language.pls" groupId="language" instance="icu.windea.pls.core.settings.ParadoxSettingsConfigurable"/>
-    <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
     
     <!--<preloadingActivity implementation="icu.windea.pls.core.ParadoxPreloadActivity"/>-->
     
     <pathReferenceProvider implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
-    
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
