@@ -9,15 +9,12 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.psi.util.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
@@ -26,7 +23,6 @@ import icu.windea.pls.core.settings.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import java.lang.Integer.*

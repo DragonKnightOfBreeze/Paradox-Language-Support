@@ -29,6 +29,6 @@ interface ParadoxDefinitionProperty : ParadoxScriptNamedElement, NavigatablePsiE
 			return buildList { block?.processValue(includeConditional = true) { add(it) } }
 		}
 	
-	val parameterMap: Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> get() = emptyMap()
+	val parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> get() = emptyMap()
 }
 

@@ -149,7 +149,7 @@ class ParadoxScriptValueFieldExpression(
 										continue
 									}
 									val info = if(flag) {
-										ParadoxScriptSvParameterExpressionInfo(textSv, textRangeSv, svName)
+										ParadoxScriptSvParameterExpressionInfo(textSv, textRangeSv, svName, configGroup)
 									} else {
 										ParadoxScriptSvParameterValueExpressionInfo(textSv, textRangeSv)
 									}

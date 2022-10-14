@@ -118,7 +118,7 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
 
   @Override
   @NotNull
-  public Map<String, Set<SmartPsiElementPointer<IParadoxScriptParameter>>> getParameterMap() {
+  public Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> getParameterMap() {
     return ParadoxScriptPsiImplUtil.getParameterMap(this);
   }
 

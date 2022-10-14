@@ -44,6 +44,6 @@ class ParadoxScriptKeyReference(
 	 * 由[icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider]提供代码补全。
 	 */
 	override fun getVariants(): Array<Any> {
-		return ArrayUtilRt.EMPTY_OBJECT_ARRAY
+		return super<PsiReferenceBase>.getVariants() //not here
 	}
 }

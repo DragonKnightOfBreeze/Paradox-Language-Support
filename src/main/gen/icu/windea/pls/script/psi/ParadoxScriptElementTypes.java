@@ -138,7 +138,7 @@ public interface ParadoxScriptElementTypes {
         return new ParadoxScriptParameterConditionExpressionImpl(node);
       }
       else if (type == PARAMETER_CONDITION_PARAMETER) {
-        return new ParadoxScriptParameterConditionParameterImpl(node);
+        return new ParadoxParameterConditionParameterImpl(node);
       }
       else if (type == PROPERTY) {
         return new ParadoxScriptPropertyImpl(node);

@@ -4,7 +4,6 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.model.ParadoxValueType;
 import java.awt.Color;
 import javax.swing.Icon;

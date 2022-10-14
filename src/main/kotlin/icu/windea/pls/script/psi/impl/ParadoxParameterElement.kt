@@ -11,15 +11,16 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 值集中的值并不存在一个真正意义上的声明处，用这个模拟。
+ * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
  */
-class ParadoxValueSetValueElement(
+class ParadoxParameterElement(
 	element: PsiElement,
 	private val name: String,
-	val valueSetName: String,
+	val definitionName: String,
+	val definitionType: String,
 	private val project: Project,
 	val gameType: ParadoxGameType
-) : RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
+): RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
 	override fun getText(): String {
 		return name
 	}
@@ -29,11 +30,11 @@ class ParadoxValueSetValueElement(
 	}
 	
 	override fun getTypeName(): String {
-		return PlsBundle.message("script.description.valueSetValue")
+		return PlsBundle.message("script.description.parameter")
 	}
 	
 	override fun getIcon(): Icon {
-		return PlsIcons.ValueSetValue
+		return PlsIcons.Parameter
 	}
 	
 	override fun getNameIdentifier(): PsiElement {
@@ -53,9 +54,10 @@ class ParadoxValueSetValueElement(
 	}
 	
 	override fun isEquivalentTo(another: PsiElement?): Boolean {
-		return another is ParadoxValueSetValueElement &&
+		return another is ParadoxParameterElement &&
 			name == another.name &&
-			valueSetName == another.valueSetName &&
+			definitionName == another.definitionName &&
+			definitionType == another.definitionType &&
 			project == another.project &&
 			gameType == another.gameType
 	}

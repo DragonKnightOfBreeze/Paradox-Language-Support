@@ -14,13 +14,13 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOption
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
-val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(INPUT_PARAMETER_ID)
+val ParadoxParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(INPUT_PARAMETER_ID)
 
 val ParadoxScriptInlineMathVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE_ID)
 
-val IParadoxScriptParameter.parameterId: PsiElement? get() = findOptionalChild(PARAMETER_ID)
+val ParadoxParameter.parameterId: PsiElement? get() = findOptionalChild(PARAMETER_ID)
 
-val IParadoxScriptParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
+val ParadoxParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
 
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。

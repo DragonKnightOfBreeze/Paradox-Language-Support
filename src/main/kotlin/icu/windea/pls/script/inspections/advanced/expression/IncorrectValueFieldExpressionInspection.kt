@@ -14,7 +14,6 @@ import javax.swing.*
 
 class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 	@JvmField var reportsUnresolvedDs = true
-	@JvmField var reportsUnusedSvParam = false
 	
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
@@ -45,15 +44,6 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 							//注册无法解析的异常
 							if(expression.infos.isNotEmpty()) {
 								for(info in expression.infos) {
-									if(info is ParadoxScriptSvParameterExpressionInfo) {
-										if(reportsUnusedSvParam) {
-											if(info.isUnresolved(element, config)) {
-												val error = info.getUnresolvedError()
-												holder.registerScriptExpressionError(element, error)
-											}
-										}
-										continue
-									}
 									if(reportsUnresolvedDs) {
 										if(info.isUnresolved(element, config)) {
 											val error = info.getUnresolvedError()
@@ -78,11 +68,6 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 				checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnresolvedDs"))
 					.bindSelected(::reportsUnresolvedDs)
 					.actionListener { _, component -> reportsUnresolvedDs = component.isSelected }
-			}
-			row {
-				checkBox(PlsBundle.message("script.inspection.expression.incorrectValueFieldExpression.option.reportsUnusedSvParam"))
-					.bindSelected(::reportsUnusedSvParam)
-					.actionListener { _, component -> reportsUnusedSvParam = component.isSelected }
 			}
 		}
 	}
