@@ -1,12 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
 import icu.windea.pls.script.psi.*;
+import org.jetbrains.annotations.*;
 
 public class ParadoxScriptParameterConditionExpressionImpl extends ASTWrapperPsiElement implements ParadoxScriptParameterConditionExpression {
 
@@ -26,8 +26,8 @@ public class ParadoxScriptParameterConditionExpressionImpl extends ASTWrapperPsi
 
   @Override
   @NotNull
-  public ParadoxParameterConditionParameter getParameterConditionParameter() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxParameterConditionParameter.class));
+  public ParadoxScriptParameterConditionParameter getParameterConditionParameter() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptParameterConditionParameter.class));
   }
 
 }

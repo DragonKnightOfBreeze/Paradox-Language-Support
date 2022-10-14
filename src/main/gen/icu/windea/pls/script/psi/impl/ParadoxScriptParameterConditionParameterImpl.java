@@ -1,18 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.*;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.script.reference.ParadoxParameterReference;
-import javax.swing.Icon;
+import icu.windea.pls.script.reference.*;
+import org.jetbrains.annotations.*;
 
-public class ParadoxParameterConditionParameterImpl extends ASTWrapperPsiElement implements ParadoxParameterConditionParameter {
+import javax.swing.*;
 
-  public ParadoxParameterConditionParameterImpl(@NotNull ASTNode node) {
+public class ParadoxScriptParameterConditionParameterImpl extends ASTWrapperPsiElement implements ParadoxScriptParameterConditionParameter {
+
+  public ParadoxScriptParameterConditionParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
@@ -40,7 +40,7 @@ public class ParadoxParameterConditionParameterImpl extends ASTWrapperPsiElement
 
   @Override
   @NotNull
-  public ParadoxParameterConditionParameter setName(@NotNull String name) {
+  public ParadoxScriptParameterConditionParameter setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 

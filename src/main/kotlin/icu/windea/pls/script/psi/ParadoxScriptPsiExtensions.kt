@@ -14,7 +14,7 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOption
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
-val ParadoxParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(INPUT_PARAMETER_ID)
+val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(INPUT_PARAMETER_ID)
 
 val ParadoxScriptInlineMathVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE_ID)
 

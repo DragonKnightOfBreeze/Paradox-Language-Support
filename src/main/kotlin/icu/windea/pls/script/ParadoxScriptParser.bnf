@@ -27,7 +27,7 @@ root_block ::= root_block_item + {
   ]
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= COMMENT | property | value | variable{
+private root_block_item ::= COMMENT | value | property | variable{
   recoverWhile="#auto"
 }
 
@@ -176,7 +176,7 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
   ]
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue getValueType getReference]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue getReference]
 }
 
 //parameter condition

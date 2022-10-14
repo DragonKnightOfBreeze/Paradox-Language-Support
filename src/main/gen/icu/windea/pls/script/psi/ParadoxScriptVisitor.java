@@ -57,7 +57,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInlineMathParameter(@NotNull ParadoxScriptInlineMathParameter o) {
     visitInlineMathFactor(o);
-    // visitIParadoxScriptParameter(o);
+    // visitParadoxParameter(o);
   }
 
   public void visitInlineMathUnaryExpression(@NotNull ParadoxScriptInlineMathUnaryExpression o) {
@@ -75,7 +75,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {
-    visitIParadoxScriptParameter(o);
+    visitParadoxParameter(o);
   }
 
   public void visitParameterCondition(@NotNull ParadoxScriptParameterCondition o) {
@@ -86,8 +86,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitParameterConditionParameter(@NotNull ParadoxParameterConditionParameter o) {
-    visitIParadoxScriptInputParameter(o);
+  public void visitParameterConditionParameter(@NotNull ParadoxScriptParameterConditionParameter o) {
+    visitParadoxInputParameter(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
@@ -143,11 +143,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitIParadoxScriptInputParameter(@NotNull ParadoxInputParameter o) {
+  public void visitParadoxInputParameter(@NotNull ParadoxInputParameter o) {
     visitElement(o);
   }
 
-  public void visitIParadoxScriptParameter(@NotNull ParadoxParameter o) {
+  public void visitParadoxParameter(@NotNull ParadoxParameter o) {
     visitElement(o);
   }
 
