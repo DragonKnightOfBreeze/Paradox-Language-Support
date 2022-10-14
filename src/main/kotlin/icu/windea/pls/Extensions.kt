@@ -483,7 +483,7 @@ inline fun processSyncedLocalisationVariants(
  * 基于文件索引，根据相对于游戏或模组目录的文件路径查找匹配的文件（非目录）。
  * @param expressionType 使用何种文件路径表达式类型。默认使用精确路径。
  * @param ignoreCase 匹配路径时是否忽略大小写。 默认为`true`。
- * @param selector 用于指定如何选择需要查找的文件，尤其时当存在覆盖与重载的情况时。
+ * @param selector 用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
  */
 fun findFileByFilePath(
 	filePath: String,
@@ -501,7 +501,7 @@ fun findFileByFilePath(
  * @param expressionType 使用何种文件路径表达式类型。默认使用精确路径。
  * @param ignoreCase 匹配路径时是否忽略大小写。默认为`true`。
  * @param distinct 是否需要对相同路径的文件进行去重。默认为`false`。
- * @param selector 用于指定如何选择需要查找的文件，尤其时当存在覆盖与重载的情况时。
+ * @param selector 用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
  */
 fun findFilesByFilePath(
 	filePath: String,
@@ -519,7 +519,7 @@ fun findFilesByFilePath(
  * 基于文件索引，根据相查找所有匹配的（位于游戏或模组根目录或其子目录中的）文件（非目录）。
  * @param ignoreCase 匹配路径时是否忽略大小写。默认为`true`。
  * @param distinct 是否需要对相同路径的文件进行去重。默认为`false`。
- * @param selector 用于指定如何选择需要查找的文件，尤其时当存在覆盖与重载的情况时。
+ * @param selector 用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
  */
 fun findAllFilesByFilePath(
 	project: Project,

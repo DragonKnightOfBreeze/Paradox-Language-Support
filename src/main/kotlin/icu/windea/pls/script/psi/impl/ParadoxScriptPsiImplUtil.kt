@@ -779,7 +779,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
 		val nameElement = element.parameterId
-		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
+		val newNameElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).parameterId!!
 		nameElement.replace(newNameElement)
 		return element
 	}

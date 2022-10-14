@@ -33,12 +33,6 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createParameter(project: Project, name: String): ParadoxScriptParameter {
-		val usedName = "$$name$"
-		return createRootBlock(project, usedName).findRequiredChild()
-	}
-	
-	@JvmStatic
 	fun createProperty(project: Project, key: String, value: String): ParadoxScriptProperty {
 		val usedKey = key.quoteIfNecessary()
 		return createRootBlock(project, "$usedKey=$value").findRequiredChild(PROPERTY)
@@ -81,8 +75,26 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
+	fun createParameter(project: Project, name: String): ParadoxScriptParameter {
+		val text = "$$name$"
+		return createRootBlock(project, text).findRequiredChild<ParadoxScriptString>().findRequiredChild()
+	}
+	
+	@JvmStatic
+	fun createParameterConditionParameter(project: Project, name: String): ParadoxScriptParameterConditionParameter {
+		val text = "a = { [[$name] = a }"
+		return createRootBlock(project, text)
+			.findRequiredChild<ParadoxScriptProperty>()
+			.findRequiredChild<ParadoxScriptPropertyValue>()
+			.findRequiredChild<ParadoxScriptBlock>()
+			.findRequiredChild<ParadoxScriptParameterCondition>()
+			.findRequiredChild<ParadoxScriptParameterConditionExpression>()
+			.findRequiredChild()
+	}
+	
+	@JvmStatic
 	fun createInlineMathParameter(project: Project, name: String): ParadoxScriptInlineMathParameter {
-		val usedName = "$$name$"
-		return createInlineMath(project, usedName).findRequiredChild(INLINE_MATH_PARAMETER)
+		val text = "$$name$"
+		return createInlineMath(project, text).findRequiredChild(INLINE_MATH_PARAMETER)
 	}
 }
