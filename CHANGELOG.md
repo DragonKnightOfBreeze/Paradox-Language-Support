@@ -13,35 +13,42 @@
 * 功能优化：
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
-  * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
 * 新增功能：
-  * [ ] 添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义） 
+  * [ ] ［搁置］添加内嵌提示：定义和定义元素的作用域的内嵌提示（需要研究）
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
   * [ ] 实现工具栏动作：生成所有缺失的相关本地化
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
-  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他文件作比较（拥有相同的相对于游戏或模组目录的路径，不限文件类型，如果存在）
-  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他定义/本地化作比较
   * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
   * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
-* 完善内嵌提示：
-  * [ ] ［搁置］定义和定义元素的作用域的内嵌提示（需要研究）
-  * [ ] 本地化图标（显示选用的内嵌图标，如果对应图标的大小合适）
 * 脚本文件语法解析优化：
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
 * 本地化文件语法解析优化：
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
   * [ ] 将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等
 * ［长期］完善CWT配置支持：
-  * [ ] 支持`complex_enum` 
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
-  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
-  * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
   * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息（支持valueSetValueExpression，如`val@root.owner`）
 不保证复现的问题：
   * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
+
+### 0.7.4
+
+* 功能优化：
+  * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
+* 新增功能：
+  * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
+  * [ ] 添加检查：参数（`$PARAM$`）被设置/引用但未被使用
+  * [ ] 添加检查：值集中的值（`some_flag`）被设置/引用但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`）
+  * [ ] 添加内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
+  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他文件作比较（拥有相同的相对于游戏或模组目录的路径，不限文件类型，如果存在）
+  * [ ] 在右键菜单和项目视图菜单中提供动作：与重载或者被重载的其他定义/本地化作比较
+* ［长期］完善CWT配置支持：
+  * [ ] 支持`complex_enum`
+  * [ ] 优化：更好地兼容嵌套的定义
+  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
 
 ### 0.7.3
 
