@@ -16,7 +16,7 @@ object ParadoxElementPathHandler {
 	@JvmStatic
 	fun resolveFromFile(element: ParadoxDefinitionProperty, maxDepth: Int = -1): Pair<ParadoxElementPath, ParadoxScriptFile>? {
 		if(element is ParadoxScriptFile) {
-			return ParadoxElementPath.EmptyPath to element
+			return EmptyParadoxElementPath to element
 		}
 		var current: PsiElement = element
 		var depth = 0

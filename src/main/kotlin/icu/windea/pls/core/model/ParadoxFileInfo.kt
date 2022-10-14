@@ -14,7 +14,7 @@ class ParadoxFileInfo(
 	val rootType get() = rootInfo.rootType
 	val rootPath get() = rootInfo.rootPath
 	@Deprecated("Select game type instead.", level = DeprecationLevel.ERROR)
-	val gameType get() = rootInfo.gameType //考虑使用ParadoxGame gameType，兼容性更好
+	val gameType get() = rootInfo.gameType
 	
 	val isValid get() = rootInfo.isValid 
 	

@@ -16,38 +16,15 @@ import icu.windea.pls.script.psi.*
  *
  * @property originalPath 保留括起的双引号的使用"/"分割的路径。
  * @property path 不保留括起的双引号的使用"/"分割的路径。
+ * @property isParameterAware 路径中是否带有参数（即使无法解析或者语法错误）。
  */
-class ParadoxElementPath private constructor(
+interface ParadoxElementPath : Iterable<String> {
 	val originalPath: String
-) : Iterable<String> {
-	companion object Resolver {
-		val EmptyPath = ParadoxElementPath("")
-		
-		private val cache: LoadingCache<String, ParadoxElementPath> = CacheBuilder.newBuilder().buildCache { ParadoxElementPath(it) }
-		
-		fun resolve(path: String): ParadoxElementPath {
-			if(path.isEmpty()) return EmptyPath
-			return cache[path]
-		}
-		
-		fun resolve(originalSubPaths: List<String>): ParadoxElementPath {
-			if(originalSubPaths.isEmpty()) return EmptyPath
-			return cache[originalSubPaths.joinToString("/")]
-		}
-	}
-	
-	val originalSubPaths: List<String> = originalPath.split('/')
-	
-	val subPaths = originalSubPaths.map { it.unquote() }
-	
-	val path = subPaths.joinToString("/")
-	
-	val length = originalSubPaths.size
-	
-	/**
-	 * 路径中是否带有参数（即使无法解析或者语法错误）。
-	 */
-	val isParameterAware = length != 0 && originalSubPaths.any { it.isParameterAwareExpression() }
+	val originalSubPaths: List<String>
+	val subPaths: List<String>
+	val path: String
+	val length: Int
+	val isParameterAware: Boolean
 	
 	fun isEmpty(): Boolean {
 		return length == 0
@@ -60,6 +37,57 @@ class ParadoxElementPath private constructor(
 	override fun iterator(): Iterator<String> {
 		return originalSubPaths.iterator()
 	}
+	
+	override fun equals(other: Any?): Boolean
+	
+	override fun hashCode(): Int
+	
+	override fun toString(): String
+	
+	companion object Resolver {
+		private val cache: LoadingCache<String, ParadoxElementPath> = CacheBuilder.newBuilder().buildCache {
+			if(it.isEmpty()) EmptyParadoxElementPath else ParadoxElementPathImpl(it)
+		}
+		
+		fun resolve(path: String): ParadoxElementPath {
+			return cache[path]
+		}
+		
+		fun resolve(originalSubPaths: List<String>): ParadoxElementPath {
+			return cache[originalSubPaths.joinToString("/")]
+		}
+	}
+}
+
+object EmptyParadoxElementPath : ParadoxElementPath {
+	override val originalPath: String = ""
+	override val originalSubPaths: List<String> = emptyList()
+	override val subPaths: List<String> = emptyList()
+	override val path: String = ""
+	override val length: Int = 0
+	override val isParameterAware: Boolean = false
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || other is ParadoxElementPath && originalPath == other.originalPath
+	}
+	
+	override fun hashCode(): Int {
+		return originalPath.hashCode()
+	}
+	
+	override fun toString(): String {
+		return originalPath
+	}
+}
+
+class ParadoxElementPathImpl(
+	override val originalPath: String
+) : ParadoxElementPath {
+	override val originalSubPaths: List<String> = originalPath.split('/')
+	override val subPaths = originalSubPaths.map { it.unquote() }
+	override val path = subPaths.joinToString("/")
+	override val length = originalSubPaths.size
+	override val isParameterAware = length != 0 && originalSubPaths.any { it.isParameterAwareExpression() }
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxElementPath && originalPath == other.originalPath
