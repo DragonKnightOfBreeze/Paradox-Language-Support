@@ -106,7 +106,7 @@ object DdsToPngConverter {
 	
 	fun getUnknownPngPath(): String {
 		if(PlsPaths.unknownPngPath.notExists()) {
-			PlsPaths.unknownPngUrl.openStream().use { inputStream ->
+			PlsPaths.unknownPngClasspathUrl.openStream().use { inputStream ->
 				Files.copy(inputStream, PlsPaths.unknownPngPath) //将jar包中的unknown.png复制到~/.pls/images中
 			}
 		}

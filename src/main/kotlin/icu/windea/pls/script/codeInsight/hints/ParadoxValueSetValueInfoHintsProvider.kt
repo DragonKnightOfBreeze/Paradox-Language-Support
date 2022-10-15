@@ -3,8 +3,6 @@ package icu.windea.pls.script.codeInsight.hints
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
@@ -34,7 +32,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 			if(config.expression.type.let { it == CwtDataTypes.Value || it == CwtDataTypes.ValueSet }) {
 				val valueSetName = config.expression.value ?: return true
 				val presentation = collectDefinition(valueSetName)
-				val finalPresentation = presentation.toFinalPresentation(this, file, file.project)
+				val finalPresentation = presentation.toFinalPresentation(this, file.project)
 				val endOffset = element.endOffset
 				sink.addInlineElement(endOffset, true, finalPresentation, false)
 			}

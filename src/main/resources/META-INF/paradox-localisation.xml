@@ -60,6 +60,9 @@
     <codeInsight.lineMarkerProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.codeInsight.markers.ParadoxLocalisationLineMarkerProvider"/>
+    <codeInsight.inlayProvider
+        language="PARADOX_LOCALISATION"
+        implementationClass="icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider"/>
     <lang.formatter
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>

@@ -1,4 +1,4 @@
-package icu.windea.pls.script.codeInsight.hints
+package icu.windea.pls.localisation.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
@@ -7,14 +7,14 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.script.*
+import icu.windea.pls.localisation.*
 
 @Suppress("UnstableApiUsage")
-abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
+abstract class ParadoxLocalisationHintsProvider<T: Any>: InlayHintsProvider<T> {
 	override val previewText: String? get() = null
 	
 	override fun isLanguageSupported(language: Language): Boolean {
-		return language == ParadoxScriptLanguage
+		return language == ParadoxLocalisationLanguage
 	}
 	
 	override fun createConfigurable(settings: T): ImmediateConfigurable {

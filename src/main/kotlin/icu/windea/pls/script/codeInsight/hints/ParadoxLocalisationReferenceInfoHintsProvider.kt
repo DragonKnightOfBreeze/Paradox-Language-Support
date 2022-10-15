@@ -7,20 +7,23 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
+import javax.swing.*
 
 /**
  * 本地化引用信息的内嵌提示（对应的本地化的渲染后文本，如果过长则会截断）。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
+class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
 	companion object {
-		private val settingsKey: SettingsKey<NoSettings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
+		private val settingsKey: SettingsKey<Settings> = SettingsKey("ParadoxLocalisationReferenceInfoHintsSettingsKey")
 		private val keyExpressionTypes: Array<CwtKeyDataType> = arrayOf(
 			CwtDataTypes.Localisation,
 			CwtDataTypes.InlineLocalisation,
@@ -38,9 +41,14 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 		)
 	}
 	
+	data class Settings(
+		var textLengthLimit: Int = 30,
+		var iconHeightLimit: Int = 32
+	)
+	
 	override val name: String get() = PlsBundle.message("script.hints.localisationReferenceInfo")
 	override val description: String get() = PlsBundle.message("script.hints.localisationReferenceInfo.description")
-	override val key: SettingsKey<NoSettings> get() = settingsKey
+	override val key: SettingsKey<Settings> get() = settingsKey
 	
 	override val previewText: String get() = ParadoxScriptHintsPreviewProvider.civicPreview
 	
@@ -49,16 +57,37 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 			.also { file -> ParadoxScriptHintsPreviewProvider.handleCivicPreviewFile(file) }
 	}
 	
-	override fun createSettings() = NoSettings()
+	override fun createSettings() = Settings()
 	
-	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
+	override fun createConfigurable(settings: Settings): ImmediateConfigurable {
+		return object : ImmediateConfigurable {
+			override fun createComponent(listener: ChangeListener): JComponent = panel {
+				row {
+					label(PlsBundle.message("script.hints.settings.textLengthLimit"))
+						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
+					textField()
+						.bindIntText(settings::textLengthLimit)
+						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+				}
+				row {
+					label(PlsBundle.message("script.hints.settings.iconHeightLimit"))
+						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
+					textField()
+						.bindIntText(settings::iconHeightLimit)
+						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+				}
+			}
+		}
+	}
+	
+	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
 		if(element is ParadoxScriptPropertyKey) {
 			val resolved = CwtConfigHandler.resolveKey(element) { it.type in keyExpressionTypes }
 			if(resolved is ParadoxLocalisationProperty) {
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
-					val presentation = collectLocalisation(resolved, editor)
-					val finalPresentation = presentation?.toFinalPresentation(this, file, file.project) ?: return true
+					val presentation = collectLocalisation(resolved, editor, settings)
+					val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
 					val endOffset = element.endOffset
 					sink.addInlineElement(endOffset, true, finalPresentation, false)
 				}
@@ -68,18 +97,18 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 			if(resolved is ParadoxLocalisationProperty) {
 				val localisationInfo = resolved.localisationInfo
 				if(localisationInfo != null) {
-					val presentation = collectLocalisation(resolved, editor)
-					val finalPresentation = presentation?.toFinalPresentation(this, file, file.project) ?: return true
+					val presentation = collectLocalisation(resolved, editor, settings)
+					val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
 					val endOffset = element.endOffset
-					sink.addInlineElement(endOffset, false, finalPresentation, false)
+					sink.addInlineElement(endOffset, true, finalPresentation, false)
 				}
 			}
 		}
 		return true
 	}
 	
-	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty, editor: Editor): InlayPresentation? {
-		return ParadoxLocalisationTextHintsRenderer.render(localisation,this, editor)
+	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
+		return ParadoxLocalisationTextHintsRenderer.render(localisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
 	}
 }
 

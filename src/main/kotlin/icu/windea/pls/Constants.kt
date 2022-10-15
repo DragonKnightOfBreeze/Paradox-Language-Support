@@ -81,8 +81,9 @@ object PlsPaths {
 	val dataDirectoryPath by lazy { userHomePath.resolve(dataDirectoryName) }
 	val imagesDirectoryPath by lazy { dataDirectoryPath.resolve(imagesDirectoryName) }
 	val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
+	val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
 	
-	val unknownPngUrl = "/${unknownPngName}".toClasspathUrl()
+	val unknownPngClasspathUrl = "/${unknownPngName}".toClasspathUrl()
 }
 
 object PlsPatterns {

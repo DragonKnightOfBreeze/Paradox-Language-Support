@@ -28,9 +28,9 @@ class ParadoxScriptedVariableReferenceInfoHintsProvider : ParadoxScriptHintsProv
 		if(element is ParadoxScriptVariableReference) {
 			val referenceValue = element.referenceValue ?: return true //不检查值的类型
 			val presentation = collectValue(referenceValue) ?: return true
-			val finalPresentation = presentation.toFinalPresentation(this, file, file.project)
+			val finalPresentation = presentation.toFinalPresentation(this, file.project)
 			val endOffset = element.endOffset
-			sink.addInlineElement(endOffset, false, finalPresentation, false)
+			sink.addInlineElement(endOffset, true, finalPresentation, false)
 		}
 		return true
 	}

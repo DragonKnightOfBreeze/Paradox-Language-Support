@@ -134,14 +134,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						.bindItem(settings::localisationPreferredLocale.toNullableProperty())
 						.onApply { refreshInlayHints() }
 				}
-				row {
-					label(PlsBundle.message("settings.localisation.truncateLimit")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.localisation.truncateLimit.tooltip")
-					}
-					intTextField(0..100)
-						.bindIntText(settings::localisationTruncateLimit)
-						.onApply { refreshInlayHints() }
-				}
 				buttonsGroup(PlsBundle.message("settings.localisation.doc")) {
 					row {
 						checkBox(PlsBundle.message("settings.localisation.doc.renderLineComment"))
