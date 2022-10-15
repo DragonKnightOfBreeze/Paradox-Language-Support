@@ -1,0 +1,35 @@
+<html>
+<body>
+  <p>
+    Reports unused parameters.
+  </p>
+  <p>
+    A parameter is considered as unused if it is
+    set (by invocation expressions or script value expressions)
+    or checked (by parameter condition expressions),
+    but not used (in definition declarations).
+  </p>
+  <p><b>Example:</b></p>
+  <pre>
+# some_script_file.txt
+some_definition = {
+    some_prop = $PARAM$ # used
+    [[UNUSED_PARAM] # checked but not used
+        some_other_prop = $PARAM$
+    ]
+}
+# some_other_script_file.txt
+some_other_definition = {
+    some_definition = {
+        UNUSED_PARAM = value # set but not used
+    }
+    some_sv_prop = value:some_sv|UNUSED_PARAM|value| # set but not used
+}</pre>
+  <!-- tooltip end -->
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
+    currently.
+  </p>
+</body>
+</html>

@@ -94,25 +94,25 @@ object PlsPatterns {
 }
 
 object PlsKeys {
-	val rootInfoKey = Key.create<ParadoxRootInfo>("paradoxRootInfo")
-	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradoxDescriptorInfo")
-	val fileInfoKey = Key.create<ParadoxFileInfo>("paradoxFileInfo")
-	val contentFileKey = Key.create<VirtualFile>("paradoxContentFile")
+	val rootInfoKey = Key.create<ParadoxRootInfo>("paradox.rootInfo")
+	val descriptorInfoKey = Key.create<ParadoxDescriptorInfo>("paradox.descriptorInfo")
+	val fileInfoKey = Key.create<ParadoxFileInfo>("paradox.fileInfo")
+	val contentFileKey = Key.create<VirtualFile>("paradox.contentFile")
 	
-	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("cachedParadoxDefinitionInfo")
-	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("cachedParadoxLocalisationInfo")
+	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cachedDefinitionInfo")
+	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cachedLocalisationInfo")
 	
-	val definitionElementInfoKey = Key.create<ParadoxDefinitionElementInfo>("paradoxDefinitionElementInfo")
+	val definitionElementInfoKey = Key.create<ParadoxDefinitionElementInfo>("paradox.definitionElementInfo")
 	
-	val injectedInfoKey = Key.create<List<String>>("paradoxInjectedInfo")
+	val injectedInfoKey = Key.create<List<String>>("paradox.injectedInfo")
 	
-	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradoxTextColorConfig")
+	val textColorConfigKey = Key.create<ParadoxTextColorConfig>("paradox.textColorConfig")
 	
 	val definitionConfigKeys = setOf<Key<out ParadoxDefinitionConfig>>(
 		textColorConfigKey
 	)
 	
-	val cwtConfigKey = Key.create<CwtKvConfig<*>>("cwtConfig")
+	val cwtConfigKey = Key.create<CwtKvConfig<*>>("paradox.cwtConfig")
 }
 
 object PlsDataKeys {

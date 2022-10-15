@@ -215,7 +215,7 @@ class ParadoxScriptSvParameterExpressionInfo(
 		return false
 	}
 	
-	//TODO unused SV parameter -> put to ParameterNotUsedInspection
+	//TODO unused SV parameter -> put to UnusedParameterInspection
 }
 
 class ParadoxScriptSvParameterValueExpressionInfo(
@@ -243,5 +243,5 @@ class ParadoxScriptValueSetValueExpressionInfo(
 		return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
 	}
 	
-	//TODO unused value set value -> put to ValueSetValueNotUsedInspection
+	//TODO unused value set value -> put to UnusedValueSetValueInspection
 }

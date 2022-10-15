@@ -18,7 +18,8 @@ class ParadoxValueSetValueElement(
 	private val name: String,
 	val valueSetName: String,
 	private val project: Project,
-	val gameType: ParadoxGameType
+	val gameType: ParadoxGameType,
+	val read: Boolean = true
 ) : RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
 	override fun getText(): String {
 		return name
@@ -52,11 +53,19 @@ class ParadoxValueSetValueElement(
 		return false // false -> click to show usages
 	}
 	
-	override fun isEquivalentTo(another: PsiElement?): Boolean {
-		return another is ParadoxValueSetValueElement &&
-			name == another.name &&
-			valueSetName == another.valueSetName &&
-			project == another.project &&
-			gameType == another.gameType
+	override fun equals(other: Any?): Boolean {
+		return other is ParadoxValueSetValueElement &&
+			name == other.name &&
+			valueSetName == other.valueSetName &&
+			project == other.project &&
+			gameType == other.gameType
+	}
+	
+	override fun hashCode(): Int {
+		var result = name.hashCode()
+		result = 31 * result + valueSetName.hashCode()
+		result = 31 * result + project.hashCode()
+		result = 31 * result + gameType.hashCode()
+		return result
 	}
 }

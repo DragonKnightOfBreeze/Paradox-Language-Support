@@ -24,7 +24,6 @@ import javax.swing.event.*
 
 /**
  * 缺失的本地化的检查。
- *
  * @property locales 要检查的语言区域。默认检查英文。
  * @property forPrimaryLocale 是否同样检查主要的语言区域。默认为true。
  * @property forPrimaryRelated 是否同样检查定义的主要的相关本地化，默认为true。
@@ -140,12 +139,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 					.actionListener { _, component -> forPrimaryLocale = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkPrimaryRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPrimaryRelated"))
 					.bindSelected(::forPrimaryRelated)
 					.actionListener { _, component -> forPrimaryRelated = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkOptionalRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forOptionalRelated"))
 					.bindSelected(::forOptionalRelated)
 					.actionListener { _, component -> forOptionalRelated = component.isSelected }
 			}

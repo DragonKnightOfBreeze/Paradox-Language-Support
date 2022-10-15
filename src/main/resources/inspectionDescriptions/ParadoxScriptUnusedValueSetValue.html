@@ -1,0 +1,30 @@
+<html>
+<body>
+  <p>
+    Reports unused value set values.
+  </p>
+  <p>
+    A value set value is considered as unused if it is
+    set (by, such as, set-flag expression)
+    but not used (by, such as, has-flag expression).
+  </p>
+  <p><b>Example:</b></p>
+  <pre>
+# some_script_file.txt
+some_definition = {
+    set_global_flag = unused_flag # set but not used
+    some_prop = {
+        limit = {
+            has_global = flag 
+        }
+        # ...
+    }
+}</pre>
+  <!-- tooltip end -->
+  <p>
+    Based on plugin's built-in
+    <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/src/main/resources/config/cwt">CWT Config</a>
+    currently.
+  </p>
+</body>
+</html>

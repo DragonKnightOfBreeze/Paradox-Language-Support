@@ -13,7 +13,7 @@ class ParadoxOuterParameterReference(
 	private val definitionName: String,
 	private val definitionType: String,
 	private val configGroup: CwtConfigGroup
-): PsiReferenceBase<PsiElement>(element,rangeInElement){
+) : PsiReferenceBase<PsiElement>(element, rangeInElement), ParadoxParameterResolvable {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名引用指向的元素（在对应的范围内）
 		val element = element

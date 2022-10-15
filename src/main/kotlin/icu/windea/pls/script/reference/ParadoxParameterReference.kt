@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.impl.*
 class ParadoxParameterReference(
 	element: @UnionType(types = [ParadoxInputParameter::class, ParadoxParameter::class]) PsiElement,
 	rangeInElement: TextRange
-) : PsiReferenceBase<PsiElement>(element, rangeInElement) {
+) : PsiReferenceBase<PsiElement>(element, rangeInElement), ParadoxParameterResolvable {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名引用指向的元素
 		val element = element

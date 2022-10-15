@@ -101,12 +101,12 @@ class MissingImageInspection : LocalInspectionTool() {
 	override fun createOptionsPanel(): JComponent {
 		return panel {
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkPrimaryRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.forPrimaryRelated"))
 					.bindSelected(::forPrimaryRelated)
 					.actionListener { _, component -> forPrimaryRelated = component.isSelected }
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkOptionalRelated"))
+				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.forOptionalRelated"))
 					.bindSelected(::forOptionalRelated)
 					.actionListener { _, component -> forOptionalRelated = component.isSelected }
 			}

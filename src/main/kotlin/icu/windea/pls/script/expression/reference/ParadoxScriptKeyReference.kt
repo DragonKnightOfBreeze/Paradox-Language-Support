@@ -7,11 +7,12 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.reference.*
 
 class ParadoxScriptKeyReference(
 	element: ParadoxScriptPropertyKey,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxScriptPropertyKey>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiReferenceBase<ParadoxScriptPropertyKey>(element, rangeInElement), PsiPolyVariantReference, ParadoxParameterResolvable, ParadoxValueSetValueResolvable {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()

@@ -9,6 +9,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.reference.*
 
 class ParadoxScriptScopeFieldPrefixReference(
 	element: ParadoxScriptExpressionElement,
@@ -28,7 +29,7 @@ class ParadoxScriptScopeFieldDataSourceReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	private val linkConfigs: List<CwtLinkConfig>
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), ParadoxValueSetValueResolvable {
 	override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()

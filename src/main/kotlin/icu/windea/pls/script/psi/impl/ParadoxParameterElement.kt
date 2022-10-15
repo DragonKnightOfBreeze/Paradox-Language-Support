@@ -19,7 +19,8 @@ class ParadoxParameterElement(
 	val definitionName: String,
 	val definitionType: String,
 	private val project: Project,
-	val gameType: ParadoxGameType
+	val gameType: ParadoxGameType,
+	val read: Boolean = true
 ): RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
 	override fun getText(): String {
 		return name
@@ -53,12 +54,21 @@ class ParadoxParameterElement(
 		return false // false -> click to show usages
 	}
 	
-	override fun isEquivalentTo(another: PsiElement?): Boolean {
-		return another is ParadoxParameterElement &&
-			name == another.name &&
-			definitionName == another.definitionName &&
-			definitionType == another.definitionType &&
-			project == another.project &&
-			gameType == another.gameType
+	override fun equals(other: Any?): Boolean {
+		return other is ParadoxParameterElement &&
+			name == other.name &&
+			definitionName == other.definitionName &&
+			definitionType == other.definitionType &&
+			project == other.project &&
+			gameType == other.gameType
+	}
+	
+	override fun hashCode(): Int {
+		var result = name.hashCode()
+		result = 31 * result + definitionName.hashCode()
+		result = 31 * result + definitionType.hashCode()
+		result = 31 * result + project.hashCode()
+		result = 31 * result + gameType.hashCode()
+		return result
 	}
 }

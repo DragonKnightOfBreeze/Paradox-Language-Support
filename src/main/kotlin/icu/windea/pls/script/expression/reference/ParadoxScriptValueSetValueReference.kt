@@ -5,13 +5,14 @@ import com.intellij.psi.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.reference.*
 
 class ParadoxScriptValueSetValueReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	private val name: String,
 	private val config: CwtKvConfig<*>
-): PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement){
+) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), ParadoxValueSetValueResolvable {
 	override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 		//重命名引用指向的元素（仅修改对应范围的文本）
 		return element.setValue(rangeInElement.replace(element.value, newElementName))
