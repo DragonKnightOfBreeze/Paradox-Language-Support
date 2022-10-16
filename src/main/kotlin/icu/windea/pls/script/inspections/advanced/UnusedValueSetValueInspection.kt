@@ -15,11 +15,9 @@ import java.util.concurrent.*
 import javax.swing.*
 
 /**
- * 值集中的值（`some_flag`）被设置/引用但未被使用的检查
+ * 值集中的值（`some_flag`）被设置但未被使用的检查
  *
  * 例如，有`set_flag = xxx`但没有`has_flag = xxx`。
- * @property forScopeFieldExpressions 是否对作用域字段表达式进行检查。
- * @property forValueFieldExpressions 是否对值字段表达式（包括SV表达式）进行检查。
  */
 class UnusedValueSetValueInspection : LocalInspectionTool() {
 	//may be slow for ReferencesSearch
@@ -27,9 +25,6 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 	companion object {
 		private val statusMapKey = Key.create<MutableMap<ParadoxValueSetValueElement, Boolean>>("paradox.statusMap")
 	}
-	
-	@JvmField var forScopeFieldExpressions = true
-	@JvmField var forValueFieldExpressions = true
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
 		session.putUserData(statusMapKey, ConcurrentHashMap())
@@ -50,40 +45,36 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 			if(!shouldVisit(element)) return
 			ProgressManager.checkCanceled()
 			
-			val references = element.references
-			for(reference in references) {
-				ProgressManager.checkCanceled()
-				if(reference !is ParadoxValueSetValueResolvable) continue
-				if(reference is ParadoxScriptScopeFieldDataSourceReference && !inspection.forScopeFieldExpressions) continue
-				if(reference is ParadoxScriptValueFieldDataSourceReference && !inspection.forValueFieldExpressions) continue
-				val resolved = reference.resolveSingle()
-				if(resolved !is ParadoxValueSetValueElement) continue
-				if(!resolved.read) {
-					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
-					val statusMap = session.getUserData(statusMapKey)!!
-					val used = statusMap[resolved]
-					val isUsed = if(used == null) {
-						val r = ReferencesSearch.search(resolved).processResult {
-							val res = it.resolve()
-							if(res is ParadoxValueSetValueElement && res.read) {
-								statusMap[resolved] = true
-								false
-							} else {
-								true
-							}
-						}
-						if(r) {
-							statusMap[resolved] = false
+			//may only resolve to single ParadoxValueSetValueElement (set-flag expression)
+			val reference = element.reference
+			if(reference !is ParadoxValueSetValueResolvable) return
+			val resolved = reference.resolve()
+			if(resolved !is ParadoxValueSetValueElement) return
+			if(!resolved.read) {
+				//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
+				val statusMap = session.getUserData(statusMapKey)!!
+				val used = statusMap[resolved]
+				val isUsed = if(used == null) {
+					val r = ReferencesSearch.search(resolved).processResult {
+						val res = it.resolve()
+						if(res is ParadoxValueSetValueElement && res.read) {
+							statusMap[resolved] = true
 							false
 						} else {
 							true
 						}
+					}
+					if(r) {
+						statusMap[resolved] = false
+						false
 					} else {
-						used
+						true
 					}
-					if(!isUsed) {
-						registerProblem(resolved, reference)
-					}
+				} else {
+					used
+				}
+				if(!isUsed) {
+					registerProblem(resolved, reference)
 				}
 			}
 		}
@@ -93,22 +84,5 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 			holder.registerProblem(reference, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
 		}
 	}
-	
-	
-	override fun createOptionsPanel(): JComponent {
-		return panel {
-			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forScopeFieldExpressions"))
-					.bindSelected(::forScopeFieldExpressions)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forScopeFieldExpressions.tooltip") }
-					.actionListener { _, component -> forScopeFieldExpressions = component.isSelected }
-			}
-			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forValueFieldExpressions"))
-					.bindSelected(::forValueFieldExpressions)
-					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forValueFieldExpressions.tooltip") }
-					.actionListener { _, component -> forValueFieldExpressions = component.isSelected }
-			}
-		}
-	}
 }
+

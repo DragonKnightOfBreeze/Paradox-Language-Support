@@ -1,11 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.*;
-import icu.windea.pls.script.reference.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import icu.windea.pls.script.reference.ParadoxParameterReference;
+import javax.swing.Icon;
 
 public interface ParadoxScriptParameterConditionParameter extends ParadoxInputParameter {
 
@@ -17,9 +18,6 @@ public interface ParadoxScriptParameterConditionParameter extends ParadoxInputPa
 
   @NotNull
   ParadoxScriptParameterConditionParameter setName(@NotNull String name);
-
-  @NotNull
-  PsiElement getNameIdentifier();
 
   int getTextOffset();
 

@@ -49,12 +49,6 @@ public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMat
   }
 
   @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
   public int getTextOffset() {
     return ParadoxScriptPsiImplUtil.getTextOffset(this);
   }

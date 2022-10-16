@@ -72,7 +72,7 @@ property_key ::= key_expr {
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ] 
   methods=[
-    getName setName getValue setValue getNameIdentifier getReference getReferences
+    getName setName getValue setValue getReference getReferences
     getValueType getConfigExpression
   ]
 }
@@ -126,7 +126,7 @@ upper string ::= value_expr {
   ]
   methods=[
     getIcon
-    getName setName getValue setValue getNameIdentifier getReference getReferences getStringValue
+    getName setName getValue setValue getReference getReferences getStringValue
     getValueType getConfigExpression
   ]
 }
@@ -176,7 +176,7 @@ parameter ::= PARAMETER_START PARAMETER_ID [PIPE (ARG_NUMBER_TOKEN | ARG_STRING_
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
   ]
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getDefaultValue getReference]
+  methods=[getIcon getName setName getTextOffset getValue getDefaultValue getReference]
 }
 
 //parameter condition
@@ -195,7 +195,7 @@ private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_exp
 parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
 parameter_condition_parameter ::= INPUT_PARAMETER_ID {
   implements="icu.windea.pls.script.psi.ParadoxInputParameter"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getReference]
+  methods=[getIcon getName setName getTextOffset getReference]
 }
 private parameter_condition_item ::= COMMENT | property | value
 
@@ -255,5 +255,5 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] P
   extends=inline_math_factor
   pin=1
   implements="icu.windea.pls.script.psi.ParadoxParameter"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getDefaultValue getReference]
+  methods=[getIcon getName setName getTextOffset getDefaultValue getReference]
 }

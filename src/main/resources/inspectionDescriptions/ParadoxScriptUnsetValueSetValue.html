@@ -1,21 +1,21 @@
 <html>
 <body>
   <p>
-    Reports unused value set values.
+    Reports unset value set values.
   </p>
   <p>
-    A value set value is considered as unused if it is
-    set (by, such as, set-flag expression)
-    but not used (by, such as, has-flag expression).
+    A value set value is considered as unset if it is
+    used (by, such as, has-flag expression)
+    but not set (by, such as, set-flag expression).
   </p>
   <p><b>Example:</b></p>
   <pre>
 # some_script_file.txt
 some_definition = {
-    set_global_flag = unused_flag # set but not used
+    set_global_flag = flag
     some_prop = {
         limit = {
-            has_global_flag = flag 
+            has_global_flag = unset_flag # used but not set 
         }
         # ...
     }

@@ -1,12 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.*;
-import icu.windea.pls.core.model.*;
-import icu.windea.pls.script.expression.reference.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import java.util.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
+import icu.windea.pls.core.model.ParadoxValueType;
 
 public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement {
 
@@ -26,10 +25,7 @@ public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement
   ParadoxScriptPropertyKey setValue(@NotNull String value);
 
   @Nullable
-  PsiElement getNameIdentifier();
-
-  @Nullable
-  ParadoxScriptKeyReference getReference();
+  PsiReference getReference();
 
   @NotNull
   PsiReference[] getReferences();

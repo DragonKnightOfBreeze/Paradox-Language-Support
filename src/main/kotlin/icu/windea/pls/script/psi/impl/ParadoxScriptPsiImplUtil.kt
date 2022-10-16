@@ -162,11 +162,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptParameter): PsiElement? {
-		return element.parameterId
-	}
-	
-	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptParameter): Int {
 		return element.node.startOffset + 1
 	}
@@ -310,13 +305,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptPropertyKey): PsiElement? {
-		return if(!element.isParameterAwareExpression()) element.firstChild  else null
-	}
-	
-	@JvmStatic
-	fun getReference(element: ParadoxScriptPropertyKey): ParadoxScriptKeyReference? {
-		return element.references.firstOrNull().castOrNull()
+	fun getReference(element: ParadoxScriptPropertyKey): PsiReference? {
+		return element.references.singleOrNull()
 	}
 	
 	@JvmStatic
@@ -468,18 +458,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptString): PsiElement? {
-		return if(!element.isParameterAwareExpression()) element.firstChild else null
-	}
-	
-	@JvmStatic
 	fun getStringValue(element: ParadoxScriptString): String {
 		return element.value
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptString): ParadoxScriptValueReference? {
-		return element.references.firstOrNull().castOrNull()
+	fun getReference(element: ParadoxScriptString): PsiReference? {
+		return element.references.singleOrNull()
 	}
 	
 	@JvmStatic
@@ -785,11 +770,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptParameterConditionParameter): PsiElement {
-		return element.parameterId
-	}
-	
-	@JvmStatic
 	fun getTextOffset(element: ParadoxScriptParameterConditionParameter): Int {
 		return element.node.startOffset
 	}
@@ -868,11 +848,6 @@ object ParadoxScriptPsiImplUtil {
 		val newNameElement = ParadoxScriptElementFactory.createInlineMathParameter(element.project, name).parameterId!!
 		nameElement.replace(newNameElement)
 		return element
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptInlineMathParameter): PsiElement? {
-		return element.parameterId
 	}
 	
 	@JvmStatic

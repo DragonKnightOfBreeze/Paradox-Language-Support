@@ -1,13 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.*;
-import icu.windea.pls.core.model.*;
-import icu.windea.pls.script.expression.reference.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
-import java.util.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
+import icu.windea.pls.core.model.ParadoxValueType;
+import javax.swing.Icon;
 
 public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptStringStub> {
 
@@ -30,10 +31,7 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptEx
   ParadoxScriptString setValue(@NotNull String name);
 
   @Nullable
-  PsiElement getNameIdentifier();
-
-  @Nullable
-  ParadoxScriptValueReference getReference();
+  PsiReference getReference();
 
   @NotNull
   PsiReference[] getReferences();
