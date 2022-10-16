@@ -27,8 +27,11 @@ object ParadoxScriptStringStubElementType: IStubElementType<ParadoxScriptStringS
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
+		//only for string
 		if(node.elementType != ParadoxScriptElementTypes.STRING) return false
-		//总是创建stub（通过匹配的CWT规则进行判断可能会导致SOF）
+		//skip if may contain parameter
+		val isParameterAware = node.processChild { it.elementType != ParadoxScriptElementTypes.PARAMETER }
+		if(isParameterAware) return false
 		return true
 	}
 	

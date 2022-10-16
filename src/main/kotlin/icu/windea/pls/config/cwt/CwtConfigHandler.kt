@@ -1382,7 +1382,7 @@ object CwtConfigHandler {
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return null
-					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType)
+					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType, false)
 				}
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return null
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>()
@@ -1497,7 +1497,8 @@ object CwtConfigHandler {
 					val definitionType = config.parent?.castOrNull<CwtPropertyConfig>()
 						?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
 						?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return emptyList()
-					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType).toSingletonList()
+					return ParadoxParameterElement(element, name, definitionName, definitionType, project, gameType, false)
+						.toSingletonList()
 				}
 				val enumValueConfig = configGroup.enums.get(enumName)?.valueConfigMap?.get(name) ?: return emptyList()
 				return enumValueConfig.pointer.element.castOrNull<CwtNamedElement>().toSingletonListOrEmpty()
@@ -1634,7 +1635,8 @@ object CwtConfigHandler {
 	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, config: CwtKvConfig<*>): PsiElement? {
 		val valueSetName = config.expression.value ?: return null
 		val configGroup = config.info.configGroup
-		if(config.expression.type != CwtDataTypes.ValueSet) {
+		val read = config.expression.type == CwtDataTypes.Value
+		if(read) {
 			//首先尝试解析为预定义的value
 			run {
 				val valueSetValueConfig = configGroup.values.get(valueSetName)?.valueConfigMap?.get(name) ?: return@run
@@ -1642,7 +1644,7 @@ object CwtConfigHandler {
 				if(resolved != null) return resolved
 			}
 		}
-		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, configGroup.gameType)
+		return ParadoxValueSetValueElement(element, name, valueSetName, configGroup.project, configGroup.gameType, read)
 	}
 	
 	fun resolveModifier(name: String, configGroup: CwtConfigGroup): PsiElement? {

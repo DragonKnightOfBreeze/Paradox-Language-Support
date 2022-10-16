@@ -62,14 +62,14 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 					reference.resolve()
 				}
 				if(resolved !is ParadoxValueSetValueElement) continue
-				if(resolved.read) {
+				if(!resolved.read) {
 					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch
 					val statusMap = session.getUserData(statusMapKey)!!
 					val used = statusMap[resolved]
 					val isUsed = if(used == null) {
 						val r = ReferencesSearch.search(resolved).forEach(Processor {
 							val res = it.resolve()
-							if(res is ParadoxValueSetValueElement && !res.read) {
+							if(res is ParadoxValueSetValueElement && res.read) {
 								statusMap[resolved] = true
 								false
 							} else {

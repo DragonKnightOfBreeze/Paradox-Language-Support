@@ -23,16 +23,9 @@ class ParadoxOuterParameterReference(
 		}
 	}
 	
-	override fun isReferenceTo(element: PsiElement): Boolean {
-		//必要的处理
-		val resolved = resolve()
-		val manager = getElement().manager
-		return manager.areElementsEquivalent(resolved, element)
-	}
-	
 	override fun resolve(): PsiElement {
 		val element = element
 		val name = rangeInElement.substring(element.text)
-		return ParadoxParameterElement(element, name, definitionName, definitionType, configGroup.project, configGroup.gameType)
+		return ParadoxParameterElement(element, name, definitionName, definitionType, configGroup.project, configGroup.gameType, false)
 	}
 }

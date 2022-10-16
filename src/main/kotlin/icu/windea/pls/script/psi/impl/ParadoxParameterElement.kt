@@ -20,7 +20,7 @@ class ParadoxParameterElement(
 	val definitionType: String,
 	private val project: Project,
 	val gameType: ParadoxGameType,
-	val read: Boolean = true
+	val read: Boolean
 ): RenameableFakePsiElement(element), ParadoxScriptNamedElement, Navigatable {
 	override fun getText(): String {
 		return name

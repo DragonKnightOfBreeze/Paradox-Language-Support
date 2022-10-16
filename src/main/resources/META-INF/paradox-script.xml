@@ -195,18 +195,16 @@
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnresolvedFilePathInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
-                     enabledByDefault="true" level="WEAK_WARNING"
-                     bundle="messages.PlsBundle"
-                     key="script.inspection.advanced.missingLocalisation"
+                     enabledByDefault="true" level="WEAK WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.unusedParameter"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.unusedParameter"
+                     groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnusedParameterInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedValueSetValue"
-                     enabledByDefault="true" level="WEAK_WARNING"
-                     bundle="messages.PlsBundle"
-                     key="script.inspection.advanced.missingLocalisation"
+                     enabledByDefault="true" level="WEAK WARNING"
+                     bundle="messages.PlsBundle" key="script.inspection.advanced.unusedValueSetValue"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
-                     groupPathKey="script.inspection.advanced.unusedValueSetValue"
+                     groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnusedValueSetValueInspection"/>
     <!--advanced > expression-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"

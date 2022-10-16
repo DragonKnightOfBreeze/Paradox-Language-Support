@@ -10,7 +10,8 @@ import icu.windea.pls.script.psi.impl.*
 
 class ParadoxParameterReference(
 	element: @UnionType(types = [ParadoxInputParameter::class, ParadoxParameter::class]) PsiElement,
-	rangeInElement: TextRange
+	rangeInElement: TextRange,
+	private val read: Boolean
 ) : PsiReferenceBase<PsiElement>(element, rangeInElement), ParadoxParameterResolvable {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//重命名引用指向的元素
@@ -22,20 +23,13 @@ class ParadoxParameterReference(
 		}
 	}
 	
-	override fun isReferenceTo(element: PsiElement): Boolean {
-		//必要的处理
-		val resolved = resolve()
-		val manager = getElement().manager
-		return manager.areElementsEquivalent(resolved, element)
-	}
-	
 	override fun resolve(): PsiElement? {
 		val element = element
 		val name = rangeInElement.substring(element.text)
 		//向上找到definition
 		val definition = element.findParentDefinition() ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
-		return ParadoxParameterElement(element, name, definitionInfo.name, definitionInfo.type, definitionInfo.project, definitionInfo.gameType)
+		return ParadoxParameterElement(element, name, definitionInfo.name, definitionInfo.type, definitionInfo.project, definitionInfo.gameType, read)
 	}
 	
 	override fun getVariants(): Array<out Any> {

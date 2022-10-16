@@ -184,7 +184,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxScriptParameter): ParadoxParameterReference? {
 		val nameElement = element.parameterId ?: return null
-		return ParadoxParameterReference(element, nameElement.textRangeInParent)
+		return ParadoxParameterReference(element, nameElement.textRangeInParent, true)
 	}
 	//endregion
 	
@@ -797,7 +797,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxScriptParameterConditionParameter): ParadoxParameterReference {
 		val nameElement = element.parameterId
-		return ParadoxParameterReference(element, nameElement.textRangeInParent)
+		return ParadoxParameterReference(element, nameElement.textRangeInParent, false)
 	}
 	//endregion
 	
@@ -888,7 +888,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterReference? {
 		val nameElement = element.parameterId ?: return null
-		return ParadoxParameterReference(element, nameElement.textRangeInParent)
+		return ParadoxParameterReference(element, nameElement.textRangeInParent, true)
 	}
 	//endregion
 }
