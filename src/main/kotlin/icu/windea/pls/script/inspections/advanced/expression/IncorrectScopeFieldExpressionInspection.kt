@@ -25,16 +25,9 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 		val project = file.project
 		val gameType = ParadoxSelectorUtils.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-			override fun visitElement(e: PsiElement) {
+		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
-				if(e is ParadoxScriptExpressionElement) {
-					visitElementExpression(e)
-				}
-				super.visitElement(e)
-			}
-			
-			private fun visitElementExpression(element: ParadoxScriptExpressionElement) {
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
 				val type = config.expression.type
 				if(type == CwtDataTypes.Scope || type == CwtDataTypes.ScopeField || type == CwtDataTypes.ScopeGroup) {
@@ -67,6 +60,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 						}
 					}
 				}
+				super.visitExpressionElement(element)
 			}
 		})
 		return holder.resultsArray

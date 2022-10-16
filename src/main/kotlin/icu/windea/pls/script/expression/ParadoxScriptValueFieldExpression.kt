@@ -6,7 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeScriptValueParameters
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeParametersForScriptValueExpression
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
 import icu.windea.pls.core.codeInsight.completion.*
@@ -234,7 +234,7 @@ class ParadoxScriptValueFieldExpression(
 			if(paramNameKeyword != null) {
 				put(PlsCompletionKeys.keywordKey, paramNameKeyword)
 				//开始提示
-				completeScriptValueParameters(svName, paramNames, result)
+				completeParametersForScriptValueExpression(svName, paramNames, result)
 				put(PlsCompletionKeys.keywordKey, expressionString)
 			}
 			return

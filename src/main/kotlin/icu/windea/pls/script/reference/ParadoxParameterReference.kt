@@ -4,7 +4,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
 
@@ -32,8 +31,11 @@ class ParadoxParameterReference(
 		return ParadoxParameterElement(element, name, definitionInfo.name, definitionInfo.type, definitionInfo.project, definitionInfo.gameType, read)
 	}
 	
-	override fun getVariants(): Array<out Any> {
-		//直接在这里进行参数补全 - 如果参数在所属定义声明内部
-		return CwtConfigHandler.getParameterVariants(element, rangeInElement)
+	/**
+	 * @see icu.windea.pls.script.codeInsight.completion.ParadoxParameterCompletionProvider
+	 */
+	@Suppress("RedundantOverride")
+	override fun getVariants(): Array<Any> {
+		return super.getVariants() //not here
 	}
 }

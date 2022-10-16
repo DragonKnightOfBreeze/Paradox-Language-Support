@@ -2,6 +2,7 @@ package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -28,12 +29,14 @@ class MissingImageInspection : LocalInspectionTool() {
 		private val holder: ProblemsHolder
 	) : ParadoxScriptVisitor() {
 		override fun visitFile(file: PsiFile) {
+			ProgressManager.checkCanceled()
 			val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
 			val definitionInfo = scriptFile.definitionInfo ?: return
 			visitDefinition(scriptFile, definitionInfo)
 		}
 		
 		override fun visitProperty(property: ParadoxScriptProperty) {
+			ProgressManager.checkCanceled()
 			val definitionInfo = property.definitionInfo ?: return
 			visitDefinition(property, definitionInfo)
 		}
@@ -43,6 +46,7 @@ class MissingImageInspection : LocalInspectionTool() {
 			val imageInfos = definitionInfo.images
 			if(imageInfos.isEmpty()) return
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
+			ProgressManager.checkCanceled()
 			val nameToDistinct = mutableSetOf<String>()
 			val infoMap = mutableMapOf<String, Tuple2<ParadoxRelatedImageInfo, String?>>()
 			//进行代码检查时，规则文件中声明了多个不同名字的primaryLocalisation/primaryImage的场合，只要匹配其中一个名字的即可

@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.inspections
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.quickfix.*
@@ -16,6 +17,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
 		override fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
+			ProgressManager.checkCanceled()
 			val colorName = element.name ?: return
 			val colorConfig = element.colorConfig
 			if(colorConfig != null) return

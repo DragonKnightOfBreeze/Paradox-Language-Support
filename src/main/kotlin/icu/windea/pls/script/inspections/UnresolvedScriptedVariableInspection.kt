@@ -4,6 +4,7 @@ import com.intellij.codeInsight.intention.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
@@ -28,6 +29,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxScriptVisitor() {
 		override fun visitVariableReference(element: ParadoxScriptVariableReference) {
+			ProgressManager.checkCanceled()
 			val reference = element.reference
 			if(reference.resolve() != null) return
 			val quickFixes = buildList {
@@ -44,7 +46,6 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 		}
 	}
 	
-	@Suppress("NAME_SHADOWING")
 	private class IntroduceLocalVariableFix(
 		private val variableName: String,
 		element: ParadoxScriptProperty

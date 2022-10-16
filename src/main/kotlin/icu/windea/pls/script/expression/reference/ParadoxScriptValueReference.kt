@@ -42,7 +42,7 @@ class ParadoxScriptValueReference(
 	}
 	
 	/**
-	 * 由[icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider]提供代码补全。
+	 * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
 	 */
 	override fun getVariants(): Array<Any> {
 		return super<PsiReferenceBase>.getVariants() //not here

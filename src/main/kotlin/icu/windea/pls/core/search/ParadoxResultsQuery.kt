@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package icu.windea.pls.core.search
 
 import com.intellij.util.*
@@ -72,7 +74,8 @@ class ParadoxResultsQuery<T, P : ParadoxSearchParameters<T>>(
 		val selector = searchParameters.selector
 		return delegateProcessResults(original) {
 			if(selector.selectAll(it)) {
-				consumer.process(it)
+				val r = consumer.process(it)
+				if(!r) return@delegateProcessResults false
 			}
 			true
 		}

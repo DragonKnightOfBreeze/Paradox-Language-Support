@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
@@ -10,17 +11,19 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.script.reference.*
+import org.jetbrains.kotlin.idea.util.application.*
+import java.util.concurrent.*
 import javax.swing.*
 
 /**
  * 参数（`$PARAM$`）被设置/引用但未被使用的检查
- * 
+ *
  * 例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  * @property forParameterConditionExpressions 是否对参数条件表达式进行检查。（`[[PARAM] ... ]`）
  * @property forInvocationExpressions 是否对调用表达式进行检查。（`some_effect = {PARAM = some_value}`）
  * @property forScriptValueExpressions 是否对SV表达式进行检查。（`some_prop = value:some_sv|PARAM|value|`）
  */
-class UnusedParameterInspection: LocalInspectionTool() {
+class UnusedParameterInspection : LocalInspectionTool() {
 	//may be slow for ReferencesSearch
 	
 	companion object {
@@ -32,6 +35,7 @@ class UnusedParameterInspection: LocalInspectionTool() {
 	@JvmField var forScriptValueExpressions = true
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
+		session.putUserData(statusMapKey, ConcurrentHashMap())
 		return Visitor(this, holder, session)
 	}
 	
@@ -52,10 +56,13 @@ class UnusedParameterInspection: LocalInspectionTool() {
 		
 		override fun visitElement(element: PsiElement) {
 			if(!shouldVisit(element)) return
+			ProgressManager.checkCanceled()
 			
 			val references = element.references
 			for(reference in references) {
+				ProgressManager.checkCanceled()
 				if(reference !is ParadoxParameterResolvable) continue
+				
 				val resolved = if(reference is PsiPolyVariantReference) {
 					val multiResolved = reference.multiResolve(false)
 					if(multiResolved.size != 1) continue
@@ -69,7 +76,7 @@ class UnusedParameterInspection: LocalInspectionTool() {
 					val statusMap = session.getUserData(statusMapKey)!!
 					val used = statusMap[resolved]
 					val isUsed = if(used == null) {
-						val r = ReferencesSearch.search(resolved).forEach(Processor {
+						val r = ReferencesSearch.search(resolved).processResult {
 							val res = it.resolve()
 							if(res is ParadoxParameterElement && res.read) {
 								statusMap[resolved] = true
@@ -77,7 +84,7 @@ class UnusedParameterInspection: LocalInspectionTool() {
 							} else {
 								true
 							}
-						})
+						}
 						if(r) {
 							statusMap[resolved] = false
 							false

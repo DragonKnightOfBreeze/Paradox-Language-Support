@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections.advanced.event
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
@@ -27,7 +28,9 @@ class IncorrectEventNamespaceInspection  : LocalInspectionTool() {
 		val namespaceProperties = properties.filter { it.name.equals("namespace", true) }
 		if(namespaceProperties.isEmpty()) return null //没有事件命名空间，不进行检查
 		var holder: ProblemsHolder? = null
+		ProgressManager.checkCanceled()
 		for(namespaceProperty in namespaceProperties) {
+			ProgressManager.checkCanceled()
 			val namespacePropertyValue = namespaceProperty.propertyValue?.value.castOrNull<ParadoxScriptString>() ?: continue //事件ID不是字符串，另行检查
 			val namespace = namespacePropertyValue.stringValue
 			if(isIncorrectEventNamespace(namespace)){

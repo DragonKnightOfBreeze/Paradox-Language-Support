@@ -45,7 +45,7 @@ object ParadoxCwtConfigHandler {
 			CwtPropertyConfig::class.java -> {
 				val valueElement = when {
 					element is ParadoxScriptProperty -> element.propertyValue?.value
-					element is ParadoxScriptPropertyKey -> element.parent.cast<ParadoxScriptProperty>().propertyValue?.value
+					element is ParadoxScriptPropertyKey -> element.propertyValue?.value
 					else -> return emptyList()
 				}
 				val definitionElementInfo = ParadoxDefinitionElementInfoHandler.get(element) ?: return emptyList()

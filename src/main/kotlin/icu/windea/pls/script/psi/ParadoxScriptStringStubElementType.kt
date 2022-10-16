@@ -30,7 +30,7 @@ object ParadoxScriptStringStubElementType: IStubElementType<ParadoxScriptStringS
 		//only for string
 		if(node.elementType != ParadoxScriptElementTypes.STRING) return false
 		//skip if may contain parameter
-		val isParameterAware = node.processChild { it.elementType != ParadoxScriptElementTypes.PARAMETER }
+		val isParameterAware = node.processChild { it.elementType == ParadoxScriptElementTypes.PARAMETER }
 		if(isParameterAware) return false
 		return true
 	}

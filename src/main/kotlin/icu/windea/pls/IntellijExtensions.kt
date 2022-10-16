@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package icu.windea.pls
 
@@ -116,6 +116,10 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T?): T
 	val newValue = action()
 	if(newValue != null) this.putUserData(key, newValue)
 	return newValue
+}
+
+inline fun <T> Query<T>.processResult(consumer: Processor<in T>): Boolean {
+	return forEach(consumer)
 }
 //endregion
 
@@ -300,6 +304,16 @@ fun ASTNode.isEndOfLine(): Boolean {
 //endregion
 
 //region PsiElement Extensions
+/**
+ * 判断两个[PsiElement]是否在同一[VirtualFile]的同一位置。
+ */
+infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean{
+	if(this == null || other == null) return false
+	if(this == other) return true
+	return textRange.startOffset == other.textRange.startOffset
+		&& containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
+}
+
 fun <T : PsiElement> T.takeIf(elementType: IElementType): T? {
 	return takeIf { it.elementType == elementType }
 }

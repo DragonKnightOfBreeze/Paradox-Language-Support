@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.inspections
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
@@ -24,6 +25,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
 		override fun visitPropertyList(element: ParadoxLocalisationPropertyList) {
+			ProgressManager.checkCanceled()
 			val propertyGroup = element.propertyList.groupBy { it.name }
 			if(propertyGroup.isEmpty()) return
 			for((key, values) in propertyGroup) {

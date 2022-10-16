@@ -22,6 +22,12 @@ val ParadoxParameter.parameterId: PsiElement? get() = findOptionalChild(PARAMETE
 
 val ParadoxParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
 
+
+val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptPropertyValue? get() = siblings(true, false).findIsInstance()
+
+val ParadoxScriptPropertyValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(false, true).findIsInstance()
+
+
 /**
  * 遍历当前代码块中的所有（直接作为子节点的）属性。
  * @param includeConditional 是否也包括间接作为其中的参数表达式的子节点的属性。

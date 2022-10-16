@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.inspections
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.psi.*
@@ -15,6 +16,7 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
 	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxLocalisationVisitor() {
 		override fun visitLocale(element: ParadoxLocalisationLocale) {
+			ProgressManager.checkCanceled()
 			val localeConfig = element.localeConfig
 			if(localeConfig != null) return
 			val location = element.localeId

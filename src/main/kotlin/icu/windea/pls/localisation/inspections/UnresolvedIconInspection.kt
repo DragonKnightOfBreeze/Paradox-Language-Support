@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.inspections
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.observable.util.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
@@ -27,6 +28,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
 		private val holder: ProblemsHolder
 	) : ParadoxLocalisationVisitor() {
 		override fun visitIcon(element: ParadoxLocalisationIcon) {
+			ProgressManager.checkCanceled()
 			val iconName = element.name ?: return
 			if(iconName.matchesGlobFileName(inspection.ignoredIconNames, true)) return //忽略
 			val resolved = element.reference?.resolve()

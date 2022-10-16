@@ -2,6 +2,7 @@ package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.observable.util.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
@@ -31,6 +32,7 @@ class UnresolvedFilePathInspection : LocalInspectionTool() {
 		private val holder: ProblemsHolder
 	) : ParadoxScriptVisitor() {
 		override fun visitString(valueElement: ParadoxScriptString) {
+			ProgressManager.checkCanceled()
 			//match or single
 			val valueConfig = ParadoxCwtConfigHandler.resolveValueConfig(valueElement) ?: return
 			val expression = valueConfig.valueExpression

@@ -202,9 +202,12 @@ public final class ParadoxResolveScopeManager extends ResolveScopeManager implem
 		ProjectFileIndex projectFileIndex = myProjectRootManager.getFileIndex();
 		VirtualFile notNullVFile = virtualFile != null ? virtualFile : vDirectory;
 		Module module = projectFileIndex.getModuleForFile(notNullVFile);
-		Language language = element.getLanguage();
 		//paradox files -> allScope
-		if (module == null || language == ParadoxScriptLanguage.INSTANCE || language == ParadoxLocalisationLanguage.INSTANCE) {
+		Language language = element.getLanguage();
+		if(language == ParadoxScriptLanguage.INSTANCE || language == ParadoxLocalisationLanguage.INSTANCE) {
+			return allScope;
+		}
+		if (module == null) {
 			List<OrderEntry> entries = projectFileIndex.getOrderEntriesForFile(notNullVFile);
 			if (entries.isEmpty() && (myAdditionalIndexableFileSet.isInSet(notNullVFile) || isFromAdditionalLibraries(notNullVFile))) {
 				return allScope;

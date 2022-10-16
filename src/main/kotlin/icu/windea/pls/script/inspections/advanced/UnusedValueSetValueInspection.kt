@@ -1,11 +1,11 @@
 package icu.windea.pls.script.inspections.advanced
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
@@ -48,9 +48,11 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 		
 		override fun visitElement(element: PsiElement) {
 			if(!shouldVisit(element)) return
+			ProgressManager.checkCanceled()
 			
 			val references = element.references
 			for(reference in references) {
+				ProgressManager.checkCanceled()
 				if(reference !is ParadoxValueSetValueResolvable) continue
 				if(reference is ParadoxScriptScopeFieldDataSourceReference && !inspection.forScopeFieldExpressions) continue
 				if(reference is ParadoxScriptValueFieldDataSourceReference && !inspection.forValueFieldExpressions) continue
@@ -67,7 +69,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 					val statusMap = session.getUserData(statusMapKey)!!
 					val used = statusMap[resolved]
 					val isUsed = if(used == null) {
-						val r = ReferencesSearch.search(resolved).forEach(Processor {
+						val r = ReferencesSearch.search(resolved).processResult {
 							val res = it.resolve()
 							if(res is ParadoxValueSetValueElement && res.read) {
 								statusMap[resolved] = true
@@ -75,7 +77,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 							} else {
 								true
 							}
-						})
+						}
 						if(r) {
 							statusMap[resolved] = false
 							false

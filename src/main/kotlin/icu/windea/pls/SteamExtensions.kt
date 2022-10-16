@@ -1,6 +1,6 @@
 package icu.windea.pls
 
-//# 直接得到steam的安装路径
+//直接得到steam的安装路径
 //powershell -command "Get-ItemProperty -Path HKLM:\SOFTWARE\Wow6432Node\Valve\Steam | Select-Object InstallPath | Format-Table -HideTableHeaders"
 
 //游戏安装目录：steamapps/common

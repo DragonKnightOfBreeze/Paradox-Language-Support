@@ -1,6 +1,7 @@
 package icu.windea.pls.script.inspections.advanced.event
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
@@ -27,6 +28,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
 		if(properties.find { it.name.equals("namespace", true) } == null) return null //没有事件命名空间，不进行检查
 		val eventGroup: MutableMap<String, MutableList<ParadoxScriptProperty>> = mutableMapOf() //namespace - eventDefinitions
 		var nextNamespace = ""
+		ProgressManager.checkCanceled()
 		for(property in properties) {
 			if(property.name.equals("namespace", true)) {
 				//如果值不是一个字符串，作为空字符串存到缓存中
