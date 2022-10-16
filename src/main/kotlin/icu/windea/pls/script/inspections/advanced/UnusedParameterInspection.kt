@@ -63,13 +63,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
 				ProgressManager.checkCanceled()
 				if(reference !is ParadoxParameterResolvable) continue
 				
-				val resolved = if(reference is PsiPolyVariantReference) {
-					val multiResolved = reference.multiResolve(false)
-					if(multiResolved.size != 1) continue
-					multiResolved.single().element ?: continue
-				} else {
-					reference.resolve()
-				}
+				val resolved = reference.resolveSingle()
 				if(resolved !is ParadoxParameterElement) continue
 				if(!resolved.read) {
 					//当确定同一文件中某一名称的参数已被使用时，后续不需要再进行ReferencesSearch

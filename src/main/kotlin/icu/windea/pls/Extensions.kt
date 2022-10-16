@@ -94,6 +94,14 @@ var VirtualFile.contentFile
 //endregion
 
 //region PsiElement Extensions
+fun PsiReference.resolveSingle(): PsiElement?{
+	return if(this is PsiPolyVariantReference) {
+		this.multiResolve(false).firstNotNullOfOrNull { it.element }
+	} else {
+		this.resolve()
+	}
+}
+
 fun PsiElement.isQuoted(): Boolean {
 	return firstLeafOrSelf().text.startsWith('"') || lastLeafOrSelf().text.endsWith('"')
 }
