@@ -1,5 +1,6 @@
 package icu.windea.pls.script.psi
 
+import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -151,6 +152,10 @@ fun ParadoxScriptExpressionElement.isSimpleScriptExpression(): Boolean {
 
 fun ParadoxScriptExpressionElement.isParameterAwareExpression(): Boolean {
 	return !this.isQuoted() && this.textContains('$')
+}
+
+fun ASTNode.isParameterAwareExpression(): Boolean {
+	return !this.processChild { it.elementType != PARAMETER }
 }
 
 fun String.isParameterAwareExpression(): Boolean {

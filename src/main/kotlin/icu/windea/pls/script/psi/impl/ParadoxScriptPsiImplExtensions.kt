@@ -62,6 +62,8 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScriptPropertyKey {
 	constructor(node: ASTNode) : super(node)
 	
+	constructor(stub: ParadoxScriptPropertyKeyStub, type: IStubElementType<*, *>) : super(stub, type)
+	
 	@Volatile private var _value: String? = null
 	@Volatile private var _valueType: ParadoxValueType? = null
 	

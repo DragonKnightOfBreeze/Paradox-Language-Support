@@ -21,37 +21,51 @@ object ParadoxScriptStringStubElementType: IStubElementType<ParadoxScriptStringS
 	}
 	
 	override fun createStub(psi: ParadoxScriptString, parentStub: StubElement<*>): ParadoxScriptStringStub {
-		val valueSetInfo = ParadoxValueSetValueInfoHandler.resolve(psi, parentStub)
+		//accept only one info
+		val complexEnumInfo = ParadoxComplexEnumInfoHandler.resolve(psi, parentStub)
+		val valueSetInfo = if(complexEnumInfo == null) ParadoxValueSetValueInfoHandler.resolve(psi, parentStub) else null
 		val gameType = psi.fileInfo?.rootInfo?.gameType
-		return ParadoxScriptStringStubImpl(parentStub, valueSetInfo, gameType)
+		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetInfo, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
-		//only for string
-		if(node.elementType != ParadoxScriptElementTypes.STRING) return false
-		//skip if may contain parameter
-		val isParameterAware = node.processChild { it.elementType == ParadoxScriptElementTypes.PARAMETER }
-		if(isParameterAware) return false
+		//skip if it may contain parameter
+		if(node.isParameterAwareExpression()) return false
 		return true
 	}
 	
 	override fun indexStub(stub: ParadoxScriptStringStub, sink: IndexSink) {
+		stub.complexEnumInfo?.let { info -> sink.occurrence(ParadoxComplexEnumIndex.key, info.enumName) }
 		stub.valueSetValueInfo?.let { info -> sink.occurrence(ParadoxValueSetValueIndex.key, info.valueSetName) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptStringStub, dataStream: StubOutputStream) {
-		dataStream.writeName(stub.valueSetValueInfo?.name)
-		dataStream.writeName(stub.valueSetValueInfo?.valueSetName)
+		stub.complexEnumInfo?.let { info -> 
+			dataStream.writeByte(0)
+			dataStream.writeName(info.name)
+			dataStream.writeName(info.enumName)
+		}
+		stub.valueSetValueInfo?.let { info ->
+			dataStream.writeByte(1)
+			dataStream.writeName(info.name)
+			dataStream.writeName(info.valueSetName)
+		}
 		dataStream.writeName(stub.gameType?.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptStringStub {
-		val valueSetInfo = run {
-			val name = dataStream.readNameString()
-			val valueSetName = dataStream.readNameString()
-			if(name == null || valueSetName == null) null else ParadoxValueSetValueInfo(name, valueSetName)
+		val flag = dataStream.readByte()
+		val complexEnumInfo = if(flag != 0.toByte()) null else {
+			val name = dataStream.readNameString().orEmpty()
+			val enumName = dataStream.readNameString().orEmpty()
+			ParadoxComplexEnumInfo(name, enumName)
+		}
+		val valueSetValueInfo = if(flag != 1.toByte()) null else {
+			val name = dataStream.readNameString().orEmpty()
+			val valueSetName = dataStream.readNameString().orEmpty()
+			ParadoxValueSetValueInfo(name, valueSetName)
 		}
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-		return ParadoxScriptStringStubImpl(parentStub, valueSetInfo, gameType)
+		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetValueInfo, gameType)
 	}
 }

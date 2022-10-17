@@ -16,6 +16,7 @@
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
+    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxComplexEnumIndex"/>
     <stubIndex implementation="icu.windea.pls.script.psi.ParadoxValueSetValueIndex"/>
 
     <spellchecker.support

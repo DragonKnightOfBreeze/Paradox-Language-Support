@@ -21,6 +21,8 @@ class CwtConfigGroup(
 	
 	//enumValue可以是int、float、bool类型，统一用字符串表示
 	val enums: Map<String, CwtEnumConfig>
+	//基于enum_name进行定位，对应的可能是key/value
+	val complexEnums: Map<String, CwtComplexEnumConfig>
 	
 	//since: stellaris v3.4
 	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
@@ -69,6 +71,7 @@ class CwtConfigGroup(
 		types = mutableMapOf()
 		values = mutableMapOf()
 		enums = mutableMapOf()
+		complexEnums = mutableMapOf()
 		tags = CollectionFactory.createCaseInsensitiveStringMap()
 		links = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsScopeNotData = CollectionFactory.createCaseInsensitiveStringMap()
@@ -123,7 +126,7 @@ class CwtConfigGroup(
 							}
 						}
 					}
-					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums中
+					//找到配置文件中的顶级的key为"enums"的属性，然后解析它的子属性，添加到enums和complexEnums中
 					"enums" -> {
 						val props = property.properties ?: continue
 						for(prop in props) {
@@ -131,6 +134,11 @@ class CwtConfigGroup(
 							if(!enumName.isNullOrEmpty()) {
 								val enumConfig = resolveEnumConfig(prop, enumName) ?: continue
 								enums[enumName] = enumConfig
+							}
+							val complexEnumName = prop.key.removeSurroundingOrNull("complex_enum[", "]")
+							if(!complexEnumName.isNullOrEmpty()){
+								val complexEnumConfig = resolveComplexEnumConfig(prop, complexEnumName) ?: continue
+								complexEnums[complexEnumName] = complexEnumConfig
 							}
 						}
 					}
@@ -494,6 +502,29 @@ class CwtConfigGroup(
 			valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
 		}
 		return CwtEnumConfig(pointer, info, name, values, valueConfigMap)
+	}
+	
+	private fun resolveComplexEnumConfig(propertyConfig: CwtPropertyConfig, name: String): CwtComplexEnumConfig? {
+		val pointer = propertyConfig.pointer
+		val info = propertyConfig.info
+		val props = propertyConfig.properties ?: return null
+		if(props.isEmpty()) return null //invalid
+		var path: MutableList<String> = SmartList()
+		var pathFile: String? = null
+		var startFromRoot = false
+		var pathStrict = false
+		var nameConfig: CwtPropertyConfig? = null
+		for(prop in props) {
+			when(prop.key){
+				"path" -> prop.stringValue?.let { path.add(it) }
+				"path_file" -> pathFile = prop.stringValue
+				"path_strict" -> pathStrict = prop.booleanValue ?: false
+				"start_from_root" -> startFromRoot = prop.booleanValue ?: false
+				"name" -> nameConfig = prop
+			}
+		}
+		if(path.isEmpty() || nameConfig == null) return null //invalid
+		return CwtComplexEnumConfig(pointer, info, name, path, pathFile, pathStrict, startFromRoot, nameConfig)
 	}
 	
 	private fun resolveTagConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTagConfig? {

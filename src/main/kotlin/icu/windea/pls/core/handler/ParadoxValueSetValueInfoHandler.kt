@@ -12,14 +12,13 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueInfoHandler {
 	@JvmStatic
-	fun resolve(element: ParadoxScriptValue, parentStub: StubElement<*>? = null): ParadoxValueSetValueInfo? {
-		if(element !is ParadoxScriptString) return null //仅限string
+	fun resolve(element: ParadoxScriptString, parentStub: StubElement<*>? = null): ParadoxValueSetValueInfo? {
 		if(element.isParameterAwareExpression() || element.isQuoted()) return null //快速判断
 		val config = resolveConfigs(element, CwtValueConfig::class.java) {
 			!shouldBeSkipped(it)
 		}.firstOrNull() ?: return null
 		if(config.expression.type != CwtDataTypes.Value && config.expression.type != CwtDataTypes.ValueSet) return null
-		val name = element.value
+		val name = element.value.substringBefore('@')
 		val valueSetName = config.expression.value?.takeIfNotEmpty() ?: return null
 		return ParadoxValueSetValueInfo(name, valueSetName)
 	}

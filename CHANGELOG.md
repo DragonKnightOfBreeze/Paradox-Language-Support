@@ -34,6 +34,8 @@
   * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
 
+## 0.7
+
 ### 0.7.4
 
 * 功能优化：

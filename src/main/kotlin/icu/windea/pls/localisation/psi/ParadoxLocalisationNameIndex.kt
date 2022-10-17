@@ -11,8 +11,8 @@ import icu.windea.pls.core.selector.*
 sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
 	object Localisation : ParadoxLocalisationNameIndex() {
 		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-		private const val version = 9 //0.7.3
-		private const val cacheSize = 200 * 1024
+		private const val version = 10 //0.7.4
+		private const val cacheSize = 100 * 1024
 		
 		override fun getKey() = key
 		override fun getVersion() = version
@@ -21,7 +21,7 @@ sealed class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLoca
 	
 	object SyncedLocalisation : ParadoxLocalisationNameIndex() {
 		private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-		private const val version = 9 //0.7.3
+		private const val version = 10 //0.7.4
 		private const val cacheSize = 2 * 1024
 		
 		override fun getKey() = key

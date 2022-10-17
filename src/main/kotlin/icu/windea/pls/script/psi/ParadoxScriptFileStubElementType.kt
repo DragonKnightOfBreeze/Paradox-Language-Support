@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
 	private const val externalId = "paradoxScript.file"
-	private const val stubVersion = 2 //0.7.3
+	private const val stubVersion = 3 //0.7.4
 	
 	override fun getExternalId() = externalId
 	
@@ -70,13 +70,12 @@ object ParadoxScriptFileStubElementType : IStubFileElementType<PsiFileStub<*>>(P
 		}
 		
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-			//需要包括scripted_variable, property, string (作为：valueSetValue)
-			val type = node.elementType
+			//需要包括scripted_variable, property, key/string (作为：complexEnum, valueSetValue)
+			val elementType = node.elementType
 			return when {
-				type == PARAMETER || type == PARAMETER_CONDITION -> true
-				type == INLINE_MATH || type == INLINE_MATH_PARAMETER -> true
-				type == BOOLEAN || type == INT || type == FLOAT || type == COLOR -> true
-				type == PROPERTY_KEY -> true
+				elementType == PARAMETER || elementType == PARAMETER_CONDITION -> true
+				elementType == INLINE_MATH || elementType == INLINE_MATH_PARAMETER -> true
+				elementType == BOOLEAN || elementType == INT || elementType == FLOAT || elementType == COLOR -> true
 				else -> false
 			}
 		}

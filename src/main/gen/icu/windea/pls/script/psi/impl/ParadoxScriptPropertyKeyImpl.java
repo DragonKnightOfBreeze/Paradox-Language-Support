@@ -8,12 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.model.ParadoxValueType;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implements ParadoxScriptPropertyKey {
+public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<ParadoxScriptPropertyKeyStub> implements ParadoxScriptPropertyKey {
+
+  public ParadoxScriptPropertyKeyImpl(@NotNull ParadoxScriptPropertyKeyStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
 
   public ParadoxScriptPropertyKeyImpl(@NotNull ASTNode node) {
     super(node);

@@ -11,7 +11,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage){
 	private const val externalId = "paradoxLocalisation.file"
-	private const val stubVersion = 2 //0.7.3
+	private const val stubVersion = 3 //0.7.4
 	
 	override fun getExternalId() = externalId
 	
@@ -33,9 +33,11 @@ object ParadoxLocalisationFileStubElementType : IStubFileElementType<PsiFileStub
 	class Builder: DefaultStubBuilder(){
 		override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
 			//仅包括propertyList和property
-			return when{
+			return when {
+				node.elementType == LOCALE -> true
 				node.elementType == PROPERTY_LIST -> false
 				node.elementType == PROPERTY -> false
+				parent.elementType == PROPERTY -> true
 				else -> true
 			}
 		}

@@ -4,10 +4,11 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.model.ParadoxValueType;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

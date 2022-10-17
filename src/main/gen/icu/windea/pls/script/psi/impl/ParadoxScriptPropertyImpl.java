@@ -42,7 +42,7 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Override
   @NotNull
   public ParadoxScriptPropertyKey getPropertyKey() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptPropertyKey.class));
+    return notNullChild(PsiTreeUtil.getStubChildOfType(this, ParadoxScriptPropertyKey.class));
   }
 
   @Override

@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxSelectorUtils {
@@ -21,9 +20,7 @@ object ParadoxSelectorUtils {
 				?: from.definitionInfo?.gameType
 				?: ParadoxMagicCommentHandler.resolveDefinitionTypeComment(from)?.first //这个如果合法的话会被上一个选择逻辑覆盖
 				?: selectGameType(from.parent)
-			from is ParadoxLocalisationProperty -> runCatching { from.stub?.gameType }.getOrNull()
-				?: selectGameType(from.parent)
-			from is ParadoxScriptString -> runCatching { from.stub?.gameType }.getOrNull()
+			from is ParadoxScriptExpressionElement -> runCatching { from.stub?.gameType }.getOrNull()
 				?: selectGameType(from.parent)
 			from is PsiElement -> selectGameType(from.parent)
 			else -> null

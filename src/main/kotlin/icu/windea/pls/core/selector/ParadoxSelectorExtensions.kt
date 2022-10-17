@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
 private val NopParadoxSelector = ChainedParadoxSelector<Nothing>()
@@ -23,7 +22,7 @@ fun definitionSelector() = ChainedParadoxSelector<ParadoxDefinitionProperty>()
 
 fun localisationSelector() = ChainedParadoxSelector<ParadoxLocalisationProperty>()
 
-fun valueSetValueSelector() = ChainedParadoxSelector<ParadoxScriptExpressionElement>()
+fun valueSetValueSelector() = ChainedParadoxSelector<ParadoxScriptString>()
 
 
 fun <T, K> ChainedParadoxSelector<T>.distinctBy(selector: (T) -> K) = apply { selectors += ParadoxDistinctSelector(selector) }

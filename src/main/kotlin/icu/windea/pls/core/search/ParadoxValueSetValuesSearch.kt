@@ -11,17 +11,17 @@ import icu.windea.pls.script.psi.*
 /**
  * 值集中的值的查询器。
  */
-class ParadoxValueSetValuesSearch : ExtensibleQueryFactory<ParadoxScriptExpressionElement, ParadoxValueSetValuesSearch.SearchParameters>(EP_NAME) {
+class ParadoxValueSetValuesSearch : ExtensibleQueryFactory<ParadoxScriptString, ParadoxValueSetValuesSearch.SearchParameters>(EP_NAME) {
 	class SearchParameters(
 		val name: String?,
 		val valueSetName: String,
 		override val project: Project,
 		override val scope: SearchScope,
-		override val selector: ChainedParadoxSelector<ParadoxScriptExpressionElement>
-	) : ParadoxSearchParameters<ParadoxScriptExpressionElement>
+		override val selector: ChainedParadoxSelector<ParadoxScriptString>
+	) : ParadoxSearchParameters<ParadoxScriptString>
 	
 	companion object {
-		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptExpressionElement, SearchParameters>>("icu.windea.pls.paradoxValueSetValuesSearch")
+		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptString, SearchParameters>>("icu.windea.pls.paradoxValueSetValuesSearch")
 		@JvmField val INSTANCE = ParadoxValueSetValuesSearch()
 		
 		fun search(
@@ -29,14 +29,14 @@ class ParadoxValueSetValuesSearch : ExtensibleQueryFactory<ParadoxScriptExpressi
 			valueSetName: String,
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxScriptExpressionElement> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
 		) = INSTANCE.createParadoxResultsQuery(SearchParameters(name, valueSetName, project, scope, selector))
 		
 		fun search(
 			valueSetName: String,
 			project: Project,
 			scope: SearchScope = GlobalSearchScope.allScope(project),
-			selector: ChainedParadoxSelector<ParadoxScriptExpressionElement> = nopSelector()
+			selector: ChainedParadoxSelector<ParadoxScriptString> = nopSelector()
 		) = INSTANCE.createParadoxResultsQuery(SearchParameters(null, valueSetName, project, scope, selector))
 	}
 }
