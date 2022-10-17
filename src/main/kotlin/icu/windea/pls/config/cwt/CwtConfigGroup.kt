@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import kotlin.collections.isNullOrEmpty
 
@@ -20,7 +21,7 @@ class CwtConfigGroup(
 	val values: Map<String, CwtEnumConfig>
 	
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	val enums: Map<String, CwtEnumConfig>
+	private val enums: Map<String, CwtEnumConfig>
 	//基于enum_name进行定位，对应的可能是key/value
 	val complexEnums: Map<String, CwtComplexEnumConfig>
 	
@@ -136,7 +137,7 @@ class CwtConfigGroup(
 								enums[enumName] = enumConfig
 							}
 							val complexEnumName = prop.key.removeSurroundingOrNull("complex_enum[", "]")
-							if(!complexEnumName.isNullOrEmpty()){
+							if(!complexEnumName.isNullOrEmpty()) {
 								val complexEnumConfig = resolveComplexEnumConfig(prop, complexEnumName) ?: continue
 								complexEnums[complexEnumName] = complexEnumConfig
 							}
@@ -278,10 +279,10 @@ class CwtConfigGroup(
 					keysNoConst.add(key)
 				}
 			}
-			if(!keysConst.isNullOrEmpty()){
+			if(!keysConst.isNullOrEmpty()) {
 				aliasKeysGroupConst.put(k, keysConst)
 			}
-			if(!keysNoConst.isNullOrEmpty()){
+			if(!keysNoConst.isNullOrEmpty()) {
 				aliasKeysGroupNoConst.put(k, keysNoConst.sortedByDescending { CwtKeyExpression.resolve(it).priority }.toSet())
 			}
 		}
@@ -296,8 +297,12 @@ class CwtConfigGroup(
 		bindModifierCategories()
 	}
 	
-	val linksAsScopePrefixes: Set<String> = linksAsScope.mapNotNullTo(mutableSetOf()){ it.value.prefix }
-	val linksAsValuePrefixes: Set<String> = linksAsValue.mapNotNullTo(mutableSetOf()){ it.value.prefix }
+	val linksAsScopePrefixes: Set<String> by lazy { 
+		linksAsScope.mapNotNullTo(mutableSetOf()) { it.value.prefix }
+	}
+	val linksAsValuePrefixes: Set<String> by lazy { 
+		linksAsValue.mapNotNullTo(mutableSetOf()) { it.value.prefix }
+	}
 	
 	//解析CWT配置
 	
@@ -331,7 +336,7 @@ class CwtConfigGroup(
 				when(key) {
 					//定义的值是否需要为代码块，默认为是
 					"block" -> block = prop.booleanValue ?: continue //EXTENDED BY PLS
-					//这里path需要移除第一个子路径"game"，这个插件会忽略它
+					//这里的path会以"game/"开始，需要忽略
 					"path" -> path = prop.stringValue?.removePrefix("game")?.trimStart('/') ?: continue
 					"path_strict" -> pathStrict = prop.booleanValue ?: continue
 					"path_file" -> pathFile = prop.stringValue ?: continue
@@ -509,14 +514,17 @@ class CwtConfigGroup(
 		val info = propertyConfig.info
 		val props = propertyConfig.properties ?: return null
 		if(props.isEmpty()) return null //invalid
-		var path: MutableList<String> = SmartList()
+		val path: MutableSet<String> = mutableSetOf()
 		var pathFile: String? = null
 		var startFromRoot = false
 		var pathStrict = false
 		var nameConfig: CwtPropertyConfig? = null
 		for(prop in props) {
-			when(prop.key){
-				"path" -> prop.stringValue?.let { path.add(it) }
+			when(prop.key) {
+				//这里的path会以"game/"开始，需要忽略
+				"path" -> {
+					prop.stringValue?.removePrefix("game")?.trimStart('/')?.let { path.add(it) }
+				}
 				"path_file" -> pathFile = prop.stringValue
 				"path_strict" -> pathStrict = prop.booleanValue ?: false
 				"start_from_root" -> startFromRoot = prop.booleanValue ?: false
@@ -685,5 +693,26 @@ class CwtConfigGroup(
 				modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
 			}
 		}
+	}
+	
+	fun getEnumConfig(name: String): CwtEnumConfig? {
+		return enums[name]
+	}
+	
+	fun getComplexEnumConfig(name: String): CwtComplexEnumConfig? {
+		return complexEnums[name]
+	}
+	
+	fun getComplexEnumConfig(path: ParadoxPath, lazyElementPath: Lazy<ParadoxElementPath?>, isKey: Boolean): CwtComplexEnumConfig? {
+		//lazy get elementPath
+		//TODO cache by (path,elementPath) -> config (may be too many)
+		for(complexEnum in complexEnums.values) {
+			if(ParadoxComplexEnumInfoHandler.matchesComplexEnumByPath(complexEnum, path)) {
+				if(ParadoxComplexEnumInfoHandler.matchesComplexEnumByElementPath(complexEnum, lazyElementPath, isKey)){
+					return complexEnum
+				}
+			}
+		}
+		return null
 	}
 }

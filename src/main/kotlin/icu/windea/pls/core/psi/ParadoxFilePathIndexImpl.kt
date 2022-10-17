@@ -21,7 +21,6 @@ class ParadoxFilePathIndexImpl : ScalarIndexExtension<String>() {
 		return EnumeratorStringDescriptor.INSTANCE
 	}
 	
-	@Suppress("UnresolvedPluginConfigReference")
 	override fun getVersion(): Int {
 		return 3 + (if(Registry.`is`("indexing.paradox.file.path.over.vfs")) 0xff else 0)
 	}

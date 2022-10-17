@@ -41,9 +41,8 @@ object ParadoxDefinitionInfoHandler {
 		val file = element.containingFile
 		val project = file.project
 		val fileInfo = file.fileInfo
-			?: return resolveByTypeComment(element, project)
-				?: resolveByPathComment(element, file, project)
-		val (elementPath, _) = ParadoxElementPathHandler.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
+			?: return resolveByTypeComment(element, project) ?: resolveByPathComment(element, file, project)
+		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val path = fileInfo.path
 		val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
@@ -53,7 +52,7 @@ object ParadoxDefinitionInfoHandler {
 	
 	private fun resolveByPathComment(element: ParadoxDefinitionProperty, file: PsiFile, project: Project): ParadoxDefinitionInfo? {
 		val (gameType, path) = ParadoxMagicCommentHandler.resolveFilePathComment(file) ?: return null
-		val (elementPath, _) = ParadoxElementPathHandler.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
+		val elementPath = ParadoxElementPathHandler.resolveFromFile(element, maxMayBeDefinitionDepth) ?: return null
 		val rootKey = element.pathName //如果是文件名，不要包含扩展名
 		val configGroup = getCwtConfig(project).getValue(gameType) //这里需要指定project
 		return doResolve(configGroup, element, rootKey, path, elementPath)
@@ -76,7 +75,7 @@ object ParadoxDefinitionInfoHandler {
 		elementPath: ParadoxElementPath
 	): ParadoxDefinitionInfo? {
 		for(typeConfig in configGroup.types.values) {
-			if(matchesType(configGroup, typeConfig, element, rootKey, path, elementPath)) {
+			if(matchesTypeConfig(configGroup, typeConfig, element, rootKey, path, elementPath)) {
 				//需要懒加载
 				return ParadoxDefinitionInfo(rootKey, typeConfig, configGroup.gameType, configGroup, element)
 			}
@@ -92,14 +91,14 @@ object ParadoxDefinitionInfoHandler {
 	): ParadoxDefinitionInfo? {
 		val typeConfig = configGroup.types[type] ?: return null
 		//仍然要求匹配rootKey
-		if(matchesTypeWithKnownType(typeConfig, rootKey)) {
+		if(matchesTypeConfigWithKnownType(typeConfig, rootKey)) {
 			return ParadoxDefinitionInfo(rootKey, typeConfig, configGroup.gameType, configGroup, element)
 		}
 		return null
 	}
 	
 	@JvmStatic
-	fun matchesType(
+	fun matchesTypeConfig(
 		configGroup: CwtConfigGroup,
 		typeConfig: CwtTypeConfig,
 		element: ParadoxDefinitionProperty,
@@ -174,7 +173,7 @@ object ParadoxDefinitionInfoHandler {
 	}
 	
 	@JvmStatic
-	fun matchesTypeWithKnownType(
+	fun matchesTypeConfigWithKnownType(
 		typeConfig: CwtTypeConfig,
 		rootKey: String
 	): Boolean {
@@ -193,7 +192,7 @@ object ParadoxDefinitionInfoHandler {
 	}
 	
 	@JvmStatic
-	fun matchesSubtype(
+	fun matchesSubtypeConfig(
 		configGroup: CwtConfigGroup,
 		subtypeConfig: CwtSubtypeConfig,
 		element: ParadoxDefinitionProperty,

@@ -1,6 +1,7 @@
 <idea-plugin>
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.paradoxValueSetValuesSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.paradoxComplexEnumsSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
   </extensionPoints>
   
   <extensions defaultExtensionNs="com.intellij">
@@ -32,6 +33,7 @@
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls">
+    <paradoxComplexEnumsSearch implementation="icu.windea.pls.core.search.ParadoxComplexEnumsSearcher"/>
     <paradoxValueSetValuesSearch implementation="icu.windea.pls.core.search.ParadoxValueSetValuesSearcher"/>
   </extensions>
   

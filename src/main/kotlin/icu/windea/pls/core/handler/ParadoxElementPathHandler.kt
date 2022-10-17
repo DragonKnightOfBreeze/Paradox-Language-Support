@@ -14,9 +14,9 @@ object ParadoxElementPathHandler {
 	 * 解析指定定义相对于所属文件的属性路径。
 	 */
 	@JvmStatic
-	fun resolveFromFile(element: ParadoxDefinitionProperty, maxDepth: Int = -1): Pair<ParadoxElementPath, ParadoxScriptFile>? {
+	fun resolveFromFile(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
 		if(element is ParadoxScriptFile) {
-			return EmptyParadoxElementPath to element
+			return EmptyParadoxElementPath
 		}
 		var current: PsiElement = element
 		var depth = 0
@@ -37,14 +37,14 @@ object ParadoxElementPathHandler {
 			current = current.parent ?: break
 		}
 		val file = current as ParadoxScriptFile
-		return ParadoxElementPath.resolve(originalSubPaths) to file
+		return ParadoxElementPath.resolve(originalSubPaths)
 	}
 	
 	/**
 	 * 解析指定元素相对于所属定义的属性路径。
 	 */
 	@JvmStatic
-	fun resolveFromDefinition(element: PsiElement): Tuple2<ParadoxElementPath, ParadoxDefinitionProperty>? {
+	fun resolveFromDefinitionWithDefinition(element: PsiElement): Tuple2<ParadoxElementPath, ParadoxDefinitionProperty>? {
 		var current: PsiElement = element
 		var depth = 0
 		val subPaths = LinkedList<String>()

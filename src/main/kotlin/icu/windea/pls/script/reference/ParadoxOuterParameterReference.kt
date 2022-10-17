@@ -18,7 +18,7 @@ class ParadoxOuterParameterReference(
 		//重命名引用指向的元素（在对应的范围内）
 		val element = element
 		return when {
-			element is ParadoxScriptExpressionElement -> element.setName(rangeInElement.replace(element.getName(), newElementName))
+			element is ParadoxScriptExpressionElement -> element.setValue(rangeInElement.replace(element.value, newElementName))
 			else -> element
 		}
 	}

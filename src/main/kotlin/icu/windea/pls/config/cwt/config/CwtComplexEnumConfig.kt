@@ -14,7 +14,7 @@ data class CwtComplexEnumConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
 	override val info: CwtConfigInfo,
 	val name: String,
-	val path: List<String>,
+	val path: Set<String>,
 	val pathFile: String?,
 	val pathStrict: Boolean,
 	val startFromRoot: Boolean,

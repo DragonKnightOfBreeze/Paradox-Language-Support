@@ -19,12 +19,6 @@ public interface ParadoxScriptString extends ParadoxScriptValue, ParadoxScriptEx
   Icon getIcon(@IconFlags int flags);
 
   @NotNull
-  String getName();
-
-  @NotNull
-  ParadoxScriptString setName(@NotNull String value);
-
-  @NotNull
   String getValue();
 
   @NotNull

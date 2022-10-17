@@ -29,7 +29,7 @@ object ParadoxDefinitionElementInfoHandler {
 	@JvmStatic
 	fun resolveDownUp(element: PsiElement): ParadoxDefinitionElementInfo? {
 		//这里输入的element本身可以是定义，这时elementPath会是空字符串
-		val (elementPath, definition) = ParadoxElementPathHandler.resolveFromDefinition(element) ?: return null
+		val (elementPath, definition) = ParadoxElementPathHandler.resolveFromDefinitionWithDefinition(element) ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
 		val scope = definitionInfo.subtypeConfigs.find { it.pushScope != null }?.pushScope
 		val gameType = definitionInfo.gameType

@@ -283,16 +283,6 @@ object ParadoxScriptPsiImplUtil {
 	
 	//region ParadoxScriptPropertyKey
 	@JvmStatic
-	fun getName(element: ParadoxScriptPropertyKey): String {
-		return getValue(element)
-	}
-	
-	@JvmStatic
-	fun setName(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-		return setValue(element, value)
-	}
-	
-	@JvmStatic
 	fun getValue(element: ParadoxScriptPropertyKey): String {
 		return element.text.unquote()
 	}
@@ -433,17 +423,6 @@ object ParadoxScriptPsiImplUtil {
 		if(element.resolveTagConfig() != null) return PlsIcons.Tag
 		return PlsIcons.ScriptValue
 	}
-	
-	@JvmStatic
-	fun getName(element: ParadoxScriptString): String {
-		return getValue(element)
-	}
-	
-	@JvmStatic
-	fun setName(element: ParadoxScriptString, value: String): ParadoxScriptString {
-		return setValue(element, value)
-	}
-	
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptString): String {
