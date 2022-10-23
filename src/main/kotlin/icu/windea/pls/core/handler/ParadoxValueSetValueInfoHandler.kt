@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core.handler
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
@@ -14,7 +15,7 @@ object ParadoxValueSetValueInfoHandler {
 	@JvmStatic
 	fun resolve(element: ParadoxScriptString, parentStub: StubElement<*>? = null): ParadoxValueSetValueInfo? {
 		if(element.isParameterAwareExpression() || element.isQuoted()) return null //快速判断
-		
+		ProgressManager.checkCanceled()
 		val config = resolveConfigs(element, CwtValueConfig::class.java) {
 			!shouldBeSkipped(it)
 		}.firstOrNull() ?: return null

@@ -192,7 +192,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		val locationExpression = configType?.localisation?.let { CwtLocalisationLocationExpression.resolve(it) } ?: return
 		val key = locationExpression.resolvePlaceholder(name) ?: return
 		ProgressManager.checkCanceled()
-		val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
+		val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
 		val localisation = findLocalisation(key, configGroup.project, selector = selector) ?: return
 		content {
 			ParadoxLocalisationTextRenderer.renderTo(localisation, this)

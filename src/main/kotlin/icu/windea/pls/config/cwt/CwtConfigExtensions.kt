@@ -33,11 +33,12 @@ inline fun CwtKvConfig<*>.processParentProperty(processor: ProcessEntry.(CwtProp
 	return true
 }
 
-fun CwtKvConfig<*>.processDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean{
+fun CwtKvConfig<*>.processDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean {
 	return doProcessDescendants(processor)
 }
 
-private fun CwtKvConfig<*>.doProcessDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean{
+private fun CwtKvConfig<*>.doProcessDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean {
+	ProcessEntry.processor(this).also { if(!it) return false }
 	this.properties?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
 	this.values?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
 	return true

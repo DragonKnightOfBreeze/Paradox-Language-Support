@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core.handler
 
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
@@ -17,7 +18,7 @@ object ParadoxComplexEnumValueInfoHandler {
 	@JvmStatic
 	fun resolve(element: ParadoxScriptExpressionElement, parentStub: StubElement<*>? = null): ParadoxComplexEnumValueInfo? {
 		if(element.isParameterAwareExpression()) return null //快速判断
-		
+		ProgressManager.checkCanceled()
 		val file = element.containingFile
 		val project = file.project
 		val fileInfo = file.fileInfo ?: return null
@@ -26,9 +27,11 @@ object ParadoxComplexEnumValueInfoHandler {
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		for(complexEnumConfig in configGroup.complexEnums.values) {
 			if(matchComplexEnumByPath(complexEnumConfig, path)) {
+				//DEBUG
+				if(element.value != "reform_and_opening_up" || element.findParentDefinitionProperty()?.name != "policy_flags") continue
 				if(matchComplexEnum(complexEnumConfig, element)) {
 					val name = element.value
-					val enumName = ""
+					val enumName = complexEnumConfig.name
 					return ParadoxComplexEnumValueInfo(name, enumName)
 				}
 			}
@@ -72,28 +75,7 @@ object ParadoxComplexEnumValueInfoHandler {
 				return false
 			}
 		}
-		val parentConfig = config.parent ?: return false
-		if(parentConfig == complexEnumConfig.nameConfig) return false
-		val parentBlockElement = element.parentOfType<ParadoxScriptBlock>() ?: return false
-		val parentElement = if(parentBlockElement.isLonely()) parentBlockElement else parentBlockElement.parentOfType<ParadoxScriptProperty>() ?: return false
-		if(!complexEnumConfig.startFromRoot && parentElement.findParentScriptElement() == null) return false
-		parentConfig.properties?.forEach { propConfig ->
-			//ignore same config or enum name config
-			if(propConfig == config || propConfig.key == "enum_name" || propConfig.stringValue == "enum_name") return@forEach
-			val notMatched = parentBlockElement.processProperty { propElement ->
-				!doMatchPropertyConfig(complexEnumConfig, propConfig, propElement)
-			}
-			if(notMatched) return false
-		}
-		parentConfig.values?.forEach { valueConfig ->
-			//ignore same config or enum name config
-			if(valueConfig == config || valueConfig.stringValue == "enum_name") return@forEach
-			val notMatched = parentBlockElement.processValue { valueElement ->
-				!doMatchValueConfig(complexEnumConfig, valueConfig, valueElement)
-			}
-			if(notMatched) return false
-		}
-		return doMatchParentConfig(complexEnumConfig, parentConfig, parentElement)
+		return doBeforeMatchParentConfig(config, element, complexEnumConfig)
 	}
 	
 	private fun doMatchParentConfig(complexEnumConfig: CwtComplexEnumConfig, config: CwtKvConfig<*>, element: PsiElement): Boolean {
@@ -107,12 +89,21 @@ object ParadoxComplexEnumValueInfoHandler {
 		} else {
 			return false
 		}
-		
+		return doBeforeMatchParentConfig(config, element, complexEnumConfig)
+	}
+	
+	private fun doBeforeMatchParentConfig(config: CwtKvConfig<*>, element: PsiElement, complexEnumConfig: CwtComplexEnumConfig): Boolean {
 		val parentConfig = config.parent ?: return false
-		if(parentConfig == complexEnumConfig.nameConfig) return false
 		val parentBlockElement = element.parentOfType<ParadoxScriptBlock>() ?: return false
-		val parentElement = if(parentBlockElement.isLonely()) parentBlockElement else parentBlockElement.parentOfType<ParadoxScriptProperty>() ?: return false
-		if(!complexEnumConfig.startFromRoot && parentElement.findParentScriptElement() == null) return false
+		val parentElement = if(parentBlockElement.isLonely()) parentBlockElement else parentBlockElement.parentOfType<ParadoxScriptProperty>()
+		if(parentConfig == complexEnumConfig.nameConfig) {
+			if(complexEnumConfig.startFromRoot) {
+				return parentElement == null
+			} else {
+				return parentElement != null && parentElement.findParentScriptElement() == null
+			}
+		}
+		if(parentElement == null) return false
 		parentConfig.properties?.forEach { propConfig ->
 			//ignore same config or enum name config
 			if(propConfig == config || propConfig.key == "enum_name" || propConfig.stringValue == "enum_name") return@forEach
@@ -137,10 +128,10 @@ object ParadoxComplexEnumValueInfoHandler {
 			&& doMatchValueConfig(complexEnumConfig, config, propertyElement.propertyValue?.value ?: return false)
 	}
 	
-	private fun doMatchKeyConfig(complexEnumConfig: CwtComplexEnumConfig, config: CwtPropertyConfig, keyElement: ParadoxScriptProperty): Boolean {
+	private fun doMatchKeyConfig(complexEnumConfig: CwtComplexEnumConfig, config: CwtPropertyConfig, propertyElement: ParadoxScriptProperty): Boolean {
 		val key = config.key
 		if(key == "scalar" || key == "enum_name") return true
-		return key.equals(keyElement.value, true)
+		return key.equals(propertyElement.name, true)
 	}
 	
 	private fun doMatchValueConfig(complexEnumConfig: CwtComplexEnumConfig, config: CwtKvConfig<*>, valueElement: ParadoxScriptValue): Boolean {
