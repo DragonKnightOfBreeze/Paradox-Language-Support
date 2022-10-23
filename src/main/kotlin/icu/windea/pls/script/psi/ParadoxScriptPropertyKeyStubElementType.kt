@@ -22,7 +22,7 @@ object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPr
 	
 	override fun createStub(psi: ParadoxScriptPropertyKey, parentStub: StubElement<*>): ParadoxScriptPropertyKeyStub {
 		//accept only one info
-		val complexEnumInfo = ParadoxComplexEnumInfoHandler.resolve(psi, parentStub)
+		val complexEnumInfo = ParadoxComplexEnumValueInfoHandler.resolve(psi, parentStub)
 		val gameType = psi.fileInfo?.rootInfo?.gameType
 		return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumInfo, gameType)
 	}
@@ -34,16 +34,16 @@ object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPr
 	}
 	
 	override fun indexStub(stub: ParadoxScriptPropertyKeyStub, sink: IndexSink) {
-		stub.complexEnumInfo?.let { info -> sink.occurrence(ParadoxComplexEnumIndex.key, info.enumName) }
+		stub.complexEnumValueInfo?.let { info -> sink.occurrence(ParadoxComplexEnumIndex.key, info.enumName) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptPropertyKeyStub, dataStream: StubOutputStream) {
-		val complexEnumInfo = stub.complexEnumInfo
+		val complexEnumValueInfo = stub.complexEnumValueInfo
 		when {
-			complexEnumInfo != null -> {
+			complexEnumValueInfo != null -> {
 				dataStream.writeByte(1)
-				dataStream.writeName(complexEnumInfo.name)
-				dataStream.writeName(complexEnumInfo.enumName)
+				dataStream.writeName(complexEnumValueInfo.name)
+				dataStream.writeName(complexEnumValueInfo.enumName)
 			}
 			else -> {
 				dataStream.writeByte(0)
@@ -54,12 +54,12 @@ object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPr
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyKeyStub {
 		val flag = dataStream.readByte()
-		val complexEnumInfo = if(flag != 1.toByte()) null else {
+		val complexEnumValueInfo = if(flag != 1.toByte()) null else {
 			val name = dataStream.readNameString().orEmpty()
 			val enumName = dataStream.readNameString().orEmpty()
-			ParadoxComplexEnumInfo(name, enumName)
+			ParadoxComplexEnumValueInfo(name, enumName)
 		}
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-		return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumInfo, gameType)
+		return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumValueInfo, gameType)
 	}
 }

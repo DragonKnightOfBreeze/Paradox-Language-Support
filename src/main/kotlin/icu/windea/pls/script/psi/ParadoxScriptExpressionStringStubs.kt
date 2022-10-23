@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.core.model.*
 
 interface ParadoxScriptExpressionElementStub<T : ParadoxScriptExpressionElement> : StubElement<T> {
-	val complexEnumInfo: ParadoxComplexEnumInfo?
+	val complexEnumValueInfo: ParadoxComplexEnumValueInfo?
 	val gameType: ParadoxGameType?
 }
 

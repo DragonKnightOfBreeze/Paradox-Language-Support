@@ -26,7 +26,7 @@ class ParadoxComplexEnumsSearcher : QueryExecutor<PsiElement, ParadoxComplexEnum
 	}
 	
 	private fun getName(it: ParadoxScriptExpressionElement): String? {
-		val name = runCatching { it.stub }.getOrNull()?.complexEnumInfo?.name
+		val name = runCatching { it.stub }.getOrNull()?.complexEnumValueInfo?.name
 			?: it.value
 		return name.takeIfNotEmpty()
 	}

@@ -113,6 +113,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						checkBox(PlsBundle.message("settings.script.doc.renderRelatedImages"))
 							.bindSelected(settings::scriptRenderRelatedImages)
 							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.renderRelatedImages.tooltip") }
+					}
+					row {
 						checkBox(PlsBundle.message("settings.script.doc.showParameters"))
 							.bindSelected(settings::scriptShowParameters)
 							.applyToComponent { toolTipText = PlsBundle.message("settings.script.doc.showParameters.tooltip") }

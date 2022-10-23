@@ -1,7 +1,7 @@
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
-import com.intellij.openapi.project.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -74,10 +74,17 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true)
-			buildLocalisationContent(element, name, configType, project)
-			buildDocumentationContent(element)
+			buildLocalisationContent(originalElement, name, configType, configGroup)
+			val sectionMap = buildDocumentationContent(element)
 			buildScopeContent(element, originalElement, name, configType, configGroup)
 			buildSupportedScopesContent(element, originalElement, name, configType, configGroup)
+			if(sectionMap.isNotEmpty()){
+				sections {
+					for((sectionTitle, sectionValue) in sectionMap) {
+						section(sectionTitle, sectionValue)
+					}
+				}
+			}
 		}
 	}
 	
@@ -89,8 +96,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
 			buildStringDefinition(element, originalElement, name, configType, configGroup, true)
-			buildLocalisationContent(element, name, configType, project)
-			buildDocumentationContent(element)
+			buildLocalisationContent(originalElement, name, configType, configGroup)
+			val sectionMap = buildDocumentationContent(element)
+			if(sectionMap.isNotEmpty()){
+				sections {
+					for((sectionTitle, sectionValue) in sectionMap) {
+						section(sectionTitle, sectionValue)
+					}
+				}
+			}
 		}
 	}
 	
@@ -172,17 +186,20 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildLocalisationContent(element: PsiElement, name: String, configType: CwtConfigType?, project: Project) {
+	private fun StringBuilder.buildLocalisationContent(originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
+		if(originalElement?.language != ParadoxScriptLanguage) return
+		if(configGroup == null) return
 		val locationExpression = configType?.localisation?.let { CwtLocalisationLocationExpression.resolve(it) } ?: return
 		val key = locationExpression.resolvePlaceholder(name) ?: return
-		val selector = localisationSelector().gameTypeFrom(element).preferRootFrom(element).preferLocale(preferredParadoxLocale())
-		val localisation = findLocalisation(key, project, selector = selector) ?: return
+		ProgressManager.checkCanceled()
+		val selector = localisationSelector().gameTypeFrom(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
+		val localisation = findLocalisation(key, configGroup.project, selector = selector) ?: return
 		content {
 			ParadoxLocalisationTextRenderer.renderTo(localisation, this)
 		}
 	}
 	
-	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
+	private fun StringBuilder.buildDocumentationContent(element: PsiElement): Map<String, String> {
 		//渲染文档注释（作为HTML）和版本号信息
 		var current: PsiElement = element
 		var lines: LinkedList<String>? = null
@@ -216,10 +233,8 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				append(documentation)
 			}
 		}
-		if(since != null) {
-			sections {
-				section(PlsDocBundle.message("title.since"), since)
-			}
+		return buildMap {
+			if(since != null) put(PlsDocBundle.message("title.since"), since)
 		}
 	}
 	
@@ -235,11 +250,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				val inputScopeNames = linkConfig.inputScopeNames.joinToString()
 				val outputScopeName = linkConfig.outputScopeName
 				content {
-					append(nameToUse).appendBr()
-					if(descToUse != null && descToUse.isNotEmpty()) append(descToUse).appendBr()
+					append(nameToUse)
+					if(descToUse != null && descToUse.isNotEmpty()) {
+						appendBr()
+						append(descToUse)
+					}
 				}
 				content {
-					append(PlsDocBundle.message("content.inputScopes", inputScopeNames)).appendBr()
+					append(PlsDocBundle.message("content.inputScopes", inputScopeNames))
+					appendBr()
 					append(PlsDocBundle.message("content.outputScope", outputScopeName))
 				}
 			}
@@ -274,11 +293,14 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			else -> pass()
 		}
 		content {
+			var appendBr = false
 			if(!categoryNames.isNullOrEmpty()) {
+				appendBr = true
 				val categoryNamesToUse = categoryNames.joinToString(", ")
 				append(PlsDocBundle.message("content.categories", categoryNamesToUse))
 			}
 			if(!supportedScopeNames.isNullOrEmpty()) {
+				if(appendBr) appendBr()
 				val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ")
 				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNamesToUse))
 			}

@@ -22,7 +22,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 	
 	override fun createStub(psi: ParadoxScriptString, parentStub: StubElement<*>): ParadoxScriptStringStub {
 		//accept only one info
-		val complexEnumInfo = ParadoxComplexEnumInfoHandler.resolve(psi, parentStub)
+		val complexEnumInfo = ParadoxComplexEnumValueInfoHandler.resolve(psi, parentStub)
 		val valueSetInfo = if(complexEnumInfo == null) ParadoxValueSetValueInfoHandler.resolve(psi, parentStub) else null
 		val gameType = psi.fileInfo?.rootInfo?.gameType
 		return ParadoxScriptStringStubImpl(parentStub, complexEnumInfo, valueSetInfo, gameType)
@@ -35,12 +35,12 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 	}
 	
 	override fun indexStub(stub: ParadoxScriptStringStub, sink: IndexSink) {
-		stub.complexEnumInfo?.let { info -> sink.occurrence(ParadoxComplexEnumIndex.key, info.enumName) }
+		stub.complexEnumValueInfo?.let { info -> sink.occurrence(ParadoxComplexEnumIndex.key, info.enumName) }
 		stub.valueSetValueInfo?.let { info -> sink.occurrence(ParadoxValueSetValueIndex.key, info.valueSetName) }
 	}
 	
 	override fun serialize(stub: ParadoxScriptStringStub, dataStream: StubOutputStream) {
-		val complexEnumInfo = stub.complexEnumInfo
+		val complexEnumInfo = stub.complexEnumValueInfo
 		val valueSetValueInfo = stub.valueSetValueInfo
 		when {
 			complexEnumInfo != null -> {
@@ -65,7 +65,7 @@ object ParadoxScriptStringStubElementType : IStubElementType<ParadoxScriptString
 		val complexEnumInfo = if(flag != 1.toByte()) null else {
 			val name = dataStream.readNameString().orEmpty()
 			val enumName = dataStream.readNameString().orEmpty()
-			ParadoxComplexEnumInfo(name, enumName)
+			ParadoxComplexEnumValueInfo(name, enumName)
 		}
 		val valueSetValueInfo = if(flag != 2.toByte()) null else {
 			val name = dataStream.readNameString().orEmpty()

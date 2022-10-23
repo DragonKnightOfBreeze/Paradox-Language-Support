@@ -13,9 +13,9 @@ import icu.windea.pls.script.psi.*
 /**
  * 用于处理复杂枚举信息。
  */
-object ParadoxComplexEnumInfoHandler {
+object ParadoxComplexEnumValueInfoHandler {
 	@JvmStatic
-	fun resolve(element: ParadoxScriptExpressionElement, parentStub: StubElement<*>? = null): ParadoxComplexEnumInfo? {
+	fun resolve(element: ParadoxScriptExpressionElement, parentStub: StubElement<*>? = null): ParadoxComplexEnumValueInfo? {
 		if(element.isParameterAwareExpression()) return null //快速判断
 		
 		val file = element.containingFile
@@ -29,7 +29,7 @@ object ParadoxComplexEnumInfoHandler {
 				if(matchComplexEnum(complexEnumConfig, element)) {
 					val name = element.value
 					val enumName = ""
-					return ParadoxComplexEnumInfo(name, enumName)
+					return ParadoxComplexEnumValueInfo(name, enumName)
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 package icu.windea.pls.core.model
 
-data class ParadoxComplexEnumInfo(
+data class ParadoxComplexEnumValueInfo(
 	val name: String,
 	val enumName: String
 )
