@@ -41,7 +41,7 @@
   * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 尽管在脚本文件中Ctrl+点击本地化引用只会导航到选用的（而非所有的，Alt+Ctrl+点击才会导航到所有的），从任意同名本地化Ctrl+点击可以仍然导航到所有的引用，其他类型的引用同理
-  * [ ] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常
+  * [ ] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
 * 功能变更：
   * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ -> 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
 * 新增功能：
