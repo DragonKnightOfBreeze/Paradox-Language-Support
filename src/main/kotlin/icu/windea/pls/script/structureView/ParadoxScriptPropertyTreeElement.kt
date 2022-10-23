@@ -10,7 +10,7 @@ import icu.windea.pls.util.*
 class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTreeElementBase<ParadoxScriptProperty>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		val element = element ?: return emptyList()
-		val parent = element.findPropertyValue<ParadoxScriptBlock>() ?: return emptyList()
+		val parent = element.findValue<ParadoxScriptBlock>() ?: return emptyList()
 		//允许混合value和property
 		val result: MutableList<StructureViewTreeElement> = SmartList()
 		parent.forEachChild {

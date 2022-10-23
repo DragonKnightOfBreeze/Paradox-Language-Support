@@ -10,8 +10,6 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -419,8 +417,6 @@ object ParadoxScriptPsiImplUtil {
 	//region ParadoxScriptString
 	@JvmStatic
 	fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
-		//特殊处理字符串需要被识别为标签的情况
-		if(element.resolveTagConfig() != null) return PlsIcons.Tag
 		return PlsIcons.ScriptValue
 	}
 	

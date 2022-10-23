@@ -147,6 +147,8 @@
     
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
+    <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxScriptHighContrast.xml"/>
+    <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxScriptIntellijLight.xml"/>
 
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedScriptedVariable"
                      enabledByDefault="true" level="ERROR"

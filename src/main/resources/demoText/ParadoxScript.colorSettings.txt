@@ -1,36 +1,33 @@
-# Root comment
-# Second line comment
-@var1 = 123
-@var2 = 1
+@var = 1
 
 settings = {
 	# Line comment
-	variable_value = @var1 # variable reference
-	boolean_value = yes # yes or no
-	number_value = 123 # number
-	string_value = Foo # simple text
-	string_value = "Foo\n bar " # text (require quotes when contains blank)
+	variable_value = @var
+	boolean_value = yes
+	number_value = 1.0
+	string_value = Foo
+	string_value = "Foo\n bar "
 	property_value = {
 		foo = bar
-		number < 1 # predicate expression (treat as property)
+		number < 1
 	}
 	list_value = {
 		"A" "B" "C"
 	}
 	values = { 1 2 3 }
 	color = rgb { 142 188 241 }
-	
 	parameter = $PARAM$
 	[[!PARAM] parameter_condition = $PARAM$ ]
-	inline_math = @[2 + ($MAX$ - 1 + var1)]
+	inline_math = @[2 + ($MAX$ - 1 + var)]
 }
 
-<definition>definition_name</definition> = {
+<DEFINITION>some_definition</DEFINITION> = {
+	name = <DEFINITION_NAME>definition_name</DEFINITION_NAME>
 	<TAG>tag_name</TAG>
 	key = <DEFINITION_REFERENCE>definition_reference</DEFINITION_REFERENCE>
 	key = <LOCALISATION_REFERENCE>localisation_reference</LOCALISATION_REFERENCE>
 	key = <SYNCED_LOCALISATION_REFERENCE>synced_localisation_reference</SYNCED_LOCALISATION_REFERENCE>
-	key = <PATH_REFERENCE><STRING>path_reference</STRING></PATH_REFERENCE>
+	key = <PATH_REFERENCE>path_reference</PATH_REFERENCE>
 	key = <ENUM_VALUE>enum_value</ENUM_VALUE>
 	key = <COMPLEX_ENUM_VALUE>complex_enum_value</COMPLEX_ENUM_VALUE>
 	key = <VALUE_SET_VALUE>value_set_value</VALUE_SET_VALUE>

@@ -11,7 +11,6 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
@@ -21,9 +20,8 @@ import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
  *
  * * 提供定义的特殊颜色高亮。（基于CWT规则）
  * * 提供定义元素的特殊颜色高亮。（基于CWT规则）
- * * 提供标签的特殊颜色高亮。（基于扩展的CWT规则）
+ * * 提供特殊标签的特殊颜色高亮。（基于扩展的CWT规则）
  */
-@Suppress("UNUSED_PARAMETER")
 class ParadoxScriptAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
@@ -41,6 +39,15 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
 		//颜色高亮
 		holder.newSilentAnnotation(INFORMATION).range(element.propertyKey).textAttributes(Keys.DEFINITION_KEY).create()
+		val nameField = definitionInfo.typeConfig.nameField
+		if(nameField != null) {
+			//如果存在，高亮定义名对应的字符串
+			val nameElement = element.findDefinitionProperty(nameField, true)?.findValue<ParadoxScriptString>()
+			if(nameElement != null) {
+				holder.newAnnotation(INFORMATION, PlsBundle.message("script.annotator.definitionName"))
+					.range(nameElement).textAttributes(Keys.DEFINITION_NAME_KEY).create()
+			}
+		}
 	}
 	
 	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
@@ -48,21 +55,25 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(element.isParameterAwareExpression()) return
 		
 		val propertyConfig = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
-		if(propertyConfig != null) annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig, holder)
+		if(propertyConfig != null) {
+			annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig, holder)
+		}
 	}
 	
 	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
 		//不高亮带有参数的情况
 		if(element.isParameterAwareExpression()) return
 		
-		//特殊处理字符串需要被识别为标签的情况
-		if(annotateTag(element, holder)) return
-		
 		val valueConfig = ParadoxCwtConfigHandler.resolveValueConfig(element)
 		if(valueConfig != null) annotateExpression(element, element.textRange, valueConfig.expression, valueConfig, holder)
 	}
 	
 	private fun annotateExpression(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, config: CwtKvConfig<*>, holder: AnnotationHolder) {
+		//高亮特殊标签
+		if(config is CwtValueConfig && config.isTagConfig) {
+			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
+		}
+		
 		//颜色高亮
 		val configGroup = config.info.configGroup
 		when(expression.type) {
@@ -129,9 +140,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 							val infoRange = info.textRange.shiftRight(range.startOffset)
 							annotateExpression(element, infoRange, attributesKeyExpressions.first(), config, holder)
 							continue
-						} 
+						}
 						val attributesKey = info.getAttributesKey()
-						if(attributesKey != null){
+						if(attributesKey != null) {
 							val infoRange = info.textRange.shiftRight(range.startOffset)
 							holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
 						}
@@ -139,7 +150,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				}
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
-				if(!element.isQuoted()){
+				if(!element.isQuoted()) {
 					val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(element.value, configGroup)
 					if(valueFieldExpression.isEmpty()) return
 					for(info in valueFieldExpression.infos) {
@@ -151,7 +162,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 							continue
 						}
 						val attributesKey = info.getAttributesKey()
-						if(attributesKey != null){
+						if(attributesKey != null) {
 							val infoRange = info.textRange.shiftRight(range.startOffset)
 							holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
 						}
@@ -164,12 +175,5 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			}
 			else -> pass()
 		}
-	}
-	
-	private fun annotateTag(element: ParadoxScriptString, holder: AnnotationHolder): Boolean {
-		//颜色高亮
-		if(element.resolveTagConfig() == null) return false
-		holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
-		return true
 	}
 }

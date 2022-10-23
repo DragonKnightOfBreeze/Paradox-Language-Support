@@ -8,7 +8,7 @@ import icu.windea.pls.core.selector.*
 
 object ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptVariable>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptVariable>("paradox.scriptedVariable.name.index")
-	private const val version = 9 //0.7.3
+	private const val version = 10 //0.7.4
 	private const val cacheSize = 2 * 1024
 	
 	override fun getKey() = key

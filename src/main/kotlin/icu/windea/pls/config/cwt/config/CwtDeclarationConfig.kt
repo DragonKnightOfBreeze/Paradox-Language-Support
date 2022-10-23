@@ -75,9 +75,7 @@ data class CwtDeclarationConfig(
 									if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
 										nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index, path)
 									}
-								}
-								else if(!isKey && config is CwtValueConfig) {
-									if(isKey) continue
+								} else if(!isKey && config is CwtValueConfig) {
 									nextResult.add(config)
 								}
 							} else {
@@ -98,7 +96,7 @@ data class CwtDeclarationConfig(
 							}
 						}
 						//如果存在可以精确匹配的规则，则仅返回这些可以精确匹配的规则（对于property来说是keyExpression，对于string来说是valueExpression）
-						result = nextResult.filter { CwtConfigHandler.matchesExactly(it.expression, path.last(), configGroup) }
+						result = nextResult.filter { CwtConfigHandler.matchesExactly(it.expression, path.last().first, configGroup) }
 							.ifEmpty { nextResult }
 						index = nextIndex
 					}

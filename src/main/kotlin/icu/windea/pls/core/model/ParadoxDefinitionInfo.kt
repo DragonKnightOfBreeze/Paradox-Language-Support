@@ -38,9 +38,9 @@ class ParadoxDefinitionInfo(
 		//name_from_file = yes -> 返回文件名（不包含扩展名）
 		val nameFromFileConfig = typeConfig.nameFromFile
 		if(nameFromFileConfig) return@lazy element.containingFile.name.substringBeforeLast('.')
-		//name_field = xxx -> 返回对应名字（xxx）的property的value，如果不存在则返回空字符串
+		//name_field = xxx -> 返回对应名字（xxx）的property的stringValue，如果不存在则返回空字符串
 		val nameFieldConfig = typeConfig.nameField
-		if(nameFieldConfig != null) return@lazy element.findProperty(nameFieldConfig, true)?.value.orEmpty()
+		if(nameFieldConfig != null) return@lazy element.findDefinitionProperty(nameFieldConfig, true)?.findValue<ParadoxScriptString>()?.stringValue.orEmpty()
 		//否则直接返回rootKey
 		rootKey
 	}

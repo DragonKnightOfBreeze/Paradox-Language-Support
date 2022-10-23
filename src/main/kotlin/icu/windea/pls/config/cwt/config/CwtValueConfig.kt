@@ -25,4 +25,6 @@ data class CwtValueConfig(
 	override val expression: CwtValueExpression get() = valueExpression
 	
 	override val resolved: CwtValueConfig get() = this
+	
+	val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true
 }

@@ -1,26 +1,22 @@
-# Root comment
-# Second line comment
-@var1 = 123
-@var2 = 1
+@var = 1
 
 settings = {
 	# Line comment
-	variable_value = @var1 # variable reference
-	boolean_value = yes # yes or no
-	number_value = 123 # number
-	string_value = Foo # simple text
-	string_value = "Foo\n bar " # text (require quotes when contains blank)
+	variable_value = @var
+	boolean_value = yes
+	number_value = 1.0
+	string_value = Foo
+	string_value = "Foo\n bar "
 	property_value = {
 		foo = bar
-		number < 1 # predicate expression (treat as property)
+		number < 1
 	}
 	list_value = {
 		"A" "B" "C"
 	}
 	values = { 1 2 3 }
 	color = rgb { 142 188 241 }
-	
 	parameter = $PARAM$
 	[[!PARAM] parameter_condition = $PARAM$ ]
-	inline_math = @[2 + ($MAX$ - 1 + var1)]
+	inline_math = @[2 + ($MAX$ - 1 + var)]
 }

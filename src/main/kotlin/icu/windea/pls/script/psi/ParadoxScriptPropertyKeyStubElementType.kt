@@ -38,17 +38,23 @@ object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPr
 	}
 	
 	override fun serialize(stub: ParadoxScriptPropertyKeyStub, dataStream: StubOutputStream) {
-		stub.complexEnumInfo?.let { info ->
-			dataStream.writeByte(0)
-			dataStream.writeName(info.name)
-			dataStream.writeName(info.enumName)
+		val complexEnumInfo = stub.complexEnumInfo
+		when {
+			complexEnumInfo != null -> {
+				dataStream.writeByte(1)
+				dataStream.writeName(complexEnumInfo.name)
+				dataStream.writeName(complexEnumInfo.enumName)
+			}
+			else -> {
+				dataStream.writeByte(0)
+			}
 		}
 		dataStream.writeName(stub.gameType?.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyKeyStub {
 		val flag = dataStream.readByte()
-		val complexEnumInfo = if(flag != 0.toByte()) null else {
+		val complexEnumInfo = if(flag != 1.toByte()) null else {
 			val name = dataStream.readNameString().orEmpty()
 			val enumName = dataStream.readNameString().orEmpty()
 			ParadoxComplexEnumInfo(name, enumName)

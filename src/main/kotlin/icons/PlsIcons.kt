@@ -64,6 +64,7 @@ object PlsIcons {
 		@JvmField val RelatedLocalisation = loadIcon("/icons/gutter/relatedLocalisation.svg")
 		@JvmField val RelatedImages = loadIcon("/icons/gutter/relatedImages.svg")
 		@JvmField val Localisation = loadIcon("/icons/gutter/localisation.svg")
+		@JvmField val ComplexEnumValue = loadIcon("icons/gutter/complexEnumValue.svg")
 	}
 	
 	@JvmStatic fun loadIcon(path: String): Icon {

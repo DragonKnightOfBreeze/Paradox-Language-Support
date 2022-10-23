@@ -86,9 +86,11 @@
     <fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationTextEditorProvider"/>
     <!--<fileEditorProvider implementation="icu.windea.pls.localisation.ui.preview.ParadoxLocalisationEditorProvider"/>-->
     <advancedSetting id="paradoxLocalisation.hide.floating.toolbar" default="false" groupKey="settings"/>
-
+    
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
+    <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxLocalisationHighContrast.xml"/>
+    <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxLocalisationIntellijLight.xml"/>
 
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.ChangeLocalisationLocaleIntention</className>

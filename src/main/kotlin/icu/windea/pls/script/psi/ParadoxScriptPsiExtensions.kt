@@ -83,7 +83,7 @@ inline fun ParadoxScriptParameterCondition.processValue(processor: (ParadoxScrip
 }
 
 
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findPropertyValue(): T? {
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.findValue(): T? {
 	return findOptionalChild<ParadoxScriptPropertyValue>()?.findOptionalChild()
 }
 
@@ -92,9 +92,9 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlock.findValues(): Lis
 }
 
 /**
- * 得到指定名字的属性。如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。
+ * 得到指定名字的定义属性。如果为当前定义属性本身不是定义文件且[propertyName]为空字符串，则直接返回当前定义属性。
  */
-fun ParadoxDefinitionProperty.findProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
+fun ParadoxDefinitionProperty.findDefinitionProperty(propertyName: String, ignoreCase: Boolean = true): ParadoxScriptProperty? {
 	if(propertyName.isEmpty() && this is ParadoxScriptProperty) return this
 	block?.processProperty(includeConditional = true) {
 		if(it.name.equals(propertyName, ignoreCase)) return it

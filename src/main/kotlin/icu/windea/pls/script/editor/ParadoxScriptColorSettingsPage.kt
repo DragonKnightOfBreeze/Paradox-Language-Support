@@ -4,6 +4,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.highlighter.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.highlighter.*
 
@@ -31,6 +32,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			AttributesDescriptor(PlsBundle.message("script.displayName.badCharacter"), ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY),
 			
 			AttributesDescriptor(PlsBundle.message("script.displayName.definition"), ParadoxScriptAttributesKeys.DEFINITION_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.definitionName"), ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.definitionReference"), ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.localisationReference"), ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.syncedLocalisationReference"), ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY),
@@ -48,10 +50,12 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 	}
 	
 	private val tagToDescriptorMap = mapOf(
-		"STRING" to ParadoxScriptAttributesKeys.STRING_KEY,
 		"DEFINITION" to ParadoxScriptAttributesKeys.DEFINITION_KEY,
+		"DEFINITION_NAME" to ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY,
 		"DEFINITION_REFERENCE" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
+		"LOCALISATION" to ParadoxLocalisationAttributesKeys.LOCALISATION_KEY,
 		"LOCALISATION_REFERENCE" to ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY,
+		"SYNCED_LOCALISATION" to ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY,
 		"SYNCED_LOCALISATION_REFERENCE" to ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY,
 		"PATH_REFERENCE" to ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY,
 		"ENUM_VALUE" to ParadoxScriptAttributesKeys.ENUM_VALUE_KEY,

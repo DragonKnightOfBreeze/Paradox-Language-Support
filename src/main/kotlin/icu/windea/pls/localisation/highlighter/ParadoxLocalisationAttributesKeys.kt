@@ -9,30 +9,29 @@ import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.*
 import java.awt.*
 
-@Suppress("DEPRECATION")
 object ParadoxLocalisationAttributesKeys {
-	@JvmField val OPERATOR_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.operator"), OPERATION_SIGN)
-	@JvmField val MARKER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.marker"), KEYWORD)
-	@JvmField val COMMENT_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.comment"), LINE_COMMENT)
-	@JvmField val NUMBER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.number"), NUMBER)
-	@JvmField val LOCALE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.locale"), KEYWORD)
-	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.propertyKey"), KEYWORD)
-	@JvmField val STRING_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.string"), STRING)
-	@JvmField val PROPERTY_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.propertyReference"), KEYWORD)
-	@JvmField val PROPERTY_REFERENCE_PARAMETER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.propertyReferenceParameter"), KEYWORD)
-	@JvmField val ICON_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.icon"), CodeInsightColors.HYPERLINK_ATTRIBUTES) //Markdown -> Links//Link text
-	@JvmField val COMMAND_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.commandScope"), IDENTIFIER)
-	@JvmField val COMMAND_FIELD_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.commandField"), IDENTIFIER)
-	@JvmField val COLOR_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.color"), IDENTIFIER)
-	@JvmField val VALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.validEscape"), VALID_STRING_ESCAPE)
-	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.invalidEscape"), INVALID_STRING_ESCAPE)
-	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.badCharacter"), BAD_CHARACTER)
+	@JvmField val OPERATOR_KEY = createTextAttributesKey("PARADOX_LOCALISATION.OPERATOR", OPERATION_SIGN)
+	@JvmField val MARKER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.MARKER", KEYWORD)
+	@JvmField val COMMENT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMENT", LINE_COMMENT)
+	@JvmField val NUMBER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.NUMBER", NUMBER)
+	@JvmField val LOCALE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALE", KEYWORD)
+	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey("PARADOX_LOCALISATION.PROPERTY_KEY", KEYWORD)
+	@JvmField val STRING_KEY = createTextAttributesKey("PARADOX_LOCALISATION.STRING", STRING)
+	@JvmField val PROPERTY_REFERENCE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.PROPERTY_REFERENCE", KEYWORD)
+	@JvmField val PROPERTY_REFERENCE_PARAMETER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.PROPERTY_REFERENCE_PARAMETER", KEYWORD)
+	@JvmField val ICON_KEY = createTextAttributesKey("PARADOX_LOCALISATION.ICON", IDENTIFIER) //#5C8AE6
+	@JvmField val COMMAND_SCOPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_SCOPE", IDENTIFIER)
+	@JvmField val COMMAND_FIELD_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_FIELD", IDENTIFIER)
+	@JvmField val COLOR_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COLOR", IDENTIFIER)
+	@JvmField val VALID_ESCAPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.VALID_ESCAPE", VALID_STRING_ESCAPE)
+	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.INVALID_ESCAPE", INVALID_STRING_ESCAPE)
+	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.BAD_CHARACTER", BAD_CHARACTER)
 	
-	@JvmField val LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.localisation"), PROPERTY_KEY_KEY) //underscored (commented)
-	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.syncedLocalisation"), PROPERTY_KEY_KEY) //underscored (commented)
+	@JvmField val LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION", PROPERTY_KEY_KEY) //underscored
+	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SYNCED_LOCALISATION", PROPERTY_KEY_KEY) //underscored
 	
 	private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
-		createTextAttributesKey("${PlsBundle.message("localisation.externalName.color")}_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
+		createTempTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
 			foregroundColor = color
 		})
 	}
@@ -43,7 +42,7 @@ object ParadoxLocalisationAttributesKeys {
 	}
 	
 	private val colorOnlyKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
-		createTextAttributesKey("${PlsBundle.message("localisation.externalName.color")}_${color.rgb}", TextAttributes().apply {
+		createTempTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", TextAttributes().apply {
 			foregroundColor = color
 		})
 	}

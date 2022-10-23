@@ -38,7 +38,7 @@ fun CwtKvConfig<*>.processDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -
 }
 
 private fun CwtKvConfig<*>.doProcessDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean{
-	this.properties?.process { doProcessDescendants(processor) }?.also { if(!it) return false }
-	this.values?.process { doProcessDescendants(processor) }?.also { if(!it) return false }
+	this.properties?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
+	this.values?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
 	return true
 }

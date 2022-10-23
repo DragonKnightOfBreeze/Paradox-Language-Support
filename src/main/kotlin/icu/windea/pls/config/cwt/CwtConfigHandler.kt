@@ -1646,9 +1646,8 @@ object CwtConfigHandler {
 					val aliasSubNameIgnoreCase = configGroup.aliasKeysGroupConst.get(aliasName)?.get(aliasSubName)
 					val aliases = aliasGroup[aliasSubNameIgnoreCase] //需要忽略大小写
 					if(aliases != null) {
-						val alias = aliases.firstOrNull()
-						val element = alias?.pointer?.element
-						if(element != null) return element
+						val alias = aliases.firstOrNull() ?: return null
+						return alias.pointer.element
 					}
 					return null
 				}

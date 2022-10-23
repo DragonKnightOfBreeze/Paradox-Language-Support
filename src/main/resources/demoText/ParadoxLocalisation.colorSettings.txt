@@ -1,5 +1,3 @@
-# Root comment
-# Second line comment
 l_english:
  # Comment
  KEY:0 "Value"

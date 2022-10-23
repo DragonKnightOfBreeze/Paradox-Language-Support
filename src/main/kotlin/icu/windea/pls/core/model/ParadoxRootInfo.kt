@@ -51,13 +51,13 @@ class ParadoxRootInfo(
 				var path: String? = null
 				rootBlock.processProperty { property ->
 					when(property.name) {
-						"name" -> name = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-						"version" -> version = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-						"picture" -> picture = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-						"tags" -> tags = property.findPropertyValue<ParadoxScriptBlock>()?.findValues<ParadoxScriptString>()?.mapTo(mutableSetOf()) { it.stringValue }
-						"supported_version" -> supportedVersion = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-						"remote_file_id" -> remoteFileId = property.findPropertyValue<ParadoxScriptString>()?.stringValue
-						"path" -> path = property.findPropertyValue<ParadoxScriptString>()?.stringValue
+						"name" -> name = property.findValue<ParadoxScriptString>()?.stringValue
+						"version" -> version = property.findValue<ParadoxScriptString>()?.stringValue
+						"picture" -> picture = property.findValue<ParadoxScriptString>()?.stringValue
+						"tags" -> tags = property.findValue<ParadoxScriptBlock>()?.findValues<ParadoxScriptString>()?.mapTo(mutableSetOf()) { it.stringValue }
+						"supported_version" -> supportedVersion = property.findValue<ParadoxScriptString>()?.stringValue
+						"remote_file_id" -> remoteFileId = property.findValue<ParadoxScriptString>()?.stringValue
+						"path" -> path = property.findValue<ParadoxScriptString>()?.stringValue
 					}
 					true
 				}
