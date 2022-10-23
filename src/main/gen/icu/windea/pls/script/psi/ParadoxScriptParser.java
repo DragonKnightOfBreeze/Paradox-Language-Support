@@ -525,7 +525,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   // NOT_SIGN ? parameter_condition_parameter
   public static boolean parameter_condition_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition_expression")) return false;
-    if (!nextTokenIs(b, "<parameter condition expression>", INPUT_PARAMETER_ID, NOT_SIGN)) return false;
+    if (!nextTokenIs(b, "<parameter condition expression>", ARGUMENT_ID, NOT_SIGN)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, PARAMETER_CONDITION_EXPRESSION, "<parameter condition expression>");
     r = parameter_condition_expression_0(b, l + 1);
@@ -555,13 +555,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INPUT_PARAMETER_ID
+  // ARGUMENT_ID
   public static boolean parameter_condition_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition_parameter")) return false;
-    if (!nextTokenIs(b, INPUT_PARAMETER_ID)) return false;
+    if (!nextTokenIs(b, ARGUMENT_ID)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, INPUT_PARAMETER_ID);
+    r = consumeToken(b, ARGUMENT_ID);
     exit_section_(b, m, PARAMETER_CONDITION_PARAMETER, r);
     return r;
   }

@@ -1,35 +1,32 @@
 <?xml version='1.0'?>
 <list>
-  <option name="PARADOX_SCRIPT.INPUT_PARAMETER">
+  <option name="PARADOX_SCRIPT.COLOR">
+    <value>
+      <option name="FOREGROUND" value="E8BF6A"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.ARGUMENT">
     <value>
       <option name="FOREGROUND" value="467CDA"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
-      <option name="FOREGROUND" value="9876AA"/>
-      <option name="EFFECT_COLOR" value="9876AA"/>
       <option name="EFFECT_TYPE" value="1"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="9876AA"/>
-      <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.LOCALISATION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="CC7832"/>
-      <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.SYNCED_LOCALISATION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="CC7832"/>
-      <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>

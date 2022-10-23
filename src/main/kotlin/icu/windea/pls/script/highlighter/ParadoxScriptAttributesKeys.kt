@@ -18,27 +18,28 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val COMMENT_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.comment"), LINE_COMMENT)
 	@JvmField val KEYWORD_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.keyword"), KEYWORD)
 	@JvmField val VARIABLE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.variable"), STATIC_FIELD)
-	@JvmField val INPUT_PARAMETER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.inputParameter"), KEYWORD)
+	@JvmField val ARGUMENT_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.argument"), KEYWORD) //Kotlin > Named argument
 	@JvmField val PARAMETER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.parameter"), KEYWORD)
 	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.propertyKey"), INSTANCE_FIELD)
-	@JvmField val COLOR_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.color"), FUNCTION_DECLARATION)
+	@JvmField val COLOR_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.color"), KEYWORD) //HTML > Tag name
 	@JvmField val NUMBER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.number"), NUMBER)
 	@JvmField val STRING_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.string"), STRING)
 	@JvmField val VALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.validEscape"), VALID_STRING_ESCAPE)
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.invalidEscape"), INVALID_STRING_ESCAPE)
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.badCharacter"), BAD_CHARACTER)
 	
-	@JvmField val DEFINITION_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definition"), PROPERTY_KEY_KEY)
-	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definitionReference"), DEFINITION_KEY)
-	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)
-	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)
-	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY)
+	@JvmField val DEFINITION_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definition"), PROPERTY_KEY_KEY) //underscored
+	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.definitionReference"), DEFINITION_KEY)  //dotted line
+	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)  //dotted line
+	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.syncedLocalisationReference"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)  //dotted line
+	@JvmField val PATH_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.pathReference"), STRING_KEY) //underscored #707D95
 	@JvmField val ENUM_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.enumValue"), STATIC_FIELD)
-	@JvmField val VALUE_SET_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueSetValue"), LOCAL_VARIABLE)
+	@JvmField val COMPLEX_ENUM_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.complexEnumValue"), INSTANCE_FIELD) //#?
+	@JvmField val VALUE_SET_VALUE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueSetValue"), LOCAL_VARIABLE) //#?
 	@JvmField val SYSTEM_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.systemScope"), STATIC_METHOD)
 	@JvmField val SCOPE_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scope"), INSTANCE_METHOD)
 	@JvmField val SCOPE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.scopeFieldPrefix"), CUSTOM_KEYWORD3_ATTRIBUTES)
 	@JvmField val VALUE_FIELD_PREFIX_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.valueFieldPrefix"), CUSTOM_KEYWORD4_ATTRIBUTES)
-	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), PREDEFINED_SYMBOL)
+	@JvmField val MODIFIER_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.modifier"), PREDEFINED_SYMBOL) //Python > Special names//Definition
 	@JvmField val TAG_KEY = createTextAttributesKey(PlsBundle.message("script.externalName.tag"), METADATA)
 }

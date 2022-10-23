@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.annotations.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -15,7 +16,7 @@ val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOption
 
 val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
 
-val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(INPUT_PARAMETER_ID)
+val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(ARGUMENT_ID)
 
 val ParadoxScriptInlineMathVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(INLINE_MATH_VARIABLE_REFERENCE_ID)
 
@@ -134,6 +135,13 @@ fun PsiElement.findParentDefinitionProperty(fromParentBlock: Boolean = false): P
 		current = current.parent ?: break
 	}
 	return null
+}
+
+fun PsiElement.findParentScriptElement(): @UnionType(ParadoxScriptProperty::class, ParadoxScriptValue::class) PsiElement? {
+	if(language != ParadoxScriptLanguage) return null
+	return parents(false).find {
+		it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isLonely())
+	}
 }
 
 

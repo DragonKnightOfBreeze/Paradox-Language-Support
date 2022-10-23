@@ -11,7 +11,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 	init {
 		val stringTokens = TokenSet.create(STRING_TOKEN, QUOTED_STRING_TOKEN)
 		val propertyKeyOrStringTokens = TokenSet.create(PROPERTY_KEY_TOKEN, QUOTED_PROPERTY_KEY_TOKEN, STRING_TOKEN, QUOTED_STRING_TOKEN)
-		val parameterTokens = TokenSet.create(PARAMETER_ID, INPUT_PARAMETER_ID)
+		val parameterTokens = TokenSet.create(PARAMETER_ID, ARGUMENT_ID)
 		
 		//当用户正在输入一个propertyKey或string时提示
 		val definitionPattern = psiElement().withElementType(propertyKeyOrStringTokens)

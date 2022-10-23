@@ -467,26 +467,6 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, ignoreCase: Bo
 }
 
 /**
- * 判断当前子路径列表是否完全匹配另一个子路径列表（相同）。使用"/"作为路径分隔符。
- * @param ignoreCase 是否忽略大小写。默认为`true`。
- * @param useAnyWildcard 是否使用`"any"`字符串作为子路径通配符。表示匹配任意子路径。默认为`true`。
- * @param matchesParent 是否需要仅匹配另一个路径的父路径。默认为`false`。
- */
-fun List<String>.matchEntirePath(other: List<String>, ignoreCase: Boolean = true, useAnyWildcard: Boolean = true, matchesParent: Boolean = false): Boolean {
-	val size = size
-	val otherSize = if(matchesParent) other.size - 1 else other.size
-	if(size != otherSize) return false //路径长度不一致
-	if(otherSize < 0) return false //需要匹配另一个路径的父路径而另一个路径为空
-	for(index in 0 until size) {
-		val path = if(ignoreCase) this[index].lowercase() else this[index]
-		if(useAnyWildcard && path == "any") continue
-		val otherPath = if(ignoreCase) other[index].lowercase() else other[index]
-		if(path != otherPath) return false
-	}
-	return true
-}
-
-/**
  * 规范化当前路径。将路径分隔符统一替换成"/"，并去除所有作为前后缀的分隔符。
  */
 fun String.normalizePath(): String {

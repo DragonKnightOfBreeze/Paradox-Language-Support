@@ -20,7 +20,7 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val STRING_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.string"), STRING)
 	@JvmField val PROPERTY_REFERENCE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.propertyReference"), KEYWORD)
 	@JvmField val PROPERTY_REFERENCE_PARAMETER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.propertyReferenceParameter"), KEYWORD)
-	@JvmField val ICON_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.icon"), IDENTIFIER)
+	@JvmField val ICON_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.icon"), CodeInsightColors.HYPERLINK_ATTRIBUTES) //Markdown -> Links//Link text
 	@JvmField val COMMAND_SCOPE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.commandScope"), IDENTIFIER)
 	@JvmField val COMMAND_FIELD_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.commandField"), IDENTIFIER)
 	@JvmField val COLOR_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.color"), IDENTIFIER)
@@ -28,8 +28,8 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val INVALID_ESCAPE_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.invalidEscape"), INVALID_STRING_ESCAPE)
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.badCharacter"), BAD_CHARACTER)
 	
-	@JvmField val LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.localisation"), PROPERTY_KEY_KEY)
-	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.syncedLocalisation"), PROPERTY_KEY_KEY)
+	@JvmField val LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.localisation"), PROPERTY_KEY_KEY) //underscored (commented)
+	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey(PlsBundle.message("localisation.externalName.syncedLocalisation"), PROPERTY_KEY_KEY) //underscored (commented)
 	
 	private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
 		createTextAttributesKey("${PlsBundle.message("localisation.externalName.color")}_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {

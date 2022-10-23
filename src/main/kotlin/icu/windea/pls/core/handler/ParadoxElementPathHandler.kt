@@ -28,7 +28,7 @@ object ParadoxElementPathHandler {
 					depth++
 				}
 				current is ParadoxScriptValue && current.isLonely() -> {
-					originalSubPaths.addFirst("#" + current.text)
+					originalSubPaths.addFirst("-")
 					depth++
 				}
 			}
@@ -36,7 +36,6 @@ object ParadoxElementPathHandler {
 			if(maxDepth != -1 && maxDepth < depth) return null
 			current = current.parent ?: break
 		}
-		val file = current as ParadoxScriptFile
 		return ParadoxElementPath.resolve(originalSubPaths)
 	}
 	

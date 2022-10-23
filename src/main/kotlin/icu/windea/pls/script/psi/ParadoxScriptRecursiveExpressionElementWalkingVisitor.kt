@@ -7,7 +7,7 @@ abstract class ParadoxScriptRecursiveExpressionElementWalkingVisitor : ParadoxSc
 	final override fun visitColor(o: ParadoxScriptColor) {}
 	final override fun visitInlineMath(o: ParadoxScriptInlineMath) {}
 	final override fun visitParameter(o: ParadoxScriptParameter) {}
-	final override fun visitParadoxInputParameter(o: ParadoxInputParameter) {}
+	final override fun visitParadoxArgument(o: ParadoxArgument) {}
 	final override fun visitParameterCondition(o: ParadoxScriptParameterCondition) {}
 	final override fun visitVariable(o: ParadoxScriptVariable) {}
 	

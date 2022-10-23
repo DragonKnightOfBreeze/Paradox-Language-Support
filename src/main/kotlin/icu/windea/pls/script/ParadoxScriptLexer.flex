@@ -384,7 +384,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
   "!" {return NOT_SIGN;}
-  {PARAMETER_ID} {return INPUT_PARAMETER_ID;}
+  {PARAMETER_ID} {return ARGUMENT_ID;}
   "]" {yybegin(WAITING_PARAMETER_CONDITION); return NESTED_RIGHT_BRACKET;}
 }
 

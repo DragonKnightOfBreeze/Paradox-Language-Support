@@ -9,6 +9,8 @@ import icu.windea.pls.*
  * 示例：
  * * `common/buildings/00_capital_buildings.txt`
  * * `localisation/simp_chinese/l_simp_chinese.yml`
+ *
+ * @property path 使用"/"分割的路径（保留括起的双引号）。
  */
 interface ParadoxPath : Iterable<String> {
 	val path: String

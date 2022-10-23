@@ -204,7 +204,7 @@ class ParadoxScriptSvParameterExpressionInfo(
 	val configGroup: CwtConfigGroup
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
-		return ParadoxScriptAttributesKeys.INPUT_PARAMETER_KEY
+		return ParadoxScriptAttributesKeys.ARGUMENT_KEY
 	}
 	
 	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): PsiReference {

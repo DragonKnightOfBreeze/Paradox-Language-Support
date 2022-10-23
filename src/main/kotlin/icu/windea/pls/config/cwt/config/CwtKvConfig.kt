@@ -6,6 +6,11 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 
 abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
+	abstract val value: String
+	abstract val booleanValue: Boolean?
+	abstract val intValue: Int?
+	abstract val floatValue: Float?
+	abstract val stringValue: String?
 	abstract val properties: List<CwtPropertyConfig>?
 	abstract val values: List<CwtValueConfig>?
 	abstract val documentation: String?
@@ -17,6 +22,8 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	var parent: CwtKvConfig<*>? = null
 	
 	abstract val resolved: CwtKvConfig<*>
+	
+	val isBlock: Boolean get() = properties != null || values != null
 	
 	val cardinality by lazy { resolveCardinality() }
 	val scope get() = resolveScope() //不要缓存，因为parent可能有变动
@@ -85,7 +92,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		val values = values
 		var mergedProperties: MutableList<CwtPropertyConfig>? = if(properties != null) SmartList() else null
 		var mergedValues: MutableList<CwtValueConfig>? = if(values != null) SmartList() else null
-		if(properties != null && properties.isNotEmpty()){
+		if(properties != null && properties.isNotEmpty()) {
 			for(propConfig in properties) {
 				val configList = propConfig.deepMergeBySubtypes(subtypes)
 				if(configList.isEmpty()) continue
@@ -102,7 +109,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 				}
 			}
 		}
-		if(values != null && values.isNotEmpty()){
+		if(values != null && values.isNotEmpty()) {
 			for(valueConfig in values) {
 				val configList = valueConfig.deepMergeBySubtypes(subtypes)
 				if(configList.isEmpty()) continue
@@ -121,7 +128,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		}
 		when(this) {
 			is CwtPropertyConfig -> {
-				val subtypeName = key.removeSurroundingOrNull("subtype[", "]") 
+				val subtypeName = key.removeSurroundingOrNull("subtype[", "]")
 					?: return copy(properties = mergedProperties, values = mergedValues).also { parent = it.parent }.toSingletonList()
 				if(!matchesDefinitionSubtypeExpression(subtypeName, subtypes)) return emptyList()
 				return mergedProperties.orEmpty() + mergedValues.orEmpty()

@@ -1005,7 +1005,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 89: break;
           case 31: 
-            { return INPUT_PARAMETER_ID;
+            { return ARGUMENT_ID;
             } 
             // fall through
           case 90: break;

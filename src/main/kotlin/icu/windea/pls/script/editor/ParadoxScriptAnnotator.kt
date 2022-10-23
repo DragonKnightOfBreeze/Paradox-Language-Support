@@ -11,7 +11,6 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -102,9 +101,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			CwtDataTypes.Enum -> {
-				//TODO 支持complex_enum
+				val enumName = expression.value ?: return
 				val attributesKey = when {
-					expression.value == CwtConfigHandler.paramsEnumName -> Keys.INPUT_PARAMETER_KEY
+					enumName == CwtConfigHandler.paramsEnumName -> Keys.ARGUMENT_KEY
+					configGroup.getEnumConfig(enumName) != null -> Keys.ENUM_VALUE_KEY
+					configGroup.getComplexEnumConfig(enumName) != null -> Keys.ENUM_VALUE_KEY
 					else -> Keys.ENUM_VALUE_KEY
 				}
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
@@ -157,18 +158,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 					}
 				}
 			}
-			else -> {
-				//特殊处理是modifier的情况
-				val resolved = element.references.singleOrNull()?.resolve()
-				val configType = resolved?.let { CwtConfigType.resolve(it) }
-				val attributesKey = when {
-					configType == CwtConfigType.Modifier -> Keys.MODIFIER_KEY
-					else -> null
-				}
-				if(attributesKey != null) {
-					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-				}
+			CwtDataTypes.Modifier -> {
+				val attributesKey = Keys.MODIFIER_KEY
+				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
+			else -> pass()
 		}
 	}
 	

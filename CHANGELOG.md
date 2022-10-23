@@ -42,6 +42,8 @@
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 尽管在脚本文件中Ctrl+点击本地化引用只会导航到选用的（而非所有的，Alt+Ctrl+点击才会导航到所有的），从任意同名本地化Ctrl+点击可以仍然导航到所有的引用，其他类型的引用同理
   * [ ] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常
+* 功能变更：
+  * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ -> 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
 * 新增功能：
   * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
   * [X] 添加检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
@@ -53,7 +55,7 @@
   * [ ] 添加引用解析：用于格式化的本地化文本中的格式化分段（`format.xxx: "<some_parts> ...""`中的`<some_parts>`）
   * [X] 在查找使用中，区分参数和值集中的值的读/写使用
 * ［长期］完善CWT配置支持：
-  * [ ] 支持`complex_enum`
+  * [X] 支持`complex_enum`
   * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
 

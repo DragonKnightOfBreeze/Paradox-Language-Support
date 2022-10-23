@@ -755,7 +755,7 @@ object CwtConfigHandler {
 						//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 						val name = n.quoteIf(quoted)
 						val lookupElement = LookupElementBuilder.create(complexEnum, name)
-							.withExpectedIcon(PlsIcons.ValueSetValue)
+							.withExpectedIcon(PlsIcons.ComplexEnumValue)
 							.withTailText(tailText, true)
 							.withTypeText(typeFile?.name, typeFile?.icon, true)
 							.withExpectedInsertHandler(isKey)

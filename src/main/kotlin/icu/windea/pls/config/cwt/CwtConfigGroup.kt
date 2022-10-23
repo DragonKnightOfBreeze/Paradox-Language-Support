@@ -7,7 +7,6 @@ import icu.windea.pls.*
 import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import kotlin.collections.isNullOrEmpty
 
@@ -703,16 +702,7 @@ class CwtConfigGroup(
 		return complexEnums[name]
 	}
 	
-	fun getComplexEnumConfig(path: ParadoxPath, lazyElementPath: Lazy<ParadoxElementPath?>, isKey: Boolean): CwtComplexEnumConfig? {
-		//lazy get elementPath
-		//TODO cache by (path,elementPath) -> config (may be too many)
-		for(complexEnum in complexEnums.values) {
-			if(ParadoxComplexEnumInfoHandler.matchesComplexEnumByPath(complexEnum, path)) {
-				if(ParadoxComplexEnumInfoHandler.matchesComplexEnumByElementPath(complexEnum, lazyElementPath, isKey)){
-					return complexEnum
-				}
-			}
-		}
-		return null
+	fun getValueConfig(name: String): CwtEnumConfig? {
+		return values[name]
 	}
 }

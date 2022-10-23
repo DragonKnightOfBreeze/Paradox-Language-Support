@@ -10,7 +10,7 @@ enum class CwtConfigType(
 	val id: String,
 	val text: String,
 	val isReference: Boolean = false,
-	val hasType: Boolean = false,
+	val typeCategory: String? = null,
 	val localisation: String? = null
 ) {
 	Type("type", PlsDocBundle.message("name.cwt.type")),
@@ -21,8 +21,8 @@ enum class CwtConfigType(
 	SingleAlias("single alias", PlsDocBundle.message("name.cwt.singleAlias")),
 	Alias("alias", PlsDocBundle.message("name.cwt.alias")),
 	
-	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), true, true),
-	ValueSetValue("value set value", PlsDocBundle.message("name.cwt.valueSetValue"), true, true),
+	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), true, typeCategory = "enums"),
+	ValueSetValue("value set value", PlsDocBundle.message("name.cwt.valueSetValue"), true, typeCategory = "values"),
 	
 	Link("link", PlsDocBundle.message("name.cwt.link"), true),
 	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink"), true),

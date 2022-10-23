@@ -29,7 +29,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			//进行代码提示时，这里是有效的代码
-			is ParadoxInputParameter -> getParameterInfo(element)
+			is ParadoxArgument -> getParameterInfo(element)
 			is ParadoxParameter -> getParameterInfo(element)
 			//使用FakeElement时，这里是有效的代码
 			is ParadoxParameterElement -> getParameterInfo(element)
@@ -74,21 +74,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getParameterInfo(element: ParadoxInputParameter): String {
-		return buildString {
-			buildParameterDefinition(element.name)
+	private fun getParameterInfo(element: PsiElement): String? {
+		val name = when(element) {
+			is ParadoxParameter -> element.name
+			is ParadoxArgument -> element.name
+			is ParadoxParameterElement -> element.name
+			else -> return null
 		}
-	}
-	
-	private fun getParameterInfo(element: ParadoxParameter): String {
+		val definitionInfo = if(element is ParadoxParameterElement) element.definitionName + ": " + element.definitionType else null
 		return buildString {
-			buildParameterDefinition(element.name)
-		}
-	}
-	
-	private fun getParameterInfo(element: ParadoxParameterElement): String {
-		return buildString {
-			buildParameterDefinition(element.name)
+			buildParameterDefinition(name, definitionInfo)
 		}
 	}
 	
@@ -109,7 +104,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			//进行代码提示时，这里是有效的代码
-			is ParadoxInputParameter -> getParameterDoc(element)
+			is ParadoxArgument -> getParameterDoc(element)
 			is ParadoxParameter -> getParameterDoc(element)
 			//使用FakeElement时，这里是有效的代码
 			is ParadoxParameterElement -> getParameterDoc(element)
@@ -166,21 +161,16 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getParameterDoc(element: ParadoxInputParameter): String {
-		return buildString {
-			buildParameterDefinition(element.name)
+	private fun getParameterDoc(element: PsiElement): String? {
+		val name = when(element) {
+			is ParadoxParameter -> element.name
+			is ParadoxArgument -> element.name
+			is ParadoxParameterElement -> element.name
+			else -> return null
 		}
-	}
-	
-	private fun getParameterDoc(element: ParadoxParameter): String {
+		val definitionInfo = if(element is ParadoxParameterElement) element.definitionName + ": " + element.definitionType else null
 		return buildString {
-			buildParameterDefinition(element.name)
-		}
-	}
-	
-	private fun getParameterDoc(element: ParadoxParameterElement): String {
-		return buildString {
-			buildParameterDefinition(element.name)
+			buildParameterDefinition(name, definitionInfo)
 		}
 	}
 	
@@ -347,11 +337,27 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildParameterDefinition(name: String) {
+	private fun StringBuilder.buildComplexEnumDefinition(element: PsiElement, name: String, enumName: String) {
+		definition {
+			//加上文件信息
+			appendFileInfoHeader(element.fileInfo)
+			//加上复杂枚举信息
+			append(PlsDocBundle.message("name.script.complexEnumValue"))
+			if(enumName.isNotEmpty()) {
+				append(": ").append(enumName)
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildParameterDefinition(name: String, definitionInfo: String?) {
 		definition {
 			//不加上文件信息
 			//加上名字
 			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			if(definitionInfo != null) {
+				append(" ")
+				append(PlsDocBundle.message("ofDefinition", definitionInfo))
+			}
 		}
 	}
 	

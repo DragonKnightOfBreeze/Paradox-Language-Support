@@ -75,7 +75,7 @@ object ParadoxDefinitionInfoHandler {
 		elementPath: ParadoxElementPath
 	): ParadoxDefinitionInfo? {
 		for(typeConfig in configGroup.types.values) {
-			if(matchesTypeConfig(configGroup, typeConfig, element, rootKey, path, elementPath)) {
+			if(matchTypeConfig(configGroup, typeConfig, element, rootKey, path, elementPath)) {
 				//需要懒加载
 				return ParadoxDefinitionInfo(rootKey, typeConfig, configGroup.gameType, configGroup, element)
 			}
@@ -91,14 +91,14 @@ object ParadoxDefinitionInfoHandler {
 	): ParadoxDefinitionInfo? {
 		val typeConfig = configGroup.types[type] ?: return null
 		//仍然要求匹配rootKey
-		if(matchesTypeConfigWithKnownType(typeConfig, rootKey)) {
+		if(matchTypeConfigWithKnownType(typeConfig, rootKey)) {
 			return ParadoxDefinitionInfo(rootKey, typeConfig, configGroup.gameType, configGroup, element)
 		}
 		return null
 	}
 	
 	@JvmStatic
-	fun matchesTypeConfig(
+	fun matchTypeConfig(
 		configGroup: CwtConfigGroup,
 		typeConfig: CwtTypeConfig,
 		element: ParadoxDefinitionProperty,
@@ -145,13 +145,7 @@ object ParadoxDefinitionInfoHandler {
 		if(skipRootKeyConfig.isNullOrEmpty()) {
 			if(elementPath.length > 1) return false
 		} else {
-			var skipResult = false
-			for(keys in skipRootKeyConfig) {
-				if(keys.matchEntirePath(elementPath.subPaths, matchesParent = true)) {
-					skipResult = true
-					break
-				}
-			}
+			val skipResult = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
 			if(!skipResult) return false
 		}
 		//如果starts_with存在，则要求type_key匹配这个前缀（忽略大小写）
@@ -173,7 +167,7 @@ object ParadoxDefinitionInfoHandler {
 	}
 	
 	@JvmStatic
-	fun matchesTypeConfigWithKnownType(
+	fun matchTypeConfigWithKnownType(
 		typeConfig: CwtTypeConfig,
 		rootKey: String
 	): Boolean {
@@ -192,7 +186,7 @@ object ParadoxDefinitionInfoHandler {
 	}
 	
 	@JvmStatic
-	fun matchesSubtypeConfig(
+	fun matchSubtypeConfig(
 		configGroup: CwtConfigGroup,
 		subtypeConfig: CwtSubtypeConfig,
 		element: ParadoxDefinitionProperty,

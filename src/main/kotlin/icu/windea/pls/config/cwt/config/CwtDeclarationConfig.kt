@@ -62,11 +62,7 @@ data class CwtDeclarationConfig(
 					var result: List<CwtKvConfig<*>> = getMergedConfigs(subtypes)
 					var index = 0
 					while(index < path.length) {
-						val originalSubPath = path.originalSubPaths[index]
-						val originalKey = originalSubPath.removePrefix("#")
-						val key = originalKey.unquote()
-						val isQuoted = key.isQuoted()
-						val isValue = originalSubPath.startsWith("#")
+						val (key, isQuoted, isKey) = path.subPathInfos[index]
 						var nextIndex = index + 1
 						
 						//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要跳过当前的key
@@ -75,21 +71,18 @@ data class CwtDeclarationConfig(
 						val nextResult = SmartList<CwtKvConfig<*>>()
 						for(config in result) {
 							if(index == 0) {
-								when {
-									config is CwtPropertyConfig -> {
-										if(isValue) continue
-										if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
-											nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index, path)
-										}
+								if(isKey && config is CwtPropertyConfig) {
+									if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
+										nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index, path)
 									}
-									config is CwtValueConfig -> {
-										if(!isValue) continue
-										nextResult.add(config)
-									}
+								}
+								else if(!isKey && config is CwtValueConfig) {
+									if(isKey) continue
+									nextResult.add(config)
 								}
 							} else {
 								val propertyConfigs = config.properties
-								if(!isValue && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
+								if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
 									for(propertyConfig in propertyConfigs) {
 										if(CwtConfigHandler.matchesKey(propertyConfig.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
 											nextIndex = inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, path)
@@ -97,7 +90,7 @@ data class CwtDeclarationConfig(
 									}
 								}
 								val valueConfigs = config.values
-								if(isValue && valueConfigs != null && valueConfigs.isNotEmpty()) {
+								if(!isKey && valueConfigs != null && valueConfigs.isNotEmpty()) {
 									for(valueConfig in valueConfigs) {
 										nextResult.add(valueConfig)
 									}

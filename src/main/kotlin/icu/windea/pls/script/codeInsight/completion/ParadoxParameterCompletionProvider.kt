@@ -16,7 +16,7 @@ class ParadoxParameterCompletionProvider: CompletionProvider<CompletionParameter
 		val parameterElement = tokenElement.parent
 		val read = when(parameterElement){
 			is ParadoxParameter -> true
-			is ParadoxInputParameter -> false
+			is ParadoxArgument -> false
 			else -> return
 		}
 		

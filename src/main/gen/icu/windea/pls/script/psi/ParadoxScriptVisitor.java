@@ -90,7 +90,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitParameterConditionParameter(@NotNull ParadoxScriptParameterConditionParameter o) {
-    visitParadoxInputParameter(o);
+    visitParadoxArgument(o);
   }
 
   public void visitProperty(@NotNull ParadoxScriptProperty o) {
@@ -146,7 +146,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitParadoxInputParameter(@NotNull ParadoxInputParameter o) {
+  public void visitParadoxArgument(@NotNull ParadoxArgument o) {
     visitElement(o);
   }
 

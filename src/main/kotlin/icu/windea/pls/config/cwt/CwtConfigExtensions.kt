@@ -11,24 +11,34 @@ internal typealias CwtConfigMaps = MutableMap<String, CwtConfigMap>
 
 val MockCwtConfigGroup by lazy { CwtConfigGroup(ParadoxGameType.Stellaris, getDefaultProject(), emptyMap()) }
 
-inline fun CwtKvConfig<*>.processParent(processor: (CwtKvConfig<*>) -> Boolean): Boolean {
+inline fun CwtKvConfig<*>.processParent(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean {
 	var parent = this.parent
 	while(parent != null) {
-		val result = processor(parent)
+		val result = ProcessEntry.processor(parent)
 		if(!result) return false
 		parent = parent.parent
 	}
 	return true
 }
 
-inline fun CwtKvConfig<*>.processParentProperty(processor: (CwtPropertyConfig) -> Boolean): Boolean {
+inline fun CwtKvConfig<*>.processParentProperty(processor: ProcessEntry.(CwtPropertyConfig) -> Boolean): Boolean {
 	var parent = this.parent
 	while(parent != null) {
 		if(parent is CwtPropertyConfig) {
-			val result = processor(parent)
+			val result = ProcessEntry.processor(parent)
 			if(!result) return false
 		}
 		parent = parent.parent
 	}
+	return true
+}
+
+fun CwtKvConfig<*>.processDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean{
+	return doProcessDescendants(processor)
+}
+
+private fun CwtKvConfig<*>.doProcessDescendants(processor: ProcessEntry.(CwtKvConfig<*>) -> Boolean): Boolean{
+	this.properties?.process { doProcessDescendants(processor) }?.also { if(!it) return false }
+	this.values?.process { doProcessDescendants(processor) }?.also { if(!it) return false }
 	return true
 }

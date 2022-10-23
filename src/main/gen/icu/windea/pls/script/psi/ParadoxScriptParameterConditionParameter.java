@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.script.reference.ParadoxParameterReference;
 import javax.swing.Icon;
 
-public interface ParadoxScriptParameterConditionParameter extends ParadoxInputParameter {
+public interface ParadoxScriptParameterConditionParameter extends ParadoxArgument {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

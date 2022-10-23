@@ -94,7 +94,7 @@ var VirtualFile.contentFile
 //endregion
 
 //region PsiElement Extensions
-fun PsiReference.resolveSingle(): PsiElement?{
+fun PsiReference.resolveSingle(): PsiElement? {
 	return if(this is PsiPolyVariantReference) {
 		this.multiResolve(false).firstNotNullOfOrNull { it.element }
 	} else {
@@ -570,21 +570,33 @@ private fun resolveCwtLink(linkWithoutPrefix: String, context: PsiElement): CwtP
 			"types" -> {
 				val name = tokens.getOrNull(2)
 				val subtypeName = tokens.getOrNull(3)
-				return when {
+				val config = when{
 					name == null -> null
-					subtypeName == null -> getCwtConfig(project).getValue(gameType).types.getValue(name)
-						.pointer.element
-					
-					else -> getCwtConfig(project).getValue(gameType).types.getValue(name)
-						.subtypes.getValue(subtypeName).pointer.element
-				}
+					subtypeName == null -> getCwtConfig(project).getValue(gameType).types[name]
+					else -> getCwtConfig(project).getValue(gameType).types.getValue(name).subtypes[subtypeName]
+				} ?: return null
+				return config.pointer.element
 			}
-			
 			"scopes" -> {
 				val name = tokens.getOrNull(2) ?: return null
-				return getCwtConfig(project).getValue(gameType).scopeAliasMap.getValue(name).pointer.element
+				val config = getCwtConfig(project).getValue(gameType).scopeAliasMap[name] ?: return null
+				return config.pointer.element
 			}
-			
+			"enums" -> {
+				val name = tokens.getOrNull(2) ?: return null
+				val config = getCwtConfig(project).getValue(gameType).getEnumConfig(name) ?: return null
+				return config.pointer.element
+			}
+			"complex_enums" -> {
+				val name = tokens.getOrNull(2) ?: return null
+				val config = getCwtConfig(project).getValue(gameType).getComplexEnumConfig(name) ?: return null
+				return config.pointer.element
+			}
+			"values" -> {
+				val name = tokens.getOrNull(2) ?: return null
+				val config = getCwtConfig(project).getValue(gameType).getValueConfig(name) ?: return null
+				return config.pointer.element
+			}
 			else -> null
 		}
 	}.getOrNull()

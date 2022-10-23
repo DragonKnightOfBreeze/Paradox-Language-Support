@@ -100,10 +100,19 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
-				if(configType?.hasType == true) {
-					val typeName = element.parentOfType<CwtProperty>()?.name?.substringIn('[', ']')?.takeIfNotEmpty()
+				val typeCategory = configType?.typeCategory
+				if(typeCategory != null) {
+					val typeElement = element.parentOfType<CwtProperty>()
+					val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
 					if(typeName != null && typeName.isNotEmpty()) {
-						append(": ").append(typeName)
+						//在脚本文件中显示为链接
+						if(configGroup != null) {
+							val gameType = configGroup.gameType
+							val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
+							append(": ").appendCwtLink(typeName, typeLink, typeElement)
+						} else {
+							append(": ").append(typeName)
+						}
 					}
 				}
 			} else {
@@ -130,10 +139,19 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
-				if(configType?.hasType == true) {
-					val typeName = element.parentOfType<CwtProperty>()?.name?.substringIn('[', ']')?.takeIfNotEmpty()
+				val typeCategory = configType?.typeCategory
+				if(typeCategory != null) {
+					val typeElement = element.parentOfType<CwtProperty>()
+					val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
 					if(typeName != null && typeName.isNotEmpty()) {
-						append(": ").append(typeName)
+						//在脚本文件中显示为链接
+						if(configGroup != null) {
+							val gameType = configGroup.gameType
+							val typeLink = "${gameType.id}/${typeCategory}/${typeName}"
+							append(": ").appendCwtLink(typeName, typeLink, typeElement)
+						} else {
+							append(": ").append(typeName)
+						}
 					}
 				}
 			} else {
