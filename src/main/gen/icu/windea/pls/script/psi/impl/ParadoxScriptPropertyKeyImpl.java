@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub;
 import icu.windea.pls.script.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.model.ParadoxValueType;
 import com.intellij.psi.stubs.IStubElementType;
@@ -74,6 +75,12 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
   @Nullable
   public String getConfigExpression() {
     return ParadoxScriptPsiImplUtil.getConfigExpression(this);
+  }
+
+  @Override
+  @Nullable
+  public ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
 }

@@ -8,7 +8,6 @@ import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.*
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
 	override fun getType(element: PsiElement): String {
@@ -26,35 +25,23 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
 			is ParadoxLocalisationProperty -> {
-				//如果是本地化，需要特殊处理
-				val localisationInfo = element.localisationInfo
-				if(localisationInfo != null) {
-					when(localisationInfo.category) {
-						ParadoxLocalisationCategory.Localisation -> {
-							if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.localisation") else element.name
-						}
-						ParadoxLocalisationCategory.SyncedLocalisation -> {
-							if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.syncedLocalisation") else element.name
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> {
+						val localisationInfo = element.localisationInfo
+						when(localisationInfo?.category) {
+							ParadoxLocalisationCategory.Localisation -> PlsBundle.message("localisation.name.localisation")
+							ParadoxLocalisationCategory.SyncedLocalisation -> PlsBundle.message("localisation.name.syncedLocalisation")
+							else -> PlsBundle.message("localisation.name.property")
 						}
 					}
-				} else {
-					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.property") else element.name
+					else -> element.name
 				}
 			}
 			is ParadoxLocalisationLocale -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.locale") else element.name
-			}
-			is ParadoxLocalisationIcon -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.icon") else element.name
-			}
-			is ParadoxLocalisationCommandScope -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandScope") else element.name
-			}
-			is ParadoxLocalisationCommandField -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.commandField") else element.name
-			}
-			is ParadoxLocalisationColorfulText -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("localisation.name.colorfulText") else element.name
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("localisation.name.locale")
+					else -> element.name
+				}
 			}
 			else -> null
 		}

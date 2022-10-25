@@ -206,7 +206,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptProperty): PsiElement? {
-		return if(!element.propertyKey.isParameterAwareExpression()) element.firstChild  else null
+		return if(!element.propertyKey.isParameterAwareExpression()) element.firstChild else null
 	}
 	
 	@JvmStatic
@@ -275,6 +275,8 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getPresentation(element: ParadoxScriptProperty): ItemPresentation {
+		val definitionInfo = element.definitionInfo
+		if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
 		return ParadoxScriptPropertyPresentation(element)
 	}
 	//endregion
@@ -644,7 +646,7 @@ object ParadoxScriptPsiImplUtil {
 			val newBlock = ParadoxScriptElementFactory.createValue(project, newText) as? ParadoxScriptBlock
 			if(newBlock != null) {
 				val documentManager = PsiDocumentManager.getInstance(project)
-				val document = documentManager.getDocument(element.containingFile)?:return
+				val document = documentManager.getDocument(element.containingFile) ?: return
 				val command = Runnable {
 					element.replace(newBlock)
 				}
@@ -839,6 +841,15 @@ object ParadoxScriptPsiImplUtil {
 	fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterReference? {
 		val nameElement = element.parameterId ?: return null
 		return ParadoxParameterReference(element, nameElement.textRangeInParent, true)
+	}
+	//endregion
+	
+	//region ParadoxScriptExpressionElement
+	@JvmStatic
+	fun getPresentation(element: ParadoxScriptExpressionElement): ItemPresentation? {
+		val complexEnumValueInfo = element.complexEnumValueInfo
+		if(complexEnumValueInfo != null) return ParadoxComplexEnumValuePresentation(element, complexEnumValueInfo)
+		return null
 	}
 	//endregion
 }

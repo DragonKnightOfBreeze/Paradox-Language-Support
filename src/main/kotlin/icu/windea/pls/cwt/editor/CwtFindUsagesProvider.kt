@@ -24,13 +24,22 @@ class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
 			is CwtOption -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("cwt.description.option") else element.name
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.option")
+					else -> element.name
+				}
 			}
 			is CwtProperty -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("cwt.description.property") else element.name
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.property")
+					else -> element.name
+				}
 			}
 			is CwtString -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("cwt.description.value") else element.value
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.value")
+					else -> element.value
+				}
 			}
 			else -> null
 		}

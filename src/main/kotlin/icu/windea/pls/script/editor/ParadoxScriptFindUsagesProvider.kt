@@ -24,18 +24,46 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
 			is ParadoxScriptVariable -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.variable") else element.name
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.variable")
+					else -> element.name
+				}
 			}
 			is ParadoxParameter -> {
-				if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.parameter") else element.name
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.parameter")
+					else -> element.name
+				}
 			}
 			is ParadoxScriptProperty -> {
 				//如果是定义，需要特殊处理
 				val definitionInfo = element.definitionInfo
 				if(definitionInfo != null) {
-					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.definition") else definitionInfo.name
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.definition")
+						UsageViewLongNameLocation.INSTANCE -> definitionInfo.name + ": " + definitionInfo.typesText
+						else -> definitionInfo.name
+					}
 				} else {
-					if(location == UsageViewTypeLocation.INSTANCE) PlsBundle.message("script.description.property") else element.name
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.property")
+						else -> element.name
+					}
+				}
+			}
+			is ParadoxScriptExpressionElement -> {
+				val complexEnumValueInfo = element.complexEnumValueInfo
+				if(complexEnumValueInfo != null) {
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
+						UsageViewLongNameLocation.INSTANCE -> complexEnumValueInfo.name + ": " + complexEnumValueInfo.enumName
+						else -> complexEnumValueInfo.name
+					}
+				} else {
+					when(location) {
+						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.expression")
+						else -> element.text //keep quotes
+					}
 				}
 			}
 			else -> null
@@ -48,6 +76,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
 		return element is ParadoxScriptNamedElement
+			|| (element is ParadoxScriptExpressionElement && element.complexEnumValueInfo != null)
 	}
 	
 	override fun getWordsScanner(): WordsScanner {

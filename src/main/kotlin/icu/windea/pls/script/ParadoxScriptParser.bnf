@@ -76,6 +76,7 @@ property_key ::= key_expr {
   methods=[
     getValue setValue getReference getReferences
     getValueType getConfigExpression
+    getPresentation
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
@@ -130,6 +131,7 @@ upper string ::= value_expr {
     getIcon
     getValue setValue getReference getReferences getStringValue
     getValueType getConfigExpression
+    getPresentation
   ]
 }
 color ::= COLOR_TOKEN {

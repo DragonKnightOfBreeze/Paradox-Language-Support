@@ -26,29 +26,26 @@ class ParadoxScriptFileTreeElement(
 	
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
+		//如果文件名是descriptor.mod（不区分大小写），需要忽略
+		if(element.name.equals(descriptorFileName, true)) return null
+		//如果是定义，则优先显示定义信息（名字+类型）
+		val definitionInfo = element.definitionInfo
+		if(definitionInfo != null) return definitionInfo.name + ": " + definitionInfo.typesText
 		return element.name
 	}
 	
 	override fun getLocationString(): String? {
 		val element = element ?: return null
-		//如果文件名是descriptor.mod（不区分大小写），不显示定义信息
+		//如果文件名是descriptor.mod（不区分大小写），需要忽略
 		if(element.name.equals(descriptorFileName, true)) return null
-		val definitionInfo = element.definitionInfo ?: return null
-		val name = definitionInfo.name
-		val typesText = definitionInfo.typesText
-		//如果definitionName和rootKey相同，则省略definitionName
-		val builder = StringBuilder()
-		if(!name.equals(definitionInfo.rootKey, true)) {
-			builder.append(name)
-		}
-		builder.append(": ").append(typesText)
 		//如果存在，显示定义的本地化名字（最相关的本地化文本）
+		val definitionInfo = element.definitionInfo ?: return null
 		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation(element)
 		if(primaryLocalisation != null) {
 			//这里需要使用移除格式后的纯文本，这里返回的字符串不是HTML
 			val localizedName = ParadoxLocalisationTextExtractor.extract(primaryLocalisation)
-			builder.append(" ").append(localizedName)
+			return localizedName
 		}
-		return builder.toString()
+		return null
 	}
 }

@@ -112,7 +112,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				val attributesKey = when {
 					enumName == CwtConfigHandler.paramsEnumName -> Keys.ARGUMENT_KEY
 					configGroup.enums[enumName] != null -> Keys.ENUM_VALUE_REFERENCE_KEY
-					configGroup.complexEnums[enumName] != null -> Keys.ENUM_VALUE_REFERENCE_KEY
+					configGroup.complexEnums[enumName] != null -> Keys.COMPLEX_ENUM_VALUE_REFERENCE_KEY
 					else -> Keys.ENUM_VALUE_REFERENCE_KEY
 				}
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()

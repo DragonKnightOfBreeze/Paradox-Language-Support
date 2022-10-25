@@ -25,24 +25,23 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
 	}
 	
 	override fun getPresentableText(): String? {
-		//如果是定义，则优先使用定义的名字
 		val element = element ?: return null
-		return element.definitionInfo?.name ?: element.name
+		//如果是定义，则优先显示定义信息（名字+类型）
+		val definitionInfo = element.definitionInfo
+		if(definitionInfo != null) return definitionInfo.name + ": " + definitionInfo.typesText
+		return element.name
 	}
 	
 	override fun getLocationString(): String? {
 		val element = element ?: return null
-		val definitionInfo = element.definitionInfo ?: return null
-		val builder = StringBuilder()
-		//显示定义的类型信息
-		builder.append(": ").append(definitionInfo.typesText)
 		//如果存在，显示定义的本地化名字（最相关的本地化文本）
+		val definitionInfo = element.definitionInfo ?: return null
 		val primaryLocalisation = definitionInfo.resolvePrimaryLocalisation(element)
 		if(primaryLocalisation != null) {
 			//这里需要使用移除格式后的纯文本，这里返回的字符串不是HTML
 			val localizedName = ParadoxLocalisationTextExtractor.extract(primaryLocalisation)
-			builder.append(" ").append(localizedName)
+			return localizedName
 		}
-		return builder.toString()
+		return null
 	}
 }

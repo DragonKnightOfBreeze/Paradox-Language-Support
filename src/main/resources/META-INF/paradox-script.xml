@@ -116,12 +116,11 @@
     <langCodeStyleSettingsProvider
         implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxDefinitionChooseByNameContributor"/>
+    <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxComplexEnumValueChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.impl.ParadoxScriptedVariableImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.impl.ParadoxDefinitionImplementationsSearch"/>
-    <projectViewNodeDecorator
-        implementation="icu.windea.pls.script.projectView.ParadoxScriptProjectViewNodeDecorator"/>
     <lang.psiStructureViewFactory
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>

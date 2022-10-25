@@ -38,6 +38,7 @@ public interface ParadoxScriptElementTypes {
   IElementType VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_REFERENCE");
   IElementType VARIABLE_VALUE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_VALUE");
 
+  IElementType ARGUMENT_ID = ParadoxScriptElementTypeFactory.getTokenType("ARGUMENT_ID");
   IElementType ARG_NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("ARG_NUMBER_TOKEN");
   IElementType ARG_STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("ARG_STRING_TOKEN");
   IElementType AT = ParadoxScriptElementTypeFactory.getTokenType("AT");
@@ -52,7 +53,6 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_END = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_END");
   IElementType INLINE_MATH_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_START");
   IElementType INLINE_MATH_VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_VARIABLE_REFERENCE_ID");
-  IElementType ARGUMENT_ID = ParadoxScriptElementTypeFactory.getTokenType("ARGUMENT_ID");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
   IElementType KEY_STRING_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("KEY_STRING_SNIPPET");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
