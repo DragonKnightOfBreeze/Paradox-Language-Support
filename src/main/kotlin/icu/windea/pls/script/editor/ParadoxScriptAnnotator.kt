@@ -32,7 +32,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	
 	private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
 		val definitionInfo = element.definitionInfo
-		if(definitionInfo != null) annotateDefinition(element, holder, definitionInfo)
+		if(definitionInfo != null) return annotateDefinition(element, holder, definitionInfo)
 	}
 	
 	private fun annotateDefinition(element: ParadoxScriptProperty, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
@@ -54,9 +54,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(element.isParameterAwareExpression()) return
 		
 		val complexEnumValueInfo = element.complexEnumValueInfo
-		if(complexEnumValueInfo != null) annotateComplexEnumValue(element, holder)
+		if(complexEnumValueInfo != null) return annotateComplexEnumValue(element, holder)
 		val config = ParadoxCwtConfigHandler.resolveConfig(element)
-		if(config != null) doAnnotateExpressionElement(element, element.textRange, config.expression, config, holder)
+		if(config != null) return doAnnotateExpressionElement(element, element.textRange, config.expression, config, holder)
 	}
 	
 	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
