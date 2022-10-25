@@ -138,9 +138,12 @@ val PsiElement.localeConfig: ParadoxLocaleConfig?
 //注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
 //如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
-val VirtualFile.fileInfo: ParadoxFileInfo? get() = this.getUserDataOnValid(PlsKeys.fileInfoKey) { it.isValid }
-val PsiFile.fileInfo: ParadoxFileInfo? get() = this.originalFile.virtualFile?.fileInfo //需要使用原始文件
-val PsiElement.fileInfo: ParadoxFileInfo? get() = this.containingFile?.fileInfo
+val VirtualFile.fileInfo: ParadoxFileInfo?
+	get() = this.getUserDataOnValid(PlsKeys.fileInfoKey) { it.isValid }
+val PsiFile.fileInfo: ParadoxFileInfo?
+	get() = this.originalFile.virtualFile?.fileInfo //需要使用原始文件
+val PsiElement.fileInfo: ParadoxFileInfo?
+	get() = this.containingFile?.fileInfo
 
 val ParadoxDefinitionProperty.definitionInfo: ParadoxDefinitionInfo?
 	get() = ParadoxDefinitionInfoHandler.get(this)
@@ -157,7 +160,11 @@ val ParadoxScriptExpressionElement.definitionElementInfo: ParadoxDefinitionEleme
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 	get() = ParadoxLocalisationInfoHandler.get(this)
 
-val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig? get() = InternalConfigHandler.getLocale(name, project)
+val ParadoxScriptExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
+	get() = ParadoxComplexEnumValueInfoHandler.get(this)
+
+val ParadoxLocalisationLocale.localeConfig: ParadoxLocaleConfig?
+	get() = InternalConfigHandler.getLocale(name, project)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorConfig?
 	get() {
@@ -549,7 +556,7 @@ private const val definitionLinkPrefix = "#definition/"
 private const val localisationLinkPrefix = "#localisation/"
 private const val filePathLinkPrefix = "#path/"
 
-fun resolveScope(link: String, context: PsiElement): PsiElement? {
+fun resolveLink(link: String, context: PsiElement): PsiElement? {
 	return when {
 		link.startsWith(cwtLinkPrefix) -> resolveCwtLink(link.drop(cwtLinkPrefix.length), context)
 		link.startsWith(definitionLinkPrefix) -> resolveDefinitionLink(link.drop(definitionLinkPrefix.length), context)
@@ -584,17 +591,17 @@ private fun resolveCwtLink(linkWithoutPrefix: String, context: PsiElement): CwtP
 			}
 			"enums" -> {
 				val name = tokens.getOrNull(2) ?: return null
-				val config = getCwtConfig(project).getValue(gameType).getEnumConfig(name) ?: return null
+				val config = getCwtConfig(project).getValue(gameType).enums[name] ?: return null
 				return config.pointer.element
 			}
 			"complex_enums" -> {
 				val name = tokens.getOrNull(2) ?: return null
-				val config = getCwtConfig(project).getValue(gameType).getComplexEnumConfig(name) ?: return null
+				val config = getCwtConfig(project).getValue(gameType).complexEnums[name] ?: return null
 				return config.pointer.element
 			}
 			"values" -> {
 				val name = tokens.getOrNull(2) ?: return null
-				val config = getCwtConfig(project).getValue(gameType).getValueConfig(name) ?: return null
+				val config = getCwtConfig(project).getValue(gameType).values[name] ?: return null
 				return config.pointer.element
 			}
 			else -> null
@@ -659,7 +666,7 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 	return this
 }
 
-fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?): StringBuilder {
+fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(unresolvedString)
 	//如果可以被解析为CWT规则，则显示链接（context传null时总是显示）

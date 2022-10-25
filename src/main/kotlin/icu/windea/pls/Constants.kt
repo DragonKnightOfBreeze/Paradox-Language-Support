@@ -101,6 +101,7 @@ object PlsKeys {
 	
 	val cachedDefinitionInfoKey = Key.create<CachedValue<ParadoxDefinitionInfo>>("paradox.cachedDefinitionInfo")
 	val cachedLocalisationInfoKey = Key.create<CachedValue<ParadoxLocalisationInfo>>("paradox.cachedLocalisationInfo")
+	val cachedComplexEnumValueInfoKey = Key.create<CachedValue<ParadoxComplexEnumValueInfo>>("paradox.cachedComplexEnumValueInfo")
 	
 	val definitionElementInfoKey = Key.create<ParadoxDefinitionElementInfo>("paradox.definitionElementInfo")
 	

@@ -3,6 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
@@ -21,7 +22,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
 		if(link == null || context == null) return null
-		return resolveScope(link, context)
+		return resolveLink(link, context)
 	}
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
@@ -35,7 +36,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxParameterElement -> getParameterInfo(element)
 			//进行代码提示时，这里是有效的代码
 			is ParadoxScriptExpressionElement -> {
-				if(originalElement != null) return null
+				val complexEnumValueInfo = element.complexEnumValueInfo
+				if(complexEnumValueInfo != null) return generateComplexEnumValueInfo(element, complexEnumValueInfo)
 				val config = ParadoxCwtConfigHandler.resolveConfig(element)
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueInfo(element, config)
@@ -74,6 +76,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun generateComplexEnumValueInfo(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
+		return buildString { 
+			buildComplexEnumValueDefinition(element, complexEnumValueInfo)
+		}
+	}
+	
 	private fun getParameterInfo(element: PsiElement): String? {
 		val name = when(element) {
 			is ParadoxParameter -> element.name
@@ -89,13 +97,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getValueSetValueInfo(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
 		return buildString {
-			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty())
+			val configGroup = config.info.configGroup
+			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
 		}
 	}
 	
 	private fun getValueSetValueInfo(element: ParadoxValueSetValueElement): String {
 		return buildString {
-			buildValueSetValueDefinition(element.name, element.valueSetName)
+			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
+			buildValueSetValueDefinition(element.name, element.valueSetName, configGroup)
 		}
 	}
 	
@@ -110,7 +120,8 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 			is ParadoxParameterElement -> getParameterDoc(element)
 			//进行代码提示时，这里是有效的代码
 			is ParadoxScriptExpressionElement -> {
-				if(originalElement != null) return null
+				val complexEnumValueInfo = element.complexEnumValueInfo
+				if(complexEnumValueInfo != null) return generateComplexEnumValueDoc(element, complexEnumValueInfo)
 				val config = ParadoxCwtConfigHandler.resolveConfig(element)
 				when(config?.expression?.type) {
 					CwtDataTypes.Value, CwtDataTypes.ValueSet -> getValueSetValueDoc(element, config)
@@ -161,6 +172,12 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
+	private fun generateComplexEnumValueDoc(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String? {
+		return buildString {
+			buildComplexEnumValueDefinition(element, complexEnumValueInfo)
+		}
+	}
+	
 	private fun getParameterDoc(element: PsiElement): String? {
 		val name = when(element) {
 			is ParadoxParameter -> element.name
@@ -176,13 +193,15 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	private fun getValueSetValueDoc(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): String {
 		return buildString {
-			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty())
+			val configGroup = config.info.configGroup
+			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
 		}
 	}
 	
 	private fun getValueSetValueDoc(element: ParadoxValueSetValueElement): String {
 		return buildString {
-			buildValueSetValueDefinition(element.name, element.valueSetName)
+			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
+			buildValueSetValueDefinition(element.name, element.valueSetName, configGroup)
 		}
 	}
 	
@@ -222,13 +241,13 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 				val gameType = definitionInfo.gameType
 				val typeConfig = definitionInfo.typeConfig
 				val typeLink = "${gameType.id}/types/${typeConfig.name}"
-				appendCwtLink(typeConfig.name, typeLink, typeConfig.pointer.element)
+				appendCwtLink(typeConfig.name, typeLink)
 				val subtypeConfigs = definitionInfo.subtypeConfigs
 				if(subtypeConfigs.isNotEmpty()) {
 					for(subtypeConfig in subtypeConfigs) {
 						append(", ")
 						val subtypeLink = "$typeLink/${subtypeConfig.name}"
-						appendCwtLink(subtypeConfig.name, subtypeLink, subtypeConfig.pointer.element)
+						appendCwtLink(subtypeConfig.name, subtypeLink)
 					}
 				}
 			}
@@ -337,14 +356,24 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildComplexEnumDefinition(element: PsiElement, name: String, enumName: String) {
+	private fun StringBuilder.buildComplexEnumValueDefinition(element: PsiElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
 		definition {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)
 			//加上复杂枚举信息
-			append(PlsDocBundle.message("name.script.complexEnumValue"))
+			val name = complexEnumValueInfo.name
+			val enumName = complexEnumValueInfo.enumName
+			append(PlsDocBundle.message("name.script.complexEnumValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 			if(enumName.isNotEmpty()) {
-				append(": ").append(enumName)
+				val gameType = complexEnumValueInfo.gameType.orDefault()
+				val configGroup = getCwtConfig(element.project).getValue(gameType)
+				val complexEnumConfig = configGroup.complexEnums[enumName]
+				if(complexEnumConfig != null) {
+					val typeLink = "${gameType.id}/complex_enums/${enumName}"
+					append(": ").appendCwtLink(enumName, typeLink)
+				} else {
+					append(": ").append(enumName)
+				}
 			}
 		}
 	}
@@ -361,13 +390,21 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetName: String) {
+	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetName: String, configGroup: CwtConfigGroup) {
 		definition {
 			//不加上文件信息
-			//加上名字
+			//加上值集中的值的信息
 			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
-			//加上分组信息
-			if(valueSetName.isNotEmpty()) append(": ").append(valueSetName)
+			if(valueSetName.isNotEmpty()) {
+				val valueConfig = configGroup.values[valueSetName]
+				if(valueConfig != null) {
+					val gameType = configGroup.gameType
+					val typeLink = "${gameType.id}/values/${valueSetName}"
+					append(": ").appendCwtLink(valueSetName, typeLink)
+				} else {
+					append(": ").append(valueSetName)
+				}
+			}
 		}
 	}
 	

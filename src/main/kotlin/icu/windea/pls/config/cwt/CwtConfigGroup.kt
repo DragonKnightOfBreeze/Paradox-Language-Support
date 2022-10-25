@@ -20,12 +20,9 @@ class CwtConfigGroup(
 	val values: Map<String, CwtEnumConfig>
 	
 	//enumValue可以是int、float、bool类型，统一用字符串表示
-	private val enums: Map<String, CwtEnumConfig>
+	val enums: Map<String, CwtEnumConfig>
 	//基于enum_name进行定位，对应的可能是key/value
 	val complexEnums: Map<String, CwtComplexEnumConfig>
-	
-	//since: stellaris v3.4
-	val tags: Map<@CaseInsensitive String, CwtTagConfig> //tagName - tagConfig
 	
 	val links: Map<@CaseInsensitive String, CwtLinkConfig>
 	val linksAsScopeNotData: Map<@CaseInsensitive String, CwtLinkConfig>
@@ -54,17 +51,11 @@ class CwtConfigGroup(
 	//目前版本的CWT配置已经不再使用
 	val modifierCategoryIdMap: Map<String, CwtModifierCategoryConfig>
 	
-	//since: stellaris v3.4
-	val tagMap: Map<String, Map<@CaseInsensitive String, CwtTagConfig>> //definitionType - tagName - tagConfig
-	
 	//常量字符串的别名的组名的映射
 	val aliasKeysGroupConst: Map<String, Map<@CaseInsensitive String, String>>
 	
 	//非常量字符串的别名的组名的映射
 	val aliasKeysGroupNoConst: Map<String, Set<String>>
-	
-	//支持参数的定义类型
-	val definitionTypesSupportParameters: Set<String>
 	
 	init {
 		folders = mutableSetOf()
@@ -72,7 +63,6 @@ class CwtConfigGroup(
 		values = mutableMapOf()
 		enums = mutableMapOf()
 		complexEnums = mutableMapOf()
-		tags = CollectionFactory.createCaseInsensitiveStringMap()
 		links = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsScopeNotData = CollectionFactory.createCaseInsensitiveStringMap()
 		linksAsScope = CollectionFactory.createCaseInsensitiveStringMap()
@@ -140,15 +130,6 @@ class CwtConfigGroup(
 								val complexEnumConfig = resolveComplexEnumConfig(prop, complexEnumName) ?: continue
 								complexEnums[complexEnumName] = complexEnumConfig
 							}
-						}
-					}
-					//找到配置文件中的顶级的key为"tags"的属性，然后解析它的子属性，添加到tags中
-					"tags" -> {
-						val props = property.properties ?: continue
-						for(prop in props) {
-							val tagName = prop.key
-							val tagConfig = resolveTagConfig(prop, tagName) ?: continue
-							tags[tagName] = tagConfig
 						}
 					}
 					//找到配置文件中的顶级的key为"links"的属性，然后解析它的子属性，添加到links中
@@ -289,18 +270,21 @@ class CwtConfigGroup(
 		this.aliasKeysGroupNoConst = aliasKeysGroupNoConst
 		
 		this.modifierCategoryIdMap = initModifierCategoryIdMap()
-		this.tagMap = initTagMap()
-		this.definitionTypesSupportParameters = initDefinitionTypesSupportParameters()
 		
 		bindModifierCategorySupportedScopeNames()
 		bindModifierCategories()
 	}
 	
-	val linksAsScopePrefixes: Set<String> by lazy { 
+	val linksAsScopePrefixes: Set<String> by lazy {
 		linksAsScope.mapNotNullTo(mutableSetOf()) { it.value.prefix }
 	}
-	val linksAsValuePrefixes: Set<String> by lazy { 
+	val linksAsValuePrefixes: Set<String> by lazy {
 		linksAsValue.mapNotNullTo(mutableSetOf()) { it.value.prefix }
+	}
+	
+	//支持参数的定义类型
+	val definitionTypesSupportParameters: Set<String> by lazy {
+		initDefinitionTypesSupportParameters()
 	}
 	
 	//解析CWT配置
@@ -646,16 +630,6 @@ class CwtConfigGroup(
 		return result
 	}
 	
-	private fun initTagMap(): Map<String, Map<@CaseInsensitive String, CwtTagConfig>> {
-		val result: MutableMap<String, MutableMap<String, CwtTagConfig>> = mutableMapOf()
-		for(tag in tags.values) {
-			for(supportedType in tag.supportedTypes) {
-				result.getOrPut(supportedType) { CollectionFactory.createCaseInsensitiveStringMap() }.put(tag.name, tag)
-			}
-		}
-		return result
-	}
-	
 	private fun initDefinitionTypesSupportParameters(): MutableSet<String> {
 		val result = mutableSetOf<String>()
 		for(aliasGroup in aliasGroups.values) {
@@ -692,17 +666,5 @@ class CwtConfigGroup(
 				modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
 			}
 		}
-	}
-	
-	fun getEnumConfig(name: String): CwtEnumConfig? {
-		return enums[name]
-	}
-	
-	fun getComplexEnumConfig(name: String): CwtComplexEnumConfig? {
-		return complexEnums[name]
-	}
-	
-	fun getValueConfig(name: String): CwtEnumConfig? {
-		return values[name]
 	}
 }

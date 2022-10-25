@@ -134,7 +134,7 @@ class ParadoxDefinitionInfo(
 }
 
 /**
- * 定义是否需要进行索引。
+ * 对应的定义是否需要进行索引。
  */
 val ParadoxDefinitionInfo.shouldIndex: Boolean get() = sourceType == SourceType.PathComment || sourceType == SourceType.TypeComment
 

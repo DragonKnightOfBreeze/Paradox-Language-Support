@@ -8,7 +8,7 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPropertyKeyStub, ParadoxScriptPropertyKey>(
+object ParadoxScriptPropertyKeyStubElementType : IStubElementType<ParadoxScriptPropertyKeyStub, ParadoxScriptPropertyKey>(
 	"PROPERTY_KEY",
 	ParadoxScriptLanguage
 ) {
@@ -22,8 +22,9 @@ object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPr
 	
 	override fun createStub(psi: ParadoxScriptPropertyKey, parentStub: StubElement<*>): ParadoxScriptPropertyKeyStub {
 		//accept only one info
-		val complexEnumInfo = ParadoxComplexEnumValueInfoHandler.resolve(psi, parentStub)
-		val gameType = psi.fileInfo?.rootInfo?.gameType
+		val file = psi.containingFile
+		val gameType = file.fileInfo?.rootInfo?.gameType
+		val complexEnumInfo = ParadoxComplexEnumValueInfoHandler.resolve(psi)
 		return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumInfo, gameType)
 	}
 	
@@ -38,6 +39,7 @@ object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPr
 	}
 	
 	override fun serialize(stub: ParadoxScriptPropertyKeyStub, dataStream: StubOutputStream) {
+		dataStream.writeName(stub.gameType?.id)
 		val complexEnumValueInfo = stub.complexEnumValueInfo
 		when {
 			complexEnumValueInfo != null -> {
@@ -49,17 +51,16 @@ object ParadoxScriptPropertyKeyStubElementType: IStubElementType<ParadoxScriptPr
 				dataStream.writeByte(0)
 			}
 		}
-		dataStream.writeName(stub.gameType?.id)
 	}
 	
 	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptPropertyKeyStub {
+		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
 		val flag = dataStream.readByte()
 		val complexEnumValueInfo = if(flag != 1.toByte()) null else {
 			val name = dataStream.readNameString().orEmpty()
 			val enumName = dataStream.readNameString().orEmpty()
-			ParadoxComplexEnumValueInfo(name, enumName)
+			ParadoxComplexEnumValueInfo(name, enumName, gameType)
 		}
-		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
 		return ParadoxScriptPropertyKeyStubImpl(parentStub, complexEnumValueInfo, gameType)
 	}
 }

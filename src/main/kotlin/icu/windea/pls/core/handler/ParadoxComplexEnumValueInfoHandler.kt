@@ -4,9 +4,9 @@ package icu.windea.pls.core.handler
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
@@ -16,23 +16,48 @@ import icu.windea.pls.script.psi.*
  */
 object ParadoxComplexEnumValueInfoHandler {
 	@JvmStatic
-	fun resolve(element: ParadoxScriptExpressionElement, parentStub: StubElement<*>? = null): ParadoxComplexEnumValueInfo? {
-		if(element.isParameterAwareExpression()) return null //快速判断
-		ProgressManager.checkCanceled()
-		val file = element.containingFile
+	fun get(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
+		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
+			val file = element.containingFile
+			val value = resolve(element, file)
+			CachedValueProvider.Result.create(value, file)//invalidated on file modification
+		}
+	}
+	
+	@JvmStatic
+	fun resolve(element: ParadoxScriptExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueInfo? {
+		//排除带参数的情况
+		if(element.isParameterAwareExpression()) return null
+		
 		val project = file.project
+		
+		//首先尝试直接基于stub进行解析
+		val stub = kotlin.runCatching { element.stub }.getOrNull()
+		if(stub != null) {
+			return resolveByStub(element, stub)
+		}
+		
+		ProgressManager.checkCanceled()
 		val fileInfo = file.fileInfo ?: return null
 		val path = fileInfo.path
 		val gameType = fileInfo.rootInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
+		return doResolve(element, path, configGroup)
+	}
+	
+	private fun resolveByStub(element: ParadoxScriptExpressionElement, stub: ParadoxScriptExpressionElementStub<*>): ParadoxComplexEnumValueInfo? {
+		return stub.complexEnumValueInfo
+	}
+	
+	private fun doResolve(element: ParadoxScriptExpressionElement, path: ParadoxPath, configGroup: CwtConfigGroup): ParadoxComplexEnumValueInfo? {
 		for(complexEnumConfig in configGroup.complexEnums.values) {
 			if(matchComplexEnumByPath(complexEnumConfig, path)) {
 				//DEBUG
-				if(element.value != "reform_and_opening_up" || element.findParentDefinitionProperty()?.name != "policy_flags") continue
+				//if(element.value != "reform_and_opening_up" || element.findParentDefinitionProperty()?.name != "policy_flags") continue
 				if(matchComplexEnum(complexEnumConfig, element)) {
 					val name = element.value
 					val enumName = complexEnumConfig.name
-					return ParadoxComplexEnumValueInfo(name, enumName)
+					return ParadoxComplexEnumValueInfo(name, enumName, configGroup.gameType)
 				}
 			}
 		}

@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.util.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
@@ -16,7 +15,7 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
 		if(link == null || context == null) return null
-		return resolveScope(link, context)
+		return resolveLink(link, context)
 	}
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {

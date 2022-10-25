@@ -25,7 +25,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun getDocumentationElementForLink(psiManager: PsiManager?, link: String?, context: PsiElement?): PsiElement? {
 		if(link == null || context == null) return null
-		return resolveScope(link, context)
+		return resolveLink(link, context)
 	}
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
