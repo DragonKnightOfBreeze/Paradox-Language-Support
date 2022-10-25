@@ -22,14 +22,15 @@ settings = {
 }
 
 <DEFINITION>some_definition</DEFINITION> = {
-	name = <DEFINITION_NAME>definition_name</DEFINITION_NAME>
 	<TAG>tag_name</TAG>
+	<COMPLEX_ENUM_VALUE>complex_enum_value</COMPLEX_ENUM_VALUE>
+	name = <DEFINITION_NAME>definition_name</DEFINITION_NAME>
 	key = <DEFINITION_REFERENCE>definition_reference</DEFINITION_REFERENCE>
 	key = <LOCALISATION_REFERENCE>localisation_reference</LOCALISATION_REFERENCE>
 	key = <SYNCED_LOCALISATION_REFERENCE>synced_localisation_reference</SYNCED_LOCALISATION_REFERENCE>
 	key = <PATH_REFERENCE>path_reference</PATH_REFERENCE>
-	key = <ENUM_VALUE>enum_value</ENUM_VALUE>
-	key = <COMPLEX_ENUM_VALUE>complex_enum_value</COMPLEX_ENUM_VALUE>
+	key = <ENUM_VALUE_REFERENCE>enum_value</ENUM_VALUE_REFERENCE>
+	key = <COMPLEX_ENUM_VALUE_REFERENCE>complex_enum_value</COMPLEX_ENUM_VALUE_REFERENCE>
 	key = <VALUE_SET_VALUE>value_set_value</VALUE_SET_VALUE>
 	<SYSTEM_SCOPE>root</SYSTEM_SCOPE> = {
 		<SCOPE>owner</SCOPE> = {

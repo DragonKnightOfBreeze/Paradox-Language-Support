@@ -26,8 +26,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxScriptProperty -> annotateProperty(element, holder)
-			is ParadoxScriptPropertyKey -> annotatePropertyKey(element, holder)
-			is ParadoxScriptString -> annotateString(element, holder)
+			is ParadoxScriptExpressionElement -> annotateExpressionElement(element, holder)
 		}
 	}
 	
@@ -50,25 +49,22 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun annotatePropertyKey(element: ParadoxScriptPropertyKey, holder: AnnotationHolder) {
+	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
 		//不高亮带有参数的情况
 		if(element.isParameterAwareExpression()) return
 		
-		val propertyConfig = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
-		if(propertyConfig != null) {
-			annotateExpression(element, element.textRange, propertyConfig.expression, propertyConfig, holder)
-		}
+		val complexEnumValueInfo = element.complexEnumValueInfo
+		if(complexEnumValueInfo != null) annotateComplexEnumValue(element, holder)
+		val config = ParadoxCwtConfigHandler.resolveConfig(element)
+		if(config != null) doAnnotateExpressionElement(element, element.textRange, config.expression, config, holder)
 	}
 	
-	private fun annotateString(element: ParadoxScriptString, holder: AnnotationHolder) {
-		//不高亮带有参数的情况
-		if(element.isParameterAwareExpression()) return
-		
-		val valueConfig = ParadoxCwtConfigHandler.resolveValueConfig(element)
-		if(valueConfig != null) annotateExpression(element, element.textRange, valueConfig.expression, valueConfig, holder)
+	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
+		//颜色高亮
+		holder.newSilentAnnotation(INFORMATION).textAttributes(Keys.COMPLEX_ENUM_VALUE_KEY).create()
 	}
 	
-	private fun annotateExpression(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, config: CwtKvConfig<*>, holder: AnnotationHolder) {
+	private fun doAnnotateExpressionElement(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, config: CwtKvConfig<*>, holder: AnnotationHolder) {
 		//高亮特殊标签
 		if(config is CwtValueConfig && config.isTagConfig) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
@@ -115,9 +111,9 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				val enumName = expression.value ?: return
 				val attributesKey = when {
 					enumName == CwtConfigHandler.paramsEnumName -> Keys.ARGUMENT_KEY
-					configGroup.enums[enumName] != null -> Keys.ENUM_VALUE_KEY
-					configGroup.complexEnums[enumName] != null -> Keys.ENUM_VALUE_KEY
-					else -> Keys.ENUM_VALUE_KEY
+					configGroup.enums[enumName] != null -> Keys.ENUM_VALUE_REFERENCE_KEY
+					configGroup.complexEnums[enumName] != null -> Keys.ENUM_VALUE_REFERENCE_KEY
+					else -> Keys.ENUM_VALUE_REFERENCE_KEY
 				}
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
@@ -138,7 +134,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 						if(attributesKeyExpressions.isNotEmpty()) {
 							//使用第一个匹配的expression的高亮
 							val infoRange = info.textRange.shiftRight(range.startOffset)
-							annotateExpression(element, infoRange, attributesKeyExpressions.first(), config, holder)
+							doAnnotateExpressionElement(element, infoRange, attributesKeyExpressions.first(), config, holder)
 							continue
 						}
 						val attributesKey = info.getAttributesKey()
@@ -158,7 +154,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 						if(attributesKeyExpressions.isNotEmpty()) {
 							//使用第一个匹配的expression的高亮
 							val infoRange = info.textRange.shiftRight(range.startOffset)
-							annotateExpression(element, infoRange, attributesKeyExpressions.first(), config, holder)
+							doAnnotateExpressionElement(element, infoRange, attributesKeyExpressions.first(), config, holder)
 							continue
 						}
 						val attributesKey = info.getAttributesKey()
