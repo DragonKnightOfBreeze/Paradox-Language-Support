@@ -6,6 +6,7 @@ import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -29,19 +30,12 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 					else -> element.name
 				}
 			}
-			is ParadoxParameter -> {
-				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.parameter")
-					else -> element.name
-				}
-			}
 			is ParadoxScriptProperty -> {
 				//如果是定义，需要特殊处理
 				val definitionInfo = element.definitionInfo
 				if(definitionInfo != null) {
 					when(location) {
 						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.definition")
-						UsageViewLongNameLocation.INSTANCE -> definitionInfo.name + ": " + definitionInfo.typesText
 						else -> definitionInfo.name
 					}
 				} else {
@@ -56,7 +50,6 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 				if(complexEnumValueInfo != null) {
 					when(location) {
 						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
-						UsageViewLongNameLocation.INSTANCE -> complexEnumValueInfo.name + ": " + complexEnumValueInfo.enumName
 						else -> complexEnumValueInfo.name
 					}
 				} else {
@@ -75,8 +68,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	}
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return element is ParadoxScriptNamedElement
-			|| (element is ParadoxScriptExpressionElement && element.complexEnumValueInfo != null)
+		return element is NavigatablePsiElement && element.language == ParadoxScriptLanguage
 	}
 	
 	override fun getWordsScanner(): WordsScanner {

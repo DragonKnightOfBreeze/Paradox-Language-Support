@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -52,7 +53,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 	}
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return element is ParadoxLocalisationNamedElement
+		return element is NavigatablePsiElement && element.language == ParadoxLocalisationLanguage
 	}
 	
 	override fun getWordsScanner(): WordsScanner {

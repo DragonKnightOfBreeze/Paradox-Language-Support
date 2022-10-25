@@ -8,6 +8,10 @@ class ParadoxScriptFilePresentation(
 	element: ParadoxScriptFile
 ) : ParadoxItemPresentation<ParadoxScriptFile>(element)
 
+class ParadoxScriptVariablePresentation(
+	element: ParadoxScriptVariable
+) : ParadoxItemPresentation<ParadoxScriptVariable>(element)
+
 class ParadoxScriptPropertyPresentation(
 	element: ParadoxScriptProperty
 ) : ParadoxItemPresentation<ParadoxScriptProperty>(element)
@@ -29,7 +33,3 @@ class ParadoxComplexEnumValuePresentation(
 		return complexEnumValueInfo.name
 	}
 }
-
-class ParadoxScriptVariablePresentation(
-	element: ParadoxScriptVariable
-) : ParadoxItemPresentation<ParadoxScriptVariable>(element)
