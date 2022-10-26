@@ -210,7 +210,7 @@
                      groupPathKey="script.inspection.advanced.path"
                      implementationClass="icu.windea.pls.script.inspections.advanced.UnusedValueSetValueInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsetValueSetValue"
-                     enabledByDefault="true" level="WEAK WARNING"
+                     enabledByDefault="false" level="WEAK WARNING"
                      bundle="messages.PlsBundle" key="script.inspection.advanced.unsetValueSetValue"
                      groupBundle="messages.PlsBundle" groupKey="script.inspection.advanced"
                      groupPathKey="script.inspection.advanced.path"
