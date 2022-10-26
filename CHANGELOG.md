@@ -61,7 +61,7 @@
 * ［长期］完善CWT配置支持：
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
-  * [ ] 一某种方式另外实现`definitionName` `complexEnumValueName`的文档和查找使用
+  * [ ] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档和查找使用 - 通过Annotator和InlayHintIcon
   * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
 

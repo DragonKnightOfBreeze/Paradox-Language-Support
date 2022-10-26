@@ -43,7 +43,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			//如果存在，高亮定义名对应的字符串（可能还有其他高亮）
 			val nameElement = element.findDefinitionProperty(nameField, true)?.findValue<ParadoxScriptString>()
 			if(nameElement != null) {
-				holder.newAnnotation(INFORMATION, PlsBundle.message("script.annotator.definitionName"))
+				holder.newAnnotation(INFORMATION, PlsBundle.message("script.annotator.definitionName", definitionInfo.name, definitionInfo.typesText))
 					.range(nameElement).textAttributes(Keys.DEFINITION_NAME_KEY).create()
 			}
 		}
@@ -58,6 +58,12 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		
 		val complexEnumValueInfo = element.complexEnumValueInfo
 		if(complexEnumValueInfo != null) annotateComplexEnumValue(element, holder, complexEnumValueInfo)
+	}
+	
+	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+		//高亮复杂枚举名对应的字符串（可能还有其他高亮）
+		holder.newAnnotation(INFORMATION, PlsBundle.message("script.annotator.complexEnumValueName", complexEnumValueInfo.name, complexEnumValueInfo.enumName))
+			.range(element).textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY).create()
 	}
 	
 	private fun doAnnotateExpressionElement(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, config: CwtKvConfig<*>, holder: AnnotationHolder) {
@@ -167,11 +173,5 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			}
 			else -> pass()
 		}
-	}
-	
-	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
-		//高亮复杂枚举名对应的字符串（可能还有其他高亮）
-		holder.newAnnotation(INFORMATION, PlsBundle.message("script.annotator.complexEnumValueName", complexEnumValueInfo.enumName))
-			.range(element).textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY).create()
 	}
 }
