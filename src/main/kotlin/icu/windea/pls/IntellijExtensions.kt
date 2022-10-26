@@ -507,6 +507,18 @@ fun PsiElement.isSingleLineBreak(): Boolean {
 	return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
 }
 
+/**
+ * 搭配[com.intellij.psi.util.PsiUtilCore.getElementAtOffset]使用。
+ */
+fun PsiElement.getSelfOrPrevSiblingNotWhitespace(): PsiElement {
+	if(this !is PsiWhiteSpace) return this
+	var current = this.prevSibling ?: return this
+	while(current is PsiWhiteSpace){
+		current = current.prevSibling ?: return this
+	}
+	return current
+}
+
 inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
 	var current: PsiElement? = element ?: return null
 	while(current != null && current !is PsiFile) {

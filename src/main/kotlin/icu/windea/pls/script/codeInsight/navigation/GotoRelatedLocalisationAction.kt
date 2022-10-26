@@ -30,7 +30,7 @@ class GotoRelatedLocalisationAction : BaseCodeInsightAction() {
 				presentation.isEnabled = true
 				return
 			}
-			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset)
+			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
 			val isRootKeyOrName = element.parentOfType<ParadoxScriptExpressionElement>()?.isDefinitionRootKeyOrName() == true
 			presentation.isEnabled = isRootKeyOrName
 		} else {

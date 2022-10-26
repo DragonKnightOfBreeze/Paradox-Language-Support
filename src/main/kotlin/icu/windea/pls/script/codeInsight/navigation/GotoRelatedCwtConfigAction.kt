@@ -5,6 +5,7 @@ import com.intellij.codeInsight.*
 import com.intellij.codeInsight.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -25,7 +26,7 @@ class GotoRelatedCwtConfigAction : BaseCodeInsightAction() {
 		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
 		if(file is ParadoxScriptFile) {
 			presentation.isVisible = true
-			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset)
+			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
 			val location = element.parentOfTypes(ParadoxScriptPropertyKey::class, ParadoxScriptValue::class)
 			if(location == null) {
 				presentation.isEnabled = false

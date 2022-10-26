@@ -23,7 +23,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
 	
 	override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
 		val project = file.project
-		val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset)
+		val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
 		val definition = element.findParentDefinition() ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
 		val localisationInfos = definitionInfo.localisation
