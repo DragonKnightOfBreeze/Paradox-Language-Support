@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
@@ -198,6 +199,18 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
+		//仅允许重命名定义，如果定义的名字来自某个定义属性，则修改那个属性的值
+		val definitionInfo = element.definitionInfo
+		if(definitionInfo == null) throw IncorrectOperationException()
+		val nameField = definitionInfo.typeConfig.nameField
+		if(nameField != null) {
+			val nameProperty = element.findDefinitionProperty(nameField)
+			if(nameProperty != null) {
+				val nameElement = nameProperty.findValue<ParadoxScriptString>()
+				nameElement?.setValue(name)
+			}
+			return element
+		}
 		val nameElement = element.propertyKey
 		val newNameElement = ParadoxScriptElementFactory.createPropertyKey(element.project, name)
 		nameElement.replace(newNameElement)
@@ -741,7 +754,7 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
 		val nameElement = element.parameterId
-		val newNameElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).parameterId!!
+		val newNameElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).parameterId
 		nameElement.replace(newNameElement)
 		return element
 	}

@@ -19,6 +19,7 @@ class ParadoxScriptValueReference(
 		when {
 			resolved == null -> pass()
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
+			resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
 			resolved is PsiNamedElement -> resolved.setName(newElementName)
 			else -> throw IncorrectOperationException() //不允许重命名
 		}

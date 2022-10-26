@@ -467,6 +467,10 @@ fun PsiElement.getKeyword(offset: Int): String {
 	return text.unquote().substring(0, offset)
 }
 
+fun PsiFile.setNameWithoutExtension(name: String): PsiElement {
+	return setName(name + "." + this.name.substringAfterLast('.', ""))
+}
+
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
 	override fun getElement() = null
 	
