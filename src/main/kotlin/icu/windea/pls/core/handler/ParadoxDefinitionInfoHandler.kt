@@ -114,8 +114,7 @@ object ParadoxDefinitionInfoHandler {
 			if(elementBlock == null) return false
 		}
 		//判断element是否需要是scriptFile还是scriptProperty
-		//TODO nameFromFile和typePerFile有什么区别？
-		val nameFromFileConfig = typeConfig.nameFromFile || typeConfig.typePerFile
+		val nameFromFileConfig = typeConfig.nameFromFile
 		if(nameFromFileConfig) {
 			if(element !is ParadoxScriptFile) return false
 		} else {

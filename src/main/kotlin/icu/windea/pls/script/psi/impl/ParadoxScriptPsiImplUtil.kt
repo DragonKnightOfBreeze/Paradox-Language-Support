@@ -207,7 +207,7 @@ object ParadoxScriptPsiImplUtil {
 			val nameProperty = element.findDefinitionProperty(nameField)
 			if(nameProperty != null) {
 				val nameElement = nameProperty.findValue<ParadoxScriptString>()
-				nameElement?.setValue(name)
+				nameElement?.value = name
 			}
 			return element
 		}
