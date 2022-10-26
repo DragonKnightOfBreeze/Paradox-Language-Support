@@ -5,6 +5,7 @@ import com.intellij.codeInsight.*
 import com.intellij.codeInsight.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -16,15 +17,24 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 	}
 	
 	override fun update(event: AnActionEvent) {
+		//当选中的文件是脚本文件时显示
+		//当选中的文件是定义或者光标位置的元素是定义的rootKey或者作为名字的字符串时启用
 		val presentation = event.presentation
 		val project = event.project
 		val editor = event.editor
 		if(editor == null || project == null) return
-		val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-		presentation.isVisible = file is ParadoxScriptFile
-		if(!presentation.isVisible) return
-		val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset)
-		val definition = element.findParentDefinition() //鼠标位置可以在rootKey上，也可以在定义声明中
-		presentation.isEnabled = definition != null
+		val file = PsiUtilBase.getPsiFileInEditor(editor, project)
+		if(file is ParadoxScriptFile) {
+			presentation.isVisible = true
+			if(file.definitionInfo != null) {
+				presentation.isEnabled = true
+				return
+			}
+			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset)
+			val isRootKeyOrName = element.parentOfType<ParadoxScriptExpressionElement>()?.isDefinitionRootKeyOrName() == true
+			presentation.isEnabled = isRootKeyOrName
+		} else {
+			presentation.isEnabledAndVisible = false
+		}
 	}
 }

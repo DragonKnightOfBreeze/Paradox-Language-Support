@@ -1,7 +1,7 @@
 package icu.windea.pls.script.codeInsight.navigation
 
-import com.intellij.codeInsight.navigation.GotoTargetHandler
-import com.intellij.codeInsight.navigation.NavigationUtil
+import com.intellij.codeInsight.navigation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -11,7 +11,6 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.idea.util.application.*
 import java.util.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -31,8 +30,10 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
 		if(localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
 		val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
 		val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+			//need read action here
 			runReadAction {
 				for((_, locationExpression) in localisationInfos) {
+					ProgressManager.checkCanceled()
 					val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).preferLocale(preferredParadoxLocale())
 					val (_, localisations) = locationExpression.resolveAll(definitionInfo.name, definition, project, selector = selector) ?: continue
 					if(localisations.isNotEmpty()) targets.addAll(localisations)
@@ -48,13 +49,13 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
 	}
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: anonymousString
+		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: unknownString
 		return PlsBundle.message("script.goto.relatedLocalisation.chooseTitle", definitionName.escapeXml())
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: anonymousString
-		return PlsBundle.message("script.goto.relatedLocalisation.findUsagesTitle", definitionName.escapeXml())
+		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: unknownString
+		return PlsBundle.message("script.goto.relatedLocalisation.findUsagesTitle", definitionName)
 	}
 	
 	override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
@@ -66,7 +67,7 @@ class GotoRelatedLocalisationHandler : GotoTargetHandler() {
 	}
 	
 	override fun navigateToElement(descriptor: Navigatable) {
-		if(descriptor  is PsiElement){
+		if(descriptor is PsiElement) {
 			NavigationUtil.activateFileWithPsiElement(descriptor, true)
 		} else {
 			descriptor.navigate(true)

@@ -52,7 +52,9 @@ data class CwtDeclarationConfig(
 		//如果路径中可能待遇参数，则不进行解析
 		if(path.isParameterAware) return emptyList()
 		
-		//FIX 这里可能出现ProcessCanceledException，暂时直接返回空列表
+		//FIXME 需要重新调整对返回的规则列表的排序
+		//这里可能出现ProcessCanceledException，这时直接返回空列表
+		
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return configsCache.getOrPut(cacheKey, { emptyList() }) {
 			when {

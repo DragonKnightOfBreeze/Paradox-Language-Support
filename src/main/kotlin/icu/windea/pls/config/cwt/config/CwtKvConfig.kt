@@ -21,8 +21,6 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	
 	var parent: CwtKvConfig<*>? = null
 	
-	abstract val resolved: CwtKvConfig<*>
-	
 	val isBlock: Boolean get() = properties != null || values != null
 	
 	val cardinality by lazy { resolveCardinality() }
@@ -74,6 +72,10 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 			for(option in it) scopeMap.putIfAbsent(option.key, option.value)
 		}
 	}
+	
+	abstract fun resolved(): CwtKvConfig<*>
+	
+	abstract fun resolvedOrNull(): CwtKvConfig<*>?
 	
 	//深拷贝
 	

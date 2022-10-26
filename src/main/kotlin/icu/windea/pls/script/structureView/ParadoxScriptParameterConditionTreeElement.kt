@@ -24,6 +24,6 @@ class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameter
 	
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
-		return "[" + element.expression + "]"
+		return "[" + element.conditionExpression + "]"
 	}
 }

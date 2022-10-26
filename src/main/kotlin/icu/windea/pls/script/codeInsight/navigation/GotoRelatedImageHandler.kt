@@ -1,6 +1,7 @@
 package icu.windea.pls.script.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -9,7 +10,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.idea.util.application.*
 import java.util.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -29,8 +29,10 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 		if(imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
 		val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
 		val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+			//need read action here
 			runReadAction {
 				for((_, locationExpression) in imageInfos) {
+					ProgressManager.checkCanceled()
 					val (_, files) = locationExpression.resolveAll(definition, definitionInfo, project) ?: continue
 					if(files.isNotEmpty()) targets.addAll(files)
 				}
@@ -45,13 +47,13 @@ class GotoRelatedImageHandler : GotoTargetHandler() {
 	}
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: anonymousString
+		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: unknownString
 		return PlsBundle.message("script.goto.relatedImage.chooseTitle", definitionName.escapeXml())
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: anonymousString
-		return PlsBundle.message("script.goto.relatedImage.findUsagesTitle", definitionName.escapeXml())
+		val definitionName = sourceElement.castOrNull<ParadoxDefinitionProperty>()?.definitionInfo?.name ?: unknownString
+		return PlsBundle.message("script.goto.relatedImage.findUsagesTitle", definitionName)
 	}
 	
 	override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {

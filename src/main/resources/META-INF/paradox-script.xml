@@ -272,6 +272,10 @@
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
+      <action id="ParadoxScript.GotoRelatedCwtConfig" class="icu.windea.pls.script.codeInsight.navigation.GotoRelatedCwtConfigAction">
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
       <add-to-group group-id="GoToCodeGroup" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="EditorPopupMenu.GoTo" relative-to-action="GotoRelated" anchor="after"/>
     </group>

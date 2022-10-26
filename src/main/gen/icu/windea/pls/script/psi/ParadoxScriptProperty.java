@@ -47,6 +47,9 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable
   ParadoxValueType getValueType();
 
+  @NotNull
+  String getConditionExpression();
+
   @Nullable
   String getConfigExpression();
 

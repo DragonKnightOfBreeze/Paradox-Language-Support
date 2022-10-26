@@ -31,7 +31,6 @@ enum class CwtConfigType(
 	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true, localisation = "mod_$"),
 	Scope("scope", PlsDocBundle.message("name.cwt.scope"), true),
 	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup"), true),
-	Tag("tag", PlsDocBundle.message("name.cwt.tag"), true),
 	
 	SystemScope("system scope", PlsDocBundle.message("name.cwt.systemScope"), true),
 	LocalisationLocale("localisation locale", PlsDocBundle.message("name.cwt.localisationLocale"), true),
@@ -43,6 +42,8 @@ enum class CwtConfigType(
 	}
 	
 	companion object {
+		//属性名匹配+父属性名匹配，不检查属性是否在正确的位置，插件开发者应当保证CWT配置是正确的……
+		
 		fun resolve(element: PsiElement): CwtConfigType? {
 			return when {
 				element is CwtProperty -> resolve(element)
@@ -72,7 +73,6 @@ enum class CwtConfigType(
 						parentName == "modifiers" -> Modifier
 						parentName == "scopes" -> Scope
 						parentName == "scope_groups" -> ScopeGroup
-						parentName == "tags" -> Tag
 						//from internal config
 						parentName == "system_scopes" && parentProperty.containingFile.name == InternalConfigGroup.scriptConfigFileName -> SystemScope
 						parentName == "locales" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationLocale

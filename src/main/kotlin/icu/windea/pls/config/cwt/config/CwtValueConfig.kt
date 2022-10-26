@@ -24,7 +24,9 @@ data class CwtValueConfig(
 	val valueExpression: CwtValueExpression = if(stringValue == null) CwtValueExpression.EmptyExpression else CwtValueExpression.resolve(stringValue)
 	override val expression: CwtValueExpression get() = valueExpression
 	
-	override val resolved: CwtValueConfig get() = this
-	
 	val isTagConfig = optionValues?.any { it.stringValue == "tag" } == true
+	
+	override fun resolved(): CwtValueConfig = this
+	
+	override fun resolvedOrNull(): CwtValueConfig? = null
 }

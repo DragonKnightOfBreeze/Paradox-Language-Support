@@ -23,7 +23,7 @@ class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
 			o is ParadoxScriptVariable -> "@" + o.name
 			o is ParadoxScriptProperty -> o.definitionInfo?.name ?: o.name
 			o is ParadoxScriptValue && o.isLonely() -> o.value
-			o is ParadoxScriptParameterCondition -> o.expression?.let { "[$it]" }
+			o is ParadoxScriptParameterCondition -> o.conditionExpression?.let { "[$it]" }
 			else -> null
 		}
 	}

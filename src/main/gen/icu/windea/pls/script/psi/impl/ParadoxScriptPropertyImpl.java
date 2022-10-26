@@ -105,6 +105,12 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
+  @NotNull
+  public String getConditionExpression() {
+    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
+  }
+
+  @Override
   @Nullable
   public String getConfigExpression() {
     return ParadoxScriptPsiImplUtil.getConfigExpression(this);

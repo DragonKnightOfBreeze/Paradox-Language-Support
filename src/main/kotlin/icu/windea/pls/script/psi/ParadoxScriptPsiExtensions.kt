@@ -145,6 +145,32 @@ fun PsiElement.findParentScriptElement(): @UnionType(ParadoxScriptProperty::clas
 }
 
 
+fun ParadoxScriptExpressionElement.isDefinitionRootKeyOrName(): Boolean{
+	return when{
+		this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
+		this is ParadoxScriptString -> isDefinitionName()
+		else -> false
+	}
+}
+
+fun ParadoxScriptPropertyKey.isDefinitionRootKey() : Boolean{
+	val definition = this.parent.castOrNull<ParadoxScriptProperty>() ?: return false
+	if(definition.definitionInfo != null) return true
+	return false
+} 
+
+fun ParadoxScriptString.isDefinitionName(): Boolean {
+	val nameProperty = this.parent.parent.castOrNull<ParadoxScriptProperty>() ?: return false
+	//def = def_name
+	if(nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
+	val block = nameProperty.parent.castOrNull<ParadoxScriptBlock>() ?: return false
+	val definition = block.parent.parent.castOrNull<ParadoxScriptProperty>() ?: return false
+	//def = { name_prop = def_name }
+	if(definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
+	return false
+}
+
+
 fun ParadoxScriptExpressionElement.isSimpleScriptExpression(): Boolean {
 	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return true
 	return when(this) {

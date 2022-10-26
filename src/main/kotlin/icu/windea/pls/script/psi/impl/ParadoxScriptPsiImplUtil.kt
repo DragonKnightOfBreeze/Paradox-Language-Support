@@ -252,6 +252,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
+	fun getConditionExpression(element: ParadoxScriptProperty): String {
+		val keyExpression = element.propertyKey.expression
+		val valueExpression = element.propertyValue?.value?.expression ?: unresolvedString
+		return "$keyExpression = $valueExpression"
+	}
+	
+	@JvmStatic
 	fun getConfigExpression(element: ParadoxScriptProperty): String? {
 		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element) ?: return null
 		return "${config.key} = ${config.value}"
@@ -677,6 +684,11 @@ object ParadoxScriptPsiImplUtil {
 	fun getValueType(element: ParadoxScriptBlock): ParadoxValueType {
 		return ParadoxValueType.BlockType
 	}
+	
+	@JvmStatic
+	fun getConditionExpression(element: ParadoxScriptBlock): String {
+		return PlsFolders.blockFolder
+	}
 	//endregion
 	
 	//region ParadoxScriptParameterCondition
@@ -686,7 +698,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpression(element: ParadoxScriptParameterCondition): String? {
+	fun getConditionExpression(element: ParadoxScriptParameterCondition): String? {
 		val conditionExpression = element.parameterConditionExpression ?: return null
 		var builder: StringBuilder? = null
 		conditionExpression.processChild {
@@ -780,6 +792,11 @@ object ParadoxScriptPsiImplUtil {
 	@JvmStatic
 	fun getValueType(element: ParadoxScriptInlineMath): ParadoxValueType {
 		return ParadoxValueType.InlineMathType
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxScriptInlineMath): String {
+		return PlsFolders.inlineMathFolder
 	}
 	//endregion
 	

@@ -100,4 +100,10 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
     return ParadoxScriptPsiImplUtil.getValueType(this);
   }
 
+  @Override
+  @NotNull
+  public String getConditionExpression() {
+    return ParadoxScriptPsiImplUtil.getConditionExpression(this);
+  }
+
 }

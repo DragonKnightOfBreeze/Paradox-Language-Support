@@ -28,33 +28,32 @@ data class CwtPropertyConfig(
 	val valueExpression: CwtValueExpression = if(stringValue == null) CwtValueExpression.EmptyExpression else CwtValueExpression.resolve(stringValue)
 	override val expression: CwtKeyExpression get() = keyExpression
 	
-	override val resolved: CwtPropertyConfig get() = inlineableConfig?.config ?: this
-	val keyResolved: CwtPropertyConfig get() = inlineableConfig?.castOrNull<CwtAliasConfig>()?.config ?: this
-	
-	val valueConfig by lazy { doGetValueConfig() }
-	
-	private fun doGetValueConfig(): CwtValueConfig? {
-		val resolvedPointer = resolved.pointer
-		val valuePointer = resolvedPointer.containingFile?.let { f -> resolvedPointer.element?.value?.createPointer(f) } ?: return null
-		return CwtValueConfig(
+	val valueConfig by lazy {
+		val resolvedPointer = resolved().pointer
+		val valuePointer = resolvedPointer.containingFile
+			?.let { f -> resolvedPointer.element?.value?.createPointer(f) } ?: return@lazy null
+		CwtValueConfig(
 			valuePointer, info, value, booleanValue, intValue, floatValue, stringValue,
 			properties, values, documentation, options, optionValues
 		).also { it.parent = parent }
 	}
 	
+	override fun resolved(): CwtPropertyConfig = inlineableConfig?.config ?: this
+	
+	override fun resolvedOrNull(): CwtPropertyConfig? = inlineableConfig?.config
+	
 	//规则内联相关
-	//TODO properties和values需要考虑深拷贝
 	
 	var inlineableConfig: CwtInlineableConfig? = null
 	
 	/**
 	 * 从[singleAliasConfig]内联规则：value改为取[singleAliasConfig]的的value，如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig):CwtPropertyConfig{
+	fun inlineFromSingleAliasConfig(singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
 		//内联所有value
 		val other = singleAliasConfig.config
 		val inlined = copy(
-			value = other.value, 
+			value = other.value,
 			booleanValue = other.booleanValue,
 			intValue = other.intValue,
 			floatValue = other.floatValue,
@@ -72,7 +71,7 @@ data class CwtPropertyConfig(
 	/**
 	 * 从[aliasConfig]内联规则：key改为取[aliasConfig]的subName，value改为取[aliasConfig]的的value，如果需要拷贝，则进行深拷贝。
 	 */
-	fun inlineFromAliasConfig(aliasConfig:CwtAliasConfig):CwtPropertyConfig{
+	fun inlineFromAliasConfig(aliasConfig: CwtAliasConfig): CwtPropertyConfig {
 		//内联所有value，key取aliasSubName（如：alias[effect:if] 中的if）
 		val other = aliasConfig.config
 		val inlined = copy(

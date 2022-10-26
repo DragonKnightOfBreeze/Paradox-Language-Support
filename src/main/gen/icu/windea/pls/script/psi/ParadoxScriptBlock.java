@@ -44,4 +44,7 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, IParadoxScriptBl
   @NotNull
   ParadoxValueType getValueType();
 
+  @NotNull
+  String getConditionExpression();
+
 }

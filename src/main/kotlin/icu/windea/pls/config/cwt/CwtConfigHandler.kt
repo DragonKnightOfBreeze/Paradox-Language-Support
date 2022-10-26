@@ -579,7 +579,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Localisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 				processLocalisationVariants(keyword, project, selector = selector) { localisation ->
 					val n = localisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -596,7 +596,7 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.SyncedLocalisation -> {
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				val selector = localisationSelector().gameType(gameType).preferRootFrom(contextElement).preferLocale(preferredParadoxLocale())
 				processSyncedLocalisationVariants(keyword, project, selector = selector) { syncedLocalisation ->
 					val n = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
@@ -614,7 +614,7 @@ object CwtConfigHandler {
 			CwtDataTypes.InlineLocalisation -> {
 				if(quoted) return
 				result.restartCompletionOnAnyPrefixChange() //当前缀变动时需要重新提示
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				processLocalisationVariants(keyword, project) { localisation ->
 					val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
 					val typeFile = localisation.containingFile
@@ -638,7 +638,7 @@ object CwtConfigHandler {
 					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
 				}
 				if(virtualFiles.isEmpty()) return
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
@@ -660,7 +660,7 @@ object CwtConfigHandler {
 					findFilesByFilePath(expressionValue, project, expressionType = expressionType, distinct = true, selector = selector)
 				}
 				if(virtualFiles.isEmpty()) return
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				for(virtualFile in virtualFiles) {
 					val file = virtualFile.toPsiFile<PsiFile>(project) ?: continue
 					val filePath = virtualFile.fileInfo?.path?.path ?: continue
@@ -677,7 +677,7 @@ object CwtConfigHandler {
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement)
 				val definitions = findAllDefinitionsByType(typeExpression, project, distinct = true, selector = selector) //不预先过滤结果
 				if(definitions.isEmpty()) return
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				for(definition in definitions) {
 					val n = definition.definitionInfo?.name ?: continue
 					val name = n.quoteIf(quoted)
@@ -696,7 +696,7 @@ object CwtConfigHandler {
 				val definitions = findAllDefinitionsByType(typeExpression, project, distinct = true, selector = selector) //不预先过滤结果
 				if(definitions.isEmpty()) return
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				for(definition in definitions) {
 					val definitionName = definition.definitionInfo?.name ?: continue
 					val n = "$prefix$definitionName$suffix"
@@ -772,7 +772,7 @@ object CwtConfigHandler {
 				
 				if(quoted) return
 				val valueSetName = expression.value ?: return
-				val tailText = " by $expression in ${config.resolved.pointer.containingFile?.name ?: anonymousString}"
+				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: anonymousString}"
 				//提示预定义的value
 				run {
 					ProgressManager.checkCanceled()
@@ -861,8 +861,8 @@ object CwtConfigHandler {
 				val n = expression.value ?: return
 				//if(!n.matchesKeyword(keyword)) return //不预先过滤结果
 				val name = n.quoteIf(quoted)
-				val element = config.resolved.pointer.element ?: return
-				val typeFile = config.resolved.pointer.containingFile
+				val element = config.resolved().pointer.element ?: return
+				val typeFile = config.resolved().pointer.containingFile
 				val lookupElement = LookupElementBuilder.create(element, name)
 					.withExpectedIcon(if(isKey) PlsIcons.Property else PlsIcons.Value, config)
 					.withTypeText(typeFile?.name, typeFile?.icon, true)
@@ -1454,12 +1454,12 @@ object CwtConfigHandler {
 			//意味着aliasSubName是嵌入值，如modifier的名字
 			CwtDataTypes.AliasMatchLeft -> return null
 			CwtDataTypes.Constant -> {
-				if(config is CwtKvConfig<*>) return config.resolved.pointer.element.castOrNull<CwtNamedElement>()
+				if(config is CwtKvConfig<*>) return config.resolved().pointer.element.castOrNull<CwtNamedElement>()
 				return null
 			}
 			//对于值，如果类型是scalar、int等，不进行解析
 			else -> {
-				if(isKey == true && config is CwtPropertyConfig) return config.keyResolved.pointer.element //TODO
+				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element //TODO
 				return null //TODO 
 			}
 		}
@@ -1584,7 +1584,7 @@ object CwtConfigHandler {
 			}
 			//对于值，如果类型是scalar、int等，不进行解析
 			else -> {
-				if(isKey == true && config is CwtPropertyConfig) return config.keyResolved.pointer.element.toSingletonListOrEmpty() //TODO
+				if(isKey == true && config is CwtPropertyConfig) return config.resolved().pointer.element.toSingletonListOrEmpty() //TODO
 				return emptyList() //TODO 
 			}
 		}

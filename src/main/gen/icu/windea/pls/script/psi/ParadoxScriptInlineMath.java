@@ -20,4 +20,7 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
   @NotNull
   ParadoxValueType getValueType();
 
+  @NotNull
+  String getExpression();
+
 }

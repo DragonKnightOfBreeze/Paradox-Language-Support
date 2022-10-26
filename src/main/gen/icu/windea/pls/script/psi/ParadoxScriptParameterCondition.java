@@ -23,7 +23,7 @@ public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
   Icon getIcon(@IconFlags int flags);
 
   @Nullable
-  String getExpression();
+  String getConditionExpression();
 
   boolean isEmpty();
 

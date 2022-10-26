@@ -41,6 +41,7 @@ object ParadoxCwtConfigHandler {
 		hasDefault: Boolean = true,
 		valueExpressionPredicate: ((CwtValueExpression) -> Boolean)? = null
 	): List<T> {
+		//当输入的元素是key或property时，输入的规则类型必须是property
 		return when(configType) {
 			CwtPropertyConfig::class.java -> {
 				val valueElement = when {

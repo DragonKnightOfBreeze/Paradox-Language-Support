@@ -6,15 +6,15 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
 		return when(node.elementType) {
 			BLOCK -> PlsFolders.blockFolder
 			PARAMETER_CONDITION -> {
-				val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.expression ?: PlsFolders.ellipsis
+				val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression ?: PlsFolders.ellipsis
 				PlsFolders.parameterConditionFolder(expression)
 			}
 			INLINE_MATH -> PlsFolders.inlineMathFolder

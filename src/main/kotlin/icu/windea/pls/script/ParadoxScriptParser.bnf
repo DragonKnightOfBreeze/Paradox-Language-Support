@@ -63,7 +63,7 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
-    getDefinitionType getValueType getConfigExpression
+    getDefinitionType getValueType getConditionExpression getConfigExpression
     getPathName getOriginalPathName getParameterMap getPresentation
   ]
 }
@@ -145,7 +145,10 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements=[
     "icu.windea.pls.script.psi.IParadoxScriptBlock"
   ]
-  methods=[getIcon getValue isEmpty isNotEmpty getComponents getColor setColor getValueType]
+  methods=[
+    getIcon getValue isEmpty isNotEmpty getComponents getColor setColor
+    getValueType getConditionExpression
+  ]
 }
 private block_item ::= COMMENT | property | value | parameter_condition | variable{
   recoverWhile="#auto"
@@ -190,7 +193,7 @@ parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_conditio
   pin=1
   recoverWhile="#auto"
   implements="com.intellij.psi.PsiListLikeElement"
-  methods=[getIcon getExpression isEmpty isNotEmpty getComponents]
+  methods=[getIcon getConditionExpression isEmpty isNotEmpty getComponents]
 }
 private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET{
   pin=1
@@ -214,7 +217,7 @@ inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END{
   pin=1
   recoverWhile="#auto"
   extends=value
-  methods=[getValue getValueType]
+  methods=[getValue getValueType getExpression]
 }
 private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
 //noinspection BnfUnusedRule

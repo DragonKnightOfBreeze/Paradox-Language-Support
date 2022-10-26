@@ -8,6 +8,7 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import javax.swing.*
 
@@ -37,7 +38,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getComponents(element: CwtRootBlock): List<PsiElement> {
-		return element.filterChildOfType { it is CwtProperty || it is CwtValue}
+		return element.filterChildOfType { it is CwtProperty || it is CwtValue }
 	}
 	//endregion
 	
@@ -95,7 +96,13 @@ object CwtPsiImplUtil {
 	//region CwtProperty
 	@JvmStatic
 	fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-		return PlsIcons.CwtProperty
+		//0.7.4 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
+		val type = CwtConfigType.resolve(element)
+		return when {
+			type == CwtConfigType.Alias -> PlsIcons.Alias
+			type == CwtConfigType.SingleAlias -> PlsIcons.Alias
+			else -> PlsIcons.CwtProperty
+		}
 	}
 	
 	@JvmStatic
@@ -232,7 +239,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getComponents(element: CwtBlock): List<PsiElement> {
-		return element.filterChildOfType { it is CwtProperty || it is CwtValue}
+		return element.filterChildOfType { it is CwtProperty || it is CwtValue }
 	}
 	//endregion
 	

@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -34,6 +35,9 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 			}
 			symbol is ParadoxScriptPropertyKey -> {
 				return getSymbolTypeDeclarations(symbol.parent)
+			}
+			symbol.language == CwtLanguage -> {
+				return symbol.toSingletonArray()
 			}
 			//symbol已被解析，不能这样做
 			//symbol is ParadoxScriptExpressionElement -> {
