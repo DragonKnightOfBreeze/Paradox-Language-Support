@@ -57,7 +57,7 @@
   * [ ] 添加引用解析：用于格式化的本地化文本中的格式化分段（`format.xxx: "<some_parts> ...""`中的`<some_parts>`）
   * [X] 在查找使用中，区分参数和值集中的值的读/写使用
 * ［长期］完善CWT配置支持：
-  * [ ] 支持`complex_enum`，以及相关功能：匹配、代码提示、引用解析 *
+  * [ ] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName`,`complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件

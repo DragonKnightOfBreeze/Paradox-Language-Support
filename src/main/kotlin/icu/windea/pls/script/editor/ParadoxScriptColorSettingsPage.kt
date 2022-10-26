@@ -33,7 +33,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 			
 			AttributesDescriptor(PlsBundle.message("script.displayName.definition"), ParadoxScriptAttributesKeys.DEFINITION_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.definitionName"), ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY),
-			AttributesDescriptor(PlsBundle.message("script.displayName.complexEnumValue"), ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY),
+			AttributesDescriptor(PlsBundle.message("script.displayName.complexEnumValueName"), ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_NAME_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.definitionReference"), ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.localisationReference"), ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY),
 			AttributesDescriptor(PlsBundle.message("script.displayName.syncedLocalisationReference"), ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE_KEY),
@@ -53,6 +53,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 	private val tagToDescriptorMap = mapOf(
 		"DEFINITION" to ParadoxScriptAttributesKeys.DEFINITION_KEY,
 		"DEFINITION_NAME" to ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY,
+		"COMPLEX_ENUM_VALUE_NAME" to ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_NAME_KEY,
 		"DEFINITION_REFERENCE" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
 		"LOCALISATION" to ParadoxLocalisationAttributesKeys.LOCALISATION_KEY,
 		"LOCALISATION_REFERENCE" to ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY,
