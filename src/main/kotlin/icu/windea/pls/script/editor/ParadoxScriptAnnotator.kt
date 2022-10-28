@@ -40,11 +40,13 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		holder.newSilentAnnotation(INFORMATION).range(element.propertyKey).textAttributes(Keys.DEFINITION_KEY).create()
 		val nameField = definitionInfo.typeConfig.nameField
 		if(nameField != null) {
-			//如果存在，高亮定义名对应的字符串（可能还有其他高亮）
+			//如果存在，高亮定义名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
 			val nameElement = element.findDefinitionProperty(nameField, true)?.findValue<ParadoxScriptString>()
 			if(nameElement != null) {
-				holder.newAnnotation(INFORMATION, PlsBundle.message("script.annotator.definitionName", definitionInfo.name, definitionInfo.typesText))
-					.range(nameElement).textAttributes(Keys.DEFINITION_NAME_KEY).create()
+				val nameString = definitionInfo.name.escapeXmlOrAnonymous()
+				val typesString = definitionInfo.typesText
+				val tooltip = PlsBundle.message("script.annotator.definitionName", nameString, typesString)
+				holder.newSilentAnnotation(INFORMATION).tooltip(tooltip).range(nameElement).textAttributes(Keys.DEFINITION_NAME_KEY).create()
 			}
 		}
 	}
@@ -61,9 +63,11 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
-		//高亮复杂枚举名对应的字符串（可能还有其他高亮）
-		holder.newAnnotation(INFORMATION, PlsBundle.message("script.annotator.complexEnumValueName", complexEnumValueInfo.name, complexEnumValueInfo.enumName))
-			.range(element).textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY).create()
+		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
+		val nameString = complexEnumValueInfo.name.escapeXmlOrAnonymous()
+		val enumNameString = complexEnumValueInfo.enumName
+		val tooltip = PlsBundle.message("script.annotator.complexEnumValueName", nameString, enumNameString)
+		holder.newSilentAnnotation(INFORMATION).tooltip(tooltip).range(element).textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY).create()
 	}
 	
 	private fun doAnnotateExpressionElement(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, config: CwtKvConfig<*>, holder: AnnotationHolder) {

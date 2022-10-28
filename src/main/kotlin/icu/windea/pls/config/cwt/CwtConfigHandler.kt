@@ -77,12 +77,22 @@ object CwtConfigHandler {
 	//}
 	
 	private fun isAlias(propertyConfig: CwtPropertyConfig): Boolean {
-		return propertyConfig.keyExpression.type == CwtDataTypes.AliasName &&
-			propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
+		return propertyConfig.keyExpression.type == CwtDataTypes.AliasName 
+			&& propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
 	}
 	
 	private fun isSingleAlias(propertyConfig: CwtPropertyConfig): Boolean {
 		return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
+	}
+	
+	fun isComplexEnum(config: CwtKvConfig<*>): Boolean{
+		return config.expression.type == CwtDataTypes.Enum
+			&& config.expression.value?.let { config.info.configGroup.complexEnums[it] }  != null
+	}
+	
+	fun isValueSetValue(config: CwtKvConfig<*>): Boolean{
+		return config.expression.type == CwtDataTypes.Value
+			|| config.expression.type == CwtDataTypes.ValueSet
 	}
 	
 	//fun mergeScope(scopeMap: MutableMap<String, String>, thisScope: String?): MutableMap<String, String> {

@@ -49,7 +49,7 @@
   * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ -> 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
 * 新增功能：
   * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
-  * [X] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
+  * [X] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effect = { PARAM = some_value }`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
   * [X] 实现检查：值集中的值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
   * [X] 实现检查：值集中的值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
   * [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
@@ -61,6 +61,7 @@
 * ［长期］完善CWT配置支持：
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
+  * [X] 为`complexEnumValue`的引用提供特殊文档（而非声明）
   * [ ] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档和查找使用 - 通过Annotator和InlayHintIcon
   * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
