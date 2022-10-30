@@ -25,7 +25,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		val dataType = config.expression.type
 		if(dataType != CwtDataTypes.ValueField && dataType != CwtDataTypes.IntValueField) return null
 		val configGroup = config.info.configGroup
-		val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(text, configGroup)
+		val valueFieldExpression = ParadoxScriptExpression.resolveValueField(text, configGroup)
 		val prefixInfo = valueFieldExpression.prefixInfo ?: return null
 		if(prefixInfo.text != "value:") return null
 		val dataSourceInfo = valueFieldExpression.dataSourceInfo ?: return null
@@ -57,7 +57,7 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		val dataType = config.expression.type
 		if(dataType != CwtDataTypes.ValueField && dataType != CwtDataTypes.IntValueField) return null
 		val configGroup = config.info.configGroup
-		val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(text, configGroup)
+		val valueFieldExpression = ParadoxScriptExpression.resolveValueField(text, configGroup)
 		val prefixInfo = valueFieldExpression.prefixInfo ?: return null
 		if(prefixInfo.text != "value:") return null
 		valueFieldExpression.dataSourceInfo ?: return null

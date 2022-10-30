@@ -13,7 +13,7 @@ private val setColorActionCache = CacheBuilder.newBuilder()
 	.build(CacheLoader.from<ParadoxTextColorConfig, SetColorAction> { SetColorAction(it) })
 
 private fun doGetChildren(): List<AnAction> {
-	val textEditor = threadLocalTextEditorContainer.get() ?: return emptyList()
+	val textEditor = PlsThreadLocals.threadLocalTextEditorContainer.get() ?: return emptyList()
 	val project = textEditor.editor.project ?: return emptyList()
 	val file = textEditor.file
 	val gameType = file.fileInfo?.rootInfo?.gameType ?: return emptyList()
@@ -23,6 +23,8 @@ private fun doGetChildren(): List<AnAction> {
 }
 
 class FloatingToolbarGroup : DefaultActionGroup(doGetChildren()) {
-	override fun isPopup() = true
+	init {
+		templatePresentation.isPopupGroup = true
+	}
 }
 

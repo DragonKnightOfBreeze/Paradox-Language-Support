@@ -11,8 +11,8 @@
     <stubElementTypeHolder
         class="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes"
         externalIdPrefix="paradoxLocalisation."/>
-    <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationNameIndex$Localisation"/>
-    <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationNameIndex$SyncedLocalisation"/>
+    <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.localisation.psi.ParadoxSyncedLocalisationNameIndex"/>
 
     <spellchecker.support
         language="PARADOX_LOCALISATION"

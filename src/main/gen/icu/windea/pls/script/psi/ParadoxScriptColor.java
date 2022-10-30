@@ -4,7 +4,7 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.model.ParadoxValueType;
+import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 import java.awt.Color;
 
 public interface ParadoxScriptColor extends ParadoxScriptValue {
@@ -18,6 +18,6 @@ public interface ParadoxScriptColor extends ParadoxScriptValue {
   void setColor(@NotNull Color color);
 
   @NotNull
-  ParadoxValueType getValueType();
+  ParadoxScriptExpressionType getExpressionType();
 
 }

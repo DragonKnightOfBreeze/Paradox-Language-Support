@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.dds.*
@@ -92,7 +93,10 @@ class CwtImageLocationExpression(
 					definition.findDefinitionProperty(propertyName)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
+			val config = ParadoxCwtConfigHandler.resolveValueConfig(value)
+				?.takeIf { it.expression.type in validValueTypes }
+				?: return null
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, value.textRangeInParent, config.expression, config, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -139,7 +143,10 @@ class CwtImageLocationExpression(
 					definition.findDefinitionProperty(propertyName)?.findValue<ParadoxScriptInt>()?.intValue ?: 0
 				} ?: 0
 			}
-			val resolved = CwtConfigHandler.resolveValue(value) { it.type in validValueTypes } ?: return null
+			val config = ParadoxCwtConfigHandler.resolveValueConfig(value)
+				?.takeIf { it.expression.type in validValueTypes }
+				?: return null
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, value.textRangeInParent, config.expression, config, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {

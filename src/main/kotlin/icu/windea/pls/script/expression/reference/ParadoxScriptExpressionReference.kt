@@ -5,14 +5,17 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 
-class ParadoxScriptKeyReference(
-	element: ParadoxScriptPropertyKey,
-	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxScriptPropertyKey>(element, rangeInElement), PsiPolyVariantReference, ParadoxParameterResolvable, ParadoxValueSetValueResolvable {
+class ParadoxScriptExpressionReference(
+	element: ParadoxScriptExpressionElement,
+	rangeInElement: TextRange,
+	val config: CwtKvConfig<*>,
+	val isKey: Boolean
+) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiPolyVariantReference, ParadoxValueSetValueResolvable {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()
@@ -35,11 +38,12 @@ class ParadoxScriptKeyReference(
 	}
 	
 	override fun resolve(): PsiElement? {
-		return CwtConfigHandler.resolveKey(element) //根据对应的expression进行解析
+		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config.expression, config, isKey) //根据对应的expression进行解析
 	}
 	
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-		return CwtConfigHandler.multiResolveKey(element).mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
+		return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config.expression, config, isKey)
+			.mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
 	}
 	
 	/**

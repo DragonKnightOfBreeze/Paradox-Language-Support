@@ -50,19 +50,6 @@ fun LookupElement.withExplicitProximity(explicitProximity: Int): LookupElement {
 	return PrioritizedLookupElement.withExplicitProximity(this, explicitProximity)
 }
 
-/**导航到指定元素的位置*/
-fun navigateToElement(editor: Editor, element: PsiElement?) {
-	val offset = element?.textOffset ?: return
-	editor.caretModel.moveToOffset(offset)
-	editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-}
-
-/**导航到指定元素的位置并且光标选择该元素*/
-fun selectElement(editor: Editor, element: PsiElement?) {
-	val range = element?.textRange ?: return
-	editor.selectionModel.setSelection(range.startOffset, range.endOffset)
-}
-
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
 fun DataContext.findElement(): PsiElement? {
 	var element = this.getData(CommonDataKeys.PSI_ELEMENT)
@@ -164,7 +151,7 @@ inline fun StringBuilder.grayed(block: StringBuilder.() -> Unit): StringBuilder 
 
 fun String.escapeXml() = if(this.isEmpty()) "" else StringUtil.escapeXmlEntities(this)
 
-fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) anonymousString else StringUtil.escapeXmlEntities(this)
+fun String.escapeXmlOrAnonymous() = if(this.isEmpty()) PlsConstants.anonymousString else StringUtil.escapeXmlEntities(this)
 
 fun String.escapeBlank(): String {
 	var builder: StringBuilder? = null

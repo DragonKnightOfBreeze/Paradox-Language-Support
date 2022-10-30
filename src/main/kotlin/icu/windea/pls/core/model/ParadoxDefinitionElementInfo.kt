@@ -3,8 +3,10 @@ package icu.windea.pls.core.model
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.CwtConfigHandler.matchesScriptExpression
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -57,7 +59,8 @@ class ParadoxDefinitionElementInfo(
 		}
 		if(properties.isEmpty()) return@lazy emptyMap()
 		properties.groupAndCountBy { prop ->
-			childPropertyConfigs.find { CwtConfigHandler.matchesKey(it.keyExpression, prop.propertyKey, configGroup) }?.keyExpression
+			val expression = ParadoxScriptExpression.resolve(prop.propertyKey)
+			childPropertyConfigs.find { matchesScriptExpression(expression, it.keyExpression, configGroup) }?.keyExpression
 		}
 	}
 	
@@ -70,7 +73,8 @@ class ParadoxDefinitionElementInfo(
 		}
 		if(values.isEmpty()) return@lazy emptyMap()
 		values.groupAndCountBy { value ->
-			childValueConfigs.find { CwtConfigHandler.matchesValue(it.valueExpression, value, configGroup) }?.valueExpression
+			val expression = ParadoxScriptExpression.resolve(value)
+			childValueConfigs.find { matchesScriptExpression(expression, it.valueExpression, configGroup) }?.valueExpression
 		}
 	}
 }

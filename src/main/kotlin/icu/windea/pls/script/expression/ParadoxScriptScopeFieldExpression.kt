@@ -21,21 +21,21 @@ class ParadoxScriptScopeFieldExpression(
 	configGroup: CwtConfigGroup,
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
 	errors: List<ParadoxScriptExpressionError> = emptyList()
-) : ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
+) : ParadoxScriptComplexExpression(expressionString, configGroup, infos, errors) {
 	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
 	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
 	
 	//TODO 参考CWT规则，作用域本身的别名（如：`root`）也可以包含点号
 	//NOTE 参考CWT规则，可能没有前缀，前缀后的文本需要基于data_source对应的表达式（如：`value_set[event_target]`）进行解析
 	
-	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptScopeFieldExpression>() {
+	companion object Resolver : ParadoxScriptComplexExpressionResolver<ParadoxScriptScopeFieldExpression>() {
 		val EmptyExpression by lazy { ParadoxScriptScopeFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
 		
 		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptScopeFieldExpression {
 			if(expressionString.isEmpty()) return EmptyExpression
 			
 			var isValid = true
-			var isMatched = false
+			var isMatched = true
 			val wholeRange = TextRange.create(0, expressionString.length)
 			val infos = SmartList<ParadoxScriptExpressionInfo>()
 			val errors = SmartList<ParadoxScriptExpressionError>()
@@ -62,6 +62,7 @@ class ParadoxScriptScopeFieldExpression(
 				if(textToCheck.isEmpty() || !textToCheck.isValidSubExpression()) {
 					//如果表达式格式不正确
 					isValid = false
+					isMatched = false
 					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.malformed", expressionString), wholeRange)
 					errors.clear()
 					errors.add(error)
@@ -72,7 +73,6 @@ class ParadoxScriptScopeFieldExpression(
 				if(resolved != null) {
 					val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, resolved, configGroup.linksAsScopePrefixes)
 					infos.add(info)
-					isMatched = true //可解析 -> 可匹配 
 					continue
 				}
 				val matchedLinkConfigs = configGroup.linksAsScope.values
@@ -90,12 +90,10 @@ class ParadoxScriptScopeFieldExpression(
 						val dataSourcesText = matchedLinkConfigs.joinToString { "'${it.dataSource}'" }
 						val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.missingDs", dataSourcesText), textRange)
 						errors.add(error)
-						isMatched = true //认为匹配
 					} else {
 						val dataSourceRange = TextRange.create(textRange.startOffset + prefix.length, textRange.endOffset)
 						val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(dataSourceText, dataSourceRange, matchedLinkConfigs)
 						infos.add(dataSourceInfo)
-						isMatched = true //认为匹配
 					}
 				} else {
 					//没有前缀
@@ -104,11 +102,11 @@ class ParadoxScriptScopeFieldExpression(
 						//无法解析的scope，或者要求有前缀
 						val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, null, configGroup.linksAsScopePrefixes)
 						infos.add(info)
-						isMatched = true //也认为匹配，实际上这里无法判断
+						isMatched = false //不匹配
 					} else {
 						val dataSourceInfo = ParadoxScriptScopeFieldDataSourceExpressionInfo(textToCheck, textRange, linkConfigsNoPrefix)
 						infos.add(dataSourceInfo)
-						isMatched = true //也认为匹配，实际上这里无法判断
+						//也认为匹配，实际上这里无法判断
 					}
 				}
 			}

@@ -37,8 +37,8 @@ object ParadoxLocalisationPropertyStubElementType : IStubElementType<ParadoxLoca
 		//根据分类索引localisation和localisation_synced的name
 		stub.name?.takeIfNotEmpty()?.let { name ->
 			when(stub.category) {
-				ParadoxLocalisationCategory.Localisation -> sink.occurrence(ParadoxLocalisationNameIndex.Localisation.key, name)
-				ParadoxLocalisationCategory.SyncedLocalisation -> sink.occurrence(ParadoxLocalisationNameIndex.SyncedLocalisation.key, name)
+				ParadoxLocalisationCategory.Localisation -> sink.occurrence(ParadoxLocalisationNameIndex.key, name)
+				ParadoxLocalisationCategory.SyncedLocalisation -> sink.occurrence(ParadoxSyncedLocalisationNameIndex.key, name)
 			}
 		}
 	}

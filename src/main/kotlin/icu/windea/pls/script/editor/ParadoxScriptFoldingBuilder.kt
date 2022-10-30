@@ -12,12 +12,12 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 class ParadoxScriptFoldingBuilder : FoldingBuilder, DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
 		return when(node.elementType) {
-			BLOCK -> PlsFolders.blockFolder
+			BLOCK -> PlsConstants.blockFolder
 			PARAMETER_CONDITION -> {
-				val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression ?: PlsFolders.ellipsis
-				PlsFolders.parameterConditionFolder(expression)
+				val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression ?: PlsConstants.ellipsis
+				PlsConstants.parameterConditionFolder(expression)
 			}
-			INLINE_MATH -> PlsFolders.inlineMathFolder
+			INLINE_MATH -> PlsConstants.inlineMathFolder
 			else -> throw InternalError()
 		}
 	}

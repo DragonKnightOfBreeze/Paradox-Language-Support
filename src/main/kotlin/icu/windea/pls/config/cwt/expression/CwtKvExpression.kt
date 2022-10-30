@@ -1,5 +1,7 @@
 package icu.windea.pls.config.cwt.expression
 
+import icu.windea.pls.*
+
 /**
  * @property type 表达式类型，即CWT规则的dataType。
  * @property priority 优先级，需要依赖索引进行精确匹配的类型应当拥有更低的优先级。
@@ -10,3 +12,5 @@ interface CwtKvExpression : CwtExpression {
 	val value: String?
 	val extraValue: Any?
 }
+
+inline fun <reified T> CwtKvExpression.extraValue() = extraValue?.cast<T>() 

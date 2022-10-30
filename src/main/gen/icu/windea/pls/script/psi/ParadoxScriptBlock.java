@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.core.model.ParadoxValueType;
+import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 import java.awt.Color;
 import javax.swing.Icon;
 
@@ -42,7 +42,7 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, IParadoxScriptBl
   void setColor(@NotNull Color color);
 
   @NotNull
-  ParadoxValueType getValueType();
+  ParadoxScriptExpressionType getExpressionType();
 
   @NotNull
   String getConditionExpression();

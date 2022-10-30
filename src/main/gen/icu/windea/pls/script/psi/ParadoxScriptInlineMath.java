@@ -4,7 +4,7 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.model.ParadoxValueType;
+import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 
 public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 
@@ -18,7 +18,7 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
   String getValue();
 
   @NotNull
-  ParadoxValueType getValueType();
+  ParadoxScriptExpressionType getExpressionType();
 
   @NotNull
   String getExpression();

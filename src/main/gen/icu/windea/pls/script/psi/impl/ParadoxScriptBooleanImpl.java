@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.core.model.ParadoxValueType;
+import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 
 public class ParadoxScriptBooleanImpl extends ParadoxScriptValueImpl implements ParadoxScriptBoolean {
 
@@ -35,8 +35,8 @@ public class ParadoxScriptBooleanImpl extends ParadoxScriptValueImpl implements 
 
   @Override
   @NotNull
-  public ParadoxValueType getValueType() {
-    return ParadoxScriptPsiImplUtil.getValueType(this);
+  public ParadoxScriptExpressionType getExpressionType() {
+    return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 
 }

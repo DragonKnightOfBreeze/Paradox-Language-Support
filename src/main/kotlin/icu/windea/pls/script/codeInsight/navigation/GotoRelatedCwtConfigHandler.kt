@@ -41,12 +41,12 @@ class GotoRelatedCwtConfigHandler : GotoTargetHandler() {
 	}
 	
 	override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-		val expression = sourceElement.castOrNull<ParadoxScriptTypedElement>()?.configExpression ?: unknownString
+		val expression = sourceElement.castOrNull<ParadoxScriptTypedElement>()?.configExpression ?: PlsConstants.unknownString
 		return PlsBundle.message("script.goto.relatedCwtConfig.chooseTitle", expression.escapeXml())
 	}
 	
 	override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-		val expression = sourceElement.castOrNull<ParadoxScriptTypedElement>()?.configExpression ?: unknownString
+		val expression = sourceElement.castOrNull<ParadoxScriptTypedElement>()?.configExpression ?: PlsConstants.unknownString
 		return PlsBundle.message("script.goto.relatedCwtConfig.findUsagesTitle", expression)
 	}
 	

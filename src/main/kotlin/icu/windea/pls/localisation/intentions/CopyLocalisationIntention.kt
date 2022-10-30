@@ -63,7 +63,7 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 			CopyPasteManager.getInstance().setContents(StringSelection(text))
 		}
 		
-		val keysText = keys.take(keyTruncateLimit).joinToString { "'<code>$it</code>'" } + if(keys.size > keyTruncateLimit) ", ..." else ""
+		val keysText = keys.take(PlsConstants.keysTruncateLimit).joinToString { "'<code>$it</code>'" } + if(keys.size > PlsConstants.keysTruncateLimit) ", ..." else ""
 		NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
 			PlsBundle.message("notification.copyLocalisation.success.title"),
 			PlsBundle.message("notification.copyLocalisation.success.content", keysText),

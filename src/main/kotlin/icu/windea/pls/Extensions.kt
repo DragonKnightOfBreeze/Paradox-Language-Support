@@ -4,7 +4,6 @@ package icu.windea.pls
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.components.*
-import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -26,10 +25,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.util.*
 import java.lang.Integer.*
-
-//region Global Caches
-val threadLocalTextEditorContainer = ThreadLocal<TextEditor?>()
-//endregion
 
 //region Misc Extensions
 fun getDefaultProject() = ProjectManager.getInstance().defaultProject
@@ -421,7 +416,7 @@ fun findLocalisation(
 	preferFirst: Boolean = !getSettings().preferOverridden,
 	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.Localisation.findOne(name, project, scope, preferFirst, selector)
+	return ParadoxLocalisationNameIndex.findOne(name, project, scope, preferFirst, selector)
 }
 
 /**
@@ -434,7 +429,7 @@ fun findLocalisations(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): Set<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.Localisation.findAll(name, project, scope, selector)
+	return ParadoxLocalisationNameIndex.findAll(name, project, scope, selector)
 }
 
 /**
@@ -449,7 +444,7 @@ inline fun processLocalisationVariants(
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
 	val maxSize = getSettings().maxCompleteSize
-	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize, selector, processor)
+	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
 }
 
 /**
@@ -462,7 +457,7 @@ fun findSyncedLocalisation(
 	preferFirst: Boolean = !getSettings().preferOverridden,
 	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): ParadoxLocalisationProperty? {
-	return ParadoxLocalisationNameIndex.SyncedLocalisation.findOne(name, project, scope, preferFirst, selector)
+	return ParadoxSyncedLocalisationNameIndex.findOne(name, project, scope, preferFirst, selector)
 }
 
 /**
@@ -475,7 +470,7 @@ fun findSyncedLocalisations(
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	selector: ChainedParadoxSelector<ParadoxLocalisationProperty> = nopSelector()
 ): Set<ParadoxLocalisationProperty> {
-	return ParadoxLocalisationNameIndex.SyncedLocalisation.findAll(name, project, scope, selector)
+	return ParadoxSyncedLocalisationNameIndex.findAll(name, project, scope, selector)
 }
 
 /**
@@ -490,7 +485,7 @@ inline fun processSyncedLocalisationVariants(
 	crossinline processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean
 ): Boolean {
 	val maxSize = getSettings().maxCompleteSize
-	return ParadoxLocalisationNameIndex.Localisation.processVariants(keyword, project, scope, maxSize, selector, processor)
+	return ParadoxLocalisationNameIndex.processVariants(keyword, project, scope, maxSize, selector, processor)
 }
 
 
@@ -668,7 +663,7 @@ fun StringBuilder.appendPsiLink(refText: String, label: String, plainLink: Boole
 
 fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
-	if(name.isEmpty()) return append(unresolvedString)
+	if(name.isEmpty()) return append(PlsConstants.unresolvedString)
 	//如果可以被解析为CWT规则，则显示链接（context传null时总是显示）
 	val isResolved = context == null || resolveCwtLink(link, context) != null
 	if(isResolved) return appendPsiLink("$cwtLinkPrefix$link".escapeXml(), name.escapeXml())
@@ -678,7 +673,7 @@ fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?
 
 fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
-	if(name.isEmpty()) return append(unresolvedString)
+	if(name.isEmpty()) return append(PlsConstants.unresolvedString)
 	//如果可以被解析为定义，则显示链接
 	val isResolved = resolved == true || (resolved == null && findDefinition(name, null, context.project, preferFirst = true, selector = definitionSelector().gameTypeFrom(context)) != null)
 	if(isResolved) return appendPsiLink("$definitionLinkPrefix$typeExpression/$name", name)
@@ -688,7 +683,7 @@ fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, con
 
 fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
-	if(name.isEmpty()) return append(unresolvedString)
+	if(name.isEmpty()) return append(PlsConstants.unresolvedString)
 	//如果可以被解析为本地化，则显示链接
 	val isResolved = resolved == true || (resolved == null && findLocalisation(name, context.project, preferFirst = true, selector = localisationSelector().gameTypeFrom(context)) != null)
 	if(isResolved) return appendPsiLink("$localisationLinkPrefix$name", name)

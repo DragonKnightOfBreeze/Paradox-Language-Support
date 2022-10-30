@@ -33,7 +33,7 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 		val position = file.findElementAt(offset) ?: return false
 		val positionType = position.elementType
 		if(positionType != INT_TOKEN && positionType != FLOAT_TOKEN) return false
-		val name = defaultScriptedVariableName
+		val name = PlsConstants.defaultScriptedVariableName
 		
 		//将光标移到所在PSI元素的结束位置并选中
 		editor.caretModel.moveToOffset(position.endOffset)

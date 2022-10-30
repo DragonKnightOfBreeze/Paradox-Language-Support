@@ -8,6 +8,7 @@ import com.intellij.psi.search.searches.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.script.reference.*
@@ -61,7 +62,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
 			val references = element.references
 			for(reference in references) {
 				ProgressManager.checkCanceled()
-				if(reference !is ParadoxParameterResolvable) continue
+				if(!reference.canResolveParameter()) continue
 				
 				val resolved = reference.resolveSingle()
 				if(resolved !is ParadoxParameterElement) continue

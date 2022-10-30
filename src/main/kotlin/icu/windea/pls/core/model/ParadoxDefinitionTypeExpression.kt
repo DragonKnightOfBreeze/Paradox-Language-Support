@@ -16,7 +16,7 @@ class ParadoxDefinitionTypeExpression private constructor(
 	val subtype: String? = null,
 	val typeAndSubtypePairs: List<Pair<String, String?>>? = null
 ) : AbstractExpression(expressionString) {
-	companion object Resolver : CachedExpressionResolver<ParadoxDefinitionTypeExpression>() {
+	companion object Resolver : ExpressionResolver<ParadoxDefinitionTypeExpression>() {
 		val EmptyExpression = ParadoxDefinitionTypeExpression("", "")
 		
 		override fun doResolve(expressionString: String): ParadoxDefinitionTypeExpression {

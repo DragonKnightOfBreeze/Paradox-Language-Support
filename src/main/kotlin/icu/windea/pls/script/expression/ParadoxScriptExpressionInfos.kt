@@ -8,36 +8,12 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.core.model.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
-
-sealed class ParadoxScriptTokenExpressionInfo(
-	text: String,
-	textRange: TextRange
-) : ParadoxScriptExpressionInfo(text, textRange)
-
-class ParadoxScriptOperatorExpressionInfo(
-	text: String,
-	textRange: TextRange
-) : ParadoxScriptTokenExpressionInfo(text, textRange) {
-	override fun getAttributesKey(): TextAttributesKey {
-		return ParadoxScriptAttributesKeys.OPERATOR_KEY
-	}
-}
-
-class ParadoxScriptMarkerExpressionInfo(
-	text: String,
-	textRange: TextRange
-) : ParadoxScriptTokenExpressionInfo(text, textRange) {
-	override fun getAttributesKey(): TextAttributesKey {
-		return ParadoxScriptAttributesKeys.MARKER_KEY
-	}
-}
 
 class ParadoxScriptScopeExpressionInfo(
 	text: String,
@@ -223,7 +199,7 @@ class ParadoxScriptSvParameterValueExpressionInfo(
 	textRange: TextRange
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
-		return if(ParadoxValueType.infer(text).matchesFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
+		return if(ParadoxScriptExpressionType.resolve(text).isFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
 	}
 }
 

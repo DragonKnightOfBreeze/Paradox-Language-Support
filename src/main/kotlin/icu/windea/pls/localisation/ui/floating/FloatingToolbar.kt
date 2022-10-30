@@ -72,7 +72,7 @@ class FloatingToolbar(val textEditor: TextEditor) : Disposable {
 	
 	@Suppress("UnstableApiUsage")
 	private fun createActionToolbar(targetComponent: JComponent): ActionToolbar {
-		threadLocalTextEditorContainer.set(textEditor)
+		PlsThreadLocals.threadLocalTextEditorContainer.set(textEditor)
 		val group = FloatingToolbarGroup()
 		val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
 			override fun addNotify() {

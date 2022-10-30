@@ -5,9 +5,11 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.CwtConfigHandler.matchesScriptExpression
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.expression.*
 
 data class CwtDeclarationConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -57,57 +59,61 @@ data class CwtDeclarationConfig(
 		
 		val cacheKey = "${subtypes.joinToString(",")}:$path"
 		return configsCache.getOrPut(cacheKey, { emptyList() }) {
-			when {
-				//这里的属性路径可以为空，这时得到的属性列表即是定义本身组成的单例列表
-				path.isEmpty() -> propertyConfigList
-				else -> {
-					var result: List<CwtKvConfig<*>> = getMergedConfigs(subtypes)
-					var index = 0
-					while(index < path.length) {
-						val (key, isQuoted, isKey) = path.subPathInfos[index]
-						var nextIndex = index + 1
-						
-						//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要跳过当前的key
-						//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
-						
-						val nextResult = SmartList<CwtKvConfig<*>>()
-						for(config in result) {
-							if(index == 0) {
-								if(isKey && config is CwtPropertyConfig) {
-									if(CwtConfigHandler.matchesKey(config.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
-										nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index, path)
-									}
-								} else if(!isKey && config is CwtValueConfig) {
-									nextResult.add(config)
+			doResolveConfigs(subtypes, path, configGroup)
+		}
+	}
+	
+	private fun doResolveConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup) =
+		when {
+			//这里的属性路径可以为空，这时得到的属性列表即是定义本身组成的单例列表
+			path.isEmpty() -> propertyConfigList
+			else -> {
+				var result: List<CwtKvConfig<*>> = getMergedConfigs(subtypes)
+				var index = 0
+				while(index < path.length) {
+					val (key, isQuoted, isKey) = path.subPathInfos[index]
+					var nextIndex = index + 1
+					
+					//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要跳过当前的key
+					//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
+					
+					val nextResult = SmartList<CwtKvConfig<*>>()
+					for(config in result) {
+						val expression = ParadoxScriptExpression.resolve(key, isQuoted, true)
+						if(index == 0) {
+							if(isKey && config is CwtPropertyConfig) {
+								if(matchesScriptExpression(expression, config.keyExpression, configGroup)) {
+									nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index, path)
 								}
-							} else {
-								val propertyConfigs = config.properties
-								if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
-									for(propertyConfig in propertyConfigs) {
-										if(CwtConfigHandler.matchesKey(propertyConfig.keyExpression, key, ParadoxValueType.infer(key), isQuoted, configGroup)) {
-											nextIndex = inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, path)
-										}
-									}
-								}
-								val valueConfigs = config.values
-								if(!isKey && valueConfigs != null && valueConfigs.isNotEmpty()) {
-									for(valueConfig in valueConfigs) {
-										nextResult.add(valueConfig)
+							} else if(!isKey && config is CwtValueConfig) {
+								nextResult.add(config)
+							}
+						} else {
+							val propertyConfigs = config.properties
+							if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
+								for(propertyConfig in propertyConfigs) {
+									if(matchesScriptExpression(expression, propertyConfig.keyExpression, configGroup)) {
+										nextIndex = inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, path)
 									}
 								}
 							}
+							val valueConfigs = config.values
+							if(!isKey && valueConfigs != null && valueConfigs.isNotEmpty()) {
+								for(valueConfig in valueConfigs) {
+									nextResult.add(valueConfig)
+								}
+							}
 						}
-						//如果存在可以精确匹配的规则，则仅返回这些可以精确匹配的规则（对于property来说是keyExpression，对于string来说是valueExpression）
-						result = nextResult.filter { CwtConfigHandler.matchesExactly(it.expression, path.last().first, configGroup) }
-							.ifEmpty { nextResult }
-						index = nextIndex
 					}
-					//需要按优先级重新排序
-					result.sortedByDescending { it.expression.priority }
+					//如果存在可以精确匹配的规则，则仅返回这些可以精确匹配的规则（对于property来说是keyExpression，对于string来说是valueExpression）
+					result = nextResult.filter { CwtConfigHandler.matchesExactly(it.expression, path.last().first, configGroup) }
+						.ifEmpty { nextResult }
+					index = nextIndex
 				}
+				//需要按优先级重新排序
+				result.sortedByDescending { it.expression.priority }
 			}
 		}
-	}
 	
 	/**
 	 * 内联规则以便后续的代码提示、引用解析和结构验证。

@@ -30,7 +30,7 @@ class ParadoxLocaleCompletionProvider : CompletionProvider<CompletionParameters>
 		val locales = InternalConfigHandler.getLocales(project)
 		for(locale in locales) {
 			val element = locale.pointer.element ?: continue
-			val typeText = locale.pointer.containingFile?.name ?: anonymousString
+			val typeText = locale.pointer.containingFile?.name ?: PlsConstants.anonymousString
 			val pinned = locale.id == localeIdFromFileName
 			val lookupElement = LookupElementBuilder.create(element, locale.id).withIcon(locale.icon)
 				.withTypeText(typeText, true)

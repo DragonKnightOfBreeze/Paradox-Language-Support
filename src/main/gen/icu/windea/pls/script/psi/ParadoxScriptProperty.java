@@ -8,7 +8,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.SmartPsiElementPointer;
-import icu.windea.pls.core.model.ParadoxValueType;
+import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.Icon;
@@ -45,7 +45,7 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   String getDefinitionType();
 
   @Nullable
-  ParadoxValueType getValueType();
+  ParadoxScriptExpressionType getExpressionType();
 
   @NotNull
   String getConditionExpression();

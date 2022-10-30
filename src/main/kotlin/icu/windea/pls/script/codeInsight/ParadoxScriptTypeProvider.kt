@@ -7,7 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.codeInsight.hint.JavaTypeProvider
@@ -48,8 +48,8 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 		//优先显示最相关的类型
 		val typeToShow = (element.definitionType
 			?: element.configExpression
-			?: element.valueType?.text
-			?: ParadoxValueType.UnknownType.text)
+			?: element.expressionType?.text
+			?: ParadoxScriptExpressionType.UnknownType.text)
 		return typeToShow.escapeXml()
 	}
 	
@@ -65,8 +65,11 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 			element.definitionType?.let { type ->
 				add(makeHtmlRow(PlsDocBundle.message("title.definitionType"), type))
 			}
-			element.valueType?.let { valueType ->
-				add(makeHtmlRow(PlsDocBundle.message("title.valueType"), valueType.text))
+			element.expressionType?.let { expressionType ->
+				add(makeHtmlRow(PlsDocBundle.message("title.expressionType"), expressionType.text))
+			}
+			element.expression?.let { expression ->
+				add(makeHtmlRow(PlsDocBundle.message("title.expression"), expression))
 			}
 			element.configExpression?.let { configExpression ->
 				add(makeHtmlRow(PlsDocBundle.message("title.configExpression"), configExpression))

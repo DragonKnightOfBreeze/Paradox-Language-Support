@@ -11,6 +11,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
@@ -50,27 +51,28 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<N
 	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxScriptPropertyKey) {
-			val resolved = CwtConfigHandler.resolveKey(element) { it.type in keyExpressionTypes }
-			if(resolved is ParadoxDefinitionProperty) {
-				val definitionInfo = resolved.definitionInfo
-				if(definitionInfo != null) {
-					val presentation = collectDefinition(definitionInfo)
-					val finalPresentation = presentation.toFinalPresentation(this, file.project)
-					val endOffset = element.endOffset
-					sink.addInlineElement(endOffset, true, finalPresentation, false)
-				}
+		val resolved = when(element) {
+			is ParadoxScriptPropertyKey -> {
+				val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
+					?.takeIf { it.expression.type in keyExpressionTypes }
+					?: return true
+				CwtConfigHandler.resolveScriptExpression(element, element.textRangeInParent, config.expression, config, true)
 			}
-		} else if(element is ParadoxScriptString) {
-			val resolved = CwtConfigHandler.resolveValue(element) { it.type in valueExpressionTypes }
-			if(resolved is ParadoxDefinitionProperty) {
-				val definitionInfo = resolved.definitionInfo
-				if(definitionInfo != null) {
-					val presentation = collectDefinition(definitionInfo)
-					val finalPresentation = presentation.toFinalPresentation(this, file.project)
-					val endOffset = element.endOffset
-					sink.addInlineElement(endOffset, true, finalPresentation, false)
-				}
+			is ParadoxScriptString -> {
+				val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
+					?.takeIf { it.expression.type in valueExpressionTypes }
+					?: return true
+				CwtConfigHandler.resolveScriptExpression(element, element.textRangeInParent, config.expression, config, false)
+			}
+			else -> return true
+		}
+		if(resolved is ParadoxDefinitionProperty) {
+			val definitionInfo = resolved.definitionInfo
+			if(definitionInfo != null) {
+				val presentation = collectDefinition(definitionInfo)
+				val finalPresentation = presentation.toFinalPresentation(this, file.project)
+				val endOffset = element.endOffset
+				sink.addInlineElement(endOffset, true, finalPresentation, false)
 			}
 		}
 		return true

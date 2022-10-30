@@ -11,9 +11,9 @@ class ParadoxParameterReference(
 	element: @UnionType(types = [ParadoxArgument::class, ParadoxParameter::class]) PsiElement,
 	rangeInElement: TextRange,
 	private val read: Boolean
-) : PsiReferenceBase<PsiElement>(element, rangeInElement), ParadoxParameterResolvable {
+) : PsiReferenceBase<PsiElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名引用指向的元素
+		//重命名引用指向的元素即可
 		val element = element
 		return when {
 			element is ParadoxArgument -> element.setName(newElementName)

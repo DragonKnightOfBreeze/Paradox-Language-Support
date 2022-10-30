@@ -38,7 +38,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 						val value = element.value
 						val gameTypeToUse = gameType ?: ParadoxSelectorUtils.selectGameType(element) ?: return
 						val configGroup = getCwtConfig(project).getValue(gameTypeToUse)
-						val expression = ParadoxScriptScopeFieldExpression.resolve(value, configGroup)
+						val expression = ParadoxScriptExpression.resolveScopeField(value, configGroup)
 						if(expression.isEmpty()) {
 							//无法解析
 							holder.registerProblem(element, PlsBundle.message("script.inspection.expression.scopeField.malformed", value), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)

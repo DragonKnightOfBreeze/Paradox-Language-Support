@@ -12,6 +12,7 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.expression.*
+import icu.windea.pls.script.intentions.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
@@ -46,9 +47,27 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				val nameString = definitionInfo.name.escapeXmlOrAnonymous()
 				val typesString = definitionInfo.typesText
 				val tooltip = PlsBundle.message("script.annotator.definitionName", nameString, typesString)
-				holder.newSilentAnnotation(INFORMATION).tooltip(tooltip).range(nameElement).textAttributes(Keys.DEFINITION_NAME_KEY).create()
+				holder.newSilentAnnotation(INFORMATION).range(nameElement)
+					.tooltip(tooltip)
+					.textAttributes(Keys.DEFINITION_NAME_KEY)
+					.withFix(DefinitionNameFindUsagesIntention())
+					.withFix(DefinitionNameGotoTypeDeclarationIntention())
+					.create()
 			}
 		}
+	}
+	
+	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
+		val nameString = complexEnumValueInfo.name.escapeXmlOrAnonymous()
+		val enumNameString = complexEnumValueInfo.enumName
+		val tooltip = PlsBundle.message("script.annotator.complexEnumValueName", nameString, enumNameString)
+		holder.newSilentAnnotation(INFORMATION).range(element)
+			.tooltip(tooltip)
+			.textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY)
+			.withFix(ComplexEnumValueNameFindUsagesIntention())
+			.withFix(ComplexEnumValueNameGotoTypeDeclarationIntention())
+			.create()
 	}
 	
 	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
@@ -62,15 +81,13 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		if(complexEnumValueInfo != null) annotateComplexEnumValue(element, holder, complexEnumValueInfo)
 	}
 	
-	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
-		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
-		val nameString = complexEnumValueInfo.name.escapeXmlOrAnonymous()
-		val enumNameString = complexEnumValueInfo.enumName
-		val tooltip = PlsBundle.message("script.annotator.complexEnumValueName", nameString, enumNameString)
-		holder.newSilentAnnotation(INFORMATION).tooltip(tooltip).range(element).textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY).create()
-	}
-	
-	private fun doAnnotateExpressionElement(element: ParadoxScriptExpressionElement, range: TextRange, expression: CwtKvExpression, config: CwtKvConfig<*>, holder: AnnotationHolder) {
+	private fun doAnnotateExpressionElement(
+		element: ParadoxScriptExpressionElement,
+		range: TextRange,
+		expression: CwtKvExpression,
+		config: CwtKvConfig<*>,
+		holder: AnnotationHolder
+	) {
 		//高亮特殊标签
 		if(config is CwtValueConfig && config.isTagConfig) {
 			holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
@@ -123,52 +140,27 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				}
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.Value -> {
+			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
+				if(!element.isQuoted()){
+					val valueSetValueExpression = ParadoxScriptExpression.resolveValueSetValue(element.value, configGroup)
+					if(valueSetValueExpression.isEmpty()) return
+					doAnnotateComplexExpression(element, valueSetValueExpression, config, range, holder)
+				}
 				val attributesKey = Keys.VALUE_SET_VALUE_KEY
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
-			CwtDataTypes.ValueSet -> {
-				val attributesKey = Keys.VALUE_SET_VALUE_KEY
-				holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
-			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				if(!element.isQuoted()) {
-					val scopeFieldExpression = ParadoxScriptScopeFieldExpression.resolve(element.value, configGroup)
+					val scopeFieldExpression = ParadoxScriptExpression.resolveScopeField(element.value, configGroup)
 					if(scopeFieldExpression.isEmpty()) return
-					for(info in scopeFieldExpression.infos) {
-						val attributesKeyExpressions = info.getAttributesKeyExpressions(element, config)
-						if(attributesKeyExpressions.isNotEmpty()) {
-							//使用第一个匹配的expression的高亮
-							val infoRange = info.textRange.shiftRight(range.startOffset)
-							doAnnotateExpressionElement(element, infoRange, attributesKeyExpressions.first(), config, holder)
-							continue
-						}
-						val attributesKey = info.getAttributesKey()
-						if(attributesKey != null) {
-							val infoRange = info.textRange.shiftRight(range.startOffset)
-							holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
-						}
-					}
+					doAnnotateComplexExpression(element, scopeFieldExpression, config, range, holder)
 				}
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
 				if(!element.isQuoted()) {
-					val valueFieldExpression = ParadoxScriptValueFieldExpression.resolve(element.value, configGroup)
+					val valueFieldExpression = ParadoxScriptExpression.resolveValueField(element.value, configGroup)
 					if(valueFieldExpression.isEmpty()) return
-					for(info in valueFieldExpression.infos) {
-						val attributesKeyExpressions = info.getAttributesKeyExpressions(element, config)
-						if(attributesKeyExpressions.isNotEmpty()) {
-							//使用第一个匹配的expression的高亮
-							val infoRange = info.textRange.shiftRight(range.startOffset)
-							doAnnotateExpressionElement(element, infoRange, attributesKeyExpressions.first(), config, holder)
-							continue
-						}
-						val attributesKey = info.getAttributesKey()
-						if(attributesKey != null) {
-							val infoRange = info.textRange.shiftRight(range.startOffset)
-							holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
-						}
-					}
+					doAnnotateComplexExpression(element, valueFieldExpression, config, range, holder)
 				}
 			}
 			CwtDataTypes.Modifier -> {
@@ -176,6 +168,29 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 			}
 			else -> pass()
+		}
+	}
+	
+	private fun doAnnotateComplexExpression(
+		element: ParadoxScriptExpressionElement,
+		valueSetValueExpression: ParadoxScriptComplexExpression,
+		config: CwtKvConfig<*>,
+		range: TextRange,
+		holder: AnnotationHolder
+	) {
+		for(info in valueSetValueExpression.infos) {
+			val attributesKeyExpressions = info.getAttributesKeyExpressions(element, config)
+			if(attributesKeyExpressions.isNotEmpty()) {
+				//使用第一个匹配的expression的高亮
+				val infoRange = info.textRange.shiftRight(range.startOffset)
+				doAnnotateExpressionElement(element, infoRange, attributesKeyExpressions.first(), config, holder)
+				continue
+			}
+			val attributesKey = info.getAttributesKey()
+			if(attributesKey != null) {
+				val infoRange = info.textRange.shiftRight(range.startOffset)
+				holder.newSilentAnnotation(INFORMATION).range(infoRange).textAttributes(attributesKey).create()
+			}
 		}
 	}
 }

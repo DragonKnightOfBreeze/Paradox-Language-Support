@@ -5,8 +5,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.impl.*
-import icu.windea.pls.script.reference.*
 
 /**
  * 在查找使用中，区分参数和值集中的值的读/写使用
@@ -29,13 +29,15 @@ class ParadoxScriptReadWriteAccessDetector : ReadWriteAccessDetector() {
 	}
 	
 	override fun getReferenceAccess(referencedElement: PsiElement, reference: PsiReference): Access {
-		return when{
-			reference is ParadoxParameterResolvable -> reference.resolveSingle()
-				?.castOrNull<ParadoxParameterElement>()?.getAccess() ?: Access.ReadWrite
-			reference is ParadoxValueSetValueResolvable -> reference.resolveSingle()
-				?.castOrNull<ParadoxValueSetValueElement>()?.getAccess() ?: Access.ReadWrite
-			else -> Access.ReadWrite
+		if(reference.canResolveParameter()) {
+			val resolved = reference.resolveSingle()?.castOrNull<ParadoxParameterElement>()
+			if(resolved != null) return resolved.getAccess()
 		}
+		if(reference.canResolveValueSetValue()) {
+			val resolved = reference.resolveSingle()?.castOrNull<ParadoxValueSetValueElement>()
+			if(resolved != null) return resolved.getAccess()
+		} 
+		return Access.ReadWrite
 	}
 	
 	override fun getExpressionAccess(expression: PsiElement): Access {
@@ -43,15 +45,13 @@ class ParadoxScriptReadWriteAccessDetector : ReadWriteAccessDetector() {
 		if(expression.language != ParadoxScriptLanguage) return Access.ReadWrite
 		for(reference in expression.references) {
 			ProgressManager.checkCanceled()
-			when(reference){
-				is ParadoxParameterResolvable -> {
-					val resolved = reference.resolveSingle()?.castOrNull<ParadoxParameterElement>() ?: continue
-					return resolved.getAccess()
-				}
-				is ParadoxValueSetValueResolvable -> {
-					val resolved = reference.resolveSingle()?.castOrNull<ParadoxValueSetValueElement>() ?: continue
-					return resolved.getAccess()
-				}
+			if(reference.canResolveParameter()) {
+				val resolved = reference.resolveSingle()?.castOrNull<ParadoxParameterElement>()
+				if(resolved != null) return resolved.getAccess()
+			}
+			if(reference.canResolveValueSetValue()) {
+				val resolved = reference.resolveSingle()?.castOrNull<ParadoxValueSetValueElement>()
+				if(resolved != null) return resolved.getAccess()
 			}
 		}
 		return Access.ReadWrite

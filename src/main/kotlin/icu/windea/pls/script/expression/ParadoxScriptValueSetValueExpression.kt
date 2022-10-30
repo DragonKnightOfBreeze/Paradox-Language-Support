@@ -16,8 +16,8 @@ class ParadoxScriptValueSetValueExpression(
 	configGroup: CwtConfigGroup,
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
 	errors: List<ParadoxScriptExpressionError> = emptyList()
-) : ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
-	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptValueSetValueExpression>() {
+) : ParadoxScriptComplexExpression(expressionString, configGroup, infos, errors) {
+	companion object Resolver : ParadoxScriptComplexExpressionResolver<ParadoxScriptValueSetValueExpression>() {
 		val EmptyExpression by lazy { ParadoxScriptValueSetValueExpression("", MockCwtConfigGroup).apply { empty = true } }
 		
 		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptValueSetValueExpression {

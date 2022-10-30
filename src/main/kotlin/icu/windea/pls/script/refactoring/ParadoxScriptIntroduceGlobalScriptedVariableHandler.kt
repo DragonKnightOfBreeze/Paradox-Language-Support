@@ -41,7 +41,7 @@ object ParadoxScriptIntroduceGlobalScriptedVariableHandler : ContextAwareRefacto
 		
 		//打开对话框
 		val scriptedVariablesDirectory = ParadoxFileLocator.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
-		val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, defaultScriptedVariableName)
+		val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsConstants.defaultScriptedVariableName)
 		if(!dialog.showAndGet()) return true //取消
 		
 		val variableName = dialog.variableName

@@ -5,8 +5,8 @@ import com.intellij.openapi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeParametersForScriptValueExpression
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
 import icu.windea.pls.core.codeInsight.completion.*
@@ -22,19 +22,19 @@ class ParadoxScriptValueFieldExpression(
 	configGroup: CwtConfigGroup,
 	infos: List<ParadoxScriptExpressionInfo> = emptyList(),
 	errors: List<ParadoxScriptExpressionError> = emptyList()
-) : ParadoxScriptExpression(expressionString, configGroup, infos, errors) {
+) : ParadoxScriptComplexExpression(expressionString, configGroup, infos, errors) {
 	val prefixInfo = infos.findIsInstance<ParadoxScriptValueFieldPrefixExpressionInfo>()
 	val dataSourceInfo = infos.findIsInstance<ParadoxScriptValueFieldDataSourceExpressionInfo>()
 	val scriptValueParametersStartIndex = if(dataSourceInfo == null) -1 else expressionString.indexOf('|', dataSourceInfo.textRange.endOffset)
 	
-	companion object Resolver : ParadoxScriptExpressionResolver<ParadoxScriptValueFieldExpression>() {
+	companion object Resolver : ParadoxScriptComplexExpressionResolver<ParadoxScriptValueFieldExpression>() {
 		val EmptyExpression by lazy { ParadoxScriptValueFieldExpression("", MockCwtConfigGroup).apply { empty = true } }
 		
 		override fun doResolve(expressionString: String, configGroup: CwtConfigGroup): ParadoxScriptValueFieldExpression {
 			if(expressionString.isEmpty()) return EmptyExpression
 			
 			var isValid = true
-			var isMatched = false
+			var isMatched = true
 			val wholeRange = TextRange.create(0, expressionString.length)
 			val infos = SmartList<ParadoxScriptExpressionInfo>()
 			val errors = SmartList<ParadoxScriptExpressionError>()
@@ -68,6 +68,7 @@ class ParadoxScriptValueFieldExpression(
 				if(textToCheck.isEmpty() || !textToCheck.isValidSubExpression()) {
 					//如果表达式格式不正确
 					isValid = false
+					isMatched = false
 					val error = ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.valueField.malformed", expressionString), wholeRange)
 					errors.clear()
 					errors.add(error)
@@ -78,14 +79,13 @@ class ParadoxScriptValueFieldExpression(
 					val resolved = CwtConfigHandler.resolveScope(textToCheck, configGroup)
 					val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, resolved, configGroup.linksAsScopePrefixes)
 					infos.add(info)
-					isMatched = true //可解析 -> 可匹配 / 也认为匹配，实际上这里无法判断
+					if(resolved == null) isMatched = false
 				} else {
 					val resolved = CwtConfigHandler.resolveValueOfValueField(textToCheck, configGroup)
 					//可以解析，继续
 					if(resolved != null) {
 						val info = ParadoxScriptValueOfValueFieldExpressionInfo(textToCheck, textRange, resolved)
 						infos.add(info)
-						isMatched = true //可解析 -> 可匹配 
 						continue
 					}
 					
@@ -168,13 +168,11 @@ class ParadoxScriptValueFieldExpression(
 							}
 						}
 					} else {
-						//没有前缀
+						//这里认为如果声明了数据源，则必须要有前缀
 						//无法解析的value，或者要求有前缀
 						val info = ParadoxScriptValueOfValueFieldExpressionInfo(textToCheck, textRange, null, configGroup.linksAsValuePrefixes)
 						infos.add(info)
-						isMatched = true //也认为匹配，实际上这里无法判断
-						
-						//这里认为必须要有前缀
+						isMatched = false //不匹配
 					}
 				}
 			}

@@ -17,7 +17,7 @@ object CwtPsiImplUtil {
 	//region CwtRootBlock
 	@JvmStatic
 	fun getValue(element: CwtRootBlock): String {
-		return PlsFolders.blockFolder
+		return PlsConstants.blockFolder
 	}
 	
 	@JvmStatic
@@ -218,7 +218,7 @@ object CwtPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: CwtBlock): String {
-		return PlsFolders.blockFolder
+		return PlsConstants.blockFolder
 	}
 	
 	@JvmStatic

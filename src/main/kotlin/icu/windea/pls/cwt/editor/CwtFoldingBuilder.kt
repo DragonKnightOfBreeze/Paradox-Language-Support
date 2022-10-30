@@ -7,12 +7,11 @@ import com.intellij.openapi.project.*
 import com.intellij.util.SmartList
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
-import icu.windea.pls.script.psi.*
 
 class CwtFoldingBuilder:FoldingBuilder,DumbAware {
 	override fun getPlaceholderText(node: ASTNode): String {
 		return when(node.elementType) {
-			BLOCK -> PlsFolders.blockFolder
+			BLOCK -> PlsConstants.blockFolder
 			else -> throw InternalError()
 		}
 	}

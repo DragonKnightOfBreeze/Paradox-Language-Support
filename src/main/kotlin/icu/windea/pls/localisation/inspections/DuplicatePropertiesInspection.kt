@@ -1,5 +1,6 @@
 package icu.windea.pls.localisation.inspections
 
+import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
@@ -60,7 +61,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 				val iterator = pointers.iterator()
 				val next = iterator.next().element
 				val toNavigate = if(next != startElement) next else iterator.next().element
-				navigateToElement(editor, toNavigate)
+				if(toNavigate != null) NavigationUtil.activateFileWithPsiElement(toNavigate)
 			} else {
 				val allElements = pointers.mapNotNull { it.element }.filter { it !== startElement }
 				val popup = Popup(allElements, key, editor)
@@ -79,14 +80,15 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 		) : BaseListPopupStep<ParadoxLocalisationProperty>(PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1.popup.header", key), values) {
 			override fun getIconFor(value: ParadoxLocalisationProperty) = value.icon
 			
-			override fun getTextFor(value: ParadoxLocalisationProperty) = PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+			override fun getTextFor(value: ParadoxLocalisationProperty) =
+				PlsBundle.message("localisation.inspection.duplicateProperties.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex() = 0
 			
 			override fun isSpeedSearchEnabled() = true
 			
 			override fun onChosen(selectedValue: ParadoxLocalisationProperty, finalChoice: Boolean): PopupStep<*>? {
-				navigateToElement(editor, selectedValue)
+				NavigationUtil.activateFileWithPsiElement(selectedValue)
 				return FINAL_CHOICE
 			}
 		}

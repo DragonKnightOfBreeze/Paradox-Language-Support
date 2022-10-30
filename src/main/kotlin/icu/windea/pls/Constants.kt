@@ -1,6 +1,7 @@
 package icu.windea.pls
 
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
@@ -39,10 +40,6 @@ val paradoxScriptCodeStyleSettingsDemoText = "/demoText/ParadoxScript.codeStyleS
 const val dummyIdentifier = "windea"
 const val dummyIdentifierLength = dummyIdentifier.length
 
-const val anonymousString = "(anonymous)"
-const val unknownString = "(unknown)"
-const val unresolvedString = "(unresolved)"
-
 val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
 val booleanValues = arrayOf("yes", "no")
@@ -54,14 +51,7 @@ val ddsFileExtensions = arrayOf("dds")
 const val launcherSettingsFileName = "launcher-settings.json"
 const val descriptorFileName = "descriptor.mod"
 
-//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
-const val maxMayBeDefinitionDepth = 4
-
-const val defaultScriptedVariableName = "var"
-
-const val keyTruncateLimit = 5
-
-object PlsFolders {
+object PlsConstants {
 	const val ellipsis = "..."
 	const val commentFolder = "#..."
 	const val parameterFolder = "$...$"
@@ -69,6 +59,17 @@ object PlsFolders {
 	const val blockFolder = "{...}"
 	fun parameterConditionFolder(expression: String) = "[[$expression]...]"
 	const val inlineMathFolder = "@[...]"
+	
+	const val anonymousString = "(anonymous)"
+	const val unknownString = "(unknown)"
+	const val unresolvedString = "(unresolved)"
+	
+	const val defaultScriptedVariableName = "var"
+	
+	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
+	const val maxMayBeDefinitionDepth = 4
+	
+	const val keysTruncateLimit = 5
 }
 
 object PlsPaths {
@@ -91,6 +92,10 @@ object PlsPatterns {
 	val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
 	
 	val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
+}
+
+object PlsThreadLocals{
+	val threadLocalTextEditorContainer = ThreadLocal<TextEditor?>()
 }
 
 object PlsKeys {

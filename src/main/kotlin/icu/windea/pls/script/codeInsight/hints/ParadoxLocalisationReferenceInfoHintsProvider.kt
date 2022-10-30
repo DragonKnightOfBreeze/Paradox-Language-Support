@@ -11,6 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
@@ -81,27 +82,28 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
 	}
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxScriptPropertyKey) {
-			val resolved = CwtConfigHandler.resolveKey(element) { it.type in keyExpressionTypes }
-			if(resolved is ParadoxLocalisationProperty) {
-				val localisationInfo = resolved.localisationInfo
-				if(localisationInfo != null) {
-					val presentation = collectLocalisation(resolved, editor, settings)
-					val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
-					val endOffset = element.endOffset
-					sink.addInlineElement(endOffset, true, finalPresentation, false)
-				}
+		val resolved = when(element) {
+			is ParadoxScriptPropertyKey -> {
+				val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
+					?.takeIf { it.expression.type in keyExpressionTypes }
+					?: return true
+				CwtConfigHandler.resolveScriptExpression(element, element.textRangeInParent, config.expression, config, true)
 			}
-		} else if(element is ParadoxScriptString) {
-			val resolved = CwtConfigHandler.resolveValue(element) { it.type in valueExpressionTypes }
-			if(resolved is ParadoxLocalisationProperty) {
-				val localisationInfo = resolved.localisationInfo
-				if(localisationInfo != null) {
-					val presentation = collectLocalisation(resolved, editor, settings)
-					val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
-					val endOffset = element.endOffset
-					sink.addInlineElement(endOffset, true, finalPresentation, false)
-				}
+			is ParadoxScriptString -> {
+				val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
+					?.takeIf { it.expression.type in valueExpressionTypes }
+					?: return true
+				CwtConfigHandler.resolveScriptExpression(element, element.textRangeInParent, config.expression, config, false)
+			}
+			else -> return true
+		}
+		if(resolved is ParadoxLocalisationProperty) {
+			val localisationInfo = resolved.localisationInfo
+			if(localisationInfo != null) {
+				val presentation = collectLocalisation(resolved, editor, settings)
+				val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
+				val endOffset = element.endOffset
+				sink.addInlineElement(endOffset, true, finalPresentation, false)
 			}
 		}
 		return true

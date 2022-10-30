@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
-import icu.windea.pls.core.model.ParadoxValueType;
+import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -81,8 +81,8 @@ public class ParadoxScriptStringImpl extends ParadoxScriptStubElementImpl<Parado
 
   @Override
   @NotNull
-  public ParadoxValueType getValueType() {
-    return ParadoxScriptPsiImplUtil.getValueType(this);
+  public ParadoxScriptExpressionType getExpressionType() {
+    return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 
   @Override

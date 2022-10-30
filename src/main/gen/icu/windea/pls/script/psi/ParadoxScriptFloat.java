@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
-import icu.windea.pls.core.model.ParadoxValueType;
+import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 
 public interface ParadoxScriptFloat extends ParadoxScriptValue, PsiLiteralValue {
 
@@ -15,6 +15,6 @@ public interface ParadoxScriptFloat extends ParadoxScriptValue, PsiLiteralValue 
   float getFloatValue();
 
   @NotNull
-  ParadoxValueType getValueType();
+  ParadoxScriptExpressionType getExpressionType();
 
 }

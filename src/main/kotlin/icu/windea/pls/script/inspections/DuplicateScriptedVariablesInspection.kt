@@ -1,5 +1,6 @@
 package icu.windea.pls.script.inspections
 
+import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -59,7 +60,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 				val iterator = pointers.iterator()
 				val next = iterator.next().element
 				val toNavigate = if(next != startElement) next else iterator.next().element
-				navigateToElement(editor, toNavigate)
+				if(toNavigate != null) NavigationUtil.activateFileWithPsiElement(toNavigate)
 			} else {
 				val allElements = pointers.mapNotNull { it.element }.filter { it !== startElement }
 				val popup = Popup(allElements, key, editor)
@@ -78,14 +79,15 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 		) : BaseListPopupStep<ParadoxScriptVariable>(PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.header", key), values) {
 			override fun getIconFor(value: ParadoxScriptVariable) = value.icon
 			
-			override fun getTextFor(value: ParadoxScriptVariable) = PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+			override fun getTextFor(value: ParadoxScriptVariable) =
+				PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex(): Int = 0
 			
 			override fun isSpeedSearchEnabled(): Boolean = true
 			
 			override fun onChosen(selectedValue: ParadoxScriptVariable, finalChoice: Boolean): PopupStep<*>? {
-				navigateToElement(editor, selectedValue)
+				NavigationUtil.activateFileWithPsiElement(selectedValue)
 				return PopupStep.FINAL_CHOICE
 			}
 		}

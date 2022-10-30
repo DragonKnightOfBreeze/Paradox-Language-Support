@@ -15,7 +15,7 @@ class ParadoxScriptValueFieldPrefixReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	private val resolved: List<PsiElement>?
-): PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement){
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
 		throw IncorrectOperationException() //不允许重命名
 	}
@@ -47,8 +47,10 @@ class ParadoxScriptValueFieldDataSourceReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		val element = element
 		return linkConfigs.mapNotNull { linkConfig ->
-			val dataSource = linkConfig.dataSource ?: return@mapNotNull null
-			val resolved = CwtConfigHandler.resolveScriptExpression(element, dataSource, linkConfig, rangeInElement) ?: return@mapNotNull null
+			val dataSource = linkConfig.dataSource
+				?: return@mapNotNull null
+			val resolved = CwtConfigHandler.resolveScriptExpression(element, rangeInElement, dataSource, linkConfig)
+				?: return@mapNotNull null
 			ParadoxScriptValueFieldDataSourceResolveResult(resolved, true, dataSource)
 		}.toTypedArray()
 	}

@@ -42,7 +42,7 @@ variable ::= variable_name variable_separator variable_value {
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptVariableStub"
-  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getValueType getPresentation]
+  methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getExpressionType getPresentation]
 }
 variable_name ::= AT VARIABLE_NAME_ID{
   methods=[getName]
@@ -63,7 +63,7 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
-    getDefinitionType getValueType getConditionExpression getConfigExpression
+    getDefinitionType getExpressionType getConditionExpression getConfigExpression
     getPathName getOriginalPathName getParameterMap getPresentation
   ]
 }
@@ -75,7 +75,7 @@ property_key ::= key_expr {
   ] 
   methods=[
     getValue setValue getReference getReferences
-    getValueType getConfigExpression
+    getExpressionType getConfigExpression
     getPresentation
   ]
 }
@@ -89,7 +89,7 @@ value ::= variable_reference | boolean | int | float | string | color | block | 
   ]
   methods=[
     getIcon getValue
-    getValueType getConfigExpression
+    getExpressionType getConfigExpression
   ]
 }
 variable_reference ::= AT VARIABLE_REFERENCE_ID {
@@ -97,28 +97,28 @@ variable_reference ::= AT VARIABLE_REFERENCE_ID {
   implements=[
     "icu.windea.pls.script.psi.IParadoxScriptVariableReference"
   ]
-  methods=[getIcon getName setName getReference getValueType]
+  methods=[getIcon getName setName getReference getExpressionType]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getBooleanValue getValueType]
+  methods=[getBooleanValue getExpressionType]
 }
 int ::= INT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue getIntValue getValueType]
+  methods=[getValue getIntValue getExpressionType]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue getFloatValue getValueType]
+  methods=[getValue getFloatValue getExpressionType]
 }
 upper string ::= value_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
@@ -130,13 +130,13 @@ upper string ::= value_expr {
   methods=[
     getIcon
     getValue setValue getReference getReferences getStringValue
-    getValueType getConfigExpression
+    getExpressionType getConfigExpression
     getPresentation
   ]
 }
 color ::= COLOR_TOKEN {
   extends=value
-  methods=[getValue getColor setColor getValueType]
+  methods=[getValue getColor setColor getExpressionType]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
@@ -147,7 +147,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   ]
   methods=[
     getIcon getValue isEmpty isNotEmpty getComponents getColor setColor
-    getValueType getConditionExpression
+    getExpressionType getConditionExpression
   ]
 }
 private block_item ::= COMMENT | property | value | parameter_condition | variable{
@@ -217,7 +217,7 @@ inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END{
   pin=1
   recoverWhile="#auto"
   extends=value
-  methods=[getValue getValueType getExpression]
+  methods=[getValue getExpressionType getExpression]
 }
 private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
 //noinspection BnfUnusedRule
@@ -251,7 +251,7 @@ inline_math_number ::= NUMBER_TOKEN { //int | float
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
-  methods=[getValue getValueType]
+  methods=[getValue getExpressionType]
 }
 inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without prefix "@"
   extends=inline_math_factor
