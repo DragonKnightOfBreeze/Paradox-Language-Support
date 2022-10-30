@@ -12,7 +12,6 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.expression.*
-import icu.windea.pls.script.intentions.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
 
@@ -50,8 +49,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 				holder.newSilentAnnotation(INFORMATION).range(nameElement)
 					.tooltip(tooltip)
 					.textAttributes(Keys.DEFINITION_NAME_KEY)
-					.withFix(DefinitionNameFindUsagesIntention())
-					.withFix(DefinitionNameGotoTypeDeclarationIntention())
 					.create()
 			}
 		}
@@ -65,8 +62,6 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		holder.newSilentAnnotation(INFORMATION).range(element)
 			.tooltip(tooltip)
 			.textAttributes(Keys.COMPLEX_ENUM_VALUE_NAME_KEY)
-			.withFix(ComplexEnumValueNameFindUsagesIntention())
-			.withFix(ComplexEnumValueNameGotoTypeDeclarationIntention())
 			.create()
 	}
 	

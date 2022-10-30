@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.intentions
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
@@ -36,6 +37,10 @@ class CopyLocalisationTextIntention : IntentionAction {
 		val element = originalElement.parentOfType<ParadoxLocalisationProperty>() ?: return
 		val text = element.value
 		CopyPasteManager.getInstance().setContents(StringSelection(text))
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
 	}
 }
 

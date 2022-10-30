@@ -16,7 +16,6 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return PsiReference.EMPTY_ARRAY
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		val text = element.text
-		val textRange = TextRange.create(0, text.length)
 		//排除可能包含参数的情况
 		if(text.isParameterAwareExpression()) return PsiReference.EMPTY_ARRAY
 		val config = ParadoxCwtConfigHandler.resolveConfig(element)
@@ -41,7 +40,9 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 					else -> pass() //TODO
 				}
 			}
-			//TODO 不能直接返回PsiReference，需要先确定textRange
+			//TODO 不能直接返回PsiReference，需要先确定rangeInElement
+			val value = text.unquote()
+			val textRange = TextRange.create(0, value.length)
 			return arrayOf(ParadoxScriptExpressionReference(element, textRange, config, element is ParadoxScriptPropertyKey))
 		}
 		return PsiReference.EMPTY_ARRAY

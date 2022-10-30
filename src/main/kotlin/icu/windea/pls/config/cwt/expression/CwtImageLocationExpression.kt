@@ -96,7 +96,7 @@ class CwtImageLocationExpression(
 			val config = ParadoxCwtConfigHandler.resolveValueConfig(value)
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, value.textRangeInParent, config.expression, config, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -146,7 +146,7 @@ class CwtImageLocationExpression(
 			val config = ParadoxCwtConfigHandler.resolveValueConfig(value)
 				?.takeIf { it.expression.type in validValueTypes }
 				?: return null
-			val resolved = CwtConfigHandler.resolveScriptExpression(value, value.textRangeInParent, config.expression, config, false)
+			val resolved = CwtConfigHandler.resolveScriptExpression(value, null, config.expression, config, false)
 			when {
 				//由filePath解析为DDS文件
 				resolved is PsiFile && resolved.fileType == DdsFileType -> {

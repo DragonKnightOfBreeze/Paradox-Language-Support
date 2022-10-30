@@ -1,6 +1,7 @@
 package icu.windea.pls.script.intentions
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.find.actions.*
 import com.intellij.openapi.actionSystem.*
@@ -44,18 +45,23 @@ abstract class DefinitionNameIntention: IntentionAction, PriorityAction {
 }
 
 /**
- * 为表示定义名称的字符串提供查找使用的功能的意向。注解器提供的提示同样会附带上这个意向。
+ * 为表示定义名称的字符串提供查找使用的功能的意向。
  */
 class DefinitionNameFindUsagesIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
+		//TODO
 		ActionUtil.invokeAction(FindUsagesAction(), editor.contentComponent, ActionPlaces.EDITOR_POPUP, null, null)
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
 	}
 }
 
 /**
- * 为表示定义名称的字符串提供导航到声明的功能的意向。注解器提供的提示同样会附带上这个意向。
+ * 为表示定义名称的字符串提供导航到声明的功能的意向。
  */
 class DefinitionNameGotoTypeDeclarationIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration")
@@ -63,5 +69,9 @@ class DefinitionNameGotoTypeDeclarationIntention: DefinitionNameIntention() {
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		val element = definitionInfo.typeConfig.pointer.element ?: return
 		NavigationUtil.activateFileWithPsiElement(element)
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
 	}
 }

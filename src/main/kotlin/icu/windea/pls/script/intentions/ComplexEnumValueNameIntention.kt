@@ -1,6 +1,7 @@
 package icu.windea.pls.script.intentions
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -39,18 +40,22 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 }
 
 /**
- * 为表示复杂枚举名称的表达式提供查找使用的功能的意向。注解器提供的提示同样会附带上这个意向。
+ * 为表示复杂枚举名称的表达式提供查找使用的功能的意向。
  */
 class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
 	
 	override fun doInvoke(definition: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, project: Project) {
-		TODO("Not yet implemented")
+		//TODO("Not yet implemented")
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
 	}
 }
 
 /**
- * 为表示复杂枚举名称的表达式提供导航到声明的功能的意向。注解器提供的提示同样会附带上这个意向。
+ * 为表示复杂枚举名称的表达式提供导航到声明的功能的意向。
  */
 class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")
@@ -62,5 +67,9 @@ class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameInte
 		val config = configGroup.complexEnums[enumName] ?: return //unexpected
 		val element = config.pointer.element ?: return
 		NavigationUtil.activateFileWithPsiElement(element)
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
 	}
 }

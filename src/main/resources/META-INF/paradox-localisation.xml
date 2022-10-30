@@ -94,29 +94,34 @@
 
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.ChangeLocalisationLocaleIntention</className>
-      <category>Paradox localisation</category>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>localisation.intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.ChangeLocalisationColorIntention</className>
-      <category>Paradox localisation</category>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>localisation.intention.category</categoryKey>
     </intentionAction>
-
 
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.CopyLocalisationIntention</className>
-      <category>Paradox localisation</category>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>localisation.intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.CopyLocalisationTextIntention</className>
-      <category>Paradox localisation</category>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>localisation.intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.CopyLocalisationPlainTextIntention</className>
-      <category>Paradox localisation</category>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>localisation.intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
       <className>icu.windea.pls.localisation.intentions.CopyLocalisationRichTextIntention</className>
-      <category>Paradox localisation</category>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>localisation.intention.category</categoryKey>
     </intentionAction>
 
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedLocale"

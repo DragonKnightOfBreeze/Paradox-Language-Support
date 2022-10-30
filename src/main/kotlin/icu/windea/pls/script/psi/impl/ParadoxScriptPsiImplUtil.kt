@@ -681,13 +681,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptBlock): ParadoxScriptExpressionType {
-		return ParadoxScriptExpressionType.BlockType
+	fun getExpression(element: ParadoxScriptBlock): String {
+		return PlsConstants.blockFolder
 	}
 	
 	@JvmStatic
-	fun getConditionExpression(element: ParadoxScriptBlock): String {
-		return PlsConstants.blockFolder
+	fun getExpressionType(element: ParadoxScriptBlock): ParadoxScriptExpressionType {
+		return ParadoxScriptExpressionType.BlockType
 	}
 	//endregion
 	

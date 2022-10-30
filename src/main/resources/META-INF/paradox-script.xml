@@ -143,6 +143,27 @@
         implementationClass="icu.windea.pls.script.refactoring.ParadoxScriptInlineHandler"/>
 
     <fileIconProvider implementation="icu.windea.pls.core.ParadoxFileIconProvider"/>
+
+    <intentionAction>
+      <className>icu.windea.pls.script.intentions.DefinitionNameFindUsagesIntention</className>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
+    </intentionAction>
+    <intentionAction>
+      <className>icu.windea.pls.script.intentions.DefinitionNameGotoTypeDeclarationIntention</className>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
+    </intentionAction>
+    <intentionAction>
+      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameFindUsagesIntention</className>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
+    </intentionAction>
+    <intentionAction>
+      <className>icu.windea.pls.script.intentions.ComplexEnumValueNameGotoTypeDeclarationIntention</className>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>script.intention.category</categoryKey>
+    </intentionAction>
     
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>

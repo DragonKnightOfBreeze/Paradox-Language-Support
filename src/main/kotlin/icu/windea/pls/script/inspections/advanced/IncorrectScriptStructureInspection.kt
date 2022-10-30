@@ -32,7 +32,8 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 					val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedKey", element.text))
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedKey", element.expression))
+						return //skip children
 					}
 				}
 				super.visitPropertyKey(element)
@@ -40,11 +41,13 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 			
 			override fun visitValue(element: ParadoxScriptValue) {
 				ProgressManager.checkCanceled()
+				//排除block
 				if(if(element.isLonely()) forValue else forPropertyValue) {
 					val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedValue", element.text))
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedValue", element.expression))
+						return //skip children
 					}
 				}
 				super.visitValue(element)

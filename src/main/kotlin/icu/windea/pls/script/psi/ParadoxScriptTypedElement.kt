@@ -12,6 +12,6 @@ import icu.windea.pls.script.expression.*
 interface ParadoxScriptTypedElement : PsiElement {
 	val definitionType: String? get() = null
 	val expressionType: ParadoxScriptExpressionType? get() = null
-	val expression: String? get() = text
+	val expression: String get() = text
 	val configExpression: String? get() = null
 }

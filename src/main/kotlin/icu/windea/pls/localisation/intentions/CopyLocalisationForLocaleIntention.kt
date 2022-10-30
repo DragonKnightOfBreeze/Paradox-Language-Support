@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.intentions
 import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.notification.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
@@ -135,7 +136,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
 	}
 	
-	fun checkProcessCanceledAndEditorDisposed(progressIndicator: BackgroundableProcessIndicator, project: Project?, editor: Editor?): Boolean {
+	private fun checkProcessCanceledAndEditorDisposed(progressIndicator: BackgroundableProcessIndicator, project: Project?, editor: Editor?): Boolean {
 		if(progressIndicator.isCanceled) {
 			// no need to finish the progress indicator,
 			// because it's already finished in the delegate.
@@ -166,5 +167,9 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 		override fun addStateDelegate(delegate: ProgressIndicatorEx) {
 			throw UnsupportedOperationException()
 		}
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
 	}
 }

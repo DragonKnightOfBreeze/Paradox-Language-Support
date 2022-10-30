@@ -85,13 +85,13 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
 				val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
 					?.takeIf { it.expression.type in keyExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, element.textRangeInParent, config.expression, config, true)
+				CwtConfigHandler.resolveScriptExpression(element, null, config.expression, config, true)
 			}
 			is ParadoxScriptString -> {
 				val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
 					?.takeIf { it.expression.type in valueExpressionTypes }
 					?: return true
-				CwtConfigHandler.resolveScriptExpression(element, element.textRangeInParent, config.expression, config, false)
+				CwtConfigHandler.resolveScriptExpression(element, null, config.expression, config, false)
 			}
 			else -> return true
 		}

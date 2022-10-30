@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.intentions
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.notification.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
@@ -69,6 +70,10 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
 			PlsBundle.message("notification.copyLocalisation.success.content", keysText),
 			NotificationType.INFORMATION
 		).notify(project)
+	}
+	
+	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
+		return IntentionPreviewInfo.EMPTY
 	}
 }
 

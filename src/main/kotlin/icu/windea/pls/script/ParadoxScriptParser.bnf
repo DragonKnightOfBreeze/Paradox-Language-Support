@@ -147,7 +147,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   ]
   methods=[
     getIcon getValue isEmpty isNotEmpty getComponents getColor setColor
-    getExpressionType getConditionExpression
+    getExpressionType getExpression
   ]
 }
 private block_item ::= COMMENT | property | value | parameter_condition | variable{

@@ -45,6 +45,6 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, IParadoxScriptBl
   ParadoxScriptExpressionType getExpressionType();
 
   @NotNull
-  String getConditionExpression();
+  String getExpression();
 
 }
