@@ -5,6 +5,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
@@ -18,6 +19,6 @@ class ParadoxComplexEnumValueChooseByNameContributor : ChooseByNameContributorEx
 	}
 	
 	override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-		StubIndex.getInstance().processElements(ParadoxComplexEnumIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxScriptExpressionElement::class.java, processor)
+		StubIndex.getInstance().processElements(ParadoxComplexEnumIndex.key, name, parameters.project, parameters.searchScope, parameters.idFilter, ParadoxExpressionAwareElement::class.java, processor)
 	}
 }

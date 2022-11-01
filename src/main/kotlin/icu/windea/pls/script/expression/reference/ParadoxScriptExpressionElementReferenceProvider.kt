@@ -6,13 +6,14 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 	override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-		if(element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
+		if(element !is ParadoxExpressionAwareElement) return PsiReference.EMPTY_ARRAY
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return PsiReference.EMPTY_ARRAY
 		val configGroup = getCwtConfig(element.project).getValue(gameType)
 		val text = element.text
@@ -41,8 +42,7 @@ class ParadoxScriptExpressionElementReferenceProvider : PsiReferenceProvider() {
 				}
 			}
 			//TODO 不能直接返回PsiReference，需要先确定rangeInElement
-			val value = text.unquote()
-			val textRange = TextRange.create(0, value.length)
+			val textRange = TextRange.create(0, text.length)
 			return arrayOf(ParadoxScriptExpressionReference(element, textRange, config, element is ParadoxScriptPropertyKey))
 		}
 		return PsiReference.EMPTY_ARRAY

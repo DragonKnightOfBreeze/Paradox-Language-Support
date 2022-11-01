@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -22,7 +23,7 @@ fun definitionSelector() = ChainedParadoxSelector<ParadoxDefinitionProperty>()
 
 fun localisationSelector() = ChainedParadoxSelector<ParadoxLocalisationProperty>()
 
-fun complexEnumSelector() = ChainedParadoxSelector<ParadoxScriptExpressionElement>()
+fun complexEnumSelector() = ChainedParadoxSelector<ParadoxExpressionAwareElement>()
 
 fun valueSetValueSelector() = ChainedParadoxSelector<ParadoxScriptString>()
 

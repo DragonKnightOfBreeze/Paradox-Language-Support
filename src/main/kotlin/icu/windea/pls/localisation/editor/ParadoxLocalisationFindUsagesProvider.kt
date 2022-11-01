@@ -7,7 +7,7 @@ import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.localisation.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -44,6 +44,19 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 					else -> element.name
 				}
 			}
+			is ParadoxParameterElement -> {
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.parameter")
+					else -> element.name
+				}
+			}
+			is ParadoxValueSetValueElement -> {
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.valueSetValue")
+					UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.valueSetName
+					else -> element.name
+				}
+			}
 			else -> null
 		}
 	}
@@ -53,7 +66,13 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 	}
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return element is NavigatablePsiElement && element.language == ParadoxLocalisationLanguage
+		return when(element){
+			is ParadoxLocalisationProperty -> true
+			is ParadoxLocalisationLocale -> true
+			is ParadoxParameterElement -> true
+			is ParadoxValueSetValueElement -> true
+			else -> false
+		} 
 	}
 	
 	override fun getWordsScanner(): WordsScanner {

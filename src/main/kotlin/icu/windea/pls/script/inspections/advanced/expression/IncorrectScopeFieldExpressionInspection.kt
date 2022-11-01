@@ -7,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -25,8 +26,8 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 		val project = file.project
 		val gameType = ParadoxSelectorUtils.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
-			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+		file.accept(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+			override fun visitExpressionElement(element: ParadoxExpressionAwareElement) {
 				ProgressManager.checkCanceled()
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
 				val type = config.expression.type

@@ -74,7 +74,6 @@
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
-    <readWriteAccessDetector implementation="icu.windea.pls.script.codeInsight.highghting.ParadoxScriptReadWriteAccessDetector"/>
     <completion.contributor
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>

@@ -1,6 +1,5 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 
 abstract class ParadoxScriptRecursiveElementWalkingVisitor : ParadoxScriptVisitor(), PsiRecursiveVisitor {
@@ -11,7 +10,6 @@ abstract class ParadoxScriptRecursiveElementWalkingVisitor : ParadoxScriptVisito
 	}
 	
 	override fun visitElement(element: PsiElement) {
-		ProgressManager.checkCanceled()
 		walkingState.elementStarted(element)
 	}
 	

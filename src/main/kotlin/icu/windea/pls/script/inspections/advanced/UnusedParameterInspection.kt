@@ -8,6 +8,7 @@ import com.intellij.psi.search.searches.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*

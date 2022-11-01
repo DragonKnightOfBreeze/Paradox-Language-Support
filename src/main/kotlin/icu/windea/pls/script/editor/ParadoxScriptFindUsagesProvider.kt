@@ -6,7 +6,7 @@ import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.script.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -45,11 +45,12 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 					}
 				}
 			}
-			is ParadoxScriptExpressionElement -> {
+			is ParadoxExpressionAwareElement -> {
 				val complexEnumValueInfo = element.complexEnumValueInfo
 				if(complexEnumValueInfo != null) {
 					when(location) {
 						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
+						UsageViewNodeTextLocation.INSTANCE -> complexEnumValueInfo.name + ": " + complexEnumValueInfo.enumName
 						else -> complexEnumValueInfo.name
 					}
 				} else {
@@ -57,6 +58,19 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.expression")
 						else -> element.text //keep quotes
 					}
+				}
+			}
+			is ParadoxParameterElement -> {
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.parameter")
+					else -> element.name
+				}
+			}
+			is ParadoxValueSetValueElement -> {
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.valueSetValue")
+					UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.valueSetName
+					else -> element.name
 				}
 			}
 			else -> null
@@ -68,7 +82,14 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	}
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return element is NavigatablePsiElement && element.language == ParadoxScriptLanguage
+		return when(element){
+			is ParadoxScriptVariable -> true
+			is ParadoxScriptProperty -> true
+			is ParadoxExpressionAwareElement -> true
+			is ParadoxParameterElement -> true
+			is ParadoxValueSetValueElement -> true
+			else -> return false
+		}
 	}
 	
 	override fun getWordsScanner(): WordsScanner {

@@ -40,7 +40,7 @@ class ParadoxScriptTypeDeclarationProvider : TypeDeclarationProvider {
 				return symbol.toSingletonArray()
 			}
 			//symbol已被解析，不能这样做
-			//symbol is ParadoxScriptExpressionElement -> {
+			//symbol is ParadoxExpressionAwareElement -> {
 			//	val config = symbol.getConfig()
 			//	if(config != null) {
 			//		return config.pointer.element?.toSingletonArray()

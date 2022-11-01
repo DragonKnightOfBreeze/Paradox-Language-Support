@@ -1,12 +1,13 @@
-package icu.windea.pls.script.codeInsight.highghting
+package icu.windea.pls.core.codeInsight.highlight
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.reference.*
-import icu.windea.pls.script.psi.impl.*
 
 /**
  * 在查找使用中，区分参数和值集中的值的读/写使用
@@ -42,7 +43,7 @@ class ParadoxScriptReadWriteAccessDetector : ReadWriteAccessDetector() {
 	
 	override fun getExpressionAccess(expression: PsiElement): Access {
 		//find usages use this method finally
-		if(expression.language != ParadoxScriptLanguage) return Access.ReadWrite
+		if(expression.language != ParadoxScriptLanguage && expression.language != ParadoxLocalisationLanguage) return Access.ReadWrite
 		for(reference in expression.references) {
 			ProgressManager.checkCanceled()
 			if(reference.canResolveParameter()) {

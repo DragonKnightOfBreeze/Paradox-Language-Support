@@ -4,8 +4,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.impl.*
 
 class ParadoxParameterReference(
 	element: @UnionType(types = [ParadoxArgument::class, ParadoxParameter::class]) PsiElement,

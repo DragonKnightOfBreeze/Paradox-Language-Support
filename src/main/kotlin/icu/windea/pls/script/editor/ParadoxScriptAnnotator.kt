@@ -11,6 +11,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
@@ -26,7 +27,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	override fun annotate(element: PsiElement, holder: AnnotationHolder) {
 		when(element) {
 			is ParadoxScriptProperty -> annotateProperty(element, holder)
-			is ParadoxScriptExpressionElement -> annotateExpressionElement(element, holder)
+			is ParadoxExpressionAwareElement -> annotateExpressionElement(element, holder)
 		}
 	}
 	
@@ -54,7 +55,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+	private fun annotateComplexEnumValue(element: ParadoxExpressionAwareElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
 		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
 		val nameString = complexEnumValueInfo.name.escapeXmlOrAnonymous()
 		val enumNameString = complexEnumValueInfo.enumName
@@ -65,7 +66,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			.create()
 	}
 	
-	private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
+	private fun annotateExpressionElement(element: ParadoxExpressionAwareElement, holder: AnnotationHolder) {
 		//不高亮带有参数的情况
 		if(element.isParameterAwareExpression()) return
 		
@@ -77,7 +78,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun doAnnotateExpressionElement(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxExpressionAwareElement,
 		range: TextRange,
 		expression: CwtDataExpression,
 		config: CwtDataConfig<*>,
@@ -137,7 +138,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			}
 			CwtDataTypes.Value, CwtDataTypes.ValueSet -> {
 				if(!element.isQuoted()){
-					val valueSetValueExpression = ParadoxScriptExpression.resolveValueSetValue(element.value, configGroup)
+					val expressionString = range.shiftLeft(element.textRange.startOffset).substring(element.text).unquote()
+					val valueSetValueExpression = ParadoxScriptExpression.resolveValueSetValue(expressionString, configGroup)
 					if(valueSetValueExpression.isEmpty()) return
 					doAnnotateComplexExpression(element, valueSetValueExpression, config, range, holder)
 				}
@@ -146,14 +148,16 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 			}
 			CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> {
 				if(!element.isQuoted()) {
-					val scopeFieldExpression = ParadoxScriptExpression.resolveScopeField(element.value, configGroup)
+					val expressionString = range.shiftLeft(element.textRange.startOffset).substring(element.text).unquote()
+					val scopeFieldExpression = ParadoxScriptExpression.resolveScopeField(expressionString, configGroup)
 					if(scopeFieldExpression.isEmpty()) return
 					doAnnotateComplexExpression(element, scopeFieldExpression, config, range, holder)
 				}
 			}
 			CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> {
 				if(!element.isQuoted()) {
-					val valueFieldExpression = ParadoxScriptExpression.resolveValueField(element.value, configGroup)
+					val expressionString = range.shiftLeft(element.textRange.startOffset).substring(element.text).unquote()
+					val valueFieldExpression = ParadoxScriptExpression.resolveValueField(expressionString, configGroup)
 					if(valueFieldExpression.isEmpty()) return
 					doAnnotateComplexExpression(element, valueFieldExpression, config, range, holder)
 				}
@@ -167,7 +171,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun doAnnotateComplexExpression(
-		element: ParadoxScriptExpressionElement,
+		element: ParadoxExpressionAwareElement,
 		valueSetValueExpression: ParadoxScriptComplexExpression,
 		config: CwtDataConfig<*>,
 		range: TextRange,

@@ -3,7 +3,9 @@ package icu.windea.pls.localisation.editor
 import com.intellij.lang.documentation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.util.*
 
@@ -19,13 +21,17 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 	}
 	
 	override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
-		return when {
-			element is ParadoxLocalisationProperty -> getPropertyInfo(element)
-			element is ParadoxLocalisationLocale -> getLocaleConfig(element)
-			element is ParadoxLocalisationIcon -> getIconInfo(element)
-			element is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
-			element is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
-			element is ParadoxLocalisationColorfulText -> getColorConfig(element)
+		return when(element) {
+			is ParadoxLocalisationProperty -> getPropertyInfo(element)
+			is ParadoxLocalisationLocale -> getLocaleConfig(element)
+			is ParadoxLocalisationIcon -> getIconInfo(element)
+			is ParadoxLocalisationCommandScope -> getCommandScopeInfo(element)
+			is ParadoxLocalisationCommandField -> getCommandFieldInfo(element)
+			is ParadoxLocalisationColorfulText -> getColorConfig(element)
+			//使用FakeElement时，这里是有效的代码
+			is ParadoxParameterElement -> getParameterInfo(element)
+			//使用FakeElement时，这里是有效的代码
+			is ParadoxValueSetValueElement -> getValueSetValueInfo(element)
 			else -> null
 		}
 	}
@@ -80,14 +86,33 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		}
 	}
 	
+	private fun getParameterInfo(element: ParadoxParameterElement): String {
+		val name = element.name
+		val definitionInfo = element.definitionName + ": " + element.definitionType
+		return buildString {
+			buildParameterDefinition(name, definitionInfo)
+		}
+	}
+	
+	private fun getValueSetValueInfo(element: ParadoxValueSetValueElement): String {
+		return buildString {
+			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
+			buildValueSetValueDefinition(element.name, element.valueSetName, configGroup)
+		}
+	}
+	
 	override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
-		return when {
-			element is ParadoxLocalisationProperty -> getPropertyDoc(element)
-			element is ParadoxLocalisationLocale -> getLocaleDoc(element)
-			element is ParadoxLocalisationIcon -> getIconDoc(element)
-			element is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
-			element is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
-			element is ParadoxLocalisationColorfulText -> getColorDoc(element)
+		return when(element) {
+			is ParadoxLocalisationProperty -> getPropertyDoc(element)
+			is ParadoxLocalisationLocale -> getLocaleDoc(element)
+			is ParadoxLocalisationIcon -> getIconDoc(element)
+			is ParadoxLocalisationCommandScope -> getCommandScopeDoc(element)
+			is ParadoxLocalisationCommandField -> getCommandFieldDoc(element)
+			is ParadoxLocalisationColorfulText -> getColorDoc(element)
+			//使用FakeElement时，这里是有效的代码
+			is ParadoxParameterElement -> getParameterDoc(element)
+			//使用FakeElement时，这里是有效的代码
+			is ParadoxValueSetValueElement -> getValueSetValueDoc(element)
 			else -> null
 		}
 	}
@@ -142,6 +167,21 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		return buildString {
 			//加上元素定义信息
 			buildColorDefinition(name)
+		}
+	}
+	
+	private fun getParameterDoc(element: ParadoxParameterElement): String {
+		val name =  element.name
+		val definitionInfo = element.definitionName + ": " + element.definitionType
+		return buildString {
+			buildParameterDefinition(name, definitionInfo)
+		}
+	}
+	
+	private fun getValueSetValueDoc(element: ParadoxValueSetValueElement): String {
+		return buildString {
+			val configGroup = getCwtConfig(element.project).getValue(element.gameType)
+			buildValueSetValueDefinition(element.name, element.valueSetName, configGroup)
 		}
 	}
 	
@@ -207,6 +247,36 @@ class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider()
 		definition {
 			//加上元素定义信息
 			append(PlsDocBundle.message("name.localisation.color")).append(" <b>").append(name).append("</b>")
+		}
+	}
+	
+	private fun StringBuilder.buildParameterDefinition(name: String, definitionInfo: String?) {
+		definition {
+			//不加上文件信息
+			//加上名字
+			append(PlsDocBundle.message("name.script.parameter")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			if(definitionInfo != null) {
+				append(" ")
+				append(PlsDocBundle.message("ofDefinition", definitionInfo))
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildValueSetValueDefinition(name: String, valueSetName: String, configGroup: CwtConfigGroup) {
+		definition {
+			//不加上文件信息
+			//加上值集中的值的信息
+			append(PlsDocBundle.message("name.cwt.valueSetValue")).append(" <b>").append(name.escapeXmlOrAnonymous()).append("</b>")
+			if(valueSetName.isNotEmpty()) {
+				val valueConfig = configGroup.values[valueSetName]
+				if(valueConfig != null) {
+					val gameType = configGroup.gameType
+					val typeLink = "${gameType.id}/values/${valueSetName}"
+					append(": ").appendCwtLink(valueSetName, typeLink)
+				} else {
+					append(": ").append(valueSetName)
+				}
+			}
 		}
 	}
 	

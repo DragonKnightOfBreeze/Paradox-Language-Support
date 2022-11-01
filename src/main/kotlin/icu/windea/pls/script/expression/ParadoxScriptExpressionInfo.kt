@@ -5,7 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.psi.*
 
 sealed class ParadoxScriptExpressionInfo(
 	val text: String,
@@ -13,9 +13,9 @@ sealed class ParadoxScriptExpressionInfo(
 	val directlyResolved: PsiElement? = null,
 	val directlyResolvedList: List<PsiElement>? = null
 ) {
-	open fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): PsiReference? = null 
+	open fun getReference(element: ParadoxExpressionAwareElement, config: CwtDataConfig<*>): PsiReference? = null 
 	
-	open fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
+	open fun isUnresolved(element: ParadoxExpressionAwareElement, config: CwtDataConfig<*>): Boolean {
 		if(directlyResolved != null) return false
 		val reference = getReference(element, config) ?: return false
 		if(reference is PsiPolyVariantReference) return reference.multiResolve(false).isEmpty()
@@ -26,5 +26,5 @@ sealed class ParadoxScriptExpressionInfo(
 	
 	open fun getAttributesKey(): TextAttributesKey? = null
 	
-	open fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): List<CwtDataExpression> = emptyList()
+	open fun getAttributesKeyExpressions(element: ParadoxExpressionAwareElement, config: CwtDataConfig<*>): List<CwtDataExpression> = emptyList()
 }

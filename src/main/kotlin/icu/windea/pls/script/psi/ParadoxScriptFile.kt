@@ -35,9 +35,9 @@ class ParadoxScriptFile(
 		return ParadoxScriptFilePresentation(this)
 	}
 	
-	//@Volatile private var _valueSetValueMap: Map<String, Set<SmartPsiElementPointer<ParadoxScriptExpressionElement>>>? = null
+	//@Volatile private var _valueSetValueMap: Map<String, Set<SmartPsiElementPointer<ParadoxExpressionAwareElement>>>? = null
 	
-	//val valueSetValueMap: Map<String, Set<SmartPsiElementPointer<ParadoxScriptExpressionElement>>>
+	//val valueSetValueMap: Map<String, Set<SmartPsiElementPointer<ParadoxExpressionAwareElement>>>
 	//	get() = _valueSetValueMap ?: ParadoxScriptPsiImplUtil.getValueSetValueMap(this).also { _valueSetValueMap = it }
 	
 	override fun subtreeChanged() {

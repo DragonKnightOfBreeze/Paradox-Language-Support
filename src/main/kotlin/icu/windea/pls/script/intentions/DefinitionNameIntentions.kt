@@ -49,6 +49,7 @@ class DefinitionNameFindUsagesIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
+		//TODO
 		GotoDeclarationAction.startFindUsages(editor, project, definition)
 	}
 	

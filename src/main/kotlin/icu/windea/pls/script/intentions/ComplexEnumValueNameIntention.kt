@@ -3,14 +3,15 @@ package icu.windea.pls.script.intentions
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInsight.navigation.*
+import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
 
 abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 	override fun getPriority() = PriorityAction.Priority.LOW
@@ -23,7 +24,7 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 		if(editor == null || file == null) return false
 		if(file.language != ParadoxScriptLanguage) return false
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return false
-		val element = originalElement.parentOfType<ParadoxScriptExpressionElement>() ?: return false
+		val element = originalElement.parentOfType<ParadoxExpressionAwareElement>() ?: return false
 		return element.complexEnumValueInfo != null
 	}
 	
@@ -31,12 +32,12 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 		if(editor == null || file == null) return
 		if(file.language != ParadoxScriptLanguage) return
 		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
-		val element = originalElement.parentOfType<ParadoxScriptExpressionElement>() ?: return
+		val element = originalElement.parentOfType<ParadoxExpressionAwareElement>() ?: return
 		val complexEnumValueInfo = element.complexEnumValueInfo ?: return
-		doInvoke(element, complexEnumValueInfo, project)
+		doInvoke(element, complexEnumValueInfo, editor, project)
 	}
 	
-	abstract fun doInvoke(definition: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, project: Project)
+	abstract fun doInvoke(element: ParadoxExpressionAwareElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project)
 }
 
 /**
@@ -45,8 +46,9 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
 	
-	override fun doInvoke(definition: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, project: Project) {
-		TODO("Not yet implemented")
+	override fun doInvoke(element: ParadoxExpressionAwareElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+		//TODO
+		GotoDeclarationAction.startFindUsages(editor, project, element)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
@@ -60,7 +62,7 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")
 	
-	override fun doInvoke(definition: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, project: Project) {
+	override fun doInvoke(definition: ParadoxExpressionAwareElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		val gameType = complexEnumValueInfo.gameType ?: return
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val enumName = complexEnumValueInfo.enumName

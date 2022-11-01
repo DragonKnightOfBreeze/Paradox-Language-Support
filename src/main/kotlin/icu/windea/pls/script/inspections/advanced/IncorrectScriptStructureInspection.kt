@@ -25,15 +25,14 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+		file.accept(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
 			override fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
 				if(forPropertyKey) {
-					val propertyKey = element.propertyKey
-					val config = ParadoxCwtConfigHandler.resolvePropertyConfig(propertyKey)
+					val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
 					//是定义元素，非定义自身，且路径中不带参数
-					if(config == null && propertyKey.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						holder.registerProblem(propertyKey, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
+					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
 						return //skip property value if property key is invalid 
 					}
 				}

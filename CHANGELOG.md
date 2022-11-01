@@ -38,6 +38,13 @@
 
 ### 0.7.4
 
+* BUG修复：
+  * [ ] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
+  * [ ] 兼容`value_field`或者`int_value_field`需要被是被为`value[variable]`的情况
+  * [ ] 兼容嵌套的表达式的情况，如：`root.owner.event_target:target@root.owner`
+  * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况
+  * [X] 兼容localisationCommandScope需要被识别为`value_set[variable]`的情况
+  * [ ] 修复`root.from`中的`.`实际上并没有被正确地高亮为操作符（operator）的问题s
 * 功能优化：
   * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
@@ -72,7 +79,6 @@
 ```
 # Cannot resolve 'faill_breach_shroud_owner' and no exception thrown???
 event_target:faill_breach_shroud_owner
-无法提示普通枚举？
 
 icu.windea.pls.script.expression.reference.ParadoxScriptExpressionElementReferenceProvider
 TODO 不能直接返回PsiReference，需要先确定textRange

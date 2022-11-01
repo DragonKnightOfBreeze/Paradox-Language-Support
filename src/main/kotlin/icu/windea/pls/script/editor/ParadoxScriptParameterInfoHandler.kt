@@ -24,7 +24,7 @@ class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProp
 			.parents(true)
 			.filterIsInstance<ParadoxScriptProperty>()
 			.find { prop ->
-				prop.definitionElementInfo?.takeIf { it.isValid }?.configs?.any { config ->
+				prop.definitionElementInfo?.takeIf { it.isValid }?.getConfigs()?.any { config ->
 					config is CwtPropertyConfig && config.properties?.any { prop ->
 						prop.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName }
 					} ?: false

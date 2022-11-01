@@ -8,6 +8,7 @@ import com.intellij.usages.*
 import com.intellij.usages.impl.*
 import com.intellij.usages.rules.*
 import icu.windea.pls.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -34,7 +35,7 @@ class LocalisationLocaleGroupingRule(
 	override fun getParentGroupFor(usage: Usage, targets: Array<out UsageTarget>): UsageGroup? {
 		if(usage !is PsiElementUsage) return null
 		val element = usage.element
-		if(element !is ParadoxLocalisationProperty) return null
+		if(element.language != ParadoxLocalisationLanguage) return null
 		val localisationLocale = element.parent?.castOrNull<ParadoxLocalisationPropertyList>()?.locale ?: return null
 		return LocalisationLocaleGroup(localisationLocale, usageViewSettings)
 	}

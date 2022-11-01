@@ -2,14 +2,15 @@
 package icu.windea.pls.script.psi;
 
 import java.util.List;
+
+import icu.windea.pls.core.psi.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
 
-public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
+public interface ParadoxScriptPropertyKey extends ParadoxExpressionAwareElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();

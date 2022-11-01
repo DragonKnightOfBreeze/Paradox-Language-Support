@@ -1,5 +1,7 @@
 package icu.windea.pls.script.psi
 
+import icu.windea.pls.core.psi.*
+
 abstract class ParadoxScriptRecursiveExpressionElementWalkingVisitor : ParadoxScriptRecursiveElementWalkingVisitor() {
 	final override fun visitBoolean(o: ParadoxScriptBoolean) {}
 	final override fun visitInt(o: ParadoxScriptInt) {}
@@ -11,7 +13,7 @@ abstract class ParadoxScriptRecursiveExpressionElementWalkingVisitor : ParadoxSc
 	final override fun visitParameterCondition(o: ParadoxScriptParameterCondition) {}
 	final override fun visitVariable(o: ParadoxScriptVariable) {}
 	
-	override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+	override fun visitExpressionElement(element: ParadoxExpressionAwareElement) {
 		
 	}
 	

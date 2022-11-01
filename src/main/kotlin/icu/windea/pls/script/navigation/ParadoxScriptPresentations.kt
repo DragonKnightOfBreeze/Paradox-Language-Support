@@ -2,6 +2,7 @@ package icu.windea.pls.script.navigation
 
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.navigation.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFilePresentation(
@@ -26,9 +27,9 @@ class ParadoxDefinitionPresentation(
 }
 
 class ParadoxComplexEnumValuePresentation(
-	element: ParadoxScriptExpressionElement,
+	element: ParadoxExpressionAwareElement,
 	private val complexEnumValueInfo: ParadoxComplexEnumValueInfo
-): ParadoxItemPresentation<ParadoxScriptExpressionElement>(element){
+): ParadoxItemPresentation<ParadoxExpressionAwareElement>(element){
 	override fun getPresentableText(): String {
 		return complexEnumValueInfo.name
 	}

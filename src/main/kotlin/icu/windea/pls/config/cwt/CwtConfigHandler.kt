@@ -19,14 +19,13 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.impl.*
-import org.intellij.lang.annotations.*
 import javax.swing.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -106,12 +105,7 @@ object CwtConfigHandler {
 	//region Matches Methods
 	//TODO 基于cwt规则文件的匹配方法需要进一步匹配scope
 	//DONE 兼容variableReference inlineMath parameter
-	fun matchesScriptExpression(
-		expression: ParadoxScriptExpression,
-		configExpression: CwtDataExpression,
-		configGroup: CwtConfigGroup,
-		@MagicConstant(flagsFromClass = CwtConfigMatchType::class) matchType: Int = CwtConfigMatchType.ALL
-	): Boolean {
+	fun matchesScriptExpression(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//匹配block
 		if(configExpression == CwtValueExpression.EmptyExpression) {
 			return expression.type == ParadoxScriptExpressionType.BlockType
@@ -348,12 +342,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun matchesAliasName(
-		expression: ParadoxScriptExpression,
-		aliasName: String,
-		configGroup: CwtConfigGroup,
-		@MagicConstant(flagsFromClass = CwtConfigMatchType::class) matchType: Int = CwtConfigMatchType.ALL
-	): Boolean {
+	fun matchesAliasName(expression: ParadoxScriptExpression, aliasName: String, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//TODO 匹配scope
 		val aliasSubName = getAliasSubName(expression.value, expression.quoted, aliasName, configGroup) ?: return false
 		val configExpression = CwtKeyExpression.resolve(aliasSubName)
@@ -417,7 +406,7 @@ object CwtConfigHandler {
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val childPropertyConfigs = definitionElementInfo.childPropertyConfigs
+		val childPropertyConfigs = definitionElementInfo.getChildPropertyConfigs()
 		if(childPropertyConfigs.isEmpty()) return true
 		
 		context.put(PlsCompletionKeys.isKeyKey, true)
@@ -437,7 +426,7 @@ object CwtConfigHandler {
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val configs = definitionElementInfo.configs
+		val configs = definitionElementInfo.getConfigs()
 		if(configs.isEmpty()) return true
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
@@ -457,7 +446,7 @@ object CwtConfigHandler {
 		val scope = definitionElementInfo.scope
 		val gameType = definitionElementInfo.gameType
 		val configGroup = getCwtConfig(project).getValue(gameType)
-		val childValueConfigs = definitionElementInfo.childValueConfigs
+		val childValueConfigs = definitionElementInfo.getChildValueConfigs()
 		if(childValueConfigs.isEmpty()) return true
 		
 		context.put(PlsCompletionKeys.isKeyKey, false)
@@ -1263,16 +1252,15 @@ object CwtConfigHandler {
 	//NOTE 不要传入psiFile - 推断gameType时可能需要直接从上下文psiElement推断
 	/**
 	 * @param element 需要解析的PSI元素。
-	 * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。忽略括起的双引号。
+	 * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
 	 */
-	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
+	fun resolveScriptExpression(element: ParadoxExpressionAwareElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
 		if(element.isParameterAwareExpression()) return null //排除带参数的情况
 		
 		val project = element.project
 		val configGroup = config.info.configGroup
 		val gameType = configGroup.gameType
-		val elementValue = element.value
-		val expression = rangeInElement?.substring(elementValue) ?: elementValue
+		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value 
 		when(configExpression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = expression
@@ -1383,14 +1371,13 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange, configExpression: CwtDataExpression, config: CwtDataConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+	fun multiResolveScriptExpression(element: ParadoxExpressionAwareElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtDataConfig<*>, isKey: Boolean?): Collection<PsiElement> {
 		if(element.isParameterAwareExpression()) return emptyList() //排除带参数的情况  
 		
 		val project = element.project
 		val configGroup = config.info.configGroup
 		val gameType = configGroup.gameType
-		val elementValue = element.value
-		val text = rangeInElement.substring(elementValue)
+		val text = rangeInElement?.substring(element.text)?.unquote() ?: element.value
 		when(configExpression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = text
@@ -1584,7 +1571,7 @@ object CwtConfigHandler {
 		return linkConfig.pointer.element
 	}
 	
-	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, config: CwtDataConfig<*>): PsiElement? {
+	fun resolveValueSetValue(element: ParadoxExpressionAwareElement, name: String, config: CwtDataConfig<*>): PsiElement? {
 		val valueSetName = config.expression.value ?: return null
 		val configGroup = config.info.configGroup
 		val read = config.expression.type == CwtDataTypes.Value

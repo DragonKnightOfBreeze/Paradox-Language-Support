@@ -6,16 +6,17 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 
 class ParadoxScriptExpressionReference(
-	element: ParadoxScriptExpressionElement,
+	element: ParadoxExpressionAwareElement,
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiPolyVariantReference, ParadoxValueSetValueResolvable {
+) : PsiReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement), PsiPolyVariantReference, ParadoxValueSetValueResolvable {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()

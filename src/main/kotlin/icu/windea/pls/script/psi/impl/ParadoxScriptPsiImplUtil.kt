@@ -10,6 +10,7 @@ import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
@@ -23,10 +24,10 @@ import javax.swing.*
 object ParadoxScriptPsiImplUtil {
 	//region ParadoxFile
 	//@JvmStatic
-	//fun getValueSetValueMap(file: ParadoxScriptFile): Map<String, Set<SmartPsiElementPointer<ParadoxScriptExpressionElement>>> {
-	//	val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxScriptExpressionElement>>>() //按名字进行排序
+	//fun getValueSetValueMap(file: ParadoxScriptFile): Map<String, Set<SmartPsiElementPointer<ParadoxExpressionAwareElement>>> {
+	//	val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxExpressionAwareElement>>>() //按名字进行排序
 	//	file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
-	//		override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
+	//		override fun visitExpressionElement(element: ParadoxExpressionAwareElement) {
 	//			ProgressManager.checkCanceled()
 	//			val config = element.getConfig() ?: return
 	//			val dataType = config.expression.type
@@ -283,7 +284,7 @@ object ParadoxScriptPsiImplUtil {
 	fun getParameterMap(element: ParadoxScriptProperty): Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>> {
 		val file = element.containingFile
 		val result = sortedMapOf<String, MutableSet<SmartPsiElementPointer<ParadoxParameter>>>() //按名字进行排序
-		element.acceptChildren(object : ParadoxScriptRecursiveElementWalkingVisitor() {
+		element.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitParadoxParameter(e: ParadoxParameter) {
 				ProgressManager.checkCanceled()
 				result.getOrPut(e.name) { mutableSetOf() }.add(e.createPointer(file))
@@ -874,9 +875,9 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxScriptExpressionElement
+	//region ParadoxExpressionAwareElement
 	@JvmStatic
-	fun getPresentation(element: ParadoxScriptExpressionElement): ItemPresentation? {
+	fun getPresentation(element: ParadoxExpressionAwareElement): ItemPresentation? {
 		val complexEnumValueInfo = element.complexEnumValueInfo
 		if(complexEnumValueInfo != null) return ParadoxComplexEnumValuePresentation(element, complexEnumValueInfo)
 		return null

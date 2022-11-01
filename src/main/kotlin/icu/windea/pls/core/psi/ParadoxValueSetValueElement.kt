@@ -1,4 +1,4 @@
-package icu.windea.pls.script.psi.impl
+package icu.windea.pls.core.psi
 
 import com.intellij.openapi.project.*
 import com.intellij.pom.*

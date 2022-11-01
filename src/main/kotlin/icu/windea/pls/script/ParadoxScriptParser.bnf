@@ -71,7 +71,7 @@ property_key ::= key_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub"
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
+    "icu.windea.pls.core.psi.ParadoxExpressionAwareElement"
   ] 
   methods=[
     getValue setValue getReference getReferences
@@ -125,7 +125,7 @@ upper string ::= value_expr {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptStringStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptValue"
-    "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
+    "icu.windea.pls.core.psi.ParadoxExpressionAwareElement"
   ]
   methods=[
     getIcon

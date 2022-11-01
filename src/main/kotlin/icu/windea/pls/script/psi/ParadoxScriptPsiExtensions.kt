@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.annotations.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -145,7 +146,7 @@ fun PsiElement.findParentScriptElement(): @UnionType(ParadoxScriptProperty::clas
 }
 
 
-fun ParadoxScriptExpressionElement.isDefinitionRootKeyOrName(): Boolean{
+fun ParadoxExpressionAwareElement.isDefinitionRootKeyOrName(): Boolean{
 	return when{
 		this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
 		this is ParadoxScriptString -> isDefinitionName()
@@ -171,7 +172,7 @@ fun ParadoxScriptString.isDefinitionName(): Boolean {
 }
 
 
-fun ParadoxScriptExpressionElement.isSimpleScriptExpression(): Boolean {
+fun ParadoxExpressionAwareElement.isSimpleScriptExpression(): Boolean {
 	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return true
 	return when(this) {
 		is ParadoxScriptPropertyKey -> singleChild.elementType.let {
@@ -184,7 +185,7 @@ fun ParadoxScriptExpressionElement.isSimpleScriptExpression(): Boolean {
 	}
 }
 
-fun ParadoxScriptExpressionElement.isParameterAwareExpression(): Boolean {
+fun ParadoxExpressionAwareElement.isParameterAwareExpression(): Boolean {
 	return !this.isQuoted() && this.textContains('$')
 }
 

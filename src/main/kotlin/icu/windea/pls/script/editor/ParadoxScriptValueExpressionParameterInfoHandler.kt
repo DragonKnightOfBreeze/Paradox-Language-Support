@@ -4,20 +4,20 @@ import com.intellij.lang.parameterInfo.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 显示SV表达式的参数信息（如果有）。
  */
-class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<ParadoxScriptExpressionElement, Set<String>> {
+class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<ParadoxExpressionAwareElement, Set<String>> {
 	//2. 光标位置位于带参数的SV表达式的参数部分中，即在value:xxx|xxx|xxx|的第一个管道符之后
 	
-	override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxScriptExpressionElement? {
+	override fun findElementForParameterInfo(context: CreateParameterInfoContext): ParadoxExpressionAwareElement? {
 		val offset = context.offset
 		val element = context.file.findElementAt(offset) ?: return null
-		val targetElement = element.parent.castOrNull<ParadoxScriptExpressionElement>() ?: return null
+		val targetElement = element.parent.castOrNull<ParadoxExpressionAwareElement>() ?: return null
 		
 		val text = targetElement.text
 		if(!text.contains("value:") || !text.contains('|')) return null //快速判断
@@ -44,10 +44,10 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		return targetElement
 	}
 	
-	override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): ParadoxScriptExpressionElement? {
+	override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): ParadoxExpressionAwareElement? {
 		val offset = context.offset
 		val element = context.file.findElementAt(offset) ?: return null
-		val targetElement = element.parent.castOrNull<ParadoxScriptExpressionElement>() ?: return null
+		val targetElement = element.parent.castOrNull<ParadoxExpressionAwareElement>() ?: return null
 		val current = context.parameterOwner
 		if(current != null && current !== targetElement) return null
 		
@@ -77,11 +77,11 @@ class ParadoxScriptValueExpressionParameterInfoHandler : ParameterInfoHandler<Pa
 		context.setupUIComponentPresentation(text, startOffset, endOffset, false, false, false, context.defaultParameterColor)
 	}
 	
-	override fun updateParameterInfo(parameterOwner: ParadoxScriptExpressionElement, context: UpdateParameterInfoContext) {
+	override fun updateParameterInfo(parameterOwner: ParadoxExpressionAwareElement, context: UpdateParameterInfoContext) {
 		context.parameterOwner = parameterOwner
 	}
 	
-	override fun showParameterInfo(element: ParadoxScriptExpressionElement, context: CreateParameterInfoContext) {
+	override fun showParameterInfo(element: ParadoxExpressionAwareElement, context: CreateParameterInfoContext) {
 		context.showHint(element, element.textRange.startOffset + 1, this)
 	}
 }

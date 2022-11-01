@@ -7,9 +7,9 @@ import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.script.reference.*
 import java.util.concurrent.*
 import javax.swing.*
@@ -43,7 +43,7 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
 	) : ParadoxScriptVisitor() {
 		private fun shouldVisit(element: PsiElement): Boolean {
 			//ignore with parameters situation
-			return (element is ParadoxScriptExpressionElement && !element.isParameterAwareExpression())
+			return (element is ParadoxExpressionAwareElement && !element.isParameterAwareExpression())
 		}
 		
 		override fun visitElement(element: PsiElement) {

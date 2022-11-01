@@ -11,14 +11,14 @@ data class CwtTypeLocalisationConfig(
 	override val info: CwtConfigInfo,
 	val configs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
 ) : CwtConfig<CwtProperty> {
-	private val mergesConfigsCache: Cache<String, List<CwtLocationConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val mergedConfigsCache: Cache<String, List<CwtLocationConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
 	
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
 	 */
 	fun getMergedConfigs(subtypes: List<String>): List<CwtLocationConfig> {
 		val cacheKey = subtypes.joinToString(",")
-		return mergesConfigsCache.getOrPut(cacheKey){
+		return mergedConfigsCache.getOrPut(cacheKey){
 			val result = SmartList<CwtLocationConfig>()
 			for((subtypeExpression, locationConfig) in configs) {
 				if(subtypeExpression == null || matchesDefinitionSubtypeExpression(subtypeExpression, subtypes)) {

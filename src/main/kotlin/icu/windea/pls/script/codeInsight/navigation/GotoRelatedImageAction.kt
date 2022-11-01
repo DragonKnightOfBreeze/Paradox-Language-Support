@@ -6,6 +6,7 @@ import com.intellij.codeInsight.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -31,7 +32,7 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 				return
 			}
 			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
-			val isRootKeyOrName = element.parentOfType<ParadoxScriptExpressionElement>()?.isDefinitionRootKeyOrName() == true
+			val isRootKeyOrName = element.parentOfType<ParadoxExpressionAwareElement>()?.isDefinitionRootKeyOrName() == true
 			presentation.isEnabled = isRootKeyOrName
 		} else {
 			presentation.isEnabledAndVisible = false

@@ -31,7 +31,7 @@ class ParadoxScriptValueSetValueExpression(
 			if(separatorIndex == -1) {
 				infos.add(ParadoxScriptValueSetValueExpressionInfo(expressionString, wholeRange))
 			} else {
-				infos.add(ParadoxScriptValueSetValueExpressionInfo(expressionString.substring(separatorIndex), TextRange.create(0, separatorIndex)))
+				infos.add(ParadoxScriptValueSetValueExpressionInfo(expressionString.substring(0,separatorIndex), TextRange.create(0, separatorIndex)))
 				if(separatorIndex == expressionString.length - 1 || expressionString.indexOf('@', separatorIndex + 1) != -1) {
 					//以@结束或者多个@ -> 不合法
 					isValid = false

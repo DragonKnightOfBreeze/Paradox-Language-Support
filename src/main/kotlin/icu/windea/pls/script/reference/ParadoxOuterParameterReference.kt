@@ -4,11 +4,10 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.impl.*
+import icu.windea.pls.core.psi.*
 
 class ParadoxOuterParameterReference(
-	element: @UnionType(types = [ParadoxScriptExpressionElement::class]) PsiElement,
+	element: @UnionType(types = [ParadoxExpressionAwareElement::class]) PsiElement,
 	rangeInElement: TextRange,
 	private val definitionName: String,
 	private val definitionType: String,
@@ -18,7 +17,7 @@ class ParadoxOuterParameterReference(
 		//重命名引用指向的元素即可（在对应的范围内）
 		val element = element
 		return when {
-			element is ParadoxScriptExpressionElement -> element.setValue(rangeInElement.replace(element.value, newElementName))
+			element is ParadoxExpressionAwareElement -> element.setValue(rangeInElement.replace(element.value, newElementName))
 			else -> element
 		}
 	}

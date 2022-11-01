@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package icu.windea.pls.localisation.highlighter
 
 import com.google.common.cache.*
@@ -31,7 +33,7 @@ object ParadoxLocalisationAttributesKeys {
 	@JvmField val SYNCED_LOCALISATION_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SYNCED_LOCALISATION", PROPERTY_KEY_KEY) //underscored
 	
 	private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
-		createTempTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
+		createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
 			foregroundColor = color
 		})
 	}
@@ -42,7 +44,7 @@ object ParadoxLocalisationAttributesKeys {
 	}
 	
 	private val colorOnlyKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
-		createTempTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", TextAttributes().apply {
+		createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", TextAttributes().apply {
 			foregroundColor = color
 		})
 	}

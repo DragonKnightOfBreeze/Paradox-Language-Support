@@ -7,16 +7,16 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.reference.*
 
 class ParadoxScriptScopeFieldPrefixReference(
-	element: ParadoxScriptExpressionElement,
+	element: ParadoxExpressionAwareElement,
 	rangeInElement: TextRange,
 	private val resolved: List<PsiElement>?
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
-	override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+) : PsiPolyVariantReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement) {
+	override fun handleElementRename(newElementName: String): ParadoxExpressionAwareElement {
 		throw IncorrectOperationException() //不允许重命名
 	}
 	
@@ -26,11 +26,11 @@ class ParadoxScriptScopeFieldPrefixReference(
 }
 
 class ParadoxScriptScopeFieldDataSourceReference(
-	element: ParadoxScriptExpressionElement,
+	element: ParadoxExpressionAwareElement,
 	rangeInElement: TextRange,
 	private val linkConfigs: List<CwtLinkConfig>
-) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), ParadoxValueSetValueResolvable {
-	override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
+) : PsiPolyVariantReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement), ParadoxValueSetValueResolvable {
+	override fun handleElementRename(newElementName: String): ParadoxExpressionAwareElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()
 		when {
