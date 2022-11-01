@@ -10,7 +10,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.reference.*
 import java.util.concurrent.*
 import javax.swing.*
 
@@ -53,9 +52,10 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
 			val references = element.references
 			for(reference in references) {
 				ProgressManager.checkCanceled()
-				if(reference !is ParadoxValueSetValueResolvable) continue
+				if(!reference.canResolveValueSetValue()) continue
 				if(reference is ParadoxScriptScopeFieldDataSourceReference && !inspection.forScopeFieldExpressions) continue
 				if(reference is ParadoxScriptValueFieldDataSourceReference && !inspection.forValueFieldExpressions) continue
+				
 				val resolved = reference.resolveSingle()
 				if(resolved !is ParadoxValueSetValueElement) continue
 				if(resolved.read) {
@@ -93,7 +93,6 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
 			holder.registerProblem(reference, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 		}
 	}
-	
 	
 	override fun createOptionsPanel(): JComponent {
 		return panel {

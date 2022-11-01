@@ -29,7 +29,7 @@ class ParadoxScriptValueFieldDataSourceReference(
 	element: ParadoxExpressionAwareElement,
 	rangeInElement: TextRange,
 	private val linkConfigs: List<CwtLinkConfig>
-) : PsiPolyVariantReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement), ParadoxValueSetValueResolvable {
+) : PsiPolyVariantReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): ParadoxExpressionAwareElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()

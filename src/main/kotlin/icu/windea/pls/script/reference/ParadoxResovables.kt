@@ -1,5 +1,0 @@
-package icu.windea.pls.script.reference
-
-interface ParadoxParameterResolvable
-
-interface ParadoxValueSetValueResolvable

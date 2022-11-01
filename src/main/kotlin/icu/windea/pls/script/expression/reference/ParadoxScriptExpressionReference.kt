@@ -16,7 +16,7 @@ class ParadoxScriptExpressionReference(
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement), PsiPolyVariantReference, ParadoxValueSetValueResolvable {
+) : PsiReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()

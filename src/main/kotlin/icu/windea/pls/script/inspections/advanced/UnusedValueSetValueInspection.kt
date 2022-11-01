@@ -5,11 +5,13 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.reference.*
 import java.util.concurrent.*
+import javax.swing.*
 
 /**
  * 值集中的值（`some_flag`）被设置但未被使用的检查
@@ -22,6 +24,9 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 	companion object {
 		private val statusMapKey = Key.create<MutableMap<ParadoxValueSetValueElement, Boolean>>("paradox.statusMap")
 	}
+	
+	@JvmField var forScopeFieldExpressions = true
+	@JvmField var forValueFieldExpressions = true
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
 		session.putUserData(statusMapKey, ConcurrentHashMap())
@@ -43,8 +48,11 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 			ProgressManager.checkCanceled()
 			
 			//may only resolve to single ParadoxValueSetValueElement (set-flag expression)
-			val reference = element.reference
-			if(reference !is ParadoxValueSetValueResolvable) return
+			val reference = element.reference ?: return
+			if(!reference.canResolveValueSetValue()) return
+			if(reference is ParadoxScriptScopeFieldDataSourceReference && !inspection.forScopeFieldExpressions) return
+			if(reference is ParadoxScriptValueFieldDataSourceReference && !inspection.forValueFieldExpressions) return
+			
 			val resolved = reference.resolve()
 			if(resolved !is ParadoxValueSetValueElement) return
 			if(!resolved.read) {
@@ -79,6 +87,23 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 		private fun registerProblem(resolved: ParadoxValueSetValueElement, reference: PsiReference) {
 			val message = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.description", resolved.name)
 			holder.registerProblem(reference, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
+		}
+	}
+	
+	override fun createOptionsPanel(): JComponent {
+		return panel {
+			row {
+				checkBox(PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forScopeFieldExpressions"))
+					.bindSelected(::forScopeFieldExpressions)
+					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forScopeFieldExpressions.tooltip") }
+					.actionListener { _, component -> forScopeFieldExpressions = component.isSelected }
+			}
+			row {
+				checkBox(PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forValueFieldExpressions"))
+					.bindSelected(::forValueFieldExpressions)
+					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.option.forValueFieldExpressions.tooltip") }
+					.actionListener { _, component -> forValueFieldExpressions = component.isSelected }
+			}
 		}
 	}
 }
