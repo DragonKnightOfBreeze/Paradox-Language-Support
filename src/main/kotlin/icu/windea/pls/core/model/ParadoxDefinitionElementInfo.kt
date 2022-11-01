@@ -31,14 +31,6 @@ class ParadoxDefinitionElementInfo(
 		definitionInfo.declarationConfig?.resolveConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}
 	
-	val propertyConfigs: List<CwtPropertyConfig> by lazy {
-		configs.filterIsInstance<CwtPropertyConfig>()
-	}
-	
-	val valueConfigs: List<CwtValueConfig> by lazy {
-		configs.filterIsInstance<CwtValueConfig>()
-	}
-	
 	/** 对应的子属性配置列表。 */
 	val childPropertyConfigs: List<CwtPropertyConfig> by lazy {
 		//基于上一级keyExpression，keyExpression一定唯一

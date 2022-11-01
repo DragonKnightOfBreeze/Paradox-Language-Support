@@ -252,7 +252,12 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getConditionExpression(element: ParadoxScriptProperty): String {
+	fun getExpressionType(element: ParadoxScriptProperty): ParadoxScriptExpressionType? {
+		return element.propertyValue?.value?.expressionType
+	}
+	
+	@JvmStatic
+	fun getExpression(element: ParadoxScriptProperty): String {
 		val keyExpression = element.propertyKey.expression
 		val valueExpression = element.propertyValue?.value?.expression ?: PlsConstants.unresolvedString
 		return "$keyExpression = $valueExpression"
@@ -262,11 +267,6 @@ object ParadoxScriptPsiImplUtil {
 	fun getConfigExpression(element: ParadoxScriptProperty): String? {
 		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element) ?: return null
 		return "${config.key} = ${config.value}"
-	}
-	
-	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptProperty): ParadoxScriptExpressionType? {
-		return element.propertyValue?.value?.expressionType
 	}
 	
 	@JvmStatic
@@ -325,12 +325,6 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
-		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element) ?: return null
-		return config.key
-	}
-	
-	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptPropertyKey): ParadoxScriptExpressionType {
 		element.processChild {
 			when(it.elementType) {
@@ -341,6 +335,12 @@ object ParadoxScriptPsiImplUtil {
 			}
 		}
 		return ParadoxScriptExpressionType.UnknownType
+	}
+	
+	@JvmStatic
+	fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
+		val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element) ?: return null
+		return config.key
 	}
 	//endregion
 	
@@ -389,14 +389,14 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getConfigExpression(element: ParadoxScriptValue): String? {
-		val config = ParadoxCwtConfigHandler.resolveValueConfig(element) ?: return null
-		return config.value
+	fun getExpressionType(element: ParadoxScriptValue): ParadoxScriptExpressionType {
+		return ParadoxScriptExpressionType.UnknownType
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptValue): ParadoxScriptExpressionType {
-		return ParadoxScriptExpressionType.UnknownType
+	fun getConfigExpression(element: ParadoxScriptValue): String? {
+		val config = ParadoxCwtConfigHandler.resolveValueConfig(element) ?: return null
+		return config.value
 	}
 	//endregion
 	
@@ -681,13 +681,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpression(element: ParadoxScriptBlock): String {
-		return PlsConstants.blockFolder
+	fun getExpressionType(element: ParadoxScriptBlock): ParadoxScriptExpressionType {
+		return ParadoxScriptExpressionType.BlockType
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptBlock): ParadoxScriptExpressionType {
-		return ParadoxScriptExpressionType.BlockType
+	fun getExpression(element: ParadoxScriptBlock): String {
+		return PlsConstants.blockFolder
 	}
 	//endregion
 	

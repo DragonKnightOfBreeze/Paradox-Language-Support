@@ -63,10 +63,11 @@ object ParadoxCwtConfigHandler {
 				val definitionElementInfo = ParadoxDefinitionElementInfoHandler.get(element) ?: return emptyList()
 				if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
 				//如果无法匹配value，则取第一个
-				val propertyConfigs = definitionElementInfo.propertyConfigs
+				val configs = definitionElementInfo.configs
 				val configGroup = definitionElementInfo.configGroup
 				buildList {
-					for(propertyConfig in propertyConfigs) {
+					for(config in configs) {
+						val propertyConfig = config as? CwtPropertyConfig ?: continue
 						//不完整的属性 - 不匹配值
 						if(valueElement == null) {
 							add(propertyConfig)
@@ -79,7 +80,7 @@ object ParadoxCwtConfigHandler {
 						}
 					}
 					if(hasDefault && isEmpty()) {
-						propertyConfigs.firstOrNull()?.let { add(it) }
+						configs.firstOrNull()?.let { add(it) }
 					}
 				} as List<T>
 			}
@@ -95,10 +96,11 @@ object ParadoxCwtConfigHandler {
 						val property = parent.parent as? ParadoxScriptProperty ?: return emptyList()
 						val definitionElementInfo = property.definitionElementInfo ?: return emptyList()
 						if(!allowDefinitionSelf && definitionElementInfo.elementPath.isEmpty()) return emptyList()
-						val propertyConfigs = definitionElementInfo.propertyConfigs
+						val configs = definitionElementInfo.configs
 						val configGroup = definitionElementInfo.configGroup
 						buildList {
-							for(propertyConfig in propertyConfigs) {
+							for(config in configs) {
+								val propertyConfig = config as? CwtPropertyConfig ?: continue
 								val expression = ParadoxScriptExpression.resolve(valueElement)
 								val valueExpression = propertyConfig.valueExpression
 								if(CwtConfigHandler.matchesScriptExpression(expression, valueExpression, configGroup, matchType)) {
@@ -106,7 +108,7 @@ object ParadoxCwtConfigHandler {
 								}
 							}
 							if(hasDefault && isEmpty()) {
-								propertyConfigs.singleOrNull()?.valueConfig?.let { add(it) }
+								configs.findIsInstance<CwtPropertyConfig>()?.valueConfig?.let { add(it) }
 							}
 						} as List<T>
 					}

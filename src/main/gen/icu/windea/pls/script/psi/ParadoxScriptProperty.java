@@ -47,11 +47,11 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable
   ParadoxScriptExpressionType getExpressionType();
 
-  @NotNull
-  String getConditionExpression();
-
   @Nullable
   String getConfigExpression();
+
+  @NotNull
+  String getExpression();
 
   @Nullable
   String getPathName();

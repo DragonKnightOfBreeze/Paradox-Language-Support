@@ -26,17 +26,18 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.acceptChildren(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
-			override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
+			override fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
 				if(forPropertyKey) {
-					val config = ParadoxCwtConfigHandler.resolvePropertyConfig(element)
+					val propertyKey = element.propertyKey
+					val config = ParadoxCwtConfigHandler.resolvePropertyConfig(propertyKey)
 					//是定义元素，非定义自身，且路径中不带参数
-					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedKey", element.expression))
-						return //skip children
+					if(config == null && propertyKey.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
+						holder.registerProblem(propertyKey, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
+						return //skip property value if property key is invalid 
 					}
 				}
-				super.visitPropertyKey(element)
+				super.visitProperty(element)
 			}
 			
 			override fun visitValue(element: ParadoxScriptValue) {
@@ -46,7 +47,7 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 					val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
-						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.unresolvedValue", element.expression))
+						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))
 						return //skip children
 					}
 				}

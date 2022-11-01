@@ -4,6 +4,7 @@ import com.intellij.lang.parameterInfo.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.selector.*
@@ -23,8 +24,8 @@ class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProp
 			.parents(true)
 			.filterIsInstance<ParadoxScriptProperty>()
 			.find { prop ->
-				prop.definitionElementInfo?.takeIf { it.isValid }?.propertyConfigs?.any { propConfig ->
-					propConfig.properties?.any { prop ->
+				prop.definitionElementInfo?.takeIf { it.isValid }?.configs?.any { config ->
+					config is CwtPropertyConfig && config.properties?.any { prop ->
 						prop.keyExpression.let { it.type == CwtDataTypes.Enum && it.value == CwtConfigHandler.paramsEnumName }
 					} ?: false
 				} ?: false
