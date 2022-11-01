@@ -1,10 +1,8 @@
 package icu.windea.pls.config.cwt.expression
 
 import icu.windea.pls.*
-import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
-import icu.windea.pls.config.cwt.expression.CwtKvExpressionPriorities as Priorities
 
 /**
  * CWT键表达式。
@@ -14,96 +12,94 @@ import icu.windea.pls.config.cwt.expression.CwtKvExpressionPriorities as Priorit
 class CwtKeyExpression private constructor(
 	expressionString: String,
 	override val type: CwtKeyDataType,
-	override val priority: Int,
 	override val value: String? = null,
 	override val extraValue: Any? = null
-) : AbstractExpression(expressionString), CwtKvExpression {
+) : AbstractExpression(expressionString), CwtDataExpression {
 	companion object Resolver : CachedExpressionResolver<CwtKeyExpression>() {
-		val EmptyStringExpression = CwtKeyExpression("", Types.Constant,Priorities.constantPriority, "")
+		val EmptyStringExpression = CwtKeyExpression("", Types.Constant, "")
 		
 		override fun doResolve(expressionString: String): CwtKeyExpression {
 			return when {
 				expressionString.isEmpty() -> EmptyStringExpression
 				expressionString == "any" -> {
-					CwtKeyExpression(expressionString, Types.Any, Priorities.fallbackPriority)
+					CwtKeyExpression(expressionString, Types.Any)
 				}
 				expressionString == "int" -> {
-					CwtKeyExpression(expressionString, Types.Int, Priorities.constantPriority)
+					CwtKeyExpression(expressionString, Types.Int)
 				}
 				expressionString.surroundsWith("int[", "]") -> {
 					val extraValue = expressionString.substring(4, expressionString.length - 1).toIntRangeOrNull()
-					CwtKeyExpression(expressionString, Types.Int, Priorities.rangedConstantPriority, null, extraValue)
+					CwtKeyExpression(expressionString, Types.Int, null, extraValue)
 				}
 				expressionString == "float" -> {
-					CwtKeyExpression(expressionString, Types.Float, Priorities.constantPriority)
+					CwtKeyExpression(expressionString, Types.Float)
 				}
 				expressionString.surroundsWith("float[", "]") -> {
 					val extraValue = expressionString.substring(6, expressionString.length - 1).toFloatRangeOrNull()
-					CwtKeyExpression(expressionString, Types.Float, Priorities.rangedConstantPriority, null, extraValue)
+					CwtKeyExpression(expressionString, Types.Float, null, extraValue)
 				}
 				expressionString == "scalar" -> {
-					CwtKeyExpression(expressionString, Types.Scalar, Priorities.scalarPriority)
+					CwtKeyExpression(expressionString, Types.Scalar)
 				}
 				expressionString == "localisation" -> {
-					CwtKeyExpression(expressionString, Types.Localisation, Priorities.localisationReferencePriority)
+					CwtKeyExpression(expressionString, Types.Localisation)
 				}
 				expressionString == "localisation_synced" -> {
-					CwtKeyExpression(expressionString, Types.SyncedLocalisation, Priorities.syncedLocalisationReferencePriority)
+					CwtKeyExpression(expressionString, Types.SyncedLocalisation)
 				}
 				expressionString == "localisation_inline" -> {
-					CwtKeyExpression(expressionString, Types.InlineLocalisation, Priorities.localisationReferencePriority)
+					CwtKeyExpression(expressionString, Types.InlineLocalisation)
 				}
 				expressionString.surroundsWith('<', '>') -> {
 					val value = expressionString.substring(1, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.TypeExpression, Priorities.definitionReferencePriority, value)
+					CwtKeyExpression(expressionString, Types.TypeExpression, value)
 				}
 				expressionString.indexOf('<').let { it > 0 && it < expressionString.indexOf('>') } && !expressionString.endsWith("]") -> {
 					val value = expressionString.substring(expressionString.indexOf('<'), expressionString.indexOf('>'))
 					val extraValue = expressionString.substringBefore('<') to expressionString.substringAfterLast('>')
-					CwtKeyExpression(expressionString, Types.TypeExpressionString, Priorities.definitionReferencePriority, value, extraValue)
+					CwtKeyExpression(expressionString, Types.TypeExpressionString, value, extraValue)
 				}
 				expressionString.surroundsWith("enum[", "]") -> {
 					val value = expressionString.substring(5, expressionString.length - 1)
-					val priority = if(value == CwtConfigHandler.paramsEnumName) Priorities.parametersPriority else Priorities.enumPriority
-					CwtKeyExpression(expressionString, Types.Enum, priority, value)
+					CwtKeyExpression(expressionString, Types.Enum, value)
 				}
 				expressionString.surroundsWith("value[", "]") -> {
 					val value = expressionString.substring(6, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.Value, Priorities.valuePriority, value)
+					CwtKeyExpression(expressionString, Types.Value, value)
 				}
 				expressionString.surroundsWith("value_set[", "]") -> {
 					val value = expressionString.substring(10, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.ValueSet, Priorities.valuePriority, value)
+					CwtKeyExpression(expressionString, Types.ValueSet, value)
 				}
 				expressionString == "scope_field" -> {
-					CwtKeyExpression(expressionString, Types.ScopeField, Priorities.scopeFieldPriority)
+					CwtKeyExpression(expressionString, Types.ScopeField)
 				}
 				expressionString.surroundsWith("scope[", "]") -> {
 					//value需要是有效的scope_type
 					val value = expressionString.substring(6, expressionString.length - 1).takeIf { it != "any" }
-					CwtKeyExpression(expressionString, Types.Scope, Priorities.rangedScopeFieldPriority, value)
+					CwtKeyExpression(expressionString, Types.Scope, value)
 				}
 				expressionString.surroundsWith("scope_group[", "]") -> {
 					val value = expressionString.substring(12, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.ScopeGroup, Priorities.rangedScopeFieldPriority, value)
+					CwtKeyExpression(expressionString, Types.ScopeGroup, value)
 				}
 				//EXTENDED BY PLS
 				expressionString == "\$modifier" -> {
-					CwtKeyExpression(expressionString, Types.Modifier, Priorities.modifierPriority)
+					CwtKeyExpression(expressionString, Types.Modifier)
 				}
 				expressionString.surroundsWith("alias_keys_field[", "]") -> {
 					val value = expressionString.substring(17, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.AliasKeysField, Priorities.aliasPriority, value)
+					CwtKeyExpression(expressionString, Types.AliasKeysField, value)
 				}
 				expressionString.surroundsWith("alias_name[", "]") -> {
 					val value = expressionString.substring(11, expressionString.length - 1)
-					CwtKeyExpression(expressionString, Types.AliasName, Priorities.aliasPriority, value)
+					CwtKeyExpression(expressionString, Types.AliasName, value)
 				}
 				expressionString.endsWith(']') -> {
-					CwtKeyExpression(expressionString, Types.Other, Priorities.fallbackPriority)
+					CwtKeyExpression(expressionString, Types.Other)
 				}
 				else -> {
-					CwtKeyExpression(expressionString, Types.Constant, Priorities.constantPriority, expressionString)
+					CwtKeyExpression(expressionString, Types.Constant, expressionString)
 				}
 			}
 		}

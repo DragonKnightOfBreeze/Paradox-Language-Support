@@ -25,7 +25,7 @@ data class CwtComplexEnumConfig(
 	/**
 	 * [nameConfig]中作为锚点的`enum_name`对应的CWT规则。
 	 */
-	val enumNameConfigs: List<CwtKvConfig<*>> by lazy {
+	val enumNameConfigs: List<CwtDataConfig<*>> by lazy {
 		buildList {
 			nameConfig.processDescendants {
 				when {

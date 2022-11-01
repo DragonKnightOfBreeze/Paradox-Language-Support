@@ -12,7 +12,6 @@ import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.reference.*
-import icu.windea.pls.core.model.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -158,7 +157,7 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getFrame(element: ParadoxLocalisationIcon): Int{
 		//NOTE 这里的帧数可能用propertyReference表示，对应脚本中的参数，这时帧数传0
 		val iconFrameElement = element.iconFrame //默认为0（不切分）
-		if(iconFrameElement != null) return iconFrameElement.text.toIntOrDefault(0)
+		if(iconFrameElement != null) return iconFrameElement.text.toIntOrNull() ?: 0
 		//这里的propertyReference是一个来自脚本文件的参数，不解析
 		//val iconFrameReferenceElement = element.iconFrameReference ?: return 0
 		//return iconFrameReferenceElement.reference?.resolve()?.value?.toIntOrDefault(0) ?: 0

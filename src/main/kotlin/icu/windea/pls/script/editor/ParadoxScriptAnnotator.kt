@@ -79,8 +79,8 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private fun doAnnotateExpressionElement(
 		element: ParadoxScriptExpressionElement,
 		range: TextRange,
-		expression: CwtKvExpression,
-		config: CwtKvConfig<*>,
+		expression: CwtDataExpression,
+		config: CwtDataConfig<*>,
 		holder: AnnotationHolder
 	) {
 		//高亮特殊标签
@@ -169,7 +169,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	private fun doAnnotateComplexExpression(
 		element: ParadoxScriptExpressionElement,
 		valueSetValueExpression: ParadoxScriptComplexExpression,
-		config: CwtKvConfig<*>,
+		config: CwtDataConfig<*>,
 		range: TextRange,
 		holder: AnnotationHolder
 	) {

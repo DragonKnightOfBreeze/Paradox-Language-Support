@@ -118,7 +118,7 @@ object PlsKeys {
 		textColorConfigKey
 	)
 	
-	val cwtConfigKey = Key.create<CwtKvConfig<*>>("paradox.cwtConfig")
+	val cwtConfigKey = Key.create<CwtDataConfig<*>>("paradox.cwtConfig")
 }
 
 object PlsDataKeys {

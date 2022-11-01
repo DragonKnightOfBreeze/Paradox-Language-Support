@@ -17,8 +17,8 @@ data class CwtDeclarationConfig(
 	val name: String,
 	val propertyConfig: CwtPropertyConfig, //definitionName = ...
 ) : CwtConfig<CwtProperty> {
-	private val mergeConfigsCache: Cache<String, List<CwtKvConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
-	private val configsCache: Cache<String, List<CwtKvConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val mergeConfigsCache: Cache<String, List<CwtDataConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val configsCache: Cache<String, List<CwtDataConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
 	private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
 	private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
 	
@@ -27,7 +27,7 @@ data class CwtDeclarationConfig(
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
 	 */
-	fun getMergedConfigs(subtypes: List<String>): List<CwtKvConfig<*>> {
+	fun getMergedConfigs(subtypes: List<String>): List<CwtDataConfig<*>> {
 		val properties = propertyConfig.properties
 		val values = propertyConfig.values
 		
@@ -36,7 +36,7 @@ data class CwtDeclarationConfig(
 		
 		val cacheKey = subtypes.joinToString(",")
 		return mergeConfigsCache.getOrPut(cacheKey) {
-			val mergedConfigs = SmartList<CwtKvConfig<*>>()
+			val mergedConfigs = SmartList<CwtDataConfig<*>>()
 			if(properties != null && properties.isNotEmpty()) {
 				properties.forEach { mergedConfigs.addAll(it.deepMergeBySubtypes(subtypes)) }
 			}
@@ -50,7 +50,7 @@ data class CwtDeclarationConfig(
 	/**
 	 * 根据路径解析对应的属性/值配置列表。
 	 */
-	fun resolveConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup): List<CwtKvConfig<*>> {
+	fun resolveConfigs(subtypes: List<String>, path: ParadoxElementPath, configGroup: CwtConfigGroup): List<CwtDataConfig<*>> {
 		//如果路径中可能待遇参数，则不进行解析
 		if(path.isParameterAware) return emptyList()
 		
@@ -68,18 +68,17 @@ data class CwtDeclarationConfig(
 			//这里的属性路径可以为空，这时得到的属性列表即是定义本身组成的单例列表
 			path.isEmpty() -> propertyConfigList
 			else -> {
-				var result: List<CwtKvConfig<*>> = getMergedConfigs(subtypes)
+				var result: List<CwtDataConfig<*>> = getMergedConfigs(subtypes)
 				var index = 0
 				while(index < path.length) {
 					val (key, isQuoted, isKey) = path.subPathInfos[index]
 					var nextIndex = index + 1
 					
-					//如果aliasName是effect或trigger，则key也可以是links中的link，或者其嵌套格式（root.owner），这时需要跳过当前的key
 					//如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
 					
-					val nextResult = SmartList<CwtKvConfig<*>>()
+					val expression = ParadoxScriptExpression.resolve(key, isQuoted, true)
+					val nextResult = SmartList<CwtDataConfig<*>>()
 					for(config in result) {
-						val expression = ParadoxScriptExpression.resolve(key, isQuoted, true)
 						if(index == 0) {
 							if(isKey && config is CwtPropertyConfig) {
 								if(matchesScriptExpression(expression, config.keyExpression, configGroup)) {
@@ -105,20 +104,21 @@ data class CwtDeclarationConfig(
 							}
 						}
 					}
-					//如果存在可以精确匹配的规则，则仅返回这些可以精确匹配的规则（对于property来说是keyExpression，对于string来说是valueExpression）
-					result = nextResult.filter { CwtConfigHandler.matchesExactly(it.expression, path.last().first, configGroup) }
-						.ifEmpty { nextResult }
+					
+					//如果存在可以静态匹配（CwtConfigMatchType.STATIC）的规则，则仅选用可以静态匹配的规则
+					result = nextResult.filter { 
+						matchesScriptExpression(expression, it.expression, configGroup, CwtConfigMatchType.STATIC)
+					}.ifEmpty { nextResult }
 					index = nextIndex
 				}
-				//需要按优先级重新排序
-				result.sortedByDescending { it.expression.priority }
+				result.sortedByPriority(configGroup) { it.expression }
 			}
 		}
 	
 	/**
 	 * 内联规则以便后续的代码提示、引用解析和结构验证。
 	 */
-	private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtKvConfig<*>>, index: Int, path: ParadoxElementPath): Int {
+	private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtDataConfig<*>>, index: Int, path: ParadoxElementPath): Int {
 		//内联类型为`single_alias_right`或`alias_match_left`的规则
 		run {
 			val valueExpression = config.valueExpression

@@ -520,17 +520,18 @@ fun <T> Collection<T>.toListOrThis(): List<T> {
 	}
 }
 
+fun <T> Collection<T>.toSetOrThis(): Set<T> {
+	return when(this) {
+		is Set -> this
+		else -> this.toSet()
+	}
+}
+
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
-
-fun Boolean.toInt() = if(this) 1 else 0
-
-fun Boolean.toStringYesNo() = if(this) "yes" else "no"
 
 fun String.toBooleanYesNo() = this == "yes"
 
 fun String.toBooleanYesNoOrNull() = if(this == "yes") true else if(this == "no") false else null
-
-fun String.toIntOrDefault(defaultValue: Int) = runCatching { toInt() }.getOrDefault(defaultValue)
 
 fun String.toUUID(): UUID {
 	return UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))

@@ -13,9 +13,9 @@ sealed class ParadoxScriptExpressionInfo(
 	val directlyResolved: PsiElement? = null,
 	val directlyResolvedList: List<PsiElement>? = null
 ) {
-	open fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): PsiReference? = null 
+	open fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): PsiReference? = null 
 	
-	open fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): Boolean {
+	open fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
 		if(directlyResolved != null) return false
 		val reference = getReference(element, config) ?: return false
 		if(reference is PsiPolyVariantReference) return reference.multiResolve(false).isEmpty()
@@ -26,5 +26,5 @@ sealed class ParadoxScriptExpressionInfo(
 	
 	open fun getAttributesKey(): TextAttributesKey? = null
 	
-	open fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): List<CwtKvExpression> = emptyList()
+	open fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): List<CwtDataExpression> = emptyList()
 }

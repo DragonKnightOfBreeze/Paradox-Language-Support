@@ -17,7 +17,7 @@ data class CwtValueConfig(
 	override val documentation: String? = null,
 	override val options: List<CwtOptionConfig>? = null,
 	override val optionValues: List<CwtOptionValueConfig>? = null
-) : CwtKvConfig<CwtValue>() {
+) : CwtDataConfig<CwtValue>() {
 	//val stringValues by lazy { values?.mapNotNull { it.stringValue } }
 	//val stringValueOrValues by lazy { stringValue?.toSingletonList() ?: values?.mapNotNull { it.stringValue } }
 	

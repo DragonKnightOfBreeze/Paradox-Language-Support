@@ -3,9 +3,7 @@ package icu.windea.pls.script.intentions
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInsight.navigation.*
-import com.intellij.find.actions.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.actionSystem.ex.*
+import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -51,8 +49,7 @@ class DefinitionNameFindUsagesIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
-		//TODO
-		ActionUtil.invokeAction(FindUsagesAction(), editor.contentComponent, ActionPlaces.EDITOR_POPUP, null, null)
+		GotoDeclarationAction.startFindUsages(editor, project, definition)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {
@@ -67,6 +64,7 @@ class DefinitionNameGotoTypeDeclarationIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.gotoTypeDeclaration")
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
+		//不包括子类型（`subtype[origin]`）
 		val element = definitionInfo.typeConfig.pointer.element ?: return
 		NavigationUtil.activateFileWithPsiElement(element)
 	}

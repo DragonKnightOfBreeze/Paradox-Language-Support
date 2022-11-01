@@ -21,7 +21,7 @@ class ParadoxScriptScopeExpressionInfo(
 	directlyResolved: PsiElement?,
 	private val possiblePrefixSet: Set<String>? = null
 ) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): ParadoxScriptScopeReference {
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptScopeReference {
 		return ParadoxScriptScopeReference(element, textRange, directlyResolved)
 	}
 	
@@ -53,7 +53,7 @@ class ParadoxScriptScopeFieldPrefixExpressionInfo(
 	textRange: TextRange,
 	directlyResolvedList: List<PsiElement>?
 ) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): ParadoxScriptScopeFieldPrefixReference {
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptScopeFieldPrefixReference {
 		return ParadoxScriptScopeFieldPrefixReference(element, textRange, directlyResolvedList)
 	}
 	
@@ -65,15 +65,13 @@ class ParadoxScriptScopeFieldPrefixExpressionInfo(
 class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	val linkConfigs: Collection<CwtLinkConfig>
+	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange) {
-	val sortedLinkConfigs = linkConfigs.sortedByDescending { it.dataSource!!.priority } //需要按照优先级重新排序
-	
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): ParadoxScriptScopeFieldDataSourceReference {
-		return ParadoxScriptScopeFieldDataSourceReference(element, textRange, sortedLinkConfigs)
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptScopeFieldDataSourceReference {
+		return ParadoxScriptScopeFieldDataSourceReference(element, textRange, linkConfigs)
 	}
 	
-	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): Boolean {
+	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
 		//特殊处理可能是value的情况
 		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return false
 		return super.isUnresolved(element, config)
@@ -84,7 +82,7 @@ class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 		return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.scopeField.unresolvedDs", text, dataSourcesText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 	}
 	
-	override fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): List<CwtValueExpression> {
+	override fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): List<CwtValueExpression> {
 		val result = getReference(element, config).multiResolve(false)
 			.filterIsInstance<ParadoxScriptScopeFieldDataSourceResolveResult>()
 			.map { it.expression }
@@ -100,7 +98,7 @@ class ParadoxScriptValueOfValueFieldExpressionInfo(
 	directlyResolved: PsiElement?,
 	private val possiblePrefixSet: Set<String>? = null
 ) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): ParadoxScriptValueOfValueFieldReference {
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptValueOfValueFieldReference {
 		return ParadoxScriptValueOfValueFieldReference(element, textRange, directlyResolved)
 	}
 	
@@ -132,7 +130,7 @@ class ParadoxScriptValueFieldPrefixExpressionInfo(
 	textRange: TextRange,
 	directlyResolvedList: List<PsiElement>?
 ) : ParadoxScriptExpressionInfo(text, textRange, null, directlyResolvedList) {
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): ParadoxScriptValueFieldPrefixReference {
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptValueFieldPrefixReference {
 		return ParadoxScriptValueFieldPrefixReference(element, textRange, directlyResolvedList)
 	}
 	
@@ -144,18 +142,16 @@ class ParadoxScriptValueFieldPrefixExpressionInfo(
 class ParadoxScriptValueFieldDataSourceExpressionInfo(
 	text: String,
 	textRange: TextRange,
-	val linkConfigs: Collection<CwtLinkConfig>
+	val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxScriptExpressionInfo(text, textRange) {
-	val sortedLinkConfigs = linkConfigs.sortedByDescending { it.dataSource!!.priority } //需要按照优先级重新排序
-	
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): ParadoxScriptValueFieldDataSourceReference {
-		return ParadoxScriptValueFieldDataSourceReference(element, textRange, sortedLinkConfigs)
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): ParadoxScriptValueFieldDataSourceReference {
+		return ParadoxScriptValueFieldDataSourceReference(element, textRange, linkConfigs)
 	}
 	
-	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): Boolean {
+	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
 		//特殊处理可能是value的情况
 		if(linkConfigs.any { it.dataSource?.type == CwtDataTypes.Value }) return false
-		return super.isUnresolved(element, config)
+		return super.isUnresolved(element, config)  
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {
@@ -163,7 +159,7 @@ class ParadoxScriptValueFieldDataSourceExpressionInfo(
 		return ParadoxScriptExpressionError(PlsBundle.message("script.inspection.expression.valueField.unresolvedDs", text, dataSourcesText), textRange, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
 	}
 	
-	override fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): List<CwtValueExpression> {
+	override fun getAttributesKeyExpressions(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): List<CwtValueExpression> {
 		val result = getReference(element, config).multiResolve(false)
 			.filterIsInstance<ParadoxScriptValueFieldDataSourceResolveResult>()
 			.map { it.expression }
@@ -183,11 +179,11 @@ class ParadoxScriptSvParameterExpressionInfo(
 		return ParadoxScriptAttributesKeys.ARGUMENT_KEY
 	}
 	
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): PsiReference {
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): PsiReference {
 		return ParadoxOuterParameterReference(element, textRange, svName, "script_value", configGroup)
 	}
 	
-	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): Boolean {
+	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
 		return false
 	}
 	
@@ -207,11 +203,11 @@ class ParadoxScriptValueSetValueExpressionInfo(
 	text: String,
 	textRange: TextRange
 ): ParadoxScriptExpressionInfo(text, textRange){
-	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): PsiReference {
+	override fun getReference(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): PsiReference {
 		return ParadoxScriptValueSetValueReference(element, textRange, text, config)
 	}
 	
-	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtKvConfig<*>): Boolean {
+	override fun isUnresolved(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): Boolean {
 		return false
 	}
 	

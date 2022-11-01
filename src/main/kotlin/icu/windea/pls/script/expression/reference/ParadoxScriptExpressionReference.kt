@@ -13,7 +13,7 @@ import icu.windea.pls.script.reference.*
 class ParadoxScriptExpressionReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
-	val config: CwtKvConfig<*>,
+	val config: CwtDataConfig<*>,
 	val isKey: Boolean
 ) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiPolyVariantReference, ParadoxValueSetValueResolvable {
 	override fun handleElementRename(newElementName: String): PsiElement {

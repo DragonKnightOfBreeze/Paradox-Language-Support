@@ -90,7 +90,7 @@ class ParadoxDefinitionInfo(
 		result
 	}
 	
-	val declaration: List<CwtKvConfig<*>> by lazy {
+	val declaration: List<CwtDataConfig<*>> by lazy {
 		configGroup.declarations.get(type)?.getMergedConfigs(subtypes) ?: emptyList()
 	}
 	

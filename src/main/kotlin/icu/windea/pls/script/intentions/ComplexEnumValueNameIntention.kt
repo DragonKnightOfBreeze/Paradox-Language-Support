@@ -46,7 +46,7 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
 	
 	override fun doInvoke(definition: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, project: Project) {
-		//TODO("Not yet implemented")
+		TODO("Not yet implemented")
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {

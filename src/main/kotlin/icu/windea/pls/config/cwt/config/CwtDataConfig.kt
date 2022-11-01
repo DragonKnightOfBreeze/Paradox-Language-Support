@@ -5,7 +5,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 
-abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
+abstract class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val value: String
 	abstract val booleanValue: Boolean?
 	abstract val intValue: Int?
@@ -17,9 +17,9 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val options: List<CwtOptionConfig>?
 	abstract val optionValues: List<CwtOptionValueConfig>?
 	
-	abstract val expression: CwtKvExpression
+	abstract val expression: CwtDataExpression
 	
-	var parent: CwtKvConfig<*>? = null
+	var parent: CwtDataConfig<*>? = null
 	
 	val isBlock: Boolean get() = properties != null || values != null
 	
@@ -36,7 +36,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	private fun resolveScope(): String? {
 		//option的名字可能是：replace_scope/replace_scopes/push_scope
 		//对应的option可能位于：alias规则定义上，上一级definitionProperty规则定义上，definition规则定义上，subtype规则定义上
-		var current: CwtKvConfig<*>? = this
+		var current: CwtDataConfig<*>? = this
 		while(current != null) {
 			val scope = doResolveScope(current)
 			if(scope != null) return scope
@@ -45,7 +45,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		return null
 	}
 	
-	private fun doResolveScope(config: CwtKvConfig<*>): String? {
+	private fun doResolveScope(config: CwtDataConfig<*>): String? {
 		val options = config.options ?: return null
 		return options.find { it.key == "push_scope" }?.value
 			?: options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options
@@ -57,7 +57,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		//option的名字可能是：replace_scope/replace_scopes/push_scope
 		//对应的option可能位于：alias规则定义上，上一级definitionProperty规则定义上，definition规则定义上，subtype规则定义上
 		val result: MutableMap<String, String> = mutableMapOf()
-		var current: CwtKvConfig<*>? = this
+		var current: CwtDataConfig<*>? = this
 		while(current != null) {
 			doResolveScopeMap(current, result)
 			current = current.parent
@@ -65,7 +65,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		return result
 	}
 	
-	private fun doResolveScopeMap(config: CwtKvConfig<*>, scopeMap: MutableMap<String, String>) {
+	private fun doResolveScopeMap(config: CwtDataConfig<*>, scopeMap: MutableMap<String, String>) {
 		val options = config.options ?: return
 		options.find { it.key == "push_scope" }?.value?.let { scopeMap.putIfAbsent("this", it) }
 		options.find { it.key == "replace_scope" || it.key == "replace_scopes" }?.options?.let {
@@ -73,9 +73,9 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 		}
 	}
 	
-	abstract fun resolved(): CwtKvConfig<*>
+	abstract fun resolved(): CwtDataConfig<*>
 	
-	abstract fun resolvedOrNull(): CwtKvConfig<*>?
+	abstract fun resolvedOrNull(): CwtDataConfig<*>?
 	
 	//深拷贝
 	
@@ -89,7 +89,7 @@ abstract class CwtKvConfig<out T : PsiElement> : CwtConfig<T> {
 	
 	//深拷贝 + 根据子类型进行合并
 	
-	fun deepMergeBySubtypes(subtypes: List<String>): List<CwtKvConfig<*>> {
+	fun deepMergeBySubtypes(subtypes: List<String>): List<CwtDataConfig<*>> {
 		val properties = properties
 		val values = values
 		var mergedProperties: MutableList<CwtPropertyConfig>? = if(properties != null) SmartList() else null

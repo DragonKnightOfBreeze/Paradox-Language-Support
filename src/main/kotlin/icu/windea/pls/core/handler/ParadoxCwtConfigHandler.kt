@@ -10,7 +10,7 @@ import org.intellij.lang.annotations.*
 
 object ParadoxCwtConfigHandler {
 	@JvmStatic
-	fun resolveConfig(element: ParadoxScriptExpressionElement): CwtKvConfig<*>? {
+	fun resolveConfig(element: ParadoxScriptExpressionElement): CwtDataConfig<*>? {
 		return when {
 			element is ParadoxScriptPropertyKey -> resolvePropertyConfig(element)
 			element is ParadoxScriptValue -> resolveValueConfig(element)

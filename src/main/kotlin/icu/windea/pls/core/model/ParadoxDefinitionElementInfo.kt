@@ -26,7 +26,7 @@ class ParadoxDefinitionElementInfo(
 	//NOTE 部分属性需要使用懒加载
 	
 	/** 对应的属性/值配置列表。 */
-	val configs: List<CwtKvConfig<*>> by lazy {
+	val configs: List<CwtDataConfig<*>> by lazy {
 		//基于keyExpression，valueExpression可能不同
 		definitionInfo.declarationConfig?.resolveConfigs(definitionInfo.subtypes, elementPath, configGroup) ?: emptyList()
 	}

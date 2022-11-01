@@ -139,24 +139,22 @@ class CwtConfigGroup(
 							val linkName = prop.key
 							val linkConfig = resolveLinkConfig(prop, linkName) ?: continue
 							links[linkName] = linkConfig
+							val fromData = linkConfig.fromData && linkConfig.dataSource != null
+							val noPrefix = linkConfig.prefix == null
 							when(linkConfig.type) {
 								null, "scope" -> {
-									(if(linkConfig.fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
+									(if(fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
 									//要求data_source存在
-									if(linkConfig.fromData && linkConfig.prefix == null && linkConfig.dataSource != null) {
-										linksAsScopeNoPrefix[linkName] = linkConfig
-									}
+									if(fromData && noPrefix) linksAsScopeNoPrefix[linkName] = linkConfig
 								}
 								"value" -> {
-									(if(linkConfig.fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
+									(if(fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
 								}
 								"both" -> {
-									(if(linkConfig.fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
-									(if(linkConfig.fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
+									(if(fromData) linksAsScope else linksAsScopeNotData)[linkName] = linkConfig
+									(if(fromData) linksAsValue else linksAsValueNotData)[linkName] = linkConfig
 									//要求data_source存在
-									if(linkConfig.fromData && linkConfig.prefix == null && linkConfig.dataSource != null) {
-										linksAsScopeNoPrefix[linkName] = linkConfig
-									}
+									if(fromData && noPrefix) linksAsScopeNoPrefix[linkName] = linkConfig
 								}
 							}
 						}
@@ -244,7 +242,9 @@ class CwtConfigGroup(
 				}
 			}
 		}
-		
+	}
+	
+	init {
 		val aliasKeysGroupConst = mutableMapOf<String, Map<String, String>>()
 		val aliasKeysGroupNoConst = mutableMapOf<String, Set<String>>()
 		for((k, v) in aliasGroups) {
@@ -263,7 +263,7 @@ class CwtConfigGroup(
 				aliasKeysGroupConst.put(k, keysConst)
 			}
 			if(!keysNoConst.isNullOrEmpty()) {
-				aliasKeysGroupNoConst.put(k, keysNoConst.sortedByDescending { CwtKeyExpression.resolve(it).priority }.toSet())
+				aliasKeysGroupNoConst.put(k, keysNoConst.sortedByPriority(this) { CwtKeyExpression.resolve(it) }.toSet())
 			}
 		}
 		this.aliasKeysGroupConst = aliasKeysGroupConst
@@ -280,6 +280,16 @@ class CwtConfigGroup(
 	}
 	val linksAsValuePrefixes: Set<String> by lazy {
 		linksAsValue.mapNotNullTo(mutableSetOf()) { it.value.prefix }
+	}
+	
+	val linksAsScopeSorted: List<CwtLinkConfig> by lazy { 
+		linksAsScope.values.sortedByPriority(this) { it.dataSource!! }
+	}
+	val linksAsValueSorted: List<CwtLinkConfig> by lazy {
+		linksAsValue.values.sortedByPriority(this) { it.dataSource!! }
+	}
+	val linksAsScopeNoPrefixSorted: List<CwtLinkConfig> by lazy { 
+		linksAsScopeNoPrefix.values.sortedByPriority(this) { it.dataSource!! }
 	}
 	
 	//支持参数的定义类型
