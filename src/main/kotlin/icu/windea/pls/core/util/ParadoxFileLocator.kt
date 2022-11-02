@@ -1,4 +1,4 @@
-package icu.windea.pls.util
+package icu.windea.pls.core.util
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*

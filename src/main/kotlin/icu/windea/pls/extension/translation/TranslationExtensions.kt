@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.translation
+package icu.windea.pls.extension.translation
 
 import cn.yiiguxing.plugin.translate.*
 import cn.yiiguxing.plugin.translate.action.*

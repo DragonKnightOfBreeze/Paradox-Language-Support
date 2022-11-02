@@ -9,7 +9,7 @@
     <applicationService serviceImplementation="icu.windea.pls.core.settings.ParadoxSettings"/>
 
     <projectService serviceInterface="com.intellij.psi.impl.ResolveScopeManager"
-                    serviceImplementation="icu.windea.pls.core.ParadoxResolveScopeManager" overrides="true"/>
+                    serviceImplementation="icu.windea.pls.core.psi.ParadoxResolveScopeManager" overrides="true"/>
     
     <!--suppress PluginXmlValidity -->
     <fileTypeOverrider implementation="icu.windea.pls.core.ParadoxFileTypeOverrider"/>
@@ -40,16 +40,16 @@
   </extensions>
   
   <actions>
-    <action id="FileChooser.Pls.GotoSteamPath" class="icu.windea.pls.actions.GotoSteamPathAction">
+    <action id="FileChooser.Pls.GotoSteamPath" class="icu.windea.pls.core.actions.GotoSteamPathAction">
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </action>
-    <action id="FileChooser.Pls.GotoSteamGamePath" class="icu.windea.pls.actions.GotoSteamGamePathAction">
+    <action id="FileChooser.Pls.GotoSteamGamePath" class="icu.windea.pls.core.actions.GotoSteamGamePathAction">
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </action>
-    <action id="FileChooser.Pls.GotoSteamWorkshopPath" class="icu.windea.pls.actions.GotoSteamWorkshopPathAction">
+    <action id="FileChooser.Pls.GotoSteamWorkshopPath" class="icu.windea.pls.core.actions.GotoSteamWorkshopPathAction">
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </action>
-    <action id="FileChooser.Pls.GotoGameModPath" class="icu.windea.pls.actions.GotoGameModPathAction">
+    <action id="FileChooser.Pls.GotoGameModPath" class="icu.windea.pls.core.actions.GotoGameModPathAction">
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </action>
   </actions>

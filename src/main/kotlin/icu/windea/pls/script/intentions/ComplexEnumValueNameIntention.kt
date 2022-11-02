@@ -62,13 +62,13 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 class ComplexEnumValueNameGotoTypeDeclarationIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.gotoTypeDeclaration")
 	
-	override fun doInvoke(definition: ParadoxExpressionAwareElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
+	override fun doInvoke(element: ParadoxExpressionAwareElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
 		val gameType = complexEnumValueInfo.gameType ?: return
 		val configGroup = getCwtConfig(project).getValue(gameType)
 		val enumName = complexEnumValueInfo.enumName
 		val config = configGroup.complexEnums[enumName] ?: return //unexpected
-		val element = config.pointer.element ?: return
-		NavigationUtil.activateFileWithPsiElement(element)
+		val resolved = config.pointer.element ?: return
+		NavigationUtil.activateFileWithPsiElement(resolved)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {

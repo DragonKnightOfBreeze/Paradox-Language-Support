@@ -3,7 +3,7 @@ package icu.windea.pls.dds
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.*
-import icu.windea.pls.util.*
+import icu.windea.pls.core.util.*
 import kotlin.io.path.*
 
 /**

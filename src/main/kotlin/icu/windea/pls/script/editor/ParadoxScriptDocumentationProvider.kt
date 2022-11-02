@@ -9,9 +9,9 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
 
 class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {

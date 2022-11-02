@@ -7,10 +7,10 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import javax.swing.*
 

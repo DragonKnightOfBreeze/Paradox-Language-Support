@@ -3,10 +3,10 @@ package icu.windea.pls.core.model
 import com.intellij.openapi.application.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.core.selector.*

@@ -1,4 +1,4 @@
-package icu.windea.pls.util
+package icu.windea.pls.core.util
 
 import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*

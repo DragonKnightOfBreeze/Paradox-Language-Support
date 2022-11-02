@@ -1,4 +1,4 @@
-package icu.windea.pls.annotations
+package icu.windea.pls.core.annotations
 
 /**
  * 注明此方法用于进行某种推断。可能需要继续优化。

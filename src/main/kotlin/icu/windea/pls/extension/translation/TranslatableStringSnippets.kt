@@ -1,4 +1,4 @@
-package icu.windea.pls.translation
+package icu.windea.pls.extension.translation
 
 class TranslatableStringSnippets(
 	snippets: MutableList<TranslatableStringSnippet> = mutableListOf()

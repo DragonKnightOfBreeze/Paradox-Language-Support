@@ -2,9 +2,9 @@ package icu.windea.pls.config.internal
 
 import com.intellij.util.containers.*
 import icu.windea.pls.*
-import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.annotations.*
 
 class InternalConfigGroup(
 	configMap: InternalConfigMap

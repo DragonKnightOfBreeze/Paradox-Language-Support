@@ -10,9 +10,9 @@ import com.intellij.refactoring.suggested.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
 import javax.swing.*
 
 /**

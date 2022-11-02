@@ -10,9 +10,9 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.refactoring.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.util.*
 
 /**
  * 声明全局封装变量的重构。

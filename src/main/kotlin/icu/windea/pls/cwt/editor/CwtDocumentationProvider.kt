@@ -11,11 +11,11 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
 import java.util.*
 
 class CwtDocumentationProvider : AbstractDocumentationProvider() {

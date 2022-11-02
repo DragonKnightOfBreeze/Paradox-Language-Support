@@ -1,7 +1,7 @@
 package icu.windea.pls.dds
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.util.*
+import icu.windea.pls.core.util.*
 import org.intellij.images.editor.ImageDocument.*
 import org.intellij.images.vfs.*
 

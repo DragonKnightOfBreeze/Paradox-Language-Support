@@ -68,7 +68,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 			element.expressionType?.let { expressionType ->
 				add(makeHtmlRow(PlsDocBundle.message("title.expressionType"), expressionType.text))
 			}
-			element.expression?.let { expression ->
+			element.expression.let { expression ->
 				add(makeHtmlRow(PlsDocBundle.message("title.expression"), expression))
 			}
 			element.configExpression?.let { configExpression ->

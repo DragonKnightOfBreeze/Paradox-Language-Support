@@ -12,10 +12,10 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
 import javax.swing.*
 
 /**

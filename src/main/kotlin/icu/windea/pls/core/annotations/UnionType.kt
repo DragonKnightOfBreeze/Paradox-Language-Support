@@ -1,4 +1,4 @@
-package icu.windea.pls.annotations
+package icu.windea.pls.core.annotations
 
 import kotlin.reflect.*
 

@@ -10,9 +10,9 @@ import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.core.quickfix.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.refactoring.*
-import icu.windea.pls.util.*
 
 /**
  * 无法解析的封装变量引用的检查。

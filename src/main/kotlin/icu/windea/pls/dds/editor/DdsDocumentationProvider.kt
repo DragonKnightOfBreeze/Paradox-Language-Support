@@ -1,13 +1,12 @@
 package icu.windea.pls.dds.editor
 
-import com.intellij.lang.documentation.DocumentationProvider
-import com.intellij.openapi.project.DumbService
-import com.intellij.openapi.util.text.HtmlBuilder
-import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.lang.documentation.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.text.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.util.*
 
 //org.intellij.images.fileTypes.ImageDocumentationProvider
 

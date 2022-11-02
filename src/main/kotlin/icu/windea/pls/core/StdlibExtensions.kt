@@ -15,8 +15,7 @@ import kotlin.math.*
 
 //region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
-inline fun pass() {
-}
+inline fun pass() {}
 
 inline fun <T> Boolean.ifTrue(body: () -> T?): T? = if(this) body() else null
 

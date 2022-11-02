@@ -13,9 +13,9 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.util.*
 import javax.swing.*
 
 /**

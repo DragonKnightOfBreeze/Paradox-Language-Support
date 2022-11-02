@@ -66,8 +66,8 @@ class DefinitionNameGotoTypeDeclarationIntention: DefinitionNameIntention() {
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
 		//不包括子类型（`subtype[origin]`）
-		val element = definitionInfo.typeConfig.pointer.element ?: return
-		NavigationUtil.activateFileWithPsiElement(element)
+		val resolved = definitionInfo.typeConfig.pointer.element ?: return
+		NavigationUtil.activateFileWithPsiElement(resolved)
 	}
 	
 	override fun generatePreview(project: Project, editor: Editor, file: PsiFile): IntentionPreviewInfo {

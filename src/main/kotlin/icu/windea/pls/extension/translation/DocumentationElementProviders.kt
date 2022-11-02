@@ -1,4 +1,4 @@
-package icu.windea.pls.translation
+package icu.windea.pls.extension.translation
 
 import cn.yiiguxing.plugin.translate.provider.*
 import com.intellij.psi.*

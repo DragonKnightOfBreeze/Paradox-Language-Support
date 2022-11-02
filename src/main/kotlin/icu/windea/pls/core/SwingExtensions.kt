@@ -1,9 +1,9 @@
 package icu.windea.pls
 
-import com.intellij.util.IconUtil
+import com.intellij.util.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
-import javax.swing.Icon
+import javax.swing.*
 
 fun Icon.resize(width:Int, height:Int): Icon {
 	return IconUtil.toSize(this, width, height)

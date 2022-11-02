@@ -1,4 +1,4 @@
-package icu.windea.pls.actions
+package icu.windea.pls.core.actions
 
 import com.intellij.ide.lightEdit.*
 import com.intellij.openapi.actionSystem.*

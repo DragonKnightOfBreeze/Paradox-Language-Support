@@ -6,8 +6,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.util.*
 
 class ParadoxLocalisationDocumentationProvider : AbstractDocumentationProvider() {
 	override fun getDocumentationElementForLookupItem(psiManager: PsiManager?, `object`: Any?, element: PsiElement?): PsiElement? {

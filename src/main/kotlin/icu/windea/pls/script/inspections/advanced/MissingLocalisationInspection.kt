@@ -12,9 +12,9 @@ import com.intellij.util.*
 import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
-import icu.windea.pls.annotations.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.*

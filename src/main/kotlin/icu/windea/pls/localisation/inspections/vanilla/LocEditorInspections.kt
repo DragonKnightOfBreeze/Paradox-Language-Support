@@ -2,8 +2,8 @@
 
 package icu.windea.pls.localisation.inspections.vanilla
 
-import com.intellij.codeInspection.LocalInspectionTool
-import icu.windea.pls.annotations.*
+import com.intellij.codeInspection.*
+import icu.windea.pls.core.annotations.*
 
 @LocEditorInspection("[LocEditor:RedundantFile] File contains no active keys, does not exist in English, could be deleted")
 class LocEditorRedundantFileInspection: LocalInspectionTool()

@@ -2,8 +2,8 @@ package icu.windea.pls.script.reference
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.annotations.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 
 class ParadoxOuterParameterReference(
