@@ -2,14 +2,13 @@ package icu.windea.pls.localisation.reference
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.config.internal.*
-import icu.windea.pls.core.model.*
-import icu.windea.pls.core.selector.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationPropertyReferenceReference(
 	element: ParadoxLocalisationPropertyReference,
@@ -55,9 +54,7 @@ class ParadoxLocalisationPropertyReferenceReference(
 		return when(category) {
 			Localisation -> findLocalisations(name, project, selector = selector) //仅查找对应语言区域的
 			SyncedLocalisation -> findSyncedLocalisations(name, project, selector = selector) //仅查找对应语言区域的
-		}.mapToArray {
-			PsiElementResolveResult(it)
-		}
+		}.mapToArray { PsiElementResolveResult(it) }
 	}
 	
 	/**

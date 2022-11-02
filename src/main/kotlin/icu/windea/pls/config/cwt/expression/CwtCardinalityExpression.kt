@@ -16,7 +16,7 @@ class CwtCardinalityExpression private constructor(
 	val max: Int?,
 	val limitMax: Boolean = true
 ) : AbstractExpression(expressionString), CwtExpression {
-	companion object Resolver : CachedExpressionResolver<CwtCardinalityExpression>() {
+	companion object Resolver : CwtExpressionResolver<CwtCardinalityExpression>() {
 		val EmptyExpression = CwtCardinalityExpression("", 0, null, true)
 		
 		override fun doResolve(expressionString: String): CwtCardinalityExpression {

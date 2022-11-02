@@ -2,8 +2,8 @@ package icu.windea.pls.config.cwt
 
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import java.util.*
 

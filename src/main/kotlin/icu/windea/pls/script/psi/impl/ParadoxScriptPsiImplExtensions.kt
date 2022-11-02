@@ -3,8 +3,8 @@ package icu.windea.pls.script.psi.impl
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 //region ParadoxScriptProperty
@@ -15,7 +15,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	
 	@Volatile private var _name: String? = null
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxScriptExpressionType? = null
+	@Volatile private var _valueType: ParadoxDataType? = null
 	@Volatile private var _pathName: String? = null
 	@Volatile private var _originalPathName: String? = null
 	@Volatile private var _parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>>? = null
@@ -28,7 +28,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxScriptExpressionType?
+	override val expressionType: ParadoxDataType?
 		get() = _valueType ?: super.expressionType.also { _valueType = it }
 	
 	override val pathName: String?
@@ -65,13 +65,13 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	constructor(stub: ParadoxScriptPropertyKeyStub, type: IStubElementType<*, *>) : super(stub, type)
 	
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxScriptExpressionType? = null
+	@Volatile private var _valueType: ParadoxDataType? = null
 	
 	override fun getValue(): String {
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxScriptExpressionType
+	override val expressionType: ParadoxDataType
 		get() = _valueType ?: super.expressionType.also { _valueType = it }
 	
 	override fun subtreeChanged() {
@@ -107,13 +107,13 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	constructor(node: ASTNode) : super(node)
 	
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxScriptExpressionType? = null
+	@Volatile private var _valueType: ParadoxDataType? = null
 	
 	override fun getValue(): String {
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxScriptExpressionType
+	override val expressionType: ParadoxDataType
 		get() = _valueType ?: super.expressionType.also { _valueType = it }
 	
 	override fun subtreeChanged() {

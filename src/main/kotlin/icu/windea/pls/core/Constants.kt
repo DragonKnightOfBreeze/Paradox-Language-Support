@@ -1,4 +1,4 @@
-package icu.windea.pls
+package icu.windea.pls.core
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.*
@@ -84,7 +84,7 @@ object PlsPaths {
 	val unknownPngPath by lazy { imagesDirectoryPath.resolve(unknownPngName) }
 	val unknownPngUrl by lazy { unknownPngPath.toUri().toURL() }
 	
-	val unknownPngClasspathUrl = "/${unknownPngName}".toClasspathUrl()
+	val unknownPngClasspathUrl = "/$unknownPngName".toClasspathUrl()
 }
 
 object PlsPatterns {

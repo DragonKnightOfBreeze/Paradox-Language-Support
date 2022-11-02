@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import icu.windea.pls.core.expression.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
+
+import java.util.*;
 
 public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 
@@ -18,7 +18,7 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
   String getValue();
 
   @NotNull
-  ParadoxScriptExpressionType getExpressionType();
+  ParadoxDataType getExpressionType();
 
   @NotNull
   String getExpression();

@@ -1,8 +1,9 @@
 package icu.windea.pls.core.ui
 
-import icu.windea.pls.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 
 internal fun getLocalesToSelect(existingLocales: List<ParadoxLocaleConfig>, locale: ParadoxLocaleConfig?): List<ParadoxLocaleConfig> {
 	//置顶偏好的语言区域

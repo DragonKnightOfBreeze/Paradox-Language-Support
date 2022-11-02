@@ -1,7 +1,7 @@
 package icu.windea.pls.core.model
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 enum class ParadoxFileType(
 	val id: String,
@@ -32,7 +32,7 @@ enum class ParadoxFileType(
 		}
 		
 		private fun isIgnored(fileName: String): Boolean {
-			return getSettings().finalScriptIgnoredFileNames.contains(fileName)
+			return getSettings().scriptIgnoredFileNames.asCommaDelimited().contains(fileName)
 		}
 		
 		private fun isInFolders(gameType: ParadoxGameType, path: ParadoxPath): Boolean {

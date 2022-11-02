@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -195,7 +196,7 @@ class ParadoxScriptSvParameterValueExpressionInfo(
 	textRange: TextRange
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
-		return if(ParadoxScriptExpressionType.resolve(text).isFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
+		return if(ParadoxDataType.resolve(text).isFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
 	}
 }
 

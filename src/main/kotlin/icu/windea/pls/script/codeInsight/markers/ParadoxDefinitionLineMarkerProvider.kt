@@ -6,10 +6,10 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 
 /**
  * 定义（definition）的装订线图标提供器。

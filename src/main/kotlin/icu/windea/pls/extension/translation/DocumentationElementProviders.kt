@@ -3,7 +3,7 @@ package icu.windea.pls.extension.translation
 import cn.yiiguxing.plugin.translate.provider.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*

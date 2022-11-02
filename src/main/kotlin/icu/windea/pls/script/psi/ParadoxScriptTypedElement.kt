@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.core.expression.*
 
 /**
  * @property definitionType 定义的类型。基于CWT规则。
@@ -11,7 +11,7 @@ import icu.windea.pls.script.expression.*
  */
 interface ParadoxScriptTypedElement : PsiElement {
 	val definitionType: String? get() = null
-	val expressionType: ParadoxScriptExpressionType? get() = null
+	val expressionType: ParadoxDataType? get() = null
 	val expression: String get() = text
 	val configExpression: String? get() = null
 }

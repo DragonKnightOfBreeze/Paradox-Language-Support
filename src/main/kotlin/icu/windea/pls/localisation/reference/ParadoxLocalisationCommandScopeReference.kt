@@ -3,8 +3,8 @@ package icu.windea.pls.localisation.reference
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
@@ -26,15 +26,16 @@ class ParadoxLocalisationCommandScopeReference(
 		val name = element.name
 		val project = element.project
 		//尝试被识别为预定义的localisation_command
-		doResolveLocalisationScope(name, project)?.let { return it }
+		val localisationScope = doResolveLocalisationScope(name, project)
+		if(localisationScope != null) return localisationScope
 		
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 		//尝试识别为value[event_target]或value[global_event_target]
 		val selector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
 		val eventTarget = ParadoxValueSetValuesSearch.search(name, "event_target", project, selector = selector).findFirst()
-		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project , gameType)
+		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project, gameType)
 		val globalEventTarget = ParadoxValueSetValuesSearch.search(name, "global_event_target", project, selector = selector).findFirst()
-		if(globalEventTarget != null) return ParadoxValueSetValueElement(element, name, "global_event_target", project , gameType)
+		if(globalEventTarget != null) return ParadoxValueSetValueElement(element, name, "global_event_target", project, gameType)
 		return null
 	}
 	

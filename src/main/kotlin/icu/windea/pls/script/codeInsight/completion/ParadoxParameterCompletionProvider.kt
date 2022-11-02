@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeParameters
+import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.script.psi.*
 

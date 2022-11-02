@@ -3,7 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 object ParadoxScriptIntroducer {
 	/**

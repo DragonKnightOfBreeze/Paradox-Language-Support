@@ -1,7 +1,10 @@
-package icu.windea.pls.common.collections
+package icu.windea.pls.core.collections
 
 import icu.windea.pls.*
-import icu.windea.pls.common.*
+import icu.windea.pls.core.*
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T, C: Collection<T>> C?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
 
 fun <T> Collection<T>.toListOrThis(): List<T> {
 	return when(this) {

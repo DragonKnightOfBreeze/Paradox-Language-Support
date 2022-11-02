@@ -3,8 +3,8 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
 import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptFileTreeElement(

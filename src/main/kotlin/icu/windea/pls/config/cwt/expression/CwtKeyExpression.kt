@@ -1,6 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
 
@@ -15,7 +15,7 @@ class CwtKeyExpression private constructor(
 	override val value: String? = null,
 	override val extraValue: Any? = null
 ) : AbstractExpression(expressionString), CwtDataExpression {
-	companion object Resolver : CachedExpressionResolver<CwtKeyExpression>() {
+	companion object Resolver : CwtExpressionResolver<CwtKeyExpression>() {
 		val EmptyStringExpression = CwtKeyExpression("", Types.Constant, "")
 		
 		override fun doResolve(expressionString: String): CwtKeyExpression {

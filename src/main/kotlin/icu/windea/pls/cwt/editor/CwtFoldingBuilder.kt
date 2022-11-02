@@ -4,8 +4,8 @@ import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
-import com.intellij.util.SmartList
-import icu.windea.pls.*
+import com.intellij.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtFoldingBuilder:FoldingBuilder,DumbAware {

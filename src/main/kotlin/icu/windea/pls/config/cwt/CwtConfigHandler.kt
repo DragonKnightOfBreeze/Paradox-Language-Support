@@ -13,11 +13,13 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
@@ -108,7 +110,7 @@ object CwtConfigHandler {
 	fun matchesScriptExpression(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//匹配block
 		if(configExpression == CwtValueExpression.EmptyExpression) {
-			return expression.type == ParadoxScriptExpressionType.BlockType
+			return expression.type == ParadoxDataType.BlockType
 		}
 		//匹配空字符串
 		if(configExpression.isEmpty()) {
@@ -119,7 +121,7 @@ object CwtConfigHandler {
 		val gameType = configGroup.gameType
 		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
 		val isExact = BitUtil.isSet(matchType, CwtConfigMatchType.EXACT)
-		val isParameterAware = expression.type == ParadoxScriptExpressionType.StringType && expression.value.isParameterAwareExpression()
+		val isParameterAware = expression.type == ParadoxDataType.StringType && expression.value.isParameterAwareExpression()
 		when(configExpression.type) {
 			CwtDataTypes.Any -> {
 				return true
@@ -129,14 +131,14 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Int -> {
 				//注意：用括号括起的整数（作为scalar）也匹配这个规则
-				if(expression.type.isIntType() || ParadoxScriptExpressionType.resolve(expression.value).isIntType()) return true
+				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.value).isIntType()) return true
 				//匹配范围
 				if(isExact && configExpression.extraValue<IntRange>()?.contains(expression.value.toIntOrNull()) != false) return true
 				return false
 			}
 			CwtDataTypes.Float -> {
 				//注意：用括号括起的浮点数（作为scalar）也匹配这个规则
-				if(expression.type.isFloatType() || ParadoxScriptExpressionType.resolve(expression.value).isFloatType()) return true
+				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.value).isFloatType()) return true
 				//匹配范围
 				if(isExact && configExpression.extraValue<FloatRange>()?.contains(expression.value.toFloatOrNull()) != false) return true
 				return false
@@ -150,11 +152,11 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.PercentageField -> {
 				if(!expression.type.isStringType()) return false
-				return ParadoxScriptExpressionType.isPercentageField(expression.value)
+				return ParadoxDataType.isPercentageField(expression.value)
 			}
 			CwtDataTypes.DateField -> {
 				if(!expression.type.isStringType()) return false
-				return ParadoxScriptExpressionType.isDateField(expression.value)
+				return ParadoxDataType.isDateField(expression.value)
 			}
 			CwtDataTypes.Localisation -> {
 				if(!expression.type.isStringType()) return false
@@ -287,14 +289,14 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-				if(expression.type.isFloatType() || ParadoxScriptExpressionType.resolve(expression.value).isFloatType()) return true
+				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.value).isFloatType()) return true
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				return ParadoxScriptExpression.resolveValueField(expression.value, configGroup).isMatched()
 			}
 			CwtDataTypes.IntValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-				if(expression.type.isIntType() || ParadoxScriptExpressionType.resolve(expression.value).isIntType()) return true
+				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.value).isIntType()) return true
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				return ParadoxScriptExpression.resolveValueField(expression.value, configGroup).isMatched()

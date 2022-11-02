@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls
+package icu.windea.pls.core
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.components.*
@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.newvfs.impl.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.indexing.*
+import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.definition.*
@@ -18,12 +19,13 @@ import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.settings.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.tool.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -36,7 +38,7 @@ fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
 fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
-fun getSettings() = service<ParadoxSettings>().state
+fun getSettings() = service<ParadoxSettings>()
 
 fun getInternalConfig(project: Project? = null) = (project ?: getTheOnlyOpenOrDefaultProject()).service<InternalConfigProvider>().configGroup
 

@@ -16,7 +16,8 @@ import com.intellij.refactoring.util.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.tool.*
 import icu.windea.pls.dds.*
 import java.io.*
 import java.util.concurrent.atomic.*

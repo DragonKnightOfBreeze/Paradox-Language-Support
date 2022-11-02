@@ -1,8 +1,10 @@
-package icu.windea.pls.core.util
+package icu.windea.pls.core.tool
 
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
 
 /**

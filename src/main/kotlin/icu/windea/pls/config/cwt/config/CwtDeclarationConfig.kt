@@ -3,7 +3,8 @@ package icu.windea.pls.config.cwt.config
 import com.google.common.cache.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 data class CwtDeclarationConfig(

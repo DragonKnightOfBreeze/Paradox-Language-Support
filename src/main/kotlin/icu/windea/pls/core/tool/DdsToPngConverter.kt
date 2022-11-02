@@ -1,9 +1,10 @@
-package icu.windea.pls.core.util
+package icu.windea.pls.core.tool
 
 import co.phoenixlab.dds.*
 import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import java.lang.invoke.*
 import java.nio.file.*
 import kotlin.io.path.*

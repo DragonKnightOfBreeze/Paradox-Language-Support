@@ -7,7 +7,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
-import icu.windea.pls.script.expression.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.codeInsight.hint.JavaTypeProvider
@@ -49,7 +50,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 		val typeToShow = (element.definitionType
 			?: element.configExpression
 			?: element.expressionType?.text
-			?: ParadoxScriptExpressionType.UnknownType.text)
+			?: ParadoxDataType.UnknownType.text)
 		return typeToShow.escapeXml()
 	}
 	

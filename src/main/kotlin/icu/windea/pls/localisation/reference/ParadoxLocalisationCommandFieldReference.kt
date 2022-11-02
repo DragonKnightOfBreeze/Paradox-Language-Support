@@ -4,8 +4,9 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
@@ -28,16 +29,18 @@ class ParadoxLocalisationCommandFieldReference(
 		val name = element.name
 		val project = element.project
 		//尝试识别为预定义的localisation_command
-		doResolveLocalisationCommand(name, project)?.let { return it }
+		val localisationCommand = doResolveLocalisationCommand(name, project)
+		if(localisationCommand != null) return localisationCommand
 		
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-		findDefinitionByType(name, "scripted_loc", project, selector = selector)?.let { return it }
+		val scriptedLoc = findDefinitionByType(name, "scripted_loc", project, selector = selector)
+		if(scriptedLoc != null) return scriptedLoc
 		//尝试识别为value[variable]
-		val selector1 = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
-		val eventTarget = ParadoxValueSetValuesSearch.search(name, "variable", project, selector = selector1).findFirst()
-		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "variable", project , gameType)
+		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
+		val eventTarget = ParadoxValueSetValuesSearch.search(name, "variable", project, selector = variableSelector).findFirst()
+		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType)
 		return null
 	}
 	
@@ -45,16 +48,18 @@ class ParadoxLocalisationCommandFieldReference(
 		val name = element.name
 		val project = element.project
 		//尝试识别为预定义的localisation_command
-		doResolveLocalisationCommand(name, project)?.let { return arrayOf(PsiElementResolveResult(it)) }
+		val localisationCommand = doResolveLocalisationCommand(name, project)
+		if(localisationCommand != null) return arrayOf(PsiElementResolveResult(localisationCommand))
 		
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return ResolveResult.EMPTY_ARRAY
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-		findDefinitionsByType(name, "scripted_loc", project, selector = selector).takeIfNotEmpty()?.let { return it.mapToArray { e -> PsiElementResolveResult(e) }}
+		val scriptedLocs = findDefinitionsByType(name, "scripted_loc", project, selector = selector)
+		if(scriptedLocs.isNotEmpty()) return scriptedLocs.mapToArray { PsiElementResolveResult(it) }
 		//尝试识别为value[variable]
-		val selector1 = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
-		val eventTarget = ParadoxValueSetValuesSearch.search(name, "variable", project, selector = selector1).findFirst()
-		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "variable", project , gameType).let { return arrayOf(PsiElementResolveResult(it)) }
+		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
+		val eventTarget = ParadoxValueSetValuesSearch.search(name, "variable", project, selector = variableSelector).findFirst()
+		if(eventTarget != null) return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType)))
 		return ResolveResult.EMPTY_ARRAY
 	}
 	

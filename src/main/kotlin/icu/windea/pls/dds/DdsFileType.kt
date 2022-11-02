@@ -2,7 +2,7 @@ package icu.windea.pls.dds
 
 import com.intellij.openapi.fileTypes.*
 import icons.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import javax.swing.*
 
 //org.intellij.images.fileTypes.impl.ImageFileType

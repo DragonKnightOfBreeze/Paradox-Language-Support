@@ -2,8 +2,8 @@ package icu.windea.pls.script.expression
 
 import com.google.common.cache.*
 import com.intellij.openapi.application.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.*
 
 abstract class ParadoxScriptComplexExpressionResolver<T : ParadoxScriptComplexExpression> {
 	//这里需要限制缓存数量 - 因为表达式可能格式错误或者有引用无法解析

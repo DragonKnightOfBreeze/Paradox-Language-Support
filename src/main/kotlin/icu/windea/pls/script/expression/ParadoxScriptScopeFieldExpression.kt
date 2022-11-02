@@ -8,7 +8,9 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
+import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.script.psi.*
 
 /**

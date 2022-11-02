@@ -2,12 +2,11 @@
 
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.openapi.project.*;import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 
-import static com.intellij.psi.TokenType.*;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import static icu.windea.pls.StdlibExtensionsKt.*;
 
 
 /**
@@ -376,7 +375,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     private boolean isIconStart(){
 		if(yylength() <= 1) return false;
 	    char c = yycharat(1);
-	    return isExactLetter(c) || isExactDigit(c) || c == '_';
+	    return icu.windea.pls.core.StdlibExtensionsKt.isExactLetter(c) || icu.windea.pls.core.StdlibExtensionsKt.isExactDigit(c) || c == '_';
     }
     
     private boolean isCommandStart(){
@@ -386,7 +385,7 @@ public class ParadoxLocalisationLexer implements com.intellij.lexer.FlexLexer {
     
     private boolean isColorfulTextStart(){
 		  if(yylength() <= 1) return false;
-	    return isExactLetter(yycharat(1));
+	    return icu.windea.pls.core.StdlibExtensionsKt.isExactLetter(yycharat(1));
     }
     
     private boolean isRightQuote(){

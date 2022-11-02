@@ -3,7 +3,8 @@ package icu.windea.pls.core.psi
 import com.intellij.openapi.util.registry.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
+import java.util.*
 
 class ParadoxFilePathIndexImpl : ScalarIndexExtension<String>() {
 	override fun getName(): ID<String, Void> {
@@ -13,7 +14,7 @@ class ParadoxFilePathIndexImpl : ScalarIndexExtension<String>() {
 	override fun getIndexer(): DataIndexer<String, Void, FileContent> {
 		return DataIndexer { inputData ->
 			val path = inputData.file.fileInfo?.path?.path
-			if(path == null) emptyMap() else mapOfKv(path, null)
+			if(path == null) emptyMap() else Collections.singletonMap(path, null)
 		}
 	}
 	

@@ -11,6 +11,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.refactoring.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*

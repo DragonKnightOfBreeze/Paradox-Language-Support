@@ -2,8 +2,9 @@ package icu.windea.pls.config.cwt.config
 
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 
 abstract class CwtDataConfig<out T : PsiElement> : CwtConfig<T> {
 	abstract val value: String

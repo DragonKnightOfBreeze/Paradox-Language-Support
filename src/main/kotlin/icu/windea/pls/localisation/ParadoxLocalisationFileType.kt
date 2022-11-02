@@ -2,7 +2,7 @@ package icu.windea.pls.localisation
 
 import com.intellij.openapi.fileTypes.*
 import icons.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 object ParadoxLocalisationFileType : LanguageFileType(ParadoxLocalisationLanguage) {
 	override fun getName() = paradoxLocalisationName

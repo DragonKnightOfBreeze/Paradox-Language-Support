@@ -1,12 +1,9 @@
 package icu.windea.pls.core.settings
 
 import com.intellij.openapi.components.*
-import icu.windea.pls.*
 import icu.windea.pls.config.internal.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-
-@State(name = "ParadoxSettings", storages = [Storage("paradox-language-support.xml")])
-class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(ParadoxSettingsState())
 
 /**
  * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。
@@ -22,30 +19,47 @@ class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(Par
  * @property localisationRenderLineComment 对于本地化语言，是否需要渲染之前的单行注释文本到文档中。
  * @property localisationRenderLocalisation 对于本地化语言，是否需要为本地化渲染本地化文本到文档中。
  */
-class ParadoxSettingsState : BaseState() {
-	var defaultGameType: ParadoxGameType by enum(ParadoxGameType.Stellaris)
-	var preferOverridden: Boolean by property(true)
+@State(name = "ParadoxSettings", storages = [Storage("paradox-language-support.xml")])
+class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettings.State>(State()) {
+	var defaultGameType by state::defaultGameType
+	var preferOverridden by state::preferOverridden
 	@Deprecated("Consider for removal.")
-	var maxCompleteSize: Int by property(100)
+	var maxCompleteSize by state::maxCompleteSize
 	
-	var scriptIgnoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
-	var scriptRenderLineComment by property(false)
-	var scriptRenderRelatedLocalisation by property(true)
-	var scriptRenderRelatedImages by property(true)
-	var scriptShowParameters by property(true)
+	var scriptIgnoredFileNames by state::scriptIgnoredFileNames
+	var scriptRenderLineComment by state::scriptRenderLineComment
+	var scriptRenderRelatedLocalisation by state::scriptRenderRelatedLocalisation
+	var scriptRenderRelatedImages by state::scriptRenderRelatedImages
+	var scriptShowParameters by state::scriptShowParameters
 	
-	var localisationPreferredLocale by string("auto")
-	var localisationRenderLineComment by property(false)
-	var localisationRenderLocalisation by property(true)
+	var localisationPreferredLocale by state::localisationPreferredLocale
+	var localisationRenderLineComment by state::localisationRenderLineComment
+	var localisationRenderLocalisation by state::localisationRenderLocalisation
 	
-	var generationFileNamePrefix by string("000000_")
-	
-	var finalScriptIgnoredFileNames = scriptIgnoredFileNames?.toCommaDelimitedStringSet(ignoreCase = true).orEmpty()
+	var generationFileNamePrefix by state::generationFileNamePrefix
 	
 	val locales by lazy {
 		buildList {
 			add("auto")
 			addAll(InternalConfigHandler.getLocaleMap(includeDefault = false).keys)
 		}
+	}
+	
+	class State : BaseState() {
+		var defaultGameType: ParadoxGameType by enum(ParadoxGameType.Stellaris)
+		var preferOverridden: Boolean by property(true)
+		var maxCompleteSize: Int by property(100)
+		
+		var scriptIgnoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
+		var scriptRenderLineComment by property(false)
+		var scriptRenderRelatedLocalisation by property(true)
+		var scriptRenderRelatedImages by property(true)
+		var scriptShowParameters by property(true)
+		
+		var localisationPreferredLocale by string("auto")
+		var localisationRenderLineComment by property(false)
+		var localisationRenderLocalisation by property(true)
+		
+		var generationFileNamePrefix by string("000000_")
 	}
 }

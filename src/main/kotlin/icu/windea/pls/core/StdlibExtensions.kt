@@ -1,11 +1,13 @@
 @file:Suppress("unused")
 
-package icu.windea.pls
+package icu.windea.pls.core
 
 import com.google.common.cache.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.io.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -13,13 +15,8 @@ import java.nio.file.*
 import java.util.*
 import kotlin.math.*
 
-//region Common Extensions
 @Suppress("NOTHING_TO_INLINE")
 inline fun pass() {}
-
-inline fun <T> Boolean.ifTrue(body: () -> T?): T? = if(this) body() else null
-
-inline fun <T> Boolean.ifFalse(body: () -> T?): T? = if(!this) body() else null
 
 fun Number.format(digits: Int): String {
 	val power = 10.0.pow(abs(digits))
@@ -33,9 +30,6 @@ fun Number.format(digits: Int): String {
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun String.takeIfNotEmpty() = this.takeIf { it.isNotEmpty() }
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T, C: Collection<T>> C?.takeIfNotEmpty() = this?.takeIf { it.isNotEmpty() }
 
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
 	return startsWith(prefix, ignoreCase) && endsWith(suffix, ignoreCase)
@@ -281,39 +275,6 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) block(this) else this
 
-fun String.toCommaDelimitedStringMutableList(): MutableList<String> {
-	val input = this.trim()
-	return if(input.isEmpty()) {
-		mutableListOf()
-	} else {
-		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIfNotEmpty() }
-	}
-}
-
-fun String.toCommaDelimitedStringList(): List<String> {
-	val input = this.trim()
-	return if(input.isEmpty()) {
-		emptyList()
-	} else {
-		input.splitToSequence(',').mapNotNullTo(SmartList()) { it.trim().takeIfNotEmpty() }
-	}
-}
-
-fun String.toCommaDelimitedStringSet(ignoreCase: Boolean = false): Set<String> {
-	val input = this.trim()
-	return if(input.isEmpty()) {
-		emptySet()
-	} else {
-		val set = if(ignoreCase) CollectionFactory.createCaseInsensitiveStringSet() else mutableSetOf()
-		input.splitToSequence(',').mapNotNullTo(set) { it.trim().takeIfNotEmpty() }
-	}
-}
-
-fun Collection<String>.toCommaDelimitedString(): String {
-	val input = this
-	return if(input.isEmpty()) "" else input.joinToString(",")
-}
-
 fun String.matchesGlobFileName(pattern: String, ignoreCase: Boolean = false): Boolean {
 	if(pattern.isEmpty()) return false
 	if(pattern == "*") return true
@@ -507,25 +468,6 @@ fun Path.create(): Path {
 	return this
 }
 
-val nullPair = null to null
-
-@Suppress("UNCHECKED_CAST")
-fun <A, B> emptyPair() = nullPair as Pair<A, B>
-
-fun <T> Collection<T>.toListOrThis(): List<T> {
-	return when(this) {
-		is List -> this
-		else -> this.toList()
-	}
-}
-
-fun <T> Collection<T>.toSetOrThis(): Set<T> {
-	return when(this) {
-		is Set -> this
-		else -> this.toSet()
-	}
-}
-
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 
 fun String.toBooleanYesNo() = this == "yes"
@@ -583,231 +525,3 @@ inline val <T : Enum<T>> Class<T>.sharedEnumConstants get() = enumValuesCache[th
 //fun <T> Result<T>.getOrThrow(predicate: (Throwable) -> Boolean): T? {
 //	return this.onFailure { if(predicate(it)) throw it }.getOrNull()
 //}
-//endregion
-
-//region Collection Extensions
-fun <T> List<T>.asMutable() = this as MutableList<T>
-
-fun <T> Set<T>.asMutable() = this as MutableSet<T>
-
-fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
-	return if(comparator == null) mutableSetOf() else TreeSet(comparator)
-}
-
-fun <T, E> List<T>.groupAndCountBy(selector: (T) -> E?): Map<E, Int> {
-	val result = mutableMapOf<E, Int>()
-	for(e in this) {
-		val k = selector(e)
-		if(k != null) {
-			result.compute(k) { _, v -> if(v == null) 1 else v + 1 }
-		}
-	}
-	return result
-}
-
-inline fun <reified R> Iterable<*>.findIsInstance(): R? {
-	return findIsInstance(R::class.java)
-}
-
-@Suppress("UNCHECKED_CAST")
-fun <R> Iterable<*>.findIsInstance(klass: Class<R>): R? {
-	for(element in this) if(klass.isInstance(element)) return element as R
-	return null
-}
-
-inline fun <reified R> Sequence<*>.findIsInstance(): R? {
-	return findIsInstance(R::class.java)
-}
-
-@Suppress("UNCHECKED_CAST")
-fun <R> Sequence<*>.findIsInstance(klass: Class<R>): R? {
-	for(element in this) if(klass.isInstance(element)) return element as R
-	return null
-}
-
-inline fun <T, R : Any, C : MutableCollection<in R>> Iterable<T>.mapNotNullTo(destination: C, transform: (T) -> R?): C {
-	for(item in this) {
-		val result = transform(item)
-		if(result != null) destination.add(result)
-	}
-	return destination
-}
-
-inline fun <T, R : Any> List<T>.mapAndFirst(predicate: (R?) -> Boolean = { it != null }, transform: (T) -> R?): R? {
-	if(this.isEmpty()) return null
-	var first: R? = null
-	for(element in this) {
-		val result = transform(element)
-		if(predicate(result)) return result
-		first = result
-	}
-	return first
-}
-
-inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R> {
-	return Array(size) { transform(this[it]) }
-}
-
-inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
-	return Array(size) { transform(this[it]) }
-}
-
-inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
-	if(this is List) return this.mapToArray(transform)
-	val result = arrayOfNulls<R>(this.size)
-	for((i, e) in this.withIndex()) {
-		result[i] = transform(e)
-	}
-	return result.cast()
-}
-
-inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -> R): Array<R> {
-	//这里不先将Set转为List
-	val size = this.size
-	val entries = this.entries
-	try {
-		val iterator = entries.iterator()
-		return Array(size) { transform(iterator.next()) }
-	} catch(e: Exception) {
-		val list = entries.toList()
-		return Array(size) { transform(list[it]) }
-	}
-}
-
-inline fun <T, reified R> Sequence<T>.mapToArray(transform: (T) -> R): Array<R> {
-	return toList().mapToArray(transform)
-}
-
-fun <K, V> mapOfKv(key: K, value: V): Map<K, V> {
-	return Collections.singletonMap(key, value)
-}
-
-inline fun <reified T> T.toSingletonArray() = arrayOf(this)
-
-inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
-
-fun <T> T.toSingletonList(): List<T> = Collections.singletonList(this)
-
-fun <T : Any> T?.toSingletonListOrEmpty(): List<T> = if(this == null) Collections.emptyList() else Collections.singletonList(this)
-
-fun <T> T.toSingletonSet(): Set<T> = Collections.singleton(this)
-
-fun <T : Any> T?.toSingletonSetOrEmpty(): Set<T> = if(this == null) Collections.emptySet() else Collections.singleton(this)
-
-data class ReversibleList<T>(val list: List<T>, val notReversed: Boolean) : List<T> by list {
-	override fun contains(element: T): Boolean {
-		return if(notReversed) list.contains(element) else !list.contains(element)
-	}
-	
-	override fun containsAll(elements: Collection<T>): Boolean {
-		return if(notReversed) list.containsAll(elements) else !list.containsAll(elements)
-	}
-}
-
-fun <T> List<T>.toReversibleList(notReversed: Boolean) = ReversibleList(this, notReversed)
-
-data class ReversibleSet<T>(val set: Set<T>, val notReversed: Boolean) : Set<T> by set {
-	override fun contains(element: T): Boolean {
-		return if(notReversed) set.contains(element) else !set.contains(element)
-	}
-	
-	override fun containsAll(elements: Collection<T>): Boolean {
-		return if(notReversed) set.containsAll(elements) else !set.containsAll(elements)
-	}
-}
-
-fun <T> Set<T>.toReversibleSet(notReversed: Boolean) = ReversibleSet(this, notReversed)
-
-data class ReversibleMap<K, V>(val map: Map<K, V>, val notReversed: Boolean = false) : Map<K, V> by map {
-	override fun containsKey(key: K): Boolean {
-		return if(notReversed) map.containsKey(key) else !map.containsKey(key)
-	}
-	
-	override fun containsValue(value: V): Boolean {
-		return if(notReversed) map.containsValue(value) else !map.containsValue(value)
-	}
-}
-
-fun <K, V> Map<K, V>.toReversibleMap(notReversed: Boolean) = ReversibleMap(this, notReversed)
-
-inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
-	val result = mutableListOf<T>()
-	var elementToPin: T? = null
-	for(e in this) {
-		if(elementToPin == null && predicate(e)) {
-			elementToPin = e
-		} else {
-			result.add(e)
-		}
-	}
-	if(elementToPin != null) result.add(0, elementToPin)
-	return result
-}
-
-inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
-	val result = mutableListOf<T>()
-	var elementToPin: T? = null
-	for(e in this) {
-		if(elementToPin == null && predicate(e)) {
-			elementToPin = e
-		} else {
-			result.add(e)
-		}
-	}
-	if(elementToPin != null) result.add(elementToPin)
-	return result
-}
-
-fun <T> Iterable<T>.process(processor: ProcessEntry.(T) -> Boolean): Boolean {
-	for(e in this) {
-		val result = ProcessEntry.processor(e)
-		if(!result) return false
-	}
-	return true
-}
-
-fun <K, V> Map<K, V>.process(processor: ProcessEntry.(Map.Entry<K, V>) -> Boolean): Boolean {
-	for(entry in this) {
-		val result = ProcessEntry.processor(entry)
-		if(!result) return false
-	}
-	return true
-}
-
-object ProcessEntry {
-	fun <T> T.addTo(destination: MutableCollection<T>) = destination.add(this)
-	
-	fun <T : Collection<T>> T.addAllTo(destination: MutableCollection<T>) = destination.addAll(this)
-	
-	fun Any?.end() = true
-	
-	fun Any?.stop() = false
-}
-//endregion
-
-//region Tuple & Range Extensions
-typealias Tuple2<A, B> = Pair<A, B>
-
-typealias TypedTuple2<T> = Pair<T, T>
-
-typealias Tuple3<A, B, C> = Triple<A, B, C>
-
-typealias TypedTuple3<T> = Triple<T, T, T>
-
-fun <A, B> tupleOf(first: A, second: B) = Tuple2(first, second)
-
-fun <A, B, C> tupleOf(first: A, second: B, third: C) = Tuple3(first, second, third)
-
-typealias FloatRange = ClosedRange<Float>
-
-operator fun FloatRange.contains(element: Float?): Boolean {
-	return element != null && contains(element)
-}
-//endregion
-
-//region Other Types
-data class BlockEntry<out K, out V>(
-	val key: K,
-	val value: V
-)
-//endregion

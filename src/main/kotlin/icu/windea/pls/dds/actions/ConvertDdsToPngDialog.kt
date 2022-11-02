@@ -16,6 +16,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import javax.swing.*
 
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog

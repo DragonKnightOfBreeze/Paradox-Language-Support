@@ -1,7 +1,7 @@
 package icu.windea.pls.config.cwt.expression
 
 import com.intellij.openapi.project.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.selector.*
@@ -22,7 +22,7 @@ class CwtLocalisationLocationExpression(
 	val placeholder: String? = null,
 	val propertyName: String? = null
 ) : AbstractExpression(expressionString), CwtExpression {
-	companion object Resolver : CachedExpressionResolver<CwtLocalisationLocationExpression>() {
+	companion object Resolver : CwtExpressionResolver<CwtLocalisationLocationExpression>() {
 		val EmptyExpression = CwtLocalisationLocationExpression("", "")
 		
 		override fun doResolve(expressionString: String): CwtLocalisationLocationExpression {

@@ -5,8 +5,8 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.internal.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.localisation.psi.*
 

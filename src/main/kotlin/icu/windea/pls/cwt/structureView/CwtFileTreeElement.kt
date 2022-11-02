@@ -2,9 +2,8 @@ package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.*
-import com.intellij.psi.util.*
-import com.intellij.util.SmartList
-import icu.windea.pls.*
+import com.intellij.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtFileTreeElement(

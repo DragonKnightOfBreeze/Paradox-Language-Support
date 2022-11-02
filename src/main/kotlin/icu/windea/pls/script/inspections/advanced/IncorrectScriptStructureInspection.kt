@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

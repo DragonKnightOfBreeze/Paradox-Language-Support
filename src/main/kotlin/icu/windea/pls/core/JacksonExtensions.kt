@@ -1,4 +1,4 @@
-package icu.windea.pls
+package icu.windea.pls.core
 
 import com.fasterxml.jackson.module.kotlin.*
 

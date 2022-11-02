@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -34,7 +35,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 				}
 			}
 			row {
-				expandableTextField({ it.toCommaDelimitedStringMutableList() }, { it.toCommaDelimitedString() })
+				expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
 					.bindText(::ignoredFileNames)
 					.applyToComponent {
 						whenTextChanged {

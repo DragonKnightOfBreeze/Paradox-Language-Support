@@ -9,8 +9,9 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.quickfix.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.refactoring.*
 

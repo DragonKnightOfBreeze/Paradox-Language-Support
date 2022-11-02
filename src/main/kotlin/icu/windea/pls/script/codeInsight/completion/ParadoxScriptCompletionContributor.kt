@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 

@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.codeStyle
 
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 class ParadoxLocalisationCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
 	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)

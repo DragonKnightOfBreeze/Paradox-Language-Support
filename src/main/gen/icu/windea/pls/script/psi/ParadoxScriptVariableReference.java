@@ -1,13 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import icu.windea.pls.core.expression.*;
+import icu.windea.pls.script.reference.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
-import icu.windea.pls.script.reference.ParadoxScriptedVariableReference;
-import javax.swing.Icon;
+
+import javax.swing.*;
 
 public interface ParadoxScriptVariableReference extends ParadoxScriptValue, IParadoxScriptVariableReference {
 
@@ -24,6 +22,6 @@ public interface ParadoxScriptVariableReference extends ParadoxScriptValue, IPar
   ParadoxScriptedVariableReference getReference();
 
   @NotNull
-  ParadoxScriptExpressionType getExpressionType();
+  ParadoxDataType getExpressionType();
 
 }

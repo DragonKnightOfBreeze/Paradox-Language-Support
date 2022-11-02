@@ -2,7 +2,6 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
-import icu.windea.pls.*
 import icu.windea.pls.core.model.*
 
 /**

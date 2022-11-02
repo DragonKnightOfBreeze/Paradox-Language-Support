@@ -1,4 +1,4 @@
-package icu.windea.pls.common.collections
+package icu.windea.pls.core.collections
 
 import java.util.*
 

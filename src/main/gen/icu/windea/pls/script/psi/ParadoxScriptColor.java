@@ -1,11 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import icu.windea.pls.core.expression.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
-import java.awt.Color;
+
+import java.awt.*;
 
 public interface ParadoxScriptColor extends ParadoxScriptValue {
 
@@ -18,6 +17,6 @@ public interface ParadoxScriptColor extends ParadoxScriptValue {
   void setColor(@NotNull Color color);
 
   @NotNull
-  ParadoxScriptExpressionType getExpressionType();
+  ParadoxDataType getExpressionType();
 
 }

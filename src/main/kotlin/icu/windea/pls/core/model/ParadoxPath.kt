@@ -1,7 +1,7 @@
 package icu.windea.pls.core.model
 
 import com.google.common.cache.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 /**
  * 文件或目录相对于游戏或模组根路径的路径。保留大小写。

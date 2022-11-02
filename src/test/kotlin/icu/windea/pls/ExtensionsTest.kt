@@ -1,5 +1,6 @@
 package icu.windea.pls
 
+import icu.windea.pls.core.*
 import org.junit.*
 
 class ExtensionsTest {

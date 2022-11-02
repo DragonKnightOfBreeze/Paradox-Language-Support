@@ -1,17 +1,17 @@
 package icu.windea.pls.script.expression
 
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 脚本表达式。
  */
-interface   ParadoxScriptExpression : Expression {
+interface ParadoxScriptExpression : Expression {
 	val value: String get() = expressionString
 	val quoted: Boolean
-	val type: ParadoxScriptExpressionType
+	val type: ParadoxDataType
 	val isKey: Boolean?
 	
 	companion object {
@@ -24,14 +24,14 @@ interface   ParadoxScriptExpression : Expression {
 		}
 		
 		fun resolve(expressionString: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxScriptSimpleExpression {
-			val expressionType = ParadoxScriptExpressionType.resolve(expressionString)
+			val expressionType = ParadoxDataType.resolve(expressionString)
 			return ParadoxScriptSimpleExpression(expressionString, isQuoted, expressionType, isKey)
 		}
 		
 		fun resolve(text: String, isKey: Boolean? = null): ParadoxScriptSimpleExpression {
 			val expressionString = text.unquote()
 			val quoted = text.isQuoted()
-			val expressionType = ParadoxScriptExpressionType.resolve(text)
+			val expressionType = ParadoxDataType.resolve(text)
 			return ParadoxScriptSimpleExpression(expressionString, quoted, expressionType, isKey)
 		}
 		

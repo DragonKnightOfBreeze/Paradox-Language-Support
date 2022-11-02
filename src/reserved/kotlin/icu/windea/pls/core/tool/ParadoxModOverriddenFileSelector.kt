@@ -1,6 +1,6 @@
-package icu.windea.pls.util
+package icu.windea.pls.core.tool
 
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import java.io.*
 import java.util.concurrent.*
 

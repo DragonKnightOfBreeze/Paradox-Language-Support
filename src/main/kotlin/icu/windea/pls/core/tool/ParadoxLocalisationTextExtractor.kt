@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util
+package icu.windea.pls.core.tool
 
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*

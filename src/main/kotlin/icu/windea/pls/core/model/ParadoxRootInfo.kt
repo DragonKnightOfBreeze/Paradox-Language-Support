@@ -3,7 +3,7 @@ package icu.windea.pls.core.model
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 import java.nio.file.*
 

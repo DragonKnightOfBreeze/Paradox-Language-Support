@@ -1,7 +1,7 @@
 package icu.windea.pls.script.codeInsight.hints
 
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 
 object ParadoxScriptHintsPreviewProvider {
 	val civicPreview = """

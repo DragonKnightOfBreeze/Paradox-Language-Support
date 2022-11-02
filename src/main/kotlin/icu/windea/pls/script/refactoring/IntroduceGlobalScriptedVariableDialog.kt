@@ -12,7 +12,8 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
-import icu.windea.pls.core.model.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.expression.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.*
 import javax.swing.*
@@ -120,7 +121,7 @@ class IntroduceGlobalScriptedVariableDialog(
 	private fun ValidationInfoBuilder.validateScriptedVariableValue(): ValidationInfo? {
 		if(variableValue.isEmpty()) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.0"))
-		} else if(!ParadoxScriptExpressionType.resolve(variableValue).canBeScriptedVariableValue()) {
+		} else if(!ParadoxDataType.resolve(variableValue).canBeScriptedVariableValue()) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.1"))
 		}
 		return null

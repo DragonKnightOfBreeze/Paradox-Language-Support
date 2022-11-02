@@ -3,7 +3,8 @@ package icu.windea.pls.core.search
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -13,22 +14,18 @@ class ParadoxValueSetValuesSearcher : QueryExecutor<PsiElement, ParadoxValueSetV
 	override fun execute(queryParameters: ParadoxValueSetValuesSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
 		val project = queryParameters.project
 		val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
-		return ParadoxValueSetValueIndex.processAllElements(queryParameters.valueSetName, project, scope) {
-			if(queryParameters.name == null || matches(it, queryParameters.name)) {
+		val name = queryParameters.name
+		val valueSetName = queryParameters.valueSetName
+		return ParadoxValueSetValueIndex.processAllElements(valueSetName, project, scope) {
+			if(name == null || matches(it, name)) {
 				consumer.process(it)
 			}
 			true
 		}
 	}
 	
-	private fun matches(it: ParadoxScriptString, valueName: String): Boolean {
-		return getName(it) == valueName
-	}
-	
-	private fun getName(it: ParadoxScriptString): String? {
-		val name = runCatching { it.stub }.getOrNull()?.valueSetValueInfo?.name
-			?: it.value.substringBefore('@')
-		return name.takeIfNotEmpty()
+	private fun matches(element: ParadoxScriptString, name: String): Boolean {
+		return ParadoxValueSetValueInfoHandler.resolveName(element) == name
 	}
 }
 

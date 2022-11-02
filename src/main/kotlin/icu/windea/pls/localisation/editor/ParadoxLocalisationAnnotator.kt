@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys

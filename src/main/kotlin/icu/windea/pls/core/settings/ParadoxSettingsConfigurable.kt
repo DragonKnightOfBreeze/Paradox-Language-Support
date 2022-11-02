@@ -82,13 +82,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 					label(PlsBundle.message("settings.generic.ignoredFileNames")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
 					}
-					expandableTextField({ it.toCommaDelimitedStringMutableList() }, { it.toCommaDelimitedString() })
-						.bindText({
-							settings.scriptIgnoredFileNames.orEmpty()
-						}, {
-							settings.scriptIgnoredFileNames = it
-							settings.finalScriptIgnoredFileNames = it.toCommaDelimitedStringSet(ignoreCase = true)
-						})
+					expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+						.bindText({ settings.scriptIgnoredFileNames.orEmpty() }, { settings.scriptIgnoredFileNames = it })
 						.onApply {
 							runWriteAction {
 								reparseScriptFiles()

@@ -1,6 +1,6 @@
 package co.phoenixlab.dds
 
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import java.util.*
 import java.util.function.*
 

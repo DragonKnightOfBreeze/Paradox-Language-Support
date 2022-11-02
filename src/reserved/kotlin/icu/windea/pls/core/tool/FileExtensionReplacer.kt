@@ -1,4 +1,4 @@
-package icu.windea.pls.util
+package icu.windea.pls.core.tool
 
 import java.io.*
 

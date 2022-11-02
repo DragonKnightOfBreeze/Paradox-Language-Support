@@ -2,7 +2,7 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.extapi.psi.*
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 
 class CwtFile(

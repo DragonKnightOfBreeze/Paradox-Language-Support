@@ -1,4 +1,4 @@
-package icu.windea.pls
+package icu.windea.pls.core
 
 import com.intellij.util.*
 import org.apache.commons.imaging.color.*

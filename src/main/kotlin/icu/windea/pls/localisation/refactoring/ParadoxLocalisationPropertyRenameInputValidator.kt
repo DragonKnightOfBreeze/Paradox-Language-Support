@@ -5,9 +5,8 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.core.*
+import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationPropertyRenameInputValidator : RenameInputValidator {
 	companion object {

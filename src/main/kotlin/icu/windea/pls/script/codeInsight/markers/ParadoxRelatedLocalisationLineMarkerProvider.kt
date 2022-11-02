@@ -6,11 +6,11 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.navigation.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.core.selector.*
 
 /**
  * 定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标提供器。

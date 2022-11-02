@@ -9,8 +9,9 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.refactoring.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.tool.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 

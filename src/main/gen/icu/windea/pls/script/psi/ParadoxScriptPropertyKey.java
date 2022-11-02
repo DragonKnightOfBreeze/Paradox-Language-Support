@@ -1,14 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
-
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import icu.windea.pls.core.expression.*;
 import icu.windea.pls.core.psi.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiReference;
-import icu.windea.pls.script.expression.ParadoxScriptExpressionType;
+
+import java.util.*;
 
 public interface ParadoxScriptPropertyKey extends ParadoxExpressionAwareElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
@@ -28,7 +27,7 @@ public interface ParadoxScriptPropertyKey extends ParadoxExpressionAwareElement,
   PsiReference[] getReferences();
 
   @NotNull
-  ParadoxScriptExpressionType getExpressionType();
+  ParadoxDataType getExpressionType();
 
   @Nullable
   String getConfigExpression();

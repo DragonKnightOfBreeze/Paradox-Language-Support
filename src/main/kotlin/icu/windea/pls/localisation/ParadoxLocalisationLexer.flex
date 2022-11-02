@@ -1,11 +1,10 @@
 package icu.windea.pls.localisation.psi;
 
-import com.intellij.openapi.project.*;import com.intellij.psi.TokenType;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import static icu.windea.pls.StdlibExtensionsKt.*;
 
 %%
 
@@ -42,68 +41,68 @@ import static icu.windea.pls.StdlibExtensionsKt.*;
 %{
 		
     private boolean noIndent = true;
-    private int depth = 0;
-    private int commandLocation = 0;
-    private int propertyReferenceLocation = 0;
-    private boolean inIconName = false;
-    
-    public ParadoxLocalisationLexer() {
-        this((java.io.Reader)null);
-    }
-	
-    private void increaseDepth(){
-	    depth++;
-    }
-    
-    private void decreaseDepth(){
-	    if(depth > 0) depth--;
-    }
-    
-    private int nextStateForText(){
-      return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
-    }
-    
-    private int nextStateForCommand(){
-      if(commandLocation == 0) return nextStateForText();
-      else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
-      else if (commandLocation == 2) return WAITING_ICON;
-      else return nextStateForText();
-    }
-    
-    private int nextStateForPropertyReference(){
-      if(propertyReferenceLocation == 0) return nextStateForText();
-      else if (propertyReferenceLocation == 1) return WAITING_ICON_ID_FINISHED;
-      else if (propertyReferenceLocation == 2) return WAITING_ICON_FRAME_FINISHED;
-      else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
-      else return nextStateForText();
-    }
-    
-	private boolean isPropertyReferenceStart(){
-		if(yylength() <= 1) return false;
-		return true;
-	}
-	
-    private boolean isIconStart(){
-		if(yylength() <= 1) return false;
-	    char c = yycharat(1);
-	    return isExactLetter(c) || isExactDigit(c) || c == '_';
-    }
-    
-    private boolean isCommandStart(){
-		  if(yylength() <= 1) return false;
-	    return yycharat(yylength()-1) == ']';
-    }
-    
-    private boolean isColorfulTextStart(){
-		  if(yylength() <= 1) return false;
-	    return isExactLetter(yycharat(1));
-    }
-    
-    private boolean isRightQuote(){
-		  if(yylength() == 1) return true;
-	    return yycharat(yylength()-1) != '"';
-    }
-%}
+        private int depth = 0;
+        private int commandLocation = 0;
+        private int propertyReferenceLocation = 0;
+        private boolean inIconName = false;
+        
+        public ParadoxLocalisationLexer() {
+            this((java.io.Reader)null);
+        }
+	    
+        private void increaseDepth(){
+	        depth++;
+        }
+        
+        private void decreaseDepth(){
+	        if(depth > 0) depth--;
+        }
+        
+        private int nextStateForText(){
+          return depth <= 0 ? WAITING_RICH_TEXT : WAITING_COLORFUL_TEXT;
+        }
+        
+        private int nextStateForCommand(){
+          if(commandLocation == 0) return nextStateForText();
+          else if (commandLocation == 1) return WAITING_PROPERTY_REFERENCE;
+          else if (commandLocation == 2) return WAITING_ICON;
+          else return nextStateForText();
+        }
+        
+        private int nextStateForPropertyReference(){
+          if(propertyReferenceLocation == 0) return nextStateForText();
+          else if (propertyReferenceLocation == 1) return WAITING_ICON_ID_FINISHED;
+          else if (propertyReferenceLocation == 2) return WAITING_ICON_FRAME_FINISHED;
+          else if (propertyReferenceLocation == 3) return WAITING_COMMAND_SCOPE_OR_FIELD;
+          else return nextStateForText();
+        }
+        
+	    private boolean isPropertyReferenceStart(){
+		    if(yylength() <= 1) return false;
+		    return true;
+	    }
+	    
+        private boolean isIconStart(){
+		    if(yylength() <= 1) return false;
+	        char c = yycharat(1);
+	        return icu.windea.pls.core.StdlibExtensionsKt.isExactLetter(c) || icu.windea.pls.core.StdlibExtensionsKt.isExactDigit(c) || c == '_';
+        }
+        
+        private boolean isCommandStart(){
+		      if(yylength() <= 1) return false;
+	        return yycharat(yylength()-1) == ']';
+        }
+        
+        private boolean isColorfulTextStart(){
+		      if(yylength() <= 1) return false;
+	        return icu.windea.pls.core.StdlibExtensionsKt.isExactLetter(yycharat(1));
+        }
+        
+        private boolean isRightQuote(){
+		      if(yylength() == 1) return true;
+	        return yycharat(yylength()-1) != '"';
+        }
+    %}
 
 //Stellaris官方本地化文件中本身就存在语法解析错误，需要保证存在错误的情况下仍然会解析后续的本地化文本，草
 
