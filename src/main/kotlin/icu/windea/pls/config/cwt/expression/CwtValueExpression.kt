@@ -1,5 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
+import com.google.common.cache.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.config.cwt.expression.CwtDataTypes as Types
@@ -15,12 +16,14 @@ class CwtValueExpression private constructor(
 	override val value: String? = null,
 	override val extraValue: Any? = null
 ) : AbstractExpression(expressionString), CwtDataExpression {
-	companion object Resolver : CwtExpressionResolver<CwtValueExpression>() {
+	companion object Resolver : CwtExpressionResolver<CwtValueExpression> {
 		val EmptyExpression = CwtValueExpression("", Types.Any)
 		val EmptyStringExpression = CwtValueExpression("", Types.Constant, "")
 		
-		override fun doResolve(expressionString: String): CwtValueExpression {
-			return when {
+		val cache: LoadingCache<String, CwtValueExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		
+		override fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
+			when {
 				expressionString.isEmpty() -> EmptyStringExpression
 				expressionString == "any" -> {
 					CwtValueExpression(expressionString, Types.Any)

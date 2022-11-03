@@ -1,5 +1,7 @@
 package icu.windea.pls.config.cwt.expression
 
+import com.google.common.cache.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 
 /**
@@ -16,11 +18,13 @@ class CwtCardinalityExpression private constructor(
 	val max: Int?,
 	val limitMax: Boolean = true
 ) : AbstractExpression(expressionString), CwtExpression {
-	companion object Resolver : CwtExpressionResolver<CwtCardinalityExpression>() {
+	companion object Resolver : CwtExpressionResolver<CwtCardinalityExpression> {
 		val EmptyExpression = CwtCardinalityExpression("", 0, null, true)
 		
-		override fun doResolve(expressionString: String): CwtCardinalityExpression {
-			return when {
+		val cache: LoadingCache<String, CwtCardinalityExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		
+		override fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
+			when {
 				expressionString.isEmpty() -> EmptyExpression
 				expressionString.first() == '~' -> {
 					val firstDotIndex = expressionString.indexOf('.')

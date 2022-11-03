@@ -70,6 +70,8 @@ object PlsConstants {
 	const val maxMayBeDefinitionDepth = 4
 	
 	const val keysTruncateLimit = 5
+	
+	const val debugMode = false
 }
 
 object PlsPaths {

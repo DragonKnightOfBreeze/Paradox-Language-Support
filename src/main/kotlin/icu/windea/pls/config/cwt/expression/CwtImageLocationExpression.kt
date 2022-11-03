@@ -1,5 +1,6 @@
 package icu.windea.pls.config.cwt.expression
 
+import com.google.common.cache.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
@@ -36,11 +37,13 @@ class CwtImageLocationExpression(
 	val propertyName: String? = null,
 	val extraPropertyNames: List<String>? = null
 ) : AbstractExpression(expressionString), CwtExpression {
-	companion object Resolver : CwtExpressionResolver<CwtImageLocationExpression>() {
+	companion object Resolver : CwtExpressionResolver<CwtImageLocationExpression> {
 		val EmptyExpression = CwtImageLocationExpression("")
 		
-		override fun doResolve(expressionString: String): CwtImageLocationExpression {
-			return when {
+		val cache: LoadingCache<String, CwtImageLocationExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		
+		override fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
+			when {
 				expressionString.isEmpty() -> EmptyExpression
 				expressionString.startsWith('#') -> {
 					val pipeIndex = expressionString.indexOf('|', 1)

@@ -1,8 +1,9 @@
-package icu.windea.pls.core.model
+package icu.windea.pls.core.expression
 
+import com.google.common.cache.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -16,11 +17,13 @@ class ParadoxDefinitionTypeExpression private constructor(
 	val subtype: String? = null,
 	val typeAndSubtypePairs: List<Pair<String, String?>>? = null
 ) : AbstractExpression(expressionString) {
-	companion object Resolver : ExpressionResolver<ParadoxDefinitionTypeExpression>() {
+	companion object Resolver : ExpressionResolver<ParadoxDefinitionTypeExpression> {
 		val EmptyExpression = ParadoxDefinitionTypeExpression("", "")
 		
-		override fun doResolve(expressionString: String): ParadoxDefinitionTypeExpression {
-			return when {
+		val cache: LoadingCache<String, ParadoxDefinitionTypeExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		
+		fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
+			when {
 				expressionString.isEmpty() -> EmptyExpression
 				else -> {
 					val pipeIndex = expressionString.indexOf('|')
