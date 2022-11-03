@@ -66,13 +66,13 @@ class ParadoxModifierInfoHintsProvider: ParadoxScriptHintsProvider<Settings>(){
 			val type = config.expression.type
 			if(type == CwtDataTypes.Modifier) {
 				val name = element.value
-				val key = CwtConfigHandler.getModifierLocalisationName(name)
 				val configGroup = config.info.configGroup
+				val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup) ?: return true
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
 				//可以为全大写/全小写
-				val localisation = findLocalisation(key, configGroup.project, selector = selector)
-					?: findLocalisation(key.uppercase(), configGroup.project, selector = selector)
-					?: return true
+				val localisation = keys.firstNotNullOfOrNull {
+					findLocalisation(it, configGroup.project, selector = selector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = selector)
+				} ?: return true
 				val presentation = collectLocalisation(localisation, editor, settings)
 				val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
 				val endOffset = element.endOffset

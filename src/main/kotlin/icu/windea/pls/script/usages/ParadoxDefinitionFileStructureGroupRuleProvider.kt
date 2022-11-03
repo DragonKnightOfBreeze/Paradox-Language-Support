@@ -9,7 +9,7 @@ import com.intellij.usages.impl.*
 import com.intellij.usages.rules.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.localisation.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -24,19 +24,19 @@ class ParadoxDefinitionFileStructureGroupRuleProvider : FileStructureGroupRulePr
 	}
 	
 	override fun getUsageGroupingRule(project: Project, usageViewSettings: UsageViewSettings): UsageGroupingRule {
-		return LocalisationLocaleGroupingRule(usageViewSettings)
+		return DefinitionUsageGroupingRule(usageViewSettings)
 	}
 }
 
 //com.intellij.usages.impl.rules.MethodGroupingRule
 
-class LocalisationLocaleGroupingRule(
+class DefinitionUsageGroupingRule(
 	private val usageViewSettings: UsageViewSettings
 ) : SingleParentUsageGroupingRule() {
 	override fun getParentGroupFor(usage: Usage, targets: Array<out UsageTarget>): UsageGroup? {
 		if(usage !is PsiElementUsage) return null
 		val element = usage.element
-		if(element.language != ParadoxLocalisationLanguage) return null
+		if(element.language != ParadoxScriptLanguage) return null
 		val definition = element.findParentDefinition() ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
 		return DefinitionUsageGroup(definition, definitionInfo, usageViewSettings)

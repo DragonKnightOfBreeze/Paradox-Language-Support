@@ -157,15 +157,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val configGroup = config.info.configGroup
 			if(config.expression.type != CwtDataTypes.Modifier) return
 			val name = element.value
-			val modifier = CwtConfigHandler.resolveModifier(name, configGroup)
-			if(modifier == null) return //忽略无法解析的修饰符
-			val key = CwtConfigHandler.getModifierLocalisationName(name)
+			val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup) ?: return
 			val missingLocales = mutableSetOf<ParadoxLocaleConfig>()
 			for(locale in inspection.localeSet) {
 				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).locale(locale)
 				//可以为全大写/全小写
-				val localisation = findLocalisation(key, configGroup.project, selector = selector)
-					?: findLocalisation(key.uppercase(), configGroup.project, selector = selector)
+				val localisation = keys.firstNotNullOfOrNull {
+					findLocalisation(it, configGroup.project, selector = selector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = selector)
+				}
 				if(localisation == null) missingLocales.add(locale)
 			}
 			if(missingLocales.isNotEmpty()){
@@ -216,7 +215,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkForModifiers"))
 					.bindSelected(::checkForModifiers)
 					.actionListener { _, component -> checkForModifiers = component.isSelected }
-					.enabledIf(checkForDefinitionsCb.selected)
 			}
 		}
 	}

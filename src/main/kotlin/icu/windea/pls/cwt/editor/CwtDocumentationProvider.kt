@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -134,7 +135,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//得到相关本地化
-			getRelatedLocalisations(element, originalElement, name, configType, configGroup, sections)
+			getRelatedLocalisations(element, originalElement, name, configGroup, sections)
 		}
 	}
 	
@@ -175,25 +176,44 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				}
 			}
 			//得到相关本地化
-			getRelatedLocalisations(element, originalElement, name, configType, configGroup, sections)
+			getRelatedLocalisations(element, originalElement, name, configGroup, sections)
 		}
 	}
 	
-	private fun StringBuilder.getRelatedLocalisations(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
+	private fun StringBuilder.getRelatedLocalisations(element: PsiElement, originalElement: PsiElement?, name: String, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
+		//NOTE 不能确定相关本地化的名字到底是什么，并且从API层面上来说，上下文PSI元素只能是CwtProperty而非ParadoxExpressionAwareElement
+		//Name, Desc?
+		ProgressManager.checkCanceled()
 		if(originalElement == null || configGroup == null) return
-		val key = when(configType) {
-			CwtConfigType.Modifier -> CwtConfigHandler.getModifierLocalisationName(name)
-			else -> return
+		val keys = CwtConfigHandler.getModifierLocalisationNameKeys(name, configGroup)
+		val localisation = keys?.firstNotNullOfOrNull {
+			val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
+			//可以为全大写/全小写
+			findLocalisation(it, configGroup.project, selector = selector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = selector)
 		}
-		val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
-		//可以为全大写/全小写
-		val localisation = findLocalisation(key, configGroup.project, selector = selector)
-			?: findLocalisation(key.uppercase(), configGroup.project, selector = selector)
-		appendBr()
-		append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
-		append("Name = ").appendLocalisationLink(configGroup.gameType, localisation?.name ?: key, originalElement, resolved = localisation != null)
+		val descKeys = CwtConfigHandler.getModifierLocalisationDescKeys(name, configGroup)
+		val descLocalisation = descKeys?.firstNotNullOfOrNull {
+			val descSelector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
+			//可以为全大写/全小写
+			findLocalisation(it, configGroup.project, selector = descSelector) ?: findLocalisation(it.uppercase(), configGroup.project, selector = descSelector)
+		}
+		//如果没找到的话，不要在文档中显示相关本地化信息
+		if(localisation != null) {
+			appendBr()
+			append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
+			append("Name = ").appendLocalisationLink(configGroup.gameType, localisation.name, originalElement, resolved = true)
+		}
+		if(descLocalisation != null) {
+			appendBr()
+			append("Desc = ").appendLocalisationLink(configGroup.gameType, descLocalisation.name, originalElement, resolved = true)
+		}
 		if(sections != null) {
-			if(localisation != null) sections.put("Name", ParadoxLocalisationTextRenderer.render(localisation))
+			if(localisation != null) {
+				sections.put("Name", ParadoxLocalisationTextRenderer.render(localisation))
+			}
+			if(descLocalisation != null) {
+				sections.put("Desc", ParadoxLocalisationTextRenderer.render(descLocalisation))
+			}
 		}
 	}
 	

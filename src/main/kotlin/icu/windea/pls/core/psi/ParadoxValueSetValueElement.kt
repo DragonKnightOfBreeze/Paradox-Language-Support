@@ -1,5 +1,6 @@
 package icu.windea.pls.core.psi
 
+import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
@@ -7,6 +8,7 @@ import com.intellij.psi.impl.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.navigation.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -39,6 +41,10 @@ class ParadoxValueSetValueElement(
 	
 	override fun getNameIdentifier(): PsiElement {
 		return this
+	}
+	
+	override fun getPresentation(): ItemPresentation {
+		return ParadoxValueSetValueElementPresentation(this)
 	}
 	
 	override fun getProject(): Project {

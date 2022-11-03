@@ -51,7 +51,6 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 				if(complexEnumValueInfo != null) {
 					when(location) {
 						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
-						UsageViewNodeTextLocation.INSTANCE -> complexEnumValueInfo.name + ": " + complexEnumValueInfo.enumName
 						else -> complexEnumValueInfo.name
 					}
 				} else {
@@ -70,7 +69,6 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			is ParadoxValueSetValueElement -> {
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.valueSetValue")
-					UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.valueSetName
 					else -> element.name
 				}
 			}

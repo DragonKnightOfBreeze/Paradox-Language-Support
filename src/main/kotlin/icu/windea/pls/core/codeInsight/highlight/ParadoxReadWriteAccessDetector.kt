@@ -9,6 +9,8 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.expression.reference.*
 
+//如果在查找使用页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
+
 /**
  * 在查找使用中，区分参数和值集中的值的读/写使用
  */

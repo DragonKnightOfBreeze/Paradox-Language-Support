@@ -40,15 +40,14 @@
 
 * BUG修复：
   * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
-  * [ ] 兼容`value_field`或者`int_value_field`需要被是被为`value[variable]`的情况
-  * [ ] 修复`root.from`中的`.`实际上并没有被正确地高亮为操作符（operator）的问题
   * [ ] 兼容更复杂的表达式的情况，如：`root.owner.event_target:target@root.owner`
+  * [ ] 修复`root.from`中的`.`实际上并没有被正确地高亮为操作符（operator）的问题
+  * [ ] 兼容`value_field`或者`int_value_field`需要被是被为`value[variable]`的情况
   * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况
   * [X] 兼容localisationCommandScope需要被识别为`value_set[variable]`的情况
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
-  * [X] 在文档中修饰符的相关本地化（注意修饰符的相关本地化的名字是`mod_$`，可以为全大写/全小写）
   * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 尽管在脚本文件中Ctrl+点击本地化引用只会导航到选用的（而非所有的，Alt+Ctrl+点击才会导航到所有的），从任意同名本地化Ctrl+点击仍然需要可以导航到所有的引用，其他类型的引用同理
@@ -68,24 +67,16 @@
   * [ ] 实现动作：与重载或者被重载的其他定义/本地化作比较（对于定义/本地化，在编辑菜单/右键菜单/项目视图右键菜单中）（要比较的定义/本地化拥有相同的名字）
   * [ ] 添加引用解析：用于格式化的本地化文本中的格式化分段（`format.xxx: "<some_parts> ...""`中的`<some_parts>`）
   * [X] 在查找使用中，区分参数和值集中的值的读/写使用
-  * [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）
+  * [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
 * ［长期］完善CWT配置支持：
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   * [X] 为`complexEnumValue`的引用（而非声明）提供特殊文档
   * [X] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找使用、导航到类型声明等功能 - 通过intention和annotator
+  * [X] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc` `mod_category_$`等，需要确定具体规则是什么）
+  * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
   * [ ] 优化：更好地兼容嵌套的定义
   * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
-
-待检查：
-
-```
-# Cannot resolve 'faill_breach_shroud_owner' and no exception thrown???
-event_target:faill_breach_shroud_owner
-
-icu.windea.pls.script.expression.reference.ParadoxScriptExpressionElementReferenceProvider
-TODO 不能直接返回PsiReference，需要先确定textRange
-```
 
 ### 0.7.3
 

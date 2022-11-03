@@ -43,8 +43,22 @@ object CwtConfigHandler {
 	//region Misc
 	const val paramsEnumName = "scripted_effect_params"
 	
-	fun getModifierLocalisationName(name: String) : String{
-		return "mod_$name"
+	fun getModifierLocalisationNameKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
+		//TODO 检查到底是如何确定的
+		//mod_$, mod_country_$
+		val modifier = configGroup.modifiers[name] ?: return null
+		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
+		if(isCountryModifier) return listOf("mod_${name}", "mod_country_${name}")
+		return listOf("mod_${name}")
+	}
+	
+	fun getModifierLocalisationDescKeys(name: String, configGroup: CwtConfigGroup): List<String>? {
+		//TODO 检查到底是如何确定的
+		//mod_$_desc, mod_country_$_desc
+		val modifier = configGroup.modifiers[name] ?: return null
+		val isCountryModifier = !name.startsWith("country_") && modifier.categories.any { it.equals("country", true) || it.equals("countries", true) }
+		if(isCountryModifier) return listOf("mod_${name}_desc", "mod_country_${name}_desc")
+		return listOf("mod_${name}_desc")
 	}
 	
 	fun getScopeName(scopeNameOrAlias: String, configGroup: CwtConfigGroup): String {
@@ -107,7 +121,7 @@ object CwtConfigHandler {
 			return expression.type == ParadoxExpressionType.BlockType
 		}
 		//匹配空字符串
-		if(configExpression.isEmpty()) {    
+		if(configExpression.isEmpty()) {
 			return expression.isEmpty()
 		}
 		
@@ -360,8 +374,8 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int{
-		return when(configExpression.type){
+	fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Int {
+		return when(configExpression.type) {
 			CwtDataTypes.Any -> 90
 			CwtDataTypes.Bool -> 90
 			CwtDataTypes.Int -> 90
@@ -1266,7 +1280,7 @@ object CwtConfigHandler {
 		val project = element.project
 		val configGroup = config.info.configGroup
 		val gameType = configGroup.gameType
-		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value 
+		val expression = rangeInElement?.substring(element.text)?.unquote() ?: element.value
 		when(configExpression.type) {
 			CwtDataTypes.Localisation -> {
 				val name = expression
