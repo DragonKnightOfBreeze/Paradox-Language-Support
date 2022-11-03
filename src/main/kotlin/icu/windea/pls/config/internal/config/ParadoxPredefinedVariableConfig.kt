@@ -12,7 +12,7 @@ class ParadoxPredefinedVariableConfig(
 	override val description: String,
 	override val pointer: SmartPsiElementPointer<out PsiElement>
 ) : InternalConfig {
-	override val icon: Icon get() = PlsIcons.Variable
+	override val icon: Icon get() = PlsIcons.PredefinedVariable
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || other is ParadoxPredefinedVariableConfig && id == other.id

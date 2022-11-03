@@ -113,16 +113,7 @@ class ParadoxScriptValueFieldValueExpressionInfo(
 	}
 	
 	override fun getAttributesKey(): TextAttributesKey {
-		return when {
-			directlyResolved is CwtProperty -> {
-				when(CwtConfigType.resolve(directlyResolved)) {
-					CwtConfigType.SystemScope -> ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
-					CwtConfigType.Scope -> ParadoxScriptAttributesKeys.SCOPE_KEY
-					else -> ParadoxScriptAttributesKeys.SCOPE_KEY
-				}
-			}
-			else -> ParadoxScriptAttributesKeys.SCOPE_KEY
-		}
+		return  ParadoxScriptAttributesKeys.VALUE_FIELD_VALUE_KEY
 	}
 }
 
@@ -214,7 +205,6 @@ class ParadoxScriptValueSetValueExpressionInfo(
 	
 	override fun getAttributesKey(): TextAttributesKey {
 		return ParadoxScriptAttributesKeys.VALUE_SET_VALUE_KEY
+		//TODO 对变量使用特殊的高亮
 	}
-	
-	//TODO unused value set value -> put to UnusedValueSetValueInspection
 }

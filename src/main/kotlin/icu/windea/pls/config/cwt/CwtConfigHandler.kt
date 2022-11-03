@@ -720,7 +720,7 @@ object CwtConfigHandler {
 							val element = valueSetValueConfig.pointer.element ?: continue
 							val typeFile = valueConfig.pointer.containingFile
 							val lookupElement = LookupElementBuilder.create(element, name)
-								.withExpectedIcon(PlsIcons.HardCodedValueSetValue)
+								.withExpectedIcon(PlsIcons.PredefinedValueSetValue)
 								.withTailText(tailText, true)
 								.withTypeText(typeFile?.name, typeFile?.icon, true)
 								.withExpectedInsertHandler(isKey)
