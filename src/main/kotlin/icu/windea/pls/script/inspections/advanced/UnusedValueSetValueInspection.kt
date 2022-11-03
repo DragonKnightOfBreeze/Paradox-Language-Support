@@ -41,14 +41,13 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 		private val session: LocalInspectionToolSession
 	) : ParadoxScriptVisitor() {
 		private fun shouldVisit(element: PsiElement): Boolean {
-			//ignore with parameters situation
 			return (element is ParadoxExpressionAwareElement && !element.isParameterAwareExpression())
 		}
 		
 		override fun visitElement(element: PsiElement) {
 			if(!shouldVisit(element)) return
-			ProgressManager.checkCanceled()
 			
+			ProgressManager.checkCanceled()
 			//may only resolve to single ParadoxValueSetValueElement (set-flag expression)
 			val reference = element.reference ?: return
 			if(!reference.canResolveValueSetValue()) return
@@ -81,15 +80,15 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 					used
 				}
 				if(!isUsed) {
-					registerProblem(resolved, reference.rangeInElement)
+					registerProblem(element, resolved.name, reference.rangeInElement)
 				}
 			}
 		}
 		
-		private fun registerProblem(resolved: ParadoxValueSetValueElement, range: TextRange) {
-			val message = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.description", resolved.name)
-			holder.registerProblem(resolved, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
-				ImportGameOrModDirectoryFix(resolved)
+		private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
+			val message = PlsBundle.message("script.inspection.advanced.unusedValueSetValue.description", name)
+			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
+				ImportGameOrModDirectoryFix(element)
 			)
 		}
 	}

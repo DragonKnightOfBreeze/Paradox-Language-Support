@@ -93,16 +93,16 @@ class UnusedParameterInspection : LocalInspectionTool() {
 						used
 					}
 					if(!isUsed) {
-						registerProblem(resolved, reference.rangeInElement)
+						registerProblem(element, resolved.name, reference.rangeInElement)
 					}
 				}
 			}
 		}
 		
-		private fun registerProblem(resolved: ParadoxParameterElement, range: TextRange) {
-			val message = PlsBundle.message("script.inspection.advanced.unusedParameter.description", resolved.name)
-			holder.registerProblem(resolved, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
-				ImportGameOrModDirectoryFix(resolved)
+		private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
+			val message = PlsBundle.message("script.inspection.advanced.unusedParameter.description", name)
+			holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
+				ImportGameOrModDirectoryFix(element)
 			)
 		}
 	}

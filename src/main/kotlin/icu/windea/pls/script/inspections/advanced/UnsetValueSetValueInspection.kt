@@ -84,16 +84,16 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
 						used
 					}
 					if(!isUsed) {
-						registerProblem(resolved, reference.rangeInElement)
+						registerProblem(element, resolved.name, reference.rangeInElement)
 					}
 				}
 			}
 		}
 		
-		private fun registerProblem(resolved: ParadoxValueSetValueElement, range: TextRange) {
-			val message = PlsBundle.message("script.inspection.advanced.unsetValueSetValue.description", resolved.name)
-			holder.registerProblem(resolved, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range,
-				ImportGameOrModDirectoryFix(resolved)
+		private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
+			val message = PlsBundle.message("script.inspection.advanced.unsetValueSetValue.description", name)
+			holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range,
+				ImportGameOrModDirectoryFix(element)
 			)
 		}
 	}

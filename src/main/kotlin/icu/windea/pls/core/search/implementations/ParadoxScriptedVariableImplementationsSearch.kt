@@ -1,4 +1,4 @@
-package icu.windea.pls.core.search.impl
+package icu.windea.pls.core.search.implementations
 
 import com.intellij.openapi.application.*
 import com.intellij.psi.*

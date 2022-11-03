@@ -39,7 +39,7 @@
 ### 0.7.4
 
 * BUG修复：
-  * [ ] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
+  * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   * [ ] 兼容`value_field`或者`int_value_field`需要被是被为`value[variable]`的情况
   * [ ] 修复`root.from`中的`.`实际上并没有被正确地高亮为操作符（operator）的问题
   * [ ] 兼容嵌套的表达式的情况，如：`root.owner.event_target:target@root.owner`
