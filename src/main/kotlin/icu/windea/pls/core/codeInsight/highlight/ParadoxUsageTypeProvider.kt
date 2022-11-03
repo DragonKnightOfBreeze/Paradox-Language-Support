@@ -3,9 +3,9 @@ package icu.windea.pls.core.codeInsight.highlight
 import com.intellij.psi.*
 import com.intellij.usages.*
 import com.intellij.usages.impl.rules.*
-import icu.windea.pls.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -17,19 +17,20 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 	}
 	
 	override fun getUsageType(element: PsiElement?, targets: Array<out UsageTarget>): UsageType? {
+		//TODO
 		return when {
 			element is ParadoxExpressionAwareElement -> {
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return null
 				val configExpression = config.expression
-				UsageType { PlsBundle.message("usageType.byConfigExpression", configExpression) }
+				ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
 			}
 			element is ParadoxScriptVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
 			element is ParadoxScriptInlineMathVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
 			element is ParadoxScriptParameter -> ParadoxUsageType.PARAMETER_REFERENCE_1
 			element is ParadoxScriptInlineMathParameter -> ParadoxUsageType.PARAMETER_REFERENCE_2
 			element is ParadoxScriptParameterConditionParameter -> ParadoxUsageType.PARAMETER_REFERENCE_3
+			element is ParadoxLocalisationPropertyReference -> ParadoxUsageType.LOCALISATION_REFERENCE
 			else -> null
-			//TODO
 		}
 	}
 }

@@ -111,7 +111,7 @@ private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionEl
 					if(index == 0) {
 						if(isKey && config is CwtPropertyConfig) {
 							if(matchesScriptExpression(expression, config.keyExpression, configGroup, matchType)) {
-								nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index)
+								nextIndex = inlineConfig(key, isQuoted, config, configGroup, nextResult, index, matchType)
 							}
 						} else if(!isKey && config is CwtValueConfig) {
 							nextResult.add(config)
@@ -121,7 +121,7 @@ private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionEl
 						if(isKey && propertyConfigs != null && propertyConfigs.isNotEmpty()) {
 							for(propertyConfig in propertyConfigs) {
 								if(matchesScriptExpression(expression, propertyConfig.keyExpression, configGroup, matchType)) {
-									nextIndex = inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index)
+									nextIndex = inlineConfig(key, isQuoted, propertyConfig, configGroup, nextResult, index, matchType)
 								}
 							}
 						}
@@ -148,7 +148,7 @@ private fun doResolveConfigs(definitionInfo: ParadoxDefinitionInfo, definitionEl
 /**
  * 内联规则以便后续的代码提示、引用解析和结构验证。
  */
-private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtDataConfig<*>>, index: Int): Int {
+private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConfig, configGroup: CwtConfigGroup, result: MutableList<CwtDataConfig<*>>, index: Int, matchType: Int): Int {
 	//内联类型为`single_alias_right`或`alias_match_left`的规则
 	run {
 		val valueExpression = config.valueExpression
@@ -164,7 +164,7 @@ private fun inlineConfig(key: String, isQuoted: Boolean, config: CwtPropertyConf
 			CwtDataTypes.AliasMatchLeft -> {
 				val aliasName = valueExpression.value ?: return@run
 				val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-				val aliasSubName = CwtConfigHandler.getAliasSubName(key, isQuoted, aliasName, configGroup) ?: return@run
+				val aliasSubName = CwtConfigHandler.getAliasSubName(key, isQuoted, aliasName, configGroup, matchType) ?: return@run
 				val aliases = aliasGroup[aliasSubName] ?: return@run
 				for(alias in aliases) {
 					result.add(config.inlineFromAliasConfig(alias))

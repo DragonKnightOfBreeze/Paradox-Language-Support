@@ -24,7 +24,7 @@ abstract class DefinitionNameIntention: IntentionAction, PriorityAction {
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
 		if(file.language != ParadoxScriptLanguage) return false
-		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return false
+		val originalElement = file.findElementAt(editor.caretModel.offset)?.getSelfOrPrevSiblingNotWhitespace() ?: return false
 		val element = originalElement.parentOfType<ParadoxScriptString>() ?: return false
 		return element.isDefinitionName()
 	}
@@ -32,7 +32,7 @@ abstract class DefinitionNameIntention: IntentionAction, PriorityAction {
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
 		if(file.language != ParadoxScriptLanguage) return
-		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
+		val originalElement = file.findElementAt(editor.caretModel.offset)?.getSelfOrPrevSiblingNotWhitespace() ?: return
 		val element = originalElement.parentOfType<ParadoxScriptString>() ?: return
 		val definition = element.findParentDefinition() ?: return //unexpected
 		val definitionInfo = definition.definitionInfo ?: return //unexpected
@@ -50,7 +50,6 @@ class DefinitionNameFindUsagesIntention: DefinitionNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.definitionName.findUsages")
 	
 	override fun doInvoke(definition: ParadoxDefinitionProperty, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
-		//TODO
 		GotoDeclarationAction.startFindUsages(editor, project, definition)
 	}
 	

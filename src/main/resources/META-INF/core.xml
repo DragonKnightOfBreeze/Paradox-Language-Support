@@ -37,6 +37,7 @@
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxLocalisationImplementationsSearch"/>
     
     <referencesSearch implementation="icu.windea.pls.core.search.references.ParadoxDefinitionReferencesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.core.search.references.ParadoxComplexEnumValueReferencesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
     

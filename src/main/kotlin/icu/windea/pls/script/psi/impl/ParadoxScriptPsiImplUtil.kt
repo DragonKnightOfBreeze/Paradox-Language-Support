@@ -112,7 +112,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getPresentation(element: ParadoxScriptScriptedVariable): ItemPresentation {
-		return ParadoxScriptVariablePresentation(element)
+		return ParadoxScriptScriptedVariablePresentation(element)
 	}
 	//endregion
 	

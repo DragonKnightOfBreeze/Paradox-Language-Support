@@ -24,7 +24,7 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
 		if(editor == null || file == null) return false
 		if(file.language != ParadoxScriptLanguage) return false
-		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return false
+		val originalElement = file.findElementAt(editor.caretModel.offset)?.getSelfOrPrevSiblingNotWhitespace() ?: return false
 		val element = originalElement.parentOfType<ParadoxExpressionAwareElement>() ?: return false
 		return element.complexEnumValueInfo != null
 	}
@@ -32,7 +32,7 @@ abstract class ComplexEnumValueNameIntention: IntentionAction, PriorityAction {
 	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
 		if(editor == null || file == null) return
 		if(file.language != ParadoxScriptLanguage) return
-		val originalElement = file.findElementAt(editor.caretModel.offset) ?: return
+		val originalElement = file.findElementAt(editor.caretModel.offset)?.getSelfOrPrevSiblingNotWhitespace() ?: return
 		val element = originalElement.parentOfType<ParadoxExpressionAwareElement>() ?: return
 		val complexEnumValueInfo = element.complexEnumValueInfo ?: return
 		doInvoke(element, complexEnumValueInfo, editor, project)
@@ -48,7 +48,6 @@ class ComplexEnumValueNameFindUsagesIntention: ComplexEnumValueNameIntention() {
 	override fun getText() = PlsBundle.message("script.intention.complexEnumValueName.findUsages")
 	
 	override fun doInvoke(element: ParadoxExpressionAwareElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo, editor: Editor, project: Project) {
-		//TODO
 		GotoDeclarationAction.startFindUsages(editor, project, element)
 	}
 	
