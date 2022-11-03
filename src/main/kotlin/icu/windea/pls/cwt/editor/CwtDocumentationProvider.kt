@@ -103,7 +103,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
-				val typeCategory = configType?.typeCategory
+				val typeCategory = configType?.category
 				if(typeCategory != null) {
 					val typeElement = element.parentOfType<CwtProperty>()
 					val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
@@ -144,7 +144,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(configType != null) append(configType.text).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
-				val typeCategory = configType?.typeCategory
+				val typeCategory = configType?.category
 				if(typeCategory != null) {
 					val typeElement = element.parentOfType<CwtProperty>()
 					val typeName = typeElement?.name?.substringIn('[', ']')?.takeIfNotEmpty()
@@ -191,7 +191,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			?: findLocalisation(key.uppercase(), configGroup.project, selector = selector)
 		appendBr()
 		append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
-		append("Name = ").appendLocalisationLink(localisation?.name ?: key, originalElement, resolved = localisation != null)
+		append("Name = ").appendLocalisationLink(configGroup.gameType, localisation?.name ?: key, originalElement, resolved = localisation != null)
 		if(sections != null) {
 			if(localisation != null) sections.put("Name", ParadoxLocalisationTextRenderer.render(localisation))
 		}

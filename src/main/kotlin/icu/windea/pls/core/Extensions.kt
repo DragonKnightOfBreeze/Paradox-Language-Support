@@ -5,6 +5,7 @@ package icu.windea.pls.core
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.ex.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.impl.*
@@ -686,95 +687,96 @@ fun findAllFilesByFilePath(
 //endregion
 
 //region Psi Link Extensions
-
-//com.jetbrains.python.documentation.PyDocumentationLink
-
 private const val cwtLinkPrefix = "#cwt/"
 private const val definitionLinkPrefix = "#definition/"
 private const val localisationLinkPrefix = "#localisation/"
 private const val filePathLinkPrefix = "#path/"
 
-fun resolveLink(link: String, context: PsiElement): PsiElement? {
-	return when {
-		link.startsWith(cwtLinkPrefix) -> resolveCwtLink(link.drop(cwtLinkPrefix.length), context)
-		link.startsWith(definitionLinkPrefix) -> resolveDefinitionLink(link.drop(definitionLinkPrefix.length), context)
-		link.startsWith(localisationLinkPrefix) -> resolveLocalisationLink(link.drop(localisationLinkPrefix.length), context)
-		link.startsWith(filePathLinkPrefix) -> resolveFilePathLink(link.drop(filePathLinkPrefix.length), context)
+fun resolveLink(link: String, sourceElement: PsiElement): PsiElement? {
+	//e.g. #cwt/stellaris/types/civic_or_origin/civic
+	link.removePrefixOrNull(cwtLinkPrefix)?.let { return resolveCwtLink(it, sourceElement) }
+	//e.g. #definition/stellaris/civic_or_origin.origin/origin_default
+	link.removePrefixOrNull(definitionLinkPrefix)?.let { return resolveDefinitionLink(it, sourceElement) }
+	//e.g. #localisation/stellaris/KEY
+	link.removePrefixOrNull(localisationLinkPrefix)?.let { return resolveLocalisationLink(it, sourceElement) }
+	//e.g. #path/stellaris/path
+	link.removePrefixOrNull(filePathLinkPrefix)?.let { return resolveFilePathLink(it, sourceElement) }
+	return null
+}
+
+private fun resolveCwtLink(linkWithoutPrefix: String, sourceElement: PsiElement): CwtProperty? {
+	ProgressManager.checkCanceled()
+	val tokens = linkWithoutPrefix.split('/')
+	if(tokens.size > 4) return null
+	val gameType = tokens.getOrNull(0) ?: return null
+	val category = tokens.getOrNull(1) ?: return null
+	val project = sourceElement.project
+	return when(category) {
+		"types" -> {
+			val name = tokens.getOrNull(2)
+			val subtypeName = tokens.getOrNull(3)
+			val config = when {
+				name == null -> null
+				subtypeName == null -> getCwtConfig(project).getValue(gameType).types[name]
+				else -> getCwtConfig(project).getValue(gameType).types.getValue(name).subtypes[subtypeName]
+			} ?: return null
+			return config.pointer.element
+		}
+		"scopes" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).scopeAliasMap[name] ?: return null
+			return config.pointer.element
+		}
+		"enums" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).enums[name] ?: return null
+			return config.pointer.element
+		}
+		"complex_enums" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).complexEnums[name] ?: return null
+			return config.pointer.element
+		}
+		"values" -> {
+			val name = tokens.getOrNull(2) ?: return null
+			val config = getCwtConfig(project).getValue(gameType).values[name] ?: return null
+			return config.pointer.element
+		}
 		else -> null
 	}
 }
 
-//#cwt/stellaris/types/civic_or_origin/civic
-private fun resolveCwtLink(linkWithoutPrefix: String, context: PsiElement): CwtProperty? {
-	return runCatching {
-		val project = context.project
-		val tokens = linkWithoutPrefix.split('/')
-		val gameType = tokens[0]
-		val configType = tokens[1]
-		when(configType) {
-			"types" -> {
-				val name = tokens.getOrNull(2)
-				val subtypeName = tokens.getOrNull(3)
-				val config = when{
-					name == null -> null
-					subtypeName == null -> getCwtConfig(project).getValue(gameType).types[name]
-					else -> getCwtConfig(project).getValue(gameType).types.getValue(name).subtypes[subtypeName]
-				} ?: return null
-				return config.pointer.element
-			}
-			"scopes" -> {
-				val name = tokens.getOrNull(2) ?: return null
-				val config = getCwtConfig(project).getValue(gameType).scopeAliasMap[name] ?: return null
-				return config.pointer.element
-			}
-			"enums" -> {
-				val name = tokens.getOrNull(2) ?: return null
-				val config = getCwtConfig(project).getValue(gameType).enums[name] ?: return null
-				return config.pointer.element
-			}
-			"complex_enums" -> {
-				val name = tokens.getOrNull(2) ?: return null
-				val config = getCwtConfig(project).getValue(gameType).complexEnums[name] ?: return null
-				return config.pointer.element
-			}
-			"values" -> {
-				val name = tokens.getOrNull(2) ?: return null
-				val config = getCwtConfig(project).getValue(gameType).values[name] ?: return null
-				return config.pointer.element
-			}
-			else -> null
-		}
-	}.getOrNull()
+private fun resolveDefinitionLink(linkWithoutPrefix: String, sourceElement: PsiElement): ParadoxDefinitionProperty? {
+	ProgressManager.checkCanceled()
+	val tokens = linkWithoutPrefix.split('/')
+	if(tokens.size > 3) return null
+	val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
+	val typeExpression = tokens.getOrNull(1) ?: return null
+	val name = tokens.getOrNull(2) ?: return null
+	val project = sourceElement.project
+	val selector = definitionSelector().gameType(gameType).preferRootFrom(sourceElement)
+	return findDefinitionByType(name, typeExpression, project, selector = selector)
 }
 
-//#definition/civic_or_origin.origin/origin_default
-private fun resolveDefinitionLink(linkWithoutPrefix: String, context: PsiElement): ParadoxDefinitionProperty? {
-	return runCatching {
-		val lastDotIndex = linkWithoutPrefix.lastIndexOf('/')
-		val type = linkWithoutPrefix.substring(0, lastDotIndex)
-		val name = linkWithoutPrefix.substring(lastDotIndex + 1)
-		val selector = definitionSelector().gameTypeFrom(context).preferRootFrom(context)
-		findDefinitionByType(name, type, context.project, selector = selector)
-	}.getOrNull()
+private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: PsiElement): ParadoxLocalisationProperty? {
+	ProgressManager.checkCanceled()
+	val tokens = linkWithoutPrefix.split('/')
+	if(tokens.size > 2) return null
+	val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
+	val name = tokens.getOrNull(1) ?: return null
+	val project = sourceElement.project
+	val selector = localisationSelector().gameType(gameType).preferRootFrom(sourceElement).preferLocale(sourceElement.localeConfig)
+	return findLocalisation(name, project, selector = selector)
 }
 
-//#localisation/KEY
-private fun resolveLocalisationLink(linkWithoutPrefix: String, context: PsiElement): ParadoxLocalisationProperty? {
-	return runCatching {
-		val token = linkWithoutPrefix
-		val selector = localisationSelector().gameTypeFrom(context).preferRootFrom(context).preferLocale(context.localeConfig)
-		return findLocalisation(token, context.project, selector = selector)
-	}.getOrNull()
-}
-
-private fun resolveFilePathLink(linkWithoutPrefix: String, context: PsiElement): PsiFile? {
-	return runCatching {
-		val filePath = linkWithoutPrefix
-		val project = context.project
-		val fileInfo = context.fileInfo ?: return@runCatching null
-		val selector = fileSelector().gameType(fileInfo.rootInfo.gameType).preferRoot(fileInfo.rootFile)
-		findFileByFilePath(filePath, project, selector = selector)?.toPsiFile<PsiFile>(project)
-	}.getOrNull()
+private fun resolveFilePathLink(linkWithoutPrefix: String, sourceElement: PsiElement): PsiFile? {
+	ProgressManager.checkCanceled()
+	val tokens = linkWithoutPrefix.split('/', limit = 2)
+	val gameType = tokens.getOrNull(0)?.let { ParadoxGameType.resolve(it) } ?: return null
+	val filePath = tokens.getOrNull(1) ?: return null
+	val project = sourceElement.project
+	val selector = fileSelector().gameType(gameType).preferRootFrom(sourceElement)
+	return findFileByFilePath(filePath, project, selector = selector)?.toPsiFile(project)
 }
 //endregion
 
@@ -814,30 +816,30 @@ fun StringBuilder.appendCwtLink(name: String, link: String, context: PsiElement?
 	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendDefinitionLink(name: String, typeExpression: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
+fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, typeExpression: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(PlsConstants.unresolvedString)
 	//如果可以被解析为定义，则显示链接
 	val isResolved = resolved == true || (resolved == null && findDefinition(name, null, context.project, preferFirst = true, selector = definitionSelector().gameTypeFrom(context)) != null)
-	if(isResolved) return appendPsiLink("$definitionLinkPrefix$typeExpression/$name", name)
+	if(isResolved) return appendPsiLink("$definitionLinkPrefix${gameType.id}/$typeExpression/$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendLocalisationLink(name: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
+fun StringBuilder.appendLocalisationLink(gameType: ParadoxGameType, name: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(PlsConstants.unresolvedString)
 	//如果可以被解析为本地化，则显示链接
 	val isResolved = resolved == true || (resolved == null && findLocalisation(name, context.project, preferFirst = true, selector = localisationSelector().gameTypeFrom(context)) != null)
-	if(isResolved) return appendPsiLink("$localisationLinkPrefix$name", name)
+	if(isResolved) return appendPsiLink("$localisationLinkPrefix${gameType.id}/$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)
 }
 
-fun StringBuilder.appendFilePathLink(filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
+fun StringBuilder.appendFilePathLink(gameType: ParadoxGameType, filePath: String, context: PsiElement, resolved: Boolean? = null): StringBuilder {
 	//如果可以定位到绝对路径，则显示链接
 	val isResolved = resolved == true || (resolved == null && findFileByFilePath(filePath, context.project, selector = fileSelector().gameTypeFrom(context)) != null)
-	if(isResolved) return appendPsiLink("$filePathLinkPrefix$filePath", filePath)
+	if(isResolved) return appendPsiLink("$filePathLinkPrefix${gameType.id}/$filePath", filePath)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(filePath)
 }

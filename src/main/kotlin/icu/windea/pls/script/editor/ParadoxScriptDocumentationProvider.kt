@@ -295,7 +295,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 							if(localisationKeys.add(key)) {
 								appendBr()
 								append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
-								append(key).append(" = ").appendLocalisationLink(targetKey, element, resolved = true)
+								append(key).append(" = ").appendLocalisationLink(definitionInfo.gameType, targetKey, element, resolved = true)
 							}
 						}
 					}
@@ -315,7 +315,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 							if(imageKeys.add(key)) {
 								appendBr()
 								append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
-								append(key).append(" = ").appendFilePathLink(filePath, element, resolved = true)
+								append(key).append(" = ").appendFilePathLink(definitionInfo.gameType, filePath, element, resolved = true)
 							}
 						}
 					}
