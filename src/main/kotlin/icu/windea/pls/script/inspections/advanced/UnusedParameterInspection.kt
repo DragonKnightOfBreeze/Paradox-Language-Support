@@ -10,6 +10,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
@@ -92,15 +93,17 @@ class UnusedParameterInspection : LocalInspectionTool() {
 						used
 					}
 					if(!isUsed) {
-						registerProblem(resolved, reference)
+						registerProblem(resolved, reference.rangeInElement)
 					}
 				}
 			}
 		}
 		
-		private fun registerProblem(resolved: ParadoxParameterElement, reference: PsiReference) {
+		private fun registerProblem(resolved: ParadoxParameterElement, range: TextRange) {
 			val message = PlsBundle.message("script.inspection.advanced.unusedParameter.description", resolved.name)
-			holder.registerProblem(reference, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
+			holder.registerProblem(resolved, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range,
+				ImportGameOrModDirectoryFix(resolved)
+			)
 		}
 	}
 	

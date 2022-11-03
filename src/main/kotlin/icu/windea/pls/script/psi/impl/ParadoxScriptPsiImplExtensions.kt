@@ -15,7 +15,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 	
 	@Volatile private var _name: String? = null
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxDataType? = null
+	@Volatile private var _valueType: ParadoxExpressionType? = null
 	@Volatile private var _pathName: String? = null
 	@Volatile private var _originalPathName: String? = null
 	@Volatile private var _parameterMap: Map<String, Set<SmartPsiElementPointer<ParadoxParameter>>>? = null
@@ -28,7 +28,7 @@ class SmartParadoxScriptProperty : ParadoxScriptPropertyImpl, ParadoxScriptPrope
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxDataType?
+	override val expressionType: ParadoxExpressionType?
 		get() = _valueType ?: super.expressionType.also { _valueType = it }
 	
 	override val pathName: String?
@@ -65,13 +65,13 @@ class SmartParadoxScriptPropertyKey : ParadoxScriptPropertyKeyImpl, ParadoxScrip
 	constructor(stub: ParadoxScriptPropertyKeyStub, type: IStubElementType<*, *>) : super(stub, type)
 	
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxDataType? = null
+	@Volatile private var _valueType: ParadoxExpressionType? = null
 	
 	override fun getValue(): String {
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxDataType
+	override val expressionType: ParadoxExpressionType
 		get() = _valueType ?: super.expressionType.also { _valueType = it }
 	
 	override fun subtreeChanged() {
@@ -107,13 +107,13 @@ class SmartParadoxScriptString : ParadoxScriptStringImpl, ParadoxScriptString {
 	constructor(node: ASTNode) : super(node)
 	
 	@Volatile private var _value: String? = null
-	@Volatile private var _valueType: ParadoxDataType? = null
+	@Volatile private var _valueType: ParadoxExpressionType? = null
 	
 	override fun getValue(): String {
 		return _value ?: super.getValue().also { _value = it }
 	}
 	
-	override val expressionType: ParadoxDataType
+	override val expressionType: ParadoxExpressionType
 		get() = _valueType ?: super.expressionType.also { _valueType = it }
 	
 	override fun subtreeChanged() {

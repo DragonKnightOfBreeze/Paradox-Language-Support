@@ -4,9 +4,9 @@ import icu.windea.pls.core.*
 import java.text.*
 
 /**
- * @see ParadoxDataExpression
+ * @see ParadoxExpression
  */
-enum class ParadoxDataType(
+enum class ParadoxExpressionType(
 	val id: String,
 	val text: String
 ) {
@@ -26,7 +26,7 @@ enum class ParadoxDataType(
 	}
 	
 	companion object {
-		fun resolve(expression: String): ParadoxDataType {
+		fun resolve(expression: String): ParadoxExpressionType {
 			return when {
 				isBooleanYesNo(expression) -> BooleanType
 				isInt(expression) -> IntType

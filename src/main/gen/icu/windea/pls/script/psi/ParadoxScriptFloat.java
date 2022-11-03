@@ -1,9 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import com.intellij.psi.*;
-import icu.windea.pls.core.expression.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLiteralValue;
+import icu.windea.pls.core.expression.ParadoxExpressionType;
 
 public interface ParadoxScriptFloat extends ParadoxScriptValue, PsiLiteralValue {
 
@@ -13,6 +15,6 @@ public interface ParadoxScriptFloat extends ParadoxScriptValue, PsiLiteralValue 
   float getFloatValue();
 
   @NotNull
-  ParadoxDataType getExpressionType();
+  ParadoxExpressionType getExpressionType();
 
 }

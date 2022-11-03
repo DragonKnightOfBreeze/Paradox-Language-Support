@@ -21,27 +21,27 @@ class CwtCardinalityExpression private constructor(
 	companion object Resolver : CwtExpressionResolver<CwtCardinalityExpression> {
 		val EmptyExpression = CwtCardinalityExpression("", 0, null, true)
 		
-		val cache: LoadingCache<String, CwtCardinalityExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) } }
 		
-		override fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
-			when {
-				expressionString.isEmpty() -> EmptyExpression
-				expressionString.first() == '~' -> {
-					val firstDotIndex = expressionString.indexOf('.')
-					val min = expressionString.substring(1, firstDotIndex).toIntOrNull() ?: 0
-					val max = expressionString.substring(firstDotIndex + 2)
-						.let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
-					val limitMax = true
-					CwtCardinalityExpression(expressionString, min, max, limitMax)
-				}
-				else -> {
-					val firstDotIndex = expressionString.indexOf('.')
-					val min = expressionString.substring(0, firstDotIndex).toIntOrNull() ?: 0
-					val max = expressionString.substring(firstDotIndex + 2)
-						.let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
-					val limitMax = false
-					CwtCardinalityExpression(expressionString, min, max, limitMax)
-				}
+		override fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		
+		private fun doResolve(expressionString: String) = when {
+			expressionString.isEmpty() -> EmptyExpression
+			expressionString.first() == '~' -> {
+				val firstDotIndex = expressionString.indexOf('.')
+				val min = expressionString.substring(1, firstDotIndex).toIntOrNull() ?: 0
+				val max = expressionString.substring(firstDotIndex + 2)
+					.let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
+				val limitMax = true
+				CwtCardinalityExpression(expressionString, min, max, limitMax)
+			}
+			else -> {
+				val firstDotIndex = expressionString.indexOf('.')
+				val min = expressionString.substring(0, firstDotIndex).toIntOrNull() ?: 0
+				val max = expressionString.substring(firstDotIndex + 2)
+					.let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
+				val limitMax = false
+				CwtCardinalityExpression(expressionString, min, max, limitMax)
 			}
 		}
 	}

@@ -10,5 +10,5 @@ interface ParadoxArgument: ParadoxScriptTypedElement {
 	
 	fun setName(name: String): ParadoxArgument
 	
-	override val expressionType: ParadoxDataType get() = ParadoxDataType.ParameterType
+	override val expressionType: ParadoxExpressionType get() = ParadoxExpressionType.ParameterType
 }

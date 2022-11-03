@@ -73,8 +73,8 @@ class ParadoxDefinitionElementInfo(
 }
 
 private val configsCache: Cache<String, List<CwtDataConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
-private val childPropertyConfigsCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
-private val childValueConfigsCache: Cache<String, List<CwtValueConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
+private val childPropertyConfigCache: Cache<String, List<CwtPropertyConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
+private val childValueConfigCache: Cache<String, List<CwtValueConfig>> by lazy { CacheBuilder.newBuilder().buildCache() }
 
 /**
  * 根据路径解析对应的属性/值配置列表。
@@ -188,7 +188,7 @@ private fun resolveChildPropertyConfigs(definitionInfo: ParadoxDefinitionInfo, d
 	
 	//parentPath可以对应property或者value
 	val cacheKey = "${definitionInfo.typesText}:${definitionElementInfo.elementPath}:$matchType"
-	return childPropertyConfigsCache.getOrPut(cacheKey, { emptyList() }) {
+	return childPropertyConfigCache.getOrPut(cacheKey, { emptyList() }) {
 		doResolveChildPropertyConfigs(definitionInfo, definitionElementInfo, matchType)
 	}
 }
@@ -221,7 +221,7 @@ private fun resolveChildValueConfigs(definitionInfo: ParadoxDefinitionInfo, defi
 	
 	//parentPath可以对应property或者value
 	val cacheKey = "${definitionInfo.typesText}:${definitionElementInfo.elementPath}:$matchType"
-	return childValueConfigsCache.getOrPut(cacheKey) {
+	return childValueConfigCache.getOrPut(cacheKey) {
 		doResolveChildValueConfigs(definitionInfo, definitionElementInfo, matchType)
 	}
 }

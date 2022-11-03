@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -14,12 +15,14 @@ import javax.swing.*
 
 /**
  * 缺失的图片的检查。
- * @property forPrimaryRelated 是否同样检查定义的主要的相关图片，默认为true。
- * @property forOptionalRelated 是否同样检查定义的可选的相关图片，默认为false。
+ * @property checkForDefinitions 是否检查定义。默认为true。
+ * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关图片，默认为true。
+ * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关图片，默认为false。
  */
 class MissingImageInspection : LocalInspectionTool() {
-	@JvmField var forPrimaryRelated = true
-	@JvmField var forOptionalRelated = false
+	@JvmField var checkForDefinitions = true
+	@JvmField var checkPrimaryForDefinitions = true
+	@JvmField var checkOptionalForDefinitions = false
 	
 	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
 		return Visitor(this, holder)
@@ -31,6 +34,7 @@ class MissingImageInspection : LocalInspectionTool() {
 	) : ParadoxScriptVisitor() {
 		override fun visitFile(file: PsiFile) {
 			ProgressManager.checkCanceled()
+			if(!inspection.checkForDefinitions) return
 			val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
 			val definitionInfo = scriptFile.definitionInfo ?: return
 			visitDefinition(scriptFile, definitionInfo)
@@ -38,6 +42,7 @@ class MissingImageInspection : LocalInspectionTool() {
 		
 		override fun visitProperty(property: ParadoxScriptProperty) {
 			ProgressManager.checkCanceled()
+			if(!inspection.checkForDefinitions) return
 			val definitionInfo = property.definitionInfo ?: return
 			visitDefinition(property, definitionInfo)
 		}
@@ -57,7 +62,7 @@ class MissingImageInspection : LocalInspectionTool() {
 					if(nameToDistinct.contains(info.name)) continue
 					if(info.primary && hasPrimary) continue
 					//多个位置表达式无法解析时，使用第一个
-					if(info.required || if(info.primary) inspection.forPrimaryRelated else inspection.forOptionalRelated) {
+					if(info.required || if(info.primary) inspection.checkPrimaryForDefinitions else inspection.checkOptionalForDefinitions) {
 						val resolved = info.locationExpression.resolve(definition, definitionInfo, project)
 						if(resolved != null) {
 							val (key, image) = resolved
@@ -105,15 +110,25 @@ class MissingImageInspection : LocalInspectionTool() {
 	
 	override fun createOptionsPanel(): JComponent {
 		return panel {
+			lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.forPrimaryRelated"))
-					.bindSelected(::forPrimaryRelated)
-					.actionListener { _, component -> forPrimaryRelated = component.isSelected }
+				checkForDefinitionsCb = checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkForDefinitions"))
+					.bindSelected(::checkForDefinitions)
+					.actionListener { _, component -> checkForDefinitions = component.isSelected }
 			}
-			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.forOptionalRelated"))
-					.bindSelected(::forOptionalRelated)
-					.actionListener { _, component -> forOptionalRelated = component.isSelected }
+			indent {
+				row {
+					checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkPrimaryForDefinitions"))
+						.bindSelected(::checkPrimaryForDefinitions)
+						.actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
+						.enabledIf(checkForDefinitionsCb.selected)
+				}
+				row {
+					checkBox(PlsBundle.message("script.inspection.advanced.missingImage.option.checkOptionalForDefinitions"))
+						.bindSelected(::checkOptionalForDefinitions)
+						.actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
+						.enabledIf(checkForDefinitionsCb.selected)
+				}
 			}
 		}
 	}

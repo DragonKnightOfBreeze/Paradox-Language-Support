@@ -41,16 +41,17 @@
 * BUG修复：
   * [ ] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   * [ ] 兼容`value_field`或者`int_value_field`需要被是被为`value[variable]`的情况
+  * [ ] 修复`root.from`中的`.`实际上并没有被正确地高亮为操作符（operator）的问题
   * [ ] 兼容嵌套的表达式的情况，如：`root.owner.event_target:target@root.owner`
   * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况
   * [X] 兼容localisationCommandScope需要被识别为`value_set[variable]`的情况
-  * [ ] 修复`root.from`中的`.`实际上并没有被正确地高亮为操作符（operator）的问题s
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
+  * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
+  * [ ] 在文档中修饰符的相关本地化（注意修饰符的相关本地化的名字是`mod_$`，可以为全大写/全小写）
   * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 尽管在脚本文件中Ctrl+点击本地化引用只会导航到选用的（而非所有的，Alt+Ctrl+点击才会导航到所有的），从任意同名本地化Ctrl+点击仍然需要可以导航到所有的引用，其他类型的引用同理
-  * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
   * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
   * [ ] 需要重新调整对返回的规则列表的排序
 * 功能变更：
@@ -61,6 +62,7 @@
   * [X] 实现检查：值集中的值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
   * [X] 实现检查：值集中的值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
   * [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
+  * [X] 实现内嵌提示：预定义修饰符的本地化名字（`mod_$`）
   * [X] 实现动作：导航到（对应的）CWT规则（对于定义元素，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）
   * [ ] 实现动作：与重载或者被重载的其他文件作比较（对于文件，在编辑菜单/右键菜单/项目视图右键菜单中）（要比较的文件拥有相同的相对于游戏或模组目录的路径，不限制文件类型）
   * [ ] 实现动作：与重载或者被重载的其他定义/本地化作比较（对于定义/本地化，在编辑菜单/右键菜单/项目视图右键菜单中）（要比较的定义/本地化拥有相同的名字）

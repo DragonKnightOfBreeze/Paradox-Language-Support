@@ -1,0 +1,88 @@
+package icu.windea.pls.script.codeInsight.hints
+
+import com.intellij.codeInsight.hints.*
+import com.intellij.codeInsight.hints.presentation.*
+import com.intellij.openapi.editor.*
+import com.intellij.psi.*
+import com.intellij.refactoring.suggested.*
+import com.intellij.ui.dsl.builder.*
+import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.selector.*
+import icu.windea.pls.core.tool.*
+import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.codeInsight.hints.ParadoxModifierInfoHintsProvider.*
+import javax.swing.*
+
+/**
+ * （预定义的）修饰符的本地化名字的内嵌提示（相关本地化）
+ */
+@Suppress("UnstableApiUsage")
+class ParadoxModifierInfoHintsProvider: ParadoxScriptHintsProvider<Settings>(){
+	companion object {
+		private val settingsKey = SettingsKey<Settings>("ParadoxModifierInfoHintsSettingsKey")
+	}
+	
+	data class Settings(
+		var textLengthLimit: Int = 20,
+		var iconHeightLimit: Int = 32
+	)
+	
+	override val name: String get() = PlsBundle.message("script.hints.modifierLocalizedName")
+	override val description: String get() = PlsBundle.message("script.hints.modifierLocalizedName.description")
+	override val key: SettingsKey<Settings> get() = settingsKey
+	
+	override fun createSettings() = Settings()
+	
+	override fun createConfigurable(settings: Settings): ImmediateConfigurable {
+		return object : ImmediateConfigurable {
+			override fun createComponent(listener: ChangeListener): JComponent = panel {
+				row {
+					label(PlsBundle.message("script.hints.settings.textLengthLimit"))
+						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
+					textField()
+						.bindIntText(settings::textLengthLimit)
+						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+				}
+				row {
+					label(PlsBundle.message("script.hints.settings.iconHeightLimit"))
+						.applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
+					textField()
+						.bindIntText(settings::iconHeightLimit)
+						.errorOnApply("Int should be positive") { (it.text.toIntOrNull() ?: 0) <= 0 }
+				}
+			}
+		}
+	}
+	
+	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+		if(element is ParadoxExpressionAwareElement) {
+			//基于stub
+			val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return true
+			val type = config.expression.type
+			if(type == CwtDataTypes.Modifier) {
+				val name = element.value
+				val key = CwtConfigHandler.getModifierLocalisationName(name)
+				val configGroup = config.info.configGroup
+				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).preferLocale(preferredParadoxLocale())
+				//可以为全大写/全小写
+				val localisation = findLocalisation(key, configGroup.project, selector = selector)
+					?: findLocalisation(key.uppercase(), configGroup.project, selector = selector)
+					?: return true
+				val presentation = collectLocalisation(localisation, editor, settings)
+				val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
+				val endOffset = element.endOffset
+				sink.addInlineElement(endOffset, true, finalPresentation, false)
+			}
+		}
+		return true
+	}
+	
+	private fun PresentationFactory.collectLocalisation(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
+		return ParadoxLocalisationTextHintsRenderer.render(localisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+	}
+}

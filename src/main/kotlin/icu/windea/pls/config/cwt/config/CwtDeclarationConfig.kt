@@ -15,7 +15,7 @@ data class CwtDeclarationConfig(
 ) : CwtConfig<CwtProperty> {
 	val propertyConfigSingletonList by lazy { propertyConfig.toSingletonList() }
 	
-	private val mergedConfigsCache: Cache<String, List<CwtDataConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
+	private val mergedConfigCache: Cache<String, List<CwtDataConfig<*>>> by lazy { CacheBuilder.newBuilder().buildCache() }
 	
 	/**
 	 * 得到根据子类型列表进行合并后的配置。
@@ -28,7 +28,7 @@ data class CwtDeclarationConfig(
 		if(properties == null && values == null) return propertyConfigSingletonList
 		
 		val cacheKey = subtypes.joinToString(",")
-		return mergedConfigsCache.getOrPut(cacheKey) {
+		return mergedConfigCache.getOrPut(cacheKey) {
 			val mergedConfigs = SmartList<CwtDataConfig<*>>()
 			if(properties != null && properties.isNotEmpty()) {
 				properties.forEach { mergedConfigs.addAll(it.deepMergeBySubtypes(subtypes)) }

@@ -20,39 +20,39 @@ class ParadoxDefinitionTypeExpression private constructor(
 	companion object Resolver : ExpressionResolver<ParadoxDefinitionTypeExpression> {
 		val EmptyExpression = ParadoxDefinitionTypeExpression("", "")
 		
-		val cache: LoadingCache<String, ParadoxDefinitionTypeExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, ParadoxDefinitionTypeExpression> { doResolve(it) } }
 		
-		fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
-			when {
-				expressionString.isEmpty() -> EmptyExpression
-				else -> {
-					val pipeIndex = expressionString.indexOf('|')
-					if(pipeIndex == -1) {
-						val dotIndex = expressionString.indexOf('.')
-						if(dotIndex == -1) {
-							val type = expressionString
-							ParadoxDefinitionTypeExpression(expressionString, type, null, null)
-						} else {
-							val type = expressionString.substring(0, dotIndex)
-							val subtype = expressionString.substring(dotIndex + 1)
-							ParadoxDefinitionTypeExpression(expressionString, type, subtype, null)
-						}
+		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		
+		private fun doResolve(expressionString: String) = when {
+			expressionString.isEmpty() -> EmptyExpression
+			else -> {
+				val pipeIndex = expressionString.indexOf('|')
+				if(pipeIndex == -1) {
+					val dotIndex = expressionString.indexOf('.')
+					if(dotIndex == -1) {
+						val type = expressionString
+						ParadoxDefinitionTypeExpression(expressionString, type, null, null)
 					} else {
-						val pairs = SmartList<Pair<String, String?>>()
-						expressionString.split('|').mapTo(pairs) {
-							val dotIndex = it.indexOf('.')
-							if(dotIndex == -1) {
-								val type = it
-								type to null
-							} else {
-								val type = it.substring(0, dotIndex)
-								val subtype = it.substring(dotIndex + 1)
-								type to subtype
-							}
-						}
-						val (type, subtype) = pairs.first()
-						ParadoxDefinitionTypeExpression(expressionString, type, subtype, pairs)
+						val type = expressionString.substring(0, dotIndex)
+						val subtype = expressionString.substring(dotIndex + 1)
+						ParadoxDefinitionTypeExpression(expressionString, type, subtype, null)
 					}
+				} else {
+					val pairs = SmartList<Pair<String, String?>>()
+					expressionString.split('|').mapTo(pairs) {
+						val dotIndex = it.indexOf('.')
+						if(dotIndex == -1) {
+							val type = it
+							type to null
+						} else {
+							val type = it.substring(0, dotIndex)
+							val subtype = it.substring(dotIndex + 1)
+							type to subtype
+						}
+					}
+					val (type, subtype) = pairs.first()
+					ParadoxDefinitionTypeExpression(expressionString, type, subtype, pairs)
 				}
 			}
 		}

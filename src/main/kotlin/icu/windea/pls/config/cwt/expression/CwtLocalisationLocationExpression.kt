@@ -26,17 +26,17 @@ class CwtLocalisationLocationExpression(
 	companion object Resolver : CwtExpressionResolver<CwtLocalisationLocationExpression> {
 		val EmptyExpression = CwtLocalisationLocationExpression("", "")
 		
-		val cache: LoadingCache<String, CwtLocalisationLocationExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) } }
 		
-		override fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
-			when {
-				expressionString.isEmpty() -> EmptyExpression
-				expressionString.startsWith('#') -> {
-					val propertyName = expressionString.substring(1)
-					CwtLocalisationLocationExpression(expressionString, null, propertyName)
-				}
-				else -> CwtLocalisationLocationExpression(expressionString, expressionString)
+		override fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		
+		private fun doResolve(expressionString: String) = when {
+			expressionString.isEmpty() -> EmptyExpression
+			expressionString.startsWith('#') -> {
+				val propertyName = expressionString.substring(1)
+				CwtLocalisationLocationExpression(expressionString, null, propertyName)
 			}
+			else -> CwtLocalisationLocationExpression(expressionString, expressionString)
 		}
 	}
 	

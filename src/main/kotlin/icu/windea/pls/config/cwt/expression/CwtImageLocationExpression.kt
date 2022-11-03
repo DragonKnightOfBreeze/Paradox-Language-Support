@@ -40,25 +40,25 @@ class CwtImageLocationExpression(
 	companion object Resolver : CwtExpressionResolver<CwtImageLocationExpression> {
 		val EmptyExpression = CwtImageLocationExpression("")
 		
-		val cache: LoadingCache<String, CwtImageLocationExpression> by lazy { CacheBuilder.newBuilder().buildLazyCache() }
+		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) } }
 		
-		override fun resolve(expressionString: String) = cache.getOrPut(expressionString) {
-			when {
-				expressionString.isEmpty() -> EmptyExpression
-				expressionString.startsWith('#') -> {
-					val pipeIndex = expressionString.indexOf('|', 1)
-					if(pipeIndex == -1) {
-						val propertyName = expressionString.substring(1)
-						CwtImageLocationExpression(expressionString, null, propertyName)
-					} else {
-						val propertyName = expressionString.substring(1, pipeIndex)
-						val extraPropertyNames = expressionString.substring(pipeIndex + 1)
-							.splitToSequence(',').mapTo(SmartList()) { it.drop(1) }
-						CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)
-					}
+		override fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		
+		private fun doResolve(expressionString: String) = when {
+			expressionString.isEmpty() -> EmptyExpression
+			expressionString.startsWith('#') -> {
+				val pipeIndex = expressionString.indexOf('|', 1)
+				if(pipeIndex == -1) {
+					val propertyName = expressionString.substring(1)
+					CwtImageLocationExpression(expressionString, null, propertyName)
+				} else {
+					val propertyName = expressionString.substring(1, pipeIndex)
+					val extraPropertyNames = expressionString.substring(pipeIndex + 1)
+						.splitToSequence(',').mapTo(SmartList()) { it.drop(1) }
+					CwtImageLocationExpression(expressionString, null, propertyName, extraPropertyNames)
 				}
-				else -> CwtImageLocationExpression(expressionString, expressionString, null, null)
 			}
+			else -> CwtImageLocationExpression(expressionString, expressionString, null, null)
 		}
 	}
 	

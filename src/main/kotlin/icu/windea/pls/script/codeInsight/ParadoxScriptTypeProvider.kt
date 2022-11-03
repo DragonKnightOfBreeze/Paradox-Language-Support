@@ -50,7 +50,7 @@ class ParadoxScriptTypeProvider : ExpressionTypeProvider<ParadoxScriptTypedEleme
 		val typeToShow = (element.definitionType
 			?: element.configExpression
 			?: element.expressionType?.text
-			?: ParadoxDataType.UnknownType.text)
+			?: ParadoxExpressionType.UnknownType.text)
 		return typeToShow.escapeXml()
 	}
 	

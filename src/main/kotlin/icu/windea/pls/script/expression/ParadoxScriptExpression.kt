@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 interface ParadoxScriptExpression : Expression {
 	val value: String get() = expressionString
 	val quoted: Boolean
-	val type: ParadoxDataType
+	val type: ParadoxExpressionType
 	val isKey: Boolean?
 	
 	companion object {
@@ -24,14 +24,14 @@ interface ParadoxScriptExpression : Expression {
 		}
 		
 		fun resolve(expressionString: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxScriptSimpleExpression {
-			val expressionType = ParadoxDataType.resolve(expressionString)
+			val expressionType = ParadoxExpressionType.resolve(expressionString)
 			return ParadoxScriptSimpleExpression(expressionString, isQuoted, expressionType, isKey)
 		}
 		
 		fun resolve(text: String, isKey: Boolean? = null): ParadoxScriptSimpleExpression {
 			val expressionString = text.unquote()
 			val quoted = text.isQuoted()
-			val expressionType = ParadoxDataType.resolve(text)
+			val expressionType = ParadoxExpressionType.resolve(text)
 			return ParadoxScriptSimpleExpression(expressionString, quoted, expressionType, isKey)
 		}
 		

@@ -12,7 +12,7 @@ import icu.windea.pls.script.expression.reference.*
 /**
  * 在查找使用中，区分参数和值集中的值的读/写使用
  */
-class ParadoxScriptReadWriteAccessDetector : ReadWriteAccessDetector() {
+class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 	override fun isReadWriteAccessible(element: PsiElement): Boolean {
 		return when {
 			element is ParadoxParameterElement -> true

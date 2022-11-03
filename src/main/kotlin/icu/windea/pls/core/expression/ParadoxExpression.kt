@@ -1,5 +1,8 @@
 package icu.windea.pls.core.expression
 
-interface ParadoxExpression : Expression
+interface ParadoxExpression : Expression {
+	val value: String
+	val type: ParadoxExpressionType
+}
 
-abstract class ParadoxExpressionResolver
+interface ParadoxExpressionResolver

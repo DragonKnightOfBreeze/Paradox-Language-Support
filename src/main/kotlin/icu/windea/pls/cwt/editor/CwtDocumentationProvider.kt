@@ -1,13 +1,11 @@
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
-import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
@@ -45,7 +43,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val project = element.project
 			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false)
+			buildPropertyDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
 	}
 	
@@ -56,7 +54,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val project = element.project
 			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			buildStringDefinition(element, originalElement, name, configType, configGroup, false)
+			buildStringDefinition(element, originalElement, name, configType, configGroup, false, null)
 		}
 	}
 	
@@ -75,18 +73,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val project = element.project
 			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true)
-			buildLocalisationContent(originalElement, name, configType, configGroup)
-			val sectionMap = buildDocumentationContent(element)
+			val sections = mutableMapOf<String, String>()
+			buildPropertyDefinition(element, originalElement, name, configType, configGroup, true, sections)
+			buildDocumentationContent(element)
 			buildScopeContent(element, originalElement, name, configType, configGroup)
 			buildSupportedScopesContent(element, originalElement, name, configType, configGroup)
-			if(sectionMap.isNotEmpty()){
-				sections {
-					for((sectionTitle, sectionValue) in sectionMap) {
-						section(sectionTitle, sectionValue)
-					}
-				}
-			}
+			buildSections(sections)
 		}
 	}
 	
@@ -97,20 +89,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			val project = element.project
 			val gameType = ParadoxSelectorUtils.selectGameType(originalElement?.takeIf { it.language == ParadoxScriptLanguage })
 			val configGroup = gameType?.let { getCwtConfig(project).getValue(it) }
-			buildStringDefinition(element, originalElement, name, configType, configGroup, true)
-			buildLocalisationContent(originalElement, name, configType, configGroup)
-			val sectionMap = buildDocumentationContent(element)
-			if(sectionMap.isNotEmpty()){
-				sections {
-					for((sectionTitle, sectionValue) in sectionMap) {
-						section(sectionTitle, sectionValue)
-					}
-				}
-			}
+			val sections = mutableMapOf<String, String>()
+			buildStringDefinition(element, originalElement, name, configType, configGroup, true, sections)
+			buildDocumentationContent(element)
+			buildSections(sections)
 		}
 	}
 	
-	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean) {
+	//返回实际使用的相关本地化
+	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean, sections: MutableMap<String, String>?) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
@@ -146,10 +133,12 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
+			//得到相关本地化
+			getRelatedLocalisations(element, originalElement, name, configType, configGroup, sections)
 		}
 	}
 	
-	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean) {
+	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean, sections: MutableMap<String, String>?) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
 				if(configType != null) append(configType.text).append(" ")
@@ -185,23 +174,30 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 					}
 				}
 			}
+			//得到相关本地化
+			getRelatedLocalisations(element, originalElement, name, configType, configGroup, sections)
 		}
 	}
 	
-	private fun StringBuilder.buildLocalisationContent(originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
-		if(originalElement?.language != ParadoxScriptLanguage) return
-		if(configGroup == null) return
-		val locationExpression = configType?.localisation?.let { CwtLocalisationLocationExpression.resolve(it) } ?: return
-		val key = locationExpression.resolvePlaceholder(name) ?: return
-		ProgressManager.checkCanceled()
+	private fun StringBuilder.getRelatedLocalisations(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
+		if(originalElement == null || configGroup == null) return
+		val key = when(configType) {
+			CwtConfigType.Modifier -> CwtConfigHandler.getModifierLocalisationName(name)
+			else -> return
+		}
 		val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(originalElement).preferLocale(preferredParadoxLocale())
-		val localisation = findLocalisation(key, configGroup.project, selector = selector) ?: return
-		content {
-			ParadoxLocalisationTextRenderer.renderTo(localisation, this)
+		//可以为全大写/全小写
+		val localisation = findLocalisation(key, configGroup.project, selector = selector)
+			?: findLocalisation(key.uppercase(), configGroup.project, selector = selector)
+		appendBr()
+		append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
+		append("Name = ").appendLocalisationLink(localisation?.name ?: key, originalElement, resolved = localisation != null)
+		if(sections != null) {
+			if(localisation != null) sections.put("Name", ParadoxLocalisationTextRenderer.render(localisation))
 		}
 	}
 	
-	private fun StringBuilder.buildDocumentationContent(element: PsiElement): Map<String, String> {
+	private fun StringBuilder.buildDocumentationContent(element: PsiElement) {
 		//渲染文档注释（作为HTML）和版本号信息
 		var current: PsiElement = element
 		var lines: LinkedList<String>? = null
@@ -235,8 +231,10 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				append(documentation)
 			}
 		}
-		return buildMap {
-			if(since != null) put(PlsDocBundle.message("title.since"), since)
+		if(since != null) {
+			content {
+				append(PlsDocBundle.message("content.since", since))
+			}
 		}
 	}
 	
@@ -305,6 +303,15 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 				if(appendBr) appendBr()
 				val supportedScopeNamesToUse = supportedScopeNames.joinToString(", ")
 				append(PlsDocBundle.message("content.supportedScopes", supportedScopeNamesToUse))
+			}
+		}
+	}
+	
+	private fun StringBuilder.buildSections(sections: Map<String, String>) {
+		if(sections.isEmpty()) return
+		sections {
+			for((key, value) in sections) {
+				section(key, value)
 			}
 		}
 	}

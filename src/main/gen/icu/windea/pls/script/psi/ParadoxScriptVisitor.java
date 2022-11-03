@@ -1,10 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import icu.windea.pls.core.psi.*;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import icu.windea.pls.core.psi.ParadoxExpressionAwareElement;
+import com.intellij.psi.PsiLiteralValue;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -100,7 +101,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
-    visitExpressionElement(o);
+    visitParadoxExpressionAwareElement(o);
   }
 
   public void visitPropertyValue(@NotNull ParadoxScriptPropertyValue o) {
@@ -113,7 +114,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
-    // visitExpressionElement(o);
+    // visitParadoxExpressionAwareElement(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
@@ -142,6 +143,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitParadoxExpressionAwareElement(@NotNull ParadoxExpressionAwareElement o) {
+    visitElement(o);
+  }
+
   public void visitIParadoxScriptBlock(@NotNull IParadoxScriptBlock o) {
     visitElement(o);
   }
@@ -152,10 +157,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitParadoxParameter(@NotNull ParadoxParameter o) {
     visitElement(o);
-  }
-
-  public void visitExpressionElement(@NotNull ParadoxExpressionAwareElement o) {
-    visitPsiElement(o);
   }
 
   public void visitNamedElement(@NotNull ParadoxScriptNamedElement o) {

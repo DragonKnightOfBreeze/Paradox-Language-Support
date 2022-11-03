@@ -22,8 +22,16 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 		val project = file.project
 		val gameType = ParadoxSelectorUtils.selectGameType(file)
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.accept(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
-			override fun visitExpressionElement(element: ParadoxExpressionAwareElement) {
+		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
+			override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
+				visitExpressionAwareElement(element)
+			}
+			
+			override fun visitString(element: ParadoxScriptString) {
+				visitExpressionAwareElement(element)
+			}
+			
+			private fun visitExpressionAwareElement(element: ParadoxExpressionAwareElement) {
 				ProgressManager.checkCanceled()
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
 				val type = config.expression.type
@@ -57,7 +65,6 @@ class IncorrectValueFieldExpressionInspection  : LocalInspectionTool() {
 						}
 					}
 				}
-				super.visitExpressionElement(element)
 			}
 		})
 		return holder.resultsArray

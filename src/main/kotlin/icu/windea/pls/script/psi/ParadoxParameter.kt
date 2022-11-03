@@ -12,5 +12,5 @@ interface ParadoxParameter : ParadoxScriptTypedElement {
 	
 	val defaultValue: String? get() = null
 	
-	override val expressionType: ParadoxDataType get() = ParadoxDataType.ParameterType
+	override val expressionType: ParadoxExpressionType get() = ParadoxExpressionType.ParameterType
 }

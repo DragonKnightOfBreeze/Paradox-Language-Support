@@ -11,8 +11,7 @@ enum class CwtConfigType(
 	val id: String,
 	val text: String,
 	val isReference: Boolean = false,
-	val typeCategory: String? = null,
-	val localisation: String? = null
+	val typeCategory: String? = null
 ) {
 	Type("type", PlsDocBundle.message("name.cwt.type")),
 	Subtype("subtype", PlsDocBundle.message("name.cwt.subtype")),
@@ -29,7 +28,7 @@ enum class CwtConfigType(
 	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink"), true),
 	LocalisationCommand("localisation command", PlsDocBundle.message("name.cwt.localisationCommand"), true),
 	ModifierCategory("modifier category", PlsDocBundle.message("name.cwt.modifierCategory"), true),
-	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true, localisation = "mod_$"),
+	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true),
 	Scope("scope", PlsDocBundle.message("name.cwt.scope"), true),
 	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup"), true),
 	

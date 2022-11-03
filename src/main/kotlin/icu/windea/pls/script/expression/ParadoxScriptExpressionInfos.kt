@@ -196,7 +196,7 @@ class ParadoxScriptSvParameterValueExpressionInfo(
 	textRange: TextRange
 ) : ParadoxScriptExpressionInfo(text, textRange) {
 	override fun getAttributesKey(): TextAttributesKey {
-		return if(ParadoxDataType.resolve(text).isFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
+		return if(ParadoxExpressionType.resolve(text).isFloatType()) ParadoxScriptAttributesKeys.NUMBER_KEY else ParadoxScriptAttributesKeys.STRING_KEY
 	}
 }
 

@@ -6,17 +6,23 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.*
+import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
+import icu.windea.pls.config.cwt.*
+import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
+import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.ui.*
@@ -27,17 +33,21 @@ import javax.swing.event.*
 /**
  * 缺失的本地化的检查。
  * @property locales 要检查的语言区域。默认检查英文。
- * @property forPrimaryLocale 是否同样检查主要的语言区域。默认为true。
- * @property forPrimaryRelated 是否同样检查定义的主要的相关本地化，默认为true。
- * @property forOptionalRelated 是否同样检查定义的可选的相关本地化，默认为false。
+ * @property checkPrimaryLocale 是否同样检查主要的语言区域。默认为true。
+ * @property checkForDefinitions 是否检查定义。默认为true。
+ * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关本地化，默认为true。
+ * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关本地化，默认为false。
+ * @property checkForModifiers 是否检查修饰符。默认为true。
  */
 @CwtInspection("CWT100")
 class MissingLocalisationInspection : LocalInspectionTool() {
 	@OptionTag(converter = CommaDelimitedStringListConverter::class)
 	@JvmField var locales = listOf("l_english")
-	@JvmField var forPrimaryLocale = true
-	@JvmField var forPrimaryRelated = true
-	@JvmField var forOptionalRelated = false
+	@JvmField var checkForDefinitions = true
+	@JvmField var checkPrimaryLocale = true
+	@JvmField var checkPrimaryForDefinitions = true
+	@JvmField var checkOptionalForDefinitions = false
+	@JvmField var checkForModifiers = true
 	
 	private val localeList by lazy { locales.mapNotNullTo(SmartList()) { InternalConfigHandler.getLocale(it) } }
 	private val localeSet by lazy { InternalConfigHandler.getLocales().filterTo(mutableSetOf()) { it.id in locales } }
@@ -52,6 +62,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	) : ParadoxScriptVisitor() {
 		override fun visitFile(file: PsiFile) {
 			ProgressManager.checkCanceled()
+			if(inspection.localeSet.isEmpty()) return
+			if(!inspection.checkForDefinitions) return
 			val scriptFile = file.castOrNull<ParadoxScriptFile>() ?: return
 			val definitionInfo = scriptFile.definitionInfo ?: return
 			visitDefinition(scriptFile, definitionInfo)
@@ -59,6 +71,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		
 		override fun visitProperty(property: ParadoxScriptProperty) {
 			ProgressManager.checkCanceled()
+			if(inspection.localeSet.isEmpty()) return
+			if(!inspection.checkForDefinitions) return
 			val definitionInfo = property.definitionInfo ?: return
 			visitDefinition(property, definitionInfo)
 		}
@@ -67,8 +81,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val project = definitionInfo.project
 			val localisationInfos = definitionInfo.localisation
 			if(localisationInfos.isEmpty()) return
-			val localeSet = inspection.localeSet
-			if(localeSet.isEmpty()) return
 			val location = if(definition is ParadoxScriptProperty) definition.propertyKey else definition
 			ProgressManager.checkCanceled()
 			val nameToDistinct = mutableSetOf<String>()
@@ -77,12 +89,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			val hasPrimaryLocales = mutableSetOf<ParadoxLocaleConfig>()
 			runReadAction {
 				for(info in localisationInfos) {
-					if(info.required || if(info.primary) inspection.forPrimaryRelated else inspection.forOptionalRelated) {
-						for(locale in localeSet) {
+					if(info.required || if(info.primary) inspection.checkPrimaryForDefinitions else inspection.checkOptionalForDefinitions) {
+						for(locale in inspection.localeSet) {
 							if(nameToDistinct.contains(info.name + "@" + locale)) continue
 							if(info.primary && hasPrimaryLocales.contains(locale)) continue
 							//多个位置表达式无法解析时，使用第一个
-							val selector = localisationSelector().gameTypeFrom(definition).preferRootFrom(definition).locale(locale)
+							val selector = localisationSelector().gameTypeFrom(definition).locale(locale)
 							val resolved = info.locationExpression.resolve(definition, definitionInfo, project, selector = selector)
 							if(resolved != null) {
 								val (key, loc) = resolved
@@ -128,6 +140,43 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 				}
 			}
 		}
+		
+		override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
+			visitExpressionAwareElement(element)
+		}
+		
+		override fun visitString(element: ParadoxScriptString) {
+			visitExpressionAwareElement(element)
+		}
+		
+		private fun visitExpressionAwareElement(element: ParadoxExpressionAwareElement) {
+			ProgressManager.checkCanceled()
+			if(inspection.localeSet.isEmpty()) return
+			if(!inspection.checkForModifiers) return
+			val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
+			val configGroup = config.info.configGroup
+			if(config.expression.type != CwtDataTypes.Modifier) return
+			val name = element.value
+			val modifier = CwtConfigHandler.resolveModifier(name, configGroup)
+			if(modifier == null) return //忽略无法解析的修饰符
+			val key = CwtConfigHandler.getModifierLocalisationName(name)
+			val missingLocales = mutableSetOf<ParadoxLocaleConfig>()
+			for(locale in inspection.localeSet) {
+				val selector = localisationSelector().gameType(configGroup.gameType).preferRootFrom(element).locale(locale)
+				//可以为全大写/全小写
+				val localisation = findLocalisation(key, configGroup.project, selector = selector)
+					?: findLocalisation(key.uppercase(), configGroup.project, selector = selector)
+				if(localisation == null) missingLocales.add(locale)
+			}
+			if(missingLocales.isNotEmpty()){
+				for(locale in missingLocales) {
+					val message = PlsBundle.message("script.inspection.advanced.missingLocalisation.description.4", name, locale)
+					holder.registerProblem(element, message, ProblemHighlightType.WEAK_WARNING,
+						ImportGameOrModDirectoryFix(element)
+					)
+				}
+			}
+		}
 	}
 	
 	override fun createOptionsPanel(): JComponent {
@@ -139,21 +188,36 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			}
 			row {
 				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPreferredLocale"))
-					.bindSelected(::forPrimaryLocale)
+					.bindSelected(::checkPrimaryLocale)
 					.applyToComponent { toolTipText = PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPrimaryLocale.tooltip") }
-					.actionListener { _, component -> forPrimaryLocale = component.isSelected }
+					.actionListener { _, component -> checkPrimaryLocale = component.isSelected }
+			}
+			lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
+			row {
+				checkForDefinitionsCb = checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkForDefinitions"))
+					.bindSelected(::checkForDefinitions)
+					.actionListener { _, component -> checkForDefinitions = component.isSelected }
+			}
+			indent {
+				row {
+					checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkPrimaryForDefinitions"))
+						.bindSelected(::checkPrimaryForDefinitions)
+						.actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
+						.enabledIf(checkForDefinitionsCb.selected)
+				}
+				row {
+					checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkOptionalForDefinitions"))
+						.bindSelected(::checkOptionalForDefinitions)
+						.actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
+						.enabledIf(checkForDefinitionsCb.selected)
+				}
 			}
 			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forPrimaryRelated"))
-					.bindSelected(::forPrimaryRelated)
-					.actionListener { _, component -> forPrimaryRelated = component.isSelected }
+				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.checkForModifiers"))
+					.bindSelected(::checkForModifiers)
+					.actionListener { _, component -> checkForModifiers = component.isSelected }
+					.enabledIf(checkForDefinitionsCb.selected)
 			}
-			row {
-				checkBox(PlsBundle.message("script.inspection.advanced.missingLocalisation.option.forOptionalRelated"))
-					.bindSelected(::forOptionalRelated)
-					.actionListener { _, component -> forOptionalRelated = component.isSelected }
-			}
-			//TODO 对于modifier trigger等的本地化（不确定是否总是存在）
 		}
 	}
 	

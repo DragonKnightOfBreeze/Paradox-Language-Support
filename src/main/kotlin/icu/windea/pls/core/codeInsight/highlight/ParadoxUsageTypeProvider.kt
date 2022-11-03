@@ -1,0 +1,35 @@
+package icu.windea.pls.core.codeInsight.highlight
+
+import com.intellij.psi.*
+import com.intellij.usages.*
+import com.intellij.usages.impl.rules.*
+import icu.windea.pls.*
+import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
+
+/**
+ * 在查找使用中，区分定义、本地化、参数、值集中的值等的使用类型。
+ */
+class ParadoxUsageTypeProvider : UsageTypeProviderEx {
+	override fun getUsageType(element: PsiElement): UsageType? {
+		return getUsageType(element, UsageTarget.EMPTY_ARRAY)
+	}
+	
+	override fun getUsageType(element: PsiElement?, targets: Array<out UsageTarget>): UsageType? {
+		return when {
+			element is ParadoxExpressionAwareElement -> {
+				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return null
+				val configExpression = config.expression
+				UsageType { PlsBundle.message("usageType.byConfigExpression", configExpression) }
+			}
+			element is ParadoxScriptVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
+			element is ParadoxScriptInlineMathVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
+			element is ParadoxScriptParameter -> ParadoxUsageType.PARAMETER_REFERENCE_1
+			element is ParadoxScriptInlineMathParameter -> ParadoxUsageType.PARAMETER_REFERENCE_2
+			element is ParadoxScriptParameterConditionParameter -> ParadoxUsageType.PARAMETER_REFERENCE_3
+			else -> null
+			//TODO
+		}
+	}
+}

@@ -295,7 +295,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 							if(localisationKeys.add(key)) {
 								appendBr()
 								append(PlsDocBundle.message("name.script.relatedLocalisation")).append(" ")
-								append(key).append(" = ").appendLocalisationLink(targetKey, element, resolved = target != null)
+								append(key).append(" = ").appendLocalisationLink(targetKey, element, resolved = true)
 							}
 						}
 					}
@@ -315,7 +315,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 							if(imageKeys.add(key)) {
 								appendBr()
 								append(PlsDocBundle.message("name.script.relatedImage")).append(" ")
-								append(key).append(" = ").appendFilePathLink(filePath, element, resolved = target != null)
+								append(key).append(" = ").appendFilePathLink(filePath, element, resolved = true)
 							}
 						}
 					}
@@ -374,7 +374,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun StringBuilder.buildDefinitionSections(sections: MutableMap<String, String>) {
+	private fun StringBuilder.buildDefinitionSections(sections: Map<String, String>) {
 		if(sections.isEmpty()) return
 		sections {
 			for((key, value) in sections) {

@@ -29,7 +29,8 @@
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
 
-    <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxScriptReadWriteAccessDetector"/>
+    <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
+    <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
   </extensions>

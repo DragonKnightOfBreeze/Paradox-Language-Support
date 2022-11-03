@@ -9,6 +9,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
@@ -83,15 +84,17 @@ class UnsetValueSetValueInspection : LocalInspectionTool() {
 						used
 					}
 					if(!isUsed) {
-						registerProblem(resolved, reference)
+						registerProblem(resolved, reference.rangeInElement)
 					}
 				}
 			}
 		}
 		
-		private fun registerProblem(resolved: ParadoxValueSetValueElement, reference: PsiReference) {
+		private fun registerProblem(resolved: ParadoxValueSetValueElement, range: TextRange) {
 			val message = PlsBundle.message("script.inspection.advanced.unsetValueSetValue.description", resolved.name)
-			holder.registerProblem(reference, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+			holder.registerProblem(resolved, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range,
+				ImportGameOrModDirectoryFix(resolved)
+			)
 		}
 	}
 	

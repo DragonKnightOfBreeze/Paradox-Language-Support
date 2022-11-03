@@ -26,7 +26,7 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 		if(file !is ParadoxScriptFile) return null
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		file.accept(object : ParadoxScriptRecursiveExpressionElementWalkingVisitor() {
+		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitProperty(element: ParadoxScriptProperty) {
 				ProgressManager.checkCanceled()
 				if(forPropertyKey) {
