@@ -27,13 +27,13 @@ root_block ::= root_block_item + {
   ]
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= COMMENT | value | property | variable{
+private root_block_item ::= COMMENT | value | property | scripted_variable{
   recoverWhile="#auto"
 }
 
 //scripted_variable
 //should outside of definition declaration
-variable ::= variable_name variable_separator variable_value {
+scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
   pin=1
   recoverWhile="#auto"
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
@@ -44,11 +44,11 @@ variable ::= variable_name variable_separator variable_value {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptVariableStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getExpressionType getPresentation]
 }
-variable_name ::= AT VARIABLE_NAME_ID{
+scripted_variable_name ::= AT VARIABLE_NAME_ID{
   methods=[getName]
 }
-private variable_separator ::= EQUAL_SIGN
-variable_value ::= boolean | int | float
+private scripted_variable_separator ::= EQUAL_SIGN
+scripted_variable_value ::= boolean | int | float
 
 //property related
 property ::= property_key property_separator property_value {
@@ -150,7 +150,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     getExpressionType getExpression
   ]
 }
-private block_item ::= COMMENT | property | value | parameter_condition | variable{
+private block_item ::= COMMENT | property | value | parameter_condition | scripted_variable{
   recoverWhile="#auto"
 }
 

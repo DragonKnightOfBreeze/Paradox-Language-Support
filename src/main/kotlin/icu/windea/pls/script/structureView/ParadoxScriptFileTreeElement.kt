@@ -16,7 +16,7 @@ class ParadoxScriptFileTreeElement(
 		val result = SmartList<StructureViewTreeElement>()
 		rootBlock.forEachChild {
 			when {
-				it is ParadoxScriptVariable -> result.add(ParadoxScriptVariableTreeElement(it))
+				it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
 				it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
 				it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
 			}

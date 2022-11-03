@@ -7,7 +7,7 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptVariable>(
+object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptScriptedVariable>(
 	"VARIABLE",
 	ParadoxScriptLanguage
 ) {
@@ -15,11 +15,11 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	
 	override fun getExternalId() = externalId
 	
-	override fun createPsi(stub: ParadoxScriptVariableStub): ParadoxScriptVariable {
-		return ParadoxScriptVariableImpl(stub, this)
+	override fun createPsi(stub: ParadoxScriptVariableStub): ParadoxScriptScriptedVariable {
+		return ParadoxScriptScriptedVariableImpl(stub, this)
 	}
 	
-	override fun createStub(psi: ParadoxScriptVariable, parentStub: StubElement<*>): ParadoxScriptVariableStub {
+	override fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<*>): ParadoxScriptVariableStub {
 		val name = psi.name
 		val gameType = psi.fileInfo?.rootInfo?.gameType
 		return ParadoxScriptVariableStubImpl(parentStub, name, gameType)

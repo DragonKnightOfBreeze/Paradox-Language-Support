@@ -975,7 +975,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun ProcessingContext.completeValueOfValueField(result: CompletionResultSet) {
+	fun ProcessingContext.completeValueFieldValue(result: CompletionResultSet) {
 		//TODO 进一步匹配scope
 		val keyword = keyword
 		val lookupElements = mutableSetOf<LookupElement>()
@@ -993,12 +993,12 @@ object CwtConfigHandler {
 			val tailText = " from values"
 			val typeFile = linkConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
-				.withExpectedIcon(PlsIcons.ValueOfValueField)
+				.withExpectedIcon(PlsIcons.ValueFieldValue)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey)
 				.withCaseSensitivity(false) //忽略大小写
-				.withPriority(PlsCompletionPriorities.valueOfValueFieldPriority)
+				.withPriority(PlsCompletionPriorities.valueFieldValuePriority)
 			lookupElements.add(lookupElement)
 		}
 		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
@@ -1570,7 +1570,7 @@ object CwtConfigHandler {
 		return linkConfig.pointer.element
 	}
 	
-	fun resolveValueOfValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
+	fun resolveValueFieldValue(name: String, configGroup: CwtConfigGroup): PsiElement? {
 		val links = configGroup.linksAsValueNotData
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null

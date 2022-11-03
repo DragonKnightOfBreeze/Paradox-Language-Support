@@ -44,8 +44,8 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 	
 	private class NavigateToDuplicatesFix(
 		private val key: String,
-		element: ParadoxScriptVariable,
-		duplicates: List<ParadoxScriptVariable>
+		element: ParadoxScriptScriptedVariable,
+		duplicates: List<ParadoxScriptScriptedVariable>
 	) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
 		private val pointers = duplicates.map { it.createPointer() }
 		
@@ -74,20 +74,20 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 		override fun availableInBatchMode() = false
 		
 		private class Popup(
-			values: List<ParadoxScriptVariable>,
+			values: List<ParadoxScriptScriptedVariable>,
 			private val key: String,
 			private val editor: Editor
-		) : BaseListPopupStep<ParadoxScriptVariable>(PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.header", key), values) {
-			override fun getIconFor(value: ParadoxScriptVariable) = value.icon
+		) : BaseListPopupStep<ParadoxScriptScriptedVariable>(PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.header", key), values) {
+			override fun getIconFor(value: ParadoxScriptScriptedVariable) = value.icon
 			
-			override fun getTextFor(value: ParadoxScriptVariable) =
+			override fun getTextFor(value: ParadoxScriptScriptedVariable) =
 				PlsBundle.message("script.inspection.duplicateScriptedVariables.quickFix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
 			
 			override fun getDefaultOptionIndex(): Int = 0
 			
 			override fun isSpeedSearchEnabled(): Boolean = true
 			
-			override fun onChosen(selectedValue: ParadoxScriptVariable, finalChoice: Boolean): PopupStep<*>? {
+			override fun onChosen(selectedValue: ParadoxScriptScriptedVariable, finalChoice: Boolean): PopupStep<*>? {
 				NavigationUtil.activateFileWithPsiElement(selectedValue)
 				return PopupStep.FINAL_CHOICE
 			}

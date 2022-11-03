@@ -17,7 +17,7 @@ fun <T> selector() = ChainedParadoxSelector<T>()
 
 fun fileSelector() = ChainedParadoxSelector<VirtualFile>()
 
-fun scriptedVariableSelector() = ChainedParadoxSelector<ParadoxScriptVariable>()
+fun scriptedVariableSelector() = ChainedParadoxSelector<ParadoxScriptScriptedVariable>()
 
 fun definitionSelector() = ChainedParadoxSelector<ParadoxDefinitionProperty>()
 

@@ -42,13 +42,13 @@
   * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   * [ ] 兼容`value_field`或者`int_value_field`需要被是被为`value[variable]`的情况
   * [ ] 修复`root.from`中的`.`实际上并没有被正确地高亮为操作符（operator）的问题
-  * [ ] 兼容嵌套的表达式的情况，如：`root.owner.event_target:target@root.owner`
+  * [ ] 兼容更复杂的表达式的情况，如：`root.owner.event_target:target@root.owner`
   * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况
   * [X] 兼容localisationCommandScope需要被识别为`value_set[variable]`的情况
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
-  * [ ] 在文档中修饰符的相关本地化（注意修饰符的相关本地化的名字是`mod_$`，可以为全大写/全小写）
+  * [X] 在文档中修饰符的相关本地化（注意修饰符的相关本地化的名字是`mod_$`，可以为全大写/全小写）
   * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
   * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
   * [ ] 尽管在脚本文件中Ctrl+点击本地化引用只会导航到选用的（而非所有的，Alt+Ctrl+点击才会导航到所有的），从任意同名本地化Ctrl+点击仍然需要可以导航到所有的引用，其他类型的引用同理

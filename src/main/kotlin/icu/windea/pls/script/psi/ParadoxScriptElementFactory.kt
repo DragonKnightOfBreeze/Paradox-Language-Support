@@ -23,7 +23,7 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createVariable(project: Project, name: String, value: String): ParadoxScriptVariable {
+	fun createVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
 		return createRootBlock(project, "@$name=$value").findRequiredChild(VARIABLE)
 	}
 	

@@ -19,7 +19,7 @@ class ParadoxScriptSyntaxHighlighter : SyntaxHighlighterBase() {
 		private val INLINE_MATH_OPERATOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.INLINE_MATH_OPERATOR_KEY)
 		private val COMMENT_KEYS = arrayOf(ParadoxScriptAttributesKeys.COMMENT_KEY)
 		private val KEYWORD_KEYS = arrayOf(ParadoxScriptAttributesKeys.KEYWORD_KEY)
-		private val VARIABLE_KEYS = arrayOf(ParadoxScriptAttributesKeys.VARIABLE_KEY)
+		private val VARIABLE_KEYS = arrayOf(ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY)
 		private val ARGUMENT_KEYS = arrayOf(ParadoxScriptAttributesKeys.ARGUMENT_KEY)
 		private val PARAMETER_KEYS = arrayOf(ParadoxScriptAttributesKeys.PARAMETER_KEY)
 		private val PROPERTY_KEY_KEYS = arrayOf(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)

@@ -23,7 +23,7 @@ class ParadoxScriptedVariableReference(
 		return element.setName(newElementName)
 	}
 	
-	override fun resolve(): ParadoxScriptVariable? {
+	override fun resolve(): ParadoxScriptScriptedVariable? {
 		//首先尝试从当前文件中查找引用，然后从全局范围中查找引用
 		val name = element.name
 		val project = element.project

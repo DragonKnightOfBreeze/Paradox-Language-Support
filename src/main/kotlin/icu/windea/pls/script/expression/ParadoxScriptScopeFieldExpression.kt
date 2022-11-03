@@ -7,7 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldValue
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -142,7 +142,7 @@ class ParadoxScriptScopeFieldExpression(
 		
 		if(isLast) {
 			completeScope(result)
-			completeValueOfValueField(result)
+			completeValueFieldValue(result)
 			completeValueFieldPrefixOrDataSource(result)
 		} else {
 			completeScope(result)

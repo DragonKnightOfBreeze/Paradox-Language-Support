@@ -24,7 +24,7 @@ class ParadoxScriptStructureViewModel(
 	
 	//指定在结构视图中的元素
 	override fun isSuitable(element: PsiElement?): Boolean {
-		return element is ParadoxScriptFile || element is ParadoxScriptVariable || element is ParadoxScriptProperty
+		return element is ParadoxScriptFile || element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty
 			|| (element is ParadoxScriptValue && element.isLonely()) || element is ParadoxScriptParameterCondition
 	}
 	

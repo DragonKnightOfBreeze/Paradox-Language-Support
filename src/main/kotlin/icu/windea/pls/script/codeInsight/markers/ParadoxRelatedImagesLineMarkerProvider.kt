@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 	override fun getName() = PlsBundle.message("script.gutterIcon.relatedImages")
 	
-	override fun getIcon() = PlsIcons.Gutter.RelatedImages
+	override fun getIcon() = PlsIcons.Gutter.RelatedImage
 	
 	override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 		//何时显示装订线图标：element是definition，且definitionInfo.images不为空，且计算得到的keys不为空
@@ -27,7 +27,7 @@ class ParadoxRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
 		if(imageInfos.isEmpty()) return
 		
 		//显示在提示中 & 可导航：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括没有对应的图片的项，按解析顺序排序
-		val icon = PlsIcons.Gutter.RelatedImages
+		val icon = PlsIcons.Gutter.RelatedImage
 		val tooltipBuilder = StringBuilder()
 		val project = element.project
 		val keys = mutableSetOf<String>()

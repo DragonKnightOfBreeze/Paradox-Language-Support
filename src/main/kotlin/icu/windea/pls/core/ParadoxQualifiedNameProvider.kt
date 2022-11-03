@@ -22,7 +22,7 @@ class ParadoxQualifiedNameProvider : QualifiedNameProvider {
 	
 	override fun getQualifiedName(element: PsiElement): String? {
 		when {
-			element is ParadoxScriptVariable -> return element.name
+			element is ParadoxScriptScriptedVariable -> return element.name
 			element is ParadoxScriptProperty -> {
 				val definitionInfo = element.definitionInfo
 				if(definitionInfo != null) return definitionInfo.name

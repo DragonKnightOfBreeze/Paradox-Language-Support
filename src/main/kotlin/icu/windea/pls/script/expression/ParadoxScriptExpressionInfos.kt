@@ -93,14 +93,14 @@ class ParadoxScriptScopeFieldDataSourceExpressionInfo(
 	}
 }
 
-class ParadoxScriptValueOfValueFieldExpressionInfo(
+class ParadoxScriptValueFieldValueExpressionInfo(
 	text: String,
 	textRange: TextRange,
 	directlyResolved: PsiElement?,
 	private val possiblePrefixSet: Set<String>? = null
 ) : ParadoxScriptExpressionInfo(text, textRange, directlyResolved) {
-	override fun getReference(element: ParadoxExpressionAwareElement, config: CwtDataConfig<*>): ParadoxScriptValueOfValueFieldReference {
-		return ParadoxScriptValueOfValueFieldReference(element, textRange, directlyResolved)
+	override fun getReference(element: ParadoxExpressionAwareElement, config: CwtDataConfig<*>): ParadoxScriptValueFieldValueReference {
+		return ParadoxScriptValueFieldValueReference(element, textRange, directlyResolved)
 	}
 	
 	override fun getUnresolvedError(): ParadoxScriptExpressionError {

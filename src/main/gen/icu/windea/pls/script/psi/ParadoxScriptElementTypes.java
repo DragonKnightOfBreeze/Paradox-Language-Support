@@ -156,7 +156,7 @@ public interface ParadoxScriptElementTypes {
         return new ParadoxScriptStringImpl(node);
       }
       else if (type == VARIABLE) {
-        return new ParadoxScriptVariableImpl(node);
+        return new ParadoxScriptScriptedVariableImpl(node);
       }
       else if (type == VARIABLE_NAME) {
         return new ParadoxScriptVariableNameImpl(node);

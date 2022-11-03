@@ -30,7 +30,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun getQuickNavigateInfo(element: PsiElement, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariable -> getScriptedVariableInfo(element)
+			is ParadoxScriptScriptedVariable -> getScriptedVariableInfo(element)
 			is ParadoxScriptProperty -> getPropertyInfo(element)
 			//进行代码提示时，这里是有效的代码
 			is ParadoxArgument -> getParameterInfo(element)
@@ -60,7 +60,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getScriptedVariableInfo(element: ParadoxScriptVariable): String {
+	private fun getScriptedVariableInfo(element: ParadoxScriptScriptedVariable): String {
 		val name = element.name
 		return buildString {
 			buildScriptedVariableDefinition(element, name)
@@ -126,7 +126,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	
 	override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
 		return when(element) {
-			is ParadoxScriptVariable -> getScriptedVariableDoc(element)
+			is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element)
 			is ParadoxScriptProperty -> getPropertyDoc(element)
 			//进行代码提示时，这里是有效的代码
 			is ParadoxArgument -> getParameterDoc(element)
@@ -156,7 +156,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getScriptedVariableDoc(element: ParadoxScriptVariable): String {
+	private fun getScriptedVariableDoc(element: ParadoxScriptScriptedVariable): String {
 		val name = element.name
 		return buildString {
 			buildScriptedVariableDefinition(element, name)
@@ -233,7 +233,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	
-	private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptVariable, name: String) {
+	private fun StringBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
 		definition {
 			//加上文件信息
 			appendFileInfoHeader(element.fileInfo)

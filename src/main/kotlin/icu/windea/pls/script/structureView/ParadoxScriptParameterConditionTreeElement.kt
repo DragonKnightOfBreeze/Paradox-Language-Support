@@ -14,7 +14,7 @@ class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameter
 		val result: MutableList<StructureViewTreeElement> = SmartList()
 		parent.forEachChild {
 			when {
-				it is ParadoxScriptVariable -> result.add(ParadoxScriptVariableTreeElement(it))
+				it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
 				it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
 				it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
 			}

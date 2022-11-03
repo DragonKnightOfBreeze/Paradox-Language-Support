@@ -18,14 +18,14 @@ class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
 	
 	override fun acceptElement(element: PsiElement): Boolean {
 		return element is ParadoxScriptProperty || (element is ParadoxScriptValue && element.isLonely())
-			|| element is ParadoxScriptVariable
+			|| element is ParadoxScriptScriptedVariable
 	}
 	
 	override fun getElementInfo(element: PsiElement): String {
 		return when(element) {
 			is ParadoxScriptProperty -> element.name
 			is ParadoxScriptValue -> element.value
-			is ParadoxScriptVariable -> element.name
+			is ParadoxScriptScriptedVariable -> element.name
 			else -> throw InternalError()
 		}
 	}

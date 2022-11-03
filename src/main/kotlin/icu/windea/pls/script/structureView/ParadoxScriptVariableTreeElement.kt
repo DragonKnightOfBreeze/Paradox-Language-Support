@@ -5,8 +5,8 @@ import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptVariableTreeElement(
-	element: ParadoxScriptVariable
-) : PsiTreeElementBase<ParadoxScriptVariable>(element) {
+	element: ParadoxScriptScriptedVariable
+) : PsiTreeElementBase<ParadoxScriptScriptedVariable>(element) {
 	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
 		return emptyList()
 	}

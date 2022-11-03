@@ -8,7 +8,7 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeParametersForScriptValueExpression
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeScope
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldPrefixOrDataSource
-import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueOfValueField
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeValueFieldValue
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
@@ -83,10 +83,10 @@ class ParadoxScriptValueFieldExpression(
 					infos.add(info)
 					if(resolved == null) isMatched = false
 				} else {
-					val resolved = CwtConfigHandler.resolveValueOfValueField(textToCheck, configGroup)
+					val resolved = CwtConfigHandler.resolveValueFieldValue(textToCheck, configGroup)
 					//可以解析，继续
 					if(resolved != null) {
-						val info = ParadoxScriptValueOfValueFieldExpressionInfo(textToCheck, textRange, resolved)
+						val info = ParadoxScriptValueFieldValueExpressionInfo(textToCheck, textRange, resolved)
 						infos.add(info)
 						continue
 					}
@@ -172,7 +172,7 @@ class ParadoxScriptValueFieldExpression(
 					} else {
 						//这里认为如果声明了数据源，则必须要有前缀
 						//无法解析的value，或者要求有前缀
-						val info = ParadoxScriptValueOfValueFieldExpressionInfo(textToCheck, textRange, null, configGroup.linksAsValuePrefixes)
+						val info = ParadoxScriptValueFieldValueExpressionInfo(textToCheck, textRange, null, configGroup.linksAsValuePrefixes)
 						infos.add(info)
 						isMatched = false //不匹配
 					}
@@ -248,7 +248,7 @@ class ParadoxScriptValueFieldExpression(
 		
 		if(isLast) {
 			completeScope(result)
-			completeValueOfValueField(result)
+			completeValueFieldValue(result)
 			completeValueFieldPrefixOrDataSource(result)
 		} else {
 			completeScope(result)

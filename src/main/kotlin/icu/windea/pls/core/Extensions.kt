@@ -340,14 +340,14 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
  * @param name 变量的名字，以"@"开始。
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，递归向上查找。
  */
-fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScriptVariable? {
+fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScriptScriptedVariable? {
 	//在整个脚本文件中递归向上向前查找，返回查找到的第一个
-	var result: ParadoxScriptVariable? = null
+	var result: ParadoxScriptScriptedVariable? = null
 	var current = context
 	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
-			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
+			if(prevSibling is ParadoxScriptScriptedVariable && prevSibling.name == name) {
 				result = prevSibling
 				break
 			}
@@ -363,14 +363,14 @@ fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScript
  * @param name 变量的名字，以"@"开始。
  * @param context 需要从哪个[PsiElement]开始，在整个文件内，向上查找。
  */
-fun findScriptedVariablesInFile(name: String, context: PsiElement): Set<ParadoxScriptVariable> {
+fun findScriptedVariablesInFile(name: String, context: PsiElement): Set<ParadoxScriptScriptedVariable> {
 	//在整个脚本文件中递归向上向前查找，按查找到的顺序排序
-	var result: MutableSet<ParadoxScriptVariable>? = null
+	var result: MutableSet<ParadoxScriptScriptedVariable>? = null
 	var current = context
 	while(current !is PsiFile) {
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
-			if(prevSibling is ParadoxScriptVariable && prevSibling.name == name) {
+			if(prevSibling is ParadoxScriptScriptedVariable && prevSibling.name == name) {
 				if(result == null) result = mutableSetOf()
 				result.add(prevSibling)
 				break
@@ -387,15 +387,15 @@ fun findScriptedVariablesInFile(name: String, context: PsiElement): Set<ParadoxS
  * 在当前文件中递归查找所有的封装变量（scriptedVariable）。（不一定声明在顶层）
  * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
  */
-fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false): Set<ParadoxScriptVariable> {
+fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false): Set<ParadoxScriptScriptedVariable> {
 	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
-	var result: MutableSet<ParadoxScriptVariable>? = null
+	var result: MutableSet<ParadoxScriptScriptedVariable>? = null
 	val namesToDistinct = if(distinct) mutableSetOf<String>() else null
 	var current = context
 	while(current !is PsiFile) {
 		var prevSibling = current.prevSibling
 		while(prevSibling != null) {
-			if(prevSibling is ParadoxScriptVariable) {
+			if(prevSibling is ParadoxScriptScriptedVariable) {
 				if(namesToDistinct == null || namesToDistinct.add(prevSibling.name)) {
 					if(result == null) result = mutableSetOf()
 					result.add(prevSibling)
@@ -417,8 +417,8 @@ fun findScriptedVariable(
 	name: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxScriptVariable> = nopSelector()
-): ParadoxScriptVariable? {
+	selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
+): ParadoxScriptScriptedVariable? {
 	return ParadoxScriptedVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden, selector)
 }
 
@@ -430,8 +430,8 @@ fun findScriptedVariables(
 	name: String,
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxScriptVariable> = nopSelector()
-): Set<ParadoxScriptVariable> {
+	selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
+): Set<ParadoxScriptScriptedVariable> {
 	return ParadoxScriptedVariableNameIndex.findAll(name, project, scope, selector)
 }
 
@@ -443,8 +443,8 @@ fun findAllScriptedVariables(
 	project: Project,
 	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
 	distinct: Boolean = false,
-	selector: ChainedParadoxSelector<ParadoxScriptVariable> = nopSelector()
-): Set<ParadoxScriptVariable> {
+	selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
+): Set<ParadoxScriptScriptedVariable> {
 	return ParadoxScriptedVariableNameIndex.findAll(project, scope, distinct, selector)
 }
 

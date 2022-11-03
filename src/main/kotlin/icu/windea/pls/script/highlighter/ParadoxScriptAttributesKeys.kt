@@ -17,7 +17,7 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val INLINE_MATH_OPERATOR_KEY = createTextAttributesKey("PARADOX_SCRIPT.INLINE_MATH_OPERATOR", OPERATION_SIGN)
 	@JvmField val COMMENT_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMMENT", LINE_COMMENT)
 	@JvmField val KEYWORD_KEY = createTextAttributesKey("PARADOX_SCRIPT.KEYWORD", KEYWORD)
-	@JvmField val VARIABLE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VARIABLE", STATIC_FIELD)
+	@JvmField val SCRIPTED_VARIABLE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCRIPTED_VARIABLE", STATIC_FIELD)
 	@JvmField val ARGUMENT_KEY = createTextAttributesKey("PARADOX_SCRIPT.ARGUMENT", KEYWORD) //Kotlin > Named argument
 	@JvmField val PARAMETER_KEY = createTextAttributesKey("PARADOX_SCRIPT.PARAMETER", KEYWORD)
 	@JvmField val PROPERTY_KEY_KEY = createTextAttributesKey("PARADOX_SCRIPT.PROPERTY_KEY", INSTANCE_FIELD)
@@ -29,8 +29,8 @@ object ParadoxScriptAttributesKeys {
 	@JvmField val BAD_CHARACTER_KEY = createTextAttributesKey("PARADOX_SCRIPT.BAD_CHARACTER", BAD_CHARACTER)
 	
 	@JvmField val DEFINITION_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY_KEY) //underscored
-	@JvmField val DEFINITION_NAME_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") //bold?
-	@JvmField val COMPLEX_ENUM_VALUE_NAME_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE_NAME", INSTANCE_FIELD) //bold?
+	@JvmField val DEFINITION_NAME_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") //background #223C23
+	@JvmField val COMPLEX_ENUM_VALUE_NAME_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE_NAME", INSTANCE_FIELD) //background #223C23
 	@JvmField val DEFINITION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_REFERENCE", DEFINITION_KEY)  //dotted line  #707D95
 	@JvmField val LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.LOCALISATION_REFERENCE", ParadoxLocalisationAttributesKeys.LOCALISATION_KEY)  //dotted line #707D95
 	@JvmField val SYNCED_LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYNCED_LOCALISATION_REFERENCE", ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY)  //dotted line #707D95

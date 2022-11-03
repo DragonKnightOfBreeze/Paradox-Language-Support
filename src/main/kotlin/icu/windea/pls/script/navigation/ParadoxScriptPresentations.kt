@@ -10,8 +10,8 @@ class ParadoxScriptFilePresentation(
 ) : ParadoxItemPresentation<ParadoxScriptFile>(element)
 
 class ParadoxScriptVariablePresentation(
-	element: ParadoxScriptVariable
-) : ParadoxItemPresentation<ParadoxScriptVariable>(element)
+	element: ParadoxScriptScriptedVariable
+) : ParadoxItemPresentation<ParadoxScriptScriptedVariable>(element)
 
 class ParadoxScriptPropertyPresentation(
 	element: ParadoxScriptProperty

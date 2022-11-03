@@ -25,9 +25,9 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
-			is ParadoxScriptVariable -> {
+			is ParadoxScriptScriptedVariable -> {
 				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.variable")
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.scriptedVariable")
 					else -> element.name
 				}
 			}
@@ -84,7 +84,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
 		return when(element){
-			is ParadoxScriptVariable -> true
+			is ParadoxScriptScriptedVariable -> true
 			is ParadoxScriptProperty -> true
 			is ParadoxExpressionAwareElement -> true
 			is ParadoxParameterElement -> true

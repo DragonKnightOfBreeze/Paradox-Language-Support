@@ -14,7 +14,7 @@ public interface ParadoxScriptRootBlock extends IParadoxScriptBlock {
   List<ParadoxScriptValue> getValueList();
 
   @NotNull
-  List<ParadoxScriptVariable> getVariableList();
+  List<ParadoxScriptScriptedVariable> getVariableList();
 
   @NotNull
   String getValue();

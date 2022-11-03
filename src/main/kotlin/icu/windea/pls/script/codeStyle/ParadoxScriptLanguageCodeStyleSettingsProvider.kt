@@ -47,7 +47,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 	
 	private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
 		val spacesAroundOperators = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_AROUND_VARIABLE_SEPARATOR", PlsBundle.message("script.codeStyleSettings.spacing.around.variableSeparator"), spacesAroundOperators)
+		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR", PlsBundle.message("script.codeStyleSettings.spacing.around.scriptedVariableSeparator"), spacesAroundOperators)
 		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_AROUND_PROPERTY_SEPARATOR", PlsBundle.message("script.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperators)
 		consumer.showCustomOption(ParadoxScriptCodeStyleSettings::class.java, "SPACE_AROUND_INLINE_MATH_OPERATOR", PlsBundle.message("script.codeStyleSettings.spacing.around.inlineMathOperator"), spacesAroundOperators)
 		

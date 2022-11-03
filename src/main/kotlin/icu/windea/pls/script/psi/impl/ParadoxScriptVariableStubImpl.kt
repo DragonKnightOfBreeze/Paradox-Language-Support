@@ -8,7 +8,7 @@ class ParadoxScriptVariableStubImpl(
 	parent: StubElement<*>,
 	override val name: String?,
 	override val gameType: ParadoxGameType?
-) : StubBase<ParadoxScriptVariable>(parent, ParadoxScriptStubElementTypes.VARIABLE), ParadoxScriptVariableStub{
+) : StubBase<ParadoxScriptScriptedVariable>(parent, ParadoxScriptStubElementTypes.VARIABLE), ParadoxScriptVariableStub{
 	override fun toString(): String {
 		return "ParadoxScriptVariableStub: (name=$name, gameType=$gameType)"
 	}

@@ -15,7 +15,7 @@ object ParadoxSelectorUtils {
 			from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
 			from is PsiFile -> from.fileInfo?.rootInfo?.gameType
 				?: ParadoxMagicCommentHandler.resolveFilePathComment(from)?.first
-			from is ParadoxScriptVariable -> runCatching { from.stub }.getOrNull()?.gameType
+			from is ParadoxScriptScriptedVariable -> runCatching { from.stub }.getOrNull()?.gameType
 				?: selectGameType(from.parent)
 			from is ParadoxDefinitionProperty -> runCatching { from.getStub() }.getOrNull()?.gameType
 				?: from.definitionInfo?.gameType

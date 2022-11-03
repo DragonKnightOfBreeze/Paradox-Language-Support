@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptInlineHandler: InlineHandler {
 	override fun createInliner(element: PsiElement, settings: InlineHandler.Settings): InlineHandler.Inliner? {
 		return when{
-			element is ParadoxScriptVariable -> null
+			element is ParadoxScriptScriptedVariable -> null
 			element is ParadoxScriptVariableReference -> null
 			else -> null
 		}

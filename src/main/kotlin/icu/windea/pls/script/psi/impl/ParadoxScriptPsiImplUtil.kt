@@ -58,18 +58,18 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	private fun isRootBlockComponent(element: PsiElement): Boolean {
-		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+		return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
 	}
 	//endregion
 	
-	//region ParadoxScriptVariable
+	//region ParadoxScriptScriptedVariable
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptVariable, @Iconable.IconFlags flags: Int): Icon {
+	fun getIcon(element: ParadoxScriptScriptedVariable, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.ScriptedVariable
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxScriptVariable): String {
+	fun getName(element: ParadoxScriptScriptedVariable): String {
 		//注意：element.stub可能会导致ProcessCanceledException
 		// 不包含作为前缀的"@"
 		runCatching { element.stub?.name }.getOrNull()?.let { return it }
@@ -77,7 +77,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptVariable, name: String): ParadoxScriptVariable {
+	fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
 		// 不包含作为前缀的"@"
 		val nameElement = element.variableName.variableNameId
 		val newNameElement = ParadoxScriptElementFactory.createVariableName(element.project, name).variableNameId
@@ -86,32 +86,32 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getNameIdentifier(element: ParadoxScriptVariable): PsiElement {
+	fun getNameIdentifier(element: ParadoxScriptScriptedVariable): PsiElement {
 		return element.variableName.variableNameId
 	}
 	
 	@JvmStatic
-	fun getTextOffset(element: ParadoxScriptVariable): Int {
+	fun getTextOffset(element: ParadoxScriptScriptedVariable): Int {
 		return element.node.startOffset + 1
 	}
 	
 	@JvmStatic
-	fun getValue(element: ParadoxScriptVariable): String? {
+	fun getValue(element: ParadoxScriptScriptedVariable): String? {
 		return element.variableValue?.value?.text?.unquote()
 	}
 	
 	@JvmStatic
-	fun getUnquotedValue(element: ParadoxScriptVariable): String? {
+	fun getUnquotedValue(element: ParadoxScriptScriptedVariable): String? {
 		return element.variableValue?.value?.text
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptVariable): ParadoxExpressionType? {
+	fun getExpressionType(element: ParadoxScriptScriptedVariable): ParadoxExpressionType? {
 		return element.variableValue?.value?.expressionType
 	}
 	
 	@JvmStatic
-	fun getPresentation(element: ParadoxScriptVariable): ItemPresentation {
+	fun getPresentation(element: ParadoxScriptScriptedVariable): ItemPresentation {
 		return ParadoxScriptVariablePresentation(element)
 	}
 	//endregion
@@ -565,7 +565,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	private fun isBlockComponent(element: PsiElement): Boolean {
-		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+		return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
 			|| element is ParadoxScriptParameterCondition
 	}
 	
@@ -731,7 +731,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	private fun isParameterConditionComponent(element: PsiElement): Boolean {
-		return element is ParadoxScriptVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
+		return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
 	}
 	//endregion
 	

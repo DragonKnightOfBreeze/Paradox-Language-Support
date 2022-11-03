@@ -31,13 +31,12 @@ object PlsIcons {
 	@JvmField val LocalisationCommandField = loadIcon("/icons/localisationCommandField.svg")
 	
 	@JvmField val Definition = loadIcon("/icons/definition.svg")
-	@JvmField val RelatedLocalisation = loadIcon("/icons/relatedLocalisation.svg")
 	@JvmField val Localisation = loadIcon("/icons/localisation.svg")
 	@JvmField val ScriptedVariable = loadIcon("/icons/scriptedVariable.svg")
 	@JvmField val Property = loadIcon("/icons/property.svg")
 	@JvmField val Value = loadIcon("/icons/value.svg")
 	@JvmField val Parameter = loadIcon("/icons/parameter.svg")
-	@JvmField val Variable = loadIcon("/icons/variable.svg")
+	@JvmField val Variable = loadIcon("/icons/variable.svg") //predefined_localisation_variable | value[variable]
 	@JvmField val ValueSetValue = loadIcon("/icons/valueSetValue.svg")
 	@JvmField val HardCodedValueSetValue = loadIcon("/icons/hardCodedValueSetValue.svg")
 	@JvmField val EnumValue = loadIcon("/icons/enumValue.svg")
@@ -45,7 +44,7 @@ object PlsIcons {
 	@JvmField val SystemScope = loadIcon("/icons/systemScope.svg")
 	@JvmField val Scope = loadIcon("/icons/scope.svg")
 	@JvmField val ScopeFieldPrefix = loadIcon("/icons/scopeFieldPrefix.svg")
-	@JvmField val ValueOfValueField = loadIcon("/icons/valueOfValueField.svg")
+	@JvmField val ValueFieldValue = loadIcon("/icons/valueFieldValue.svg")
 	@JvmField val ValueFieldPrefix = loadIcon("/icons/valueFieldPrefix.svg")
 	@JvmField val Modifier = loadIcon("/icons/modifier.svg")
 	@JvmField val Alias = loadIcon("/icons/alias.svg")
@@ -61,7 +60,7 @@ object PlsIcons {
 	object Gutter {
 		@JvmField val Definition = loadIcon("/icons/gutter/definition.svg")
 		@JvmField val RelatedLocalisation = loadIcon("/icons/gutter/relatedLocalisation.svg")
-		@JvmField val RelatedImages = loadIcon("/icons/gutter/relatedImages.svg")
+		@JvmField val RelatedImage = loadIcon("/icons/gutter/relatedImage.svg")
 		@JvmField val Localisation = loadIcon("/icons/gutter/localisation.svg")
 		@JvmField val ComplexEnumValue = loadIcon("icons/gutter/complexEnumValue.svg")
 	}

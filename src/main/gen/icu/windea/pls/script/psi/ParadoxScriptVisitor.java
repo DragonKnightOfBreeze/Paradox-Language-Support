@@ -5,7 +5,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.core.psi.ParadoxExpressionAwareElement;
-import com.intellij.psi.PsiLiteralValue;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -121,7 +120,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitTypedElement(o);
   }
 
-  public void visitVariable(@NotNull ParadoxScriptVariable o) {
+  public void visitVariable(@NotNull ParadoxScriptScriptedVariable o) {
     visitNamedElement(o);
     // visitTypedElement(o);
   }

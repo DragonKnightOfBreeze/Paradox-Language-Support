@@ -16,7 +16,7 @@ class ParadoxScriptedVariableImplementationsSearch: QueryExecutor<PsiElement, De
 	override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
 		//得到解析后的PSI元素
 		val sourceElement = queryParameters.element
-		if(sourceElement is ParadoxScriptVariable){
+		if(sourceElement is ParadoxScriptScriptedVariable){
 			val name = sourceElement.name
 			val project = queryParameters.project
 			//使用全部作用域
