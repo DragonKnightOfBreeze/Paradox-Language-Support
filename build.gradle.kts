@@ -1,15 +1,21 @@
+
+import org.jetbrains.changelog.*
+import org.jetbrains.kotlin.gradle.tasks.*
+import org.jetbrains.kotlin.utils.*
+
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.7.0"
-	id("org.jetbrains.intellij") version "1.8.0"
+	id("org.jetbrains.intellij") version "1.9.0"
 	id("org.jetbrains.grammarkit") version "2021.2.2"
+	id("org.jetbrains.changelog") version "2.0.0"
 }
 
 group = "icu.windea"
 version = "0.7.4"
 
 intellij {
-	version.set("2022.2")
 	pluginName.set("Paradox Language Support")
+	version.set("2022.2")
 	plugins.add("com.intellij.platform.images")
 	plugins.add("cn.yiiguxing.plugin.translate:3.3.2") //https://github.com/YiiGuxing/TranslationPlugin
 	
@@ -22,13 +28,13 @@ intellij {
 
 repositories {
 	maven("https://maven.aliyun.com/nexus/content/groups/public")
+	maven("https://www.jetbrains.com/intellij-repository/releases")
 	mavenCentral()
 }
 
 dependencies {
-	implementation("org.jetbrains.kotlin:kotlin-stdlib")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("ar.com.hjg:pngj:2.1.0") //FROM DDS4J
+	testImplementation("junit:junit:4.13.2")
 }
 
 sourceSets {
@@ -41,27 +47,15 @@ sourceSets {
 	}
 }
 
-java {
-	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(11))
-	}
-}
-
 kotlin {
 	jvmToolchain {
-		this as JavaToolchainSpec
 		languageVersion.set(JavaLanguageVersion.of(11))
 	}
-}
-
-val projectCompiler = javaToolchains.compilerFor {
-	languageVersion.set(JavaLanguageVersion.of(11))
 }
 
 data class CwtConfigDir(
 	val from: String,
-	val to: String,
-	val flatConfigDir: Boolean = false
+	val to: String
 )
 
 val cwtConfigDirs = listOf(
@@ -75,6 +69,12 @@ val cwtConfigDirs = listOf(
 )
 
 tasks {
+	withType<KotlinCompile> {
+		kotlinOptions {
+			jvmTarget = "11"
+			freeCompilerArgs = listOf("-Xjvm-default=all")
+		}
+	}
 	jar {
 		//添加项目文档和许可证
 		from("README.md", "README_en.md", "LICENSE")
@@ -82,7 +82,7 @@ tasks {
 		cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
 			from("$rootDir/cwt/$cwtConfigDir") {
 				includeEmptyDirs = false
-				exclude("**/.*")
+				exclude(".*", "*.fsx", "gitlab-ci.yml")
 				//打平/config子目录中的文件
 				eachFile {
 					val i = path.indexOf("/config", ignoreCase = true)
@@ -94,38 +94,30 @@ tasks {
 			}
 		}
 	}
-	compileJava {
-		javaCompiler.set(projectCompiler)
-	}
-	compileTestJava {
-		javaCompiler.set(projectCompiler)
-	}
-	compileKotlin {
-		kotlinOptions {
-			jvmTarget = "11"
-			freeCompilerArgs = listOf("-Xjvm-default=all")
-		}
-	}
-	compileTestKotlin {
-		kotlinOptions {
-			jvmTarget = "11"
-			freeCompilerArgs = listOf("-Xjvm-default=all")
-		}
-	}
-	buildSearchableOptions {
-		enabled = false
+	patchPluginXml {
+		sinceBuild.set("222")
+		untilBuild.set("")
+		val descriptionText = projectDir.resolve("DESCRIPTION.md").readText()
+		pluginDescription.set(descriptionText)
+		val changelogText = projectDir.resolve("CHANGELOG.md").readText()
+			.lines()
+			.run {
+				val start = indexOfFirst { it.startsWith("## ${version.get()}") }
+				val end = indexOfFirst(start + 1) { it.startsWith("## ") }.let { if(it != -1) it else size }
+				subList(start + 1, end)
+			}
+			.joinToString("\n")
+			.let { markdownToHTML(it) }
+		changeNotes.set(changelogText)
 	}
 	prepareSandbox {
 		
 	}
-	publishPlugin {
-		token.set(System.getenv("IDEA_TOKEN"))
-	}
 	runIde {
-		//添加自定义配置项到systemProperties中（idea.properties中的配置项会被识别为systemProperties）
-		//通过调用java.lang.Boolean.getBoolean()来检查配置项
-		systemProperty("pls.debug", true)
-		//自定义JVM参数
-		jvmArgs("-Xmx4096m")
+		jvmArgs("-Xmx4096m") //自定义JVM参数
+	}
+	publishPlugin {
+		dependsOn("patchChangelog")
+		token.set(System.getenv("IDEA_TOKEN"))
 	}
 }

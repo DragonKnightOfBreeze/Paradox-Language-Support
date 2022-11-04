@@ -1,4 +1,4 @@
-# 更新日志
+# Changelog
 
 > 除非明确说明：
 > 
@@ -13,30 +13,37 @@
 * 功能优化：
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
   * [ ] 确认重命名正确（如果支持重命名）
+  * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
+  * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
+  * [ ] 将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等
+  * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
+  * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
+  * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
+  * [ ] 需要重新调整对返回的规则列表的排序
 * 新增功能：
+  * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
   * [ ] ［搁置］添加内嵌提示：定义和定义元素的作用域的内嵌提示（需要研究）
   * [ ] 实现工具栏动作：生成所有缺失语言区域的本地化文件
   * [ ] 实现工具栏动作：生成所有缺失的相关本地化
   * [ ] 可以通过特殊注释强制指定定义类型（基于文件路径或者基于直接的类型+子类型） - 用于实现差异比较等功能
   * [ ] 实现对`*.gui`文件中的GUI定义的UI预览（参考IDEA的Markdown插件的实现）
   * [ ] 实现对`*.txt`文件中的定义的UI预览（参考游戏中的效果以及灰机Wiki的实现）
-* 脚本文件语法解析优化：
-  * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
-* 本地化文件语法解析优化：
-  * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
-  * [ ] 将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等
-* ［长期］完善CWT配置支持：
+  * [ ] 实现动作：与重载或者被重载的其他文件作比较（对于文件，在编辑菜单/右键菜单/项目视图右键菜单中）（要比较的文件拥有相同的相对于游戏或模组目录的路径，不限制文件类型）
+  * [ ] 实现动作：与重载或者被重载的其他定义/本地化作比较（对于定义/本地化，在编辑菜单/右键菜单/项目视图右键菜单中）（要比较的定义/本地化拥有相同的名字）
+  * [ ] 添加引用解析：用于格式化的本地化文本中的格式化分段（`format.xxx: "<some_parts> ...""`中的`<some_parts>`）
+* 完善CWT配置支持：
+  * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
+  * [ ] 优化：更好地兼容嵌套的定义
+  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
   * [ ] 优化：scope的名字（准确来说是别名）可以包含点号
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
   * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息（支持valueSetValueExpression，如`val@root.owner`）
-不保证复现的问题：
-  * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`识别为scope_expression而非参数名，为什么？
+* 遗留问题：
+  * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`被识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？
 
-## 0.7
-
-### 0.7.4
+## 0.7.4
 
 * BUG修复：
   * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
@@ -48,37 +55,26 @@
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
-  * [ ] 基于facet或者合成库`SyntheticLibrary`+自定义设置配置模组的游戏类型、游戏目录、依赖模组列表等配置
-  * [ ] 内嵌提示的预览文本中不再包括特殊注释，而是通过向psiFile中注入特定userData的方式提供必要的信息（类型、本地化等）
-  * [ ] 尽管在脚本文件中Ctrl+点击本地化引用只会导航到选用的（而非所有的，Alt+Ctrl+点击才会导航到所有的），从任意同名本地化Ctrl+点击仍然需要可以导航到所有的引用，其他类型的引用同理
-  * [ ] 基于引用的重命名需要考虑存在前后缀的情况（主要是为图标引用考虑）
-  * [ ] 需要重新调整对返回的规则列表的排序
+  * [ ] 从任意同名的封装变量/定义/本地化出发，可以通过查找使用导航到所有那个名字的使用
 * 功能变更：
-  * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ -> 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
+  * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ → 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
 * 新增功能：
-  * [ ] ~~添加检查：图标属性的值引用了定义自身（`foo { icon = foo ... }`）（不觉得这有什么意义）~~
-  * [X] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effect = { PARAM = some_value }`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
+  * [X] 实现检查：参数（`$PARAM$`）被设置/引用但未被使用（例如：有`some_effecFt = { PARAM = some_value }`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。）
   * [X] 实现检查：值集中的值（`some_flag`）被设置但未被使用（例如，有`set_flag = xxx`但没有`has_flag = xxx`。）
   * [X] 实现检查：值集中的值（`some_flag`）被使用但未被设置（例如，有`has_flag = xxx`但没有`set_flag = xxx`。） - 默认不启用
   * [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
   * [X] 实现内嵌提示：预定义修饰符的本地化名字（`mod_$`）
   * [X] 实现动作：导航到（对应的）CWT规则（对于定义元素，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）
-  * [ ] 实现动作：与重载或者被重载的其他文件作比较（对于文件，在编辑菜单/右键菜单/项目视图右键菜单中）（要比较的文件拥有相同的相对于游戏或模组目录的路径，不限制文件类型）
-  * [ ] 实现动作：与重载或者被重载的其他定义/本地化作比较（对于定义/本地化，在编辑菜单/右键菜单/项目视图右键菜单中）（要比较的定义/本地化拥有相同的名字）
-  * [ ] 添加引用解析：用于格式化的本地化文本中的格式化分段（`format.xxx: "<some_parts> ...""`中的`<some_parts>`）
   * [X] 在查找使用中，区分参数和值集中的值的读/写使用
   * [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
-* ［长期］完善CWT配置支持：
+* 完善CWT配置支持：
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   * [X] 为`complexEnumValue`的引用（而非声明）提供特殊文档
   * [X] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找使用、导航到类型声明等功能 - 通过intention和annotator
   * [X] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc` `mod_category_$`等，需要确定具体规则是什么）
-  * [ ] ~~为复杂枚举如`complex_enum[policy_option]`提供相关本地化支持（类似定义）~~（搁置，不能很好地显示出来，复杂枚举名可能本身就是一个本地化引用）
-  * [ ] 优化：更好地兼容嵌套的定义
-  * [ ] 编写工具类支持解析`localistions.log` `modifiers.log` `scopes.log` `trigger_docs.log`等日志文件，生成对应的cwt文件
 
-### 0.7.3
+## 0.7.3
 
 * [X] 更新cwt规则到最新版本（2022/10/13）
 * 功能优化：
@@ -106,11 +102,11 @@
       * 特殊注释不能包含任何其他非空白文本，合法的特殊注释文本示例：`@type:stellaris:civic_or_origin`
       * 定义的rootKey仍然需要匹配
 
-### 0.7.2
+## 0.7.2
 
 * BUG修复
 
-### 0.7.1
+## 0.7.1
 
 * BUG修复
 * 功能优化：
@@ -126,16 +122,16 @@
     * 特殊注释不能包含任何其他非空白文本，合法的特殊注释文本示例：`@type:stellaris:civic_or_origin`
     * 定义的rootKey仍然需要匹配
 
-### 0.7.1
+## 0.7.1
 
 * BUG修复
 
-### 0.7.0
+## 0.7.0
 
 * 更新IDEA版本到2022.2
 * 对模组描述符文件使用特定的图标
 
-## 0.6 > 0.6.7
+## 0.6
 
 * [X] 更新cwt规则到最新版本（2022/6/10）
 * [X] 将CWT配置移动到项目根目录下`cwt`目录中，以便随远程GIT仓库更新CWT配置
@@ -236,7 +232,7 @@
   * 检查Github上最新的CWT配置文件仓库，提高CWT配置文件语法解析的兼容性
   * 每次打开项目时，检查已添加的CWT配置库的更新（`git pull`）
 
-## 0.5 >> 0.5.5
+## 0.5
 
 * [X] 更新IDEA版本到2022.1
 * [X] 更新内置的CWT配置
