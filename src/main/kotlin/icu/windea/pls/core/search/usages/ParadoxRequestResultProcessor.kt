@@ -25,7 +25,7 @@ class ParadoxRequestResultProcessor(
 	
 	private fun PsiReference.isReferenceToTarget(element: PsiElement): Boolean {
 		if(isReferenceTo(element)) return true
-		//TODO
+		//base on ReferencesSearchOptions, not considered yet
 		return false
 	}
 }
