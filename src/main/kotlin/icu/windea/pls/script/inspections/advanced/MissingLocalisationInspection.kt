@@ -37,7 +37,7 @@ import javax.swing.event.*
  * @property checkForDefinitions 是否检查定义。默认为true。
  * @property checkPrimaryForDefinitions 是否同样检查定义的主要的相关本地化，默认为true。
  * @property checkOptionalForDefinitions 是否同样检查定义的可选的相关本地化，默认为false。
- * @property checkForModifiers 是否检查修饰符。默认为true。
+ * @property checkForModifiers 是否检查修饰符。默认为false。
  */
 @CwtInspection("CWT100")
 class MissingLocalisationInspection : LocalInspectionTool() {
@@ -47,7 +47,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 	@JvmField var checkPrimaryLocale = true
 	@JvmField var checkPrimaryForDefinitions = true
 	@JvmField var checkOptionalForDefinitions = false
-	@JvmField var checkForModifiers = true
+	@JvmField var checkForModifiers = false
 	
 	private val localeList by lazy { locales.mapNotNullTo(SmartList()) { InternalConfigHandler.getLocale(it) } }
 	private val localeSet by lazy { InternalConfigHandler.getLocales().filterTo(mutableSetOf()) { it.id in locales } }

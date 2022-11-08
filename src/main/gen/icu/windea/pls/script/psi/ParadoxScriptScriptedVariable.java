@@ -9,7 +9,7 @@ import icu.windea.pls.core.expression.ParadoxExpressionType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptScriptedVariable
-    extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, StubBasedPsiElement<ParadoxScriptVariableStub> {
+    extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
 
   @NotNull
   ParadoxScriptVariableName getVariableName();

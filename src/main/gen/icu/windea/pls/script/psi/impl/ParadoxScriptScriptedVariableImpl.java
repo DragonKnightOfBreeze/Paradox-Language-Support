@@ -6,17 +6,17 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import icu.windea.pls.script.psi.ParadoxScriptVariableStub;
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import icu.windea.pls.core.expression.ParadoxExpressionType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptVariableStub> implements
+public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptScriptedVariableStub> implements
     ParadoxScriptScriptedVariable {
 
-  public ParadoxScriptScriptedVariableImpl(@NotNull ParadoxScriptVariableStub stub, @Nullable IStubElementType<?, ?> type) {
+  public ParadoxScriptScriptedVariableImpl(@NotNull ParadoxScriptScriptedVariableStub stub, @Nullable IStubElementType<?, ?> type) {
     super(stub, type);
   }
 

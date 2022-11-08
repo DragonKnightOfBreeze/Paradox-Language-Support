@@ -55,7 +55,7 @@
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
-  * [ ] 从任意同名的封装变量/定义/本地化出发，可以通过查找使用导航到所有那个名字的使用
+  * [X] 从任意同名的封装变量/定义/本地化/文件路径出发，可以通过查找使用导航到所有那个名字的使用
 * 功能变更：
   * [X] ~~支持额外的CWT选项：`## icon = <icon_type>`，用于重载进行代码补全时需要显示的图标，如`## icon = tag`~~ → 使用CWT选项`## tag`标记特殊标签，如`optimize_memory`
 * 新增功能：

@@ -7,7 +7,7 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVariableStub, ParadoxScriptScriptedVariable>(
+object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>(
 	"VARIABLE",
 	ParadoxScriptLanguage
 ) {
@@ -15,14 +15,14 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 	
 	override fun getExternalId() = externalId
 	
-	override fun createPsi(stub: ParadoxScriptVariableStub): ParadoxScriptScriptedVariable {
+	override fun createPsi(stub: ParadoxScriptScriptedVariableStub): ParadoxScriptScriptedVariable {
 		return ParadoxScriptScriptedVariableImpl(stub, this)
 	}
 	
-	override fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<*>): ParadoxScriptVariableStub {
+	override fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
 		val name = psi.name
 		val gameType = psi.fileInfo?.rootInfo?.gameType
-		return ParadoxScriptVariableStubImpl(parentStub, name, gameType)
+		return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
 	}
 	
 	override fun shouldCreateStub(node: ASTNode): Boolean {
@@ -33,19 +33,19 @@ object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptVari
 		return "common/scripted_variables".matchesPath(path, acceptSelf = false)
 	}
 	
-	override fun indexStub(stub: ParadoxScriptVariableStub, sink: IndexSink) {
+	override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
 		//索引scripted_variable的name
 		stub.name?.takeIfNotEmpty()?.let { name -> sink.occurrence(ParadoxScriptedVariableNameIndex.key, name) }
 	}
 	
-	override fun serialize(stub: ParadoxScriptVariableStub, dataStream: StubOutputStream) {
+	override fun serialize(stub: ParadoxScriptScriptedVariableStub, dataStream: StubOutputStream) {
 		dataStream.writeName(stub.name)
 		dataStream.writeName(stub.gameType?.id)
 	}
 	
-	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptVariableStub {
+	override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
 		val name = dataStream.readNameString()
 		val gameType = dataStream.readNameString()?.let { ParadoxGameType.resolve(it) }
-		return ParadoxScriptVariableStubImpl(parentStub, name, gameType)
+		return ParadoxScriptScriptedVariableStubImpl(parentStub, name, gameType)
 	}
 }

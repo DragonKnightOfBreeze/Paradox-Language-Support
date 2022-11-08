@@ -41,7 +41,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
-  stubClass="icu.windea.pls.script.psi.ParadoxScriptVariableStub"
+  stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getExpressionType getPresentation]
 }
 scripted_variable_name ::= AT VARIABLE_NAME_ID{
