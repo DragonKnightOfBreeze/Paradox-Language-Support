@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.psi.impl
 
 import com.intellij.navigation.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -70,7 +71,8 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getName(element: ParadoxLocalisationProperty): String {
 		//注意：element.stub可能会导致ProcessCanceledException
-		runCatching { element.stub?.name }.getOrNull()?.let { return it }
+		ProgressManager.checkCanceled()
+		element.stub?.name?.let { return it }
 		return element.propertyKey.propertyKeyId.text
 	}
 	
@@ -95,7 +97,8 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
 		//注意：element.stub可能会导致ProcessCanceledException
-		runCatching { element.stub?.category }.getOrNull()?.let { return it }
+		ProgressManager.checkCanceled()
+		element.stub?.category?.let { return it }
 		return element.localisationInfo?.category
 	}
 	
@@ -114,8 +117,9 @@ object ParadoxLocalisationPsiImplUtil {
 	@JvmStatic
 	fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
 		//name & category (localisation / synced_localisation) & gameType
+		//TODO should localisations with different locales be equivalent?
 		return another is ParadoxLocalisationProperty
-			&& element.localisationInfo?.equals(another.localisationInfo) != true
+			&& element.localisationInfo?.equals(another.localisationInfo) == true
 	}
 	//endregion
 	

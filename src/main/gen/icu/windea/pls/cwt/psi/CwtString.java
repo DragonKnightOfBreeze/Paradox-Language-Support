@@ -13,12 +13,6 @@ public interface CwtString extends CwtValue, CwtNamedElement {
   Icon getIcon(@IconFlags int flags);
 
   @NotNull
-  String getValue();
-
-  @NotNull
-  String getStringValue();
-
-  @NotNull
   String getName();
 
   @NotNull
@@ -26,5 +20,11 @@ public interface CwtString extends CwtValue, CwtNamedElement {
 
   @NotNull
   PsiElement getNameIdentifier();
+
+  @NotNull
+  String getValue();
+
+  @NotNull
+  String getStringValue();
 
 }

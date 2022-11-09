@@ -65,4 +65,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @NotNull
   ItemPresentation getPresentation();
 
+  boolean isEquivalentTo(@NotNull PsiElement another);
+
 }

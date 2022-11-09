@@ -19,6 +19,9 @@ import icu.windea.pls.script.psi.*
 object ParadoxComplexEnumValueInfoHandler {
 	@JvmStatic
 	fun get(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
+		//注意：element.stub可能会导致ProcessCanceledException
+		ProgressManager.checkCanceled()
+		element.stub?.complexEnumValueInfo?.let { return it }
 		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfoKey) {
 			val file = element.containingFile
 			val value = resolve(element, file)

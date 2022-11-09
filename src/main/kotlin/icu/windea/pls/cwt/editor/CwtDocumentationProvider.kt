@@ -101,7 +101,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildPropertyDefinition(element: CwtProperty, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean, sections: MutableMap<String, String>?) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
-				if(configType != null) append(configType.text).append(" ")
+				if(configType != null) append(configType.nameText).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
 				val typeCategory = configType?.category
@@ -142,7 +142,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	private fun StringBuilder.buildStringDefinition(element: CwtString, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?, showDetail: Boolean, sections: MutableMap<String, String>?) {
 		definition {
 			if(originalElement?.language != ParadoxScriptLanguage || configType?.isReference == true) {
-				if(configType != null) append(configType.text).append(" ")
+				if(configType != null) append(configType.nameText).append(" ")
 				append("<b>").append(name.escapeXmlOrAnonymous()).append("</b>")
 				//加上类型信息
 				val typeCategory = configType?.category

@@ -5,7 +5,7 @@ import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
 import com.intellij.usageView.*
-import icu.windea.pls.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
@@ -23,21 +23,17 @@ class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
-			is CwtOption -> {
-				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.option")
-					else -> element.name
-				}
-			}
 			is CwtProperty -> {
+				val configType = CwtConfigType.resolve(element)?.takeIf { it.isReference } ?: return null
 				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.property")
+					UsageViewTypeLocation.INSTANCE -> configType.descriptionText
 					else -> element.name
 				}
 			}
 			is CwtString -> {
+				val configType = CwtConfigType.resolve(element)?.takeIf { it.isReference } ?: return null
 				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.value")
+					UsageViewTypeLocation.INSTANCE -> configType.descriptionText
 					else -> element.value
 				}
 			}
@@ -50,7 +46,11 @@ class CwtFindUsagesProvider : FindUsagesProvider , ElementDescriptionProvider{
 	}
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return false //NOTE 总是不支持：没有必要，并且引用可能过多
+		return when(element){
+			is CwtProperty -> CwtConfigType.resolve(element)?.isReference == true
+			is CwtString -> CwtConfigType.resolve(element)?.isReference == true
+			else -> false
+		}
 	}
 	
 	override fun getWordsScanner(): WordsScanner {

@@ -9,14 +9,13 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionReference(
 	element: ParadoxExpressionElement,
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()
@@ -31,12 +30,18 @@ class ParadoxScriptExpressionReference(
 		return element.setValue(newElementName)
 	}
 	
-	override fun isReferenceTo(element: PsiElement): Boolean {
-		//必要的处理
-		val resolved = resolve()
-		val manager = getElement().manager
-		return manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))
-	}
+	//override fun isReferenceTo(element: PsiElement): Boolean {
+	//	//必要的处理，否则无法
+	//	val results = multiResolve(false)
+	//	val manager = getElement().manager
+	//	for(result in results) {
+	//		val resolved = result.element
+	//		if(manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))) {
+	//			return true
+	//		}
+	//	}
+	//	return false
+	//}
 	
 	override fun resolve(): PsiElement? {
 		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config.expression, config, isKey) //根据对应的expression进行解析
@@ -50,7 +55,8 @@ class ParadoxScriptExpressionReference(
 	/**
 	 * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
 	 */
+	@Suppress("RedundantOverride")
 	override fun getVariants(): Array<Any> {
-		return super<PsiReferenceBase>.getVariants() //not here
+		return super.getVariants() //not here
 	}
 }

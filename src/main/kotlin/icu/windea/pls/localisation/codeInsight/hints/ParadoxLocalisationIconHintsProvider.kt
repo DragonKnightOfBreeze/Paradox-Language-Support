@@ -12,7 +12,6 @@ import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.*
 import javax.swing.*
 
 /**
@@ -68,7 +67,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
 						//只是显示图标而已，其他什么都不做，无法点击，鼠标悬浮不会显示tooltip
 						val presentation = smallScaledIcon(icon)
 						val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
-						val endOffset = element.endOffset
+						val endOffset = element.textRange.endOffset
 						sink.addInlineElement(endOffset, true, finalPresentation, false)
 					}
 				}

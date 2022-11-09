@@ -13,13 +13,13 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationPropertyReferenceReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//TODO 重命名关联的definition
 		return element.setName(newElementName)
 	}
 	
-	//TODO may be resolved to localisation / variable / system statistics in GUI elements 
+	//TODO may be resolved to localisation / parameter / system statistics in GUI elements 
 	
 	override fun resolve(): PsiElement? {
 		val file = element.containingFile as? ParadoxLocalisationFile ?: return null
@@ -60,8 +60,9 @@ class ParadoxLocalisationPropertyReferenceReference(
 	/**
 	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxPropertyReferenceCompletionProvider
 	 */
+	@Suppress("RedundantOverride")
 	override fun getVariants(): Array<Any> {
-		return super<PsiReferenceBase>.getVariants() //not here
+		return super.getVariants() //not here
 	}
 }
 

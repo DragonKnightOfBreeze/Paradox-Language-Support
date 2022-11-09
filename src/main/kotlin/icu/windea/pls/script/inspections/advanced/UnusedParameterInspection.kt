@@ -15,7 +15,6 @@ import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.impl.*
 import icu.windea.pls.script.reference.*
-import org.jetbrains.kotlin.idea.util.application.*
 import java.util.concurrent.*
 import javax.swing.*
 

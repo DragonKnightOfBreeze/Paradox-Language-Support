@@ -64,7 +64,7 @@ property ::= property_key property_separator property_value {
   methods=[
     getIcon getName setName getNameIdentifier getValue getDepth getBlock 
     getDefinitionType getExpressionType getConfigExpression getExpression
-    getPathName getOriginalPathName getParameterMap getPresentation
+    getPathName getOriginalPathName getParameterMap getPresentation isEquivalentTo
   ]
 }
 property_key ::= key_expr {

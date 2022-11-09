@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptedVariableReference(
 	element: IParadoxScriptVariableReference,
 	rangeInElement: TextRange
-) : PsiReferenceBase<IParadoxScriptVariableReference>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiPolyVariantReferenceBase<IParadoxScriptVariableReference>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的variable
 		val resolved = resolve()

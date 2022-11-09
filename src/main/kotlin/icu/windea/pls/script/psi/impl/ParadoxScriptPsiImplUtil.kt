@@ -74,7 +74,8 @@ object ParadoxScriptPsiImplUtil {
 	fun getName(element: ParadoxScriptScriptedVariable): String {
 		//注意：element.stub可能会导致ProcessCanceledException
 		// 不包含作为前缀的"@"
-		runCatching { element.stub?.name }.getOrNull()?.let { return it }
+		ProgressManager.checkCanceled()
+		element.stub?.name?.let { return it }
 		return element.scriptedVariableName.variableNameId.text
 	}
 	
@@ -186,7 +187,8 @@ object ParadoxScriptPsiImplUtil {
 	fun getName(element: ParadoxScriptProperty): String {
 		//注意：element.stub可能会导致ProcessCanceledException
 		//注意：这里需要得到element.stub.rootKey，而非element.stub.name，因为这里需要的是PSI元素的名字而非定义的名字
-		runCatching { element.stub?.rootKey }.getOrNull()?.let { return it }
+		ProgressManager.checkCanceled()
+		element.stub?.rootKey?.let { return it }
 		return element.propertyKey.text.unquote()
 	}
 	

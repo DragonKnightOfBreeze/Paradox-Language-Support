@@ -36,18 +36,6 @@ public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
 
   @Override
   @NotNull
-  public String getValue() {
-    return CwtPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  @NotNull
-  public String getStringValue() {
-    return CwtPsiImplUtil.getStringValue(this);
-  }
-
-  @Override
-  @NotNull
   public String getName() {
     return CwtPsiImplUtil.getName(this);
   }
@@ -62,6 +50,18 @@ public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
   @NotNull
   public PsiElement getNameIdentifier() {
     return CwtPsiImplUtil.getNameIdentifier(this);
+  }
+
+  @Override
+  @NotNull
+  public String getValue() {
+    return CwtPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  @NotNull
+  public String getStringValue() {
+    return CwtPsiImplUtil.getStringValue(this);
   }
 
 }

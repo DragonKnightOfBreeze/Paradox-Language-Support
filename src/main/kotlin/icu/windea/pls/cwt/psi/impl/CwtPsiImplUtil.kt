@@ -55,16 +55,6 @@ object CwtPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun setName(element: CwtOption, name: String): CwtOption {
-		throw IncorrectOperationException() //不允许重命名
-	}
-	
-	@JvmStatic
-	fun getNameIdentifier(element: CwtOption): PsiElement {
-		return element.optionKey
-	}
-	
-	@JvmStatic
 	fun getOptionName(element: CwtOption): String {
 		return element.optionKey.value
 	}
@@ -186,16 +176,6 @@ object CwtPsiImplUtil {
 	
 	//region CwtString
 	@JvmStatic
-	fun getValue(element: CwtString): String {
-		return element.text.unquote()
-	}
-	
-	@JvmStatic
-	fun getStringValue(element: CwtString): String {
-		return element.value
-	}
-	
-	@JvmStatic
 	fun getName(element: CwtString): String {
 		return element.value
 	}
@@ -208,6 +188,16 @@ object CwtPsiImplUtil {
 	@JvmStatic
 	fun getNameIdentifier(element: CwtString): PsiElement {
 		return element
+	}
+	
+	@JvmStatic
+	fun getValue(element: CwtString): String {
+		return element.text.unquote()
+	}
+	
+	@JvmStatic
+	fun getStringValue(element: CwtString): String {
+		return element.value
 	}
 	//endregion
 	

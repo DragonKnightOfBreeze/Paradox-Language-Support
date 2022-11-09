@@ -7,38 +7,100 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
-enum class CwtConfigType(
+sealed class CwtConfigType(
 	val id: String,
-	val text: String,
 	val isReference: Boolean = false,
 	val category: String? = null
 ) {
-	Type("type", PlsDocBundle.message("name.cwt.type")),
-	Subtype("subtype", PlsDocBundle.message("name.cwt.subtype")),
-	Enum("enum", PlsDocBundle.message("name.cwt.enum")),
-	ComplexEnum("complex enum", PlsDocBundle.message("name.cwt.complexEnum")),
-	Value("value", PlsDocBundle.message("name.cwt.value")),
-	SingleAlias("single alias", PlsDocBundle.message("name.cwt.singleAlias")),
-	Alias("alias", PlsDocBundle.message("name.cwt.alias")),
+	abstract val nameText: String
+	open val descriptionText: String? = null
 	
-	EnumValue("enum value", PlsDocBundle.message("name.cwt.enumValue"), true, category = "enums"),
-	ValueSetValue("value set value", PlsDocBundle.message("name.cwt.valueSetValue"), true, category = "values"),
+	object Type : CwtConfigType("type") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.type")
+	}
 	
-	Link("link", PlsDocBundle.message("name.cwt.link"), true),
-	LocalisationLink("localisation link", PlsDocBundle.message("name.cwt.localisationLink"), true),
-	LocalisationCommand("localisation command", PlsDocBundle.message("name.cwt.localisationCommand"), true),
-	ModifierCategory("modifier category", PlsDocBundle.message("name.cwt.modifierCategory"), true),
-	Modifier("modifier", PlsDocBundle.message("name.cwt.modifier"), true),
-	Scope("scope", PlsDocBundle.message("name.cwt.scope"), true),
-	ScopeGroup("scope group", PlsDocBundle.message("name.cwt.scopeGroup"), true),
+	object Subtype : CwtConfigType("subtype") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.subtype")
+	}
 	
-	SystemScope("system scope", PlsDocBundle.message("name.cwt.systemScope"), true),
-	LocalisationLocale("localisation locale", PlsDocBundle.message("name.cwt.localisationLocale"), true),
-	LocalisationColor("localisation color", PlsDocBundle.message("name.cwt.localisationColor"), true),
-	LocalisationPredefinedVariable("localisation predefined variable", PlsDocBundle.message("name.cwt.localisationPredefinedVariable"), true);
+	object Enum : CwtConfigType("enum") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.enum")
+	}
 	
-	override fun toString(): String {
-		return text
+	object ComplexEnum : CwtConfigType("complex enum") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.complexEnum")
+	}
+	
+	object Value : CwtConfigType("value") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.value")
+	}
+	
+	object SingleAlias : CwtConfigType("single alias") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.singleAlias")
+	}
+	
+	object Alias : CwtConfigType("alias") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.alias")
+	}
+	
+	object EnumValue : CwtConfigType("enum value", true, "enums") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.enumValue")
+		override val descriptionText get() = PlsBundle.message("cwt.description.enumValue")
+	}
+	
+	object ValueSetValue : CwtConfigType("value set value", true, "values") {
+		override val nameText get() = PlsDocBundle.message("name.cwt.valueSetValue")
+		override val descriptionText get() = PlsBundle.message("cwt.description.valueSetValue")
+	}
+	
+	object Link : CwtConfigType("link", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.link")
+		override val descriptionText get() = PlsBundle.message("cwt.description.link")
+	}
+	
+	object LocalisationLink : CwtConfigType("localisation link", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.localisationLink")
+		override val descriptionText get() = PlsBundle.message("cwt.description.localisationLink")
+	}
+	
+	object LocalisationCommand : CwtConfigType("localisation command", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.localisationCommand")
+		override val descriptionText get() = PlsBundle.message("cwt.description.localisationCommand")
+	}
+	
+	object ModifierCategory : CwtConfigType("modifier category", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.modifierCategory")
+		override val descriptionText get() = PlsBundle.message("cwt.description.modifierCategory")
+	}
+	
+	object Modifier : CwtConfigType("modifier", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.modifier")
+		override val descriptionText get() = PlsBundle.message("cwt.description.modifier")
+	}
+	
+	object Scope : CwtConfigType("scope", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.scope")
+		override val descriptionText get() = PlsBundle.message("cwt.description.scope")
+	}
+	
+	object ScopeGroup : CwtConfigType("scope group", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.scopeGroup")
+		override val descriptionText get() = PlsBundle.message("cwt.description.scopeGroup")
+	}
+	
+	object SystemScope : CwtConfigType("system scope", isReference = true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.systemScope")
+		override val descriptionText get() = PlsBundle.message("cwt.description.systemScope")
+	}
+	
+	object LocalisationLocale : CwtConfigType("localisation locale", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.localisationLocale")
+		override val descriptionText get() = PlsBundle.message("cwt.description.localisationLocale")
+	}
+	
+	object LocalisationPredefinedVariable : CwtConfigType("localisation predefined variable", true) {
+		override val nameText get() = PlsDocBundle.message("name.cwt.localisationPredefinedVariable")
+		override val descriptionText get() = PlsBundle.message("cwt.description.localisationPredefinedVariable")
 	}
 	
 	companion object {
@@ -76,7 +138,6 @@ enum class CwtConfigType(
 						//from internal config
 						parentName == "system_scopes" && parentProperty.containingFile.name == InternalConfigGroup.scriptConfigFileName -> SystemScope
 						parentName == "locales" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationLocale
-						parentName == "colors" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationColor
 						parentName == "predefined_variables" && parentProperty.containingFile.name == InternalConfigGroup.localisationConfigFileName -> LocalisationPredefinedVariable
 						else -> null
 					}
@@ -94,6 +155,35 @@ enum class CwtConfigType(
 				parentName.surroundsWith("value[", "]") -> ValueSetValue
 				parentParentName == "scope_groups" -> Scope
 				else -> null
+			}
+		}
+		
+		fun values(): Array<CwtConfigType> {
+			return arrayOf(Type, Subtype, Enum, ComplexEnum, Value, SingleAlias, Alias, EnumValue, ValueSetValue, Link, LocalisationLink, LocalisationCommand, ModifierCategory, Modifier, Scope, ScopeGroup, SystemScope, LocalisationLocale, LocalisationPredefinedVariable)
+		}
+		
+		fun valueOf(value: String): CwtConfigType {
+			return when(value) {
+				"Type" -> Type
+				"Subtype" -> Subtype
+				"Enum" -> Enum
+				"ComplexEnum" -> ComplexEnum
+				"Value" -> Value
+				"SingleAlias" -> SingleAlias
+				"Alias" -> Alias
+				"EnumValue" -> EnumValue
+				"ValueSetValue" -> ValueSetValue
+				"Link" -> Link
+				"LocalisationLink" -> LocalisationLink
+				"LocalisationCommand" -> LocalisationCommand
+				"ModifierCategory" -> ModifierCategory
+				"Modifier" -> Modifier
+				"Scope" -> Scope
+				"ScopeGroup" -> ScopeGroup
+				"SystemScope" -> SystemScope
+				"LocalisationLocale" -> LocalisationLocale
+				"LocalisationPredefinedVariable" -> LocalisationPredefinedVariable
+				else -> throw IllegalArgumentException("No object icu.windea.pls.cwt.CwtConfigType.$value")
 			}
 		}
 	}

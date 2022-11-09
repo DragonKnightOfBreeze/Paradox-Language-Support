@@ -38,9 +38,7 @@ private option_comment_item ::= option | value
 
 option ::= option_key option_separator value{
   pin=1
-  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
-  implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getName setName getNameIdentifier getOptionName getOptionValue getSeparatorType]
+  methods=[getIcon getName getOptionName getOptionValue getSeparatorType]
 }
 option_key ::= OPTION_KEY_TOKEN{
   methods=[getValue]
@@ -81,7 +79,7 @@ string ::= STRING_TOKEN{
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements="icu.windea.pls.cwt.psi.CwtNamedElement"
-  methods=[getIcon getValue getStringValue getName setName getNameIdentifier]
+  methods=[getIcon getName setName getNameIdentifier getValue getStringValue]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1

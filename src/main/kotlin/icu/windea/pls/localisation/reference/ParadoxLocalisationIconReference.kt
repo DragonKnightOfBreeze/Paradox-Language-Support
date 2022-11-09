@@ -3,12 +3,12 @@ package icu.windea.pls.localisation.reference
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 import kotlin.collections.mapNotNullTo
 
 /**
@@ -23,31 +23,28 @@ import kotlin.collections.mapNotNullTo
 class ParadoxLocalisationIconReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationIcon>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//TODO scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
-		//重命名关联的sprite或ddsFile
-		//val resolved = resolve()
-		//when{
-		//	resolved != null && !resolved.isWritable -> {
-		//		throw IncorrectOperationException(message("cannotBeRenamed"))
-		//	}
-		//	resolved is ParadoxScriptProperty -> {
-		//		val nameProperty = resolved.findProperty("name", true)
-		//		val nameValue = nameProperty?.propertyValue?.value
-		//		if(nameValue is ParadoxScriptString){
-		//			nameValue.value = "GFX_text_${newElementName}".quote()
-		//		}
-		//	}
-		//	resolved is PsiFile -> {
-		//		resolved.name = "$newElementName.dds"
-		//	}
-		//}
+		//重命名关联的sprite或definition或ddsFile
+		val resolved = resolve()
+		when{
+			resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
+			resolved is ParadoxScriptProperty -> {
+				val definitionInfo = resolved.definitionInfo
+				if(definitionInfo != null) {
+					if(definitionInfo.type.let { it == "sprite" || it == "spriteType" }) {
+						resolved.name = resolved.name.replaceFirst(rangeInElement.substring(element.text), newElementName)
+					} else {
+						resolved.name = newElementName
+					}
+				}
+			}
+		}
 		return element.setName(newElementName)
 	}
 	
 	//TODO 研究生成的图标究竟是个啥逻辑
-	//应当可以来自游戏启动时生成的modifier，mod_$modifierName
+	//也许可以来自游戏启动时生成的modifier，即：mod_$modifierName？
 	
 	override fun resolve(): PsiElement? {
 		//根据spriteName和ddsFileName进行解析
@@ -110,6 +107,6 @@ class ParadoxLocalisationIconReference(
 	 */
 	@Suppress("RedundantOverride")
 	override fun getVariants(): Array<Any> {
-		return super<PsiReferenceBase>.getVariants() //not here
+		return super.getVariants() //not here
 	}
 }

@@ -5,7 +5,6 @@ package icu.windea.pls.core
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.core.*
-import org.jetbrains.kotlin.idea.gradleTooling.*
 import kotlin.properties.*
 import kotlin.reflect.*
 

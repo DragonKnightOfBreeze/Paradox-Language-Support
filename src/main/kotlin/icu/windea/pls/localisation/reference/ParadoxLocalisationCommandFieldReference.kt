@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationCommandFieldReference(
 	element: ParadoxLocalisationCommandField,
 	rangeInElement: TextRange
-) : PsiReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationCommandField>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		throw IncorrectOperationException() //不允许重命名
 	}

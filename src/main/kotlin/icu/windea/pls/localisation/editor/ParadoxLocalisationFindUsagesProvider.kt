@@ -27,21 +27,14 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
 		return when(element) {
 			is ParadoxLocalisationProperty -> {
+				val localisationInfo = element.localisationInfo ?: return null
 				when(location) {
 					UsageViewTypeLocation.INSTANCE -> {
-						val localisationInfo = element.localisationInfo
-						when(localisationInfo?.category) {
+						when(localisationInfo.category) {
 							ParadoxLocalisationCategory.Localisation -> PlsBundle.message("localisation.name.localisation")
 							ParadoxLocalisationCategory.SyncedLocalisation -> PlsBundle.message("localisation.name.syncedLocalisation")
-							else -> PlsBundle.message("localisation.name.property")
 						}
 					}
-					else -> element.name
-				}
-			}
-			is ParadoxLocalisationLocale -> {
-				when(location) {
-					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("localisation.name.locale")
 					else -> element.name
 				}
 			}
@@ -68,8 +61,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
 		return when(element){
-			is ParadoxLocalisationProperty -> true
-			is ParadoxLocalisationLocale -> true
+			is ParadoxLocalisationProperty -> element.localisationInfo != null
 			is ParadoxParameterElement -> true
 			is ParadoxValueSetValueElement -> true
 			else -> false

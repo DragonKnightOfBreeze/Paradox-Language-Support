@@ -33,31 +33,17 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 			}
 			is ParadoxScriptProperty -> {
 				//如果是定义，需要特殊处理
-				val definitionInfo = element.definitionInfo
-				if(definitionInfo != null) {
-					when(location) {
-						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.definition")
-						else -> definitionInfo.name
-					}
-				} else {
-					when(location) {
-						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.property")
-						else -> element.name
-					}
+				val definitionInfo = element.definitionInfo ?: return null
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.definition")
+					else -> definitionInfo.name
 				}
 			}
 			is ParadoxScriptExpressionElement -> {
-				val complexEnumValueInfo = element.complexEnumValueInfo
-				if(complexEnumValueInfo != null) {
-					when(location) {
-						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
-						else -> complexEnumValueInfo.name
-					}
-				} else {
-					when(location) {
-						UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.expression")
-						else -> element.text //keep quotes
-					}
+				val complexEnumValueInfo = element.complexEnumValueInfo ?: return null
+				when(location) {
+					UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.complexEnumValue")
+					else -> complexEnumValueInfo.name
 				}
 			}
 			is ParadoxParameterElement -> {
@@ -81,13 +67,13 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 	}
 	
 	override fun canFindUsagesFor(element: PsiElement): Boolean {
-		return when(element){
+		return when(element) {
 			is ParadoxScriptScriptedVariable -> true
-			is ParadoxScriptProperty -> true
-			is ParadoxExpressionElement -> true
+			is ParadoxScriptProperty -> element.definitionInfo != null
+			is ParadoxScriptExpressionElement -> element.complexEnumValueInfo != null
 			is ParadoxParameterElement -> true
 			is ParadoxValueSetValueElement -> true
-			else -> return false
+			else -> false
 		}
 	}
 	

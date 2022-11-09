@@ -3,6 +3,7 @@ package icu.windea.pls.core.search.usages
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.localisation.psi.*
@@ -16,7 +17,8 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
 		if(target !is ParadoxLocalisationProperty) return
 		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
 			val name = target.name
-			queryParameters.optimizer.searchWord(name, target.useScope, true, target)
+			val useScope = GlobalSearchScope.allScope(queryParameters.project)
+			queryParameters.optimizer.searchWord(name, useScope, true, target)
 		}
 	}
 }

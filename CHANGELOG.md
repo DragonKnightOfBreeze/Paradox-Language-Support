@@ -12,7 +12,7 @@
 * 完善在线参考文档
 * 功能优化：
   * [ ] 编辑本地化文件时提供输入彩色文本、图标等的快捷键（仅在可用的位置生效）
-  * [ ] 确认重命名正确（如果支持重命名）
+  * [ ] 确认重命名功能能够预期正确进行（如果对应的声明/引用支持重命名）
   * [ ] 确认`inline_math`和`scripted_loc`是否需要进行转义的最终条件，并添加到对应的检查中
   * [ ] `commandField`额外支持`$@variableName$`的写法，其中`variableName`是全局封装变量（位于`common/scripted_variables`中）（来自CWT：`localisations.log`）
   * [ ] 将本地化命令（`[xxx]`中的xxx，所有文本）解析为单个元素，如果解析scopeFieldExpression一样，将此作为localisationCommandExpression并解析，实现相关功能：检查、提示等
@@ -46,12 +46,16 @@
 ## 0.7.4
 
 * BUG修复：
+  * [X] 修复无法从项目文件中的声明导航到库中的引用的问题（需要自定义referencesSearch且useScope使用allScope）
   * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   * [X] 从任意同名的封装变量/定义/本地化/文件路径出发，可以通过查找使用导航到所有那个名字的使用
-    * 存在定义/本地化的引用高亮不正确的奇怪BUG
-    * 可能需要重载`PsiElement.isEquivalentTo()`方法
+    * [ ] 存在定义/本地化的引用高亮不正确的奇怪BUG
+    * [X] 必要时需要重载`PsiElement.isEquivalentTo()`方法
   * [ ] 兼容更复杂的表达式的情况，如：`root.owner.event_target:target@root.owner`
   * [ ] 兼容`value_field`或者`int_value_field`需要被识别为变量的情况（`root.owner.var_name`）
+  * [ ] 脚本文件中来自CWT文件的引用需要能被同时高亮出来，同时一般情况下不能从CWT文件中的规则查找引用（`modifier`等除外）
+    * 在库文件中可以正常工作
+    * 对于别名无法正常工作（`if` != `alias[effect:if]`）
   * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况
   * [X] 兼容localisationCommandScope需要被识别为`value_set[variable]`的情况
 * 功能优化：
@@ -394,7 +398,7 @@
 * [X] 修复当规则类型为alias_name或者引用为modifier时，无法解析definitionPropertyKey的引用的bug
 * [ ] definitionProperty本身就有对应的引用（如definition）的情况时，是否同样将规则对应的cwtKey/cwtValue作为它的引用？
 * [ ] 基于cwt规则文件，对脚本文件的结构进行验证
-* [ ] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
+* [X] scriptProperty的propertyName和definitionName不一致导致重命名scriptProperty时出现问题
 * [X] 适配IDEA版本`2021.2`
 * [X] ~~添加新的库作为依赖时（原始游戏目录，模组），兼容zip压缩包和文件夹~~（使用基于jar协议的url打开zip文件，实际测试发现读取不到内容）
 * [X] 实现或重构用于提示definition的nameTypeInfo的InlayHint，可以单独启用
