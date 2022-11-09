@@ -31,12 +31,12 @@ public interface ParadoxScriptElementTypes {
   IElementType PROPERTY_KEY = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType PROPERTY_VALUE = ParadoxScriptElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType ROOT_BLOCK = ParadoxScriptElementTypeFactory.getElementType("ROOT_BLOCK");
+  IElementType SCRIPTED_VARIABLE = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE");
+  IElementType SCRIPTED_VARIABLE_NAME = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE_NAME");
+  IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
+  IElementType SCRIPTED_VARIABLE_VALUE = ParadoxScriptElementTypeFactory.getElementType("SCRIPTED_VARIABLE_VALUE");
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
-  IElementType VARIABLE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE");
-  IElementType VARIABLE_NAME = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_NAME");
-  IElementType VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_REFERENCE");
-  IElementType VARIABLE_VALUE = ParadoxScriptElementTypeFactory.getElementType("VARIABLE_VALUE");
 
   IElementType ARGUMENT_ID = ParadoxScriptElementTypeFactory.getTokenType("ARGUMENT_ID");
   IElementType ARG_NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("ARG_NUMBER_TOKEN");
@@ -80,11 +80,11 @@ public interface ParadoxScriptElementTypes {
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
   IElementType RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACKET");
   IElementType RP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RP_SIGN");
+  IElementType SCRIPTED_VARIABLE_NAME_ID = ParadoxScriptElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_NAME_ID");
+  IElementType SCRIPTED_VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_ID");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType TIMES_SIGN = ParadoxScriptElementTypeFactory.getTokenType("TIMES_SIGN");
   IElementType VALUE_STRING_SNIPPET = ParadoxScriptElementTypeFactory.getTokenType("VALUE_STRING_SNIPPET");
-  IElementType VARIABLE_NAME_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_NAME_ID");
-  IElementType VARIABLE_REFERENCE_ID = ParadoxScriptElementTypeFactory.getTokenType("VARIABLE_REFERENCE_ID");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -152,20 +152,20 @@ public interface ParadoxScriptElementTypes {
       else if (type == ROOT_BLOCK) {
         return new ParadoxScriptRootBlockImpl(node);
       }
-      else if (type == STRING) {
-        return new ParadoxScriptStringImpl(node);
-      }
-      else if (type == VARIABLE) {
+      else if (type == SCRIPTED_VARIABLE) {
         return new ParadoxScriptScriptedVariableImpl(node);
       }
-      else if (type == VARIABLE_NAME) {
-        return new ParadoxScriptVariableNameImpl(node);
+      else if (type == SCRIPTED_VARIABLE_NAME) {
+        return new ParadoxScriptScriptedVariableNameImpl(node);
       }
-      else if (type == VARIABLE_REFERENCE) {
-        return new ParadoxScriptVariableReferenceImpl(node);
+      else if (type == SCRIPTED_VARIABLE_REFERENCE) {
+        return new ParadoxScriptScriptedVariableReferenceImpl(node);
       }
-      else if (type == VARIABLE_VALUE) {
-        return new ParadoxScriptVariableValueImpl(node);
+      else if (type == SCRIPTED_VARIABLE_VALUE) {
+        return new ParadoxScriptScriptedVariableValueImpl(node);
+      }
+      else if (type == STRING) {
+        return new ParadoxScriptStringImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

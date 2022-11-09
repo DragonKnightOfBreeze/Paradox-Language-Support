@@ -36,11 +36,9 @@
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxLocalisationImplementationsSearch"/>
     
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxScriptedVariableUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxDefinitionUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxComplexEnumValueUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxLocalisationUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxFilePathUsagesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
   </extensions>

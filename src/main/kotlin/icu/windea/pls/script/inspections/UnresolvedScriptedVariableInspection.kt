@@ -29,7 +29,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 	}
 	
 	private class Visitor(private val holder: ProblemsHolder) : ParadoxScriptVisitor() {
-		override fun visitVariableReference(element: ParadoxScriptVariableReference) {
+		override fun visitScriptedVariableReference(element: ParadoxScriptScriptedVariableReference) {
 			ProgressManager.checkCanceled()
 			val reference = element.reference
 			if(reference.resolve() != null) return
@@ -67,7 +67,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 				if(document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
 				if(editor != null) {
 					//光标移到newVariableValue的结束位置并选中
-					val newVariableValue = newVariable.variableValue ?: return@Runnable
+					val newVariableValue = newVariable.scriptedVariableValue ?: return@Runnable
 					editor.caretModel.moveToOffset(newVariableValue.endOffset)
 					editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
 					editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)

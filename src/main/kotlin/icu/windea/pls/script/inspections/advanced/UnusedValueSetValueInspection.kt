@@ -41,7 +41,7 @@ class UnusedValueSetValueInspection : LocalInspectionTool() {
 		private val session: LocalInspectionToolSession
 	) : ParadoxScriptVisitor() {
 		private fun shouldVisit(element: PsiElement): Boolean {
-			return (element is ParadoxExpressionAwareElement && !element.isParameterAwareExpression())
+			return (element is ParadoxExpressionElement && !element.isParameterAwareExpression())
 		}
 		
 		override fun visitElement(element: PsiElement) {

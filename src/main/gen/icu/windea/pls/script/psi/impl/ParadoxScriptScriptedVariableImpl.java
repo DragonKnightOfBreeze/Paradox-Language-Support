@@ -1,20 +1,22 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi.impl;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.expression.ParadoxExpressionType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptScriptedVariableStub> implements
-    ParadoxScriptScriptedVariable {
+public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptScriptedVariableStub> implements ParadoxScriptScriptedVariable {
 
   public ParadoxScriptScriptedVariableImpl(@NotNull ParadoxScriptScriptedVariableStub stub, @Nullable IStubElementType<?, ?> type) {
     super(stub, type);
@@ -25,7 +27,7 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitVariable(this);
+    visitor.visitScriptedVariable(this);
   }
 
   @Override
@@ -36,14 +38,14 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
 
   @Override
   @NotNull
-  public ParadoxScriptVariableName getVariableName() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptVariableName.class));
+  public ParadoxScriptScriptedVariableName getScriptedVariableName() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptScriptedVariableName.class));
   }
 
   @Override
   @Nullable
-  public ParadoxScriptVariableValue getVariableValue() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxScriptVariableValue.class);
+  public ParadoxScriptScriptedVariableValue getScriptedVariableValue() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptScriptedVariableValue.class);
   }
 
   @Override

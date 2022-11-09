@@ -83,4 +83,9 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
+  @Override
+  public boolean isEquivalentTo(@NotNull PsiElement another) {
+    return ParadoxScriptPsiImplUtil.isEquivalentTo(this, another);
+  }
+
 }

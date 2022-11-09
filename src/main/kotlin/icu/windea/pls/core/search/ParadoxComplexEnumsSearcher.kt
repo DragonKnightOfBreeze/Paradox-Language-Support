@@ -4,7 +4,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -22,11 +21,11 @@ class ParadoxComplexEnumsSearcher : QueryExecutor<PsiElement, ParadoxComplexEnum
 		}
 	}
 	
-	private fun matches(it: ParadoxExpressionAwareElement, valueName: String): Boolean {
+	private fun matches(it: ParadoxScriptExpressionElement, valueName: String): Boolean {
 		return getName(it) == valueName
 	}
 	
-	private fun getName(it: ParadoxExpressionAwareElement): String? {
+	private fun getName(it: ParadoxScriptExpressionElement): String? {
 		val name = runCatching { it.stub }.getOrNull()?.complexEnumValueInfo?.name
 			?: it.value
 		return name.takeIfNotEmpty()

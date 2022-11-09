@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxCwtConfigHandler {
 	@JvmStatic
-	fun resolveConfig(element: ParadoxExpressionAwareElement): CwtDataConfig<*>? {
+	fun resolveConfig(element: ParadoxExpressionElement): CwtDataConfig<*>? {
 		return when {
 			element is ParadoxScriptPropertyKey -> resolvePropertyConfig(element)
 			element is ParadoxScriptValue -> resolveValueConfig(element)

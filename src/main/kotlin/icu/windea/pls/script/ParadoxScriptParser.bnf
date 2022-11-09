@@ -44,7 +44,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
   methods=[getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getExpressionType getPresentation]
 }
-scripted_variable_name ::= AT VARIABLE_NAME_ID{
+scripted_variable_name ::= AT SCRIPTED_VARIABLE_NAME_ID {
   methods=[getName]
 }
 private scripted_variable_separator ::= EQUAL_SIGN
@@ -71,19 +71,19 @@ property_key ::= key_expr {
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub"
   implements=[
-    "icu.windea.pls.core.psi.ParadoxExpressionAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ] 
   methods=[
     getValue setValue getReference getReferences
     getExpressionType getConfigExpression
-    getPresentation
+    getPresentation isEquivalentTo
   ]
 }
 private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN
 property_value ::= value
 
 //(property) value related
-value ::= variable_reference | boolean | int | float | string | color | block | inline_math {
+value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptTypedElement"
   ]
@@ -92,7 +92,7 @@ value ::= variable_reference | boolean | int | float | string | color | block | 
     getExpressionType getConfigExpression
   ]
 }
-variable_reference ::= AT VARIABLE_REFERENCE_ID {
+scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
   extends=value
   implements=[
     "icu.windea.pls.script.psi.IParadoxScriptVariableReference"
@@ -125,13 +125,13 @@ upper string ::= value_expr {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptStringStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptValue"
-    "icu.windea.pls.core.psi.ParadoxExpressionAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
   ]
   methods=[
     getIcon
     getValue setValue getReference getReferences getStringValue
     getExpressionType getConfigExpression
-    getPresentation
+    getPresentation isEquivalentTo
   ]
 }
 color ::= COLOR_TOKEN {

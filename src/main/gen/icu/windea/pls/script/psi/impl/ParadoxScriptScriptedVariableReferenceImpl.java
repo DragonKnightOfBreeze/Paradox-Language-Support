@@ -14,15 +14,15 @@ import icu.windea.pls.core.expression.ParadoxExpressionType;
 import icu.windea.pls.script.reference.ParadoxScriptedVariableReference;
 import javax.swing.Icon;
 
-public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl implements ParadoxScriptVariableReference {
+public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptValueImpl implements ParadoxScriptScriptedVariableReference {
 
-  public ParadoxScriptVariableReferenceImpl(@NotNull ASTNode node) {
+  public ParadoxScriptScriptedVariableReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitVariableReference(this);
+    visitor.visitScriptedVariableReference(this);
   }
 
   @Override
@@ -45,7 +45,7 @@ public class ParadoxScriptVariableReferenceImpl extends ParadoxScriptValueImpl i
 
   @Override
   @NotNull
-  public ParadoxScriptVariableReference setName(@NotNull String name) {
+  public ParadoxScriptScriptedVariableReference setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 

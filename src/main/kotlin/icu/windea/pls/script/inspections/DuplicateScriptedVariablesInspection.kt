@@ -33,7 +33,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
 				if(values.size <= 1) continue
 				for(value in values) {
 					//第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
-					val location = value.variableName
+					val location = value.scriptedVariableName
 					holder.registerProblem(location, PlsBundle.message("script.inspection.duplicateScriptedVariables.description", name),
 						NavigateToDuplicatesFix(name, value, values)
 					)

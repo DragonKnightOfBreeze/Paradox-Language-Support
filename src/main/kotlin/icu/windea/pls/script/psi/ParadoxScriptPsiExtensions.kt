@@ -10,13 +10,13 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
-val ParadoxScriptVariableName.variableNameId: PsiElement get() = findRequiredChild(VARIABLE_NAME_ID)
+val ParadoxScriptScriptedVariableName.variableNameId: PsiElement get() = findRequiredChild(SCRIPTED_VARIABLE_NAME_ID)
 
 val ParadoxScriptPropertyKey.propertyKeyId: PsiElement? get() = findOptionalChild(PROPERTY_KEY_TOKEN)
 
 val ParadoxScriptPropertyKey.quotedPropertyKeyId: PsiElement? get() = findOptionalChild(QUOTED_PROPERTY_KEY_TOKEN)
 
-val ParadoxScriptVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(VARIABLE_REFERENCE_ID)
+val ParadoxScriptScriptedVariableReference.variableReferenceId: PsiElement get() = findRequiredChild(SCRIPTED_VARIABLE_REFERENCE_ID)
 
 val ParadoxScriptParameterConditionParameter.parameterId: PsiElement get() = findRequiredChild(ARGUMENT_ID)
 
@@ -147,7 +147,7 @@ fun PsiElement.findParentScriptElement(): @UnionType(ParadoxScriptProperty::clas
 }
 
 
-fun ParadoxExpressionAwareElement.isDefinitionRootKeyOrName(): Boolean{
+fun ParadoxExpressionElement.isDefinitionRootKeyOrName(): Boolean{
 	return when{
 		this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
 		this is ParadoxScriptString -> isDefinitionName()
@@ -173,7 +173,7 @@ fun ParadoxScriptString.isDefinitionName(): Boolean {
 }
 
 
-fun ParadoxExpressionAwareElement.isSimpleScriptExpression(): Boolean {
+fun ParadoxExpressionElement.isSimpleScriptExpression(): Boolean {
 	val singleChild = this.firstChild?.takeIf { it.nextSibling == null } ?: return true
 	return when(this) {
 		is ParadoxScriptPropertyKey -> singleChild.elementType.let {
@@ -186,7 +186,7 @@ fun ParadoxExpressionAwareElement.isSimpleScriptExpression(): Boolean {
 	}
 }
 
-fun ParadoxExpressionAwareElement.isParameterAwareExpression(): Boolean {
+fun ParadoxExpressionElement.isParameterAwareExpression(): Boolean {
 	return !this.isQuoted() && this.textContains('$')
 }
 

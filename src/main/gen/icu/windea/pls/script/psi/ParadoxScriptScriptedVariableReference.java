@@ -9,7 +9,7 @@ import icu.windea.pls.core.expression.ParadoxExpressionType;
 import icu.windea.pls.script.reference.ParadoxScriptedVariableReference;
 import javax.swing.Icon;
 
-public interface ParadoxScriptVariableReference extends ParadoxScriptValue, IParadoxScriptVariableReference {
+public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptValue, IParadoxScriptVariableReference {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -18,7 +18,7 @@ public interface ParadoxScriptVariableReference extends ParadoxScriptValue, IPar
   String getName();
 
   @NotNull
-  ParadoxScriptVariableReference setName(@NotNull String name);
+  ParadoxScriptScriptedVariableReference setName(@NotNull String name);
 
   @NotNull
   ParadoxScriptedVariableReference getReference();

@@ -21,7 +21,7 @@ class ParadoxScriptBlock(
 		private val separatorTokens = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN)
 		private val inlineMathOperatorTokens = TokenSet.create(PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN, LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN)
 		private val shouldIndentParentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION)
-		private val shouldIndentTypes = TokenSet.create(VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, PARAMETER_CONDITION, COMMENT)
+		private val shouldIndentTypes = TokenSet.create(SCRIPTED_VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, PARAMETER_CONDITION, COMMENT)
 		private val shouldChildIndentTypes = TokenSet.create(BLOCK, PARAMETER_CONDITION, PARAMETER_CONDITION_EXPRESSION)
 		
 		private fun createWrap(): Wrap? {
@@ -36,7 +36,7 @@ class ParadoxScriptBlock(
 			//变量声明分隔符周围的空格，属性分隔符周围的空格
 			val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
 			return SpacingBuilder(settings, ParadoxScriptLanguage)
-				.aroundInside(separatorTokens, VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
+				.aroundInside(separatorTokens, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
 				.aroundInside(separatorTokens, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
 				.around(inlineMathOperatorTokens).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) //内联数学表达式操作符周围按情况可能需要空格
 				.between(LEFT_BRACE, RIGHT_BRACE).none()//花括号之间总是不需要空格

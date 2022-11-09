@@ -24,12 +24,12 @@ object ParadoxScriptElementFactory {
 	
 	@JvmStatic
 	fun createVariable(project: Project, name: String, value: String): ParadoxScriptScriptedVariable {
-		return createRootBlock(project, "@$name=$value").findRequiredChild(VARIABLE)
+		return createRootBlock(project, "@$name=$value").findRequiredChild(SCRIPTED_VARIABLE)
 	}
 	
 	@JvmStatic
-	fun createVariableName(project: Project, name: String): ParadoxScriptVariableName {
-		return createVariable(project, name, "0").findRequiredChild(VARIABLE_NAME)
+	fun createVariableName(project: Project, name: String): ParadoxScriptScriptedVariableName {
+		return createVariable(project, name, "0").findRequiredChild(SCRIPTED_VARIABLE_NAME)
 	}
 	
 	@JvmStatic
@@ -54,8 +54,8 @@ object ParadoxScriptElementFactory {
 	}
 	
 	@JvmStatic
-	fun createVariableReference(project: Project, name: String): ParadoxScriptVariableReference{
-		return createPropertyValue(project, "@$name").findRequiredChild(VARIABLE_REFERENCE)
+	fun createVariableReference(project: Project, name: String): ParadoxScriptScriptedVariableReference {
+		return createPropertyValue(project, "@$name").findRequiredChild(SCRIPTED_VARIABLE_REFERENCE)
 	}
 	
 	@JvmStatic

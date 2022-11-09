@@ -4,13 +4,12 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import icu.windea.pls.core.psi.ParadoxExpressionAwareElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import icu.windea.pls.core.expression.ParadoxExpressionType;
 
-public interface ParadoxScriptPropertyKey extends ParadoxExpressionAwareElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
+public interface ParadoxScriptPropertyKey extends ParadoxScriptExpressionElement, StubBasedPsiElement<ParadoxScriptPropertyKeyStub> {
 
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
@@ -35,5 +34,7 @@ public interface ParadoxScriptPropertyKey extends ParadoxExpressionAwareElement,
 
   @Nullable
   ItemPresentation getPresentation();
+
+  boolean isEquivalentTo(@NotNull PsiElement another);
 
 }

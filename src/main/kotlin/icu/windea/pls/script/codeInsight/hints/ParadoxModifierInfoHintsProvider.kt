@@ -60,7 +60,7 @@ class ParadoxModifierInfoHintsProvider: ParadoxScriptHintsProvider<Settings>(){
 	}
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxExpressionAwareElement) {
+		if(element is ParadoxExpressionElement) {
 			//基于stub
 			val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return true
 			val type = config.expression.type

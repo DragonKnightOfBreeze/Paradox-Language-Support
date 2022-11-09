@@ -11,14 +11,14 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
-public class ParadoxScriptVariableNameImpl extends ASTWrapperPsiElement implements ParadoxScriptVariableName {
+public class ParadoxScriptScriptedVariableValueImpl extends ASTWrapperPsiElement implements ParadoxScriptScriptedVariableValue {
 
-  public ParadoxScriptVariableNameImpl(@NotNull ASTNode node) {
+  public ParadoxScriptScriptedVariableValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitVariableName(this);
+    visitor.visitScriptedVariableValue(this);
   }
 
   @Override
@@ -29,8 +29,8 @@ public class ParadoxScriptVariableNameImpl extends ASTWrapperPsiElement implemen
 
   @Override
   @NotNull
-  public String getName() {
-    return ParadoxScriptPsiImplUtil.getName(this);
+  public ParadoxScriptValue getValue() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ParadoxScriptValue.class));
   }
 
 }

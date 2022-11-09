@@ -6,11 +6,11 @@ import com.intellij.util.*
 import icu.windea.pls.core.psi.*
 
 class ParadoxScriptValueFieldValueReference(
-	element: ParadoxExpressionAwareElement,
+	element: ParadoxExpressionElement,
 	rangeInElement: TextRange,
 	private val resolved: PsiElement?
-) : PsiReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement) {
-	override fun handleElementRename(newElementName: String): ParadoxExpressionAwareElement {
+) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+	override fun handleElementRename(newElementName: String): ParadoxExpressionElement {
 		throw IncorrectOperationException() //不允许重命名
 	}
 	

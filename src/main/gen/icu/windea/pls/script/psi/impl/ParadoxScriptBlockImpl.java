@@ -7,7 +7,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import icu.windea.pls.core.expression.ParadoxExpressionType;
 import java.awt.Color;
 import javax.swing.Icon;
@@ -43,14 +45,14 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
-  public List<ParadoxScriptValue> getValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+  public List<ParadoxScriptScriptedVariable> getScriptedVariableList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
   }
 
   @Override
   @NotNull
-  public List<ParadoxScriptScriptedVariable> getVariableList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
+  public List<ParadoxScriptValue> getValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }
 
   @Override

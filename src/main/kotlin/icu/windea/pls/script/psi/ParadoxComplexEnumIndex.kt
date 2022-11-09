@@ -1,10 +1,9 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.psi.*
 
-object ParadoxComplexEnumIndex: StringStubIndexExtension<ParadoxExpressionAwareElement>(){
-	private val key = StubIndexKey.createIndexKey<String, ParadoxExpressionAwareElement>("paradox.complexEnum.index")
+object ParadoxComplexEnumIndex: StringStubIndexExtension<ParadoxScriptExpressionElement>(){
+	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptExpressionElement>("paradox.complexEnum.index")
 	private const val version = 10 //0.7.4
 	private const val cacheSize = 2 * 1024
 	

@@ -10,7 +10,7 @@ interface IParadoxScriptVariableReference : ParadoxScriptTypedElement {
 	
 	override fun getReference(): ParadoxScriptedVariableReference
 	
-	val referenceValue: ParadoxScriptValue? get() = reference.resolve()?.variableValue?.value
+	val referenceValue: ParadoxScriptValue? get() = reference.resolve()?.scriptedVariableValue?.value
 	
 	override val expressionType: ParadoxExpressionType? get() = referenceValue?.expressionType
 }

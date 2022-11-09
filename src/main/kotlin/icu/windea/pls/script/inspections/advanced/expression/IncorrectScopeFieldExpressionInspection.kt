@@ -29,14 +29,14 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 		val holder = ProblemsHolder(manager, file, isOnTheFly)
 		file.accept(object : ParadoxScriptRecursiveElementWalkingVisitor() {
 			override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
-				visitExpressionAwareElement(element)
+				visitExpressionElement(element)
 			}
 			
 			override fun visitString(element: ParadoxScriptString) {
-				visitExpressionAwareElement(element)
+				visitExpressionElement(element)
 			}
 			
-			private fun visitExpressionAwareElement(element: ParadoxExpressionAwareElement) {
+			private fun visitExpressionElement(element: ParadoxExpressionElement) {
 				ProgressManager.checkCanceled()
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
 				val type = config.expression.type

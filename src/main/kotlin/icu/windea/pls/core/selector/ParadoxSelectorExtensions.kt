@@ -23,7 +23,7 @@ fun definitionSelector() = ChainedParadoxSelector<ParadoxDefinitionProperty>()
 
 fun localisationSelector() = ChainedParadoxSelector<ParadoxLocalisationProperty>()
 
-fun complexEnumSelector() = ChainedParadoxSelector<ParadoxExpressionAwareElement>()
+fun complexEnumSelector() = ChainedParadoxSelector<ParadoxExpressionElement>()
 
 fun valueSetValueSelector() = ChainedParadoxSelector<ParadoxScriptString>()
 

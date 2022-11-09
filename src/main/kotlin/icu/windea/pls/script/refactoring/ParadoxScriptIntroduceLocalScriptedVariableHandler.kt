@@ -55,7 +55,7 @@ object ParadoxScriptIntroduceLocalScriptedVariableHandler : ContextAwareRefactor
 			
 			val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
 			val builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
-			val variableNameId = newVariable.variableName.variableNameId
+			val variableNameId = newVariable.scriptedVariableName.variableNameId
 			builder.replaceElement(variableNameId, "variableName", TextExpression(variableNameId.text), true)
 			builder.replaceElement(variableReferenceId, "variableReference", "variableName", false)
 			val caretMarker = editor.document.createRangeMarker(0, editor.caretModel.offset)

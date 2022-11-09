@@ -7,7 +7,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 
 class ParadoxOuterParameterReference(
-	element: @UnionType(types = [ParadoxExpressionAwareElement::class]) PsiElement,
+	element: @UnionType(types = [ParadoxExpressionElement::class]) PsiElement,
 	rangeInElement: TextRange,
 	private val definitionName: String,
 	private val definitionType: String,
@@ -17,7 +17,7 @@ class ParadoxOuterParameterReference(
 		//重命名引用指向的元素即可（在对应的范围内）
 		val element = element
 		return when {
-			element is ParadoxExpressionAwareElement -> element.setValue(rangeInElement.replace(element.value, newElementName))
+			element is ParadoxExpressionElement -> element.setValue(rangeInElement.replace(element.value, newElementName))
 			else -> element
 		}
 	}

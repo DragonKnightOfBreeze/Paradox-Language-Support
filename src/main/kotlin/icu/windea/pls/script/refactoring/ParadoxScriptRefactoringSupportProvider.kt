@@ -14,7 +14,7 @@ class ParadoxScriptRefactoringSupportProvider : RefactoringSupportProvider() {
 	override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
 		if(element is ParadoxScriptScriptedVariable) return true
 		if(element is ParadoxScriptProperty && element.definitionInfo.let { it != null && it.typeConfig.nameField == null }) return true
-		if(element is ParadoxExpressionAwareElement) return true
+		if(element is ParadoxExpressionElement) return true
 		return false
 	}
 }

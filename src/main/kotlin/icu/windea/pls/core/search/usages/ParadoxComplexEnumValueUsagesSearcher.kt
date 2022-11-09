@@ -3,11 +3,10 @@ package icu.windea.pls.core.search.usages
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 复杂枚举值的使用的查询。
@@ -17,11 +16,10 @@ import icu.windea.pls.core.psi.*
 class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 	override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
 		val target = queryParameters.elementToSearch
-		if(target !is ParadoxExpressionAwareElement) return
+		if(target !is ParadoxScriptExpressionElement) return
 		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
 			val complexEnumValueInfo = target.complexEnumValueInfo ?: return@runReadActionInSmartMode
-			val processor = ParadoxRequestResultProcessor(target)
-			queryParameters.optimizer.searchWord(complexEnumValueInfo.name, target.useScope, UsageSearchContext.IN_CODE, true, target, processor)
+			queryParameters.optimizer.searchWord(complexEnumValueInfo.name, target.useScope, true, target)
 		}
 	}
 }

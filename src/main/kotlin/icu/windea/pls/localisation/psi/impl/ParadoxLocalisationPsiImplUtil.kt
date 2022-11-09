@@ -110,6 +110,13 @@ object ParadoxLocalisationPsiImplUtil {
 		if(localisationInfo != null) return ParadoxLocalisationPresentation(element)
 		return ParadoxLocalisationPropertyPresentation(element)
 	}
+	
+	@JvmStatic
+	fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
+		//name & category (localisation / synced_localisation) & gameType
+		return another is ParadoxLocalisationProperty
+			&& element.localisationInfo?.equals(another.localisationInfo) != true
+	}
 	//endregion
 	
 	//region ParadoxLocalisationPropertyReference

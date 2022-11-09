@@ -70,7 +70,7 @@ object ParadoxScriptDataResolver {
 			is ParadoxScriptFloat -> value.value.toFloat()
 			is ParadoxScriptString -> value.value
 			is ParadoxScriptColor -> value.color
-			is ParadoxScriptVariableReference -> value.referenceValue?.let { resolveValue(it) }
+			is ParadoxScriptScriptedVariableReference -> value.referenceValue?.let { resolveValue(it) }
 			is ParadoxScriptBlock -> resolveBlock(value)
 			else -> value.value
 		}

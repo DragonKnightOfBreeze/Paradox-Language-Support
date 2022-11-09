@@ -188,10 +188,10 @@ ARG_STRING_TOKEN={STRING_TOKEN}
 	if(yycharat(yylength() -1) == '='){
 	  pushbackUntilBeforeBlank(1);
 	  yybegin(WAITING_VARIABLE_NAME);
-	  return VARIABLE_NAME_ID;
+	  return SCRIPTED_VARIABLE_NAME_ID;
 	} else {
 	  yybegin(WAITING_PROPERTY_END);
-      return VARIABLE_REFERENCE_ID;
+      return SCRIPTED_VARIABLE_REFERENCE_ID;
 	}
   }
 }
@@ -200,7 +200,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  {VARIABLE_ID} {return VARIABLE_NAME_ID;}
+  {VARIABLE_ID} {return SCRIPTED_VARIABLE_NAME_ID;}
   "=" {yybegin(WAITING_VARIABLE_VALUE); return EQUAL_SIGN;}
 }
 <WAITING_VARIABLE_VALUE> {
@@ -225,7 +225,7 @@ ARG_STRING_TOKEN={STRING_TOKEN}
   {COMMENT} {return COMMENT;}
   "}" {depth--; beginNextState(); return RIGHT_BRACE;}
   "{" {depth++; beginNextState(); return LEFT_BRACE;}
-  {VARIABLE_ID} {yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;}
+  {VARIABLE_ID} {yybegin(WAITING_PROPERTY_END); return SCRIPTED_VARIABLE_REFERENCE_ID;}
 }
 
 <WAITING_PROPERTY_KEY> {

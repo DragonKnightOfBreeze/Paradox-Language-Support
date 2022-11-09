@@ -11,10 +11,10 @@ public interface ParadoxScriptRootBlock extends IParadoxScriptBlock {
   List<ParadoxScriptProperty> getPropertyList();
 
   @NotNull
-  List<ParadoxScriptValue> getValueList();
+  List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
   @NotNull
-  List<ParadoxScriptScriptedVariable> getVariableList();
+  List<ParadoxScriptValue> getValueList();
 
   @NotNull
   String getValue();

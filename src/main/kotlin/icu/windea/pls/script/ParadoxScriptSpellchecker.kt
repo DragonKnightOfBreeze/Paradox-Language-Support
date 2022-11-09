@@ -14,9 +14,9 @@ class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
 	
 	override fun getTokenizer(element: PsiElement): Tokenizer<*> {
 		return when(element.elementType) {
-			VARIABLE_NAME_ID -> compactTextTokenizer
+			SCRIPTED_VARIABLE_NAME_ID -> compactTextTokenizer
 			PROPERTY_KEY_TOKEN -> compactTextTokenizer
-			VARIABLE_REFERENCE_ID -> emptyTokenizer
+			SCRIPTED_VARIABLE_REFERENCE_ID -> emptyTokenizer
 			QUOTED_STRING_TOKEN -> compactTextTokenizer
 			STRING_TOKEN -> compactTextTokenizer
 			ARGUMENT_ID -> textTokenizer

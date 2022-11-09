@@ -49,7 +49,7 @@
   * [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
   * [X] 从任意同名的封装变量/定义/本地化/文件路径出发，可以通过查找使用导航到所有那个名字的使用
     * 存在定义/本地化的引用高亮不正确的奇怪BUG
-    * 不能仅通过默认的`PsiReferenceBase.isReferenceTo()`判断
+    * 可能需要重载`PsiElement.isEquivalentTo()`方法
   * [ ] 兼容更复杂的表达式的情况，如：`root.owner.event_target:target@root.owner`
   * [ ] 兼容`value_field`或者`int_value_field`需要被识别为变量的情况（`root.owner.var_name`）
   * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况

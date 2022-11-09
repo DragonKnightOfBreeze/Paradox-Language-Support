@@ -46,7 +46,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 					}
 				}
 			}
-			is ParadoxExpressionAwareElement -> {
+			is ParadoxScriptExpressionElement -> {
 				val complexEnumValueInfo = element.complexEnumValueInfo
 				if(complexEnumValueInfo != null) {
 					when(location) {
@@ -84,7 +84,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
 		return when(element){
 			is ParadoxScriptScriptedVariable -> true
 			is ParadoxScriptProperty -> true
-			is ParadoxExpressionAwareElement -> true
+			is ParadoxExpressionElement -> true
 			is ParadoxParameterElement -> true
 			is ParadoxValueSetValueElement -> true
 			else -> return false

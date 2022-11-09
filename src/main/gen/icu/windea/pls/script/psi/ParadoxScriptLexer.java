@@ -891,7 +891,7 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
             // fall through
           case 71: break;
           case 13: 
-            { return VARIABLE_NAME_ID;
+            { return SCRIPTED_VARIABLE_NAME_ID;
             } 
             // fall through
           case 72: break;
@@ -961,16 +961,16 @@ public class ParadoxScriptLexer implements com.intellij.lexer.FlexLexer {
 	if(yycharat(yylength() -1) == '='){
 	  pushbackUntilBeforeBlank(1);
 	  yybegin(WAITING_VARIABLE_NAME);
-	  return VARIABLE_NAME_ID;
+	  return SCRIPTED_VARIABLE_NAME_ID;
 	} else {
 	  yybegin(WAITING_PROPERTY_END);
-      return VARIABLE_REFERENCE_ID;
+      return SCRIPTED_VARIABLE_REFERENCE_ID;
 	}
             } 
             // fall through
           case 82: break;
           case 24: 
-            { yybegin(WAITING_PROPERTY_END); return VARIABLE_REFERENCE_ID;
+            { yybegin(WAITING_PROPERTY_END); return SCRIPTED_VARIABLE_REFERENCE_ID;
             } 
             // fall through
           case 83: break;

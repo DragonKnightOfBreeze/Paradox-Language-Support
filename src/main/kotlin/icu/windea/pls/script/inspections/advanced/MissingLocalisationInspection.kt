@@ -142,14 +142,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 		}
 		
 		override fun visitPropertyKey(element: ParadoxScriptPropertyKey) {
-			visitExpressionAwareElement(element)
+			visitExpressionElement(element)
 		}
 		
 		override fun visitString(element: ParadoxScriptString) {
-			visitExpressionAwareElement(element)
+			visitExpressionElement(element)
 		}
 		
-		private fun visitExpressionAwareElement(element: ParadoxExpressionAwareElement) {
+		private fun visitExpressionElement(element: ParadoxExpressionElement) {
 			ProgressManager.checkCanceled()
 			if(inspection.localeSet.isEmpty()) return
 			if(!inspection.checkForModifiers) return

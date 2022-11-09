@@ -8,12 +8,12 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueSetValueReference(
-	element: ParadoxExpressionAwareElement,
+	element: ParadoxExpressionElement,
 	rangeInElement: TextRange,
 	private val name: String,
 	private val config: CwtDataConfig<*>
-) : PsiReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement) {
-	override fun handleElementRename(newElementName: String): ParadoxExpressionAwareElement {
+) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+	override fun handleElementRename(newElementName: String): ParadoxExpressionElement {
 		//重命名引用指向的元素（仅修改对应范围的文本）
 		return element.setValue(rangeInElement.replace(element.value, newElementName))
 	}

@@ -32,7 +32,7 @@ class GotoRelatedImageAction : BaseCodeInsightAction() {
 				return
 			}
 			val element = PsiUtilCore.getElementAtOffset(file, editor.caretModel.offset).getSelfOrPrevSiblingNotWhitespace()
-			val isRootKeyOrName = element.parentOfType<ParadoxExpressionAwareElement>()?.isDefinitionRootKeyOrName() == true
+			val isRootKeyOrName = element.parentOfType<ParadoxExpressionElement>()?.isDefinitionRootKeyOrName() == true
 			presentation.isEnabled = isRootKeyOrName
 		} else {
 			presentation.isEnabledAndVisible = false

@@ -19,12 +19,12 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 	override fun getUsageType(element: PsiElement?, targets: Array<out UsageTarget>): UsageType? {
 		//TODO
 		return when {
-			element is ParadoxExpressionAwareElement -> {
+			element is ParadoxExpressionElement -> {
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return null
 				val configExpression = config.expression
 				ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
 			}
-			element is ParadoxScriptVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
+			element is ParadoxScriptScriptedVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
 			element is ParadoxScriptInlineMathVariableReference -> ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
 			element is ParadoxScriptParameter -> ParadoxUsageType.PARAMETER_REFERENCE_1
 			element is ParadoxScriptInlineMathParameter -> ParadoxUsageType.PARAMETER_REFERENCE_2

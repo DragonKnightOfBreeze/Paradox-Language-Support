@@ -13,6 +13,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.selector.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -73,13 +75,13 @@ object ParadoxScriptPsiImplUtil {
 		//注意：element.stub可能会导致ProcessCanceledException
 		// 不包含作为前缀的"@"
 		runCatching { element.stub?.name }.getOrNull()?.let { return it }
-		return element.variableName.variableNameId.text
+		return element.scriptedVariableName.variableNameId.text
 	}
 	
 	@JvmStatic
 	fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
 		// 不包含作为前缀的"@"
-		val nameElement = element.variableName.variableNameId
+		val nameElement = element.scriptedVariableName.variableNameId
 		val newNameElement = ParadoxScriptElementFactory.createVariableName(element.project, name).variableNameId
 		nameElement.replace(newNameElement)
 		return element
@@ -87,7 +89,7 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getNameIdentifier(element: ParadoxScriptScriptedVariable): PsiElement {
-		return element.variableName.variableNameId
+		return element.scriptedVariableName.variableNameId
 	}
 	
 	@JvmStatic
@@ -97,28 +99,36 @@ object ParadoxScriptPsiImplUtil {
 	
 	@JvmStatic
 	fun getValue(element: ParadoxScriptScriptedVariable): String? {
-		return element.variableValue?.value?.text?.unquote()
+		return element.scriptedVariableValue?.value?.text?.unquote()
 	}
 	
 	@JvmStatic
 	fun getUnquotedValue(element: ParadoxScriptScriptedVariable): String? {
-		return element.variableValue?.value?.text
+		return element.scriptedVariableValue?.value?.text
 	}
 	
 	@JvmStatic
 	fun getExpressionType(element: ParadoxScriptScriptedVariable): ParadoxExpressionType? {
-		return element.variableValue?.value?.expressionType
+		return element.scriptedVariableValue?.value?.expressionType
 	}
 	
 	@JvmStatic
 	fun getPresentation(element: ParadoxScriptScriptedVariable): ItemPresentation {
 		return ParadoxScriptScriptedVariablePresentation(element)
 	}
+	
+	@JvmStatic
+	fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
+		//name & gameType
+		return another is ParadoxScriptScriptedVariable
+			&& element.name == another.name
+			&& ParadoxSelectorUtils.selectGameType(element) == ParadoxSelectorUtils.selectGameType(another)
+	}
 	//endregion
 	
-	//region ParadoxScriptVariableName
+	//region ParadoxScriptScriptedVariableName
 	@JvmStatic
-	fun getName(element: ParadoxScriptVariableName): String {
+	fun getName(element: ParadoxScriptScriptedVariableName): String {
 		// 不包含作为前缀的"@"
 		return element.variableNameId.text
 	}
@@ -282,6 +292,14 @@ object ParadoxScriptPsiImplUtil {
 		if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
 		return ParadoxScriptPropertyPresentation(element)
 	}
+	
+	@JvmStatic
+	fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement): Boolean {
+		//for definition: definitionName & definitionType & gameType
+		//for others: never
+		return another is ParadoxScriptProperty
+			&& element.definitionInfo == another.definitionInfo
+	}
 	//endregion
 	
 	//region ParadoxScriptPropertyKey
@@ -327,20 +345,20 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxScriptVariableReference
+	//region ParadoxScriptScriptedVariableReference
 	@JvmStatic
-	fun getIcon(element: ParadoxScriptVariableReference, @Iconable.IconFlags flags: Int): Icon {
+	fun getIcon(element: ParadoxScriptScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
 		return PlsIcons.ScriptedVariable
 	}
 	
 	@JvmStatic
-	fun getName(element: ParadoxScriptVariableReference): String {
+	fun getName(element: ParadoxScriptScriptedVariableReference): String {
 		// 不包含作为前缀的"@"
 		return element.variableReferenceId.text.orEmpty()
 	}
 	
 	@JvmStatic
-	fun setName(element: ParadoxScriptVariableReference, name: String): ParadoxScriptVariableReference {
+	fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
 		// 不包含作为前缀的"@"
 		val nameElement = element.variableReferenceId
 		val newNameElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).variableReferenceId
@@ -349,13 +367,13 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptVariableReference): ParadoxScriptedVariableReference {
+	fun getReference(element: ParadoxScriptScriptedVariableReference): ParadoxScriptedVariableReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
 		return ParadoxScriptedVariableReference(element, rangeInElement)
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptVariableReference): ParadoxExpressionType {
+	fun getExpressionType(element: ParadoxScriptScriptedVariableReference): ParadoxExpressionType {
 		return element.reference.resolve()?.expressionType ?: ParadoxExpressionType.UnknownType
 	}
 	//endregion
@@ -857,12 +875,20 @@ object ParadoxScriptPsiImplUtil {
 	}
 	//endregion
 	
-	//region ParadoxExpressionAwareElement
+	//region ParadoxScriptExpressionElement
 	@JvmStatic
-	fun getPresentation(element: ParadoxExpressionAwareElement): ItemPresentation? {
+	fun getPresentation(element: ParadoxScriptExpressionElement): ItemPresentation? {
 		val complexEnumValueInfo = element.complexEnumValueInfo
 		if(complexEnumValueInfo != null) return ParadoxComplexEnumValuePresentation(element, complexEnumValueInfo)
 		return null
+	}
+	
+	@JvmStatic
+	fun isEquivalentTo(element: ParadoxScriptExpressionElement, another: PsiElement): Boolean {
+		//for complexEnumValueName: name & enumName & gameType
+		//for others: never
+		return another is ParadoxScriptExpressionElement
+			&& element.complexEnumValueInfo?.equals(another.complexEnumValueInfo) == true
 	}
 	//endregion
 }

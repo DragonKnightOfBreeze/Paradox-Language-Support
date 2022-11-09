@@ -7,6 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 
@@ -34,14 +35,14 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public List<ParadoxScriptValue> getValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
+  public List<ParadoxScriptScriptedVariable> getScriptedVariableList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
   }
 
   @Override
   @NotNull
-  public List<ParadoxScriptScriptedVariable> getVariableList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
+  public List<ParadoxScriptValue> getValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }
 
   @Override

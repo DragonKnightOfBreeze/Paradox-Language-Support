@@ -41,4 +41,6 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   @NotNull
   ItemPresentation getPresentation();
 
+  boolean isEquivalentTo(@NotNull PsiElement another);
+
 }

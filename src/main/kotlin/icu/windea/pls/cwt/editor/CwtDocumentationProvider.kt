@@ -181,7 +181,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 	}
 	
 	private fun StringBuilder.getRelatedLocalisations(element: PsiElement, originalElement: PsiElement?, name: String, configGroup: CwtConfigGroup?, sections: MutableMap<String, String>?) {
-		//NOTE 不能确定相关本地化的名字到底是什么，并且从API层面上来说，上下文PSI元素只能是CwtProperty而非ParadoxExpressionAwareElement
+		//NOTE 不能确定相关本地化的名字到底是什么，并且从API层面上来说，上下文PSI元素只能是CwtProperty而非ParadoxExpressionElement
 		//Name, Desc?
 		ProgressManager.checkCanceled()
 		if(originalElement == null || configGroup == null) return
@@ -305,7 +305,7 @@ class CwtDocumentationProvider : AbstractDocumentationProvider() {
 			}
 			CwtConfigType.Alias -> {
 				//TODO 有些alias的supported_scopes信息并没有同步到最新版本的CWT规则文件中，需要另外写日志解析器进行解析
-				val expressionElement = originalElement?.parent?.castOrNull<ParadoxExpressionAwareElement>() ?: return
+				val expressionElement = originalElement?.parent?.castOrNull<ParadoxExpressionElement>() ?: return
 				val config = ParadoxCwtConfigHandler.resolveConfig(expressionElement)?.castOrNull<CwtPropertyConfig>()
 				val aliasConfig = config?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
 				supportedScopeNames = aliasConfig.supportedScopeNames

@@ -12,11 +12,11 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionReference(
-	element: ParadoxExpressionAwareElement,
+	element: ParadoxExpressionElement,
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiReferenceBase<ParadoxExpressionAwareElement>(element, rangeInElement), PsiPolyVariantReference {
+) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement), PsiPolyVariantReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()
