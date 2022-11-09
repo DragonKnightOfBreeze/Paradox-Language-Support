@@ -77,8 +77,8 @@
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   * [X] 为`complexEnumValue`的引用（而非声明）提供特殊文档
-  * [X] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找使用、导航到类型声明等功能 - 通过intention和annotator
-  * [X] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc` `mod_category_$`等，需要确定具体规则是什么）
+  * [X] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找使用、导航到类型声明等功能 - 通过意向（intention）
+  * [X] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc` `mod_category_$`等，需要确定具体规则是什么） *
 
 ## 0.7.3
 
