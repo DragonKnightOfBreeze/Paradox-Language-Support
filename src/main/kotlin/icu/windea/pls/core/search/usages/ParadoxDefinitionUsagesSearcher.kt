@@ -20,7 +20,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
 			val definitionInfo = target.definitionInfo ?: return@runReadActionInSmartMode
 			val name = definitionInfo.name
-			val useScope = getUseScope(queryParameters)
+			val useScope = target.useScope
 			queryParameters.optimizer.searchWord(name, useScope, true, target)
 		}
 	}

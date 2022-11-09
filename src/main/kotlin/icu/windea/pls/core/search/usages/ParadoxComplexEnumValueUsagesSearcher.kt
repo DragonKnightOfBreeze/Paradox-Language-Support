@@ -19,7 +19,7 @@ class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, Re
 		if(target !is ParadoxScriptExpressionElement) return
 		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
 			val complexEnumValueInfo = target.complexEnumValueInfo ?: return@runReadActionInSmartMode
-			val useScope = getUseScope(queryParameters)
+			val useScope = target.useScope
 			queryParameters.optimizer.searchWord(complexEnumValueInfo.name, useScope, true, target)
 		}
 	}
