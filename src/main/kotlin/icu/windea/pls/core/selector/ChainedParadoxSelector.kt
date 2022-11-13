@@ -1,5 +1,9 @@
 package icu.windea.pls.core.selector
 
+import com.intellij.openapi.project.*
+import com.intellij.psi.search.*
+import icu.windea.pls.core.collections.*
+
 open class ChainedParadoxSelector<T>(
 	private val baseComparator: Comparator<T>? = null
 ) : ParadoxSelector<T> {
@@ -50,5 +54,9 @@ open class ChainedParadoxSelector<T>(
 		return comparator?.thenComparing { a, b ->
 			if(a == b) 0 else 1
 		}
+	}
+	
+	fun getGlobalSearchScope(project: Project): GlobalSearchScope? {
+		return selectors.findIsInstance<ParadoxWithSearchScopeSelector<*>>()?.getGlobalSearchScope()
 	}
 }

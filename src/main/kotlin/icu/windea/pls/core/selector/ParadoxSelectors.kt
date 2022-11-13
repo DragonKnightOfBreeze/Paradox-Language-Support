@@ -1,6 +1,8 @@
 package icu.windea.pls.core.selector
 
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
+import com.intellij.psi.search.*
 import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
@@ -10,8 +12,8 @@ import icu.windea.pls.localisation.psi.*
 import java.util.*
 
 class ParadoxDistinctSelector<T, K>(
-	private val selector: (T) -> K
-): ParadoxSelector<T>{
+	val selector: (T) -> K
+) : ParadoxSelector<T> {
 	val keys = mutableSetOf<K>()
 	
 	override fun selectAll(result: T): Boolean {
@@ -24,7 +26,7 @@ class ParadoxGameTypeSelector<T>(
 	gameType: ParadoxGameType? = null,
 	from: Any? = null
 ) : ParadoxSelector<T> {
-	private val gameType by lazy { gameType ?: selectGameType(from) }
+	val gameType by lazy { gameType ?: selectGameType(from) }
 	
 	override fun select(result: T): Boolean {
 		return gameType == selectGameType(result)
@@ -39,7 +41,7 @@ class ParadoxRootFileSelector<T>(
 	rootFile: VirtualFile? = null,
 	from: Any? = null
 ) : ParadoxSelector<T> {
-	private val rootFile by lazy { rootFile ?: selectRootFile(from) }
+	val rootFile by lazy { rootFile ?: selectRootFile(from) }
 	
 	override fun select(result: T): Boolean {
 		return rootFile == selectRootFile(result)
@@ -54,7 +56,7 @@ class ParadoxPreferRootFileSelector<T>(
 	rootFile: VirtualFile? = null,
 	from: Any? = null
 ) : ParadoxSelector<T> {
-	private val rootFile by lazy { rootFile ?: selectRootFile(from) }
+	val rootFile by lazy { rootFile ?: selectRootFile(from) }
 	
 	override fun select(result: T): Boolean {
 		return rootFile == selectRootFile(result)
@@ -69,9 +71,32 @@ class ParadoxPreferRootFileSelector<T>(
 	}
 }
 
+class ParadoxWithSearchScopeSelector<T : PsiElement>(
+	val searchScope: ParadoxSearchScope,
+	val context: PsiElement
+) : ParadoxSelector<T> {
+	private val root by lazy { findRoot(context) }
+	
+	override fun select(result: T): Boolean {
+		return root == null || root == findRoot(result)
+	}
+	
+	override fun selectAll(result: T): Boolean {
+		return select(result)
+	}
+	
+	private fun findRoot(context: PsiElement): PsiElement? {
+		return searchScope.findRoot(context)
+	}
+	
+	fun getGlobalSearchScope(): GlobalSearchScope? {
+		return searchScope.getGlobalSearchScope(context)
+	}
+}
+
 class ParadoxLocaleSelector(
-	private val locale: ParadoxLocaleConfig
-): ParadoxSelector<ParadoxLocalisationProperty> {
+	val locale: ParadoxLocaleConfig
+) : ParadoxSelector<ParadoxLocalisationProperty> {
 	override fun select(result: ParadoxLocalisationProperty): Boolean {
 		return locale == result.localeConfig
 	}
@@ -82,8 +107,8 @@ class ParadoxLocaleSelector(
 }
 
 class ParadoxPreferLocaleSelector(
-	private val locale: ParadoxLocaleConfig
-): ParadoxSelector<ParadoxLocalisationProperty> {
+	val locale: ParadoxLocaleConfig
+) : ParadoxSelector<ParadoxLocalisationProperty> {
 	override fun select(result: ParadoxLocalisationProperty): Boolean {
 		return locale == result.localeConfig
 	}

@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.model.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -20,7 +21,15 @@ class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, Re
 		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
 			val complexEnumValueInfo = target.complexEnumValueInfo ?: return@runReadActionInSmartMode
 			//这里不能直接使用target.useScope，否则文件高亮会出现问题
-			val useScope = queryParameters.effectiveSearchScope
+			var useScope = queryParameters.effectiveSearchScope
+			//需要特别处理指定了searchScope的情况
+			val complexEnumConfig = complexEnumValueInfo.getConfig(queryParameters.project)
+			if(complexEnumConfig?.searchScope != null) {
+				val globalSearchScope = ParadoxSearchScope(complexEnumConfig.searchScope).getGlobalSearchScope(target)
+				if(globalSearchScope != null){
+					useScope = useScope.intersectWith(globalSearchScope)
+				}
+			}
 			queryParameters.optimizer.searchWord(complexEnumValueInfo.name, useScope, true, target)
 		}
 	}

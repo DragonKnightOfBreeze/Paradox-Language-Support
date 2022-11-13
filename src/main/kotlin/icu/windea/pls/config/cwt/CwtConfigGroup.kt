@@ -511,8 +511,9 @@ class CwtConfigGroup(
 		if(props.isEmpty()) return null //invalid
 		val path: MutableSet<String> = mutableSetOf()
 		var pathFile: String? = null
-		var startFromRoot = false
 		var pathStrict = false
+		var startFromRoot = false
+		var searchScope: String? = null
 		var nameConfig: CwtPropertyConfig? = null
 		for(prop in props) {
 			when(prop.key) {
@@ -523,11 +524,12 @@ class CwtConfigGroup(
 				"path_file" -> pathFile = prop.stringValue
 				"path_strict" -> pathStrict = prop.booleanValue ?: false
 				"start_from_root" -> startFromRoot = prop.booleanValue ?: false
+				"search_scope" -> searchScope = prop.stringValue
 				"name" -> nameConfig = prop
 			}
 		}
 		if(path.isEmpty() || nameConfig == null) return null //invalid
-		return CwtComplexEnumConfig(pointer, info, name, path, pathFile, pathStrict, startFromRoot, nameConfig)
+		return CwtComplexEnumConfig(pointer, info, name, path, pathFile, pathStrict, startFromRoot, searchScope, nameConfig)
 	}
 	
 	private fun resolveTagConfig(propertyConfig: CwtPropertyConfig, name: String): CwtTagConfig? {

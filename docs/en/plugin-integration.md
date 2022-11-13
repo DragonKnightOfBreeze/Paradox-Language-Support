@@ -7,11 +7,13 @@ PLS will provide bellow additional functions:
 
 ### Translate documentation
 
-When the cursor is over a definition name, localized key or CWT expression (property key & value),
+When the cursor is over a definition name, a localisation name or some other positions,
 can translate documentation content by click and select `Translate Documentation` icon button in quick documentation popup window,
 or click `Translate Documentation` item in right-click menu.
 
 ![](../assets/images/plugin-integration/translate-documentation.gif)
+
+**Note:** There is no guarantee that special markers will be preserved correctly after translation yet.
 
 ### Intention: Copy localisation(s) to the clipboard for locale...
 
@@ -21,4 +23,4 @@ and try to translate the localisation text into the specified locale before doin
 
 ![](../assets/images/plugin-integration/intention_copy_loc_for_locale.gif)
 
-**Note:* There is no guarantee that special markers (such as color text markers) will be preserved correctly after translation.
+**Note:** There is no guarantee that special markers will be preserved correctly after translation yet.

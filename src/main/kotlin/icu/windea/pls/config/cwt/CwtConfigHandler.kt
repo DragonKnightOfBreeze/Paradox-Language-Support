@@ -695,9 +695,10 @@ object CwtConfigHandler {
 				if(complexEnumConfig != null) {
 					ProgressManager.checkCanceled()
 					val typeFile = complexEnumConfig.pointer.containingFile
-					val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
-					val complexEnumQuery = ParadoxComplexEnumValueSearch.search(enumName, project, selector = selector)
-					complexEnumQuery.processResult { complexEnum ->
+					val searchScope = complexEnumConfig.searchScope
+					val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, contextElement).preferRootFrom(contextElement).distinctByName()
+					val query = ParadoxComplexEnumValueSearch.search(enumName, project, selector = selector)
+					query.processResult { complexEnum ->
 						val n = complexEnum.value
 						//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
 						val name = n.quoteIf(quoted)
@@ -1348,7 +1349,8 @@ object CwtConfigHandler {
 				//尝试解析为复杂枚举
 				val complexEnumConfig = configGroup.complexEnums[enumName]
 				if(complexEnumConfig != null) {
-					val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(element)
+					val searchScope = complexEnumConfig.searchScope
+					val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element).preferRootFrom(element)
 					return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).find()
 				}
 				return null
@@ -1465,7 +1467,8 @@ object CwtConfigHandler {
 				//尝试解析为复杂枚举
 				val complexEnumConfig = configGroup.complexEnums[enumName]
 				if(complexEnumConfig != null) {
-					val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(element)
+					val searchScope = complexEnumConfig.searchScope
+					val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element).preferRootFrom(element)
 					return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).findAll()
 				}
 				return emptyList()
@@ -1547,7 +1550,8 @@ object CwtConfigHandler {
 					//尝试解析为复杂枚举
 					val complexEnumConfig = configGroup.complexEnums[enumName]
 					if(complexEnumConfig != null) {
-						val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(element)
+						val searchScope = complexEnumConfig.searchScope
+						val selector = complexEnumValueSelector().gameType(gameType).withSearchScope(searchScope, element).preferRootFrom(element)
 						return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).find()
 					}
 					return null
