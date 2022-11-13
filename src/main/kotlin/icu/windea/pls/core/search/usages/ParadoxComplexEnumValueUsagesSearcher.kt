@@ -19,7 +19,8 @@ class ParadoxComplexEnumValueUsagesSearcher : QueryExecutorBase<PsiReference, Re
 		if(target !is ParadoxScriptExpressionElement) return
 		DumbService.getInstance(queryParameters.project).runReadActionInSmartMode {
 			val complexEnumValueInfo = target.complexEnumValueInfo ?: return@runReadActionInSmartMode
-			val useScope = target.useScope
+			//这里不能直接使用target.useScope，否则文件高亮会出现问题
+			val useScope = queryParameters.effectiveSearchScope
 			queryParameters.optimizer.searchWord(complexEnumValueInfo.name, useScope, true, target)
 		}
 	}
