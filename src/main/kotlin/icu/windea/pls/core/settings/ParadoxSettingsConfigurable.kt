@@ -66,6 +66,21 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 						}
 				}
 				row {
+					label(PlsBundle.message("settings.generic.ignoredFileNames")).applyToComponent {
+						toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
+					}
+					expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+						.bindText({ settings.ignoredFileNames.orEmpty() }, { settings.ignoredFileNames = it })
+						.onApply {
+							runWriteAction {
+								reparseScriptFiles()
+							}
+						}
+						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
+						.horizontalAlign(HorizontalAlign.FILL)
+						.resizableColumn()
+				}
+				row {
 					label(PlsBundle.message("settings.generic.maxCompleteSize")).applyToComponent {
 						toolTipText = PlsBundle.message("settings.generic.maxCompleteSize.tooltip")
 					}
@@ -78,21 +93,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 				}
 			}
 			group(PlsBundle.message("settings.script")) {
-				row {
-					label(PlsBundle.message("settings.generic.ignoredFileNames")).applyToComponent {
-						toolTipText = PlsBundle.message("settings.generic.ignoredFileNames.tooltip")
-					}
-					expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
-						.bindText({ settings.scriptIgnoredFileNames.orEmpty() }, { settings.scriptIgnoredFileNames = it })
-						.onApply {
-							runWriteAction {
-								reparseScriptFiles()
-							}
-						}
-						.comment(PlsBundle.message("settings.generic.ignoredFileNames.comment"))
-						.horizontalAlign(HorizontalAlign.FILL)
-						.resizableColumn()
-				}
 				buttonsGroup(PlsBundle.message("settings.script.doc")) {
 					row {
 						checkBox(PlsBundle.message("settings.script.doc.renderLineComment"))

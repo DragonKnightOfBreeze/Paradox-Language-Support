@@ -25,14 +25,14 @@ enum class ParadoxFileType(
 			return when {
 				fileName == descriptorFileName -> ParadoxScript
 				path.canBeScriptFilePath() && fileExtension in scriptFileExtensions && !isIgnored(fileName) && isInFolders(gameType, path) -> ParadoxScript
-				path.canBeLocalisationFilePath() && fileExtension in localisationFileExtensions -> ParadoxLocalisation
+				path.canBeLocalisationFilePath() && fileExtension in localisationFileExtensions && !isIgnored(fileName) -> ParadoxLocalisation
 				fileExtension in ddsFileExtensions -> Dds
 				else -> Other
 			}
 		}
 		
 		private fun isIgnored(fileName: String): Boolean {
-			return getSettings().scriptIgnoredFileNames.asCommaDelimited().contains(fileName)
+			return getSettings().ignoredFileNames.asCommaDelimited().contains(fileName)
 		}
 		
 		private fun isInFolders(gameType: ParadoxGameType, path: ParadoxPath): Boolean {
