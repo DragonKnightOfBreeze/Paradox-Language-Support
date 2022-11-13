@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionReference(
 	element: ParadoxExpressionElement,
@@ -30,18 +31,18 @@ class ParadoxScriptExpressionReference(
 		return element.setValue(newElementName)
 	}
 	
-	//override fun isReferenceTo(element: PsiElement): Boolean {
-	//	//必要的处理，否则无法
-	//	val results = multiResolve(false)
-	//	val manager = getElement().manager
-	//	for(result in results) {
-	//		val resolved = result.element
-	//		if(manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))) {
-	//			return true
-	//		}
-	//	}
-	//	return false
-	//}
+	override fun isReferenceTo(element: PsiElement): Boolean {
+		//必要的处理，否则查找使用时会出现问题（输入的PsiElement永远不会是propertyKey）
+		val results = multiResolve(false)
+		val manager = getElement().manager
+		for(result in results) {
+			val resolved = result.element
+			if(manager.areElementsEquivalent(resolved, element) || (resolved is ParadoxScriptProperty && manager.areElementsEquivalent(resolved.propertyKey, element))) {
+				return true
+			}
+		}
+		return false
+	}
 	
 	override fun resolve(): PsiElement? {
 		return CwtConfigHandler.resolveScriptExpression(element, rangeInElement, config.expression, config, isKey) //根据对应的expression进行解析

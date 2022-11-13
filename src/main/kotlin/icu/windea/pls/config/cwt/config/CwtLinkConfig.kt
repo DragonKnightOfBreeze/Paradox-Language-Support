@@ -13,6 +13,7 @@ import icu.windea.pls.cwt.psi.*
  * @property prefix prefix: string
  * @property inputScopes input_scopes | input_scopes: string[]
  * @property outputScope output_scope: string
+ * @property forDefinition output_scope: string
  */
 data class CwtLinkConfig(
 	override val pointer: SmartPsiElementPointer<CwtProperty>,
@@ -22,10 +23,11 @@ data class CwtLinkConfig(
 	val desc: String? = null,
 	val fromData: Boolean = false,
 	val type: String? = null,
-	val dataSource: CwtValueExpression? = null,
-	val prefix: String? = null,
+	val dataSource: CwtValueExpression?,
+	val prefix: String?,
 	val inputScopes: Set<String>?,
-	val outputScope: String?,
+	val outputScope: String? = null,
+	val forDefinition: String?
 ) : CwtConfig<CwtProperty> {
 	val inputAnyScope = inputScopes.isNullOrEmpty() || inputScopes.singleOrNull().let { it == "any" || it == "all" }
 	val outputAnyScope = outputScope == null || outputScope == "any"

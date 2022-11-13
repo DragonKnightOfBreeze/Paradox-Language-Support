@@ -8,8 +8,8 @@ import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptVariableStubElementType : IStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>(
-	"VARIABLE",
+object ParadoxScriptScriptedVariableStubElementType : IStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>(
+	"SCRIPTED_VARIABLE",
 	ParadoxScriptLanguage
 ) {
 	private const val externalId = "paradoxScript.variable"

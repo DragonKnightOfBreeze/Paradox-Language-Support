@@ -36,6 +36,14 @@
     <readWriteAccessDetector implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.core.codeInsight.highlight.ParadoxUsageTypeProvider"/>
     
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionTypeIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.core.index.ParadoxSyncedLocalisationNameIndex"/>
+    
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxScriptedVariableImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxDefinitionImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.core.search.implementations.ParadoxLocalisationImplementationsSearch"/>

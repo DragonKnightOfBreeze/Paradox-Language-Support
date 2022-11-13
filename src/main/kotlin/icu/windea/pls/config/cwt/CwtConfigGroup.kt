@@ -3,7 +3,6 @@ package icu.windea.pls.config.cwt
 import com.intellij.openapi.project.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
@@ -552,6 +551,7 @@ class CwtConfigGroup(
 		var prefix: String? = null
 		var inputScopes: Set<String>? = null
 		var outputScope: String? = null
+		var forDefinition: String? = null
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
@@ -563,9 +563,10 @@ class CwtConfigGroup(
 				"input_scopes" -> inputScopes = prop.stringValue?.let { setOf(it) }
 					?: prop.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
 				"output_scope" -> outputScope = prop.stringValue
+				"for_definition" -> forDefinition = prop.stringValue
 			}
 		}
-		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope)
+		return CwtLinkConfig(propertyConfig.pointer, propertyConfig.info, propertyConfig, name, desc, fromData, type, dataSource, prefix, inputScopes, outputScope, forDefinition)
 	}
 	
 	private fun resolveLocalisationCommandConfig(propertyConfig: CwtPropertyConfig, name: String): CwtLocalisationCommandConfig {

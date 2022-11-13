@@ -9,7 +9,7 @@ object ParadoxScriptElementTypeFactory {
 	
 	@JvmStatic fun getElementType(debugName: String): IElementType {
 		return when(debugName) {
-			"VARIABLE" -> ParadoxScriptStubElementTypes.VARIABLE
+			"SCRIPTED_VARIABLE" -> ParadoxScriptStubElementTypes.SCRIPTED_VARIABLE
 			"PROPERTY" -> ParadoxScriptStubElementTypes.PROPERTY
 			"PROPERTY_KEY" -> ParadoxScriptStubElementTypes.PROPERTY_KEY
 			"STRING" -> ParadoxScriptStubElementTypes.STRING

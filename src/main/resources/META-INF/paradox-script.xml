@@ -13,11 +13,6 @@
     <stubElementTypeHolder
         class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes"
         externalIdPrefix="paradoxScript."/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxScriptedVariableNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxDefinitionNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.script.psi.ParadoxDefinitionTypeIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxComplexEnumIndex"/>
-    <stubIndex implementation="icu.windea.pls.core.index.ParadoxValueSetValueIndex"/>
 
     <spellchecker.support
         language="PARADOX_SCRIPT"

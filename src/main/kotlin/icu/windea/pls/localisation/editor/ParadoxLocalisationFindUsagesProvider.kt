@@ -13,15 +13,15 @@ import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
 	override fun getType(element: PsiElement): String {
-		return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE)
+		return getElementDescription(element, UsageViewTypeLocation.INSTANCE).orEmpty()
 	}
 	
 	override fun getDescriptiveName(element: PsiElement): String {
-		return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE)
+		return getElementDescription(element, UsageViewLongNameLocation.INSTANCE).orEmpty()
 	}
 	
 	override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
-		return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE)
+		return getElementDescription(element, UsageViewNodeTextLocation.INSTANCE).orEmpty()
 	}
 	
 	override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {

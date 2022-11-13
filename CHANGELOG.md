@@ -41,6 +41,7 @@
   * [ ] 优化：检查scopeFieldExpression时也检查是否匹配对应的scopeName或者scopeGroupName（归类到`MismatchScopeInspection`）
   * [ ] 支持基于CWT规则校验脚本结构（仅限定义元素）
   * [ ] 优化：支持处理`value`和`value_set`自带的作用域信息（支持valueSetValueExpression，如`val@root.owner`）
+  * [ ] 对于link `pop_faction_parameter`和complexEnum `pop_faction_parameters`的特殊处理 ，前者只能在`pop_faction`中使用且作为数据源的complexEnumValue只能来自同一定义声明中
 * 遗留问题：
   * [ ] 有时候会把`DISTRICT = district_arcology_housing`的`DISTRICT`被识别为scope_expression而非参数名，为什么？
   * [ ] 有时候`event_target:mechanocalibrator_country`中的`event_target:`无法点击导航到CWT，为什么？

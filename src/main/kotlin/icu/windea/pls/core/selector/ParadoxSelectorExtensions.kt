@@ -36,9 +36,9 @@ fun ParadoxDefinitionSelector.distinctByName() = distinctBy { ParadoxDefinitionI
 
 fun ParadoxLocalisationSelector.distinctByName() = distinctBy { it.name }
 
-fun ParadoxComplexEnumValueSelector.distinctByName() = distinctBy{ ParadoxComplexEnumValueInfoHandler.getName(it) }
+fun ParadoxComplexEnumValueSelector.distinctByName() = distinctBy { ParadoxComplexEnumValueInfoHandler.getName(it) }
 
-fun ParadoxValueSetValueSelector.distinctByValue() = distinctBy{ it.value.substringBefore('@') }
+fun ParadoxValueSetValueSelector.distinctByValue() = distinctBy { it.value.substringBefore('@') }
 
 fun ParadoxLocalisationSelector.locale(locale: ParadoxLocaleConfig?) = apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }
 
