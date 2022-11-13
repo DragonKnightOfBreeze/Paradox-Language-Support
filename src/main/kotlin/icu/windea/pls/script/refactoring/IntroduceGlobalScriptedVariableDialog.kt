@@ -121,7 +121,7 @@ class IntroduceGlobalScriptedVariableDialog(
 	private fun ValidationInfoBuilder.validateScriptedVariableValue(): ValidationInfo? {
 		if(variableValue.isEmpty()) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.0"))
-		} else if(!ParadoxExpressionType.resolve(variableValue).canBeScriptedVariableValue()) {
+		} else if(!ParadoxDataType.resolve(variableValue).canBeScriptedVariableValue()) {
 			return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.1"))
 		}
 		return null

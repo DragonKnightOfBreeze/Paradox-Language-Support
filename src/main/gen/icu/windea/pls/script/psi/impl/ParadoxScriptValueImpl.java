@@ -11,7 +11,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.core.expression.ParadoxExpressionType;
+import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
 public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implements ParadoxScriptValue {
@@ -44,7 +44,7 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
 
   @Override
   @NotNull
-  public ParadoxExpressionType getExpressionType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

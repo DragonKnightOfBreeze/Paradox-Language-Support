@@ -10,6 +10,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
@@ -25,10 +26,10 @@ class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>()
 		//需要避免ProcessCanceledException导致完全不作任何提示
 		
 		val map = CollectionFactory.createSmallMemoryFootprintLinkedMap<String, PsiElement>() //优化性能
-		val definitionSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
 		//根据spriteName进行提示
 		runBlockingCancellable {
-			val sprites = findAllDefinitionsByType("sprite|spriteType", project, distinct = true, selector = definitionSelector)
+			val spriteSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
+			val sprites = ParadoxDefinitionSearch.search("sprite|spriteType", project, selector = spriteSelector).findAll()
 			if(sprites.isNotEmpty()) {
 				for(sprite in sprites) {
 					val spriteName = sprite.definitionInfo?.name
@@ -51,13 +52,12 @@ class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>()
 		}
 		//作为生成的图标处理（解析为其他类型的定义）
 		runBlockingCancellable {
+			val jobSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
 			//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
-			val jobDefinitions = findAllDefinitions("job", project, distinct = true, selector = definitionSelector)
-			if(jobDefinitions.isNotEmpty()) {
-				for(jobDefinition in jobDefinitions) {
-					val jobName = jobDefinition.definitionInfo?.name ?: continue
-					map.putIfAbsent("job_$jobName", jobDefinition)
-				}
+			ParadoxDefinitionSearch.search("job", project, selector = jobSelector).processResult { definition ->
+				val jobName = definition.definitionInfo?.name ?: return@processResult true
+				map.putIfAbsent("job_$jobName", definition)
+				true
 			}
 		}
 		if(map.isEmpty()) return

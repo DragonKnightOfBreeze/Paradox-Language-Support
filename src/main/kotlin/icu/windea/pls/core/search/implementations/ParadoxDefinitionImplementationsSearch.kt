@@ -6,6 +6,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
@@ -25,13 +26,10 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
 				//使用全部作用域
 				val scope = GlobalSearchScope.allScope(project)
 				//val scope = GlobalSearchScopeUtil.toGlobalSearchScope(queryParameters.scope, project)
-				//这里不需要也无法进行排序
-				val selector = definitionSelector().gameTypeFrom(sourceElement)
-				val definitions = runReadAction { 
-					findDefinitionsByType(name, type, project, scope, selector = selector)
-				}
-				definitions.forEach {
-					consumer.process(it)
+				runReadAction {
+					//这里不进行排序
+					val selector = definitionSelector().gameTypeFrom(sourceElement)
+					ParadoxDefinitionSearch.search(name, type, project, scope, selector).processResult(consumer)
 				}
 			}
 		}

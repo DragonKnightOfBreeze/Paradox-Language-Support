@@ -5,13 +5,13 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
-import icu.windea.pls.core.expression.ParadoxExpressionType;
+import icu.windea.pls.core.expression.ParadoxDataType;
 
 public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValue {
 
   boolean getBooleanValue();
 
   @NotNull
-  ParadoxExpressionType getExpressionType();
+  ParadoxDataType getExpressionType();
 
 }

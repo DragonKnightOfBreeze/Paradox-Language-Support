@@ -6,10 +6,10 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxDataExpression(
 	override val value: String,
-	override val type: ParadoxExpressionType,
+	val type: ParadoxDataType,
 	override val quoted: Boolean,
 	override val isKey: Boolean?
-) : AbstractExpression(value), ParadoxScriptExpression{
+) : AbstractExpression(value), ParadoxScriptExpression {
 	companion object Resolver : ParadoxExpressionResolver
 }
 
@@ -22,13 +22,13 @@ fun Resolver.resolve(element: ParadoxScriptValue): ParadoxScriptExpression {
 }
 
 fun Resolver.resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression {
-	val expressionType = ParadoxExpressionType.resolve(value)
+	val expressionType = ParadoxDataType.resolve(value)
 	return ParadoxDataExpression(value, expressionType, isQuoted, isKey)
 }
 
 fun Resolver.resolve(text: String, isKey: Boolean? = null): ParadoxScriptExpression {
 	val value = text.unquote()
-	val expressionType = ParadoxExpressionType.resolve(text)
+	val expressionType = ParadoxDataType.resolve(text)
 	val quoted = text.isQuoted()
 	return ParadoxDataExpression(value, expressionType, quoted, isKey)
 }

@@ -32,9 +32,9 @@ class ParadoxLocalisationCommandScopeReference(
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 		//尝试识别为value[event_target]或value[global_event_target]
 		val selector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
-		val eventTarget = ParadoxValueSetValuesSearch.search(name, "event_target", project, selector = selector).findFirst()
+		val eventTarget = ParadoxValueSetValueSearch.search(name, "event_target", project, selector = selector).findFirst()
 		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "event_target", project, gameType)
-		val globalEventTarget = ParadoxValueSetValuesSearch.search(name, "global_event_target", project, selector = selector).findFirst()
+		val globalEventTarget = ParadoxValueSetValueSearch.search(name, "global_event_target", project, selector = selector).findFirst()
 		if(globalEventTarget != null) return ParadoxValueSetValueElement(element, name, "global_event_target", project, gameType)
 		return null
 	}

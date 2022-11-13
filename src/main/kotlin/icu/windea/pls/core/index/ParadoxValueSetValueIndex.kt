@@ -1,6 +1,7 @@
-package icu.windea.pls.script.psi
+package icu.windea.pls.core.index
 
 import com.intellij.psi.stubs.*
+import icu.windea.pls.script.psi.*
 
 object ParadoxValueSetValueIndex : StringStubIndexExtension<ParadoxScriptString>() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxScriptString>("paradox.valueSetValue.index")

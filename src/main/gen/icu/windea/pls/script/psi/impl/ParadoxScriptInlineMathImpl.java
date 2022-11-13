@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
-import icu.windea.pls.core.expression.ParadoxExpressionType;
+import icu.windea.pls.core.expression.ParadoxDataType;
 
 public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implements ParadoxScriptInlineMath {
 
@@ -48,7 +48,7 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
 
   @Override
   @NotNull
-  public ParadoxExpressionType getExpressionType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

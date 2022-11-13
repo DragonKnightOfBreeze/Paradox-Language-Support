@@ -8,6 +8,7 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
@@ -44,7 +45,7 @@ class ParadoxScriptParameterInfoHandler : ParameterInfoHandler<ParadoxScriptProp
 		val definitionType = config.keyExpression.value ?: return null
 		//合并所有可能的参数名
 		val selector = definitionSelector().gameTypeFrom(context.file).preferRootFrom(context.file)
-		val definitions = findDefinitionsByType(definitionName, definitionType, context.project, selector = selector)
+		val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, context.project, selector = selector).findAll()
 		val parameterNamesSet = definitions.mapNotNullTo(mutableSetOf()) { definition ->
 			definition.parameterMap.keys.ifEmpty { setOf(PlsDocBundle.message("noParameters")) }
 		}

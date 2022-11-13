@@ -13,8 +13,11 @@ import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.keymap.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.ui.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
@@ -24,7 +27,9 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
+import com.intellij.refactoring.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
+import com.intellij.ui.dsl.builder.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
 import com.intellij.util.xmlb.*
@@ -35,6 +40,8 @@ import icu.windea.pls.cwt.psi.*
 import java.io.*
 import java.util.*
 import javax.swing.*
+import javax.swing.text.*
+import kotlin.reflect.*
 
 //region JRT Extensions
 fun String.compareToIgnoreCase(other: String): Int {
@@ -293,6 +300,14 @@ fun ASTNode.isEndOfLine(): Boolean {
 //endregion
 
 //region PsiElement Extensions
+fun PsiReference.resolveSingle(): PsiElement? {
+	return if(this is PsiPolyVariantReference) {
+		this.multiResolve(false).firstNotNullOfOrNull { it.element }
+	} else {
+		this.resolve()
+	}
+}
+
 /**
  * 判断两个[PsiElement]是否在同一[VirtualFile]的同一位置。
  */
@@ -722,5 +737,18 @@ class CommaDelimitedStringListConverter : Converter<List<String>>() {
 	override fun toString(value: List<String>): String {
 		return value.toCommaDelimitedString()
 	}
+}
+//endregion
+
+//region UI Extensions
+val <T: DialogWrapper> T.dialog get() = this
+
+fun <T : JTextComponent> Cell<T>.bindText(prop: KMutableProperty0<String?>): Cell<T> {
+	return bindText({ prop.get().orEmpty() }, { prop.set(it) })
+}
+
+fun Row.pathCompletionShortcutComment() {
+	val shortcutText = KeymapUtil.getFirstKeyboardShortcutText(ActionManager.getInstance().getAction(IdeActions.ACTION_CODE_COMPLETION))
+	comment(RefactoringBundle.message("path.completion.shortcut", shortcutText))
 }
 //endregion

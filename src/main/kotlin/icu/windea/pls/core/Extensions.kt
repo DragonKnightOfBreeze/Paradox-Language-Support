@@ -22,14 +22,18 @@ import icu.windea.pls.config.internal.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.handler.*
+import icu.windea.pls.core.index.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.settings.*
 import icu.windea.pls.core.tool.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
 import java.util.*
@@ -54,17 +58,6 @@ fun preferredParadoxLocale(): ParadoxLocaleConfig? {
 	//基于OS得到对应的语言区域，或者使用英文
 	val userLanguage = System.getProperty("user.language")
 	return InternalConfigHandler.getLocaleByCode(userLanguage) ?: InternalConfigHandler.getLocaleByCode("en")
-}
-
-/**
- * 判断指定的定义子类型表达式是否匹配一组子类型。
- * @param expression 表达式。示例：`origin`, `!origin`
- */
-fun matchesDefinitionSubtypeExpression(expression: String, subtypes: List<String>): Boolean {
-	return when {
-		expression.startsWith('!') -> subtypes.isEmpty() || expression.drop(1) !in subtypes
-		else -> subtypes.isNotEmpty() && expression in subtypes
-	}
 }
 
 /**
@@ -233,12 +226,12 @@ var VirtualFile.contentFile
 //endregion
 
 //region PsiElement Extensions
-fun PsiReference.resolveSingle(): PsiElement? {
-	return if(this is PsiPolyVariantReference) {
-		this.multiResolve(false).firstNotNullOfOrNull { it.element }
-	} else {
-		this.resolve()
+fun PsiElement.useAllUseScope(): Boolean {
+	if(this is PsiFile) {
+		if(this.fileInfo != null) return true
 	}
+	val language = this.language
+	return language == CwtLanguage || language == ParadoxScriptLanguage || language == ParadoxLocalisationLanguage
 }
 
 fun PsiElement.isQuoted(): Boolean {
@@ -335,221 +328,6 @@ fun ParadoxScriptValue.isNullLike(): Boolean {
 //endregion
 
 //region Find Extensions
-/**
- * 根据名字在指定文件中递归查找封装变量（scriptedVariable）。（不一定声明在顶层）
- * @param name 变量的名字，以"@"开始。
- * @param context 需要从哪个[PsiElement]开始，在整个文件内，递归向上查找。
- */
-fun findScriptedVariableInFile(name: String, context: PsiElement): ParadoxScriptScriptedVariable? {
-	//在整个脚本文件中递归向上向前查找，返回查找到的第一个
-	var result: ParadoxScriptScriptedVariable? = null
-	var current = context
-	while(current !is PsiFile) { //NOTE 目前不检查是否是paradoxScriptFile
-		var prevSibling = current.prevSibling
-		while(prevSibling != null) {
-			if(prevSibling is ParadoxScriptScriptedVariable && prevSibling.name == name) {
-				result = prevSibling
-				break
-			}
-			prevSibling = prevSibling.prevSibling
-		}
-		current = current.parent ?: break
-	}
-	return result
-}
-
-/**
- * 根据名字在指定文件中递归查找所有的封装变量（scriptedVariable）。（不一定声明在顶层）
- * @param name 变量的名字，以"@"开始。
- * @param context 需要从哪个[PsiElement]开始，在整个文件内，向上查找。
- */
-fun findScriptedVariablesInFile(name: String, context: PsiElement): Set<ParadoxScriptScriptedVariable> {
-	//在整个脚本文件中递归向上向前查找，按查找到的顺序排序
-	var result: MutableSet<ParadoxScriptScriptedVariable>? = null
-	var current = context
-	while(current !is PsiFile) {
-		var prevSibling = current.prevSibling
-		while(prevSibling != null) {
-			if(prevSibling is ParadoxScriptScriptedVariable && prevSibling.name == name) {
-				if(result == null) result = mutableSetOf()
-				result.add(prevSibling)
-				break
-			}
-			prevSibling = prevSibling.prevSibling
-		}
-		current = current.parent ?: break
-	}
-	if(result == null) return emptySet()
-	return result
-}
-
-/**
- * 在当前文件中递归查找所有的封装变量（scriptedVariable）。（不一定声明在顶层）
- * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
- */
-fun findAllScriptVariablesInFile(context: PsiElement, distinct: Boolean = false): Set<ParadoxScriptScriptedVariable> {
-	//在整个脚本文件中递归向上查找，返回查找到的所有结果，按查找到的顺序排序
-	var result: MutableSet<ParadoxScriptScriptedVariable>? = null
-	val namesToDistinct = if(distinct) mutableSetOf<String>() else null
-	var current = context
-	while(current !is PsiFile) {
-		var prevSibling = current.prevSibling
-		while(prevSibling != null) {
-			if(prevSibling is ParadoxScriptScriptedVariable) {
-				if(namesToDistinct == null || namesToDistinct.add(prevSibling.name)) {
-					if(result == null) result = mutableSetOf()
-					result.add(prevSibling)
-				}
-			}
-			prevSibling = prevSibling.prevSibling
-		}
-		current = current.parent ?: break
-	}
-	if(result == null) return emptySet()
-	return result
-}
-
-/**
- * 基于封装变量名字索引，根据名字查找封装变量（scriptedVariable）。
- * @param name 变量的名字，以"@"开始。
- */
-fun findScriptedVariable(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
-): ParadoxScriptScriptedVariable? {
-	return ParadoxScriptedVariableNameIndex.findOne(name, project, scope, !getSettings().preferOverridden, selector)
-}
-
-/**
- * 基于封装变量名字索引，根据名字查找所有的封装变量（scriptedVariable）。
- * @param name 变量的名字，以"@"开始。
- */
-fun findScriptedVariables(
-	name: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
-): Set<ParadoxScriptScriptedVariable> {
-	return ParadoxScriptedVariableNameIndex.findAll(name, project, scope, selector)
-}
-
-/**
- * 基于封装变量名字索引，查找所有的封装变量（scriptedVariable）。
- * @param distinct 是否需要对相同名字的变量进行去重。默认为`false`。
- */
-fun findAllScriptedVariables(
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	distinct: Boolean = false,
-	selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable> = nopSelector()
-): Set<ParadoxScriptScriptedVariable> {
-	return ParadoxScriptedVariableNameIndex.findAll(project, scope, distinct, selector)
-}
-
-/**
- * 基于定义名字索引，根据名字、类型表达式查找脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- */
-fun findDefinition(
-	name: String,
-	typeExpression: String?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
-): ParadoxDefinitionProperty? {
-	return ParadoxDefinitionNameIndex.findOne(name, typeExpression, project, scope, preferFirst, selector)
-}
-
-/**
- * 基于定义名字索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- */
-fun findDefinitions(
-	name: String,
-	typeExpression: String?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
-): Set<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionNameIndex.findAll(name, typeExpression, project, scope, selector)
-}
-
-/**
- * 基于定义名字索引，根据类型表达式查找所有的脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- * @param distinct 是否需要对同一基本类型而相同名字的定义进行去重。默认为`false`。
- */
-fun findAllDefinitions(
-	typeExpression: String?,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	distinct: Boolean = false,
-	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
-): Set<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionNameIndex.findAll(typeExpression, project, scope, distinct, selector)
-}
-
-/**
- * 基于定义类型索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- */
-fun findDefinitionByType(
-	name: String,
-	typeExpression: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	preferFirst: Boolean = !getSettings().preferOverridden,
-	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
-): ParadoxDefinitionProperty? {
-	return ParadoxDefinitionTypeIndex.findOne(name, typeExpression, project, scope, preferFirst, selector)
-}
-
-/**
- * 基于定义类型索引，根据名字、类型表达式查找所有的脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- */
-fun findDefinitionsByType(
-	name: String,
-	typeExpression: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
-): Set<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionTypeIndex.findAll(name, typeExpression, project, scope, selector)
-}
-
-/**
- * 基于定义类型索引，根据类型表达式查找所有的脚本文件的定义（definition）。
- * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
- * @param distinct 是否需要对同一基本类型而相同名字的定义进行去重。默认为`false`。
- */
-fun findAllDefinitionsByType(
-	typeExpression: String,
-	project: Project,
-	scope: GlobalSearchScope = GlobalSearchScope.allScope(project),
-	distinct: Boolean = false,
-	selector: ChainedParadoxSelector<ParadoxDefinitionProperty> = nopSelector()
-): Set<ParadoxDefinitionProperty> {
-	return ParadoxDefinitionTypeIndex.findAll(typeExpression, project, scope, distinct, selector)
-}
-
-//NOTE 查找定义时不需要预先过滤结果
-///**
-// * 基于定义类型索引，根据关键字和类型表达式查找所有的脚本文件的定义（definition）。
-// * @param typeExpression 参见[ParadoxDefinitionTypeExpression]。
-// */
-//fun findDefinitionsByKeywordByType(
-//	keyword: String,
-//	typeExpression: String,
-//	project: Project,
-//	scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
-//): List<ParadoxDefinitionProperty> {
-//	return ParadoxDefinitionTypeIndex.findAllByKeyword(keyword, typeExpression, project, scope, getSettings().maxCompleteSize)
-//}
-
 /**
  * 基于本地化名字索引，根据名字查找本地化（localisation）。
  */
@@ -755,7 +533,7 @@ private fun resolveDefinitionLink(linkWithoutPrefix: String, sourceElement: PsiE
 	val name = tokens.getOrNull(2) ?: return null
 	val project = sourceElement.project
 	val selector = definitionSelector().gameType(gameType).preferRootFrom(sourceElement)
-	return findDefinitionByType(name, typeExpression, project, selector = selector)
+	return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
 }
 
 private fun resolveLocalisationLink(linkWithoutPrefix: String, sourceElement: PsiElement): ParadoxLocalisationProperty? {
@@ -820,7 +598,7 @@ fun StringBuilder.appendDefinitionLink(gameType: ParadoxGameType, name: String, 
 	//如果name为空字符串，需要特殊处理
 	if(name.isEmpty()) return append(PlsConstants.unresolvedString)
 	//如果可以被解析为定义，则显示链接
-	val isResolved = resolved == true || (resolved == null && findDefinition(name, null, context.project, preferFirst = true, selector = definitionSelector().gameTypeFrom(context)) != null)
+	val isResolved = resolved == true || (resolved == null && ParadoxDefinitionSearch.search(name, null, context.project, selector = definitionSelector().gameTypeFrom(context)).findFirst() != null)
 	if(isResolved) return appendPsiLink("$definitionLinkPrefix${gameType.id}/$typeExpression/$name", name)
 	//否则显示未解析的链接
 	return appendUnresolvedLink(name)

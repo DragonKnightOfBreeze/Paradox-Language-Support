@@ -1,9 +1,6 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package icu.windea.pls.core.search
 
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.selector.*
@@ -17,7 +14,7 @@ import icu.windea.pls.core.selector.*
  * @see ParadoxSelector
  * @see ChainedParadoxSelector
  */
-class ParadoxResultsQuery<T, P : ParadoxSearchParameters<T>>(
+class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 	private val original: Query<T>,
 	private val searchParameters: P
 ) : AbstractQuery<T>() {
@@ -84,10 +81,10 @@ class ParadoxResultsQuery<T, P : ParadoxSearchParameters<T>>(
 	}
 	
 	override fun toString(): String {
-		return "ParadoxResultsQuery: $original"
+		return "ParadoxQuery: $original"
 	}
 }
 
-fun <R : Any, P : ParadoxSearchParameters<R>> QueryFactory<R, P>.createParadoxResultsQuery(parameters: P): ParadoxResultsQuery<R, P> {
-	return ParadoxResultsQuery(createQuery(parameters), parameters)
+fun <R : Any, P : ParadoxSearchParameters<R>> QueryFactory<R, P>.createParadoxQuery(parameters: P): ParadoxQuery<R, P> {
+	return ParadoxQuery(createQuery(parameters), parameters)
 }

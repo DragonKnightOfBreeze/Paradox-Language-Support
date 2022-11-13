@@ -31,7 +31,7 @@ object ParadoxValueSetValueInfoHandler {
 	}
 	
 	@JvmStatic
-	fun resolveName(element: ParadoxScriptString): String? {
+	fun getName(element: ParadoxScriptString): String? {
 		val stub = runCatching { element.stub }.getOrNull()
 		val name = stub?.valueSetValueInfo?.name ?: element.value.substringBefore('@')
 		return name.takeIfNotEmpty()

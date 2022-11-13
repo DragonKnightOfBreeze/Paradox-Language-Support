@@ -118,7 +118,7 @@ object CwtConfigHandler {
 	fun matchesScriptExpression(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup, matchType: Int = CwtConfigMatchType.ALL): Boolean {
 		//匹配block
 		if(configExpression == CwtValueExpression.EmptyExpression) {
-			return expression.type == ParadoxExpressionType.BlockType
+			return expression.type == ParadoxDataType.BlockType
 		}
 		//匹配空字符串
 		if(configExpression.isEmpty()) {
@@ -129,7 +129,7 @@ object CwtConfigHandler {
 		val gameType = configGroup.gameType
 		val isStatic = BitUtil.isSet(matchType, CwtConfigMatchType.STATIC)
 		val isExact = BitUtil.isSet(matchType, CwtConfigMatchType.EXACT)
-		val isParameterAware = expression.type == ParadoxExpressionType.StringType && expression.value.isParameterAwareExpression()
+		val isParameterAware = expression.type == ParadoxDataType.StringType && expression.value.isParameterAwareExpression()
 		when(configExpression.type) {
 			CwtDataTypes.Any -> {
 				return true
@@ -139,14 +139,14 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.Int -> {
 				//注意：用括号括起的整数（作为scalar）也匹配这个规则
-				if(expression.type.isIntType() || ParadoxExpressionType.resolve(expression.value).isIntType()) return true
+				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.value).isIntType()) return true
 				//匹配范围
 				if(isExact && configExpression.extraValue<IntRange>()?.contains(expression.value.toIntOrNull()) != false) return true
 				return false
 			}
 			CwtDataTypes.Float -> {
 				//注意：用括号括起的浮点数（作为scalar）也匹配这个规则
-				if(expression.type.isFloatType() || ParadoxExpressionType.resolve(expression.value).isFloatType()) return true
+				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.value).isFloatType()) return true
 				//匹配范围
 				if(isExact && configExpression.extraValue<FloatRange>()?.contains(expression.value.toFloatOrNull()) != false) return true
 				return false
@@ -160,11 +160,11 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.PercentageField -> {
 				if(!expression.type.isStringType()) return false
-				return ParadoxExpressionType.isPercentageField(expression.value)
+				return ParadoxDataType.isPercentageField(expression.value)
 			}
 			CwtDataTypes.DateField -> {
 				if(!expression.type.isStringType()) return false
-				return ParadoxExpressionType.isDateField(expression.value)
+				return ParadoxDataType.isDateField(expression.value)
 			}
 			CwtDataTypes.Localisation -> {
 				if(!expression.type.isStringType()) return false
@@ -233,7 +233,7 @@ object CwtConfigHandler {
 				val typeExpression = configExpression.value ?: return false //invalid cwt config
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
 					val selector = definitionSelector().gameType(gameType)
-					return findDefinitionByType(expression.value, typeExpression, project, preferFirst = true, selector = selector) != null
+					return ParadoxDefinitionSearch.search(expression.value, typeExpression, project, selector = selector).findFirst() != null
 				}
 				return true
 			}
@@ -244,7 +244,7 @@ object CwtConfigHandler {
 				val typeExpression = configExpression.value ?: return false //invalid cwt config
 				if(BitUtil.isSet(matchType, CwtConfigMatchType.DEFINITION)) {
 					val selector = definitionSelector().gameType(gameType)
-					return findDefinitionByType(expression.value, typeExpression, project, preferFirst = true, selector = selector) != null
+					return ParadoxDefinitionSearch.search(expression.value, typeExpression, project, selector = selector).findFirst() != null
 				}
 				return true
 			}
@@ -264,8 +264,8 @@ object CwtConfigHandler {
 				val complexEnumConfig = configGroup.complexEnums[enumName]
 				if(complexEnumConfig != null) {
 					if(BitUtil.isSet(matchType, CwtConfigMatchType.COMPLEX_ENUM_VALUE)) {
-						val selector = complexEnumSelector().gameType(gameType)
-						val search = ParadoxComplexEnumsSearch.search(enumName, project, selector = selector)
+						val selector = complexEnumValueSelector().gameType(gameType)
+						val search = ParadoxComplexEnumValueSearch.search(enumName, project, selector = selector)
 						return search.findFirst() != null
 					}
 				}
@@ -297,14 +297,14 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.ValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-				if(expression.type.isFloatType() || ParadoxExpressionType.resolve(expression.value).isFloatType()) return true
+				if(expression.type.isFloatType() || ParadoxDataType.resolve(expression.value).isFloatType()) return true
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				return ParadoxScriptExpression.resolveValueField(expression.value, configGroup).isMatched()
 			}
 			CwtDataTypes.IntValueField -> {
 				//也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-				if(expression.type.isIntType() || ParadoxExpressionType.resolve(expression.value).isIntType()) return true
+				if(expression.type.isIntType() || ParadoxDataType.resolve(expression.value).isIntType()) return true
 				if(!isStatic && isParameterAware) return true
 				if(expression.quoted) return false //接下来的匹配不允许用引号括起
 				return ParadoxScriptExpression.resolveValueField(expression.value, configGroup).isMatched()
@@ -621,12 +621,11 @@ object CwtConfigHandler {
 			}
 			CwtDataTypes.TypeExpression -> {
 				val typeExpression = expression.value ?: return
-				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement)
-				val definitions = findAllDefinitionsByType(typeExpression, project, distinct = true, selector = selector) //不预先过滤结果
-				if(definitions.isEmpty()) return
 				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
-				for(definition in definitions) {
-					val n = definition.definitionInfo?.name ?: continue
+				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
+				val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
+				definitionQuery.processResult { definition ->
+					val n = definition.definitionInfo?.name ?: return@processResult true
 					val name = n.quoteIf(quoted)
 					val typeFile = definition.containingFile
 					val lookupElement = LookupElementBuilder.create(definition, name)
@@ -635,17 +634,17 @@ object CwtConfigHandler {
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
 					result.addElement(lookupElement)
+					true
 				}
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val typeExpression = expression.value ?: return
-				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement)
-				val definitions = findAllDefinitionsByType(typeExpression, project, distinct = true, selector = selector) //不预先过滤结果
-				if(definitions.isEmpty()) return
 				val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return
 				val tailText = " by $expression in ${config.resolved().pointer.containingFile?.name ?: PlsConstants.anonymousString}"
-				for(definition in definitions) {
-					val definitionName = definition.definitionInfo?.name ?: continue
+				val selector = definitionSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
+				val definitionQuery = ParadoxDefinitionSearch.search(typeExpression, project, selector = selector)
+				definitionQuery.processResult { definition ->
+					val definitionName = definition.definitionInfo?.name ?: return@processResult true
 					val n = "$prefix$definitionName$suffix"
 					val name = n.quoteIf(quoted)
 					val typeFile = definition.containingFile
@@ -655,6 +654,7 @@ object CwtConfigHandler {
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
 					result.addElement(lookupElement)
+					true
 				}
 			}
 			CwtDataTypes.Enum -> {
@@ -695,8 +695,8 @@ object CwtConfigHandler {
 				if(complexEnumConfig != null) {
 					ProgressManager.checkCanceled()
 					val typeFile = complexEnumConfig.pointer.containingFile
-					val selector = complexEnumSelector().gameType(gameType).preferRootFrom(contextElement).distinctBy { it.value }
-					val complexEnumQuery = ParadoxComplexEnumsSearch.search(enumName, project, selector = selector)
+					val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(contextElement).distinctByName()
+					val complexEnumQuery = ParadoxComplexEnumValueSearch.search(enumName, project, selector = selector)
 					complexEnumQuery.processResult { complexEnum ->
 						val n = complexEnum.value
 						//if(!n.matchesKeyword(keyword)) continue //不预先过滤结果
@@ -746,15 +746,15 @@ object CwtConfigHandler {
 				//提示来自脚本文件的value
 				run {
 					ProgressManager.checkCanceled()
-					val selector = valueSetValueSelector().gameType(gameType).distinctBy { it.value.substringBefore('@') }
-					val valueSetValueQuery = ParadoxValueSetValuesSearch.search(valueSetName, project, selector = selector)
+					val selector = valueSetValueSelector().gameType(gameType).distinctByValue()
+					val valueSetValueQuery = ParadoxValueSetValueSearch.search(valueSetName, project, selector = selector)
 					valueSetValueQuery.processResult { valueSetValue ->
 						//去除后面的作用域信息
-						val name = valueSetValue.value.substringBefore('@')
+						val value = valueSetValue.value.substringBefore('@')
 						//排除当前正在输入的那个
-						if(name == keyword.substringBefore('@') && valueSetValue isSamePosition contextElement) return@processResult true
+						if(value == keyword.substringBefore('@') && valueSetValue isSamePosition contextElement) return@processResult true
 						//不显示typeText
-						val lookupElement = LookupElementBuilder.create(valueSetValue, name)
+						val lookupElement = LookupElementBuilder.create(valueSetValue, value)
 							.withExpectedIcon(PlsIcons.ValueSetValue)
 							.withTailText(tailText, true)
 							.withExpectedInsertHandler(isKey)
@@ -1166,7 +1166,7 @@ object CwtConfigHandler {
 			?.inlineableConfig?.castOrNull<CwtAliasConfig>()?.keyExpression
 			?.takeIf { it.type == CwtDataTypes.TypeExpression }?.value ?: return //不期望的结果
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(propertyElement)
-		val definition = findDefinitionByType(definitionName, definitionType, configGroup.project, selector = selector) ?: return
+		val definition = ParadoxDefinitionSearch.search(definitionName, definitionType, configGroup.project, selector = selector).find() ?: return
 		val parameterMap = definition.parameterMap
 		if(parameterMap.isEmpty()) return
 		val existParameterNames = mutableSetOf<String>()
@@ -1189,7 +1189,7 @@ object CwtConfigHandler {
 	
 	fun ProcessingContext.completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, result: CompletionResultSet) {
 		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
-		val svList = findDefinitionsByType(svName, "script_value", configGroup.project, selector = selector)
+		val svList = ParadoxDefinitionSearch.search(svName, "script_value", configGroup.project, selector = selector).findAll()
 		if(svList.isEmpty()) return
 		val existParameterNames = mutableSetOf<String>()
 		existParameterNames.addAll(parameterNames)
@@ -1319,14 +1319,14 @@ object CwtConfigHandler {
 				val name = expression
 				val typeExpression = configExpression.value ?: return null
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-				return findDefinitionByType(name, typeExpression, project, selector = selector)
+				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return null
 				val name = expression.removeSurrounding(prefix, suffix)
 				val typeExpression = configExpression.value ?: return null
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-				return findDefinitionByType(name, typeExpression, project, selector = selector)
+				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).find()
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = configExpression.value ?: return null
@@ -1348,8 +1348,8 @@ object CwtConfigHandler {
 				//尝试解析为复杂枚举
 				val complexEnumConfig = configGroup.complexEnums[enumName]
 				if(complexEnumConfig != null) {
-					val selector = complexEnumSelector().gameType(gameType).preferRootFrom(element)
-					return ParadoxComplexEnumsSearch.search(name, enumName, project, selector = selector).find()
+					val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(element)
+					return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).find()
 				}
 				return null
 			}
@@ -1436,14 +1436,14 @@ object CwtConfigHandler {
 				val name = text
 				val typeExpression = configExpression.value ?: return emptyList()
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-				return findDefinitionsByType(name, typeExpression, project, selector = selector)
+				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
 			}
 			CwtDataTypes.TypeExpressionString -> {
 				val (prefix, suffix) = configExpression.extraValue?.cast<TypedTuple2<String>>() ?: return emptyList()
 				val name = text.removeSurrounding(prefix, suffix)
 				val typeExpression = configExpression.value ?: return emptyList()
 				val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-				return findDefinitionsByType(name, typeExpression, project, selector = selector)
+				return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findAll()
 			}
 			CwtDataTypes.Enum -> {
 				val enumName = configExpression.value ?: return emptyList()
@@ -1465,8 +1465,8 @@ object CwtConfigHandler {
 				//尝试解析为复杂枚举
 				val complexEnumConfig = configGroup.complexEnums[enumName]
 				if(complexEnumConfig != null) {
-					val selector = complexEnumSelector().gameType(gameType).preferRootFrom(element)
-					return ParadoxComplexEnumsSearch.search(name, enumName, project, selector = selector).findAll()
+					val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(element)
+					return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).findAll()
 				}
 				return emptyList()
 			}
@@ -1526,14 +1526,14 @@ object CwtConfigHandler {
 				CwtDataTypes.TypeExpression -> {
 					val typeExpression = expression.value ?: return null
 					val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-					return findDefinitionByType(name, typeExpression, project, selector = selector)
+					return ParadoxDefinitionSearch.search(name, typeExpression, project, selector = selector).findFirst()
 				}
 				CwtDataTypes.TypeExpressionString -> {
 					val (prefix, suffix) = expression.extraValue?.cast<TypedTuple2<String>>() ?: return null
 					val nameToUse = name.removeSurrounding(prefix, suffix)
 					val typeExpression = expression.value ?: return null
 					val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-					return findDefinitionByType(nameToUse, typeExpression, project, selector = selector)
+					return ParadoxDefinitionSearch.search(nameToUse, typeExpression, project, selector = selector).findFirst()
 				}
 				CwtDataTypes.Enum -> {
 					val enumName = expression.value ?: return null
@@ -1547,8 +1547,8 @@ object CwtConfigHandler {
 					//尝试解析为复杂枚举
 					val complexEnumConfig = configGroup.complexEnums[enumName]
 					if(complexEnumConfig != null) {
-						val selector = complexEnumSelector().gameType(gameType).preferRootFrom(element)
-						return ParadoxComplexEnumsSearch.search(name, enumName, project, selector = selector).find()
+						val selector = complexEnumValueSelector().gameType(gameType).preferRootFrom(element)
+						return ParadoxComplexEnumValueSearch.search(name, enumName, project, selector = selector).find()
 					}
 					return null
 				}

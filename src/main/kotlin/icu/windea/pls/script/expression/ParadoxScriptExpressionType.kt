@@ -1,16 +1,16 @@
 package icu.windea.pls.script.expression
 
 import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.ParadoxExpressionType.*
+import icu.windea.pls.core.expression.ParadoxDataType.*
 
-fun ParadoxExpressionType.isBooleanType() = this == BooleanType
+fun ParadoxDataType.isBooleanType() = this == BooleanType
 
-fun ParadoxExpressionType.isIntType() = this == UnknownType || this == IntType || this == ParameterType || this == InlineMathType
+fun ParadoxDataType.isIntType() = this == UnknownType || this == IntType || this == ParameterType || this == InlineMathType
 
-fun ParadoxExpressionType.isFloatType() = this == UnknownType || this == IntType || this == FloatType || this == ParameterType || this == InlineMathType
+fun ParadoxDataType.isFloatType() = this == UnknownType || this == IntType || this == FloatType || this == ParameterType || this == InlineMathType
 
-fun ParadoxExpressionType.isStringType() = this == UnknownType || this == StringType || this == ParameterType
+fun ParadoxDataType.isStringType() = this == UnknownType || this == StringType || this == ParameterType
 
-fun ParadoxExpressionType.isColorType() = this == ColorType
+fun ParadoxDataType.isColorType() = this == ColorType
 
-fun ParadoxExpressionType.canBeScriptedVariableValue() = this == BooleanType || this == IntType || this == FloatType
+fun ParadoxDataType.canBeScriptedVariableValue() = this == BooleanType || this == IntType || this == FloatType

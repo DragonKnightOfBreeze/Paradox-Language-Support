@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKeyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
-import icu.windea.pls.core.expression.ParadoxExpressionType;
+import icu.windea.pls.core.expression.ParadoxDataType;
 import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<ParadoxScriptPropertyKeyStub> implements ParadoxScriptPropertyKey {
@@ -67,7 +67,7 @@ public class ParadoxScriptPropertyKeyImpl extends ParadoxScriptStubElementImpl<P
 
   @Override
   @NotNull
-  public ParadoxExpressionType getExpressionType() {
+  public ParadoxDataType getExpressionType() {
     return ParadoxScriptPsiImplUtil.getExpressionType(this);
   }
 

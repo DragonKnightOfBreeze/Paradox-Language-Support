@@ -6,6 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -53,11 +54,11 @@ class ParadoxLocalisationIconReference(
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
 		val textSpriteSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
-		val textSprite = findDefinitionByType(textSpriteName, "sprite|spriteType", project, selector = textSpriteSelector)
+		val textSprite = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", project, selector = textSpriteSelector).find()
 		if(textSprite != null) return textSprite
 		val spriteName = "GFX_$iconName"
 		val spriteSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
-		val sprite = findDefinitionByType(spriteName, "sprite|spriteType", project, selector = spriteSelector)
+		val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", project, selector = spriteSelector).find()
 		if(sprite != null) return sprite
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val fileSelector = fileSelector().gameTypeFrom(element).preferRootFrom(element)
@@ -68,7 +69,7 @@ class ParadoxLocalisationIconReference(
 		val jobName = iconName.removePrefixOrNull("job_")
 		if(jobName != null) {
 			val definitionSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
-			val jobDefinition = findDefinition(jobName, "job", project, selector = definitionSelector)
+			val jobDefinition = ParadoxDefinitionSearch.search(jobName, "job", project, selector = definitionSelector).find()
 			if(jobDefinition != null) return jobDefinition
 		}
 		return null
@@ -81,11 +82,11 @@ class ParadoxLocalisationIconReference(
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
 		val textSpriteSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
-		val textSprites = findDefinitionsByType(textSpriteName, "sprite|spriteType", project, selector = textSpriteSelector)
+		val textSprites = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", project, selector = textSpriteSelector).findAll()
 		if(textSprites.isNotEmpty()) return textSprites.mapToArray { PsiElementResolveResult(it) }
 		val spriteName = "GFX_$iconName"
 		val spriteSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
-		val sprites = findDefinitionsByType(spriteName, "sprite|spriteType", project, selector = spriteSelector)
+		val sprites = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", project, selector = spriteSelector).findAll()
 		if(sprites.isNotEmpty()) return sprites.mapToArray { PsiElementResolveResult(it) }
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val fileSelector = fileSelector().gameTypeFrom(element).preferRootFrom(element)
@@ -96,7 +97,7 @@ class ParadoxLocalisationIconReference(
 		val jobName = iconName.removePrefixOrNull("job_")
 		if(jobName != null) {
 			val definitionSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element)
-			val jobDefinitions = findDefinitions(jobName, "job", project, selector = definitionSelector)
+			val jobDefinitions = ParadoxDefinitionSearch.search(jobName, "job", project, selector = definitionSelector).findAll()
 			if(jobDefinitions.isNotEmpty()) return jobDefinitions.mapToArray { PsiElementResolveResult(it) }
 		}
 		return ResolveResult.EMPTY_ARRAY

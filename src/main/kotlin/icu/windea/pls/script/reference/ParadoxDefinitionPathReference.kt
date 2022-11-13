@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.xml.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
@@ -17,7 +17,7 @@ class ParadoxDefinitionPathReference(
 	private val file: ParadoxScriptFile
 ) : PsiReferenceBase<PsiElement>(element, rangeInElement), AnchorReference, EmptyResolveMessageProvider {
 	override fun resolve(): PsiElement? {
-		return findDefinition(anchor, null, element.project, GlobalSearchScope.fileScope(file), selector = definitionSelector().gameTypeFrom(element))
+		return ParadoxDefinitionSearch.search(anchor, null, element.project, GlobalSearchScope.fileScope(file), selector = definitionSelector().gameTypeFrom(element)).find()
 	}
 	
 	override fun getUnresolvedMessagePattern(): String {

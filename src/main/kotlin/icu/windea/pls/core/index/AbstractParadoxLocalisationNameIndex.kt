@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.psi
+package icu.windea.pls.core.index
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
@@ -6,6 +6,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.localisation.psi.*
 
 //注意这里不能直接访问element.localisationInfo，需要优先通过element.stub获取本地化信息
 

@@ -15,6 +15,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -109,7 +110,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptScriptedVariable): ParadoxExpressionType? {
+	fun getExpressionType(element: ParadoxScriptScriptedVariable): ParadoxDataType? {
 		return element.scriptedVariableValue?.value?.expressionType
 	}
 	
@@ -247,7 +248,7 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptProperty): ParadoxExpressionType? {
+	fun getExpressionType(element: ParadoxScriptProperty): ParadoxDataType? {
 		return element.propertyValue?.value?.expressionType
 	}
 	
@@ -328,16 +329,16 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptPropertyKey): ParadoxExpressionType {
+	fun getExpressionType(element: ParadoxScriptPropertyKey): ParadoxDataType {
 		element.processChild {
 			when(it.elementType) {
-				PROPERTY_KEY_TOKEN -> return ParadoxExpressionType.resolve(it.text)
-				QUOTED_PROPERTY_KEY_TOKEN -> return ParadoxExpressionType.StringType
-				PARAMETER_ID -> return ParadoxExpressionType.ParameterType
+				PROPERTY_KEY_TOKEN -> return ParadoxDataType.resolve(it.text)
+				QUOTED_PROPERTY_KEY_TOKEN -> return ParadoxDataType.StringType
+				PARAMETER_ID -> return ParadoxDataType.ParameterType
 				else -> end()
 			}
 		}
-		return ParadoxExpressionType.UnknownType
+		return ParadoxDataType.UnknownType
 	}
 	
 	@JvmStatic
@@ -375,8 +376,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptScriptedVariableReference): ParadoxExpressionType {
-		return element.reference.resolve()?.expressionType ?: ParadoxExpressionType.UnknownType
+	fun getExpressionType(element: ParadoxScriptScriptedVariableReference): ParadoxDataType {
+		return element.reference.resolve()?.expressionType ?: ParadoxDataType.UnknownType
 	}
 	//endregion
 	
@@ -392,8 +393,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptValue): ParadoxExpressionType {
-		return ParadoxExpressionType.UnknownType
+	fun getExpressionType(element: ParadoxScriptValue): ParadoxDataType {
+		return ParadoxDataType.UnknownType
 	}
 	
 	@JvmStatic
@@ -410,8 +411,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptBoolean): ParadoxExpressionType {
-		return ParadoxExpressionType.BooleanType
+	fun getExpressionType(element: ParadoxScriptBoolean): ParadoxDataType {
+		return ParadoxDataType.BooleanType
 	}
 	//endregion
 	
@@ -422,8 +423,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptInt): ParadoxExpressionType {
-		return ParadoxExpressionType.IntType
+	fun getExpressionType(element: ParadoxScriptInt): ParadoxDataType {
+		return ParadoxDataType.IntType
 	}
 	//endregion
 	
@@ -434,8 +435,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptFloat): ParadoxExpressionType {
-		return ParadoxExpressionType.FloatType
+	fun getExpressionType(element: ParadoxScriptFloat): ParadoxDataType {
+		return ParadoxDataType.FloatType
 	}
 	//endregion
 	
@@ -473,8 +474,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptString): ParadoxExpressionType {
-		return ParadoxExpressionType.StringType
+	fun getExpressionType(element: ParadoxScriptString): ParadoxDataType {
+		return ParadoxDataType.StringType
 	}
 	//endregion
 	
@@ -538,8 +539,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptColor): ParadoxExpressionType {
-		return ParadoxExpressionType.ColorType
+	fun getExpressionType(element: ParadoxScriptColor): ParadoxDataType {
+		return ParadoxDataType.ColorType
 	}
 	//endregion
 	
@@ -684,8 +685,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptBlock): ParadoxExpressionType {
-		return ParadoxExpressionType.BlockType
+	fun getExpressionType(element: ParadoxScriptBlock): ParadoxDataType {
+		return ParadoxDataType.BlockType
 	}
 	
 	@JvmStatic
@@ -793,8 +794,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptInlineMath): ParadoxExpressionType {
-		return ParadoxExpressionType.InlineMathType
+	fun getExpressionType(element: ParadoxScriptInlineMath): ParadoxDataType {
+		return ParadoxDataType.InlineMathType
 	}
 	
 	@JvmStatic
@@ -810,8 +811,8 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getExpressionType(element: ParadoxScriptInlineMathNumber): ParadoxExpressionType {
-		return ParadoxExpressionType.resolve(element.text)
+	fun getExpressionType(element: ParadoxScriptInlineMathNumber): ParadoxDataType {
+		return ParadoxDataType.resolve(element.text)
 	}
 	//endregion
 	

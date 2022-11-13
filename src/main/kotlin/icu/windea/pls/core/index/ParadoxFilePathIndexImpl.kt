@@ -1,4 +1,4 @@
-package icu.windea.pls.core.psi
+package icu.windea.pls.core.index
 
 import com.intellij.openapi.util.registry.*
 import com.intellij.util.indexing.*

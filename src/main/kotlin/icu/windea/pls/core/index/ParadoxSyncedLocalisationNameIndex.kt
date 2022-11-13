@@ -1,6 +1,7 @@
-package icu.windea.pls.localisation.psi
+package icu.windea.pls.core.index
 
 import com.intellij.psi.stubs.*
+import icu.windea.pls.localisation.psi.*
 
 object ParadoxSyncedLocalisationNameIndex : AbstractParadoxLocalisationNameIndex() {
 	private val key = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")

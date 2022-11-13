@@ -7,6 +7,7 @@ import icons.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandField
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 
 /**
@@ -30,8 +31,8 @@ class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParam
 		
 		//提示类型为scripted_loc的definition
 		val tailText = " from scripted_loc"
-		val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file)
-		val definitions = findAllDefinitionsByType("scripted_loc", project, distinct = true, selector = selector)
+		val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
+		val definitions = ParadoxDefinitionSearch.search("scripted_loc", project, selector = selector).findAll()
 		if(definitions.isEmpty()) return
 		for(definition in definitions) {
 			val name = definition.definitionInfo?.name.orEmpty() //不应该为空

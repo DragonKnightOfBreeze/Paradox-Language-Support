@@ -20,7 +20,7 @@ sealed class ParadoxScriptComplexExpression(
 	val errors: List<ParadoxScriptExpressionError>
 ) : AbstractExpression(expressionString), ParadoxScriptExpression {
 	override val quoted: Boolean get() = false //always unquoted
-	override val type: ParadoxExpressionType get() = ParadoxExpressionType.StringType //always string
+	override val type: ParadoxDataType get() = ParadoxDataType.StringType //always string
 	override val isKey: Boolean? get() = null //unspecified
 	
 	protected var empty = false

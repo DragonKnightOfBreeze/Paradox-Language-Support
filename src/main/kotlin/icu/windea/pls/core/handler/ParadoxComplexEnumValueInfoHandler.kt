@@ -208,4 +208,11 @@ object ParadoxComplexEnumValueInfoHandler {
 		}
 		return true
 	}
+	
+	@JvmStatic
+	fun getName(element: ParadoxScriptExpressionElement): String? {
+		val stub     = runCatching { element.stub }.getOrNull()
+		val name = stub?.complexEnumValueInfo?.name ?: element.value
+		return name.takeIfNotEmpty()
+	}
 }

@@ -35,11 +35,11 @@ class ParadoxLocalisationCommandFieldReference(
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-		val scriptedLoc = findDefinitionByType(name, "scripted_loc", project, selector = selector)
+		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).find()
 		if(scriptedLoc != null) return scriptedLoc
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
-		val eventTarget = ParadoxValueSetValuesSearch.search(name, "variable", project, selector = variableSelector).findFirst()
+		val eventTarget = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
 		if(eventTarget != null) return ParadoxValueSetValueElement(element, name, "variable", project, gameType)
 		return null
 	}
@@ -54,11 +54,11 @@ class ParadoxLocalisationCommandFieldReference(
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return ResolveResult.EMPTY_ARRAY
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(element)
-		val scriptedLocs = findDefinitionsByType(name, "scripted_loc", project, selector = selector)
+		val scriptedLocs = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).findAll()
 		if(scriptedLocs.isNotEmpty()) return scriptedLocs.mapToArray { PsiElementResolveResult(it) }
 		//尝试识别为value[variable]
 		val variableSelector = valueSetValueSelector().gameType(gameType).preferRootFrom(element)
-		val eventTarget = ParadoxValueSetValuesSearch.search(name, "variable", project, selector = variableSelector).findFirst()
+		val eventTarget = ParadoxValueSetValueSearch.search(name, "variable", project, selector = variableSelector).findFirst()
 		if(eventTarget != null) return arrayOf(PsiElementResolveResult(ParadoxValueSetValueElement(element, name, "variable", project, gameType)))
 		return ResolveResult.EMPTY_ARRAY
 	}

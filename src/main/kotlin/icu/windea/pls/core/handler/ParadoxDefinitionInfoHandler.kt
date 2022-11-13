@@ -345,4 +345,16 @@ object ParadoxDefinitionInfoHandler {
 			doMatchProperty(propertyElement, alias.config, configGroup)
 		}
 	}
+	
+	fun getName(element: ParadoxDefinitionProperty): String?{
+		return runCatching { element.getStub() }.getOrNull()?.name ?: element.definitionInfo?.name
+	}
+	
+	fun getType(element: ParadoxDefinitionProperty): String?{
+		return runCatching { element.getStub() }.getOrNull()?.type ?: element.definitionInfo?.type
+	}
+	
+	fun getSubtypes(element: ParadoxDefinitionProperty): List<String>?{
+		return runCatching { element.getStub() }.getOrNull()?.subtypes ?: element.definitionInfo?.subtypes
+	}
 }

@@ -1,6 +1,6 @@
 package icu.windea.pls.core.selector
 
-class ChainedParadoxSelector<T>(
+open class ChainedParadoxSelector<T>(
 	private val baseComparator: Comparator<T>? = null
 ) : ParadoxSelector<T> {
 	val selectors = mutableListOf<ParadoxSelector<T>>()

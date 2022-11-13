@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.core.expression.ParadoxExpressionType;
+import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
@@ -17,7 +17,7 @@ public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
   String getValue();
 
   @NotNull
-  ParadoxExpressionType getExpressionType();
+  ParadoxDataType getExpressionType();
 
   @Nullable
   String getConfigExpression();

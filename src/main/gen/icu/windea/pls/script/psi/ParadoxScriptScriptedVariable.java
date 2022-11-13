@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.core.expression.ParadoxExpressionType;
+import icu.windea.pls.core.expression.ParadoxDataType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, ParadoxScriptTypedElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
@@ -39,7 +39,7 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   String getUnquotedValue();
 
   @Nullable
-  ParadoxExpressionType getExpressionType();
+  ParadoxDataType getExpressionType();
 
   @NotNull
   ItemPresentation getPresentation();
