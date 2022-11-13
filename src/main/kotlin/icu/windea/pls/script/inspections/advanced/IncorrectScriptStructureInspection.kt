@@ -44,7 +44,8 @@ class IncorrectScriptStructureInspection : LocalInspectionTool() {
 				ProgressManager.checkCanceled()
 				//排除block
 				if(if(element.isLonely()) forValue else forPropertyValue) {
-					val config = ParadoxCwtConfigHandler.resolveValueConfig(element)
+					//精确解析
+					val config = ParadoxCwtConfigHandler.resolveValueConfig(element, hasDefault = false)
 					//是定义元素，非定义自身，且路径中不带参数
 					if(config == null && element.definitionElementInfo?.let { it.isValid && !it.elementPath.isParameterAware } == true) {
 						holder.registerProblem(element, PlsBundle.message("script.inspection.advanced.incorrectScriptStructure.description.1", element.expression))

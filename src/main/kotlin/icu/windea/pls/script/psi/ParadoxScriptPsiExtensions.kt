@@ -26,7 +26,6 @@ val ParadoxParameter.parameterId: PsiElement? get() = findOptionalChild(PARAMETE
 
 val ParadoxParameter.defaultValueToken: PsiElement? get() = findOptionalChild(NUMBER_TOKEN)
 
-
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptPropertyValue? get() = siblings(true, false).findIsInstance()
 
 val ParadoxScriptPropertyValue.propertyKey: ParadoxScriptPropertyKey? get() = siblings(false, true).findIsInstance()
