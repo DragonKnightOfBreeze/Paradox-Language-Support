@@ -22,16 +22,13 @@ class ParadoxLocalisationColorReference(
 		return element.colorConfig?.pointer?.element
 	}
 	
-	///**
-	// * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxColorCompletionProvider
-	// */
+	
+	
+	/**
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationColorCompletionProvider
+	 */
 	@Suppress("RedundantOverride")
 	override fun getVariants(): Array<out Any> {
-		val file = element.containingFile
-		val project = element.project
-		val gameType = ParadoxSelectorUtils.selectGameType(file) ?: return LookupElement.EMPTY_ARRAY
-		val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project, file)
-		
 		return super.getVariants() //not here
 	}
 }

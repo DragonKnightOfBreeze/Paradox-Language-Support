@@ -3,7 +3,6 @@ package icu.windea.pls.extension.translation
 import cn.yiiguxing.plugin.translate.provider.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -29,7 +28,7 @@ class ParadoxScriptDocumentationElementProvider : DocumentationElementProvider {
 	
 	override fun findDocumentationElementAt(psiFile: PsiFile, offset: Int): PsiElement? {
 		return psiFile.findElementAt(offset)?.parents(true)?.find {
-			it is ParadoxScriptProperty && it.definitionInfo != null
+			it is ParadoxScriptProperty || it is ParadoxScriptValue
 		}
 	}
 }
@@ -41,7 +40,7 @@ class ParadoxLocalisationDocumentationElementProvider : DocumentationElementProv
 	
 	override fun findDocumentationElementAt(psiFile: PsiFile, offset: Int): PsiElement? {
 		return psiFile.findElementAt(offset)?.parents(true)?.find {
-			it is ParadoxLocalisationProperty && it.localisationInfo != null
+			it is ParadoxLocalisationProperty
 		}
 	}
 }

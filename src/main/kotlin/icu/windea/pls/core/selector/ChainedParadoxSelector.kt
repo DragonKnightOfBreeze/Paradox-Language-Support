@@ -43,11 +43,12 @@ open class ChainedParadoxSelector<T>(
 	override fun comparator(): Comparator<T>? {
 		if(selectors.isEmpty()) return super.comparator()
 		var comparator: Comparator<T>? = baseComparator
-		selectors.forEach {
+		for(paradoxSelector in selectors) {
+			val nextComparator = paradoxSelector.comparator() ?: continue
 			if(comparator == null) {
-				comparator = it.comparator()
+				comparator = nextComparator
 			} else {
-				comparator = comparator?.thenComparing(it.comparator())
+				comparator = comparator.thenComparing(nextComparator)
 			}
 		}
 		//最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
