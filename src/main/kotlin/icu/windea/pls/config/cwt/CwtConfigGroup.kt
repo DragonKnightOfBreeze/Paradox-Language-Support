@@ -557,7 +557,7 @@ class CwtConfigGroup(
 		val props = propertyConfig.properties ?: return null
 		for(prop in props) {
 			when(prop.key) {
-				"desc" -> desc = prop.stringValue?.takeIf { !it.isExactSnakeCase() } //排除占位码
+				"desc" -> desc = prop.stringValue?.takeIf { !it.isExactSnakeCase() }?.trim() //排除占位码 & 去除首尾空白
 				"from_data" -> fromData = prop.booleanValue ?: false
 				"type" -> type = prop.stringValue
 				"data_source" -> dataSource = prop.valueExpression //TODO 实际上也可能data（可重复），但是目前只有一处

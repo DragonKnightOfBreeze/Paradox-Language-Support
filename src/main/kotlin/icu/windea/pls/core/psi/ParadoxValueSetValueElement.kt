@@ -36,7 +36,10 @@ class ParadoxValueSetValueElement(
 	}
 	
 	override fun getIcon(): Icon {
-		return PlsIcons.ValueSetValue
+		return when(valueSetName) {
+			"variable" -> PlsIcons.Variable
+			else -> PlsIcons.ValueSetValue
+		}
 	}
 	
 	override fun getNameIdentifier(): PsiElement {

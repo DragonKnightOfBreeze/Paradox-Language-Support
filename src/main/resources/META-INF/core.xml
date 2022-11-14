@@ -53,6 +53,8 @@
     <referencesSearch implementation="icu.windea.pls.core.search.usages.ParadoxLocalisationUsagesSearcher"/>
     
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
+    
+    <iconDescriptionBundle resourceBundle="messages.PlsIconBundle"/>
   </extensions>
   
   <extensions defaultExtensionNs="icu.windea.pls">

@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.documentation.*

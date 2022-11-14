@@ -754,9 +754,13 @@ object CwtConfigHandler {
 						val value = valueSetValue.value.substringBefore('@')
 						//排除当前正在输入的那个
 						if(value == keyword.substringBefore('@') && valueSetValue isSamePosition contextElement) return@processResult true
+						val icon = when(valueSetName) {
+							"variable" -> PlsIcons.Variable
+							else -> PlsIcons.ValueSetValue
+						}
 						//不显示typeText
 						val lookupElement = LookupElementBuilder.create(valueSetValue, value)
-							.withExpectedIcon(PlsIcons.ValueSetValue)
+							.withExpectedIcon(icon)
 							.withTailText(tailText, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写

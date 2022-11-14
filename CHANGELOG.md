@@ -59,7 +59,7 @@
   * [X] 脚本文件中来自CWT文件的引用需要能被同时高亮出来，同时一般情况下不能从CWT文件中的规则查找引用（`modifier`等除外）
     * 对于别名无法正常工作（`if` != `alias[effect:if]`）
   * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况
-  * [X] 兼容localisationCommandScope需要被识别为`value_set[variable]`的情况
+  * [X] 兼容localisationCommandField需要被识别为`value_set[variable]`的情况
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`
@@ -75,6 +75,7 @@
   * [X] 在查找使用中，区分参数和值集中的值的读/写使用
   * [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
   * [X] 可设置要忽略的本地化文件的名字
+  * [X] 为图标提供提示（tooltip），例如，鼠标悬浮到结构视图（Structure）中的节点图标上即可看到
 * 完善CWT配置支持：
   * [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   * [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）

@@ -6,18 +6,23 @@ links = {
 		type = scope
 	}
 	event_target = {
-		desc =  "Event target."
+		desc = "Event target"
 		from_data = yes
 		type = both
 		prefix = event_target:
 		data_source = value[event_target]
 	}
-	
 	global_event_target = {
-		desc =  "Global event target."
+		desc = "Global event target"
 		from_data = yes
 		type = both
 		prefix = event_target:
 		data_source = value[global_event_target]
+	}
+	variable = {
+		desc = "Variable"
+		from_data = yes
+		type = value
+		data_source = value[variable]
 	}
 }
