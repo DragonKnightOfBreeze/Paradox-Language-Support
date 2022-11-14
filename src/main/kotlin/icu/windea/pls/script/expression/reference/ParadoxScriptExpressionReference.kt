@@ -12,11 +12,11 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptExpressionReference(
-	element: ParadoxExpressionElement,
+	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
 	val config: CwtDataConfig<*>,
 	val isKey: Boolean
-) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的definition、localisation、syncedLocalisation等
 		val resolved = resolve()
@@ -57,7 +57,7 @@ class ParadoxScriptExpressionReference(
 	 * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
 	 */
 	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<Any> {
+	override fun getVariants(): Array<out Any> {
 		return super.getVariants() //not here
 	}
 }

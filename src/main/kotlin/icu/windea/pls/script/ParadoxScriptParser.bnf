@@ -95,7 +95,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_ID {
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.IParadoxScriptVariableReference"
+    "icu.windea.pls.script.psi.ParadoxScriptedVariableReference"
   ]
   methods=[getIcon getName setName getReference getExpressionType]
 }
@@ -255,7 +255,7 @@ inline_math_number ::= NUMBER_TOKEN { //int | float
 }
 inline_math_variable_reference ::= INLINE_MATH_VARIABLE_REFERENCE_ID { //without prefix "@"
   extends=inline_math_factor
-  implements="icu.windea.pls.script.psi.IParadoxScriptVariableReference"
+  implements="icu.windea.pls.script.psi.ParadoxScriptedVariableReference"
   methods=[getIcon getName setName getReference]
 }
 inline_math_parameter ::= PARAMETER_START PARAMETER_ID [PIPE ARG_NUMBER_TOKEN] PARAMETER_END {

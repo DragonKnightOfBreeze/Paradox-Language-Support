@@ -104,10 +104,10 @@ class ParadoxLocalisationIconReference(
 	}
 	
 	/**
-	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxIconCompletionProvider
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationIconCompletionProvider
 	 */
 	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<Any> {
+	override fun getVariants(): Array<out Any> {
 		return super.getVariants() //not here
 	}
 }

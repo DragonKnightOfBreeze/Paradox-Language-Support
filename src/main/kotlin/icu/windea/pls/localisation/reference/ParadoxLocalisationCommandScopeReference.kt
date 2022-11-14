@@ -11,7 +11,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxCommandScopeCompletionProvider
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationCommandScopeCompletionProvider
  */
 class ParadoxLocalisationCommandScopeReference(
 	element: ParadoxLocalisationCommandScope,

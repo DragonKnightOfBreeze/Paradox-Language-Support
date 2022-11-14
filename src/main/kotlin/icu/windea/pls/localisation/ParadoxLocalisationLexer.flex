@@ -102,7 +102,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 		      if(yylength() == 1) return true;
 	        return yycharat(yylength()-1) != '"';
         }
-    %}
+%}
 
 //Stellaris官方本地化文件中本身就存在语法解析错误，需要保证存在错误的情况下仍然会解析后续的本地化文本，草
 

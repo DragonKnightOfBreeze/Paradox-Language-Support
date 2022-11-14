@@ -11,7 +11,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 提供命令字段作用域的代码补全。
  */
-class ParadoxCommandScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
 		val keyword = parameters.position.getKeyword(offsetInParent)

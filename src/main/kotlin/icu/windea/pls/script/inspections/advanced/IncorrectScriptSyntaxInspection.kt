@@ -32,7 +32,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 			val valueElement = e.value
 			if(!mayByNumberValue(valueElement)) {
 				valueElement.siblings(forward = false, withSelf = false).forEach {
-					if(isOperator(it)) {
+					if(isComparisonOperator(it)) {
 						val message = PlsBundle.message("script.inspection.advanced.incorrectScriptSyntax.description.1")
 						holder.registerProblem(it, message, ProblemHighlightType.GENERIC_ERROR)
 					}
@@ -54,7 +54,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
 			}
 		}
 		
-		private fun isOperator(element: PsiElement): Boolean {
+		private fun isComparisonOperator(element: PsiElement): Boolean {
 			//LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN 
 			val elementType = element.elementType
 			return elementType == LT_SIGN || elementType == GT_SIGN || elementType == LE_SIGN || elementType == GE_SIGN

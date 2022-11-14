@@ -15,6 +15,7 @@ import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
@@ -203,7 +204,7 @@ object ParadoxScriptPsiImplUtil {
 			val nameProperty = element.findDefinitionProperty(nameField)
 			if(nameProperty != null) {
 				val nameElement = nameProperty.findValue<ParadoxScriptString>()
-				nameElement?.value = name
+				nameElement?.setValue(name)
 			}
 			return element
 		}
@@ -370,9 +371,9 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptScriptedVariableReference): ParadoxScriptedVariableReference {
+	fun getReference(element: ParadoxScriptScriptedVariableReference): ParadoxScriptedVariableReferenceReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
-		return ParadoxScriptedVariableReference(element, rangeInElement)
+		return ParadoxScriptedVariableReferenceReference(element, rangeInElement)
 	}
 	
 	@JvmStatic
@@ -836,9 +837,9 @@ object ParadoxScriptPsiImplUtil {
 	}
 	
 	@JvmStatic
-	fun getReference(element: ParadoxScriptInlineMathVariableReference): ParadoxScriptedVariableReference {
+	fun getReference(element: ParadoxScriptInlineMathVariableReference): ParadoxScriptedVariableReferenceReference {
 		val rangeInElement = element.variableReferenceId.textRangeInParent
-		return ParadoxScriptedVariableReference(element, rangeInElement)
+		return ParadoxScriptedVariableReferenceReference(element, rangeInElement)
 	}
 	//endregion
 	

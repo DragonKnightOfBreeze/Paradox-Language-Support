@@ -1,7 +1,8 @@
-package icu.windea.pls.core.expression
+package icu.windea.pls.script.exp
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.expression.ParadoxDataExpression.*
+import icu.windea.pls.core.expression.*
+import icu.windea.pls.script.exp.ParadoxDataExpression.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDataExpression(
@@ -10,7 +11,7 @@ class ParadoxDataExpression(
 	override val quoted: Boolean,
 	override val isKey: Boolean?
 ) : AbstractExpression(value), ParadoxScriptExpression {
-	companion object Resolver : ParadoxExpressionResolver
+	companion object Resolver
 }
 
 fun Resolver.resolve(element: ParadoxScriptPropertyKey): ParadoxScriptExpression {

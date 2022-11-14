@@ -18,5 +18,3 @@ abstract class AbstractExpression(override val expressionString: String) : Expre
 	
 	override fun toString() = expressionString
 }
-
-interface ExpressionResolver<out T : Expression>

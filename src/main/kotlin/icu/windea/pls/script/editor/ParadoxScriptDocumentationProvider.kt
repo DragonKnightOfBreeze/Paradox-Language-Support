@@ -84,7 +84,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun generateComplexEnumValueInfo(element: ParadoxExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
+	private fun generateComplexEnumValueInfo(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
 		return buildString { 
 			buildComplexEnumValueDefinition(element, complexEnumValueInfo)
 		}
@@ -103,14 +103,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	//private fun getComplexEnumValueInfo(element: ParadoxExpressionElement, config: CwtDataConfig<*>): String {
+	//private fun getComplexEnumValueInfo(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
 	//	return buildString {
 	//		val configGroup = config.info.configGroup
 	//		buildComplexEnumValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
 	//	}
 	//}
 	
-	private fun getValueSetValueInfo(element: ParadoxExpressionElement, config: CwtDataConfig<*>): String {
+	private fun getValueSetValueInfo(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
 			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
@@ -192,7 +192,7 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun generateComplexEnumValueDoc(element: ParadoxExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
+	private fun generateComplexEnumValueDoc(element: ParadoxScriptExpressionElement, complexEnumValueInfo: ParadoxComplexEnumValueInfo): String {
 		return buildString {
 			buildComplexEnumValueDefinition(element, complexEnumValueInfo)
 		}
@@ -211,14 +211,14 @@ class ParadoxScriptDocumentationProvider : AbstractDocumentationProvider() {
 		}
 	}
 	
-	private fun getComplexEnumValueDoc(element: ParadoxExpressionElement, config: CwtDataConfig<*>): String {
+	private fun getComplexEnumValueDoc(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
 			buildComplexEnumValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)
 		}
 	}
 	
-	private fun getValueSetValueDoc(element: ParadoxExpressionElement, config: CwtDataConfig<*>): String {
+	private fun getValueSetValueDoc(element: ParadoxScriptExpressionElement, config: CwtDataConfig<*>): String {
 		return buildString {
 			val configGroup = config.info.configGroup
 			buildValueSetValueDefinition(element.value, config.expression.value.orEmpty(), configGroup)

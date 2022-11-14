@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 值集中的值的内嵌提示（值的类型即值集的名字）。
@@ -27,7 +28,7 @@ class ParadoxValueSetValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSetti
 	override fun createSettings() = NoSettings()
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxExpressionElement) {
+		if(element is ParadoxScriptExpressionElement) {
 			val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return true
 			val type = config.expression.type
 			if(type == CwtDataTypes.Value || type == CwtDataTypes.ValueSet) {

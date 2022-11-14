@@ -286,7 +286,7 @@ val ParadoxScriptPropertyKey.definitionElementInfo: ParadoxDefinitionElementInfo
 	get() = ParadoxDefinitionElementInfoHandler.get(this)
 val ParadoxScriptValue.definitionElementInfo: ParadoxDefinitionElementInfo?
 	get() = ParadoxDefinitionElementInfoHandler.get(this)
-val ParadoxExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
+val ParadoxScriptExpressionElement.definitionElementInfo: ParadoxDefinitionElementInfo?
 	get() = ParadoxDefinitionElementInfoHandler.get(this)
 
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?

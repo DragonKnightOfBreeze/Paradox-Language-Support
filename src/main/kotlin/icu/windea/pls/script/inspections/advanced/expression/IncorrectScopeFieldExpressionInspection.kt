@@ -8,7 +8,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
@@ -36,7 +35,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 				visitExpressionElement(element)
 			}
 			
-			private fun visitExpressionElement(element: ParadoxExpressionElement) {
+			override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 				ProgressManager.checkCanceled()
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return
 				val type = config.expression.type

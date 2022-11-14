@@ -2,6 +2,7 @@ package icu.windea.pls.core.handler
 
 import com.intellij.lang.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.script.*
@@ -13,11 +14,12 @@ import icu.windea.pls.script.psi.*
 object ParadoxDefinitionElementInfoHandler {
 	@JvmStatic
 	fun get(element: PsiElement): ParadoxDefinitionElementInfo? {
-		//必须是脚本语言的PsiElement
 		val targetElement = if(element is ParadoxScriptPropertyKey) element.parent ?: return null else element
 		if(targetElement.language != ParadoxScriptLanguage) return null
-		return targetElement.getOrPutUserData(PlsKeys.definitionElementInfoKey) {
-			resolveDownUp(targetElement)
+		return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionElementInfoKey) {
+			val file = element.containingFile
+			val value = resolveDownUp(targetElement)
+			CachedValueProvider.Result.create(value, file) //invalidated on file modification
 		}
 	}
 	

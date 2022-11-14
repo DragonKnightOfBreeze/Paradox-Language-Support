@@ -22,7 +22,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.quickfix.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.ui.*
@@ -149,7 +148,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 			visitExpressionElement(element)
 		}
 		
-		private fun visitExpressionElement(element: ParadoxExpressionElement) {
+		override fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
 			ProgressManager.checkCanceled()
 			if(inspection.localeSet.isEmpty()) return
 			if(!inspection.checkForModifiers) return

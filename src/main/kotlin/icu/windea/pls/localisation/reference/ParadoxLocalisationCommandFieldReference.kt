@@ -13,7 +13,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxCommandFieldCompletionProvider
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationCommandFieldCompletionProvider
  */
 class ParadoxLocalisationCommandFieldReference(
 	element: ParadoxLocalisationCommandField,

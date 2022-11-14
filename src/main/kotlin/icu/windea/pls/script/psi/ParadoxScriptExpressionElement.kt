@@ -1,11 +1,11 @@
 package icu.windea.pls.script.psi
 
-import icu.windea.pls.core.psi.*
+import com.intellij.psi.*
 
-interface ParadoxScriptExpressionElement: ParadoxScriptTypedElement, ParadoxExpressionElement {
+interface ParadoxScriptExpressionElement: ParadoxScriptTypedElement, PsiLiteralValue, ContributedReferenceHost, NavigatablePsiElement {
 	val stub: ParadoxScriptExpressionElementStub<*>?
 	
 	override fun getValue(): String
 	
-	override fun setValue(value: String): ParadoxScriptExpressionElement
+	fun setValue(value: String): ParadoxScriptExpressionElement
 }

@@ -1,12 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
+import icu.windea.pls.script.exp.*;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import icu.windea.pls.core.expression.ParadoxDataType;
-import javax.swing.Icon;
+
+import javax.swing.*;
 
 public interface ParadoxScriptValue extends ParadoxScriptTypedElement {
 

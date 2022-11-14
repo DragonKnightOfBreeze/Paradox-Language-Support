@@ -1,14 +1,14 @@
 package icu.windea.pls.script.psi
 
-import icu.windea.pls.core.expression.*
+import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.reference.*
 
-interface IParadoxScriptVariableReference : ParadoxScriptTypedElement {
+interface ParadoxScriptedVariableReference : ParadoxScriptTypedElement {
 	val name: String
 	
-	fun setName(name: String): IParadoxScriptVariableReference
+	fun setName(name: String): ParadoxScriptedVariableReference
 	
-	override fun getReference(): ParadoxScriptedVariableReference
+	override fun getReference(): ParadoxScriptedVariableReferenceReference
 	
 	val referenceValue: ParadoxScriptValue? get() = reference.resolve()?.scriptedVariableValue?.value
 	

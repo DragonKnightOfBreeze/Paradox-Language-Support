@@ -5,6 +5,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.expression.*
+import icu.windea.pls.script.exp.*
 
 /**
  * 复杂脚本表达式。 

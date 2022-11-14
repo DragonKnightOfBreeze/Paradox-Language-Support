@@ -12,7 +12,6 @@ import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.handler.*
 import icu.windea.pls.core.model.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
@@ -56,7 +55,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		}
 	}
 	
-	private fun annotateComplexEnumValue(element: ParadoxExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
+	private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, complexEnumValueInfo: ParadoxComplexEnumValueInfo) {
 		//高亮复杂枚举名对应的字符串（可能还有其他高亮）（这里不能使用PSI链接）
 		val nameString = complexEnumValueInfo.name.escapeXmlOrAnonymous()
 		val enumNameString = complexEnumValueInfo.enumName
@@ -79,7 +78,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun doAnnotateExpressionElement(
-		element: ParadoxExpressionElement,
+		element: ParadoxScriptExpressionElement,
 		range: TextRange,
 		expression: CwtDataExpression,
 		config: CwtDataConfig<*>,
@@ -172,7 +171,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 	}
 	
 	private fun doAnnotateComplexExpression(
-		element: ParadoxExpressionElement,
+		element: ParadoxScriptExpressionElement,
 		valueSetValueExpression: ParadoxScriptComplexExpression,
 		config: CwtDataConfig<*>,
 		range: TextRange,

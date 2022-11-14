@@ -16,6 +16,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.core.tool.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierInfoHintsProvider.*
+import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
@@ -60,7 +61,7 @@ class ParadoxModifierInfoHintsProvider: ParadoxScriptHintsProvider<Settings>(){
 	}
 	
 	override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-		if(element is ParadoxExpressionElement) {
+		if(element is ParadoxScriptExpressionElement) {
 			//基于stub
 			val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return true
 			val type = config.expression.type

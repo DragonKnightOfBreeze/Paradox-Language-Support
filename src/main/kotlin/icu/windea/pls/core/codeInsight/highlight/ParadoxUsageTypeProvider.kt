@@ -4,7 +4,6 @@ import com.intellij.psi.*
 import com.intellij.usages.*
 import com.intellij.usages.impl.rules.*
 import icu.windea.pls.core.handler.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -19,7 +18,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 	override fun getUsageType(element: PsiElement?, targets: Array<out UsageTarget>): UsageType? {
 		//TODO
 		return when {
-			element is ParadoxExpressionElement -> {
+			element is ParadoxScriptExpressionElement -> {
 				val config = ParadoxCwtConfigHandler.resolveConfig(element) ?: return null
 				val configExpression = config.expression
 				ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)

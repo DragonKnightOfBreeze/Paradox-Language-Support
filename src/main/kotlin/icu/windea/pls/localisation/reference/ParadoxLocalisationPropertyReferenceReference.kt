@@ -58,10 +58,10 @@ class ParadoxLocalisationPropertyReferenceReference(
 	}
 	
 	/**
-	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxPropertyReferenceCompletionProvider
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationPropertyReferenceCompletionProvider
 	 */
 	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<Any> {
+	override fun getVariants(): Array<out Any> {
 		return super.getVariants() //not here
 	}
 }

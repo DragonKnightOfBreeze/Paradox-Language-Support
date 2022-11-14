@@ -16,12 +16,12 @@ class CwtKeyExpression private constructor(
 	override val value: String? = null,
 	override val extraValue: Any? = null
 ) : AbstractExpression(expressionString), CwtDataExpression {
-	companion object Resolver : CwtExpressionResolver<CwtKeyExpression> {
+	companion object Resolver {
 		val EmptyStringExpression = CwtKeyExpression("", Types.Constant, "")
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtKeyExpression> { doResolve(it) } }
 		
-		override fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String) = when {
 			expressionString.isEmpty() -> EmptyStringExpression

@@ -21,10 +21,10 @@ class ParadoxLocalisationLocaleReference(
 	}
 	
 	/**
-	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocaleCompletionProvider
+	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationLocaleCompletionProvider
 	 */
 	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<Any> {
+	override fun getVariants(): Array<out Any> {
 		return super.getVariants() //not here
 	}
 }

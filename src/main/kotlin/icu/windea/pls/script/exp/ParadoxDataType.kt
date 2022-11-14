@@ -1,4 +1,4 @@
-package icu.windea.pls.core.expression
+package icu.windea.pls.script.exp
 
 import icu.windea.pls.core.*
 import java.text.*

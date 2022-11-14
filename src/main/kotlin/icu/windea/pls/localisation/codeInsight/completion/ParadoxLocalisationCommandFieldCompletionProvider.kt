@@ -13,7 +13,7 @@ import icu.windea.pls.core.selector.*
 /**
  * 提供命令字段名字的代码补全。
  */
-class ParadoxCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val offsetInParent = parameters.offset - parameters.position.textRange.startOffset
 		val keyword = parameters.position.getKeyword(offsetInParent)

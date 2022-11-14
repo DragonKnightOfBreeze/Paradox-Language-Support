@@ -1,7 +1,7 @@
 package icu.windea.pls.script.expression
 
-import icu.windea.pls.core.expression.*
-import icu.windea.pls.core.expression.ParadoxDataType.*
+import icu.windea.pls.script.exp.*
+import icu.windea.pls.script.exp.ParadoxDataType.*
 
 fun ParadoxDataType.isBooleanType() = this == BooleanType
 

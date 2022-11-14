@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
  * 提供图标名字的代码补全。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxIconCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val originalFile = parameters.originalFile
 		val project = originalFile.project

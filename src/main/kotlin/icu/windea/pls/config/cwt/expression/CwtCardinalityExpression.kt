@@ -18,12 +18,12 @@ class CwtCardinalityExpression private constructor(
 	val max: Int?,
 	val limitMax: Boolean = true
 ) : AbstractExpression(expressionString), CwtExpression {
-	companion object Resolver : CwtExpressionResolver<CwtCardinalityExpression> {
+	companion object Resolver {
 		val EmptyExpression = CwtCardinalityExpression("", 0, null, true)
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) } }
 		
-		override fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String) = when {
 			expressionString.isEmpty() -> EmptyExpression

@@ -11,10 +11,10 @@ import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptedVariableReference(
-	element: IParadoxScriptVariableReference,
+class ParadoxScriptedVariableReferenceReference(
+	element: ParadoxScriptedVariableReference,
 	rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<IParadoxScriptVariableReference>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxScriptedVariableReference>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
 		//尝试重命名关联的variable
 		val resolved = resolve()

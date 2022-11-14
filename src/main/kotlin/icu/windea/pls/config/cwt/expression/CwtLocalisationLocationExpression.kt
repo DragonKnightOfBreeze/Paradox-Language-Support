@@ -23,12 +23,12 @@ class CwtLocalisationLocationExpression(
 	val placeholder: String? = null,
 	val propertyName: String? = null
 ) : AbstractExpression(expressionString), CwtExpression {
-	companion object Resolver : CwtExpressionResolver<CwtLocalisationLocationExpression> {
+	companion object Resolver {
 		val EmptyExpression = CwtLocalisationLocationExpression("", "")
 		
 		val cache by lazy { CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) } }
 		
-		override fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
+		fun resolve(expressionString: String) = cache.getUnchecked(expressionString)
 		
 		private fun doResolve(expressionString: String) = when {
 			expressionString.isEmpty() -> EmptyExpression

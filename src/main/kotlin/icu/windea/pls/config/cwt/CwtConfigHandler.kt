@@ -19,13 +19,13 @@ import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.expression.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.codeStyle.*
+import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.expression.ParadoxScriptExpression
 import icu.windea.pls.script.psi.*
@@ -1279,7 +1279,7 @@ object CwtConfigHandler {
 	 * @param element 需要解析的PSI元素。
 	 * @param rangeInElement 需要解析的文本在需要解析的PSI元素对应的整个文本中的位置。
 	 */
-	fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
+	fun resolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtConfig<*>, isKey: Boolean? = null): PsiElement? {
 		if(element.isParameterAwareExpression()) return null //排除带参数的情况
 		
 		val project = element.project
@@ -1397,7 +1397,7 @@ object CwtConfigHandler {
 		}
 	}
 	
-	fun multiResolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtDataConfig<*>, isKey: Boolean?): Collection<PsiElement> {
+	fun multiResolveScriptExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, configExpression: CwtDataExpression, config: CwtDataConfig<*>, isKey: Boolean?): Collection<PsiElement> {
 		if(element.isParameterAwareExpression()) return emptyList() //排除带参数的情况  
 		
 		val project = element.project
@@ -1599,7 +1599,7 @@ object CwtConfigHandler {
 		return linkConfig.pointer.element
 	}
 	
-	fun resolveValueSetValue(element: ParadoxExpressionElement, name: String, config: CwtDataConfig<*>): PsiElement? {
+	fun resolveValueSetValue(element: ParadoxScriptExpressionElement, name: String, config: CwtDataConfig<*>): PsiElement? {
 		val valueSetName = config.expression.value ?: return null
 		val configGroup = config.info.configGroup
 		val read = config.expression.type == CwtDataTypes.Value
