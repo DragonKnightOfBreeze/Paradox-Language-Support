@@ -2,10 +2,11 @@ package icu.windea.pls.localisation.editor
 
 import com.intellij.codeInsight.template.*
 import com.intellij.psi.util.*
-import icu.windea.pls.core.*
+import icu.windea.pls.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
-class ParadoxLocalisationTemplateContext : TemplateContextType(paradoxLocalisationId, paradoxLocalisationName) {
+class ParadoxLocalisationTemplateContext : FileTypeBasedContextType(ParadoxLocalisationLanguage.id, PlsBundle.message("localisation.templateContextType"), ParadoxLocalisationFileType) {
 	override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
 		val file = templateActionContext.file
 		val startOffset = templateActionContext.startOffset

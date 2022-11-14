@@ -1218,7 +1218,7 @@ object CwtConfigHandler {
 		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
 	}
 	
-	private val boolLookupElements = booleanValues.map { value ->
+	private val boolLookupElements = PlsConstants.booleanValues.map { value ->
 		LookupElementBuilder.create(value).bold().withPriority(PlsCompletionPriorities.keywordPriority)
 	}
 	

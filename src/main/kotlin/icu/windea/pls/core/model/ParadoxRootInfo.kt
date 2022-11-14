@@ -37,7 +37,7 @@ class ParadoxRootInfo(
 	private fun resolveDescriptorInfo(descriptorFile: VirtualFile): ParadoxDescriptorInfo? {
 		val fileName = descriptorFile.name
 		return when {
-			fileName == descriptorFileName -> {
+			fileName == PlsConstants.descriptorFileName -> {
 				//TODO 直接解析VirtualFile
 				val psiFile = descriptorFile.toPsiFile<PsiFile>(getDefaultProject())
 				if(psiFile !is ParadoxScriptFile) return null
@@ -65,7 +65,7 @@ class ParadoxRootInfo(
 				ParadoxDescriptorInfo(nameToUse, version, picture, tags, supportedVersion, remoteFileId, path, isModDescriptor = true)
 			}
 			
-			fileName == launcherSettingsFileName -> {
+			fileName == PlsConstants.launcherSettingsFileName -> {
 				val json = jsonMapper.readValue<Map<String, Any?>>(descriptorFile.inputStream)
 				val name = gameType.description
 				val version = json.get("rawVersion")?.toString()

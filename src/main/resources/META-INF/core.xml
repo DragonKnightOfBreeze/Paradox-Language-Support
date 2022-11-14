@@ -20,6 +20,7 @@
     <utf8BomOptionProvider implementation="icu.windea.pls.core.ParadoxUtf8BomOptionProvider"/>
 
     <fileBasedIndex implementation="icu.windea.pls.core.index.ParadoxFilePathIndexImpl"/>
+    
     <registryKey key="indexing.paradox.file.path.over.vfs" defaultValue="true" restartRequired="true"
                  description="Use VFS-based implementation for ParadoxFilePathIndex"/>
     <registryKey key="run.convert.dds.to.png.under.progress" defaultValue="true" restartRequired="true"

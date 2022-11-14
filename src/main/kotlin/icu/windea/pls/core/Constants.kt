@@ -11,47 +11,30 @@ import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.config.definition.config.*
 import icu.windea.pls.core.model.*
 
-val locationClass = PlsIcons::class.java
-
-const val ddsName = "DDS"
-const val ddsDescription = "DirectDraw Surface"
-
-const val cwtName = "Cwt"
-const val cwtDescription = "Cwt config"
-const val cwtId = "CWT"
-const val cwtExtension = "cwt"
-val cwtColorSettingsDemoText = "/demoText/Cwt.colorSettings.txt".toClasspathUrl().readText()
-val cwtCodeStyleSettingsDemoText = "/demoText/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
-
-const val paradoxLocalisationName = "Paradox Localisation"
-const val paradoxLocalisationDescription = "Paradox localisation"
-const val paradoxLocalisationId = "PARADOX_LOCALISATION"
-const val paradoxLocalisationExtension = "yml"
-val paradoxLocalisationColorSettingsDemoText = "/demoText/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
-val paradoxLocalisationCodeStyleSettingsDemoText = "/demoText/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
-
-const val paradoxScriptName = "Paradox Script"
-const val paradoxScriptDescription = "Paradox script"
-const val paradoxScriptId = "PARADOX_SCRIPT"
-const val paradoxScriptExtension = "txt"
-val paradoxScriptColorSettingsDemoText = "/demoText/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
-val paradoxScriptCodeStyleSettingsDemoText = "/demoText/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
-
-const val dummyIdentifier = "windea"
-const val dummyIdentifierLength = dummyIdentifier.length
-
-val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
-
-val booleanValues = arrayOf("yes", "no")
-
-val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
-val localisationFileExtensions = arrayOf("yml")
-val ddsFileExtensions = arrayOf("dds")
-
-const val launcherSettingsFileName = "launcher-settings.json"
-const val descriptorFileName = "descriptor.mod"
-
 object PlsConstants {
+	val locationClass = PlsIcons::class.java
+	
+	val cwtColorSettingsDemoText = "/demoText/Cwt.colorSettings.txt".toClasspathUrl().readText()
+	val cwtCodeStyleSettingsDemoText = "/demoText/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
+	
+	val paradoxLocalisationColorSettingsDemoText = "/demoText/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
+	val paradoxLocalisationCodeStyleSettingsDemoText = "/demoText/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
+	
+	val paradoxScriptColorSettingsDemoText = "/demoText/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
+	val paradoxScriptCodeStyleSettingsDemoText = "/demoText/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
+	
+	const val dummyIdentifier = "windea"
+	
+	val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
+	val booleanValues = arrayOf("yes", "no")
+	
+	val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
+	val localisationFileExtensions = arrayOf("yml")
+	val ddsFileExtensions = arrayOf("dds")
+	
+	const val launcherSettingsFileName = "launcher-settings.json"
+	const val descriptorFileName = "descriptor.mod"
+	
 	const val ellipsis = "..."
 	const val commentFolder = "#..."
 	const val parameterFolder = "$...$"
@@ -65,13 +48,9 @@ object PlsConstants {
 	const val unresolvedString = "(unresolved)"
 	
 	const val defaultScriptedVariableName = "var"
-	
 	//NOTE 目前认为cwt文件中定义的definition的propertyPath的maxDepth是4（最多跳过3个rootKey）
 	const val maxMayBeDefinitionDepth = 4
-	
 	const val keysTruncateLimit = 5
-	
-	const val debugMode = false
 }
 
 object PlsPaths {
@@ -96,7 +75,7 @@ object PlsPatterns {
 	val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
 }
 
-object PlsThreadLocals{
+object PlsThreadLocals {
 	val threadLocalTextEditorContainer = ThreadLocal<TextEditor?>()
 }
 

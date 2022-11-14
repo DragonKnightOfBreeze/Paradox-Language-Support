@@ -11,13 +11,15 @@ import icu.windea.pls.script.*
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 	override fun getLanguage() = ParadoxScriptLanguage
 	
-	override fun getCodeSample(settingsType: SettingsType) = paradoxScriptCodeStyleSettingsDemoText
+	override fun getConfigurableDisplayName() = PlsBundle.message("options.script.displayName")
+	
+	override fun getCodeSample(settingsType: SettingsType) = PlsConstants.paradoxScriptCodeStyleSettingsDemoText
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxScriptCodeStyleSettings(settings)
-
+	
 	//需要重载这个方法以显示indentOptions设置页面
 	override fun getIndentOptionsEditor() = IndentOptionsEditor(this)
-
+	
 	override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
 		indentOptions.INDENT_SIZE = 4
 		indentOptions.CONTINUATION_INDENT_SIZE = 4
@@ -26,7 +28,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 		commonSettings.LINE_COMMENT_AT_FIRST_COLUMN = false
 		commonSettings.LINE_COMMENT_ADD_SPACE = false
 	}
-
+	
 	override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
 		when(settingsType) {
 			SettingsType.INDENT_SETTINGS -> customizeIndentSettings(consumer)

@@ -9,7 +9,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.highlighter.*
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
-	companion object{
+	companion object {
 		private val attributesDescriptors = arrayOf(
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.operator"), ParadoxLocalisationAttributesKeys.OPERATOR_KEY),
 			AttributesDescriptor(PlsBundle.message("localisation.displayName.marker"), ParadoxLocalisationAttributesKeys.MARKER_KEY),
@@ -34,7 +34,8 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 		)
 	}
 	
-	override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
+	override fun getHighlighter() =
+		SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
 	
 	override fun getAdditionalHighlightingTagToDescriptorMap() = null
 	
@@ -44,7 +45,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 	
 	override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
 	
-	override fun getDisplayName() = paradoxLocalisationName
+	override fun getDisplayName() = PlsBundle.message("options.localisation.displayName")
 	
-	override fun getDemoText() = paradoxLocalisationColorSettingsDemoText
+	override fun getDemoText() = PlsConstants.paradoxLocalisationColorSettingsDemoText
 }

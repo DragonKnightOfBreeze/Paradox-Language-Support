@@ -30,7 +30,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	}
 	
 	override fun beforeCompletion(context: CompletionInitializationContext) {
-		context.dummyIdentifier = dummyIdentifier
+		context.dummyIdentifier = PlsConstants.dummyIdentifier
 	}
 	
 	@Suppress("RedundantOverride")

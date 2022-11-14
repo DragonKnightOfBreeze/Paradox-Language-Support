@@ -23,10 +23,10 @@ enum class ParadoxFileType(
 			val fileName = file.name
 			val fileExtension = file.extension?.lowercase() ?: return Other
 			return when {
-				fileName == descriptorFileName -> ParadoxScript
-				path.canBeScriptFilePath() && fileExtension in scriptFileExtensions && !isIgnored(fileName) && isInFolders(gameType, path) -> ParadoxScript
-				path.canBeLocalisationFilePath() && fileExtension in localisationFileExtensions && !isIgnored(fileName) -> ParadoxLocalisation
-				fileExtension in ddsFileExtensions -> Dds
+				fileName == PlsConstants.descriptorFileName -> ParadoxScript
+				path.canBeScriptFilePath() && fileExtension in PlsConstants.scriptFileExtensions && !isIgnored(fileName) && isInFolders(gameType, path) -> ParadoxScript
+				path.canBeLocalisationFilePath() && fileExtension in PlsConstants.localisationFileExtensions && !isIgnored(fileName) -> ParadoxLocalisation
+				fileExtension in PlsConstants.ddsFileExtensions -> Dds
 				else -> Other
 			}
 		}

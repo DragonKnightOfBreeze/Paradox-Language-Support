@@ -2,12 +2,15 @@ package icu.windea.pls.localisation.codeStyle
 
 import com.intellij.application.options.*
 import com.intellij.psi.codeStyle.*
-import icu.windea.pls.core.*
+import icu.windea.pls.*
+import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
-	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
+	override fun getLanguage() = ParadoxLocalisationLanguage
 	
-	override fun getConfigurableDisplayName() = paradoxLocalisationName
+	override fun getConfigurableDisplayName() = PlsBundle.message("options.localisation.displayName")
+	
+	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
 	
 	override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
 		return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {

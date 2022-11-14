@@ -9,7 +9,9 @@ import icu.windea.pls.cwt.*
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 	override fun getLanguage() = CwtLanguage
 	
-	override fun getCodeSample(settingsType: SettingsType) = cwtCodeStyleSettingsDemoText
+	override fun getConfigurableDisplayName() = PlsBundle.message("options.cwt.displayName")
+	
+	override fun getCodeSample(settingsType: SettingsType) = PlsConstants.cwtCodeStyleSettingsDemoText
 	
 	override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
 	

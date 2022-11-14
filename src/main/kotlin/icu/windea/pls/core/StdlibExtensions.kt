@@ -498,7 +498,7 @@ fun String.toFileUrl() = File(this).toURI().toURL()
 /**
  * 得到当前相对于classpath的绝对路径对应的URL。
  */
-fun String.toClasspathUrl() = locationClass.getResource(this)!!
+fun String.toClasspathUrl() = PlsConstants.locationClass.getResource(this)!!
 
 fun String.toIntRangeOrNull(): IntRange? = runCatching { split("..", limit = 2).let { (a, b) -> a.toInt()..b.toInt() } }.getOrNull()
 

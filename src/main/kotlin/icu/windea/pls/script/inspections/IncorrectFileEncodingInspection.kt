@@ -28,7 +28,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		if(file !is ParadoxLocalisationFile) return null //不期望的结果
 		val virtualFile = file.virtualFile ?: return null
 		val charset = virtualFile.charset
-		val hasBom = virtualFile.hasBom(utf8Bom)
+		val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
 		val fileInfo = virtualFile.fileInfo ?: return null //无法获取文件信息时跳过检查
 		val isNameList = fileInfo.path.parent.startsWith("common/name_lists")
 		val isValid = charset == Charsets.UTF_8 && (if(isNameList) hasBom else !hasBom)
@@ -54,16 +54,16 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
 			val virtualFile = file.virtualFile
 			val isUtf8 = virtualFile.charset == Charsets.UTF_8
-			val hasBom = virtualFile.hasBom(utf8Bom)
+			val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
 			if(isNameList && !hasBom) {
 				try {
-					virtualFile.addBom(utf8Bom)
+					virtualFile.addBom(PlsConstants.utf8Bom)
 				} catch(e: Exception) {
 					thisLogger().warn("Unexpected exception occurred on attempt to add BOM from file $this", e)
 				}
 			} else if(!isNameList && hasBom) {
 				try {
-					virtualFile.removeBom(utf8Bom)
+					virtualFile.removeBom(PlsConstants.utf8Bom)
 				} catch(e: Exception) {
 					thisLogger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", e)
 				}

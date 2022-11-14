@@ -27,7 +27,7 @@ class ParadoxScriptFileTreeElement(
 	override fun getPresentableText(): String? {
 		val element = element ?: return null
 		//如果文件名是descriptor.mod（不区分大小写），则直接显示该文件名
-		if(element.name.equals(descriptorFileName, true)) return element.name
+		if(element.name.equals(PlsConstants.descriptorFileName, true)) return element.name
 		//如果是定义，则优先显示定义的名字
 		val definitionInfo = element.definitionInfo
 		if(definitionInfo != null) return definitionInfo.name
@@ -37,7 +37,7 @@ class ParadoxScriptFileTreeElement(
 	override fun getLocationString(): String? {
 		val element = element ?: return null
 		//如果文件名是descriptor.mod（不区分大小写），则忽略
-		if(element.name.equals(descriptorFileName, true)) return null
+		if(element.name.equals(PlsConstants.descriptorFileName, true)) return null
 		//如果是定义，则显示定义的类型信息
 		val definitionInfo = element.definitionInfo ?: return null
 		val builder = StringBuilder()

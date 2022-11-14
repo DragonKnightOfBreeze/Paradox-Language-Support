@@ -107,21 +107,21 @@ private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean)
 		rootName == ParadoxRootType.PdxLauncher.id -> {
 			rootType = ParadoxRootType.PdxLauncher
 			descriptorFile = rootFile.parent?.children?.find {
-				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(launcherSettingsFileName, true)
+				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(PlsConstants.launcherSettingsFileName, true)
 			}
 			markerFile = descriptorFile
 		}
 		rootName == ParadoxRootType.PdxOnlineAssets.id -> {
 			rootType = ParadoxRootType.PdxOnlineAssets
 			descriptorFile = rootFile.parent?.children?.find {
-				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(launcherSettingsFileName, true)
+				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(PlsConstants.launcherSettingsFileName, true)
 			}
 			markerFile = descriptorFile
 		}
 		rootName == ParadoxRootType.TweakerGuiAssets.id -> {
 			rootType = ParadoxRootType.TweakerGuiAssets
 			descriptorFile = rootFile.parent?.children?.find {
-				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(launcherSettingsFileName, true)
+				!it.isDirectory && (canBeNotAvailable || it.isValid) && it.name.equals(PlsConstants.launcherSettingsFileName, true)
 			}
 			markerFile = descriptorFile
 		}
@@ -131,13 +131,13 @@ private fun doResolveRootInfo(rootFile: VirtualFile, canBeNotAvailable: Boolean)
 				if(!canBeNotAvailable && !rootChild.isValid) continue
 				val rootChildName = rootChild.name
 				when {
-					rootChildName.equals(launcherSettingsFileName, true) -> {
+					rootChildName.equals(PlsConstants.launcherSettingsFileName, true) -> {
 						rootType = ParadoxRootType.Game
 						descriptorFile = rootChild
 						markerFile = rootChild
 						break
 					}
-					rootChildName.equals(descriptorFileName, true) -> {
+					rootChildName.equals(PlsConstants.descriptorFileName, true) -> {
 						rootType = ParadoxRootType.Mod
 						descriptorFile = rootChild
 						if(descriptorFile != null && markerFile != null) break

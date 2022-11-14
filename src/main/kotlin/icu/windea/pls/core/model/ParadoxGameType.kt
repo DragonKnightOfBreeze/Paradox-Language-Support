@@ -36,7 +36,7 @@ enum class ParadoxGameType(
 				if(markerFile.isDirectory) return null //非目录
 				val markerFileName = markerFile.name
 				return when {
-					markerFileName == launcherSettingsFileName -> {
+					markerFileName == PlsConstants.launcherSettingsFileName -> {
 						val gameId = jsonMapper.readTree(markerFile.inputStream).get("gameId").textValue()
 						resolve(gameId)
 					}

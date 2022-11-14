@@ -2,21 +2,16 @@ package icu.windea.pls.dds
 
 import com.intellij.openapi.fileTypes.*
 import icons.*
-import icu.windea.pls.core.*
-import javax.swing.*
+import icu.windea.pls.*
 
 //org.intellij.images.fileTypes.impl.ImageFileType
 
 object DdsFileType : UserBinaryFileType() {
-	override fun getName(): String {
-		return ddsName
-	}
+	override fun getName() = "DDS"
 	
-	override fun getDescription(): String {
-		return ddsDescription
-	}
+	override fun getDescription() = PlsBundle.message("filetype.dds.description")
 	
-	override fun getIcon(): Icon {
-		return PlsIcons.DdsFile
-	}
+	override fun getDisplayName() = PlsBundle.message("filetype.dds.displayName")
+	
+	override fun getIcon() = PlsIcons.DdsFile
 }

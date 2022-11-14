@@ -74,7 +74,7 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 				val rootInfo = resolveRootInfo(rootFile) ?: return
 				if(file == rootInfo.descriptorFile) {
 					file.putUserData(PlsKeys.descriptorInfoKey, null) //清空描述符信息缓存
-				} else if(file == rootInfo.markerFile && file.name == launcherSettingsFileName) {
+				} else if(file == rootInfo.markerFile && file.name == PlsConstants.launcherSettingsFileName) {
 					reparseFilesInRoot(rootFile) //这种情况下也需要重新解析
 				}
 			}
@@ -99,8 +99,8 @@ class DescriptorOrMarkerFileListener : AsyncFileListener {
 	
 	private fun isPossibleDescriptorOrMarkerFile(fileName: String): Boolean {
 		return when {
-			fileName.equals(descriptorFileName, true) -> true
-			fileName.equals(launcherSettingsFileName, true) -> true
+			fileName.equals(PlsConstants.descriptorFileName, true) -> true
+			fileName.equals(PlsConstants.launcherSettingsFileName, true) -> true
 			fileName.startsWith('.') -> ParadoxGameType.resolve(fileName.drop(1)) != null
 			else -> false
 		}

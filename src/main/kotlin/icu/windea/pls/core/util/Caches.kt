@@ -6,17 +6,17 @@ import com.google.common.cache.*
 import com.google.common.util.concurrent.*
 import java.util.concurrent.*
 
-fun <K, V> CacheBuilder<K, V>.withDebugMode(): CacheBuilder<K, V> {
-	if(PlsConstants.debugMode) return maximumSize(0)
+inline fun <K, V> CacheBuilder<K, V>.configure(): CacheBuilder<K, V> {
+	//return maximumSize(0)
 	return this
 }
 
 inline fun <K, V> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
-	return withDebugMode().build()
+	return configure().build()
 }
 
 inline fun <K, V> CacheBuilder<in K, in V>.buildCache(crossinline loader: (K) -> V): LoadingCache<K, V> {
-	return withDebugMode().build(object : CacheLoader<K, V>() {
+	return configure().build(object : CacheLoader<K, V>() {
 		override fun load(key: K): V {
 			return loader(key)
 		}
@@ -43,11 +43,11 @@ inline fun <K : Any, V> Cache<K, V>.getOrPut(key: K, defaultValueOnException: (T
 	}
 }
 
-operator fun <K : Any, V> Cache<K, V>.get(key: K): V? {
+inline operator fun <K : Any, V> Cache<K, V>.get(key: K): V? {
 	return getIfPresent(key)
 }
 
-operator fun <K : Any, V> Cache<K, V>.set(key: K, value: V) {
+inline operator fun <K : Any, V> Cache<K, V>.set(key: K, value: V) {
 	put(key, value)
 }
 

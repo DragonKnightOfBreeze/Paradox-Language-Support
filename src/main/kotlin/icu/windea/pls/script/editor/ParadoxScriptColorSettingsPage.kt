@@ -83,7 +83,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 	
 	override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
 	
-	override fun getDisplayName() = paradoxScriptName
+	override fun getDisplayName() = PlsBundle.message("options.script.displayName")
 	
-	override fun getDemoText() = paradoxScriptColorSettingsDemoText
+	override fun getDemoText() = PlsConstants.paradoxScriptColorSettingsDemoText
 }
