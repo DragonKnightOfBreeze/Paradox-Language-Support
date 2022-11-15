@@ -1,11 +1,11 @@
 package icu.windea.pls.script.codeInsight.navigation
 
-import cn.yiiguxing.plugin.translate.action.*
 import com.intellij.codeInsight.*
 import com.intellij.codeInsight.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.actions.*
 import icu.windea.pls.script.psi.*
 
 /**

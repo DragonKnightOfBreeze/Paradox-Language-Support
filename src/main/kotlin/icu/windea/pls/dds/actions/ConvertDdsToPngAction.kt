@@ -29,6 +29,10 @@ import java.util.function.Consumer
  * 将DDS图片转化为PNG图片。保存到指定的路径。可以批量转化。
  */
 class ConvertDdsToPngAction : DumbAwareAction() {
+	override fun getActionUpdateThread(): ActionUpdateThread {
+		return ActionUpdateThread.BGT
+	}
+	
 	override fun update(e: AnActionEvent) {
 		val project = e.project
 		val editor = e.getData(CommonDataKeys.EDITOR)

@@ -3,7 +3,6 @@ package icu.windea.pls.core.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.config.cwt.*
 
 object PlsCompletionKeys {
@@ -21,17 +20,3 @@ object PlsCompletionKeys {
 	val isIntKey = Key.create<Boolean>("paradoxCompletion.isInt")
 	val valueSetName = Key.create<String>("paradoxCompletion.valueSetName")
 }
-
-val ProcessingContext.completionType get() = get(PlsCompletionKeys.completionTypeKey)
-val ProcessingContext.contextElement get() = get(PlsCompletionKeys.contextElementKey)
-val ProcessingContext.quoted get() = get(PlsCompletionKeys.quotedKey)
-val ProcessingContext.offsetInParent get() = get(PlsCompletionKeys.offsetInParentKey)
-val ProcessingContext.keyword get() = get(PlsCompletionKeys.keywordKey)
-val ProcessingContext.isKey get() = get(PlsCompletionKeys.isKeyKey)
-val ProcessingContext.configGroup get() = get(PlsCompletionKeys.configGroupKey)
-val ProcessingContext.prevScope get() = get(PlsCompletionKeys.prevScopeKey)
-val ProcessingContext.isExpectedScopeMatched get() = get(PlsCompletionKeys.isExpectedScopeMatchedKey) ?: true
-val ProcessingContext.scopeName get() = get(PlsCompletionKeys.scopeNameKey)
-val ProcessingContext.scopeGroupName get() = get(PlsCompletionKeys.scopeGroupNameKey)
-val ProcessingContext.isInt get() = get(PlsCompletionKeys.isIntKey) ?: false
-val ProcessingContext.valueSetName get() = get(PlsCompletionKeys.valueSetName)

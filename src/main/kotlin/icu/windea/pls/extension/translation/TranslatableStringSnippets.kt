@@ -10,5 +10,5 @@ class TranslatableStringSnippets(
 
 data class TranslatableStringSnippet(
 	var text: String,
-	val shouldTranslate: Boolean = false
+	val shouldTranslate: Boolean
 )

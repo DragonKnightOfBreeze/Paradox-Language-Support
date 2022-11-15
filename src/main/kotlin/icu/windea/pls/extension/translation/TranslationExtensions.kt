@@ -33,15 +33,14 @@ fun ParadoxLocalisationProperty.toTranslatableStringSnippets(): TranslatableStri
 	try {
 		val propertyValue = this.propertyValue ?: return null
 		val start = textRange.startOffset
-		val end = textRange.endOffset
 		val quoteStart = propertyValue.textRange.startOffset // _"
 		val quoteEnd = propertyValue.textRange.endOffset // "_
 		if(quoteEnd - quoteStart < 2) return null
 		val snippets = mutableListOf<TranslatableStringSnippet>()
 		val text = text
-		snippets.add(TranslatableStringSnippet(text.substring(0, quoteStart + 1 - start)))
+		snippets.add(TranslatableStringSnippet(text.substring(0, quoteStart + 1 - start), false))
 		snippets.add(TranslatableStringSnippet(text.substring(quoteStart + 1 - start, quoteEnd - 1 - start), true))
-		snippets.add(TranslatableStringSnippet(text.substring(quoteEnd - 1 - start)))
+		snippets.add(TranslatableStringSnippet(text.substring(quoteEnd - 1 - start), false))
 		return TranslatableStringSnippets(snippets)
 	} catch(e: Exception) {
 		return null

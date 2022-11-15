@@ -6,6 +6,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.definition.config.*
+import icu.windea.pls.core.actions.*
 
 //org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction
 //org.intellij.plugins.markdown.ui.actions.styling.BaseToggleStateAction
@@ -16,14 +17,18 @@ class SetColorAction(
 ) : ToggleAction(colorConfig.text, null, colorConfig.icon) {
 	private val setColorActionBaseName = PlsBundle.message("action.ParadoxLocalisation.Styling.SetColor.text")
 	
+	override fun getActionUpdateThread(): ActionUpdateThread {
+		return ActionUpdateThread.BGT
+	}
+	
 	override fun update(event: AnActionEvent) {
-		val editor = event.dataContext.getData(CommonDataKeys.EDITOR) ?: return
+		val editor = event.editor ?: return
 		event.presentation.isEnabled = editor.document.isWritable
 		super.update(event)
 	}
 	
 	override fun isSelected(event: AnActionEvent): Boolean {
-		val editor = event.dataContext.getData(CommonDataKeys.EDITOR) ?: return false
+		val editor = event.editor ?: return false
 		val allCarets = editor.caretModel.allCarets
 		val caret = allCarets.singleOrNull() ?: return false
 		val selectionStart = caret.selectionStart
@@ -33,7 +38,7 @@ class SetColorAction(
 	}
 	
 	override fun setSelected(event: AnActionEvent, state: Boolean) {
-		val editor = event.dataContext.getData(CommonDataKeys.EDITOR) ?: return
+		val editor = event.editor ?: return
 		val project = event.project ?: return
 		val allCarets = editor.caretModel.allCarets
 		val caret = allCarets.singleOrNull() ?: return

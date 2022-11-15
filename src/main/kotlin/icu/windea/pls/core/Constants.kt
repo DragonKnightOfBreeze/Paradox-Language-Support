@@ -1,8 +1,6 @@
 package icu.windea.pls.core
 
-import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.util.*
@@ -100,11 +98,3 @@ object PlsKeys {
 	
 	val cwtConfigKey = Key.create<CwtDataConfig<*>>("paradox.cwtConfig")
 }
-
-object PlsDataKeys {
-	val gameTypePropertyKey = DataKey.create<GraphProperty<ParadoxGameType>>("PARADOX_GAME_TYPE_PROPERTY")
-	val rootTypePropertyKey = DataKey.create<GraphProperty<ParadoxRootType>>("PARADOX_ROOT_TYPE_PROPERTY")
-}
-
-val AnActionEvent.gameTypeProperty get() = getData(PlsDataKeys.gameTypePropertyKey)
-val AnActionEvent.rootTypeProperty get() = getData(PlsDataKeys.rootTypePropertyKey)

@@ -155,6 +155,10 @@ class DdsEditorUI(
 		}
 	}
 	
+	override fun getActionUpdateThread(): ActionUpdateThread {
+		return ActionUpdateThread.BGT
+	}
+	
 	@Suppress("unused")
 	fun getContentComponent(): JComponent {
 		return contentPanel

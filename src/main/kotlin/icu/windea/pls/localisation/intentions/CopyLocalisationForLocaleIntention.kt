@@ -23,7 +23,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
-//https://github.com/YiiGuxing/TranslationPlugin/blob/master/src/main/kotlin/cn/yiiguxing/plugin/translate/action/TranslateAndReplaceAction.kt
+//cn.yiiguxing.plugin.translate.action.TranslateAndReplaceAction
 
 /**
  * 复制本地化到剪贴板并在这之前尝试将本地化文本翻译到指定的语言区域的意向。（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）

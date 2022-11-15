@@ -23,6 +23,10 @@ import java.io.*
 //org.intellij.images.actions.EditExternallyAction
 
 internal class EditExternallyAction : DumbAwareAction() {
+	override fun getActionUpdateThread(): ActionUpdateThread {
+		return ActionUpdateThread.BGT
+	}
+	
 	override fun actionPerformed(e: AnActionEvent) {
 		val imageFile = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE)
 		var executablePath = PropertiesComponent.getInstance().getValue(EditExternalImageEditorAction.EXT_PATH_KEY, "")
