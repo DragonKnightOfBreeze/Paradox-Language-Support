@@ -35,7 +35,7 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		if(scriptedLocs.isEmpty()) return
 		for(scriptedLoc in scriptedLocs) {
 			val name = scriptedLoc.definitionInfo?.name.orEmpty() //不应该为空
-			val icon = PlsIcons.LocalisationCommandField
+			val icon = PlsIcons.Definition
 			val tailText = " from <scripted_loc>"
 			val typeFile = scriptedLoc.containingFile
 			val lookupElement = LookupElementBuilder.create(scriptedLoc, name).withIcon(icon)
