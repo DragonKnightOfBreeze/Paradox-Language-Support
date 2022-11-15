@@ -3,13 +3,16 @@ package icu.windea.pls.localisation.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandField
+import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandScope
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.localisation.psi.*
 
 /**
  * 提供命令字段名字的代码补全。
@@ -27,6 +30,14 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		context.put(PlsCompletionKeys.offsetInParentKey, offsetInParent)
 		context.put(PlsCompletionKeys.keywordKey, keyword)
 		
+		val prevScope = parameters.position.parent?.siblings(forward = false, withSelf = false)
+			?.find { it is ParadoxLocalisationCommandScope }
+			?.text
+		if(prevScope != null) context.put(PlsCompletionKeys.prevScopeKey, prevScope)
+		
+		//提示scope
+		context.completeLocalisationCommandScope(configGroup, result)
+		
 		//提示command
 		context.completeLocalisationCommandField(configGroup, result)
 		
@@ -42,6 +53,38 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 			val lookupElement = LookupElementBuilder.create(scriptedLoc, name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile.name, typeFile.icon, true)
+				.withCaseSensitivity(false) //忽略大小写
+			result.addElement(lookupElement)
+			true
+		}
+		
+		//提示value[event_target]
+		ProgressManager.checkCanceled()
+		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
+		eventTargetQuery.processResult { eventTarget ->
+			val value = eventTarget.value.substringBefore('@')
+			val icon = PlsIcons.ValueSetValue
+			val tailText = " from value[event_target]"
+			val lookupElement = LookupElementBuilder.create(eventTarget, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
+				.withCaseSensitivity(false) //忽略大小写
+			result.addElement(lookupElement)
+			true
+		}
+		
+		//提示value[global_event_target]
+		ProgressManager.checkCanceled()
+		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
+		globalEventTargetQuery.processResult { globalEventTarget ->
+			val value = globalEventTarget.value.substringBefore('@')
+			val icon = PlsIcons.ValueSetValue
+			val tailText = " from value[global_event_target]"
+			val lookupElement = LookupElementBuilder.create(globalEventTarget, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
 				.withCaseSensitivity(false) //忽略大小写
 			result.addElement(lookupElement)
 			true

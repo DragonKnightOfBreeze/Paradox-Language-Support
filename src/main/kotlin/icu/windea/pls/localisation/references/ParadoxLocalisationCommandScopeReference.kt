@@ -12,6 +12,7 @@ import icu.windea.pls.core.selector.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.psi.*
 
 /**
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationCommandScopeCompletionProvider
@@ -21,12 +22,13 @@ class ParadoxLocalisationCommandScopeReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), PsiAnnotatedReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//尝试重命名关联的valueSetValue等
+		//尝试重命名关联的valueSetValue
 		val resolved = resolve()
 		when {
 			resolved == null -> pass()
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
 			resolved is PsiNamedElement -> resolved.setName(newElementName)
+			resolved is ParadoxScriptExpressionElement -> resolved.value = newElementName
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
 		//重命名当前元素

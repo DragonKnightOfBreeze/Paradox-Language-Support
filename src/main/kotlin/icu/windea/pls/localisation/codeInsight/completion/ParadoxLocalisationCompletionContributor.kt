@@ -27,10 +27,10 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		extend(null, colorPattern, ParadoxLocalisationColorCompletionProvider())
 		
 		//当用户正在输入一个commandScope的名字时提示
-		val commandScopePattern = psiElement(COMMAND_SCOPE_ID) or psiElement(COMMAND_FIELD_ID)
+		val commandScopePattern = psiElement(COMMAND_SCOPE_ID)
 		extend(null, commandScopePattern, ParadoxLocalisationCommandScopeCompletionProvider())
 		
-		//当用户正在输入一个commandField的名字时提示
+		//当用户正在输入一个commandScope或者commandField的名字时提示
 		val commandFieldPattern = psiElement(COMMAND_FIELD_ID)
 		extend(null, commandFieldPattern, ParadoxLocalisationCommandFieldCompletionProvider())
 	}

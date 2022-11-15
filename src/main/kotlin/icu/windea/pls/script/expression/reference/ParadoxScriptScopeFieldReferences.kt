@@ -38,7 +38,7 @@ class ParadoxScriptScopeFieldDataSourceReference(
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
 			resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
 			resolved is PsiNamedElement -> resolved.setName(newElementName)
-			resolved is ParadoxScriptExpressionElement -> resolved.setValue(newElementName)
+			resolved is ParadoxScriptExpressionElement -> resolved.value = newElementName
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
 		//重命名当前元素（仅修改对应范围的文本，认为整个文本没有用引号括起）

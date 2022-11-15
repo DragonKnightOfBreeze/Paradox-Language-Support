@@ -27,6 +27,7 @@ class ParadoxScriptExpressionReference(
 			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
 			resolved is PsiFile -> resolved.setNameWithoutExtension(newElementName)
 			resolved is PsiNamedElement -> resolved.setName(newElementName)
+			resolved is ParadoxScriptExpressionElement -> resolved.value = newElementName
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
 		//重命名当前元素
