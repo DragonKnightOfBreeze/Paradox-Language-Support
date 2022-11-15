@@ -1,13 +1,34 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
+import icu.windea.pls.config.definition.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.selector.*
 
 /**
  * 提供颜色ID的代码补全。
  */
-class ParadoxLocalisationColorCompletionProvider: CompletionProvider<CompletionParameters>(){
+class ParadoxLocalisationColorCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		TODO("Not yet implemented")
+		val position = parameters.position
+		val file = parameters.originalFile
+		val project = file.project
+		val gameType = ParadoxSelectorUtils.selectGameType(file) ?: return
+		val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project, file)
+		val lookupElements = mutableListOf<LookupElement>()
+		for(colorConfig in colorConfigs) {
+			val element = colorConfig.pointer.element ?: continue
+			val name = colorConfig.name
+			val icon = colorConfig.icon
+			val tailText = " from <textcolor>"
+			val typeFile = colorConfig.pointer.containingFile
+			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+				.withTailText(tailText, true)
+				.withTypeText(typeFile?.name, typeFile?.icon, true)
+			lookupElements.add(lookupElement)
+		}
+		result.addAllElements(lookupElements)
 	}
 }

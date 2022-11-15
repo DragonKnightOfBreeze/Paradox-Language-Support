@@ -1,4 +1,4 @@
-package icu.windea.pls.script.reference
+package icu.windea.pls.script.references
 
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
@@ -64,8 +64,9 @@ class ParadoxScriptedVariableReferenceReference(
 		return result.mapToArray {
 			val name = it.name
 			val icon = it.icon
-			val typeText = it.containingFile.name
-			LookupElementBuilder.create(it, name).withIcon(icon).withTypeText(typeText, true)
+			val typeFile = it.containingFile
+			LookupElementBuilder.create(it, name).withIcon(icon)
+				.withTypeText(typeFile.name, typeFile.icon, true)
 		}
 	}
 }

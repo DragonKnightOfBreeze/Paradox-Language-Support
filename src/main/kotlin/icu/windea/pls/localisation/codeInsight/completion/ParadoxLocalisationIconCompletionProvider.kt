@@ -68,19 +68,18 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
 					val icon = PlsIcons.LocalisationIcon //使用特定图标
 					val definitionInfo = element.definitionInfo //不应该为null
 					val tailText = if(definitionInfo != null) " from ${definitionInfo.type} definition ${definitionInfo.name}" else ""
-					val typeText = element.containingFile.name
+					val typeFile = element.containingFile
 					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
+						.withTypeText(typeFile.name, typeFile.icon, true)
 					result.addElement(lookupElement)
 				}
 				is PsiFile -> {
 					val icon = PlsIcons.LocalisationIcon //使用特定图标
 					val tailText = " from dds file ${element.name}"
-					val typeText = element.name
 					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 						.withTailText(tailText, true)
-						.withTypeText(typeText, true)
+						.withTypeText(element.name, element.icon, true)
 					result.addElement(lookupElement)
 				}
 				else -> pass()

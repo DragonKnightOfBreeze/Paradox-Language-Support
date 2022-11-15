@@ -1,11 +1,15 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icons.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandScope
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.core.search.*
+import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -31,5 +35,37 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		
 		//提示scope
 		context.completeLocalisationCommandScope(configGroup, result)
+		
+		//提示value[event_target]
+		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
+		eventTargetQuery.processResult { eventTarget ->
+			val value = eventTarget.value.substringBefore('@')
+			val icon = PlsIcons.ValueSetValue
+			val tailText = " from value[event_target]"
+			val lookupElement = LookupElementBuilder.create(eventTarget, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsCompletionPriorities.valueSetValuePriority)
+			result.addElement(lookupElement)
+			true
+		}
+		
+		//提示value[global_event_target]
+		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
+		globalEventTargetQuery.processResult { globalEventTarget ->
+			val value = globalEventTarget.value.substringBefore('@')
+			val icon = PlsIcons.ValueSetValue
+			val tailText = " from value[global_event_target]"
+			val lookupElement = LookupElementBuilder.create(globalEventTarget, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsCompletionPriorities.valueSetValuePriority)
+			result.addElement(lookupElement)
+			true
+		}
 	}
 }

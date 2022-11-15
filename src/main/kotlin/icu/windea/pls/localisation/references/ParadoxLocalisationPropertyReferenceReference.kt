@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.reference
+package icu.windea.pls.localisation.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -10,6 +10,9 @@ import icu.windea.pls.core.model.ParadoxLocalisationCategory.*
 import icu.windea.pls.core.selector.*
 import icu.windea.pls.localisation.psi.*
 
+/**
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationPropertyReferenceCompletionProvider
+ */
 class ParadoxLocalisationPropertyReferenceReference(
 	element: ParadoxLocalisationPropertyReference,
 	rangeInElement: TextRange
@@ -50,19 +53,11 @@ class ParadoxLocalisationPropertyReferenceReference(
 		InternalConfigHandler.getPredefinedVariable(name)?.pointer?.element?.let { return arrayOf(PsiElementResolveResult(it)) }
 		
 		//解析成localisation或者synced_localisation
-		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file) //不指定偏好的语言区域
+		val selector = localisationSelector().gameTypeFrom(file).preferRootFrom(file).preferLocale(locale)
 		return when(category) {
 			Localisation -> findLocalisations(name, project, selector = selector) //仅查找对应语言区域的
 			SyncedLocalisation -> findSyncedLocalisations(name, project, selector = selector) //仅查找对应语言区域的
 		}.mapToArray { PsiElementResolveResult(it) }
-	}
-	
-	/**
-	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationPropertyReferenceCompletionProvider
-	 */
-	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<out Any> {
-		return super.getVariants() //not here
 	}
 }
 

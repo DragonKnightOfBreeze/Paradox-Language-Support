@@ -13,7 +13,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.reference.*
+import icu.windea.pls.localisation.references.*
 import javax.swing.*
 
 //getName 确定进行重构和导航时显示的PsiElement的名字
@@ -221,7 +221,7 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getPrevIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandIdentifier? {
 		var separator = element.prevSibling ?: return null
 		if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.prevSibling ?: return null
-		if(separator.elementType != PIPE) return null
+		if(separator.elementType != DOT) return null
 		var prev = separator.prevSibling ?: return null
 		if(prev.elementType == TokenType.WHITE_SPACE) prev = prev.prevSibling ?: return null
 		if(prev !is ParadoxLocalisationCommandIdentifier) return null
@@ -232,7 +232,7 @@ object ParadoxLocalisationPsiImplUtil {
 	fun getNextIdentifier(element: ParadoxLocalisationCommandIdentifier): ParadoxLocalisationCommandIdentifier? {
 		var separator = element.nextSibling ?: return null
 		if(separator.elementType == TokenType.WHITE_SPACE) separator = separator.nextSibling ?: return null
-		if(separator.elementType != PIPE) return null
+		if(separator.elementType != DOT) return null
 		var next = separator.nextSibling ?: return null
 		if(next.elementType == TokenType.WHITE_SPACE) next = next.nextSibling ?: return null
 		if(next !is ParadoxLocalisationCommandIdentifier) return null

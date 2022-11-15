@@ -7,9 +7,9 @@ import com.intellij.xml.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.model.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.reference.*
+import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.reference.*
+import icu.windea.pls.script.references.*
 
 //用于兼容markdown锚点
 

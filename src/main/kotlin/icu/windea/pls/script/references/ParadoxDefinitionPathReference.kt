@@ -1,4 +1,4 @@
-package icu.windea.pls.script.reference
+package icu.windea.pls.script.references
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.util.*

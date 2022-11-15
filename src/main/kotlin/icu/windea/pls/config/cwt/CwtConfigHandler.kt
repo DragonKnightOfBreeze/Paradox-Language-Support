@@ -594,6 +594,7 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(file.name, file.icon, true)
 						.withExpectedInsertHandler(isKey)
+						.withPriority(PlsCompletionPriorities.pathPriority)
 					result.addElement(lookupElement)
 				}
 			}
@@ -616,6 +617,7 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(file.name, file.icon, true)
 						.withExpectedInsertHandler(isKey)
+						.withPriority(PlsCompletionPriorities.pathPriority)
 					result.addElement(lookupElement)
 				}
 			}
@@ -633,6 +635,7 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
+						.withPriority(PlsCompletionPriorities.definitionPriority)
 					result.addElement(lookupElement)
 					true
 				}
@@ -653,6 +656,7 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
+						.withPriority(PlsCompletionPriorities.definitionPriority)
 					result.addElement(lookupElement)
 					true
 				}
@@ -687,6 +691,7 @@ object CwtConfigHandler {
 							.withTypeText(typeFile?.name, typeFile?.icon, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写
+							.withPriority(PlsCompletionPriorities.enumPriority)
 						result.addElement(lookupElement)
 					}
 				}
@@ -708,6 +713,7 @@ object CwtConfigHandler {
 							.withTypeText(typeFile?.name, typeFile?.icon, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写
+							.withPriority(PlsCompletionPriorities.complexEnumPriority)
 						result.addElement(lookupElement)
 						true
 					}
@@ -740,6 +746,7 @@ object CwtConfigHandler {
 								.withTypeText(typeFile?.name, typeFile?.icon, true)
 								.withExpectedInsertHandler(isKey)
 								.withCaseSensitivity(false) //忽略大小写
+								.withPriority(PlsCompletionPriorities.predefinedValueSetValuePriority)
 							result.addElement(lookupElement)
 						}
 					}
@@ -758,12 +765,17 @@ object CwtConfigHandler {
 							"variable" -> PlsIcons.Variable
 							else -> PlsIcons.ValueSetValue
 						}
+						val priority = when(valueSetName) {
+							"variable" -> PlsCompletionPriorities.variablePriority
+							else -> PlsCompletionPriorities.valueSetValuePriority
+						}
 						//不显示typeText
 						val lookupElement = LookupElementBuilder.create(valueSetValue, value)
 							.withExpectedIcon(icon)
 							.withTailText(tailText, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写
+							.withPriority(priority)
 						result.addElement(lookupElement)
 						true
 					}
@@ -820,7 +832,7 @@ object CwtConfigHandler {
 					.withTypeText(typeFile?.name, typeFile?.icon, true)
 					.withExpectedInsertHandler(isKey)
 					.withCaseSensitivity(false) //忽略大小写
-					.withPriority(if(isKey) PlsCompletionPriorities.propertyPriority else PlsCompletionPriorities.valuePriority)
+					.withPriority(PlsCompletionPriorities.constantPriority)
 				result.addElement(lookupElement)
 			}
 			else -> pass()
@@ -1109,7 +1121,7 @@ object CwtConfigHandler {
 			val typeFile = linkConfig.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
 				.withExpectedIcon(PlsIcons.LocalisationCommandScope)
-				.withTailText(tailText)
+				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsCompletionPriorities.scopePriority)
@@ -1132,7 +1144,7 @@ object CwtConfigHandler {
 			val typeFile = config.pointer.containingFile
 			val lookupElement = LookupElementBuilder.create(element, name)
 				.withExpectedIcon(PlsIcons.LocalisationCommandField)
-				.withTailText(tailText)
+				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
 				.withPriority(PlsCompletionPriorities.localisationCommandPriority)
@@ -1154,10 +1166,8 @@ object CwtConfigHandler {
 			if(parameters.size == 1 && element isSamePosition parameter) continue
 			//如果要提示的是$PARAM$中的PARAM，需要忽略与之相同参数名
 			if(read && parameterName == keyword) continue
-			val tailText = " from parameters"
 			val lookupElement = LookupElementBuilder.create(parameter, parameterName)
 				.withExpectedIcon(PlsIcons.Parameter)
-				.withTailText(tailText)
 				.withTypeText(definitionInfo.name, definition.icon, true)
 			lookupElements.add(lookupElement)
 		}
@@ -1181,10 +1191,8 @@ object CwtConfigHandler {
 		for((parameterName, parameters) in parameterMap) {
 			if(parameterName in existParameterNames) continue //排除已输入的
 			val parameter = parameters.firstOrNull() ?: continue
-			val tailText = " from parameters"
 			val lookupElement = LookupElementBuilder.create(parameter, parameterName)
 				.withExpectedIcon(PlsIcons.Parameter)
-				.withTailText(tailText)
 				.withTypeText(definitionName, definition.icon, true)
 				.withExpectedInsertHandler(isKey)
 			lookupElements.add(lookupElement)
@@ -1206,10 +1214,8 @@ object CwtConfigHandler {
 			for((parameterName, parameters) in parameterMap) {
 				if(parameterName in existParameterNames) continue //排除已输入的
 				val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
-				val tailText = " from parameters"
 				val lookupElement = LookupElementBuilder.create(parameter, parameterName)
 					.withExpectedIcon(PlsIcons.Parameter)
-					.withTailText(tailText)
 					.withTypeText(svName, sv.icon, true)
 					.withExpectedInsertHandler(false)
 				lookupElements.add(lookupElement)
@@ -1582,10 +1588,12 @@ object CwtConfigHandler {
 		return null
 	}
 	
+	fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
+		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project) ?: return null
+		return systemScope.pointer.element
+	}
+	
 	fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project)
-		if(systemScope != null) return systemScope.pointer.element
-		
 		val links = configGroup.linksAsScopeNotData
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null
@@ -1620,9 +1628,6 @@ object CwtConfigHandler {
 	}
 	
 	fun resolveLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-		val systemScope = InternalConfigHandler.getSystemScope(name, configGroup.project)
-		if(systemScope != null) return systemScope.pointer.element
-		
 		val links = configGroup.localisationLinks
 		if(links.isEmpty()) return null
 		val linkConfig = links[name] ?: return null

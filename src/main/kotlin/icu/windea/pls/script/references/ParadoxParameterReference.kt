@@ -1,13 +1,15 @@
-package icu.windea.pls.script.reference
+package icu.windea.pls.script.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * @see icu.windea.pls.script.codeInsight.completion.ParadoxParameterCompletionProvider
+ */
 class ParadoxParameterReference(
 	element: @UnionType(types = [ParadoxArgument::class, ParadoxParameter::class]) PsiElement,
 	rangeInElement: TextRange,
@@ -30,13 +32,5 @@ class ParadoxParameterReference(
 		val definition = element.findParentDefinition() ?: return null
 		val definitionInfo = definition.definitionInfo ?: return null
 		return ParadoxParameterElement(element, name, definitionInfo.name, definitionInfo.type, definitionInfo.project, definitionInfo.gameType, read)
-	}
-	
-	/**
-	 * @see icu.windea.pls.script.codeInsight.completion.ParadoxParameterCompletionProvider
-	 */
-	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<out Any> {
-		return super.getVariants() //not here
 	}
 }

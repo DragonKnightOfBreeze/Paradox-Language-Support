@@ -93,7 +93,7 @@ class ParadoxScriptAnnotator : Annotator, DumbAware {
 		val configGroup = config.info.configGroup
 		when(expression.type) {
 			CwtDataTypes.InlineLocalisation -> {
-				if(element.isQuoted()) {
+				if(!element.isQuoted()) {
 					val attributesKey = Keys.LOCALISATION_REFERENCE_KEY
 					holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
 				}

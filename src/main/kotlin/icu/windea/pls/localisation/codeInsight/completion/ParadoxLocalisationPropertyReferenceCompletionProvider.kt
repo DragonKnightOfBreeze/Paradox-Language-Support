@@ -29,10 +29,9 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
 		val processor: ProcessEntry.(ParadoxLocalisationProperty) -> Boolean = {
 			val name = it.name
 			val icon = it.icon
-			val typeText = it.containingFile.name
-			val lookupElement = LookupElementBuilder.create(it, name)
-				.withIcon(icon)
-				.withTypeText(typeText, true)
+			val typeFile = it.containingFile
+			val lookupElement = LookupElementBuilder.create(it, name).withIcon(icon)
+				.withTypeText(typeFile.name, typeFile.icon, true)
 			result.addElement(lookupElement)
 			true
 		}

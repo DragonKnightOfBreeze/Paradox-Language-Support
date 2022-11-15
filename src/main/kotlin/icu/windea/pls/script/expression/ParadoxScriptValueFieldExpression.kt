@@ -78,7 +78,8 @@ class ParadoxScriptValueFieldExpression(
 				}
 				//可以解析，或者不是最后一个，继续
 				if(index != textRanges.lastIndex) {
-					val resolved = CwtConfigHandler.resolveScope(textToCheck, configGroup)
+					val resolved = CwtConfigHandler.resolveSystemScope(textToCheck, configGroup)
+						?: CwtConfigHandler.resolveScope(textToCheck, configGroup)
 					val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, resolved, configGroup.linksAsScopePrefixes)
 					infos.add(info)
 					if(resolved == null) isMatched = false

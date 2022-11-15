@@ -1,7 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import icu.windea.pls.script.reference.*;
+import icu.windea.pls.script.references.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

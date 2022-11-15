@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.reference
+package icu.windea.pls.localisation.references
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
@@ -20,7 +20,9 @@ import kotlin.collections.mapNotNullTo
  * * 名字为"GFX_${iconName}"，类型为sprite的定义。
  * * "gfx/interface/icons"及其子目录中，文件名为iconName（去除后缀名）的DDS文件。
  * * 生成的图标。例如定义`job_head_researcher`拥有定义属性`icon = researcher`，将会生成图标`job_head_researcher`。
- */
+ * 
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationIconCompletionProvider
+*/
 class ParadoxLocalisationIconReference(
 	element: ParadoxLocalisationIcon,
 	rangeInElement: TextRange
@@ -101,13 +103,5 @@ class ParadoxLocalisationIconReference(
 			if(jobDefinitions.isNotEmpty()) return jobDefinitions.mapToArray { PsiElementResolveResult(it) }
 		}
 		return ResolveResult.EMPTY_ARRAY
-	}
-	
-	/**
-	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationIconCompletionProvider
-	 */
-	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<out Any> {
-		return super.getVariants() //not here
 	}
 }

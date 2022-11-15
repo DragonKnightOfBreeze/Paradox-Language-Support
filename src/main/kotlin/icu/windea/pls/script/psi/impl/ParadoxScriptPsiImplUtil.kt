@@ -20,7 +20,7 @@ import icu.windea.pls.script.expression.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.reference.*
+import icu.windea.pls.script.references.*
 import org.apache.commons.imaging.color.*
 import java.awt.*
 import javax.swing.*

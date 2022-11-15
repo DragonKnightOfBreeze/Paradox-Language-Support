@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.reference
+package icu.windea.pls.localisation.references
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.util.*

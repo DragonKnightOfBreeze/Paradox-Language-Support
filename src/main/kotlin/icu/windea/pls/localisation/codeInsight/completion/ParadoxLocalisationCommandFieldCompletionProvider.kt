@@ -29,20 +29,37 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		//提示command
 		context.completeLocalisationCommandField(configGroup, result)
 		
-		//提示类型为scripted_loc的definition
-		val tailText = " from scripted_loc"
-		val selector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
-		val definitions = ParadoxDefinitionSearch.search("scripted_loc", project, selector = selector).findAll()
-		if(definitions.isEmpty()) return
-		for(definition in definitions) {
-			val name = definition.definitionInfo?.name.orEmpty() //不应该为空
+		//提示<scripted_loc>
+		val scriptedLocSelector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
+		val scriptedLocs = ParadoxDefinitionSearch.search("scripted_loc", project, selector = scriptedLocSelector).findAll()
+		if(scriptedLocs.isEmpty()) return
+		for(scriptedLoc in scriptedLocs) {
+			val name = scriptedLoc.definitionInfo?.name.orEmpty() //不应该为空
 			val icon = PlsIcons.LocalisationCommandField
-			val typeText = definition.containingFile.name
-			val lookupElement = LookupElementBuilder.create(definition, name).withIcon(icon)
+			val tailText = " from <scripted_loc>"
+			val typeFile = scriptedLoc.containingFile
+			val lookupElement = LookupElementBuilder.create(scriptedLoc, name).withIcon(icon)
 				.withTailText(tailText, true)
-				.withTypeText(typeText, true)
+				.withTypeText(typeFile.name, typeFile.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsCompletionPriorities.definitionPriority)
 			result.addElement(lookupElement)
+		}
+		
+		//提示value[variable]
+		val variableSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
+		val variableQuery = ParadoxValueSetValueSearch.search("variable", project, selector = variableSelector)
+		variableQuery.processResult { variable -> 
+			val value = variable.value.substringBefore('@')
+			val icon = PlsIcons.Variable
+			val tailText = " from value[variable]"
+			val lookupElement = LookupElementBuilder.create(variable, value)
+				.withIcon(icon)
+				.withTailText(tailText, true)
+				.withCaseSensitivity(false) //忽略大小写
+				.withPriority(PlsCompletionPriorities.variablePriority)
+			result.addElement(lookupElement)
+			true
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.reference
+package icu.windea.pls.localisation.references
 
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.*
@@ -8,6 +8,9 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
+/**
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationLocaleCompletionProvider
+ */
 class ParadoxLocalisationLocaleReference(
 	element: ParadoxLocalisationLocale,
 	rangeInElement: TextRange
@@ -18,13 +21,5 @@ class ParadoxLocalisationLocaleReference(
 	
 	override fun resolve(): PsiElement? {
 		return element.localeConfig?.pointer?.element
-	}
-	
-	/**
-	 * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationLocaleCompletionProvider
-	 */
-	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<out Any> {
-		return super.getVariants() //not here
 	}
 }

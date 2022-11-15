@@ -11,6 +11,9 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
+/**
+ * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
+ */
 class ParadoxScriptExpressionReference(
 	element: ParadoxScriptExpressionElement,
 	rangeInElement: TextRange,
@@ -51,13 +54,5 @@ class ParadoxScriptExpressionReference(
 	override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
 		return CwtConfigHandler.multiResolveScriptExpression(element, rangeInElement, config.expression, config, isKey)
 			.mapToArray { PsiElementResolveResult(it) } //根据对应的expression进行解析
-	}
-	
-	/**
-	 * @see icu.windea.pls.script.codeInsight.completion.ParadoxDefinitionCompletionProvider
-	 */
-	@Suppress("RedundantOverride")
-	override fun getVariants(): Array<out Any> {
-		return super.getVariants() //not here
 	}
 }

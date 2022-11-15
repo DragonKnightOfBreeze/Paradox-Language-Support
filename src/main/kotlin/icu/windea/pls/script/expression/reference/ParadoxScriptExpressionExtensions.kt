@@ -1,8 +1,8 @@
 package icu.windea.pls.script.expression.reference
 
 import com.intellij.psi.*
-import icu.windea.pls.localisation.reference.*
-import icu.windea.pls.script.reference.*
+import icu.windea.pls.localisation.references.*
+import icu.windea.pls.script.references.*
 
 fun PsiReference.canResolveParameter() : Boolean{
 	return when(this){

@@ -58,8 +58,8 @@
   * [X] 兼容`value_field`或者`int_value_field`需要被识别为变量的情况（`root.owner.var_name`）（通过更新CWT规则文件`links.cwt`）
   * [X] 脚本文件中来自CWT文件的引用需要能被同时高亮出来，同时一般情况下不能从CWT文件中的规则查找引用（`modifier`等除外）
     * 对于别名无法正常工作（`if` != `alias[effect:if]`）
-  * [X] 兼容localisationCommandScope需要被识别为`value_set[event_target]`或者`value_set[global_event_target]`的情况
-  * [X] 兼容localisationCommandField需要被识别为`value_set[variable]`的情况
+  * [X] 兼容localisationCommandScope需要被识别为`value[event_target]`或者`value[global_event_target]`的情况，以及代码提示
+  * [X] 兼容localisationCommandField需要被识别为`value[variable]`的情况，以及代码提示
 * 功能优化：
   * [X] 对CWT别名规则（dataType=alias/single_alias）使用特殊的别名图标，以便区分内联前后的CWT规则
   * [X] 在单纯地匹配CWT规则以找到对应的CWT规则时，不应该要求索引，否则可能会引发IDE异常：`java.lang.Throwable: Indexing process should not rely on non-indexed file data.`

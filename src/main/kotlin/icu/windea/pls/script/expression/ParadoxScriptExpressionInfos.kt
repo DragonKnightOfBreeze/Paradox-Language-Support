@@ -14,7 +14,7 @@ import icu.windea.pls.script.exp.*
 import icu.windea.pls.script.expression.reference.*
 import icu.windea.pls.script.highlighter.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.reference.*
+import icu.windea.pls.script.references.*
 
 class ParadoxScriptScopeExpressionInfo(
 	text: String,

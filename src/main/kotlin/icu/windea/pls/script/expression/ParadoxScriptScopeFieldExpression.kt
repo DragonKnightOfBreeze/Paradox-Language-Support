@@ -70,7 +70,8 @@ class ParadoxScriptScopeFieldExpression(
 					errors.add(error)
 					break
 				}
-				val resolved = CwtConfigHandler.resolveScope(textToCheck, configGroup)
+				val resolved = CwtConfigHandler.resolveSystemScope(textToCheck, configGroup)
+					?: CwtConfigHandler.resolveScope(textToCheck, configGroup)
 				//可以解析，继续
 				if(resolved != null) {
 					val info = ParadoxScriptScopeExpressionInfo(textToCheck, textRange, resolved, configGroup.linksAsScopePrefixes)
