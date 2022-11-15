@@ -34,7 +34,9 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 			val pinned = locale.id == localeIdFromFileName
 			val lookupElement = LookupElementBuilder.create(element, locale.id).withIcon(locale.icon)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withPriority(if(pinned) PlsCompletionPriorities.pinnedPriority else 0.0) //优先提示与文件名匹配的语言区域
+				.letIf(pinned) {
+					it.withPriority(PlsCompletionPriorities.pinnedPriority) //优先提示与文件名匹配的语言区域
+				}
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)

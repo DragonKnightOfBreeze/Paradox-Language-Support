@@ -13,10 +13,19 @@ import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
+import kotlin.contracts.*
 import kotlin.math.*
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun pass() {}
+
+@OptIn(ExperimentalContracts::class)
+inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	return if (condition) block(this) else this
+}
 
 fun Number.format(digits: Int): String {
 	val power = 10.0.pow(abs(digits))

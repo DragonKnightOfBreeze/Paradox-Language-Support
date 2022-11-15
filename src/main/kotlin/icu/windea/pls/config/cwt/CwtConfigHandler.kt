@@ -594,7 +594,6 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(file.name, file.icon, true)
 						.withExpectedInsertHandler(isKey)
-						.withPriority(PlsCompletionPriorities.pathPriority)
 					result.addElement(lookupElement)
 				}
 			}
@@ -617,7 +616,6 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(file.name, file.icon, true)
 						.withExpectedInsertHandler(isKey)
-						.withPriority(PlsCompletionPriorities.pathPriority)
 					result.addElement(lookupElement)
 				}
 			}
@@ -635,7 +633,6 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
-						.withPriority(PlsCompletionPriorities.definitionPriority)
 					result.addElement(lookupElement)
 					true
 				}
@@ -656,7 +653,6 @@ object CwtConfigHandler {
 						.withTailText(tailText, true)
 						.withTypeText(typeFile.name, typeFile.icon, true)
 						.withExpectedInsertHandler(isKey)
-						.withPriority(PlsCompletionPriorities.definitionPriority)
 					result.addElement(lookupElement)
 					true
 				}
@@ -713,7 +709,6 @@ object CwtConfigHandler {
 							.withTypeText(typeFile?.name, typeFile?.icon, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写
-							.withPriority(PlsCompletionPriorities.complexEnumPriority)
 						result.addElement(lookupElement)
 						true
 					}
@@ -765,17 +760,12 @@ object CwtConfigHandler {
 							"variable" -> PlsIcons.Variable
 							else -> PlsIcons.ValueSetValue
 						}
-						val priority = when(valueSetName) {
-							"variable" -> PlsCompletionPriorities.variablePriority
-							else -> PlsCompletionPriorities.valueSetValuePriority
-						}
 						//不显示typeText
 						val lookupElement = LookupElementBuilder.create(valueSetValue, value)
 							.withExpectedIcon(icon)
 							.withTailText(tailText, true)
 							.withExpectedInsertHandler(isKey)
 							.withCaseSensitivity(false) //忽略大小写
-							.withPriority(priority)
 						result.addElement(lookupElement)
 						true
 					}
@@ -1029,7 +1019,6 @@ object CwtConfigHandler {
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
 				.withExpectedInsertHandler(isKey)
 				.withCaseSensitivity(false) //忽略大小写
-				.withPriority(PlsCompletionPriorities.valueFieldValuePriority)
 			lookupElements.add(lookupElement)
 		}
 		result.withPrefixMatcher(keyword).addAllElements(lookupElements)

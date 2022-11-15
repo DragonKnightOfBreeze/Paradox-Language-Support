@@ -58,8 +58,9 @@ class ParadoxLocalisationAnnotator : Annotator, DumbAware {
 	
 	private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
 		//颜色高亮
+		val location = element.colorId ?: return
 		val attributesKey = element.reference?.resolveTextAttributesKey() ?: return
-		holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKey).create()
+		holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
 	}
 	
 	private fun annotateCommandScope(element: ParadoxLocalisationCommandScope, holder: AnnotationHolder) {

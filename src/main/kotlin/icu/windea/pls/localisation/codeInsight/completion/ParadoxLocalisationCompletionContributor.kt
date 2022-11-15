@@ -23,7 +23,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 		extend(null, iconPattern, ParadoxLocalisationIconCompletionProvider())
 		
 		//当用户可能可能正在输入一个color的ID时提示（因为colorId只有一个字符，这里需要特殊处理）
-		val colorPattern = psiElement().afterLeaf(psiElement().withText("§"))
+		val colorPattern = psiElement().atStartOf(psiElement().afterLeaf("§")) 
 		extend(null, colorPattern, ParadoxLocalisationColorCompletionProvider())
 		
 		//当用户正在输入一个commandScope的名字时提示

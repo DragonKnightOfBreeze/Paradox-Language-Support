@@ -47,7 +47,6 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 				.withIcon(icon)
 				.withTailText(tailText, true)
 				.withCaseSensitivity(false) //忽略大小写
-				.withPriority(PlsCompletionPriorities.valueSetValuePriority)
 			result.addElement(lookupElement)
 			true
 		}
@@ -63,7 +62,6 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 				.withIcon(icon)
 				.withTailText(tailText, true)
 				.withCaseSensitivity(false) //忽略大小写
-				.withPriority(PlsCompletionPriorities.valueSetValuePriority)
 			result.addElement(lookupElement)
 			true
 		}

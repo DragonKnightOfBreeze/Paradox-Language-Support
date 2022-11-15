@@ -1,19 +1,22 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
 import icu.windea.pls.config.definition.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.localisation.psi.*
 
 /**
  * 提供颜色ID的代码补全。
  */
 class ParadoxLocalisationColorCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-		val position = parameters.position
 		val file = parameters.originalFile
+		val originalColorId = file.findElementAt(parameters.offset)
+			?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_ID }
 		val project = file.project
 		val gameType = ParadoxSelectorUtils.selectGameType(file) ?: return
 		val colorConfigs = DefinitionConfigHandler.getTextColorConfigs(gameType, project, file)
@@ -27,6 +30,14 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
 			val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
 				.withTailText(tailText, true)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
+				.letIf(originalColorId != null) {
+					//delete existing colorId
+					it.withInsertHandler { context, item ->
+						val editor = context.editor
+						val offset = editor.caretModel.offset
+						editor.document.deleteString(offset, offset + 1)
+					}
+				}
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
