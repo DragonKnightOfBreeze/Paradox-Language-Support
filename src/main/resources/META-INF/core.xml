@@ -30,7 +30,6 @@
     
     <!--<preloadingActivity implementation="icu.windea.pls.core.ParadoxPreloadActivity"/>-->
     
-    <pathReferenceProvider implementation="icu.windea.pls.core.ParadoxPathReferenceProvider"/>
     <qualifiedNameProvider implementation="icu.windea.pls.core.ParadoxQualifiedNameProvider"/>
     <vfs.asyncListener implementation="icu.windea.pls.core.DescriptorOrMarkerFileListener"/>
 
