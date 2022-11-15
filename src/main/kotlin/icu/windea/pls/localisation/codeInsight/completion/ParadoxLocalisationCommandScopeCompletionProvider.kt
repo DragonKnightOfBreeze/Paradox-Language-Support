@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
@@ -37,6 +38,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		context.completeLocalisationCommandScope(configGroup, result)
 		
 		//提示value[event_target]
+		ProgressManager.checkCanceled()
 		val eventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val eventTargetQuery = ParadoxValueSetValueSearch.search("event_target", project, selector = eventTargetSelector)
 		eventTargetQuery.processResult { eventTarget ->
@@ -52,6 +54,7 @@ class ParadoxLocalisationCommandScopeCompletionProvider : CompletionProvider<Com
 		}
 		
 		//提示value[global_event_target]
+		ProgressManager.checkCanceled()
 		val globalEventTargetSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val globalEventTargetQuery = ParadoxValueSetValueSearch.search("global_event_target", project, selector = globalEventTargetSelector)
 		globalEventTargetQuery.processResult { globalEventTarget ->

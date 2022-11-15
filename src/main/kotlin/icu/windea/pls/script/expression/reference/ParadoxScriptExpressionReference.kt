@@ -7,7 +7,6 @@ import icu.windea.pls.config.cwt.*
 import icu.windea.pls.config.cwt.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.script.psi.*
 
@@ -30,7 +29,7 @@ class ParadoxScriptExpressionReference(
 			resolved is PsiNamedElement -> resolved.setName(newElementName)
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
-		//重命名引用指向的元素
+		//重命名当前元素
 		return element.setValue(newElementName)
 	}
 	

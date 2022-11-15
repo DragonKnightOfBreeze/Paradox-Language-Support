@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.config.cwt.CwtConfigHandler.completeLocalisationCommandField
@@ -30,10 +31,10 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 		context.completeLocalisationCommandField(configGroup, result)
 		
 		//提示<scripted_loc>
+		ProgressManager.checkCanceled()
 		val scriptedLocSelector = definitionSelector().gameTypeFrom(file).preferRootFrom(file).distinctByName()
-		val scriptedLocs = ParadoxDefinitionSearch.search("scripted_loc", project, selector = scriptedLocSelector).findAll()
-		if(scriptedLocs.isEmpty()) return
-		for(scriptedLoc in scriptedLocs) {
+		val scriptedLocQuery = ParadoxDefinitionSearch.search("scripted_loc", project, selector = scriptedLocSelector)
+		scriptedLocQuery.processResult { scriptedLoc ->
 			val name = scriptedLoc.definitionInfo?.name.orEmpty() //不应该为空
 			val icon = PlsIcons.Definition
 			val tailText = " from <scripted_loc>"
@@ -43,9 +44,11 @@ class ParadoxLocalisationCommandFieldCompletionProvider : CompletionProvider<Com
 				.withTypeText(typeFile.name, typeFile.icon, true)
 				.withCaseSensitivity(false) //忽略大小写
 			result.addElement(lookupElement)
+			true
 		}
 		
 		//提示value[variable]
+		ProgressManager.checkCanceled()
 		val variableSelector = valueSetValueSelector().gameTypeFrom(file).preferRootFrom(file).distinctByValue()
 		val variableQuery = ParadoxValueSetValueSearch.search("variable", project, selector = variableSelector)
 		variableQuery.processResult { variable -> 

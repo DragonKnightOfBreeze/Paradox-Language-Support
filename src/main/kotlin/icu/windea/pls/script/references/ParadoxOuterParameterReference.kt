@@ -15,7 +15,7 @@ class ParadoxOuterParameterReference(
 	private val configGroup: CwtConfigGroup
 ) : PsiReferenceBase<PsiElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名引用指向的元素即可（在对应的范围内）
+		//重命名当前元素即可（在对应的范围内）
 		val element = element
 		return when {
 			element is ParadoxScriptExpressionElement -> element.setValue(rangeInElement.replace(element.value, newElementName))

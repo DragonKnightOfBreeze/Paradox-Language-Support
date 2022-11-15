@@ -40,7 +40,7 @@ class ParadoxScriptValueFieldDataSourceReference(
 			resolved is PsiNamedElement -> resolved.setName(newElementName)
 			else -> throw IncorrectOperationException() //不允许重命名
 		}
-		//重命名引用指向的元素（仅修改对应范围的文本，认为整个文本没有用引号括起）
+		//重命名当前元素（仅修改对应范围的文本，认为整个文本没有用引号括起）
 		return element.setValue(rangeInElement.replace(element.value, newElementName))
 	}
 	

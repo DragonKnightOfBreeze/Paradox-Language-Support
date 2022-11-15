@@ -5,9 +5,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import com.intellij.util.containers.*
 import icons.*
-import icu.windea.pls.*
 import icu.windea.pls.config.cwt.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.search.*
@@ -17,73 +15,76 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供图标名字的代码补全。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionParameters>() {
 	override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
 		val originalFile = parameters.originalFile
 		val project = originalFile.project
+		val namesToDistinct = mutableSetOf<String>()
 		
-		//需要避免ProcessCanceledException导致完全不作任何提示
-		
-		val map = CollectionFactory.createSmallMemoryFootprintLinkedMap<String, PsiElement>() //优化性能
 		//根据spriteName进行提示
-		runBlockingCancellable {
-			val spriteSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
-			val sprites = ParadoxDefinitionSearch.search("sprite|spriteType", project, selector = spriteSelector).findAll()
-			if(sprites.isNotEmpty()) {
-				for(sprite in sprites) {
-					val spriteName = sprite.definitionInfo?.name
-					val name = spriteName?.removePrefixOrNull("GFX_")?.removePrefix("text_")
-					if(name != null) map.putIfAbsent(name, sprite)
-				}
+		ProgressManager.checkCanceled()
+		val spriteSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
+		val spriteQuery = ParadoxDefinitionSearch.search("sprite|spriteType", project, selector = spriteSelector)
+		spriteQuery.processResult { sprite ->
+			val spriteName = sprite.definitionInfo?.name
+			val name = spriteName?.removePrefixOrNull("GFX_")?.removePrefix("text_")
+			if(name != null && namesToDistinct.add(name)) {
+				addLookupElement(name, sprite, result)
 			}
+			true
 		}
+		
 		//根据ddsFileName进行提示
-		runBlockingCancellable {
-			val fileSelector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
-			val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = fileSelector)
-			if(ddsFiles.isNotEmpty()) {
-				for(ddsFile in ddsFiles) {
-					val name = ddsFile.nameWithoutExtension
-					val file = ddsFile.toPsiFile<PsiFile>(project)
-					if(file != null) map.putIfAbsent(name, file)
+		ProgressManager.checkCanceled()
+		val fileSelector = fileSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile)
+		val ddsFiles = findFilesByFilePath("gfx/interface/icons/", project, expressionType = CwtFilePathExpressionTypes.Icon, distinct = true, selector = fileSelector)
+		if(ddsFiles.isNotEmpty()) {
+			for(ddsFile in ddsFiles) {
+				val name = ddsFile.nameWithoutExtension
+				val file = ddsFile.toPsiFile<PsiFile>(project)
+				if(file != null && namesToDistinct.add(name)) {
+					addLookupElement(name, file, result)
 				}
 			}
 		}
+		
 		//作为生成的图标处理（解析为其他类型的定义）
-		runBlockingCancellable {
-			val jobSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
-			//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
-			ParadoxDefinitionSearch.search("job", project, selector = jobSelector).processResult { definition ->
-				val jobName = definition.definitionInfo?.name ?: return@processResult true
-				map.putIfAbsent("job_$jobName", definition)
-				true
+		ProgressManager.checkCanceled()
+		val definitionSelector = definitionSelector().gameTypeFrom(originalFile).preferRootFrom(originalFile).distinctByName()
+		//如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
+		val definitionQuery = ParadoxDefinitionSearch.search("job", project, selector = definitionSelector)
+		definitionQuery.processResult { definition ->
+			val jobName = definition.definitionInfo?.name ?: return@processResult true
+			val name = "job_$jobName"
+			if(namesToDistinct.add(name)) {
+				addLookupElement(name, definition, result)
 			}
+			true
 		}
-		if(map.isEmpty()) return
-		map.forEach { (name, element) ->
-			when(element) {
-				//val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
-				is ParadoxDefinitionProperty -> {
-					val icon = PlsIcons.LocalisationIcon //使用特定图标
-					val definitionInfo = element.definitionInfo //不应该为null
-					val tailText = if(definitionInfo != null) " from ${definitionInfo.type} definition ${definitionInfo.name}" else ""
-					val typeFile = element.containingFile
-					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-						.withTailText(tailText, true)
-						.withTypeText(typeFile.name, typeFile.icon, true)
-					result.addElement(lookupElement)
-				}
-				is PsiFile -> {
-					val icon = PlsIcons.LocalisationIcon //使用特定图标
-					val tailText = " from dds file ${element.name}"
-					val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
-						.withTailText(tailText, true)
-						.withTypeText(element.name, element.icon, true)
-					result.addElement(lookupElement)
-				}
-				else -> pass()
+	}
+	
+	private fun addLookupElement(name: String, element: PsiElement, result: CompletionResultSet) {
+		when(element) {
+			//val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
+			is ParadoxDefinitionProperty -> {
+				val icon = PlsIcons.LocalisationIcon //使用特定图标
+				val definitionInfo = element.definitionInfo //不应该为null
+				val tailText = if(definitionInfo != null) " from ${definitionInfo.type} definition ${definitionInfo.name}" else ""
+				val typeFile = element.containingFile
+				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					.withTailText(tailText, true)
+					.withTypeText(typeFile.name, typeFile.icon, true)
+				result.addElement(lookupElement)
 			}
+			is PsiFile -> {
+				val icon = PlsIcons.LocalisationIcon //使用特定图标
+				val tailText = " from dds file ${element.name}"
+				val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
+					.withTailText(tailText, true)
+					.withTypeText(element.name, element.icon, true)
+				result.addElement(lookupElement)
+			}
+			else -> pass()
 		}
 	}
 }

@@ -13,7 +13,7 @@ class ParadoxScriptValueSetValueReference(
 	private val config: CwtDataConfig<*>
 ) : PsiReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): ParadoxScriptExpressionElement {
-		//重命名引用指向的元素（仅修改对应范围的文本）
+		//重命名当前元素（仅修改对应范围的文本）
 		return element.setValue(rangeInElement.replace(element.value, newElementName))
 	}
 	

@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.search.*
 import icu.windea.pls.core.selector.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.highlighter.*
 
@@ -20,7 +21,16 @@ class ParadoxLocalisationCommandScopeReference(
 	rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationCommandScope>(element, rangeInElement), PsiAnnotatedReference {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		throw IncorrectOperationException() //不允许重命名
+		//尝试重命名关联的valueSetValue等
+		val resolved = resolve()
+		when {
+			resolved == null -> pass()
+			resolved.language == CwtLanguage -> throw IncorrectOperationException() //不允许重命名
+			resolved is PsiNamedElement -> resolved.setName(newElementName)
+			else -> throw IncorrectOperationException() //不允许重命名
+		}
+		//重命名当前元素
+		return element.setName(newElementName)
 	}
 	
 	override fun resolve(): PsiElement? {

@@ -16,7 +16,7 @@ class ParadoxParameterReference(
 	private val read: Boolean
 ) : PsiReferenceBase<PsiElement>(element, rangeInElement) {
 	override fun handleElementRename(newElementName: String): PsiElement {
-		//重命名引用指向的元素即可
+		//重命名当前元素即可
 		val element = element
 		return when {
 			element is ParadoxArgument -> element.setName(newElementName)

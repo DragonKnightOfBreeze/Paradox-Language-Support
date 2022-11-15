@@ -1189,16 +1189,15 @@ object CwtConfigHandler {
 	}
 	
 	fun ProcessingContext.completeParametersForScriptValueExpression(svName: String, parameterNames: Set<String>, result: CompletionResultSet) {
-		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
-		val svList = ParadoxDefinitionSearch.search(svName, "script_value", configGroup.project, selector = selector).findAll()
-		if(svList.isEmpty()) return
+		//整合所有匹配名字的SV的参数
+		val resultToUse = result.withPrefixMatcher(keyword)
 		val existParameterNames = mutableSetOf<String>()
 		existParameterNames.addAll(parameterNames)
-		//批量提示
-		val lookupElements = mutableSetOf<LookupElement>()
-		for(sv in svList) {
+		val selector = definitionSelector().gameType(configGroup.gameType).preferRootFrom(contextElement)
+		val svQuery = ParadoxDefinitionSearch.search(svName, "script_value", configGroup.project, selector = selector)
+		svQuery.processResult { sv ->
 			val parameterMap = sv.parameterMap
-			if(parameterMap.isEmpty()) continue
+			if(parameterMap.isEmpty()) return@processResult true
 			for((parameterName, parameters) in parameterMap) {
 				if(parameterName in existParameterNames) continue //排除已输入的
 				val parameter = parameters.firstNotNullOfOrNull { it.element } ?: continue
@@ -1206,10 +1205,10 @@ object CwtConfigHandler {
 					.withIcon(PlsIcons.Parameter)
 					.withTypeText(svName, sv.icon, true)
 					.withExpectedInsertHandler(false)
-				lookupElements.add(lookupElement)
+				resultToUse.addElement(lookupElement)
 			}
+			true
 		}
-		result.withPrefixMatcher(keyword).addAllElements(lookupElements)
 	}
 	
 	private val boolLookupElements = PlsConstants.booleanValues.map { value ->
