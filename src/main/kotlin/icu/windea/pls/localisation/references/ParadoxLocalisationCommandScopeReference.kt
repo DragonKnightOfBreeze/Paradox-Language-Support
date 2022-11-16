@@ -43,7 +43,6 @@ class ParadoxLocalisationCommandScopeReference(
 		val name = element.name
 		val project = element.project
 		val gameType = ParadoxSelectorUtils.selectGameType(element) ?: return null
-		
 		//尝试被识别为预定义的localisation_command
 		val configGroup = getCwtConfig(project).get(gameType) ?: return null
 		val systemScope = CwtConfigHandler.resolveSystemScope(name, configGroup)

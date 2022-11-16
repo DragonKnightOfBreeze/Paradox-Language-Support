@@ -27,6 +27,14 @@ inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {
 	return if (condition) block(this) else this
 }
 
+@OptIn(ExperimentalContracts::class)
+inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	return if (!condition) block(this) else this
+}
+
 fun Number.format(digits: Int): String {
 	val power = 10.0.pow(abs(digits))
 	return when {

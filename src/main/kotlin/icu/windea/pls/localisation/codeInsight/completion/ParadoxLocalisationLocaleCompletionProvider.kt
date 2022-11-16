@@ -1,9 +1,12 @@
 package icu.windea.pls.localisation.codeInsight.completion
 
+import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.ui.*
 import com.intellij.util.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
@@ -28,17 +31,35 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		val locales = InternalConfigHandler.getLocales(project)
+		val insertHandler = getInsertHandler()
 		for(locale in locales) {
 			val element = locale.pointer.element ?: continue
 			val typeFile = locale.pointer.containingFile
-			val pinned = locale.id == localeIdFromFileName
+			val matched = localeIdFromFileName?.let { it == locale.id }
 			val lookupElement = LookupElementBuilder.create(element, locale.id).withIcon(locale.icon)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.letIf(pinned) {
+				.withInsertHandler(insertHandler)
+				.letUnless(matched == false) {
+					it.withItemTextForeground(JBColor.GRAY) //将不匹配的语言区域的提示项置灰
+				}
+				.letIf(matched == true) {
 					it.withPriority(PlsCompletionPriorities.pinnedPriority) //优先提示与文件名匹配的语言区域
 				}
 			lookupElements.add(lookupElement)
 		}
 		result.addAllElements(lookupElements)
+	}
+	
+	private fun getInsertHandler(): InsertHandler<LookupElement> {
+		return InsertHandler { context, _ ->
+			//如果之后没有英文冒号，则插入：英文冒号+换行符+缩进
+			val editor = context.editor
+			val chars = editor.document.charsSequence
+			if(chars.get(context.startOffset) != ':') {
+				val customSettings = CodeStyle.getSettings(context.file)
+				val s = ":\n" + " ".repeat(customSettings.indentOptions.INDENT_SIZE)
+				EditorModificationUtil.insertStringAtCaret(editor, s)
+			}
+		}
 	}
 }
