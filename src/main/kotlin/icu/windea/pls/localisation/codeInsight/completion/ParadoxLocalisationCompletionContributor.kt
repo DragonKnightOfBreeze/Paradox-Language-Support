@@ -12,7 +12,7 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
 	init {
 		//当用户可能正在输入一个locale的名字时提示
 		val localePattern = psiElement(LOCALE_ID) or psiElement(PROPERTY_KEY_ID)
-		extend(CompletionType.BASIC, localePattern, ParadoxLocalisationLocaleCompletionProvider())
+		extend(null, localePattern, ParadoxLocalisationLocaleCompletionProvider())
 		
 		//当用户正在输入一个propertyReference的名字时提示
 		val propertyReferencePattern = psiElement(PROPERTY_REFERENCE_ID)

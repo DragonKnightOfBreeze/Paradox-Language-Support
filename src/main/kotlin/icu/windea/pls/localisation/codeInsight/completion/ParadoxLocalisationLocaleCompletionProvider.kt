@@ -11,6 +11,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.internal.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.completion.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -25,6 +26,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 					it.elementType != TokenType.WHITE_SPACE || it.text.last().let { c -> c != '\n' && c != '\r' }
 				} == true) return
 		}
+		val insertColon = position.nextSibling.elementType != ParadoxLocalisationElementTypes.COLON
 		val file = parameters.originalFile
 		val project = file.project
 		val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
@@ -38,8 +40,10 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 			val matched = localeIdFromFileName?.let { it == locale.id }
 			val lookupElement = LookupElementBuilder.create(element, locale.id).withIcon(locale.icon)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.withInsertHandler(insertHandler)
-				.letUnless(matched == false) {
+				.letIf(insertColon) {
+					it.withInsertHandler(insertHandler) //如果之后没有英文冒号，则插入：英文冒号+换行符+缩进
+				}
+				.letIf(matched == false) {
 					it.withItemTextForeground(JBColor.GRAY) //将不匹配的语言区域的提示项置灰
 				}
 				.letIf(matched == true) {
@@ -52,14 +56,11 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 	
 	private fun getInsertHandler(): InsertHandler<LookupElement> {
 		return InsertHandler { context, _ ->
-			//如果之后没有英文冒号，则插入：英文冒号+换行符+缩进
 			val editor = context.editor
-			val chars = editor.document.charsSequence
-			if(chars.get(context.startOffset) != ':') {
-				val customSettings = CodeStyle.getSettings(context.file)
-				val s = ":\n" + " ".repeat(customSettings.indentOptions.INDENT_SIZE)
-				EditorModificationUtil.insertStringAtCaret(editor, s)
-			}
+			val settings = CodeStyle.getSettings(context.file)
+			val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
+			val s = ":\n" + " ".repeat(indentOptions.INDENT_SIZE)
+			EditorModificationUtil.insertStringAtCaret(editor, s)
 		}
 	}
 }
