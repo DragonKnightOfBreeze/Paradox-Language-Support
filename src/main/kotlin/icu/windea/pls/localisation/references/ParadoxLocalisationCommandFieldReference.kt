@@ -52,7 +52,7 @@ class ParadoxLocalisationCommandFieldReference(
 		
 		//尝试识别为<scripted_loc>
 		val selector = definitionSelector().gameType(gameType).preferRootFrom(element, exact)
-		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).find()
+		val scriptedLoc = ParadoxDefinitionSearch.search(name, "scripted_loc", project, selector = selector).find(exact)
 		if(scriptedLoc != null) return scriptedLoc
 		
 		//尝试识别为value[variable]

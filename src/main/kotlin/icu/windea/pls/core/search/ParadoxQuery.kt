@@ -22,6 +22,10 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 		return delegateProcessResults(original, CommonProcessors.UniqueProcessor(consumer))
 	}
 	
+	fun find(exact: Boolean): T? {
+		return if(exact) find() else findFirst()
+	}
+	
 	fun find(): T? {
 		return if(getSettings().preferOverridden) {
 			findLast()

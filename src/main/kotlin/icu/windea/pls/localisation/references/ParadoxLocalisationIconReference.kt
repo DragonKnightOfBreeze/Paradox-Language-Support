@@ -61,11 +61,11 @@ class ParadoxLocalisationIconReference(
 		//尝试解析为spriteType
 		val textSpriteName = "GFX_text_$iconName"
 		val textSpriteSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element, exact)
-		val textSprite = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", project, selector = textSpriteSelector).find()
+		val textSprite = ParadoxDefinitionSearch.search(textSpriteName, "sprite|spriteType", project, selector = textSpriteSelector).find(exact)
 		if(textSprite != null) return textSprite
 		val spriteName = "GFX_$iconName"
 		val spriteSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element, exact)
-		val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", project, selector = spriteSelector).find()
+		val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite|spriteType", project, selector = spriteSelector).find(exact)
 		if(sprite != null) return sprite
 		//如果不能解析为spriteType，则尝试解析为gfx/interface/icons及其子目录中为相同名字的dds文件
 		val fileSelector = fileSelector().gameTypeFrom(element).preferRootFrom(element, exact)
@@ -76,7 +76,7 @@ class ParadoxLocalisationIconReference(
 		val jobName = iconName.removePrefixOrNull("job_")
 		if(jobName != null) {
 			val definitionSelector = definitionSelector().gameTypeFrom(element).preferRootFrom(element, exact)
-			val jobDefinition = ParadoxDefinitionSearch.search(jobName, "job", project, selector = definitionSelector).find()
+			val jobDefinition = ParadoxDefinitionSearch.search(jobName, "job", project, selector = definitionSelector).find(exact)
 			if(jobDefinition != null) return jobDefinition
 		}
 		return null
