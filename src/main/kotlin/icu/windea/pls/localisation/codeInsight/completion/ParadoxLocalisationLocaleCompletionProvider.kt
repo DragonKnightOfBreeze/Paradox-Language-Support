@@ -33,16 +33,14 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 		//批量提示
 		val lookupElements = mutableSetOf<LookupElement>()
 		val locales = InternalConfigHandler.getLocales(project)
-		val insertHandler = getInsertHandler()
+		val insertHandler = getInsertHandler(insertColon)
 		for(locale in locales) {
 			val element = locale.pointer.element ?: continue
 			val typeFile = locale.pointer.containingFile
 			val matched = localeIdFromFileName?.let { it == locale.id }
 			val lookupElement = LookupElementBuilder.create(element, locale.id).withIcon(locale.icon)
 				.withTypeText(typeFile?.name, typeFile?.icon, true)
-				.letIf(insertColon) {
-					it.withInsertHandler(insertHandler) //如果之后没有英文冒号，则插入：英文冒号+换行符+缩进
-				}
+				.withInsertHandler(insertHandler)
 				.letIf(matched == false) {
 					it.withItemTextForeground(JBColor.GRAY) //将不匹配的语言区域的提示项置灰
 				}
@@ -54,13 +52,22 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 		result.addAllElements(lookupElements)
 	}
 	
-	private fun getInsertHandler(): InsertHandler<LookupElement> {
+	private fun getInsertHandler(insertColon: Boolean): InsertHandler<LookupElement> {
 		return InsertHandler { context, _ ->
+			//如果之后没有英文冒号，则插入：英文冒号+换行符+缩进，否则光标移到冒号之后
 			val editor = context.editor
-			val settings = CodeStyle.getSettings(context.file)
-			val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
-			val s = ":\n" + " ".repeat(indentOptions.INDENT_SIZE)
-			EditorModificationUtil.insertStringAtCaret(editor, s)
+			if(insertColon) {
+				val settings = CodeStyle.getSettings(context.file)
+				val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
+				val s = ":\n" + " ".repeat(indentOptions.INDENT_SIZE)
+				EditorModificationUtil.insertStringAtCaret(editor, s)
+			} else {
+				val chars = editor.document.charsSequence
+				val colonIndex = chars.indexOf(':', context.startOffset)
+				if(colonIndex != -1) {
+					editor.caretModel.moveToOffset(colonIndex + 1)
+				}
+			}
 		}
 	}
 }
